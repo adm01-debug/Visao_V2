@@ -1,6 +1,5 @@
 import { 
   Shield, 
-  TrendingUp, 
   AlertTriangle, 
   Lock,
   Bell,
@@ -11,9 +10,11 @@ import {
   MoreVertical,
   Pencil,
   Trash2,
-  Power
+  Power,
+  Cog,
+  BarChart3
 } from 'lucide-react';
-import { Rule } from '@/types/surveillance';
+import { UIRule } from '@/types/rules';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -25,17 +26,18 @@ import {
 import { Button } from '@/components/ui/button';
 
 interface RuleCardProps {
-  rule: Rule;
+  rule: UIRule;
   onToggle: (id: string, isActive: boolean) => void;
-  onEdit: (rule: Rule) => void;
+  onEdit: (rule: UIRule) => void;
   onDelete: (id: string) => void;
 }
 
 const categoryConfig: Record<string, { icon: typeof Shield; label: string; color: string }> = {
   security: { icon: Shield, label: 'Segurança', color: 'text-blue-400' },
-  productivity: { icon: TrendingUp, label: 'Produtividade', color: 'text-emerald-400' },
   safety: { icon: AlertTriangle, label: 'Segurança do Trabalho', color: 'text-amber-400' },
-  intrusion: { icon: Lock, label: 'Intrusão', color: 'text-red-400' },
+  operations: { icon: Cog, label: 'Operações', color: 'text-emerald-400' },
+  access: { icon: Lock, label: 'Acesso', color: 'text-red-400' },
+  analytics: { icon: BarChart3, label: 'Analytics', color: 'text-purple-400' },
 };
 
 const severityConfig: Record<string, { label: string; variant: 'default' | 'success' | 'warning' | 'alert' }> = {

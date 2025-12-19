@@ -1,70 +1,62 @@
 import { useState } from 'react';
-import { Plus, Search, Filter, Shield, TrendingUp, AlertTriangle, Lock } from 'lucide-react';
-import { Rule, AlertType } from '@/types/surveillance';
-import { mockRules } from '@/data/mockRules';
+import { Plus, Search, Filter, Shield, AlertTriangle, Lock, Cog, BarChart3 } from 'lucide-react';
 import { RuleCard } from './RuleCard';
 import { RuleEditor } from './RuleEditor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { toast } from 'sonner';
+import { useRules } from '@/hooks/useRules';
+import { Skeleton } from '@/components/ui/skeleton';
+import { mapDbRuleToUI, mapUIRuleToDb, UIRule, DbRule } from '@/types/rules';
 
 const categoryTabs: { value: string; label: string; icon: typeof Shield }[] = [
   { value: 'all', label: 'Todas', icon: Filter },
   { value: 'security', label: 'Segurança', icon: Shield },
-  { value: 'productivity', label: 'Produtividade', icon: TrendingUp },
   { value: 'safety', label: 'Seg. Trabalho', icon: AlertTriangle },
-  { value: 'intrusion', label: 'Intrusão', icon: Lock },
+  { value: 'operations', label: 'Operações', icon: Cog },
+  { value: 'access', label: 'Acesso', icon: Lock },
+  { value: 'analytics', label: 'Analytics', icon: BarChart3 },
 ];
 
 export function RulesPanel() {
-  const [rules, setRules] = useState<Rule[]>(mockRules);
+  const { rules, loading, createRule, updateRule, deleteRule, toggleRule } = useRules();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const [editingRule, setEditingRule] = useState<Rule | null>(null);
+  const [editingRule, setEditingRule] = useState<DbRule | null>(null);
 
-  const filteredRules = rules.filter(rule => {
+  const uiRules = rules.map(mapDbRuleToUI);
+
+  const filteredRules = uiRules.filter(rule => {
     const matchesSearch = rule.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       rule.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = activeCategory === 'all' || rule.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
 
-  const handleToggleRule = (id: string, isActive: boolean) => {
-    setRules(prev => prev.map(rule => 
-      rule.id === id ? { ...rule, isActive, updatedAt: new Date() } : rule
-    ));
-    toast.success(isActive ? 'Regra ativada' : 'Regra desativada');
+  const handleToggleRule = async (id: string, isActive: boolean) => {
+    await toggleRule(id, isActive);
   };
 
-  const handleEditRule = (rule: Rule) => {
-    setEditingRule(rule);
-    setIsEditorOpen(true);
+  const handleEditRule = (rule: UIRule) => {
+    const dbRule = rules.find(r => r.id === rule.id);
+    if (dbRule) {
+      setEditingRule(dbRule);
+      setIsEditorOpen(true);
+    }
   };
 
-  const handleDeleteRule = (id: string) => {
-    setRules(prev => prev.filter(rule => rule.id !== id));
-    toast.success('Regra excluída com sucesso');
+  const handleDeleteRule = async (id: string) => {
+    await deleteRule(id);
   };
 
-  const handleSaveRule = (ruleData: Omit<Rule, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const handleSaveRule = async (ruleData: Omit<UIRule, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const dbRule = mapUIRuleToDb(ruleData);
+
     if (editingRule) {
-      setRules(prev => prev.map(rule => 
-        rule.id === editingRule.id 
-          ? { ...rule, ...ruleData, updatedAt: new Date() }
-          : rule
-      ));
-      toast.success('Regra atualizada com sucesso');
+      await updateRule(editingRule.id, dbRule);
     } else {
-      const newRule: Rule = {
-        ...ruleData,
-        id: `rule-${Date.now()}`,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      setRules(prev => [newRule, ...prev]);
-      toast.success('Regra criada com sucesso');
+      await createRule(dbRule);
     }
     setEditingRule(null);
   };
@@ -74,11 +66,35 @@ export function RulesPanel() {
     setIsEditorOpen(true);
   };
 
-  const activeRulesCount = rules.filter(r => r.isActive).length;
+  const activeRulesCount = uiRules.filter(r => r.isActive).length;
   const categoryStats = categoryTabs.slice(1).map(cat => ({
     ...cat,
-    count: rules.filter(r => r.category === cat.value).length,
+    count: uiRules.filter(r => r.category === cat.value).length,
   }));
+
+  if (loading) {
+    return (
+      <div className="p-6 space-y-6 overflow-auto h-[calc(100vh-4rem)]">
+        <div className="flex items-center justify-between">
+          <div>
+            <Skeleton className="h-8 w-48 mb-2" />
+            <Skeleton className="h-4 w-64" />
+          </div>
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {[...Array(5)].map((_, i) => (
+            <Skeleton key={i} className="h-24" />
+          ))}
+        </div>
+        <div className="space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <Skeleton key={i} className="h-32" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6 overflow-auto h-[calc(100vh-4rem)]">
@@ -99,7 +115,7 @@ export function RulesPanel() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 animate-fade-in">
         <div className="glass-card p-4 text-center">
-          <p className="text-3xl font-bold text-primary">{rules.length}</p>
+          <p className="text-3xl font-bold text-primary">{uiRules.length}</p>
           <p className="text-sm text-muted-foreground">Total de Regras</p>
         </div>
         <div className="glass-card p-4 text-center">
@@ -176,7 +192,7 @@ export function RulesPanel() {
 
       {/* Rule Editor Modal */}
       <RuleEditor
-        rule={editingRule}
+        rule={editingRule ? mapDbRuleToUI(editingRule) : null}
         isOpen={isEditorOpen}
         onClose={() => {
           setIsEditorOpen(false);

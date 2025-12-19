@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { X, Plus, Trash2 } from 'lucide-react';
-import { Rule, RuleCondition, AlertType, AlertSeverity, RuleAction, RuleConditionType } from '@/types/surveillance';
+import { Plus, Trash2 } from 'lucide-react';
+import { UIRule, RuleCondition, RuleCategory, RuleSeverity, RuleActionType, RuleConditionType } from '@/types/rules';
 import { conditionTypeLabels } from '@/data/mockRules';
 import { mockCameras } from '@/data/mockData';
 import { Button } from '@/components/ui/button';
@@ -24,27 +24,28 @@ import {
 } from '@/components/ui/dialog';
 
 interface RuleEditorProps {
-  rule?: Rule | null;
+  rule?: UIRule | null;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (rule: Omit<Rule, 'id' | 'createdAt' | 'updatedAt'>) => void;
+  onSave: (rule: Omit<UIRule, 'id' | 'createdAt' | 'updatedAt'>) => void;
 }
 
-const categories: { value: AlertType; label: string }[] = [
+const categories: { value: RuleCategory; label: string }[] = [
   { value: 'security', label: 'Segurança' },
-  { value: 'productivity', label: 'Produtividade' },
   { value: 'safety', label: 'Segurança do Trabalho' },
-  { value: 'intrusion', label: 'Intrusão' },
+  { value: 'operations', label: 'Operações' },
+  { value: 'access', label: 'Acesso' },
+  { value: 'analytics', label: 'Analytics' },
 ];
 
-const severities: { value: AlertSeverity; label: string }[] = [
+const severities: { value: RuleSeverity; label: string }[] = [
   { value: 'low', label: 'Baixa' },
   { value: 'medium', label: 'Média' },
   { value: 'high', label: 'Alta' },
   { value: 'critical', label: 'Crítica' },
 ];
 
-const actions: { value: RuleAction; label: string }[] = [
+const actions: { value: RuleActionType; label: string }[] = [
   { value: 'alert', label: 'Gerar Alerta' },
   { value: 'notification', label: 'Enviar Notificação' },
   { value: 'record', label: 'Gravar Vídeo' },
@@ -77,10 +78,10 @@ const weekDays = [
 const defaultRule = {
   name: '',
   description: '',
-  category: 'security' as AlertType,
-  severity: 'medium' as AlertSeverity,
+  category: 'security' as RuleCategory,
+  severity: 'medium' as RuleSeverity,
   conditions: [] as RuleCondition[],
-  actions: ['alert'] as RuleAction[],
+  actions: ['alert'] as RuleActionType[],
   cameras: [] as string[],
   schedule: {
     enabled: false,
@@ -122,7 +123,7 @@ export function RuleEditor({ rule, isOpen, onClose, onSave }: RuleEditorProps) {
       ...prev,
       conditions: [
         ...prev.conditions,
-        { type: 'people_count', operator: 'greater_than', value: 1 },
+        { type: 'people_count' as RuleConditionType, operator: 'greater_than' as const, value: 1 },
       ],
     }));
   };
@@ -143,7 +144,7 @@ export function RuleEditor({ rule, isOpen, onClose, onSave }: RuleEditorProps) {
     }));
   };
 
-  const toggleAction = (action: RuleAction) => {
+  const toggleAction = (action: RuleActionType) => {
     setFormData(prev => ({
       ...prev,
       actions: prev.actions.includes(action)
@@ -207,7 +208,7 @@ export function RuleEditor({ rule, isOpen, onClose, onSave }: RuleEditorProps) {
                 <Label htmlFor="category">Categoria</Label>
                 <Select
                   value={formData.category}
-                  onValueChange={(value: AlertType) => setFormData(prev => ({ ...prev, category: value }))}
+                  onValueChange={(value: RuleCategory) => setFormData(prev => ({ ...prev, category: value }))}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -224,7 +225,7 @@ export function RuleEditor({ rule, isOpen, onClose, onSave }: RuleEditorProps) {
                 <Label htmlFor="severity">Severidade</Label>
                 <Select
                   value={formData.severity}
-                  onValueChange={(value: AlertSeverity) => setFormData(prev => ({ ...prev, severity: value }))}
+                  onValueChange={(value: RuleSeverity) => setFormData(prev => ({ ...prev, severity: value }))}
                 >
                   <SelectTrigger>
                     <SelectValue />
