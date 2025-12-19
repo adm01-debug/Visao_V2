@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, Camera, AlertTriangle, X, Loader2, MapPin, Clock, Filter, Calendar, History, Trash2 } from 'lucide-react';
+import { Search, Camera, AlertTriangle, X, Loader2, MapPin, Clock, Filter, Calendar, History, Trash2, Star, Plus, Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -48,6 +48,12 @@ interface Filters {
   timePeriod: string;
 }
 
+interface SavedFilter {
+  id: string;
+  name: string;
+  filters: Filters;
+}
+
 const SEVERITY_COLORS: Record<string, string> = {
   low: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
   medium: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
@@ -84,6 +90,7 @@ const TIME_PERIODS: { value: string; label: string }[] = [
 ];
 
 const STORAGE_KEY = 'search-history';
+const FILTERS_STORAGE_KEY = 'saved-filters';
 const MAX_HISTORY_ITEMS = 10;
 
 export function SearchDropdown() {
@@ -102,6 +109,9 @@ export function SearchDropdown() {
     timePeriod: 'all',
   });
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [savedFilters, setSavedFilters] = useState<SavedFilter[]>([]);
+  const [newFilterName, setNewFilterName] = useState('');
+  const [showSaveInput, setShowSaveInput] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -118,6 +128,16 @@ export function SearchDropdown() {
       }
     } catch (error) {
       console.error('Error loading search history:', error);
+    }
+    
+    // Load saved filters
+    try {
+      const storedFilters = localStorage.getItem(FILTERS_STORAGE_KEY);
+      if (storedFilters) {
+        setSavedFilters(JSON.parse(storedFilters));
+      }
+    } catch (error) {
+      console.error('Error loading saved filters:', error);
     }
   }, []);
 
@@ -388,6 +408,60 @@ export function SearchDropdown() {
     inputRef.current?.focus();
   };
 
+  const saveCurrentFilter = () => {
+    if (!newFilterName.trim() || !hasActiveFilters) return;
+    
+    const newFilter: SavedFilter = {
+      id: Date.now().toString(),
+      name: newFilterName.trim(),
+      filters: { ...filters },
+    };
+    
+    setSavedFilters(prev => {
+      const updated = [...prev, newFilter];
+      try {
+        localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(updated));
+      } catch (error) {
+        console.error('Error saving filter:', error);
+      }
+      return updated;
+    });
+    
+    setNewFilterName('');
+    setShowSaveInput(false);
+  };
+
+  const applySavedFilter = (savedFilter: SavedFilter) => {
+    setFilters(savedFilter.filters);
+  };
+
+  const deleteSavedFilter = (id: string) => {
+    setSavedFilters(prev => {
+      const updated = prev.filter(f => f.id !== id);
+      try {
+        localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(updated));
+      } catch (error) {
+        console.error('Error deleting filter:', error);
+      }
+      return updated;
+    });
+  };
+
+  const getFilterSummary = (f: Filters): string => {
+    const parts: string[] = [];
+    if (f.cameraStatus.length > 0) {
+      parts.push(`${f.cameraStatus.length} status`);
+    }
+    if (f.alertSeverity.length > 0) {
+      parts.push(`${f.alertSeverity.length} severidade`);
+    }
+    if (f.timePeriod !== 'all') {
+      const period = TIME_PERIODS.find(p => p.value === f.timePeriod);
+      parts.push(period?.label || f.timePeriod);
+    }
+    return parts.join(' • ') || 'Nenhum filtro';
+  };
+
   const hasResults = cameras.length > 0 || alerts.length > 0;
   const showDropdown = isOpen && (query.trim().length >= 2 || isLoading || hasActiveFilters || (query.trim().length === 0 && searchHistory.length > 0));
   const showHistory = isOpen && query.trim().length === 0 && !hasActiveFilters && searchHistory.length > 0;
@@ -448,6 +522,40 @@ export function SearchDropdown() {
                   )}
                 </div>
               </div>
+
+              {/* Saved Filters Section */}
+              {savedFilters.length > 0 && (
+                <div className="p-3 border-b border-border bg-muted/20">
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5 mb-2">
+                    <Star className="w-3 h-3" />
+                    Filtros Salvos
+                  </label>
+                  <div className="space-y-1.5 max-h-32 overflow-y-auto">
+                    {savedFilters.map((saved) => (
+                      <div
+                        key={saved.id}
+                        className="flex items-center gap-2 group"
+                      >
+                        <button
+                          onClick={() => applySavedFilter(saved)}
+                          className="flex-1 px-2.5 py-1.5 rounded-md text-left text-xs bg-secondary hover:bg-secondary/80 transition-colors"
+                        >
+                          <span className="font-medium text-foreground">{saved.name}</span>
+                          <span className="block text-[10px] text-muted-foreground mt-0.5">
+                            {getFilterSummary(saved.filters)}
+                          </span>
+                        </button>
+                        <button
+                          onClick={() => deleteSavedFilter(saved.id)}
+                          className="p-1 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="p-3 space-y-4">
                 {/* Camera Status Filter */}
@@ -521,7 +629,57 @@ export function SearchDropdown() {
                 </div>
               </div>
 
-              <div className="p-3 border-t border-border bg-muted/30">
+              <div className="p-3 border-t border-border bg-muted/30 space-y-2">
+                {/* Save Filter Input */}
+                {hasActiveFilters && (
+                  showSaveInput ? (
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={newFilterName}
+                        onChange={(e) => setNewFilterName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') saveCurrentFilter();
+                          if (e.key === 'Escape') setShowSaveInput(false);
+                        }}
+                        placeholder="Nome do filtro..."
+                        className="flex-1 h-8 px-2.5 text-xs rounded-md bg-secondary border border-border focus:outline-none focus:ring-1 focus:ring-primary"
+                        autoFocus
+                      />
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 w-8 p-0"
+                        onClick={saveCurrentFilter}
+                        disabled={!newFilterName.trim()}
+                      >
+                        <Check className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 w-8 p-0"
+                        onClick={() => {
+                          setShowSaveInput(false);
+                          setNewFilterName('');
+                        }}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={() => setShowSaveInput(true)}
+                    >
+                      <Star className="w-3.5 h-3.5 mr-1.5" />
+                      Salvar Filtro
+                    </Button>
+                  )
+                )}
+                
                 <Button 
                   className="w-full" 
                   size="sm"
