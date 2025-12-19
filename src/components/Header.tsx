@@ -46,7 +46,13 @@ export function Header({ alertCount }: HeaderProps) {
   });
 
   const toggleTheme = () => {
+    // Add transition class for smooth animation
+    document.documentElement.classList.add('theme-transition');
     setTheme(theme === 'dark' ? 'light' : 'dark');
+    // Remove transition class after animation completes
+    setTimeout(() => {
+      document.documentElement.classList.remove('theme-transition');
+    }, 300);
   };
 
   const toggleMute = () => {
