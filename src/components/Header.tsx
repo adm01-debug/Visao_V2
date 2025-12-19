@@ -37,7 +37,7 @@ interface HeaderProps {
 
 export function Header({ alertCount }: HeaderProps) {
   const { user, signOut } = useAuth();
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [isMuted, setIsMuted] = useState(getAlertSoundsMuted);
   const [pushEnabled, setPushEnabled] = useState(() => {
     return isNotificationSupported() && 
@@ -139,7 +139,14 @@ export function Header({ alertCount }: HeaderProps) {
               className={theme === 'system' ? 'bg-secondary' : ''}
             >
               <Monitor className="w-4 h-4 mr-2" />
-              Sistema
+              <span className="flex items-center gap-2">
+                Sistema
+                {theme === 'system' && (
+                  <span className="text-xs text-muted-foreground">
+                    ({resolvedTheme === 'dark' ? 'escuro' : 'claro'})
+                  </span>
+                )}
+              </span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
