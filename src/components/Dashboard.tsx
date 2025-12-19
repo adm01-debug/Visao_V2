@@ -18,6 +18,7 @@ import { CameraModal } from './CameraModal';
 import { ExportMenu } from './ExportMenu';
 import { CameraMap } from './CameraMap';
 import { AlertTrendsChart } from './AlertTrendsChart';
+import { AlertsByCameraChart } from './AlertsByCameraChart';
 import { CameraLayoutControls, CameraLayout } from './CameraLayoutControls';
 import { AlertFiltersComponent, filterAlerts, defaultFilters, AlertFilters, CameraOption } from './AlertFilters';
 import { SearchInput, filterCamerasBySearch, filterAlertsBySearch } from './SearchInput';
@@ -242,8 +243,16 @@ export function Dashboard() {
           />
         </div>
 
-        {/* Alert Trends Chart */}
-        <AlertTrendsChart alerts={uiAlerts} className="animate-fade-in" />
+        {/* Charts Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 animate-fade-in">
+          <AlertTrendsChart alerts={uiAlerts} />
+          <AlertsByCameraChart 
+            alerts={uiAlerts} 
+            onCameraClick={(cameraId) => {
+              setAlertFilters(prev => ({ ...prev, cameraId }));
+            }}
+          />
+        </div>
 
         {/* Search Bar */}
         <div className="flex items-center gap-4 animate-fade-in">
