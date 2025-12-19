@@ -1,22 +1,29 @@
 // Alert notification sounds using Web Audio API
 
-type AlertSeverity = 'low' | 'medium' | 'high' | 'critical';
+export type AlertSeverity = 'low' | 'medium' | 'high' | 'critical';
+export type ToneType = 'sine' | 'square' | 'triangle' | 'sawtooth';
 
-interface SoundConfig {
+export const TONE_TYPES: ToneType[] = ['sine', 'square', 'triangle', 'sawtooth'];
+
+export interface SoundConfig {
   frequency: number;
   duration: number;
   volume: number;
   beeps: number;
   interval: number;
+  tone: ToneType;
 }
 
-const SOUND_CONFIGS: Record<AlertSeverity, SoundConfig> = {
+export type SoundSettings = Record<AlertSeverity, SoundConfig>;
+
+const DEFAULT_SETTINGS: SoundSettings = {
   low: {
     frequency: 440,
     duration: 150,
     volume: 0.2,
     beeps: 1,
     interval: 0,
+    tone: 'sine',
   },
   medium: {
     frequency: 520,
@@ -24,6 +31,7 @@ const SOUND_CONFIGS: Record<AlertSeverity, SoundConfig> = {
     volume: 0.3,
     beeps: 2,
     interval: 150,
+    tone: 'sine',
   },
   high: {
     frequency: 660,
@@ -31,6 +39,7 @@ const SOUND_CONFIGS: Record<AlertSeverity, SoundConfig> = {
     volume: 0.5,
     beeps: 3,
     interval: 200,
+    tone: 'triangle',
   },
   critical: {
     frequency: 880,
@@ -38,11 +47,41 @@ const SOUND_CONFIGS: Record<AlertSeverity, SoundConfig> = {
     volume: 0.7,
     beeps: 4,
     interval: 250,
+    tone: 'square',
   },
 };
 
 let audioContext: AudioContext | null = null;
 let isMuted = false;
+let soundSettings: SoundSettings = { ...DEFAULT_SETTINGS };
+
+// Load settings from localStorage
+function loadSettings(): void {
+  try {
+    const saved = localStorage.getItem('alert-sound-settings');
+    if (saved) {
+      soundSettings = { ...DEFAULT_SETTINGS, ...JSON.parse(saved) };
+    }
+  } catch {
+    soundSettings = { ...DEFAULT_SETTINGS };
+  }
+}
+
+// Initialize on module load
+loadSettings();
+
+export function getSoundSettings(): SoundSettings {
+  return { ...soundSettings };
+}
+
+export function updateSoundSettings(settings: SoundSettings): void {
+  soundSettings = { ...settings };
+  try {
+    localStorage.setItem('alert-sound-settings', JSON.stringify(settings));
+  } catch {
+    // Ignore localStorage errors
+  }
+}
 
 function getAudioContext(): AudioContext {
   if (!audioContext) {
@@ -51,7 +90,7 @@ function getAudioContext(): AudioContext {
   return audioContext;
 }
 
-function playBeep(frequency: number, duration: number, volume: number): Promise<void> {
+function playBeep(frequency: number, duration: number, volume: number, tone: ToneType): Promise<void> {
   return new Promise((resolve) => {
     const ctx = getAudioContext();
     
@@ -67,7 +106,7 @@ function playBeep(frequency: number, duration: number, volume: number): Promise<
     gainNode.connect(ctx.destination);
 
     oscillator.frequency.value = frequency;
-    oscillator.type = 'sine';
+    oscillator.type = tone;
 
     // Envelope for smooth sound
     const now = ctx.currentTime;
@@ -84,17 +123,17 @@ function playBeep(frequency: number, duration: number, volume: number): Promise<
 
 async function playAlertPattern(config: SoundConfig): Promise<void> {
   for (let i = 0; i < config.beeps; i++) {
-    await playBeep(config.frequency, config.duration, config.volume);
+    await playBeep(config.frequency, config.duration, config.volume, config.tone);
     if (i < config.beeps - 1 && config.interval > 0) {
       await new Promise(r => setTimeout(r, config.interval));
     }
   }
 }
 
-export async function playAlertSound(severity: AlertSeverity): Promise<void> {
-  if (isMuted) return;
+export async function playAlertSound(severity: AlertSeverity, forcePlay = false): Promise<void> {
+  if (isMuted && !forcePlay) return;
   
-  const config = SOUND_CONFIGS[severity];
+  const config = soundSettings[severity];
   if (!config) return;
 
   try {
@@ -136,11 +175,13 @@ export async function playCriticalAlertSound(): Promise<void> {
       await ctx.resume();
     }
 
+    const config = soundSettings.critical;
+    
     // Play urgent siren-like pattern
     for (let i = 0; i < 3; i++) {
-      await playBeep(880, 200, 0.6);
+      await playBeep(config.frequency, 200, config.volume * 0.85, config.tone);
       await new Promise(r => setTimeout(r, 100));
-      await playBeep(1100, 200, 0.7);
+      await playBeep(config.frequency * 1.25, 200, config.volume, config.tone);
       await new Promise(r => setTimeout(r, 150));
     }
   } catch (error) {
