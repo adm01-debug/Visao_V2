@@ -358,9 +358,17 @@ export function Dashboard() {
             </div>
 
             {/* Filter summary */}
-            {(alertFilters.type !== 'all' || alertFilters.severity !== 'all' || alertFilters.dateRange !== 'all') && (
+            {(alertFilters.type !== 'all' || alertFilters.severity !== 'all' || alertFilters.dateRange !== 'all' || alertFilters.cameraId !== 'all') && (
               <p className="text-xs text-muted-foreground">
                 Mostrando {filteredAlerts.length} de {uiAlerts.length} alertas
+                {alertFilters.cameraId !== 'all' && (
+                  <button
+                    onClick={() => setAlertFilters({ ...alertFilters, cameraId: 'all' })}
+                    className="ml-2 text-primary hover:underline"
+                  >
+                    Limpar filtro de câmera
+                  </button>
+                )}
               </p>
             )}
             
@@ -373,6 +381,7 @@ export function Dashboard() {
                     timestamp: new Date(alert.timestamp),
                   }}
                   searchQuery={searchQuery}
+                  onCameraClick={(cameraId) => setAlertFilters({ ...alertFilters, cameraId })}
                 />
               ))}
               {filteredAlerts.length === 0 && uiAlerts.length > 0 && (
