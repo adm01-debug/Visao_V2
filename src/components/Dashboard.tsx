@@ -77,7 +77,7 @@ function mapDbCameraToUI(dbCamera: DbCamera) {
 }
 
 export function Dashboard() {
-  const { cameras, loading: camerasLoading } = useCameras();
+  const { cameras, loading: camerasLoading, updateCamera } = useCameras();
   const { alerts, loading: alertsLoading, unreadCount, markAllAsRead } = useAlerts();
   const [selectedCamera, setSelectedCamera] = useState<ReturnType<typeof mapDbCameraToUI> | null>(null);
   const [cameraLayout, setCameraLayout] = useState<CameraLayout>(() => {
@@ -484,6 +484,11 @@ export function Dashboard() {
           camera={selectedCamera}
           isOpen={!!selectedCamera}
           onClose={() => setSelectedCamera(null)}
+          onUpdateCoordinates={async (id, latitude, longitude) => {
+            await updateCamera(id, { latitude, longitude });
+            // Update selectedCamera with new coordinates
+            setSelectedCamera(prev => prev ? { ...prev, latitude, longitude } : null);
+          }}
         />
       )}
     </>
