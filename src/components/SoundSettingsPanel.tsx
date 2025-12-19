@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Settings, Volume2, Play } from 'lucide-react';
+import { useState } from 'react';
+import { Settings, Volume2, Play, VolumeX, Volume1, Siren } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -25,7 +25,9 @@ import {
   TONE_TYPES,
   type AlertSeverity,
   type ToneType,
+  type SoundSettings,
 } from '@/lib/alertSounds';
+import { toast } from 'sonner';
 
 const SEVERITY_LABELS: Record<AlertSeverity, { label: string; color: string }> = {
   low: { label: 'Baixa', color: 'text-blue-400' },
@@ -41,9 +43,61 @@ const TONE_LABELS: Record<ToneType, string> = {
   sawtooth: 'Serrado',
 };
 
+type PresetKey = 'discrete' | 'default' | 'urgent';
+
+interface Preset {
+  label: string;
+  description: string;
+  icon: typeof VolumeX;
+  settings: SoundSettings;
+}
+
+const PRESETS: Record<PresetKey, Preset> = {
+  discrete: {
+    label: 'Discreto',
+    description: 'Sons suaves e menos intrusivos',
+    icon: VolumeX,
+    settings: {
+      low: { frequency: 300, duration: 100, volume: 0.1, beeps: 1, interval: 0, tone: 'sine' },
+      medium: { frequency: 350, duration: 120, volume: 0.15, beeps: 1, interval: 0, tone: 'sine' },
+      high: { frequency: 400, duration: 150, volume: 0.2, beeps: 2, interval: 200, tone: 'sine' },
+      critical: { frequency: 450, duration: 180, volume: 0.3, beeps: 2, interval: 250, tone: 'triangle' },
+    },
+  },
+  default: {
+    label: 'Padrão',
+    description: 'Configuração balanceada',
+    icon: Volume1,
+    settings: {
+      low: { frequency: 440, duration: 150, volume: 0.2, beeps: 1, interval: 0, tone: 'sine' },
+      medium: { frequency: 520, duration: 200, volume: 0.3, beeps: 2, interval: 150, tone: 'sine' },
+      high: { frequency: 660, duration: 250, volume: 0.5, beeps: 3, interval: 200, tone: 'triangle' },
+      critical: { frequency: 880, duration: 300, volume: 0.7, beeps: 4, interval: 250, tone: 'square' },
+    },
+  },
+  urgent: {
+    label: 'Urgente',
+    description: 'Sons altos e alertas intensos',
+    icon: Siren,
+    settings: {
+      low: { frequency: 520, duration: 200, volume: 0.35, beeps: 2, interval: 100, tone: 'triangle' },
+      medium: { frequency: 660, duration: 250, volume: 0.5, beeps: 3, interval: 150, tone: 'square' },
+      high: { frequency: 880, duration: 300, volume: 0.7, beeps: 4, interval: 180, tone: 'square' },
+      critical: { frequency: 1100, duration: 350, volume: 0.9, beeps: 5, interval: 200, tone: 'sawtooth' },
+    },
+  },
+};
+
 export function SoundSettingsPanel() {
   const [settings, setSettings] = useState(getSoundSettings);
   const [open, setOpen] = useState(false);
+
+  const applyPreset = (presetKey: PresetKey) => {
+    const preset = PRESETS[presetKey];
+    setSettings(preset.settings);
+    updateSoundSettings(preset.settings);
+    toast.success(`Preset "${preset.label}" aplicado`);
+  };
 
   const handleVolumeChange = (severity: AlertSeverity, value: number[]) => {
     const newSettings = {
@@ -103,7 +157,32 @@ export function SoundSettingsPanel() {
           </SheetDescription>
         </SheetHeader>
 
-        <div className="mt-6 space-y-8">
+        {/* Presets Section */}
+        <div className="mt-6 space-y-3">
+          <Label className="text-sm font-medium">Presets Rápidos</Label>
+          <div className="grid grid-cols-3 gap-2">
+            {(Object.keys(PRESETS) as PresetKey[]).map((key) => {
+              const preset = PRESETS[key];
+              const Icon = preset.icon;
+              return (
+                <Button
+                  key={key}
+                  variant="outline"
+                  className="flex flex-col h-auto py-3 gap-1 hover:border-primary hover:bg-primary/10"
+                  onClick={() => applyPreset(key)}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span className="text-xs font-medium">{preset.label}</span>
+                </Button>
+              );
+            })}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Clique em um preset para aplicar configurações pré-definidas.
+          </p>
+        </div>
+
+        <div className="mt-6 space-y-6">
           {(Object.keys(SEVERITY_LABELS) as AlertSeverity[]).map((severity) => (
             <div key={severity} className="space-y-4 p-4 rounded-lg bg-secondary/50 border border-border">
               <div className="flex items-center justify-between">
