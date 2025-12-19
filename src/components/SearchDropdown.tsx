@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, Camera, AlertTriangle, X, Loader2, MapPin, Clock, Filter, Calendar, ChevronDown } from 'lucide-react';
+import { Search, Camera, AlertTriangle, X, Loader2, MapPin, Clock, Filter, Calendar, History, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -83,6 +83,9 @@ const TIME_PERIODS: { value: string; label: string }[] = [
   { value: 'month', label: 'Último mês' },
 ];
 
+const STORAGE_KEY = 'search-history';
+const MAX_HISTORY_ITEMS = 10;
+
 export function SearchDropdown() {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
@@ -98,12 +101,25 @@ export function SearchDropdown() {
     alertSeverity: [],
     timePeriod: 'all',
   });
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const hasActiveFilters = filters.cameraStatus.length > 0 || filters.alertSeverity.length > 0 || filters.timePeriod !== 'all';
   const activeFilterCount = filters.cameraStatus.length + filters.alertSeverity.length + (filters.timePeriod !== 'all' ? 1 : 0);
+
+  // Load search history from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        setSearchHistory(JSON.parse(stored));
+      }
+    } catch (error) {
+      console.error('Error loading search history:', error);
+    }
+  }, []);
 
   // Build flat list of all items for keyboard navigation
   const allItems: SearchItem[] = [
@@ -231,7 +247,27 @@ export function SearchDropdown() {
     }
   }, [activeIndex]);
 
+  const addToHistory = useCallback((term: string) => {
+    if (term.trim().length < 2) return;
+    
+    setSearchHistory(prev => {
+      const filtered = prev.filter(item => item.toLowerCase() !== term.toLowerCase());
+      const newHistory = [term.trim(), ...filtered].slice(0, MAX_HISTORY_ITEMS);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(newHistory));
+      } catch (error) {
+        console.error('Error saving search history:', error);
+      }
+      return newHistory;
+    });
+  }, []);
+
   const handleSelect = useCallback((item: SearchItem) => {
+    // Save search to history before clearing
+    if (query.trim().length >= 2) {
+      addToHistory(query.trim());
+    }
+    
     setIsOpen(false);
     setActiveIndex(-1);
     setQuery('');
@@ -243,7 +279,7 @@ export function SearchDropdown() {
     } else {
       setSelectedAlert(item.data);
     }
-  }, []);
+  }, [query, addToHistory]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!isOpen || allItems.length === 0) {
@@ -324,8 +360,37 @@ export function SearchDropdown() {
     setFilters(prev => ({ ...prev, timePeriod: period }));
   };
 
+
+  const removeFromHistory = (term: string) => {
+    setSearchHistory(prev => {
+      const newHistory = prev.filter(item => item !== term);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(newHistory));
+      } catch (error) {
+        console.error('Error saving search history:', error);
+      }
+      return newHistory;
+    });
+  };
+
+  const clearHistory = () => {
+    setSearchHistory([]);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (error) {
+      console.error('Error clearing search history:', error);
+    }
+  };
+
+  const selectFromHistory = (term: string) => {
+    setQuery(term);
+    addToHistory(term);
+    inputRef.current?.focus();
+  };
+
   const hasResults = cameras.length > 0 || alerts.length > 0;
-  const showDropdown = isOpen && (query.trim().length >= 2 || isLoading || hasActiveFilters);
+  const showDropdown = isOpen && (query.trim().length >= 2 || isLoading || hasActiveFilters || (query.trim().length === 0 && searchHistory.length > 0));
+  const showHistory = isOpen && query.trim().length === 0 && !hasActiveFilters && searchHistory.length > 0;
 
   // Calculate index offset for alerts (they come after cameras)
   const alertIndexOffset = cameras.length;
@@ -475,7 +540,49 @@ export function SearchDropdown() {
 
         {showDropdown && (
           <div className="absolute top-full left-0 right-0 mt-2 bg-popover border border-border rounded-lg shadow-xl z-50 overflow-hidden max-h-[400px] overflow-y-auto">
-            {isLoading ? (
+            {/* Search History */}
+            {showHistory ? (
+              <div>
+                <div className="px-3 py-2 border-b border-border bg-muted/30 flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                    <History className="w-3 h-3" />
+                    Buscas Recentes
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearHistory}
+                    className="h-6 text-xs text-muted-foreground hover:text-foreground"
+                  >
+                    <Trash2 className="w-3 h-3 mr-1" />
+                    Limpar
+                  </Button>
+                </div>
+                {searchHistory.map((term, index) => (
+                  <div
+                    key={`${term}-${index}`}
+                    className="flex items-center group"
+                  >
+                    <button
+                      onClick={() => selectFromHistory(term)}
+                      className="flex-1 px-4 py-2.5 flex items-center gap-3 transition-colors text-left hover:bg-secondary/50"
+                    >
+                      <Clock className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm text-foreground">{term}</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeFromHistory(term);
+                      }}
+                      className="px-3 py-2.5 text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : isLoading ? (
               <div className="flex items-center justify-center py-8 text-muted-foreground">
                 <Loader2 className="w-5 h-5 animate-spin mr-2" />
                 <span className="text-sm">Buscando...</span>
