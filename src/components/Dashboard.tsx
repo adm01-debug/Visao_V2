@@ -250,6 +250,7 @@ export function Dashboard() {
                       camera={camera} 
                       onClick={() => setSelectedCamera(camera)}
                       compact={cameraLayout === 'list'}
+                      searchQuery={searchQuery}
                     />
                   ))}
                 </div>
@@ -272,6 +273,7 @@ export function Dashboard() {
                     camera={camera}
                     onClick={() => setSelectedCamera(camera)}
                     compact={cameraLayout === 'list'}
+                    searchQuery={searchQuery}
                   />
                 ))}
               </div>
@@ -317,10 +319,14 @@ export function Dashboard() {
             
             <div className="space-y-3">
               {paginatedAlerts.map(alert => (
-                <AlertCard key={alert.id} alert={{
-                  ...alert,
-                  timestamp: new Date(alert.timestamp),
-                }} />
+                <AlertCard 
+                  key={alert.id} 
+                  alert={{
+                    ...alert,
+                    timestamp: new Date(alert.timestamp),
+                  }}
+                  searchQuery={searchQuery}
+                />
               ))}
               {filteredAlerts.length === 0 && uiAlerts.length > 0 && (
                 <div className="text-center py-8 text-muted-foreground">

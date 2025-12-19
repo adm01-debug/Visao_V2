@@ -3,14 +3,16 @@ import { StatusIndicator } from './StatusIndicator';
 import { Badge } from '@/components/ui/badge';
 import { Users, AlertTriangle, MapPin, Video, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { HighlightText } from './HighlightText';
 
 export interface CameraCardProps {
   camera: Camera;
   onClick?: () => void;
   compact?: boolean;
+  searchQuery?: string;
 }
 
-export function CameraCard({ camera, onClick, compact = false }: CameraCardProps) {
+export function CameraCard({ camera, onClick, compact = false, searchQuery = '' }: CameraCardProps) {
   const hasAlerts = camera.alerts && camera.alerts > 0;
   
   if (compact) {
@@ -33,12 +35,12 @@ export function CameraCard({ camera, onClick, compact = false }: CameraCardProps
         
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
-            {camera.name}
+            <HighlightText text={camera.name} highlight={searchQuery} />
           </h3>
           <div className="flex items-center gap-3 mt-0.5 text-muted-foreground text-sm">
             <span className="flex items-center gap-1">
               <MapPin className="w-3 h-3" />
-              {camera.location}
+              <HighlightText text={camera.location} highlight={searchQuery} />
             </span>
             <span className="flex items-center gap-1">
               <Users className="w-3 h-3" />
@@ -115,11 +117,13 @@ export function CameraCard({ camera, onClick, compact = false }: CameraCardProps
       {/* Camera Info */}
       <div className="p-4">
         <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-          {camera.name}
+          <HighlightText text={camera.name} highlight={searchQuery} />
         </h3>
         <div className="flex items-center gap-1.5 mt-1 text-muted-foreground">
           <MapPin className="w-3 h-3" />
-          <span className="text-sm">{camera.location}</span>
+          <span className="text-sm">
+            <HighlightText text={camera.location} highlight={searchQuery} />
+          </span>
         </div>
       </div>
     </div>

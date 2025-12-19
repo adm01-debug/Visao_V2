@@ -11,6 +11,7 @@ import {
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { HighlightText } from './HighlightText';
 
 export type AlertType = 'security' | 'safety' | 'operations' | 'access' | 'analytics';
 export type AlertSeverity = 'low' | 'medium' | 'high' | 'critical';
@@ -30,6 +31,7 @@ export interface UIAlert {
 interface AlertCardProps {
   alert: UIAlert;
   onClick?: () => void;
+  searchQuery?: string;
 }
 
 const alertTypeConfig: Record<AlertType, { icon: typeof Shield; label: string; color: string }> = {
@@ -67,7 +69,7 @@ const severityConfig = {
   critical: 'alert',
 } as const;
 
-export function AlertCard({ alert, onClick }: AlertCardProps) {
+export function AlertCard({ alert, onClick, searchQuery = '' }: AlertCardProps) {
   const config = alertTypeConfig[alert.type] || alertTypeConfig.security;
   const Icon = config.icon;
   
@@ -96,12 +98,12 @@ export function AlertCard({ alert, onClick }: AlertCardProps) {
           </div>
           
           <p className="text-sm text-foreground mb-2 line-clamp-2">
-            {alert.message}
+            <HighlightText text={alert.message} highlight={searchQuery} />
           </p>
           
           <div className="flex items-center gap-1 text-muted-foreground text-xs">
             <Camera className="w-3 h-3" />
-            {alert.cameraName}
+            <HighlightText text={alert.cameraName} highlight={searchQuery} />
           </div>
         </div>
       </div>
