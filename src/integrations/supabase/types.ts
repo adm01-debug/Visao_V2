@@ -14,6 +14,92 @@ export type Database = {
   }
   public: {
     Tables: {
+      alerts: {
+        Row: {
+          camera_id: string | null
+          camera_name: string
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          severity: Database["public"]["Enums"]["rule_severity"]
+          thumbnail: string | null
+          timestamp: string
+          type: Database["public"]["Enums"]["alert_type"]
+        }
+        Insert: {
+          camera_id?: string | null
+          camera_name: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          severity?: Database["public"]["Enums"]["rule_severity"]
+          thumbnail?: string | null
+          timestamp?: string
+          type?: Database["public"]["Enums"]["alert_type"]
+        }
+        Update: {
+          camera_id?: string | null
+          camera_name?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          severity?: Database["public"]["Enums"]["rule_severity"]
+          thumbnail?: string | null
+          timestamp?: string
+          type?: Database["public"]["Enums"]["alert_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alerts_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cameras: {
+        Row: {
+          alerts_count: number | null
+          created_at: string
+          detected_people: number | null
+          id: string
+          last_activity: string | null
+          location: string
+          name: string
+          status: Database["public"]["Enums"]["camera_status"]
+          thumbnail: string | null
+          updated_at: string
+        }
+        Insert: {
+          alerts_count?: number | null
+          created_at?: string
+          detected_people?: number | null
+          id?: string
+          last_activity?: string | null
+          location: string
+          name: string
+          status?: Database["public"]["Enums"]["camera_status"]
+          thumbnail?: string | null
+          updated_at?: string
+        }
+        Update: {
+          alerts_count?: number | null
+          created_at?: string
+          detected_people?: number | null
+          id?: string
+          last_activity?: string | null
+          location?: string
+          name?: string
+          status?: Database["public"]["Enums"]["camera_status"]
+          thumbnail?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       rules: {
         Row: {
           actions: Database["public"]["Enums"]["rule_action"][]
@@ -67,6 +153,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      alert_type: "security" | "safety" | "operations" | "access" | "analytics"
+      camera_status: "online" | "offline" | "alert" | "warning"
       condition_operator:
         | "greater_than"
         | "less_than"
@@ -220,6 +308,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      alert_type: ["security", "safety", "operations", "access", "analytics"],
+      camera_status: ["online", "offline", "alert", "warning"],
       condition_operator: [
         "greater_than",
         "less_than",
