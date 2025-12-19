@@ -10,8 +10,8 @@ interface Camera {
   name: string;
   location: string;
   status: 'online' | 'offline' | 'alert' | 'warning';
-  lat?: number;
-  lng?: number;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 interface CameraMapProps {
@@ -87,10 +87,13 @@ export function CameraMap({ cameras, onCameraClick, className = '' }: CameraMapP
 
     // Add new markers
     cameras.forEach((camera, index) => {
-      const coords = locationCoordinates[camera.location] || [
-        -46.6333 + (index * 0.001),
-        -23.5505 + (index * 0.0005)
-      ];
+      // Use real coordinates from database if available, otherwise use simulated
+      const coords: [number, number] = (camera.longitude != null && camera.latitude != null)
+        ? [camera.longitude, camera.latitude]
+        : locationCoordinates[camera.location] || [
+            -46.6333 + (index * 0.001),
+            -23.5505 + (index * 0.0005)
+          ];
 
       // Create custom marker element
       const el = document.createElement('div');

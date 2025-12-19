@@ -71,7 +71,9 @@ export type Database = {
           detected_people: number | null
           id: string
           last_activity: string | null
+          latitude: number | null
           location: string
+          longitude: number | null
           name: string
           status: Database["public"]["Enums"]["camera_status"]
           thumbnail: string | null
@@ -84,7 +86,9 @@ export type Database = {
           detected_people?: number | null
           id?: string
           last_activity?: string | null
+          latitude?: number | null
           location: string
+          longitude?: number | null
           name: string
           status?: Database["public"]["Enums"]["camera_status"]
           thumbnail?: string | null
@@ -97,7 +101,9 @@ export type Database = {
           detected_people?: number | null
           id?: string
           last_activity?: string | null
+          latitude?: number | null
           location?: string
+          longitude?: number | null
           name?: string
           status?: Database["public"]["Enums"]["camera_status"]
           thumbnail?: string | null

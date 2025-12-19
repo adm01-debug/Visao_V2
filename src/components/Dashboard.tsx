@@ -71,6 +71,8 @@ function mapDbCameraToUI(dbCamera: DbCamera) {
     lastActivity: dbCamera.last_activity || undefined,
     detectedPeople: dbCamera.detected_people || 0,
     alerts: dbCamera.alerts_count || 0,
+    latitude: dbCamera.latitude,
+    longitude: dbCamera.longitude,
   };
 }
 
