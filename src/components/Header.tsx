@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Bell, User, LogOut, Volume2, VolumeX, BellRing, BellOff, Sun, Moon } from 'lucide-react';
+import { Bell, User, LogOut, Volume2, VolumeX, BellRing, BellOff, Sun, Moon, Monitor } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { NotificationsPanel } from '@/components/NotificationsPanel';
@@ -45,10 +45,10 @@ export function Header({ alertCount }: HeaderProps) {
            getBrowserNotificationsEnabled();
   });
 
-  const toggleTheme = () => {
+  const setThemeWithTransition = (newTheme: string) => {
     // Add transition class for smooth animation
     document.documentElement.classList.add('theme-transition');
-    setTheme(theme === 'dark' ? 'light' : 'dark');
+    setTheme(newTheme);
     // Remove transition class after animation completes
     setTimeout(() => {
       document.documentElement.classList.remove('theme-transition');
@@ -104,26 +104,45 @@ export function Header({ alertCount }: HeaderProps) {
 
       {/* Actions */}
       <div className="flex items-center gap-2">
-        {/* Theme Toggle */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button 
-                onClick={toggleTheme}
-                className="relative p-2 rounded-lg hover:bg-secondary transition-colors"
-              >
-                {theme === 'dark' ? (
-                  <Sun className="w-5 h-5 text-yellow-500" />
-                ) : (
-                  <Moon className="w-5 h-5 text-primary" />
-                )}
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{theme === 'dark' ? 'Modo claro' : 'Modo escuro'}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        {/* Theme Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="relative p-2 rounded-lg hover:bg-secondary transition-colors">
+              {theme === 'system' ? (
+                <Monitor className="w-5 h-5 text-primary" />
+              ) : theme === 'dark' ? (
+                <Moon className="w-5 h-5 text-primary" />
+              ) : (
+                <Sun className="w-5 h-5 text-yellow-500" />
+              )}
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuLabel className="text-xs text-muted-foreground">Tema</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem 
+              onClick={() => setThemeWithTransition('light')}
+              className={theme === 'light' ? 'bg-secondary' : ''}
+            >
+              <Sun className="w-4 h-4 mr-2" />
+              Claro
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={() => setThemeWithTransition('dark')}
+              className={theme === 'dark' ? 'bg-secondary' : ''}
+            >
+              <Moon className="w-4 h-4 mr-2" />
+              Escuro
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={() => setThemeWithTransition('system')}
+              className={theme === 'system' ? 'bg-secondary' : ''}
+            >
+              <Monitor className="w-4 h-4 mr-2" />
+              Sistema
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Sound Toggle */}
         <TooltipProvider>
