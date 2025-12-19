@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { 
   Camera, 
   AlertTriangle, 
@@ -7,8 +7,7 @@ import {
   TrendingUp,
   Activity,
   CheckCheck,
-  Maximize2,
-  X
+  ArrowUpDown
 } from 'lucide-react';
 import { StatsCard } from './StatsCard';
 import { CameraCard } from './CameraCard';
@@ -23,8 +22,40 @@ import { useCameras, DbCamera } from '@/hooks/useCameras';
 import { useAlerts } from '@/hooks/useAlerts';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { exportAlerts, exportCameras } from '@/lib/exportUtils';
 import { cn } from '@/lib/utils';
+
+type AlertSortOption = 'date-desc' | 'date-asc' | 'severity-desc' | 'severity-asc' | 'type';
+
+const severityOrder: Record<string, number> = {
+  critical: 4,
+  high: 3,
+  medium: 2,
+  low: 1,
+};
+
+const sortAlerts = <T extends { timestamp: string | Date; severity: string; type: string }>(
+  alerts: T[],
+  sortBy: AlertSortOption
+): T[] => {
+  return [...alerts].sort((a, b) => {
+    switch (sortBy) {
+      case 'date-desc':
+        return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+      case 'date-asc':
+        return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+      case 'severity-desc':
+        return (severityOrder[b.severity] || 0) - (severityOrder[a.severity] || 0);
+      case 'severity-asc':
+        return (severityOrder[a.severity] || 0) - (severityOrder[b.severity] || 0);
+      case 'type':
+        return a.type.localeCompare(b.type);
+      default:
+        return 0;
+    }
+  });
+};
 
 // Map DB camera to UI format
 function mapDbCameraToUI(dbCamera: DbCamera) {
@@ -50,6 +81,7 @@ export function Dashboard() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [alertFilters, setAlertFilters] = useState<AlertFilters>(defaultFilters);
   const [searchQuery, setSearchQuery] = useState('');
+  const [alertSortBy, setAlertSortBy] = useState<AlertSortOption>('date-desc');
 
   useEffect(() => {
     localStorage.setItem('camera-layout', cameraLayout);
@@ -79,12 +111,13 @@ export function Dashboard() {
   const onlineCameras = uiCameras.filter(c => c.status !== 'offline').length;
   const activeAlerts = uiAlerts.filter(a => !a.isRead).length;
 
-  // Filter alerts based on current filters and search
+  // Filter and sort alerts based on current filters, search, and sort option
   const alertsWithFilters = filterAlerts(uiAlerts.map(a => ({
     ...a,
     timestamp: a.timestamp.toISOString(),
   })), alertFilters);
-  const filteredAlerts = filterAlertsBySearch(alertsWithFilters, searchQuery);
+  const searchedAlerts = filterAlertsBySearch(alertsWithFilters, searchQuery);
+  const filteredAlerts = useMemo(() => sortAlerts(searchedAlerts, alertSortBy), [searchedAlerts, alertSortBy]);
 
   // Pagination for alerts
   const {
@@ -288,6 +321,19 @@ export function Dashboard() {
                 <h2 className="text-lg font-semibold text-foreground">Alertas Recentes</h2>
               </div>
               <div className="flex items-center gap-1">
+                <Select value={alertSortBy} onValueChange={(v) => setAlertSortBy(v as AlertSortOption)}>
+                  <SelectTrigger className="h-7 w-[130px] text-xs">
+                    <ArrowUpDown className="w-3 h-3 mr-1" />
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="date-desc">Mais recentes</SelectItem>
+                    <SelectItem value="date-asc">Mais antigos</SelectItem>
+                    <SelectItem value="severity-desc">Maior severidade</SelectItem>
+                    <SelectItem value="severity-asc">Menor severidade</SelectItem>
+                    <SelectItem value="type">Por tipo</SelectItem>
+                  </SelectContent>
+                </Select>
                 <AlertFiltersComponent
                   filters={alertFilters}
                   onFiltersChange={setAlertFilters}
