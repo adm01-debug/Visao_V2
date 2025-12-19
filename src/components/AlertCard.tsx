@@ -1,42 +1,62 @@
-import { Alert } from '@/types/surveillance';
 import { Badge } from '@/components/ui/badge';
 import { 
   AlertTriangle, 
   Shield, 
   Clock, 
-  Users, 
   Camera,
-  ShieldAlert 
+  ShieldAlert,
+  Cog,
+  BarChart3
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
+export type AlertType = 'security' | 'safety' | 'operations' | 'access' | 'analytics';
+export type AlertSeverity = 'low' | 'medium' | 'high' | 'critical';
+
+export interface UIAlert {
+  id: string;
+  cameraId: string;
+  cameraName: string;
+  type: AlertType;
+  severity: AlertSeverity;
+  message: string;
+  timestamp: Date;
+  isRead: boolean;
+  thumbnail?: string;
+}
+
 interface AlertCardProps {
-  alert: Alert;
+  alert: UIAlert;
   onClick?: () => void;
 }
 
-const alertTypeConfig = {
+const alertTypeConfig: Record<AlertType, { icon: typeof Shield; label: string; color: string }> = {
   security: {
     icon: Shield,
     label: 'Segurança',
     color: 'text-destructive',
-  },
-  productivity: {
-    icon: Users,
-    label: 'Produtividade',
-    color: 'text-warning',
   },
   safety: {
     icon: AlertTriangle,
     label: 'Segurança do Trabalho',
     color: 'text-warning',
   },
-  intrusion: {
+  operations: {
+    icon: Cog,
+    label: 'Operações',
+    color: 'text-emerald-400',
+  },
+  access: {
     icon: ShieldAlert,
-    label: 'Intrusão',
+    label: 'Acesso',
     color: 'text-destructive',
+  },
+  analytics: {
+    icon: BarChart3,
+    label: 'Analytics',
+    color: 'text-purple-400',
   },
 };
 
@@ -48,7 +68,7 @@ const severityConfig = {
 } as const;
 
 export function AlertCard({ alert, onClick }: AlertCardProps) {
-  const config = alertTypeConfig[alert.type];
+  const config = alertTypeConfig[alert.type] || alertTypeConfig.security;
   const Icon = config.icon;
   
   return (

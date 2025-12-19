@@ -5,20 +5,86 @@ import {
   Users, 
   Shield,
   TrendingUp,
-  Activity
+  Activity,
+  CheckCheck
 } from 'lucide-react';
 import { StatsCard } from './StatsCard';
 import { CameraCard } from './CameraCard';
-import { AlertCard } from './AlertCard';
+import { AlertCard, UIAlert } from './AlertCard';
 import { CameraModal } from './CameraModal';
-import { mockCameras, mockAlerts, mockAnalytics } from '@/data/mockData';
-import { Camera as CameraType } from '@/types/surveillance';
+import { useCameras, DbCamera } from '@/hooks/useCameras';
+import { useAlerts } from '@/hooks/useAlerts';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+
+// Map DB camera to UI format
+function mapDbCameraToUI(dbCamera: DbCamera) {
+  return {
+    id: dbCamera.id,
+    name: dbCamera.name,
+    location: dbCamera.location,
+    status: dbCamera.status,
+    thumbnail: dbCamera.thumbnail || undefined,
+    lastActivity: dbCamera.last_activity || undefined,
+    detectedPeople: dbCamera.detected_people || 0,
+    alerts: dbCamera.alerts_count || 0,
+  };
+}
 
 export function Dashboard() {
-  const [selectedCamera, setSelectedCamera] = useState<CameraType | null>(null);
-  const unreadAlerts = mockAlerts.filter(a => !a.isRead);
-  const priorityCameras = mockCameras.filter(c => c.status === 'alert' || c.status === 'warning');
-  const normalCameras = mockCameras.filter(c => c.status === 'online' || c.status === 'offline');
+  const { cameras, loading: camerasLoading } = useCameras();
+  const { alerts, loading: alertsLoading, unreadCount, markAllAsRead } = useAlerts();
+  const [selectedCamera, setSelectedCamera] = useState<ReturnType<typeof mapDbCameraToUI> | null>(null);
+
+  const loading = camerasLoading || alertsLoading;
+
+  const uiCameras = cameras.map(mapDbCameraToUI);
+  const uiAlerts: UIAlert[] = alerts.map(a => ({
+    id: a.id,
+    cameraId: a.camera_id || '',
+    cameraName: a.camera_name,
+    type: a.type,
+    severity: a.severity,
+    message: a.message,
+    timestamp: new Date(a.timestamp),
+    isRead: a.is_read,
+    thumbnail: a.thumbnail || undefined,
+  }));
+
+  const priorityCameras = uiCameras.filter(c => c.status === 'alert' || c.status === 'warning');
+  const normalCameras = uiCameras.filter(c => c.status === 'online' || c.status === 'offline');
+
+  const totalPeople = uiCameras.reduce((sum, c) => sum + (c.detectedPeople || 0), 0);
+  const onlineCameras = uiCameras.filter(c => c.status !== 'offline').length;
+  const activeAlerts = uiAlerts.filter(a => !a.isRead).length;
+
+  if (loading) {
+    return (
+      <div className="p-6 space-y-6 overflow-auto h-[calc(100vh-4rem)]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <Skeleton key={i} className="h-32" />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-4">
+            <Skeleton className="h-8 w-48" />
+            <div className="grid grid-cols-2 gap-4">
+              {[...Array(4)].map((_, i) => (
+                <Skeleton key={i} className="h-48" />
+              ))}
+            </div>
+          </div>
+          <div className="space-y-4">
+            <Skeleton className="h-8 w-48" />
+            {[...Array(3)].map((_, i) => (
+              <Skeleton key={i} className="h-24" />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -27,22 +93,22 @@ export function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in">
           <StatsCard
             title="Câmeras Online"
-            value={`${mockAnalytics.onlineCameras}/${mockAnalytics.totalCameras}`}
-            subtitle="3 câmeras offline"
+            value={`${onlineCameras}/${uiCameras.length}`}
+            subtitle={`${uiCameras.length - onlineCameras} câmeras offline`}
             icon={Camera}
             variant="primary"
             trend={{ value: 2, isPositive: true }}
           />
           <StatsCard
             title="Alertas Ativos"
-            value={mockAnalytics.activeAlerts}
-            subtitle="2 críticos"
+            value={activeAlerts}
+            subtitle={`${uiAlerts.length} total`}
             icon={AlertTriangle}
             variant="danger"
           />
           <StatsCard
             title="Pessoas Detectadas"
-            value={mockAnalytics.detectedPeople}
+            value={totalPeople}
             subtitle="Em tempo real"
             icon={Users}
             variant="default"
@@ -50,7 +116,7 @@ export function Dashboard() {
           />
           <StatsCard
             title="Score de Segurança"
-            value={`${mockAnalytics.securityScore}%`}
+            value="94%"
             subtitle="Excelente"
             icon={Shield}
             variant="success"
@@ -108,13 +174,30 @@ export function Dashboard() {
                 <AlertTriangle className="w-5 h-5 text-warning" />
                 <h2 className="text-lg font-semibold text-foreground">Alertas Recentes</h2>
               </div>
-              <span className="text-sm text-muted-foreground">{unreadAlerts.length} não lidos</span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">{unreadCount} não lidos</span>
+                {unreadCount > 0 && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-7 px-2"
+                    onClick={() => markAllAsRead()}
+                  >
+                    <CheckCheck className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
             </div>
             
             <div className="space-y-3">
-              {mockAlerts.map(alert => (
+              {uiAlerts.slice(0, 5).map(alert => (
                 <AlertCard key={alert.id} alert={alert} />
               ))}
+              {uiAlerts.length === 0 && (
+                <div className="text-center py-8 text-muted-foreground">
+                  Nenhum alerta registrado
+                </div>
+              )}
             </div>
 
             {/* Productivity Score */}
@@ -125,13 +208,13 @@ export function Dashboard() {
               </div>
               <div className="relative pt-1">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-3xl font-bold text-primary">{mockAnalytics.productivityScore}%</span>
+                  <span className="text-3xl font-bold text-primary">87%</span>
                   <span className="text-xs text-success">+3% vs ontem</span>
                 </div>
                 <div className="h-2 bg-secondary rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-primary rounded-full transition-all duration-1000"
-                    style={{ width: `${mockAnalytics.productivityScore}%` }}
+                    style={{ width: '87%' }}
                   />
                 </div>
               </div>
