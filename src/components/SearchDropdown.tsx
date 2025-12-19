@@ -1,15 +1,25 @@
-import { useState, useEffect, useRef } from 'react';
-import { Search, Camera, AlertTriangle, X, Loader2 } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Search, Camera, AlertTriangle, X, Loader2, MapPin, Clock, ArrowUp, ArrowDown } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface CameraResult {
   id: string;
   name: string;
   location: string;
   status: string;
+  thumbnail?: string;
+  detected_people?: number;
+  last_activity?: string;
 }
 
 interface AlertResult {
@@ -19,7 +29,12 @@ interface AlertResult {
   severity: string;
   timestamp: string;
   type: string;
+  thumbnail?: string;
 }
+
+type SearchItem = 
+  | { type: 'camera'; data: CameraResult }
+  | { type: 'alert'; data: AlertResult };
 
 const SEVERITY_COLORS: Record<string, string> = {
   low: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
@@ -35,25 +50,56 @@ const STATUS_COLORS: Record<string, string> = {
   warning: 'bg-yellow-500',
 };
 
+const STATUS_LABELS: Record<string, string> = {
+  online: 'Online',
+  offline: 'Offline',
+  alert: 'Em Alerta',
+  warning: 'Atenção',
+};
+
 export function SearchDropdown() {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [cameras, setCameras] = useState<CameraResult[]>([]);
   const [alerts, setAlerts] = useState<AlertResult[]>([]);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const [selectedCamera, setSelectedCamera] = useState<CameraResult | null>(null);
+  const [selectedAlert, setSelectedAlert] = useState<AlertResult | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  // Build flat list of all items for keyboard navigation
+  const allItems: SearchItem[] = [
+    ...cameras.map(c => ({ type: 'camera' as const, data: c })),
+    ...alerts.map(a => ({ type: 'alert' as const, data: a })),
+  ];
 
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
+        setActiveIndex(-1);
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Global keyboard shortcut (Ctrl+K)
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleGlobalKeyDown);
+    return () => document.removeEventListener('keydown', handleGlobalKeyDown);
   }, []);
 
   // Search when query changes
@@ -62,24 +108,25 @@ export function SearchDropdown() {
       if (query.trim().length < 2) {
         setCameras([]);
         setAlerts([]);
+        setActiveIndex(-1);
         return;
       }
 
       setIsLoading(true);
+      setActiveIndex(-1);
       
       try {
         const searchTerm = `%${query.trim()}%`;
 
-        // Search cameras and alerts in parallel
         const [camerasResult, alertsResult] = await Promise.all([
           supabase
             .from('cameras')
-            .select('id, name, location, status')
+            .select('id, name, location, status, thumbnail, detected_people, last_activity')
             .or(`name.ilike.${searchTerm},location.ilike.${searchTerm}`)
             .limit(5),
           supabase
             .from('alerts')
-            .select('id, message, camera_name, severity, timestamp, type')
+            .select('id, message, camera_name, severity, timestamp, type, thumbnail')
             .or(`message.ilike.${searchTerm},camera_name.ilike.${searchTerm}`)
             .order('timestamp', { ascending: false })
             .limit(5),
@@ -97,6 +144,67 @@ export function SearchDropdown() {
     return () => clearTimeout(searchTimeout);
   }, [query]);
 
+  // Scroll active item into view
+  useEffect(() => {
+    if (activeIndex >= 0 && itemRefs.current[activeIndex]) {
+      itemRefs.current[activeIndex]?.scrollIntoView({
+        block: 'nearest',
+        behavior: 'smooth',
+      });
+    }
+  }, [activeIndex]);
+
+  const handleSelect = useCallback((item: SearchItem) => {
+    setIsOpen(false);
+    setActiveIndex(-1);
+    setQuery('');
+    setCameras([]);
+    setAlerts([]);
+
+    if (item.type === 'camera') {
+      setSelectedCamera(item.data);
+    } else {
+      setSelectedAlert(item.data);
+    }
+  }, []);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!isOpen || allItems.length === 0) {
+      if (e.key === 'Escape') {
+        inputRef.current?.blur();
+        setIsOpen(false);
+      }
+      return;
+    }
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setActiveIndex(prev => 
+          prev < allItems.length - 1 ? prev + 1 : 0
+        );
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setActiveIndex(prev => 
+          prev > 0 ? prev - 1 : allItems.length - 1
+        );
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (activeIndex >= 0 && activeIndex < allItems.length) {
+          handleSelect(allItems[activeIndex]);
+        }
+        break;
+      case 'Escape':
+        e.preventDefault();
+        setIsOpen(false);
+        setActiveIndex(-1);
+        inputRef.current?.blur();
+        break;
+    }
+  };
+
   const handleFocus = () => {
     setIsOpen(true);
   };
@@ -105,133 +213,278 @@ export function SearchDropdown() {
     setQuery('');
     setCameras([]);
     setAlerts([]);
+    setActiveIndex(-1);
     inputRef.current?.focus();
   };
 
   const hasResults = cameras.length > 0 || alerts.length > 0;
   const showDropdown = isOpen && (query.trim().length >= 2 || isLoading);
 
+  // Calculate index offset for alerts (they come after cameras)
+  const alertIndexOffset = cameras.length;
+
   return (
-    <div ref={containerRef} className="relative w-full">
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <input
-          ref={inputRef}
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onFocus={handleFocus}
-          placeholder="Buscar câmeras, alertas..."
-          className="w-full h-10 pl-10 pr-10 rounded-lg bg-secondary border border-border text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
-        />
-        {query && (
-          <button
-            onClick={clearSearch}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
+    <>
+      <div ref={containerRef} className="relative w-full">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <input
+            ref={inputRef}
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={handleFocus}
+            onKeyDown={handleKeyDown}
+            placeholder="Buscar câmeras, alertas... (Ctrl+K)"
+            className="w-full h-10 pl-10 pr-10 rounded-lg bg-secondary border border-border text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+          />
+          {query && (
+            <button
+              onClick={clearSearch}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
+        {showDropdown && (
+          <div className="absolute top-full left-0 right-0 mt-2 bg-popover border border-border rounded-lg shadow-xl z-50 overflow-hidden max-h-[400px] overflow-y-auto">
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8 text-muted-foreground">
+                <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                <span className="text-sm">Buscando...</span>
+              </div>
+            ) : !hasResults ? (
+              <div className="py-8 text-center text-muted-foreground">
+                <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <p className="text-sm">Nenhum resultado encontrado</p>
+                <p className="text-xs mt-1">Tente buscar por outro termo</p>
+              </div>
+            ) : (
+              <>
+                {/* Keyboard hint */}
+                <div className="px-3 py-2 border-b border-border bg-muted/30 flex items-center justify-between text-xs text-muted-foreground">
+                  <span>{allItems.length} resultado(s)</span>
+                  <div className="flex items-center gap-2">
+                    <kbd className="px-1.5 py-0.5 bg-secondary rounded text-[10px] font-mono">↑↓</kbd>
+                    <span>navegar</span>
+                    <kbd className="px-1.5 py-0.5 bg-secondary rounded text-[10px] font-mono">Enter</kbd>
+                    <span>selecionar</span>
+                  </div>
+                </div>
+
+                {/* Cameras Section */}
+                {cameras.length > 0 && (
+                  <div>
+                    <div className="px-3 py-2 bg-secondary/50 border-b border-border">
+                      <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        <Camera className="w-3 h-3" />
+                        Câmeras ({cameras.length})
+                      </div>
+                    </div>
+                    {cameras.map((camera, index) => (
+                      <button
+                        key={camera.id}
+                        ref={el => itemRefs.current[index] = el}
+                        onClick={() => handleSelect({ type: 'camera', data: camera })}
+                        onMouseEnter={() => setActiveIndex(index)}
+                        className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left border-b border-border/50 last:border-0 ${
+                          activeIndex === index 
+                            ? 'bg-primary/10 border-l-2 border-l-primary' 
+                            : 'hover:bg-secondary/50'
+                        }`}
+                      >
+                        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${STATUS_COLORS[camera.status] || 'bg-muted-foreground'}`} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-foreground truncate">
+                            {camera.name}
+                          </p>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {camera.location}
+                          </p>
+                        </div>
+                        <Badge variant="outline" className="text-xs capitalize">
+                          {camera.status}
+                        </Badge>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Alerts Section */}
+                {alerts.length > 0 && (
+                  <div>
+                    <div className="px-3 py-2 bg-secondary/50 border-b border-border">
+                      <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        <AlertTriangle className="w-3 h-3" />
+                        Alertas ({alerts.length})
+                      </div>
+                    </div>
+                    {alerts.map((alert, index) => {
+                      const itemIndex = alertIndexOffset + index;
+                      return (
+                        <button
+                          key={alert.id}
+                          ref={el => itemRefs.current[itemIndex] = el}
+                          onClick={() => handleSelect({ type: 'alert', data: alert })}
+                          onMouseEnter={() => setActiveIndex(itemIndex)}
+                          className={`w-full px-4 py-3 flex items-start gap-3 transition-colors text-left border-b border-border/50 last:border-0 ${
+                            activeIndex === itemIndex 
+                              ? 'bg-primary/10 border-l-2 border-l-primary' 
+                              : 'hover:bg-secondary/50'
+                          }`}
+                        >
+                          <AlertTriangle className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
+                            alert.severity === 'critical' ? 'text-red-400' :
+                            alert.severity === 'high' ? 'text-orange-400' :
+                            alert.severity === 'medium' ? 'text-yellow-400' : 'text-blue-400'
+                          }`} />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-foreground line-clamp-1">
+                              {alert.message}
+                            </p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-xs text-muted-foreground">
+                                {alert.camera_name}
+                              </span>
+                              <span className="text-xs text-muted-foreground">•</span>
+                              <span className="text-xs text-muted-foreground">
+                                {format(new Date(alert.timestamp), "dd/MM HH:mm", { locale: ptBR })}
+                              </span>
+                            </div>
+                          </div>
+                          <Badge className={`text-xs capitalize flex-shrink-0 ${SEVERITY_COLORS[alert.severity]}`}>
+                            {alert.severity}
+                          </Badge>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         )}
       </div>
 
-      {showDropdown && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg shadow-xl z-50 overflow-hidden max-h-[400px] overflow-y-auto">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-8 text-muted-foreground">
-              <Loader2 className="w-5 h-5 animate-spin mr-2" />
-              <span className="text-sm">Buscando...</span>
-            </div>
-          ) : !hasResults ? (
-            <div className="py-8 text-center text-muted-foreground">
-              <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">Nenhum resultado encontrado</p>
-              <p className="text-xs mt-1">Tente buscar por outro termo</p>
-            </div>
-          ) : (
-            <>
-              {/* Cameras Section */}
-              {cameras.length > 0 && (
-                <div>
-                  <div className="px-3 py-2 bg-secondary/50 border-b border-border">
-                    <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                      <Camera className="w-3 h-3" />
-                      Câmeras ({cameras.length})
-                    </div>
-                  </div>
-                  {cameras.map((camera) => (
-                    <button
-                      key={camera.id}
-                      onClick={() => {
-                        setIsOpen(false);
-                        // Could navigate to camera or open modal
-                      }}
-                      className="w-full px-4 py-3 flex items-center gap-3 hover:bg-secondary/50 transition-colors text-left border-b border-border/50 last:border-0"
-                    >
-                      <div className={`w-2 h-2 rounded-full ${STATUS_COLORS[camera.status] || 'bg-muted-foreground'}`} />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-foreground truncate">
-                          {camera.name}
-                        </p>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {camera.location}
-                        </p>
-                      </div>
-                      <Badge variant="outline" className="text-xs capitalize">
-                        {camera.status}
-                      </Badge>
-                    </button>
-                  ))}
+      {/* Camera Details Dialog */}
+      <Dialog open={!!selectedCamera} onOpenChange={() => setSelectedCamera(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Camera className="w-5 h-5" />
+              {selectedCamera?.name}
+            </DialogTitle>
+            <DialogDescription>
+              Detalhes da câmera
+            </DialogDescription>
+          </DialogHeader>
+          {selectedCamera && (
+            <div className="space-y-4">
+              {selectedCamera.thumbnail && (
+                <div className="aspect-video rounded-lg overflow-hidden bg-secondary">
+                  <img 
+                    src={selectedCamera.thumbnail} 
+                    alt={selectedCamera.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               )}
-
-              {/* Alerts Section */}
-              {alerts.length > 0 && (
-                <div>
-                  <div className="px-3 py-2 bg-secondary/50 border-b border-border">
-                    <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                      <AlertTriangle className="w-3 h-3" />
-                      Alertas ({alerts.length})
-                    </div>
-                  </div>
-                  {alerts.map((alert) => (
-                    <button
-                      key={alert.id}
-                      onClick={() => {
-                        setIsOpen(false);
-                        // Could navigate to alert or open details
-                      }}
-                      className="w-full px-4 py-3 flex items-start gap-3 hover:bg-secondary/50 transition-colors text-left border-b border-border/50 last:border-0"
-                    >
-                      <AlertTriangle className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
-                        alert.severity === 'critical' ? 'text-red-400' :
-                        alert.severity === 'high' ? 'text-orange-400' :
-                        alert.severity === 'medium' ? 'text-yellow-400' : 'text-blue-400'
-                      }`} />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-foreground line-clamp-1">
-                          {alert.message}
-                        </p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs text-muted-foreground">
-                            {alert.camera_name}
-                          </span>
-                          <span className="text-xs text-muted-foreground">•</span>
-                          <span className="text-xs text-muted-foreground">
-                            {format(new Date(alert.timestamp), "dd/MM HH:mm", { locale: ptBR })}
-                          </span>
-                        </div>
-                      </div>
-                      <Badge className={`text-xs capitalize flex-shrink-0 ${SEVERITY_COLORS[alert.severity]}`}>
-                        {alert.severity}
-                      </Badge>
-                    </button>
-                  ))}
+              <div className="grid gap-3">
+                <div className="flex items-center gap-2 text-sm">
+                  <MapPin className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">Localização:</span>
+                  <span className="font-medium">{selectedCamera.location}</span>
                 </div>
-              )}
-            </>
+                <div className="flex items-center gap-2 text-sm">
+                  <div className={`w-2 h-2 rounded-full ${STATUS_COLORS[selectedCamera.status]}`} />
+                  <span className="text-muted-foreground">Status:</span>
+                  <Badge variant="outline" className="capitalize">
+                    {STATUS_LABELS[selectedCamera.status] || selectedCamera.status}
+                  </Badge>
+                </div>
+                {selectedCamera.detected_people !== undefined && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-muted-foreground">Pessoas detectadas:</span>
+                    <span className="font-medium">{selectedCamera.detected_people}</span>
+                  </div>
+                )}
+                {selectedCamera.last_activity && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Clock className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">Última atividade:</span>
+                    <span className="font-medium">
+                      {format(new Date(selectedCamera.last_activity), "dd/MM/yyyy HH:mm", { locale: ptBR })}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
           )}
-        </div>
-      )}
-    </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Alert Details Dialog */}
+      <Dialog open={!!selectedAlert} onOpenChange={() => setSelectedAlert(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className={`w-5 h-5 ${
+                selectedAlert?.severity === 'critical' ? 'text-red-400' :
+                selectedAlert?.severity === 'high' ? 'text-orange-400' :
+                selectedAlert?.severity === 'medium' ? 'text-yellow-400' : 'text-blue-400'
+              }`} />
+              Detalhes do Alerta
+            </DialogTitle>
+            <DialogDescription>
+              Informações completas do alerta
+            </DialogDescription>
+          </DialogHeader>
+          {selectedAlert && (
+            <div className="space-y-4">
+              {selectedAlert.thumbnail && (
+                <div className="aspect-video rounded-lg overflow-hidden bg-secondary">
+                  <img 
+                    src={selectedAlert.thumbnail} 
+                    alt="Captura do alerta"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <div className="p-3 rounded-lg bg-secondary/50 border border-border">
+                <p className="text-sm">{selectedAlert.message}</p>
+              </div>
+              <div className="grid gap-3">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-muted-foreground">Severidade:</span>
+                  <Badge className={`capitalize ${SEVERITY_COLORS[selectedAlert.severity]}`}>
+                    {selectedAlert.severity}
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-muted-foreground">Tipo:</span>
+                  <Badge variant="outline" className="capitalize">
+                    {selectedAlert.type}
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Camera className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">Câmera:</span>
+                  <span className="font-medium">{selectedAlert.camera_name}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Clock className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">Data/Hora:</span>
+                  <span className="font-medium">
+                    {format(new Date(selectedAlert.timestamp), "dd/MM/yyyy 'às' HH:mm:ss", { locale: ptBR })}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
