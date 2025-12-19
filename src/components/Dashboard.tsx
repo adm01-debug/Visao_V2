@@ -18,6 +18,7 @@ import { ExportMenu } from './ExportMenu';
 import { CameraLayoutControls, CameraLayout } from './CameraLayoutControls';
 import { AlertFiltersComponent, filterAlerts, defaultFilters, AlertFilters } from './AlertFilters';
 import { SearchInput, filterCamerasBySearch, filterAlertsBySearch } from './SearchInput';
+import { PaginationControls, usePagination } from './PaginationControls';
 import { useCameras, DbCamera } from '@/hooks/useCameras';
 import { useAlerts } from '@/hooks/useAlerts';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -84,6 +85,15 @@ export function Dashboard() {
     timestamp: a.timestamp.toISOString(),
   })), alertFilters);
   const filteredAlerts = filterAlertsBySearch(alertsWithFilters, searchQuery);
+
+  // Pagination for alerts
+  const {
+    currentPage: alertsPage,
+    setCurrentPage: setAlertsPage,
+    totalPages: alertsTotalPages,
+    paginatedItems: paginatedAlerts,
+    totalItems: alertsTotalItems,
+  } = usePagination(filteredAlerts, 5);
 
   const getCameraGridClass = () => {
     switch (cameraLayout) {
@@ -306,7 +316,7 @@ export function Dashboard() {
             )}
             
             <div className="space-y-3">
-              {filteredAlerts.slice(0, 10).map(alert => (
+              {paginatedAlerts.map(alert => (
                 <AlertCard key={alert.id} alert={{
                   ...alert,
                   timestamp: new Date(alert.timestamp),
@@ -323,6 +333,19 @@ export function Dashboard() {
                 </div>
               )}
             </div>
+
+            {/* Pagination */}
+            {alertsTotalPages > 1 && (
+              <PaginationControls
+                currentPage={alertsPage}
+                totalPages={alertsTotalPages}
+                totalItems={alertsTotalItems}
+                itemsPerPage={5}
+                onPageChange={setAlertsPage}
+                compact
+                className="mt-4"
+              />
+            )}
 
             {/* Productivity Score */}
             <div className="glass-card p-5 mt-6">
