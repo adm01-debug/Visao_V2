@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Bell, User, LogOut, Volume2, VolumeX, BellRing, BellOff } from 'lucide-react';
+import { Bell, User, LogOut, Volume2, VolumeX, BellRing, BellOff, Sun, Moon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { NotificationsPanel } from '@/components/NotificationsPanel';
 import { SoundSettingsPanel } from '@/components/SoundSettingsPanel';
 import { SearchDropdown } from '@/components/SearchDropdown';
+import { useTheme } from 'next-themes';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,12 +37,17 @@ interface HeaderProps {
 
 export function Header({ alertCount }: HeaderProps) {
   const { user, signOut } = useAuth();
+  const { theme, setTheme } = useTheme();
   const [isMuted, setIsMuted] = useState(getAlertSoundsMuted);
   const [pushEnabled, setPushEnabled] = useState(() => {
     return isNotificationSupported() && 
            getNotificationPermission() === 'granted' && 
            getBrowserNotificationsEnabled();
   });
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
 
   const toggleMute = () => {
     const newMuted = !isMuted;
@@ -92,6 +98,27 @@ export function Header({ alertCount }: HeaderProps) {
 
       {/* Actions */}
       <div className="flex items-center gap-2">
+        {/* Theme Toggle */}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button 
+                onClick={toggleTheme}
+                className="relative p-2 rounded-lg hover:bg-secondary transition-colors"
+              >
+                {theme === 'dark' ? (
+                  <Sun className="w-5 h-5 text-yellow-500" />
+                ) : (
+                  <Moon className="w-5 h-5 text-primary" />
+                )}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{theme === 'dark' ? 'Modo claro' : 'Modo escuro'}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
         {/* Sound Toggle */}
         <TooltipProvider>
           <Tooltip>
