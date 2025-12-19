@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Camera, 
   AlertTriangle, 
@@ -6,16 +6,22 @@ import {
   Shield,
   TrendingUp,
   Activity,
-  CheckCheck
+  CheckCheck,
+  Maximize2,
+  X
 } from 'lucide-react';
 import { StatsCard } from './StatsCard';
 import { CameraCard } from './CameraCard';
 import { AlertCard, UIAlert } from './AlertCard';
 import { CameraModal } from './CameraModal';
+import { ExportMenu } from './ExportMenu';
+import { CameraLayoutControls, CameraLayout } from './CameraLayoutControls';
 import { useCameras, DbCamera } from '@/hooks/useCameras';
 import { useAlerts } from '@/hooks/useAlerts';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
+import { exportAlerts, exportCameras } from '@/lib/exportUtils';
+import { cn } from '@/lib/utils';
 
 // Map DB camera to UI format
 function mapDbCameraToUI(dbCamera: DbCamera) {
@@ -35,6 +41,14 @@ export function Dashboard() {
   const { cameras, loading: camerasLoading } = useCameras();
   const { alerts, loading: alertsLoading, unreadCount, markAllAsRead } = useAlerts();
   const [selectedCamera, setSelectedCamera] = useState<ReturnType<typeof mapDbCameraToUI> | null>(null);
+  const [cameraLayout, setCameraLayout] = useState<CameraLayout>(() => {
+    return (localStorage.getItem('camera-layout') as CameraLayout) || '2x2';
+  });
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('camera-layout', cameraLayout);
+  }, [cameraLayout]);
 
   const loading = camerasLoading || alertsLoading;
 
@@ -57,6 +71,49 @@ export function Dashboard() {
   const totalPeople = uiCameras.reduce((sum, c) => sum + (c.detectedPeople || 0), 0);
   const onlineCameras = uiCameras.filter(c => c.status !== 'offline').length;
   const activeAlerts = uiAlerts.filter(a => !a.isRead).length;
+
+  const getCameraGridClass = () => {
+    switch (cameraLayout) {
+      case '2x2': return 'grid grid-cols-1 sm:grid-cols-2 gap-4';
+      case '3x3': return 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3';
+      case 'list': return 'flex flex-col gap-2';
+      default: return 'grid grid-cols-1 sm:grid-cols-2 gap-4';
+    }
+  };
+
+  const handleExportAlertsCSV = () => {
+    exportAlerts(alerts, 'csv');
+  };
+
+  const handleExportAlertsPDF = () => {
+    exportAlerts(alerts, 'pdf');
+  };
+
+  const handleExportCamerasCSV = () => {
+    exportCameras(cameras, 'csv');
+  };
+
+  const handleExportCamerasPDF = () => {
+    exportCameras(cameras, 'pdf');
+  };
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
 
   if (loading) {
     return (
@@ -127,6 +184,20 @@ export function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Cameras Section */}
           <div className="lg:col-span-2 space-y-4 animate-fade-in-delay-1">
+            {/* Camera Controls */}
+            <div className="flex items-center justify-between">
+              <CameraLayoutControls
+                layout={cameraLayout}
+                onLayoutChange={setCameraLayout}
+                onFullscreen={toggleFullscreen}
+              />
+              <ExportMenu
+                onExportCSV={handleExportCamerasCSV}
+                onExportPDF={handleExportCamerasPDF}
+                disabled={cameras.length === 0}
+              />
+            </div>
+
             {/* Priority Cameras */}
             {priorityCameras.length > 0 && (
               <div>
@@ -134,12 +205,13 @@ export function Dashboard() {
                   <AlertTriangle className="w-5 h-5 text-destructive" />
                   <h2 className="text-lg font-semibold text-foreground">Câmeras com Alertas</h2>
                 </div>
-                <div className="camera-grid">
+                <div className={getCameraGridClass()}>
                   {priorityCameras.map(camera => (
                     <CameraCard 
                       key={camera.id} 
                       camera={camera} 
                       onClick={() => setSelectedCamera(camera)}
+                      compact={cameraLayout === 'list'}
                     />
                   ))}
                 </div>
@@ -155,12 +227,13 @@ export function Dashboard() {
                 </div>
                 <button className="text-sm text-primary hover:underline">Ver todas</button>
               </div>
-              <div className="camera-grid">
-                {normalCameras.slice(0, 6).map(camera => (
+              <div className={getCameraGridClass()}>
+                {normalCameras.slice(0, cameraLayout === '3x3' ? 9 : 6).map(camera => (
                   <CameraCard 
                     key={camera.id} 
                     camera={camera}
                     onClick={() => setSelectedCamera(camera)}
+                    compact={cameraLayout === 'list'}
                   />
                 ))}
               </div>
@@ -175,7 +248,11 @@ export function Dashboard() {
                 <h2 className="text-lg font-semibold text-foreground">Alertas Recentes</h2>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">{unreadCount} não lidos</span>
+                <ExportMenu
+                  onExportCSV={handleExportAlertsCSV}
+                  onExportPDF={handleExportAlertsPDF}
+                  disabled={alerts.length === 0}
+                />
                 {unreadCount > 0 && (
                   <Button 
                     variant="ghost" 

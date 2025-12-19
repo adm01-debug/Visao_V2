@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { NotificationsPanel } from '@/components/NotificationsPanel';
 import { SoundSettingsPanel } from '@/components/SoundSettingsPanel';
+import { PreferencesPanel } from '@/components/PreferencesPanel';
 import { SearchDropdown } from '@/components/SearchDropdown';
 import { useTheme } from 'next-themes';
 import {
@@ -227,18 +228,11 @@ export function Header({ alertCount }: HeaderProps) {
         )}
 
         {/* Sound Settings */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div>
-                <SoundSettingsPanel />
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Configurações de som</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <SoundSettingsPanel />
+
+        {/* Preferences Panel */}
+        <PreferencesPanel />
+
         <NotificationsPanel
           trigger={
             <button className="relative p-2 rounded-lg hover:bg-secondary transition-colors">

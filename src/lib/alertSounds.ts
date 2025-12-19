@@ -54,6 +54,7 @@ const DEFAULT_SETTINGS: SoundSettings = {
 let audioContext: AudioContext | null = null;
 let isMuted = false;
 let soundSettings: SoundSettings = { ...DEFAULT_SETTINGS };
+let globalVolume = 1.0;
 
 // Load settings from localStorage
 function loadSettings(): void {
@@ -162,8 +163,31 @@ export function getAlertSoundsMuted(): boolean {
   }
 }
 
-// Initialize muted state from localStorage
+// Aliases for backward compatibility
+export const getSoundEnabled = (): boolean => !getAlertSoundsMuted();
+export const setSoundEnabled = (enabled: boolean): void => setAlertSoundsMuted(!enabled);
+
+export function getSoundVolume(): number {
+  try {
+    const saved = localStorage.getItem('alert-sound-volume');
+    return saved ? parseFloat(saved) : 1.0;
+  } catch {
+    return 1.0;
+  }
+}
+
+export function setSoundVolume(volume: number): void {
+  globalVolume = Math.max(0, Math.min(1, volume));
+  try {
+    localStorage.setItem('alert-sound-volume', String(globalVolume));
+  } catch {
+    // Ignore localStorage errors
+  }
+}
+
+// Initialize muted state and volume from localStorage
 isMuted = getAlertSoundsMuted();
+globalVolume = getSoundVolume();
 
 // Critical alert with more urgent pattern
 export async function playCriticalAlertSound(): Promise<void> {
