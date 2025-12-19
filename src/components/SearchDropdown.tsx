@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, Camera, AlertTriangle, X, Loader2, MapPin, Clock, ArrowUp, ArrowDown } from 'lucide-react';
+import { Search, Camera, AlertTriangle, X, Loader2, MapPin, Clock, Filter, Calendar, ChevronDown } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Badge } from '@/components/ui/badge';
-import { format } from 'date-fns';
+import { Button } from '@/components/ui/button';
+import { format, subDays, subWeeks, subMonths, startOfDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import {
   Dialog,
@@ -11,6 +12,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 
 interface CameraResult {
   id: string;
@@ -36,6 +42,12 @@ type SearchItem =
   | { type: 'camera'; data: CameraResult }
   | { type: 'alert'; data: AlertResult };
 
+interface Filters {
+  cameraStatus: string[];
+  alertSeverity: string[];
+  timePeriod: string;
+}
+
 const SEVERITY_COLORS: Record<string, string> = {
   low: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
   medium: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
@@ -57,6 +69,20 @@ const STATUS_LABELS: Record<string, string> = {
   warning: 'Atenção',
 };
 
+const SEVERITY_LABELS: Record<string, string> = {
+  low: 'Baixa',
+  medium: 'Média',
+  high: 'Alta',
+  critical: 'Crítica',
+};
+
+const TIME_PERIODS: { value: string; label: string }[] = [
+  { value: 'all', label: 'Todo período' },
+  { value: 'today', label: 'Hoje' },
+  { value: 'week', label: 'Última semana' },
+  { value: 'month', label: 'Último mês' },
+];
+
 export function SearchDropdown() {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
@@ -66,9 +92,18 @@ export function SearchDropdown() {
   const [activeIndex, setActiveIndex] = useState(-1);
   const [selectedCamera, setSelectedCamera] = useState<CameraResult | null>(null);
   const [selectedAlert, setSelectedAlert] = useState<AlertResult | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState<Filters>({
+    cameraStatus: [],
+    alertSeverity: [],
+    timePeriod: 'all',
+  });
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const hasActiveFilters = filters.cameraStatus.length > 0 || filters.alertSeverity.length > 0 || filters.timePeriod !== 'all';
+  const activeFilterCount = filters.cameraStatus.length + filters.alertSeverity.length + (filters.timePeriod !== 'all' ? 1 : 0);
 
   // Build flat list of all items for keyboard navigation
   const allItems: SearchItem[] = [
@@ -102,10 +137,25 @@ export function SearchDropdown() {
     return () => document.removeEventListener('keydown', handleGlobalKeyDown);
   }, []);
 
-  // Search when query changes
+  // Get time filter date
+  const getTimeFilterDate = useCallback(() => {
+    const now = new Date();
+    switch (filters.timePeriod) {
+      case 'today':
+        return startOfDay(now).toISOString();
+      case 'week':
+        return subWeeks(now, 1).toISOString();
+      case 'month':
+        return subMonths(now, 1).toISOString();
+      default:
+        return null;
+    }
+  }, [filters.timePeriod]);
+
+  // Search when query or filters change
   useEffect(() => {
     const searchTimeout = setTimeout(async () => {
-      if (query.trim().length < 2) {
+      if (query.trim().length < 2 && !hasActiveFilters) {
         setCameras([]);
         setAlerts([]);
         setActiveIndex(-1);
@@ -116,20 +166,47 @@ export function SearchDropdown() {
       setActiveIndex(-1);
       
       try {
-        const searchTerm = `%${query.trim()}%`;
+        const searchTerm = query.trim().length >= 2 ? `%${query.trim()}%` : null;
+        const timeFilter = getTimeFilterDate();
+
+        // Build cameras query
+        let camerasQuery = supabase
+          .from('cameras')
+          .select('id, name, location, status, thumbnail, detected_people, last_activity');
+        
+        if (searchTerm) {
+          camerasQuery = camerasQuery.or(`name.ilike.${searchTerm},location.ilike.${searchTerm}`);
+        }
+        
+        if (filters.cameraStatus.length > 0) {
+          camerasQuery = camerasQuery.in('status', filters.cameraStatus as ('online' | 'offline' | 'alert' | 'warning')[]);
+        }
+        
+        if (timeFilter) {
+          camerasQuery = camerasQuery.gte('last_activity', timeFilter);
+        }
+
+        // Build alerts query
+        let alertsQuery = supabase
+          .from('alerts')
+          .select('id, message, camera_name, severity, timestamp, type, thumbnail')
+          .order('timestamp', { ascending: false });
+        
+        if (searchTerm) {
+          alertsQuery = alertsQuery.or(`message.ilike.${searchTerm},camera_name.ilike.${searchTerm}`);
+        }
+        
+        if (filters.alertSeverity.length > 0) {
+          alertsQuery = alertsQuery.in('severity', filters.alertSeverity as ('low' | 'medium' | 'high' | 'critical')[]);
+        }
+        
+        if (timeFilter) {
+          alertsQuery = alertsQuery.gte('timestamp', timeFilter);
+        }
 
         const [camerasResult, alertsResult] = await Promise.all([
-          supabase
-            .from('cameras')
-            .select('id, name, location, status, thumbnail, detected_people, last_activity')
-            .or(`name.ilike.${searchTerm},location.ilike.${searchTerm}`)
-            .limit(5),
-          supabase
-            .from('alerts')
-            .select('id, message, camera_name, severity, timestamp, type, thumbnail')
-            .or(`message.ilike.${searchTerm},camera_name.ilike.${searchTerm}`)
-            .order('timestamp', { ascending: false })
-            .limit(5),
+          camerasQuery.limit(10),
+          alertsQuery.limit(10),
         ]);
 
         setCameras(camerasResult.data || []);
@@ -142,7 +219,7 @@ export function SearchDropdown() {
     }, 300);
 
     return () => clearTimeout(searchTimeout);
-  }, [query]);
+  }, [query, filters, hasActiveFilters, getTimeFilterDate]);
 
   // Scroll active item into view
   useEffect(() => {
@@ -217,8 +294,38 @@ export function SearchDropdown() {
     inputRef.current?.focus();
   };
 
+  const clearFilters = () => {
+    setFilters({
+      cameraStatus: [],
+      alertSeverity: [],
+      timePeriod: 'all',
+    });
+  };
+
+  const toggleCameraStatus = (status: string) => {
+    setFilters(prev => ({
+      ...prev,
+      cameraStatus: prev.cameraStatus.includes(status)
+        ? prev.cameraStatus.filter(s => s !== status)
+        : [...prev.cameraStatus, status],
+    }));
+  };
+
+  const toggleAlertSeverity = (severity: string) => {
+    setFilters(prev => ({
+      ...prev,
+      alertSeverity: prev.alertSeverity.includes(severity)
+        ? prev.alertSeverity.filter(s => s !== severity)
+        : [...prev.alertSeverity, severity],
+    }));
+  };
+
+  const setTimePeriod = (period: string) => {
+    setFilters(prev => ({ ...prev, timePeriod: period }));
+  };
+
   const hasResults = cameras.length > 0 || alerts.length > 0;
-  const showDropdown = isOpen && (query.trim().length >= 2 || isLoading);
+  const showDropdown = isOpen && (query.trim().length >= 2 || isLoading || hasActiveFilters);
 
   // Calculate index offset for alerts (they come after cameras)
   const alertIndexOffset = cameras.length;
@@ -226,26 +333,144 @@ export function SearchDropdown() {
   return (
     <>
       <div ref={containerRef} className="relative w-full">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input
-            ref={inputRef}
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onFocus={handleFocus}
-            onKeyDown={handleKeyDown}
-            placeholder="Buscar câmeras, alertas... (Ctrl+K)"
-            className="w-full h-10 pl-10 pr-10 rounded-lg bg-secondary border border-border text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
-          />
-          {query && (
-            <button
-              onClick={clearSearch}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input
+              ref={inputRef}
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onFocus={handleFocus}
+              onKeyDown={handleKeyDown}
+              placeholder="Buscar câmeras, alertas... (Ctrl+K)"
+              className="w-full h-10 pl-10 pr-10 rounded-lg bg-secondary border border-border text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+            />
+            {query && (
+              <button
+                onClick={clearSearch}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
           )}
+          </div>
+
+          {/* Filter Button */}
+          <Popover open={showFilters} onOpenChange={setShowFilters}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className={`h-10 w-10 shrink-0 ${hasActiveFilters ? 'bg-primary/10 border-primary text-primary' : ''}`}
+              >
+                <Filter className="w-4 h-4" />
+                {hasActiveFilters && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-primary-foreground text-[10px] rounded-full flex items-center justify-center font-medium">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 p-0" align="end">
+              <div className="p-3 border-b border-border">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium text-sm">Filtros Avançados</h4>
+                  {hasActiveFilters && (
+                    <Button variant="ghost" size="sm" onClick={clearFilters} className="h-7 text-xs">
+                      Limpar filtros
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              <div className="p-3 space-y-4">
+                {/* Camera Status Filter */}
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5 mb-2">
+                    <Camera className="w-3 h-3" />
+                    Status da Câmera
+                  </label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {Object.entries(STATUS_LABELS).map(([value, label]) => (
+                      <button
+                        key={value}
+                        onClick={() => toggleCameraStatus(value)}
+                        className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5 ${
+                          filters.cameraStatus.includes(value)
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-secondary hover:bg-secondary/80 text-foreground'
+                        }`}
+                      >
+                        <div className={`w-1.5 h-1.5 rounded-full ${STATUS_COLORS[value]}`} />
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Alert Severity Filter */}
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5 mb-2">
+                    <AlertTriangle className="w-3 h-3" />
+                    Severidade do Alerta
+                  </label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {Object.entries(SEVERITY_LABELS).map(([value, label]) => (
+                      <button
+                        key={value}
+                        onClick={() => toggleAlertSeverity(value)}
+                        className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                          filters.alertSeverity.includes(value)
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-secondary hover:bg-secondary/80 text-foreground'
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Time Period Filter */}
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5 mb-2">
+                    <Calendar className="w-3 h-3" />
+                    Período
+                  </label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {TIME_PERIODS.map(({ value, label }) => (
+                      <button
+                        key={value}
+                        onClick={() => setTimePeriod(value)}
+                        className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                          filters.timePeriod === value
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-secondary hover:bg-secondary/80 text-foreground'
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-3 border-t border-border bg-muted/30">
+                <Button 
+                  className="w-full" 
+                  size="sm"
+                  onClick={() => {
+                    setShowFilters(false);
+                    setIsOpen(true);
+                    inputRef.current?.focus();
+                  }}
+                >
+                  Aplicar Filtros
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
 
         {showDropdown && (
