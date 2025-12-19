@@ -3,7 +3,7 @@ import {
   LayoutDashboard, 
   Camera, 
   Bell, 
-  BarChart3, 
+  Brain, 
   Settings, 
   Shield,
   Users,
@@ -22,7 +22,7 @@ const menuItems = [
   { id: 'cameras', label: 'Câmeras', icon: Camera },
   { id: 'alerts', label: 'Alertas', icon: Bell },
   { id: 'rules', label: 'Regras', icon: ListChecks },
-  { id: 'analytics', label: 'Relatórios', icon: BarChart3 },
+  { id: 'analytics', label: 'AI Vision', icon: Brain },
   { id: 'people', label: 'Colaboradores', icon: Users },
   { id: 'security', label: 'Segurança', icon: Shield },
 ];

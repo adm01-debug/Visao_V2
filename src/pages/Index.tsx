@@ -4,6 +4,7 @@ import { Header } from '@/components/Header';
 import { Dashboard } from '@/components/Dashboard';
 import { RulesPanel } from '@/components/RulesPanel';
 import { FloorPlanMap } from '@/components/FloorPlanMap';
+import { AIAnalysisPanel } from '@/components/AIAnalysisPanel';
 import { mockAlerts } from '@/data/mockData';
 import { Helmet } from 'react-helmet-async';
 
@@ -19,6 +20,14 @@ const Index = () => {
         return <RulesPanel />;
       case 'cameras':
         return <FloorPlanMap />;
+      case 'analytics':
+        return (
+          <div className="p-6 overflow-auto h-full">
+            <div className="max-w-xl mx-auto">
+              <AIAnalysisPanel />
+            </div>
+          </div>
+        );
       default:
         return (
           <div className="flex items-center justify-center h-full">
