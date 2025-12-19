@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Bell, Search, User, LogOut, Volume2, VolumeX, BellRing, BellOff } from 'lucide-react';
+import { Bell, User, LogOut, Volume2, VolumeX, BellRing, BellOff } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { NotificationsPanel } from '@/components/NotificationsPanel';
 import { SoundSettingsPanel } from '@/components/SoundSettingsPanel';
+import { SearchDropdown } from '@/components/SearchDropdown';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -86,14 +87,7 @@ export function Header({ alertCount }: HeaderProps) {
     <header className="h-16 border-b border-border bg-card/50 backdrop-blur-sm flex items-center justify-between px-6">
       {/* Search */}
       <div className="flex items-center gap-3 flex-1 max-w-md">
-        <div className="relative w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Buscar câmeras, alertas..."
-            className="w-full h-10 pl-10 pr-4 rounded-lg bg-secondary border border-border text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
-          />
-        </div>
+        <SearchDropdown />
       </div>
 
       {/* Actions */}
