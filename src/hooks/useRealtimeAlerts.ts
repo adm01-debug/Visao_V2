@@ -3,6 +3,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { DbAlert } from './useAlerts';
 import { playAlertSound, playCriticalAlertSound } from '@/lib/alertSounds';
+import { 
+  showBrowserNotification, 
+  getBrowserNotificationsEnabled,
+  getNotificationPermission 
+} from '@/lib/browserNotifications';
 
 const alertTypeLabels: Record<string, string> = {
   security: 'Segurança',
@@ -70,6 +75,20 @@ export function useRealtimeAlerts({
             toast.info(`${newAlert.message}`, {
               description: `${newAlert.camera_name} • ${typeLabel} • ${severityLabel}`,
               duration: 5000,
+            });
+          }
+          
+          // Show browser push notification if enabled and permission granted
+          if (getBrowserNotificationsEnabled() && getNotificationPermission() === 'granted') {
+            const isCritical = newAlert.severity === 'critical' || newAlert.severity === 'high';
+            showBrowserNotification({
+              title: isCritical ? `🚨 ${typeLabel.toUpperCase()}` : typeLabel,
+              body: `${newAlert.message}\n📍 ${newAlert.camera_name}`,
+              tag: newAlert.id,
+              requireInteraction: newAlert.severity === 'critical',
+              onClick: () => {
+                window.focus();
+              },
             });
           }
           
