@@ -7,7 +7,8 @@ import {
   TrendingUp,
   Activity,
   CheckCheck,
-  ArrowUpDown
+  ArrowUpDown,
+  X
 } from 'lucide-react';
 import { StatsCard } from './StatsCard';
 import { CameraCard } from './CameraCard';
@@ -357,18 +358,29 @@ export function Dashboard() {
               </div>
             </div>
 
+            {/* Camera filter indicator */}
+            {alertFilters.cameraId !== 'all' && (
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/10 border border-primary/20">
+                <Camera className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium text-foreground">
+                  Filtrando por: {uiCameras.find(c => c.id === alertFilters.cameraId)?.name || 'Câmera'}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 px-2 ml-auto text-xs"
+                  onClick={() => setAlertFilters({ ...alertFilters, cameraId: 'all' })}
+                >
+                  <X className="w-3 h-3 mr-1" />
+                  Limpar
+                </Button>
+              </div>
+            )}
+
             {/* Filter summary */}
-            {(alertFilters.type !== 'all' || alertFilters.severity !== 'all' || alertFilters.dateRange !== 'all' || alertFilters.cameraId !== 'all') && (
+            {(alertFilters.type !== 'all' || alertFilters.severity !== 'all' || alertFilters.dateRange !== 'all') && (
               <p className="text-xs text-muted-foreground">
                 Mostrando {filteredAlerts.length} de {uiAlerts.length} alertas
-                {alertFilters.cameraId !== 'all' && (
-                  <button
-                    onClick={() => setAlertFilters({ ...alertFilters, cameraId: 'all' })}
-                    className="ml-2 text-primary hover:underline"
-                  >
-                    Limpar filtro de câmera
-                  </button>
-                )}
               </p>
             )}
             
