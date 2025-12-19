@@ -1,7 +1,7 @@
 import { Camera } from '@/types/surveillance';
 import { StatusIndicator } from './StatusIndicator';
 import { Badge } from '@/components/ui/badge';
-import { Users, AlertTriangle, MapPin, Video } from 'lucide-react';
+import { Users, AlertTriangle, MapPin, Video, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface CameraCardProps {
@@ -29,6 +29,13 @@ export function CameraCard({ camera, onClick }: CameraCardProps) {
         
         {/* Scan line effect */}
         <div className="scan-line opacity-30" />
+
+        {/* Play button overlay */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-background/30">
+          <div className="p-4 rounded-full bg-primary/90 text-primary-foreground transform group-hover:scale-110 transition-transform">
+            <Play className="w-6 h-6" />
+          </div>
+        </div>
         
         {/* Status overlay */}
         <div className="absolute top-3 left-3">
