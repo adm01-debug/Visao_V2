@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Bell, User, LogOut, Volume2, VolumeX, BellRing, BellOff, Sun, Moon, Monitor } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -45,15 +45,40 @@ export function Header({ alertCount }: HeaderProps) {
            getBrowserNotificationsEnabled();
   });
 
-  const setThemeWithTransition = (newTheme: string) => {
-    // Add transition class for smooth animation
+  const setThemeWithTransition = useCallback((newTheme: string) => {
     document.documentElement.classList.add('theme-transition');
     setTheme(newTheme);
-    // Remove transition class after animation completes
     setTimeout(() => {
       document.documentElement.classList.remove('theme-transition');
     }, 300);
-  };
+  }, [setTheme]);
+
+  // Keyboard shortcuts for theme switching
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+Shift+T to cycle themes
+      if (e.ctrlKey && e.shiftKey && e.key === 'T') {
+        e.preventDefault();
+        const themes = ['light', 'dark', 'system'];
+        const currentIndex = themes.indexOf(theme || 'system');
+        const nextIndex = (currentIndex + 1) % themes.length;
+        setThemeWithTransition(themes[nextIndex]);
+      }
+      // Ctrl+Shift+L for light
+      if (e.ctrlKey && e.shiftKey && e.key === 'L') {
+        e.preventDefault();
+        setThemeWithTransition('light');
+      }
+      // Ctrl+Shift+D for dark
+      if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+        e.preventDefault();
+        setThemeWithTransition('dark');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [theme, setThemeWithTransition]);
 
   const toggleMute = () => {
     const newMuted = !isMuted;
@@ -117,7 +142,7 @@ export function Header({ alertCount }: HeaderProps) {
               )}
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
+          <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuLabel className="text-xs text-muted-foreground">Tema</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem 
@@ -125,21 +150,23 @@ export function Header({ alertCount }: HeaderProps) {
               className={theme === 'light' ? 'bg-secondary' : ''}
             >
               <Sun className="w-4 h-4 mr-2" />
-              Claro
+              <span className="flex-1">Claro</span>
+              <kbd className="text-[10px] text-muted-foreground bg-muted px-1 rounded">⌃⇧L</kbd>
             </DropdownMenuItem>
             <DropdownMenuItem 
               onClick={() => setThemeWithTransition('dark')}
               className={theme === 'dark' ? 'bg-secondary' : ''}
             >
               <Moon className="w-4 h-4 mr-2" />
-              Escuro
+              <span className="flex-1">Escuro</span>
+              <kbd className="text-[10px] text-muted-foreground bg-muted px-1 rounded">⌃⇧D</kbd>
             </DropdownMenuItem>
             <DropdownMenuItem 
               onClick={() => setThemeWithTransition('system')}
               className={theme === 'system' ? 'bg-secondary' : ''}
             >
               <Monitor className="w-4 h-4 mr-2" />
-              <span className="flex items-center gap-2">
+              <span className="flex-1 flex items-center gap-1">
                 Sistema
                 {theme === 'system' && (
                   <span className="text-xs text-muted-foreground">
@@ -148,6 +175,10 @@ export function Header({ alertCount }: HeaderProps) {
                 )}
               </span>
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <div className="px-2 py-1 text-[10px] text-muted-foreground">
+              ⌃⇧T para alternar
+            </div>
           </DropdownMenuContent>
         </DropdownMenu>
 
