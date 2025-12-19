@@ -1,20 +1,59 @@
-import { X, ExternalLink, Settings, Bell, History } from 'lucide-react';
+import { useState } from 'react';
+import { X, ExternalLink, Settings, Bell, History, MapPin, Save } from 'lucide-react';
 import { Camera } from '@/types/surveillance';
 import { VideoPlayer } from './VideoPlayer';
 import { EventTimeline } from './EventTimeline';
 import { StatusIndicator } from './StatusIndicator';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-interface CameraModalProps {
-  camera: Camera;
-  isOpen: boolean;
-  onClose: () => void;
+interface ExtendedCamera extends Camera {
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
-export function CameraModal({ camera, isOpen, onClose }: CameraModalProps) {
+interface CameraModalProps {
+  camera: ExtendedCamera;
+  isOpen: boolean;
+  onClose: () => void;
+  onUpdateCoordinates?: (id: string, latitude: number | null, longitude: number | null) => Promise<void>;
+}
+
+export function CameraModal({ camera, isOpen, onClose, onUpdateCoordinates }: CameraModalProps) {
+  const [latitude, setLatitude] = useState<string>(camera.latitude?.toString() || '');
+  const [longitude, setLongitude] = useState<string>(camera.longitude?.toString() || '');
+  const [saving, setSaving] = useState(false);
+
   if (!isOpen) return null;
+
+  const handleSaveCoordinates = async () => {
+    if (!onUpdateCoordinates) return;
+    
+    setSaving(true);
+    try {
+      const lat = latitude ? parseFloat(latitude) : null;
+      const lng = longitude ? parseFloat(longitude) : null;
+      
+      if (latitude && isNaN(lat!)) {
+        return;
+      }
+      if (longitude && isNaN(lng!)) {
+        return;
+      }
+      
+      await onUpdateCoordinates(camera.id, lat, lng);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const hasCoordinatesChanged = 
+    latitude !== (camera.latitude?.toString() || '') ||
+    longitude !== (camera.longitude?.toString() || '');
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -119,6 +158,56 @@ export function CameraModal({ camera, isOpen, onClose }: CameraModalProps) {
                         <span className="text-muted-foreground">Protocolo</span>
                         <span className="text-foreground">RTSP</span>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Coordinates Form */}
+                  <div className="glass-card p-4 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-primary" />
+                      <h4 className="font-semibold text-foreground">Localização no Mapa</h4>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="space-y-1.5">
+                        <Label htmlFor="latitude" className="text-xs text-muted-foreground">
+                          Latitude
+                        </Label>
+                        <Input
+                          id="latitude"
+                          type="number"
+                          step="any"
+                          placeholder="-23.5505"
+                          value={latitude}
+                          onChange={(e) => setLatitude(e.target.value)}
+                          className="h-8 text-sm"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="longitude" className="text-xs text-muted-foreground">
+                          Longitude
+                        </Label>
+                        <Input
+                          id="longitude"
+                          type="number"
+                          step="any"
+                          placeholder="-46.6333"
+                          value={longitude}
+                          onChange={(e) => setLongitude(e.target.value)}
+                          className="h-8 text-sm"
+                        />
+                      </div>
+                      {onUpdateCoordinates && (
+                        <Button
+                          size="sm"
+                          className="w-full gap-2"
+                          onClick={handleSaveCoordinates}
+                          disabled={saving || !hasCoordinatesChanged}
+                        >
+                          <Save className="w-4 h-4" />
+                          {saving ? 'Salvando...' : 'Salvar Coordenadas'}
+                        </Button>
+                      )}
                     </div>
                   </div>
 
