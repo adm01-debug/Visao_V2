@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Bell, Search, User, LogOut, Volume2, VolumeX } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Bell, Search, User, LogOut, Volume2, VolumeX, BellRing, BellOff } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { NotificationsPanel } from '@/components/NotificationsPanel';
@@ -19,6 +19,14 @@ import {
 } from '@/components/ui/tooltip';
 import { useAuth } from '@/contexts/AuthContext';
 import { getAlertSoundsMuted, setAlertSoundsMuted } from '@/lib/alertSounds';
+import { 
+  requestNotificationPermission, 
+  getNotificationPermission, 
+  getBrowserNotificationsEnabled, 
+  setBrowserNotificationsEnabled,
+  isNotificationSupported 
+} from '@/lib/browserNotifications';
+import { toast } from 'sonner';
 
 interface HeaderProps {
   alertCount: number;
@@ -27,11 +35,50 @@ interface HeaderProps {
 export function Header({ alertCount }: HeaderProps) {
   const { user, signOut } = useAuth();
   const [isMuted, setIsMuted] = useState(getAlertSoundsMuted);
+  const [pushEnabled, setPushEnabled] = useState(() => {
+    return isNotificationSupported() && 
+           getNotificationPermission() === 'granted' && 
+           getBrowserNotificationsEnabled();
+  });
 
   const toggleMute = () => {
     const newMuted = !isMuted;
     setIsMuted(newMuted);
     setAlertSoundsMuted(newMuted);
+  };
+
+  const togglePushNotifications = async () => {
+    if (!isNotificationSupported()) {
+      toast.error('Seu navegador não suporta notificações push');
+      return;
+    }
+
+    if (pushEnabled) {
+      // Disable push notifications
+      setBrowserNotificationsEnabled(false);
+      setPushEnabled(false);
+      toast.info('Notificações push desativadas');
+    } else {
+      // Check/request permission first
+      const permission = getNotificationPermission();
+      
+      if (permission === 'denied') {
+        toast.error('Notificações bloqueadas. Altere nas configurações do navegador.');
+        return;
+      }
+      
+      if (permission === 'default') {
+        const newPermission = await requestNotificationPermission();
+        if (newPermission !== 'granted') {
+          toast.error('Permissão para notificações negada');
+          return;
+        }
+      }
+      
+      setBrowserNotificationsEnabled(true);
+      setPushEnabled(true);
+      toast.success('Notificações push ativadas');
+    }
   };
 
   return (
@@ -70,6 +117,29 @@ export function Header({ alertCount }: HeaderProps) {
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
+
+        {/* Push Notifications Toggle */}
+        {isNotificationSupported() && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button 
+                  onClick={togglePushNotifications}
+                  className="relative p-2 rounded-lg hover:bg-secondary transition-colors"
+                >
+                  {pushEnabled ? (
+                    <BellRing className="w-5 h-5 text-primary" />
+                  ) : (
+                    <BellOff className="w-5 h-5 text-muted-foreground" />
+                  )}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{pushEnabled ? 'Desativar notificações push' : 'Ativar notificações push'}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
 
         {/* Notifications */}
         <NotificationsPanel
