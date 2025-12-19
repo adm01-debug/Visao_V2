@@ -16,6 +16,7 @@ import { AlertCard, UIAlert } from './AlertCard';
 import { CameraModal } from './CameraModal';
 import { ExportMenu } from './ExportMenu';
 import { CameraLayoutControls, CameraLayout } from './CameraLayoutControls';
+import { AlertFiltersComponent, filterAlerts, defaultFilters, AlertFilters } from './AlertFilters';
 import { useCameras, DbCamera } from '@/hooks/useCameras';
 import { useAlerts } from '@/hooks/useAlerts';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -45,6 +46,7 @@ export function Dashboard() {
     return (localStorage.getItem('camera-layout') as CameraLayout) || '2x2';
   });
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [alertFilters, setAlertFilters] = useState<AlertFilters>(defaultFilters);
 
   useEffect(() => {
     localStorage.setItem('camera-layout', cameraLayout);
@@ -71,6 +73,12 @@ export function Dashboard() {
   const totalPeople = uiCameras.reduce((sum, c) => sum + (c.detectedPeople || 0), 0);
   const onlineCameras = uiCameras.filter(c => c.status !== 'offline').length;
   const activeAlerts = uiAlerts.filter(a => !a.isRead).length;
+
+  // Filter alerts based on current filters
+  const filteredAlerts = filterAlerts(uiAlerts.map(a => ({
+    ...a,
+    timestamp: a.timestamp.toISOString(),
+  })), alertFilters);
 
   const getCameraGridClass = () => {
     switch (cameraLayout) {
@@ -247,7 +255,11 @@ export function Dashboard() {
                 <AlertTriangle className="w-5 h-5 text-warning" />
                 <h2 className="text-lg font-semibold text-foreground">Alertas Recentes</h2>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                <AlertFiltersComponent
+                  filters={alertFilters}
+                  onFiltersChange={setAlertFilters}
+                />
                 <ExportMenu
                   onExportCSV={handleExportAlertsCSV}
                   onExportPDF={handleExportAlertsPDF}
@@ -265,11 +277,26 @@ export function Dashboard() {
                 )}
               </div>
             </div>
+
+            {/* Filter summary */}
+            {(alertFilters.type !== 'all' || alertFilters.severity !== 'all' || alertFilters.dateRange !== 'all') && (
+              <p className="text-xs text-muted-foreground">
+                Mostrando {filteredAlerts.length} de {uiAlerts.length} alertas
+              </p>
+            )}
             
             <div className="space-y-3">
-              {uiAlerts.slice(0, 5).map(alert => (
-                <AlertCard key={alert.id} alert={alert} />
+              {filteredAlerts.slice(0, 10).map(alert => (
+                <AlertCard key={alert.id} alert={{
+                  ...alert,
+                  timestamp: new Date(alert.timestamp),
+                }} />
               ))}
+              {filteredAlerts.length === 0 && uiAlerts.length > 0 && (
+                <div className="text-center py-8 text-muted-foreground">
+                  Nenhum alerta corresponde aos filtros
+                </div>
+              )}
               {uiAlerts.length === 0 && (
                 <div className="text-center py-8 text-muted-foreground">
                   Nenhum alerta registrado
