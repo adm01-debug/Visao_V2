@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { DbRule, DbRuleInsert, DbRuleUpdate } from '@/types/rules';
 import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 
 export function useRules() {
   const [rules, setRules] = useState<DbRule[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   const fetchRules = async () => {
     try {
@@ -27,11 +29,13 @@ export function useRules() {
     }
   };
 
-  const createRule = async (rule: DbRuleInsert) => {
+  const createRule = async (rule: Omit<DbRuleInsert, 'user_id'>) => {
+    if (!user) throw new Error('Usuário não autenticado');
+    
     try {
       const { data, error } = await supabase
         .from('rules')
-        .insert(rule)
+        .insert({ ...rule, user_id: user.id })
         .select()
         .single();
 
@@ -104,8 +108,10 @@ export function useRules() {
   };
 
   useEffect(() => {
-    fetchRules();
-  }, []);
+    if (user) {
+      fetchRules();
+    }
+  }, [user]);
 
   return {
     rules,

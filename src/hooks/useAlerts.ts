@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 import { toast } from 'sonner';
 import { mockAlerts } from '@/data/mockData';
+import { useAuth } from '@/contexts/AuthContext';
 
 export type DbAlert = Tables<'alerts'>;
 export type DbAlertInsert = TablesInsert<'alerts'>;
@@ -12,6 +13,7 @@ export function useAlerts() {
   const [alerts, setAlerts] = useState<DbAlert[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   const fetchAlerts = async () => {
     try {
@@ -33,6 +35,8 @@ export function useAlerts() {
   };
 
   const seedAlerts = async () => {
+    if (!user) return;
+    
     try {
       const { data: existingAlerts } = await supabase
         .from('alerts')
@@ -61,6 +65,7 @@ export function useAlerts() {
         message: a.message,
         timestamp: a.timestamp.toISOString(),
         is_read: a.isRead,
+        user_id: user.id,
       }));
 
       const { error } = await supabase
@@ -74,11 +79,13 @@ export function useAlerts() {
     }
   };
 
-  const createAlert = async (alert: DbAlertInsert) => {
+  const createAlert = async (alert: Omit<DbAlertInsert, 'user_id'>) => {
+    if (!user) throw new Error('Usuário não autenticado');
+    
     try {
       const { data, error } = await supabase
         .from('alerts')
-        .insert(alert)
+        .insert({ ...alert, user_id: user.id })
         .select()
         .single();
 
@@ -145,8 +152,10 @@ export function useAlerts() {
   };
 
   useEffect(() => {
-    fetchAlerts().then(() => seedAlerts());
-  }, []);
+    if (user) {
+      fetchAlerts().then(() => seedAlerts());
+    }
+  }, [user]);
 
   return {
     alerts,

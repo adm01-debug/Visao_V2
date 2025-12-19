@@ -1,16 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Sidebar } from '@/components/Sidebar';
 import { Header } from '@/components/Header';
 import { Dashboard } from '@/components/Dashboard';
 import { RulesPanel } from '@/components/RulesPanel';
 import { FloorPlanMap } from '@/components/FloorPlanMap';
 import { AIAnalysisPanel } from '@/components/AIAnalysisPanel';
-import { mockAlerts } from '@/data/mockData';
+import { useAuth } from '@/contexts/AuthContext';
+import { useAlerts } from '@/hooks/useAlerts';
 import { Helmet } from 'react-helmet-async';
+import { Loader2 } from 'lucide-react';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const unreadAlertsCount = mockAlerts.filter(a => !a.isRead).length;
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  const { unreadCount } = useAlerts();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/auth', { replace: true });
+    }
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   const renderContent = () => {
     switch (activeTab) {
@@ -53,7 +76,7 @@ const Index = () => {
         <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
         
         <div className="flex-1 flex flex-col overflow-hidden">
-          <Header alertCount={unreadAlertsCount} />
+          <Header alertCount={unreadCount} />
           
           <main className="flex-1 overflow-hidden">
             {renderContent()}
