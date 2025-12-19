@@ -4,14 +4,59 @@ import { Badge } from '@/components/ui/badge';
 import { Users, AlertTriangle, MapPin, Video, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface CameraCardProps {
+export interface CameraCardProps {
   camera: Camera;
   onClick?: () => void;
+  compact?: boolean;
 }
 
-export function CameraCard({ camera, onClick }: CameraCardProps) {
+export function CameraCard({ camera, onClick, compact = false }: CameraCardProps) {
   const hasAlerts = camera.alerts && camera.alerts > 0;
   
+  if (compact) {
+    return (
+      <div 
+        className={cn(
+          "glass-card p-3 cursor-pointer transition-all duration-300 hover:border-primary/50 group flex items-center gap-4",
+          hasAlerts && "border-destructive/50"
+        )}
+        onClick={onClick}
+      >
+        <div className="relative w-20 h-14 bg-secondary rounded-lg overflow-hidden flex-shrink-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-secondary to-background flex items-center justify-center">
+            <Video className="w-6 h-6 text-muted-foreground/30" />
+          </div>
+          <div className="absolute top-1 left-1">
+            <StatusIndicator status={camera.status} size="sm" />
+          </div>
+        </div>
+        
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+            {camera.name}
+          </h3>
+          <div className="flex items-center gap-3 mt-0.5 text-muted-foreground text-sm">
+            <span className="flex items-center gap-1">
+              <MapPin className="w-3 h-3" />
+              {camera.location}
+            </span>
+            <span className="flex items-center gap-1">
+              <Users className="w-3 h-3" />
+              {camera.detectedPeople || 0}
+            </span>
+          </div>
+        </div>
+        
+        {hasAlerts && (
+          <Badge variant="alert" className="gap-1 flex-shrink-0">
+            <AlertTriangle className="w-3 h-3" />
+            {camera.alerts}
+          </Badge>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div 
       className={cn(
