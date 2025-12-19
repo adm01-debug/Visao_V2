@@ -2,12 +2,33 @@ import { useState } from 'react';
 import { Sidebar } from '@/components/Sidebar';
 import { Header } from '@/components/Header';
 import { Dashboard } from '@/components/Dashboard';
+import { RulesPanel } from '@/components/RulesPanel';
 import { mockAlerts } from '@/data/mockData';
 import { Helmet } from 'react-helmet-async';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const unreadAlertsCount = mockAlerts.filter(a => !a.isRead).length;
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        return <Dashboard />;
+      case 'rules':
+        return <RulesPanel />;
+      default:
+        return (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <p className="text-2xl font-semibold text-muted-foreground mb-2">
+                {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+              </p>
+              <p className="text-sm text-muted-foreground">Em desenvolvimento</p>
+            </div>
+          </div>
+        );
+    }
+  };
 
   return (
     <>
@@ -23,17 +44,7 @@ const Index = () => {
           <Header alertCount={unreadAlertsCount} />
           
           <main className="flex-1 overflow-hidden">
-            {activeTab === 'dashboard' && <Dashboard />}
-            {activeTab !== 'dashboard' && (
-              <div className="flex items-center justify-center h-full">
-                <div className="text-center">
-                  <p className="text-2xl font-semibold text-muted-foreground mb-2">
-                    {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
-                  </p>
-                  <p className="text-sm text-muted-foreground">Em desenvolvimento</p>
-                </div>
-              </div>
-            )}
+            {renderContent()}
           </main>
         </div>
       </div>
