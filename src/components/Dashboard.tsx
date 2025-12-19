@@ -15,7 +15,7 @@ import { AlertCard, UIAlert } from './AlertCard';
 import { CameraModal } from './CameraModal';
 import { ExportMenu } from './ExportMenu';
 import { CameraLayoutControls, CameraLayout } from './CameraLayoutControls';
-import { AlertFiltersComponent, filterAlerts, defaultFilters, AlertFilters } from './AlertFilters';
+import { AlertFiltersComponent, filterAlerts, defaultFilters, AlertFilters, CameraOption } from './AlertFilters';
 import { SearchInput, filterCamerasBySearch, filterAlertsBySearch } from './SearchInput';
 import { PaginationControls, usePagination } from './PaginationControls';
 import { useCameras, DbCamera } from '@/hooks/useCameras';
@@ -337,6 +337,7 @@ export function Dashboard() {
                 <AlertFiltersComponent
                   filters={alertFilters}
                   onFiltersChange={setAlertFilters}
+                  cameras={uiCameras.map(c => ({ id: c.id, name: c.name })) as CameraOption[]}
                 />
                 <ExportMenu
                   onExportCSV={handleExportAlertsCSV}

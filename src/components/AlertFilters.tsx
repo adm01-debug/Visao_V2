@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Filter, X, Calendar, AlertTriangle, Gauge } from 'lucide-react';
+import { Filter, X, Calendar, AlertTriangle, Gauge, Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -24,17 +24,24 @@ export type AlertType = 'security' | 'safety' | 'operations' | 'access' | 'analy
 export type AlertSeverity = 'low' | 'medium' | 'high' | 'critical' | 'all';
 export type DateRange = 'all' | '1h' | '24h' | '7d' | '30d' | 'custom';
 
+export interface CameraOption {
+  id: string;
+  name: string;
+}
+
 export interface AlertFilters {
   type: AlertType;
   severity: AlertSeverity;
   dateRange: DateRange;
   customDateStart?: Date;
   customDateEnd?: Date;
+  cameraId: string; // 'all' or specific camera id
 }
 
 interface AlertFiltersProps {
   filters: AlertFilters;
   onFiltersChange: (filters: AlertFilters) => void;
+  cameras?: CameraOption[];
 }
 
 const TYPE_LABELS: Record<AlertType, string> = {
@@ -63,7 +70,7 @@ const DATE_RANGE_LABELS: Record<DateRange, string> = {
   custom: 'Personalizado',
 };
 
-export function AlertFiltersComponent({ filters, onFiltersChange }: AlertFiltersProps) {
+export function AlertFiltersComponent({ filters, onFiltersChange, cameras = [] }: AlertFiltersProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [showStartCalendar, setShowStartCalendar] = useState(false);
   const [showEndCalendar, setShowEndCalendar] = useState(false);
@@ -72,6 +79,7 @@ export function AlertFiltersComponent({ filters, onFiltersChange }: AlertFilters
     filters.type !== 'all',
     filters.severity !== 'all',
     filters.dateRange !== 'all',
+    filters.cameraId !== 'all',
   ].filter(Boolean).length;
 
   const handleReset = () => {
@@ -81,6 +89,7 @@ export function AlertFiltersComponent({ filters, onFiltersChange }: AlertFilters
       dateRange: 'all',
       customDateStart: undefined,
       customDateEnd: undefined,
+      cameraId: 'all',
     });
   };
 
@@ -156,6 +165,32 @@ export function AlertFiltersComponent({ filters, onFiltersChange }: AlertFilters
               </SelectContent>
             </Select>
           </div>
+
+          {/* Camera Filter */}
+          {cameras.length > 0 && (
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground flex items-center gap-1">
+                <Camera className="w-3 h-3" />
+                Câmera
+              </Label>
+              <Select
+                value={filters.cameraId}
+                onValueChange={(value) => onFiltersChange({ ...filters, cameraId: value })}
+              >
+                <SelectTrigger className="h-9">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas as câmeras</SelectItem>
+                  {cameras.map((camera) => (
+                    <SelectItem key={camera.id} value={camera.id}>
+                      {camera.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           {/* Date Range Filter */}
           <div className="space-y-2">
@@ -241,7 +276,7 @@ export function AlertFiltersComponent({ filters, onFiltersChange }: AlertFilters
 }
 
 // Utility function to filter alerts
-export function filterAlerts<T extends { type: string; severity: string; timestamp: string | Date }>(
+export function filterAlerts<T extends { type: string; severity: string; timestamp: string | Date; cameraId?: string }>(
   alerts: T[],
   filters: AlertFilters
 ): T[] {
@@ -253,6 +288,11 @@ export function filterAlerts<T extends { type: string; severity: string; timesta
 
     // Severity filter
     if (filters.severity !== 'all' && alert.severity !== filters.severity) {
+      return false;
+    }
+
+    // Camera filter
+    if (filters.cameraId !== 'all' && alert.cameraId !== filters.cameraId) {
       return false;
     }
 
@@ -295,4 +335,5 @@ export const defaultFilters: AlertFilters = {
   type: 'all',
   severity: 'all',
   dateRange: 'all',
+  cameraId: 'all',
 };
