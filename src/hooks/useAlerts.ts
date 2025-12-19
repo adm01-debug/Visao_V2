@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 import { toast } from 'sonner';
 import { mockAlerts } from '@/data/mockData';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRealtimeAlerts } from './useRealtimeAlerts';
 
 export type DbAlert = Tables<'alerts'>;
 export type DbAlertInsert = TablesInsert<'alerts'>;
@@ -90,7 +91,7 @@ export function useAlerts() {
         .single();
 
       if (error) throw error;
-      setAlerts(prev => [data, ...prev]);
+      // Don't update state here - realtime will handle it
       return data;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro ao criar alerta';
@@ -109,7 +110,7 @@ export function useAlerts() {
         .single();
 
       if (error) throw error;
-      setAlerts(prev => prev.map(a => a.id === id ? data : a));
+      // Don't update state here - realtime will handle it
       return data;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro ao marcar alerta como lido';
@@ -143,13 +144,38 @@ export function useAlerts() {
         .eq('id', id);
 
       if (error) throw error;
-      setAlerts(prev => prev.filter(a => a.id !== id));
+      // Don't update state here - realtime will handle it
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro ao excluir alerta';
       toast.error(message);
       throw err;
     }
   };
+
+  // Realtime handlers
+  const handleNewAlert = useCallback((newAlert: DbAlert) => {
+    setAlerts(prev => {
+      // Check if alert already exists to avoid duplicates
+      if (prev.some(a => a.id === newAlert.id)) return prev;
+      return [newAlert, ...prev];
+    });
+  }, []);
+
+  const handleAlertUpdated = useCallback((updatedAlert: DbAlert) => {
+    setAlerts(prev => prev.map(a => a.id === updatedAlert.id ? updatedAlert : a));
+  }, []);
+
+  const handleAlertDeleted = useCallback((alertId: string) => {
+    setAlerts(prev => prev.filter(a => a.id !== alertId));
+  }, []);
+
+  // Subscribe to realtime updates
+  useRealtimeAlerts({
+    onNewAlert: handleNewAlert,
+    onAlertUpdated: handleAlertUpdated,
+    onAlertDeleted: handleAlertDeleted,
+    enabled: !!user,
+  });
 
   useEffect(() => {
     if (user) {
