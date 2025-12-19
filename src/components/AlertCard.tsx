@@ -32,6 +32,7 @@ interface AlertCardProps {
   alert: UIAlert;
   onClick?: () => void;
   searchQuery?: string;
+  onCameraClick?: (cameraId: string) => void;
 }
 
 const alertTypeConfig: Record<AlertType, { icon: typeof Shield; label: string; color: string }> = {
@@ -69,9 +70,14 @@ const severityConfig = {
   critical: 'alert',
 } as const;
 
-export function AlertCard({ alert, onClick, searchQuery = '' }: AlertCardProps) {
+export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: AlertCardProps) {
   const config = alertTypeConfig[alert.type] || alertTypeConfig.security;
   const Icon = config.icon;
+
+  const handleCameraClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onCameraClick?.(alert.cameraId);
+  };
   
   return (
     <div 
@@ -101,10 +107,14 @@ export function AlertCard({ alert, onClick, searchQuery = '' }: AlertCardProps) 
             <HighlightText text={alert.message} highlight={searchQuery} />
           </p>
           
-          <div className="flex items-center gap-1 text-muted-foreground text-xs">
+          <button
+            onClick={handleCameraClick}
+            className="flex items-center gap-1 text-muted-foreground text-xs hover:text-primary transition-colors"
+            title="Filtrar por esta câmera"
+          >
             <Camera className="w-3 h-3" />
             <HighlightText text={alert.cameraName} highlight={searchQuery} />
-          </div>
+          </button>
         </div>
       </div>
     </div>
