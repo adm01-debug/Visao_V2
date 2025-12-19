@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Bell, Search, User, LogOut, Volume2, VolumeX } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { NotificationsPanel } from '@/components/NotificationsPanel';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -71,14 +72,18 @@ export function Header({ alertCount }: HeaderProps) {
         </TooltipProvider>
 
         {/* Notifications */}
-        <button className="relative p-2 rounded-lg hover:bg-secondary transition-colors">
-          <Bell className="w-5 h-5 text-muted-foreground" />
-          {alertCount > 0 && (
-            <Badge variant="destructive" className="absolute -top-1 -right-1 w-5 h-5 p-0 flex items-center justify-center text-xs">
-              {alertCount}
-            </Badge>
-          )}
-        </button>
+        <NotificationsPanel
+          trigger={
+            <button className="relative p-2 rounded-lg hover:bg-secondary transition-colors">
+              <Bell className="w-5 h-5 text-muted-foreground" />
+              {alertCount > 0 && (
+                <Badge variant="destructive" className="absolute -top-1 -right-1 w-5 h-5 p-0 flex items-center justify-center text-xs">
+                  {alertCount}
+                </Badge>
+              )}
+            </button>
+          }
+        />
 
         {/* Time */}
         <div className="text-sm font-mono text-muted-foreground px-2">
