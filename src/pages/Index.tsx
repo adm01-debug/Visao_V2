@@ -3,6 +3,7 @@ import { Sidebar } from '@/components/Sidebar';
 import { Header } from '@/components/Header';
 import { Dashboard } from '@/components/Dashboard';
 import { RulesPanel } from '@/components/RulesPanel';
+import { FloorPlanMap } from '@/components/FloorPlanMap';
 import { mockAlerts } from '@/data/mockData';
 import { Helmet } from 'react-helmet-async';
 
@@ -16,6 +17,8 @@ const Index = () => {
         return <Dashboard />;
       case 'rules':
         return <RulesPanel />;
+      case 'cameras':
+        return <FloorPlanMap />;
       default:
         return (
           <div className="flex items-center justify-center h-full">
