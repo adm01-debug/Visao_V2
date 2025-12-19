@@ -8,7 +8,8 @@ import {
   Shield,
   Users,
   ChevronLeft,
-  ListChecks
+  ListChecks,
+  BarChart3
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -22,7 +23,8 @@ const menuItems = [
   { id: 'cameras', label: 'Câmeras', icon: Camera },
   { id: 'alerts', label: 'Alertas', icon: Bell },
   { id: 'rules', label: 'Regras', icon: ListChecks },
-  { id: 'analytics', label: 'AI Vision', icon: Brain },
+  { id: 'reports', label: 'Analytics', icon: BarChart3 },
+  { id: 'ai-vision', label: 'AI Vision', icon: Brain },
   { id: 'people', label: 'Colaboradores', icon: Users },
   { id: 'security', label: 'Segurança', icon: Shield },
 ];
