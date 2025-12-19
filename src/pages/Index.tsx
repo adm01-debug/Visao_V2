@@ -6,6 +6,7 @@ import { Dashboard } from '@/components/Dashboard';
 import { RulesPanel } from '@/components/RulesPanel';
 import { FloorPlanMap } from '@/components/FloorPlanMap';
 import { AIAnalysisPanel } from '@/components/AIAnalysisPanel';
+import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAlerts } from '@/hooks/useAlerts';
 import { Helmet } from 'react-helmet-async';
@@ -43,7 +44,9 @@ const Index = () => {
         return <RulesPanel />;
       case 'cameras':
         return <FloorPlanMap />;
-      case 'analytics':
+      case 'reports':
+        return <AnalyticsDashboard />;
+      case 'ai-vision':
         return (
           <div className="p-6 overflow-auto h-full">
             <div className="max-w-xl mx-auto">
