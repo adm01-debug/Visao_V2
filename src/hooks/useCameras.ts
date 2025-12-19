@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 import { toast } from 'sonner';
 import { mockCameras } from '@/data/mockData';
+import { useAuth } from '@/contexts/AuthContext';
 
 export type DbCamera = Tables<'cameras'>;
 export type DbCameraInsert = TablesInsert<'cameras'>;
@@ -12,6 +13,7 @@ export function useCameras() {
   const [cameras, setCameras] = useState<DbCamera[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   const fetchCameras = async () => {
     try {
@@ -33,6 +35,8 @@ export function useCameras() {
   };
 
   const seedCameras = async () => {
+    if (!user) return;
+    
     try {
       const { data: existingCameras } = await supabase
         .from('cameras')
@@ -50,6 +54,7 @@ export function useCameras() {
         detected_people: c.detectedPeople || 0,
         alerts_count: c.alerts || 0,
         last_activity: new Date().toISOString(),
+        user_id: user.id,
       }));
 
       const { error } = await supabase
@@ -64,11 +69,13 @@ export function useCameras() {
     }
   };
 
-  const createCamera = async (camera: DbCameraInsert) => {
+  const createCamera = async (camera: Omit<DbCameraInsert, 'user_id'>) => {
+    if (!user) throw new Error('Usuário não autenticado');
+    
     try {
       const { data, error } = await supabase
         .from('cameras')
-        .insert(camera)
+        .insert({ ...camera, user_id: user.id })
         .select()
         .single();
 
@@ -120,8 +127,10 @@ export function useCameras() {
   };
 
   useEffect(() => {
-    fetchCameras().then(() => seedCameras());
-  }, []);
+    if (user) {
+      fetchCameras().then(() => seedCameras());
+    }
+  }, [user]);
 
   return {
     cameras,
