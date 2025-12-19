@@ -8,13 +8,15 @@ import {
   Activity,
   CheckCheck,
   ArrowUpDown,
-  X
+  X,
+  Map
 } from 'lucide-react';
 import { StatsCard } from './StatsCard';
 import { CameraCard } from './CameraCard';
 import { AlertCard, UIAlert } from './AlertCard';
 import { CameraModal } from './CameraModal';
 import { ExportMenu } from './ExportMenu';
+import { CameraMap } from './CameraMap';
 import { CameraLayoutControls, CameraLayout } from './CameraLayoutControls';
 import { AlertFiltersComponent, filterAlerts, defaultFilters, AlertFilters, CameraOption } from './AlertFilters';
 import { SearchInput, filterCamerasBySearch, filterAlertsBySearch } from './SearchInput';
@@ -83,7 +85,7 @@ export function Dashboard() {
   const [alertFilters, setAlertFilters] = useState<AlertFilters>(defaultFilters);
   const [searchQuery, setSearchQuery] = useState('');
   const [alertSortBy, setAlertSortBy] = useState<AlertSortOption>('date-desc');
-
+  const [showMap, setShowMap] = useState(true);
   useEffect(() => {
     localStorage.setItem('camera-layout', cameraLayout);
   }, [cameraLayout]);
@@ -249,6 +251,33 @@ export function Dashboard() {
             <p className="text-sm text-muted-foreground">
               {searchedCameras.length} câmeras • {filteredAlerts.length} alertas encontrados
             </p>
+          )}
+        </div>
+
+        {/* Camera Map Section */}
+        <div className="animate-fade-in">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Map className="w-5 h-5 text-primary" />
+              <h2 className="text-lg font-semibold text-foreground">Mapa das Câmeras</h2>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowMap(!showMap)}
+            >
+              {showMap ? 'Ocultar mapa' : 'Mostrar mapa'}
+            </Button>
+          </div>
+          {showMap && (
+            <CameraMap
+              cameras={uiCameras}
+              onCameraClick={(cameraId) => {
+                const camera = uiCameras.find(c => c.id === cameraId);
+                if (camera) setSelectedCamera(camera);
+              }}
+              className="h-[300px]"
+            />
           )}
         </div>
 
