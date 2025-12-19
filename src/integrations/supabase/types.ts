@@ -26,6 +26,7 @@ export type Database = {
           thumbnail: string | null
           timestamp: string
           type: Database["public"]["Enums"]["alert_type"]
+          user_id: string | null
         }
         Insert: {
           camera_id?: string | null
@@ -38,6 +39,7 @@ export type Database = {
           thumbnail?: string | null
           timestamp?: string
           type?: Database["public"]["Enums"]["alert_type"]
+          user_id?: string | null
         }
         Update: {
           camera_id?: string | null
@@ -50,6 +52,7 @@ export type Database = {
           thumbnail?: string | null
           timestamp?: string
           type?: Database["public"]["Enums"]["alert_type"]
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -73,6 +76,7 @@ export type Database = {
           status: Database["public"]["Enums"]["camera_status"]
           thumbnail: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           alerts_count?: number | null
@@ -85,6 +89,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["camera_status"]
           thumbnail?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           alerts_count?: number | null
@@ -97,6 +102,34 @@ export type Database = {
           status?: Database["public"]["Enums"]["camera_status"]
           thumbnail?: string | null
           updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -114,6 +147,7 @@ export type Database = {
           schedule: Json | null
           severity: Database["public"]["Enums"]["rule_severity"]
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           actions?: Database["public"]["Enums"]["rule_action"][]
@@ -128,6 +162,7 @@ export type Database = {
           schedule?: Json | null
           severity?: Database["public"]["Enums"]["rule_severity"]
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           actions?: Database["public"]["Enums"]["rule_action"][]
@@ -142,6 +177,7 @@ export type Database = {
           schedule?: Json | null
           severity?: Database["public"]["Enums"]["rule_severity"]
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
