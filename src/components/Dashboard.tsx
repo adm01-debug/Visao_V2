@@ -17,6 +17,7 @@ import { CameraModal } from './CameraModal';
 import { ExportMenu } from './ExportMenu';
 import { CameraLayoutControls, CameraLayout } from './CameraLayoutControls';
 import { AlertFiltersComponent, filterAlerts, defaultFilters, AlertFilters } from './AlertFilters';
+import { SearchInput, filterCamerasBySearch, filterAlertsBySearch } from './SearchInput';
 import { useCameras, DbCamera } from '@/hooks/useCameras';
 import { useAlerts } from '@/hooks/useAlerts';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -47,6 +48,7 @@ export function Dashboard() {
   });
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [alertFilters, setAlertFilters] = useState<AlertFilters>(defaultFilters);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     localStorage.setItem('camera-layout', cameraLayout);
@@ -67,18 +69,21 @@ export function Dashboard() {
     thumbnail: a.thumbnail || undefined,
   }));
 
-  const priorityCameras = uiCameras.filter(c => c.status === 'alert' || c.status === 'warning');
-  const normalCameras = uiCameras.filter(c => c.status === 'online' || c.status === 'offline');
+  // Apply search filter to cameras
+  const searchedCameras = filterCamerasBySearch(uiCameras, searchQuery);
+  const priorityCameras = searchedCameras.filter(c => c.status === 'alert' || c.status === 'warning');
+  const normalCameras = searchedCameras.filter(c => c.status === 'online' || c.status === 'offline');
 
   const totalPeople = uiCameras.reduce((sum, c) => sum + (c.detectedPeople || 0), 0);
   const onlineCameras = uiCameras.filter(c => c.status !== 'offline').length;
   const activeAlerts = uiAlerts.filter(a => !a.isRead).length;
 
-  // Filter alerts based on current filters
-  const filteredAlerts = filterAlerts(uiAlerts.map(a => ({
+  // Filter alerts based on current filters and search
+  const alertsWithFilters = filterAlerts(uiAlerts.map(a => ({
     ...a,
     timestamp: a.timestamp.toISOString(),
   })), alertFilters);
+  const filteredAlerts = filterAlertsBySearch(alertsWithFilters, searchQuery);
 
   const getCameraGridClass = () => {
     switch (cameraLayout) {
@@ -186,6 +191,21 @@ export function Dashboard() {
             icon={Shield}
             variant="success"
           />
+        </div>
+
+        {/* Search Bar */}
+        <div className="flex items-center gap-4 animate-fade-in">
+          <SearchInput
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder="Buscar câmeras e alertas..."
+            className="flex-1 max-w-md"
+          />
+          {searchQuery && (
+            <p className="text-sm text-muted-foreground">
+              {searchedCameras.length} câmeras • {filteredAlerts.length} alertas encontrados
+            </p>
+          )}
         </div>
 
         {/* Main Content Grid */}
