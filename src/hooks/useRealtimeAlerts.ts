@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { DbAlert } from './useAlerts';
-import { AlertTriangle, Shield, HardHat, Activity, BarChart3 } from 'lucide-react';
+import { playAlertSound, playCriticalAlertSound } from '@/lib/alertSounds';
 
 const alertTypeLabels: Record<string, string> = {
   security: 'Segurança',
@@ -52,17 +52,21 @@ export function useRealtimeAlerts({
           const typeLabel = alertTypeLabels[newAlert.type] || newAlert.type;
           const severityLabel = severityLabels[newAlert.severity] || newAlert.severity;
           
+          // Play sound based on severity
           if (newAlert.severity === 'critical') {
+            playCriticalAlertSound();
             toast.error(`🚨 ALERTA CRÍTICO: ${newAlert.message}`, {
               description: `${newAlert.camera_name} • ${typeLabel}`,
               duration: 10000,
             });
           } else if (newAlert.severity === 'high') {
+            playAlertSound('high');
             toast.warning(`⚠️ ${newAlert.message}`, {
               description: `${newAlert.camera_name} • ${typeLabel}`,
               duration: 7000,
             });
           } else {
+            playAlertSound(newAlert.severity as 'low' | 'medium');
             toast.info(`${newAlert.message}`, {
               description: `${newAlert.camera_name} • ${typeLabel} • ${severityLabel}`,
               duration: 5000,

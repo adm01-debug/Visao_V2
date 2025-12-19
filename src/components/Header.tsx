@@ -1,4 +1,5 @@
-import { Bell, Search, User, LogOut } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Bell, Search, User, LogOut, Volume2, VolumeX } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,7 +10,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { useAuth } from '@/contexts/AuthContext';
+import { getAlertSoundsMuted, setAlertSoundsMuted } from '@/lib/alertSounds';
 
 interface HeaderProps {
   alertCount: number;
@@ -17,6 +25,13 @@ interface HeaderProps {
 
 export function Header({ alertCount }: HeaderProps) {
   const { user, signOut } = useAuth();
+  const [isMuted, setIsMuted] = useState(getAlertSoundsMuted);
+
+  const toggleMute = () => {
+    const newMuted = !isMuted;
+    setIsMuted(newMuted);
+    setAlertSoundsMuted(newMuted);
+  };
 
   return (
     <header className="h-16 border-b border-border bg-card/50 backdrop-blur-sm flex items-center justify-between px-6">
@@ -33,7 +48,28 @@ export function Header({ alertCount }: HeaderProps) {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2">
+        {/* Sound Toggle */}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button 
+                onClick={toggleMute}
+                className="relative p-2 rounded-lg hover:bg-secondary transition-colors"
+              >
+                {isMuted ? (
+                  <VolumeX className="w-5 h-5 text-muted-foreground" />
+                ) : (
+                  <Volume2 className="w-5 h-5 text-primary" />
+                )}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{isMuted ? 'Ativar sons de alerta' : 'Silenciar alertas'}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
         {/* Notifications */}
         <button className="relative p-2 rounded-lg hover:bg-secondary transition-colors">
           <Bell className="w-5 h-5 text-muted-foreground" />
@@ -45,7 +81,7 @@ export function Header({ alertCount }: HeaderProps) {
         </button>
 
         {/* Time */}
-        <div className="text-sm font-mono text-muted-foreground">
+        <div className="text-sm font-mono text-muted-foreground px-2">
           {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
         </div>
 
