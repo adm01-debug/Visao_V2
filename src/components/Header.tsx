@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Bell, Search, User, LogOut, Volume2, VolumeX, BellRing, BellOff } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { NotificationsPanel } from '@/components/NotificationsPanel';
+import { SoundSettingsPanel } from '@/components/SoundSettingsPanel';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -141,7 +142,19 @@ export function Header({ alertCount }: HeaderProps) {
           </TooltipProvider>
         )}
 
-        {/* Notifications */}
+        {/* Sound Settings */}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div>
+                <SoundSettingsPanel />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Configurações de som</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <NotificationsPanel
           trigger={
             <button className="relative p-2 rounded-lg hover:bg-secondary transition-colors">
