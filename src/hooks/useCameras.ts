@@ -137,6 +137,7 @@ export function useCameras() {
     loading,
     error,
     fetchCameras,
+    refetch: fetchCameras,
     createCamera,
     updateCamera,
     deleteCamera,
