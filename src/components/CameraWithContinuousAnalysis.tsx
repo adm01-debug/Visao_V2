@@ -14,6 +14,7 @@ import { useAlerts } from '@/hooks/useAlerts';
 import { useRules } from '@/hooks/useRules';
 import { DbCamera } from '@/hooks/useCameras';
 import { useVideoStream } from '@/hooks/useVideoStream';
+import { useMLModels } from '@/hooks/useMLModels';
 import { 
   AnalysisResult, 
   SecurityAnalysis,
@@ -286,9 +287,23 @@ export function CameraWithContinuousAnalysis({
   const [showDetections, setShowDetections] = useState(initialShowDetections);
   const [showStats, setShowStats] = useState(true);
   const [controlsVisible, setControlsVisible] = useState(true);
+  const [mlDetections, setMlDetections] = useState<any[]>([]);
   
   // Hooks externos
   const { rules } = useRules();
+
+  // Hook de ML Models para detecção local
+  const {
+    detectObjects,
+    detectPersons,
+    isReady: mlReady,
+    isLoading: mlLoading,
+    backend: mlBackend,
+  } = useMLModels({
+    models: ['coco-ssd'],
+    autoLoad: true,
+    onModelLoaded: (model) => console.log(`[ML] ${model} carregado para ${camera.name}`),
+  });
 
   // URL do stream (usando URL de teste pois stream_url não existe no schema atual)
   const streamUrl = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
