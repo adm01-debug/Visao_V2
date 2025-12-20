@@ -10,14 +10,16 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 
 // Lazy loading das páginas
-const Dashboard = lazy(() => import('@/pages/Dashboard'));
+const Dashboard = lazy(() => import('@/pages/Index'));
 const DashboardV2 = lazy(() => import('@/pages/DashboardV2'));
 const CamerasPage = lazy(() => import('@/pages/CamerasPage'));
 const AlertsPage = lazy(() => import('@/pages/AlertsPage'));
 const PeoplePage = lazy(() => import('@/pages/PeoplePage'));
 const ZonesPage = lazy(() => import('@/pages/ZonesPage'));
+const RecordingsPage = lazy(() => import('@/pages/RecordingsPage'));
 const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
-const LoginPage = lazy(() => import('@/pages/LoginPage'));
+const AuthPage = lazy(() => import('@/pages/Auth'));
+const NotFoundPage = lazy(() => import('@/pages/NotFound'));
 
 // Loading fallback
 function PageLoader() {
@@ -54,14 +56,18 @@ export function AppRoutes() {
         {/* Zonas */}
         <Route path="/zones" element={<ZonesPage />} />
         
+        {/* Gravações */}
+        <Route path="/recordings" element={<RecordingsPage />} />
+        
         {/* Configurações */}
         <Route path="/settings" element={<SettingsPage />} />
         
-        {/* Login */}
-        <Route path="/login" element={<LoginPage />} />
+        {/* Auth */}
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/login" element={<Navigate to="/auth" replace />} />
         
         {/* 404 */}
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Suspense>
   );
