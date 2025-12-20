@@ -30,6 +30,7 @@ const StreamSettingsPage = lazy(() => import('@/pages/StreamSettingsPage'));
 const HeatmapPage = lazy(() => import('@/pages/HeatmapPage'));
 const LicensePlatePage = lazy(() => import('@/pages/LicensePlatePage'));
 const TelegramSettingsPage = lazy(() => import('@/pages/TelegramSettingsPage'));
+const ReportsPage = lazy(() => import('@/pages/ReportsPage'));
 
 // Loading fallback
 function PageLoader() {
@@ -83,6 +84,7 @@ export function AppRoutes() {
         {/* Analytics Avançado */}
         <Route path="/heatmap" element={<HeatmapPage />} />
         <Route path="/license-plates" element={<LicensePlatePage />} />
+        <Route path="/reports" element={<ReportsPage />} />
         
         {/* Configurações */}
         <Route path="/settings" element={<SettingsPage />} />
