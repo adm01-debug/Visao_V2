@@ -18,14 +18,15 @@ import {
   ChevronRight,
   Eye,
   LogOut,
-  Moon,
-  Sun,
   Activity,
   Menu,
   X,
   Video,
   ScanFace,
   BarChart3,
+  Flame,
+  Car,
+  Send,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -104,6 +105,16 @@ const mainNavItems: NavItem[] = [
     path: '/recognition-analytics',
   },
   {
+    label: 'Mapa de Calor',
+    icon: Flame,
+    path: '/heatmap',
+  },
+  {
+    label: 'Placas',
+    icon: Car,
+    path: '/license-plates',
+  },
+  {
     label: 'Zonas',
     icon: Target,
     path: '/zones',
@@ -115,6 +126,11 @@ const bottomNavItems: NavItem[] = [
     label: 'Streams',
     icon: Video,
     path: '/settings/streams',
+  },
+  {
+    label: 'Telegram',
+    icon: Send,
+    path: '/settings/telegram',
   },
   {
     label: 'Notificações',
