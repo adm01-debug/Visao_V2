@@ -6,7 +6,11 @@ import { BrowserRouter } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "@/contexts/ThemeProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { I18nProvider } from "@/contexts/i18n";
+import { AccessibilityProvider } from "@/contexts/accessibility";
+import { GlobalStreamingProvider } from "@/hooks/useGlobalStreaming";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { SkipLinks } from "@/contexts/accessibility";
 import { AppRoutes } from "@/AppRoutes";
 
 const queryClient = new QueryClient({
@@ -21,19 +25,26 @@ const queryClient = new QueryClient({
 const App = () => (
   <ErrorBoundary>
     <HelmetProvider>
-      <ThemeProvider defaultTheme="dark" storageKey="visao-theme">
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <AuthProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <AppRoutes />
-              </BrowserRouter>
-            </AuthProvider>
-          </TooltipProvider>
-        </QueryClientProvider>
-      </ThemeProvider>
+      <I18nProvider defaultLocale="pt-BR">
+        <AccessibilityProvider>
+          <ThemeProvider defaultTheme="dark" storageKey="visao-theme">
+            <QueryClientProvider client={queryClient}>
+              <GlobalStreamingProvider>
+                <TooltipProvider>
+                  <AuthProvider>
+                    <SkipLinks />
+                    <Toaster />
+                    <Sonner />
+                    <BrowserRouter>
+                      <AppRoutes />
+                    </BrowserRouter>
+                  </AuthProvider>
+                </TooltipProvider>
+              </GlobalStreamingProvider>
+            </QueryClientProvider>
+          </ThemeProvider>
+        </AccessibilityProvider>
+      </I18nProvider>
     </HelmetProvider>
   </ErrorBoundary>
 );
