@@ -1,18 +1,6 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Colaboradores / Pessoas
- */
-
-export default function PeoplePage() {
-  // Re-export the component
-}
-
-export { PeoplePage };
-
-// Rest of the original file follows below after removing duplicate declaration
-/**
- * VISÃO - Sistema de Vigilância Inteligente
- * Página: Colaboradores / Pessoas
  * 
  * Funcionalidades simplificadas para alinhamento com schema do banco:
  * - Lista de pessoas cadastradas
@@ -45,7 +33,6 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -504,7 +491,7 @@ function PersonDetailsDialog({
                       </div>
                       {log.confidence && (
                         <p className="text-xs text-muted-foreground mt-1">
-                          Confiança: {Math.round(log.confidence * 100)}%
+                          Confiança: {Math.round(Number(log.confidence) * 100)}%
                         </p>
                       )}
                     </div>
@@ -539,7 +526,7 @@ function PersonDetailsDialog({
 // COMPONENTE PRINCIPAL
 // ============================================
 
-export function PeoplePage() {
+export default function PeoplePage() {
   const { user } = useAuth();
   
   // Estado
@@ -613,6 +600,51 @@ export function PeoplePage() {
     currentPage * itemsPerPage
   );
 
+  // Handlers
+  const handleSavePerson = async (data: Partial<DbPersonInsert>) => {
+    if (!user) return;
+
+    if (editingPerson) {
+      const { error } = await supabase
+        .from('registered_persons')
+        .update(data)
+        .eq('id', editingPerson.id);
+
+      if (error) throw error;
+    } else {
+      const { error } = await supabase
+        .from('registered_persons')
+        .insert({ ...data, user_id: user.id } as DbPersonInsert);
+
+      if (error) throw error;
+    }
+
+    loadPeople();
+    setEditingPerson(null);
+  };
+
+  const handleDeletePerson = async () => {
+    if (!deleteConfirm) return;
+
+    try {
+      const { error } = await supabase
+        .from('registered_persons')
+        .delete()
+        .eq('id', deleteConfirm.id);
+
+      if (error) throw error;
+
+      toast.success('Pessoa removida');
+      loadPeople();
+    } catch (error) {
+      toast.error('Erro ao remover');
+      console.error(error);
+    } finally {
+      setDeleteConfirm(null);
+      setSelectedPerson(null);
+    }
+  };
+
   // Stats
   const stats = useMemo(() => ({
     total: people.length,
@@ -620,270 +652,313 @@ export function PeoplePage() {
     inactive: people.filter(p => !p.is_active).length,
   }), [people]);
 
-  // Handlers
-  const handleSave = async (data: Partial<DbPersonInsert>) => {
-    if (!user) throw new Error('Usuário não autenticado');
-    
-    try {
-      if (editingPerson) {
-        // Update
-        const { error } = await supabase
-          .from('registered_persons')
-          .update(data)
-          .eq('id', editingPerson.id);
-        
-        if (error) throw error;
-      } else {
-        // Insert
-        const { error } = await supabase
-          .from('registered_persons')
-          .insert({
-            ...data,
-            name: data.name!,
-            user_id: user.id,
-          });
-        
-        if (error) throw error;
-      }
-      
-      loadPeople();
-    } catch (error) {
-      console.error('Erro ao salvar:', error);
-      throw error;
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!deleteConfirm) return;
-    
-    try {
-      const { error } = await supabase
-        .from('registered_persons')
-        .delete()
-        .eq('id', deleteConfirm.id);
-      
-      if (error) throw error;
-      
-      toast.success('Pessoa excluída');
-      setDeleteConfirm(null);
-      setSelectedPerson(null);
-      loadPeople();
-    } catch (error) {
-      console.error('Erro ao excluir:', error);
-      toast.error('Erro ao excluir');
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="p-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <Skeleton className="h-8 w-48" />
-          <Skeleton className="h-10 w-32" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[...Array(6)].map((_, i) => (
-            <Skeleton key={i} className="h-32" />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Users className="w-6 h-6" />
-            Colaboradores
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {stats.total} pessoas cadastradas • {stats.active} ativos
-          </p>
-        </div>
+      <div className="border-b bg-card">
+        <div className="container py-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-2xl font-bold flex items-center gap-2">
+                <Users className="w-6 h-6" />
+                Colaboradores
+              </h1>
+              <p className="text-muted-foreground mt-1">
+                Gerencie as pessoas cadastradas no sistema de reconhecimento
+              </p>
+            </div>
 
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={loadPeople}>
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Atualizar
-          </Button>
-          <Button onClick={() => { setEditingPerson(null); setIsFormOpen(true); }}>
-            <UserPlus className="w-4 h-4 mr-2" />
-            Adicionar
-          </Button>
-        </div>
-      </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={loadPeople}
+                disabled={loading}
+              >
+                <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
+              </Button>
+              <Button onClick={() => { setEditingPerson(null); setIsFormOpen(true); }}>
+                <UserPlus className="w-4 h-4 mr-2" />
+                Cadastrar
+              </Button>
+            </div>
+          </div>
 
-      {/* Filters */}
-      <div className="flex items-center gap-4">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar por nome, cargo ou departamento..."
-            value={filters.search}
-            onChange={(e) => setFilters(f => ({ ...f, search: e.target.value }))}
-            className="pl-9"
-          />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Switch
-            id="activeOnly"
-            checked={filters.activeOnly}
-            onCheckedChange={(checked) => setFilters(f => ({ ...f, activeOnly: checked }))}
-          />
-          <Label htmlFor="activeOnly" className="text-sm">Apenas ativos</Label>
-        </div>
-
-        <div className="flex items-center border rounded-lg">
-          <Button
-            variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
-            size="sm"
-            onClick={() => setViewMode('grid')}
-            className="rounded-r-none"
-          >
-            <LayoutGrid className="w-4 h-4" />
-          </Button>
-          <Button
-            variant={viewMode === 'list' ? 'secondary' : 'ghost'}
-            size="sm"
-            onClick={() => setViewMode('list')}
-            className="rounded-l-none"
-          >
-            <List className="w-4 h-4" />
-          </Button>
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-4">
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Users className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">{stats.total}</p>
+                    <p className="text-xs text-muted-foreground">Total</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">{stats.active}</p>
+                    <p className="text-xs text-muted-foreground">Ativos</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gray-500/10 flex items-center justify-center">
+                    <XCircle className="w-5 h-5 text-gray-500" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">{stats.inactive}</p>
+                    <p className="text-xs text-muted-foreground">Inativos</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
 
       {/* Content */}
-      {filteredPeople.length === 0 ? (
-        <div className="text-center py-12">
-          <Users className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
-          <h3 className="text-lg font-medium mb-2">Nenhuma pessoa encontrada</h3>
-          <p className="text-muted-foreground mb-4">
-            {filters.search ? 'Tente ajustar os filtros de busca' : 'Comece cadastrando colaboradores'}
-          </p>
-          <Button onClick={() => { setEditingPerson(null); setIsFormOpen(true); }}>
-            <UserPlus className="w-4 h-4 mr-2" />
-            Cadastrar Pessoa
-          </Button>
-        </div>
-      ) : viewMode === 'grid' ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {paginatedPeople.map(person => (
-            <PersonCard
-              key={person.id}
-              person={person}
-              onView={() => setSelectedPerson(person)}
-              onEdit={() => { setEditingPerson(person); setIsFormOpen(true); }}
-              onDelete={() => setDeleteConfirm(person)}
+      <div className="container py-6">
+        {/* Filters */}
+        <div className="flex items-center gap-4 mb-6">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar por nome, departamento, cargo..."
+              value={filters.search}
+              onChange={(e) => setFilters(f => ({ ...f, search: e.target.value }))}
+              className="pl-9"
             />
-          ))}
-        </div>
-      ) : (
-        <div className="border rounded-lg overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Pessoa</TableHead>
-                <TableHead>Departamento</TableHead>
-                <TableHead>Cargo</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="w-[80px]"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedPeople.map(person => (
-                <TableRow key={person.id} className="cursor-pointer" onClick={() => setSelectedPerson(person)}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src={person.photo_url || undefined} />
-                        <AvatarFallback className="text-xs">
-                          {person.name.charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="font-medium">{person.name}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>{person.department || '-'}</TableCell>
-                  <TableCell>{person.role || '-'}</TableCell>
-                  <TableCell>
-                    <Badge variant={person.is_active ? 'default' : 'secondary'}>
-                      {person.is_active ? 'Ativo' : 'Inativo'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreHorizontal className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setEditingPerson(person); setIsFormOpen(true); }}>
-                          <Edit className="w-4 h-4 mr-2" />
-                          Editar
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem 
-                          className="text-destructive"
-                          onClick={(e) => { e.stopPropagation(); setDeleteConfirm(person); }}
-                        >
-                          <Trash2 className="w-4 h-4 mr-2" />
-                          Excluir
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      )}
+            {filters.search && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
+                onClick={() => setFilters(f => ({ ...f, search: '' }))}
+              >
+                <X className="w-3 h-3" />
+              </Button>
+            )}
+          </div>
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(p => p - 1)}
-          >
-            Anterior
-          </Button>
-          <span className="text-sm text-muted-foreground">
-            Página {currentPage} de {totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(p => p + 1)}
-          >
-            Próximo
-          </Button>
+          <div className="flex items-center gap-2">
+            <Switch
+              id="active-only"
+              checked={filters.activeOnly}
+              onCheckedChange={(checked) => setFilters(f => ({ ...f, activeOnly: checked }))}
+            />
+            <Label htmlFor="active-only" className="text-sm">
+              Apenas ativos
+            </Label>
+          </div>
+
+          <div className="flex items-center border rounded-lg p-1">
+            <Button
+              variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setViewMode('grid')}
+            >
+              <LayoutGrid className="w-4 h-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setViewMode('list')}
+            >
+              <List className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
-      )}
+
+        {/* Loading */}
+        {loading && (
+          <div className={cn(
+            'gap-4',
+            viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'space-y-2'
+          )}>
+            {[...Array(6)].map((_, i) => (
+              <Skeleton key={i} className={viewMode === 'grid' ? 'h-32' : 'h-16'} />
+            ))}
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && filteredPeople.length === 0 && (
+          <div className="text-center py-16">
+            <Users className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
+            <h3 className="text-lg font-medium mb-1">
+              {filters.search || filters.activeOnly
+                ? 'Nenhuma pessoa encontrada'
+                : 'Nenhuma pessoa cadastrada'
+              }
+            </h3>
+            <p className="text-muted-foreground mb-4">
+              {filters.search || filters.activeOnly
+                ? 'Tente ajustar os filtros'
+                : 'Cadastre a primeira pessoa para começar'
+              }
+            </p>
+            {!(filters.search || filters.activeOnly) && (
+              <Button onClick={() => { setEditingPerson(null); setIsFormOpen(true); }}>
+                <UserPlus className="w-4 h-4 mr-2" />
+                Cadastrar pessoa
+              </Button>
+            )}
+          </div>
+        )}
+
+        {/* Grid View */}
+        {!loading && viewMode === 'grid' && paginatedPeople.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {paginatedPeople.map(person => (
+              <PersonCard
+                key={person.id}
+                person={person}
+                onView={() => setSelectedPerson(person)}
+                onEdit={() => { setEditingPerson(person); setIsFormOpen(true); }}
+                onDelete={() => setDeleteConfirm(person)}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* List View */}
+        {!loading && viewMode === 'list' && paginatedPeople.length > 0 && (
+          <Card>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Pessoa</TableHead>
+                  <TableHead>Departamento</TableHead>
+                  <TableHead>Cargo</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Cadastrado</TableHead>
+                  <TableHead className="w-[50px]"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {paginatedPeople.map(person => (
+                  <TableRow 
+                    key={person.id} 
+                    className="cursor-pointer"
+                    onClick={() => setSelectedPerson(person)}
+                  >
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar className="w-8 h-8">
+                          <AvatarImage src={person.photo_url || undefined} />
+                          <AvatarFallback className="text-xs">
+                            {person.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium">{person.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>{person.department || '-'}</TableCell>
+                    <TableCell>{person.role || '-'}</TableCell>
+                    <TableCell>
+                      <Badge variant={person.is_active ? 'default' : 'secondary'}>
+                        {person.is_active ? 'Ativo' : 'Inativo'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {format(new Date(person.created_at), 'dd/MM/yy')}
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreHorizontal className="w-4 h-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setSelectedPerson(person); }}>
+                            <Eye className="w-4 h-4 mr-2" />
+                            Ver
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setEditingPerson(person); setIsFormOpen(true); }}>
+                            <Edit className="w-4 h-4 mr-2" />
+                            Editar
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem 
+                            className="text-destructive"
+                            onClick={(e) => { e.stopPropagation(); setDeleteConfirm(person); }}
+                          >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Excluir
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Card>
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-6">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(p => p - 1)}
+            >
+              Anterior
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              Página {currentPage} de {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(p => p + 1)}
+            >
+              Próxima
+            </Button>
+          </div>
+        )}
+      </div>
 
       {/* Dialogs */}
       <PersonFormDialog
         person={editingPerson}
         isOpen={isFormOpen}
         onClose={() => { setIsFormOpen(false); setEditingPerson(null); }}
-        onSave={handleSave}
+        onSave={handleSavePerson}
       />
 
       <PersonDetailsDialog
         person={selectedPerson}
         isOpen={!!selectedPerson}
         onClose={() => setSelectedPerson(null)}
-        onEdit={() => { setEditingPerson(selectedPerson); setIsFormOpen(true); setSelectedPerson(null); }}
-        onDelete={() => { setDeleteConfirm(selectedPerson); setSelectedPerson(null); }}
+        onEdit={() => {
+          setEditingPerson(selectedPerson);
+          setIsFormOpen(true);
+          setSelectedPerson(null);
+        }}
+        onDelete={() => {
+          setDeleteConfirm(selectedPerson);
+          setSelectedPerson(null);
+        }}
       />
 
       <AlertDialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
@@ -891,12 +966,16 @@ export function PeoplePage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
             <AlertDialogDescription>
-              Deseja realmente excluir "{deleteConfirm?.name}"? Esta ação não pode ser desfeita.
+              Tem certeza que deseja excluir <strong>{deleteConfirm?.name}</strong>?
+              Esta ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
+            <AlertDialogAction
+              onClick={handleDeletePerson}
+              className="bg-destructive hover:bg-destructive/90"
+            >
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>

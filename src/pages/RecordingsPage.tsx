@@ -4,10 +4,9 @@
  * 
  * Funcionalidades:
  * - Lista de clips gravados
- * - Filtros por câmera, data, evento
+ * - Filtros por câmera, data
  * - Player de clips
  * - Download e exclusão
- * - Timeline visual
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
@@ -18,11 +17,9 @@ import {
   Download,
   Trash2,
   Search,
-  Filter,
   Calendar,
   Camera,
   Clock,
-  HardDrive,
   LayoutGrid,
   List,
   RefreshCw,
@@ -32,10 +29,6 @@ import {
   ChevronRight,
   Volume2,
   VolumeX,
-  Maximize2,
-  AlertTriangle,
-  Tag,
-  Eye,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useCameras } from '@/hooks/useCameras';
@@ -79,58 +72,32 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib/utils';
-import { format, formatDistanceToNow, startOfDay, endOfDay, subDays } from 'date-fns';
+import { format, formatDistanceToNow, startOfDay, subDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
+import { Tables } from '@/integrations/supabase/types';
 
 // ============================================
-// TIPOS
+// TIPOS - Alinhados com schema do banco
 // ============================================
 
-type TriggerType = 'manual' | 'rule' | 'motion' | 'alert' | 'scheduled';
+type DbVideoClip = Tables<'video_clips'>;
 
-interface VideoClip {
-  id: string;
-  camera_id: string;
+interface VideoClipWithCamera extends DbVideoClip {
   camera_name: string;
-  start_time: string;
-  end_time: string;
-  duration: number;
-  file_url: string;
-  thumbnail_url?: string;
-  file_size: number;
-  trigger_type: TriggerType;
-  trigger_rule_id?: string;
-  trigger_rule_name?: string;
-  alert_id?: string;
-  tags?: string[];
-  notes?: string;
-  created_at: string;
 }
 
-type ViewMode = 'grid' | 'list' | 'timeline';
+type ViewMode = 'grid' | 'list';
 type DateFilter = 'today' | 'yesterday' | 'week' | 'month' | 'all';
-
-// ============================================
-// CONFIGURAÇÃO
-// ============================================
-
-const triggerTypeConfig: Record<TriggerType, { label: string; color: string }> = {
-  manual: { label: 'Manual', color: 'text-blue-500' },
-  rule: { label: 'Regra', color: 'text-purple-500' },
-  motion: { label: 'Movimento', color: 'text-orange-500' },
-  alert: { label: 'Alerta', color: 'text-red-500' },
-  scheduled: { label: 'Agendado', color: 'text-green-500' },
-};
 
 // ============================================
 // HELPER FUNCTIONS
 // ============================================
 
-function formatDuration(seconds: number): string {
+function formatDuration(seconds: number | null): string {
+  if (!seconds) return '0s';
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
   if (mins > 0) {
@@ -139,19 +106,12 @@ function formatDuration(seconds: number): string {
   return `${secs}s`;
 }
 
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
-}
-
 // ============================================
 // COMPONENTE: Clip Card
 // ============================================
 
 interface ClipCardProps {
-  clip: VideoClip;
+  clip: VideoClipWithCamera;
   isSelected: boolean;
   onSelect: (selected: boolean) => void;
   onPlay: () => void;
@@ -160,8 +120,6 @@ interface ClipCardProps {
 }
 
 function ClipCard({ clip, isSelected, onSelect, onPlay, onDownload, onDelete }: ClipCardProps) {
-  const triggerConfig = triggerTypeConfig[clip.trigger_type];
-
   return (
     <Card className={cn(
       'overflow-hidden transition-all hover:shadow-md group',
@@ -205,12 +163,12 @@ function ClipCard({ clip, isSelected, onSelect, onPlay, onDownload, onDelete }: 
           />
         </div>
 
-        {/* Trigger type */}
+        {/* Status */}
         <Badge 
           variant="secondary" 
-          className={cn('absolute top-2 right-2 text-xs', triggerConfig.color)}
+          className="absolute top-2 right-2 text-xs"
         >
-          {triggerConfig.label}
+          {clip.status}
         </Badge>
       </div>
 
@@ -225,18 +183,6 @@ function ClipCard({ clip, isSelected, onSelect, onPlay, onDownload, onDelete }: 
             <p className="text-xs text-muted-foreground mt-1">
               {format(new Date(clip.start_time), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
             </p>
-            <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
-              <span>{formatFileSize(clip.file_size)}</span>
-              {clip.tags && clip.tags.length > 0 && (
-                <>
-                  <span>•</span>
-                  <span className="flex items-center gap-1">
-                    <Tag className="w-3 h-3" />
-                    {clip.tags.length}
-                  </span>
-                </>
-              )}
-            </div>
           </div>
 
           <DropdownMenu>
@@ -272,7 +218,7 @@ function ClipCard({ clip, isSelected, onSelect, onPlay, onDownload, onDelete }: 
 // ============================================
 
 interface VideoPlayerDialogProps {
-  clip: VideoClip | null;
+  clip: VideoClipWithCamera | null;
   isOpen: boolean;
   onClose: () => void;
   onPrev?: () => void;
@@ -296,8 +242,6 @@ function VideoPlayerDialog({
 
   if (!clip) return null;
 
-  const triggerConfig = triggerTypeConfig[clip.trigger_type];
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl p-0 overflow-hidden">
@@ -307,23 +251,18 @@ function VideoPlayerDialog({
             <DialogTitle className="flex items-center gap-2">
               <Camera className="w-5 h-5" />
               {clip.camera_name}
-              <Badge variant="secondary" className={cn('ml-2 text-xs', triggerConfig.color)}>
-                {triggerConfig.label}
-              </Badge>
             </DialogTitle>
             <DialogDescription>
               {format(new Date(clip.start_time), "dd 'de' MMMM 'de' yyyy 'às' HH:mm:ss", { locale: ptBR })}
               {' • '}
               {formatDuration(clip.duration)}
-              {' • '}
-              {formatFileSize(clip.file_size)}
             </DialogDescription>
           </DialogHeader>
 
           {/* Video */}
           <div className="relative aspect-video bg-black mt-4">
             <video
-              src={clip.file_url}
+              src={clip.file_url || undefined}
               className="w-full h-full"
               autoPlay={isPlaying}
               muted={isMuted}
@@ -406,16 +345,15 @@ function VideoPlayerDialog({
 
 export function RecordingsPage() {
   // Estado
-  const [clips, setClips] = useState<VideoClip[]>([]);
+  const [clips, setClips] = useState<VideoClipWithCamera[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [searchQuery, setSearchQuery] = useState('');
   const [cameraFilter, setCameraFilter] = useState<string>('all');
   const [dateFilter, setDateFilter] = useState<DateFilter>('week');
-  const [triggerFilter, setTriggerFilter] = useState<string>('all');
   const [selectedClips, setSelectedClips] = useState<Set<string>>(new Set());
-  const [playingClip, setPlayingClip] = useState<VideoClip | null>(null);
-  const [deleteConfirm, setDeleteConfirm] = useState<VideoClip | null>(null);
+  const [playingClip, setPlayingClip] = useState<VideoClipWithCamera | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<VideoClipWithCamera | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
 
@@ -455,18 +393,13 @@ export function RecordingsPage() {
         query = query.eq('camera_id', cameraFilter);
       }
 
-      // Trigger filter
-      if (triggerFilter !== 'all') {
-        query = query.eq('trigger_type', triggerFilter);
-      }
-
       const { data, error } = await query;
 
       if (error) throw error;
 
-      const formattedClips: VideoClip[] = (data || []).map(clip => ({
+      const formattedClips: VideoClipWithCamera[] = (data || []).map(clip => ({
         ...clip,
-        camera_name: clip.cameras?.name || 'Câmera desconhecida',
+        camera_name: (clip.cameras as any)?.name || 'Câmera desconhecida',
       }));
 
       setClips(formattedClips);
@@ -476,7 +409,7 @@ export function RecordingsPage() {
     } finally {
       setLoading(false);
     }
-  }, [cameraFilter, dateFilter, triggerFilter]);
+  }, [cameraFilter, dateFilter]);
 
   useEffect(() => {
     loadClips();
@@ -488,9 +421,7 @@ export function RecordingsPage() {
     
     const query = searchQuery.toLowerCase();
     return clips.filter(clip =>
-      clip.camera_name.toLowerCase().includes(query) ||
-      clip.tags?.some(tag => tag.toLowerCase().includes(query)) ||
-      clip.notes?.toLowerCase().includes(query)
+      clip.camera_name.toLowerCase().includes(query)
     );
   }, [clips, searchQuery]);
 
@@ -501,46 +432,62 @@ export function RecordingsPage() {
     currentPage * itemsPerPage
   );
 
-  // Stats
-  const stats = useMemo(() => ({
-    total: clips.length,
-    totalSize: clips.reduce((sum, c) => sum + c.file_size, 0),
-    totalDuration: clips.reduce((sum, c) => sum + c.duration, 0),
-    byTrigger: Object.fromEntries(
-      Object.keys(triggerTypeConfig).map(type => [
-        type,
-        clips.filter(c => c.trigger_type === type).length
-      ])
-    ),
-  }), [clips]);
-
   // Handlers
-  const toggleSelectAll = () => {
-    if (selectedClips.size === filteredClips.length) {
-      setSelectedClips(new Set());
+  const handleSelectClip = (clipId: string, selected: boolean) => {
+    setSelectedClips(prev => {
+      const newSet = new Set(prev);
+      if (selected) {
+        newSet.add(clipId);
+      } else {
+        newSet.delete(clipId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleSelectAll = (selected: boolean) => {
+    if (selected) {
+      setSelectedClips(new Set(paginatedClips.map(c => c.id)));
     } else {
-      setSelectedClips(new Set(filteredClips.map(c => c.id)));
+      setSelectedClips(new Set());
     }
   };
 
-  const handleDelete = async (clip: VideoClip) => {
+  const handleDownloadClip = async (clip: VideoClipWithCamera) => {
+    if (!clip.file_url) {
+      toast.error('URL do arquivo não disponível');
+      return;
+    }
+
+    const link = document.createElement('a');
+    link.href = clip.file_url;
+    link.download = `clip_${clip.id}.mp4`;
+    link.click();
+    toast.success('Download iniciado');
+  };
+
+  const handleDeleteClip = async () => {
+    if (!deleteConfirm) return;
+
     try {
       const { error } = await supabase
         .from('video_clips')
         .delete()
-        .eq('id', clip.id);
+        .eq('id', deleteConfirm.id);
 
       if (error) throw error;
 
       toast.success('Clip excluído');
       loadClips();
-      setDeleteConfirm(null);
     } catch (error) {
-      toast.error('Erro ao excluir');
+      console.error('Erro ao excluir:', error);
+      toast.error('Erro ao excluir clip');
+    } finally {
+      setDeleteConfirm(null);
     }
   };
 
-  const handleBulkDelete = async () => {
+  const handleDeleteSelected = async () => {
     if (selectedClips.size === 0) return;
 
     try {
@@ -555,293 +502,346 @@ export function RecordingsPage() {
       setSelectedClips(new Set());
       loadClips();
     } catch (error) {
-      toast.error('Erro ao excluir');
+      console.error('Erro ao excluir:', error);
+      toast.error('Erro ao excluir clips');
     }
   };
 
-  const handleDownload = (clip: VideoClip) => {
-    const a = document.createElement('a');
-    a.href = clip.file_url;
-    a.download = `${clip.camera_name}_${format(new Date(clip.start_time), 'yyyy-MM-dd_HH-mm-ss')}.webm`;
-    a.click();
-    toast.success('Download iniciado');
+  // Navigate clips in player
+  const handlePrevClip = () => {
+    if (!playingClip) return;
+    const idx = filteredClips.findIndex(c => c.id === playingClip.id);
+    if (idx > 0) {
+      setPlayingClip(filteredClips[idx - 1]);
+    }
   };
 
-  // Navigation in player
-  const currentIndex = playingClip
-    ? filteredClips.findIndex(c => c.id === playingClip.id)
-    : -1;
+  const handleNextClip = () => {
+    if (!playingClip) return;
+    const idx = filteredClips.findIndex(c => c.id === playingClip.id);
+    if (idx < filteredClips.length - 1) {
+      setPlayingClip(filteredClips[idx + 1]);
+    }
+  };
 
-  if (loading) {
-    return (
-      <div className="p-6 space-y-6">
-        <Skeleton className="h-8 w-48" />
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-24" />)}
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[...Array(6)].map((_, i) => <Skeleton key={i} className="aspect-video" />)}
-        </div>
-      </div>
-    );
-  }
+  // Stats
+  const stats = useMemo(() => ({
+    total: clips.length,
+    totalDuration: clips.reduce((sum, c) => sum + (c.duration || 0), 0),
+  }), [clips]);
 
   return (
-    <div className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Video className="w-6 h-6" />
-            Gravações
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {stats.total} clips • {formatFileSize(stats.totalSize)} • {formatDuration(stats.totalDuration)} total
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={loadClips}>
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Atualizar
-          </Button>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-muted-foreground">Total</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
-              </div>
-              <Video className="w-8 h-8 text-muted-foreground" />
+      <div className="border-b bg-card">
+        <div className="container py-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-2xl font-bold flex items-center gap-2">
+                <Video className="w-6 h-6" />
+                Gravações
+              </h1>
+              <p className="text-muted-foreground mt-1">
+                Visualize e gerencie os clips de vídeo gravados
+              </p>
             </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-muted-foreground">Armazenamento</p>
-                <p className="text-2xl font-bold">{formatFileSize(stats.totalSize)}</p>
-              </div>
-              <HardDrive className="w-8 h-8 text-blue-500" />
+
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={loadClips}
+                disabled={loading}
+              >
+                <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
+              </Button>
+              {selectedClips.size > 0 && (
+                <Button 
+                  variant="destructive" 
+                  size="sm"
+                  onClick={handleDeleteSelected}
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Excluir ({selectedClips.size})
+                </Button>
+              )}
             </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-muted-foreground">Manual</p>
-                <p className="text-2xl font-bold text-blue-500">{stats.byTrigger.manual || 0}</p>
-              </div>
-              <Play className="w-8 h-8 text-blue-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-muted-foreground">Por Regra</p>
-                <p className="text-2xl font-bold text-purple-500">{stats.byTrigger.rule || 0}</p>
-              </div>
-              <AlertTriangle className="w-8 h-8 text-purple-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-muted-foreground">Por Alerta</p>
-                <p className="text-2xl font-bold text-red-500">{stats.byTrigger.alert || 0}</p>
-              </div>
-              <AlertTriangle className="w-8 h-8 text-red-500" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar gravações..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
-          />
-        </div>
-
-        <Select value={cameraFilter} onValueChange={setCameraFilter}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Câmera" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todas câmeras</SelectItem>
-            {cameras.map(c => (
-              <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select value={dateFilter} onValueChange={(v) => setDateFilter(v as DateFilter)}>
-          <SelectTrigger className="w-32">
-            <SelectValue placeholder="Período" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="today">Hoje</SelectItem>
-            <SelectItem value="yesterday">Ontem</SelectItem>
-            <SelectItem value="week">7 dias</SelectItem>
-            <SelectItem value="month">30 dias</SelectItem>
-            <SelectItem value="all">Todos</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select value={triggerFilter} onValueChange={setTriggerFilter}>
-          <SelectTrigger className="w-32">
-            <SelectValue placeholder="Tipo" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todos tipos</SelectItem>
-            {Object.entries(triggerTypeConfig).map(([key, config]) => (
-              <SelectItem key={key} value={key}>{config.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {/* View Mode */}
-        <div className="flex items-center gap-1 border rounded-lg p-1 ml-auto">
-          <Button
-            variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => setViewMode('grid')}
-          >
-            <LayoutGrid className="w-4 h-4" />
-          </Button>
-          <Button
-            variant={viewMode === 'list' ? 'secondary' : 'ghost'}
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => setViewMode('list')}
-          >
-            <List className="w-4 h-4" />
-          </Button>
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Video className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">{stats.total}</p>
+                    <p className="text-xs text-muted-foreground">Clips</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-blue-500" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">{formatDuration(stats.totalDuration)}</p>
+                    <p className="text-xs text-muted-foreground">Duração total</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
 
-      {/* Bulk actions */}
-      {selectedClips.size > 0 && (
-        <div className="flex items-center gap-4 p-3 bg-muted rounded-lg">
-          <Checkbox
-            checked={selectedClips.size === filteredClips.length}
-            onCheckedChange={toggleSelectAll}
-          />
-          <span className="text-sm font-medium">{selectedClips.size} selecionados</span>
-          <div className="flex items-center gap-2 ml-auto">
-            <Button variant="outline" size="sm">
-              <Download className="w-4 h-4 mr-2" />
-              Download
+      {/* Content */}
+      <div className="container py-6">
+        {/* Filters */}
+        <div className="flex flex-wrap items-center gap-4 mb-6">
+          <div className="relative flex-1 min-w-[200px] max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar por câmera..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9"
+            />
+            {searchQuery && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
+                onClick={() => setSearchQuery('')}
+              >
+                <X className="w-3 h-3" />
+              </Button>
+            )}
+          </div>
+
+          <Select value={cameraFilter} onValueChange={setCameraFilter}>
+            <SelectTrigger className="w-[180px]">
+              <Camera className="w-4 h-4 mr-2" />
+              <SelectValue placeholder="Câmera" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas as câmeras</SelectItem>
+              {cameras.map(cam => (
+                <SelectItem key={cam.id} value={cam.id}>
+                  {cam.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={dateFilter} onValueChange={(v) => setDateFilter(v as DateFilter)}>
+            <SelectTrigger className="w-[150px]">
+              <Calendar className="w-4 h-4 mr-2" />
+              <SelectValue placeholder="Período" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="today">Hoje</SelectItem>
+              <SelectItem value="yesterday">Ontem</SelectItem>
+              <SelectItem value="week">Última semana</SelectItem>
+              <SelectItem value="month">Último mês</SelectItem>
+              <SelectItem value="all">Todos</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <div className="flex items-center border rounded-lg p-1 ml-auto">
+            <Button
+              variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setViewMode('grid')}
+            >
+              <LayoutGrid className="w-4 h-4" />
             </Button>
-            <Button variant="destructive" size="sm" onClick={handleBulkDelete}>
-              <Trash2 className="w-4 h-4 mr-2" />
-              Excluir
+            <Button
+              variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setViewMode('list')}
+            >
+              <List className="w-4 h-4" />
             </Button>
           </div>
         </div>
-      )}
 
-      {/* Results */}
-      <div className="text-sm text-muted-foreground">
-        {filteredClips.length} gravações
+        {/* Select all */}
+        {paginatedClips.length > 0 && (
+          <div className="flex items-center gap-2 mb-4">
+            <Checkbox
+              checked={selectedClips.size === paginatedClips.length}
+              onCheckedChange={handleSelectAll}
+            />
+            <span className="text-sm text-muted-foreground">
+              Selecionar todos ({paginatedClips.length})
+            </span>
+          </div>
+        )}
+
+        {/* Loading */}
+        {loading && (
+          <div className={cn(
+            'gap-4',
+            viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'space-y-2'
+          )}>
+            {[...Array(8)].map((_, i) => (
+              <Skeleton key={i} className={viewMode === 'grid' ? 'aspect-video' : 'h-20'} />
+            ))}
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && filteredClips.length === 0 && (
+          <div className="text-center py-16">
+            <Video className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
+            <h3 className="text-lg font-medium mb-1">Nenhuma gravação encontrada</h3>
+            <p className="text-muted-foreground">
+              Ajuste os filtros ou grave novos clips
+            </p>
+          </div>
+        )}
+
+        {/* Grid View */}
+        {!loading && viewMode === 'grid' && paginatedClips.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {paginatedClips.map(clip => (
+              <ClipCard
+                key={clip.id}
+                clip={clip}
+                isSelected={selectedClips.has(clip.id)}
+                onSelect={(selected) => handleSelectClip(clip.id, selected)}
+                onPlay={() => setPlayingClip(clip)}
+                onDownload={() => handleDownloadClip(clip)}
+                onDelete={() => setDeleteConfirm(clip)}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* List View */}
+        {!loading && viewMode === 'list' && paginatedClips.length > 0 && (
+          <div className="space-y-2">
+            {paginatedClips.map(clip => (
+              <Card key={clip.id} className={cn(
+                'overflow-hidden transition-all hover:shadow-md cursor-pointer',
+                selectedClips.has(clip.id) && 'ring-2 ring-primary'
+              )}>
+                <CardContent className="p-4 flex items-center gap-4">
+                  <Checkbox
+                    checked={selectedClips.has(clip.id)}
+                    onCheckedChange={(checked) => handleSelectClip(clip.id, !!checked)}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  
+                  <div 
+                    className="w-32 h-20 bg-muted rounded overflow-hidden flex-shrink-0 cursor-pointer"
+                    onClick={() => setPlayingClip(clip)}
+                  >
+                    {clip.thumbnail_url ? (
+                      <img 
+                        src={clip.thumbnail_url} 
+                        alt="" 
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Video className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium flex items-center gap-2">
+                      <Camera className="w-4 h-4 text-muted-foreground" />
+                      {clip.camera_name}
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {format(new Date(clip.start_time), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+                    </p>
+                    <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {formatDuration(clip.duration)}
+                      </span>
+                      <Badge variant="secondary" className="text-xs">
+                        {clip.status}
+                      </Badge>
+                    </div>
+                  </div>
+
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <MoreHorizontal className="w-4 h-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => setPlayingClip(clip)}>
+                        <Play className="w-4 h-4 mr-2" />
+                        Reproduzir
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleDownloadClip(clip)}>
+                        <Download className="w-4 h-4 mr-2" />
+                        Download
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="text-destructive" onClick={() => setDeleteConfirm(clip)}>
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Excluir
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-6">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(p => p - 1)}
+            >
+              <ChevronLeft className="w-4 h-4 mr-1" />
+              Anterior
+            </Button>
+            <span className="text-sm text-muted-foreground px-4">
+              Página {currentPage} de {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(p => p + 1)}
+            >
+              Próxima
+              <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
+        )}
       </div>
 
-      {/* Clips Grid */}
-      {filteredClips.length === 0 ? (
-        <div className="text-center py-12">
-          <Video className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium mb-2">Nenhuma gravação encontrada</h3>
-          <p className="text-sm text-muted-foreground">
-            As gravações aparecerão aqui quando você gravar clips das câmeras
-          </p>
-        </div>
-      ) : (
-        <div className={cn(
-          viewMode === 'grid'
-            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
-            : 'flex flex-col gap-2'
-        )}>
-          {paginatedClips.map(clip => (
-            <ClipCard
-              key={clip.id}
-              clip={clip}
-              isSelected={selectedClips.has(clip.id)}
-              onSelect={(selected) => {
-                const next = new Set(selectedClips);
-                if (selected) {
-                  next.add(clip.id);
-                } else {
-                  next.delete(clip.id);
-                }
-                setSelectedClips(next);
-              }}
-              onPlay={() => setPlayingClip(clip)}
-              onDownload={() => handleDownload(clip)}
-              onDelete={() => setDeleteConfirm(clip)}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(p => p - 1)}
-          >
-            Anterior
-          </Button>
-          <span className="text-sm text-muted-foreground">
-            Página {currentPage} de {totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(p => p + 1)}
-          >
-            Próxima
-          </Button>
-        </div>
-      )}
-
-      {/* Video Player */}
+      {/* Video Player Dialog */}
       <VideoPlayerDialog
         clip={playingClip}
         isOpen={!!playingClip}
         onClose={() => setPlayingClip(null)}
-        onPrev={() => {
-          if (currentIndex > 0) {
-            setPlayingClip(filteredClips[currentIndex - 1]);
-          }
-        }}
-        onNext={() => {
-          if (currentIndex < filteredClips.length - 1) {
-            setPlayingClip(filteredClips[currentIndex + 1]);
-          }
-        }}
-        hasPrev={currentIndex > 0}
-        hasNext={currentIndex < filteredClips.length - 1}
+        onPrev={handlePrevClip}
+        onNext={handleNextClip}
+        hasPrev={playingClip ? filteredClips.findIndex(c => c.id === playingClip.id) > 0 : false}
+        hasNext={playingClip ? filteredClips.findIndex(c => c.id === playingClip.id) < filteredClips.length - 1 : false}
       />
 
       {/* Delete Confirmation */}
@@ -850,15 +850,15 @@ export function RecordingsPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir este clip de {deleteConfirm?.camera_name}?
+              Tem certeza que deseja excluir esta gravação?
               Esta ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-destructive text-destructive-foreground"
-              onClick={() => deleteConfirm && handleDelete(deleteConfirm)}
+              onClick={handleDeleteClip}
+              className="bg-destructive hover:bg-destructive/90"
             >
               Excluir
             </AlertDialogAction>
