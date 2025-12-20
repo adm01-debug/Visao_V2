@@ -54,6 +54,7 @@ import { ClipRecorderControls } from '@/components/ClipRecorderControls';
 import { ZoneOverlay } from '@/components/ZoneOverlay';
 import { FaceRecognitionOverlay } from '@/components/FaceRecognitionOverlay';
 import { ContinuousAnalysisPanel } from '@/components/ContinuousAnalysisPanel';
+import { OnboardingTour } from '@/components/OnboardingTour';
 
 // Hooks
 import { useCameras, DbCamera } from '@/hooks/useCameras';
@@ -848,6 +849,9 @@ export function DashboardV2() {
           }}
         />
       )}
+
+      {/* Onboarding Tour para novos usuários */}
+      <OnboardingTour autoStart={true} />
     </div>
   );
 }
