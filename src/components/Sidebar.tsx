@@ -27,6 +27,7 @@ import {
   Flame,
   Car,
   Send,
+  FileText,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -113,6 +114,11 @@ const mainNavItems: NavItem[] = [
     label: 'Placas',
     icon: Car,
     path: '/license-plates',
+  },
+  {
+    label: 'Relatórios',
+    icon: FileText,
+    path: '/reports',
   },
   {
     label: 'Zonas',
