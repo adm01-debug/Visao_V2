@@ -488,15 +488,36 @@ export function useClipRecorder(
   // ============================================
   // SALVAR NO BANCO
   // ============================================
-  // SALVAR NO BANCO (desabilitado - tabela video_clips não existe)
+  // SALVAR NO BANCO
   // ============================================
 
   const saveClipToDatabase = useCallback(async (clip: VideoClip) => {
-    // Nota: tabela video_clips não existe no schema atual
-    // Funcionalidade de persistência desabilitada
     if (!saveToDatabase) return;
-    console.log('[ClipRecorder] Persistência de clips desabilitada - tabela não existe');
-  }, [saveToDatabase]);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.warn('[ClipRecorder] Usuário não autenticado - clip não será salvo');
+        return;
+      }
+
+      await supabase.from('video_clips').insert({
+        id: clip.id,
+        camera_id: cameraId,
+        user_id: user.id,
+        start_time: clip.startedAt.toISOString(),
+        end_time: clip.endedAt?.toISOString(),
+        duration: clip.duration,
+        file_url: clip.fileUrl,
+        thumbnail_url: clip.thumbnailUrl,
+        status: clip.status,
+      });
+      
+      console.log('[ClipRecorder] Clip salvo no banco de dados');
+    } catch (err) {
+      console.error('[ClipRecorder] Erro ao salvar clip:', err);
+    }
+  }, [saveToDatabase, cameraId]);
 
   // ============================================
   // API PÚBLICA
