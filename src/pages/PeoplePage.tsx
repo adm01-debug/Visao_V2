@@ -191,6 +191,8 @@ function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
 // COMPONENTE: Person Form Dialog
 // ============================================
 
+import { useStorage, STORAGE_BUCKETS } from '@/hooks/useStorage';
+
 interface PersonFormDialogProps {
   person?: DbPerson | null;
   isOpen: boolean;
@@ -199,7 +201,7 @@ interface PersonFormDialogProps {
 }
 
 function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogProps) {
-  const { user } = useAuth();
+  const storage = useStorage();
   const [formData, setFormData] = useState({
     name: '',
     department: '',
@@ -209,7 +211,6 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
 
   useEffect(() => {
     if (person) {
@@ -231,21 +232,20 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
       setPhotoPreview(null);
       setPhotoFile(null);
     }
-    setUploadProgress(0);
+    storage.clearError();
   }, [person, isOpen]);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error('Arquivo muito grande. Máximo 5MB.');
-        return;
-      }
+      // Validate using hook
+      const validation = storage.validateFile(file, {
+        maxSize: 5 * 1024 * 1024,
+        allowedTypes: ['image/jpeg', 'image/png', 'image/webp'],
+      });
       
-      // Validate file type
-      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-        toast.error('Formato inválido. Use JPEG, PNG ou WebP.');
+      if (!validation.valid) {
+        toast.error(validation.error || 'Arquivo inválido');
         return;
       }
 
@@ -253,62 +253,6 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
       const reader = new FileReader();
       reader.onload = () => setPhotoPreview(reader.result as string);
       reader.readAsDataURL(file);
-    }
-  };
-
-  const uploadPhoto = async (file: File): Promise<string | null> => {
-    if (!user) return null;
-
-    try {
-      setUploadProgress(10);
-      
-      // Generate unique filename
-      const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-      const fileName = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
-      
-      setUploadProgress(30);
-
-      // Upload to storage
-      const { data, error } = await supabase.storage
-        .from('person-photos')
-        .upload(fileName, file, {
-          cacheControl: '3600',
-          upsert: false,
-        });
-
-      if (error) {
-        console.error('Upload error:', error);
-        throw new Error('Erro ao fazer upload da foto');
-      }
-
-      setUploadProgress(80);
-
-      // Get public URL
-      const { data: urlData } = supabase.storage
-        .from('person-photos')
-        .getPublicUrl(data.path);
-
-      setUploadProgress(100);
-      return urlData.publicUrl;
-    } catch (error) {
-      console.error('Upload failed:', error);
-      throw error;
-    }
-  };
-
-  const deleteOldPhoto = async (photoUrl: string | null) => {
-    if (!photoUrl || !user) return;
-    
-    try {
-      // Extract path from URL
-      const urlParts = photoUrl.split('/person-photos/');
-      if (urlParts.length < 2) return;
-      
-      const filePath = urlParts[1];
-      await supabase.storage.from('person-photos').remove([filePath]);
-    } catch (error) {
-      console.error('Error deleting old photo:', error);
-      // Don't throw - old photo deletion is not critical
     }
   };
 
@@ -326,14 +270,22 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
       if (photoFile) {
         // Delete old photo if updating
         if (person?.photo_url) {
-          await deleteOldPhoto(person.photo_url);
+          const oldPath = storage.extractPathFromUrl(STORAGE_BUCKETS.PERSON_PHOTOS, person.photo_url);
+          if (oldPath) {
+            await storage.remove(STORAGE_BUCKETS.PERSON_PHOTOS, oldPath);
+          }
         }
         
-        photoUrl = await uploadPhoto(photoFile);
-        if (!photoUrl) {
-          toast.error('Erro ao fazer upload da foto');
+        const result = await storage.upload(photoFile, {
+          bucket: STORAGE_BUCKETS.PERSON_PHOTOS,
+        });
+        
+        if (!result) {
+          toast.error(storage.error || 'Erro ao fazer upload da foto');
           return;
         }
+        
+        photoUrl = result.url;
       }
 
       await onSave({ 
@@ -347,13 +299,15 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
       console.error(error);
     } finally {
       setIsSubmitting(false);
-      setUploadProgress(0);
     }
   };
 
   const handleRemovePhoto = async () => {
     if (person?.photo_url) {
-      await deleteOldPhoto(person.photo_url);
+      const oldPath = storage.extractPathFromUrl(STORAGE_BUCKETS.PERSON_PHOTOS, person.photo_url);
+      if (oldPath) {
+        await storage.remove(STORAGE_BUCKETS.PERSON_PHOTOS, oldPath);
+      }
     }
     setPhotoPreview(null);
     setPhotoFile(null);
@@ -414,16 +368,16 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
             </div>
 
             {/* Upload Progress */}
-            {isSubmitting && uploadProgress > 0 && uploadProgress < 100 && (
+            {storage.isUploading && storage.progress > 0 && storage.progress < 100 && (
               <div className="w-full max-w-xs">
                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-primary transition-all duration-300"
-                    style={{ width: `${uploadProgress}%` }}
+                    style={{ width: `${storage.progress}%` }}
                   />
                 </div>
                 <p className="text-xs text-center text-muted-foreground mt-1">
-                  Enviando foto... {uploadProgress}%
+                  Enviando foto... {storage.progress}%
                 </p>
               </div>
             )}
