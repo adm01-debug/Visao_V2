@@ -1,0 +1,114 @@
+# ============================================
+# VISÃO - Sistema de Vigilância Inteligente
+# Docker Compose - Stack Completa
+# ============================================
+
+version: '3.8'
+
+services:
+  # ============================================
+  # APLICAÇÃO PRINCIPAL (Frontend React)
+  # ============================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+        - VITE_SUPABASE_PUBLISHABLE_KEY=${VITE_SUPABASE_PUBLISHABLE_KEY}
+        - VITE_MEDIAMTX_URL=http://mediamtx:8888
+    container_name: visao-app
+    ports:
+      - "3000:80"
+    depends_on:
+      - mediamtx
+    environment:
+      - NODE_ENV=production
+    networks:
+      - visao-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================
+  # MEDIAMTX (Servidor de Streaming RTSP/HLS/WebRTC)
+  # ============================================
+  mediamtx:
+    image: bluenviron/mediamtx:latest
+    container_name: visao-mediamtx
+    ports:
+      - "8554:8554"   # RTSP
+      - "1935:1935"   # RTMP
+      - "8888:8888"   # HLS
+      - "8889:8889"   # WebRTC
+      - "9997:9997"   # API
+    volumes:
+      - ./docker/mediamtx.yml:/mediamtx.yml:ro
+      - mediamtx-recordings:/recordings
+    environment:
+      - MTX_PROTOCOLS=tcp,udp
+      - MTX_HLSVARIANT=lowLatency
+      - MTX_WEBRTCLOCALTCPADDRESS=:8889
+    networks:
+      - visao-network
+    restart: unless-stopped
+
+  # ============================================
+  # REDIS (Cache e Pub/Sub para alertas)
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    container_name: visao-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - visao-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================
+  # NGINX PROXY (Opcional - para produção)
+  # ============================================
+  # nginx-proxy:
+  #   image: nginx:alpine
+  #   container_name: visao-proxy
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./docker/nginx-proxy.conf:/etc/nginx/nginx.conf:ro
+  #     - ./docker/ssl:/etc/nginx/ssl:ro
+  #   depends_on:
+  #     - app
+  #   networks:
+  #     - visao-network
+  #   restart: unless-stopped
+
+# ============================================
+# VOLUMES
+# ============================================
+volumes:
+  mediamtx-recordings:
+    driver: local
+  redis-data:
+    driver: local
+
+# ============================================
+# NETWORKS
+# ============================================
+networks:
+  visao-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
