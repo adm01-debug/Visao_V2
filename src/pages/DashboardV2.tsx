@@ -12,6 +12,7 @@
  */
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useI18n } from '@/contexts/i18n';
 import { 
   Camera, 
   AlertTriangle, 
@@ -441,6 +442,9 @@ function SettingsSheet({ settings, onSettingsChange }: SettingsSheetProps) {
 // ============================================
 
 export function DashboardV2() {
+  // i18n
+  const { t } = useI18n();
+  
   // Estado
   const [selectedCamera, setSelectedCamera] = useState<ReturnType<typeof mapDbCameraToUI> | null>(null);
   const [alertFilters, setAlertFilters] = useState<AlertFilters>(defaultFilters);
@@ -561,9 +565,9 @@ export function DashboardV2() {
       {/* Header com controles */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Dashboard</h1>
+          <h1 className="text-2xl font-bold">{t('dashboard.title', 'Dashboard')}</h1>
           <p className="text-sm text-muted-foreground">
-            {uiCameras.length} câmeras • {streamingCameras} com streaming
+            {uiCameras.length} {t('dashboard.cameras', 'câmeras')} • {streamingCameras} {t('dashboard.withStreaming', 'com streaming')}
           </p>
         </div>
         
