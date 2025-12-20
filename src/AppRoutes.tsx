@@ -33,6 +33,7 @@ const HeatmapPage = lazy(() => import('@/pages/HeatmapPage'));
 const LicensePlatePage = lazy(() => import('@/pages/LicensePlatePage'));
 const TelegramSettingsPage = lazy(() => import('@/pages/TelegramSettingsPage'));
 const ReportsPage = lazy(() => import('@/pages/ReportsPage'));
+const PPEPage = lazy(() => import('@/pages/PPEPage'));
 
 // Loading fallback
 function PageLoader() {
@@ -93,6 +94,9 @@ export function AppRoutes() {
           
           {/* Segurança */}
           <Route path="/security" element={<SecurityPage />} />
+          
+          {/* PPE - Equipamentos de Proteção */}
+          <Route path="/ppe" element={<PPEPage />} />
           
           {/* Analytics Avançado */}
           <Route path="/heatmap" element={<HeatmapPage />} />
