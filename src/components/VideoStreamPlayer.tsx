@@ -31,6 +31,7 @@ import {
   Activity,
   Zap,
   Signal,
+  Scan,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -57,6 +58,8 @@ import {
   StreamStatus,
   testStreamUrls,
 } from '@/types/streaming';
+import { FaceRecognitionOverlay } from './FaceRecognitionOverlay';
+import { useStreamFaceDetection } from '@/hooks/useStreamFaceDetection';
 
 // ============================================
 // TIPOS
@@ -100,6 +103,12 @@ interface VideoStreamPlayerProps {
   
   /** Mostrar estatísticas */
   showStats?: boolean;
+  
+  /** Habilitar detecção facial */
+  enableFaceDetection?: boolean;
+  
+  /** Intervalo de detecção facial em ms */
+  faceDetectionInterval?: number;
   
   /** Altura fixa (default: aspect-video) */
   height?: number | string;
@@ -297,6 +306,8 @@ export function VideoStreamPlayer({
   isLive = true,
   detections = [],
   showStats = false,
+  enableFaceDetection = false,
+  faceDetectionInterval = 3000,
   height,
   onSnapshot,
   onError,
@@ -306,6 +317,7 @@ export function VideoStreamPlayer({
   // Estados locais
   const [showStatsOverlay, setShowStatsOverlay] = useState(showStats);
   const [controlsVisible, setControlsVisible] = useState(true);
+  const [faceDetectionActive, setFaceDetectionActive] = useState(enableFaceDetection);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -337,6 +349,30 @@ export function VideoStreamPlayer({
       onSnapshot?.(data);
     },
   });
+
+  // Hook de detecção facial
+  const {
+    faces: detectedFaces,
+    isProcessing: isFaceProcessing,
+    isActive: isFaceDetectionActive,
+    start: startFaceDetection,
+    stop: stopFaceDetection,
+    stats: faceStats,
+  } = useStreamFaceDetection({
+    cameraId,
+    detectionIntervalMs: faceDetectionInterval,
+    autoStart: faceDetectionActive && state.status === 'playing',
+    enableAlertSound: true,
+  });
+
+  // Sincronizar estado de detecção facial
+  useEffect(() => {
+    if (faceDetectionActive && state.status === 'playing') {
+      startFaceDetection();
+    } else {
+      stopFaceDetection();
+    }
+  }, [faceDetectionActive, state.status, startFaceDetection, stopFaceDetection]);
 
   // Hora atual
   const [currentTime, setCurrentTime] = useState('');
@@ -380,6 +416,11 @@ export function VideoStreamPlayer({
       link.download = `snapshot_${cameraId}_${Date.now()}.jpg`;
       link.click();
     }
+  };
+
+  // Toggle face detection
+  const toggleFaceDetection = () => {
+    setFaceDetectionActive(prev => !prev);
   };
 
   return (
@@ -438,8 +479,26 @@ export function VideoStreamPlayer({
           </div>
         )}
 
-        {/* Overlay de detecções */}
+        {/* Overlay de detecções de objetos */}
         {detections.length > 0 && <DetectionOverlay detections={detections} />}
+
+        {/* Face Recognition Overlay */}
+        {faceDetectionActive && detectedFaces.length > 0 && (
+          <FaceRecognitionOverlay
+            faces={detectedFaces}
+            showLabels={true}
+            showSimilarity={true}
+            animateBoxes={true}
+          />
+        )}
+
+        {/* Face detection processing indicator */}
+        {faceDetectionActive && isFaceProcessing && (
+          <div className="absolute top-12 left-3 flex items-center gap-2 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-xs text-white">
+            <Scan className="w-3 h-3 animate-pulse text-primary" />
+            <span>Detectando...</span>
+          </div>
+        )}
 
         {/* Stats overlay */}
         {showStatsOverlay && state.status === 'playing' && (
@@ -552,6 +611,29 @@ export function VideoStreamPlayer({
             )}
 
             <div className="flex-1" />
+
+            {/* Face detection toggle */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={cn(
+                    'h-9 w-9 p-0 text-white hover:bg-white/20',
+                    faceDetectionActive && 'bg-primary/40'
+                  )}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleFaceDetection();
+                  }}
+                >
+                  <Scan className={cn('w-4 h-4', isFaceProcessing && 'animate-pulse')} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {faceDetectionActive ? 'Desativar detecção facial' : 'Ativar detecção facial'}
+              </TooltipContent>
+            </Tooltip>
 
             {/* Stats toggle */}
             <Tooltip>
