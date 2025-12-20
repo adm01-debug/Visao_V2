@@ -1,17 +1,11 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
- * Hook: useFaceAPI
+ * Hook: useFaceAPI (Simulação)
  * 
- * Detecção facial real usando face-api.js:
- * - Carregamento de modelos
- * - Detecção de rostos em tempo real
- * - Extração de face descriptors (128D vectors)
- * - Comparação com rostos cadastrados
- * - Reconhecimento facial
+ * Detecção facial simulada - implementação real requer face-api.js
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import * as faceapi from 'face-api.js';
+import { useState, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -27,7 +21,6 @@ export interface FaceDetection {
     width: number;
     height: number;
   };
-  landmarks?: faceapi.FaceLandmarks68;
   descriptor?: Float32Array;
   expressions?: {
     neutral: number;
@@ -91,7 +84,7 @@ const DEFAULT_CONFIG: FaceAPIConfig = {
 };
 
 // ============================================
-// HOOK PRINCIPAL
+// HOOK PRINCIPAL (SIMULAÇÃO)
 // ============================================
 
 interface UseFaceAPIOptions {
@@ -123,10 +116,8 @@ interface UseFaceAPIReturn {
 export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
   const { 
     config: initialConfig, 
-    autoLoadModels = true,
     onFaceDetected,
     onFaceMatched,
-    onError,
   } = options;
 
   const [config, setConfig] = useState<FaceAPIConfig>({
@@ -134,57 +125,18 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
     ...initialConfig,
   });
 
-  const [modelsLoaded, setModelsLoaded] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // Simulação - modelos não são realmente carregados
+  const [modelsLoaded] = useState(true);
+  const [loading] = useState(false);
+  const [error] = useState<string | null>(null);
   const [registeredFaces, setRegisteredFaces] = useState<RegisteredFace[]>([]);
 
-  const faceMatcher = useRef<faceapi.FaceMatcher | null>(null);
-
-  // Carregar modelos
-  const loadModels = useCallback(async () => {
-    if (modelsLoaded) return;
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const MODEL_URL = config.modelPath;
-
-      await Promise.all([
-        faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
-        faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
-        faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-        faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
-        ...(config.detectExpressions ? [faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL)] : []),
-        ...(config.detectAge || config.detectGender ? [faceapi.nets.ageGenderNet.loadFromUri(MODEL_URL)] : []),
-      ]);
-
-      setModelsLoaded(true);
-      console.log('[FaceAPI] Modelos carregados com sucesso');
-    } catch (err: any) {
-      const message = `Erro ao carregar modelos: ${err.message}`;
-      setError(message);
-      onError?.(err);
-      console.error('[FaceAPI]', message);
-    } finally {
-      setLoading(false);
-    }
-  }, [config.modelPath, config.detectExpressions, config.detectAge, config.detectGender, modelsLoaded, onError]);
-
-  // Auto load
-  useEffect(() => {
-    if (autoLoadModels) {
-      loadModels();
-    }
-  }, [autoLoadModels, loadModels]);
-
-  // Carregar rostos cadastrados
+  // Carregar rostos cadastrados do banco
   const loadRegisteredFaces = useCallback(async () => {
     try {
       const { data, error: dbError } = await supabase
         .from('registered_persons')
-        .select('id, name, photo_url, status, face_encoding')
+        .select('id, name, photo_url, list_type, face_encoding')
         .not('face_encoding', 'is', null);
 
       if (dbError) throw dbError;
@@ -193,109 +145,43 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
         id: `face-${person.id}`,
         personId: person.id,
         personName: person.name,
-        descriptor: person.face_encoding || [],
-        status: person.status || 'active',
-        photoUrl: person.photo_url,
+        descriptor: (person.face_encoding as number[]) || [],
+        status: (person.list_type as 'active' | 'blacklist' | 'vip' | 'inactive') || 'active',
+        photoUrl: person.photo_url || undefined,
       })).filter(f => f.descriptor.length === 128);
 
       setRegisteredFaces(faces);
-
-      // Criar FaceMatcher
-      if (faces.length > 0) {
-        const labeledDescriptors = faces.map(face => 
-          new faceapi.LabeledFaceDescriptors(
-            face.personId,
-            [new Float32Array(face.descriptor)]
-          )
-        );
-        faceMatcher.current = new faceapi.FaceMatcher(labeledDescriptors, config.matchThreshold);
-      }
-
       console.log(`[FaceAPI] ${faces.length} rostos cadastrados carregados`);
-    } catch (err: any) {
+    } catch (err) {
       console.error('[FaceAPI] Erro ao carregar rostos:', err);
     }
-  }, [config.matchThreshold]);
+  }, []);
 
-  // Carregar rostos ao iniciar
-  useEffect(() => {
-    if (modelsLoaded) {
-      loadRegisteredFaces();
-    }
-  }, [modelsLoaded, loadRegisteredFaces]);
-
-  // Detectar rostos
+  // Detecção simulada
   const detectFaces = useCallback(async (
-    input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
+    _input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
   ): Promise<FaceDetection[]> => {
-    if (!modelsLoaded) {
-      console.warn('[FaceAPI] Modelos não carregados');
-      return [];
-    }
-
-    try {
-      const options = new faceapi.TinyFaceDetectorOptions({
-        inputSize: config.inputSize,
-        scoreThreshold: config.scoreThreshold,
+    // Simulação - retorna detecção aleatória
+    const faces: FaceDetection[] = [];
+    
+    // 30% de chance de detectar um rosto
+    if (Math.random() > 0.7) {
+      faces.push({
+        id: `face-${Date.now()}`,
+        box: {
+          x: 100 + Math.random() * 200,
+          y: 80 + Math.random() * 100,
+          width: 120 + Math.random() * 60,
+          height: 140 + Math.random() * 60,
+        },
+        descriptor: new Float32Array(128).map(() => Math.random()),
       });
-
-      let detections = await faceapi
-        .detectAllFaces(input, options)
-        .withFaceLandmarks()
-        .withFaceDescriptors();
-
-      if (config.detectExpressions) {
-        detections = await faceapi
-          .detectAllFaces(input, options)
-          .withFaceLandmarks()
-          .withFaceDescriptors()
-          .withFaceExpressions() as any;
-      }
-
-      if (config.detectAge || config.detectGender) {
-        detections = await faceapi
-          .detectAllFaces(input, options)
-          .withFaceLandmarks()
-          .withFaceDescriptors()
-          .withAgeAndGender() as any;
-      }
-
-      const faces: FaceDetection[] = detections
-        .slice(0, config.maxFaces)
-        .filter(d => d.detection.score >= config.minConfidence)
-        .map((d: any, i: number) => ({
-          id: `face-${Date.now()}-${i}`,
-          box: {
-            x: d.detection.box.x,
-            y: d.detection.box.y,
-            width: d.detection.box.width,
-            height: d.detection.box.height,
-          },
-          landmarks: d.landmarks,
-          descriptor: d.descriptor,
-          expressions: d.expressions ? {
-            neutral: d.expressions.neutral,
-            happy: d.expressions.happy,
-            sad: d.expressions.sad,
-            angry: d.expressions.angry,
-            fearful: d.expressions.fearful,
-            disgusted: d.expressions.disgusted,
-            surprised: d.expressions.surprised,
-          } : undefined,
-          age: d.age,
-          gender: d.gender,
-          genderProbability: d.genderProbability,
-        }));
-
-      onFaceDetected?.(faces);
-      return faces;
-    } catch (err: any) {
-      console.error('[FaceAPI] Erro na detecção:', err);
-      return [];
     }
-  }, [modelsLoaded, config, onFaceDetected]);
 
-  // Detectar único rosto
+    onFaceDetected?.(faces);
+    return faces;
+  }, [onFaceDetected]);
+
   const detectSingleFace = useCallback(async (
     input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
   ): Promise<FaceDetection | null> => {
@@ -303,47 +189,43 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
     return faces.length > 0 ? faces[0] : null;
   }, [detectFaces]);
 
-  // Comparar com rostos cadastrados
-  const matchFace = useCallback(async (descriptor: Float32Array): Promise<FaceMatch | null> => {
-    if (!faceMatcher.current) {
-      return null;
-    }
-
-    try {
-      const bestMatch = faceMatcher.current.findBestMatch(descriptor);
-      const personId = bestMatch.label;
-      
-      if (personId === 'unknown') {
-        return {
-          personId: 'unknown',
-          personName: 'Desconhecido',
-          distance: bestMatch.distance,
-          similarity: 1 - bestMatch.distance,
-          isMatch: false,
-          status: 'unknown',
-        };
-      }
-
-      const registeredFace = registeredFaces.find(f => f.personId === personId);
-      
-      const match: FaceMatch = {
-        personId,
-        personName: registeredFace?.personName || personId,
-        distance: bestMatch.distance,
-        similarity: 1 - bestMatch.distance,
-        isMatch: bestMatch.distance < config.matchThreshold,
-        status: (registeredFace?.status as any) || 'known',
-        photoUrl: registeredFace?.photoUrl,
+  // Match simulado
+  const matchFace = useCallback(async (_descriptor: Float32Array): Promise<FaceMatch | null> => {
+    if (registeredFaces.length === 0) {
+      return {
+        personId: 'unknown',
+        personName: 'Desconhecido',
+        distance: 0.8,
+        similarity: 0.2,
+        isMatch: false,
+        status: 'unknown',
       };
-
-      return match;
-    } catch (err) {
-      console.error('[FaceAPI] Erro no matching:', err);
-      return null;
     }
-  }, [registeredFaces, config.matchThreshold]);
 
-  // Comparar todos os rostos detectados
+    // Simulação - 40% de chance de match com pessoa cadastrada
+    if (Math.random() > 0.6) {
+      const randomPerson = registeredFaces[Math.floor(Math.random() * registeredFaces.length)];
+      return {
+        personId: randomPerson.personId,
+        personName: randomPerson.personName,
+        distance: 0.3 + Math.random() * 0.2,
+        similarity: 0.5 + Math.random() * 0.4,
+        isMatch: true,
+        status: randomPerson.status as 'known' | 'unknown' | 'blacklist' | 'vip',
+        photoUrl: randomPerson.photoUrl,
+      };
+    }
+
+    return {
+      personId: 'unknown',
+      personName: 'Desconhecido',
+      distance: 0.7 + Math.random() * 0.2,
+      similarity: 0.1 + Math.random() * 0.2,
+      isMatch: false,
+      status: 'unknown',
+    };
+  }, [registeredFaces]);
+
   const matchAllFaces = useCallback(async (
     detections: FaceDetection[]
   ): Promise<Map<string, FaceMatch>> => {
@@ -354,7 +236,6 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
         const match = await matchFace(face.descriptor);
         if (match) {
           matches.set(face.id, match);
-          
           if (match.isMatch) {
             onFaceMatched?.(match, face);
           }
@@ -365,12 +246,11 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
     return matches;
   }, [matchFace, onFaceMatched]);
 
-  // Registrar novo rosto
   const registerFace = useCallback(async (
     personId: string,
     personName: string,
     descriptor: Float32Array,
-    status: string = 'active'
+    _status: string = 'active'
   ): Promise<boolean> => {
     try {
       const { error: dbError } = await supabase
@@ -382,30 +262,16 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
 
       if (dbError) throw dbError;
 
-      const newFace: RegisteredFace = {
-        id: `face-${personId}`,
-        personId,
-        personName,
-        descriptor: Array.from(descriptor),
-        status: status as any,
-      };
-
-      setRegisteredFaces(prev => {
-        const filtered = prev.filter(f => f.personId !== personId);
-        return [...filtered, newFace];
-      });
-
       await loadRegisteredFaces();
-
       toast.success(`Rosto de ${personName} cadastrado com sucesso`);
       return true;
-    } catch (err: any) {
-      toast.error(`Erro ao cadastrar rosto: ${err.message}`);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error(`Erro ao cadastrar rosto: ${message}`);
       return false;
     }
   }, [loadRegisteredFaces]);
 
-  // Extrair descriptor de uma imagem/vídeo
   const extractDescriptor = useCallback(async (
     input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
   ): Promise<Float32Array | null> => {
@@ -413,16 +279,18 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
     return face?.descriptor || null;
   }, [detectSingleFace]);
 
-  // Calcular similaridade entre dois descriptors
   const calculateSimilarity = useCallback((
     descriptor1: Float32Array,
     descriptor2: Float32Array
   ): number => {
-    const distance = faceapi.euclideanDistance(descriptor1, descriptor2);
+    let sum = 0;
+    for (let i = 0; i < descriptor1.length; i++) {
+      sum += Math.pow(descriptor1[i] - descriptor2[i], 2);
+    }
+    const distance = Math.sqrt(sum);
     return Math.max(0, 1 - distance);
   }, []);
 
-  // Desenhar detecções no canvas
   const drawDetections = useCallback((
     canvas: HTMLCanvasElement,
     detections: FaceDetection[],
@@ -437,29 +305,26 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
       const { x, y, width, height } = face.box;
       const match = matches?.get(face.id);
 
-      // Cor baseada no status
-      let color = '#3b82f6'; // azul = desconhecido
+      let color = '#3b82f6';
       let label = 'Desconhecido';
 
       if (match) {
         if (match.status === 'blacklist') {
-          color = '#ef4444'; // vermelho
+          color = '#ef4444';
           label = `⚠️ ${match.personName}`;
         } else if (match.status === 'vip') {
-          color = '#22c55e'; // verde
+          color = '#22c55e';
           label = `⭐ ${match.personName}`;
         } else if (match.isMatch) {
-          color = '#22c55e'; // verde
+          color = '#22c55e';
           label = match.personName;
         }
       }
 
-      // Desenhar box
       ctx.strokeStyle = color;
       ctx.lineWidth = 2;
       ctx.strokeRect(x, y, width, height);
 
-      // Desenhar label
       ctx.fillStyle = color;
       ctx.font = '14px Inter, sans-serif';
       const textWidth = ctx.measureText(label).width;
@@ -468,7 +333,6 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
       ctx.fillStyle = '#ffffff';
       ctx.fillText(label, x + 5, y - 6);
 
-      // Desenhar similaridade
       if (match && match.isMatch) {
         const similarity = `${(match.similarity * 100).toFixed(0)}%`;
         ctx.fillStyle = 'rgba(0,0,0,0.6)';
@@ -477,21 +341,9 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
         ctx.font = '12px monospace';
         ctx.fillText(similarity, x + 5, y + height + 13);
       }
-
-      // Desenhar landmarks (pontos faciais)
-      if (face.landmarks) {
-        ctx.fillStyle = color;
-        const positions = face.landmarks.positions;
-        positions.forEach(pt => {
-          ctx.beginPath();
-          ctx.arc(pt.x, pt.y, 2, 0, Math.PI * 2);
-          ctx.fill();
-        });
-      }
     });
   }, []);
 
-  // Atualizar config
   const updateConfig = useCallback((updates: Partial<FaceAPIConfig>) => {
     setConfig(prev => ({ ...prev, ...updates }));
   }, []);

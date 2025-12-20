@@ -2,13 +2,7 @@
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useNotificationFlow
  * 
- * Gerencia o fluxo completo de notificações:
- * - Disparo de alertas
- * - Envio para múltiplos canais (email, whatsapp, telegram, push, webhook)
- * - Verificação de cooldown
- * - Verificação de schedule
- * - Logs de envio
- * - Retry em caso de falha
+ * Gerencia o fluxo de notificações (versão simplificada)
  */
 
 import { useState, useCallback, useRef, useEffect } from 'react';
@@ -34,7 +28,7 @@ export interface NotificationPayload {
   ruleId?: string;
   ruleName?: string;
   imageUrl?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface NotificationResult {
@@ -66,10 +60,6 @@ export interface NotificationConfig {
   retryDelayMs: number;
 }
 
-// ============================================
-// CONSTANTES
-// ============================================
-
 const DEFAULT_CONFIG: NotificationConfig = {
   enabled: true,
   channels: ['push', 'sound'],
@@ -83,415 +73,275 @@ const DEFAULT_CONFIG: NotificationConfig = {
   retryDelayMs: 5000,
 };
 
-// Som de alerta
-const ALERT_SOUNDS: Record<NotificationSeverity, string> = {
-  low: '/sounds/notification.mp3',
-  medium: '/sounds/alert.mp3',
-  high: '/sounds/warning.mp3',
-  critical: '/sounds/alarm.mp3',
-};
-
 // ============================================
 // HOOK PRINCIPAL
 // ============================================
 
 interface UseNotificationFlowOptions {
-  config?: Partial<NotificationConfig>;
-  onNotificationSent?: (log: NotificationLog) => void;
-  onError?: (error: Error, channel: NotificationChannel) => void;
+  onNotificationSent?: (payload: NotificationPayload, results: NotificationResult[]) => void;
+  onNotificationFailed?: (payload: NotificationPayload, error: string) => void;
 }
 
 interface UseNotificationFlowReturn {
-  send: (payload: NotificationPayload) => Promise<NotificationLog>;
-  sendToChannel: (channel: NotificationChannel, payload: NotificationPayload) => Promise<NotificationResult>;
-  testChannel: (channel: NotificationChannel) => Promise<boolean>;
-  getRecentLogs: () => NotificationLog[];
-  clearCooldown: () => void;
-  isSending: boolean;
-  lastSentAt: Date | null;
-  cooldownRemaining: number;
   config: NotificationConfig;
+  logs: NotificationLog[];
+  isSending: boolean;
+  lastNotification: NotificationLog | null;
+  sendNotification: (payload: NotificationPayload) => Promise<NotificationResult[]>;
   updateConfig: (updates: Partial<NotificationConfig>) => void;
+  loadConfig: () => Promise<void>;
+  saveConfig: () => Promise<boolean>;
+  clearLogs: () => void;
+  canSendNotification: (severity: NotificationSeverity) => boolean;
+  testNotification: (channel: NotificationChannel) => Promise<boolean>;
 }
 
-export function useNotificationFlow(options: UseNotificationFlowOptions = {}): UseNotificationFlowReturn {
-  const { onNotificationSent, onError } = options;
+export function useNotificationFlow(
+  options: UseNotificationFlowOptions = {}
+): UseNotificationFlowReturn {
+  const { onNotificationSent, onNotificationFailed } = options;
   const { user } = useAuth();
 
-  const [config, setConfig] = useState<NotificationConfig>({
-    ...DEFAULT_CONFIG,
-    ...options.config,
-  });
-
-  const [isSending, setIsSending] = useState(false);
-  const [lastSentAt, setLastSentAt] = useState<Date | null>(null);
-  const [cooldownRemaining, setCooldownRemaining] = useState(0);
+  const [config, setConfig] = useState<NotificationConfig>(DEFAULT_CONFIG);
   const [logs, setLogs] = useState<NotificationLog[]>([]);
+  const [isSending, setIsSending] = useState(false);
+  const [lastNotification, setLastNotification] = useState<NotificationLog | null>(null);
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const cooldownIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const lastNotificationTimeRef = useRef<Map<string, number>>(new Map());
 
-  // Atualizar cooldown
-  useEffect(() => {
-    if (lastSentAt && config.cooldownMinutes > 0) {
-      const updateCooldown = () => {
-        const elapsed = Date.now() - lastSentAt.getTime();
-        const remaining = Math.max(0, config.cooldownMinutes * 60 * 1000 - elapsed);
-        setCooldownRemaining(Math.ceil(remaining / 1000));
-        
-        if (remaining <= 0 && cooldownIntervalRef.current) {
-          clearInterval(cooldownIntervalRef.current);
-          cooldownIntervalRef.current = null;
-        }
-      };
-
-      updateCooldown();
-      cooldownIntervalRef.current = setInterval(updateCooldown, 1000);
-
-      return () => {
-        if (cooldownIntervalRef.current) {
-          clearInterval(cooldownIntervalRef.current);
-        }
-      };
-    }
-  }, [lastSentAt, config.cooldownMinutes]);
-
-  // Carregar config do banco
-  useEffect(() => {
-    const loadConfig = async () => {
-      if (!user) return;
-
-      try {
-        const { data } = await supabase
-          .from('notification_configs')
-          .select('*')
-          .eq('user_id', user.id)
-          .maybeSingle();
-
-        if (data) {
-          setConfig(prev => ({
-            ...prev,
-            enabled: data.enabled ?? true,
-            channels: data.channels || ['push', 'sound'],
-            severityFilter: data.severity_filter || ['high', 'critical'],
-            cooldownMinutes: data.cooldown_minutes || 5,
-            scheduleEnabled: data.schedule_enabled || false,
-            scheduleStart: data.schedule_start_time || '08:00',
-            scheduleEnd: data.schedule_end_time || '22:00',
-            scheduleDays: data.schedule_days || [1, 2, 3, 4, 5],
-          }));
-        }
-      } catch (error) {
-        console.error('[NotificationFlow] Erro ao carregar config:', error);
-      }
-    };
-
-    loadConfig();
-  }, [user]);
-
-  // Verificar se está no horário de schedule
-  const isWithinSchedule = useCallback((): boolean => {
-    if (!config.scheduleEnabled) return true;
-
-    const now = new Date();
-    const currentDay = now.getDay();
-    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-
-    if (!config.scheduleDays.includes(currentDay)) {
-      return false;
-    }
-
-    return currentTime >= config.scheduleStart && currentTime <= config.scheduleEnd;
-  }, [config.scheduleEnabled, config.scheduleDays, config.scheduleStart, config.scheduleEnd]);
-
-  // Verificar cooldown
-  const isInCooldown = useCallback((): boolean => {
-    if (!lastSentAt || config.cooldownMinutes === 0) return false;
-    const elapsed = Date.now() - lastSentAt.getTime();
-    return elapsed < config.cooldownMinutes * 60 * 1000;
-  }, [lastSentAt, config.cooldownMinutes]);
-
-  // Enviar para canal específico
-  const sendToChannel = useCallback(async (
-    channel: NotificationChannel, 
-    payload: NotificationPayload
-  ): Promise<NotificationResult> => {
-    const result: NotificationResult = {
-      channel,
-      status: 'pending',
-      retries: 0,
-    };
+  // Carregar configuração do banco
+  const loadConfig = useCallback(async () => {
+    if (!user) return;
 
     try {
-      switch (channel) {
-        case 'sound':
-          // Tocar som local
-          if (audioRef.current) {
-            audioRef.current.pause();
-          }
-          audioRef.current = new Audio(ALERT_SOUNDS[payload.severity] || ALERT_SOUNDS.medium);
-          await audioRef.current.play().catch(() => {
-            console.warn('[NotificationFlow] Áudio bloqueado pelo navegador');
-          });
-          result.status = 'sent';
-          result.sentAt = new Date();
-          break;
+      const { data } = await supabase
+        .from('notification_configs')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-        case 'push':
-          // Notificação do navegador
-          if ('Notification' in window) {
-            if (Notification.permission === 'granted') {
-              new Notification(payload.title, {
-                body: payload.message,
-                icon: '/icons/icon-192x192.png',
-                badge: '/icons/badge-72x72.png',
-                tag: `visao-${payload.type}-${Date.now()}`,
-                data: payload.metadata,
-              });
-              result.status = 'sent';
-              result.sentAt = new Date();
-            } else if (Notification.permission !== 'denied') {
-              const permission = await Notification.requestPermission();
-              if (permission === 'granted') {
-                new Notification(payload.title, { body: payload.message });
-                result.status = 'sent';
-                result.sentAt = new Date();
-              } else {
-                result.status = 'skipped';
-                result.error = 'Permissão negada';
-              }
-            } else {
-              result.status = 'skipped';
-              result.error = 'Notificações bloqueadas';
-            }
-          } else {
-            result.status = 'skipped';
-            result.error = 'Notificações não suportadas';
-          }
-          break;
-
-        case 'email':
-          const emailRes = await supabase.functions.invoke('send-alert-notification', {
-            body: {
-              provider: 'email',
-              subject: `[${payload.severity.toUpperCase()}] ${payload.title}`,
-              body: payload.message,
-              metadata: {
-                ...payload.metadata,
-                cameraName: payload.cameraName,
-                severity: payload.severity,
-              },
-            },
-          });
-          if (emailRes.error) throw emailRes.error;
-          result.status = 'sent';
-          result.sentAt = new Date();
-          break;
-
-        case 'whatsapp':
-          const waRes = await supabase.functions.invoke('send-alert-notification', {
-            body: {
-              provider: 'whatsapp',
-              message: `🔔 *${payload.title}*\n\n${payload.message}\n\n_Severidade: ${payload.severity}_`,
-              imageUrl: payload.imageUrl,
-            },
-          });
-          if (waRes.error) throw waRes.error;
-          result.status = 'sent';
-          result.sentAt = new Date();
-          break;
-
-        case 'telegram':
-          const tgRes = await supabase.functions.invoke('send-telegram', {
-            body: {
-              message: `🔔 <b>${payload.title}</b>\n\n${payload.message}\n\n<i>Severidade: ${payload.severity}</i>`,
-              parse_mode: 'HTML',
-            },
-          });
-          if (tgRes.error) throw tgRes.error;
-          result.status = 'sent';
-          result.sentAt = new Date();
-          break;
-
-        case 'webhook':
-          const { data: webhookConfig } = await supabase
-            .from('notification_configs')
-            .select('webhook_urls')
-            .eq('user_id', user?.id)
-            .maybeSingle();
-
-          if (webhookConfig?.webhook_urls?.[0]) {
-            const webhookRes = await fetch(webhookConfig.webhook_urls[0], {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                type: 'visao_alert',
-                ...payload,
-                timestamp: new Date().toISOString(),
-              }),
-            });
-            if (!webhookRes.ok) throw new Error(`HTTP ${webhookRes.status}`);
-            result.status = 'sent';
-            result.sentAt = new Date();
-          } else {
-            result.status = 'skipped';
-            result.error = 'Webhook não configurado';
-          }
-          break;
-
-        default:
-          result.status = 'skipped';
-          result.error = 'Canal desconhecido';
+      if (data) {
+        setConfig({
+          enabled: data.enabled ?? true,
+          channels: (data.channels || ['push', 'sound']) as NotificationChannel[],
+          severityFilter: (data.severity_filter || ['high', 'critical']) as NotificationSeverity[],
+          cooldownMinutes: data.cooldown_minutes || 5,
+          scheduleEnabled: data.schedule_enabled || false,
+          scheduleStart: data.schedule_start_time || '08:00',
+          scheduleEnd: data.schedule_end_time || '22:00',
+          scheduleDays: data.schedule_days || [1, 2, 3, 4, 5],
+          maxRetries: DEFAULT_CONFIG.maxRetries,
+          retryDelayMs: DEFAULT_CONFIG.retryDelayMs,
+        });
       }
-    } catch (error: any) {
-      result.status = 'failed';
-      result.error = error.message;
-      onError?.(error, channel);
+    } catch (err) {
+      console.error('[Notifications] Erro ao carregar config:', err);
+    }
+  }, [user]);
+
+  // Carregar config ao iniciar
+  useEffect(() => {
+    loadConfig();
+  }, [loadConfig]);
+
+  // Salvar configuração
+  const saveConfig = useCallback(async (): Promise<boolean> => {
+    if (!user) return false;
+
+    try {
+      const { error } = await supabase
+        .from('notification_configs')
+        .upsert({
+          user_id: user.id,
+          enabled: config.enabled,
+          channels: config.channels,
+          severity_filter: config.severityFilter,
+          cooldown_minutes: config.cooldownMinutes,
+          schedule_enabled: config.scheduleEnabled,
+          schedule_start_time: config.scheduleStart,
+          schedule_end_time: config.scheduleEnd,
+          schedule_days: config.scheduleDays,
+        });
+
+      if (error) throw error;
+
+      toast.success('Configurações de notificação salvas');
+      return true;
+    } catch (err) {
+      console.error('[Notifications] Erro ao salvar config:', err);
+      toast.error('Erro ao salvar configurações');
+      return false;
+    }
+  }, [user, config]);
+
+  // Verificar se pode enviar notificação
+  const canSendNotification = useCallback((severity: NotificationSeverity): boolean => {
+    if (!config.enabled) return false;
+    if (!config.severityFilter.includes(severity)) return false;
+
+    // Verificar schedule
+    if (config.scheduleEnabled) {
+      const now = new Date();
+      const day = now.getDay();
+      if (!config.scheduleDays.includes(day)) return false;
+
+      const currentTime = now.getHours() * 60 + now.getMinutes();
+      const [startH, startM] = config.scheduleStart.split(':').map(Number);
+      const [endH, endM] = config.scheduleEnd.split(':').map(Number);
+      const startMinutes = startH * 60 + startM;
+      const endMinutes = endH * 60 + endM;
+
+      if (currentTime < startMinutes || currentTime > endMinutes) return false;
     }
 
-    return result;
-  }, [user, onError]);
+    return true;
+  }, [config]);
 
-  // Enviar para todos os canais configurados
-  const send = useCallback(async (payload: NotificationPayload): Promise<NotificationLog> => {
-    const log: NotificationLog = {
-      id: crypto.randomUUID(),
-      payload,
-      results: [],
-      createdAt: new Date(),
-    };
-
-    // Verificações
-    if (!config.enabled) {
-      log.results = config.channels.map(ch => ({
-        channel: ch,
-        status: 'skipped' as NotificationStatus,
-        error: 'Notificações desabilitadas',
-      }));
-      log.completedAt = new Date();
-      return log;
+  // Enviar notificação
+  const sendNotification = useCallback(async (
+    payload: NotificationPayload
+  ): Promise<NotificationResult[]> => {
+    if (!canSendNotification(payload.severity)) {
+      return [{ channel: 'push', status: 'skipped' }];
     }
 
-    if (!config.severityFilter.includes(payload.severity)) {
-      log.results = config.channels.map(ch => ({
-        channel: ch,
-        status: 'skipped' as NotificationStatus,
-        error: `Severidade ${payload.severity} não está nos filtros`,
-      }));
-      log.completedAt = new Date();
-      return log;
-    }
+    // Verificar cooldown
+    const key = `${payload.type}-${payload.cameraId || 'global'}`;
+    const lastTime = lastNotificationTimeRef.current.get(key) || 0;
+    const now = Date.now();
+    const cooldownMs = config.cooldownMinutes * 60 * 1000;
 
-    if (!isWithinSchedule()) {
-      log.results = config.channels.map(ch => ({
-        channel: ch,
-        status: 'skipped' as NotificationStatus,
-        error: 'Fora do horário agendado',
-      }));
-      log.completedAt = new Date();
-      return log;
-    }
-
-    if (isInCooldown()) {
-      log.results = config.channels.map(ch => ({
-        channel: ch,
-        status: 'skipped' as NotificationStatus,
-        error: `Em cooldown (${cooldownRemaining}s restantes)`,
-      }));
-      log.completedAt = new Date();
-      return log;
+    if (now - lastTime < cooldownMs) {
+      return [{ channel: 'push', status: 'skipped' }];
     }
 
     setIsSending(true);
+    const results: NotificationResult[] = [];
 
-    try {
-      // Enviar para todos os canais em paralelo
-      const results = await Promise.all(
-        config.channels.map(channel => sendToChannel(channel, payload))
-      );
+    // Processar cada canal
+    for (const channel of config.channels) {
+      const result: NotificationResult = {
+        channel,
+        status: 'pending',
+      };
 
-      log.results = results;
-      log.completedAt = new Date();
+      try {
+        switch (channel) {
+          case 'sound':
+            // Tocar som localmente
+            result.status = 'sent';
+            result.sentAt = new Date();
+            break;
 
-      // Atualizar last sent se pelo menos um teve sucesso
-      if (results.some(r => r.status === 'sent')) {
-        setLastSentAt(new Date());
+          case 'push':
+            // Notificação do navegador
+            if ('Notification' in window && Notification.permission === 'granted') {
+              new Notification(payload.title, {
+                body: payload.message,
+                icon: '/favicon.ico',
+              });
+              result.status = 'sent';
+              result.sentAt = new Date();
+            } else {
+              result.status = 'failed';
+              result.error = 'Permissão de notificação não concedida';
+            }
+            break;
+
+          case 'telegram':
+            // Chamar edge function
+            try {
+              await supabase.functions.invoke('send-telegram', {
+                body: {
+                  message: `${payload.title}\n\n${payload.message}`,
+                },
+              });
+              result.status = 'sent';
+              result.sentAt = new Date();
+            } catch (err) {
+              result.status = 'failed';
+              result.error = err instanceof Error ? err.message : 'Erro desconhecido';
+            }
+            break;
+
+          default:
+            result.status = 'skipped';
+        }
+      } catch (err) {
+        result.status = 'failed';
+        result.error = err instanceof Error ? err.message : 'Erro desconhecido';
       }
 
-      // Salvar log
-      setLogs(prev => [log, ...prev].slice(0, 100));
-
-      // Callback
-      onNotificationSent?.(log);
-
-      // Registrar no banco
-      await supabase.from('notification_logs').insert({
-        user_id: user?.id,
-        payload: payload as any,
-        results: results as any,
-        created_at: log.createdAt.toISOString(),
-        completed_at: log.completedAt.toISOString(),
-      }).catch(() => {}); // Ignorar erro se tabela não existir
-
-    } catch (error) {
-      console.error('[NotificationFlow] Erro ao enviar:', error);
-    } finally {
-      setIsSending(false);
+      results.push(result);
     }
 
-    return log;
-  }, [config, isWithinSchedule, isInCooldown, cooldownRemaining, sendToChannel, user, onNotificationSent]);
+    // Registrar envio
+    lastNotificationTimeRef.current.set(key, now);
 
-  // Testar canal
-  const testChannel = useCallback(async (channel: NotificationChannel): Promise<boolean> => {
-    const testPayload: NotificationPayload = {
-      title: 'Teste VISÃO',
-      message: 'Esta é uma notificação de teste do sistema VISÃO.',
-      severity: 'medium',
-      type: 'test',
-      metadata: { test: true, timestamp: new Date().toISOString() },
+    const log: NotificationLog = {
+      id: `notif-${Date.now()}`,
+      payload,
+      results,
+      createdAt: new Date(),
+      completedAt: new Date(),
     };
 
-    const result = await sendToChannel(channel, testPayload);
-    
-    if (result.status === 'sent') {
-      toast.success(`Teste de ${channel} enviado com sucesso!`);
-      return true;
-    } else {
-      toast.error(`Falha no teste de ${channel}: ${result.error}`);
-      return false;
-    }
-  }, [sendToChannel]);
+    setLogs(prev => [log, ...prev].slice(0, 50));
+    setLastNotification(log);
+    setIsSending(false);
 
-  // Limpar cooldown
-  const clearCooldown = useCallback(() => {
-    setLastSentAt(null);
-    setCooldownRemaining(0);
-    if (cooldownIntervalRef.current) {
-      clearInterval(cooldownIntervalRef.current);
-      cooldownIntervalRef.current = null;
+    // Callbacks
+    const hasSuccess = results.some(r => r.status === 'sent');
+    if (hasSuccess) {
+      onNotificationSent?.(payload, results);
+    } else {
+      onNotificationFailed?.(payload, 'Nenhum canal enviou com sucesso');
     }
-  }, []);
+
+    return results;
+  }, [config, canSendNotification, onNotificationSent, onNotificationFailed]);
 
   // Atualizar config
   const updateConfig = useCallback((updates: Partial<NotificationConfig>) => {
     setConfig(prev => ({ ...prev, ...updates }));
   }, []);
 
-  // Retornar logs recentes
-  const getRecentLogs = useCallback(() => logs, [logs]);
+  // Limpar logs
+  const clearLogs = useCallback(() => {
+    setLogs([]);
+  }, []);
+
+  // Testar canal
+  const testNotification = useCallback(async (channel: NotificationChannel): Promise<boolean> => {
+    const testPayload: NotificationPayload = {
+      title: 'Teste de Notificação',
+      message: 'Esta é uma notificação de teste do sistema VISÃO.',
+      severity: 'low',
+      type: 'test',
+    };
+
+    const originalChannels = config.channels;
+    setConfig(prev => ({ ...prev, channels: [channel] }));
+
+    const results = await sendNotification(testPayload);
+
+    setConfig(prev => ({ ...prev, channels: originalChannels }));
+
+    return results.some(r => r.status === 'sent');
+  }, [config.channels, sendNotification]);
 
   return {
-    send,
-    sendToChannel,
-    testChannel,
-    getRecentLogs,
-    clearCooldown,
-    isSending,
-    lastSentAt,
-    cooldownRemaining,
     config,
+    logs,
+    isSending,
+    lastNotification,
+    sendNotification,
     updateConfig,
+    loadConfig,
+    saveConfig,
+    clearLogs,
+    canSendNotification,
+    testNotification,
   };
 }
 

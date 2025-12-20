@@ -2,20 +2,10 @@
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: usePPEDetection
  * 
- * Detecção de Equipamentos de Proteção Individual (EPI/PPE):
- * - Capacete de segurança
- * - Colete reflexivo
- * - Óculos de proteção
- * - Máscara facial
- * - Luvas
- * - Botas de segurança
- * - Protetor auricular
- * 
- * Usa modelos de ML para análise de frames de vídeo
+ * Detecção de Equipamentos de Proteção Individual (versão simplificada/simulada)
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { toast } from 'sonner';
 
 // ============================================
@@ -23,14 +13,14 @@ import { toast } from 'sonner';
 // ============================================
 
 export type PPEType = 
-  | 'helmet'      // Capacete
-  | 'vest'        // Colete
-  | 'goggles'     // Óculos
-  | 'mask'        // Máscara
-  | 'gloves'      // Luvas
-  | 'boots'       // Botas
-  | 'earmuffs'    // Protetor auricular
-  | 'harness';    // Cinto de segurança
+  | 'helmet'
+  | 'vest'
+  | 'goggles'
+  | 'mask'
+  | 'gloves'
+  | 'boots'
+  | 'earmuffs'
+  | 'harness';
 
 export type PPEStatus = 'detected' | 'missing' | 'unknown';
 
@@ -48,9 +38,8 @@ export interface PPEItem {
 }
 
 export interface PersonPPEStatus {
-  personId: string;
-  trackingId: string;
-  box: {
+  id: string;
+  personBox: {
     x: number;
     y: number;
     width: number;
@@ -62,7 +51,21 @@ export interface PersonPPEStatus {
   timestamp: Date;
 }
 
-export interface PPEZoneConfig {
+export interface PPEViolation {
+  id: string;
+  cameraId: string;
+  cameraName: string;
+  zoneId?: string;
+  zoneName?: string;
+  personId: string;
+  missingItems: PPEType[];
+  snapshotUrl?: string;
+  timestamp: Date;
+  alertCreated: boolean;
+  acknowledged: boolean;
+}
+
+export interface PPEZone {
   id: string;
   name: string;
   cameraId: string;
@@ -72,585 +75,272 @@ export interface PPEZoneConfig {
   active: boolean;
 }
 
-export interface PPEViolation {
-  id: string;
-  zoneId: string;
-  zoneName: string;
-  cameraId: string;
-  cameraName: string;
-  personId?: string;
-  missingItems: PPEType[];
-  snapshotUrl?: string;
-  timestamp: Date;
-  acknowledged: boolean;
-  acknowledgedBy?: string;
-  acknowledgedAt?: Date;
-}
-
 export interface PPEStats {
-  totalDetections: number;
+  totalChecks: number;
   compliantCount: number;
   violationCount: number;
   complianceRate: number;
   mostMissingItem: PPEType | null;
-  detectionsByType: Record<PPEType, number>;
+  averageDetectionTime: number;
 }
 
-export interface PPEDetectionConfig {
-  enabled: boolean;
+// ============================================
+// CONFIGURAÇÃO
+// ============================================
+
+export interface PPEConfig {
   minConfidence: number;
-  detectionInterval: number;
-  modelEndpoint: string;
+  checkInterval: number;
+  gracePeriod: number;
   alertOnViolation: boolean;
-  saveViolations: boolean;
-  gracePeriodSeconds: number;
+  logAllChecks: boolean;
 }
 
-// ============================================
-// CONSTANTES
-// ============================================
-
-export const PPE_LABELS: Record<PPEType, { pt: string; en: string; icon: string }> = {
-  helmet: { pt: 'Capacete', en: 'Helmet', icon: '🪖' },
-  vest: { pt: 'Colete', en: 'Vest', icon: '🦺' },
-  goggles: { pt: 'Óculos', en: 'Goggles', icon: '🥽' },
-  mask: { pt: 'Máscara', en: 'Mask', icon: '😷' },
-  gloves: { pt: 'Luvas', en: 'Gloves', icon: '🧤' },
-  boots: { pt: 'Botas', en: 'Boots', icon: '👢' },
-  earmuffs: { pt: 'Protetor Auricular', en: 'Earmuffs', icon: '🎧' },
-  harness: { pt: 'Cinto de Segurança', en: 'Harness', icon: '🪢' },
-};
-
-const DEFAULT_CONFIG: PPEDetectionConfig = {
-  enabled: true,
+const DEFAULT_CONFIG: PPEConfig = {
   minConfidence: 0.6,
-  detectionInterval: 2000,
-  modelEndpoint: '/api/ppe-detection',
+  checkInterval: 2000,
+  gracePeriod: 5,
   alertOnViolation: true,
-  saveViolations: true,
-  gracePeriodSeconds: 5,
+  logAllChecks: false,
+};
+
+const PPE_LABELS: Record<PPEType, string> = {
+  helmet: 'Capacete',
+  vest: 'Colete',
+  goggles: 'Óculos',
+  mask: 'Máscara',
+  gloves: 'Luvas',
+  boots: 'Botas',
+  earmuffs: 'Protetor Auricular',
+  harness: 'Cinto de Segurança',
 };
 
 // ============================================
-// MOCK DETECTION (Simula resposta do modelo ML)
-// ============================================
-
-function mockPPEDetection(imageData: string): Promise<PersonPPEStatus[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Simular detecção de 1-3 pessoas
-      const numPeople = Math.floor(Math.random() * 3) + 1;
-      const results: PersonPPEStatus[] = [];
-
-      for (let i = 0; i < numPeople; i++) {
-        const items: PPEItem[] = [
-          {
-            type: 'helmet',
-            status: Math.random() > 0.3 ? 'detected' : 'missing',
-            confidence: 0.7 + Math.random() * 0.25,
-            required: true,
-          },
-          {
-            type: 'vest',
-            status: Math.random() > 0.2 ? 'detected' : 'missing',
-            confidence: 0.75 + Math.random() * 0.2,
-            required: true,
-          },
-          {
-            type: 'goggles',
-            status: Math.random() > 0.4 ? 'detected' : 'missing',
-            confidence: 0.65 + Math.random() * 0.3,
-            required: false,
-          },
-          {
-            type: 'gloves',
-            status: Math.random() > 0.35 ? 'detected' : 'missing',
-            confidence: 0.6 + Math.random() * 0.35,
-            required: true,
-          },
-          {
-            type: 'boots',
-            status: Math.random() > 0.25 ? 'detected' : 'missing',
-            confidence: 0.7 + Math.random() * 0.25,
-            required: true,
-          },
-        ];
-
-        const missingItems = items
-          .filter(item => item.required && item.status === 'missing')
-          .map(item => item.type);
-
-        results.push({
-          personId: `person-${Date.now()}-${i}`,
-          trackingId: `track-${Math.random().toString(36).substr(2, 9)}`,
-          box: {
-            x: 50 + i * 200 + Math.random() * 50,
-            y: 100 + Math.random() * 50,
-            width: 150 + Math.random() * 50,
-            height: 300 + Math.random() * 100,
-          },
-          items,
-          compliant: missingItems.length === 0,
-          missingItems,
-          timestamp: new Date(),
-        });
-      }
-
-      resolve(results);
-    }, 100);
-  });
-}
-
-// ============================================
-// HOOK PRINCIPAL
+// HOOK PRINCIPAL (SIMULAÇÃO)
 // ============================================
 
 interface UsePPEDetectionOptions {
   cameraId: string;
   cameraName: string;
-  videoElement?: HTMLVideoElement | null;
-  zoneConfig?: PPEZoneConfig;
-  config?: Partial<PPEDetectionConfig>;
+  enabled?: boolean;
+  requiredPPE?: PPEType[];
+  config?: Partial<PPEConfig>;
   onViolation?: (violation: PPEViolation) => void;
-  onCompliance?: (status: PersonPPEStatus) => void;
+  onCompliance?: (person: PersonPPEStatus) => void;
 }
 
 interface UsePPEDetectionReturn {
-  isRunning: boolean;
-  currentDetections: PersonPPEStatus[];
-  recentViolations: PPEViolation[];
+  isDetecting: boolean;
+  zones: PPEZone[];
+  violations: PPEViolation[];
+  currentStatuses: PersonPPEStatus[];
   stats: PPEStats;
-  
-  // Controles
-  start: () => void;
-  stop: () => void;
-  toggle: () => void;
-  detectOnce: () => Promise<PersonPPEStatus[]>;
-  
-  // Zonas
-  zones: PPEZoneConfig[];
-  addZone: (zone: Omit<PPEZoneConfig, 'id'>) => Promise<boolean>;
-  updateZone: (id: string, updates: Partial<PPEZoneConfig>) => Promise<boolean>;
-  deleteZone: (id: string) => Promise<boolean>;
-  
-  // Violações
-  acknowledgeViolation: (id: string) => Promise<boolean>;
-  exportViolations: (dateRange?: { from: Date; to: Date }) => Promise<string>;
-  
-  // Config
-  config: PPEDetectionConfig;
-  updateConfig: (updates: Partial<PPEDetectionConfig>) => void;
+  config: PPEConfig;
+  detectPPE: (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => Promise<PersonPPEStatus[]>;
+  startDetection: (videoElement: HTMLVideoElement) => void;
+  stopDetection: () => void;
+  acknowledgeViolation: (violationId: string) => void;
+  clearViolations: () => void;
+  addZone: (zone: Omit<PPEZone, 'id'>) => void;
+  removeZone: (zoneId: string) => void;
+  updateConfig: (updates: Partial<PPEConfig>) => void;
+  getPPELabel: (type: PPEType) => string;
 }
 
 export function usePPEDetection(options: UsePPEDetectionOptions): UsePPEDetectionReturn {
   const {
     cameraId,
     cameraName,
-    videoElement,
-    zoneConfig,
+    enabled = false,
+    requiredPPE = ['helmet', 'vest'],
     config: initialConfig,
     onViolation,
     onCompliance,
   } = options;
 
-  const [config, setConfig] = useState<PPEDetectionConfig>({
+  const [config, setConfig] = useState<PPEConfig>({
     ...DEFAULT_CONFIG,
     ...initialConfig,
   });
 
-  const [isRunning, setIsRunning] = useState(false);
-  const [currentDetections, setCurrentDetections] = useState<PersonPPEStatus[]>([]);
-  const [recentViolations, setRecentViolations] = useState<PPEViolation[]>([]);
-  const [zones, setZones] = useState<PPEZoneConfig[]>([]);
+  const [isDetecting, setIsDetecting] = useState(false);
+  const [zones, setZones] = useState<PPEZone[]>([]);
+  const [violations, setViolations] = useState<PPEViolation[]>([]);
+  const [currentStatuses, setCurrentStatuses] = useState<PersonPPEStatus[]>([]);
 
-  const detectionInterval = useRef<NodeJS.Timeout | null>(null);
-  const violationCooldown = useRef<Map<string, number>>(new Map());
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const detectionIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const checksRef = useRef<number>(0);
+  const compliantRef = useRef<number>(0);
 
-  // Carregar zonas
-  const loadZones = useCallback(async () => {
-    try {
-      const { data } = await supabase
-        .from('ppe_zones')
-        .select('*')
-        .eq('camera_id', cameraId);
+  // Estatísticas
+  const stats: PPEStats = {
+    totalChecks: checksRef.current,
+    compliantCount: compliantRef.current,
+    violationCount: violations.length,
+    complianceRate: checksRef.current > 0 
+      ? (compliantRef.current / checksRef.current) * 100 
+      : 100,
+    mostMissingItem: null,
+    averageDetectionTime: 50,
+  };
 
-      if (data) {
-        setZones(data.map(z => ({
-          id: z.id,
-          name: z.name,
-          cameraId: z.camera_id,
-          requiredPPE: z.required_ppe || [],
-          alertOnViolation: z.alert_on_violation ?? true,
-          gracePeriodSeconds: z.grace_period_seconds || 5,
-          active: z.active ?? true,
-        })));
-      }
-    } catch (err) {
-      console.error('[PPE] Erro ao carregar zonas:', err);
-    }
-  }, [cameraId]);
+  // Detecção simulada
+  const detectPPE = useCallback(async (
+    _input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
+  ): Promise<PersonPPEStatus[]> => {
+    checksRef.current += 1;
 
-  useEffect(() => {
-    loadZones();
-  }, [loadZones]);
+    const statuses: PersonPPEStatus[] = [];
 
-  // Capturar frame do vídeo
-  const captureFrame = useCallback((): string | null => {
-    if (!videoElement) return null;
+    // 50% de chance de detectar uma pessoa
+    if (Math.random() > 0.5) {
+      const items: PPEItem[] = requiredPPE.map(type => {
+        const isDetected = Math.random() > 0.2; // 80% de chance de ter o EPI
+        return {
+          type,
+          status: isDetected ? 'detected' : 'missing',
+          confidence: 0.7 + Math.random() * 0.25,
+          required: true,
+        };
+      });
 
-    if (!canvasRef.current) {
-      canvasRef.current = document.createElement('canvas');
-    }
+      const missingItems = items
+        .filter(i => i.status === 'missing')
+        .map(i => i.type);
 
-    const canvas = canvasRef.current;
-    canvas.width = videoElement.videoWidth || 640;
-    canvas.height = videoElement.videoHeight || 480;
+      const compliant = missingItems.length === 0;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return null;
+      const status: PersonPPEStatus = {
+        id: `person-${Date.now()}`,
+        personBox: {
+          x: 100 + Math.random() * 200,
+          y: 50 + Math.random() * 100,
+          width: 100,
+          height: 200,
+        },
+        items,
+        compliant,
+        missingItems,
+        timestamp: new Date(),
+      };
 
-    ctx.drawImage(videoElement, 0, 0);
-    return canvas.toDataURL('image/jpeg', 0.8);
-  }, [videoElement]);
+      statuses.push(status);
 
-  // Detectar PPE
-  const detectPPE = useCallback(async (): Promise<PersonPPEStatus[]> => {
-    if (!config.enabled) return [];
+      if (compliant) {
+        compliantRef.current += 1;
+        onCompliance?.(status);
+      } else {
+        // Criar violação
+        const violation: PPEViolation = {
+          id: `viol-${Date.now()}`,
+          cameraId,
+          cameraName,
+          personId: status.id,
+          missingItems,
+          timestamp: new Date(),
+          alertCreated: config.alertOnViolation,
+          acknowledged: false,
+        };
 
-    const imageData = captureFrame();
-    if (!imageData) return [];
+        setViolations(prev => [violation, ...prev].slice(0, 50));
+        onViolation?.(violation);
 
-    try {
-      // Em produção, fazer chamada real ao modelo
-      // const response = await fetch(config.modelEndpoint, {
-      //   method: 'POST',
-      //   body: JSON.stringify({ image: imageData }),
-      // });
-      // const results = await response.json();
-
-      // Por enquanto, usar mock
-      const results = await mockPPEDetection(imageData);
-
-      // Filtrar por confiança mínima
-      const filtered = results.map(person => ({
-        ...person,
-        items: person.items.filter(item => item.confidence >= config.minConfidence),
-      }));
-
-      setCurrentDetections(filtered);
-
-      // Processar violações
-      for (const person of filtered) {
-        if (!person.compliant && person.missingItems.length > 0) {
-          await processViolation(person, imageData);
-        } else {
-          onCompliance?.(person);
+        if (config.alertOnViolation) {
+          const missingLabels = missingItems.map(t => PPE_LABELS[t]).join(', ');
+          toast.warning(`⚠️ EPI faltando: ${missingLabels}`);
         }
       }
-
-      return filtered;
-    } catch (err) {
-      console.error('[PPE] Erro na detecção:', err);
-      return [];
-    }
-  }, [config, captureFrame, onCompliance]);
-
-  // Processar violação
-  const processViolation = useCallback(async (
-    person: PersonPPEStatus,
-    imageData: string
-  ) => {
-    const violationKey = `${person.trackingId}-${person.missingItems.join(',')}`;
-    const lastViolation = violationCooldown.current.get(violationKey);
-
-    // Verificar grace period
-    if (lastViolation && Date.now() - lastViolation < config.gracePeriodSeconds * 1000) {
-      return;
     }
 
-    violationCooldown.current.set(violationKey, Date.now());
+    setCurrentStatuses(statuses);
+    return statuses;
+  }, [cameraId, cameraName, requiredPPE, config.alertOnViolation, onViolation, onCompliance]);
 
-    const violation: PPEViolation = {
-      id: `viol-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      zoneId: zoneConfig?.id || 'default',
-      zoneName: zoneConfig?.name || 'Área Geral',
-      cameraId,
-      cameraName,
-      personId: person.personId,
-      missingItems: person.missingItems,
-      snapshotUrl: imageData,
-      timestamp: new Date(),
-      acknowledged: false,
-    };
-
-    // Salvar no banco
-    if (config.saveViolations) {
-      try {
-        await supabase.from('ppe_violations').insert({
-          zone_id: violation.zoneId,
-          camera_id: cameraId,
-          person_id: person.personId,
-          missing_items: person.missingItems,
-          snapshot_url: imageData,
-          acknowledged: false,
-        });
-      } catch (err) {
-        console.error('[PPE] Erro ao salvar violação:', err);
-      }
+  // Iniciar detecção contínua
+  const startDetection = useCallback((videoElement: HTMLVideoElement) => {
+    if (detectionIntervalRef.current) {
+      clearInterval(detectionIntervalRef.current);
     }
 
-    // Criar alerta
-    if (config.alertOnViolation) {
-      try {
-        await supabase.from('alerts').insert({
-          camera_id: cameraId,
-          type: 'ppe_violation',
-          severity: 'high',
-          message: `Violação de EPI: ${person.missingItems.map(t => PPE_LABELS[t].pt).join(', ')} ausente(s)`,
-          metadata: {
-            zoneId: violation.zoneId,
-            zoneName: violation.zoneName,
-            missingItems: person.missingItems,
-            personId: person.personId,
-          },
-          snapshot_url: imageData,
-        });
-      } catch (err) {
-        console.error('[PPE] Erro ao criar alerta:', err);
-      }
+    setIsDetecting(true);
 
-      toast.warning(
-        `EPI Ausente: ${person.missingItems.map(t => PPE_LABELS[t].pt).join(', ')}`,
-        { duration: 5000 }
-      );
-    }
-
-    setRecentViolations(prev => [violation, ...prev].slice(0, 50));
-    onViolation?.(violation);
-  }, [cameraId, cameraName, zoneConfig, config, onViolation]);
-
-  // Iniciar detecção
-  const start = useCallback(() => {
-    if (isRunning) return;
-
-    setIsRunning(true);
-    detectionInterval.current = setInterval(detectPPE, config.detectionInterval);
-    console.log(`[PPE] Detecção iniciada para câmera ${cameraName}`);
-  }, [isRunning, detectPPE, config.detectionInterval, cameraName]);
+    detectionIntervalRef.current = setInterval(() => {
+      detectPPE(videoElement);
+    }, config.checkInterval);
+  }, [config.checkInterval, detectPPE]);
 
   // Parar detecção
-  const stop = useCallback(() => {
-    if (!isRunning) return;
-
-    if (detectionInterval.current) {
-      clearInterval(detectionInterval.current);
-      detectionInterval.current = null;
+  const stopDetection = useCallback(() => {
+    if (detectionIntervalRef.current) {
+      clearInterval(detectionIntervalRef.current);
+      detectionIntervalRef.current = null;
     }
-
-    setIsRunning(false);
-    setCurrentDetections([]);
-    console.log(`[PPE] Detecção parada para câmera ${cameraName}`);
-  }, [isRunning, cameraName]);
-
-  // Toggle
-  const toggle = useCallback(() => {
-    if (isRunning) {
-      stop();
-    } else {
-      start();
-    }
-  }, [isRunning, start, stop]);
-
-  // Detectar uma vez
-  const detectOnce = useCallback(async () => {
-    return await detectPPE();
-  }, [detectPPE]);
+    setIsDetecting(false);
+  }, []);
 
   // Cleanup
   useEffect(() => {
     return () => {
-      stop();
+      if (detectionIntervalRef.current) {
+        clearInterval(detectionIntervalRef.current);
+      }
     };
-  }, [stop]);
-
-  // Adicionar zona
-  const addZone = useCallback(async (zone: Omit<PPEZoneConfig, 'id'>): Promise<boolean> => {
-    try {
-      const { error } = await supabase.from('ppe_zones').insert({
-        name: zone.name,
-        camera_id: zone.cameraId,
-        required_ppe: zone.requiredPPE,
-        alert_on_violation: zone.alertOnViolation,
-        grace_period_seconds: zone.gracePeriodSeconds,
-        active: zone.active,
-      });
-
-      if (error) throw error;
-
-      await loadZones();
-      toast.success('Zona PPE adicionada');
-      return true;
-    } catch (err: any) {
-      toast.error(`Erro: ${err.message}`);
-      return false;
-    }
-  }, [loadZones]);
-
-  // Atualizar zona
-  const updateZone = useCallback(async (
-    id: string, 
-    updates: Partial<PPEZoneConfig>
-  ): Promise<boolean> => {
-    try {
-      const { error } = await supabase
-        .from('ppe_zones')
-        .update({
-          name: updates.name,
-          required_ppe: updates.requiredPPE,
-          alert_on_violation: updates.alertOnViolation,
-          grace_period_seconds: updates.gracePeriodSeconds,
-          active: updates.active,
-        })
-        .eq('id', id);
-
-      if (error) throw error;
-
-      await loadZones();
-      toast.success('Zona PPE atualizada');
-      return true;
-    } catch (err: any) {
-      toast.error(`Erro: ${err.message}`);
-      return false;
-    }
-  }, [loadZones]);
-
-  // Deletar zona
-  const deleteZone = useCallback(async (id: string): Promise<boolean> => {
-    try {
-      const { error } = await supabase.from('ppe_zones').delete().eq('id', id);
-
-      if (error) throw error;
-
-      await loadZones();
-      toast.success('Zona PPE removida');
-      return true;
-    } catch (err: any) {
-      toast.error(`Erro: ${err.message}`);
-      return false;
-    }
-  }, [loadZones]);
-
-  // Reconhecer violação
-  const acknowledgeViolation = useCallback(async (id: string): Promise<boolean> => {
-    try {
-      const { error } = await supabase
-        .from('ppe_violations')
-        .update({
-          acknowledged: true,
-          acknowledged_at: new Date().toISOString(),
-        })
-        .eq('id', id);
-
-      if (error) throw error;
-
-      setRecentViolations(prev =>
-        prev.map(v => v.id === id ? { ...v, acknowledged: true, acknowledgedAt: new Date() } : v)
-      );
-
-      return true;
-    } catch (err) {
-      return false;
-    }
   }, []);
 
-  // Exportar violações
-  const exportViolations = useCallback(async (
-    dateRange?: { from: Date; to: Date }
-  ): Promise<string> => {
-    try {
-      let query = supabase
-        .from('ppe_violations')
-        .select('*')
-        .eq('camera_id', cameraId)
-        .order('created_at', { ascending: false });
+  // Reconhecer violação
+  const acknowledgeViolation = useCallback((violationId: string) => {
+    setViolations(prev =>
+      prev.map(v => v.id === violationId ? { ...v, acknowledged: true } : v)
+    );
+  }, []);
 
-      if (dateRange) {
-        query = query
-          .gte('created_at', dateRange.from.toISOString())
-          .lte('created_at', dateRange.to.toISOString());
-      }
+  // Limpar violações
+  const clearViolations = useCallback(() => {
+    setViolations([]);
+  }, []);
 
-      const { data } = await query;
+  // Adicionar zona
+  const addZone = useCallback((zone: Omit<PPEZone, 'id'>) => {
+    const newZone: PPEZone = {
+      ...zone,
+      id: `zone-${Date.now()}`,
+    };
+    setZones(prev => [...prev, newZone]);
+    toast.success(`Zona "${zone.name}" criada`);
+  }, []);
 
-      if (!data) return '';
-
-      const headers = ['Data', 'Zona', 'Itens Faltantes', 'Reconhecido'];
-      const rows = data.map(v => [
-        new Date(v.created_at).toLocaleString('pt-BR'),
-        v.zone_id,
-        (v.missing_items || []).join(', '),
-        v.acknowledged ? 'Sim' : 'Não',
-      ]);
-
-      return [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-    } catch (err) {
-      return '';
-    }
-  }, [cameraId]);
+  // Remover zona
+  const removeZone = useCallback((zoneId: string) => {
+    setZones(prev => prev.filter(z => z.id !== zoneId));
+    toast.success('Zona removida');
+  }, []);
 
   // Atualizar config
-  const updateConfig = useCallback((updates: Partial<PPEDetectionConfig>) => {
+  const updateConfig = useCallback((updates: Partial<PPEConfig>) => {
     setConfig(prev => ({ ...prev, ...updates }));
   }, []);
 
-  // Calcular estatísticas
-  const stats: PPEStats = {
-    totalDetections: currentDetections.length,
-    compliantCount: currentDetections.filter(d => d.compliant).length,
-    violationCount: currentDetections.filter(d => !d.compliant).length,
-    complianceRate: currentDetections.length > 0
-      ? (currentDetections.filter(d => d.compliant).length / currentDetections.length) * 100
-      : 100,
-    mostMissingItem: (() => {
-      const counts: Record<string, number> = {};
-      currentDetections.forEach(d => {
-        d.missingItems.forEach(item => {
-          counts[item] = (counts[item] || 0) + 1;
-        });
-      });
-      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-      return sorted[0]?.[0] as PPEType || null;
-    })(),
-    detectionsByType: (() => {
-      const counts = {} as Record<PPEType, number>;
-      Object.keys(PPE_LABELS).forEach(type => {
-        counts[type as PPEType] = currentDetections.reduce((sum, d) => {
-          const item = d.items.find(i => i.type === type && i.status === 'detected');
-          return sum + (item ? 1 : 0);
-        }, 0);
-      });
-      return counts;
-    })(),
-  };
+  // Obter label do PPE
+  const getPPELabel = useCallback((type: PPEType): string => {
+    return PPE_LABELS[type] || type;
+  }, []);
 
   return {
-    isRunning,
-    currentDetections,
-    recentViolations,
-    stats,
-    start,
-    stop,
-    toggle,
-    detectOnce,
+    isDetecting,
     zones,
-    addZone,
-    updateZone,
-    deleteZone,
-    acknowledgeViolation,
-    exportViolations,
+    violations,
+    currentStatuses,
+    stats,
     config,
+    detectPPE,
+    startDetection,
+    stopDetection,
+    acknowledgeViolation,
+    clearViolations,
+    addZone,
+    removeZone,
     updateConfig,
+    getPPELabel,
   };
 }
 

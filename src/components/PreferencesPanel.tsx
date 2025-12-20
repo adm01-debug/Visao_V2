@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Settings, Sun, Moon, Monitor, Volume2, VolumeX, Bell, BellOff, LayoutGrid, Palette } from 'lucide-react';
-import { useTheme } from 'next-themes';
+import { useTheme } from '@/contexts/ThemeProvider';
 import {
   Sheet,
   SheetContent,
@@ -83,7 +83,7 @@ export function PreferencesPanel() {
     }
   };
 
-  const setThemeWithTransition = (newTheme: string) => {
+  const setThemeWithTransition = (newTheme: 'dark' | 'light' | 'system') => {
     document.documentElement.classList.add('theme-transition');
     setTheme(newTheme);
     setTimeout(() => {
