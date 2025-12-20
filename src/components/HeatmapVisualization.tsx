@@ -5,7 +5,7 @@
  * Mapa de calor de movimentação por zona em tempo real
  */
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCameras } from '@/hooks/useCameras';
+import { useHeatmap, TimeRange } from '@/hooks/useHeatmap';
 import { 
   Activity, 
   Clock, 
@@ -97,6 +98,33 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
   const [zoneActivities, setZoneActivities] = useState<ZoneActivity[]>([]);
   const [totalDetections, setTotalDetections] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Usar hook de heatmap para câmera selecionada
+  const heatmap = useHeatmap({
+    cameraId: selectedCamera !== 'all' ? selectedCamera : cameras[0]?.id || '',
+    config: {
+      gridSize: 20,
+      colorScheme: 'thermal',
+      opacity: 0.7,
+      blur: 15,
+      realtime: false,
+    },
+  });
+
+  // Renderizar heatmap no canvas quando dados mudarem
+  useEffect(() => {
+    if (canvasRef.current && heatmap.data.grid.length > 0) {
+      heatmap.renderToCanvas(canvasRef.current);
+    }
+  }, [heatmap.data, canvasRef.current]);
+
+  // Carregar histórico quando período mudar
+  useEffect(() => {
+    if (selectedCamera !== 'all') {
+      heatmap.loadHistory(period as TimeRange);
+    }
+  }, [period, selectedCamera]);
 
   // Carregar dados de atividade
   useEffect(() => {
