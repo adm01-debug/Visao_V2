@@ -30,6 +30,7 @@ import {
   FileText,
   Moon,
   Sun,
+  HelpCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -44,6 +45,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeProvider';
+import { RestartTourButton } from '@/components/OnboardingTour';
 
 // ============================================
 // TIPOS
@@ -328,6 +330,28 @@ export function Sidebar({ className }: SidebarProps) {
             <span className="text-xs text-muted-foreground">Sistema Online</span>
           )}
         </div>
+
+        {/* Ver Tour / Ajuda */}
+        {!collapsed ? (
+          <RestartTourButton className="w-full justify-start" />
+        ) : (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="w-full"
+                onClick={() => {
+                  localStorage.removeItem('visao-onboarding-v1');
+                  window.location.reload();
+                }}
+              >
+                <HelpCircle className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">Ver Tour</TooltipContent>
+          </Tooltip>
+        )}
 
         {/* User / Logout */}
         {user && (
