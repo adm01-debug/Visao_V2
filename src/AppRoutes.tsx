@@ -16,6 +16,7 @@ const CamerasPage = lazy(() => import('@/pages/CamerasPage'));
 const AlertsPage = lazy(() => import('@/pages/AlertsPage'));
 const PeoplePage = lazy(() => import('@/pages/PeoplePage'));
 const FaceRecognitionPage = lazy(() => import('@/pages/FaceRecognitionPage'));
+const RecognitionLogsPage = lazy(() => import('@/pages/RecognitionLogsPage'));
 const ZonesPage = lazy(() => import('@/pages/ZonesPage'));
 const RecordingsPage = lazy(() => import('@/pages/RecordingsPage'));
 const AnalyticsPage = lazy(() => import('@/pages/AnalyticsPage'));
@@ -58,6 +59,7 @@ export function AppRoutes() {
         
         {/* Reconhecimento Facial */}
         <Route path="/face-recognition" element={<FaceRecognitionPage />} />
+        <Route path="/recognition-logs" element={<RecognitionLogsPage />} />
         
         {/* Zonas */}
         <Route path="/zones" element={<ZonesPage />} />
