@@ -2,83 +2,336 @@
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: ZoneOverlay
  * 
- * Overlay para exibir zonas de interesse sobre o vídeo,
- * com estatísticas em tempo real e indicadores de alerta.
+ * Overlay para exibir zonas de interesse sobre o vídeo:
+ * - Renderização de polígonos, retângulos e linhas
+ * - Indicadores de ocupação em tempo real
+ * - Animações de alerta
+ * - Stats por zona
  */
 
-import { useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Users,
   AlertTriangle,
-  Clock,
-  ArrowRightLeft,
-  Shield,
-  Car,
-  Eye,
+  ArrowRight,
+  ArrowLeft,
+  ArrowUp,
+  ArrowDown,
+  Timer,
+  Ban,
+  CheckCircle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import {
-  Zone,
-  ZoneStats,
-  TrackedObject,
-  getZoneTypeLabel,
-} from '@/types/zones';
 
 // ============================================
 // TIPOS
 // ============================================
 
+type ZoneType = 'restricted' | 'counting' | 'tripwire' | 'dwell' | 'occupancy' | 'parking' | 'queue' | 'safety' | 'custom';
+
+interface Point {
+  x: number;
+  y: number;
+}
+
+interface ZoneGeometry {
+  shape: 'polygon' | 'rectangle' | 'line' | 'circle';
+  points: Point[];
+}
+
+interface ZoneStats {
+  currentOccupancy: number;
+  countIn: number;
+  countOut: number;
+  maxOccupancy?: number;
+  avgDwellTime?: number;
+  isAlerted?: boolean;
+}
+
+interface Zone {
+  id: string;
+  name: string;
+  type: ZoneType;
+  geometry: ZoneGeometry;
+  color: string;
+  opacity: number;
+  enabled: boolean;
+  stats?: ZoneStats;
+}
+
 interface ZoneOverlayProps {
-  /** Zonas para exibir */
   zones: Zone[];
-  
-  /** Estatísticas por zona */
-  stats: Map<string, ZoneStats>;
-  
-  /** Objetos rastreados */
-  trackedObjects?: Map<string, TrackedObject>;
-  
-  /** Mostrar estatísticas */
-  showStats?: boolean;
-  
-  /** Mostrar objetos rastreados */
-  showTrackedObjects?: boolean;
-  
-  /** Mostrar labels das zonas */
   showLabels?: boolean;
-  
-  /** Zona selecionada */
-  selectedZoneId?: string | null;
-  
-  /** Callback ao clicar em zona */
-  onZoneClick?: (zone: Zone) => void;
-  
-  /** Classe CSS */
+  showStats?: boolean;
+  showAlerts?: boolean;
+  animateAlerts?: boolean;
   className?: string;
+  onZoneClick?: (zone: Zone) => void;
 }
 
 // ============================================
-// ÍCONES POR TIPO
+// CONFIGURAÇÃO
 // ============================================
 
-const zoneTypeIcons: Record<string, React.ElementType> = {
-  restricted: Shield,
+const zoneTypeIcons: Record<ZoneType, any> = {
+  restricted: Ban,
   counting: Users,
-  tripwire: ArrowRightLeft,
-  dwell: Clock,
+  tripwire: ArrowRight,
+  dwell: Timer,
   occupancy: Users,
-  parking: Car,
+  parking: CheckCircle,
   queue: Users,
-  safety: Shield,
-  custom: Eye,
+  safety: AlertTriangle,
+  custom: CheckCircle,
 };
+
+// ============================================
+// COMPONENTE: Zone Label
+// ============================================
+
+interface ZoneLabelProps {
+  zone: Zone;
+  position: Point;
+  showStats: boolean;
+}
+
+function ZoneLabel({ zone, position, showStats }: ZoneLabelProps) {
+  const Icon = zoneTypeIcons[zone.type];
+  const isAlerted = zone.stats?.isAlerted;
+  const occupancyPercent = zone.stats?.maxOccupancy 
+    ? Math.round((zone.stats.currentOccupancy / zone.stats.maxOccupancy) * 100)
+    : null;
+  const isOverCapacity = occupancyPercent !== null && occupancyPercent >= 100;
+
+  return (
+    <g>
+      {/* Background do label */}
+      <foreignObject
+        x={`${position.x - 5}%`}
+        y={`${position.y - 3}%`}
+        width="10%"
+        height="6%"
+        className="overflow-visible"
+      >
+        <div
+          className={cn(
+            'flex flex-col items-center justify-center px-2 py-1 rounded text-white text-[10px] font-medium whitespace-nowrap',
+            'bg-black/70 backdrop-blur-sm',
+            isAlerted && 'animate-pulse bg-red-600/90'
+          )}
+        >
+          <div className="flex items-center gap-1">
+            <Icon className="w-3 h-3" />
+            <span className="truncate max-w-[60px]">{zone.name}</span>
+          </div>
+          
+          {showStats && zone.stats && (
+            <div className="flex items-center gap-2 mt-0.5 text-[9px] opacity-90">
+              {(zone.type === 'counting' || zone.type === 'occupancy') && (
+                <>
+                  <span className="text-green-400">↑{zone.stats.countIn}</span>
+                  <span className="text-red-400">↓{zone.stats.countOut}</span>
+                  <span className={cn(
+                    isOverCapacity && 'text-red-400 font-bold'
+                  )}>
+                    ={zone.stats.currentOccupancy}
+                  </span>
+                </>
+              )}
+              {zone.type === 'dwell' && zone.stats.avgDwellTime && (
+                <span>{Math.round(zone.stats.avgDwellTime)}s</span>
+              )}
+            </div>
+          )}
+        </div>
+      </foreignObject>
+    </g>
+  );
+}
+
+// ============================================
+// COMPONENTE: Zone Shape
+// ============================================
+
+interface ZoneShapeProps {
+  zone: Zone;
+  animate: boolean;
+  onClick?: () => void;
+}
+
+function ZoneShape({ zone, animate, onClick }: ZoneShapeProps) {
+  const isAlerted = zone.stats?.isAlerted;
+  const { geometry, color, opacity } = zone;
+
+  // Animação pulsante para alertas
+  const alertAnimation = isAlerted && animate ? {
+    animation: 'pulse 1s ease-in-out infinite',
+  } : {};
+
+  if (geometry.shape === 'line') {
+    const start = geometry.points[0];
+    const end = geometry.points[1];
+    
+    if (!start || !end) return null;
+
+    // Calcular ângulo para a seta
+    const angle = Math.atan2(end.y - start.y, end.x - start.x) * (180 / Math.PI);
+    const midX = (start.x + end.x) / 2;
+    const midY = (start.y + end.y) / 2;
+
+    return (
+      <g className="pointer-events-auto cursor-pointer" onClick={onClick}>
+        {/* Linha principal */}
+        <line
+          x1={`${start.x}%`}
+          y1={`${start.y}%`}
+          x2={`${end.x}%`}
+          y2={`${end.y}%`}
+          stroke={color}
+          strokeWidth={isAlerted ? 4 : 3}
+          strokeDasharray="10,5"
+          style={alertAnimation}
+        />
+        
+        {/* Seta de direção no meio */}
+        <g transform={`translate(${midX}%, ${midY}%) rotate(${angle})`}>
+          <polygon
+            points="0,-4 8,0 0,4"
+            fill={color}
+            transform="translate(-4, 0)"
+          />
+        </g>
+
+        {/* Círculos nos pontos */}
+        <circle cx={`${start.x}%`} cy={`${start.y}%`} r="5" fill={color} />
+        <circle cx={`${end.x}%`} cy={`${end.y}%`} r="5" fill={color} />
+
+        {/* Glow para alerta */}
+        {isAlerted && (
+          <line
+            x1={`${start.x}%`}
+            y1={`${start.y}%`}
+            x2={`${end.x}%`}
+            y2={`${end.y}%`}
+            stroke={color}
+            strokeWidth="10"
+            strokeOpacity="0.3"
+            style={alertAnimation}
+          />
+        )}
+      </g>
+    );
+  }
+
+  if (geometry.shape === 'circle' && geometry.points.length >= 2) {
+    const center = geometry.points[0];
+    const edge = geometry.points[1];
+    const radius = Math.sqrt(
+      Math.pow(edge.x - center.x, 2) + Math.pow(edge.y - center.y, 2)
+    );
+
+    return (
+      <g className="pointer-events-auto cursor-pointer" onClick={onClick}>
+        <circle
+          cx={`${center.x}%`}
+          cy={`${center.y}%`}
+          r={`${radius}%`}
+          fill={color}
+          fillOpacity={opacity}
+          stroke={color}
+          strokeWidth={isAlerted ? 3 : 2}
+          style={alertAnimation}
+        />
+        {isAlerted && (
+          <circle
+            cx={`${center.x}%`}
+            cy={`${center.y}%`}
+            r={`${radius + 1}%`}
+            fill="none"
+            stroke={color}
+            strokeWidth="6"
+            strokeOpacity="0.3"
+            style={alertAnimation}
+          />
+        )}
+      </g>
+    );
+  }
+
+  // Polígono ou retângulo
+  return (
+    <g className="pointer-events-auto cursor-pointer" onClick={onClick}>
+      <polygon
+        points={geometry.points.map(p => `${p.x}%,${p.y}%`).join(' ')}
+        fill={color}
+        fillOpacity={opacity}
+        stroke={color}
+        strokeWidth={isAlerted ? 3 : 2}
+        style={alertAnimation}
+      />
+      {isAlerted && (
+        <polygon
+          points={geometry.points.map(p => `${p.x}%,${p.y}%`).join(' ')}
+          fill="none"
+          stroke={color}
+          strokeWidth="8"
+          strokeOpacity="0.3"
+          style={alertAnimation}
+        />
+      )}
+    </g>
+  );
+}
+
+// ============================================
+// COMPONENTE: Occupancy Indicator
+// ============================================
+
+interface OccupancyIndicatorProps {
+  zone: Zone;
+  position: Point;
+}
+
+function OccupancyIndicator({ zone, position }: OccupancyIndicatorProps) {
+  if (!zone.stats?.maxOccupancy) return null;
+
+  const { currentOccupancy, maxOccupancy } = zone.stats;
+  const percent = Math.min(100, Math.round((currentOccupancy / maxOccupancy) * 100));
+  const isOverCapacity = percent >= 100;
+  const isNearCapacity = percent >= 80;
+
+  return (
+    <foreignObject
+      x={`${position.x - 4}%`}
+      y={`${position.y + 4}%`}
+      width="8%"
+      height="3%"
+      className="overflow-visible"
+    >
+      <div className="flex flex-col items-center">
+        {/* Barra de progresso */}
+        <div className="w-full h-1.5 bg-black/50 rounded-full overflow-hidden">
+          <div
+            className={cn(
+              'h-full transition-all duration-300',
+              isOverCapacity ? 'bg-red-500' :
+              isNearCapacity ? 'bg-yellow-500' : 'bg-green-500'
+            )}
+            style={{ width: `${Math.min(100, percent)}%` }}
+          />
+        </div>
+        {/* Texto */}
+        <span className={cn(
+          'text-[9px] font-medium mt-0.5',
+          isOverCapacity ? 'text-red-400' :
+          isNearCapacity ? 'text-yellow-400' : 'text-green-400'
+        )}>
+          {currentOccupancy}/{maxOccupancy}
+        </span>
+      </div>
+    </foreignObject>
+  );
+}
 
 // ============================================
 // COMPONENTE PRINCIPAL
@@ -86,296 +339,119 @@ const zoneTypeIcons: Record<string, React.ElementType> = {
 
 export function ZoneOverlay({
   zones,
-  stats,
-  trackedObjects,
-  showStats = true,
-  showTrackedObjects = true,
   showLabels = true,
-  selectedZoneId,
-  onZoneClick,
+  showStats = true,
+  showAlerts = true,
+  animateAlerts = true,
   className,
+  onZoneClick,
 }: ZoneOverlayProps) {
-  // Filtrar zonas habilitadas
-  const enabledZones = useMemo(() => 
-    zones.filter(z => z.enabled),
-    [zones]
-  );
+  // Filtrar apenas zonas ativas
+  const activeZones = useMemo(() => {
+    return zones.filter(z => z.enabled && z.geometry.points.length >= 2);
+  }, [zones]);
 
-  // Verificar se zona tem alerta ativo
-  const hasActiveAlert = (zone: Zone, zoneStats?: ZoneStats): boolean => {
-    if (!zoneStats) return false;
+  // Calcular centro de cada zona para posicionar labels
+  const zoneCenters = useMemo(() => {
+    const centers: Record<string, Point> = {};
     
-    // Ocupação excedida
-    if (zone.config.maxOccupancy && zoneStats.currentOccupancy >= zone.config.maxOccupancy) {
-      return true;
-    }
+    activeZones.forEach(zone => {
+      const points = zone.geometry.points;
+      if (points.length === 0) return;
+      
+      centers[zone.id] = {
+        x: points.reduce((sum, p) => sum + p.x, 0) / points.length,
+        y: points.reduce((sum, p) => sum + p.y, 0) / points.length,
+      };
+    });
     
-    // Objetos com tempo excedido
-    if (zone.config.maxDwellTime) {
-      const hasExceeded = zoneStats.currentObjects.some(
-        obj => obj.dwellTime > (zone.config.maxDwellTime || Infinity)
-      );
-      if (hasExceeded) return true;
-    }
-    
-    return false;
-  };
+    return centers;
+  }, [activeZones]);
 
-  // ============================================
-  // RENDER: Zona
-  // ============================================
+  // Zonas com alerta primeiro (para renderizar por cima)
+  const sortedZones = useMemo(() => {
+    return [...activeZones].sort((a, b) => {
+      const aAlerted = a.stats?.isAlerted ? 1 : 0;
+      const bAlerted = b.stats?.isAlerted ? 1 : 0;
+      return aAlerted - bAlerted;
+    });
+  }, [activeZones]);
 
-  const renderZone = (zone: Zone) => {
-    const zoneStats = stats.get(zone.id);
-    const isSelected = selectedZoneId === zone.id;
-    const isAlerted = hasActiveAlert(zone, zoneStats);
-    const Icon = zoneTypeIcons[zone.type] || Eye;
-
-    const points = zone.geometry.points;
-    if (points.length < 2) return null;
-
-    // Calcular centro da zona
-    const centerX = points.reduce((sum, p) => sum + p.x, 0) / points.length;
-    const centerY = points.reduce((sum, p) => sum + p.y, 0) / points.length;
-
-    // Path SVG
-    const isLine = zone.geometry.shape === 'line';
-    const pathData = isLine
-      ? `M ${points[0].x} ${points[0].y} L ${points[1].x} ${points[1].y}`
-      : `M ${points.map(p => `${p.x} ${p.y}`).join(' L ')} Z`;
-
-    return (
-      <g key={zone.id} className="zone-group">
-        {/* Área da zona */}
-        <path
-          d={pathData}
-          fill={isLine ? 'none' : zone.color}
-          fillOpacity={isLine ? 0 : zone.opacity}
-          stroke={zone.color}
-          strokeWidth={isSelected ? 0.8 : 0.5}
-          strokeDasharray={isLine ? '2,2' : undefined}
-          className={cn(
-            'cursor-pointer transition-all duration-200',
-            isAlerted && 'animate-pulse'
-          )}
-          onClick={() => onZoneClick?.(zone)}
-        />
-
-        {/* Borda de alerta */}
-        {isAlerted && !isLine && (
-          <path
-            d={pathData}
-            fill="none"
-            stroke="#EF4444"
-            strokeWidth={1}
-            strokeDasharray="3,3"
-            className="animate-pulse"
-          />
-        )}
-
-        {/* Label e stats */}
-        {showLabels && !isLine && (
-          <foreignObject
-            x={centerX - 15}
-            y={centerY - 8}
-            width={30}
-            height={16}
-            className="overflow-visible pointer-events-none"
-          >
-            <div className="flex flex-col items-center gap-0.5">
-              {/* Nome da zona */}
-              <div
-                className="px-1 py-0.5 rounded text-[4px] font-medium text-white whitespace-nowrap"
-                style={{ 
-                  backgroundColor: `${zone.color}CC`,
-                  textShadow: '0 0 2px rgba(0,0,0,0.5)',
-                }}
-              >
-                {zone.name}
-              </div>
-
-              {/* Estatísticas */}
-              {showStats && zoneStats && (
-                <div className="flex items-center gap-1">
-                  {zone.type === 'counting' || zone.type === 'occupancy' ? (
-                    <div
-                      className={cn(
-                        'px-1 py-0.5 rounded text-[4px] font-bold text-white',
-                        isAlerted ? 'bg-red-500' : 'bg-black/60'
-                      )}
-                    >
-                      {zoneStats.currentOccupancy}
-                      {zone.config.maxOccupancy && `/${zone.config.maxOccupancy}`}
-                    </div>
-                  ) : zone.type === 'tripwire' ? (
-                    <div className="flex gap-0.5">
-                      <div className="px-0.5 py-0.25 rounded text-[3px] bg-green-500/80 text-white">
-                        ↓{zoneStats.countIn}
-                      </div>
-                      <div className="px-0.5 py-0.25 rounded text-[3px] bg-orange-500/80 text-white">
-                        ↑{zoneStats.countOut}
-                      </div>
-                    </div>
-                  ) : null}
-                </div>
-              )}
-            </div>
-          </foreignObject>
-        )}
-
-        {/* Indicador de alerta */}
-        {isAlerted && (
-          <g>
-            <circle
-              cx={centerX + 12}
-              cy={centerY - 8}
-              r={3}
-              fill="#EF4444"
-              className="animate-ping"
-            />
-            <circle
-              cx={centerX + 12}
-              cy={centerY - 8}
-              r={2}
-              fill="#EF4444"
-            />
-          </g>
-        )}
-
-        {/* Linha: setas de direção */}
-        {isLine && points.length === 2 && (
-          <>
-            {/* Seta no meio da linha */}
-            <polygon
-              points={getArrowPoints(points[0], points[1])}
-              fill={zone.color}
-            />
-          </>
-        )}
-      </g>
-    );
-  };
-
-  // ============================================
-  // RENDER: Objetos rastreados
-  // ============================================
-
-  const renderTrackedObjects = () => {
-    if (!showTrackedObjects || !trackedObjects) return null;
-
-    return Array.from(trackedObjects.values()).map(obj => (
-      <g key={obj.id}>
-        {/* Bounding box */}
-        <rect
-          x={obj.boundingBox.x}
-          y={obj.boundingBox.y}
-          width={obj.boundingBox.width}
-          height={obj.boundingBox.height}
-          fill="none"
-          stroke={obj.type === 'person' ? '#3B82F6' : '#10B981'}
-          strokeWidth={0.3}
-          rx={0.5}
-        />
-
-        {/* Ponto central */}
-        <circle
-          cx={obj.position.x}
-          cy={obj.position.y}
-          r={0.8}
-          fill={obj.type === 'person' ? '#3B82F6' : '#10B981'}
-        />
-
-        {/* Caminho percorrido */}
-        {obj.path && obj.path.length > 1 && (
-          <path
-            d={`M ${obj.path.map(p => `${p.x} ${p.y}`).join(' L ')}`}
-            fill="none"
-            stroke={obj.type === 'person' ? '#3B82F680' : '#10B98180'}
-            strokeWidth={0.2}
-            strokeDasharray="1,1"
-          />
-        )}
-
-        {/* Tempo de permanência (se significativo) */}
-        {obj.dwellTime > 30 && (
-          <text
-            x={obj.position.x}
-            y={obj.position.y - 3}
-            textAnchor="middle"
-            className="text-[2.5px] fill-white"
-            style={{ textShadow: '0 0 1px black' }}
-          >
-            {Math.round(obj.dwellTime)}s
-          </text>
-        )}
-      </g>
-    ));
-  };
-
-  // ============================================
-  // HELPERS
-  // ============================================
-
-  function getArrowPoints(start: { x: number; y: number }, end: { x: number; y: number }): string {
-    const midX = (start.x + end.x) / 2;
-    const midY = (start.y + end.y) / 2;
-    const angle = Math.atan2(end.y - start.y, end.x - start.x);
-    const size = 2;
-    
-    const tip = { x: midX, y: midY };
-    const left = {
-      x: midX - size * Math.cos(angle - Math.PI / 6),
-      y: midY - size * Math.sin(angle - Math.PI / 6),
-    };
-    const right = {
-      x: midX - size * Math.cos(angle + Math.PI / 6),
-      y: midY - size * Math.sin(angle + Math.PI / 6),
-    };
-    
-    return `${tip.x},${tip.y} ${left.x},${left.y} ${right.x},${right.y}`;
-  }
-
-  // ============================================
-  // RENDER PRINCIPAL
-  // ============================================
-
-  if (enabledZones.length === 0 && (!trackedObjects || trackedObjects.size === 0)) {
-    return null;
-  }
+  if (sortedZones.length === 0) return null;
 
   return (
-    <TooltipProvider>
-      <svg
-        viewBox="0 0 100 56.25"
-        preserveAspectRatio="none"
-        className={cn('absolute inset-0 w-full h-full pointer-events-none z-10', className)}
-      >
-        {/* Zonas */}
-        <g className="pointer-events-auto">
-          {enabledZones.map(renderZone)}
-        </g>
+    <div className={cn('absolute inset-0 pointer-events-none overflow-hidden', className)}>
+      <svg className="absolute inset-0 w-full h-full">
+        <defs>
+          {/* Definições para efeitos */}
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
 
-        {/* Objetos rastreados */}
-        {renderTrackedObjects()}
+        {/* Renderizar zonas */}
+        {sortedZones.map(zone => (
+          <g key={zone.id}>
+            <ZoneShape
+              zone={zone}
+              animate={animateAlerts}
+              onClick={() => onZoneClick?.(zone)}
+            />
+          </g>
+        ))}
+
+        {/* Labels */}
+        {showLabels && sortedZones.map(zone => {
+          const center = zoneCenters[zone.id];
+          if (!center) return null;
+          
+          return (
+            <ZoneLabel
+              key={`label-${zone.id}`}
+              zone={zone}
+              position={center}
+              showStats={showStats}
+            />
+          );
+        })}
+
+        {/* Indicadores de ocupação */}
+        {showStats && sortedZones
+          .filter(z => z.type === 'occupancy' && z.stats?.maxOccupancy)
+          .map(zone => {
+            const center = zoneCenters[zone.id];
+            if (!center) return null;
+            
+            return (
+              <OccupancyIndicator
+                key={`occupancy-${zone.id}`}
+                zone={zone}
+                position={center}
+              />
+            );
+          })}
       </svg>
 
-      {/* Legenda */}
-      <div className="absolute top-2 right-2 z-20 flex flex-col gap-1">
-        {enabledZones.some(z => hasActiveAlert(z, stats.get(z.id))) && (
-          <Badge variant="destructive" className="gap-1 animate-pulse">
-            <AlertTriangle className="w-3 h-3" />
-            Alerta Ativo
-          </Badge>
-        )}
-        
-        {showStats && (
-          <Badge variant="secondary" className="gap-1 text-xs">
-            <Users className="w-3 h-3" />
-            {Array.from(stats.values()).reduce((sum, s) => sum + s.currentOccupancy, 0)} pessoas
-          </Badge>
-        )}
-      </div>
-    </TooltipProvider>
+      {/* Alerta global quando há zona em alerta */}
+      {showAlerts && sortedZones.some(z => z.stats?.isAlerted) && (
+        <div className="absolute top-2 left-2 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-600/90 text-white text-xs font-medium animate-pulse">
+          <AlertTriangle className="w-4 h-4" />
+          <span>Alerta de Zona Ativo</span>
+        </div>
+      )}
+
+      {/* Estilos de animação */}
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.6; }
+        }
+      `}</style>
+    </div>
   );
 }
 
