@@ -112,6 +112,11 @@ const mainNavItems: NavItem[] = [
     path: '/face-recognition',
   },
   {
+    label: 'Logs Reconhec.',
+    icon: Activity,
+    path: '/recognition-logs',
+  },
+  {
     label: 'Zonas',
     icon: Target,
     path: '/zones',
