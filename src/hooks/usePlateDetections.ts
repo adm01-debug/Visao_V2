@@ -3,12 +3,14 @@
  * Hook: usePlateDetections
  * 
  * Hook para gerenciar detecções de placas com persistência no Supabase
+ * Integração com alertas Telegram para blacklist
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { playCriticalAlertSound } from '@/lib/alertSounds';
 
 export interface PlateDetection {
   id: string;
@@ -57,11 +59,22 @@ export interface RegisteredPlateInsert {
   list_type: 'whitelist' | 'blacklist' | 'visitor';
 }
 
+// Telegram config storage key
+const TELEGRAM_CONFIG_KEY = 'visao-telegram-config';
+
+interface TelegramConfig {
+  botToken: string;
+  chatId: string;
+  enabled: boolean;
+}
+
 export function usePlateDetections() {
   const { user } = useAuth();
   const [detections, setDetections] = useState<PlateDetection[]>([]);
   const [registeredPlates, setRegisteredPlates] = useState<RegisteredPlate[]>([]);
   const [loading, setLoading] = useState(true);
+  const lastAlertTime = useRef<Map<string, number>>(new Map());
+  const ALERT_COOLDOWN_MS = 30000; // 30 seconds cooldown
 
   // Carregar detecções
   const fetchDetections = useCallback(async () => {
@@ -136,6 +149,66 @@ export function usePlateDetections() {
     return 'unknown';
   }, [registeredPlates]);
 
+  // Send Telegram alert for blacklist
+  const sendBlacklistTelegramAlert = useCallback(async (
+    plate: string,
+    cameraName: string,
+    ownerName?: string,
+    imageUrl?: string
+  ) => {
+    // Check cooldown
+    const now = Date.now();
+    const lastAlert = lastAlertTime.current.get(plate);
+    if (lastAlert && (now - lastAlert) < ALERT_COOLDOWN_MS) {
+      console.log(`Cooldown active for plate ${plate}`);
+      return;
+    }
+    lastAlertTime.current.set(plate, now);
+
+    // Get Telegram config from localStorage
+    const configStr = localStorage.getItem(TELEGRAM_CONFIG_KEY);
+    if (!configStr) {
+      console.log('Telegram not configured');
+      return;
+    }
+
+    try {
+      const config: TelegramConfig = JSON.parse(configStr);
+      if (!config.enabled || !config.botToken || !config.chatId) {
+        console.log('Telegram disabled or incomplete config');
+        return;
+      }
+
+      const timestamp = new Date().toLocaleString('pt-BR');
+      const message = `🚨 <b>ALERTA: VEÍCULO NA BLACKLIST</b>
+
+🚗 <b>Placa:</b> <code>${plate}</code>
+${ownerName ? `👤 <b>Proprietário:</b> ${ownerName}` : ''}
+📍 <b>Câmera:</b> ${cameraName}
+🕐 <b>Data/Hora:</b> ${timestamp}
+
+⚠️ Veículo cadastrado na lista de bloqueio foi detectado.`;
+
+      const { data, error } = await supabase.functions.invoke('send-telegram', {
+        body: {
+          botToken: config.botToken,
+          chatId: config.chatId,
+          message,
+          parseMode: 'HTML',
+          photo: imageUrl?.startsWith('data:') ? imageUrl : undefined,
+        },
+      });
+
+      if (error) throw error;
+      
+      if (data?.success) {
+        console.log('Telegram blacklist alert sent successfully');
+      }
+    } catch (error) {
+      console.error('Error sending Telegram alert:', error);
+    }
+  }, []);
+
   // Adicionar detecção
   const addDetection = useCallback(async (detection: PlateDetectionInsert): Promise<PlateDetection | null> => {
     if (!user) {
@@ -175,7 +248,37 @@ export function usePlateDetections() {
       
       // Alertar se for blacklist
       if (status === 'blacklist') {
-        toast.error(`ALERTA: Veículo na blacklist detectado! Placa: ${detection.plate}`);
+        // Play critical sound
+        playCriticalAlertSound();
+        
+        // Show toast
+        toast.error(`🚨 ALERTA: Veículo na blacklist detectado! Placa: ${detection.plate}`, {
+          duration: 15000,
+        });
+
+        // Get owner name for Telegram
+        const registered = registeredPlates.find(
+          p => p.plate.toUpperCase().replace(/[^A-Z0-9]/g, '') === detection.plate.toUpperCase().replace(/[^A-Z0-9]/g, '')
+        );
+
+        // Send Telegram alert
+        sendBlacklistTelegramAlert(
+          detection.plate,
+          detection.camera_name,
+          registered?.owner_name || undefined,
+          detection.image_url || undefined
+        );
+
+        // Create alert in database
+        await supabase.from('alerts').insert({
+          type: 'security',
+          severity: 'critical',
+          camera_name: detection.camera_name,
+          camera_id: detection.camera_id,
+          message: `Veículo na blacklist detectado: ${detection.plate}`,
+          thumbnail: detection.image_url,
+          user_id: user.id,
+        });
       }
 
       return newDetection;
@@ -184,7 +287,7 @@ export function usePlateDetections() {
       toast.error('Erro ao salvar detecção');
       return null;
     }
-  }, [user, checkPlateStatus]);
+  }, [user, checkPlateStatus, registeredPlates, sendBlacklistTelegramAlert]);
 
   // Deletar detecção
   const deleteDetection = useCallback(async (id: string) => {

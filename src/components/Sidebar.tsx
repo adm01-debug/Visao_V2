@@ -2,7 +2,7 @@
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: Sidebar
  * 
- * Navegação lateral do sistema
+ * Navegação lateral do sistema com toggle de tema
  */
 
 import { useState, useEffect } from 'react';
@@ -28,6 +28,8 @@ import {
   Car,
   Send,
   FileText,
+  Moon,
+  Sun,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -41,6 +43,7 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeProvider';
 
 // ============================================
 // TIPOS
@@ -157,6 +160,7 @@ const bottomNavItems: NavItem[] = [
 export function Sidebar({ className }: SidebarProps) {
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const { resolvedTheme, toggleTheme } = useTheme();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [unreadAlerts, setUnreadAlerts] = useState(0);
@@ -289,6 +293,27 @@ export function Sidebar({ className }: SidebarProps) {
         </TooltipProvider>
         
         <Separator className="my-2" />
+        
+        {/* Theme Toggle */}
+        <Button
+          variant="ghost"
+          size={collapsed ? 'icon' : 'default'}
+          className={cn(
+            'w-full',
+            !collapsed && 'justify-start gap-3'
+          )}
+          onClick={toggleTheme}
+          title={resolvedTheme === 'dark' ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
+        >
+          {resolvedTheme === 'dark' ? (
+            <Sun className="w-4 h-4" />
+          ) : (
+            <Moon className="w-4 h-4" />
+          )}
+          {!collapsed && (
+            <span>{resolvedTheme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
+          )}
+        </Button>
         
         {/* Status indicator */}
         <div className={cn(
