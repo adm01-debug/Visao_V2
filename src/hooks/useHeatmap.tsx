@@ -569,7 +569,7 @@ interface HeatmapOverlayProps {
   className?: string;
 }
 
-export function HeatmapOverlay({ heatmapHook, className }: HeatmapOverlayProps) {
+export function HeatmapOverlay({ heatmapHook, className }: HeatmapOverlayProps): JSX.Element | null {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { heatmapData, renderToCanvas, config } = heatmapHook;
 

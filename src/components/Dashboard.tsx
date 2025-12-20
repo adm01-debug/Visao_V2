@@ -135,9 +135,9 @@ function StreamCameraCard({ camera, onClick, compact, showStream = true }: Strea
       {/* Video Stream or Thumbnail */}
       {showStream && camera.streamUrl && !hasError ? (
         <VideoStreamPlayer
-          src={camera.streamUrl}
-          autoPlay={isPlaying}
-          muted={isMuted}
+          cameraId={camera.id}
+          cameraName={camera.name}
+          streamUrl={camera.streamUrl}
           className="absolute inset-0 w-full h-full object-cover"
           onError={() => setHasError(true)}
         />
@@ -376,36 +376,35 @@ export function Dashboard() {
             <StatsCard
               title="Câmeras Online"
               value={onlineCameras}
-              total={cameras.length}
+              subtitle={`de ${cameras.length} total`}
               icon={Camera}
-              trend={cameras.length > 0 ? Math.round((onlineCameras / cameras.length) * 100) : 0}
+              trend={{ value: cameras.length > 0 ? Math.round((onlineCameras / cameras.length) * 100) : 0, isPositive: true }}
             />
             <StatsCard
               title="Pessoas Detectadas"
               value={totalPeople}
               icon={Users}
-              trend={12}
+              trend={{ value: 12, isPositive: true }}
             />
             <StatsCard
               title="Alertas Ativos"
               value={activeAlerts}
               icon={AlertTriangle}
-              trend={-5}
-              trendDirection="down"
+              trend={{ value: 5, isPositive: false }}
               variant={activeAlerts > 5 ? 'warning' : 'default'}
             />
             <StatsCard
               title="Segurança"
               value="98%"
               icon={Shield}
-              trend={2}
+              trend={{ value: 2, isPositive: true }}
             />
             <StatsCard
               title="Streams Ativos"
               value={streamingCameras}
-              total={cameras.length}
+              subtitle={`de ${cameras.length} total`}
               icon={Zap}
-              trend={streamingCameras}
+              trend={{ value: streamingCameras, isPositive: true }}
             />
           </div>
 
