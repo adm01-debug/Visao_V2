@@ -2,3 +2,18 @@ project_id = "qnjozykmaeifjqpicaue"
 
 [functions.analyze-image]
 verify_jwt = false
+
+[functions.detect-faces]
+verify_jwt = false
+
+[functions.compare-faces]
+verify_jwt = false
+
+[functions.generate-face-encoding]
+verify_jwt = false
+
+[functions.get-mapbox-token]
+verify_jwt = false
+
+[functions.send-alert-notification]
+verify_jwt = false
