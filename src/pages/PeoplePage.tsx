@@ -25,6 +25,7 @@ import {
   X,
   Upload,
   Eye,
+  Camera,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -79,6 +80,7 @@ import { formatDistanceToNow, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { Tables, TablesInsert } from '@/integrations/supabase/types';
+import { WebcamCapture } from '@/components/WebcamCapture';
 
 // ============================================
 // TIPOS - Alinhados com schema do banco
@@ -211,6 +213,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showWebcam, setShowWebcam] = useState(false);
 
   useEffect(() => {
     if (person) {
@@ -232,6 +235,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
       setPhotoPreview(null);
       setPhotoFile(null);
     }
+    setShowWebcam(false);
     storage.clearError();
   }, [person, isOpen]);
 
@@ -254,6 +258,13 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
       reader.onload = () => setPhotoPreview(reader.result as string);
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleWebcamCapture = (imageData: string, file: File) => {
+    setPhotoPreview(imageData);
+    setPhotoFile(file);
+    setShowWebcam(false);
+    toast.success('Foto capturada com sucesso!');
   };
 
   const handleSubmit = async () => {
@@ -326,62 +337,83 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Foto */}
-          <div className="flex flex-col items-center gap-4">
-            <div className="relative">
-              <Avatar className="w-24 h-24">
-                <AvatarImage src={photoPreview || undefined} />
-                <AvatarFallback className="text-2xl">
-                  {formData.name?.charAt(0) || 'P'}
-                </AvatarFallback>
-              </Avatar>
-              {photoPreview && (
+          {/* Webcam ou Foto */}
+          {showWebcam ? (
+            <WebcamCapture
+              onCapture={handleWebcamCapture}
+              onCancel={() => setShowWebcam(false)}
+              quality={0.9}
+              maxWidth={800}
+              maxHeight={600}
+            />
+          ) : (
+            <div className="flex flex-col items-center gap-4">
+              <div className="relative">
+                <Avatar className="w-24 h-24">
+                  <AvatarImage src={photoPreview || undefined} />
+                  <AvatarFallback className="text-2xl">
+                    {formData.name?.charAt(0) || 'P'}
+                  </AvatarFallback>
+                </Avatar>
+                {photoPreview && (
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    className="absolute -top-1 -right-1 h-6 w-6 rounded-full"
+                    onClick={handleRemovePhoto}
+                    type="button"
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                )}
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <Label htmlFor="photo" className="cursor-pointer">
+                  <div className="flex items-center gap-2 text-sm text-primary hover:underline">
+                    <Upload className="w-4 h-4" />
+                    Upload
+                  </div>
+                  <Input
+                    id="photo"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    onChange={handlePhotoChange}
+                  />
+                </Label>
+                <span className="text-muted-foreground">ou</span>
                 <Button
-                  variant="destructive"
-                  size="icon"
-                  className="absolute -top-1 -right-1 h-6 w-6 rounded-full"
-                  onClick={handleRemovePhoto}
                   type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowWebcam(true)}
                 >
-                  <X className="w-3 h-3" />
+                  <Camera className="w-4 h-4 mr-2" />
+                  Webcam
                 </Button>
-              )}
-            </div>
-            
-            <div className="text-center">
-              <Label htmlFor="photo" className="cursor-pointer">
-                <div className="flex items-center gap-2 text-sm text-primary hover:underline">
-                  <Upload className="w-4 h-4" />
-                  {photoPreview ? 'Alterar foto' : 'Adicionar foto'}
-                </div>
-                <Input
-                  id="photo"
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  className="hidden"
-                  onChange={handlePhotoChange}
-                />
-              </Label>
-              <p className="text-xs text-muted-foreground mt-1">
+              </div>
+
+              <p className="text-xs text-muted-foreground">
                 JPEG, PNG ou WebP • Máx 5MB
               </p>
-            </div>
 
-            {/* Upload Progress */}
-            {storage.isUploading && storage.progress > 0 && storage.progress < 100 && (
-              <div className="w-full max-w-xs">
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-primary transition-all duration-300"
-                    style={{ width: `${storage.progress}%` }}
-                  />
+              {/* Upload Progress */}
+              {storage.isUploading && storage.progress > 0 && storage.progress < 100 && (
+                <div className="w-full max-w-xs">
+                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-primary transition-all duration-300"
+                      style={{ width: `${storage.progress}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-center text-muted-foreground mt-1">
+                    Enviando foto... {storage.progress}%
+                  </p>
                 </div>
-                <p className="text-xs text-center text-muted-foreground mt-1">
-                  Enviando foto... {storage.progress}%
-                </p>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
 
           {/* Dados */}
           <div className="space-y-4">
