@@ -2,860 +2,594 @@
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useClipRecorder
  * 
- * Motor de gravação de clips de vídeo com suporte a:
- * - Gravação manual e automática (por alertas/regras)
- * - Pre-buffer (captura frames antes do evento)
- * - Upload para Supabase Storage
+ * Gerencia gravação de clips de vídeo:
+ * - MediaRecorder API
  * - Geração de thumbnails
- * 
- * @example
- * const {
- *   isRecording,
- *   startRecording,
- *   stopRecording,
- *   clips,
- * } = useClipRecorder({
- *   cameraId: 'cam-001',
- *   getFrame: () => captureFrame(),
- *   onClipReady: (clip) => saveClip(clip),
- * });
+ * - Upload para Supabase Storage
+ * - Metadados no banco
  */
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import {
-  RecordingConfig,
-  RecordingSession,
-  RecordingStatus,
-  RecordingTrigger,
-  RecordingEvents,
-  VideoClip,
-  ClipFormat,
-  defaultRecordingConfig,
-  generateClipFilename,
-  formatDuration,
-  formatFileSize,
-} from '@/types/clips';
 import { toast } from 'sonner';
 
 // ============================================
-// TIPOS DO HOOK
+// TIPOS
 // ============================================
 
-interface UseClipRecorderOptions extends RecordingEvents {
-  /** ID da câmera */
+type RecordingState = 'idle' | 'recording' | 'paused' | 'processing' | 'saving';
+type TriggerType = 'manual' | 'rule' | 'motion' | 'alert' | 'scheduled';
+
+interface RecordingConfig {
+  maxDurationSeconds: number;
+  preferredMimeType: string;
+  videoBitsPerSecond: number;
+  generateThumbnail: boolean;
+  autoSave: boolean;
+  showPreview: boolean;
+}
+
+interface ClipMetadata {
   cameraId: string;
-  
-  /** Nome da câmera */
-  cameraName?: string;
-  
-  /** Função para obter frame atual (retorna Blob ou base64) */
-  getFrame: () => Promise<Blob | null> | Blob | null;
-  
-  /** Configuração inicial */
-  config?: Partial<RecordingConfig>;
-  
-  /** Habilitar pre-buffer */
-  enablePreBuffer?: boolean;
-  
-  /** Intervalo de captura de frames (ms) */
-  captureInterval?: number;
-  
-  /** Upload automático para cloud */
-  autoUpload?: boolean;
-  
-  /** Salvar no banco de dados */
-  saveToDatabase?: boolean;
+  cameraName: string;
+  triggerType: TriggerType;
+  triggerRuleId?: string;
+  alertId?: string;
+  tags?: string[];
+  notes?: string;
+}
+
+interface RecordedClip {
+  id?: string;
+  blob: Blob;
+  url: string;
+  thumbnailUrl?: string;
+  thumbnailBlob?: Blob;
+  startTime: Date;
+  endTime: Date;
+  duration: number;
+  fileSize: number;
+  mimeType: string;
+  metadata: ClipMetadata;
+}
+
+interface UseClipRecorderOptions {
+  cameraId: string;
+  cameraName: string;
+  maxDuration?: number;
+  autoSave?: boolean;
+  onRecordingStart?: () => void;
+  onRecordingStop?: (clip: RecordedClip) => void;
+  onRecordingSave?: (clipId: string) => void;
+  onError?: (error: Error) => void;
 }
 
 interface UseClipRecorderReturn {
-  /** Está gravando agora */
+  // Estado
+  state: RecordingState;
   isRecording: boolean;
+  isPaused: boolean;
+  duration: number;
+  progress: number;
+  currentClip: RecordedClip | null;
+  clips: RecordedClip[];
   
-  /** Status atual */
-  status: RecordingStatus;
+  // Configuração
+  config: RecordingConfig;
+  updateConfig: (config: Partial<RecordingConfig>) => void;
   
-  /** Sessão de gravação ativa */
-  session: RecordingSession | null;
-  
-  /** Duração atual (segundos) */
-  currentDuration: number;
-  
-  /** Frames capturados */
-  frameCount: number;
-  
-  /** Clips gravados nesta sessão */
-  clips: VideoClip[];
-  
-  /** Iniciar gravação manual */
-  startRecording: (trigger?: RecordingTrigger, triggerId?: string, triggerDetails?: any) => void;
-  
-  /** Parar gravação */
-  stopRecording: () => Promise<VideoClip | null>;
-  
-  /** Gravar por trigger automático (alerta, regra, etc) */
-  triggerRecording: (
-    trigger: RecordingTrigger,
-    triggerId: string,
-    triggerDetails?: any
-  ) => void;
-  
-  /** Atualizar configuração */
-  updateConfig: (updates: Partial<RecordingConfig>) => void;
-  
-  /** Limpar clips locais */
+  // Ações
+  startRecording: (videoElement: HTMLVideoElement, triggerType?: TriggerType) => Promise<boolean>;
+  stopRecording: () => Promise<RecordedClip | null>;
+  pauseRecording: () => void;
+  resumeRecording: () => void;
+  cancelRecording: () => void;
+  saveClip: (clip: RecordedClip) => Promise<string | null>;
+  downloadClip: (clip: RecordedClip) => void;
+  deleteClip: (clipId: string) => Promise<boolean>;
   clearClips: () => void;
   
-  /** Fazer upload de um clip */
-  uploadClip: (clip: VideoClip) => Promise<string | null>;
-  
-  /** Deletar um clip */
-  deleteClip: (clipId: string) => Promise<void>;
-  
-  /** Baixar clip */
-  downloadClip: (clip: VideoClip) => void;
-  
-  /** Erro atual */
-  error: string | null;
+  // Utilitários
+  canRecord: boolean;
+  supportedMimeTypes: string[];
+  generateThumbnail: (videoElement: HTMLVideoElement) => Promise<Blob | null>;
 }
+
+// ============================================
+// CONSTANTES
+// ============================================
+
+const DEFAULT_CONFIG: RecordingConfig = {
+  maxDurationSeconds: 60,
+  preferredMimeType: 'video/webm;codecs=vp9',
+  videoBitsPerSecond: 2500000, // 2.5 Mbps
+  generateThumbnail: true,
+  autoSave: false,
+  showPreview: true,
+};
+
+const SUPPORTED_MIME_TYPES = [
+  'video/webm;codecs=vp9',
+  'video/webm;codecs=vp8',
+  'video/webm',
+  'video/mp4',
+];
 
 // ============================================
 // HOOK PRINCIPAL
 // ============================================
 
-export function useClipRecorder(
-  options: UseClipRecorderOptions
-): UseClipRecorderReturn {
+export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorderReturn {
   const {
     cameraId,
-    cameraName = 'Câmera',
-    getFrame,
-    config: initialConfig,
-    enablePreBuffer = true,
-    captureInterval = 100, // 10 FPS default
-    autoUpload = true,
-    saveToDatabase = true,
+    cameraName,
+    maxDuration = 60,
+    autoSave = false,
     onRecordingStart,
-    onFrameCapture,
-    onRecordingEnd,
-    onClipReady,
-    onUploadComplete,
-    onRecordingError,
-    onProcessingProgress,
+    onRecordingStop,
+    onRecordingSave,
+    onError,
   } = options;
 
   // Estado
-  const [isRecording, setIsRecording] = useState(false);
-  const [status, setStatus] = useState<RecordingStatus>('idle');
-  const [session, setSession] = useState<RecordingSession | null>(null);
-  const [currentDuration, setCurrentDuration] = useState(0);
-  const [frameCount, setFrameCount] = useState(0);
-  const [clips, setClips] = useState<VideoClip[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [state, setState] = useState<RecordingState>('idle');
+  const [duration, setDuration] = useState(0);
+  const [currentClip, setCurrentClip] = useState<RecordedClip | null>(null);
+  const [clips, setClips] = useState<RecordedClip[]>([]);
+  const [config, setConfig] = useState<RecordingConfig>({
+    ...DEFAULT_CONFIG,
+    maxDurationSeconds: maxDuration,
+    autoSave,
+  });
 
   // Refs
-  const configRef = useRef<RecordingConfig>({
-    ...defaultRecordingConfig,
-    ...initialConfig,
-    id: crypto.randomUUID(),
-    cameraId,
-  });
-  const sessionRef = useRef<RecordingSession | null>(null);
-  const framesRef = useRef<Blob[]>([]);
-  const preBufferRef = useRef<Blob[]>([]);
-  const captureIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const preBufferIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const startTimeRef = useRef<number>(0);
-  const durationIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const startTimeRef = useRef<Date | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const triggerTypeRef = useRef<TriggerType>('manual');
 
-  // ============================================
-  // PRE-BUFFER (captura contínua antes do evento)
-  // ============================================
+  // Verificar suporte
+  const canRecord = typeof MediaRecorder !== 'undefined';
+  
+  const supportedMimeTypes = SUPPORTED_MIME_TYPES.filter(type => 
+    MediaRecorder.isTypeSupported(type)
+  );
 
-  const startPreBuffer = useCallback(() => {
-    if (!enablePreBuffer) return;
-
-    const config = configRef.current;
-    const maxPreBufferFrames = Math.ceil(
-      (config.preEventSeconds * 1000) / captureInterval
-    );
-
-    preBufferIntervalRef.current = setInterval(async () => {
-      if (isRecording) return; // Não capturar pre-buffer durante gravação
-
-      try {
-        const frame = await getFrame();
-        if (frame) {
-          preBufferRef.current.push(frame);
-          // Manter apenas os últimos N frames
-          if (preBufferRef.current.length > maxPreBufferFrames) {
-            preBufferRef.current.shift();
-          }
-        }
-      } catch (err) {
-        console.error('[ClipRecorder] Erro no pre-buffer:', err);
-      }
-    }, captureInterval);
-  }, [enablePreBuffer, captureInterval, getFrame, isRecording]);
-
-  const stopPreBuffer = useCallback(() => {
-    if (preBufferIntervalRef.current) {
-      clearInterval(preBufferIntervalRef.current);
-      preBufferIntervalRef.current = null;
+  // Limpar timers
+  const clearTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
     }
   }, []);
 
-  // ============================================
-  // CAPTURA DE FRAMES
-  // ============================================
-
-  const captureFrames = useCallback(() => {
-    captureIntervalRef.current = setInterval(async () => {
-      const currentSession = sessionRef.current;
-      if (!currentSession || currentSession.status !== 'recording') return;
-
-      try {
-        const frame = await getFrame();
-        if (frame) {
-          framesRef.current.push(frame);
-          const newFrameCount = framesRef.current.length;
-          setFrameCount(newFrameCount);
-          
-          currentSession.frameCount = newFrameCount;
-          currentSession.frames = framesRef.current;
-          
-          onFrameCapture?.(currentSession, newFrameCount);
-
-          // Verificar duração máxima
-          const elapsed = (Date.now() - startTimeRef.current) / 1000;
-          if (elapsed >= configRef.current.maxDuration) {
-            stopRecording();
-          }
-        }
-      } catch (err) {
-        console.error('[ClipRecorder] Erro na captura:', err);
-      }
-    }, captureInterval);
-  }, [captureInterval, getFrame, onFrameCapture]);
-
-  const stopCapture = useCallback(() => {
-    if (captureIntervalRef.current) {
-      clearInterval(captureIntervalRef.current);
-      captureIntervalRef.current = null;
-    }
-    if (durationIntervalRef.current) {
-      clearInterval(durationIntervalRef.current);
-      durationIntervalRef.current = null;
-    }
-  }, []);
-
-  // ============================================
-  // CRIAR VÍDEO A PARTIR DOS FRAMES
-  // ============================================
-
-  const createVideoFromFrames = useCallback(async (
-    frames: Blob[],
-    format: ClipFormat
-  ): Promise<Blob | null> => {
-    if (frames.length === 0) return null;
-
-    const config = configRef.current;
-    
-    // Para formato GIF, criar GIF animado
-    if (format === 'gif') {
-      return createGifFromFrames(frames);
-    }
-
-    // Para MP4/WebM, usar MediaRecorder se disponível
-    // ou criar vídeo a partir de canvas
+  // Gerar thumbnail
+  const generateThumbnail = useCallback(async (videoElement: HTMLVideoElement): Promise<Blob | null> => {
     try {
-      const mimeType = format === 'mp4' ? 'video/mp4' : 'video/webm';
-      
-      // Criar canvas para desenhar frames
-      const firstFrame = frames[0];
-      const img = await createImageBitmap(firstFrame);
       const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d')!;
-
-      // Criar MediaRecorder se suportado
-      const stream = canvas.captureStream(config.fps);
+      canvas.width = videoElement.videoWidth || 320;
+      canvas.height = videoElement.videoHeight || 240;
       
-      if (!MediaRecorder.isTypeSupported(mimeType)) {
-        // Fallback para webm
-        const webmType = 'video/webm;codecs=vp8';
-        if (!MediaRecorder.isTypeSupported(webmType)) {
-          throw new Error('Formato de vídeo não suportado pelo navegador');
-        }
-      }
-
-      return new Promise((resolve, reject) => {
-        const chunks: Blob[] = [];
-        const recorder = new MediaRecorder(stream, {
-          mimeType: MediaRecorder.isTypeSupported(mimeType) ? mimeType : 'video/webm',
-          videoBitsPerSecond: getVideoBitrate(config.quality),
-        });
-
-        recorder.ondataavailable = (e) => {
-          if (e.data.size > 0) {
-            chunks.push(e.data);
-          }
-        };
-
-        recorder.onstop = () => {
-          const blob = new Blob(chunks, { type: recorder.mimeType });
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+      
+      ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+      
+      return new Promise((resolve) => {
+        canvas.toBlob((blob) => {
           resolve(blob);
-        };
-
-        recorder.onerror = (e) => {
-          reject(new Error('Erro ao gravar vídeo'));
-        };
-
-        recorder.start();
-
-        // Desenhar cada frame no canvas
-        let frameIndex = 0;
-        const frameInterval = 1000 / config.fps;
-
-        const drawNextFrame = async () => {
-          if (frameIndex >= frames.length) {
-            recorder.stop();
-            return;
-          }
-
-          const frameBitmap = await createImageBitmap(frames[frameIndex]);
-          ctx.drawImage(frameBitmap, 0, 0);
-          
-          // Adicionar marca d'água se configurado
-          if (config.watermark?.enabled) {
-            drawWatermark(ctx, canvas.width, canvas.height, config.watermark);
-          }
-
-          frameIndex++;
-          onProcessingProgress?.(
-            Math.round((frameIndex / frames.length) * 100),
-            sessionRef.current!
-          );
-
-          setTimeout(drawNextFrame, frameInterval);
-        };
-
-        drawNextFrame();
+        }, 'image/jpeg', 0.8);
       });
-    } catch (err) {
-      console.error('[ClipRecorder] Erro ao criar vídeo:', err);
-      throw err;
-    }
-  }, [onProcessingProgress]);
-
-  // ============================================
-  // HELPERS
-  // ============================================
-
-  const getVideoBitrate = (quality: string): number => {
-    const bitrates: Record<string, number> = {
-      low: 500000,
-      medium: 1500000,
-      high: 3000000,
-      original: 5000000,
-    };
-    return bitrates[quality] || 1500000;
-  };
-
-  const drawWatermark = (
-    ctx: CanvasRenderingContext2D,
-    width: number,
-    height: number,
-    watermark: NonNullable<RecordingConfig['watermark']>
-  ) => {
-    const padding = 10;
-    const fontSize = 14;
-    ctx.font = `${fontSize}px Arial`;
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
-    ctx.lineWidth = 2;
-
-    let text = watermark.text || cameraName;
-    if (watermark.includeTimestamp) {
-      text += ` | ${new Date().toLocaleString('pt-BR')}`;
-    }
-
-    const textWidth = ctx.measureText(text).width;
-    let x = padding;
-    let y = padding + fontSize;
-
-    switch (watermark.position) {
-      case 'top-right':
-        x = width - textWidth - padding;
-        break;
-      case 'bottom-left':
-        y = height - padding;
-        break;
-      case 'bottom-right':
-        x = width - textWidth - padding;
-        y = height - padding;
-        break;
-    }
-
-    ctx.strokeText(text, x, y);
-    ctx.fillText(text, x, y);
-  };
-
-  const createGifFromFrames = async (frames: Blob[]): Promise<Blob> => {
-    // Implementação simplificada - em produção usar biblioteca como gif.js
-    // Por agora, retornar primeiro frame como imagem
-    return frames[0];
-  };
-
-  const createThumbnail = async (frames: Blob[]): Promise<string | null> => {
-    if (frames.length === 0) return null;
-    
-    // Pegar frame do meio
-    const middleFrame = frames[Math.floor(frames.length / 2)];
-    
-    try {
-      const img = await createImageBitmap(middleFrame);
-      const canvas = document.createElement('canvas');
-      const maxSize = 320;
-      const scale = Math.min(maxSize / img.width, maxSize / img.height);
-      canvas.width = img.width * scale;
-      canvas.height = img.height * scale;
-      
-      const ctx = canvas.getContext('2d')!;
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      
-      return canvas.toDataURL('image/jpeg', 0.7);
-    } catch (err) {
-      console.error('[ClipRecorder] Erro ao criar thumbnail:', err);
+    } catch (error) {
+      console.error('Erro ao gerar thumbnail:', error);
       return null;
     }
-  };
+  }, []);
 
-  // ============================================
-  // UPLOAD PARA CLOUD
-  // ============================================
+  // Iniciar gravação
+  const startRecording = useCallback(async (
+    videoElement: HTMLVideoElement,
+    triggerType: TriggerType = 'manual'
+  ): Promise<boolean> => {
+    if (!canRecord) {
+      onError?.(new Error('MediaRecorder não suportado'));
+      return false;
+    }
 
-  const uploadClip = useCallback(async (clip: VideoClip): Promise<string | null> => {
-    if (!clip.localUrl) return null;
-
-    const config = configRef.current;
-    if (!config.storage.uploadToCloud) return null;
+    if (state !== 'idle') {
+      return false;
+    }
 
     try {
-      // Buscar blob da URL local
-      const response = await fetch(clip.localUrl);
-      const blob = await response.blob();
+      // Obter stream do vídeo
+      let stream: MediaStream;
+      
+      if ('captureStream' in videoElement) {
+        stream = (videoElement as any).captureStream();
+      } else if ('mozCaptureStream' in videoElement) {
+        stream = (videoElement as any).mozCaptureStream();
+      } else {
+        throw new Error('Navegador não suporta captureStream');
+      }
 
-      const bucket = config.storage.bucket || 'clips';
-      const filePath = `${cameraId}/${clip.id}.${clip.format}`;
+      streamRef.current = stream;
+      triggerTypeRef.current = triggerType;
 
-      const { data, error: uploadError } = await supabase.storage
-        .from(bucket)
-        .upload(filePath, blob, {
-          contentType: `video/${clip.format}`,
-          upsert: true,
+      // Escolher mime type
+      const mimeType = supportedMimeTypes[0] || 'video/webm';
+
+      // Criar MediaRecorder
+      const recorder = new MediaRecorder(stream, {
+        mimeType,
+        videoBitsPerSecond: config.videoBitsPerSecond,
+      });
+
+      chunksRef.current = [];
+      startTimeRef.current = new Date();
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunksRef.current.push(event.data);
+        }
+      };
+
+      recorder.onerror = (event) => {
+        console.error('MediaRecorder error:', event);
+        onError?.(new Error('Erro na gravação'));
+        setState('idle');
+        clearTimer();
+      };
+
+      recorder.onstop = async () => {
+        // Processar será feito em stopRecording
+      };
+
+      mediaRecorderRef.current = recorder;
+      
+      // Iniciar gravação
+      recorder.start(1000); // Chunks de 1 segundo
+      setState('recording');
+      setDuration(0);
+
+      // Timer para atualizar duração
+      timerRef.current = setInterval(() => {
+        setDuration(prev => {
+          const newDuration = prev + 1;
+          
+          // Auto-stop quando atingir duração máxima
+          if (newDuration >= config.maxDurationSeconds) {
+            stopRecording();
+          }
+          
+          return newDuration;
+        });
+      }, 1000);
+
+      onRecordingStart?.();
+      return true;
+
+    } catch (error) {
+      console.error('Erro ao iniciar gravação:', error);
+      onError?.(error as Error);
+      return false;
+    }
+  }, [canRecord, state, config, supportedMimeTypes, onRecordingStart, onError, clearTimer]);
+
+  // Parar gravação
+  const stopRecording = useCallback(async (): Promise<RecordedClip | null> => {
+    if (!mediaRecorderRef.current || state === 'idle') {
+      return null;
+    }
+
+    return new Promise((resolve) => {
+      setState('processing');
+      clearTimer();
+
+      const recorder = mediaRecorderRef.current!;
+      
+      recorder.onstop = async () => {
+        try {
+          const endTime = new Date();
+          const startTime = startTimeRef.current || new Date();
+          
+          // Criar blob do vídeo
+          const mimeType = recorder.mimeType || 'video/webm';
+          const blob = new Blob(chunksRef.current, { type: mimeType });
+          const url = URL.createObjectURL(blob);
+
+          // Calcular duração real
+          const durationSeconds = Math.round((endTime.getTime() - startTime.getTime()) / 1000);
+
+          // Criar clip
+          const clip: RecordedClip = {
+            blob,
+            url,
+            startTime,
+            endTime,
+            duration: durationSeconds,
+            fileSize: blob.size,
+            mimeType,
+            metadata: {
+              cameraId,
+              cameraName,
+              triggerType: triggerTypeRef.current,
+            },
+          };
+
+          // Gerar thumbnail se configurado
+          // (Nota: precisaria de um video element para gerar thumbnail do blob)
+
+          setCurrentClip(clip);
+          setClips(prev => [...prev, clip]);
+          
+          onRecordingStop?.(clip);
+
+          // Auto-save se configurado
+          if (config.autoSave) {
+            await saveClip(clip);
+          }
+
+          setState('idle');
+          setDuration(0);
+          
+          // Limpar
+          mediaRecorderRef.current = null;
+          chunksRef.current = [];
+          startTimeRef.current = null;
+          
+          if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => track.stop());
+            streamRef.current = null;
+          }
+
+          resolve(clip);
+
+        } catch (error) {
+          console.error('Erro ao processar gravação:', error);
+          onError?.(error as Error);
+          setState('idle');
+          resolve(null);
+        }
+      };
+
+      recorder.stop();
+    });
+  }, [state, config, cameraId, cameraName, clearTimer, onRecordingStop, onError]);
+
+  // Pausar gravação
+  const pauseRecording = useCallback(() => {
+    if (mediaRecorderRef.current && state === 'recording') {
+      mediaRecorderRef.current.pause();
+      setState('paused');
+      clearTimer();
+    }
+  }, [state, clearTimer]);
+
+  // Retomar gravação
+  const resumeRecording = useCallback(() => {
+    if (mediaRecorderRef.current && state === 'paused') {
+      mediaRecorderRef.current.resume();
+      setState('recording');
+      
+      timerRef.current = setInterval(() => {
+        setDuration(prev => {
+          if (prev >= config.maxDurationSeconds) {
+            stopRecording();
+          }
+          return prev + 1;
+        });
+      }, 1000);
+    }
+  }, [state, config.maxDurationSeconds, stopRecording]);
+
+  // Cancelar gravação
+  const cancelRecording = useCallback(() => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+    }
+    
+    clearTimer();
+    setState('idle');
+    setDuration(0);
+    chunksRef.current = [];
+    startTimeRef.current = null;
+    
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    
+    mediaRecorderRef.current = null;
+  }, [clearTimer]);
+
+  // Salvar clip no Supabase
+  const saveClip = useCallback(async (clip: RecordedClip): Promise<string | null> => {
+    try {
+      setState('saving');
+
+      // Upload do vídeo
+      const fileName = `${cameraId}/${Date.now()}.webm`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('video-clips')
+        .upload(fileName, clip.blob, {
+          contentType: clip.mimeType,
+          cacheControl: '3600',
         });
 
       if (uploadError) throw uploadError;
 
       // Obter URL pública
       const { data: urlData } = supabase.storage
-        .from(bucket)
-        .getPublicUrl(filePath);
+        .from('video-clips')
+        .getPublicUrl(fileName);
 
-      const publicUrl = urlData.publicUrl;
+      // Upload do thumbnail (se existir)
+      let thumbnailUrl: string | undefined;
+      if (clip.thumbnailBlob) {
+        const thumbName = `${cameraId}/thumb_${Date.now()}.jpg`;
+        const { data: thumbData, error: thumbError } = await supabase.storage
+          .from('video-clips')
+          .upload(thumbName, clip.thumbnailBlob, {
+            contentType: 'image/jpeg',
+          });
 
-      // Atualizar clip
-      const updatedClip = {
-        ...clip,
-        fileUrl: publicUrl,
-        status: 'ready' as const,
-      };
-
-      setClips(prev => prev.map(c => c.id === clip.id ? updatedClip : c));
-      onUploadComplete?.(updatedClip);
-
-      return publicUrl;
-    } catch (err) {
-      console.error('[ClipRecorder] Erro no upload:', err);
-      const errorMsg = err instanceof Error ? err.message : 'Erro no upload';
-      setError(errorMsg);
-      return null;
-    }
-  }, [cameraId, onUploadComplete]);
-
-  // ============================================
-  // SALVAR NO BANCO
-  // ============================================
-  // SALVAR NO BANCO
-  // ============================================
-
-  const saveClipToDatabase = useCallback(async (clip: VideoClip) => {
-    if (!saveToDatabase) return;
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        console.warn('[ClipRecorder] Usuário não autenticado - clip não será salvo');
-        return;
+        if (!thumbError) {
+          const { data: thumbUrlData } = supabase.storage
+            .from('video-clips')
+            .getPublicUrl(thumbName);
+          thumbnailUrl = thumbUrlData?.publicUrl;
+        }
       }
 
-      await supabase.from('video_clips').insert({
-        id: clip.id,
-        camera_id: cameraId,
-        user_id: user.id,
-        start_time: clip.startedAt.toISOString(),
-        end_time: clip.endedAt?.toISOString(),
-        duration: clip.duration,
-        file_url: clip.fileUrl,
-        thumbnail_url: clip.thumbnailUrl,
-        status: clip.status,
-      });
-      
-      console.log('[ClipRecorder] Clip salvo no banco de dados');
-    } catch (err) {
-      console.error('[ClipRecorder] Erro ao salvar clip:', err);
-    }
-  }, [saveToDatabase, cameraId]);
+      // Salvar metadados no banco
+      const { data: clipRecord, error: dbError } = await supabase
+        .from('video_clips')
+        .insert({
+          camera_id: cameraId,
+          start_time: clip.startTime.toISOString(),
+          end_time: clip.endTime.toISOString(),
+          duration: clip.duration,
+          file_url: urlData?.publicUrl,
+          thumbnail_url: thumbnailUrl,
+          file_size: clip.fileSize,
+          trigger_type: clip.metadata.triggerType,
+          trigger_rule_id: clip.metadata.triggerRuleId,
+          alert_id: clip.metadata.alertId,
+          tags: clip.metadata.tags,
+          notes: clip.metadata.notes,
+        })
+        .select()
+        .single();
 
-  // ============================================
-  // API PÚBLICA
-  // ============================================
+      if (dbError) throw dbError;
 
-  const startRecording = useCallback((
-    trigger: RecordingTrigger = 'manual',
-    triggerId?: string,
-    triggerDetails?: any
-  ) => {
-    if (isRecording) return;
-
-    const config = configRef.current;
-    
-    // Criar nova sessão
-    const newSession: RecordingSession = {
-      id: crypto.randomUUID(),
-      cameraId,
-      status: 'recording',
-      config,
-      trigger,
-      triggerId,
-      frames: [],
-      frameCount: 0,
-      startedAt: new Date(),
-      currentDuration: 0,
-      preBuffer: enablePreBuffer ? [...preBufferRef.current] : [],
-    };
-
-    // Incluir pre-buffer nos frames iniciais
-    framesRef.current = enablePreBuffer ? [...preBufferRef.current] : [];
-    preBufferRef.current = [];
-    
-    sessionRef.current = newSession;
-    startTimeRef.current = Date.now();
-
-    setSession(newSession);
-    setIsRecording(true);
-    setStatus('recording');
-    setFrameCount(framesRef.current.length);
-    setError(null);
-
-    // Parar pre-buffer durante gravação
-    stopPreBuffer();
-
-    // Iniciar captura
-    captureFrames();
-
-    // Atualizar duração
-    durationIntervalRef.current = setInterval(() => {
-      const elapsed = (Date.now() - startTimeRef.current) / 1000;
-      setCurrentDuration(elapsed);
-    }, 100);
-
-    onRecordingStart?.(newSession);
-    
-    toast.info(`Gravando clip - ${cameraName}`, {
-      description: `Trigger: ${trigger}`,
-    });
-  }, [
-    isRecording,
-    cameraId,
-    cameraName,
-    enablePreBuffer,
-    stopPreBuffer,
-    captureFrames,
-    onRecordingStart,
-  ]);
-
-  const stopRecording = useCallback(async (): Promise<VideoClip | null> => {
-    if (!isRecording || !sessionRef.current) return null;
-
-    const currentSession = sessionRef.current;
-    const config = configRef.current;
-
-    // Parar captura
-    stopCapture();
-    setIsRecording(false);
-    setStatus('processing');
-
-    const endTime = new Date();
-    const duration = (Date.now() - startTimeRef.current) / 1000;
-
-    // Verificar duração mínima
-    if (duration < config.minDuration) {
-      setStatus('idle');
-      setSession(null);
-      toast.warning('Gravação muito curta', {
-        description: `Mínimo: ${config.minDuration}s`,
-      });
-      startPreBuffer(); // Reiniciar pre-buffer
-      return null;
-    }
-
-    try {
-      onRecordingEnd?.(currentSession);
-
-      // Criar vídeo
-      const videoBlob = await createVideoFromFrames(
-        framesRef.current,
-        config.format
+      // Atualizar clip com ID
+      clip.id = clipRecord.id;
+      setClips(prev => 
+        prev.map(c => c.url === clip.url ? { ...c, id: clipRecord.id } : c)
       );
 
-      if (!videoBlob) {
-        throw new Error('Falha ao criar vídeo');
-      }
-
-      // Criar thumbnail
-      const thumbnailUrl = await createThumbnail(framesRef.current);
-
-      // Criar URL local
-      const localUrl = URL.createObjectURL(videoBlob);
-
-      // Criar clip
-      const clip: VideoClip = {
-        id: currentSession.id,
-        cameraId,
-        cameraName,
-        status: 'ready',
-        trigger: currentSession.trigger,
-        triggerId: currentSession.triggerId,
-        triggerDetails: currentSession.triggerDetails,
-        startedAt: currentSession.startedAt,
-        endedAt: endTime,
-        duration,
-        localUrl,
-        fileSize: videoBlob.size,
-        format: config.format,
-        thumbnailUrl: thumbnailUrl || undefined,
-        frameCount: framesRef.current.length,
-        metadata: {
-          fps: config.fps,
-        },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-
-      // Adicionar aos clips
-      setClips(prev => [clip, ...prev]);
+      setState('idle');
+      onRecordingSave?.(clipRecord.id);
+      toast.success('Gravação salva');
       
-      // Limpar
-      framesRef.current = [];
-      sessionRef.current = null;
-      setSession(null);
-      setStatus('idle');
-      setCurrentDuration(0);
-      setFrameCount(0);
+      return clipRecord.id;
 
-      // Reiniciar pre-buffer
-      startPreBuffer();
-
-      onClipReady?.(clip);
-
-      toast.success('Clip gravado!', {
-        description: `${formatDuration(duration)} | ${formatFileSize(videoBlob.size)}`,
-      });
-
-      // Upload automático
-      if (autoUpload && config.storage.uploadToCloud) {
-        setStatus('uploading');
-        const uploadedUrl = await uploadClip(clip);
-        if (uploadedUrl) {
-          clip.fileUrl = uploadedUrl;
-        }
-        setStatus('idle');
-      }
-
-      // Salvar no banco
-      await saveClipToDatabase(clip);
-
-      return clip;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Erro ao processar clip';
-      setError(errorMsg);
-      setStatus('error');
-      onRecordingError?.(err instanceof Error ? err : new Error(errorMsg), currentSession);
-      
-      toast.error('Erro na gravação', { description: errorMsg });
-      
-      // Reiniciar pre-buffer mesmo com erro
-      startPreBuffer();
-      
+    } catch (error) {
+      console.error('Erro ao salvar clip:', error);
+      onError?.(error as Error);
+      toast.error('Erro ao salvar gravação');
+      setState('idle');
       return null;
     }
-  }, [
-    isRecording,
-    stopCapture,
-    createVideoFromFrames,
-    cameraId,
-    cameraName,
-    autoUpload,
-    uploadClip,
-    saveClipToDatabase,
-    startPreBuffer,
-    onRecordingEnd,
-    onClipReady,
-    onRecordingError,
-  ]);
+  }, [cameraId, onRecordingSave, onError]);
 
-  const triggerRecording = useCallback((
-    trigger: RecordingTrigger,
-    triggerId: string,
-    triggerDetails?: any
-  ) => {
-    const config = configRef.current;
+  // Download clip
+  const downloadClip = useCallback((clip: RecordedClip) => {
+    const a = document.createElement('a');
+    a.href = clip.url;
+    a.download = `${cameraName}_${clip.startTime.toISOString().replace(/[:.]/g, '-')}.webm`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    toast.success('Download iniciado');
+  }, [cameraName]);
 
-    // Verificar se trigger está habilitado
-    if (trigger === 'alert' && !config.autoTriggers.onAlert) return;
-    if (trigger === 'motion' && !config.autoTriggers.onMotion) return;
-    if (trigger === 'rule' && !config.autoTriggers.onRule) return;
+  // Deletar clip
+  const deleteClip = useCallback(async (clipId: string): Promise<boolean> => {
+    try {
+      const { error } = await supabase
+        .from('video_clips')
+        .delete()
+        .eq('id', clipId);
 
-    // Verificar severidade mínima
-    if (triggerDetails?.severity && config.autoTriggers.minSeverity) {
-      const levels = ['low', 'medium', 'high', 'critical'];
-      const triggerLevel = levels.indexOf(triggerDetails.severity);
-      const minLevel = levels.indexOf(config.autoTriggers.minSeverity);
-      if (triggerLevel < minLevel) return;
+      if (error) throw error;
+
+      setClips(prev => prev.filter(c => c.id !== clipId));
+      toast.success('Gravação excluída');
+      return true;
+
+    } catch (error) {
+      console.error('Erro ao deletar clip:', error);
+      toast.error('Erro ao excluir gravação');
+      return false;
     }
-
-    // Iniciar gravação
-    startRecording(trigger, triggerId, triggerDetails);
-
-    // Parar automaticamente após postEventSeconds
-    setTimeout(() => {
-      if (sessionRef.current?.trigger === trigger && 
-          sessionRef.current?.triggerId === triggerId) {
-        stopRecording();
-      }
-    }, (config.preEventSeconds + config.postEventSeconds) * 1000);
-  }, [startRecording, stopRecording]);
-
-  const updateConfig = useCallback((updates: Partial<RecordingConfig>) => {
-    configRef.current = {
-      ...configRef.current,
-      ...updates,
-    };
   }, []);
 
+  // Limpar clips locais
   const clearClips = useCallback(() => {
-    // Revogar URLs de blob
     clips.forEach(clip => {
-      if (clip.localUrl) {
-        URL.revokeObjectURL(clip.localUrl);
+      if (clip.url.startsWith('blob:')) {
+        URL.revokeObjectURL(clip.url);
+      }
+      if (clip.thumbnailUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(clip.thumbnailUrl);
       }
     });
     setClips([]);
+    setCurrentClip(null);
   }, [clips]);
 
-  const deleteClip = useCallback(async (clipId: string) => {
-    const clip = clips.find(c => c.id === clipId);
-    if (!clip) return;
-
-    // Revogar URL local
-    if (clip.localUrl) {
-      URL.revokeObjectURL(clip.localUrl);
-    }
-
-    // Deletar do storage
-    if (clip.fileUrl) {
-      const config = configRef.current;
-      const bucket = config.storage.bucket || 'clips';
-      const filePath = `${cameraId}/${clip.id}.${clip.format}`;
-      
-      await supabase.storage.from(bucket).remove([filePath]);
-    }
-
-    // Nota: tabela video_clips não existe no schema atual
-    // Funcionalidade de deleção do banco desabilitada
-    if (saveToDatabase) {
-      console.log('[ClipRecorder] Deleção de clips do banco desabilitada - tabela não existe');
-    }
-
-    setClips(prev => prev.filter(c => c.id !== clipId));
-    toast.success('Clip deletado');
-  }, [clips, cameraId, saveToDatabase]);
-
-  const downloadClip = useCallback((clip: VideoClip) => {
-    const url = clip.localUrl || clip.fileUrl;
-    if (!url) return;
-
-    const filename = generateClipFilename(
-      clip.cameraName,
-      clip.trigger,
-      clip.startedAt,
-      clip.format
-    );
-
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.click();
+  // Atualizar config
+  const updateConfig = useCallback((updates: Partial<RecordingConfig>) => {
+    setConfig(prev => ({ ...prev, ...updates }));
   }, []);
 
-  // ============================================
-  // EFEITOS
-  // ============================================
-
-  // Iniciar pre-buffer ao montar
-  useEffect(() => {
-    startPreBuffer();
-    return () => {
-      stopPreBuffer();
-      stopCapture();
-    };
-  }, [startPreBuffer, stopPreBuffer, stopCapture]);
-
-  // Cleanup ao desmontar
+  // Cleanup
   useEffect(() => {
     return () => {
-      // Revogar URLs de blob
+      clearTimer();
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+        mediaRecorderRef.current.stop();
+      }
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+      // Revogar URLs
       clips.forEach(clip => {
-        if (clip.localUrl) {
-          URL.revokeObjectURL(clip.localUrl);
+        if (clip.url.startsWith('blob:')) {
+          URL.revokeObjectURL(clip.url);
         }
       });
     };
-  }, []);
+  }, [clearTimer, clips]);
 
-  // ============================================
-  // RETORNO
-  // ============================================
+  // Progresso (0-100)
+  const progress = config.maxDurationSeconds > 0 
+    ? Math.min((duration / config.maxDurationSeconds) * 100, 100)
+    : 0;
 
   return {
-    isRecording,
-    status,
-    session,
-    currentDuration,
-    frameCount,
+    // Estado
+    state,
+    isRecording: state === 'recording',
+    isPaused: state === 'paused',
+    duration,
+    progress,
+    currentClip,
     clips,
+    
+    // Configuração
+    config,
+    updateConfig,
+    
+    // Ações
     startRecording,
     stopRecording,
-    triggerRecording,
-    updateConfig,
-    clearClips,
-    uploadClip,
-    deleteClip,
+    pauseRecording,
+    resumeRecording,
+    cancelRecording,
+    saveClip,
     downloadClip,
-    error,
+    deleteClip,
+    clearClips,
+    
+    // Utilitários
+    canRecord,
+    supportedMimeTypes,
+    generateThumbnail,
   };
 }
 
