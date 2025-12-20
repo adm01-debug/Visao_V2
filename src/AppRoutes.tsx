@@ -26,6 +26,7 @@ const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
 const AuthPage = lazy(() => import('@/pages/Auth'));
 const NotFoundPage = lazy(() => import('@/pages/NotFound'));
 const NotificationSettingsPage = lazy(() => import('@/pages/NotificationSettingsPage'));
+const StreamSettingsPage = lazy(() => import('@/pages/StreamSettingsPage'));
 
 // Loading fallback
 function PageLoader() {
@@ -79,6 +80,7 @@ export function AppRoutes() {
         {/* Configurações */}
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/settings/notifications" element={<NotificationSettingsPage />} />
+        <Route path="/settings/streams" element={<StreamSettingsPage />} />
         
         {/* Auth */}
         <Route path="/auth" element={<AuthPage />} />
