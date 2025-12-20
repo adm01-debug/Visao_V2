@@ -194,6 +194,7 @@ function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
 // ============================================
 
 import { useStorage, STORAGE_BUCKETS } from '@/hooks/useStorage';
+import { useFaceDetection, FaceEncoding } from '@/hooks/useFaceDetection';
 
 interface PersonFormDialogProps {
   person?: DbPerson | null;
@@ -204,6 +205,7 @@ interface PersonFormDialogProps {
 
 function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogProps) {
   const storage = useStorage();
+  const faceDetection = useFaceDetection();
   const [formData, setFormData] = useState({
     name: '',
     department: '',
@@ -212,6 +214,8 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
   });
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [faceEncoding, setFaceEncoding] = useState<FaceEncoding | null>(null);
+  const [faceValidation, setFaceValidation] = useState<{ valid: boolean; message: string } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showWebcam, setShowWebcam] = useState(false);
 
@@ -225,6 +229,14 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
       });
       setPhotoPreview(person.photo_url || null);
       setPhotoFile(null);
+      // Se já tem encoding salvo, usa ele
+      if (person.face_encoding) {
+        setFaceEncoding(person.face_encoding as unknown as FaceEncoding);
+        setFaceValidation({ valid: true, message: 'Encoding facial existente' });
+      } else {
+        setFaceEncoding(null);
+        setFaceValidation(null);
+      }
     } else {
       setFormData({
         name: '',
@@ -234,12 +246,35 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
       });
       setPhotoPreview(null);
       setPhotoFile(null);
+      setFaceEncoding(null);
+      setFaceValidation(null);
     }
     setShowWebcam(false);
     storage.clearError();
+    faceDetection.clearError();
   }, [person, isOpen]);
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Detectar faces automaticamente quando uma foto é selecionada
+  const detectFacesInPhoto = async (imageData: string, file: File) => {
+    setFaceEncoding(null);
+    setFaceValidation(null);
+    
+    toast.loading('Analisando rosto...', { id: 'face-detection' });
+    
+    const result = await faceDetection.detectFromBase64(imageData);
+    const validation = faceDetection.validateFaceQuality(result);
+    setFaceValidation(validation);
+
+    if (validation.valid) {
+      const encoding = faceDetection.generateEncoding(result);
+      setFaceEncoding(encoding);
+      toast.success('Rosto detectado com sucesso!', { id: 'face-detection' });
+    } else {
+      toast.error(validation.message, { id: 'face-detection' });
+    }
+  };
+
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       // Validate using hook
@@ -255,16 +290,22 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
 
       setPhotoFile(file);
       const reader = new FileReader();
-      reader.onload = () => setPhotoPreview(reader.result as string);
+      reader.onload = async () => {
+        const imageData = reader.result as string;
+        setPhotoPreview(imageData);
+        // Detectar faces automaticamente
+        await detectFacesInPhoto(imageData, file);
+      };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleWebcamCapture = (imageData: string, file: File) => {
+  const handleWebcamCapture = async (imageData: string, file: File) => {
     setPhotoPreview(imageData);
     setPhotoFile(file);
     setShowWebcam(false);
-    toast.success('Foto capturada com sucesso!');
+    // Detectar faces automaticamente
+    await detectFacesInPhoto(imageData, file);
   };
 
   const handleSubmit = async () => {
@@ -302,6 +343,8 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
       await onSave({ 
         ...formData, 
         photo_url: photoUrl,
+        // Salvar encoding facial se disponível (convertido para Json)
+        face_encoding: faceEncoding ? JSON.parse(JSON.stringify(faceEncoding)) : null,
       });
       onClose();
       toast.success(person ? 'Pessoa atualizada' : 'Pessoa cadastrada');
@@ -322,6 +365,8 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
     }
     setPhotoPreview(null);
     setPhotoFile(null);
+    setFaceEncoding(null);
+    setFaceValidation(null);
   };
 
   return (
@@ -349,7 +394,12 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
           ) : (
             <div className="flex flex-col items-center gap-4">
               <div className="relative">
-                <Avatar className="w-24 h-24">
+                <Avatar className={cn(
+                  "w-24 h-24 ring-2 ring-offset-2",
+                  faceValidation?.valid ? "ring-green-500" : 
+                  faceValidation && !faceValidation.valid ? "ring-destructive" : 
+                  "ring-transparent"
+                )}>
                   <AvatarImage src={photoPreview || undefined} />
                   <AvatarFallback className="text-2xl">
                     {formData.name?.charAt(0) || 'P'}
@@ -365,6 +415,22 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
                   >
                     <X className="w-3 h-3" />
                   </Button>
+                )}
+                {/* Indicador de detecção facial */}
+                {faceDetection.isDetecting && (
+                  <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground rounded-full p-1">
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  </div>
+                )}
+                {!faceDetection.isDetecting && faceValidation?.valid && (
+                  <div className="absolute -bottom-1 -right-1 bg-green-500 text-white rounded-full p-1">
+                    <CheckCircle className="w-4 h-4" />
+                  </div>
+                )}
+                {!faceDetection.isDetecting && faceValidation && !faceValidation.valid && (
+                  <div className="absolute -bottom-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-1">
+                    <XCircle className="w-4 h-4" />
+                  </div>
                 )}
               </div>
               
@@ -397,6 +463,43 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
               <p className="text-xs text-muted-foreground">
                 JPEG, PNG ou WebP • Máx 5MB
               </p>
+
+              {/* Status da detecção facial */}
+              {photoPreview && faceValidation && (
+                <div className={cn(
+                  "flex items-center gap-2 px-3 py-2 rounded-md text-sm",
+                  faceValidation.valid 
+                    ? "bg-green-500/10 text-green-700 dark:text-green-400" 
+                    : "bg-destructive/10 text-destructive"
+                )}>
+                  {faceValidation.valid ? (
+                    <CheckCircle className="w-4 h-4" />
+                  ) : (
+                    <XCircle className="w-4 h-4" />
+                  )}
+                  <span>{faceValidation.message}</span>
+                </div>
+              )}
+
+              {/* Informações do encoding */}
+              {faceEncoding && faceEncoding.primaryFace && (
+                <div className="text-xs text-muted-foreground bg-muted/50 rounded-md p-2 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <ScanFace className="w-3 h-3" />
+                    <span>Encoding facial gerado</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1 text-[10px]">
+                    <span>Qualidade: {Math.round(faceEncoding.primaryFace.quality * 100)}%</span>
+                    <span>Confiança: {Math.round(faceEncoding.primaryFace.confidence * 100)}%</span>
+                    {faceEncoding.primaryFace.attributes?.age && (
+                      <span>Idade: ~{faceEncoding.primaryFace.attributes.age} anos</span>
+                    )}
+                    {faceEncoding.primaryFace.attributes?.gender && faceEncoding.primaryFace.attributes.gender !== 'unknown' && (
+                      <span>Gênero: {faceEncoding.primaryFace.attributes.gender === 'male' ? 'Masculino' : 'Feminino'}</span>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Upload Progress */}
               {storage.isUploading && storage.progress > 0 && storage.progress < 100 && (
