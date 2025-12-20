@@ -1,10 +1,21 @@
 /**
- * Hook para detecção facial usando a edge function detect-faces
- * Gera encoding facial automaticamente a partir de uma imagem
+ * VISÃO - Sistema de Vigilância Inteligente
+ * Hook: useFaceDetection (CONSOLIDADO)
+ * 
+ * Este hook agora é um wrapper que usa:
+ * - useFaceAPI para detecção local via face-api.js
+ * - Edge functions como fallback para servidor
+ * 
+ * Mantido para retrocompatibilidade com componentes Lovable
  */
 
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useFaceAPI, FaceDetection as FaceAPIDetection } from './useFaceAPI';
+
+// ============================================
+// TIPOS (Compatíveis com versão Lovable)
+// ============================================
 
 export interface DetectedFace {
   boundingBox: {
@@ -21,238 +32,185 @@ export interface DetectedFace {
     nose: { x: number; y: number };
     leftMouth: { x: number; y: number };
     rightMouth: { x: number; y: number };
-  } | null;
-  attributes: {
-    age: number;
-    gender: 'male' | 'female' | 'unknown';
-    emotion: string;
-    glasses: boolean;
-    mask: boolean;
-    beard: boolean;
-  } | null;
-  pose: {
-    yaw: number;
-    pitch: number;
-    roll: number;
-  } | null;
+  };
+  encoding?: number[];
 }
 
-export interface FaceDetectionResult {
-  success: boolean;
-  faces: DetectedFace[];
-  faceCount: number;
-  imageQuality: 'good' | 'medium' | 'poor';
-  processingNotes?: string;
-  error?: string;
+export interface UseFaceDetectionOptions {
+  useLocalDetection?: boolean; // Usar face-api.js local (padrão: true)
+  autoLoadModels?: boolean;
 }
 
-export interface FaceEncoding {
-  version: string;
-  timestamp: string;
-  faces: DetectedFace[];
-  primaryFace: DetectedFace | null;
-  imageQuality: string;
-}
+// ============================================
+// HOOK PRINCIPAL
+// ============================================
 
-export function useFaceDetection() {
-  const [isDetecting, setIsDetecting] = useState(false);
+export function useFaceDetection(options: UseFaceDetectionOptions = {}) {
+  const { useLocalDetection = true, autoLoadModels = true } = options;
+
+  const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [lastResult, setLastResult] = useState<FaceDetectionResult | null>(null);
+
+  // Usar hook de face-api.js
+  const faceAPI = useFaceAPI({
+    autoLoadModels,
+  });
 
   /**
-   * Detecta faces em uma imagem base64
+   * Detectar rostos usando face-api.js local
    */
-  const detectFromBase64 = useCallback(async (
+  const detectFacesLocal = useCallback(async (
+    input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
+  ): Promise<DetectedFace[]> => {
+    const detections = await faceAPI.detectFaces(input);
+
+    return detections.map(d => ({
+      boundingBox: {
+        x: d.box.x,
+        y: d.box.y,
+        width: d.box.width,
+        height: d.box.height,
+      },
+      confidence: 0.9,
+      quality: 0.8,
+      landmarks: {
+        leftEye: { x: d.box.x + d.box.width * 0.3, y: d.box.y + d.box.height * 0.35 },
+        rightEye: { x: d.box.x + d.box.width * 0.7, y: d.box.y + d.box.height * 0.35 },
+        nose: { x: d.box.x + d.box.width * 0.5, y: d.box.y + d.box.height * 0.55 },
+        leftMouth: { x: d.box.x + d.box.width * 0.35, y: d.box.y + d.box.height * 0.75 },
+        rightMouth: { x: d.box.x + d.box.width * 0.65, y: d.box.y + d.box.height * 0.75 },
+      },
+      encoding: d.descriptor ? Array.from(d.descriptor) : undefined,
+    }));
+  }, [faceAPI]);
+
+  /**
+   * Detectar rostos usando Edge Function (fallback)
+   */
+  const detectFacesRemote = useCallback(async (
     imageBase64: string
-  ): Promise<FaceDetectionResult> => {
-    setIsDetecting(true);
-    setError(null);
-    
+  ): Promise<DetectedFace[]> => {
     try {
-      // Remove o prefixo data URL se presente
-      const base64Data = imageBase64.includes(',') 
-        ? imageBase64.split(',')[1] 
-        : imageBase64;
-
       const { data, error: fnError } = await supabase.functions.invoke('detect-faces', {
-        body: { imageBase64: base64Data }
+        body: { imageBase64 },
       });
 
-      if (fnError) {
-        throw new Error(fnError.message || 'Erro ao chamar função de detecção');
-      }
-
-      const result: FaceDetectionResult = {
-        success: data.success,
-        faces: data.faces || [],
-        faceCount: data.faceCount || 0,
-        imageQuality: data.imageQuality || 'medium',
-        processingNotes: data.processingNotes,
-        error: data.error,
-      };
-
-      setLastResult(result);
-      return result;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Erro desconhecido';
-      setError(errorMsg);
-      return {
-        success: false,
-        faces: [],
-        faceCount: 0,
-        imageQuality: 'poor',
-        error: errorMsg,
-      };
-    } finally {
-      setIsDetecting(false);
+      if (fnError) throw fnError;
+      return data?.faces || [];
+    } catch (err: any) {
+      console.error('[FaceDetection] Edge function error:', err);
+      throw err;
     }
   }, []);
 
   /**
-   * Detecta faces a partir de uma URL de imagem pública
+   * Detectar rostos (auto-seleciona método)
    */
-  const detectFromUrl = useCallback(async (
-    imageUrl: string
-  ): Promise<FaceDetectionResult> => {
-    setIsDetecting(true);
+  const detectFaces = useCallback(async (
+    input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement | string
+  ): Promise<DetectedFace[]> => {
+    setIsProcessing(true);
     setError(null);
-    
-    try {
-      const { data, error: fnError } = await supabase.functions.invoke('detect-faces', {
-        body: { imageUrl }
-      });
 
-      if (fnError) {
-        throw new Error(fnError.message || 'Erro ao chamar função de detecção');
+    try {
+      // Se input é string (base64), usar edge function
+      if (typeof input === 'string') {
+        return await detectFacesRemote(input);
       }
 
-      const result: FaceDetectionResult = {
-        success: data.success,
-        faces: data.faces || [],
-        faceCount: data.faceCount || 0,
-        imageQuality: data.imageQuality || 'medium',
-        processingNotes: data.processingNotes,
-        error: data.error,
-      };
+      // Se local detection habilitado e modelos carregados
+      if (useLocalDetection && faceAPI.modelsLoaded) {
+        return await detectFacesLocal(input);
+      }
 
-      setLastResult(result);
-      return result;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Erro desconhecido';
-      setError(errorMsg);
-      return {
-        success: false,
-        faces: [],
-        faceCount: 0,
-        imageQuality: 'poor',
-        error: errorMsg,
-      };
+      // Fallback: converter para base64 e usar edge function
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('Canvas not supported');
+
+      if (input instanceof HTMLVideoElement) {
+        canvas.width = input.videoWidth;
+        canvas.height = input.videoHeight;
+        ctx.drawImage(input, 0, 0);
+      } else if (input instanceof HTMLImageElement) {
+        canvas.width = input.naturalWidth;
+        canvas.height = input.naturalHeight;
+        ctx.drawImage(input, 0, 0);
+      } else {
+        canvas.width = input.width;
+        canvas.height = input.height;
+        ctx.drawImage(input, 0, 0);
+      }
+
+      const base64 = canvas.toDataURL('image/jpeg', 0.8);
+      return await detectFacesRemote(base64.split(',')[1]);
+    } catch (err: any) {
+      setError(err.message);
+      return [];
     } finally {
-      setIsDetecting(false);
+      setIsProcessing(false);
     }
-  }, []);
+  }, [useLocalDetection, faceAPI.modelsLoaded, detectFacesLocal, detectFacesRemote]);
 
   /**
-   * Detecta faces a partir de um File
+   * Gerar encoding facial
    */
-  const detectFromFile = useCallback(async (
-    file: File
-  ): Promise<FaceDetectionResult> => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = async () => {
-        const base64 = reader.result as string;
-        const result = await detectFromBase64(base64);
-        resolve(result);
-      };
-      reader.onerror = () => {
-        const errorMsg = 'Erro ao ler arquivo';
-        setError(errorMsg);
-        resolve({
-          success: false,
-          faces: [],
-          faceCount: 0,
-          imageQuality: 'poor',
-          error: errorMsg,
-        });
-      };
-      reader.readAsDataURL(file);
-    });
-  }, [detectFromBase64]);
+  const generateEncoding = useCallback(async (
+    imageBase64: string,
+    personId?: string
+  ): Promise<number[] | null> => {
+    setIsProcessing(true);
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke('generate-face-encoding', {
+        body: { imageBase64, personId },
+      });
 
-  /**
-   * Gera um encoding facial a partir do resultado da detecção
-   * Este encoding pode ser salvo no banco para comparações futuras
-   */
-  const generateEncoding = useCallback((result: FaceDetectionResult): FaceEncoding | null => {
-    if (!result.success || result.faceCount === 0) {
+      if (fnError) throw fnError;
+      return data?.encoding || null;
+    } catch (err: any) {
+      setError(err.message);
       return null;
+    } finally {
+      setIsProcessing(false);
+    }
+  }, []);
+
+  /**
+   * Validar qualidade da imagem para face detection
+   */
+  const validateImageQuality = useCallback((face: DetectedFace): {
+    isValid: boolean;
+    issues: string[];
+  } => {
+    const issues: string[] = [];
+
+    if (face.confidence < 0.7) {
+      issues.push('Baixa confiança na detecção');
     }
 
-    // Seleciona a face com maior qualidade como face primária
-    const primaryFace = result.faces.reduce((best, current) => {
-      return current.quality > best.quality ? current : best;
-    }, result.faces[0]);
+    if (face.quality < 0.5) {
+      issues.push('Qualidade da imagem insuficiente');
+    }
+
+    if (face.boundingBox.width < 80 || face.boundingBox.height < 80) {
+      issues.push('Rosto muito pequeno na imagem');
+    }
 
     return {
-      version: '1.0',
-      timestamp: new Date().toISOString(),
-      faces: result.faces,
-      primaryFace,
-      imageQuality: result.imageQuality,
+      isValid: issues.length === 0,
+      issues,
     };
   }, []);
 
-  /**
-   * Valida se a qualidade da face é suficiente para reconhecimento
-   */
-  const validateFaceQuality = useCallback((
-    result: FaceDetectionResult,
-    minQuality: number = 0.5
-  ): { valid: boolean; message: string } => {
-    if (!result.success) {
-      return { valid: false, message: result.error || 'Falha na detecção' };
-    }
-
-    if (result.faceCount === 0) {
-      return { valid: false, message: 'Nenhum rosto detectado na imagem' };
-    }
-
-    if (result.faceCount > 1) {
-      return { valid: false, message: 'Múltiplos rostos detectados. Use uma foto individual.' };
-    }
-
-    const face = result.faces[0];
-    if (face.quality < minQuality) {
-      return { 
-        valid: false, 
-        message: `Qualidade da imagem insuficiente (${Math.round(face.quality * 100)}%). Use uma foto com melhor iluminação.` 
-      };
-    }
-
-    if (face.pose) {
-      const maxAngle = 30;
-      if (Math.abs(face.pose.yaw) > maxAngle || Math.abs(face.pose.pitch) > maxAngle) {
-        return { valid: false, message: 'Rosto não está de frente. Posicione o rosto de frente para a câmera.' };
-      }
-    }
-
-    return { valid: true, message: 'Rosto detectado com qualidade adequada' };
-  }, []);
-
-  const clearError = useCallback(() => {
-    setError(null);
-  }, []);
-
   return {
-    isDetecting,
-    error,
-    lastResult,
-    detectFromBase64,
-    detectFromUrl,
-    detectFromFile,
+    detectFaces,
     generateEncoding,
-    validateFaceQuality,
-    clearError,
+    validateImageQuality,
+    isProcessing,
+    error,
+    modelsLoaded: faceAPI.modelsLoaded,
+    loadModels: faceAPI.loadModels,
   };
 }
+
+export default useFaceDetection;
