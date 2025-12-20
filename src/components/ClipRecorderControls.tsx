@@ -2,44 +2,30 @@
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: ClipRecorderControls
  * 
- * Controles visuais para gravação de clips.
- * Mostra status, duração, frames e botões de ação.
+ * Controles para gravação de clips de vídeo:
+ * - Botão de iniciar/parar gravação
+ * - Timer de duração
+ * - Status de gravação
+ * - Download do clip
  */
 
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
-  Video,
-  Square,
   Circle,
-  Clock,
-  Film,
+  Square,
   Download,
   Trash2,
-  Settings,
-  ChevronDown,
-  ChevronUp,
-  AlertTriangle,
-  Zap,
-  Eye,
+  Clock,
+  Video,
+  Pause,
+  Play,
+  Camera,
+  AlertCircle,
+  Check,
+  Loader2,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Slider } from '@/components/ui/slider';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
 import {
   Tooltip,
   TooltipContent,
@@ -47,75 +33,52 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {
-  RecordingStatus,
-  RecordingConfig,
-  ClipFormat,
-  ClipQuality,
-  formatDuration,
-} from '@/types/clips';
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Progress } from '@/components/ui/progress';
+import { Label } from '@/components/ui/label';
+import { Slider } from '@/components/ui/slider';
+import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 // ============================================
 // TIPOS
 // ============================================
 
 interface ClipRecorderControlsProps {
-  /** Está gravando */
-  isRecording: boolean;
-  
-  /** Status atual */
-  status: RecordingStatus;
-  
-  /** Duração atual (segundos) */
-  currentDuration: number;
-  
-  /** Frames capturados */
-  frameCount: number;
-  
-  /** Configuração atual */
-  config?: Partial<RecordingConfig>;
-  
-  /** Callbacks */
-  onStartRecording: () => void;
-  onStopRecording: () => void;
-  onConfigUpdate?: (updates: Partial<RecordingConfig>) => void;
-  
-  /** Erro atual */
-  error?: string | null;
-  
-  /** Modo compacto */
-  compact?: boolean;
-  
-  /** Mostrar configurações */
-  showConfig?: boolean;
-  
-  /** Classe CSS */
+  cameraId: string;
+  cameraName: string;
+  streamRef?: React.RefObject<HTMLVideoElement>;
+  maxDuration?: number; // segundos
+  onClipSaved?: (clip: SavedClip) => void;
   className?: string;
+  compact?: boolean;
 }
 
+interface SavedClip {
+  id: string;
+  cameraId: string;
+  cameraName: string;
+  startTime: Date;
+  endTime: Date;
+  duration: number;
+  blob: Blob;
+  url: string;
+  thumbnail?: string;
+}
+
+type RecordingState = 'idle' | 'recording' | 'paused' | 'processing' | 'saved';
+
 // ============================================
-// STATUS BADGE
+// HELPER: Format Duration
 // ============================================
 
-function RecordingStatusBadge({ status }: { status: RecordingStatus }) {
-  const config: Record<RecordingStatus, { color: string; label: string; icon: typeof Video; pulse?: boolean }> = {
-    idle: { color: 'bg-gray-500', label: 'Aguardando', icon: Video },
-    recording: { color: 'bg-red-500', label: 'Gravando', icon: Circle, pulse: true },
-    processing: { color: 'bg-yellow-500', label: 'Processando', icon: Film },
-    ready: { color: 'bg-green-500', label: 'Pronto', icon: Video },
-    uploading: { color: 'bg-blue-500', label: 'Enviando', icon: Video },
-    error: { color: 'bg-red-600', label: 'Erro', icon: AlertTriangle },
-  };
-
-  const statusConfig = config[status];
-  const Icon = statusConfig.icon;
-  const pulse = statusConfig.pulse;
-
-  return (
-    <Badge className={cn('gap-1.5 text-white border-0', statusConfig.color)}>
-      <Icon className={cn('w-3 h-3', pulse && 'animate-pulse')} />
-      {statusConfig.label}
-    </Badge>
-  );
+function formatDuration(seconds: number): string {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
 // ============================================
@@ -123,332 +86,457 @@ function RecordingStatusBadge({ status }: { status: RecordingStatus }) {
 // ============================================
 
 export function ClipRecorderControls({
-  isRecording,
-  status,
-  currentDuration,
-  frameCount,
-  config,
-  onStartRecording,
-  onStopRecording,
-  onConfigUpdate,
-  error,
-  compact = false,
-  showConfig: showConfigProp = false,
+  cameraId,
+  cameraName,
+  streamRef,
+  maxDuration = 300, // 5 minutos
+  onClipSaved,
   className,
+  compact = false,
 }: ClipRecorderControlsProps) {
-  const [showConfig, setShowConfig] = useState(showConfigProp);
+  const [state, setState] = useState<RecordingState>('idle');
+  const [duration, setDuration] = useState(0);
+  const [savedClip, setSavedClip] = useState<SavedClip | null>(null);
+  const [clipDurationSetting, setClipDurationSetting] = useState(60);
+  
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const startTimeRef = useRef<Date | null>(null);
 
-  // Estado local para configurações
-  const [format, setFormat] = useState<ClipFormat>(config?.format || 'mp4');
-  const [quality, setQuality] = useState<ClipQuality>(config?.quality || 'high');
-  const [maxDuration, setMaxDuration] = useState(config?.maxDuration || 60);
-  const [preEventSeconds, setPreEventSeconds] = useState(config?.preEventSeconds || 5);
-  const [postEventSeconds, setPostEventSeconds] = useState(config?.postEventSeconds || 10);
-  const [autoOnAlert, setAutoOnAlert] = useState(config?.autoTriggers?.onAlert ?? true);
-  const [autoOnRule, setAutoOnRule] = useState(config?.autoTriggers?.onRule ?? true);
+  // Limpar timer ao desmontar
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+        mediaRecorderRef.current.stop();
+      }
+    };
+  }, []);
 
-  const handleConfigChange = (key: string, value: any) => {
-    onConfigUpdate?.({ [key]: value });
-  };
+  // Iniciar gravação
+  const startRecording = useCallback(async () => {
+    try {
+      // Verificar se temos acesso ao stream
+      let stream: MediaStream | null = null;
 
-  const handleAutoTriggersChange = (key: string, value: boolean) => {
-    onConfigUpdate?.({
-      autoTriggers: {
-        ...config?.autoTriggers,
-        [key]: value,
-      },
-    });
-  };
+      if (streamRef?.current?.captureStream) {
+        stream = streamRef.current.captureStream();
+      } else if (streamRef?.current?.srcObject instanceof MediaStream) {
+        stream = streamRef.current.srcObject;
+      }
 
-  // ============================================
-  // RENDER: Modo Compacto
-  // ============================================
+      if (!stream) {
+        // Fallback: capturar a tela do vídeo como canvas
+        toast.error('Stream não disponível para gravação');
+        return;
+      }
 
+      // Configurar MediaRecorder
+      const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+        ? 'video/webm;codecs=vp9'
+        : 'video/webm';
+
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType,
+        videoBitsPerSecond: 2500000, // 2.5 Mbps
+      });
+
+      chunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = async () => {
+        setState('processing');
+        
+        try {
+          const blob = new Blob(chunksRef.current, { type: mimeType });
+          const url = URL.createObjectURL(blob);
+          const endTime = new Date();
+          const clipDuration = Math.round((endTime.getTime() - (startTimeRef.current?.getTime() || 0)) / 1000);
+
+          // Gerar thumbnail (primeiro frame)
+          let thumbnail: string | undefined;
+          if (streamRef?.current) {
+            const canvas = document.createElement('canvas');
+            canvas.width = streamRef.current.videoWidth || 320;
+            canvas.height = streamRef.current.videoHeight || 180;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              ctx.drawImage(streamRef.current, 0, 0, canvas.width, canvas.height);
+              thumbnail = canvas.toDataURL('image/jpeg', 0.8);
+            }
+          }
+
+          const clip: SavedClip = {
+            id: `clip-${Date.now()}`,
+            cameraId,
+            cameraName,
+            startTime: startTimeRef.current || new Date(),
+            endTime,
+            duration: clipDuration,
+            blob,
+            url,
+            thumbnail,
+          };
+
+          setSavedClip(clip);
+          setState('saved');
+          onClipSaved?.(clip);
+          toast.success(`Clip salvo: ${formatDuration(clipDuration)}`);
+        } catch (error) {
+          console.error('Erro ao processar clip:', error);
+          setState('idle');
+          toast.error('Erro ao processar gravação');
+        }
+      };
+
+      mediaRecorder.onerror = (event) => {
+        console.error('Erro no MediaRecorder:', event);
+        setState('idle');
+        toast.error('Erro na gravação');
+      };
+
+      mediaRecorderRef.current = mediaRecorder;
+      startTimeRef.current = new Date();
+      setDuration(0);
+
+      // Iniciar gravação
+      mediaRecorder.start(1000); // Chunks a cada 1s
+      setState('recording');
+
+      // Timer de duração
+      timerRef.current = setInterval(() => {
+        setDuration(d => {
+          const newDuration = d + 1;
+          // Auto-stop se atingir duração máxima
+          if (newDuration >= maxDuration) {
+            stopRecording();
+          }
+          return newDuration;
+        });
+      }, 1000);
+
+      toast.success('Gravação iniciada');
+    } catch (error) {
+      console.error('Erro ao iniciar gravação:', error);
+      toast.error('Não foi possível iniciar a gravação');
+    }
+  }, [cameraId, cameraName, streamRef, maxDuration, onClipSaved]);
+
+  // Parar gravação
+  const stopRecording = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+    }
+  }, []);
+
+  // Pausar/Retomar (se suportado)
+  const togglePause = useCallback(() => {
+    if (!mediaRecorderRef.current) return;
+
+    if (state === 'recording') {
+      mediaRecorderRef.current.pause();
+      setState('paused');
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    } else if (state === 'paused') {
+      mediaRecorderRef.current.resume();
+      setState('recording');
+      timerRef.current = setInterval(() => {
+        setDuration(d => d + 1);
+      }, 1000);
+    }
+  }, [state]);
+
+  // Download do clip
+  const downloadClip = useCallback(() => {
+    if (!savedClip) return;
+
+    const a = document.createElement('a');
+    a.href = savedClip.url;
+    a.download = `${cameraName.replace(/\s+/g, '_')}_${savedClip.startTime.toISOString().slice(0, 19).replace(/[:.]/g, '-')}.webm`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    toast.success('Download iniciado');
+  }, [savedClip, cameraName]);
+
+  // Descartar clip
+  const discardClip = useCallback(() => {
+    if (savedClip?.url) {
+      URL.revokeObjectURL(savedClip.url);
+    }
+    setSavedClip(null);
+    setState('idle');
+    setDuration(0);
+  }, [savedClip]);
+
+  // Progresso da gravação
+  const progress = (duration / maxDuration) * 100;
+
+  // Versão compacta
   if (compact) {
     return (
       <TooltipProvider>
-        <div className={cn('flex items-center gap-2', className)}>
-          {/* Botão de gravação */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant={isRecording ? 'destructive' : 'default'}
-                size="sm"
-                onClick={isRecording ? onStopRecording : onStartRecording}
-                disabled={status === 'processing' || status === 'uploading'}
-              >
-                {isRecording ? (
-                  <>
-                    <Square className="w-4 h-4 mr-1" />
-                    Parar
-                  </>
-                ) : (
-                  <>
-                    <Circle className="w-4 h-4 mr-1 text-red-500" />
-                    Gravar
-                  </>
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              {isRecording ? 'Parar gravação' : 'Iniciar gravação manual'}
-            </TooltipContent>
-          </Tooltip>
-
-          {/* Indicadores durante gravação */}
-          {isRecording && (
-            <div className="flex items-center gap-2 text-sm">
-              <Badge variant="destructive" className="animate-pulse">
-                <Circle className="w-3 h-3 mr-1 fill-current" />
-                REC
-              </Badge>
-              <span className="font-mono">{formatDuration(currentDuration)}</span>
-              <span className="text-muted-foreground">{frameCount} frames</span>
-            </div>
+        <div className={cn('flex items-center gap-1', className)}>
+          {state === 'idle' && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-white hover:bg-white/20"
+                  onClick={startRecording}
+                >
+                  <Circle className="w-4 h-4 fill-red-500 text-red-500" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Iniciar gravação</TooltipContent>
+            </Tooltip>
           )}
 
-          {/* Status */}
-          {!isRecording && status !== 'idle' && (
-            <RecordingStatusBadge status={status} />
+          {(state === 'recording' || state === 'paused') && (
+            <>
+              <Badge 
+                variant="destructive" 
+                className="gap-1 animate-pulse"
+              >
+                <Circle className="w-2 h-2 fill-current" />
+                {formatDuration(duration)}
+              </Badge>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-white hover:bg-white/20"
+                    onClick={stopRecording}
+                  >
+                    <Square className="w-4 h-4 fill-current" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Parar gravação</TooltipContent>
+              </Tooltip>
+            </>
+          )}
+
+          {state === 'processing' && (
+            <Badge variant="secondary" className="gap-1">
+              <Loader2 className="w-3 h-3 animate-spin" />
+              Processando
+            </Badge>
+          )}
+
+          {state === 'saved' && savedClip && (
+            <>
+              <Badge variant="secondary" className="gap-1">
+                <Check className="w-3 h-3" />
+                {formatDuration(savedClip.duration)}
+              </Badge>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-white hover:bg-white/20"
+                    onClick={downloadClip}
+                  >
+                    <Download className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Download</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-white hover:bg-white/20"
+                    onClick={discardClip}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Descartar</TooltipContent>
+              </Tooltip>
+            </>
           )}
         </div>
       </TooltipProvider>
     );
   }
 
-  // ============================================
-  // RENDER: Modo Completo
-  // ============================================
-
+  // Versão completa
   return (
-    <TooltipProvider>
-      <div className={cn('space-y-4', className)}>
-        {/* Header com status e botão principal */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Video className="w-5 h-5 text-primary" />
-            <span className="font-semibold">Gravação de Clips</span>
-            <RecordingStatusBadge status={status} />
-          </div>
-
-          <Button
-            variant={isRecording ? 'destructive' : 'default'}
-            onClick={isRecording ? onStopRecording : onStartRecording}
-            disabled={status === 'processing' || status === 'uploading'}
-          >
-            {isRecording ? (
-              <>
-                <Square className="w-4 h-4 mr-2" />
-                Parar Gravação
-              </>
-            ) : (
-              <>
-                <Circle className="w-4 h-4 mr-2 text-red-500" />
-                Iniciar Gravação
-              </>
-            )}
-          </Button>
+    <div className={cn('space-y-3', className)}>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Video className="w-4 h-4" />
+          <span className="text-sm font-medium">Gravação</span>
         </div>
+        
+        {state !== 'idle' && (
+          <Badge 
+            variant={state === 'recording' ? 'destructive' : 'secondary'}
+            className={cn(state === 'recording' && 'animate-pulse')}
+          >
+            {state === 'recording' && 'Gravando'}
+            {state === 'paused' && 'Pausado'}
+            {state === 'processing' && 'Processando'}
+            {state === 'saved' && 'Salvo'}
+          </Badge>
+        )}
+      </div>
 
-        {/* Indicadores durante gravação */}
-        {isRecording && (
-          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <Badge variant="destructive" className="animate-pulse text-lg px-3 py-1">
-                  <Circle className="w-4 h-4 mr-2 fill-current" />
-                  GRAVANDO
-                </Badge>
-              </div>
-              
-              <div className="flex items-center gap-6 text-sm">
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-muted-foreground" />
-                  <span className="font-mono text-lg">{formatDuration(currentDuration)}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Film className="w-4 h-4 text-muted-foreground" />
-                  <span>{frameCount} frames</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Barra de progresso para duração máxima */}
-            <div className="mt-3">
-              <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                <span>Progresso</span>
-                <span>{Math.round((currentDuration / maxDuration) * 100)}%</span>
-              </div>
-              <div className="h-2 bg-destructive/20 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-destructive transition-all duration-300"
-                  style={{ width: `${Math.min((currentDuration / maxDuration) * 100, 100)}%` }}
-                />
-              </div>
-            </div>
+      {/* Timer e Progresso */}
+      {(state === 'recording' || state === 'paused') && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="font-mono text-lg">{formatDuration(duration)}</span>
+            <span className="text-muted-foreground">/ {formatDuration(maxDuration)}</span>
           </div>
+          <Progress value={progress} className="h-1" />
+        </div>
+      )}
+
+      {/* Controles */}
+      <div className="flex items-center gap-2">
+        {state === 'idle' && (
+          <>
+            <Button
+              variant="destructive"
+              size="sm"
+              className="flex-1"
+              onClick={startRecording}
+            >
+              <Circle className="w-4 h-4 mr-2 fill-current" />
+              Gravar
+            </Button>
+            
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="icon" className="h-9 w-9">
+                  <Clock className="w-4 h-4" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-64">
+                <div className="space-y-3">
+                  <Label>Duração máxima: {formatDuration(clipDurationSetting)}</Label>
+                  <Slider
+                    value={[clipDurationSetting]}
+                    onValueChange={([v]) => setClipDurationSetting(v)}
+                    min={10}
+                    max={maxDuration}
+                    step={10}
+                  />
+                </div>
+              </PopoverContent>
+            </Popover>
+          </>
         )}
 
-        {/* Erro */}
-        {error && (
-          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 flex items-center gap-2 text-destructive">
-            <AlertTriangle className="w-4 h-4" />
-            <span className="text-sm">{error}</span>
-          </div>
-        )}
-
-        {/* Configurações */}
-        <Collapsible open={showConfig} onOpenChange={setShowConfig}>
-          <CollapsibleTrigger asChild>
-            <Button variant="ghost" className="w-full justify-between">
-              <span className="flex items-center gap-2">
-                <Settings className="w-4 h-4" />
-                Configurações de Gravação
-              </span>
-              {showConfig ? (
-                <ChevronUp className="w-4 h-4" />
+        {(state === 'recording' || state === 'paused') && (
+          <>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={togglePause}
+            >
+              {state === 'recording' ? (
+                <>
+                  <Pause className="w-4 h-4 mr-2" />
+                  Pausar
+                </>
               ) : (
-                <ChevronDown className="w-4 h-4" />
+                <>
+                  <Play className="w-4 h-4 mr-2" />
+                  Retomar
+                </>
               )}
             </Button>
-          </CollapsibleTrigger>
+            
+            <Button
+              variant="destructive"
+              size="sm"
+              className="flex-1"
+              onClick={stopRecording}
+            >
+              <Square className="w-4 h-4 mr-2 fill-current" />
+              Parar
+            </Button>
+          </>
+        )}
 
-          <CollapsibleContent className="space-y-4 pt-4">
-            {/* Formato e Qualidade */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">Formato</Label>
-                <Select
-                  value={format}
-                  onValueChange={(v: ClipFormat) => {
-                    setFormat(v);
-                    handleConfigChange('format', v);
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="mp4">MP4</SelectItem>
-                    <SelectItem value="webm">WebM</SelectItem>
-                    <SelectItem value="gif">GIF</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+        {state === 'processing' && (
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span className="text-sm">Processando clip...</span>
+          </div>
+        )}
 
-              <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">Qualidade</Label>
-                <Select
-                  value={quality}
-                  onValueChange={(v: ClipQuality) => {
-                    setQuality(v);
-                    handleConfigChange('quality', v);
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="low">Baixa (500kbps)</SelectItem>
-                    <SelectItem value="medium">Média (1.5Mbps)</SelectItem>
-                    <SelectItem value="high">Alta (3Mbps)</SelectItem>
-                    <SelectItem value="original">Original (5Mbps)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            {/* Duração máxima */}
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <Label className="text-xs text-muted-foreground">Duração máxima</Label>
-                <span className="text-sm font-medium">{maxDuration}s</span>
-              </div>
-              <Slider
-                value={[maxDuration]}
-                onValueChange={([v]) => {
-                  setMaxDuration(v);
-                  handleConfigChange('maxDuration', v);
-                }}
-                min={10}
-                max={300}
-                step={10}
-              />
-            </div>
-
-            {/* Pre/Post event */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <Label className="text-xs text-muted-foreground">Pré-evento</Label>
-                  <span className="text-sm">{preEventSeconds}s</span>
-                </div>
-                <Slider
-                  value={[preEventSeconds]}
-                  onValueChange={([v]) => {
-                    setPreEventSeconds(v);
-                    handleConfigChange('preEventSeconds', v);
-                  }}
-                  min={0}
-                  max={30}
-                  step={1}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <Label className="text-xs text-muted-foreground">Pós-evento</Label>
-                  <span className="text-sm">{postEventSeconds}s</span>
-                </div>
-                <Slider
-                  value={[postEventSeconds]}
-                  onValueChange={([v]) => {
-                    setPostEventSeconds(v);
-                    handleConfigChange('postEventSeconds', v);
-                  }}
-                  min={5}
-                  max={60}
-                  step={5}
-                />
-              </div>
-            </div>
-
-            {/* Triggers automáticos */}
-            <div className="space-y-3">
-              <Label className="text-xs text-muted-foreground">Gravação Automática</Label>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-yellow-500" />
-                  <span className="text-sm">Gravar em alertas de IA</span>
-                </div>
-                <Switch
-                  checked={autoOnAlert}
-                  onCheckedChange={(v) => {
-                    setAutoOnAlert(v);
-                    handleAutoTriggersChange('onAlert', v);
-                  }}
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-orange-500" />
-                  <span className="text-sm">Gravar em violação de regras</span>
-                </div>
-                <Switch
-                  checked={autoOnRule}
-                  onCheckedChange={(v) => {
-                    setAutoOnRule(v);
-                    handleAutoTriggersChange('onRule', v);
-                  }}
-                />
-              </div>
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
+        {state === 'saved' && savedClip && (
+          <>
+            <Button
+              variant="default"
+              size="sm"
+              className="flex-1"
+              onClick={downloadClip}
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={discardClip}
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Descartar
+            </Button>
+          </>
+        )}
       </div>
-    </TooltipProvider>
+
+      {/* Info do clip salvo */}
+      {state === 'saved' && savedClip && (
+        <div className="p-3 bg-muted rounded-lg space-y-2">
+          {savedClip.thumbnail && (
+            <img 
+              src={savedClip.thumbnail} 
+              alt="Thumbnail" 
+              className="w-full h-20 object-cover rounded"
+            />
+          )}
+          <div className="text-xs text-muted-foreground space-y-1">
+            <div className="flex justify-between">
+              <span>Duração:</span>
+              <span className="font-medium">{formatDuration(savedClip.duration)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Tamanho:</span>
+              <span className="font-medium">
+                {(savedClip.blob.size / (1024 * 1024)).toFixed(2)} MB
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
