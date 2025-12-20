@@ -17,6 +17,8 @@ const AlertsPage = lazy(() => import('@/pages/AlertsPage'));
 const PeoplePage = lazy(() => import('@/pages/PeoplePage'));
 const ZonesPage = lazy(() => import('@/pages/ZonesPage'));
 const RecordingsPage = lazy(() => import('@/pages/RecordingsPage'));
+const AnalyticsPage = lazy(() => import('@/pages/AnalyticsPage'));
+const SecurityPage = lazy(() => import('@/pages/SecurityPage'));
 const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
 const AuthPage = lazy(() => import('@/pages/Auth'));
 const NotFoundPage = lazy(() => import('@/pages/NotFound'));
@@ -58,6 +60,12 @@ export function AppRoutes() {
         
         {/* Gravações */}
         <Route path="/recordings" element={<RecordingsPage />} />
+        
+        {/* Analytics */}
+        <Route path="/analytics" element={<AnalyticsPage />} />
+        
+        {/* Segurança */}
+        <Route path="/security" element={<SecurityPage />} />
         
         {/* Configurações */}
         <Route path="/settings" element={<SettingsPage />} />
