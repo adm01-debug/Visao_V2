@@ -444,21 +444,20 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       }
 
       // Salvar metadados no banco
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
       const { data: clipRecord, error: dbError } = await supabase
         .from('video_clips')
         .insert({
           camera_id: cameraId,
+          user_id: user.id,
           start_time: clip.startTime.toISOString(),
           end_time: clip.endTime.toISOString(),
           duration: clip.duration,
           file_url: urlData?.publicUrl,
           thumbnail_url: thumbnailUrl,
-          file_size: clip.fileSize,
-          trigger_type: clip.metadata.triggerType,
-          trigger_rule_id: clip.metadata.triggerRuleId,
-          alert_id: clip.metadata.alertId,
-          tags: clip.metadata.tags,
-          notes: clip.metadata.notes,
+          status: 'completed',
         })
         .select()
         .single();

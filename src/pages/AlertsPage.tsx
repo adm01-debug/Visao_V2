@@ -414,17 +414,7 @@ export function AlertsPage() {
   } = useAlerts();
   const { cameras } = useCameras();
 
-  // Realtime updates
-  useRealtimeAlerts({
-    onNewAlert: (alert) => {
-      toast.info(`Novo alerta: ${alert.message}`, {
-        action: {
-          label: 'Ver',
-          onClick: () => setDetailsAlert(alert),
-        },
-      });
-    },
-  });
+  // Realtime updates are already handled in useAlerts hook
 
   // Filtrar e ordenar
   const filteredAlerts = useMemo(() => {

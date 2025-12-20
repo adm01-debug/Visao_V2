@@ -170,15 +170,15 @@ export function Header() {
       // Buscar alertas
       const { data: alerts } = await supabase
         .from('alerts')
-        .select('id, title, type')
-        .ilike('title', `%${query}%`)
+        .select('id, message, type')
+        .ilike('message', `%${query}%`)
         .limit(3);
       
       alerts?.forEach(alert => {
         results.push({
           id: alert.id,
           type: 'alert',
-          title: alert.title,
+          title: alert.message,
           subtitle: alert.type,
           icon: AlertTriangle,
           path: `/alerts?id=${alert.id}`,

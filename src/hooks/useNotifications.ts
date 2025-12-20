@@ -6,7 +6,6 @@
  * - Push notifications (Web Push API)
  * - Notificações in-app
  * - Sons de alerta
- * - Integração com Resend/WhatsApp
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
@@ -177,12 +176,12 @@ export function useNotifications(
     }
   }, [pushEnabled]);
 
-  // Carregar notificações
+  // Carregar notificações (usando tabela alerts como fonte)
   const loadNotifications = useCallback(async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('notification_history')
+        .from('alerts')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(100);
@@ -191,15 +190,15 @@ export function useNotifications(
 
       const formatted: Notification[] = (data || []).map(n => ({
         id: n.id,
-        type: n.notification_type || 'alert',
+        type: n.type || 'alert',
         severity: n.severity || 'medium',
-        title: n.title || 'Notificação',
+        title: n.camera_name || 'Notificação',
         message: n.message || '',
-        data: n.data,
-        channels: n.channels || ['in_app'],
-        status: n.status || 'pending',
-        sentAt: n.sent_at,
-        readAt: n.read_at,
+        data: { camera_id: n.camera_id, thumbnail: n.thumbnail },
+        channels: ['in_app'] as NotificationChannel[],
+        status: n.is_read ? 'read' as NotificationStatus : 'pending' as NotificationStatus,
+        sentAt: n.timestamp,
+        readAt: n.is_read ? n.timestamp : undefined,
         createdAt: n.created_at,
       }));
 
@@ -211,34 +210,13 @@ export function useNotifications(
     }
   }, []);
 
-  // Carregar configuração
+  // Carregar configuração (usa config local por enquanto)
   const loadConfig = useCallback(async () => {
     try {
-      const { data, error } = await supabase
-        .from('notification_configs')
-        .select('*')
-        .limit(1)
-        .maybeSingle();
-
-      if (error) throw error;
-
-      if (data) {
-        setConfig({
-          id: data.id,
-          enabled: data.enabled,
-          channels: data.channels || [],
-          emailRecipients: data.email_recipients || [],
-          phoneRecipients: data.phone_recipients || [],
-          webhookUrls: data.webhook_urls || [],
-          severityFilter: data.severity_filter || ['high', 'critical'],
-          cooldownMinutes: data.cooldown_minutes || 5,
-          scheduleEnabled: data.schedule_enabled || false,
-          scheduleStartTime: data.schedule_start_time || '08:00',
-          scheduleEndTime: data.schedule_end_time || '22:00',
-          scheduleDays: data.schedule_days || [1, 2, 3, 4, 5],
-          soundEnabled: data.sound_enabled ?? true,
-          soundUrl: data.sound_url,
-        });
+      // Por enquanto usamos config local, pois não existe tabela notification_configs
+      const savedConfig = localStorage.getItem('notification_config');
+      if (savedConfig) {
+        setConfig(JSON.parse(savedConfig));
       } else {
         setConfig(DEFAULT_CONFIG);
       }
@@ -251,42 +229,9 @@ export function useNotifications(
   // Salvar configuração
   const saveConfig = useCallback(async (updates: Partial<NotificationConfig>) => {
     try {
-      const newConfig = { ...config, ...updates };
-
-      const dbData = {
-        enabled: newConfig.enabled,
-        channels: newConfig.channels,
-        email_recipients: newConfig.emailRecipients,
-        phone_recipients: newConfig.phoneRecipients,
-        webhook_urls: newConfig.webhookUrls,
-        severity_filter: newConfig.severityFilter,
-        cooldown_minutes: newConfig.cooldownMinutes,
-        schedule_enabled: newConfig.scheduleEnabled,
-        schedule_start_time: newConfig.scheduleStartTime,
-        schedule_end_time: newConfig.scheduleEndTime,
-        schedule_days: newConfig.scheduleDays,
-        sound_enabled: newConfig.soundEnabled,
-        sound_url: newConfig.soundUrl,
-      };
-
-      if (config?.id) {
-        await supabase
-          .from('notification_configs')
-          .update(dbData)
-          .eq('id', config.id);
-      } else {
-        const { data } = await supabase
-          .from('notification_configs')
-          .insert({ ...dbData, name: 'Configuração Principal' })
-          .select()
-          .single();
-        
-        if (data) {
-          newConfig.id = data.id;
-        }
-      }
-
-      setConfig(newConfig as NotificationConfig);
+      const newConfig = { ...config, ...updates } as NotificationConfig;
+      localStorage.setItem('notification_config', JSON.stringify(newConfig));
+      setConfig(newConfig);
       toast.success('Configurações salvas');
     } catch (error) {
       console.error('Erro ao salvar config:', error);
@@ -298,8 +243,8 @@ export function useNotifications(
   const markAsRead = useCallback(async (id: string) => {
     try {
       await supabase
-        .from('notification_history')
-        .update({ status: 'read', read_at: new Date().toISOString() })
+        .from('alerts')
+        .update({ is_read: true })
         .eq('id', id);
 
       setNotifications(prev =>
@@ -318,8 +263,8 @@ export function useNotifications(
       if (unreadIds.length === 0) return;
 
       await supabase
-        .from('notification_history')
-        .update({ status: 'read', read_at: new Date().toISOString() })
+        .from('alerts')
+        .update({ is_read: true })
         .in('id', unreadIds);
 
       setNotifications(prev =>
@@ -336,7 +281,7 @@ export function useNotifications(
   const deleteNotification = useCallback(async (id: string) => {
     try {
       await supabase
-        .from('notification_history')
+        .from('alerts')
         .delete()
         .eq('id', id);
 
@@ -354,7 +299,7 @@ export function useNotifications(
       if (ids.length === 0) return;
 
       await supabase
-        .from('notification_history')
+        .from('alerts')
         .delete()
         .in('id', ids);
 
@@ -486,21 +431,20 @@ export function useNotifications(
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'notification_history',
+          table: 'alerts',
         },
         (payload) => {
           const n = payload.new as any;
           processNewNotification({
             id: n.id,
-            type: n.notification_type || 'alert',
+            type: n.type || 'alert',
             severity: n.severity || 'medium',
-            title: n.title || 'Notificação',
+            title: n.camera_name || 'Notificação',
             message: n.message || '',
-            data: n.data,
-            channels: n.channels || ['in_app'],
-            status: n.status || 'pending',
-            sentAt: n.sent_at,
-            readAt: n.read_at,
+            data: { camera_id: n.camera_id, thumbnail: n.thumbnail },
+            channels: ['in_app'],
+            status: 'pending',
+            sentAt: n.timestamp,
             createdAt: n.created_at,
           });
         }
@@ -512,7 +456,7 @@ export function useNotifications(
     };
   }, [autoLoad, processNewNotification]);
 
-  // Auto-load inicial
+  // Carregar dados iniciais
   useEffect(() => {
     if (autoLoad) {
       loadNotifications();

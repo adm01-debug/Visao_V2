@@ -108,7 +108,7 @@ import { toast } from 'sonner';
 // ============================================
 
 type ViewMode = 'grid-1x1' | 'grid-2x2' | 'grid-3x3' | 'grid-4x4' | 'list';
-type CameraStatus = 'online' | 'offline' | 'recording' | 'error';
+type CameraStatus = 'online' | 'offline' | 'alert' | 'warning';
 
 interface CameraData {
   id: string;
@@ -118,15 +118,14 @@ interface CameraData {
   stream_url?: string;
   stream_protocol?: string;
   thumbnail?: string;
-  resolution?: string;
-  fps?: number;
-  ptz_enabled?: boolean;
-  audio_enabled?: boolean;
-  analysis_enabled?: boolean;
-  face_recognition_enabled?: boolean;
-  zones_enabled?: boolean;
-  last_seen_at?: string;
+  detected_people?: number;
+  alerts_count?: number;
+  latitude?: number;
+  longitude?: number;
+  last_activity?: string;
   created_at: string;
+  updated_at: string;
+  user_id?: string;
 }
 
 interface CameraStats {
