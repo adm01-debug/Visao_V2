@@ -25,6 +25,7 @@ import {
   X,
   Video,
   ScanFace,
+  BarChart3,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -96,6 +97,11 @@ const mainNavItems: NavItem[] = [
     label: 'Logs Facial',
     icon: Eye,
     path: '/recognition-logs',
+  },
+  {
+    label: 'Analytics',
+    icon: BarChart3,
+    path: '/recognition-analytics',
   },
   {
     label: 'Zonas',
