@@ -112,6 +112,11 @@ const mainNavItems: NavItem[] = [
 
 const bottomNavItems: NavItem[] = [
   {
+    label: 'Streams',
+    icon: Video,
+    path: '/settings/streams',
+  },
+  {
     label: 'Notificações',
     icon: Bell,
     path: '/settings/notifications',
