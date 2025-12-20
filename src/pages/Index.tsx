@@ -7,6 +7,7 @@ import { RulesPanel } from '@/components/RulesPanel';
 import { FloorPlanMap } from '@/components/FloorPlanMap';
 import { AIAnalysisPanel } from '@/components/AIAnalysisPanel';
 import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
+import { BlacklistAlertBanner } from '@/components/BlacklistAlertBanner';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAlerts } from '@/hooks/useAlerts';
 import { Helmet } from 'react-helmet-async';
@@ -85,6 +86,9 @@ const Index = () => {
             {renderContent()}
           </main>
         </div>
+        
+        {/* Blacklist Alert Banner */}
+        <BlacklistAlertBanner />
       </div>
     </>
   );
