@@ -1,3 +1,26 @@
+# ============================================
+# VISÃO - .gitignore
+# ============================================
+
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Build outputs
+dist
+dist-ssr
+build
+*.local
+
+# Environment variables (CRÍTICO!)
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+!.env.example
+
 # Logs
 logs
 *.log
@@ -7,18 +30,51 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
 .idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Testing
+coverage
+.nyc_output
+
+# TypeScript
+*.tsbuildinfo
+
+# Supabase
+supabase/.branches
+supabase/.temp
+
+# Docker
+docker-compose.override.yml
+
+# ML Models (se grandes demais)
+# public/models/*.weights
+# public/models/*.bin
+
+# Temporary files
+tmp
+temp
+*.tmp
+*.temp
+
+# Secrets
+*.pem
+*.key
+secrets.json
