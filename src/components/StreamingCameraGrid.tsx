@@ -147,7 +147,6 @@ function CameraTile({
             <VideoStreamPlayer
               cameraId={camera.id}
               cameraName={camera.name}
-              streamUrl={camera.stream_url || undefined}
               height="100%"
             />
           ) : (
@@ -212,7 +211,6 @@ function CameraTile({
           cameraId={camera.id}
           cameraName={camera.name}
           location={camera.location}
-          streamUrl={camera.stream_url || undefined}
         />
       ) : (
         <div className="aspect-video bg-secondary flex items-center justify-center">
@@ -406,7 +404,6 @@ export function StreamingCameraGrid({
               cameraId={expandedCamera.id}
               cameraName={expandedCamera.name}
               location={expandedCamera.location}
-              streamUrl={expandedCamera.stream_url || undefined}
               showStats={true}
               onSnapshot={(data) => handleSnapshot(expandedCamera.id, data)}
               height={600}

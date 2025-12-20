@@ -488,36 +488,14 @@ export function useClipRecorder(
   // ============================================
   // SALVAR NO BANCO
   // ============================================
+  // SALVAR NO BANCO (desabilitado - tabela video_clips não existe)
+  // ============================================
 
   const saveClipToDatabase = useCallback(async (clip: VideoClip) => {
+    // Nota: tabela video_clips não existe no schema atual
+    // Funcionalidade de persistência desabilitada
     if (!saveToDatabase) return;
-
-    try {
-      const { error: dbError } = await supabase
-        .from('video_clips')
-        .insert({
-          id: clip.id,
-          camera_id: clip.cameraId,
-          camera_name: clip.cameraName,
-          status: clip.status,
-          trigger: clip.trigger,
-          trigger_id: clip.triggerId,
-          trigger_details: clip.triggerDetails,
-          started_at: clip.startedAt.toISOString(),
-          ended_at: clip.endedAt?.toISOString(),
-          duration: clip.duration,
-          file_url: clip.fileUrl,
-          file_size: clip.fileSize,
-          format: clip.format,
-          thumbnail_url: clip.thumbnailUrl,
-          frame_count: clip.frameCount,
-          metadata: clip.metadata,
-        });
-
-      if (dbError) throw dbError;
-    } catch (err) {
-      console.error('[ClipRecorder] Erro ao salvar no banco:', err);
-    }
+    console.log('[ClipRecorder] Persistência de clips desabilitada - tabela não existe');
   }, [saveToDatabase]);
 
   // ============================================
@@ -785,9 +763,10 @@ export function useClipRecorder(
       await supabase.storage.from(bucket).remove([filePath]);
     }
 
-    // Deletar do banco
+    // Nota: tabela video_clips não existe no schema atual
+    // Funcionalidade de deleção do banco desabilitada
     if (saveToDatabase) {
-      await supabase.from('video_clips').delete().eq('id', clipId);
+      console.log('[ClipRecorder] Deleção de clips do banco desabilitada - tabela não existe');
     }
 
     setClips(prev => prev.filter(c => c.id !== clipId));

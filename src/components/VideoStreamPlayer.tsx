@@ -122,7 +122,7 @@ interface VideoStreamPlayerProps {
 // ============================================
 
 function StatusBadge({ status }: { status: StreamStatus }) {
-  const config = {
+  const config: Record<StreamStatus, { color: string; label: string; icon: typeof WifiOff; animate?: boolean }> = {
     disconnected: { color: 'bg-gray-500', label: 'Desconectado', icon: WifiOff },
     connecting: { color: 'bg-yellow-500', label: 'Conectando...', icon: Loader2, animate: true },
     connected: { color: 'bg-blue-500', label: 'Conectado', icon: Wifi },
@@ -133,12 +133,14 @@ function StatusBadge({ status }: { status: StreamStatus }) {
     reconnecting: { color: 'bg-orange-500', label: 'Reconectando...', icon: RefreshCw, animate: true },
   };
 
-  const { color, label, icon: Icon, animate } = config[status];
+  const statusConfig = config[status];
+  const Icon = statusConfig.icon;
+  const animate = statusConfig.animate;
 
   return (
-    <Badge className={cn('gap-1.5 text-white border-0', color)}>
+    <Badge className={cn('gap-1.5 text-white border-0', statusConfig.color)}>
       <Icon className={cn('w-3 h-3', animate && 'animate-spin')} />
-      {label}
+      {statusConfig.label}
     </Badge>
   );
 }

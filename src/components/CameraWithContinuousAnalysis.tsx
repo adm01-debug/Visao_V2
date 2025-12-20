@@ -290,8 +290,8 @@ export function CameraWithContinuousAnalysis({
   // Hooks externos
   const { rules } = useRules();
 
-  // URL do stream
-  const streamUrl = camera.stream_url || 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+  // URL do stream (usando URL de teste pois stream_url não existe no schema atual)
+  const streamUrl = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
 
   // Hook de streaming
   const {

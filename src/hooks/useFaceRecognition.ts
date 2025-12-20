@@ -183,49 +183,10 @@ export function useFaceRecognition(
   // ============================================
 
   const fetchPersons = useCallback(async (): Promise<Person[]> => {
-    try {
-      const { data, error: fetchError } = await supabase
-        .from('registered_persons')
-        .select('*')
-        .eq('status', 'active')
-        .order('name');
-
-      if (fetchError) throw fetchError;
-
-      const persons: Person[] = (data || []).map(p => ({
-        id: p.id,
-        name: p.name,
-        document: p.document,
-        documentType: p.document_type,
-        email: p.email,
-        phone: p.phone,
-        company: p.company,
-        department: p.department,
-        role: p.role,
-        listType: p.list_type as ListType,
-        status: p.status,
-        photoUrl: p.photo_url,
-        trainingPhotos: p.training_photos || [],
-        faceEncoding: p.face_encoding,
-        encodingQuality: p.encoding_quality,
-        tags: p.tags,
-        notes: p.notes,
-        accessSchedule: p.access_schedule,
-        allowedCameras: p.allowed_cameras,
-        lastSeenAt: p.last_seen_at ? new Date(p.last_seen_at) : undefined,
-        lastSeenCameraId: p.last_seen_camera_id,
-        lastSeenCameraName: p.last_seen_camera_name,
-        recognitionCount: p.recognition_count || 0,
-        createdAt: new Date(p.created_at),
-        updatedAt: new Date(p.updated_at),
-      }));
-
-      personsRef.current = persons;
-      return persons;
-    } catch (err) {
-      console.error('[FaceRecognition] Erro ao buscar pessoas:', err);
-      throw err;
-    }
+    // Nota: tabela registered_persons não existe no schema atual
+    // Retornando lista vazia - funcionalidade de reconhecimento facial desabilitada
+    console.log('[FaceRecognition] Busca de pessoas desabilitada - tabela não existe');
+    return [];
   }, []);
 
   // ============================================
@@ -364,16 +325,9 @@ export function useFaceRecognition(
           onVIPDetected?.({ face, matches, bestMatch, isKnown, action, shouldAlert, message }, cameraId);
         }
 
-        // Atualizar último acesso da pessoa
-        await supabase
-          .from('registered_persons')
-          .update({
-            last_seen_at: new Date().toISOString(),
-            last_seen_camera_id: cameraId,
-            last_seen_camera_name: cameraName,
-            recognition_count: (person.recognitionCount || 0) + 1,
-          })
-          .eq('id', person.id);
+        // Nota: tabela registered_persons não existe no schema atual
+        // Atualização de último acesso desabilitada
+        console.log('[FaceRecognition] Atualização de último acesso desabilitada - tabela não existe');
       }
     } else {
       // Pessoa desconhecida
@@ -426,7 +380,8 @@ export function useFaceRecognition(
       onAlert?.(result, cameraId);
     }
 
-    // Salvar log
+    // Nota: tabela recognition_logs não existe no schema atual
+    // Funcionalidade de log desabilitada
     if (saveLogs) {
       const log: Partial<RecognitionLog> = {
         id: crypto.randomUUID(),
@@ -445,21 +400,7 @@ export function useFaceRecognition(
         timestamp: new Date(),
       };
 
-      await supabase.from('recognition_logs').insert({
-        camera_id: log.cameraId,
-        camera_name: log.cameraName,
-        person_id: log.personId,
-        person_name: log.personName,
-        list_type: log.listType,
-        similarity: log.similarity,
-        is_known: log.isKnown,
-        action: log.action,
-        face_snapshot: log.faceSnapshot,
-        bounding_box: log.boundingBox,
-        attributes: log.attributes,
-        alert_generated: log.alertGenerated,
-      });
-
+      console.log('[FaceRecognition] Salvamento de log desabilitado - tabela não existe');
       setRecentLogs(prev => [log as RecognitionLog, ...prev.slice(0, 49)]);
     }
 
@@ -575,105 +516,29 @@ export function useFaceRecognition(
   }, [recognizeFaces]);
 
   // ============================================
-  // CADASTRAR PESSOA
+  // CADASTRAR PESSOA (desabilitado - tabela registered_persons não existe)
   // ============================================
 
   const registerPerson = useCallback(async (
     personData: Omit<Person, 'id' | 'createdAt' | 'updatedAt' | 'recognitionCount'>
   ): Promise<Person> => {
-    try {
-      const { data, error: insertError } = await supabase
-        .from('registered_persons')
-        .insert({
-          name: personData.name,
-          document: personData.document,
-          document_type: personData.documentType,
-          email: personData.email,
-          phone: personData.phone,
-          company: personData.company,
-          department: personData.department,
-          role: personData.role,
-          list_type: personData.listType,
-          status: personData.status,
-          photo_url: personData.photoUrl,
-          training_photos: personData.trainingPhotos,
-          face_encoding: personData.faceEncoding,
-          encoding_quality: personData.encodingQuality,
-          tags: personData.tags,
-          notes: personData.notes,
-          access_schedule: personData.accessSchedule,
-          allowed_cameras: personData.allowedCameras,
-        })
-        .select()
-        .single();
-
-      if (insertError) throw insertError;
-
-      const person: Person = {
-        ...personData,
-        id: data.id,
-        recognitionCount: 0,
-        createdAt: new Date(data.created_at),
-        updatedAt: new Date(data.updated_at),
-      };
-
-      // Adicionar à lista local
-      personsRef.current = [...personsRef.current, person];
-
-      toast.success('Pessoa cadastrada com sucesso');
-      return person;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Erro ao cadastrar';
-      toast.error(errorMsg);
-      throw err;
-    }
+    // Nota: tabela registered_persons não existe no schema atual
+    // Funcionalidade de cadastro desabilitada
+    console.log('[FaceRecognition] Cadastro de pessoas desabilitado - tabela não existe');
+    throw new Error('Funcionalidade não disponível - tabela registered_persons não existe');
   }, []);
 
   // ============================================
-  // ADICIONAR FOTO DE TREINAMENTO
+  // ADICIONAR FOTO DE TREINAMENTO (desabilitado)
   // ============================================
 
   const addTrainingPhoto = useCallback(async (
     personId: string,
     photoBase64: string
   ): Promise<void> => {
-    try {
-      // Upload da foto
-      const fileName = `${personId}/${Date.now()}.jpg`;
-      const { error: uploadError } = await supabase.storage
-        .from('face-photos')
-        .upload(fileName, Buffer.from(photoBase64, 'base64'), {
-          contentType: 'image/jpeg',
-        });
-
-      if (uploadError) throw uploadError;
-
-      // Obter URL pública
-      const { data: urlData } = supabase.storage
-        .from('face-photos')
-        .getPublicUrl(fileName);
-
-      // Atualizar pessoa
-      const person = personsRef.current.find(p => p.id === personId);
-      if (person) {
-        const newPhotos = [...person.trainingPhotos, urlData.publicUrl];
-        
-        await supabase
-          .from('registered_persons')
-          .update({ training_photos: newPhotos })
-          .eq('id', personId);
-
-        person.trainingPhotos = newPhotos;
-      }
-
-      // TODO: Gerar novo encoding com todas as fotos
-      
-      toast.success('Foto adicionada');
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Erro ao adicionar foto';
-      toast.error(errorMsg);
-      throw err;
-    }
+    // Nota: tabela registered_persons não existe no schema atual
+    console.log('[FaceRecognition] Adição de foto desabilitada - tabela não existe');
+    throw new Error('Funcionalidade não disponível - tabela registered_persons não existe');
   }, []);
 
   // ============================================

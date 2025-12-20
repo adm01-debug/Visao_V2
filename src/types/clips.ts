@@ -233,6 +233,7 @@ export interface RecordingSession {
   /** Trigger que iniciou */
   trigger: RecordingTrigger;
   triggerId?: string;
+  triggerDetails?: VideoClip['triggerDetails'];
   
   /** Frames capturados até agora */
   frames: Blob[];

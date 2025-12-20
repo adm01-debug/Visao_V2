@@ -103,7 +103,7 @@ interface ContinuousAnalysisPanelProps {
 // ============================================
 
 function SessionStatusBadge({ status }: { status: AnalysisSession['status'] }) {
-  const config = {
+  const config: Record<AnalysisSession['status'], { color: string; label: string; pulse?: boolean }> = {
     idle: { color: 'bg-gray-500', label: 'Aguardando' },
     running: { color: 'bg-green-500', label: 'Executando', pulse: true },
     paused: { color: 'bg-yellow-500', label: 'Pausado' },
@@ -112,12 +112,13 @@ function SessionStatusBadge({ status }: { status: AnalysisSession['status'] }) {
     scheduled: { color: 'bg-blue-500', label: 'Agendado' },
   };
 
-  const { color, label, pulse } = config[status];
+  const statusConfig = config[status];
+  const pulse = statusConfig.pulse;
 
   return (
-    <Badge className={cn('gap-1.5 text-white border-0', color)}>
+    <Badge className={cn('gap-1.5 text-white border-0', statusConfig.color)}>
       {pulse && <span className="w-2 h-2 bg-white rounded-full animate-pulse" />}
-      {label}
+      {statusConfig.label}
     </Badge>
   );
 }

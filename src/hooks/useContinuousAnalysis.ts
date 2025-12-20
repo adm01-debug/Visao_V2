@@ -221,12 +221,15 @@ export function useContinuousAnalysis(
       const conditionEvaluations: ConditionEvaluation[] = [];
       let allConditionsMet = true;
 
-      for (const condition of conditions) {
+      for (const conditionRaw of conditions) {
+        // Cast para any para acessar propriedades JSON
+        const condition = conditionRaw as any;
         let actualValue = 0;
         let satisfied = false;
 
         // Extrair valor atual baseado no tipo de condição
-        switch (condition.type) {
+        const conditionType = condition?.type;
+        switch (conditionType) {
           case 'people_count':
             actualValue = analysis.people_count || 0;
             break;
@@ -242,8 +245,9 @@ export function useContinuousAnalysis(
         }
 
         // Avaliar condição
-        const expectedValue = condition.value || 0;
-        switch (condition.operator) {
+        const expectedValue = condition?.value || 0;
+        const operator = condition?.operator;
+        switch (operator) {
           case 'greater_than':
             satisfied = actualValue > expectedValue;
             break;
@@ -254,14 +258,14 @@ export function useContinuousAnalysis(
             satisfied = actualValue === expectedValue;
             break;
           case 'between':
-            const value2 = condition.value2 || 0;
+            const value2 = condition?.value2 || 0;
             satisfied = actualValue >= expectedValue && actualValue <= value2;
             break;
         }
 
         conditionEvaluations.push({
-          type: condition.type || 'unknown',
-          operator: condition.operator || 'equals',
+          type: conditionType || 'unknown',
+          operator: operator || 'equals',
           expectedValue,
           actualValue,
           satisfied,
@@ -411,28 +415,15 @@ export function useContinuousAnalysis(
   }, [createAlerts, cameraName]);
 
   // ============================================
-  // SALVAR HISTÓRICO NO BANCO
+  // SALVAR HISTÓRICO NO BANCO (desabilitado - tabela analysis_history não existe)
   // ============================================
 
   const saveHistoryToDatabase = useCallback(async (entry: AnalysisHistoryEntry) => {
+    // Nota: tabela analysis_history não existe no schema atual
+    // Funcionalidade de persistência desabilitada
     if (!saveToDatabase) return;
-
-    try {
-      await supabase.from('analysis_history').insert({
-        camera_id: cameraId,
-        session_id: entry.sessionId,
-        analysis_type: entry.analysisType,
-        result: entry.result as any,
-        duration: entry.duration,
-        alerts_generated: entry.alertsGenerated,
-        violated_rules: entry.violatedRules,
-        success: entry.success,
-        error: entry.error,
-      });
-    } catch (error) {
-      console.error('[ContinuousAnalysis] Erro ao salvar histórico:', error);
-    }
-  }, [saveToDatabase, cameraId]);
+    console.log('[ContinuousAnalysis] Persistência de histórico desabilitada - tabela não existe');
+  }, [saveToDatabase]);
 
   // ============================================
   // EXECUTAR UMA ANÁLISE
