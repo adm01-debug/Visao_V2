@@ -112,6 +112,11 @@ const mainNavItems: NavItem[] = [
 
 const bottomNavItems: NavItem[] = [
   {
+    label: 'Notificações',
+    icon: Bell,
+    path: '/settings/notifications',
+  },
+  {
     label: 'Configurações',
     icon: Settings,
     path: '/settings',
