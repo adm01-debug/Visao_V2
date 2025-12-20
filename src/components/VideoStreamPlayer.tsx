@@ -32,6 +32,7 @@ import {
   Zap,
   Signal,
   Scan,
+  Circle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -60,6 +61,7 @@ import {
 } from '@/types/streaming';
 import { FaceRecognitionOverlay } from './FaceRecognitionOverlay';
 import { useStreamFaceDetection } from '@/hooks/useStreamFaceDetection';
+import { ClipRecorderControls } from './ClipRecorderControls';
 
 // ============================================
 // TIPOS
@@ -655,6 +657,17 @@ export function VideoStreamPlayer({
               </TooltipTrigger>
               <TooltipContent>Estatísticas</TooltipContent>
             </Tooltip>
+
+            {/* Clip Recorder Controls */}
+            <div onClick={(e) => e.stopPropagation()}>
+              <ClipRecorderControls
+                cameraId={cameraId}
+                cameraName={cameraName}
+                streamRef={videoRef}
+                compact={true}
+                maxDuration={300}
+              />
+            </div>
 
             {/* Snapshot */}
             <Tooltip>
