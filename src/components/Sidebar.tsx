@@ -93,6 +93,11 @@ const mainNavItems: NavItem[] = [
     path: '/face-recognition',
   },
   {
+    label: 'Logs Facial',
+    icon: Eye,
+    path: '/recognition-logs',
+  },
+  {
     label: 'Zonas',
     icon: Target,
     path: '/zones',
