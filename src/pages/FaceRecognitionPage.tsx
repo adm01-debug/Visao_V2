@@ -17,7 +17,8 @@ import {
   AlertTriangle,
   Settings,
   History,
-  RefreshCw,
+  Grid,
+  MonitorPlay,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,9 +26,9 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { LiveFaceRecognition } from '@/components/LiveFaceRecognition';
+import { MultiCameraRecognition } from '@/components/MultiCameraRecognition';
 import { RecognizedFace } from '@/hooks/useRealtimeRecognition';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -41,6 +42,7 @@ interface RecognitionEvent {
 }
 
 export default function FaceRecognitionPage() {
+  const [activeTab, setActiveTab] = useState<'webcam' | 'multicam'>('multicam');
   const [recognitionHistory, setRecognitionHistory] = useState<RecognitionEvent[]>([]);
   const [stats, setStats] = useState({
     totalToday: 0,
@@ -104,23 +106,42 @@ export default function FaceRecognitionPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">
+            {/* Tab Switcher */}
+            <div className="flex items-center bg-muted rounded-lg p-1">
+              <Button
+                variant={activeTab === 'multicam' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setActiveTab('multicam')}
+              >
+                <Grid className="w-4 h-4 mr-2" />
+                Multi-Câmeras
+              </Button>
+              <Button
+                variant={activeTab === 'webcam' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setActiveTab('webcam')}
+              >
+                <MonitorPlay className="w-4 h-4 mr-2" />
+                Webcam
+              </Button>
+            </div>
+
+            <Button variant="outline" size="sm" onClick={() => window.location.href = '/recognition-logs'}>
               <History className="w-4 h-4 mr-2" />
               Histórico
-            </Button>
-            <Button variant="outline" size="sm">
-              <Settings className="w-4 h-4 mr-2" />
-              Configurar
             </Button>
           </div>
         </header>
 
         {/* Content */}
-        <div className="flex-1 p-6 overflow-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
-            {/* Câmera Principal */}
-            <div className="lg:col-span-2">
-              <Card className="h-full">
+        {activeTab === 'multicam' ? (
+          <MultiCameraRecognition />
+        ) : (
+          <div className="flex-1 p-6 overflow-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+              {/* Câmera Principal */}
+              <div className="lg:col-span-2">
+                <Card className="h-full">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -265,6 +286,7 @@ export default function FaceRecognitionPage() {
             </div>
           </div>
         </div>
+        )}
       </div>
     </>
   );
