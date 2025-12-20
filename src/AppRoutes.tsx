@@ -27,6 +27,9 @@ const AuthPage = lazy(() => import('@/pages/Auth'));
 const NotFoundPage = lazy(() => import('@/pages/NotFound'));
 const NotificationSettingsPage = lazy(() => import('@/pages/NotificationSettingsPage'));
 const StreamSettingsPage = lazy(() => import('@/pages/StreamSettingsPage'));
+const HeatmapPage = lazy(() => import('@/pages/HeatmapPage'));
+const LicensePlatePage = lazy(() => import('@/pages/LicensePlatePage'));
+const TelegramSettingsPage = lazy(() => import('@/pages/TelegramSettingsPage'));
 
 // Loading fallback
 function PageLoader() {
@@ -77,9 +80,14 @@ export function AppRoutes() {
         {/* Segurança */}
         <Route path="/security" element={<SecurityPage />} />
         
+        {/* Analytics Avançado */}
+        <Route path="/heatmap" element={<HeatmapPage />} />
+        <Route path="/license-plates" element={<LicensePlatePage />} />
+        
         {/* Configurações */}
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/settings/notifications" element={<NotificationSettingsPage />} />
+        <Route path="/settings/telegram" element={<TelegramSettingsPage />} />
         <Route path="/settings/streams" element={<StreamSettingsPage />} />
         
         {/* Auth */}
