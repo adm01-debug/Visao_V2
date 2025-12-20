@@ -1,281 +1,362 @@
-import { useState, useMemo } from 'react';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+/**
+ * VISÃO - Sistema de Vigilância Inteligente
+ * Componente: NotificationsPanel
+ * 
+ * Painel de notificações com:
+ * - Lista de notificações
+ * - Marcar como lida
+ * - Ações rápidas
+ * - Configurações
+ */
+
+import { useState } from 'react';
+import {
+  Bell,
+  BellOff,
+  Check,
+  CheckCheck,
+  Trash2,
+  Settings,
+  Volume2,
+  VolumeX,
+  Mail,
+  MessageSquare,
+  AlertTriangle,
+  AlertCircle,
+  Info,
+  X,
+  Clock,
+  Camera,
+  Filter,
+  RefreshCw,
+} from 'lucide-react';
+import { useNotifications } from '@/hooks/useNotifications';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Bell, Check, CheckCheck, Trash2, Filter, X, Shield, HardHat, Briefcase, DoorOpen, BarChart3 } from 'lucide-react';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { useAlerts, DbAlert } from '@/hooks/useAlerts';
-import { cn } from '@/lib/utils';
 
-type AlertType = 'security' | 'safety' | 'operations' | 'access' | 'analytics';
-type AlertSeverity = 'low' | 'medium' | 'high' | 'critical';
+// ============================================
+// TIPOS
+// ============================================
 
-const alertTypeConfig: Record<AlertType, { icon: React.ElementType; label: string; color: string }> = {
-  security: { icon: Shield, label: 'Segurança', color: 'text-red-500' },
-  safety: { icon: HardHat, label: 'Segurança do Trabalho', color: 'text-orange-500' },
-  operations: { icon: Briefcase, label: 'Operações', color: 'text-blue-500' },
-  access: { icon: DoorOpen, label: 'Controle de Acesso', color: 'text-purple-500' },
-  analytics: { icon: BarChart3, label: 'Análise', color: 'text-cyan-500' },
+type NotificationSeverity = 'low' | 'medium' | 'high' | 'critical';
+
+interface NotificationItemProps {
+  id: string;
+  title: string;
+  message: string;
+  severity: NotificationSeverity;
+  isRead: boolean;
+  createdAt: string;
+  cameraName?: string;
+  onRead: () => void;
+  onDelete: () => void;
+}
+
+// ============================================
+// CONFIGURAÇÃO
+// ============================================
+
+const severityConfig: Record<NotificationSeverity, {
+  icon: any;
+  color: string;
+  bgColor: string;
+  label: string;
+}> = {
+  low: {
+    icon: Info,
+    color: 'text-blue-500',
+    bgColor: 'bg-blue-500/10',
+    label: 'Baixa',
+  },
+  medium: {
+    icon: AlertCircle,
+    color: 'text-yellow-500',
+    bgColor: 'bg-yellow-500/10',
+    label: 'Média',
+  },
+  high: {
+    icon: AlertTriangle,
+    color: 'text-orange-500',
+    bgColor: 'bg-orange-500/10',
+    label: 'Alta',
+  },
+  critical: {
+    icon: AlertTriangle,
+    color: 'text-red-500',
+    bgColor: 'bg-red-500/10',
+    label: 'Crítica',
+  },
 };
 
-const severityConfig: Record<AlertSeverity, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
-  low: { label: 'Baixa', variant: 'secondary' },
-  medium: { label: 'Média', variant: 'default' },
-  high: { label: 'Alta', variant: 'destructive' },
-  critical: { label: 'Crítica', variant: 'destructive' },
-};
+// ============================================
+// COMPONENTE: Notification Item
+// ============================================
 
-interface NotificationsPanelProps {
-  trigger?: React.ReactNode;
-}
-
-export function NotificationsPanel({ trigger }: NotificationsPanelProps) {
-  const { alerts, loading, markAsRead, markAllAsRead, deleteAlert, unreadCount } = useAlerts();
-  const [isOpen, setIsOpen] = useState(false);
-  const [typeFilter, setTypeFilter] = useState<string>('all');
-  const [severityFilter, setSeverityFilter] = useState<string>('all');
-  const [readFilter, setReadFilter] = useState<string>('all');
-
-  const filteredAlerts = useMemo(() => {
-    return alerts.filter((alert) => {
-      if (typeFilter !== 'all' && alert.type !== typeFilter) return false;
-      if (severityFilter !== 'all' && alert.severity !== severityFilter) return false;
-      if (readFilter === 'unread' && alert.is_read) return false;
-      if (readFilter === 'read' && !alert.is_read) return false;
-      return true;
-    });
-  }, [alerts, typeFilter, severityFilter, readFilter]);
-
-  const clearFilters = () => {
-    setTypeFilter('all');
-    setSeverityFilter('all');
-    setReadFilter('all');
-  };
-
-  const hasActiveFilters = typeFilter !== 'all' || severityFilter !== 'all' || readFilter !== 'all';
-
-  const handleMarkAsRead = async (id: string) => {
-    try {
-      await markAsRead(id);
-    } catch (error) {
-      console.error('Error marking as read:', error);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteAlert(id);
-    } catch (error) {
-      console.error('Error deleting alert:', error);
-    }
-  };
-
-  return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild>
-        {trigger || (
-          <Button variant="ghost" size="icon" className="relative">
-            <Bell className="h-5 w-5" />
-            {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-xs flex items-center justify-center">
-                {unreadCount > 99 ? '99+' : unreadCount}
-              </span>
-            )}
-          </Button>
-        )}
-      </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-lg flex flex-col">
-        <SheetHeader className="flex-shrink-0">
-          <div className="flex items-center justify-between">
-            <SheetTitle className="flex items-center gap-2">
-              <Bell className="h-5 w-5" />
-              Notificações
-              {unreadCount > 0 && (
-                <Badge variant="destructive" className="ml-2">
-                  {unreadCount} não lidas
-                </Badge>
-              )}
-            </SheetTitle>
-          </div>
-        </SheetHeader>
-
-        {/* Filters */}
-        <div className="flex-shrink-0 space-y-3 py-4 border-b border-border">
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium">Filtros</span>
-            {hasActiveFilters && (
-              <Button variant="ghost" size="sm" onClick={clearFilters} className="h-6 px-2 ml-auto">
-                <X className="h-3 w-3 mr-1" />
-                Limpar
-              </Button>
-            )}
-          </div>
-          <div className="grid grid-cols-3 gap-2">
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="h-8 text-xs">
-                <SelectValue placeholder="Tipo" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os tipos</SelectItem>
-                <SelectItem value="security">Segurança</SelectItem>
-                <SelectItem value="safety">Seg. Trabalho</SelectItem>
-                <SelectItem value="operations">Operações</SelectItem>
-                <SelectItem value="access">Acesso</SelectItem>
-                <SelectItem value="analytics">Análise</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={severityFilter} onValueChange={setSeverityFilter}>
-              <SelectTrigger className="h-8 text-xs">
-                <SelectValue placeholder="Severidade" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas</SelectItem>
-                <SelectItem value="low">Baixa</SelectItem>
-                <SelectItem value="medium">Média</SelectItem>
-                <SelectItem value="high">Alta</SelectItem>
-                <SelectItem value="critical">Crítica</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={readFilter} onValueChange={setReadFilter}>
-              <SelectTrigger className="h-8 text-xs">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas</SelectItem>
-                <SelectItem value="unread">Não lidas</SelectItem>
-                <SelectItem value="read">Lidas</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {unreadCount > 0 && (
-            <Button variant="outline" size="sm" onClick={markAllAsRead} className="w-full">
-              <CheckCheck className="h-4 w-4 mr-2" />
-              Marcar todas como lidas
-            </Button>
-          )}
-        </div>
-
-        {/* Alerts List */}
-        <ScrollArea className="flex-1 -mx-6 px-6">
-          {loading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            </div>
-          ) : filteredAlerts.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-              <Bell className="h-12 w-12 mb-4 opacity-50" />
-              <p className="text-sm">Nenhuma notificação encontrada</p>
-              {hasActiveFilters && (
-                <Button variant="link" size="sm" onClick={clearFilters} className="mt-2">
-                  Limpar filtros
-                </Button>
-              )}
-            </div>
-          ) : (
-            <div className="space-y-2 py-2">
-              {filteredAlerts.map((alert) => (
-                <AlertItem
-                  key={alert.id}
-                  alert={alert}
-                  onMarkAsRead={handleMarkAsRead}
-                  onDelete={handleDelete}
-                />
-              ))}
-            </div>
-          )}
-        </ScrollArea>
-
-        {/* Footer */}
-        <div className="flex-shrink-0 pt-4 border-t border-border">
-          <p className="text-xs text-muted-foreground text-center">
-            Mostrando {filteredAlerts.length} de {alerts.length} notificações
-          </p>
-        </div>
-      </SheetContent>
-    </Sheet>
-  );
-}
-
-interface AlertItemProps {
-  alert: DbAlert;
-  onMarkAsRead: (id: string) => void;
-  onDelete: (id: string) => void;
-}
-
-function AlertItem({ alert, onMarkAsRead, onDelete }: AlertItemProps) {
-  const typeConfig = alertTypeConfig[alert.type as AlertType] || alertTypeConfig.security;
-  const sevConfig = severityConfig[alert.severity as AlertSeverity] || severityConfig.medium;
-  const TypeIcon = typeConfig.icon;
+function NotificationItem({
+  id,
+  title,
+  message,
+  severity,
+  isRead,
+  createdAt,
+  cameraName,
+  onRead,
+  onDelete,
+}: NotificationItemProps) {
+  const config = severityConfig[severity];
+  const Icon = config.icon;
 
   return (
     <div
       className={cn(
-        'group relative p-3 rounded-lg border transition-colors',
-        alert.is_read
-          ? 'bg-card border-border'
-          : 'bg-primary/5 border-primary/20'
+        'p-3 rounded-lg transition-colors cursor-pointer group',
+        isRead ? 'bg-background hover:bg-muted/50' : 'bg-muted/50 hover:bg-muted',
+        !isRead && 'border-l-2 border-primary'
       )}
+      onClick={onRead}
     >
       <div className="flex items-start gap-3">
-        <div className={cn('p-2 rounded-full bg-background', typeConfig.color)}>
-          <TypeIcon className="h-4 w-4" />
+        <div className={cn('p-2 rounded-full', config.bgColor)}>
+          <Icon className={cn('w-4 h-4', config.color)} />
         </div>
+        
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <Badge variant={sevConfig.variant} className="text-xs">
-              {sevConfig.label}
-            </Badge>
-            <span className="text-xs text-muted-foreground">
-              {typeConfig.label}
-            </span>
-            {!alert.is_read && (
-              <span className="h-2 w-2 rounded-full bg-primary ml-auto" />
-            )}
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex-1 min-w-0">
+              <p className={cn(
+                'text-sm truncate',
+                !isRead && 'font-medium'
+              )}>
+                {title}
+              </p>
+              {cameraName && (
+                <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                  <Camera className="w-3 h-3" />
+                  {cameraName}
+                </p>
+              )}
+            </div>
+            
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+            >
+              <X className="w-3 h-3" />
+            </Button>
           </div>
-          <p className="text-sm font-medium line-clamp-2">{alert.message}</p>
-          <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-            <span>{alert.camera_name}</span>
-            <span>•</span>
-            <span>
-              {formatDistanceToNow(new Date(alert.timestamp), {
-                addSuffix: true,
-                locale: ptBR,
-              })}
+          
+          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+            {message}
+          </p>
+          
+          <div className="flex items-center gap-2 mt-2">
+            <Badge variant="secondary" className={cn('text-[10px] h-5', config.color)}>
+              {config.label}
+            </Badge>
+            <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              {formatDistanceToNow(new Date(createdAt), { addSuffix: true, locale: ptBR })}
             </span>
           </div>
         </div>
-      </div>
-
-      {/* Actions */}
-      <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-        {!alert.is_read && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7"
-            onClick={() => onMarkAsRead(alert.id)}
-            title="Marcar como lida"
-          >
-            <Check className="h-4 w-4" />
-          </Button>
-        )}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-7 w-7 text-destructive hover:text-destructive"
-          onClick={() => onDelete(alert.id)}
-          title="Excluir"
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
       </div>
     </div>
   );
 }
+
+// ============================================
+// COMPONENTE PRINCIPAL
+// ============================================
+
+export function NotificationsPanel() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('all');
+  
+  const {
+    notifications,
+    unreadCount,
+    config,
+    loading,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification,
+    clearAll,
+    saveConfig,
+    playAlertSound,
+    sendTestNotification,
+  } = useNotifications();
+
+  // Filtrar por tab
+  const filteredNotifications = notifications.filter(n => {
+    if (activeTab === 'all') return true;
+    if (activeTab === 'unread') return n.status !== 'read';
+    if (activeTab === 'critical') return n.severity === 'critical' || n.severity === 'high';
+    return true;
+  });
+
+  return (
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="ghost" size="icon" className="relative">
+          <Bell className="w-5 h-5" />
+          {unreadCount > 0 && (
+            <Badge 
+              variant="destructive" 
+              className="absolute -top-1 -right-1 h-5 min-w-[20px] px-1 text-[10px]"
+            >
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </Badge>
+          )}
+        </Button>
+      </PopoverTrigger>
+      
+      <PopoverContent className="w-96 p-0" align="end">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          {/* Header */}
+          <div className="p-4 pb-2">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold">Notificações</h3>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => playAlertSound()}
+                  title="Testar som"
+                >
+                  <Volume2 className="w-4 h-4" />
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Settings className="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={markAllAsRead}>
+                      <CheckCheck className="w-4 h-4 mr-2" />
+                      Marcar todas como lidas
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={clearAll}>
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Limpar todas
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <div className="px-2 py-1.5">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-sm">Sons</Label>
+                        <Switch 
+                          checked={config?.soundEnabled ?? true}
+                          onCheckedChange={(checked) => saveConfig({ soundEnabled: checked })}
+                        />
+                      </div>
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
+            
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="all" className="text-xs">
+                Todas
+              </TabsTrigger>
+              <TabsTrigger value="unread" className="text-xs">
+                Não lidas {unreadCount > 0 && `(${unreadCount})`}
+              </TabsTrigger>
+              <TabsTrigger value="critical" className="text-xs">
+                Críticas
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          <Separator />
+
+          {/* Content */}
+          <ScrollArea className="h-[400px]">
+            <div className="p-2 space-y-2">
+              {loading ? (
+                <div className="flex items-center justify-center py-8">
+                  <RefreshCw className="w-5 h-5 animate-spin text-muted-foreground" />
+                </div>
+              ) : filteredNotifications.length === 0 ? (
+                <div className="text-center py-8">
+                  <BellOff className="w-10 h-10 mx-auto text-muted-foreground mb-2" />
+                  <p className="text-sm text-muted-foreground">
+                    {activeTab === 'all' 
+                      ? 'Nenhuma notificação'
+                      : activeTab === 'unread'
+                      ? 'Nenhuma notificação não lida'
+                      : 'Nenhuma notificação crítica'}
+                  </p>
+                </div>
+              ) : (
+                filteredNotifications.map(notification => (
+                  <NotificationItem
+                    key={notification.id}
+                    id={notification.id}
+                    title={notification.title}
+                    message={notification.message}
+                    severity={notification.severity}
+                    isRead={notification.status === 'read'}
+                    createdAt={notification.createdAt}
+                    cameraName={notification.data?.cameraName}
+                    onRead={() => markAsRead(notification.id)}
+                    onDelete={() => deleteNotification(notification.id)}
+                  />
+                ))
+              )}
+            </div>
+          </ScrollArea>
+
+          {/* Footer */}
+          {filteredNotifications.length > 0 && (
+            <>
+              <Separator />
+              <div className="p-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full text-xs"
+                  onClick={() => {
+                    setIsOpen(false);
+                    // Navegar para página de configurações
+                    window.location.href = '/settings';
+                  }}
+                >
+                  Ver todas as configurações
+                </Button>
+              </div>
+            </>
+          )}
+        </Tabs>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+export default NotificationsPanel;
