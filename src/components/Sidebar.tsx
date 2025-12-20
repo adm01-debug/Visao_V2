@@ -35,6 +35,7 @@ import {
   Sun,
   HelpCircle,
   Shield,
+  HardHat,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -135,6 +136,11 @@ const mainNavItems: NavItem[] = [
     label: 'Segurança',
     icon: Shield,
     path: '/security',
+  },
+  {
+    label: 'EPIs',
+    icon: HardHat,
+    path: '/ppe',
   },
 ];
 
