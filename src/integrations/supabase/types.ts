@@ -64,6 +64,50 @@ export type Database = {
           },
         ]
       }
+      analysis_history: {
+        Row: {
+          analysis_type: string
+          camera_id: string | null
+          confidence: number | null
+          created_at: string
+          id: string
+          image_url: string | null
+          result: Json
+          timestamp: string
+          user_id: string
+        }
+        Insert: {
+          analysis_type: string
+          camera_id?: string | null
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          result?: Json
+          timestamp?: string
+          user_id: string
+        }
+        Update: {
+          analysis_type?: string
+          camera_id?: string | null
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          result?: Json
+          timestamp?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analysis_history_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cameras: {
         Row: {
           alerts_count: number | null
@@ -76,6 +120,7 @@ export type Database = {
           longitude: number | null
           name: string
           status: Database["public"]["Enums"]["camera_status"]
+          stream_url: string | null
           thumbnail: string | null
           updated_at: string
           user_id: string | null
@@ -91,6 +136,7 @@ export type Database = {
           longitude?: number | null
           name: string
           status?: Database["public"]["Enums"]["camera_status"]
+          stream_url?: string | null
           thumbnail?: string | null
           updated_at?: string
           user_id?: string | null
@@ -106,6 +152,7 @@ export type Database = {
           longitude?: number | null
           name?: string
           status?: Database["public"]["Enums"]["camera_status"]
+          stream_url?: string | null
           thumbnail?: string | null
           updated_at?: string
           user_id?: string | null
@@ -134,6 +181,96 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      recognition_logs: {
+        Row: {
+          camera_id: string | null
+          confidence: number | null
+          created_at: string
+          id: string
+          image_url: string | null
+          person_id: string | null
+          recognized: boolean
+          timestamp: string
+          user_id: string
+        }
+        Insert: {
+          camera_id?: string | null
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          person_id?: string | null
+          recognized?: boolean
+          timestamp?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string | null
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          person_id?: string | null
+          recognized?: boolean
+          timestamp?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recognition_logs_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recognition_logs_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "registered_persons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      registered_persons: {
+        Row: {
+          created_at: string
+          department: string | null
+          face_encoding: Json | null
+          id: string
+          is_active: boolean
+          name: string
+          photo_url: string | null
+          role: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          face_encoding?: Json | null
+          id?: string
+          is_active?: boolean
+          name: string
+          photo_url?: string | null
+          role?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          face_encoding?: Json | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          photo_url?: string | null
+          role?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -186,6 +323,138 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      video_clips: {
+        Row: {
+          camera_id: string | null
+          created_at: string
+          duration: number | null
+          end_time: string | null
+          file_url: string | null
+          id: string
+          start_time: string
+          status: string
+          thumbnail_url: string | null
+          user_id: string
+        }
+        Insert: {
+          camera_id?: string | null
+          created_at?: string
+          duration?: number | null
+          end_time?: string | null
+          file_url?: string | null
+          id?: string
+          start_time: string
+          status?: string
+          thumbnail_url?: string | null
+          user_id: string
+        }
+        Update: {
+          camera_id?: string | null
+          created_at?: string
+          duration?: number | null
+          end_time?: string | null
+          file_url?: string | null
+          id?: string
+          start_time?: string
+          status?: string
+          thumbnail_url?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_clips_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      zone_events: {
+        Row: {
+          created_at: string
+          detected_objects: Json | null
+          event_type: string
+          id: string
+          timestamp: string
+          user_id: string
+          zone_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          detected_objects?: Json | null
+          event_type: string
+          id?: string
+          timestamp?: string
+          user_id: string
+          zone_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          detected_objects?: Json | null
+          event_type?: string
+          id?: string
+          timestamp?: string
+          user_id?: string
+          zone_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zone_events_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      zones: {
+        Row: {
+          camera_id: string | null
+          color: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          points: Json
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          camera_id?: string | null
+          color?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          points?: Json
+          type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string | null
+          color?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          points?: Json
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zones_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

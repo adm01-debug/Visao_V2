@@ -24,6 +24,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import {
   Person,
+  PersonStatus,
   DetectedFace,
   FaceMatch,
   RecognitionResult,
@@ -183,10 +184,36 @@ export function useFaceRecognition(
   // ============================================
 
   const fetchPersons = useCallback(async (): Promise<Person[]> => {
-    // Nota: tabela registered_persons não existe no schema atual
-    // Retornando lista vazia - funcionalidade de reconhecimento facial desabilitada
-    console.log('[FaceRecognition] Busca de pessoas desabilitada - tabela não existe');
-    return [];
+    try {
+      const { data, error: queryError } = await supabase
+        .from('registered_persons')
+        .select('*')
+        .eq('is_active', true);
+
+      if (queryError) throw queryError;
+
+      const persons: Person[] = (data || []).map(row => ({
+        id: row.id,
+        name: row.name,
+        role: row.role || undefined,
+        department: row.department || undefined,
+        faceEncoding: Array.isArray(row.face_encoding) ? (row.face_encoding as number[]) : [],
+        photoUrl: row.photo_url || undefined,
+        isActive: row.is_active,
+        createdAt: new Date(row.created_at),
+        updatedAt: new Date(row.updated_at),
+        listType: 'employee' as ListType,
+        status: 'active' as PersonStatus,
+        trainingPhotos: [],
+        recognitionCount: 0,
+      }));
+
+      personsRef.current = persons;
+      return persons;
+    } catch (err) {
+      console.error('[FaceRecognition] Erro ao buscar pessoas:', err);
+      return [];
+    }
   }, []);
 
   // ============================================
@@ -325,9 +352,11 @@ export function useFaceRecognition(
           onVIPDetected?.({ face, matches, bestMatch, isKnown, action, shouldAlert, message }, cameraId);
         }
 
-        // Nota: tabela registered_persons não existe no schema atual
-        // Atualização de último acesso desabilitada
-        console.log('[FaceRecognition] Atualização de último acesso desabilitada - tabela não existe');
+        // Atualizar último acesso da pessoa
+        await supabase
+          .from('registered_persons')
+          .update({ updated_at: new Date().toISOString() })
+          .eq('id', person.id);
       }
     } else {
       // Pessoa desconhecida
@@ -380,9 +409,25 @@ export function useFaceRecognition(
       onAlert?.(result, cameraId);
     }
 
-    // Nota: tabela recognition_logs não existe no schema atual
-    // Funcionalidade de log desabilitada
+    // Salvar log de reconhecimento
     if (saveLogs) {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          await supabase.from('recognition_logs').insert({
+            camera_id: cameraId,
+            person_id: bestMatch?.personId,
+            user_id: user.id,
+            confidence: bestMatch?.similarity,
+            recognized: isKnown,
+            timestamp: new Date().toISOString(),
+            image_url: face.croppedImage,
+          });
+        }
+      } catch (logErr) {
+        console.error('[FaceRecognition] Erro ao salvar log:', logErr);
+      }
+
       const log: Partial<RecognitionLog> = {
         id: crypto.randomUUID(),
         cameraId,
@@ -400,7 +445,6 @@ export function useFaceRecognition(
         timestamp: new Date(),
       };
 
-      console.log('[FaceRecognition] Salvamento de log desabilitado - tabela não existe');
       setRecentLogs(prev => [log as RecognitionLog, ...prev.slice(0, 49)]);
     }
 

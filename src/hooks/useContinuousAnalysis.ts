@@ -415,15 +415,35 @@ export function useContinuousAnalysis(
   }, [createAlerts, cameraName]);
 
   // ============================================
-  // SALVAR HISTÓRICO NO BANCO (desabilitado - tabela analysis_history não existe)
+  // SALVAR HISTÓRICO NO BANCO
   // ============================================
 
   const saveHistoryToDatabase = useCallback(async (entry: AnalysisHistoryEntry) => {
-    // Nota: tabela analysis_history não existe no schema atual
-    // Funcionalidade de persistência desabilitada
     if (!saveToDatabase) return;
-    console.log('[ContinuousAnalysis] Persistência de histórico desabilitada - tabela não existe');
-  }, [saveToDatabase]);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.warn('[ContinuousAnalysis] Usuário não autenticado - histórico não será salvo');
+        return;
+      }
+
+      await supabase.from('analysis_history').insert({
+        id: entry.id,
+        camera_id: cameraId,
+        user_id: user.id,
+        timestamp: entry.timestamp.toISOString(),
+        analysis_type: entry.analysisType,
+        result: entry.result as any,
+        confidence: 'confidence' in entry.result ? (entry.result as any).confidence : null,
+        image_url: entry.snapshot || null,
+      });
+
+      console.log('[ContinuousAnalysis] Histórico salvo no banco de dados');
+    } catch (err) {
+      console.error('[ContinuousAnalysis] Erro ao salvar histórico:', err);
+    }
+  }, [saveToDatabase, cameraId]);
 
   // ============================================
   // EXECUTAR UMA ANÁLISE
