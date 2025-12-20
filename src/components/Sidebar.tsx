@@ -23,6 +23,7 @@ import {
   Activity,
   Menu,
   X,
+  Video,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -74,6 +75,11 @@ const mainNavItems: NavItem[] = [
     path: '/alerts',
     badge: 0, // Será atualizado dinamicamente
     badgeVariant: 'destructive',
+  },
+  {
+    label: 'Gravações',
+    icon: Video,
+    path: '/recordings',
   },
   {
     label: 'Colaboradores',
