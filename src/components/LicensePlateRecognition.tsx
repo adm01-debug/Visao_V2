@@ -2,7 +2,7 @@
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: LicensePlateRecognition
  * 
- * Reconhecimento de placas de veículos (ALPR/ANPR) usando IA
+ * Reconhecimento de placas de veículos (ALPR/ANPR) usando IA com persistência
  */
 
 import { useState, useRef, useCallback } from 'react';
@@ -12,11 +12,11 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Switch } from '@/components/ui/switch';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePlateDetections } from '@/hooks/usePlateDetections';
 import { 
   Car, 
   Camera, 
@@ -26,58 +26,34 @@ import {
   CheckCircle2,
   XCircle,
   Upload,
-  Play,
-  Pause,
   RefreshCw,
   Plus,
   Trash2,
-  Eye
+  Eye,
+  Loader2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-// ============================================
-// TIPOS
-// ============================================
-
-interface PlateDetection {
-  id: string;
-  plate: string;
-  confidence: number;
-  cameraId: string;
-  cameraName: string;
-  timestamp: Date;
-  imageUrl?: string;
-  vehicleType?: 'car' | 'motorcycle' | 'truck' | 'bus' | 'unknown';
-  status: 'authorized' | 'unauthorized' | 'unknown' | 'blacklist';
-}
-
-interface RegisteredPlate {
-  id: string;
-  plate: string;
-  ownerName: string;
-  vehicleType: string;
-  color: string;
-  notes: string;
-  listType: 'whitelist' | 'blacklist' | 'visitor';
-  createdAt: Date;
-}
-
 interface LicensePlateRecognitionProps {
   className?: string;
 }
 
-// ============================================
-// COMPONENTE PRINCIPAL
-// ============================================
-
 export function LicensePlateRecognition({ className }: LicensePlateRecognitionProps) {
   const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const {
+    detections,
+    registeredPlates,
+    loading,
+    addDetection,
+    deleteDetection,
+    addRegisteredPlate,
+    deleteRegisteredPlate,
+    checkPlateStatus
+  } = usePlateDetections();
+
   const [analyzing, setAnalyzing] = useState(false);
-  const [detections, setDetections] = useState<PlateDetection[]>([]);
-  const [registeredPlates, setRegisteredPlates] = useState<RegisteredPlate[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -85,15 +61,35 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
   // Form para nova placa
   const [newPlate, setNewPlate] = useState({
     plate: '',
-    ownerName: '',
-    vehicleType: 'car',
+    owner_name: '',
+    vehicle_type: 'car',
     color: '',
     notes: '',
-    listType: 'whitelist' as 'whitelist' | 'blacklist' | 'visitor'
+    list_type: 'whitelist' as 'whitelist' | 'blacklist' | 'visitor'
   });
+
+  // Gerar placa mock
+  const generateMockPlate = (): string => {
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const numbers = '0123456789';
+    return (
+      letters[Math.floor(Math.random() * 26)] +
+      letters[Math.floor(Math.random() * 26)] +
+      letters[Math.floor(Math.random() * 26)] +
+      numbers[Math.floor(Math.random() * 10)] +
+      letters[Math.floor(Math.random() * 26)] +
+      numbers[Math.floor(Math.random() * 10)] +
+      numbers[Math.floor(Math.random() * 10)]
+    );
+  };
 
   // Analisar imagem para detectar placa
   const analyzeImage = useCallback(async (imageData: string) => {
+    if (!user) {
+      toast.error('Faça login para analisar imagens');
+      return;
+    }
+
     setAnalyzing(true);
 
     try {
@@ -104,19 +100,14 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
       if (error) throw error;
 
       if (data?.plate) {
-        const detection: PlateDetection = {
-          id: crypto.randomUUID(),
+        await addDetection({
           plate: data.plate,
           confidence: data.confidence || 0.95,
-          cameraId: 'manual',
-          cameraName: 'Upload Manual',
-          timestamp: new Date(),
-          imageUrl: imageData,
-          vehicleType: data.vehicleType || 'unknown',
+          camera_name: 'Upload Manual',
+          image_url: imageData.length < 50000 ? imageData : null, // Limitar tamanho
+          vehicle_type: data.vehicleType || 'unknown',
           status: checkPlateStatus(data.plate)
-        };
-
-        setDetections(prev => [detection, ...prev].slice(0, 50));
+        });
         toast.success(`Placa detectada: ${data.plate}`);
       } else {
         toast.info('Nenhuma placa detectada na imagem');
@@ -127,53 +118,19 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
       
       // Simulação para demo
       const mockPlate = generateMockPlate();
-      const detection: PlateDetection = {
-        id: crypto.randomUUID(),
+      await addDetection({
         plate: mockPlate,
         confidence: 0.92,
-        cameraId: 'manual',
-        cameraName: 'Upload Manual',
-        timestamp: new Date(),
-        imageUrl: imageData,
-        vehicleType: 'car',
+        camera_name: 'Upload Manual',
+        image_url: imageData.length < 50000 ? imageData : null,
+        vehicle_type: 'car',
         status: checkPlateStatus(mockPlate)
-      };
-
-      setDetections(prev => [detection, ...prev].slice(0, 50));
+      });
       toast.success(`Placa detectada: ${mockPlate}`);
     } finally {
       setAnalyzing(false);
     }
-  }, [registeredPlates]);
-
-  // Verificar status da placa
-  const checkPlateStatus = (plate: string): PlateDetection['status'] => {
-    const registered = registeredPlates.find(
-      p => p.plate.toUpperCase().replace(/[^A-Z0-9]/g, '') === plate.toUpperCase().replace(/[^A-Z0-9]/g, '')
-    );
-    
-    if (!registered) return 'unknown';
-    if (registered.listType === 'blacklist') return 'blacklist';
-    return 'authorized';
-  };
-
-  // Gerar placa mock
-  const generateMockPlate = (): string => {
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const numbers = '0123456789';
-    
-    // Formato Mercosul: ABC1D23
-    const plate = 
-      letters[Math.floor(Math.random() * 26)] +
-      letters[Math.floor(Math.random() * 26)] +
-      letters[Math.floor(Math.random() * 26)] +
-      numbers[Math.floor(Math.random() * 10)] +
-      letters[Math.floor(Math.random() * 26)] +
-      numbers[Math.floor(Math.random() * 10)] +
-      numbers[Math.floor(Math.random() * 10)];
-    
-    return plate;
-  };
+  }, [user, addDetection, checkPlateStatus]);
 
   // Handler de upload de imagem
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -190,44 +147,39 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
   };
 
   // Adicionar placa registrada
-  const addRegisteredPlate = () => {
+  const handleAddRegisteredPlate = async () => {
     if (!newPlate.plate) {
       toast.error('Digite a placa');
       return;
     }
 
-    const plate: RegisteredPlate = {
-      id: crypto.randomUUID(),
-      ...newPlate,
-      createdAt: new Date()
-    };
+    await addRegisteredPlate({
+      plate: newPlate.plate,
+      owner_name: newPlate.owner_name,
+      vehicle_type: newPlate.vehicle_type,
+      color: newPlate.color,
+      notes: newPlate.notes,
+      list_type: newPlate.list_type
+    });
 
-    setRegisteredPlates(prev => [plate, ...prev]);
     setNewPlate({
       plate: '',
-      ownerName: '',
-      vehicleType: 'car',
+      owner_name: '',
+      vehicle_type: 'car',
       color: '',
       notes: '',
-      listType: 'whitelist'
+      list_type: 'whitelist'
     });
-    toast.success('Placa registrada com sucesso');
-  };
-
-  // Remover placa registrada
-  const removeRegisteredPlate = (id: string) => {
-    setRegisteredPlates(prev => prev.filter(p => p.id !== id));
-    toast.success('Placa removida');
   };
 
   // Filtrar detecções
   const filteredDetections = detections.filter(d =>
     d.plate.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    d.cameraName.toLowerCase().includes(searchQuery.toLowerCase())
+    d.camera_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Status badge
-  const getStatusBadge = (status: PlateDetection['status']) => {
+  const getStatusBadge = (status: string) => {
     switch (status) {
       case 'authorized':
         return <Badge className="bg-green-500 gap-1"><CheckCircle2 className="h-3 w-3" />Autorizado</Badge>;
@@ -239,6 +191,14 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
         return <Badge variant="outline" className="gap-1"><Eye className="h-3 w-3" />Desconhecido</Badge>;
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -286,18 +246,16 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
                   <Card key={detection.id}>
                     <CardContent className="pt-4">
                       <div className="flex items-center gap-4">
-                        {/* Thumbnail */}
-                        {detection.imageUrl && (
+                        {detection.image_url && (
                           <div className="w-24 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
                             <img 
-                              src={detection.imageUrl} 
+                              src={detection.image_url} 
                               alt="Veículo" 
                               className="w-full h-full object-cover"
                             />
                           </div>
                         )}
 
-                        {/* Info */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 mb-1">
                             <span className="font-mono text-xl font-bold tracking-wider">
@@ -308,7 +266,7 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
                           <div className="flex items-center gap-4 text-sm text-muted-foreground">
                             <span className="flex items-center gap-1">
                               <Camera className="h-3 w-3" />
-                              {detection.cameraName}
+                              {detection.camera_name}
                             </span>
                             <span className="flex items-center gap-1">
                               <Clock className="h-3 w-3" />
@@ -319,6 +277,14 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
                             </span>
                           </div>
                         </div>
+
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => deleteDetection(detection.id)}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -431,16 +397,16 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
                   <Label>Proprietário</Label>
                   <Input
                     placeholder="Nome do proprietário"
-                    value={newPlate.ownerName}
-                    onChange={(e) => setNewPlate({ ...newPlate, ownerName: e.target.value })}
+                    value={newPlate.owner_name}
+                    onChange={(e) => setNewPlate({ ...newPlate, owner_name: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>Tipo de Veículo</Label>
                   <Input
                     placeholder="Carro, Moto, Caminhão..."
-                    value={newPlate.vehicleType}
-                    onChange={(e) => setNewPlate({ ...newPlate, vehicleType: e.target.value })}
+                    value={newPlate.vehicle_type}
+                    onChange={(e) => setNewPlate({ ...newPlate, vehicle_type: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
@@ -459,10 +425,10 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
                   {(['whitelist', 'blacklist', 'visitor'] as const).map(type => (
                     <Button
                       key={type}
-                      variant={newPlate.listType === type ? 'default' : 'outline'}
-                      onClick={() => setNewPlate({ ...newPlate, listType: type })}
+                      variant={newPlate.list_type === type ? 'default' : 'outline'}
+                      onClick={() => setNewPlate({ ...newPlate, list_type: type })}
                       className={cn(
-                        type === 'blacklist' && newPlate.listType === type && 'bg-destructive'
+                        type === 'blacklist' && newPlate.list_type === type && 'bg-destructive'
                       )}
                     >
                       {type === 'whitelist' && 'Autorizado'}
@@ -482,7 +448,7 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
                 />
               </div>
 
-              <Button onClick={addRegisteredPlate} className="w-full">
+              <Button onClick={handleAddRegisteredPlate} className="w-full">
                 <Plus className="h-4 w-4 mr-2" />
                 Cadastrar Placa
               </Button>
@@ -492,7 +458,7 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
           {/* Lista de placas cadastradas */}
           <Card>
             <CardHeader>
-              <CardTitle>Placas Cadastradas</CardTitle>
+              <CardTitle>Placas Cadastradas ({registeredPlates.length})</CardTitle>
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[300px]">
@@ -510,20 +476,20 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
                         <div className="flex items-center gap-4">
                           <span className="font-mono font-bold">{plate.plate}</span>
                           <Badge 
-                            variant={plate.listType === 'blacklist' ? 'destructive' : 'secondary'}
+                            variant={plate.list_type === 'blacklist' ? 'destructive' : 'secondary'}
                           >
-                            {plate.listType === 'whitelist' && 'Autorizado'}
-                            {plate.listType === 'blacklist' && 'Blacklist'}
-                            {plate.listType === 'visitor' && 'Visitante'}
+                            {plate.list_type === 'whitelist' && 'Autorizado'}
+                            {plate.list_type === 'blacklist' && 'Blacklist'}
+                            {plate.list_type === 'visitor' && 'Visitante'}
                           </Badge>
-                          {plate.ownerName && (
-                            <span className="text-sm text-muted-foreground">{plate.ownerName}</span>
+                          {plate.owner_name && (
+                            <span className="text-sm text-muted-foreground">{plate.owner_name}</span>
                           )}
                         </div>
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => removeRegisteredPlate(plate.id)}
+                          onClick={() => deleteRegisteredPlate(plate.id)}
                         >
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>

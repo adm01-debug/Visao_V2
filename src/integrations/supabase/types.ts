@@ -275,6 +275,59 @@ export type Database = {
         }
         Relationships: []
       }
+      plate_detections: {
+        Row: {
+          camera_id: string | null
+          camera_name: string
+          confidence: number
+          created_at: string
+          direction: string | null
+          id: string
+          image_url: string | null
+          plate: string
+          status: string
+          timestamp: string
+          user_id: string
+          vehicle_type: string | null
+        }
+        Insert: {
+          camera_id?: string | null
+          camera_name: string
+          confidence?: number
+          created_at?: string
+          direction?: string | null
+          id?: string
+          image_url?: string | null
+          plate: string
+          status?: string
+          timestamp?: string
+          user_id: string
+          vehicle_type?: string | null
+        }
+        Update: {
+          camera_id?: string | null
+          camera_name?: string
+          confidence?: number
+          created_at?: string
+          direction?: string | null
+          id?: string
+          image_url?: string | null
+          plate?: string
+          status?: string
+          timestamp?: string
+          user_id?: string
+          vehicle_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plate_detections_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -395,6 +448,48 @@ export type Database = {
           role?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      registered_plates: {
+        Row: {
+          color: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          list_type: string
+          notes: string | null
+          owner_name: string | null
+          plate: string
+          updated_at: string
+          user_id: string
+          vehicle_type: string | null
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          list_type?: string
+          notes?: string | null
+          owner_name?: string | null
+          plate: string
+          updated_at?: string
+          user_id: string
+          vehicle_type?: string | null
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          list_type?: string
+          notes?: string | null
+          owner_name?: string | null
+          plate?: string
+          updated_at?: string
+          user_id?: string
+          vehicle_type?: string | null
         }
         Relationships: []
       }
