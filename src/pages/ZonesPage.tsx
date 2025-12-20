@@ -19,18 +19,15 @@ import {
   Edit,
   Trash2,
   Eye,
-  EyeOff,
   RefreshCw,
   MoreHorizontal,
   Clock,
   Users,
   AlertTriangle,
-  TrendingUp,
   ArrowLeftRight,
   Timer,
   MapPin,
   Activity,
-  Settings2,
   ToggleLeft,
   LayoutGrid,
   List,
@@ -49,7 +46,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -60,9 +56,6 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
 import {
   DropdownMenu,
@@ -101,6 +94,7 @@ import { cn } from '@/lib/utils';
 import { formatDistanceToNow, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 
 // ============================================
 // TIPOS
@@ -109,13 +103,16 @@ import { toast } from 'sonner';
 type ZoneType = 'restricted' | 'counting' | 'tripwire' | 'dwell' | 'occupancy' | 'parking' | 'queue' | 'safety' | 'custom';
 
 // Use database types
-import { Tables } from '@/integrations/supabase/types';
+import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 type DbZone = Tables<'zones'>;
 type DbZoneEvent = Tables<'zone_events'>;
 
-// Extended zone with UI properties
-interface Zone extends DbZone {
-  // Add any UI-specific properties
+// Extended zone points data structure (stored in points JSON)
+interface ZonePointsData {
+  shape: 'rectangle' | 'polygon' | 'line';
+  coordinates: { x: number; y: number }[];
+  opacity?: number;
+  config?: Record<string, any>;
 }
 
 interface ZoneStats {
@@ -129,6 +126,15 @@ interface ZoneStats {
 
 interface ZoneEvent extends DbZoneEvent {
   zone_name?: string;
+}
+
+// Form data for creating/editing zones
+interface ZoneFormData {
+  name: string;
+  type: ZoneType;
+  color: string;
+  is_active: boolean;
+  pointsData: ZonePointsData | null;
 }
 
 // ============================================
@@ -218,12 +224,25 @@ const defaultColors = [
   '#F97316', // orange
 ];
 
+// Helper to parse points JSON
+function parsePointsData(points: any): ZonePointsData | null {
+  if (!points) return null;
+  try {
+    if (typeof points === 'string') {
+      return JSON.parse(points);
+    }
+    return points as ZonePointsData;
+  } catch {
+    return null;
+  }
+}
+
 // ============================================
 // COMPONENTE: Zone Card
 // ============================================
 
 interface ZoneCardProps {
-  zone: Zone;
+  zone: DbZone;
   stats?: ZoneStats;
   cameraName: string;
   onEdit: () => void;
@@ -233,29 +252,29 @@ interface ZoneCardProps {
 }
 
 function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, onView }: ZoneCardProps) {
-  const typeConfig = zoneTypeConfig[zone.type];
+  const typeConfig = zoneTypeConfig[zone.type as ZoneType] || zoneTypeConfig.custom;
   const TypeIcon = typeConfig.icon;
 
   return (
     <Card className={cn(
       'transition-all hover:shadow-md cursor-pointer group',
-      !zone.enabled && 'opacity-60'
+      !zone.is_active && 'opacity-60'
     )} onClick={onView}>
-      <CardHeader className="p-4 pb-2">
+      <div className="p-4 pb-2">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
             <div 
               className="w-4 h-4 rounded"
-              style={{ backgroundColor: zone.color }}
+              style={{ backgroundColor: zone.color || '#3B82F6' }}
             />
             <div>
-              <CardTitle className="text-base">{zone.name}</CardTitle>
+              <h3 className="font-semibold text-base">{zone.name}</h3>
               <div className="flex items-center gap-2 mt-1">
                 <Badge variant="secondary" className={cn('text-xs', typeConfig.color)}>
                   <TypeIcon className="w-3 h-3 mr-1" />
                   {typeConfig.label}
                 </Badge>
-                {!zone.enabled && (
+                {!zone.is_active && (
                   <Badge variant="outline" className="text-xs">
                     Desativada
                   </Badge>
@@ -280,7 +299,7 @@ function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, onView 
               </DropdownMenuItem>
               <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onToggle(); }}>
                 <ToggleLeft className="w-4 h-4 mr-2" />
-                {zone.enabled ? 'Desativar' : 'Ativar'}
+                {zone.is_active ? 'Desativar' : 'Ativar'}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-destructive" onClick={(e) => { e.stopPropagation(); onDelete(); }}>
@@ -290,8 +309,8 @@ function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, onView 
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      </CardHeader>
-      <CardContent className="p-4 pt-2">
+      </div>
+      <div className="p-4 pt-2">
         <p className="text-xs text-muted-foreground flex items-center gap-1 mb-3">
           <Camera className="w-3 h-3" />
           {cameraName}
@@ -346,7 +365,7 @@ function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, onView 
             })}
           </p>
         )}
-      </CardContent>
+      </div>
     </Card>
   );
 }
@@ -359,74 +378,95 @@ interface ZoneEditorSheetProps {
   isOpen: boolean;
   onClose: () => void;
   camera: any;
-  zone?: Zone | null;
-  onSave: (data: Partial<Zone>) => Promise<void>;
+  zone?: DbZone | null;
+  onSave: (data: TablesInsert<'zones'> | TablesUpdate<'zones'>) => Promise<void>;
 }
 
 function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSheetProps) {
-  const [formData, setFormData] = useState<Partial<Zone>>({
+  const { user } = useAuth();
+  const [formData, setFormData] = useState<ZoneFormData>({
     name: '',
-    description: '',
     type: 'counting',
     color: defaultColors[0],
-    opacity: 0.3,
-    enabled: true,
-    config: {},
+    is_active: true,
+    pointsData: null,
   });
-  const [geometry, setGeometry] = useState<ZoneGeometry | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [drawingMode, setDrawingMode] = useState<'rectangle' | 'polygon' | 'line'>('rectangle');
+  const [opacity, setOpacity] = useState(0.3);
 
   useEffect(() => {
     if (zone) {
+      const pointsData = parsePointsData(zone.points);
       setFormData({
         name: zone.name,
-        description: zone.description,
-        type: zone.type,
-        color: zone.color,
-        opacity: zone.opacity,
-        enabled: zone.enabled,
-        config: zone.config || {},
+        type: zone.type as ZoneType,
+        color: zone.color || defaultColors[0],
+        is_active: zone.is_active,
+        pointsData,
       });
-      setGeometry(zone.geometry);
+      setOpacity(pointsData?.opacity || 0.3);
     } else {
       setFormData({
         name: '',
-        description: '',
         type: 'counting',
         color: defaultColors[Math.floor(Math.random() * defaultColors.length)],
-        opacity: 0.3,
-        enabled: true,
-        config: {},
+        is_active: true,
+        pointsData: null,
       });
-      setGeometry(null);
+      setOpacity(0.3);
     }
   }, [zone, isOpen]);
 
   const handleZoneDrawn = useCallback((points: { x: number; y: number }[]) => {
-    const shape: ZoneShape = drawingMode === 'line' ? 'line' : 
-                             drawingMode === 'rectangle' ? 'rectangle' : 'polygon';
-    setGeometry({ shape, points });
+    const shape = drawingMode === 'line' ? 'line' : 
+                  drawingMode === 'rectangle' ? 'rectangle' : 'polygon';
+    setFormData(f => ({
+      ...f,
+      pointsData: { shape, coordinates: points, opacity }
+    }));
     toast.success(`Zona desenhada com ${points.length} pontos`);
-  }, [drawingMode]);
+  }, [drawingMode, opacity]);
 
   const handleSubmit = async () => {
     if (!formData.name) {
       toast.error('Nome é obrigatório');
       return;
     }
-    if (!geometry || geometry.points.length < 2) {
+    if (!formData.pointsData || formData.pointsData.coordinates.length < 2) {
       toast.error('Desenhe a zona no vídeo');
+      return;
+    }
+    if (!user?.id) {
+      toast.error('Usuário não autenticado');
       return;
     }
 
     setIsSubmitting(true);
     try {
-      await onSave({
-        ...formData,
-        camera_id: camera.id,
-        geometry,
-      });
+      const pointsWithOpacity = { ...formData.pointsData, opacity };
+      
+      if (zone) {
+        // Update
+        await onSave({
+          name: formData.name,
+          type: formData.type,
+          color: formData.color,
+          is_active: formData.is_active,
+          points: pointsWithOpacity as any,
+        });
+      } else {
+        // Insert
+        await onSave({
+          name: formData.name,
+          type: formData.type,
+          color: formData.color,
+          is_active: formData.is_active,
+          points: pointsWithOpacity as any,
+          camera_id: camera?.id,
+          user_id: user.id,
+        });
+      }
       onClose();
       toast.success(zone ? 'Zona atualizada' : 'Zona criada');
     } catch (error) {
@@ -437,7 +477,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
     }
   };
 
-  const selectedType = zoneTypeConfig[formData.type as ZoneType];
+  const selectedType = zoneTypeConfig[formData.type];
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -485,12 +525,10 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
             <div className="aspect-video bg-black rounded-lg overflow-hidden relative border-2 border-dashed border-muted">
               {camera?.stream_url ? (
                 <VideoStreamPlayer
+                  cameraId={camera.id}
                   streamUrl={camera.stream_url}
                   protocol={camera.stream_protocol || 'hls'}
                   cameraName={camera.name}
-                  showControls={false}
-                  autoPlay
-                  muted
                 />
               ) : camera?.thumbnail ? (
                 <img 
@@ -507,31 +545,34 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
               {/* Canvas de desenho sobreposto */}
               <div className="absolute inset-0">
                 <ZoneEditor
-                  existingZones={geometry ? [{
+                  existingZones={formData.pointsData ? [{
                     id: 'temp',
                     name: formData.name || 'Nova Zona',
-                    type: formData.type as ZoneType,
-                    geometry,
-                    color: formData.color || '#3B82F6',
-                    opacity: formData.opacity || 0.3,
+                    type: formData.type,
+                    geometry: { 
+                      shape: formData.pointsData.shape, 
+                      points: formData.pointsData.coordinates 
+                    },
+                    color: formData.color,
+                    opacity: opacity,
                     enabled: true,
                   } as any] : []}
-                  onZoneCreated={(zone) => handleZoneDrawn(zone.geometry?.points || [])}
+                  onZoneCreated={(z) => handleZoneDrawn(z.geometry?.points || [])}
                   selectedColor={formData.color}
                   drawingMode={drawingMode}
                 />
               </div>
             </div>
 
-            {geometry && (
+            {formData.pointsData && (
               <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 dark:bg-green-950 p-2 rounded">
                 <Check className="w-4 h-4" />
-                Zona desenhada: {geometry.shape} com {geometry.points.length} pontos
+                Zona desenhada: {formData.pointsData.shape} com {formData.pointsData.coordinates.length} pontos
                 <Button 
                   variant="ghost" 
                   size="sm" 
                   className="ml-auto h-6 text-xs"
-                  onClick={() => setGeometry(null)}
+                  onClick={() => setFormData(f => ({ ...f, pointsData: null }))}
                 >
                   Limpar
                 </Button>
@@ -598,148 +639,28 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
             </div>
 
             <div className="col-span-2">
-              <Label>Opacidade: {Math.round((formData.opacity || 0.3) * 100)}%</Label>
+              <Label>Opacidade: {Math.round(opacity * 100)}%</Label>
               <Slider
-                value={[(formData.opacity || 0.3) * 100]}
-                onValueChange={([v]) => setFormData(f => ({ ...f, opacity: v / 100 }))}
+                value={[opacity * 100]}
+                onValueChange={([v]) => setOpacity(v / 100)}
                 min={10}
                 max={80}
                 step={5}
                 className="mt-2"
               />
             </div>
-
-            {/* Configurações específicas por tipo */}
-            {(formData.type === 'occupancy' || formData.type === 'queue') && (
-              <div>
-                <Label htmlFor="maxOccupancy">Capacidade Máxima</Label>
-                <Input
-                  id="maxOccupancy"
-                  type="number"
-                  value={formData.config?.maxOccupancy || ''}
-                  onChange={(e) => setFormData(f => ({ 
-                    ...f, 
-                    config: { ...f.config, maxOccupancy: Number(e.target.value) }
-                  }))}
-                  placeholder="Ex: 50"
-                />
-              </div>
-            )}
-
-            {formData.type === 'dwell' && (
-              <div>
-                <Label htmlFor="maxDwellTime">Tempo Máximo (segundos)</Label>
-                <Input
-                  id="maxDwellTime"
-                  type="number"
-                  value={formData.config?.maxDwellTime || ''}
-                  onChange={(e) => setFormData(f => ({ 
-                    ...f, 
-                    config: { ...f.config, maxDwellTime: Number(e.target.value) }
-                  }))}
-                  placeholder="Ex: 300"
-                />
-              </div>
-            )}
-
-            {formData.type === 'tripwire' && (
-              <div>
-                <Label htmlFor="direction">Direção da Contagem</Label>
-                <Select
-                  value={formData.config?.tripwireDirection || 'any'}
-                  onValueChange={(v) => setFormData(f => ({ 
-                    ...f, 
-                    config: { ...f.config, tripwireDirection: v as any }
-                  }))}
-                >
-                  <SelectTrigger id="direction">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="any">Qualquer direção</SelectItem>
-                    <SelectItem value="left-to-right">Esquerda → Direita</SelectItem>
-                    <SelectItem value="right-to-left">Direita → Esquerda</SelectItem>
-                    <SelectItem value="top-to-bottom">Cima → Baixo</SelectItem>
-                    <SelectItem value="bottom-to-top">Baixo → Cima</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            <div className="col-span-2">
-              <Label htmlFor="description">Descrição (opcional)</Label>
-              <Textarea
-                id="description"
-                value={formData.description || ''}
-                onChange={(e) => setFormData(f => ({ ...f, description: e.target.value }))}
-                placeholder="Descrição da zona..."
-                rows={2}
-              />
-            </div>
           </div>
 
-          {/* Alertas */}
-          <div className="space-y-3 p-4 bg-muted rounded-lg">
-            <Label className="text-sm font-medium">Configuração de Alertas</Label>
-            
-            {(formData.type === 'restricted' || formData.type === 'safety') && (
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm">Alertar ao entrar</p>
-                  <p className="text-xs text-muted-foreground">Gera alerta quando alguém entra</p>
-                </div>
-                <Switch
-                  checked={formData.config?.alertOnEnter ?? true}
-                  onCheckedChange={(checked) => setFormData(f => ({
-                    ...f,
-                    config: { ...f.config, alertOnEnter: checked }
-                  }))}
-                />
-              </div>
-            )}
-
-            {formData.type === 'occupancy' && (
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm">Alertar ocupação máxima</p>
-                  <p className="text-xs text-muted-foreground">Alerta quando atingir capacidade</p>
-                </div>
-                <Switch
-                  checked={formData.config?.alertOnOccupancy ?? true}
-                  onCheckedChange={(checked) => setFormData(f => ({
-                    ...f,
-                    config: { ...f.config, alertOnOccupancy: checked }
-                  }))}
-                />
-              </div>
-            )}
-
-            {formData.type === 'dwell' && (
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm">Alertar tempo excedido</p>
-                  <p className="text-xs text-muted-foreground">Alerta quando exceder tempo máximo</p>
-                </div>
-                <Switch
-                  checked={formData.config?.alertOnDwell ?? true}
-                  onCheckedChange={(checked) => setFormData(f => ({
-                    ...f,
-                    config: { ...f.config, alertOnDwell: checked }
-                  }))}
-                />
-              </div>
-            )}
-
-            <div className="flex items-center justify-between pt-2 border-t">
-              <div>
-                <p className="text-sm font-medium">Zona Ativa</p>
-                <p className="text-xs text-muted-foreground">Desative para pausar monitoramento</p>
-              </div>
-              <Switch
-                checked={formData.enabled}
-                onCheckedChange={(checked) => setFormData(f => ({ ...f, enabled: checked }))}
-              />
+          {/* Zona ativa */}
+          <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+            <div>
+              <p className="text-sm font-medium">Zona Ativa</p>
+              <p className="text-xs text-muted-foreground">Desative para pausar monitoramento</p>
             </div>
+            <Switch
+              checked={formData.is_active}
+              onCheckedChange={(checked) => setFormData(f => ({ ...f, is_active: checked }))}
+            />
           </div>
 
           {/* Actions */}
@@ -749,7 +670,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
             </Button>
             <Button 
               onClick={handleSubmit} 
-              disabled={isSubmitting || !geometry}
+              disabled={isSubmitting || !formData.pointsData}
               className="flex-1"
             >
               {isSubmitting ? 'Salvando...' : (zone ? 'Atualizar' : 'Criar Zona')}
@@ -766,7 +687,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
 // ============================================
 
 interface ZoneViewDialogProps {
-  zone: Zone | null;
+  zone: DbZone | null;
   camera: any;
   stats?: ZoneStats;
   events: ZoneEvent[];
@@ -777,8 +698,9 @@ interface ZoneViewDialogProps {
 function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneViewDialogProps) {
   if (!zone) return null;
 
-  const typeConfig = zoneTypeConfig[zone.type];
+  const typeConfig = zoneTypeConfig[zone.type as ZoneType] || zoneTypeConfig.custom;
   const TypeIcon = typeConfig.icon;
+  const pointsData = parsePointsData(zone.points);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -787,7 +709,7 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
           <DialogTitle className="flex items-center gap-2">
             <div 
               className="w-4 h-4 rounded"
-              style={{ backgroundColor: zone.color }}
+              style={{ backgroundColor: zone.color || '#3B82F6' }}
             />
             {zone.name}
             <Badge variant="secondary" className={cn('text-xs ml-2', typeConfig.color)}>
@@ -817,12 +739,10 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
               <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
                 {camera?.stream_url ? (
                   <VideoStreamPlayer
+                    cameraId={camera.id}
                     streamUrl={camera.stream_url}
                     protocol={camera.stream_protocol || 'hls'}
                     cameraName={camera.name}
-                    showControls
-                    autoPlay
-                    muted
                   />
                 ) : camera?.thumbnail ? (
                   <img 
@@ -837,27 +757,29 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
                 )}
                 
                 {/* Zona sobreposta */}
-                <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                  {zone.geometry.shape === 'line' ? (
-                    <line
-                      x1={`${zone.geometry.points[0]?.x}%`}
-                      y1={`${zone.geometry.points[0]?.y}%`}
-                      x2={`${zone.geometry.points[1]?.x}%`}
-                      y2={`${zone.geometry.points[1]?.y}%`}
-                      stroke={zone.color}
-                      strokeWidth="3"
-                      strokeDasharray="5,5"
-                    />
-                  ) : (
-                    <polygon
-                      points={zone.geometry.points.map(p => `${p.x}%,${p.y}%`).join(' ')}
-                      fill={zone.color}
-                      fillOpacity={zone.opacity}
-                      stroke={zone.color}
-                      strokeWidth="2"
-                    />
-                  )}
-                </svg>
+                {pointsData && (
+                  <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                    {pointsData.shape === 'line' ? (
+                      <line
+                        x1={`${pointsData.coordinates[0]?.x}%`}
+                        y1={`${pointsData.coordinates[0]?.y}%`}
+                        x2={`${pointsData.coordinates[1]?.x}%`}
+                        y2={`${pointsData.coordinates[1]?.y}%`}
+                        stroke={zone.color || '#3B82F6'}
+                        strokeWidth="3"
+                        strokeDasharray="5,5"
+                      />
+                    ) : (
+                      <polygon
+                        points={pointsData.coordinates.map(p => `${p.x}%,${p.y}%`).join(' ')}
+                        fill={zone.color || '#3B82F6'}
+                        fillOpacity={pointsData.opacity || 0.3}
+                        stroke={zone.color || '#3B82F6'}
+                        strokeWidth="2"
+                      />
+                    )}
+                  </svg>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4 mt-4">
@@ -867,16 +789,10 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
                 </div>
                 <div>
                   <Label className="text-xs text-muted-foreground">Status</Label>
-                  <p className={cn('font-medium', zone.enabled ? 'text-green-500' : 'text-gray-500')}>
-                    {zone.enabled ? 'Ativa' : 'Desativada'}
+                  <p className={cn('font-medium', zone.is_active ? 'text-green-500' : 'text-gray-500')}>
+                    {zone.is_active ? 'Ativa' : 'Desativada'}
                   </p>
                 </div>
-                {zone.description && (
-                  <div className="col-span-2">
-                    <Label className="text-xs text-muted-foreground">Descrição</Label>
-                    <p className="text-sm">{zone.description}</p>
-                  </div>
-                )}
               </div>
             </TabsContent>
 
@@ -930,21 +846,15 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
                         'w-2 h-2 rounded-full',
                         event.event_type.includes('enter') ? 'bg-green-500' :
                         event.event_type.includes('exit') ? 'bg-red-500' :
-                        event.event_type.includes('alert') ? 'bg-yellow-500' : 'bg-blue-500'
+                        event.event_type.includes('dwell') ? 'bg-orange-500' :
+                        'bg-blue-500'
                       )} />
                       <div className="flex-1">
-                        <p className="text-sm font-medium capitalize">
-                          {event.event_type.replace(/_/g, ' ')}
+                        <p className="text-sm font-medium">{event.event_type}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {format(new Date(event.timestamp), "dd/MM/yyyy 'às' HH:mm:ss", { locale: ptBR })}
                         </p>
-                        {event.value !== undefined && (
-                          <p className="text-xs text-muted-foreground">
-                            Valor: {event.value}
-                          </p>
-                        )}
                       </div>
-                      <p className="text-xs text-muted-foreground">
-                        {format(new Date(event.created_at), "dd/MM HH:mm:ss", { locale: ptBR })}
-                      </p>
                     </div>
                   ))}
                 </div>
@@ -958,61 +868,69 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
 }
 
 // ============================================
-// COMPONENTE PRINCIPAL: ZonesPage
+// PÁGINA PRINCIPAL
 // ============================================
 
 export function ZonesPage() {
-  // Estado
-  const [zones, setZones] = useState<Zone[]>([]);
-  const [zoneStats, setZoneStats] = useState<Record<string, ZoneStats>>({});
-  const [zoneEvents, setZoneEvents] = useState<Record<string, ZoneEvent[]>>({});
+  const { user } = useAuth();
+  const { cameras } = useCameras();
+  
+  // State
+  const [zones, setZones] = useState<DbZone[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCameraFilter, setSelectedCameraFilter] = useState<string>('all');
   const [selectedTypeFilter, setSelectedTypeFilter] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   
-  // Editor
+  // Editor state
   const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const [editingZone, setEditingZone] = useState<Zone | null>(null);
   const [editorCamera, setEditorCamera] = useState<any>(null);
+  const [editingZone, setEditingZone] = useState<DbZone | null>(null);
   
-  // View
-  const [viewingZone, setViewingZone] = useState<Zone | null>(null);
+  // View state
+  const [viewingZone, setViewingZone] = useState<DbZone | null>(null);
+  const [zoneStats, setZoneStats] = useState<Record<string, ZoneStats>>({});
+  const [zoneEvents, setZoneEvents] = useState<Record<string, ZoneEvent[]>>({});
   
-  // Delete
-  const [deleteConfirm, setDeleteConfirm] = useState<Zone | null>(null);
+  // Delete confirmation
+  const [deleteConfirm, setDeleteConfirm] = useState<DbZone | null>(null);
 
-  // Hooks
-  const { cameras } = useCameras();
-
-  // Carregar zonas
+  // Load zones
   const loadZones = useCallback(async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
         .from('zones')
         .select('*')
-        .order('name');
-      
+        .order('created_at', { ascending: false });
+
       if (error) throw error;
       setZones(data || []);
 
-      // Carregar stats
+      // Load basic stats from events
       const statsMap: Record<string, ZoneStats> = {};
       for (const zone of data || []) {
         try {
-          const { data: statsData } = await supabase
-            .rpc('get_zone_stats', { p_zone_id: zone.id, p_hours: 24 });
-          
-          if (statsData?.[0]) {
+          const { data: eventsData } = await supabase
+            .from('zone_events')
+            .select('event_type, timestamp')
+            .eq('zone_id', zone.id)
+            .gte('timestamp', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+            .order('timestamp', { ascending: false });
+
+          if (eventsData) {
+            const countIn = eventsData.filter(e => e.event_type.includes('enter')).length;
+            const countOut = eventsData.filter(e => e.event_type.includes('exit')).length;
+            const alertsToday = eventsData.filter(e => e.event_type.includes('alert')).length;
+            
             statsMap[zone.id] = {
-              currentOccupancy: Math.max(0, (statsData[0].count_in || 0) - (statsData[0].count_out || 0)),
-              countIn: statsData[0].count_in || 0,
-              countOut: statsData[0].count_out || 0,
+              currentOccupancy: Math.max(0, countIn - countOut),
+              countIn,
+              countOut,
               avgDwellTime: 0,
-              alertsToday: statsData[0].alerts_count || 0,
-              lastEvent: statsData[0].last_event_at,
+              alertsToday,
+              lastEvent: eventsData[0]?.timestamp,
             };
           }
         } catch (e) {
@@ -1066,24 +984,24 @@ export function ZonesPage() {
   // Stats
   const stats = useMemo(() => ({
     total: zones.length,
-    active: zones.filter(z => z.enabled).length,
+    active: zones.filter(z => z.is_active).length,
     restricted: zones.filter(z => z.type === 'restricted').length,
     counting: zones.filter(z => z.type === 'counting' || z.type === 'tripwire').length,
   }), [zones]);
 
   // Handlers
-  const handleSave = async (data: Partial<Zone>) => {
+  const handleSave = async (data: TablesInsert<'zones'> | TablesUpdate<'zones'>) => {
     try {
       if (editingZone) {
         const { error } = await supabase
           .from('zones')
-          .update(data)
+          .update(data as TablesUpdate<'zones'>)
           .eq('id', editingZone.id);
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from('zones')
-          .insert(data);
+          .insert(data as TablesInsert<'zones'>);
         if (error) throw error;
       }
       loadZones();
@@ -1093,7 +1011,7 @@ export function ZonesPage() {
     }
   };
 
-  const handleDelete = async (zone: Zone) => {
+  const handleDelete = async (zone: DbZone) => {
     try {
       const { error } = await supabase
         .from('zones')
@@ -1109,37 +1027,39 @@ export function ZonesPage() {
     }
   };
 
-  const handleToggle = async (zone: Zone) => {
+  const handleToggle = async (zone: DbZone) => {
     try {
       const { error } = await supabase
         .from('zones')
-        .update({ enabled: !zone.enabled })
+        .update({ is_active: !zone.is_active })
         .eq('id', zone.id);
       
       if (error) throw error;
-      toast.success(zone.enabled ? 'Zona desativada' : 'Zona ativada');
+      toast.success(zone.is_active ? 'Zona desativada' : 'Zona ativada');
       loadZones();
     } catch (error) {
       toast.error('Erro ao alternar');
     }
   };
 
-  const openEditor = (camera: any, zone?: Zone) => {
+  const openEditor = (camera: any, zone?: DbZone) => {
     setEditorCamera(camera);
     setEditingZone(zone || null);
     setIsEditorOpen(true);
   };
 
-  const openView = (zone: Zone) => {
+  const openView = (zone: DbZone) => {
     setViewingZone(zone);
     loadZoneEvents(zone.id);
   };
 
-  const getCameraName = (cameraId: string) => {
+  const getCameraName = (cameraId: string | null) => {
+    if (!cameraId) return 'Câmera desconhecida';
     return cameras.find(c => c.id === cameraId)?.name || 'Câmera desconhecida';
   };
 
-  const getCameraById = (cameraId: string) => {
+  const getCameraById = (cameraId: string | null) => {
+    if (!cameraId) return null;
     return cameras.find(c => c.id === cameraId);
   };
 
