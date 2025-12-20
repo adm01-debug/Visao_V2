@@ -26,13 +26,13 @@ export interface TableRow {
 
 // Cores do tema
 const COLORS = {
-  primary: [59, 130, 246],    // blue-500
-  secondary: [100, 116, 139], // slate-500
-  success: [34, 197, 94],     // green-500
-  warning: [234, 179, 8],     // yellow-500
-  danger: [239, 68, 68],      // red-500
-  dark: [30, 41, 59],         // slate-800
-  light: [248, 250, 252],     // slate-50
+  primary: [59, 130, 246] as const,    // blue-500
+  secondary: [100, 116, 139] as const, // slate-500
+  success: [34, 197, 94] as const,     // green-500
+  warning: [234, 179, 8] as const,     // yellow-500
+  danger: [239, 68, 68] as const,      // red-500
+  dark: [30, 41, 59] as const,         // slate-800
+  light: [248, 250, 252] as const,     // slate-50
 };
 
 /**

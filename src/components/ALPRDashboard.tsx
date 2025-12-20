@@ -8,11 +8,10 @@
 import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { usePlateDetections } from '@/hooks/usePlateDetections';
 import { 
   Car, 
   TrendingUp, 
@@ -26,13 +25,13 @@ import {
   Eye,
   Shield,
   Timer,
-  BarChart3
+  BarChart3,
+  Loader2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { format, subDays, isToday, isYesterday, startOfDay, endOfDay } from 'date-fns';
+import { format, subDays, isToday, isYesterday } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import {
-  ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
@@ -47,121 +46,18 @@ import {
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell,
-  LineChart,
-  Line,
-  Legend
+  Cell
 } from 'recharts';
-
-// ============================================
-// TIPOS
-// ============================================
-
-interface VehicleRecord {
-  id: string;
-  plate: string;
-  firstSeen: Date;
-  lastSeen: Date;
-  totalVisits: number;
-  averageStay: number; // em minutos
-  status: 'authorized' | 'unauthorized' | 'unknown' | 'blacklist';
-  vehicleType: string;
-  camera: string;
-}
-
-interface DetectionEvent {
-  id: string;
-  plate: string;
-  timestamp: Date;
-  camera: string;
-  confidence: number;
-  status: 'authorized' | 'unauthorized' | 'unknown' | 'blacklist';
-  direction?: 'entry' | 'exit';
-}
-
-// ============================================
-// MOCK DATA
-// ============================================
-
-const generateMockVehicles = (): VehicleRecord[] => {
-  const types = ['Carro', 'Moto', 'Caminhão', 'Van', 'SUV'];
-  const statuses: VehicleRecord['status'][] = ['authorized', 'unauthorized', 'unknown', 'blacklist'];
-  const cameras = ['Entrada Principal', 'Portão Sul', 'Estacionamento A', 'Estacionamento B', 'Saída Norte'];
-  
-  const plates = [
-    'ABC1D23', 'XYZ9K87', 'QWE3R56', 'JKL5M21', 'RTY7P43',
-    'FGH2T98', 'MNO6Y12', 'VBN4U65', 'PLK8I34', 'ZXC1A78',
-    'HGF5S90', 'TRE2W11', 'YUI9O45', 'DFG7H67', 'BNM3J89'
-  ];
-
-  return plates.map((plate, i) => ({
-    id: `v-${i}`,
-    plate,
-    firstSeen: subDays(new Date(), Math.floor(Math.random() * 30)),
-    lastSeen: subDays(new Date(), Math.floor(Math.random() * 3)),
-    totalVisits: Math.floor(Math.random() * 50) + 1,
-    averageStay: Math.floor(Math.random() * 480) + 15,
-    status: statuses[Math.floor(Math.random() * statuses.length)],
-    vehicleType: types[Math.floor(Math.random() * types.length)],
-    camera: cameras[Math.floor(Math.random() * cameras.length)]
-  }));
-};
-
-const generateMockDetections = (): DetectionEvent[] => {
-  const detections: DetectionEvent[] = [];
-  const cameras = ['Entrada Principal', 'Portão Sul', 'Estacionamento A', 'Estacionamento B', 'Saída Norte'];
-  const statuses: DetectionEvent['status'][] = ['authorized', 'unauthorized', 'unknown', 'blacklist'];
-  
-  for (let i = 0; i < 100; i++) {
-    const daysAgo = Math.floor(Math.random() * 7);
-    const hoursAgo = Math.floor(Math.random() * 24);
-    
-    detections.push({
-      id: `d-${i}`,
-      plate: `${String.fromCharCode(65 + Math.floor(Math.random() * 26))}${String.fromCharCode(65 + Math.floor(Math.random() * 26))}${String.fromCharCode(65 + Math.floor(Math.random() * 26))}${Math.floor(Math.random() * 10)}${String.fromCharCode(65 + Math.floor(Math.random() * 26))}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}`,
-      timestamp: new Date(Date.now() - (daysAgo * 24 * 60 * 60 * 1000) - (hoursAgo * 60 * 60 * 1000)),
-      camera: cameras[Math.floor(Math.random() * cameras.length)],
-      confidence: 0.85 + Math.random() * 0.15,
-      status: statuses[Math.floor(Math.random() * statuses.length)],
-      direction: Math.random() > 0.5 ? 'entry' : 'exit'
-    });
-  }
-  
-  return detections.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-};
-
-// ============================================
-// COMPONENTE PRINCIPAL
-// ============================================
 
 interface ALPRDashboardProps {
   className?: string;
 }
 
 export function ALPRDashboard({ className }: ALPRDashboardProps) {
-  const [vehicles] = useState<VehicleRecord[]>(generateMockVehicles);
-  const [detections] = useState<DetectionEvent[]>(generateMockDetections);
+  const { detections, stats, loading } = usePlateDetections();
   const [searchQuery, setSearchQuery] = useState('');
   const [periodFilter, setPeriodFilter] = useState('7d');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-
-  // Métricas calculadas
-  const metrics = useMemo(() => {
-    const today = startOfDay(new Date());
-    const todayDetections = detections.filter(d => d.timestamp >= today);
-    const uniquePlates = new Set(detections.map(d => d.plate)).size;
-    const blacklistDetections = detections.filter(d => d.status === 'blacklist').length;
-    const avgConfidence = detections.reduce((sum, d) => sum + d.confidence, 0) / detections.length;
-    
-    return {
-      totalDetections: detections.length,
-      todayDetections: todayDetections.length,
-      uniqueVehicles: uniquePlates,
-      blacklistAlerts: blacklistDetections,
-      authorizedRate: (detections.filter(d => d.status === 'authorized').length / detections.length) * 100,
-      avgConfidence: avgConfidence * 100
-    };
-  }, [detections]);
 
   // Dados para gráficos
   const chartData = useMemo(() => {
@@ -190,36 +86,66 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
 
     // Distribuição por status
     const statusData = [
-      { name: 'Autorizados', value: detections.filter(d => d.status === 'authorized').length, color: 'hsl(var(--success))' },
-      { name: 'Desconhecidos', value: detections.filter(d => d.status === 'unknown').length, color: 'hsl(var(--muted-foreground))' },
-      { name: 'Não Autorizados', value: detections.filter(d => d.status === 'unauthorized').length, color: 'hsl(var(--warning))' },
-      { name: 'Blacklist', value: detections.filter(d => d.status === 'blacklist').length, color: 'hsl(var(--destructive))' }
-    ];
+      { name: 'Autorizados', value: detections.filter(d => d.status === 'authorized').length, color: '#22c55e' },
+      { name: 'Desconhecidos', value: detections.filter(d => d.status === 'unknown').length, color: '#64748b' },
+      { name: 'Não Autorizados', value: detections.filter(d => d.status === 'unauthorized').length, color: '#eab308' },
+      { name: 'Blacklist', value: detections.filter(d => d.status === 'blacklist').length, color: '#ef4444' }
+    ].filter(s => s.value > 0);
 
     // Detecções por câmera
     const cameraData = Object.entries(
       detections.reduce((acc, d) => {
-        acc[d.camera] = (acc[d.camera] || 0) + 1;
+        acc[d.camera_name] = (acc[d.camera_name] || 0) + 1;
         return acc;
       }, {} as Record<string, number>)
     ).map(([camera, count]) => ({ camera, count }))
-     .sort((a, b) => b.count - a.count);
+     .sort((a, b) => b.count - a.count)
+     .slice(0, 5);
 
     return { hourlyData, dailyData, statusData, cameraData };
   }, [detections]);
 
+  // Agrupar detecções por placa para histórico de veículos
+  const vehicleHistory = useMemo(() => {
+    const grouped = detections.reduce((acc, d) => {
+      if (!acc[d.plate]) {
+        acc[d.plate] = {
+          plate: d.plate,
+          firstSeen: d.timestamp,
+          lastSeen: d.timestamp,
+          totalVisits: 0,
+          status: d.status,
+          camera: d.camera_name,
+          vehicleType: d.vehicle_type
+        };
+      }
+      acc[d.plate].totalVisits++;
+      if (d.timestamp > acc[d.plate].lastSeen) {
+        acc[d.plate].lastSeen = d.timestamp;
+      }
+      if (d.timestamp < acc[d.plate].firstSeen) {
+        acc[d.plate].firstSeen = d.timestamp;
+      }
+      return acc;
+    }, {} as Record<string, any>);
+
+    return Object.values(grouped).sort((a: any, b: any) => 
+      b.lastSeen.getTime() - a.lastSeen.getTime()
+    );
+  }, [detections]);
+
   // Filtrar histórico
   const filteredHistory = useMemo(() => {
-    return vehicles.filter(v => {
+    return vehicleHistory.filter((v: any) => {
       const matchesSearch = v.plate.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           v.vehicleType.toLowerCase().includes(searchQuery.toLowerCase());
+                           v.vehicleType?.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesStatus = statusFilter === 'all' || v.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
-  }, [vehicles, searchQuery, statusFilter]);
+  }, [vehicleHistory, searchQuery, statusFilter]);
 
   // Status badge
-  const getStatusBadge = (status: VehicleRecord['status']) => {
+  const getStatusBadge = (status: string) => {
     switch (status) {
       case 'authorized':
         return <Badge className="bg-green-500/20 text-green-600 border-green-500/30"><CheckCircle2 className="h-3 w-3 mr-1" />Autorizado</Badge>;
@@ -232,13 +158,13 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
     }
   };
 
-  // Formatar tempo de permanência
-  const formatDuration = (minutes: number) => {
-    if (minutes < 60) return `${minutes}min`;
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours}h ${mins}min`;
-  };
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -274,7 +200,7 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
                 <Car className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{metrics.totalDetections}</p>
+                <p className="text-2xl font-bold">{stats.totalDetections}</p>
                 <p className="text-xs text-muted-foreground">Total Detectado</p>
               </div>
             </div>
@@ -288,7 +214,7 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
                 <TrendingUp className="h-5 w-5 text-green-500" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{metrics.todayDetections}</p>
+                <p className="text-2xl font-bold">{stats.todayDetections}</p>
                 <p className="text-xs text-muted-foreground">Hoje</p>
               </div>
             </div>
@@ -302,7 +228,7 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
                 <Activity className="h-5 w-5 text-blue-500" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{metrics.uniqueVehicles}</p>
+                <p className="text-2xl font-bold">{stats.uniquePlates}</p>
                 <p className="text-xs text-muted-foreground">Veículos Únicos</p>
               </div>
             </div>
@@ -316,7 +242,7 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
                 <AlertTriangle className="h-5 w-5 text-destructive" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{metrics.blacklistAlerts}</p>
+                <p className="text-2xl font-bold">{stats.blacklistAlerts}</p>
                 <p className="text-xs text-muted-foreground">Alertas Blacklist</p>
               </div>
             </div>
@@ -330,7 +256,7 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
                 <CheckCircle2 className="h-5 w-5 text-green-500" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{metrics.authorizedRate.toFixed(0)}%</p>
+                <p className="text-2xl font-bold">{stats.authorizedRate.toFixed(0)}%</p>
                 <p className="text-xs text-muted-foreground">Taxa Autorização</p>
               </div>
             </div>
@@ -344,7 +270,7 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
                 <BarChart3 className="h-5 w-5 text-purple-500" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{metrics.avgConfidence.toFixed(0)}%</p>
+                <p className="text-2xl font-bold">{stats.avgConfidence.toFixed(0)}%</p>
                 <p className="text-xs text-muted-foreground">Confiança Média</p>
               </div>
             </div>
@@ -394,25 +320,29 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
           </CardHeader>
           <CardContent>
             <div className="h-64 flex items-center justify-center">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={chartData.statusData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={90}
-                    dataKey="value"
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    labelLine={false}
-                  >
-                    {chartData.statusData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                </PieChart>
-              </ResponsiveContainer>
+              {chartData.statusData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={chartData.statusData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={90}
+                      dataKey="value"
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      labelLine={false}
+                    >
+                      {chartData.statusData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <p className="text-muted-foreground">Sem dados</p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -450,15 +380,21 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
           </CardHeader>
           <CardContent>
             <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData.cameraData} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                  <XAxis type="number" tick={{ fontSize: 12 }} className="fill-muted-foreground" />
-                  <YAxis dataKey="camera" type="category" tick={{ fontSize: 11 }} width={120} className="fill-muted-foreground" />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="count" fill="hsl(var(--chart-2))" radius={[0, 4, 4, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+              {chartData.cameraData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={chartData.cameraData} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <XAxis type="number" tick={{ fontSize: 12 }} className="fill-muted-foreground" />
+                    <YAxis dataKey="camera" type="category" tick={{ fontSize: 11 }} width={120} className="fill-muted-foreground" />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Bar dataKey="count" fill="hsl(var(--chart-2))" radius={[0, 4, 4, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-full flex items-center justify-center">
+                  <p className="text-muted-foreground">Sem dados</p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -504,9 +440,9 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
         <CardContent>
           <ScrollArea className="h-[400px]">
             <div className="space-y-2">
-              {filteredHistory.map(vehicle => (
+              {filteredHistory.map((vehicle: any) => (
                 <div 
-                  key={vehicle.id}
+                  key={vehicle.plate}
                   className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
                 >
                   <div className="flex items-center gap-4">
@@ -519,7 +455,7 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
                         {getStatusBadge(vehicle.status)}
                       </div>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
-                        <span>{vehicle.vehicleType}</span>
+                        <span>{vehicle.vehicleType || 'Veículo'}</span>
                         <span>•</span>
                         <span>{vehicle.camera}</span>
                       </div>
@@ -529,8 +465,7 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
                   <div className="text-right">
                     <div className="flex items-center gap-4 text-sm">
                       <div>
-                        <p className="font-medium">{vehicle.totalVisits} visitas</p>
-                        <p className="text-xs text-muted-foreground">Média: {formatDuration(vehicle.averageStay)}</p>
+                        <p className="font-medium">{vehicle.totalVisits} {vehicle.totalVisits === 1 ? 'visita' : 'visitas'}</p>
                       </div>
                       <div className="text-right">
                         <p className="text-xs text-muted-foreground">Última vez</p>
