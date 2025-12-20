@@ -24,6 +24,7 @@ import {
   Menu,
   X,
   Video,
+  ScanFace,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -85,6 +86,11 @@ const mainNavItems: NavItem[] = [
     label: 'Colaboradores',
     icon: Users,
     path: '/people',
+  },
+  {
+    label: 'Reconhecimento',
+    icon: ScanFace,
+    path: '/face-recognition',
   },
   {
     label: 'Zonas',
