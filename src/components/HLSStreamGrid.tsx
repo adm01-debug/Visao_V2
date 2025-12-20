@@ -160,10 +160,71 @@ const StreamCell = memo(function StreamCell({
       hlsRef.current = null;
     }
 
-    // WebRTC (não usa HLS.js)
+    // WebRTC connection
     if (protocol === 'webrtc' && camera.webrtcUrl) {
-      // TODO: Implementar WebRTC connection
-      video.src = camera.webrtcUrl;
+      const setupWebRTC = async () => {
+        try {
+          const pc = new RTCPeerConnection({
+            iceServers: [
+              { urls: 'stun:stun.l.google.com:19302' },
+            ],
+          });
+
+          pc.ontrack = (event) => {
+            if (event.streams && event.streams[0]) {
+              video.srcObject = event.streams[0];
+              video.play().catch(console.error);
+            }
+          };
+
+          pc.oniceconnectionstatechange = () => {
+            console.log(`[WebRTC] ${camera.name}: ${pc.iceConnectionState}`);
+            if (pc.iceConnectionState === 'failed') {
+              setError('Conexão WebRTC falhou');
+            }
+          };
+
+          // Criar offer e enviar para servidor WHEP
+          pc.addTransceiver('video', { direction: 'recvonly' });
+          pc.addTransceiver('audio', { direction: 'recvonly' });
+
+          const offer = await pc.createOffer();
+          await pc.setLocalDescription(offer);
+
+          // Enviar offer para MediaMTX WHEP endpoint
+          const whepUrl = camera.webrtcUrl.replace('/webrtc', '/whep');
+          const response = await fetch(whepUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/sdp' },
+            body: offer.sdp,
+          });
+
+          if (response.ok) {
+            const answerSdp = await response.text();
+            await pc.setRemoteDescription({
+              type: 'answer',
+              sdp: answerSdp,
+            });
+            console.log(`[WebRTC] ${camera.name}: Conectado`);
+          } else {
+            throw new Error(`WHEP failed: ${response.status}`);
+          }
+
+          // Cleanup
+          return () => {
+            pc.close();
+          };
+        } catch (err: any) {
+          console.error(`[WebRTC] ${camera.name}: Erro:`, err);
+          setError(err.message);
+          // Fallback para HLS
+          if (camera.stream_url) {
+            console.log(`[WebRTC] ${camera.name}: Fallback para HLS`);
+          }
+        }
+      };
+
+      setupWebRTC();
       return;
     }
 
