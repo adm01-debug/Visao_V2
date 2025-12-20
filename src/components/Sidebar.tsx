@@ -160,7 +160,7 @@ export function Sidebar({ className }: SidebarProps) {
         {!collapsed && (
           <>
             <span className="flex-1 truncate">{item.label}</span>
-            {badge !== undefined && badge > 0 && (
+            {badge !== undefined && Number(badge) > 0 && (
               <Badge 
                 variant={item.badgeVariant || 'secondary'} 
                 className="ml-auto text-xs h-5 min-w-[20px] justify-center"
@@ -181,7 +181,7 @@ export function Sidebar({ className }: SidebarProps) {
           </TooltipTrigger>
           <TooltipContent side="right" className="flex items-center gap-2">
             {item.label}
-            {badge !== undefined && badge > 0 && (
+            {badge !== undefined && Number(badge) > 0 && (
               <Badge variant={item.badgeVariant || 'secondary'} className="text-xs">
                 {badge}
               </Badge>

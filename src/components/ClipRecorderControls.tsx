@@ -122,10 +122,12 @@ export function ClipRecorderControls({
       // Verificar se temos acesso ao stream
       let stream: MediaStream | null = null;
 
-      if (streamRef?.current?.captureStream) {
-        stream = streamRef.current.captureStream();
-      } else if (streamRef?.current?.srcObject instanceof MediaStream) {
+      if (streamRef?.current?.srcObject instanceof MediaStream) {
         stream = streamRef.current.srcObject;
+      } else if (streamRef?.current && 'captureStream' in streamRef.current) {
+        stream = (streamRef.current as any).captureStream();
+      } else if (streamRef?.current && 'mozCaptureStream' in streamRef.current) {
+        stream = (streamRef.current as any).mozCaptureStream();
       }
 
       if (!stream) {

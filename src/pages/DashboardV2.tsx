@@ -36,24 +36,24 @@ import {
   Settings2,
   RefreshCw,
 } from 'lucide-react';
-import { StatsCard } from './StatsCard';
-import { AlertCard, UIAlert } from './AlertCard';
-import { CameraModal } from './CameraModal';
-import { ExportMenu } from './ExportMenu';
-import { CameraMap } from './CameraMap';
-import { AlertTrendsChart } from './AlertTrendsChart';
-import { AlertsByCameraChart } from './AlertsByCameraChart';
-import { AlertFiltersComponent, filterAlerts, defaultFilters, AlertFilters, CameraOption } from './AlertFilters';
-import { SearchInput, filterCamerasBySearch, filterAlertsBySearch } from './SearchInput';
-import { PaginationControls, usePagination } from './PaginationControls';
+import { StatsCard } from '@/components/StatsCard';
+import { AlertCard, UIAlert } from '@/components/AlertCard';
+import { CameraModal } from '@/components/CameraModal';
+import { ExportMenu } from '@/components/ExportMenu';
+import { CameraMap } from '@/components/CameraMap';
+import { AlertTrendsChart } from '@/components/AlertTrendsChart';
+import { AlertsByCameraChart } from '@/components/AlertsByCameraChart';
+import { AlertFiltersComponent, filterAlerts, defaultFilters, AlertFilters, CameraOption } from '@/components/AlertFilters';
+import { SearchInput, filterCamerasBySearch, filterAlertsBySearch } from '@/components/SearchInput';
+import { PaginationControls, usePagination } from '@/components/PaginationControls';
 
 // Novos componentes integrados (GAP #1-5)
-import { VideoStreamPlayer } from './VideoStreamPlayer';
-import { StreamingCameraGrid } from './StreamingCameraGrid';
-import { ClipRecorderControls } from './ClipRecorderControls';
-import { ZoneOverlay } from './ZoneOverlay';
-import { FaceRecognitionOverlay } from './FaceRecognitionOverlay';
-import { ContinuousAnalysisPanel } from './ContinuousAnalysisPanel';
+import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';
+import { StreamingCameraGrid } from '@/components/StreamingCameraGrid';
+import { ClipRecorderControls } from '@/components/ClipRecorderControls';
+import { ZoneOverlay } from '@/components/ZoneOverlay';
+import { FaceRecognitionOverlay } from '@/components/FaceRecognitionOverlay';
+import { ContinuousAnalysisPanel } from '@/components/ContinuousAnalysisPanel';
 
 // Hooks
 import { useCameras, DbCamera } from '@/hooks/useCameras';

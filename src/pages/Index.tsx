@@ -76,10 +76,10 @@ const Index = () => {
       </Helmet>
       
       <div className="flex h-screen bg-background overflow-hidden">
-        <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
+        <Sidebar />
         
         <div className="flex-1 flex flex-col overflow-hidden">
-          <Header alertCount={unreadCount} />
+          <Header />
           
           <main className="flex-1 overflow-hidden">
             {renderContent()}
