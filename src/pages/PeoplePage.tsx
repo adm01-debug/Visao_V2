@@ -308,9 +308,60 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
     await detectFacesInPhoto(imageData, file);
   };
 
+  // Configurações de validação de qualidade
+  const MIN_FACE_QUALITY = 0.5; // 50% de qualidade mínima
+  const REQUIRE_FACE_FOR_NEW = true; // Exigir rosto para novos cadastros
+
+  const canSave = useMemo(() => {
+    // Se não tem foto, permite salvar (foto é opcional se não for novo cadastro)
+    if (!photoFile && !photoPreview) {
+      return !REQUIRE_FACE_FOR_NEW || !!person;
+    }
+    
+    // Se tem foto nova, precisa ter validação de rosto válida
+    if (photoFile) {
+      return faceValidation?.valid === true;
+    }
+    
+    // Se está editando e mantendo foto antiga com encoding existente
+    if (person?.face_encoding) {
+      return true;
+    }
+    
+    return faceValidation?.valid === true;
+  }, [photoFile, photoPreview, faceValidation, person]);
+
+  const getSaveButtonMessage = () => {
+    if (faceDetection.isDetecting) {
+      return 'Analisando rosto...';
+    }
+    if (photoFile && !faceValidation) {
+      return 'Aguardando análise...';
+    }
+    if (photoFile && faceValidation && !faceValidation.valid) {
+      return 'Foto inválida';
+    }
+    if (REQUIRE_FACE_FOR_NEW && !person && !photoPreview) {
+      return 'Foto obrigatória';
+    }
+    return 'Salvar';
+  };
+
   const handleSubmit = async () => {
     if (!formData.name) {
       toast.error('Nome é obrigatório');
+      return;
+    }
+
+    // Validar qualidade do rosto se tem foto nova
+    if (photoFile && (!faceValidation || !faceValidation.valid)) {
+      toast.error(faceValidation?.message || 'É necessário uma foto com rosto bem enquadrado');
+      return;
+    }
+
+    // Validar foto obrigatória para novos cadastros
+    if (REQUIRE_FACE_FOR_NEW && !person && !photoPreview) {
+      toast.error('Uma foto com rosto é obrigatória para novos cadastros');
       return;
     }
 
@@ -561,17 +612,30 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
           </div>
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={isSubmitting}>
+        <DialogFooter className="flex-col sm:flex-row gap-2">
+          <Button variant="outline" onClick={onClose} disabled={isSubmitting || faceDetection.isDetecting}>
             Cancelar
           </Button>
-          <Button onClick={handleSubmit} disabled={isSubmitting}>
+          <Button 
+            onClick={handleSubmit} 
+            disabled={isSubmitting || faceDetection.isDetecting || !canSave}
+            className={cn(
+              !canSave && !isSubmitting && !faceDetection.isDetecting && "opacity-50"
+            )}
+          >
             {isSubmitting ? (
               <>
                 <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                 Salvando...
               </>
-            ) : 'Salvar'}
+            ) : faceDetection.isDetecting ? (
+              <>
+                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                Analisando...
+              </>
+            ) : (
+              getSaveButtonMessage()
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
