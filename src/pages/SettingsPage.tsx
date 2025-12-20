@@ -366,6 +366,13 @@ export function SettingsPage() {
   const saveSettings = async () => {
     setSaving(true);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('Usuário não autenticado');
+        setSaving(false);
+        return;
+      }
+
       // Save notification settings
       const channels = [];
       if (notificationSettings.emailEnabled) channels.push('email');
@@ -373,6 +380,7 @@ export function SettingsPage() {
       if (notificationSettings.webhookEnabled) channels.push('webhook');
 
       await supabase.from('notification_configs').upsert({
+        user_id: user.id,
         name: 'Configuração Principal',
         enabled: channels.length > 0,
         channels,
@@ -389,6 +397,7 @@ export function SettingsPage() {
 
       // Save face recognition settings
       await supabase.from('face_recognition_configs').upsert({
+        user_id: user.id,
         camera_id: null,
         enabled: faceSettings.enabled,
         match_threshold: faceSettings.matchThreshold,

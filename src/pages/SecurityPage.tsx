@@ -507,12 +507,19 @@ export function SecurityPage() {
     if (!addPersonDialog || !newPersonName) return;
 
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('Usuário não autenticado');
+        return;
+      }
+
       const { data, error } = await supabase
         .from('registered_persons')
         .insert({
           name: newPersonName,
           list_type: addPersonDialog,
           notes: newPersonReason,
+          user_id: user.id,
         })
         .select()
         .single();

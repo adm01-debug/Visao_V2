@@ -159,6 +159,122 @@ export type Database = {
         }
         Relationships: []
       }
+      face_recognition_configs: {
+        Row: {
+          alert_cooldown: number
+          alert_on_unknown: boolean
+          camera_id: string | null
+          created_at: string
+          detect_multiple_faces: boolean
+          enabled: boolean
+          id: string
+          match_threshold: number
+          max_faces_per_frame: number
+          min_face_quality: number
+          min_face_size: number
+          save_unknown_faces: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alert_cooldown?: number
+          alert_on_unknown?: boolean
+          camera_id?: string | null
+          created_at?: string
+          detect_multiple_faces?: boolean
+          enabled?: boolean
+          id?: string
+          match_threshold?: number
+          max_faces_per_frame?: number
+          min_face_quality?: number
+          min_face_size?: number
+          save_unknown_faces?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          alert_cooldown?: number
+          alert_on_unknown?: boolean
+          camera_id?: string | null
+          created_at?: string
+          detect_multiple_faces?: boolean
+          enabled?: boolean
+          id?: string
+          match_threshold?: number
+          max_faces_per_frame?: number
+          min_face_quality?: number
+          min_face_size?: number
+          save_unknown_faces?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "face_recognition_configs_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_configs: {
+        Row: {
+          channels: string[]
+          cooldown_minutes: number
+          created_at: string
+          email_recipients: string[]
+          enabled: boolean
+          id: string
+          name: string
+          phone_recipients: string[]
+          schedule_days: number[] | null
+          schedule_enabled: boolean
+          schedule_end_time: string | null
+          schedule_start_time: string | null
+          severity_filter: string[]
+          updated_at: string
+          user_id: string
+          webhook_urls: string[]
+        }
+        Insert: {
+          channels?: string[]
+          cooldown_minutes?: number
+          created_at?: string
+          email_recipients?: string[]
+          enabled?: boolean
+          id?: string
+          name?: string
+          phone_recipients?: string[]
+          schedule_days?: number[] | null
+          schedule_enabled?: boolean
+          schedule_end_time?: string | null
+          schedule_start_time?: string | null
+          severity_filter?: string[]
+          updated_at?: string
+          user_id: string
+          webhook_urls?: string[]
+        }
+        Update: {
+          channels?: string[]
+          cooldown_minutes?: number
+          created_at?: string
+          email_recipients?: string[]
+          enabled?: boolean
+          id?: string
+          name?: string
+          phone_recipients?: string[]
+          schedule_days?: number[] | null
+          schedule_enabled?: boolean
+          schedule_end_time?: string | null
+          schedule_start_time?: string | null
+          severity_filter?: string[]
+          updated_at?: string
+          user_id?: string
+          webhook_urls?: string[]
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -244,7 +360,9 @@ export type Database = {
           face_encoding: Json | null
           id: string
           is_active: boolean
+          list_type: string | null
           name: string
+          notes: string | null
           photo_url: string | null
           role: string | null
           updated_at: string
@@ -256,7 +374,9 @@ export type Database = {
           face_encoding?: Json | null
           id?: string
           is_active?: boolean
+          list_type?: string | null
           name: string
+          notes?: string | null
           photo_url?: string | null
           role?: string | null
           updated_at?: string
@@ -268,7 +388,9 @@ export type Database = {
           face_encoding?: Json | null
           id?: string
           is_active?: boolean
+          list_type?: string | null
           name?: string
+          notes?: string | null
           photo_url?: string | null
           role?: string | null
           updated_at?: string

@@ -107,37 +107,15 @@ import { toast } from 'sonner';
 // ============================================
 
 type ZoneType = 'restricted' | 'counting' | 'tripwire' | 'dwell' | 'occupancy' | 'parking' | 'queue' | 'safety' | 'custom';
-type ZoneShape = 'polygon' | 'rectangle' | 'circle' | 'line';
 
-interface ZoneGeometry {
-  shape: ZoneShape;
-  points: { x: number; y: number }[];
-}
+// Use database types
+import { Tables } from '@/integrations/supabase/types';
+type DbZone = Tables<'zones'>;
+type DbZoneEvent = Tables<'zone_events'>;
 
-interface ZoneConfig {
-  maxOccupancy?: number;
-  maxDwellTime?: number;
-  tripwireDirection?: 'any' | 'left-to-right' | 'right-to-left' | 'top-to-bottom' | 'bottom-to-top';
-  alertOnEnter?: boolean;
-  alertOnExit?: boolean;
-  alertOnOccupancy?: boolean;
-  alertOnDwell?: boolean;
-}
-
-interface Zone {
-  id: string;
-  camera_id: string;
-  name: string;
-  description?: string;
-  type: ZoneType;
-  geometry: ZoneGeometry;
-  color: string;
-  opacity: number;
-  enabled: boolean;
-  config: ZoneConfig;
-  rules?: any[];
-  created_at: string;
-  updated_at: string;
+// Extended zone with UI properties
+interface Zone extends DbZone {
+  // Add any UI-specific properties
 }
 
 interface ZoneStats {
@@ -149,13 +127,8 @@ interface ZoneStats {
   lastEvent?: string;
 }
 
-interface ZoneEvent {
-  id: string;
-  zone_id: string;
-  zone_name: string;
-  event_type: string;
-  value?: number;
-  created_at: string;
+interface ZoneEvent extends DbZoneEvent {
+  zone_name?: string;
 }
 
 // ============================================
