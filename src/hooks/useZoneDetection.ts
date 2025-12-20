@@ -202,30 +202,26 @@ export function useZoneDetection(
     // Adicionar aos eventos recentes
     setRecentEvents(prev => [event, ...prev.slice(0, 99)]);
 
-    // Salvar no banco
+    // Nota: tabela zone_events não existe no schema atual
+    // Funcionalidade de salvamento desabilitada
     if (saveEvents) {
-      await supabase.from('zone_events').insert({
-        zone_id: zone.id,
-        zone_name: zone.name,
-        camera_id: cameraId,
-        event_type: eventType,
-        object_id: object?.id,
-        object_type: object?.type,
-        value,
-        alert_generated: generateAlert,
-      }).catch(console.error);
+      console.log('[ZoneDetection] Salvamento de eventos desabilitado - tabela não existe');
     }
 
     // Criar alerta se necessário
     if (generateAlert && createAlerts) {
       const severity = zone.type === 'restricted' ? 'high' : 'medium';
-      await supabase.from('alerts').insert({
-        camera_name: cameraName,
-        type: 'zone',
-        severity,
-        message: `${zone.name}: ${getEventMessage(eventType, value)}`,
-        is_read: false,
-      }).catch(console.error);
+      try {
+        await supabase.from('alerts').insert({
+          camera_name: cameraName,
+          type: 'security' as const,
+          severity,
+          message: `${zone.name}: ${getEventMessage(eventType, value)}`,
+          is_read: false,
+        });
+      } catch (err) {
+        console.error('[ZoneDetection] Erro ao criar alerta:', err);
+      }
 
       onAlert?.(zone, event);
     }
@@ -450,96 +446,53 @@ export function useZoneDetection(
   }, [zones, initializeStats]);
 
   // ============================================
-  // CRUD DE ZONAS
+  // CRUD DE ZONAS (desabilitado - tabela zones não existe)
   // ============================================
 
   const addZone = useCallback(async (
     zoneData: Omit<Zone, 'id' | 'createdAt' | 'updatedAt' | 'stats'>
   ): Promise<Zone> => {
-    try {
-      const { data, error: insertError } = await supabase
-        .from('zones')
-        .insert({
-          camera_id: cameraId,
-          name: zoneData.name,
-          description: zoneData.description,
-          type: zoneData.type,
-          geometry: zoneData.geometry,
-          color: zoneData.color || generateZoneColor(),
-          opacity: zoneData.opacity || 0.3,
-          enabled: zoneData.enabled ?? true,
-          config: zoneData.config,
-          rules: zoneData.rules || [],
-        })
-        .select()
-        .single();
+    // Nota: tabela zones não existe no schema atual
+    // Criando zona apenas em memória local
+    console.log('[ZoneDetection] Persistência de zonas desabilitada - tabela não existe');
+    
+    const newZone: Zone = {
+      ...zoneData,
+      id: crypto.randomUUID(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
-      if (insertError) throw insertError;
+    setZones(prev => [...prev, newZone]);
+    setStats(prev => new Map(prev).set(newZone.id, initializeStats(newZone)));
+    zoneObjectsRef.current.set(newZone.id, new Set());
 
-      const newZone: Zone = {
-        ...zoneData,
-        id: data.id,
-        createdAt: new Date(data.created_at),
-        updatedAt: new Date(data.updated_at),
-      };
-
-      setZones(prev => [...prev, newZone]);
-      setStats(prev => new Map(prev).set(newZone.id, initializeStats(newZone)));
-      zoneObjectsRef.current.set(newZone.id, new Set());
-
-      toast.success(`Zona "${newZone.name}" criada`);
-      return newZone;
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Erro ao criar zona';
-      toast.error(msg);
-      throw err;
-    }
-  }, [cameraId, initializeStats]);
+    toast.success(`Zona "${newZone.name}" criada (apenas em memória)`);
+    return newZone;
+  }, [initializeStats]);
 
   const updateZone = useCallback(async (zoneId: string, updates: Partial<Zone>) => {
-    try {
-      const { error: updateError } = await supabase
-        .from('zones')
-        .update({
-          name: updates.name,
-          description: updates.description,
-          type: updates.type,
-          geometry: updates.geometry,
-          color: updates.color,
-          opacity: updates.opacity,
-          enabled: updates.enabled,
-          config: updates.config,
-          rules: updates.rules,
-        })
-        .eq('id', zoneId);
-
-      if (updateError) throw updateError;
-
-      setZones(prev => prev.map(z => z.id === zoneId ? { ...z, ...updates, updatedAt: new Date() } : z));
-      toast.success('Zona atualizada');
-    } catch (err) {
-      toast.error('Erro ao atualizar zona');
-      throw err;
-    }
+    // Nota: tabela zones não existe no schema atual
+    // Atualizando zona apenas em memória local
+    console.log('[ZoneDetection] Persistência de zonas desabilitada - tabela não existe');
+    
+    setZones(prev => prev.map(z => z.id === zoneId ? { ...z, ...updates, updatedAt: new Date() } : z));
+    toast.success('Zona atualizada (apenas em memória)');
   }, []);
 
   const removeZone = useCallback(async (zoneId: string) => {
-    try {
-      await supabase.from('zones').delete().eq('id', zoneId);
-      
-      setZones(prev => prev.filter(z => z.id !== zoneId));
-      setStats(prev => {
-        const newStats = new Map(prev);
-        newStats.delete(zoneId);
-        return newStats;
-      });
-      zoneObjectsRef.current.delete(zoneId);
+    // Nota: tabela zones não existe no schema atual
+    console.log('[ZoneDetection] Persistência de zonas desabilitada - tabela não existe');
+    
+    setZones(prev => prev.filter(z => z.id !== zoneId));
+    setStats(prev => {
+      const newStats = new Map(prev);
+      newStats.delete(zoneId);
+      return newStats;
+    });
+    zoneObjectsRef.current.delete(zoneId);
 
-      toast.success('Zona removida');
-    } catch (err) {
-      toast.error('Erro ao remover zona');
-      throw err;
-    }
+    toast.success('Zona removida (apenas em memória)');
   }, []);
 
   const toggleZone = useCallback((zoneId: string) => {
@@ -549,48 +502,11 @@ export function useZoneDetection(
   }, []);
 
   const fetchZones = useCallback(async (): Promise<Zone[]> => {
-    try {
-      const { data, error: fetchError } = await supabase
-        .from('zones')
-        .select('*')
-        .eq('camera_id', cameraId)
-        .order('created_at');
-
-      if (fetchError) throw fetchError;
-
-      const loadedZones: Zone[] = (data || []).map(z => ({
-        id: z.id,
-        cameraId: z.camera_id,
-        name: z.name,
-        description: z.description,
-        type: z.type as ZoneType,
-        geometry: z.geometry as ZoneGeometry,
-        color: z.color,
-        opacity: z.opacity,
-        enabled: z.enabled,
-        config: z.config as ZoneConfig,
-        rules: z.rules || [],
-        createdAt: new Date(z.created_at),
-        updatedAt: new Date(z.updated_at),
-      }));
-
-      setZones(loadedZones);
-      
-      // Inicializar stats e objects para cada zona
-      const newStats = new Map<string, ZoneStats>();
-      loadedZones.forEach(zone => {
-        newStats.set(zone.id, initializeStats(zone));
-        zoneObjectsRef.current.set(zone.id, new Set());
-      });
-      setStats(newStats);
-
-      return loadedZones;
-    } catch (err) {
-      console.error('[ZoneDetection] Erro ao buscar zonas:', err);
-      throw err;
-    }
-  }, [cameraId, initializeStats]);
-
+    // Nota: tabela zones não existe no schema atual
+    // Retornando lista vazia - funcionalidade de persistência desabilitada
+    console.log('[ZoneDetection] Busca de zonas desabilitada - tabela não existe');
+    return zones;
+  }, [zones]);
   const resetStats = useCallback((zoneId?: string) => {
     if (zoneId) {
       const zone = zones.find(z => z.id === zoneId);

@@ -97,7 +97,7 @@ interface ClipRecorderControlsProps {
 // ============================================
 
 function RecordingStatusBadge({ status }: { status: RecordingStatus }) {
-  const config = {
+  const config: Record<RecordingStatus, { color: string; label: string; icon: typeof Video; pulse?: boolean }> = {
     idle: { color: 'bg-gray-500', label: 'Aguardando', icon: Video },
     recording: { color: 'bg-red-500', label: 'Gravando', icon: Circle, pulse: true },
     processing: { color: 'bg-yellow-500', label: 'Processando', icon: Film },
@@ -106,12 +106,14 @@ function RecordingStatusBadge({ status }: { status: RecordingStatus }) {
     error: { color: 'bg-red-600', label: 'Erro', icon: AlertTriangle },
   };
 
-  const { color, label, icon: Icon, pulse } = config[status];
+  const statusConfig = config[status];
+  const Icon = statusConfig.icon;
+  const pulse = statusConfig.pulse;
 
   return (
-    <Badge className={cn('gap-1.5 text-white border-0', color)}>
+    <Badge className={cn('gap-1.5 text-white border-0', statusConfig.color)}>
       <Icon className={cn('w-3 h-3', pulse && 'animate-pulse')} />
-      {label}
+      {statusConfig.label}
     </Badge>
   );
 }
