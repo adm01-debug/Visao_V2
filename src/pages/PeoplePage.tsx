@@ -199,6 +199,7 @@ interface PersonFormDialogProps {
 }
 
 function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogProps) {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     department: '',
@@ -206,7 +207,9 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
     is_active: true,
   });
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   useEffect(() => {
     if (person) {
@@ -217,6 +220,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
         is_active: person.is_active,
       });
       setPhotoPreview(person.photo_url || null);
+      setPhotoFile(null);
     } else {
       setFormData({
         name: '',
@@ -225,15 +229,86 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
         is_active: true,
       });
       setPhotoPreview(null);
+      setPhotoFile(null);
     }
+    setUploadProgress(0);
   }, [person, isOpen]);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Arquivo muito grande. Máximo 5MB.');
+        return;
+      }
+      
+      // Validate file type
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+        toast.error('Formato inválido. Use JPEG, PNG ou WebP.');
+        return;
+      }
+
+      setPhotoFile(file);
       const reader = new FileReader();
       reader.onload = () => setPhotoPreview(reader.result as string);
       reader.readAsDataURL(file);
+    }
+  };
+
+  const uploadPhoto = async (file: File): Promise<string | null> => {
+    if (!user) return null;
+
+    try {
+      setUploadProgress(10);
+      
+      // Generate unique filename
+      const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const fileName = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
+      
+      setUploadProgress(30);
+
+      // Upload to storage
+      const { data, error } = await supabase.storage
+        .from('person-photos')
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (error) {
+        console.error('Upload error:', error);
+        throw new Error('Erro ao fazer upload da foto');
+      }
+
+      setUploadProgress(80);
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from('person-photos')
+        .getPublicUrl(data.path);
+
+      setUploadProgress(100);
+      return urlData.publicUrl;
+    } catch (error) {
+      console.error('Upload failed:', error);
+      throw error;
+    }
+  };
+
+  const deleteOldPhoto = async (photoUrl: string | null) => {
+    if (!photoUrl || !user) return;
+    
+    try {
+      // Extract path from URL
+      const urlParts = photoUrl.split('/person-photos/');
+      if (urlParts.length < 2) return;
+      
+      const filePath = urlParts[1];
+      await supabase.storage.from('person-photos').remove([filePath]);
+    } catch (error) {
+      console.error('Error deleting old photo:', error);
+      // Don't throw - old photo deletion is not critical
     }
   };
 
@@ -245,9 +320,25 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
 
     setIsSubmitting(true);
     try {
+      let photoUrl = person?.photo_url || null;
+
+      // Upload new photo if selected
+      if (photoFile) {
+        // Delete old photo if updating
+        if (person?.photo_url) {
+          await deleteOldPhoto(person.photo_url);
+        }
+        
+        photoUrl = await uploadPhoto(photoFile);
+        if (!photoUrl) {
+          toast.error('Erro ao fazer upload da foto');
+          return;
+        }
+      }
+
       await onSave({ 
         ...formData, 
-        photo_url: photoPreview || person?.photo_url,
+        photo_url: photoUrl,
       });
       onClose();
       toast.success(person ? 'Pessoa atualizada' : 'Pessoa cadastrada');
@@ -256,7 +347,16 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
       console.error(error);
     } finally {
       setIsSubmitting(false);
+      setUploadProgress(0);
     }
+  };
+
+  const handleRemovePhoto = async () => {
+    if (person?.photo_url) {
+      await deleteOldPhoto(person.photo_url);
+    }
+    setPhotoPreview(null);
+    setPhotoFile(null);
   };
 
   return (
@@ -274,25 +374,59 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
         <div className="space-y-4">
           {/* Foto */}
           <div className="flex flex-col items-center gap-4">
-            <Avatar className="w-24 h-24">
-              <AvatarImage src={photoPreview || undefined} />
-              <AvatarFallback className="text-2xl">
-                {formData.name?.charAt(0) || 'P'}
-              </AvatarFallback>
-            </Avatar>
-            <Label htmlFor="photo" className="cursor-pointer">
-              <div className="flex items-center gap-2 text-sm text-primary hover:underline">
-                <Upload className="w-4 h-4" />
-                {photoPreview ? 'Alterar foto' : 'Adicionar foto'}
+            <div className="relative">
+              <Avatar className="w-24 h-24">
+                <AvatarImage src={photoPreview || undefined} />
+                <AvatarFallback className="text-2xl">
+                  {formData.name?.charAt(0) || 'P'}
+                </AvatarFallback>
+              </Avatar>
+              {photoPreview && (
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  className="absolute -top-1 -right-1 h-6 w-6 rounded-full"
+                  onClick={handleRemovePhoto}
+                  type="button"
+                >
+                  <X className="w-3 h-3" />
+                </Button>
+              )}
+            </div>
+            
+            <div className="text-center">
+              <Label htmlFor="photo" className="cursor-pointer">
+                <div className="flex items-center gap-2 text-sm text-primary hover:underline">
+                  <Upload className="w-4 h-4" />
+                  {photoPreview ? 'Alterar foto' : 'Adicionar foto'}
+                </div>
+                <Input
+                  id="photo"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={handlePhotoChange}
+                />
+              </Label>
+              <p className="text-xs text-muted-foreground mt-1">
+                JPEG, PNG ou WebP • Máx 5MB
+              </p>
+            </div>
+
+            {/* Upload Progress */}
+            {isSubmitting && uploadProgress > 0 && uploadProgress < 100 && (
+              <div className="w-full max-w-xs">
+                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-primary transition-all duration-300"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+                <p className="text-xs text-center text-muted-foreground mt-1">
+                  Enviando foto... {uploadProgress}%
+                </p>
               </div>
-              <Input
-                id="photo"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handlePhotoChange}
-              />
-            </Label>
+            )}
           </div>
 
           {/* Dados */}
@@ -339,11 +473,16 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={onClose} disabled={isSubmitting}>
             Cancelar
           </Button>
           <Button onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? 'Salvando...' : 'Salvar'}
+            {isSubmitting ? (
+              <>
+                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                Salvando...
+              </>
+            ) : 'Salvar'}
           </Button>
         </DialogFooter>
       </DialogContent>
