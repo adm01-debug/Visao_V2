@@ -2,284 +2,290 @@
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: FaceRecognitionOverlay
  * 
- * Overlay para exibição de faces detectadas e reconhecidas sobre o vídeo.
+ * Overlay para exibir detecções faciais sobre o vídeo:
+ * - Bounding boxes em rostos detectados
+ * - Nome/identificação da pessoa
+ * - Score de similaridade
+ * - Indicador de lista (whitelist, blacklist, etc)
  */
 
-import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
-import {
-  DetectedFace,
-  RecognitionResult,
-  getListTypeColor,
-  getListTypeLabel,
-} from '@/types/faceRecognition';
+import { useState, useEffect, useMemo } from 'react';
 import {
   User,
   UserCheck,
   UserX,
-  AlertTriangle,
   Star,
-  Ban,
+  AlertTriangle,
   Shield,
+  Clock,
+  Ban,
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 // ============================================
 // TIPOS
 // ============================================
 
+export type ListType = 'whitelist' | 'blacklist' | 'vip' | 'employee' | 'visitor' | 'contractor' | 'unknown';
+
+export interface DetectedFace {
+  id: string;
+  boundingBox: {
+    x: number;      // % da largura (0-100)
+    y: number;      // % da altura (0-100)
+    width: number;  // % da largura
+    height: number; // % da altura
+  };
+  personId?: string;
+  personName?: string;
+  listType: ListType;
+  similarity?: number;  // 0-1
+  isKnown: boolean;
+  timestamp: Date;
+  emotions?: {
+    dominant: string;
+    confidence: number;
+  };
+  age?: {
+    min: number;
+    max: number;
+  };
+  gender?: {
+    value: string;
+    confidence: number;
+  };
+}
+
 interface FaceRecognitionOverlayProps {
-  /** Resultados de reconhecimento */
-  results: RecognitionResult[];
-  
-  /** Faces detectadas (sem matching) */
-  detectedFaces?: DetectedFace[];
-  
-  /** Mostrar atributos */
-  showAttributes?: boolean;
-  
-  /** Mostrar similaridade */
+  faces: DetectedFace[];
+  showLabels?: boolean;
   showSimilarity?: boolean;
-  
-  /** Mostrar landmarks */
-  showLandmarks?: boolean;
-  
-  /** Animação de pulso em alertas */
-  pulseOnAlert?: boolean;
-  
-  /** Callback ao clicar em uma face */
-  onFaceClick?: (result: RecognitionResult) => void;
-  
-  /** Classe CSS */
+  showDetails?: boolean;
+  animateBoxes?: boolean;
   className?: string;
+  onFaceClick?: (face: DetectedFace) => void;
 }
 
 // ============================================
-// FACE BOX COMPONENT
+// CONFIGURAÇÃO
 // ============================================
 
-function FaceBox({
-  result,
-  showAttributes,
-  showSimilarity,
-  showLandmarks,
-  pulseOnAlert,
-  onClick,
-}: {
-  result: RecognitionResult;
-  showAttributes?: boolean;
-  showSimilarity?: boolean;
-  showLandmarks?: boolean;
-  pulseOnAlert?: boolean;
+const listTypeStyles: Record<ListType, {
+  borderColor: string;
+  bgColor: string;
+  textColor: string;
+  icon: any;
+  label: string;
+}> = {
+  whitelist: {
+    borderColor: 'border-green-500',
+    bgColor: 'bg-green-500/90',
+    textColor: 'text-green-500',
+    icon: UserCheck,
+    label: 'Autorizado',
+  },
+  blacklist: {
+    borderColor: 'border-red-500',
+    bgColor: 'bg-red-500/90',
+    textColor: 'text-red-500',
+    icon: Ban,
+    label: 'Bloqueado',
+  },
+  vip: {
+    borderColor: 'border-yellow-500',
+    bgColor: 'bg-yellow-500/90',
+    textColor: 'text-yellow-500',
+    icon: Star,
+    label: 'VIP',
+  },
+  employee: {
+    borderColor: 'border-blue-500',
+    bgColor: 'bg-blue-500/90',
+    textColor: 'text-blue-500',
+    icon: User,
+    label: 'Funcionário',
+  },
+  visitor: {
+    borderColor: 'border-purple-500',
+    bgColor: 'bg-purple-500/90',
+    textColor: 'text-purple-500',
+    icon: User,
+    label: 'Visitante',
+  },
+  contractor: {
+    borderColor: 'border-orange-500',
+    bgColor: 'bg-orange-500/90',
+    textColor: 'text-orange-500',
+    icon: Shield,
+    label: 'Terceiro',
+  },
+  unknown: {
+    borderColor: 'border-gray-400',
+    bgColor: 'bg-gray-600/90',
+    textColor: 'text-gray-400',
+    icon: AlertTriangle,
+    label: 'Desconhecido',
+  },
+};
+
+// ============================================
+// COMPONENTE: Face Box
+// ============================================
+
+interface FaceBoxProps {
+  face: DetectedFace;
+  showLabel: boolean;
+  showSimilarity: boolean;
+  showDetails: boolean;
+  animate: boolean;
   onClick?: () => void;
-}) {
-  const { face, bestMatch, isKnown, shouldAlert, action } = result;
-  const { boundingBox, attributes, landmarks, quality, confidence } = face;
+}
 
-  // Determinar cor do box
-  const getBoxColor = () => {
-    if (shouldAlert && action === 'block') return 'border-red-500 bg-red-500/20';
-    if (shouldAlert) return 'border-yellow-500 bg-yellow-500/20';
-    if (bestMatch?.listType === 'blacklist') return 'border-red-500 bg-red-500/10';
-    if (bestMatch?.listType === 'vip') return 'border-yellow-400 bg-yellow-400/10';
-    if (isKnown) return 'border-green-500 bg-green-500/10';
-    return 'border-blue-400 bg-blue-400/10';
-  };
-
-  // Ícone
-  const getIcon = () => {
-    if (bestMatch?.listType === 'blacklist') return Ban;
-    if (bestMatch?.listType === 'vip') return Star;
-    if (shouldAlert) return AlertTriangle;
-    if (isKnown) return UserCheck;
-    return User;
-  };
-
-  const Icon = getIcon();
+function FaceBox({
+  face,
+  showLabel,
+  showSimilarity,
+  showDetails,
+  animate,
+  onClick,
+}: FaceBoxProps) {
+  const style = listTypeStyles[face.listType];
+  const Icon = style.icon;
+  const isAlert = face.listType === 'blacklist' || face.listType === 'unknown';
 
   return (
     <div
       className={cn(
-        'absolute border-2 rounded-lg transition-all duration-300 cursor-pointer',
-        getBoxColor(),
-        shouldAlert && pulseOnAlert && 'animate-pulse'
+        'absolute pointer-events-auto cursor-pointer transition-all duration-300',
+        animate && 'animate-pulse'
       )}
       style={{
-        left: `${boundingBox.x}%`,
-        top: `${boundingBox.y}%`,
-        width: `${boundingBox.width}%`,
-        height: `${boundingBox.height}%`,
+        left: `${face.boundingBox.x}%`,
+        top: `${face.boundingBox.y}%`,
+        width: `${face.boundingBox.width}%`,
+        height: `${face.boundingBox.height}%`,
       }}
       onClick={onClick}
     >
-      {/* Label superior */}
-      <div className="absolute -top-7 left-0 flex items-center gap-1">
-        <Badge
+      {/* Bounding Box */}
+      <div
+        className={cn(
+          'absolute inset-0 border-2 rounded transition-all',
+          style.borderColor,
+          isAlert && animate && 'animate-pulse shadow-lg',
+          isAlert && 'border-3'
+        )}
+        style={{
+          boxShadow: isAlert ? `0 0 20px ${face.listType === 'blacklist' ? '#ef4444' : '#9ca3af'}` : undefined,
+        }}
+      >
+        {/* Corner indicators */}
+        <div className={cn('absolute -top-0.5 -left-0.5 w-3 h-3 border-t-2 border-l-2 rounded-tl', style.borderColor)} />
+        <div className={cn('absolute -top-0.5 -right-0.5 w-3 h-3 border-t-2 border-r-2 rounded-tr', style.borderColor)} />
+        <div className={cn('absolute -bottom-0.5 -left-0.5 w-3 h-3 border-b-2 border-l-2 rounded-bl', style.borderColor)} />
+        <div className={cn('absolute -bottom-0.5 -right-0.5 w-3 h-3 border-b-2 border-r-2 rounded-br', style.borderColor)} />
+      </div>
+
+      {/* Label */}
+      {showLabel && (
+        <div
           className={cn(
-            'text-white border-0 text-xs px-1.5 py-0.5 flex items-center gap-1',
-            isKnown && bestMatch
-              ? getListTypeColor(bestMatch.listType)
-              : shouldAlert
-              ? 'bg-yellow-500'
-              : 'bg-blue-500'
+            'absolute left-0 right-0 flex items-center justify-center gap-1',
+            'px-2 py-1 rounded text-white text-xs font-medium whitespace-nowrap',
+            'transform -translate-y-full -top-1',
+            style.bgColor
           )}
         >
           <Icon className="w-3 h-3" />
-          {isKnown && bestMatch ? (
-            <span className="truncate max-w-[100px]">{bestMatch.personName}</span>
-          ) : (
-            <span>Desconhecido</span>
-          )}
-        </Badge>
-
-        {/* Similaridade */}
-        {showSimilarity && bestMatch && (
-          <Badge variant="outline" className="text-xs bg-background/80">
-            {Math.round(bestMatch.similarity * 100)}%
-          </Badge>
-        )}
-      </div>
-
-      {/* Label inferior com atributos */}
-      {showAttributes && attributes && (
-        <div className="absolute -bottom-6 left-0 right-0 flex items-center gap-1 text-[10px]">
-          {attributes.age && (
-            <Badge variant="outline" className="bg-background/80 px-1 py-0">
-              {attributes.age} anos
-            </Badge>
-          )}
-          {attributes.gender && attributes.gender !== 'unknown' && (
-            <Badge variant="outline" className="bg-background/80 px-1 py-0">
-              {attributes.gender === 'male' ? '♂' : '♀'}
-            </Badge>
-          )}
-          {attributes.emotion && attributes.emotion !== 'neutral' && (
-            <Badge variant="outline" className="bg-background/80 px-1 py-0">
-              {attributes.emotion}
-            </Badge>
-          )}
-          {attributes.mask && (
-            <Badge variant="outline" className="bg-background/80 px-1 py-0">
-              Máscara
-            </Badge>
-          )}
-          {attributes.glasses && (
-            <Badge variant="outline" className="bg-background/80 px-1 py-0">
-              Óculos
-            </Badge>
+          <span className="truncate max-w-[120px]">
+            {face.isKnown ? face.personName : style.label}
+          </span>
+          {showSimilarity && face.similarity && (
+            <span className="opacity-75">
+              {Math.round(face.similarity * 100)}%
+            </span>
           )}
         </div>
       )}
 
-      {/* Landmarks */}
-      {showLandmarks && landmarks && (
-        <>
-          <LandmarkDot
-            x={(landmarks.leftEye.x - boundingBox.x) / boundingBox.width * 100}
-            y={(landmarks.leftEye.y - boundingBox.y) / boundingBox.height * 100}
-            color="cyan"
-          />
-          <LandmarkDot
-            x={(landmarks.rightEye.x - boundingBox.x) / boundingBox.width * 100}
-            y={(landmarks.rightEye.y - boundingBox.y) / boundingBox.height * 100}
-            color="cyan"
-          />
-          <LandmarkDot
-            x={(landmarks.nose.x - boundingBox.x) / boundingBox.width * 100}
-            y={(landmarks.nose.y - boundingBox.y) / boundingBox.height * 100}
-            color="green"
-          />
-          <LandmarkDot
-            x={(landmarks.leftMouth.x - boundingBox.x) / boundingBox.width * 100}
-            y={(landmarks.leftMouth.y - boundingBox.y) / boundingBox.height * 100}
-            color="red"
-          />
-          <LandmarkDot
-            x={(landmarks.rightMouth.x - boundingBox.x) / boundingBox.width * 100}
-            y={(landmarks.rightMouth.y - boundingBox.y) / boundingBox.height * 100}
-            color="red"
-          />
-        </>
-      )}
-
-      {/* Indicador de qualidade */}
-      <div className="absolute bottom-1 right-1">
+      {/* Details (expandido) */}
+      {showDetails && (
         <div
           className={cn(
-            'w-2 h-2 rounded-full',
-            quality > 0.7 ? 'bg-green-500' :
-            quality > 0.4 ? 'bg-yellow-500' :
-            'bg-red-500'
+            'absolute left-0 right-0 top-full mt-1',
+            'px-2 py-1.5 rounded bg-black/80 text-white text-[10px]',
+            'space-y-0.5'
           )}
-          title={`Qualidade: ${Math.round(quality * 100)}%`}
-        />
-      </div>
+        >
+          {face.emotions && (
+            <div className="flex justify-between">
+              <span className="opacity-70">Emoção:</span>
+              <span>{face.emotions.dominant}</span>
+            </div>
+          )}
+          {face.age && (
+            <div className="flex justify-between">
+              <span className="opacity-70">Idade:</span>
+              <span>{face.age.min}-{face.age.max}</span>
+            </div>
+          )}
+          {face.gender && (
+            <div className="flex justify-between">
+              <span className="opacity-70">Gênero:</span>
+              <span>{face.gender.value}</span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
 // ============================================
-// LANDMARK DOT
+// COMPONENTE: Stats Panel
 // ============================================
 
-function LandmarkDot({
-  x,
-  y,
-  color,
-}: {
-  x: number;
-  y: number;
-  color: string;
-}) {
-  return (
-    <div
-      className="absolute w-1.5 h-1.5 rounded-full -translate-x-1/2 -translate-y-1/2"
-      style={{
-        left: `${x}%`,
-        top: `${y}%`,
-        backgroundColor: color,
-        boxShadow: `0 0 4px ${color}`,
-      }}
-    />
-  );
+interface StatsPanelProps {
+  faces: DetectedFace[];
 }
 
-// ============================================
-// DETECTED FACE BOX (sem matching)
-// ============================================
+function StatsPanel({ faces }: StatsPanelProps) {
+  const stats = useMemo(() => {
+    const known = faces.filter(f => f.isKnown).length;
+    const unknown = faces.filter(f => !f.isKnown).length;
+    const blacklisted = faces.filter(f => f.listType === 'blacklist').length;
+    const vip = faces.filter(f => f.listType === 'vip').length;
 
-function DetectedFaceBox({
-  face,
-  showAttributes,
-}: {
-  face: DetectedFace;
-  showAttributes?: boolean;
-}) {
-  const { boundingBox, confidence, quality, attributes } = face;
+    return { known, unknown, blacklisted, vip, total: faces.length };
+  }, [faces]);
+
+  if (stats.total === 0) return null;
 
   return (
-    <div
-      className="absolute border-2 border-dashed border-gray-400 bg-gray-400/10 rounded-lg"
-      style={{
-        left: `${boundingBox.x}%`,
-        top: `${boundingBox.y}%`,
-        width: `${boundingBox.width}%`,
-        height: `${boundingBox.height}%`,
-      }}
-    >
-      <div className="absolute -top-6 left-0">
-        <Badge variant="outline" className="text-xs bg-background/80">
-          <User className="w-3 h-3 mr-1" />
-          Face detectada
-        </Badge>
+    <div className="absolute top-2 right-2 flex flex-col gap-1 text-[10px]">
+      <div className="flex items-center gap-1 px-2 py-1 rounded bg-black/70 text-white">
+        <User className="w-3 h-3" />
+        <span>{stats.total} detectado{stats.total !== 1 ? 's' : ''}</span>
       </div>
-
-      {showAttributes && attributes && (
-        <div className="absolute -bottom-5 left-0 flex gap-1 text-[10px]">
-          {attributes.age && (
-            <Badge variant="outline" className="bg-background/80 px-1 py-0">
-              ~{attributes.age}
-            </Badge>
-          )}
+      
+      {stats.known > 0 && (
+        <div className="flex items-center gap-1 px-2 py-1 rounded bg-green-500/80 text-white">
+          <UserCheck className="w-3 h-3" />
+          <span>{stats.known} conhecido{stats.known !== 1 ? 's' : ''}</span>
+        </div>
+      )}
+      
+      {stats.blacklisted > 0 && (
+        <div className="flex items-center gap-1 px-2 py-1 rounded bg-red-500/80 text-white animate-pulse">
+          <Ban className="w-3 h-3" />
+          <span>{stats.blacklisted} bloqueado{stats.blacklisted !== 1 ? 's' : ''}</span>
+        </div>
+      )}
+      
+      {stats.vip > 0 && (
+        <div className="flex items-center gap-1 px-2 py-1 rounded bg-yellow-500/80 text-white">
+          <Star className="w-3 h-3" />
+          <span>{stats.vip} VIP</span>
         </div>
       )}
     </div>
@@ -291,62 +297,107 @@ function DetectedFaceBox({
 // ============================================
 
 export function FaceRecognitionOverlay({
-  results,
-  detectedFaces = [],
-  showAttributes = true,
+  faces,
+  showLabels = true,
   showSimilarity = true,
-  showLandmarks = false,
-  pulseOnAlert = true,
-  onFaceClick,
+  showDetails = false,
+  animateBoxes = true,
   className,
+  onFaceClick,
 }: FaceRecognitionOverlayProps) {
-  // Faces que já têm resultado (não duplicar)
-  const resultFaceIds = new Set(results.map(r => r.face.id));
-  const unprocessedFaces = detectedFaces.filter(f => !resultFaceIds.has(f.id));
+  // Filtrar rostos recentes (últimos 5 segundos)
+  const activeFaces = useMemo(() => {
+    const now = Date.now();
+    const maxAge = 5000; // 5 segundos
+    
+    return faces.filter(face => {
+      const age = now - new Date(face.timestamp).getTime();
+      return age < maxAge;
+    });
+  }, [faces]);
 
-  if (results.length === 0 && unprocessedFaces.length === 0) {
-    return null;
-  }
+  // Ordenar por prioridade (blacklist primeiro, depois unknown)
+  const sortedFaces = useMemo(() => {
+    return [...activeFaces].sort((a, b) => {
+      const priority: Record<ListType, number> = {
+        blacklist: 0,
+        unknown: 1,
+        vip: 2,
+        employee: 3,
+        visitor: 4,
+        contractor: 5,
+        whitelist: 6,
+      };
+      return (priority[a.listType] || 99) - (priority[b.listType] || 99);
+    });
+  }, [activeFaces]);
+
+  if (sortedFaces.length === 0) return null;
 
   return (
-    <div className={cn('absolute inset-0 pointer-events-none z-10', className)}>
-      {/* Faces com resultado de reconhecimento */}
-      {results.map((result, index) => (
-        <div key={result.face.id || index} className="pointer-events-auto">
-          <FaceBox
-            result={result}
-            showAttributes={showAttributes}
-            showSimilarity={showSimilarity}
-            showLandmarks={showLandmarks}
-            pulseOnAlert={pulseOnAlert}
-            onClick={() => onFaceClick?.(result)}
-          />
-        </div>
-      ))}
+    <div className={cn('absolute inset-0 pointer-events-none overflow-hidden', className)}>
+      {/* SVG para linhas de conexão (opcional) */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none">
+        {/* Pode adicionar linhas conectando rostos a labels, etc */}
+      </svg>
 
-      {/* Faces detectadas sem matching (apenas detecção) */}
-      {unprocessedFaces.map((face, index) => (
-        <DetectedFaceBox
-          key={face.id || `detected-${index}`}
+      {/* Face boxes */}
+      {sortedFaces.map(face => (
+        <FaceBox
+          key={face.id}
           face={face}
-          showAttributes={showAttributes}
+          showLabel={showLabels}
+          showSimilarity={showSimilarity}
+          showDetails={showDetails}
+          animate={animateBoxes && (face.listType === 'blacklist' || face.listType === 'unknown')}
+          onClick={() => onFaceClick?.(face)}
         />
       ))}
 
-      {/* Contador de faces */}
-      <div className="absolute top-2 right-2 pointer-events-auto">
-        <Badge variant="secondary" className="gap-1.5">
-          <User className="w-3 h-3" />
-          {results.length + unprocessedFaces.length} face(s)
-        </Badge>
-      </div>
+      {/* Stats panel */}
+      <StatsPanel faces={sortedFaces} />
 
-      {/* Alerta visual se houver blacklist */}
-      {results.some(r => r.bestMatch?.listType === 'blacklist') && (
-        <div className="absolute inset-0 border-4 border-red-500 rounded-lg animate-pulse pointer-events-none" />
+      {/* Alerta para blacklist */}
+      {sortedFaces.some(f => f.listType === 'blacklist') && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+          <div className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+          <div className="relative inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-600 text-white font-medium">
+            <AlertTriangle className="w-5 h-5" />
+            PESSOA BLOQUEADA DETECTADA
+          </div>
+        </div>
       )}
     </div>
   );
+}
+
+// ============================================
+// HOOK: Use Face Detection Animation
+// ============================================
+
+export function useFaceDetectionAnimation(faces: DetectedFace[], intervalMs = 100) {
+  const [visibleFaces, setVisibleFaces] = useState<DetectedFace[]>([]);
+
+  useEffect(() => {
+    // Adicionar novos rostos gradualmente
+    const newFaces = faces.filter(
+      f => !visibleFaces.some(vf => vf.id === f.id)
+    );
+
+    if (newFaces.length > 0) {
+      newFaces.forEach((face, index) => {
+        setTimeout(() => {
+          setVisibleFaces(prev => [...prev, face]);
+        }, index * intervalMs);
+      });
+    }
+
+    // Remover rostos que não estão mais na lista
+    const currentIds = new Set(faces.map(f => f.id));
+    setVisibleFaces(prev => prev.filter(f => currentIds.has(f.id)));
+  }, [faces, intervalMs]);
+
+  return visibleFaces;
 }
 
 export default FaceRecognitionOverlay;
