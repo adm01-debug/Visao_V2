@@ -188,6 +188,7 @@ export function useAlerts() {
     loading,
     error,
     fetchAlerts,
+    refetch: fetchAlerts,
     createAlert,
     markAsRead,
     markAllAsRead,

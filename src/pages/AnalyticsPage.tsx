@@ -539,10 +539,10 @@ export function AnalyticsPage() {
   }, [loadData]);
 
   // Exportar relatório
-  const exportReport = (format: 'pdf' | 'csv' | 'xlsx') => {
-    toast.success(`Exportando relatório em ${format.toUpperCase()}...`);
+  const exportReport = (formatType: 'pdf' | 'csv' | 'xlsx') => {
+    toast.success(`Exportando relatório em ${formatType.toUpperCase()}...`);
     
-    if (format === 'csv') {
+    if (formatType === 'csv') {
       const headers = ['Data', 'Alertas', 'Análises', 'Detecções', 'Gravações'];
       const rows = chartData.map(d => [d.label, d.alerts, d.analyses, d.detections, d.recordings]);
       const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');

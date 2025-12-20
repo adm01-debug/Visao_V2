@@ -213,20 +213,16 @@ function CameraStreamCard({
       {hasStream && isOnline ? (
         <div className="absolute inset-0">
           <VideoStreamPlayer
+            cameraId={camera.id}
             streamUrl={camera.streamUrl!}
             protocol={camera.streamProtocol as any}
             cameraName={camera.name}
-            showControls={false}
-            showStats={false}
-            autoPlay
-            muted
           />
           
           {/* Zone Overlay */}
           {settings.enableZones && zones.length > 0 && (
             <ZoneOverlay
               zones={zones}
-              stats={zoneStats}
               showStats={false}
               showLabels
             />

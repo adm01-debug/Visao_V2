@@ -110,22 +110,22 @@ import { toast } from 'sonner';
 type ViewMode = 'grid-1x1' | 'grid-2x2' | 'grid-3x3' | 'grid-4x4' | 'list';
 type CameraStatus = 'online' | 'offline' | 'alert' | 'warning';
 
+// Tipo alinhado com o schema do banco de dados
 interface CameraData {
   id: string;
   name: string;
-  location?: string;
+  location: string;
   status: CameraStatus;
-  stream_url?: string;
-  stream_protocol?: string;
-  thumbnail?: string;
-  detected_people?: number;
-  alerts_count?: number;
-  latitude?: number;
-  longitude?: number;
-  last_activity?: string;
+  stream_url: string | null;
+  thumbnail: string | null;
+  detected_people: number | null;
+  alerts_count: number | null;
+  latitude: number | null;
+  longitude: number | null;
+  last_activity: string | null;
   created_at: string;
   updated_at: string;
-  user_id?: string;
+  user_id: string | null;
 }
 
 interface CameraStats {
@@ -182,31 +182,25 @@ function CameraCard({
         {isOnline && camera.stream_url ? (
           <>
             <VideoStreamPlayer
+              cameraId={camera.id}
               streamUrl={camera.stream_url}
-              protocol={camera.stream_protocol || 'hls'}
+              protocol="hls"
               cameraName={camera.name}
-              showControls={false}
-              autoPlay={isPlaying}
-              muted={isMuted}
             />
             
             {/* Overlays */}
             {showOverlays && (
               <>
-                {camera.zones_enabled && (
-                  <ZoneOverlay 
-                    zones={[]} // TODO: carregar zonas da câmera
-                    showLabels={!isCompact}
-                    showStats={!isCompact}
-                  />
-                )}
-                {camera.face_recognition_enabled && (
-                  <FaceRecognitionOverlay 
-                    faces={[]} // TODO: carregar faces detectadas
-                    showLabels={!isCompact}
-                    showSimilarity={!isCompact}
-                  />
-                )}
+                <ZoneOverlay 
+                  zones={[]}
+                  showLabels={!isCompact}
+                  showStats={!isCompact}
+                />
+                <FaceRecognitionOverlay 
+                  faces={[]}
+                  showLabels={!isCompact}
+                  showSimilarity={!isCompact}
+                />
               </>
             )}
           </>
@@ -228,12 +222,12 @@ function CameraCard({
             variant={isOnline ? 'default' : 'secondary'}
             className={cn(
               'text-xs',
-              camera.status === 'recording' && 'bg-red-500 animate-pulse'
+              camera.status === 'alert' && 'bg-red-500 animate-pulse'
             )}
           >
             {isOnline ? (
-              camera.status === 'recording' ? (
-                <><Circle className="w-2 h-2 mr-1 fill-current" /> REC</>
+              camera.status === 'alert' ? (
+                <><Circle className="w-2 h-2 mr-1 fill-current" /> ALERTA</>
               ) : (
                 <><Wifi className="w-3 h-3 mr-1" /> Online</>
               )
@@ -241,12 +235,6 @@ function CameraCard({
               <><WifiOff className="w-3 h-3 mr-1" /> Offline</>
             )}
           </Badge>
-          
-          {camera.analysis_enabled && (
-            <Badge variant="outline" className="text-xs bg-background/80">
-              <Brain className="w-3 h-3" />
-            </Badge>
-          )}
         </div>
 
         {/* Controls Overlay */}
@@ -355,10 +343,10 @@ function CameraCard({
                   {stats.peopleDetected}
                 </span>
               )}
-              {camera.last_seen_at && (
+              {camera.last_activity && (
                 <span className="flex items-center gap-1">
                   <Clock className="w-3 h-3" />
-                  {formatDistanceToNow(new Date(camera.last_seen_at), { 
+                  {formatDistanceToNow(new Date(camera.last_activity), { 
                     addSuffix: true, 
                     locale: ptBR 
                   })}
@@ -447,12 +435,10 @@ function CameraDetailView({
               {camera.stream_url ? (
                 <>
                   <VideoStreamPlayer
+                    cameraId={camera.id}
                     streamUrl={camera.stream_url}
-                    protocol={camera.stream_protocol || 'hls'}
+                    protocol="hls"
                     cameraName={camera.name}
-                    showControls
-                    autoPlay
-                    muted={isMuted}
                     className="w-full h-full"
                   />
                   
@@ -568,15 +554,15 @@ function CameraDetailView({
                     <CardContent className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Resolução</span>
-                        <span>{camera.resolution || '1920x1080'}</span>
+                        <span>1920x1080</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">FPS</span>
-                        <span>{camera.fps || 30}</span>
+                        <span>30</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Protocolo</span>
-                        <span className="uppercase">{camera.stream_protocol || 'HLS'}</span>
+                        <span className="uppercase">HLS</span>
                       </div>
                     </CardContent>
                   </Card>
@@ -622,19 +608,19 @@ function CameraDetailView({
                     <CardContent className="space-y-3">
                       <div className="flex items-center justify-between">
                         <Label className="text-sm">Análise de IA</Label>
-                        <Switch defaultChecked={camera.analysis_enabled} />
+                        <Switch defaultChecked={false} />
                       </div>
                       <div className="flex items-center justify-between">
                         <Label className="text-sm">Reconhecimento Facial</Label>
-                        <Switch defaultChecked={camera.face_recognition_enabled} />
+                        <Switch defaultChecked={false} />
                       </div>
                       <div className="flex items-center justify-between">
                         <Label className="text-sm">Zonas de Interesse</Label>
-                        <Switch defaultChecked={camera.zones_enabled} />
+                        <Switch defaultChecked={false} />
                       </div>
                       <div className="flex items-center justify-between">
                         <Label className="text-sm">Áudio</Label>
-                        <Switch defaultChecked={camera.audio_enabled} />
+                        <Switch defaultChecked={false} />
                       </div>
                     </CardContent>
                   </Card>
@@ -685,7 +671,7 @@ export function CamerasPage() {
   const stats = useMemo(() => ({
     total: cameras.length,
     online: cameras.filter(c => c.status !== 'offline').length,
-    recording: cameras.filter(c => c.status === 'recording').length,
+    alert: cameras.filter(c => c.status === 'alert').length,
     offline: cameras.filter(c => c.status === 'offline').length,
   }), [cameras]);
 
@@ -739,7 +725,7 @@ export function CamerasPage() {
           </h1>
           <p className="text-sm text-muted-foreground">
             {stats.online} de {stats.total} online
-            {stats.recording > 0 && ` • ${stats.recording} gravando`}
+            {stats.alert > 0 && ` • ${stats.alert} em alerta`}
           </p>
         </div>
 
