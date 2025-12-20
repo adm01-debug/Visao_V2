@@ -1,24 +1,24 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
- * Hook: useMLModels (Simulação)
+ * Hook: useMLModels (IMPLEMENTAÇÃO REAL)
  * 
- * Simulação de detecção de objetos - implementação real requer TensorFlow.js
+ * Gerenciamento de modelos TensorFlow.js:
+ * - COCO-SSD para detecção de objetos
+ * - MoveNet para detecção de poses
+ * - Carregamento lazy e caching
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import * as tf from '@tensorflow/tfjs';
+import * as cocoSsd from '@tensorflow-models/coco-ssd';
+import * as poseDetection from '@tensorflow-models/pose-detection';
 import { toast } from 'sonner';
 
 // ============================================
 // TIPOS
 // ============================================
 
-export type ModelType = 
-  | 'coco-ssd'
-  | 'movenet'
-  | 'blazeface'
-  | 'handpose'
-  | 'custom';
-
+export type ModelType = 'coco-ssd' | 'movenet' | 'blazeface';
 export type BackendType = 'webgl' | 'wasm' | 'cpu';
 
 export interface ModelInfo {
@@ -29,7 +29,6 @@ export interface ModelInfo {
   error: string | null;
   loadTime?: number;
   inferenceTime?: number;
-  size?: number;
 }
 
 export interface DetectedObject {
@@ -50,16 +49,6 @@ export interface DetectedPose {
   score: number;
 }
 
-export interface InferenceResult {
-  modelType: ModelType;
-  objects?: DetectedObject[];
-  poses?: DetectedPose[];
-  faces?: DetectedObject[];
-  custom?: unknown;
-  inferenceTime: number;
-  timestamp: Date;
-}
-
 export interface MLModelsConfig {
   backend: BackendType;
   maxDetections: number;
@@ -69,22 +58,113 @@ export interface MLModelsConfig {
 }
 
 // ============================================
-// CONSTANTES
+// CONFIGURAÇÃO
 // ============================================
 
 const DEFAULT_CONFIG: MLModelsConfig = {
   backend: 'webgl',
   maxDetections: 20,
   minScore: 0.5,
-  warmupRuns: 3,
+  warmupRuns: 1,
   enableGPU: true,
 };
 
+// Classes de interesse
 const PERSON_CLASSES = ['person'];
 const VEHICLE_CLASSES = ['car', 'motorcycle', 'bus', 'truck', 'bicycle'];
 
 // ============================================
-// HOOK PRINCIPAL (SIMULAÇÃO)
+// SINGLETON PARA CACHE DE MODELOS
+// ============================================
+
+class ModelCache {
+  private static instance: ModelCache;
+  private cocoModel: cocoSsd.ObjectDetection | null = null;
+  private poseDetector: poseDetection.PoseDetector | null = null;
+  private backendReady = false;
+
+  static getInstance(): ModelCache {
+    if (!ModelCache.instance) {
+      ModelCache.instance = new ModelCache();
+    }
+    return ModelCache.instance;
+  }
+
+  async initBackend(preferGPU: boolean): Promise<string> {
+    if (this.backendReady) {
+      return tf.getBackend();
+    }
+
+    try {
+      // Tentar WebGL primeiro se GPU habilitada
+      if (preferGPU) {
+        await tf.setBackend('webgl');
+        await tf.ready();
+        this.backendReady = true;
+        console.log('[ML] TensorFlow.js usando WebGL');
+        return 'webgl';
+      }
+    } catch (e) {
+      console.warn('[ML] WebGL não disponível, tentando WASM');
+    }
+
+    try {
+      // Tentar WASM
+      await tf.setBackend('wasm');
+      await tf.ready();
+      this.backendReady = true;
+      console.log('[ML] TensorFlow.js usando WASM');
+      return 'wasm';
+    } catch (e) {
+      console.warn('[ML] WASM não disponível, usando CPU');
+    }
+
+    // Fallback para CPU
+    await tf.setBackend('cpu');
+    await tf.ready();
+    this.backendReady = true;
+    console.log('[ML] TensorFlow.js usando CPU');
+    return 'cpu';
+  }
+
+  async getCocoModel(): Promise<cocoSsd.ObjectDetection> {
+    if (!this.cocoModel) {
+      console.log('[ML] Carregando COCO-SSD...');
+      this.cocoModel = await cocoSsd.load({
+        base: 'lite_mobilenet_v2',
+      });
+      console.log('[ML] COCO-SSD carregado');
+    }
+    return this.cocoModel;
+  }
+
+  async getPoseDetector(): Promise<poseDetection.PoseDetector> {
+    if (!this.poseDetector) {
+      console.log('[ML] Carregando MoveNet...');
+      this.poseDetector = await poseDetection.createDetector(
+        poseDetection.SupportedModels.MoveNet,
+        {
+          modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
+          enableSmoothing: true,
+        }
+      );
+      console.log('[ML] MoveNet carregado');
+    }
+    return this.poseDetector;
+  }
+
+  disposeAll(): void {
+    if (this.poseDetector) {
+      this.poseDetector.dispose();
+      this.poseDetector = null;
+    }
+    this.cocoModel = null;
+    console.log('[ML] Modelos descarregados');
+  }
+}
+
+// ============================================
+// HOOK PRINCIPAL
 // ============================================
 
 interface UseMLModelsOptions {
@@ -99,18 +179,14 @@ interface UseMLModelsReturn {
   modelsInfo: Map<ModelType, ModelInfo>;
   isLoading: boolean;
   isReady: boolean;
-  backend: BackendType;
+  backend: string;
   loadModel: (model: ModelType) => Promise<boolean>;
   loadAllModels: () => Promise<void>;
-  unloadModel: (model: ModelType) => void;
+  unloadAll: () => void;
   detectObjects: (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => Promise<DetectedObject[]>;
   detectPoses: (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => Promise<DetectedPose[]>;
   detectPersons: (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => Promise<DetectedObject[]>;
   detectVehicles: (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => Promise<DetectedObject[]>;
-  runInference: (modelType: ModelType, input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => Promise<InferenceResult>;
-  warmup: (model: ModelType) => Promise<void>;
-  getModelStats: (model: ModelType) => ModelInfo | undefined;
-  setBackend: (backend: BackendType) => Promise<void>;
   config: MLModelsConfig;
   updateConfig: (updates: Partial<MLModelsConfig>) => void;
 }
@@ -121,6 +197,7 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
     config: initialConfig,
     autoLoad = false,
     onModelLoaded,
+    onError,
   } = options;
 
   const [config, setConfig] = useState<MLModelsConfig>({
@@ -129,8 +206,10 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
   });
 
   const [modelsInfo, setModelsInfo] = useState<Map<ModelType, ModelInfo>>(new Map());
-  const [backend, setBackendState] = useState<BackendType>(config.backend);
+  const [backend, setBackend] = useState<string>('');
+  const cache = useRef(ModelCache.getInstance());
 
+  // Atualizar info do modelo
   const updateModelInfo = useCallback((type: ModelType, updates: Partial<ModelInfo>) => {
     setModelsInfo(prev => {
       const next = new Map(prev);
@@ -146,95 +225,159 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
     });
   }, []);
 
-  // Simulação de carregamento
+  // Inicializar backend
+  useEffect(() => {
+    const init = async () => {
+      const activeBackend = await cache.current.initBackend(config.enableGPU);
+      setBackend(activeBackend);
+    };
+    init();
+  }, [config.enableGPU]);
+
+  // Carregar modelo COCO-SSD
+  const loadCocoSsd = useCallback(async (): Promise<boolean> => {
+    updateModelInfo('coco-ssd', { loading: true, error: null });
+    const startTime = performance.now();
+
+    try {
+      await cache.current.getCocoModel();
+      const loadTime = performance.now() - startTime;
+
+      updateModelInfo('coco-ssd', {
+        loaded: true,
+        loading: false,
+        loadTime,
+        name: 'COCO-SSD (MobileNet v2)',
+      });
+
+      onModelLoaded?.('coco-ssd');
+      return true;
+    } catch (err: any) {
+      updateModelInfo('coco-ssd', {
+        loading: false,
+        error: err.message,
+      });
+      onError?.(err, 'coco-ssd');
+      return false;
+    }
+  }, [updateModelInfo, onModelLoaded, onError]);
+
+  // Carregar modelo MoveNet
+  const loadMoveNet = useCallback(async (): Promise<boolean> => {
+    updateModelInfo('movenet', { loading: true, error: null });
+    const startTime = performance.now();
+
+    try {
+      await cache.current.getPoseDetector();
+      const loadTime = performance.now() - startTime;
+
+      updateModelInfo('movenet', {
+        loaded: true,
+        loading: false,
+        loadTime,
+        name: 'MoveNet (SinglePose Lightning)',
+      });
+
+      onModelLoaded?.('movenet');
+      return true;
+    } catch (err: any) {
+      updateModelInfo('movenet', {
+        loading: false,
+        error: err.message,
+      });
+      onError?.(err, 'movenet');
+      return false;
+    }
+  }, [updateModelInfo, onModelLoaded, onError]);
+
+  // Carregar modelo por tipo
   const loadModel = useCallback(async (model: ModelType): Promise<boolean> => {
-    updateModelInfo(model, { loading: true, error: null });
-    
-    // Simula tempo de carregamento
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    updateModelInfo(model, {
-      loaded: true,
-      loading: false,
-      loadTime: 500,
-      name: model === 'coco-ssd' ? 'COCO-SSD (Simulado)' : model,
-    });
+    switch (model) {
+      case 'coco-ssd':
+        return loadCocoSsd();
+      case 'movenet':
+        return loadMoveNet();
+      default:
+        console.warn(`[ML] Modelo ${model} não suportado`);
+        return false;
+    }
+  }, [loadCocoSsd, loadMoveNet]);
 
-    onModelLoaded?.(model);
-    return true;
-  }, [updateModelInfo, onModelLoaded]);
-
+  // Carregar todos os modelos
   const loadAllModels = useCallback(async () => {
     for (const model of requestedModels) {
       await loadModel(model);
     }
   }, [requestedModels, loadModel]);
 
+  // Auto-load
   useEffect(() => {
-    if (autoLoad) {
+    if (autoLoad && backend) {
       loadAllModels();
     }
-  }, [autoLoad, loadAllModels]);
+  }, [autoLoad, backend, loadAllModels]);
 
-  const unloadModel = useCallback((model: ModelType) => {
-    updateModelInfo(model, { loaded: false, loading: false });
-  }, [updateModelInfo]);
+  // Descarregar modelos
+  const unloadAll = useCallback(() => {
+    cache.current.disposeAll();
+    setModelsInfo(new Map());
+  }, []);
 
-  // Detecção simulada de objetos
+  // Detectar objetos
   const detectObjects = useCallback(async (
-    _input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
+    input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
   ): Promise<DetectedObject[]> => {
-    const startTime = performance.now();
-    
-    // Simula detecções aleatórias
-    const objects: DetectedObject[] = [];
-    const numDetections = Math.floor(Math.random() * 4);
-    
-    const classes = ['person', 'car', 'dog', 'chair', 'laptop'];
-    
-    for (let i = 0; i < numDetections; i++) {
-      objects.push({
-        class: classes[Math.floor(Math.random() * classes.length)],
-        score: 0.5 + Math.random() * 0.5,
-        bbox: [
-          Math.random() * 400,
-          Math.random() * 300,
-          50 + Math.random() * 100,
-          80 + Math.random() * 120,
-        ],
-      });
+    try {
+      const model = await cache.current.getCocoModel();
+      const startTime = performance.now();
+
+      const predictions = await model.detect(input, config.maxDetections);
+      const inferenceTime = performance.now() - startTime;
+
+      updateModelInfo('coco-ssd', { inferenceTime });
+
+      return predictions
+        .filter(p => p.score >= config.minScore)
+        .map(p => ({
+          class: p.class,
+          score: p.score,
+          bbox: p.bbox as [number, number, number, number],
+        }));
+    } catch (err) {
+      console.error('[ML] Erro na detecção:', err);
+      return [];
     }
+  }, [config.maxDetections, config.minScore, updateModelInfo]);
 
-    updateModelInfo('coco-ssd', { inferenceTime: performance.now() - startTime });
-    return objects.filter(o => o.score >= config.minScore);
-  }, [config.minScore, updateModelInfo]);
-
-  // Detecção simulada de poses
+  // Detectar poses
   const detectPoses = useCallback(async (
-    _input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
+    input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
   ): Promise<DetectedPose[]> => {
-    const startTime = performance.now();
-    
-    const poses: DetectedPose[] = [];
-    
-    if (Math.random() > 0.5) {
-      const keypoints: PoseKeypoint[] = [
-        { x: 200, y: 100, score: 0.9, name: 'nose' },
-        { x: 190, y: 90, score: 0.85, name: 'left_eye' },
-        { x: 210, y: 90, score: 0.85, name: 'right_eye' },
-        { x: 200, y: 200, score: 0.8, name: 'chest' },
-      ];
-      
-      poses.push({
-        keypoints,
-        score: 0.85,
-      });
-    }
+    try {
+      const detector = await cache.current.getPoseDetector();
+      const startTime = performance.now();
 
-    updateModelInfo('movenet', { inferenceTime: performance.now() - startTime });
-    return poses;
+      const poses = await detector.estimatePoses(input);
+      const inferenceTime = performance.now() - startTime;
+
+      updateModelInfo('movenet', { inferenceTime });
+
+      return poses.map(pose => ({
+        keypoints: pose.keypoints.map(kp => ({
+          x: kp.x,
+          y: kp.y,
+          score: kp.score || 0,
+          name: kp.name || '',
+        })),
+        score: pose.score || 0,
+      }));
+    } catch (err) {
+      console.error('[ML] Erro na detecção de poses:', err);
+      return [];
+    }
   }, [updateModelInfo]);
 
+  // Detectar apenas pessoas
   const detectPersons = useCallback(async (
     input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
   ): Promise<DetectedObject[]> => {
@@ -242,6 +385,7 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
     return objects.filter(obj => PERSON_CLASSES.includes(obj.class));
   }, [detectObjects]);
 
+  // Detectar apenas veículos
   const detectVehicles = useCallback(async (
     input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
   ): Promise<DetectedObject[]> => {
@@ -249,47 +393,12 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
     return objects.filter(obj => VEHICLE_CLASSES.includes(obj.class));
   }, [detectObjects]);
 
-  const runInference = useCallback(async (
-    modelType: ModelType,
-    input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
-  ): Promise<InferenceResult> => {
-    const startTime = performance.now();
-    const result: InferenceResult = {
-      modelType,
-      inferenceTime: 0,
-      timestamp: new Date(),
-    };
-
-    switch (modelType) {
-      case 'coco-ssd':
-        result.objects = await detectObjects(input);
-        break;
-      case 'movenet':
-        result.poses = await detectPoses(input);
-        break;
-    }
-
-    result.inferenceTime = performance.now() - startTime;
-    return result;
-  }, [detectObjects, detectPoses]);
-
-  const warmup = useCallback(async (_model: ModelType) => {
-    console.log('[ML] Warmup simulado concluído');
-  }, []);
-
-  const getModelStats = useCallback((model: ModelType): ModelInfo | undefined => {
-    return modelsInfo.get(model);
-  }, [modelsInfo]);
-
-  const setBackend = useCallback(async (newBackend: BackendType) => {
-    setBackendState(newBackend);
-    toast.success(`Backend alterado para ${newBackend} (simulado)`);
-  }, []);
-
+  // Atualizar config
   const updateConfig = useCallback((updates: Partial<MLModelsConfig>) => {
     setConfig(prev => ({ ...prev, ...updates }));
   }, []);
 
+  // Estado
   const isLoading = Array.from(modelsInfo.values()).some(m => m.loading);
   const isReady = requestedModels.every(m => modelsInfo.get(m)?.loaded);
 
@@ -300,77 +409,69 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
     backend,
     loadModel,
     loadAllModels,
-    unloadModel,
+    unloadAll,
     detectObjects,
     detectPoses,
     detectPersons,
     detectVehicles,
-    runInference,
-    warmup,
-    getModelStats,
-    setBackend,
     config,
     updateConfig,
   };
 }
 
 // ============================================
-// HOOK PARA ANÁLISE CONTÍNUA (SIMULAÇÃO)
+// HOOK PARA DETECÇÃO CONTÍNUA
 // ============================================
 
 interface UseContinuousDetectionOptions {
   videoElement?: HTMLVideoElement | null;
   enabled?: boolean;
   interval?: number;
-  models?: ModelType[];
-  onDetection?: (result: InferenceResult) => void;
+  onDetection?: (objects: DetectedObject[], poses: DetectedPose[]) => void;
 }
 
 export function useContinuousDetection(options: UseContinuousDetectionOptions) {
-  const {
-    videoElement,
-    enabled = false,
-    interval = 1000,
-    models = ['coco-ssd'],
-    onDetection,
-  } = options;
+  const { videoElement, enabled = false, interval = 500, onDetection } = options;
 
-  const [isRunning, setIsRunning] = useState(false);
-  const [lastResult, setLastResult] = useState<InferenceResult | null>(null);
-
-  const { runInference, loadModel, isReady } = useMLModels({
-    models,
+  const { detectObjects, detectPoses, isReady, loadAllModels } = useMLModels({
+    models: ['coco-ssd', 'movenet'],
     autoLoad: enabled,
   });
 
+  const [isRunning, setIsRunning] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const runDetection = useCallback(async () => {
+    if (!videoElement || !isReady) return;
+
+    const [objects, poses] = await Promise.all([
+      detectObjects(videoElement),
+      detectPoses(videoElement),
+    ]);
+
+    onDetection?.(objects, poses);
+  }, [videoElement, isReady, detectObjects, detectPoses, onDetection]);
+
   useEffect(() => {
-    if (!enabled || !videoElement || !isReady) {
+    if (enabled && isReady && videoElement) {
+      setIsRunning(true);
+      intervalRef.current = setInterval(runDetection, interval);
+    } else {
       setIsRunning(false);
-      return;
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     }
 
-    setIsRunning(true);
-
-    const intervalId = setInterval(async () => {
-      for (const model of models) {
-        const result = await runInference(model, videoElement);
-        setLastResult(result);
-        onDetection?.(result);
-      }
-    }, interval);
-
     return () => {
-      clearInterval(intervalId);
-      setIsRunning(false);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
     };
-  }, [enabled, videoElement, isReady, interval, models, runInference, onDetection]);
+  }, [enabled, isReady, videoElement, interval, runDetection]);
 
-  return {
-    isRunning,
-    lastResult,
-    loadModel,
-    isReady,
-  };
+  return { isRunning, isReady };
 }
 
 export default useMLModels;
