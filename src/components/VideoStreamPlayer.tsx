@@ -53,6 +53,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useVideoStream } from '@/hooks/useVideoStream';
+import { useMLModels } from '@/hooks/useMLModels';
 import {
   StreamConfig,
   StreamQuality,
@@ -378,6 +379,25 @@ export function VideoStreamPlayer({
 
   // Hora atual
   const [currentTime, setCurrentTime] = useState('');
+
+  // Hook de detecção ML para objetos em tempo real
+  const {
+    loadModel,
+    detectObjects,
+    isLoading: isMLLoading,
+    isModelLoaded,
+    detectedObjects,
+  } = useMLModels();
+
+  // Estado para habilitar/desabilitar detecção ML no player
+  const [enableMLOverlay, setEnableMLOverlay] = useState(false);
+
+  // Carregar modelo ML quando overlay for habilitado
+  useEffect(() => {
+    if (enableMLOverlay && !isModelLoaded && !isMLLoading) {
+      loadModel("coco-ssd").catch(console.error);
+    }
+  }, [enableMLOverlay, isModelLoaded, isMLLoading, loadModel]);
   useEffect(() => {
     const updateTime = () => {
       setCurrentTime(new Date().toLocaleTimeString('pt-BR'));
@@ -727,3 +747,4 @@ export function VideoStreamPlayer({
 }
 
 export default VideoStreamPlayer;
+
