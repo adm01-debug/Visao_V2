@@ -30,6 +30,7 @@ import {
   Info
 } from 'lucide-react';
 import { useI18n } from '@/contexts/i18n';
+import { useNotificationFlow } from '@/hooks/useNotificationFlow';
 
 interface NotificationConfig {
   id: string;
@@ -72,6 +73,8 @@ const CHANNEL_OPTIONS = [
 ];
 
 export default function NotificationSettingsPage() {
+  const { sendNotification, logs, config, updateConfig } = useNotificationFlow();
+
   const { t } = useI18n();
 
   const navigate = useNavigate();
