@@ -837,7 +837,7 @@ export function CamerasPage() {
       {filteredCameras.length === 0 ? (
         <div className="text-center py-12">
           <Camera className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium mb-2"{t('cameras.noCamerasFound', 'Nenhuma câmera encontrada')}</h3>
+          <h3 className="text-lg font-medium mb-2"{t('cameras.noCameraFound', 'Nenhuma câmera encontrada')}</h3>
           <p className="text-sm text-muted-foreground mb-4">
             {cameras.length === 0 
               ? 'Adicione sua primeira câmera'
@@ -879,7 +879,7 @@ export function CamerasPage() {
       <Sheet open={!!settingsCamera} onOpenChange={() => setSettingsCamera(null)}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle{t('cameras.cameraSettings', 'Configurações da Câmera')}</SheetTitle>
+            <SheetTitle{t('cameras.settings', 'Configurações da Câmera')}</SheetTitle>
             <SheetDescription>{settingsCamera?.name}</SheetDescription>
           </SheetHeader>
           {/* TODO: Formulário de configurações */}
