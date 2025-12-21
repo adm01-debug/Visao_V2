@@ -11,6 +11,7 @@
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useI18n } from '@/contexts/i18n';
 import {
   Target,
   Plus,
@@ -872,6 +873,7 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
 // ============================================
 
 export function ZonesPage() {
+  const { t } = useI18n();
   const { user } = useAuth();
   const { cameras } = useCameras();
   
@@ -1088,17 +1090,17 @@ export function ZonesPage() {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Target className="w-6 h-6" />
-            Zonas de Interesse
+            {t('zones.title', 'Zonas de Interesse')}
           </h1>
           <p className="text-sm text-muted-foreground">
-            {stats.total} zonas • {stats.active} ativas
+            {stats.total} {t('zones.zones', 'zonas')} • {stats.active} {t('zones.active', 'ativas')}
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={loadZones}>
             <RefreshCw className="w-4 h-4 mr-2" />
-            Atualizar
+            {t('common.refresh', 'Atualizar')}
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -1340,3 +1342,4 @@ export function ZonesPage() {
 }
 
 export default ZonesPage;
+
