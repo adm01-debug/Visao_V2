@@ -37,6 +37,38 @@ export interface PluralRules {
 
 const translations: Record<SupportedLocale, Record<string, any>> = {
   'pt-BR': {
+
+    // Mapa de Calor
+    heatmap: {
+      pageTitle: 'Mapa de Calor',
+      pageDescription: 'Ver mapas de calor de movimiento por zona y cámara',
+      title: 'Mapa de Calor',
+      subtitle: 'Visualización de movimiento por zona',
+      lastHour: 'Última hora',
+      last6h: 'Últimas 6 horas',
+      last24h: 'Últimas 24 horas',
+      last7days: 'Últimos 7 días',
+      last30days: 'Últimos 30 días',
+      selectCamera: 'Seleccione una cámara',
+      allCameras: 'Todas las cámaras',
+      stats: 'Estadísticas',
+      period: 'Período',
+      intensity: 'Intensidad',
+      totalPoints: 'Total de puntos',
+      maxIntensity: 'Intensidad máxima',
+      peakHour: 'Hora pico',
+      averageActivity: 'Actividad promedio',
+      colorScheme: 'Esquema de colores',
+      thermal: 'Térmico',
+      viridis: 'Viridis',
+      grayscale: 'Escala de grises',
+      noData: 'Sin datos para el período seleccionado',
+      loadingData: 'Cargando datos del mapa de calor...',
+      gridView: 'Vista en Cuadrícula',
+      timelineView: 'Vista de Línea de Tiempo',
+    },
+
+
     // Navegação
     nav: {
       dashboard: 'Dashboard',
@@ -1069,3 +1101,4 @@ export function useI18n() {
 
 export { translations };
 export default useI18n;
+
