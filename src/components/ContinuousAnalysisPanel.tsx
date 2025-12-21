@@ -64,6 +64,7 @@ import {
   defaultAlertThresholds,
 } from '@/types/continuousAnalysis';
 import { AnalysisType, AnalysisResult } from '@/hooks/useImageAnalysis';
+import { useMLModels } from '@/hooks/useMLModels';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -250,7 +251,29 @@ export function ContinuousAnalysisPanel({
   const [minPPECompliance, setMinPPECompliance] = useState(90);
   const [minConfidence, setMinConfidence] = useState(0.7);
 
+  // Hook de detecção ML para objetos em tempo real
+  const {
+    loadModel,
+    detectObjects,
+    isLoading: isMLLoading,
+    isModelLoaded,
+    detectedObjects,
+    error: mlError,
+  } = useMLModels();
+
+  // Estado para habilitar/desabilitar detecção ML local
+  const [enableMLDetection, setEnableMLDetection] = useState(true);
+
   // Sincronizar com sessão ativa
+  // Carregar modelo ML quando componente montar
+  useEffect(() => {
+    if (enableMLDetection && !isModelLoaded && !isMLLoading) {
+      loadModel("coco-ssd").catch(err => {
+        console.error("Erro ao carregar modelo ML:", err);
+      });
+    }
+  }, [enableMLDetection, isModelLoaded, isMLLoading, loadModel]);
+
   useEffect(() => {
     if (session?.config) {
       setInterval(session.config.interval);
@@ -581,3 +604,4 @@ export function ContinuousAnalysisPanel({
 }
 
 export default ContinuousAnalysisPanel;
+
