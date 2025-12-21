@@ -29,6 +29,7 @@ import {
   AlertCircle,
   Info
 } from 'lucide-react';
+import { useI18n } from '@/contexts/i18n';
 
 interface NotificationConfig {
   id: string;
@@ -71,6 +72,8 @@ const CHANNEL_OPTIONS = [
 ];
 
 export default function NotificationSettingsPage() {
+  const { t } = useI18n();
+
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
