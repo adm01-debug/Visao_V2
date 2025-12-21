@@ -44,6 +44,7 @@ import {
   Server,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useI18n } from '@/contexts/i18n';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -202,6 +203,7 @@ function SettingRow({ label, description, children }: SettingRowProps) {
 // ============================================
 
 export function SettingsPage() {
+  const { t } = useI18n();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
@@ -526,7 +528,7 @@ export function SettingsPage() {
           </Button>
           <Button onClick={saveSettings} disabled={saving}>
             <Save className="w-4 h-4 mr-2" />
-            {saving ? 'Salvando...' : 'Salvar'}
+            {saving ? {t('settings.saving', 'Salvando...')} : {t('settings.save', 'Salvar')}}
           </Button>
         </div>
       </div>
@@ -1127,3 +1129,4 @@ export function SettingsPage() {
 }
 
 export default SettingsPage;
+
