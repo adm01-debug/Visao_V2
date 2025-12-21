@@ -142,6 +142,11 @@ const mainNavItems: NavItem[] = [
     icon: HardHat,
     path: '/ppe',
   },
+  {
+    label: 'Heatmap',
+    icon: Flame,
+    path: '/heatmap',
+  },
 ];
 
 const bottomNavItems: NavItem[] = [
@@ -423,3 +428,4 @@ export function Sidebar({ className }: SidebarProps) {
 }
 
 export default Sidebar;
+
