@@ -362,6 +362,31 @@ const translations: Record<SupportedLocale, Record<string, any>> = {
     },
 
     // Configurações
+
+    // EPIs
+    ppe: {
+      title: 'EPIs',
+      subtitle: 'Gerenciamento de Equipamentos de Proteção Individual',
+      zones: 'Zonas PPE',
+      violations: 'Violações',
+      realtime: 'Tempo Real',
+      helmet: 'Capacete',
+      vest: 'Colete',
+      goggles: 'Óculos',
+      mask: 'Máscara',
+      gloves: 'Luvas',
+      boots: 'Botas',
+      earmuffs: 'Protetor Auricular',
+      harness: 'Cinto de Segurança',
+      compliant: 'Em Conformidade',
+      violation: 'Violação',
+      complianceRate: 'Taxa de Conformidade',
+      noViolations: 'Nenhuma violação detectada',
+      zoneConfig: 'Configuração de Zona',
+      requiredPpe: 'EPIs Obrigatórios',
+      gracePeriod: 'Período de Tolerância',
+    },
+
     settings: {
       title: 'Configurações',
       subtitle: 'Configure o sistema de acordo com suas necessidades',
@@ -723,6 +748,31 @@ const translations: Record<SupportedLocale, Record<string, any>> = {
     },
 
     // Settings
+
+    // PPE
+    ppe: {
+      title: 'PPE',
+      subtitle: 'Personal Protective Equipment Management',
+      zones: 'PPE Zones',
+      violations: 'Violations',
+      realtime: 'Real-time',
+      helmet: 'Helmet',
+      vest: 'Safety Vest',
+      goggles: 'Safety Goggles',
+      mask: 'Face Mask',
+      gloves: 'Gloves',
+      boots: 'Safety Boots',
+      earmuffs: 'Ear Muffs',
+      harness: 'Safety Harness',
+      compliant: 'Compliant',
+      violation: 'Violation',
+      complianceRate: 'Compliance Rate',
+      noViolations: 'No violations detected',
+      zoneConfig: 'Zone Configuration',
+      requiredPpe: 'Required PPE',
+      gracePeriod: 'Grace Period',
+    },
+
     settings: {
       title: 'Settings',
       subtitle: 'Configure the system according to your needs',
@@ -929,6 +979,31 @@ const translations: Record<SupportedLocale, Record<string, any>> = {
         one: '{{count}} cámara',
         other: '{{count}} cámaras',
       },
+
+    // EPIs
+    ppe: {
+      title: 'EPIs',
+      subtitle: 'Gestión de Equipos de Protección Individual',
+      zones: 'Zonas EPI',
+      violations: 'Violaciones',
+      realtime: 'Tiempo Real',
+      helmet: 'Casco',
+      vest: 'Chaleco',
+      goggles: 'Gafas',
+      mask: 'Mascarilla',
+      gloves: 'Guantes',
+      boots: 'Botas',
+      earmuffs: 'Protector Auditivo',
+      harness: 'Arnés de Seguridad',
+      compliant: 'Conforme',
+      violation: 'Violación',
+      complianceRate: 'Tasa de Conformidad',
+      noViolations: 'No se detectaron violaciones',
+      zoneConfig: 'Configuración de Zona',
+      requiredPpe: 'EPIs Requeridos',
+      gracePeriod: 'Período de Gracia',
+    },
+
       alert: {
         one: '{{count}} alerta',
         other: '{{count}} alertas',
