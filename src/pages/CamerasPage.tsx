@@ -11,6 +11,7 @@
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useI18n } from '@/contexts/i18n';
 import {
   Camera,
   Grid3X3,
@@ -639,6 +640,9 @@ function CameraDetailView({
 // ============================================
 
 export function CamerasPage() {
+  // i18n
+  const { t } = useI18n();
+  
   // Estado
   const [viewMode, setViewMode] = useState<ViewMode>('grid-2x2');
   const [searchQuery, setSearchQuery] = useState('');
@@ -721,22 +725,22 @@ export function CamerasPage() {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Camera className="w-6 h-6" />
-            Câmeras
+            {t('cameras.title', 'Câmeras')}
           </h1>
           <p className="text-sm text-muted-foreground">
-            {stats.online} de {stats.total} online
-            {stats.alert > 0 && ` • ${stats.alert} em alerta`}
+            {stats.online} {t('cameras.of', 'de')} {stats.total} {t('cameras.online', 'online')}
+            {stats.alert > 0 && ` • ${stats.alert} ${t('cameras.inAlert', 'em alerta')}`}
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => refetch()}>
             <RefreshCw className="w-4 h-4 mr-2" />
-            Atualizar
+            {t('common.refresh', 'Atualizar')}
           </Button>
           <Button>
             <Plus className="w-4 h-4 mr-2" />
-            Adicionar
+            {t('common.add', 'Adicionar')}
           </Button>
         </div>
       </div>
@@ -746,7 +750,7 @@ export function CamerasPage() {
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder="Buscar câmeras..."
+            placeholder={t('cameras.searchPlaceholder', 'Buscar câmeras...')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
@@ -886,3 +890,4 @@ export function CamerasPage() {
 }
 
 export default CamerasPage;
+
