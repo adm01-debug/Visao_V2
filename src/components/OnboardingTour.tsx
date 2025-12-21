@@ -39,6 +39,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useOnboardingTour, TourStep } from '@/hooks/useOnboardingTour';
+import { TourHighlight } from '@/components/TourHighlight';
 
 // ============================================
 // CONFIGURAÇÃO DOS PASSOS DO TOUR
