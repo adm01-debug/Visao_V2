@@ -15,6 +15,7 @@ import { useRules } from '@/hooks/useRules';
 import { DbCamera } from '@/hooks/useCameras';
 import { useVideoStream } from '@/hooks/useVideoStream';
 import { useMLModels } from '@/hooks/useMLModels';
+import { usePPEDetection } from '@/hooks/usePPEDetection';
 import { 
   AnalysisResult, 
   SecurityAnalysis,
@@ -305,6 +306,19 @@ export function CameraWithContinuousAnalysis({
     onModelLoaded: (model) => console.log(`[ML] ${model} carregado para ${camera.name}`),
   });
 
+
+  // Hook de detecção de EPI (PPE)
+  const {
+    detectPPE,
+    isDetecting: isPPEDetecting,
+    lastDetection: lastPPEDetection,
+    ppeStats,
+    violations: ppeViolations,
+  } = usePPEDetection({
+    enabled: analysisConfig.analysisTypes.includes("safety"),
+    minConfidence: analysisConfig.alertThresholds.minConfidence,
+    alertOnViolation: true,
+  });
   // URL do stream (usando URL de teste pois stream_url não existe no schema atual)
   const streamUrl = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
 
@@ -752,3 +766,4 @@ export function CameraWithContinuousAnalysis({
 }
 
 export default CameraWithContinuousAnalysis;
+
