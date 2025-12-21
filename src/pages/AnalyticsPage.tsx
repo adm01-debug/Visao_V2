@@ -168,7 +168,7 @@ function KPICard({ data, loading }: KPICardProps) {
           {isNeutral ? (
             <>
               <Minus className="w-3 h-3 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">Sem alteração</span>
+              <span className="text-xs text-muted-foreground"{t('analytics.noChange', 'Sem alteração')}</span>
             </>
           ) : (
             <>
@@ -284,7 +284,7 @@ function DonutChart({ data, size = 160 }: DonutChartProps) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-2xl font-bold">{total}</span>
-        <span className="text-xs text-muted-foreground">Total</span>
+        <span className="text-xs text-muted-foreground"{t('analytics.total', 'Total')}</span>
       </div>
     </div>
   );
@@ -650,8 +650,8 @@ export function AnalyticsPage() {
         {/* Main Chart */}
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle className="text-base">Tendência de Alertas</CardTitle>
-            <CardDescription>Alertas por dia no período selecionado</CardDescription>
+            <CardTitle className="text-base"{t('analytics.alertTrend', 'Tendência de Alertas')}</CardTitle>
+            <CardDescription{t('analytics.alertsByDayDesc', 'Alertas por dia no período selecionado')}</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -670,8 +670,8 @@ export function AnalyticsPage() {
         {/* Donut Chart */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Alertas por Tipo</CardTitle>
-            <CardDescription>Distribuição por categoria</CardDescription>
+            <CardTitle className="text-base"{t('analytics.alertsByType', 'Alertas por Tipo')}</CardTitle>
+            <CardDescription{t('analytics.categoryDistribution', 'Distribuição por categoria')}</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center">
             {loading ? (
@@ -702,8 +702,8 @@ export function AnalyticsPage() {
         {/* Camera Performance */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Performance por Câmera</CardTitle>
-            <CardDescription>Top 5 câmeras com mais atividade</CardDescription>
+            <CardTitle className="text-base"{t('analytics.cameraPerformance', 'Performance por Câmera')}</CardTitle>
+            <CardDescription{t('analytics.top5Cameras', 'Top 5 câmeras com mais atividade')}</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -715,7 +715,7 @@ export function AnalyticsPage() {
             ) : cameraPerformance.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <Camera className="w-10 h-10 mx-auto mb-2 opacity-50" />
-                <p className="text-sm">Nenhuma câmera encontrada</p>
+                <p className="text-sm"{t('analytics.noCamerasFound', 'Nenhuma câmera encontrada')}</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -748,8 +748,8 @@ export function AnalyticsPage() {
         {/* Hourly Distribution */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Distribuição por Hora</CardTitle>
-            <CardDescription>Concentração de alertas ao longo do dia</CardDescription>
+            <CardTitle className="text-base"{t('analytics.hourlyDistribution', 'Distribuição por Hora')}</CardTitle>
+            <CardDescription{t('analytics.alertConcentration', 'Concentração de alertas ao longo do dia')}</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -758,7 +758,7 @@ export function AnalyticsPage() {
               <>
                 <HourlyHeatmap data={hourlyData} />
                 <div className="flex items-center justify-between mt-4 text-xs text-muted-foreground">
-                  <span>Menor atividade</span>
+                  <span{t('analytics.leastActivity', 'Menor atividade')}</span>
                   <div className="flex items-center gap-1">
                     {[0.1, 0.3, 0.5, 0.7, 0.9].map((intensity, i) => (
                       <div
@@ -768,7 +768,7 @@ export function AnalyticsPage() {
                       />
                     ))}
                   </div>
-                  <span>Maior atividade</span>
+                  <span{t('analytics.mostActivity', 'Maior atividade')}</span>
                 </div>
               </>
             )}
@@ -779,7 +779,7 @@ export function AnalyticsPage() {
       {/* Quick Stats */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Resumo do Período</CardTitle>
+          <CardTitle className="text-base"{t('analytics.periodSummary', 'Resumo do Período')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
