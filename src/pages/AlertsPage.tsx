@@ -38,6 +38,7 @@ import {
 import { useAlerts } from '@/hooks/useAlerts';
 import { useCameras } from '@/hooks/useCameras';
 import { useRealtimeAlerts } from '@/hooks/useRealtimeAlerts';
+import { useI18n } from '@/contexts/i18n';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -404,6 +405,7 @@ export function AlertsPage() {
 
   // Hooks
   const { 
+  const { t } = useI18n();
     alerts, 
     loading, 
     unreadCount, 
@@ -663,7 +665,7 @@ export function AlertsPage() {
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder="Buscar alertas..."
+            placeholder={t("alerts.searchPlaceholder", "Buscar alertas...")}
             value={filters.search}
             onChange={(e) => setFilters(f => ({ ...f, search: e.target.value }))}
             className="pl-9"
@@ -677,7 +679,7 @@ export function AlertsPage() {
             onValueChange={(v) => setFilters(f => ({ ...f, severity: v }))}
           >
             <SelectTrigger className="w-32">
-              <SelectValue placeholder="Severidade" />
+              <SelectValue placeholder={t("alerts.filterSeverity", "Severidade")} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todas</SelectItem>
@@ -693,7 +695,7 @@ export function AlertsPage() {
             onValueChange={(v) => setFilters(f => ({ ...f, dateRange: v }))}
           >
             <SelectTrigger className="w-32">
-              <SelectValue placeholder="Período" />
+              <SelectValue placeholder={t("alerts.filterPeriod", "Período")} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos</SelectItem>
@@ -709,7 +711,7 @@ export function AlertsPage() {
             onValueChange={(v) => setSortBy(v as SortOption)}
           >
             <SelectTrigger className="w-36">
-              <SelectValue placeholder="Ordenar" />
+              <SelectValue placeholder={t("alerts.sortBy", "Ordenar")} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="date-desc">Mais recentes</SelectItem>
@@ -844,3 +846,4 @@ export function AlertsPage() {
 }
 
 export default AlertsPage;
+
