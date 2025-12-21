@@ -17,7 +17,6 @@ import { toast } from 'sonner';
 // Debug log condicional (apenas em desenvolvimento)
 const debugLog = (message: string, ...args: any[]) => {
   if (import.meta.env.DEV) {
-    console.log(message, ...args);
   }
 };
 
