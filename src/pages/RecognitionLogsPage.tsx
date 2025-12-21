@@ -31,10 +31,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ExportMenu } from '@/components/ExportMenu';
 import { PaginationControls } from '@/components/PaginationControls';
 import { exportToCSV, exportToPDF } from '@/lib/exportUtils';
+import { useI18n } from '@/contexts/i18n';
 
 const ITEMS_PER_PAGE = 20;
 
 export default function RecognitionLogsPage() {
+  const { t } = useI18n();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPerson, setSelectedPerson] = useState<string>('all');
   const [selectedCamera, setSelectedCamera] = useState<string>('all');
