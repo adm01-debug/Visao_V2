@@ -705,7 +705,7 @@ export function RecordingsPage() {
         {!loading && filteredClips.length === 0 && (
           <div className="text-center py-16">
             <Video className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
-            <h3 className="text-lg font-medium mb-1"{t('recordings.noRecordingsFound', 'Nenhuma gravação encontrada')}</h3>
+            <h3 className="text-lg font-medium mb-1"{t('recordings.noRecordings', 'Nenhuma gravação encontrada')}</h3>
             <p className="text-muted-foreground">
               Ajuste os filtros ou grave novos clips
             </p>
