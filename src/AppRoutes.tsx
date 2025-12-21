@@ -11,6 +11,8 @@ import { Loader2 } from 'lucide-react';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { KeyboardShortcutsHelp } from '@/components/KeyboardShortcutsHelp';
 
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+
 // Lazy loading das páginas
 const Dashboard = lazy(() => import('@/pages/Index'));
 const DashboardV2 = lazy(() => import('@/pages/DashboardV2'));
@@ -65,46 +67,46 @@ export function AppRoutes() {
         <Routes>
           {/* Dashboard */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={<DashboardV2 />} />
+          <Route path="/dashboard" element={<ProtectedRoute><DashboardV2 /></ProtectedRoute>} />
           <Route path="/dashboard/classic" element={<Dashboard />} />
           
           {/* Câmeras */}
-          <Route path="/cameras" element={<CamerasPage />} />
+          <Route path="/cameras" element={<ProtectedRoute><CamerasPage /></ProtectedRoute>} />
           <Route path="/cameras/:id" element={<CamerasPage />} />
           
           {/* Alertas */}
-          <Route path="/alerts" element={<AlertsPage />} />
+          <Route path="/alerts" element={<ProtectedRoute><AlertsPage /></ProtectedRoute>} />
           
           {/* Pessoas/Colaboradores */}
-          <Route path="/people" element={<PeoplePage />} />
+          <Route path="/people" element={<ProtectedRoute><PeoplePage /></ProtectedRoute>} />
           
           {/* Reconhecimento Facial */}
-          <Route path="/face-recognition" element={<FaceRecognitionPage />} />
-          <Route path="/recognition-logs" element={<RecognitionLogsPage />} />
-          <Route path="/recognition-analytics" element={<RecognitionAnalyticsPage />} />
+          <Route path="/face-recognition" element={<ProtectedRoute><FaceRecognitionPage /></ProtectedRoute>} />
+          <Route path="/recognition-logs" element={<ProtectedRoute><RecognitionLogsPage /></ProtectedRoute>} />
+          <Route path="/recognition-analytics" element={<ProtectedRoute><RecognitionAnalyticsPage /></ProtectedRoute>} />
           
           {/* Zonas */}
-          <Route path="/zones" element={<ZonesPage />} />
+          <Route path="/zones" element={<ProtectedRoute><ZonesPage /></ProtectedRoute>} />
           
           {/* Gravações */}
-          <Route path="/recordings" element={<RecordingsPage />} />
+          <Route path="/recordings" element={<ProtectedRoute><RecordingsPage /></ProtectedRoute>} />
           
           {/* Analytics */}
-          <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/analytics" element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
           
           {/* Segurança */}
-          <Route path="/security" element={<SecurityPage />} />
+          <Route path="/security" element={<ProtectedRoute><SecurityPage /></ProtectedRoute>} />
           
           {/* PPE - Equipamentos de Proteção */}
-          <Route path="/ppe" element={<PPEPage />} />
+          <Route path="/ppe" element={<ProtectedRoute><PPEPage /></ProtectedRoute>} />
           
           {/* Analytics Avançado */}
-          <Route path="/heatmap" element={<HeatmapPage />} />
-          <Route path="/license-plates" element={<LicensePlatePage />} />
-          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/heatmap" element={<ProtectedRoute><HeatmapPage /></ProtectedRoute>} />
+          <Route path="/license-plates" element={<ProtectedRoute><LicensePlatePage /></ProtectedRoute>} />
+          <Route path="/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
           
           {/* Configurações */}
-          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
           <Route path="/settings/notifications" element={<NotificationSettingsPage />} />
           <Route path="/settings/telegram" element={<TelegramSettingsPage />} />
           <Route path="/settings/streams" element={<StreamSettingsPage />} />
