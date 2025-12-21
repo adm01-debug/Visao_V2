@@ -86,6 +86,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
+import { useSettings } from '@/hooks/useSettings';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -203,6 +204,8 @@ function SettingRow({ label, description, children }: SettingRowProps) {
 // ============================================
 
 export function SettingsPage() {
+  const { settings, updateSettings, resetSettings, loading: settingsLoading } = useSettings();
+
   const { t } = useI18n();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
