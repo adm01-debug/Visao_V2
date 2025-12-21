@@ -1,92 +1,75 @@
-# 🤖 Modelos de Machine Learning
+# 🧠 Face-API.js Models
 
-Esta pasta é reservada para modelos ML caso você queira hospedar localmente.
+## ✅ Configuração Atual: CDN (Recomendado)
 
-## ✅ Configuração Atual: CDN
+O VISÃO está configurado para usar modelos via **CDN jsdelivr**, eliminando a necessidade de hospedar arquivos localmente.
 
-O VISÃO está configurado para carregar modelos automaticamente do CDN:
+**URL CDN:** `https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights`
 
-```
-https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights
-```
-
-**Não é necessário baixar modelos manualmente** - eles são carregados automaticamente.
-
-## 📦 Modelos Utilizados
-
-### face-api.js (Carregados via CDN)
-| Modelo | Função | Tamanho Aprox. |
-|--------|--------|----------------|
-| ssd_mobilenetv1 | Detecção de rostos | ~5.4 MB |
-| tiny_face_detector | Detecção rápida | ~190 KB |
-| face_landmark_68 | Pontos faciais | ~350 KB |
-| face_recognition | Encoding 128D | ~6.2 MB |
-| face_expression | Emoções | ~310 KB |
-| age_gender | Idade/Gênero | ~420 KB |
-
-### TensorFlow.js (Carregados via TF Hub)
-| Modelo | Função |
-|--------|--------|
-| COCO-SSD | Detecção de objetos |
-| MoveNet | Detecção de pose |
-
-Estes modelos são carregados automaticamente pelo TensorFlow.js.
-
-## 🔧 Hospedagem Local (Opcional)
-
-Se preferir hospedar modelos localmente para melhor performance:
-
-### 1. Baixar modelos face-api.js
-
-```bash
-cd public/models
-
-# SSD MobileNet
-curl -LO https://github.com/justadudewhohacks/face-api.js/raw/master/weights/ssd_mobilenetv1_model-weights_manifest.json
-curl -LO https://github.com/justadudewhohacks/face-api.js/raw/master/weights/ssd_mobilenetv1_model-shard1
-curl -LO https://github.com/justadudewhohacks/face-api.js/raw/master/weights/ssd_mobilenetv1_model-shard2
-
-# Face Landmarks
-curl -LO https://github.com/justadudewhohacks/face-api.js/raw/master/weights/face_landmark_68_model-weights_manifest.json
-curl -LO https://github.com/justadudewhohacks/face-api.js/raw/master/weights/face_landmark_68_model-shard1
-
-# Face Recognition
-curl -LO https://github.com/justadudewhohacks/face-api.js/raw/master/weights/face_recognition_model-weights_manifest.json
-curl -LO https://github.com/justadudewhohacks/face-api.js/raw/master/weights/face_recognition_model-shard1
-curl -LO https://github.com/justadudewhohacks/face-api.js/raw/master/weights/face_recognition_model-shard2
-```
-
-### 2. Atualizar configuração
-
-Em `src/hooks/useFaceAPI.ts`, altere o `modelPath`:
-
-```typescript
-const defaultConfig: FaceAPIConfig = {
-  modelPath: '/models', // Caminho local
-  // ...
-};
-```
-
-## 📊 Performance
-
-| Método | Primeira Carga | Cache |
-|--------|----------------|-------|
-| CDN (jsdelivr) | ~2-5s | Cache browser |
-| Local | ~1-3s | Cache browser |
-| Service Worker | Instantâneo | SW cache |
-
-## ⚡ Recomendações
-
-1. **Desenvolvimento:** Use CDN (configuração atual)
-2. **Produção:** CDN com Service Worker cache
-3. **Offline:** Hospedar localmente
-
-## 🔗 Links Úteis
-
-- [face-api.js Weights](https://github.com/justadudewhohacks/face-api.js/tree/master/weights)
-- [TensorFlow.js Models](https://www.tensorflow.org/js/models)
-- [COCO-SSD](https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd)
+### Vantagens do CDN:
+- ✅ Zero configuração local
+- ✅ Cache automático no navegador
+- ✅ CDN global (baixa latência)
+- ✅ Sempre atualizado
+- ✅ Reduz tamanho do deploy
 
 ---
 
-*Configuração atualizada em Dezembro 2025*
+## 📦 Modelos Carregados
+
+| Modelo | Descrição | Tamanho |
+|--------|-----------|---------|
+| ssdMobilenetv1 | Detector de faces principal | 5.4 MB |
+| tinyFaceDetector | Detector rápido (real-time) | 190 KB |
+| faceLandmark68Net | 68 pontos de referência | 350 KB |
+| faceRecognitionNet | Face descriptors (128D) | 6.2 MB |
+| faceExpressionNet | Expressões (7 classes) | 310 KB |
+| ageGenderNet | Idade e gênero | 420 KB |
+
+**Total aproximado:** ~13 MB (cacheado após primeiro acesso)
+
+---
+
+## 🔧 Uso Offline (Opcional)
+
+Para ambientes sem internet, baixe os modelos localmente:
+
+```bash
+# Clonar repositório de pesos
+git clone https://github.com/justadudewhohacks/face-api.js.git
+cp -r face-api.js/weights/* ./public/models/
+
+# Alterar configuração em src/config/models_config.ts
+# Mudar source: 'cdn' para source: 'local'
+```
+
+### Arquivos necessários:
+```
+public/models/
+├── ssd_mobilenetv1_model-weights_manifest.json
+├── ssd_mobilenetv1_model-shard1
+├── ssd_mobilenetv1_model-shard2
+├── tiny_face_detector_model-weights_manifest.json
+├── tiny_face_detector_model-shard1
+├── face_landmark_68_model-weights_manifest.json
+├── face_landmark_68_model-shard1
+├── face_recognition_model-weights_manifest.json
+├── face_recognition_model-shard1
+├── face_recognition_model-shard2
+├── face_expression_model-weights_manifest.json
+├── face_expression_model-shard1
+├── age_gender_model-weights_manifest.json
+└── age_gender_model-shard1
+```
+
+---
+
+## 📊 Performance
+
+- **Primeira carga:** 5-10 segundos (download CDN)
+- **Cargas seguintes:** <1 segundo (cache local)
+- **Detecção por frame:** 50-100ms (SSD) / 10-30ms (Tiny)
+
+---
+
+*Configurado automaticamente pelo VISÃO*
