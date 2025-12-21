@@ -6,13 +6,16 @@
 import { Helmet } from 'react-helmet-async';
 import { Sidebar } from '@/components/Sidebar';
 import { HeatmapVisualization } from '@/components/HeatmapVisualization';
+import { useI18n } from '@/contexts/i18n';
 
 export default function HeatmapPage() {
+  const { t } = useI18n();
+  
   return (
     <>
       <Helmet>
-        <title>Mapa de Calor | VISÃO</title>
-        <meta name="description" content="Visualize mapas de calor de movimento por zona e câmera" />
+        <title>{t('heatmap.pageTitle', 'Mapa de Calor')} | VISÃO</title>
+        <meta name="description" content={t('heatmap.pageDescription', 'Visualize mapas de calor de movimento por zona e câmera')} />
       </Helmet>
       
       <div className="flex min-h-screen w-full bg-background">
