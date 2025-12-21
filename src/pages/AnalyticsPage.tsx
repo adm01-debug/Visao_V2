@@ -651,7 +651,7 @@ export function AnalyticsPage() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="text-base"{t('analytics.alertTrend', 'Tendência de Alertas')}</CardTitle>
-            <CardDescription{t('analytics.alertsByDayDesc', 'Alertas por dia no período selecionado')}</CardDescription>
+            <CardDescription{t('analytics.alertsPerDay', 'Alertas por dia no período selecionado')}</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -671,7 +671,7 @@ export function AnalyticsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="text-base"{t('analytics.alertsByType', 'Alertas por Tipo')}</CardTitle>
-            <CardDescription{t('analytics.categoryDistribution', 'Distribuição por categoria')}</CardDescription>
+            <CardDescription{t('analytics.distributionByCategory', 'Distribuição por categoria')}</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center">
             {loading ? (
@@ -715,7 +715,7 @@ export function AnalyticsPage() {
             ) : cameraPerformance.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <Camera className="w-10 h-10 mx-auto mb-2 opacity-50" />
-                <p className="text-sm"{t('analytics.noCamerasFound', 'Nenhuma câmera encontrada')}</p>
+                <p className="text-sm"{t('analytics.noCameraFound', 'Nenhuma câmera encontrada')}</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -758,7 +758,7 @@ export function AnalyticsPage() {
               <>
                 <HourlyHeatmap data={hourlyData} />
                 <div className="flex items-center justify-between mt-4 text-xs text-muted-foreground">
-                  <span{t('analytics.leastActivity', 'Menor atividade')}</span>
+                  <span{t('analytics.lowerActivity', 'Menor atividade')}</span>
                   <div className="flex items-center gap-1">
                     {[0.1, 0.3, 0.5, 0.7, 0.9].map((intensity, i) => (
                       <div
@@ -768,7 +768,7 @@ export function AnalyticsPage() {
                       />
                     ))}
                   </div>
-                  <span{t('analytics.mostActivity', 'Maior atividade')}</span>
+                  <span{t('analytics.higherActivity', 'Maior atividade')}</span>
                 </div>
               </>
             )}
