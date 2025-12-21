@@ -6,8 +6,11 @@
 import { Helmet } from 'react-helmet-async';
 import { Sidebar } from '@/components/Sidebar';
 import { ReportsPanel } from '@/components/ReportsPanel';
+import { useI18n } from '@/contexts/i18n';
 
 export default function ReportsPage() {
+  const { t } = useI18n();
+
   return (
     <>
       <Helmet>
