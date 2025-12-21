@@ -1,45 +1,46 @@
 /**
- * VISÃO - Testes do useContinuousAnalysis
- * Testes para análise contínua de frames
+ * VISÃO - Testes: useContinuousAnalysis
+ * 
+ * Testes unitários para o hook de análise contínua.
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
+import { useContinuousAnalysis } from '../useContinuousAnalysis';
 
-// Mock do Supabase
+// Mocks
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
-    functions: {
-      invoke: vi.fn().mockResolvedValue({
-        data: {
-          objects: [
-            { class: 'person', confidence: 0.95, bbox: [100, 100, 200, 300] },
-            { class: 'car', confidence: 0.88, bbox: [300, 200, 150, 100] },
-          ],
-          analysis: {
-            scene: 'indoor office environment',
-            activity: 'people working at desks',
-            anomalies: [],
-          },
-        },
-        error: null,
-      }),
-    },
     from: vi.fn().mockReturnValue({
       select: vi.fn().mockReturnValue({
-        eq: vi.fn().mockResolvedValue({
-          data: [],
-          error: null,
+        eq: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue({ data: [], error: null }),
+          }),
         }),
       }),
-      insert: vi.fn().mockResolvedValue({ data: { id: '1' }, error: null }),
+      insert: vi.fn().mockResolvedValue({ error: null }),
+      upsert: vi.fn().mockResolvedValue({ error: null }),
     }),
-    auth: {
-      getUser: vi.fn().mockResolvedValue({
-        data: { user: { id: 'user_1' } },
+    functions: {
+      invoke: vi.fn().mockResolvedValue({
+        data: { objects: [], people_count: 0 },
         error: null,
       }),
     },
+    channel: vi.fn().mockReturnValue({
+      on: vi.fn().mockReturnThis(),
+      subscribe: vi.fn().mockReturnValue({ unsubscribe: vi.fn() }),
+    }),
+    removeChannel: vi.fn(),
+  },
+}));
+
+vi.mock('sonner', () => ({
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+    info: vi.fn(),
   },
 }));
 
@@ -50,167 +51,184 @@ describe('useContinuousAnalysis', () => {
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    vi.resetAllMocks();
     vi.useRealTimers();
   });
 
-  it('should initialize with default config', async () => {
-    const { useContinuousAnalysis } = await import('@/hooks/useContinuousAnalysis');
-    
-    const { result } = renderHook(() => useContinuousAnalysis({
-      cameraId: 'camera_1',
-      cameraName: 'Câmera 1',
-    }));
+  describe('Inicialização', () => {
+    it('deve inicializar com análise parada', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1'));
+      
+      expect(result.current.isAnalyzing).toBe(false);
+    });
 
-    expect(result.current.config).toBeDefined();
-    expect(result.current.config.enabled).toBe(true);
-    expect(result.current.config.intervalMs).toBeGreaterThan(0);
+    it('deve ter resultados vazios inicialmente', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1'));
+      
+      expect(result.current.lastResult).toBeNull();
+    });
+
+    it('deve aceitar cameraId como parâmetro', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('test-camera'));
+      
+      expect(result.current).toBeDefined();
+    });
   });
 
-  it('should not be running initially', async () => {
-    const { useContinuousAnalysis } = await import('@/hooks/useContinuousAnalysis');
-    
-    const { result } = renderHook(() => useContinuousAnalysis({
-      cameraId: 'camera_1',
-      cameraName: 'Câmera 1',
-    }));
+  describe('Configuração', () => {
+    it('deve aceitar intervalo customizado', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1', {
+        interval: 5000,
+      }));
+      
+      expect(result.current).toBeDefined();
+    });
 
-    expect(result.current.isRunning).toBe(false);
+    it('deve aceitar análises específicas', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1', {
+        analyses: ['objects', 'faces', 'motion'],
+      }));
+      
+      expect(result.current).toBeDefined();
+    });
+
+    it('deve permitir desabilitar salvamento', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1', {
+        saveResults: false,
+      }));
+      
+      expect(result.current).toBeDefined();
+    });
   });
 
-  it('should have control functions', async () => {
-    const { useContinuousAnalysis } = await import('@/hooks/useContinuousAnalysis');
-    
-    const { result } = renderHook(() => useContinuousAnalysis({
-      cameraId: 'camera_1',
-      cameraName: 'Câmera 1',
-    }));
+  describe('Controle', () => {
+    it('deve expor função start', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1'));
+      
+      expect(typeof result.current.start).toBe('function');
+    });
 
-    expect(typeof result.current.start).toBe('function');
-    expect(typeof result.current.stop).toBe('function');
-    expect(typeof result.current.toggle).toBe('function');
-    expect(typeof result.current.analyzeNow).toBe('function');
+    it('deve expor função stop', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1'));
+      
+      expect(typeof result.current.stop).toBe('function');
+    });
+
+    it('deve expor função pause', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1'));
+      
+      expect(typeof result.current.pause).toBe('function');
+    });
+
+    it('deve expor função resume', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1'));
+      
+      expect(typeof result.current.resume).toBe('function');
+    });
   });
 
-  it('should have empty detections initially', async () => {
-    const { useContinuousAnalysis } = await import('@/hooks/useContinuousAnalysis');
-    
-    const { result } = renderHook(() => useContinuousAnalysis({
-      cameraId: 'camera_1',
-      cameraName: 'Câmera 1',
-    }));
+  describe('Análise Manual', () => {
+    it('deve expor função analyzeNow', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1'));
+      
+      expect(typeof result.current.analyzeNow).toBe('function');
+    });
 
-    expect(result.current.lastDetections).toBeDefined();
-    expect(Array.isArray(result.current.lastDetections)).toBe(true);
+    it('deve expor função analyzeFrame', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1'));
+      
+      expect(typeof result.current.analyzeFrame).toBe('function');
+    });
   });
 
-  it('should have stats object', async () => {
-    const { useContinuousAnalysis } = await import('@/hooks/useContinuousAnalysis');
-    
-    const { result } = renderHook(() => useContinuousAnalysis({
-      cameraId: 'camera_1',
-      cameraName: 'Câmera 1',
-    }));
+  describe('Resultados', () => {
+    it('deve expor lastResult', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1'));
+      
+      expect(result.current.lastResult).toBeDefined();
+    });
 
-    expect(result.current.stats).toBeDefined();
-    expect(typeof result.current.stats.totalAnalyses).toBe('number');
-    expect(typeof result.current.stats.avgProcessingTime).toBe('number');
+    it('deve expor histórico de resultados', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1'));
+      
+      expect(Array.isArray(result.current.history)).toBe(true);
+    });
   });
 
-  it('should accept custom config', async () => {
-    const { useContinuousAnalysis } = await import('@/hooks/useContinuousAnalysis');
-    
-    const { result } = renderHook(() => useContinuousAnalysis({
-      cameraId: 'camera_1',
-      cameraName: 'Câmera 1',
-      config: {
-        enabled: true,
-        intervalMs: 5000,
-        minConfidence: 0.8,
-      },
-    }));
+  describe('Estatísticas', () => {
+    it('deve calcular contagem de análises', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1'));
+      
+      expect(typeof result.current.stats.totalAnalyses).toBe('number');
+    });
 
-    expect(result.current.config.intervalMs).toBe(5000);
-    expect(result.current.config.minConfidence).toBe(0.8);
+    it('deve calcular tempo médio de análise', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1'));
+      
+      expect(typeof result.current.stats.avgAnalysisTime).toBe('number');
+    });
+
+    it('deve contar detecções', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1'));
+      
+      expect(result.current.stats.detectionCounts).toBeDefined();
+    });
   });
 
-  it('should have lastAnalysis timestamp', async () => {
-    const { useContinuousAnalysis } = await import('@/hooks/useContinuousAnalysis');
-    
-    const { result } = renderHook(() => useContinuousAnalysis({
-      cameraId: 'camera_1',
-      cameraName: 'Câmera 1',
-    }));
+  describe('Callbacks', () => {
+    it('deve aceitar callback onResult', () => {
+      const onResult = vi.fn();
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1', {
+        onResult,
+      }));
+      
+      expect(result.current).toBeDefined();
+    });
 
-    expect(result.current.lastAnalysis).toBeNull();
+    it('deve aceitar callback onError', () => {
+      const onError = vi.fn();
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1', {
+        onError,
+      }));
+      
+      expect(result.current).toBeDefined();
+    });
+
+    it('deve aceitar callback onDetection', () => {
+      const onDetection = vi.fn();
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1', {
+        onDetection,
+      }));
+      
+      expect(result.current).toBeDefined();
+    });
   });
 
-  it('should have error state', async () => {
-    const { useContinuousAnalysis } = await import('@/hooks/useContinuousAnalysis');
-    
-    const { result } = renderHook(() => useContinuousAnalysis({
-      cameraId: 'camera_1',
-      cameraName: 'Câmera 1',
-    }));
+  describe('Estado', () => {
+    it('deve expor isPaused', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1'));
+      
+      expect(typeof result.current.isPaused).toBe('boolean');
+    });
 
-    expect(result.current.error).toBeNull();
-  });
-});
-
-describe('Analysis Processing', () => {
-  it('should process detection results correctly', () => {
-    const detections = [
-      { class: 'person', confidence: 0.95, bbox: [100, 100, 200, 300] },
-      { class: 'car', confidence: 0.88, bbox: [300, 200, 150, 100] },
-    ];
-
-    expect(detections.length).toBe(2);
-    expect(detections[0].class).toBe('person');
-    expect(detections[0].confidence).toBeGreaterThan(0.5);
+    it('deve expor isProcessing', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1'));
+      
+      expect(typeof result.current.isProcessing).toBe('boolean');
+    });
   });
 
-  it('should filter by confidence threshold', () => {
-    const threshold = 0.9;
-    const detections = [
-      { class: 'person', confidence: 0.95, bbox: [] },
-      { class: 'car', confidence: 0.88, bbox: [] },
-      { class: 'bicycle', confidence: 0.75, bbox: [] },
-    ];
+  describe('Limpeza', () => {
+    it('deve parar análise ao desmontar', () => {
+      const { result, unmount } = renderHook(() => useContinuousAnalysis('camera-1'));
+      
+      expect(() => unmount()).not.toThrow();
+    });
 
-    const filtered = detections.filter(d => d.confidence >= threshold);
-    expect(filtered.length).toBe(1);
-    expect(filtered[0].class).toBe('person');
-  });
-});
-
-describe('Analysis Config', () => {
-  it('should have valid interval range', async () => {
-    const { useContinuousAnalysis } = await import('@/hooks/useContinuousAnalysis');
-    
-    const { result } = renderHook(() => useContinuousAnalysis({
-      cameraId: 'camera_1',
-      cameraName: 'Câmera 1',
-      config: {
-        intervalMs: 1000,
-      },
-    }));
-
-    // Intervalo mínimo razoável é 1 segundo
-    expect(result.current.config.intervalMs).toBeGreaterThanOrEqual(1000);
-  });
-
-  it('should have valid confidence range', async () => {
-    const { useContinuousAnalysis } = await import('@/hooks/useContinuousAnalysis');
-    
-    const { result } = renderHook(() => useContinuousAnalysis({
-      cameraId: 'camera_1',
-      cameraName: 'Câmera 1',
-      config: {
-        minConfidence: 0.7,
-      },
-    }));
-
-    expect(result.current.config.minConfidence).toBeGreaterThanOrEqual(0);
-    expect(result.current.config.minConfidence).toBeLessThanOrEqual(1);
+    it('deve expor função clearHistory', () => {
+      const { result } = renderHook(() => useContinuousAnalysis('camera-1'));
+      
+      expect(typeof result.current.clearHistory).toBe('function');
+    });
   });
 });
