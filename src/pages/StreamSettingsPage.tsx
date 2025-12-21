@@ -24,8 +24,11 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useI18n } from '@/contexts/i18n';
 
 export default function StreamSettingsPage() {
+  const { t } = useI18n();
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
