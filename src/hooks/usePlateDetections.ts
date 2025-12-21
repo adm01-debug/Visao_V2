@@ -160,7 +160,6 @@ export function usePlateDetections() {
     const now = Date.now();
     const lastAlert = lastAlertTime.current.get(plate);
     if (lastAlert && (now - lastAlert) < ALERT_COOLDOWN_MS) {
-      console.log(`Cooldown active for plate ${plate}`);
       return;
     }
     lastAlertTime.current.set(plate, now);
@@ -168,14 +167,12 @@ export function usePlateDetections() {
     // Get Telegram config from localStorage
     const configStr = localStorage.getItem(TELEGRAM_CONFIG_KEY);
     if (!configStr) {
-      console.log('Telegram not configured');
       return;
     }
 
     try {
       const config: TelegramConfig = JSON.parse(configStr);
       if (!config.enabled || !config.botToken || !config.chatId) {
-        console.log('Telegram disabled or incomplete config');
         return;
       }
 
@@ -202,7 +199,6 @@ ${ownerName ? `👤 <b>Proprietário:</b> ${ownerName}` : ''}
       if (error) throw error;
       
       if (data?.success) {
-        console.log('Telegram blacklist alert sent successfully');
       }
     } catch (error) {
       console.error('Error sending Telegram alert:', error);
