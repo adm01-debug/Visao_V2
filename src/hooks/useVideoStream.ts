@@ -293,11 +293,9 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
 
     // Eventos HLS
     hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-      console.log('[HLS] Media attached');
     });
 
     hls.on(Hls.Events.MANIFEST_PARSED, (_, data) => {
-      console.log('[HLS] Manifest parsed, levels:', data.levels.length);
       
       // Extrair qualidades disponíveis
       const qualities: StreamQuality[] = ['auto'];
