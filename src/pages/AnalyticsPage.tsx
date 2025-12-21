@@ -10,6 +10,7 @@
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useI18n } from '@/contexts/i18n';
 import {
   BarChart3,
   TrendingUp,
@@ -324,6 +325,8 @@ function HourlyHeatmap({ data }: HourlyHeatmapProps) {
 // ============================================
 
 export function AnalyticsPage() {
+  const { t } = useI18n();
+  
   // Estado
   const [dateRange, setDateRange] = useState<DateRange>('7d');
   const [loading, setLoading] = useState(true);
@@ -568,10 +571,10 @@ export function AnalyticsPage() {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <BarChart3 className="w-6 h-6" />
-            Analytics
+            {t('analytics.title', 'Analytics')}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Estatísticas e relatórios do sistema
+            {t('analytics.subtitle', 'Estatísticas e relatórios do sistema')}
           </p>
         </div>
 
@@ -582,10 +585,10 @@ export function AnalyticsPage() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="24h">Últimas 24h</SelectItem>
-              <SelectItem value="7d">Últimos 7 dias</SelectItem>
-              <SelectItem value="30d">Últimos 30 dias</SelectItem>
-              <SelectItem value="90d">Últimos 90 dias</SelectItem>
+              <SelectItem value="24h">{t('analytics.last24h', 'Últimas 24h')}</SelectItem>
+              <SelectItem value="7d">{t('analytics.last7d', 'Últimos 7 dias')}</SelectItem>
+              <SelectItem value="30d">{t('analytics.last30d', 'Últimos 30 dias')}</SelectItem>
+              <SelectItem value="90d">{t('analytics.last90d', 'Últimos 90 dias')}</SelectItem>
             </SelectContent>
           </Select>
 
@@ -802,3 +805,4 @@ export function AnalyticsPage() {
 }
 
 export default AnalyticsPage;
+
