@@ -10,6 +10,7 @@
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useI18n } from '@/contexts/i18n';
 import {
   Video,
   Play,
@@ -344,6 +345,8 @@ function VideoPlayerDialog({
 // ============================================
 
 export function RecordingsPage() {
+  const { t } = useI18n();
+  
   // Estado
   const [clips, setClips] = useState<VideoClipWithCamera[]>([]);
   const [loading, setLoading] = useState(true);
@@ -539,10 +542,10 @@ export function RecordingsPage() {
             <div>
               <h1 className="text-2xl font-bold flex items-center gap-2">
                 <Video className="w-6 h-6" />
-                Gravações
+                {t('recordings.title', 'Gravações')}
               </h1>
               <p className="text-muted-foreground mt-1">
-                Visualize e gerencie os clips de vídeo gravados
+                {t('recordings.subtitle', 'Visualize e gerencie os clips de vídeo gravados')}
               </p>
             </div>
 
@@ -562,7 +565,7 @@ export function RecordingsPage() {
                   onClick={handleDeleteSelected}
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
-                  Excluir ({selectedClips.size})
+                  {t('recordings.delete', 'Excluir')} ({selectedClips.size})
                 </Button>
               )}
             </div>
@@ -870,3 +873,4 @@ export function RecordingsPage() {
 }
 
 export default RecordingsPage;
+
