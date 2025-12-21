@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useRules } from '@/hooks/useRules';
+import { useRuleActions } from '@/hooks/useRuleActions';
 import { Skeleton } from '@/components/ui/skeleton';
 import { mapDbRuleToUI, mapUIRuleToDb, UIRule, DbRule } from '@/types/rules';
 
@@ -19,6 +20,8 @@ const categoryTabs: { value: string; label: string; icon: typeof Shield }[] = [
 ];
 
 export function RulesPanel() {
+  const { executeAction, validateRule, testRule } = useRuleActions();
+
   const { rules, loading, createRule, updateRule, deleteRule, toggleRule } = useRules();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
