@@ -568,7 +568,6 @@ export function useFaceRecognition(
   ): Promise<Person> => {
     // Nota: tabela registered_persons não existe no schema atual
     // Funcionalidade de cadastro desabilitada
-    console.log('[FaceRecognition] Cadastro de pessoas desabilitado - tabela não existe');
     throw new Error('Funcionalidade não disponível - tabela registered_persons não existe');
   }, []);
 
@@ -581,7 +580,6 @@ export function useFaceRecognition(
     photoBase64: string
   ): Promise<void> => {
     // Nota: tabela registered_persons não existe no schema atual
-    console.log('[FaceRecognition] Adição de foto desabilitada - tabela não existe');
     throw new Error('Funcionalidade não disponível - tabela registered_persons não existe');
   }, []);
 
