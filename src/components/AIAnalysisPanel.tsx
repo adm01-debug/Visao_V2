@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -17,6 +17,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { useImageAnalysis, AnalysisType, SecurityAnalysis, SafetyAnalysis, ProductivityAnalysis } from '@/hooks/useImageAnalysis';
+import { useMLModels } from '@/hooks/useMLModels';
 
 const severityColors = {
   low: 'bg-blue-500/20 text-blue-400 border-blue-500/50',
@@ -30,6 +31,22 @@ export function AIAnalysisPanel() {
   const [analysisType, setAnalysisType] = useState<AnalysisType>('security');
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Hook de detecção ML para objetos em tempo real
+  const {
+    loadModel,
+    detectObjects,
+    isLoading: isMLLoading,
+    isModelLoaded,
+    detectedObjects,
+  } = useMLModels();
+
+  // Carregar modelo ML quando componente montar
+  useEffect(() => {
+    if (!isModelLoaded && !isMLLoading) {
+      loadModel("coco-ssd").catch(console.error);
+    }
+  }, [isModelLoaded, isMLLoading, loadModel]);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -315,3 +332,4 @@ export function AIAnalysisPanel() {
     </Card>
   );
 }
+
