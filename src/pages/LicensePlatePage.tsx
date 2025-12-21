@@ -9,8 +9,11 @@ import { LicensePlateRecognition } from '@/components/LicensePlateRecognition';
 import { ALPRDashboard } from '@/components/ALPRDashboard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BarChart3, Car } from 'lucide-react';
+import { useI18n } from '@/contexts/i18n';
 
 export default function LicensePlatePage() {
+  const { t } = useI18n();
+
   return (
     <>
       <Helmet>
