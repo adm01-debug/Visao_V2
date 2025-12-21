@@ -16,7 +16,6 @@
  *   stats,
  * } = useZoneDetection({
  *   cameraId: 'cam-001',
- *   onEnter: (zone, obj) => console.log('Entrou:', zone.name),
  * });
  */
 
@@ -544,7 +543,6 @@ export function useZoneDetection(
   const fetchZones = useCallback(async (): Promise<Zone[]> => {
     // Nota: tabela zones não existe no schema atual
     // Retornando lista vazia - funcionalidade de persistência desabilitada
-    console.log('[ZoneDetection] Busca de zonas desabilitada - tabela não existe');
     return zones;
   }, [zones]);
   const resetStats = useCallback((zoneId?: string) => {
