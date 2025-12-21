@@ -30,6 +30,7 @@ import { cn } from '@/lib/utils';
 import { LiveFaceRecognition } from '@/components/LiveFaceRecognition';
 import { MultiCameraRecognition } from '@/components/MultiCameraRecognition';
 import { RecognizedFace } from '@/hooks/useRealtimeRecognition';
+import { useI18n } from '@/contexts/i18n';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -42,6 +43,7 @@ interface RecognitionEvent {
 }
 
 export default function FaceRecognitionPage() {
+  const { t } = useI18n();
   const [activeTab, setActiveTab] = useState<'webcam' | 'multicam'>('multicam');
   const [recognitionHistory, setRecognitionHistory] = useState<RecognitionEvent[]>([]);
   const [stats, setStats] = useState({
@@ -291,3 +293,4 @@ export default function FaceRecognitionPage() {
     </>
   );
 }
+
