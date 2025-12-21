@@ -68,7 +68,7 @@ export interface FaceAPIConfig {
 // ============================================
 
 const DEFAULT_CONFIG: FaceAPIConfig = {
-  modelPath: '/models',
+  modelPath: 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights',
   minConfidence: 0.5,
   matchThreshold: 0.6,
   inputSize: 416,
@@ -512,3 +512,4 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
 }
 
 export default useFaceAPI;
+
