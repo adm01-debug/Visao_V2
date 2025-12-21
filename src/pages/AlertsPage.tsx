@@ -38,6 +38,7 @@ import {
 import { useAlerts } from '@/hooks/useAlerts';
 import { useCameras } from '@/hooks/useCameras';
 import { useRealtimeAlerts } from '@/hooks/useRealtimeAlerts';
+import { useFaceRecognitionAlerts } from '@/hooks/useFaceRecognitionAlerts';
 import { useI18n } from '@/contexts/i18n';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -395,6 +396,8 @@ function AlertDetailsDialog({
 // ============================================
 
 export function AlertsPage() {
+  const { events: recognitionEvents, stats: recognitionStats } = useFaceRecognitionAlerts();
+
   // Estado
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [sortBy, setSortBy] = useState<SortOption>('date-desc');
