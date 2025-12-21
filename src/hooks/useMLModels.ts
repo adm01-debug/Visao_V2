@@ -14,6 +14,13 @@ import * as cocoSsd from '@tensorflow-models/coco-ssd';
 import * as poseDetection from '@tensorflow-models/pose-detection';
 import { toast } from 'sonner';
 
+// Debug log condicional (apenas em desenvolvimento)
+const debugLog = (message: string, ...args: any[]) => {
+  if (import.meta.env.DEV) {
+    console.log(message, ...args);
+  }
+};
+
 // ============================================
 // TIPOS
 // ============================================
@@ -101,7 +108,7 @@ class ModelCache {
         await tf.setBackend('webgl');
         await tf.ready();
         this.backendReady = true;
-        console.log('[ML] TensorFlow.js usando WebGL');
+        debugLog('[ML] TensorFlow.js usando WebGL');
         return 'webgl';
       }
     } catch (e) {
@@ -113,7 +120,7 @@ class ModelCache {
       await tf.setBackend('wasm');
       await tf.ready();
       this.backendReady = true;
-      console.log('[ML] TensorFlow.js usando WASM');
+      debugLog('[ML] TensorFlow.js usando WASM');
       return 'wasm';
     } catch (e) {
       console.warn('[ML] WASM não disponível, usando CPU');
@@ -123,24 +130,24 @@ class ModelCache {
     await tf.setBackend('cpu');
     await tf.ready();
     this.backendReady = true;
-    console.log('[ML] TensorFlow.js usando CPU');
+    debugLog('[ML] TensorFlow.js usando CPU');
     return 'cpu';
   }
 
   async getCocoModel(): Promise<cocoSsd.ObjectDetection> {
     if (!this.cocoModel) {
-      console.log('[ML] Carregando COCO-SSD...');
+      debugLog('[ML] Carregando COCO-SSD...');
       this.cocoModel = await cocoSsd.load({
         base: 'lite_mobilenet_v2',
       });
-      console.log('[ML] COCO-SSD carregado');
+      debugLog('[ML] COCO-SSD carregado');
     }
     return this.cocoModel;
   }
 
   async getPoseDetector(): Promise<poseDetection.PoseDetector> {
     if (!this.poseDetector) {
-      console.log('[ML] Carregando MoveNet...');
+      debugLog('[ML] Carregando MoveNet...');
       this.poseDetector = await poseDetection.createDetector(
         poseDetection.SupportedModels.MoveNet,
         {
@@ -148,7 +155,7 @@ class ModelCache {
           enableSmoothing: true,
         }
       );
-      console.log('[ML] MoveNet carregado');
+      debugLog('[ML] MoveNet carregado');
     }
     return this.poseDetector;
   }
@@ -159,7 +166,7 @@ class ModelCache {
       this.poseDetector = null;
     }
     this.cocoModel = null;
-    console.log('[ML] Modelos descarregados');
+    debugLog('[ML] Modelos descarregados');
   }
 }
 
@@ -475,3 +482,4 @@ export function useContinuousDetection(options: UseContinuousDetectionOptions) {
 }
 
 export default useMLModels;
+
