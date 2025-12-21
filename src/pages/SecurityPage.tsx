@@ -11,6 +11,7 @@
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useI18n } from '@/contexts/i18n';
 import {
   Shield,
   ShieldAlert,
@@ -332,6 +333,7 @@ function AccessEventCard({ event }: AccessEventCardProps) {
 // ============================================
 
 export function SecurityPage() {
+  const { t } = useI18n();
   // Estado
   const [activeTab, setActiveTab] = useState('logs');
   const [loading, setLoading] = useState(true);
@@ -982,3 +984,4 @@ export function SecurityPage() {
 }
 
 export default SecurityPage;
+
