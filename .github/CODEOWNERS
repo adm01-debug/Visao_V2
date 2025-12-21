@@ -1,0 +1,13 @@
+# Default owners
+* @adm01-debug
+
+# Frontend
+/src/components/ @adm01-debug
+/src/pages/ @adm01-debug
+/src/hooks/ @adm01-debug
+
+# Backend
+/supabase/ @adm01-debug
+
+# Docs
+/docs/ @adm01-debug
