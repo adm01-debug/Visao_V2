@@ -25,8 +25,11 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useI18n } from '@/contexts/i18n';
+import { useMediaMTX } from '@/hooks/useMediaMTX';
 
 export default function StreamSettingsPage() {
+  const { paths, stats, config, isConnected, refreshPaths } = useMediaMTX();
+
   const { t } = useI18n();
 
   const navigate = useNavigate();
