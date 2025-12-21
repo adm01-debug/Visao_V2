@@ -10,8 +10,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { RecognitionAnalytics } from '@/components/RecognitionAnalytics';
+import { useI18n } from '@/contexts/i18n';
 
 export default function RecognitionAnalyticsPage() {
+  const { t } = useI18n();
+
   const [dateRange, setDateRange] = useState(7);
 
   return (
