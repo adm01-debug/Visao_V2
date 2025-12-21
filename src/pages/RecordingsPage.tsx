@@ -79,6 +79,7 @@ import { format, formatDistanceToNow, startOfDay, subDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { Tables } from '@/integrations/supabase/types';
+import { ClipGallery } from '@/components/ClipGallery';
 
 // ============================================
 // TIPOS - Alinhados com schema do banco
