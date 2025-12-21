@@ -6,6 +6,7 @@
  */
 
 import { useState, useEffect, useMemo, useRef } from 'react';
+import { useI18n } from '@/contexts/i18n';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -94,6 +95,7 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
   const { cameras } = useCameras();
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<'1h' | '6h' | '24h' | '7d'>('24h');
+  const { t } = useI18n();
   const [selectedCamera, setSelectedCamera] = useState<string>('all');
   const [zoneActivities, setZoneActivities] = useState<ZoneActivity[]>([]);
   const [totalDetections, setTotalDetections] = useState(0);
@@ -412,7 +414,7 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
                   <table className="w-full text-sm">
                     <thead>
                       <tr>
-                        <th className="text-left p-2 font-medium">Zona</th>
+                        <th className="text-left p-2 font-medium">{t('common.zone', 'Zona')}</th>
                         {Array.from({ length: 24 }, (_, i) => (
                           <th key={i} className="p-1 text-center text-xs text-muted-foreground">
                             {i.toString().padStart(2, '0')}
