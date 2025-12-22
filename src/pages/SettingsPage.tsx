@@ -357,7 +357,7 @@ export function SettingsPage() {
         setAnalysisSettings(JSON.parse(savedAnalysis));
       }
     } catch (error) {
-      // rm
+      console.error('Erro ao carregar configurações:', error);
     } finally {
       setLoading(false);
     }
@@ -421,7 +421,7 @@ export function SettingsPage() {
 
       toast.success('Configurações salvas com sucesso!');
     } catch (error) {
-      // rm
+      console.error('Erro ao salvar:', error);
       toast.error('Erro ao salvar configurações');
     } finally {
       setSaving(false);
@@ -580,7 +580,7 @@ export function SettingsPage() {
             <SettingRow label="Tema" description="Aparência visual">
               <Select
                 value={generalSettings.theme}
-                onValueChange={(v) => setGeneralSettings(prev => ({ ...prev, theme: v as any }))}
+                onValueChange={(v) => setGeneralSettings(prev => ({ ...prev, theme: v as unknown }))}
               >
                 <SelectTrigger className="w-36">
                   <SelectValue />
