@@ -227,7 +227,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
 
     // Frames perdidos (API experimental)
     if ('getVideoPlaybackQuality' in video) {
-      const quality = (video as any).getVideoPlaybackQuality();
+      const quality = (video as unknown).getVideoPlaybackQuality();
       stats.droppedFrames = quality?.droppedVideoFrames || 0;
       if (quality?.totalVideoFrames && connectionStartRef.current) {
         const elapsed = (Date.now() - connectionStartRef.current) / 1000;
@@ -331,7 +331,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
     });
 
     hls.on(Hls.Events.ERROR, (_, data) => {
-      // rm
+      console.error('[HLS] Error:', data.type, data.details);
       
       if (data.fatal) {
         switch (data.type) {
@@ -479,7 +479,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
       updateState({ status: 'playing', isPlaying: true });
       onPlay?.();
     } catch (error) {
-      // rm
+      console.error('[Stream] Play error:', error);
       // Auto-play bloqueado - comum em navegadores
       updateState({ isPlaying: false });
     }
@@ -595,7 +595,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
         updateState({ isFullscreen: true });
       }
     } catch (error) {
-      // rm
+      console.error('[Stream] Fullscreen error:', error);
     }
   }, [videoRef, updateState]);
 
