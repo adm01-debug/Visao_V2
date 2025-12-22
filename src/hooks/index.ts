@@ -33,3 +33,21 @@ export { useCopyToClipboard } from './useCopyToClipboard';
 export { useOnlineStatus } from './useOnlineStatus';
 export { useFeatureFlags } from './useFeatureFlags';
 export { usePermissions } from './usePermissions';
+
+// Utility Hooks (Added)
+export { useDebounce } from './useDebounce';
+export { useLocalStorage } from './useLocalStorage';
+export { useMediaQuery } from './useMediaQuery';
+export { useOnClickOutside } from './useOnClickOutside';
+export { usePrevious } from './usePrevious';
+export { useToggle } from './useToggle';
+export { useInterval } from './useInterval';
+export { useDocumentTitle } from './useDocumentTitle';
+export { useWindowSize } from './useWindowSize';
+export { useOnlineStatus } from './useOnlineStatus';
+export { useFeatureFlags } from './useFeatureFlags';
+export { usePermissions } from './usePermissions';
+export { useCopyToClipboard } from './useCopyToClipboard';
+export { usePerformance } from './usePerformance';
+export { useScrollPosition } from './useScrollPosition';
+export { useTimeout } from './useTimeout';
