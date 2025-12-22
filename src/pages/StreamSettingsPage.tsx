@@ -102,11 +102,11 @@ export default function StreamSettingsPage() {
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
+          <div role="main" className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <div className="flex items-center gap-3">
+            <div role="main" className="flex items-center gap-3">
               <Video className="h-6 w-6 text-primary" />
               <div>
                 <h1 className="text-xl font-bold">Configuração de Streams</h1>
@@ -133,7 +133,7 @@ export default function StreamSettingsPage() {
               </CardHeader>
               <CardContent className="space-y-2">
                 {camerasLoading ? (
-                  <div className="flex items-center justify-center py-8">
+                  <div role="main" className="flex items-center justify-center py-8">
                     <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
                   </div>
                 ) : cameras.length === 0 ? (
@@ -161,8 +161,8 @@ export default function StreamSettingsPage() {
                           isSelected && 'border-primary bg-primary/5'
                         )}
                       >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
+                        <div role="main" className="flex items-center justify-between">
+                          <div role="main" className="flex items-center gap-3">
                             {isOnline ? (
                               <Wifi className="h-4 w-4 text-green-500" />
                             ) : (
@@ -173,7 +173,7 @@ export default function StreamSettingsPage() {
                               <p className="text-xs text-muted-foreground">{camera.location}</p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
+                          <div role="main" className="flex items-center gap-2">
                             {hasStream ? (
                               <Badge variant="secondary" className="gap-1">
                                 <CheckCircle2 className="h-3 w-3" />
