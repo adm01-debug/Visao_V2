@@ -80,7 +80,7 @@ interface NotificationItemProps {
 // ============================================
 
 const severityConfig: Record<NotificationSeverity, {
-  icon: any;
+  icon: unknown;
   color: string;
   bgColor: string;
   label: string;
