@@ -1,3 +1,4 @@
+import { formatDate, formatNumber } from "@/lib/formatters";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: Painel de Relatórios
