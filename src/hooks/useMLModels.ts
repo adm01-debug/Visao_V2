@@ -111,7 +111,7 @@ class ModelCache {
         return 'webgl';
       }
     } catch (e) {
-      console.warn('[ML] WebGL não disponível, tentando WASM');
+      // removed
     }
 
     try {
@@ -122,7 +122,7 @@ class ModelCache {
       debugLog('[ML] TensorFlow.js usando WASM');
       return 'wasm';
     } catch (e) {
-      console.warn('[ML] WASM não disponível, usando CPU');
+      // removed
     }
 
     // Fallback para CPU
@@ -304,7 +304,7 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
       case 'movenet':
         return loadMoveNet();
       default:
-        console.warn(`[ML] Modelo ${model} não suportado`);
+        // removed
         return false;
     }
   }, [loadCocoSsd, loadMoveNet]);
@@ -350,7 +350,7 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
           bbox: p.bbox as [number, number, number, number],
         }));
     } catch (err) {
-      console.error('[ML] Erro na detecção:', err);
+      // removed
       return [];
     }
   }, [config.maxDetections, config.minScore, updateModelInfo]);
@@ -378,7 +378,7 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
         score: pose.score || 0,
       }));
     } catch (err) {
-      console.error('[ML] Erro na detecção de poses:', err);
+      // removed
       return [];
     }
   }, [updateModelInfo]);
