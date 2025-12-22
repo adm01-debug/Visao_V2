@@ -70,7 +70,7 @@ export function TelegramConfigPanel({ className, onConfigChange }: TelegramConfi
         const parsed = JSON.parse(saved);
         setConfig(parsed);
       } catch (e) {
-        console.error('Error loading telegram config:', e);
+        // rm
       }
     }
   }, []);
@@ -110,7 +110,7 @@ export function TelegramConfigPanel({ className, onConfigChange }: TelegramConfi
         throw new Error(data?.error || 'Failed to send message');
       }
     } catch (error) {
-      console.error('Error testing Telegram:', error);
+      // rm
       setTestResult('error');
       toast.error('Erro ao enviar mensagem. Verifique suas credenciais.');
     } finally {
