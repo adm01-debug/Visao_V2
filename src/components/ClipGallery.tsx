@@ -641,7 +641,7 @@ export function ClipGallery({
           </div>
 
           {/* Filtro de trigger */}
-          <Select value={triggerFilter} onValueChange={(v: any) => setTriggerFilter(v)}>
+          <Select value={triggerFilter} onValueChange={(v: unknown) => setTriggerFilter(v)}>
             <SelectTrigger className="w-32">
               <Filter className="w-4 h-4 mr-2" />
               <SelectValue />
@@ -657,7 +657,7 @@ export function ClipGallery({
           </Select>
 
           {/* Ordenação */}
-          <Select value={sortBy} onValueChange={(v: any) => setSortBy(v)}>
+          <Select value={sortBy} onValueChange={(v: unknown) => setSortBy(v)}>
             <SelectTrigger className="w-32">
               <SelectValue />
             </SelectTrigger>
