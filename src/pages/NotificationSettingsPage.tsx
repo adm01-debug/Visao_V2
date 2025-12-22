@@ -285,7 +285,7 @@ export default function NotificationSettingsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div role="main" className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     );
@@ -293,7 +293,7 @@ export default function NotificationSettingsPage() {
 
   if (!config) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div role="main" className="flex items-center justify-center min-h-screen">
         <p className="text-muted-foreground">Erro ao carregar configurações</p>
       </div>
     );
@@ -303,8 +303,8 @@ export default function NotificationSettingsPage() {
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div role="main" className="flex items-center justify-between">
+          <div role="main" className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
               <ArrowLeft className="h-5 w-5" />
             </Button>
@@ -322,8 +322,8 @@ export default function NotificationSettingsPage() {
         {/* Master Toggle */}
         <Card>
           <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
+            <div role="main" className="flex items-center justify-between">
+              <div role="main" className="flex items-center gap-3">
                 <Bell className="h-5 w-5 text-primary" />
                 <div>
                   <p className="font-medium">Notificações Ativas</p>
@@ -383,7 +383,7 @@ export default function NotificationSettingsPage() {
             {config.channels.includes('email') && (
               <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
+                  <div role="main" className="flex items-center justify-between">
                     <div>
                       <CardTitle className="flex items-center gap-2">
                         <Mail className="h-5 w-5" />
@@ -398,7 +398,7 @@ export default function NotificationSettingsPage() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex gap-2">
+                  <div role="main" className="flex gap-2">
                     <Input
                       type="email"
                       placeholder="email@exemplo.com"
@@ -410,7 +410,7 @@ export default function NotificationSettingsPage() {
                       <Plus className="h-4 w-4" />
                     </Button>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div role="main" className="flex flex-wrap gap-2">
                     {config.email_recipients.map((email) => (
                       <Badge key={email} variant="secondary" className="gap-1">
                         {email}
@@ -428,7 +428,7 @@ export default function NotificationSettingsPage() {
             {config.channels.includes('sms') && (
               <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
+                  <div role="main" className="flex items-center justify-between">
                     <div>
                       <CardTitle className="flex items-center gap-2">
                         <Phone className="h-5 w-5" />
@@ -443,7 +443,7 @@ export default function NotificationSettingsPage() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex gap-2">
+                  <div role="main" className="flex gap-2">
                     <Input
                       type="tel"
                       placeholder="+55 11 99999-9999"
@@ -455,7 +455,7 @@ export default function NotificationSettingsPage() {
                       <Plus className="h-4 w-4" />
                     </Button>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div role="main" className="flex flex-wrap gap-2">
                     {config.phone_recipients.map((phone) => (
                       <Badge key={phone} variant="secondary" className="gap-1">
                         {phone}
@@ -473,7 +473,7 @@ export default function NotificationSettingsPage() {
             {config.channels.includes('webhook') && (
               <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
+                  <div role="main" className="flex items-center justify-between">
                     <div>
                       <CardTitle className="flex items-center gap-2">
                         <Webhook className="h-5 w-5" />
@@ -488,7 +488,7 @@ export default function NotificationSettingsPage() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex gap-2">
+                  <div role="main" className="flex gap-2">
                     <Input
                       type="url"
                       placeholder="https://api.exemplo.com/webhook"
@@ -526,7 +526,7 @@ export default function NotificationSettingsPage() {
                 <CardDescription>Configure horários específicos para receber notificações</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="flex items-center justify-between">
+                <div role="main" className="flex items-center justify-between">
                   <div>
                     <p className="font-medium">Ativar Agendamento</p>
                     <p className="text-sm text-muted-foreground">Receber notificações apenas em horários específicos</p>
@@ -560,7 +560,7 @@ export default function NotificationSettingsPage() {
 
                     <div className="space-y-2">
                       <Label>Dias da Semana</Label>
-                      <div className="flex gap-2">
+                      <div role="main" className="flex gap-2">
                         {DAYS_OF_WEEK.map((day) => {
                           const isActive = config.schedule_days?.includes(day.value);
                           return (
@@ -589,7 +589,7 @@ export default function NotificationSettingsPage() {
                       Tempo mínimo entre notificações para evitar spam
                     </p>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div role="main" className="flex items-center gap-4">
                     <Slider
                       value={[config.cooldown_minutes]}
                       onValueChange={([value]) => setConfig({ ...config, cooldown_minutes: value })}
