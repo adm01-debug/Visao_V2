@@ -1,3 +1,4 @@
+import { useOnClickOutside } from "@/hooks";
 import { useState } from 'react';
 import { X, ExternalLink, Settings, Bell, History, MapPin, Save } from 'lucide-react';
 import { Camera } from '@/types/surveillance';
