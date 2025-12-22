@@ -1,3 +1,4 @@
+import { logger } from "@/lib";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useSettings
@@ -298,7 +299,7 @@ export function useSettings(options: UseSettingsOptions = {}): UseSettingsReturn
         try {
           setGeneralState(prev => ({ ...prev, ...JSON.parse(savedGeneral) }));
         } catch (e) {
-          // warn removed
+          console.warn('Erro ao parsear settings general:', e);
         }
       }
 
@@ -307,7 +308,7 @@ export function useSettings(options: UseSettingsOptions = {}): UseSettingsReturn
         try {
           setAnalysisState(prev => ({ ...prev, ...JSON.parse(savedAnalysis) }));
         } catch (e) {
-          // warn removed
+          console.warn('Erro ao parsear settings analysis:', e);
         }
       }
 
@@ -316,7 +317,7 @@ export function useSettings(options: UseSettingsOptions = {}): UseSettingsReturn
         try {
           setRecordingState(prev => ({ ...prev, ...JSON.parse(savedRecording) }));
         } catch (e) {
-          // warn removed
+          console.warn('Erro ao parsear settings recording:', e);
         }
       }
 
@@ -325,12 +326,12 @@ export function useSettings(options: UseSettingsOptions = {}): UseSettingsReturn
         try {
           setSecurityState(prev => ({ ...prev, ...JSON.parse(savedSecurity) }));
         } catch (e) {
-          // warn removed
+          console.warn('Erro ao parsear settings security:', e);
         }
       }
 
     } catch (err) {
-      // error removed
+      console.error('[useSettings] Erro ao carregar:', err);
       setError('Erro ao carregar configurações');
     } finally {
       setLoading(false);
@@ -396,7 +397,7 @@ export function useSettings(options: UseSettingsOptions = {}): UseSettingsReturn
       return true;
 
     } catch (err) {
-      // error removed
+      console.error('[useSettings] Erro ao salvar:', err);
       setError('Erro ao salvar configurações');
       toast.error('Erro ao salvar configurações');
       return false;
@@ -483,7 +484,7 @@ export function useSettings(options: UseSettingsOptions = {}): UseSettingsReturn
       toast.success('Configurações importadas com sucesso!');
       return true;
     } catch (err) {
-      // error removed
+      console.error('[useSettings] Erro ao importar:', err);
       toast.error('Formato de arquivo inválido');
       return false;
     }
