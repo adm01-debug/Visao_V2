@@ -1,3 +1,4 @@
+import { EmptyState, ErrorState, LoadingSpinner, TimeAgo } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Gravações / Clips
@@ -403,7 +404,7 @@ export function RecordingsPage() {
 
       const formattedClips: VideoClipWithCamera[] = (data || []).map(clip => ({
         ...clip,
-        camera_name: (clip.cameras as unknown)?.name || 'Câmera desconhecida',
+        camera_name: (clip.cameras as any)?.name || 'Câmera desconhecida',
       }));
 
       setClips(formattedClips);
