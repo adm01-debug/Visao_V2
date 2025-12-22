@@ -1,4 +1,3 @@
-import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, SeverityBadge, TimeAgo, ConfirmDialog } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Câmeras
@@ -308,7 +307,7 @@ function CameraCard({
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                <Button variant="ghost" size="icon" className="h-8 w-8 -mr-2">
+                <Button aria-label="Ação" variant="ghost" size="icon" className="h-8 w-8 -mr-2">
                   <MoreHorizontal className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -425,7 +424,7 @@ function CameraDetailView({
                   <Badge variant={camera.status !== 'offline' ? 'default' : 'secondary'}>
                     {camera.status !== 'offline' ? 'Online' : 'Offline'}
                   </Badge>
-                  <Button variant="ghost" size="icon" className="text-white" onClick={onClose}>
+                  <Button aria-label="Ação" variant="ghost" size="icon" className="text-white" onClick={onClose}>
                     <X className="w-5 h-5" />
                   </Button>
                 </div>
@@ -735,7 +734,7 @@ export function CamerasPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => refetch()}>
+          <Button aria-label="Ação" variant="outline" size="sm" onClick={() => refetch()}>
             <RefreshCw className="w-4 h-4 mr-2" />
             {t('common.refresh', 'Atualizar')}
           </Button>
@@ -771,7 +770,7 @@ export function CamerasPage() {
         </Select>
 
         {(searchQuery || statusFilter !== 'all') && (
-          <Button 
+          <Button aria-label="Ação" 
             variant="ghost" 
             size="sm"
             onClick={() => {
