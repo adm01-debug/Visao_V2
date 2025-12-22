@@ -28,7 +28,7 @@ export function useCameras() {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro ao carregar câmeras';
       setError(message);
-      console.error(message);
+      // rm
     } finally {
       setLoading(false);
     }
@@ -65,7 +65,7 @@ export function useCameras() {
       await fetchCameras();
       toast.success('Câmeras inicializadas com sucesso');
     } catch (err) {
-      console.error('Error seeding cameras:', err);
+      // rm
     }
   };
 
