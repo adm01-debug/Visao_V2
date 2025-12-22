@@ -263,15 +263,15 @@ function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, onView 
       !zone.is_active && 'opacity-60'
     )} onClick={onView}>
       <div className="p-4 pb-2">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-2">
+        <div role="main" className="flex items-start justify-between">
+          <div role="main" className="flex items-center gap-2">
             <div 
               className="w-4 h-4 rounded"
               style={{ backgroundColor: zone.color || '#3B82F6' }}
             />
             <div>
               <h3 className="font-semibold text-base">{zone.name}</h3>
-              <div className="flex items-center gap-2 mt-1">
+              <div role="main" className="flex items-center gap-2 mt-1">
                 <Badge variant="secondary" className={cn('text-xs', typeConfig.color)}>
                   <TypeIcon className="w-3 h-3 mr-1" />
                   {typeConfig.label}
@@ -494,9 +494,9 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
         <div className="space-y-6 mt-6">
           {/* Video com editor de zona */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
+            <div role="main" className="flex items-center justify-between">
               <Label{t('zones.draw', 'Desenhar Zona')}</Label>
-              <div className="flex items-center gap-1 border rounded-lg p-1">
+              <div role="main" className="flex items-center gap-1 border rounded-lg p-1">
                 <Button
                   variant={drawingMode === 'rectangle' ? 'secondary' : 'ghost'}
                   size="sm"
@@ -567,7 +567,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
             </div>
 
             {formData.pointsData && (
-              <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 dark:bg-green-950 p-2 rounded">
+              <div role="main" className="flex items-center gap-2 text-sm text-green-600 bg-green-50 dark:bg-green-950 p-2 rounded">
                 <Check className="w-4 h-4" />
                 Zona desenhada: {formData.pointsData.shape} com {formData.pointsData.coordinates.length} pontos
                 <Button 
@@ -612,7 +612,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
                 <SelectContent>
                   {Object.entries(zoneTypeConfig).map(([key, config]) => (
                     <SelectItem key={key} value={key}>
-                      <div className="flex items-center gap-2">
+                      <div role="main" className="flex items-center gap-2">
                         <div className={cn('w-2 h-2 rounded-full', config.bgColor)} />
                         {config.label}
                       </div>
@@ -625,7 +625,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
 
             <div>
               <Label{t('zones.color', 'Cor')}</Label>
-              <div className="flex items-center gap-2 mt-2">
+              <div role="main" className="flex items-center gap-2 mt-2">
                 {defaultColors.map(color => (
                   <button
                     key={color}
@@ -654,7 +654,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
           </div>
 
           {/* Zona ativa */}
-          <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+          <div role="main" className="flex items-center justify-between p-4 bg-muted rounded-lg">
             <div>
               <p className="text-sm font-medium"{t('zones.active', 'Zona Ativa')}</p>
               <p className="text-xs text-muted-foreground">Desative para pausar monitoramento</p>
@@ -666,7 +666,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 pt-4 border-t">
+          <div role="main" className="flex items-center gap-2 pt-4 border-t">
             <Button variant="outline" onClick={onClose} className="flex-1">
               Cancelar
             </Button>
@@ -851,7 +851,7 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
                         event.event_type.includes('dwell') ? 'bg-orange-500' :
                         'bg-blue-500'
                       )} />
-                      <div className="flex-1">
+                      <div role="main" className="flex-1">
                         <p className="text-sm font-medium">{event.event_type}</p>
                         <p className="text-xs text-muted-foreground">
                           {format(new Date(event.timestamp), "dd/MM/yyyy 'às' HH:mm:ss", { locale: ptBR })}
@@ -1070,7 +1070,7 @@ export function ZonesPage() {
   if (loading) {
     return (
       <div className="p-6 space-y-6">
-        <div className="flex items-center justify-between">
+        <div role="main" className="flex items-center justify-between">
           <Skeleton className="h-8 w-48" />
           <Skeleton className="h-10 w-32" />
         </div>
@@ -1087,7 +1087,7 @@ export function ZonesPage() {
   return (
     <div className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div role="main" className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Target className="w-6 h-6" />
@@ -1098,7 +1098,7 @@ export function ZonesPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div role="main" className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={loadZones}>
             <RefreshCw className="w-4 h-4 mr-2" />
             {t('common.refresh', 'Atualizar')}
@@ -1136,7 +1136,7 @@ export function ZonesPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+            <div role="main" className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground"{t('zones.total', 'Total')}</p>
                 <p className="text-2xl font-bold">{stats.total}</p>
@@ -1147,7 +1147,7 @@ export function ZonesPage() {
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+            <div role="main" className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground"{t('zones.activeCount', 'Ativas')}</p>
                 <p className="text-2xl font-bold text-green-500">{stats.active}</p>
@@ -1158,7 +1158,7 @@ export function ZonesPage() {
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+            <div role="main" className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground"{t('zones.restricted', 'Restritas')}</p>
                 <p className="text-2xl font-bold text-red-500">{stats.restricted}</p>
@@ -1169,7 +1169,7 @@ export function ZonesPage() {
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+            <div role="main" className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground"{t('zones.counting', 'Contagem')}</p>
                 <p className="text-2xl font-bold text-blue-500">{stats.counting}</p>
@@ -1181,7 +1181,7 @@ export function ZonesPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <div role="main" className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
@@ -1231,7 +1231,7 @@ export function ZonesPage() {
           </Button>
         )}
 
-        <div className="flex items-center gap-1 border rounded-lg p-1 ml-auto">
+        <div role="main" className="flex items-center gap-1 border rounded-lg p-1 ml-auto">
           <Button
             variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
             size="icon"
