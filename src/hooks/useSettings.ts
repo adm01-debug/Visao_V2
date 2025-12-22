@@ -1,3 +1,4 @@
+import { APP_CONFIG, API_ENDPOINTS } from "@/lib/constants";
 import { logger } from "@/lib";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
