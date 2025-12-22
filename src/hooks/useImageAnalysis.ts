@@ -93,7 +93,7 @@ export function useImageAnalysis() {
       return analysis;
 
     } catch (error) {
-      console.error('Error analyzing image:', error);
+      // rm
       
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
       
