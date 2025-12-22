@@ -1,3 +1,4 @@
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Reconhecimento Facial
