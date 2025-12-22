@@ -1,3 +1,4 @@
+import { formatDate, formatNumber } from "@/lib/formatters";
 import { useMemo } from 'react';
 import { 
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
