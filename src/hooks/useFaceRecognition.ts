@@ -211,7 +211,7 @@ export function useFaceRecognition(
       personsRef.current = persons;
       return persons;
     } catch (err) {
-      
+      console.error('[FaceRecognition] Erro ao buscar pessoas:', err);
       return [];
     }
   }, []);
@@ -231,7 +231,7 @@ export function useFaceRecognition(
       if (apiError) throw apiError;
       if (!data.success) throw new Error(data.error);
 
-      const faces: DetectedFace[] = (data.faces || []).map((f: any, index: number) => ({
+      const faces: DetectedFace[] = (data.faces || []).map((f: unknown, index: number) => ({
         id: `face-${Date.now()}-${index}`,
         boundingBox: f.boundingBox || f.bounding_box || { x: 0, y: 0, width: 10, height: 10 },
         confidence: f.confidence || 0.9,
@@ -253,7 +253,7 @@ export function useFaceRecognition(
 
       return faces;
     } catch (err) {
-      
+      console.error('[FaceRecognition] Erro na detecção:', err);
       throw err;
     }
   }, [cameraId, onFaceDetected]);
@@ -425,7 +425,7 @@ export function useFaceRecognition(
           });
         }
       } catch (logErr) {
-        
+        console.error('[FaceRecognition] Erro ao salvar log:', logErr);
       }
 
       const log: Partial<RecognitionLog> = {
