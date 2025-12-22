@@ -180,14 +180,14 @@ interface SecurityStats {
 // CONFIGURAÇÃO
 // ============================================
 
-const logLevelConfig: Record<LogLevel, { icon: any; color: string; bgColor: string; label: string }> = {
+const logLevelConfig: Record<LogLevel, { icon: unknown; color: string; bgColor: string; label: string }> = {
   info: { icon: Info, color: 'text-blue-500', bgColor: 'bg-blue-500/10', label: 'Info' },
   warning: { icon: AlertTriangle, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Aviso' },
   error: { icon: XCircle, color: 'text-red-500', bgColor: 'bg-red-500/10', label: 'Erro' },
   critical: { icon: ShieldAlert, color: 'text-red-600', bgColor: 'bg-red-600/10', label: 'Crítico' },
 };
 
-const categoryConfig: Record<LogCategory, { icon: any; label: string }> = {
+const categoryConfig: Record<LogCategory, { icon: unknown; label: string }> = {
   auth: { icon: Key, label: 'Autenticação' },
   access: { icon: Lock, label: 'Acesso' },
   system: { icon: Settings, label: 'Sistema' },
@@ -197,7 +197,7 @@ const categoryConfig: Record<LogCategory, { icon: any; label: string }> = {
   user: { icon: User, label: 'Usuário' },
 };
 
-const listTypeConfig: Record<ListType, { icon: any; color: string; bgColor: string; label: string }> = {
+const listTypeConfig: Record<ListType, { icon: unknown; color: string; bgColor: string; label: string }> = {
   whitelist: { icon: ShieldCheck, color: 'text-green-500', bgColor: 'bg-green-500/10', label: 'Liberado' },
   blacklist: { icon: ShieldOff, color: 'text-red-500', bgColor: 'bg-red-500/10', label: 'Bloqueado' },
   watchlist: { icon: Eye, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Monitorado' },
@@ -478,7 +478,7 @@ export function SecurityPage() {
       });
 
     } catch (error) {
-      
+      console.error('Erro ao carregar dados:', error);
       toast.error('Erro ao carregar dados de segurança');
     } finally {
       setLoading(false);
@@ -543,7 +543,7 @@ export function SecurityPage() {
       setNewPersonName('');
       setNewPersonReason('');
     } catch (error) {
-      
+      console.error('Erro ao adicionar:', error);
       toast.error('Erro ao adicionar pessoa');
     }
   };
@@ -562,7 +562,7 @@ export function SecurityPage() {
       toast.success('Pessoa removida da lista');
       setDeleteConfirm(null);
     } catch (error) {
-      
+      console.error('Erro ao remover:', error);
       toast.error('Erro ao remover pessoa');
     }
   };
