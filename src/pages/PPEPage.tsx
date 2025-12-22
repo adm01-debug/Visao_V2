@@ -1,3 +1,4 @@
+import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: PPEPage (Equipamentos de Proteção Individual)
