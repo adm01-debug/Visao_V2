@@ -94,7 +94,7 @@ interface CameraWithContinuousAnalysisProps {
   showDetections?: boolean;
   
   /** Callback quando alerta é gerado */
-  onAlertGenerated?: (data: { cameraId: string; alert: any; analysis: AnalysisResult }) => void;
+  onAlertGenerated?: (data: { cameraId: string; alert: unknown; analysis: AnalysisResult }) => void;
   
   /** Callback ao clicar na câmera */
   onClick?: () => void;
@@ -305,7 +305,7 @@ export function CameraWithContinuousAnalysis({
   } = useMLModels({
     models: ['coco-ssd'],
     autoLoad: true,
-    onModelLoaded: (model) => ,
+    onModelLoaded: (model) => console.log(`[ML] ${model} carregado para ${camera.name}`),
   });
 
 
