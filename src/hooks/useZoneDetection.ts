@@ -206,7 +206,7 @@ export function useZoneDetection(
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          const insertData: any = {
+          const insertData: unknown = {
             zone_id: zone.id,
             user_id: user.id,
             event_type: eventType,
@@ -216,7 +216,7 @@ export function useZoneDetection(
           await supabase.from('zone_events').insert(insertData);
         }
       } catch (saveErr) {
-        
+        console.error('[ZoneDetection] Erro ao salvar evento:', saveErr);
       }
     }
 
@@ -232,7 +232,7 @@ export function useZoneDetection(
           is_read: false,
         });
       } catch (err) {
-        
+        console.error('[ZoneDetection] Erro ao criar alerta:', err);
       }
 
       onAlert?.(zone, event);
@@ -474,7 +474,7 @@ export function useZoneDetection(
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const insertData: any = {
+        const insertData: unknown = {
           id: newZone.id,
           camera_id: cameraId,
           user_id: user.id,
@@ -487,7 +487,7 @@ export function useZoneDetection(
         await supabase.from('zones').insert(insertData);
       }
     } catch (err) {
-      
+      console.error('[ZoneDetection] Erro ao salvar zona:', err);
     }
 
     setZones(prev => [...prev, newZone]);
@@ -500,7 +500,7 @@ export function useZoneDetection(
 
   const updateZone = useCallback(async (zoneId: string, updates: Partial<Zone>) => {
     try {
-      const updateData: any = { updated_at: new Date().toISOString() };
+      const updateData: unknown = { updated_at: new Date().toISOString() };
       if (updates.name) updateData.name = updates.name;
       if (updates.type) updateData.type = updates.type;
       if (updates.geometry?.points) updateData.points = updates.geometry.points;
@@ -509,7 +509,7 @@ export function useZoneDetection(
 
       await supabase.from('zones').update(updateData).eq('id', zoneId);
     } catch (err) {
-      
+      console.error('[ZoneDetection] Erro ao atualizar zona:', err);
     }
 
     setZones(prev => prev.map(z => z.id === zoneId ? { ...z, ...updates, updatedAt: new Date() } : z));
@@ -520,7 +520,7 @@ export function useZoneDetection(
     try {
       await supabase.from('zones').delete().eq('id', zoneId);
     } catch (err) {
-      
+      console.error('[ZoneDetection] Erro ao remover zona:', err);
     }
 
     setZones(prev => prev.filter(z => z.id !== zoneId));
