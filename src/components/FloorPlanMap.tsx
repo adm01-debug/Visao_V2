@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useState, useMemo } from 'react';
 import { Camera, AlertTriangle, Eye, EyeOff, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 import { useCameras, DbCamera } from '@/hooks/useCameras';
