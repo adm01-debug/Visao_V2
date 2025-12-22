@@ -1,4 +1,4 @@
-import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { getRelativeTime, formatDuration } from "@/lib/dateUtils";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Alertas
