@@ -199,7 +199,7 @@ Respond in JSON format:
       // Parse resposta do GPT-4
       const response = data?.analysis || data;
       if (response?.items) {
-        return response.items.map((item: any) => ({
+        return response.items.map((item: unknown) => ({
           type: item.type as PPEType,
           status: item.status as PPEStatus,
           confidence: item.confidence || 0.8,
@@ -209,7 +209,7 @@ Respond in JSON format:
 
       return [];
     } catch (err) {
-      
+      console.warn('[PPE] Vision AI failed, using local fallback:', err);
       return [];
     }
   }, []);
@@ -430,7 +430,7 @@ Respond in JSON format:
 
       return results;
     } catch (err) {
-      
+      console.error('[PPE] Detection error:', err);
       onError?.(err instanceof Error ? err : new Error(String(err)));
       return [];
     }
@@ -451,7 +451,7 @@ Respond in JSON format:
         image_url: violation.imageUrl,
       });
     } catch (err) {
-      
+      console.error('[PPE] Failed to save violation:', err);
     }
   };
 
