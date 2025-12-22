@@ -1,3 +1,4 @@
+import { EmptyState, ErrorState, LoadingSpinner, TimeAgo } from "@/components";
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -136,7 +137,7 @@ export default function NotificationSettingsPage() {
         setConfig(newConfig);
       }
     } catch (error) {
-      // rm
+      console.error('Error loading config:', error);
       toast.error('Erro ao carregar configurações');
     } finally {
       setLoading(false);
@@ -169,7 +170,7 @@ export default function NotificationSettingsPage() {
       if (error) throw error;
       toast.success('Configurações salvas com sucesso');
     } catch (error) {
-      // rm
+      console.error('Error saving config:', error);
       toast.error('Erro ao salvar configurações');
     } finally {
       setSaving(false);
@@ -277,7 +278,7 @@ export default function NotificationSettingsPage() {
       if (error) throw error;
       toast.success(`Notificação de teste enviada via ${channel}`);
     } catch (error) {
-      // rm
+      console.error('Error testing notification:', error);
       toast.error(`Erro ao testar notificação via ${channel}`);
     }
   };
