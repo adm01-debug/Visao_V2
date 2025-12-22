@@ -82,7 +82,7 @@ interface SearchResult {
   type: 'camera' | 'alert' | 'person' | 'zone' | 'recording';
   title: string;
   subtitle?: string;
-  icon: any;
+  icon: unknown;
   path: string;
 }
 
@@ -207,7 +207,7 @@ export function Header() {
 
       setSearchResults(results);
     } catch (error) {
-      
+      console.error('Erro na busca:', error);
     }
   };
 
