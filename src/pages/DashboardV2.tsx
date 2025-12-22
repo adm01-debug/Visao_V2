@@ -1,4 +1,3 @@
-import { EmptyState, LoadingSpinner, StatCard, TimeAgo } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Dashboard V2 - Integração Completa
@@ -305,7 +304,7 @@ function CameraStreamCard({
 
       {/* Quick actions (on hover) */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-        <Button size="icon" variant="secondary" className="h-8 w-8">
+        <Button aria-label="Ação" size="icon" variant="secondary" className="h-8 w-8">
           <Maximize2 className="w-4 h-4" />
         </Button>
       </div>
@@ -326,7 +325,7 @@ function SettingsSheet({ settings, onSettingsChange }: SettingsSheetProps) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button aria-label="Ação" variant="outline" size="icon">
           <Settings2 className="w-4 h-4" />
         </Button>
       </SheetTrigger>
@@ -609,12 +608,12 @@ export function DashboardV2() {
           </Select>
 
           {/* Refresh */}
-          <Button variant="outline" size="icon" onClick={handleRefresh}>
+          <Button aria-label="Ação" variant="outline" size="icon" onClick={handleRefresh}>
             <RefreshCw className="w-4 h-4" />
           </Button>
 
           {/* Fullscreen */}
-          <Button variant="outline" size="icon" onClick={toggleFullscreen}>
+          <Button aria-label="Ação" variant="outline" size="icon" onClick={toggleFullscreen}>
             <Maximize2 className="w-4 h-4" />
           </Button>
 
@@ -787,7 +786,7 @@ export function DashboardV2() {
                 </SelectContent>
               </Select>
               {unreadCount > 0 && (
-                <Button variant="ghost" size="sm" className="h-7" onClick={() => markAllAsRead()}>
+                <Button aria-label="Ação" variant="ghost" size="sm" className="h-7" onClick={() => markAllAsRead()}>
                   <CheckCheck className="w-4 h-4" />
                 </Button>
               )}
