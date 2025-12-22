@@ -403,12 +403,12 @@ export function RecordingsPage() {
 
       const formattedClips: VideoClipWithCamera[] = (data || []).map(clip => ({
         ...clip,
-        camera_name: (clip.cameras as any)?.name || 'Câmera desconhecida',
+        camera_name: (clip.cameras as unknown)?.name || 'Câmera desconhecida',
       }));
 
       setClips(formattedClips);
     } catch (error) {
-      // rm
+      console.error('Erro ao carregar clips:', error);
       toast.error('Erro ao carregar gravações');
     } finally {
       setLoading(false);
@@ -484,7 +484,7 @@ export function RecordingsPage() {
       toast.success('Clip excluído');
       loadClips();
     } catch (error) {
-      // rm
+      console.error('Erro ao excluir:', error);
       toast.error('Erro ao excluir clip');
     } finally {
       setDeleteConfirm(null);
@@ -506,7 +506,7 @@ export function RecordingsPage() {
       setSelectedClips(new Set());
       loadClips();
     } catch (error) {
-      // rm
+      console.error('Erro ao excluir:', error);
       toast.error('Erro ao excluir clips');
     }
   };
