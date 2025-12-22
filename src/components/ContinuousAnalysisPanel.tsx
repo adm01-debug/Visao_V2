@@ -269,7 +269,7 @@ export function ContinuousAnalysisPanel({
   useEffect(() => {
     if (enableMLDetection && !isModelLoaded && !isMLLoading) {
       loadModel("coco-ssd").catch(err => {
-        console.error("Erro ao carregar modelo ML:", err);
+        // rm
       });
     }
   }, [enableMLDetection, isModelLoaded, isMLLoading, loadModel]);
