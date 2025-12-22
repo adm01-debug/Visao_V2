@@ -242,7 +242,7 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
       setZoneActivities(activities);
       setTotalDetections((recognitionLogs || []).length);
     } catch (error) {
-      // rm
+      console.error('Error loading heatmap data:', error);
     } finally {
       setLoading(false);
     }
@@ -303,7 +303,7 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
           </Select>
 
           {/* Filtro de período */}
-          <Select value={period} onValueChange={(v) => setPeriod(v as any)}>
+          <Select value={period} onValueChange={(v) => setPeriod(v as unknown)}>
             <SelectTrigger className="w-32">
               <SelectValue />
             </SelectTrigger>
