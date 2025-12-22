@@ -98,7 +98,7 @@ export function useFaceDetection(options: UseFaceDetectionOptions = {}) {
       if (fnError) throw fnError;
       return data?.faces || [];
     } catch (err: unknown) {
-      console.error('[FaceDetection] Edge function error:', err);
+      
       throw err;
     }
   }, []);
