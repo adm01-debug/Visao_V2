@@ -207,7 +207,7 @@ export function Header() {
 
       setSearchResults(results);
     } catch (error) {
-      console.error('Erro na busca:', error);
+      
     }
   };
 
