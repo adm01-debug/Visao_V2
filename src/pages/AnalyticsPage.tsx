@@ -149,14 +149,14 @@ function KPICard({ data, loading }: KPICardProps) {
   return (
     <Card>
       <CardContent className="p-6">
-        <div className="flex items-center justify-between mb-2">
+        <div role="main" className="flex items-center justify-between mb-2">
           <span className="text-sm text-muted-foreground">{data.label}</span>
           <div className={cn('p-2 rounded-lg', data.color)}>
             <Icon className="w-4 h-4 text-white" />
           </div>
         </div>
         
-        <div className="flex items-baseline gap-2">
+        <div role="main" className="flex items-baseline gap-2">
           <span className="text-3xl font-bold">
             {data.value.toLocaleString('pt-BR')}
           </span>
@@ -165,7 +165,7 @@ function KPICard({ data, loading }: KPICardProps) {
           )}
         </div>
         
-        <div className="flex items-center gap-1 mt-2">
+        <div role="main" className="flex items-center gap-1 mt-2">
           {isNeutral ? (
             <>
               <Minus className="w-3 h-3 text-muted-foreground" />
@@ -205,7 +205,7 @@ function SimpleBarChart({ data, dataKey, color, height = 200 }: SimpleBarChartPr
   const maxValue = Math.max(...data.map(d => Number(d[dataKey]) || 0), 1);
   
   return (
-    <div className="flex items-end gap-1 h-full" style={{ height }}>
+    <div role="main" className="flex items-end gap-1 h-full" style={{ height }}>
       {data.map((item, index) => {
         const value = Number(item[dataKey]) || 0;
         const barHeight = (value / maxValue) * 100;
@@ -568,7 +568,7 @@ export function AnalyticsPage() {
   return (
     <div className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div role="main" className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <BarChart3 className="w-6 h-6" />
@@ -579,7 +579,7 @@ export function AnalyticsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div role="main" className="flex items-center gap-2">
           <Select value={dateRange} onValueChange={(v) => setDateRange(v as DateRange)}>
             <SelectTrigger className="w-36">
               <Calendar className="w-4 h-4 mr-2" />
@@ -725,14 +725,14 @@ export function AnalyticsPage() {
                     <span className="text-sm font-medium w-6 text-muted-foreground">
                       #{i + 1}
                     </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
+                    <div role="main" className="flex-1 min-w-0">
+                      <div role="main" className="flex items-center justify-between mb-1">
                         <span className="text-sm font-medium truncate">{camera.name}</span>
                         <Badge variant="secondary" className="text-xs">
                           {camera.alerts} alertas
                         </Badge>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div role="main" className="flex items-center gap-2">
                         <Progress value={camera.uptime} className="h-1.5 flex-1" />
                         <span className="text-xs text-muted-foreground w-12">
                           {camera.uptime.toFixed(1)}%
@@ -758,9 +758,9 @@ export function AnalyticsPage() {
             ) : (
               <>
                 <HourlyHeatmap data={hourlyData} />
-                <div className="flex items-center justify-between mt-4 text-xs text-muted-foreground">
+                <div role="main" className="flex items-center justify-between mt-4 text-xs text-muted-foreground">
                   <span{t('analytics.lowerActivity', 'Menor atividade')}</span>
-                  <div className="flex items-center gap-1">
+                  <div role="main" className="flex items-center gap-1">
                     {[0.1, 0.3, 0.5, 0.7, 0.9].map((intensity, i) => (
                       <div
                         key={i}
