@@ -116,7 +116,7 @@ function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
       onClick={onView}
     >
       <CardContent className="p-4">
-        <div className="flex items-start gap-4">
+        <div role="main" className="flex items-start gap-4">
           <Avatar className="w-16 h-16">
             <AvatarImage src={person.photo_url || undefined} />
             <AvatarFallback className="text-lg bg-primary/10">
@@ -124,8 +124,8 @@ function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
             </AvatarFallback>
           </Avatar>
 
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
+          <div role="main" className="flex-1 min-w-0">
+            <div role="main" className="flex items-center gap-2 mb-1">
               <h3 className="font-semibold truncate">{person.name}</h3>
               <Badge 
                 variant={person.is_active ? 'default' : 'secondary'}
@@ -145,7 +145,7 @@ function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
               </p>
             )}
 
-            <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+            <div role="main" className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
               <span>
                 Cadastrado: {formatDistanceToNow(new Date(person.created_at), { 
                   addSuffix: true, 
@@ -445,7 +445,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
               maxHeight={600}
             />
           ) : (
-            <div className="flex flex-col items-center gap-4">
+            <div role="main" className="flex flex-col items-center gap-4">
               <div className="relative">
                 <Avatar className={cn(
                   "w-24 h-24 ring-2 ring-offset-2",
@@ -487,9 +487,9 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
                 )}
               </div>
               
-              <div className="flex items-center gap-3">
+              <div role="main" className="flex items-center gap-3">
                 <Label htmlFor="photo" className="cursor-pointer">
-                  <div className="flex items-center gap-2 text-sm text-primary hover:underline">
+                  <div role="main" className="flex items-center gap-2 text-sm text-primary hover:underline">
                     <Upload className="w-4 h-4" />
                     Upload
                   </div>
@@ -537,7 +537,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
               {/* Informações do encoding */}
               {faceEncoding && faceEncoding.primaryFace && (
                 <div className="text-xs text-muted-foreground bg-muted/50 rounded-md p-2 space-y-1">
-                  <div className="flex items-center gap-2">
+                  <div role="main" className="flex items-center gap-2">
                     <ScanFace className="w-3 h-3" />
                     <span>Encoding facial gerado</span>
                   </div>
@@ -603,7 +603,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
               />
             </div>
 
-            <div className="flex items-center justify-between">
+            <div role="main" className="flex items-center justify-between">
               <Label htmlFor="is_active">Pessoa ativa</Label>
               <Switch
                 id="is_active"
@@ -705,7 +705,7 @@ function PersonDetailsDialog({
             </Avatar>
             <div>
               <span>{person.name}</span>
-              <div className="flex items-center gap-2 mt-1">
+              <div role="main" className="flex items-center gap-2 mt-1">
                 <Badge variant={person.is_active ? 'default' : 'secondary'} className="text-xs">
                   {person.is_active ? 'Ativo' : 'Inativo'}
                 </Badge>
@@ -765,8 +765,8 @@ function PersonDetailsDialog({
                           : 'border-l-red-500 bg-red-500/5'
                       )}
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+                      <div role="main" className="flex items-center justify-between">
+                        <div role="main" className="flex items-center gap-2">
                           {log.recognized ? (
                             <CheckCircle className="w-4 h-4 text-green-500" />
                           ) : (
@@ -952,7 +952,7 @@ export default function PeoplePage() {
       {/* Header */}
       <div className="border-b bg-card">
         <div className="container py-6">
-          <div className="flex items-center justify-between mb-6">
+          <div role="main" className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-2xl font-bold flex items-center gap-2">
                 <Users className="w-6 h-6" />
@@ -963,7 +963,7 @@ export default function PeoplePage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div role="main" className="flex items-center gap-2">
               <Button
                 variant="outline"
                 size="icon"
@@ -983,7 +983,7 @@ export default function PeoplePage() {
           <div className="grid grid-cols-3 gap-4">
             <Card>
               <CardContent className="p-4">
-                <div className="flex items-center gap-3">
+                <div role="main" className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                     <Users className="w-5 h-5 text-primary" />
                   </div>
@@ -996,7 +996,7 @@ export default function PeoplePage() {
             </Card>
             <Card>
               <CardContent className="p-4">
-                <div className="flex items-center gap-3">
+                <div role="main" className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center">
                     <CheckCircle className="w-5 h-5 text-green-500" />
                   </div>
@@ -1009,7 +1009,7 @@ export default function PeoplePage() {
             </Card>
             <Card>
               <CardContent className="p-4">
-                <div className="flex items-center gap-3">
+                <div role="main" className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gray-500/10 flex items-center justify-center">
                     <XCircle className="w-5 h-5 text-gray-500" />
                   </div>
@@ -1027,7 +1027,7 @@ export default function PeoplePage() {
       {/* Content */}
       <div className="container py-6">
         {/* Filters */}
-        <div className="flex items-center gap-4 mb-6">
+        <div role="main" className="flex items-center gap-4 mb-6">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
@@ -1048,7 +1048,7 @@ export default function PeoplePage() {
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div role="main" className="flex items-center gap-2">
             <Switch
               id="active-only"
               checked={filters.activeOnly}
@@ -1059,7 +1059,7 @@ export default function PeoplePage() {
             </Label>
           </div>
 
-          <div className="flex items-center border rounded-lg p-1">
+          <div role="main" className="flex items-center border rounded-lg p-1">
             <Button
               variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
               size="icon"
@@ -1153,7 +1153,7 @@ export default function PeoplePage() {
                     onClick={() => setSelectedPerson(person)}
                   >
                     <TableCell>
-                      <div className="flex items-center gap-3">
+                      <div role="main" className="flex items-center gap-3">
                         <Avatar className="w-8 h-8">
                           <AvatarImage src={person.photo_url || undefined} />
                           <AvatarFallback className="text-xs">
@@ -1209,7 +1209,7 @@ export default function PeoplePage() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-6">
+          <div role="main" className="flex items-center justify-center gap-2 mt-6">
             <Button
               variant="outline"
               size="sm"
