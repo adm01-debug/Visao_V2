@@ -146,7 +146,7 @@ interface ZoneFormData {
 
 const zoneTypeConfig: Record<ZoneType, { 
   label: string; 
-  icon: any; 
+  icon: unknown; 
   color: string;
   bgColor: string;
   description: string;
@@ -228,7 +228,7 @@ const defaultColors = [
 ];
 
 // Helper to parse points JSON
-function parsePointsData(points: any): ZonePointsData | null {
+function parsePointsData(points: unknown): ZonePointsData | null {
   if (!points) return null;
   try {
     if (typeof points === 'string') {
@@ -380,7 +380,7 @@ function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, onView 
 interface ZoneEditorSheetProps {
   isOpen: boolean;
   onClose: () => void;
-  camera: any;
+  camera: unknown;
   zone?: DbZone | null;
   onSave: (data: TablesInsert<'zones'> | TablesUpdate<'zones'>) => Promise<void>;
 }
@@ -456,7 +456,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
           type: formData.type,
           color: formData.color,
           is_active: formData.is_active,
-          points: pointsWithOpacity as any,
+          points: pointsWithOpacity as unknown,
         });
       } else {
         // Insert
@@ -465,7 +465,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
           type: formData.type,
           color: formData.color,
           is_active: formData.is_active,
-          points: pointsWithOpacity as any,
+          points: pointsWithOpacity as unknown,
           camera_id: camera?.id,
           user_id: user.id,
         });
@@ -474,7 +474,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
       toast.success(zone ? 'Zona atualizada' : 'Zona criada');
     } catch (error) {
       toast.error('Erro ao salvar');
-      
+      console.error(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -559,7 +559,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
                     color: formData.color,
                     opacity: opacity,
                     enabled: true,
-                  } as any] : []}
+                  } as unknown] : []}
                   onZoneCreated={(z) => handleZoneDrawn(z.geometry?.points || [])}
                   selectedColor={formData.color}
                   drawingMode={drawingMode}
@@ -691,7 +691,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
 
 interface ZoneViewDialogProps {
   zone: DbZone | null;
-  camera: any;
+  camera: unknown;
   stats?: ZoneStats;
   events: ZoneEvent[];
   isOpen: boolean;
@@ -938,12 +938,12 @@ export function ZonesPage() {
             };
           }
         } catch (e) {
-          
+          console.error('Erro ao carregar stats da zona:', zone.id, e);
         }
       }
       setZoneStats(statsMap);
     } catch (error) {
-      
+      console.error('Erro ao carregar zonas:', error);
       toast.error('Erro ao carregar dados');
     } finally {
       setLoading(false);
@@ -961,7 +961,7 @@ export function ZonesPage() {
       
       setZoneEvents(prev => ({ ...prev, [zoneId]: data || [] }));
     } catch (error) {
-      
+      console.error('Erro ao carregar eventos:', error);
     }
   };
 
@@ -1010,7 +1010,7 @@ export function ZonesPage() {
       }
       loadZones();
     } catch (error) {
-      
+      console.error('Erro ao salvar:', error);
       throw error;
     }
   };
@@ -1046,7 +1046,7 @@ export function ZonesPage() {
     }
   };
 
-  const openEditor = (camera: any, zone?: DbZone) => {
+  const openEditor = (camera: unknown, zone?: DbZone) => {
     setEditorCamera(camera);
     setEditingZone(zone || null);
     setIsEditorOpen(true);
