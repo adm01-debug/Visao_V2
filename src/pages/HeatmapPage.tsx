@@ -50,7 +50,7 @@ export default function HeatmapPage() {
     try {
       await exportData('csv');
     } catch (err) {
-      console.error('Erro ao exportar dados:', err);
+      
     }
   }, [exportData]);
 
