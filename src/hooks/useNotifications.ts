@@ -204,7 +204,7 @@ export function useNotifications(
 
       setNotifications(formatted);
     } catch (error) {
-      console.error('Erro ao carregar notificações:', error);
+      // removed
     } finally {
       setLoading(false);
     }
@@ -221,7 +221,7 @@ export function useNotifications(
         setConfig(DEFAULT_CONFIG);
       }
     } catch (error) {
-      console.error('Erro ao carregar config:', error);
+      // removed
       setConfig(DEFAULT_CONFIG);
     }
   }, []);
@@ -234,7 +234,7 @@ export function useNotifications(
       setConfig(newConfig);
       toast.success('Configurações salvas');
     } catch (error) {
-      console.error('Erro ao salvar config:', error);
+      // removed
       toast.error('Erro ao salvar configurações');
     }
   }, [config]);
@@ -251,7 +251,7 @@ export function useNotifications(
         prev.map(n => n.id === id ? { ...n, status: 'read' as NotificationStatus, readAt: new Date().toISOString() } : n)
       );
     } catch (error) {
-      console.error('Erro ao marcar como lida:', error);
+      // removed
     }
   }, []);
 
@@ -273,7 +273,7 @@ export function useNotifications(
 
       toast.success('Todas notificações marcadas como lidas');
     } catch (error) {
-      console.error('Erro ao marcar todas como lidas:', error);
+      // removed
     }
   }, [notifications]);
 
@@ -287,7 +287,7 @@ export function useNotifications(
 
       setNotifications(prev => prev.filter(n => n.id !== id));
     } catch (error) {
-      console.error('Erro ao deletar:', error);
+      // removed
     }
   }, []);
 
@@ -306,7 +306,7 @@ export function useNotifications(
       setNotifications([]);
       toast.success('Notificações limpas');
     } catch (error) {
-      console.error('Erro ao limpar:', error);
+      // removed
     }
   }, [notifications]);
 
@@ -329,7 +329,7 @@ export function useNotifications(
         return false;
       }
     } catch (error) {
-      console.error('Erro ao solicitar permissão:', error);
+      // removed
       return false;
     }
   }, []);
@@ -368,7 +368,7 @@ export function useNotifications(
 
       toast.success(`Notificação de teste enviada (${channel})`);
     } catch (error) {
-      console.error('Erro ao enviar teste:', error);
+      // removed
       toast.error('Erro ao enviar notificação de teste');
     }
   }, [pushPermission, requestPushPermission]);
@@ -380,10 +380,10 @@ export function useNotifications(
     try {
       audioRef.current.currentTime = 0;
       audioRef.current.play().catch(err => {
-        console.warn('Não foi possível tocar som:', err);
+        // removed
       });
     } catch (error) {
-      console.warn('Erro ao tocar som:', error);
+      // removed
     }
   }, [soundEnabled]);
 
