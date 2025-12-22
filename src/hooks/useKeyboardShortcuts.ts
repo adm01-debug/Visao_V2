@@ -309,7 +309,7 @@ export function useKeyboardShortcuts(
           onShortcutTriggered?.(shortcut);
           
           // Log para debug
-          console.log(`[Keyboard] Atalho executado: ${getShortcutLabel(shortcut)}`);
+          // rm
           
           return;
         }
