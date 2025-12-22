@@ -1,35 +1,42 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useAnalysisConfigs } from '../useAnalysisConfigs';
+import React from 'react';
 
-vi.mock('@/integrations/supabase/client', () => ({
-  supabase: {
-    from: vi.fn(() => ({
-      select: vi.fn().mockReturnThis(),
-      insert: vi.fn().mockReturnThis(),
-      update: vi.fn().mockReturnThis(),
-      delete: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      order: vi.fn().mockResolvedValue({ data: [], error: null }),
-      single: vi.fn().mockResolvedValue({ data: {}, error: null }),
-    })),
-  },
-}));
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+};
 
 describe('useAnalysisConfigs', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should initialize with default state', () => {
-    // Test initialization
-    expect(true).toBe(true);
+  it('should return initial state', () => {
+    const { result } = renderHook(() => useAnalysisConfigs(), {
+      wrapper: createWrapper(),
+    });
+    expect(result.current.configs).toBeDefined();
+    expect(result.current.isLoading).toBeDefined();
   });
 
   it('should handle loading state', () => {
-    expect(true).toBe(true);
+    const { result } = renderHook(() => useAnalysisConfigs(), {
+      wrapper: createWrapper(),
+    });
+    expect(typeof result.current.isLoading).toBe('boolean');
   });
 
-  it('should handle errors gracefully', () => {
-    expect(true).toBe(true);
+  it('should have create function', () => {
+    const { result } = renderHook(() => useAnalysisConfigs(), {
+      wrapper: createWrapper(),
+    });
+    expect(typeof result.current.createConfig).toBe('function');
   });
 });
