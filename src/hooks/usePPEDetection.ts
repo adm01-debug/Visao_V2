@@ -209,7 +209,7 @@ Respond in JSON format:
 
       return [];
     } catch (err) {
-      // rm
+      console.warn('[PPE] Vision AI failed, using local fallback:', err);
       return [];
     }
   }, []);
@@ -430,7 +430,7 @@ Respond in JSON format:
 
       return results;
     } catch (err) {
-      // rm
+      console.error('[PPE] Detection error:', err);
       onError?.(err instanceof Error ? err : new Error(String(err)));
       return [];
     }
@@ -451,7 +451,7 @@ Respond in JSON format:
         image_url: violation.imageUrl,
       });
     } catch (err) {
-      // rm
+      console.error('[PPE] Failed to save violation:', err);
     }
   };
 
