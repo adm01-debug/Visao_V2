@@ -166,8 +166,8 @@ function mapDbCameraToUI(dbCamera: DbCamera) {
     alerts: dbCamera.alerts_count || 0,
     latitude: dbCamera.latitude,
     longitude: dbCamera.longitude,
-    streamUrl: (dbCamera as any).stream_url || undefined,
-    streamProtocol: (dbCamera as any).stream_protocol || 'hls',
+    streamUrl: (dbCamera as unknown).stream_url || undefined,
+    streamProtocol: (dbCamera as unknown).stream_protocol || 'hls',
   };
 }
 
@@ -217,7 +217,7 @@ function CameraStreamCard({
           <VideoStreamPlayer
             cameraId={camera.id}
             streamUrl={camera.streamUrl!}
-            protocol={camera.streamProtocol as any}
+            protocol={camera.streamProtocol as unknown}
             cameraName={camera.name}
           />
           
