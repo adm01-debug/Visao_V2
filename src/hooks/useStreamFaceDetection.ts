@@ -136,7 +136,7 @@ export function useStreamFaceDetection({
       const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
       return dataUrl.replace(/^data:image\/\w+;base64,/, '');
     } catch (err) {
-      // rm
+      console.error('Erro ao capturar frame:', err);
       return null;
     }
   }, []);
@@ -269,7 +269,7 @@ export function useStreamFaceDetection({
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro desconhecido';
       setError(message);
-      // rm
+      console.error('Erro na detecção facial:', err);
       return [];
     } finally {
       setIsProcessing(false);
