@@ -1,4 +1,3 @@
-import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, SeverityBadge, TimeAgo, ConfirmDialog } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Reconhecimento Facial
@@ -132,7 +131,7 @@ export default function FaceRecognitionPage() {
               </Button>
             </div>
 
-            <Button variant="outline" size="sm" onClick={() => window.location.href = '/recognition-logs'}>
+            <Button aria-label="Ação" variant="outline" size="sm" onClick={() => window.location.href = '/recognition-logs'}>
               <History className="w-4 h-4 mr-2" />
               Histórico
             </Button>
