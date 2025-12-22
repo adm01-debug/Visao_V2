@@ -60,11 +60,11 @@ export default function HeatmapPage() {
         <meta name="description" content={t('heatmap.pageDescription', 'Visualize mapas de calor de movimento por zona e câmera')} />
       </Helmet>
       
-      <div className="flex min-h-screen w-full bg-background">
+      <div role="main" className="flex min-h-screen w-full bg-background">
         <Sidebar />
         <main className="flex-1 p-6 overflow-auto">
           {/* Header com controles */}
-          <div className="flex items-center justify-between mb-6">
+          <div role="main" className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-2xl font-bold tracking-tight">
                 {t('heatmap.title', 'Mapa de Calor')}
@@ -74,7 +74,7 @@ export default function HeatmapPage() {
               </p>
             </div>
             
-            <div className="flex items-center gap-4">
+            <div role="main" className="flex items-center gap-4">
               {/* Seletor de período */}
               <Select value={timeRange} onValueChange={(value: any) => setTimeRange(value)}>
                 <SelectTrigger className="w-[140px]">
@@ -113,7 +113,7 @@ export default function HeatmapPage() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <Card>
                 <CardContent className="pt-4">
-                  <div className="flex items-center justify-between">
+                  <div role="main" className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground">Total de Pontos</p>
                       <p className="text-2xl font-bold">{stats.totalPoints?.toLocaleString() || 0}</p>
@@ -125,7 +125,7 @@ export default function HeatmapPage() {
               
               <Card>
                 <CardContent className="pt-4">
-                  <div className="flex items-center justify-between">
+                  <div role="main" className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground">Intensidade Máx.</p>
                       <p className="text-2xl font-bold">{stats.maxIntensity?.toFixed(1) || 0}</p>
@@ -137,7 +137,7 @@ export default function HeatmapPage() {
               
               <Card>
                 <CardContent className="pt-4">
-                  <div className="flex items-center justify-between">
+                  <div role="main" className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground">Intensidade Média</p>
                       <p className="text-2xl font-bold">{stats.avgIntensity?.toFixed(1) || 0}</p>
@@ -149,7 +149,7 @@ export default function HeatmapPage() {
               
               <Card>
                 <CardContent className="pt-4">
-                  <div className="flex items-center justify-between">
+                  <div role="main" className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground">Zonas Ativas</p>
                       <p className="text-2xl font-bold">{stats.activeZones || 0}</p>
