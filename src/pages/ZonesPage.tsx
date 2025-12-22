@@ -454,7 +454,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
           type: formData.type,
           color: formData.color,
           is_active: formData.is_active,
-          points: pointsWithOpacity as any,
+          points: pointsWithOpacity as unknown,
         });
       } else {
         // Insert
@@ -463,7 +463,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
           type: formData.type,
           color: formData.color,
           is_active: formData.is_active,
-          points: pointsWithOpacity as any,
+          points: pointsWithOpacity as unknown,
           camera_id: camera?.id,
           user_id: user.id,
         });
@@ -472,7 +472,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
       toast.success(zone ? 'Zona atualizada' : 'Zona criada');
     } catch (error) {
       toast.error('Erro ao salvar');
-      // rm
+      console.error(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -557,7 +557,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
                     color: formData.color,
                     opacity: opacity,
                     enabled: true,
-                  } as any] : []}
+                  } as unknown] : []}
                   onZoneCreated={(z) => handleZoneDrawn(z.geometry?.points || [])}
                   selectedColor={formData.color}
                   drawingMode={drawingMode}
@@ -936,12 +936,12 @@ export function ZonesPage() {
             };
           }
         } catch (e) {
-          // rm
+          console.error('Erro ao carregar stats da zona:', zone.id, e);
         }
       }
       setZoneStats(statsMap);
     } catch (error) {
-      // rm
+      console.error('Erro ao carregar zonas:', error);
       toast.error('Erro ao carregar dados');
     } finally {
       setLoading(false);
@@ -959,7 +959,7 @@ export function ZonesPage() {
       
       setZoneEvents(prev => ({ ...prev, [zoneId]: data || [] }));
     } catch (error) {
-      // rm
+      console.error('Erro ao carregar eventos:', error);
     }
   };
 
@@ -1008,7 +1008,7 @@ export function ZonesPage() {
       }
       loadZones();
     } catch (error) {
-      // rm
+      console.error('Erro ao salvar:', error);
       throw error;
     }
   };
