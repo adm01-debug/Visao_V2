@@ -1,4 +1,3 @@
-import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, SeverityBadge, TimeAgo, ConfirmDialog } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Alertas
@@ -200,7 +199,7 @@ function AlertItem({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
+            <Button aria-label="Ação" variant="ghost" size="icon" className="h-8 w-8">
               <MoreHorizontal className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -368,7 +367,7 @@ function AlertDetailsDialog({
 
           {/* Actions */}
           <div className="flex items-center gap-2 pt-4 border-t">
-            <Button variant="outline" onClick={onMarkRead}>
+            <Button aria-label="Ação" variant="outline" onClick={onMarkRead}>
               {alert.is_read ? (
                 <>
                   <EyeOff className="w-4 h-4 mr-2" />
@@ -381,7 +380,7 @@ function AlertDetailsDialog({
                 </>
               )}
             </Button>
-            <Button variant="destructive" onClick={onDelete}>
+            <Button aria-label="Ação" variant="destructive" onClick={onDelete}>
               <Trash2 className="w-4 h-4 mr-2" />
               Excluir
             </Button>
@@ -598,12 +597,12 @@ export function AlertsPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => refetch()}>
+          <Button aria-label="Ação" variant="outline" size="sm" onClick={() => refetch()}>
             <RefreshCw className="w-4 h-4 mr-2" />
             Atualizar
           </Button>
           {unreadCount > 0 && (
-            <Button variant="outline" size="sm" onClick={() => markAllAsRead()}>
+            <Button aria-label="Ação" variant="outline" size="sm" onClick={() => markAllAsRead()}>
               <CheckCheck className="w-4 h-4 mr-2" />
               Marcar todos como lidos
             </Button>
@@ -726,7 +725,7 @@ export function AlertsPage() {
           </Select>
 
           {hasActiveFilters && (
-            <Button variant="ghost" size="sm" onClick={clearFilters}>
+            <Button aria-label="Ação" variant="ghost" size="sm" onClick={clearFilters}>
               <X className="w-4 h-4 mr-1" />
               Limpar
             </Button>
@@ -760,15 +759,15 @@ export function AlertsPage() {
           <span className="text-sm font-medium">
             {selectedAlerts.size} alertas selecionados
           </span>
-          <Button size="sm" variant="outline" onClick={handleMarkSelectedRead}>
+          <Button aria-label="Ação" size="sm" variant="outline" onClick={handleMarkSelectedRead}>
             <Check className="w-4 h-4 mr-1" />
             Marcar como lidos
           </Button>
-          <Button size="sm" variant="destructive" onClick={handleDeleteSelected}>
+          <Button aria-label="Ação" size="sm" variant="destructive" onClick={handleDeleteSelected}>
             <Trash2 className="w-4 h-4 mr-1" />
             Excluir
           </Button>
-          <Button size="sm" variant="ghost" onClick={() => setSelectedAlerts(new Set())}>
+          <Button aria-label="Ação" size="sm" variant="ghost" onClick={() => setSelectedAlerts(new Set())}>
             Cancelar
           </Button>
         </div>
