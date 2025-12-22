@@ -1,3 +1,4 @@
+import { APP_CONFIG, API_ENDPOINTS } from "@/lib/constants";
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
