@@ -67,7 +67,7 @@ import { useTheme } from '@/contexts/ThemeProvider';
 
 interface NavItem {
   label: string;
-  icon: any;
+  icon: unknown;
   path: string;
   badge?: number | string;
   badgeVariant?: 'default' | 'secondary' | 'destructive' | 'outline';
