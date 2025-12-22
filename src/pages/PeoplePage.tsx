@@ -1,3 +1,4 @@
+import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Colaboradores / Pessoas
@@ -402,7 +403,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
       toast.success(person ? 'Pessoa atualizada' : 'Pessoa cadastrada');
     } catch (error) {
       toast.error('Erro ao salvar');
-      // rm
+      console.error(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -685,7 +686,7 @@ function PersonDetailsDialog({
       
       setRecognitionLogs(data || []);
     } catch (error) {
-      // rm
+      console.error('Erro ao carregar logs:', error);
     } finally {
       setLoadingLogs(false);
     }
@@ -850,7 +851,7 @@ export default function PeoplePage() {
       if (error) throw error;
       setPeople(data || []);
     } catch (error) {
-      // rm
+      console.error('Erro ao carregar pessoas:', error);
       toast.error('Erro ao carregar dados');
     } finally {
       setLoading(false);
@@ -932,7 +933,7 @@ export default function PeoplePage() {
       loadPeople();
     } catch (error) {
       toast.error('Erro ao remover');
-      // rm
+      console.error(error);
     } finally {
       setDeleteConfirm(null);
       setSelectedPerson(null);
