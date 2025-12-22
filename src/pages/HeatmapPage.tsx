@@ -50,7 +50,7 @@ export default function HeatmapPage() {
     try {
       await exportData('csv');
     } catch (err) {
-      
+      console.error('Erro ao exportar dados:', err);
     }
   }, [exportData]);
 
@@ -77,7 +77,7 @@ export default function HeatmapPage() {
             
             <div role="main" className="flex items-center gap-4">
               {/* Seletor de período */}
-              <Select value={timeRange} onValueChange={(value: any) => setTimeRange(value)}>
+              <Select value={timeRange} onValueChange={(value: unknown) => setTimeRange(value)}>
                 <SelectTrigger className="w-[140px]">
                   <Calendar className="h-4 w-4 mr-2" />
                   <SelectValue />
