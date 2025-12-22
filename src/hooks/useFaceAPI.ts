@@ -99,7 +99,7 @@ class FaceAPICache {
   async loadModels(modelPath: string, options: { expressions: boolean; age: boolean }): Promise<void> {
     if (this.modelsLoaded) return;
 
-
+    console.log('[FaceAPI] Carregando modelos de', modelPath);
 
     try {
       await Promise.all([
@@ -112,9 +112,9 @@ class FaceAPICache {
       ]);
 
       this.modelsLoaded = true;
-
+      console.log('[FaceAPI] Modelos carregados com sucesso');
     } catch (err) {
-
+      console.error('[FaceAPI] Erro ao carregar modelos:', err);
       throw err;
     }
   }
@@ -154,10 +154,10 @@ class FaceAPICache {
         this.faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.6);
       }
 
-
+      console.log(`[FaceAPI] ${this.registeredFaces.length} rostos cadastrados carregados`);
       return this.registeredFaces;
     } catch (err) {
-
+      console.error('[FaceAPI] Erro ao carregar rostos:', err);
       return [];
     }
   }
@@ -251,7 +251,7 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
       });
 
       setModelsLoaded(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       const message = `Erro ao carregar modelos: ${err.message}`;
       setError(message);
       onError?.(err);
@@ -285,7 +285,7 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
     input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
   ): Promise<FaceDetection[]> => {
     if (!cache.current.isLoaded()) {
-
+      console.warn('[FaceAPI] Modelos não carregados');
       return [];
     }
 
@@ -301,18 +301,18 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
         .withFaceDescriptors();
 
       if (config.detectExpressions) {
-        query = query.withFaceExpressions() as any;
+        query = query.withFaceExpressions() as unknown;
       }
 
       if (config.detectAge) {
-        query = query.withAgeAndGender() as any;
+        query = query.withAgeAndGender() as unknown;
       }
 
       const detections = await query;
 
       const faces: FaceDetection[] = detections
         .slice(0, config.maxFaces)
-        .map((d: any, i: number) => ({
+        .map((d: unknown, i: number) => ({
           id: `face-${Date.now()}-${i}`,
           box: {
             x: d.detection.box.x,
@@ -330,8 +330,8 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
 
       onFaceDetected?.(faces);
       return faces;
-    } catch (err: any) {
-
+    } catch (err: unknown) {
+      console.error('[FaceAPI] Erro na detecção:', err);
       return [];
     }
   }, [config, onFaceDetected]);
@@ -371,7 +371,7 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
       distance: bestMatch.distance,
       similarity: 1 - bestMatch.distance,
       isMatch: bestMatch.distance < config.matchThreshold,
-      status: (registeredFace?.status as any) || 'known',
+      status: (registeredFace?.status as unknown) || 'known',
       photoUrl: registeredFace?.photoUrl,
     };
   }, [config.matchThreshold]);
@@ -412,7 +412,7 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
       await loadRegisteredFaces();
       toast.success(`Rosto de ${personName} cadastrado com sucesso`);
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error(`Erro ao cadastrar rosto: ${err.message}`);
       return false;
     }
