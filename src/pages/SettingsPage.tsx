@@ -526,11 +526,11 @@ export function SettingsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={loadSettings}>
+          <Button aria-label="Ação" variant="outline" onClick={loadSettings}>
             <RefreshCw className="w-4 h-4 mr-2" />
             Recarregar
           </Button>
-          <Button onClick={saveSettings} disabled={saving}>
+          <Button aria-label="Ação" onClick={saveSettings} disabled={saving}>
             <Save className="w-4 h-4 mr-2" />
             {saving ? {t('settings.saving', 'Salvando...')} : {t('settings.save', 'Salvar')}}
           </Button>
@@ -669,7 +669,7 @@ export function SettingsPage() {
                       onChange={(e) => setNewEmail(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && addEmail()}
                     />
-                    <Button onClick={addEmail} variant="secondary">Adicionar</Button>
+                    <Button aria-label="Ação" onClick={addEmail} variant="secondary">Adicionar</Button>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {notificationSettings.emailRecipients.map(email => (
@@ -708,7 +708,7 @@ export function SettingsPage() {
                       onChange={(e) => setNewPhone(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && addPhone()}
                     />
-                    <Button onClick={addPhone} variant="secondary">Adicionar</Button>
+                    <Button aria-label="Ação" onClick={addPhone} variant="secondary">Adicionar</Button>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {notificationSettings.whatsappNumbers.map(phone => (
@@ -1084,7 +1084,7 @@ export function SettingsPage() {
             icon={Download}
           >
             <div className="flex items-center gap-2">
-              <Button variant="outline" onClick={() => {
+              <Button aria-label="Ação" variant="outline" onClick={() => {
                 const data = {
                   general: generalSettings,
                   notifications: notificationSettings,
