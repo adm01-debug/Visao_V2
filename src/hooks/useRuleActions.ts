@@ -4,19 +4,15 @@
  * 
  * Executa ações das regras quando disparadas
  */
-
 import { useCallback, useRef, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-
 // ============================================
 // TIPOS
 // ============================================
-
 type RuleActionType = 'alert' | 'notify' | 'record' | 'lockdown' | 'dispatch';
 type RuleSeverity = 'low' | 'medium' | 'high' | 'critical';
-
 interface RuleCondition {
   type: string;
   operator: string;
@@ -24,7 +20,6 @@ interface RuleCondition {
   value2?: number;
   duration?: number;
 }
-
 interface Rule {
   id: string;
   name: string;
@@ -36,7 +31,6 @@ interface Rule {
   cameras: string[];
   isActive: boolean;
 }
-
 interface RuleEvent {
   ruleId: string;
   ruleName: string;
@@ -47,38 +41,30 @@ interface RuleEvent {
   timestamp: Date;
   metadata?: Record<string, unknown>;
 }
-
 interface UseRuleActionsOptions {
   onActionExecuted?: (action: RuleActionType, event: RuleEvent) => void;
   onError?: (error: Error, action: RuleActionType) => void;
 }
-
 interface UseRuleActionsReturn {
   executeActions: (rule: Rule, cameraId: string, cameraName: string, metadata?: Record<string, unknown>) => Promise<void>;
   executeAction: (action: RuleActionType, event: RuleEvent) => Promise<boolean>;
   isExecuting: boolean;
   lastEvent: RuleEvent | null;
 }
-
 // ============================================
 // CONSTANTES
 // ============================================
-
 const ALARM_SOUND_URL = '/sounds/alarm.mp3';
 const ALARM_DURATION_MS = 5000;
-
 // ============================================
 // HOOK PRINCIPAL
 // ============================================
-
 export function useRuleActions(options: UseRuleActionsOptions = {}): UseRuleActionsReturn {
   const { onActionExecuted, onError } = options;
   const { user } = useAuth();
-  
   const isExecutingRef = useRef(false);
   const lastEventRef = useRef<RuleEvent | null>(null);
   const alarmAudioRef = useRef<HTMLAudioElement | null>(null);
-
   useEffect(() => {
     return () => {
       if (alarmAudioRef.current) {
@@ -87,13 +73,11 @@ export function useRuleActions(options: UseRuleActionsOptions = {}): UseRuleActi
       }
     };
   }, []);
-
   /**
    * Criar alerta no banco de dados
    */
   const createAlert = useCallback(async (event: RuleEvent): Promise<boolean> => {
     if (!user) return false;
-    
     try {
       const { error } = await supabase
         .from('alerts')
@@ -107,18 +91,13 @@ export function useRuleActions(options: UseRuleActionsOptions = {}): UseRuleActi
           timestamp: event.timestamp.toISOString(),
           is_read: false,
         });
-
       if (error) throw error;
-      
-      console.log('[RuleActions] Alerta criado:', event.ruleName);
       return true;
     } catch (error) {
-      console.error('[RuleActions] Erro ao criar alerta:', error);
       onError?.(error as Error, 'alert');
       return false;
     }
   }, [user, onError]);
-
   /**
    * Enviar notificação
    */
@@ -128,7 +107,6 @@ export function useRuleActions(options: UseRuleActionsOptions = {}): UseRuleActi
       toast.warning(`⚠️ Regra: ${event.ruleName}`, {
         description: `Câmera: ${event.cameraName}`,
       });
-
       // Chamar edge function para email/whatsapp
       const { error } = await supabase.functions.invoke('send-alert-notification', {
         body: {
@@ -140,26 +118,19 @@ export function useRuleActions(options: UseRuleActionsOptions = {}): UseRuleActi
           metadata: event.metadata,
         },
       });
-
       if (error) {
-        console.warn('[RuleActions] Edge function não disponível:', error);
       }
-      
-      console.log('[RuleActions] Notificação enviada:', event.ruleName);
       return true;
     } catch (error) {
-      console.error('[RuleActions] Erro ao enviar notificação:', error);
       onError?.(error as Error, 'notify');
       return false;
     }
   }, [onError]);
-
   /**
    * Disparar gravação de clip
    */
   const triggerRecording = useCallback(async (event: RuleEvent): Promise<boolean> => {
     if (!user) return false;
-    
     try {
       const { error } = await supabase
         .from('video_clips')
@@ -169,19 +140,14 @@ export function useRuleActions(options: UseRuleActionsOptions = {}): UseRuleActi
           start_time: new Date().toISOString(),
           status: 'recording',
         });
-
       if (error) throw error;
-      
       toast.success(`Gravação iniciada: ${event.cameraName}`);
-      console.log('[RuleActions] Clip registrado:', event.ruleName);
       return true;
     } catch (error) {
-      console.error('[RuleActions] Erro ao gravar:', error);
       onError?.(error as Error, 'record');
       return false;
     }
   }, [user, onError]);
-
   /**
    * Ativar alarme sonoro
    */
@@ -190,38 +156,30 @@ export function useRuleActions(options: UseRuleActionsOptions = {}): UseRuleActi
       if (alarmAudioRef.current) {
         alarmAudioRef.current.pause();
       }
-
       const audio = new Audio(ALARM_SOUND_URL);
       audio.loop = true;
       audio.volume = 1.0;
       alarmAudioRef.current = audio;
-
       await audio.play().catch(() => {
         toast.error(`🚨 ALARME: ${event.ruleName}`, {
           duration: ALARM_DURATION_MS,
         });
-        
         if ('vibrate' in navigator) {
           navigator.vibrate([500, 200, 500, 200, 500]);
         }
       });
-
       setTimeout(() => {
         if (alarmAudioRef.current) {
           alarmAudioRef.current.pause();
           alarmAudioRef.current = null;
         }
       }, ALARM_DURATION_MS);
-
-      console.log('[RuleActions] Alarme ativado:', event.ruleName);
       return true;
     } catch (error) {
-      console.error('[RuleActions] Erro ao tocar alarme:', error);
       onError?.(error as Error, 'lockdown');
       return false;
     }
   }, [onError]);
-
   /**
    * Executar uma ação específica
    */
@@ -230,7 +188,6 @@ export function useRuleActions(options: UseRuleActionsOptions = {}): UseRuleActi
     event: RuleEvent
   ): Promise<boolean> => {
     let success = false;
-
     switch (action) {
       case 'alert':
         success = await createAlert(event);
@@ -246,17 +203,13 @@ export function useRuleActions(options: UseRuleActionsOptions = {}): UseRuleActi
         success = await triggerAlarm(event);
         break;
       default:
-        console.warn('[RuleActions] Ação desconhecida:', action);
         return false;
     }
-
     if (success) {
       onActionExecuted?.(action, event);
     }
-
     return success;
   }, [createAlert, sendNotification, triggerRecording, triggerAlarm, onActionExecuted]);
-
   /**
    * Executar todas as ações de uma regra
    */
@@ -267,17 +220,12 @@ export function useRuleActions(options: UseRuleActionsOptions = {}): UseRuleActi
     metadata?: Record<string, unknown>
   ): Promise<void> => {
     if (!rule.isActive) {
-      console.log('[RuleActions] Regra inativa, ignorando:', rule.name);
       return;
     }
-
     if (isExecutingRef.current) {
-      console.log('[RuleActions] Já executando ações, aguarde...');
       return;
     }
-
     isExecutingRef.current = true;
-
     const event: RuleEvent = {
       ruleId: rule.id,
       ruleName: rule.name,
@@ -288,29 +236,19 @@ export function useRuleActions(options: UseRuleActionsOptions = {}): UseRuleActi
       timestamp: new Date(),
       metadata,
     };
-
     lastEventRef.current = event;
-
-    console.log('[RuleActions] Executando ações para regra:', rule.name, rule.actions);
-
     try {
       const results = await Promise.allSettled(
         rule.actions.map(action => executeAction(action, event))
       );
-
       const failures = results.filter(r => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value));
-      
       if (failures.length > 0) {
-        console.warn('[RuleActions] Algumas ações falharam:', failures.length);
       }
-
     } catch (error) {
-      console.error('[RuleActions] Erro ao executar ações:', error);
     } finally {
       isExecutingRef.current = false;
     }
   }, [executeAction]);
-
   return {
     executeActions,
     executeAction,
@@ -318,5 +256,4 @@ export function useRuleActions(options: UseRuleActionsOptions = {}): UseRuleActi
     lastEvent: lastEventRef.current,
   };
 }
-
 export default useRuleActions;
