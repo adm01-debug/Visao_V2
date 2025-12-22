@@ -357,7 +357,7 @@ export function SettingsPage() {
         setAnalysisSettings(JSON.parse(savedAnalysis));
       }
     } catch (error) {
-      console.error('Erro ao carregar configurações:', error);
+      // rm
     } finally {
       setLoading(false);
     }
@@ -421,7 +421,7 @@ export function SettingsPage() {
 
       toast.success('Configurações salvas com sucesso!');
     } catch (error) {
-      console.error('Erro ao salvar:', error);
+      // rm
       toast.error('Erro ao salvar configurações');
     } finally {
       setSaving(false);
