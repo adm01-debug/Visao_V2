@@ -548,4 +548,4 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
   );
 }
 
-export default HeatmapVisualization;
+export default memo(HeatmapVisualization);
