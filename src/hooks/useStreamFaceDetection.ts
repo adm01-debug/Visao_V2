@@ -20,7 +20,7 @@ interface FaceDetectionResult {
   faces: Array<{
     bbox: [number, number, number, number]; // [x, y, width, height] em pixels
     confidence: number;
-    landmarks?: any;
+    landmarks?: unknown;
     attributes?: {
       age?: { min: number; max: number };
       gender?: { value: string; confidence: number };
@@ -136,14 +136,14 @@ export function useStreamFaceDetection({
       const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
       return dataUrl.replace(/^data:image\/\w+;base64,/, '');
     } catch (err) {
-      
+      console.error('Erro ao capturar frame:', err);
       return null;
     }
   }, []);
 
   // Buscar pessoa registrada pelo encoding (simulado)
   const matchFaceWithRegistered = useCallback(async (
-    _faceEncoding: any
+    _faceEncoding: unknown
   ): Promise<{ personId?: string; personName?: string; listType: ListType; isKnown: boolean }> => {
     // Por enquanto, retorna como desconhecido
     // TODO: Implementar comparação com registered_persons usando compare-faces edge function
@@ -269,7 +269,7 @@ export function useStreamFaceDetection({
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro desconhecido';
       setError(message);
-      
+      console.error('Erro na detecção facial:', err);
       return [];
     } finally {
       setIsProcessing(false);
