@@ -1,4 +1,4 @@
-import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { formatDate, formatNumber } from "@/lib/formatters";
 import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
