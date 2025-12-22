@@ -331,7 +331,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
     });
 
     hls.on(Hls.Events.ERROR, (_, data) => {
-      console.error('[HLS] Error:', data.type, data.details);
+      // rm
       
       if (data.fatal) {
         switch (data.type) {
@@ -479,7 +479,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
       updateState({ status: 'playing', isPlaying: true });
       onPlay?.();
     } catch (error) {
-      console.error('[Stream] Play error:', error);
+      // rm
       // Auto-play bloqueado - comum em navegadores
       updateState({ isPlaying: false });
     }
@@ -595,7 +595,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
         updateState({ isFullscreen: true });
       }
     } catch (error) {
-      console.error('[Stream] Fullscreen error:', error);
+      // rm
     }
   }, [videoRef, updateState]);
 
