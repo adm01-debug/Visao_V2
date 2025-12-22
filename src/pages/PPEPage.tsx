@@ -70,7 +70,7 @@ function ComplianceCard({
 }: { 
   title: string; 
   value: string | number; 
-  icon: any;
+  icon: unknown;
   trend?: 'up' | 'down' | 'stable';
   color?: 'default' | 'success' | 'warning' | 'danger';
 }) {
