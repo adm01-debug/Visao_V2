@@ -216,7 +216,6 @@ export function useZoneDetection(
           await supabase.from('zone_events').insert(insertData);
         }
       } catch (saveErr) {
-        console.error('[ZoneDetection] Erro ao salvar evento:', saveErr);
       }
     }
 
@@ -232,7 +231,6 @@ export function useZoneDetection(
           is_read: false,
         });
       } catch (err) {
-        console.error('[ZoneDetection] Erro ao criar alerta:', err);
       }
 
       onAlert?.(zone, event);
@@ -487,7 +485,6 @@ export function useZoneDetection(
         await supabase.from('zones').insert(insertData);
       }
     } catch (err) {
-      console.error('[ZoneDetection] Erro ao salvar zona:', err);
     }
 
     setZones(prev => [...prev, newZone]);
@@ -509,7 +506,6 @@ export function useZoneDetection(
 
       await supabase.from('zones').update(updateData).eq('id', zoneId);
     } catch (err) {
-      console.error('[ZoneDetection] Erro ao atualizar zona:', err);
     }
 
     setZones(prev => prev.map(z => z.id === zoneId ? { ...z, ...updates, updatedAt: new Date() } : z));
@@ -520,7 +516,6 @@ export function useZoneDetection(
     try {
       await supabase.from('zones').delete().eq('id', zoneId);
     } catch (err) {
-      console.error('[ZoneDetection] Erro ao remover zona:', err);
     }
 
     setZones(prev => prev.filter(z => z.id !== zoneId));
@@ -570,7 +565,6 @@ export function useZoneDetection(
 
   useEffect(() => {
     if (initialZones.length === 0) {
-      fetchZones().catch(console.error);
     }
   }, [fetchZones, initialZones.length]);
 
