@@ -96,7 +96,7 @@ export function usePlateDetections() {
         status: d.status as PlateDetection['status']
       })) || []);
     } catch (error) {
-      console.error('Error fetching detections:', error);
+      // error removed
     }
   }, [user]);
 
@@ -119,7 +119,7 @@ export function usePlateDetections() {
         list_type: p.list_type as RegisteredPlate['list_type']
       })) || []);
     } catch (error) {
-      console.error('Error fetching registered plates:', error);
+      // error removed
     }
   }, [user]);
 
@@ -201,7 +201,7 @@ ${ownerName ? `👤 <b>Proprietário:</b> ${ownerName}` : ''}
       if (data?.success) {
       }
     } catch (error) {
-      console.error('Error sending Telegram alert:', error);
+      // error removed
     }
   }, []);
 
@@ -279,7 +279,7 @@ ${ownerName ? `👤 <b>Proprietário:</b> ${ownerName}` : ''}
 
       return newDetection;
     } catch (error) {
-      console.error('Error adding detection:', error);
+      // error removed
       toast.error('Erro ao salvar detecção');
       return null;
     }
@@ -298,7 +298,7 @@ ${ownerName ? `👤 <b>Proprietário:</b> ${ownerName}` : ''}
       setDetections(prev => prev.filter(d => d.id !== id));
       toast.success('Detecção removida');
     } catch (error) {
-      console.error('Error deleting detection:', error);
+      // error removed
       toast.error('Erro ao remover detecção');
     }
   }, []);
@@ -339,7 +339,7 @@ ${ownerName ? `👤 <b>Proprietário:</b> ${ownerName}` : ''}
 
       return newPlate;
     } catch (error) {
-      console.error('Error adding registered plate:', error);
+      // error removed
       toast.error('Erro ao registrar placa');
       return null;
     }
@@ -358,7 +358,7 @@ ${ownerName ? `👤 <b>Proprietário:</b> ${ownerName}` : ''}
       await fetchRegisteredPlates();
       toast.success('Placa atualizada');
     } catch (error) {
-      console.error('Error updating registered plate:', error);
+      // error removed
       toast.error('Erro ao atualizar placa');
     }
   }, [fetchRegisteredPlates]);
@@ -376,7 +376,7 @@ ${ownerName ? `👤 <b>Proprietário:</b> ${ownerName}` : ''}
       setRegisteredPlates(prev => prev.filter(p => p.id !== id));
       toast.success('Placa removida');
     } catch (error) {
-      console.error('Error deleting registered plate:', error);
+      // error removed
       toast.error('Erro ao remover placa');
     }
   }, []);
