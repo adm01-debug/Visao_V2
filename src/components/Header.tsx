@@ -1,3 +1,4 @@
+import { useOnlineStatus, useDocumentTitle } from "@/hooks";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: Header
