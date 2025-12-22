@@ -177,7 +177,7 @@ function ClipCard({ clip, isSelected, onSelect, onPlay, onDownload, onDelete }: 
 
       {/* Info */}
       <CardContent className="p-3">
-        <div className="flex items-start justify-between gap-2">
+        <div role="main" className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
             <p className="font-medium text-sm flex items-center gap-1">
               <Camera className="w-3 h-3 text-muted-foreground" />
@@ -248,7 +248,7 @@ function VideoPlayerDialog({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl p-0 overflow-hidden">
-        <div className="flex flex-col">
+        <div role="main" className="flex flex-col">
           {/* Header */}
           <DialogHeader className="p-4 pb-0">
             <DialogTitle className="flex items-center gap-2">
@@ -310,8 +310,8 @@ function VideoPlayerDialog({
             />
 
             {/* Buttons */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+            <div role="main" className="flex items-center justify-between">
+              <div role="main" className="flex items-center gap-2">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -328,7 +328,7 @@ function VideoPlayerDialog({
                 </Button>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div role="main" className="flex items-center gap-2">
                 <Button variant="outline" size="sm">
                   <Download className="w-4 h-4 mr-2" />
                   Download
@@ -540,7 +540,7 @@ export function RecordingsPage() {
       {/* Header */}
       <div className="border-b bg-card">
         <div className="container py-6">
-          <div className="flex items-center justify-between mb-6">
+          <div role="main" className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-2xl font-bold flex items-center gap-2">
                 <Video className="w-6 h-6" />
@@ -551,7 +551,7 @@ export function RecordingsPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div role="main" className="flex items-center gap-2">
               <Button
                 variant="outline"
                 size="icon"
@@ -577,7 +577,7 @@ export function RecordingsPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card>
               <CardContent className="p-4">
-                <div className="flex items-center gap-3">
+                <div role="main" className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                     <Video className="w-5 h-5 text-primary" />
                   </div>
@@ -590,7 +590,7 @@ export function RecordingsPage() {
             </Card>
             <Card>
               <CardContent className="p-4">
-                <div className="flex items-center gap-3">
+                <div role="main" className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center">
                     <Clock className="w-5 h-5 text-blue-500" />
                   </div>
@@ -608,7 +608,7 @@ export function RecordingsPage() {
       {/* Content */}
       <div className="container py-6">
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-4 mb-6">
+        <div role="main" className="flex flex-wrap items-center gap-4 mb-6">
           <div className="relative flex-1 min-w-[200px] max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
@@ -658,7 +658,7 @@ export function RecordingsPage() {
             </SelectContent>
           </Select>
 
-          <div className="flex items-center border rounded-lg p-1 ml-auto">
+          <div role="main" className="flex items-center border rounded-lg p-1 ml-auto">
             <Button
               variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
               size="icon"
@@ -680,7 +680,7 @@ export function RecordingsPage() {
 
         {/* Select all */}
         {paginatedClips.length > 0 && (
-          <div className="flex items-center gap-2 mb-4">
+          <div role="main" className="flex items-center gap-2 mb-4">
             <Checkbox
               checked={selectedClips.size === paginatedClips.length}
               onCheckedChange={handleSelectAll}
@@ -763,7 +763,7 @@ export function RecordingsPage() {
                     )}
                   </div>
 
-                  <div className="flex-1 min-w-0">
+                  <div role="main" className="flex-1 min-w-0">
                     <p className="font-medium flex items-center gap-2">
                       <Camera className="w-4 h-4 text-muted-foreground" />
                       {clip.camera_name}
@@ -771,7 +771,7 @@ export function RecordingsPage() {
                     <p className="text-sm text-muted-foreground mt-1">
                       {format(new Date(clip.start_time), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
                     </p>
-                    <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
+                    <div role="main" className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {formatDuration(clip.duration)}
@@ -812,7 +812,7 @@ export function RecordingsPage() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-6">
+          <div role="main" className="flex items-center justify-center gap-2 mt-6">
             <Button
               variant="outline"
               size="sm"
