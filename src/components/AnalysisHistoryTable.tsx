@@ -110,7 +110,7 @@ type SortDirection = 'asc' | 'desc';
 // CONSTANTES
 // ============================================
 
-const analysisTypeLabels: Record<string, { label: string; icon: any; color: string }> = {
+const analysisTypeLabels: Record<string, { label: string; icon: unknown; color: string }> = {
   security: { label: 'Segurança', icon: AlertTriangle, color: 'text-red-500' },
   people: { label: 'Pessoas', icon: Users, color: 'text-blue-500' },
   vehicle: { label: 'Veículos', icon: Target, color: 'text-green-500' },
@@ -119,7 +119,7 @@ const analysisTypeLabels: Record<string, { label: string; icon: any; color: stri
   general: { label: 'Geral', icon: Brain, color: 'text-gray-500' },
 };
 
-const resultConfig: Record<string, { label: string; icon: any; color: string }> = {
+const resultConfig: Record<string, { label: string; icon: unknown; color: string }> = {
   success: { label: 'Sucesso', icon: CheckCircle, color: 'text-green-500' },
   warning: { label: 'Atenção', icon: AlertTriangle, color: 'text-yellow-500' },
   error: { label: 'Erro', icon: XCircle, color: 'text-red-500' },
@@ -225,7 +225,7 @@ export function AnalysisHistoryTable({
       if (error) throw error;
 
       // Mapear dados
-      const mapped: AnalysisRecord[] = (data || []).map((row: any) => ({
+      const mapped: AnalysisRecord[] = (data || []).map((row: unknown) => ({
         id: row.id,
         camera_id: row.camera_id,
         camera_name: row.cameras?.name || 'Câmera desconhecida',
@@ -250,7 +250,7 @@ export function AnalysisHistoryTable({
       setRecords(filtered);
       setTotalCount(count || 0);
     } catch (error) {
-      
+      console.error('Erro ao carregar histórico:', error);
       toast.error('Erro ao carregar histórico de análises');
     } finally {
       setLoading(false);
