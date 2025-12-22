@@ -220,7 +220,7 @@ function LogRow({ log, onViewDetails }: LogRowProps) {
   return (
     <TableRow className="cursor-pointer hover:bg-muted/50" onClick={onViewDetails}>
       <TableCell className="w-[180px]">
-        <div className="flex items-center gap-2">
+        <div role="main" className="flex items-center gap-2">
           <Clock className="w-3 h-3 text-muted-foreground" />
           <span className="text-xs">
             {format(new Date(log.timestamp), "dd/MM HH:mm:ss")}
@@ -234,7 +234,7 @@ function LogRow({ log, onViewDetails }: LogRowProps) {
         </Badge>
       </TableCell>
       <TableCell className="w-[120px]">
-        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+        <div role="main" className="flex items-center gap-1 text-xs text-muted-foreground">
           <CatIcon className="w-3 h-3" />
           {catConfig.label}
         </div>
@@ -245,7 +245,7 @@ function LogRow({ log, onViewDetails }: LogRowProps) {
       </TableCell>
       <TableCell className="w-[100px]">
         {log.userName && (
-          <div className="flex items-center gap-1 text-xs">
+          <div role="main" className="flex items-center gap-1 text-xs">
             <User className="w-3 h-3" />
             {log.userName}
           </div>
@@ -274,7 +274,7 @@ function AccessEventCard({ event }: AccessEventCardProps) {
       isDenied && 'border-l-red-500 bg-red-500/5',
       !isGranted && !isDenied && 'border-l-yellow-500 bg-yellow-500/5'
     )}>
-      <div className="flex items-start gap-3">
+      <div role="main" className="flex items-start gap-3">
         {/* Photo */}
         <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
           {event.personPhoto ? (
@@ -285,8 +285,8 @@ function AccessEventCard({ event }: AccessEventCardProps) {
         </div>
 
         {/* Info */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
+        <div role="main" className="flex-1 min-w-0">
+          <div role="main" className="flex items-center gap-2">
             <span className="font-medium text-sm">{event.personName}</span>
             <Badge variant={isGranted ? 'default' : 'destructive'} className="text-xs">
               {isGranted ? <Check className="w-3 h-3 mr-1" /> : <X className="w-3 h-3 mr-1" />}
@@ -294,7 +294,7 @@ function AccessEventCard({ event }: AccessEventCardProps) {
             </Badge>
           </div>
           
-          <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
+          <div role="main" className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
             {event.cameraName && (
               <span className="flex items-center gap-1">
                 <Camera className="w-3 h-3" />
@@ -605,7 +605,7 @@ export function SecurityPage() {
   return (
     <div className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div role="main" className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Shield className="w-6 h-6" />
@@ -616,7 +616,7 @@ export function SecurityPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div role="main" className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={loadData}>
             <RefreshCw className="w-4 h-4 mr-2" />
             Atualizar
@@ -720,7 +720,7 @@ export function SecurityPage() {
         {/* Logs Tab */}
         <TabsContent value="logs" className="mt-4 space-y-4">
           {/* Filters */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div role="main" className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
@@ -806,7 +806,7 @@ export function SecurityPage() {
 
         {/* Lists Tab */}
         <TabsContent value="lists" className="mt-4 space-y-4">
-          <div className="flex items-center gap-2">
+          <div role="main" className="flex items-center gap-2">
             <Button onClick={() => setAddPersonDialog('whitelist')} variant="outline">
               <ShieldCheck className="w-4 h-4 mr-2 text-green-500" />
               Adicionar à Whitelist
@@ -848,7 +848,7 @@ export function SecurityPage() {
                             key={person.id}
                             className="flex items-center justify-between p-2 rounded-lg bg-muted/50"
                           >
-                            <div className="flex items-center gap-3">
+                            <div role="main" className="flex items-center gap-3">
                               <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center overflow-hidden">
                                 {person.photo ? (
                                   <img src={person.photo} alt="" className="w-full h-full object-cover" />
