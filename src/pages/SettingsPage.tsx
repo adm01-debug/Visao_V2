@@ -1,3 +1,4 @@
+import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, SeverityBadge, TimeAgo, ConfirmDialog } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Configurações (Completa)
@@ -580,7 +581,7 @@ export function SettingsPage() {
             <SettingRow label="Tema" description="Aparência visual">
               <Select
                 value={generalSettings.theme}
-                onValueChange={(v) => setGeneralSettings(prev => ({ ...prev, theme: v as unknown }))}
+                onValueChange={(v) => setGeneralSettings(prev => ({ ...prev, theme: v as any }))}
               >
                 <SelectTrigger className="w-36">
                   <SelectValue />
