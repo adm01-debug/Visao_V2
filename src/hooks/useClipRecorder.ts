@@ -183,7 +183,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
         }, 'image/jpeg', 0.8);
       });
     } catch (error) {
-      console.error('Erro ao gerar thumbnail:', error);
+      
       return null;
     }
   }, []);
@@ -236,7 +236,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       };
 
       recorder.onerror = (event) => {
-        console.error('MediaRecorder error:', event);
+        
         onError?.(new Error('Erro na gravação'));
         setState('idle');
         clearTimer();
@@ -271,7 +271,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       return true;
 
     } catch (error) {
-      console.error('Erro ao iniciar gravação:', error);
+      
       onError?.(error as Error);
       return false;
     }
@@ -347,7 +347,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
           resolve(clip);
 
         } catch (error) {
-          console.error('Erro ao processar gravação:', error);
+          
           onError?.(error as Error);
           setState('idle');
           resolve(null);
@@ -477,7 +477,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       return clipRecord.id;
 
     } catch (error) {
-      console.error('Erro ao salvar clip:', error);
+      
       onError?.(error as Error);
       toast.error('Erro ao salvar gravação');
       setState('idle');
@@ -511,7 +511,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       return true;
 
     } catch (error) {
-      console.error('Erro ao deletar clip:', error);
+      
       toast.error('Erro ao excluir gravação');
       return false;
     }
