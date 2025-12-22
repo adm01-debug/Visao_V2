@@ -111,7 +111,7 @@ class ModelCache {
         return 'webgl';
       }
     } catch (e) {
-      // removed
+      console.warn('[ML] WebGL não disponível, tentando WASM');
     }
 
     try {
@@ -122,7 +122,7 @@ class ModelCache {
       debugLog('[ML] TensorFlow.js usando WASM');
       return 'wasm';
     } catch (e) {
-      // removed
+      console.warn('[ML] WASM não disponível, usando CPU');
     }
 
     // Fallback para CPU
@@ -258,7 +258,7 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
 
       onModelLoaded?.('coco-ssd');
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
       updateModelInfo('coco-ssd', {
         loading: false,
         error: err.message,
@@ -286,7 +286,7 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
 
       onModelLoaded?.('movenet');
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
       updateModelInfo('movenet', {
         loading: false,
         error: err.message,
@@ -304,7 +304,7 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
       case 'movenet':
         return loadMoveNet();
       default:
-        // removed
+        console.warn(`[ML] Modelo ${model} não suportado`);
         return false;
     }
   }, [loadCocoSsd, loadMoveNet]);
@@ -350,7 +350,7 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
           bbox: p.bbox as [number, number, number, number],
         }));
     } catch (err) {
-      // removed
+      console.error('[ML] Erro na detecção:', err);
       return [];
     }
   }, [config.maxDetections, config.minScore, updateModelInfo]);
@@ -378,7 +378,7 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
         score: pose.score || 0,
       }));
     } catch (err) {
-      // removed
+      console.error('[ML] Erro na detecção de poses:', err);
       return [];
     }
   }, [updateModelInfo]);
