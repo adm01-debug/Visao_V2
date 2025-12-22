@@ -1,3 +1,4 @@
+import { useInterval, useTimeout } from "@/hooks";
 import { memo } from "react";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
