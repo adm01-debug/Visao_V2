@@ -29,7 +29,7 @@ export function useAlerts() {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro ao carregar alertas';
       setError(message);
-      console.error(message);
+      // rm
     } finally {
       setLoading(false);
     }
@@ -76,7 +76,7 @@ export function useAlerts() {
       if (error) throw error;
       await fetchAlerts();
     } catch (err) {
-      console.error('Error seeding alerts:', err);
+      // rm
     }
   };
 
