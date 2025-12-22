@@ -472,7 +472,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
       toast.success(zone ? 'Zona atualizada' : 'Zona criada');
     } catch (error) {
       toast.error('Erro ao salvar');
-      console.error(error);
+      // rm
     } finally {
       setIsSubmitting(false);
     }
@@ -936,12 +936,12 @@ export function ZonesPage() {
             };
           }
         } catch (e) {
-          console.error('Erro ao carregar stats da zona:', zone.id, e);
+          // rm
         }
       }
       setZoneStats(statsMap);
     } catch (error) {
-      console.error('Erro ao carregar zonas:', error);
+      // rm
       toast.error('Erro ao carregar dados');
     } finally {
       setLoading(false);
@@ -959,7 +959,7 @@ export function ZonesPage() {
       
       setZoneEvents(prev => ({ ...prev, [zoneId]: data || [] }));
     } catch (error) {
-      console.error('Erro ao carregar eventos:', error);
+      // rm
     }
   };
 
@@ -1008,7 +1008,7 @@ export function ZonesPage() {
       }
       loadZones();
     } catch (error) {
-      console.error('Erro ao salvar:', error);
+      // rm
       throw error;
     }
   };
