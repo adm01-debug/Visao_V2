@@ -130,7 +130,7 @@ export function SearchDropdown() {
         setSearchHistory(JSON.parse(stored));
       }
     } catch (error) {
-      
+      console.error('Error loading search history:', error);
     }
     
     // Load saved filters
@@ -140,7 +140,7 @@ export function SearchDropdown() {
         setSavedFilters(JSON.parse(storedFilters));
       }
     } catch (error) {
-      
+      console.error('Error loading saved filters:', error);
     }
   }, []);
 
@@ -251,7 +251,7 @@ export function SearchDropdown() {
         setCameras(camerasResult.data || []);
         setAlerts(alertsResult.data || []);
       } catch (error) {
-        
+        console.error('Search error:', error);
       } finally {
         setIsLoading(false);
       }
@@ -279,7 +279,7 @@ export function SearchDropdown() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newHistory));
       } catch (error) {
-        
+        console.error('Error saving search history:', error);
       }
       return newHistory;
     });
@@ -390,7 +390,7 @@ export function SearchDropdown() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newHistory));
       } catch (error) {
-        
+        console.error('Error saving search history:', error);
       }
       return newHistory;
     });
@@ -401,7 +401,7 @@ export function SearchDropdown() {
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch (error) {
-      
+      console.error('Error clearing search history:', error);
     }
   };
 
@@ -425,7 +425,7 @@ export function SearchDropdown() {
       try {
         localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(updated));
       } catch (error) {
-        
+        console.error('Error saving filter:', error);
       }
       return updated;
     });
@@ -444,7 +444,7 @@ export function SearchDropdown() {
       try {
         localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(updated));
       } catch (error) {
-        
+        console.error('Error deleting filter:', error);
       }
       return updated;
     });
