@@ -134,7 +134,7 @@ const typeConfig = {
 // ============================================
 
 interface AlertItemProps {
-  alert: any;
+  alert: unknown;
   isSelected: boolean;
   onSelect: (selected: boolean) => void;
   onView: () => void;
@@ -292,7 +292,7 @@ function AlertItem({
 // ============================================
 
 interface AlertDetailsDialogProps {
-  alert: any;
+  alert: unknown;
   isOpen: boolean;
   onClose: () => void;
   onMarkRead: () => void;
