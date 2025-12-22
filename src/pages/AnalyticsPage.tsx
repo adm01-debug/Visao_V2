@@ -82,7 +82,7 @@ interface KPIData {
   value: number;
   previousValue: number;
   unit?: string;
-  icon: any;
+  icon: unknown;
   color: string;
 }
 
@@ -531,7 +531,7 @@ export function AnalyticsPage() {
       setHourlyData(hourlyStats);
 
     } catch (error) {
-      
+      console.error('Erro ao carregar analytics:', error);
       toast.error('Erro ao carregar dados');
     } finally {
       setLoading(false);
