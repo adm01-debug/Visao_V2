@@ -139,7 +139,7 @@ export function useFaceRecognitionAlerts(
         })));
       }
     } catch (err) {
-      console.error('[FaceRecognition] Erro ao carregar blacklist:', err);
+      // error removed
     }
   }, []);
 
@@ -162,7 +162,7 @@ export function useFaceRecognitionAlerts(
         })));
       }
     } catch (err) {
-      console.error('[FaceRecognition] Erro ao carregar VIPs:', err);
+      // error removed
     }
   }, []);
 
@@ -223,7 +223,7 @@ export function useFaceRecognitionAlerts(
           user_id: user.id,
         });
       } catch (err) {
-        console.error('[FaceRecognition] Erro ao salvar log:', err);
+        // error removed
       }
     }
 
@@ -245,7 +245,7 @@ export function useFaceRecognitionAlerts(
       toast.success('Pessoa adicionada à blacklist');
       return true;
     } catch (err) {
-      console.error('[FaceRecognition] Erro ao adicionar à blacklist:', err);
+      // error removed
       toast.error('Erro ao adicionar à blacklist');
       return false;
     }
@@ -265,7 +265,7 @@ export function useFaceRecognitionAlerts(
       toast.success('Pessoa removida da blacklist');
       return true;
     } catch (err) {
-      console.error('[FaceRecognition] Erro ao remover da blacklist:', err);
+      // error removed
       toast.error('Erro ao remover da blacklist');
       return false;
     }
@@ -285,7 +285,7 @@ export function useFaceRecognitionAlerts(
       toast.success('Pessoa adicionada à lista VIP');
       return true;
     } catch (err) {
-      console.error('[FaceRecognition] Erro ao adicionar à lista VIP:', err);
+      // error removed
       toast.error('Erro ao adicionar à lista VIP');
       return false;
     }
@@ -305,7 +305,7 @@ export function useFaceRecognitionAlerts(
       toast.success('Pessoa removida da lista VIP');
       return true;
     } catch (err) {
-      console.error('[FaceRecognition] Erro ao remover da lista VIP:', err);
+      // error removed
       toast.error('Erro ao remover da lista VIP');
       return false;
     }
