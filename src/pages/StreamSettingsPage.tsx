@@ -51,7 +51,7 @@ export default function StreamSettingsPage() {
     }
   }, [searchParams, cameras]);
 
-  const handleSaveConfig = async (config: any) => {
+  const handleSaveConfig = async (config: unknown) => {
     if (!selectedCamera) return;
 
     try {
@@ -61,7 +61,7 @@ export default function StreamSettingsPage() {
       
       toast.success('Configuração de stream salva');
     } catch (error) {
-      
+      console.error('Error saving stream config:', error);
       toast.error('Erro ao salvar configuração');
     }
   };
