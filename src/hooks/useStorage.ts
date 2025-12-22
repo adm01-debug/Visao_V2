@@ -1,3 +1,4 @@
+import { logger } from "@/lib";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useStorage
@@ -181,7 +182,7 @@ export function useStorage(): UseStorageReturn {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro ao fazer upload';
       setError(message);
-      // removed
+      console.error('Upload error:', err);
       return null;
     } finally {
       setIsUploading(false);
@@ -201,13 +202,13 @@ export function useStorage(): UseStorageReturn {
         .remove([path]);
 
       if (deleteError) {
-        // removed
+        console.error('Delete error:', deleteError);
         return false;
       }
 
       return true;
     } catch (err) {
-      // removed
+      console.error('Remove error:', err);
       return false;
     }
   }, []);
@@ -227,13 +228,13 @@ export function useStorage(): UseStorageReturn {
         .remove(paths);
 
       if (deleteError) {
-        // removed
+        console.error('Delete error:', deleteError);
         return false;
       }
 
       return true;
     } catch (err) {
-      // removed
+      console.error('Remove multiple error:', err);
       return false;
     }
   }, []);
