@@ -1,3 +1,4 @@
+import { retry, withRetry } from "@/lib/retry";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useMediaMTX
