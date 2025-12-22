@@ -1,3 +1,4 @@
+import { useMediaQuery, useWindowSize } from "@/hooks";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: HLSStreamGrid
