@@ -476,7 +476,7 @@ export function SecurityPage() {
       });
 
     } catch (error) {
-      console.error('Erro ao carregar dados:', error);
+      // rm
       toast.error('Erro ao carregar dados de segurança');
     } finally {
       setLoading(false);
@@ -541,7 +541,7 @@ export function SecurityPage() {
       setNewPersonName('');
       setNewPersonReason('');
     } catch (error) {
-      console.error('Erro ao adicionar:', error);
+      // rm
       toast.error('Erro ao adicionar pessoa');
     }
   };
@@ -560,7 +560,7 @@ export function SecurityPage() {
       toast.success('Pessoa removida da lista');
       setDeleteConfirm(null);
     } catch (error) {
-      console.error('Erro ao remover:', error);
+      // rm
       toast.error('Erro ao remover pessoa');
     }
   };
