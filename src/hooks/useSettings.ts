@@ -298,7 +298,7 @@ export function useSettings(options: UseSettingsOptions = {}): UseSettingsReturn
         try {
           setGeneralState(prev => ({ ...prev, ...JSON.parse(savedGeneral) }));
         } catch (e) {
-          console.warn('Erro ao parsear settings general:', e);
+          // warn removed
         }
       }
 
@@ -307,7 +307,7 @@ export function useSettings(options: UseSettingsOptions = {}): UseSettingsReturn
         try {
           setAnalysisState(prev => ({ ...prev, ...JSON.parse(savedAnalysis) }));
         } catch (e) {
-          console.warn('Erro ao parsear settings analysis:', e);
+          // warn removed
         }
       }
 
@@ -316,7 +316,7 @@ export function useSettings(options: UseSettingsOptions = {}): UseSettingsReturn
         try {
           setRecordingState(prev => ({ ...prev, ...JSON.parse(savedRecording) }));
         } catch (e) {
-          console.warn('Erro ao parsear settings recording:', e);
+          // warn removed
         }
       }
 
@@ -325,12 +325,12 @@ export function useSettings(options: UseSettingsOptions = {}): UseSettingsReturn
         try {
           setSecurityState(prev => ({ ...prev, ...JSON.parse(savedSecurity) }));
         } catch (e) {
-          console.warn('Erro ao parsear settings security:', e);
+          // warn removed
         }
       }
 
     } catch (err) {
-      console.error('[useSettings] Erro ao carregar:', err);
+      // error removed
       setError('Erro ao carregar configurações');
     } finally {
       setLoading(false);
@@ -396,7 +396,7 @@ export function useSettings(options: UseSettingsOptions = {}): UseSettingsReturn
       return true;
 
     } catch (err) {
-      console.error('[useSettings] Erro ao salvar:', err);
+      // error removed
       setError('Erro ao salvar configurações');
       toast.error('Erro ao salvar configurações');
       return false;
@@ -483,7 +483,7 @@ export function useSettings(options: UseSettingsOptions = {}): UseSettingsReturn
       toast.success('Configurações importadas com sucesso!');
       return true;
     } catch (err) {
-      console.error('[useSettings] Erro ao importar:', err);
+      // error removed
       toast.error('Formato de arquivo inválido');
       return false;
     }
