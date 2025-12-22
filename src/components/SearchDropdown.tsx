@@ -1,3 +1,4 @@
+import { useDebounce } from "@/hooks";
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Search, Camera, AlertTriangle, X, Loader2, MapPin, Clock, Filter, Calendar, History, Trash2, Star, Plus, Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -127,7 +128,7 @@ export function SearchDropdown() {
         setSearchHistory(JSON.parse(stored));
       }
     } catch (error) {
-      // rm
+      console.error('Error loading search history:', error);
     }
     
     // Load saved filters
@@ -137,7 +138,7 @@ export function SearchDropdown() {
         setSavedFilters(JSON.parse(storedFilters));
       }
     } catch (error) {
-      // rm
+      console.error('Error loading saved filters:', error);
     }
   }, []);
 
@@ -248,7 +249,7 @@ export function SearchDropdown() {
         setCameras(camerasResult.data || []);
         setAlerts(alertsResult.data || []);
       } catch (error) {
-        // rm
+        console.error('Search error:', error);
       } finally {
         setIsLoading(false);
       }
@@ -276,7 +277,7 @@ export function SearchDropdown() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newHistory));
       } catch (error) {
-        // rm
+        console.error('Error saving search history:', error);
       }
       return newHistory;
     });
@@ -387,7 +388,7 @@ export function SearchDropdown() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newHistory));
       } catch (error) {
-        // rm
+        console.error('Error saving search history:', error);
       }
       return newHistory;
     });
@@ -398,7 +399,7 @@ export function SearchDropdown() {
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch (error) {
-      // rm
+      console.error('Error clearing search history:', error);
     }
   };
 
@@ -422,7 +423,7 @@ export function SearchDropdown() {
       try {
         localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(updated));
       } catch (error) {
-        // rm
+        console.error('Error saving filter:', error);
       }
       return updated;
     });
@@ -441,7 +442,7 @@ export function SearchDropdown() {
       try {
         localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(updated));
       } catch (error) {
-        // rm
+        console.error('Error deleting filter:', error);
       }
       return updated;
     });
