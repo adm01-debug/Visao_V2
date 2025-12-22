@@ -1,3 +1,4 @@
+import { getRelativeTime, formatDuration } from "@/lib/dateUtils";
 import { memo } from "react";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
