@@ -126,7 +126,7 @@ export function useBlacklistAlerts({
       imageUrl,
     };
 
-    console.log('🚨 BLACKLIST ALERT:', alert);
+    // rm
 
     // Update state
     setRecentAlerts(prev => [alert, ...prev.slice(0, 9)]);
@@ -185,7 +185,7 @@ export function useBlacklistAlerts({
   useEffect(() => {
     if (!enabled) return;
 
-    console.log('🔔 Subscribing to blacklist alerts...');
+    // rm
 
     const channel = supabase
       .channel('blacklist-alerts')
@@ -206,7 +206,7 @@ export function useBlacklistAlerts({
             image_url: string | null;
           };
 
-          console.log('New recognition log:', log);
+          // rm
 
           // Only process if person was recognized and has confidence
           if (log.recognized && log.person_id && log.confidence) {
@@ -221,11 +221,11 @@ export function useBlacklistAlerts({
         }
       )
       .subscribe((status) => {
-        console.log('Blacklist alerts subscription status:', status);
+        // rm
       });
 
     return () => {
-      console.log('Unsubscribing from blacklist alerts');
+      // rm
       supabase.removeChannel(channel);
     };
   }, [enabled, handleBlacklistAlert]);
