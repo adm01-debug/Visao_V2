@@ -1,4 +1,5 @@
-import { useOnClickOutside } from "@/hooks";
+import { playAlertSound } from "@/lib/alertSounds";
+import { showNotification } from "@/lib/browserNotifications";
 import { memo } from "react";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
