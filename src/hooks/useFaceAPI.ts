@@ -1,3 +1,4 @@
+import { retry, withRetry } from "@/lib/retry";
 import { logger } from "@/lib";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
