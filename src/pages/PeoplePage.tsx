@@ -1,3 +1,4 @@
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
