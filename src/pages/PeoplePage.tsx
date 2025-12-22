@@ -402,7 +402,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
       toast.success(person ? 'Pessoa atualizada' : 'Pessoa cadastrada');
     } catch (error) {
       toast.error('Erro ao salvar');
-      console.error(error);
+      // rm
     } finally {
       setIsSubmitting(false);
     }
@@ -685,7 +685,7 @@ function PersonDetailsDialog({
       
       setRecognitionLogs(data || []);
     } catch (error) {
-      console.error('Erro ao carregar logs:', error);
+      // rm
     } finally {
       setLoadingLogs(false);
     }
@@ -850,7 +850,7 @@ export default function PeoplePage() {
       if (error) throw error;
       setPeople(data || []);
     } catch (error) {
-      console.error('Erro ao carregar pessoas:', error);
+      // rm
       toast.error('Erro ao carregar dados');
     } finally {
       setLoading(false);
@@ -932,7 +932,7 @@ export default function PeoplePage() {
       loadPeople();
     } catch (error) {
       toast.error('Erro ao remover');
-      console.error(error);
+      // rm
     } finally {
       setDeleteConfirm(null);
       setSelectedPerson(null);
