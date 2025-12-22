@@ -97,7 +97,7 @@ export function useFaceDetection(options: UseFaceDetectionOptions = {}) {
 
       if (fnError) throw fnError;
       return data?.faces || [];
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('[FaceDetection] Edge function error:', err);
       throw err;
     }
@@ -144,7 +144,7 @@ export function useFaceDetection(options: UseFaceDetectionOptions = {}) {
 
       const base64 = canvas.toDataURL('image/jpeg', 0.8);
       return await detectFacesRemote(base64.split(',')[1]);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message);
       return [];
     } finally {
@@ -167,7 +167,7 @@ export function useFaceDetection(options: UseFaceDetectionOptions = {}) {
 
       if (fnError) throw fnError;
       return data?.encoding || null;
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message);
       return null;
     } finally {
