@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useDebounce } from "@/hooks";
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Search, Camera, AlertTriangle, X, Loader2, MapPin, Clock, Filter, Calendar, History, Trash2, Star, Plus, Check } from 'lucide-react';
