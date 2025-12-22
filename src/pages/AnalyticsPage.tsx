@@ -529,7 +529,7 @@ export function AnalyticsPage() {
       setHourlyData(hourlyStats);
 
     } catch (error) {
-      console.error('Erro ao carregar analytics:', error);
+      // rm
       toast.error('Erro ao carregar dados');
     } finally {
       setLoading(false);
