@@ -1,3 +1,4 @@
+import { useLocalStorage } from "@/hooks";
 import { useState, useEffect } from 'react';
 import { Settings, Sun, Moon, Monitor, Volume2, VolumeX, Bell, BellOff, LayoutGrid, Palette } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeProvider';
