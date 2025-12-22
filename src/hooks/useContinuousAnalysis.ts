@@ -198,7 +198,7 @@ export function useContinuousAnalysis(
 
       return data.analysis as AnalysisResult;
     } catch (error) {
-      console.error('[ContinuousAnalysis] Erro na análise:', error);
+      
       throw error;
     }
   }, []);
@@ -411,7 +411,7 @@ export function useContinuousAnalysis(
         is_read: false,
       });
     } catch (error) {
-      console.error('[ContinuousAnalysis] Erro ao criar alerta:', error);
+      
     }
   }, [createAlerts, cameraName]);
 
@@ -425,7 +425,7 @@ export function useContinuousAnalysis(
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        console.warn('[ContinuousAnalysis] Usuário não autenticado - histórico não será salvo');
+        
         return;
       }
 
@@ -440,9 +440,9 @@ export function useContinuousAnalysis(
         image_url: entry.snapshot || null,
       });
 
-      console.log('[ContinuousAnalysis] Histórico salvo no banco de dados');
+      
     } catch (err) {
-      console.error('[ContinuousAnalysis] Erro ao salvar histórico:', err);
+      
     }
   }, [saveToDatabase, cameraId]);
 
