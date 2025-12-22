@@ -183,7 +183,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
         }, 'image/jpeg', 0.8);
       });
     } catch (error) {
-      // removed
+      console.error('Erro ao gerar thumbnail:', error);
       return null;
     }
   }, []);
@@ -207,9 +207,9 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       let stream: MediaStream;
       
       if ('captureStream' in videoElement) {
-        stream = (videoElement as any).captureStream();
+        stream = (videoElement as unknown).captureStream();
       } else if ('mozCaptureStream' in videoElement) {
-        stream = (videoElement as any).mozCaptureStream();
+        stream = (videoElement as unknown).mozCaptureStream();
       } else {
         throw new Error('Navegador não suporta captureStream');
       }
@@ -236,7 +236,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       };
 
       recorder.onerror = (event) => {
-        // removed
+        console.error('MediaRecorder error:', event);
         onError?.(new Error('Erro na gravação'));
         setState('idle');
         clearTimer();
@@ -271,7 +271,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       return true;
 
     } catch (error) {
-      // removed
+      console.error('Erro ao iniciar gravação:', error);
       onError?.(error as Error);
       return false;
     }
@@ -347,7 +347,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
           resolve(clip);
 
         } catch (error) {
-          // removed
+          console.error('Erro ao processar gravação:', error);
           onError?.(error as Error);
           setState('idle');
           resolve(null);
@@ -477,7 +477,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       return clipRecord.id;
 
     } catch (error) {
-      // removed
+      console.error('Erro ao salvar clip:', error);
       onError?.(error as Error);
       toast.error('Erro ao salvar gravação');
       setState('idle');
@@ -511,7 +511,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       return true;
 
     } catch (error) {
-      // removed
+      console.error('Erro ao deletar clip:', error);
       toast.error('Erro ao excluir gravação');
       return false;
     }
