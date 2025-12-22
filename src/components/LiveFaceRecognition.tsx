@@ -1,3 +1,4 @@
+import { useInterval, useTimeout } from "@/hooks";
 /**
  * Componente de Reconhecimento Facial em Tempo Real
  * Integra webcam/câmera com detecção e overlay de reconhecimento
