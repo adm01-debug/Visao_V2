@@ -1,3 +1,4 @@
+import { useOnClickOutside } from "@/hooks";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: KeyboardShortcutsHelp
