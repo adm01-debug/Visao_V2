@@ -1,82 +1,59 @@
-# Changelog
+# Changelog - VISÃO
 
-Todas as mudanças notáveis do projeto VISÃO serão documentadas neste arquivo.
+## [1.1.0] - 2024-12-22
 
-O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
-e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/spec/v2.0.0.html).
+### 🔧 Correções de Código
+- Removido ~120 console.log de produção
+- Corrigido ~50 tipos 'any' para tipos específicos
+- Implementado validação real em Edge Functions
 
-## [Unreleased]
+### 🧩 Componentes
+- Integrado 24 componentes utilitários nas páginas
+- Adicionado import de EmptyState, ErrorState, LoadingSpinner
+- Integrado StatusBadge, SeverityBadge, TimeAgo
 
-### Adicionado
-- Arquivos de som para alertas (alert.mp3, notification.mp3, warning.mp3, success.mp3)
-- Ícones PWA em todos os tamanhos (72x72 até 512x512, maskable, apple-touch-icon)
-- Configuração de modelos ML via CDN (face-api.js)
-- Testes unitários para hooks principais:
-  - useFaceAPI.test.ts
-  - useHeatmap.test.ts
-  - usePPEDetection.test.ts
-  - useVideoStream.test.ts
-  - useContinuousAnalysis.test.ts
-- Traduções completas de heatmap (pt-BR, en-US, es-ES)
-- models_config.ts para configuração flexível CDN/local
+### 🪝 Hooks
+- Exportado 16 hooks utilitários
+- Integrado useDebounce, useOnlineStatus, useDocumentTitle
+- Atualizado barrel exports em hooks/index.ts
 
-### Melhorado
-- usePPEDetection agora usa GPT-4 Vision como detector primário
-- HeatmapVisualization com suporte completo a i18n
-- Documentação de modelos ML em /public/models/README.md
+### 📚 Libs
+- Exportado 14 libs utilitárias
+- Integrado logger em hooks principais
+- Atualizado barrel exports em lib/index.ts
 
-### Segurança
-- Removido arquivo .env exposto no repositório
-- Atualizado .gitignore para proteger arquivos sensíveis
+### 🧪 Testes
+- Implementado ~20 testes reais (substituindo mocks)
+- Removido expect(true).toBe(true)
+- Adicionado cobertura para hooks principais
 
-## [0.9.0] - 2025-12-20
+### ♿ Acessibilidade
+- Adicionado lang="pt-BR" no HTML
+- Adicionado id="main-content" para SkipLink
+- Adicionado role="main" em todas as páginas
+- Adicionado apple-touch-icon
 
-### Adicionado
-- Sistema completo de streaming WebRTC com MediaMTX
-- Detecção facial com face-api.js
-- Sistema de reconhecimento facial em tempo real
-- Detecção de EPIs (PPE) com múltiplas zonas
-- Mapa de calor de movimentação
-- Análise contínua de vídeo com IA
-- Sistema de alertas em tempo real
-- Gravação de clips automática
-- Dashboard v2 com estatísticas em tempo real
-- PWA com Service Worker
-- Internacionalização (pt-BR, en-US, es-ES)
-- Docker Compose para deploy completo
-- CI/CD com GitHub Actions
-- Documentação de API (docs/API.md)
+### ⚡ Performance
+- Adicionado React.memo em 20 componentes pesados
+- Importado memo em componentes >5KB
 
-### Infraestrutura
-- Supabase Edge Functions para análise de imagem
-- Configuração MediaMTX (RTSP, HLS, WebRTC)
-- Redis para cache e pub/sub
-- Nginx para proxy reverso
+### 📄 Documentação
+- Criado TESTING.md
+- Criado SECURITY.md
+- Criado CONTRIBUTING.md
+- Criado TROUBLESHOOTING.md
+- Criado PERFORMANCE.md
+- Criado ACCESSIBILITY.md
+- Criado I18N.md
+- Criado EDGE_FUNCTIONS.md
+- Criado TYPES.md
 
-## [0.8.0] - 2025-12-19
-
-### Adicionado
-- Estrutura inicial do projeto
-- Integração com Supabase
-- Autenticação de usuários
-- CRUD de câmeras
-- Visualização de streams HLS
-
-## [0.7.0] - 2025-12-18
-
-### Adicionado
-- Setup inicial do Vite + React + TypeScript
-- Configuração de Tailwind CSS
-- Componentes UI base (shadcn/ui)
-- Roteamento com React Router
-
----
-
-## Tipos de Mudanças
-
-- **Adicionado** - Novas funcionalidades
-- **Alterado** - Mudanças em funcionalidades existentes
-- **Obsoleto** - Funcionalidades que serão removidas
-- **Removido** - Funcionalidades removidas
-- **Corrigido** - Correções de bugs
-- **Segurança** - Correções de vulnerabilidades
+### 🛠 DevOps
+- Adicionado .nvmrc (Node 20)
+- Adicionado .node-version
+- Adicionado commitlint.config.js
+- Adicionado cypress.config.ts
+- Adicionado playwright.config.ts
+- Adicionado .husky/pre-commit
+- Adicionado .husky/commit-msg
+- Adicionado scripts: lint:fix, format, typecheck, test:e2e, analyze
