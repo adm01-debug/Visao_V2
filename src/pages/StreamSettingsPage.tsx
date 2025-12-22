@@ -60,7 +60,7 @@ export default function StreamSettingsPage() {
       
       toast.success('Configuração de stream salva');
     } catch (error) {
-      console.error('Error saving stream config:', error);
+      // rm
       toast.error('Erro ao salvar configuração');
     }
   };
