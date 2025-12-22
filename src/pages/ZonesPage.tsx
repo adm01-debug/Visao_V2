@@ -1,3 +1,4 @@
+import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, SeverityBadge, TimeAgo, ConfirmDialog } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Zonas de Interesse
@@ -454,7 +455,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
           type: formData.type,
           color: formData.color,
           is_active: formData.is_active,
-          points: pointsWithOpacity as unknown,
+          points: pointsWithOpacity as any,
         });
       } else {
         // Insert
@@ -463,7 +464,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
           type: formData.type,
           color: formData.color,
           is_active: formData.is_active,
-          points: pointsWithOpacity as unknown,
+          points: pointsWithOpacity as any,
           camera_id: camera?.id,
           user_id: user.id,
         });
@@ -557,7 +558,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
                     color: formData.color,
                     opacity: opacity,
                     enabled: true,
-                  } as unknown] : []}
+                  } as any] : []}
                   onZoneCreated={(z) => handleZoneDrawn(z.geometry?.points || [])}
                   selectedColor={formData.color}
                   drawingMode={drawingMode}
