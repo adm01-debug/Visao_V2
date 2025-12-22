@@ -182,7 +182,7 @@ export function useStorage(): UseStorageReturn {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro ao fazer upload';
       setError(message);
-      console.error('Upload error:', err);
+
       return null;
     } finally {
       setIsUploading(false);
@@ -202,13 +202,13 @@ export function useStorage(): UseStorageReturn {
         .remove([path]);
 
       if (deleteError) {
-        console.error('Delete error:', deleteError);
+
         return false;
       }
 
       return true;
     } catch (err) {
-      console.error('Remove error:', err);
+
       return false;
     }
   }, []);
@@ -228,13 +228,13 @@ export function useStorage(): UseStorageReturn {
         .remove(paths);
 
       if (deleteError) {
-        console.error('Delete error:', deleteError);
+
         return false;
       }
 
       return true;
     } catch (err) {
-      console.error('Remove multiple error:', err);
+
       return false;
     }
   }, []);
