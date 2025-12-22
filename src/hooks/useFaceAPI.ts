@@ -1,3 +1,4 @@
+import { logger } from "@/lib";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useFaceAPI (IMPLEMENTAÇÃO REAL)
@@ -249,7 +250,7 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
       });
 
       setModelsLoaded(true);
-    } catch (err: unknown) {
+    } catch (err: any) {
       const message = `Erro ao carregar modelos: ${err.message}`;
       setError(message);
       onError?.(err);
@@ -328,7 +329,7 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
 
       onFaceDetected?.(faces);
       return faces;
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('[FaceAPI] Erro na detecção:', err);
       return [];
     }
@@ -410,7 +411,7 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
       await loadRegisteredFaces();
       toast.success(`Rosto de ${personName} cadastrado com sucesso`);
       return true;
-    } catch (err: unknown) {
+    } catch (err: any) {
       toast.error(`Erro ao cadastrar rosto: ${err.message}`);
       return false;
     }
