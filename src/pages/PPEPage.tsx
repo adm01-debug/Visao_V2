@@ -1,4 +1,3 @@
-import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: PPEPage (Equipamentos de Proteção Individual)
@@ -84,7 +83,7 @@ function ComplianceCard({
   return (
     <Card>
       <CardContent className="pt-6">
-        <div className="flex items-center justify-between">
+        <div role="main" className="flex items-center justify-between">
           <div>
             <p className="text-sm text-muted-foreground">{title}</p>
             <p className={cn("text-2xl font-bold", colorClasses[color])}>{value}</p>
@@ -181,7 +180,7 @@ export default function PPEPage() {
   return (
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div role="main" className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <HardHat className="w-8 h-8 text-primary" />
@@ -191,7 +190,7 @@ export default function PPEPage() {
             {t('ppe.subtitle', 'Monitore o uso de Equipamentos de Proteção Individual em tempo real')}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div role="main" className="flex items-center gap-2">
           <Select value={selectedCamera} onValueChange={setSelectedCamera}>
             <SelectTrigger className="w-[200px]">
               <Camera className="w-4 h-4 mr-2" />
@@ -317,7 +316,7 @@ export default function PPEPage() {
                         ))}
                       </div>
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div role="main" className="flex items-center justify-between">
                       <Label>Alertar violações</Label>
                       <Switch
                         checked={newZone.alertOnViolation}
@@ -369,7 +368,7 @@ export default function PPEPage() {
                       <TableRow key={zone.id}>
                         <TableCell className="font-medium">{zone.name}</TableCell>
                         <TableCell>
-                          <div className="flex gap-1">
+                          <div role="main" className="flex gap-1">
                             {zone.requiredPPE.map(type => (
                               <Badge key={type} variant="outline">
                                 <PPEIcon type={type} className="mr-1" />
@@ -440,7 +439,7 @@ export default function PPEPage() {
                         <TableCell>{violation.zoneName}</TableCell>
                         <TableCell>{violation.cameraName}</TableCell>
                         <TableCell>
-                          <div className="flex gap-1">
+                          <div role="main" className="flex gap-1">
                             {violation.missingItems.map(type => (
                               <Badge key={type} variant="destructive">
                                 <PPEIcon type={type} className="mr-1" />
@@ -508,7 +507,7 @@ export default function PPEPage() {
                       detection.compliant ? "border-green-500/50" : "border-red-500/50"
                     )}>
                       <CardContent className="pt-4">
-                        <div className="flex items-center justify-between mb-2">
+                        <div role="main" className="flex items-center justify-between mb-2">
                           <Badge variant={detection.compliant ? 'default' : 'destructive'}>
                             {detection.compliant ? (
                               <>
@@ -529,7 +528,7 @@ export default function PPEPage() {
                         <div className="space-y-2">
                           {detection.items.map(item => (
                             <div key={item.type} className="flex items-center justify-between">
-                              <div className="flex items-center gap-2">
+                              <div role="main" className="flex items-center gap-2">
                                 <PPEIcon type={item.type} />
                                 <span className="text-sm">{PPE_LABELS[item.type].pt}</span>
                               </div>
