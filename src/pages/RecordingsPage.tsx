@@ -408,7 +408,7 @@ export function RecordingsPage() {
 
       setClips(formattedClips);
     } catch (error) {
-      console.error('Erro ao carregar clips:', error);
+      // rm
       toast.error('Erro ao carregar gravações');
     } finally {
       setLoading(false);
@@ -484,7 +484,7 @@ export function RecordingsPage() {
       toast.success('Clip excluído');
       loadClips();
     } catch (error) {
-      console.error('Erro ao excluir:', error);
+      // rm
       toast.error('Erro ao excluir clip');
     } finally {
       setDeleteConfirm(null);
@@ -506,7 +506,7 @@ export function RecordingsPage() {
       setSelectedClips(new Set());
       loadClips();
     } catch (error) {
-      console.error('Erro ao excluir:', error);
+      // rm
       toast.error('Erro ao excluir clips');
     }
   };
