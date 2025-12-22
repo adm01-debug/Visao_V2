@@ -135,7 +135,7 @@ export function useNotificationFlow(
         });
       }
     } catch (err) {
-      console.error('[Notifications] Erro ao carregar config:', err);
+      // rm
     }
   }, [user]);
 
@@ -168,7 +168,7 @@ export function useNotificationFlow(
       toast.success('Configurações de notificação salvas');
       return true;
     } catch (err) {
-      console.error('[Notifications] Erro ao salvar config:', err);
+      // rm
       toast.error('Erro ao salvar configurações');
       return false;
     }
