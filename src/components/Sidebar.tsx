@@ -429,4 +429,4 @@ export function Sidebar({ className }: SidebarProps) {
   );
 }
 
-export default Sidebar;
+export default memo(Sidebar);
