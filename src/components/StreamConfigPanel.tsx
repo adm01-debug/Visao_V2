@@ -145,20 +145,20 @@ export function StreamConfigPanel({
     const inputUrl = config.url || 'rtsp://camera:554/stream';
     const outputPath = `/var/www/streams/${cameraId || 'camera1'}`;
     
-    return `ffmpeg -rtsp_transport tcp -i "${inputUrl}" \\
-  -c:v libx264 -preset ${config.transcodingPreset || 'veryfast'} \\
-  -tune zerolatency -g 30 -sc_threshold 0 \\
-  -c:a aac -b:a 128k \\
-  -f hls -hls_time 2 -hls_list_size 3 \\
-  -hls_flags delete_segments+append_list \\
+    return `ffmpeg -rtsp_transport tcp -i "${inputUrl}" \
+  -c:v libx264 -preset ${config.transcodingPreset || 'veryfast'} \
+  -tune zerolatency -g 30 -sc_threshold 0 \
+  -c:a aac -b:a 128k \
+  -f hls -hls_time 2 -hls_list_size 3 \
+  -hls_flags delete_segments+append_list \
   "${outputPath}/playlist.m3u8"`;
   };
 
   // Gerar comando Docker para Media Server
   const getDockerCommand = () => {
-    return `docker run -d --name mediamtx \\
-  -p 8554:8554 -p 8888:8888 -p 8889:8889 \\
-  -e MTX_PROTOCOLS=tcp \\
+    return `docker run -d --name mediamtx \
+  -p 8554:8554 -p 8888:8888 -p 8889:8889 \
+  -e MTX_PROTOCOLS=tcp \
   bluenviron/mediamtx:latest`;
   };
 
@@ -575,4 +575,4 @@ export function StreamConfigPanel({
   );
 }
 
-export default StreamConfigPanel;
+export default memo(StreamConfigPanel);
