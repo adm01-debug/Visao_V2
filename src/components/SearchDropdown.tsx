@@ -1,4 +1,5 @@
 import { useOnClickOutside } from "@/hooks";
+import { capitalize } from '@/lib/stringUtils';
 import { memo } from "react";
 import { useDebounce } from "@/hooks";
 import { useState, useEffect, useRef, useCallback } from 'react';
