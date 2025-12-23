@@ -1,4 +1,5 @@
 import { ErrorBoundary, formatDate, formatNumber } from "@/lib/formatters";
+import { FilterDropdown } from '@/components/FilterDropdown';
 import { DateRangePicker } from '@/components/DateRangePicker';
 import { ErrorBoundary, EmptyState, ErrorState, LoadingSpinner, TimeAgo } from "@/components";
 /**
