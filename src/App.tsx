@@ -1,4 +1,5 @@
 import { APP_CONFIG, API_ENDPOINTS } from "@/lib/constants";
+import { storage } from '@/lib/storage';
 import { logger } from '@/lib/logger';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
