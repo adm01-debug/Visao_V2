@@ -383,4 +383,4 @@ export function PersonCard({
   );
 }
 
-export default PersonCard;
+export default memo(PersonCard);
