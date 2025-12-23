@@ -531,7 +531,6 @@ export function AnalyticsPage() {
       setHourlyData(hourlyStats);
 
     } catch (error) {
-      console.error('Erro ao carregar analytics:', error);
       toast.error('Erro ao carregar dados');
     } finally {
       setLoading(false);
@@ -550,7 +549,8 @@ export function AnalyticsPage() {
     if (formatType === 'csv') {
       const headers = ['Data', 'Alertas', 'Análises', 'Detecções', 'Gravações'];
       const rows = chartData.map(d => [d.label, d.alerts, d.analyses, d.detections, d.recordings]);
-      const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('
+');
       
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
@@ -807,4 +807,3 @@ export function AnalyticsPage() {
 }
 
 export default AnalyticsPage;
-
