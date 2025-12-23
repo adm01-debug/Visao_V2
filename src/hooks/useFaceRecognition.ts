@@ -211,6 +211,7 @@ export function useFaceRecognition(
       personsRef.current = persons;
       return persons;
     } catch (err) {
+      console.error('[FaceRecognition] Erro ao buscar pessoas:', err);
       return [];
     }
   }, []);
@@ -252,6 +253,7 @@ export function useFaceRecognition(
 
       return faces;
     } catch (err) {
+      console.error('[FaceRecognition] Erro na detecção:', err);
       throw err;
     }
   }, [cameraId, onFaceDetected]);
@@ -423,6 +425,7 @@ export function useFaceRecognition(
           });
         }
       } catch (logErr) {
+        console.error('[FaceRecognition] Erro ao salvar log:', logErr);
       }
 
       const log: Partial<RecognitionLog> = {
@@ -600,6 +603,7 @@ export function useFaceRecognition(
   // Carregar pessoas ao montar
   useEffect(() => {
     if (!initialPersons) {
+      fetchPersons().catch(console.error);
     }
   }, [fetchPersons, initialPersons]);
 
