@@ -286,7 +286,7 @@ export default function NotificationSettingsPage() {
   if (loading) {
     return (
       <div role="main" className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <div role="main" aria-label="Configurações de notificações" className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     );
   }
@@ -300,8 +300,8 @@ export default function NotificationSettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div role="main" aria-label="Configurações de notificações" className="min-h-screen bg-background p-6">
+      <div role="main" aria-label="Configurações de notificações" className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div role="main" className="flex items-center justify-between">
           <div role="main" className="flex items-center gap-4">
@@ -354,7 +354,7 @@ export default function NotificationSettingsPage() {
                 <CardDescription>Escolha como deseja receber os alertas</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div role="main" aria-label="Configurações de notificações" className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {CHANNEL_OPTIONS.map((channel) => {
                     const Icon = channel.icon;
                     const isActive = config.channels.includes(channel.value);
@@ -500,7 +500,7 @@ export default function NotificationSettingsPage() {
                       <Plus className="h-4 w-4" />
                     </Button>
                   </div>
-                  <div className="space-y-2">
+                  <div role="main" aria-label="Configurações de notificações" className="space-y-2">
                     {config.webhook_urls.map((url) => (
                       <div key={url} className="flex items-center justify-between p-2 bg-muted rounded-lg">
                         <span className="text-sm truncate flex-1">{url}</span>
@@ -539,8 +539,8 @@ export default function NotificationSettingsPage() {
 
                 {config.schedule_enabled && (
                   <>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
+                    <div role="main" aria-label="Configurações de notificações" className="grid grid-cols-2 gap-4">
+                      <div role="main" aria-label="Configurações de notificações" className="space-y-2">
                         <Label>Horário de Início</Label>
                         <Input
                           type="time"
@@ -548,7 +548,7 @@ export default function NotificationSettingsPage() {
                           onChange={(e) => setConfig({ ...config, schedule_start_time: e.target.value })}
                         />
                       </div>
-                      <div className="space-y-2">
+                      <div role="main" aria-label="Configurações de notificações" className="space-y-2">
                         <Label>Horário de Fim</Label>
                         <Input
                           type="time"
@@ -558,7 +558,7 @@ export default function NotificationSettingsPage() {
                       </div>
                     </div>
 
-                    <div className="space-y-2">
+                    <div role="main" aria-label="Configurações de notificações" className="space-y-2">
                       <Label>Dias da Semana</Label>
                       <div role="main" className="flex gap-2">
                         {DAYS_OF_WEEK.map((day) => {
@@ -582,7 +582,7 @@ export default function NotificationSettingsPage() {
                   </>
                 )}
 
-                <div className="space-y-4">
+                <div role="main" aria-label="Configurações de notificações" className="space-y-4">
                   <div>
                     <Label>Intervalo entre Notificações (minutos)</Label>
                     <p className="text-sm text-muted-foreground mb-4">
@@ -616,7 +616,7 @@ export default function NotificationSettingsPage() {
                 <CardDescription>Escolha quais tipos de alertas deseja receber</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div role="main" aria-label="Configurações de notificações" className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {SEVERITY_OPTIONS.map((severity) => {
                     const Icon = severity.icon;
                     const isActive = config.severity_filter.includes(severity.value);
