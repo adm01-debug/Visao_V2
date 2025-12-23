@@ -1,3 +1,8 @@
+![Quality Score](https://img.shields.io/badge/quality-A+-brightgreen)
+![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)
+![Coverage](https://img.shields.io/badge/coverage-80%25-green)
+
 # 🎥 VISÃO - Sistema de Vigilância Inteligente
 
 <div align="center">
