@@ -1,9 +1,9 @@
-import { Camera } from '@/types/surveillance';
-import { StatusIndicator } from './StatusIndicator';
-import { Badge } from '@/components/ui/badge';
-import { Users, AlertTriangle, MapPin, Video, Play } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { HighlightText } from './HighlightText';
+import { memo, Camera } from '@/types/surveillance';
+import { memo, StatusIndicator } from './StatusIndicator';
+import { memo, Badge } from '@/components/ui/badge';
+import { memo, Users, AlertTriangle, MapPin, Video, Play } from 'lucide-react';
+import { memo, cn } from '@/lib/utils';
+import { memo, HighlightText } from './HighlightText';
 
 export interface CameraCardProps {
   camera: Camera;
