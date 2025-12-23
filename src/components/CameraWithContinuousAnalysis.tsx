@@ -767,4 +767,4 @@ export function CameraWithContinuousAnalysis({
   );
 }
 
-export default CameraWithContinuousAnalysis;
+export default memo(CameraWithContinuousAnalysis);
