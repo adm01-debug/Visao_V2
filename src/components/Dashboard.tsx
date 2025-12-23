@@ -1,4 +1,4 @@
-import { useMediaQuery, useWindowSize } from "@/hooks";
+import { memo, useMediaQuery, useWindowSize } from "@/hooks";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: Dashboard (Refatorado)
@@ -10,8 +10,8 @@ import { useMediaQuery, useWindowSize } from "@/hooks";
  * - Análise contínua integrada
  */
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { 
+import { memo, useState, useEffect, useMemo, useCallback } from 'react';
+import { memo, 
   Camera, 
   AlertTriangle, 
   Users, 
@@ -31,30 +31,30 @@ import {
   Zap,
   Eye,
 } from 'lucide-react';
-import { StatsCard } from './StatsCard';
-import { CameraCard } from './CameraCard';
-import { AlertCard, UIAlert } from './AlertCard';
-import { CameraModal } from './CameraModal';
-import { ExportMenu } from './ExportMenu';
-import { CameraMap } from './CameraMap';
-import { AlertTrendsChart } from './AlertTrendsChart';
-import { AlertsByCameraChart } from './AlertsByCameraChart';
-import { CameraLayoutControls, CameraLayout } from './CameraLayoutControls';
-import { AlertFiltersComponent, filterAlerts, defaultFilters, AlertFilters, CameraOption } from './AlertFilters';
-import { SearchInput, filterCamerasBySearch, filterAlertsBySearch } from './SearchInput';
-import { PaginationControls, usePagination } from './PaginationControls';
-import { VideoStreamPlayer } from './VideoStreamPlayer';
-import { useCameras, DbCamera } from '@/hooks/useCameras';
-import { useAlerts } from '@/hooks/useAlerts';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { exportAlerts, exportCameras } from '@/lib/exportUtils';
-import { cn } from '@/lib/utils';
+import { memo, StatsCard } from './StatsCard';
+import { memo, CameraCard } from './CameraCard';
+import { memo, AlertCard, UIAlert } from './AlertCard';
+import { memo, CameraModal } from './CameraModal';
+import { memo, ExportMenu } from './ExportMenu';
+import { memo, CameraMap } from './CameraMap';
+import { memo, AlertTrendsChart } from './AlertTrendsChart';
+import { memo, AlertsByCameraChart } from './AlertsByCameraChart';
+import { memo, CameraLayoutControls, CameraLayout } from './CameraLayoutControls';
+import { memo, AlertFiltersComponent, filterAlerts, defaultFilters, AlertFilters, CameraOption } from './AlertFilters';
+import { memo, SearchInput, filterCamerasBySearch, filterAlertsBySearch } from './SearchInput';
+import { memo, PaginationControls, usePagination } from './PaginationControls';
+import { memo, VideoStreamPlayer } from './VideoStreamPlayer';
+import { memo, useCameras, DbCamera } from '@/hooks/useCameras';
+import { memo, useAlerts } from '@/hooks/useAlerts';
+import { memo, Skeleton } from '@/components/ui/skeleton';
+import { memo, Button } from '@/components/ui/button';
+import { memo, Badge } from '@/components/ui/badge';
+import { memo, Switch } from '@/components/ui/switch';
+import { memo, Label } from '@/components/ui/label';
+import { memo, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { memo, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { memo, exportAlerts, exportCameras } from '@/lib/exportUtils';
+import { memo, cn } from '@/lib/utils';
 
 type AlertSortOption = 'date-desc' | 'date-asc' | 'severity-desc' | 'severity-asc' | 'type';
 type ViewMode = 'cards' | 'streams' | 'hybrid';
