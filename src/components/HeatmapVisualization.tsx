@@ -5,18 +5,18 @@
  * Mapa de calor de movimentação por zona em tempo real
  */
 
-import { useState, useEffect, useMemo, useRef } from 'react';
-import { useI18n } from '@/contexts/i18n';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
-import { useCameras } from '@/hooks/useCameras';
-import { useHeatmap, TimeRange } from '@/hooks/useHeatmap';
-import { 
+import { memo, useState, useEffect, useMemo, useRef } from 'react';
+import { memo, useI18n } from '@/contexts/i18n';
+import { memo, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { memo, Button } from '@/components/ui/button';
+import { memo, Badge } from '@/components/ui/badge';
+import { memo, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { memo, Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { memo, supabase } from '@/integrations/supabase/client';
+import { memo, useAuth } from '@/contexts/AuthContext';
+import { memo, useCameras } from '@/hooks/useCameras';
+import { memo, useHeatmap, TimeRange } from '@/hooks/useHeatmap';
+import { memo, 
   Activity, 
   Clock, 
   TrendingUp, 
@@ -26,9 +26,9 @@ import {
   RefreshCw,
   Thermometer
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { format, subHours, subDays, startOfHour, startOfDay } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { memo, cn } from '@/lib/utils';
+import { memo, format, subHours, subDays, startOfHour, startOfDay } from 'date-fns';
+import { memo, ptBR } from 'date-fns/locale';
 
 // ============================================
 // TIPOS
