@@ -1,15 +1,15 @@
-# Contributing Guide - VISÃO
+# 🤝 Guia de Contribuição - VISÃO
 
 ## Como Contribuir
 
 1. Fork o repositório
-2. Crie uma branch: `git checkout -b feature/minha-feature`
-3. Faça commit: `git commit -m "feat: adiciona feature"`
-4. Push: `git push origin feature/minha-feature`
+2. Crie uma branch: `git checkout -b feature/nome`
+3. Faça commits: `git commit -m "feat: descrição"`
+4. Push: `git push origin feature/nome`
 5. Abra um Pull Request
 
-## Padrões de Commit
-Usamos Conventional Commits:
+## Convenções de Commit
+
 - `feat:` Nova funcionalidade
 - `fix:` Correção de bug
 - `docs:` Documentação
@@ -18,12 +18,23 @@ Usamos Conventional Commits:
 - `test:` Testes
 - `chore:` Manutenção
 
-## Code Style
-- TypeScript strict mode
-- ESLint + Prettier
-- Componentes funcionais com hooks
+## Padrões de Código
 
-## Testes
-- Escreva testes para novas features
-- Mantenha cobertura > 80%
-- `npm test` antes de PR
+- ESLint + Prettier
+- TypeScript strict mode
+- Testes obrigatórios
+- JSDoc em funções públicas
+
+## Pull Request
+
+- Descrição clara
+- Testes passando
+- Sem console.log
+- Sem tipos any
+
+## Code Review
+
+- Mínimo 1 aprovação
+- CI/CD verde
+- Coverage mantido
+
