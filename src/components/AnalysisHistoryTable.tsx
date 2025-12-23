@@ -250,7 +250,6 @@ export function AnalysisHistoryTable({
       setRecords(filtered);
       setTotalCount(count || 0);
     } catch (error) {
-      console.error('Erro ao carregar histórico:', error);
       toast.error('Erro ao carregar histórico de análises');
     } finally {
       setLoading(false);
@@ -293,7 +292,8 @@ export function AnalysisHistoryTable({
       `${r.duration_ms}ms`,
     ]);
 
-    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('
+');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
