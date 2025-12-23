@@ -1,4 +1,5 @@
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { PageHeader } from '@/components/PageHeader';
 import { InfoTooltip } from '@/components/InfoTooltip';
 import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, SeverityBadge, TimeAgo, ConfirmDialog } from "@/components";
 /**
