@@ -224,7 +224,7 @@ export function useContinuousAnalysis(
 
       for (const conditionRaw of conditions) {
         // Cast para any para acessar propriedades JSON
-        const condition = conditionRaw as any;
+        const condition = conditionRaw as unknown;
         let actualValue = 0;
         let satisfied = false;
 
@@ -282,7 +282,7 @@ export function useContinuousAnalysis(
           violated: true,
           conditions: conditionEvaluations,
           actions: rule.actions || [],
-          severity: rule.severity as any,
+          severity: rule.severity as unknown,
           message: `Regra "${rule.name}" violada: ${rule.description || 'Condições atendidas'}`,
         });
       }
@@ -435,8 +435,8 @@ export function useContinuousAnalysis(
         user_id: user.id,
         timestamp: entry.timestamp.toISOString(),
         analysis_type: entry.analysisType,
-        result: entry.result as any,
-        confidence: 'confidence' in entry.result ? (entry.result as any).confidence : null,
+        result: entry.result as unknown,
+        confidence: 'confidence' in entry.result ? (entry.result as unknown).confidence : null,
         image_url: entry.snapshot || null,
       });
 
@@ -580,7 +580,7 @@ export function useContinuousAnalysis(
         sessionId: currentSession.id,
         cameraId,
         analysisType,
-        result: { people_count: 0, summary: 'Erro na análise' } as any,
+        result: { people_count: 0, summary: 'Erro na análise' } as unknown,
         duration,
         alertsGenerated: 0,
         violatedRules: [],
