@@ -1,4 +1,5 @@
 import { formatDate, formatNumber } from "@/lib/formatters";
+import { exportToCSV } from '@/lib/exportUtils';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: Painel de Relatórios
