@@ -1,4 +1,7 @@
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { StatCard } from '@/components/StatCard';
+import { CountUp } from '@/components/CountUp';
+import { TimeAgo } from '@/components/TimeAgo';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Dashboard V2 - Integração Completa
