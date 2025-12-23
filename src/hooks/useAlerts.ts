@@ -1,4 +1,5 @@
 import { APP_CONFIG, API_ENDPOINTS } from "@/lib/constants";
+import { ApiError } from '@/lib/apiError';
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
