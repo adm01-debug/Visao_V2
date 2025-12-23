@@ -253,7 +253,9 @@ export function useNotificationFlow(
             try {
               await supabase.functions.invoke('send-telegram', {
                 body: {
-                  message: `${payload.title}\n\n${payload.message}`,
+                  message: `${payload.title}
+
+${payload.message}`,
                 },
               });
               result.status = 'sent';
