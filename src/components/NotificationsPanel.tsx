@@ -362,4 +362,4 @@ export function NotificationsPanel() {
   );
 }
 
-export default NotificationsPanel;
+export default memo(NotificationsPanel);
