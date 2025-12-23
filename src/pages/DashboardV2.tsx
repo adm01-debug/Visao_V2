@@ -1,4 +1,5 @@
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { CardSkeleton } from '@/components/CardSkeleton';
 import { APP_NAME } from '@/lib/constants';
 import { formatNumber } from '@/lib/formatters';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
