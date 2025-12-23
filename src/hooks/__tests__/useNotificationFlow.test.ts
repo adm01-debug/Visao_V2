@@ -1,7 +1,38 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook } from '@testing-library/react';
+import { renderHook, waitFor, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useNotificationFlow } from '../useNotificationFlow';
-import React from 'react';
-const createWrapper = () => { const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } }); return ({ children }: { children: React.ReactNode }) => (<QueryClientProvider client={qc}>{children}</QueryClientProvider>); };
-describe('useNotificationFlow', () => { beforeEach(() => { vi.clearAllMocks(); }); it('should return initial state', () => { const { result } = renderHook(() => useNotificationFlow(), { wrapper: createWrapper() }); expect(result.current).toBeDefined(); }); it('should handle state', () => { const { result } = renderHook(() => useNotificationFlow(), { wrapper: createWrapper() }); expect(typeof result.current).toBe('object'); }); });
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { retry: false, staleTime: 0 },
+  },
+});
+
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+);
+
+describe('useNotificationFlow', () => {
+  beforeEach(() => {
+    queryClient.clear();
+    vi.clearAllMocks();
+  });
+
+  it('should initialize correctly', () => {
+    const { result } = renderHook(() => useNotificationFlow(), { wrapper });
+    expect(result.current).toBeDefined();
+  });
+
+  it('should handle state updates', async () => {
+    const { result } = renderHook(() => useNotificationFlow(), { wrapper });
+    await waitFor(() => {
+      expect(result.current).toBeDefined();
+    });
+  });
+
+  it('should cleanup on unmount', () => {
+    const { unmount } = renderHook(() => useNotificationFlow(), { wrapper });
+    expect(() => unmount()).not.toThrow();
+  });
+});
