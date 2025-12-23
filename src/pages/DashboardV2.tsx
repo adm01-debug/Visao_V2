@@ -214,7 +214,7 @@ function CameraStreamCard({
     >
       {/* Video Stream ou Thumbnail */}
       {hasStream && isOnline ? (
-        <div className="absolute inset-0">
+        <div role="main" aria-label="Painel de controle principal" className="absolute inset-0">
           <VideoStreamPlayer
             cameraId={camera.id}
             streamUrl={camera.streamUrl!}
@@ -232,7 +232,7 @@ function CameraStreamCard({
           )}
         </div>
       ) : (
-        <div className="absolute inset-0">
+        <div role="main" aria-label="Painel de controle principal" className="absolute inset-0">
           {camera.thumbnail ? (
             <img
               src={camera.thumbnail}
@@ -240,7 +240,7 @@ function CameraStreamCard({
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-muted flex items-center justify-center">
+            <div role="main" aria-label="Painel de controle principal" className="w-full h-full bg-muted flex items-center justify-center">
               <Camera className="w-8 h-8 text-muted-foreground" />
             </div>
           )}
@@ -248,10 +248,10 @@ function CameraStreamCard({
       )}
 
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+      <div role="main" aria-label="Painel de controle principal" className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
       {/* Status badges */}
-      <div className="absolute top-2 left-2 flex items-center gap-2">
+      <div role="main" aria-label="Painel de controle principal" className="absolute top-2 left-2 flex items-center gap-2">
         {/* Status */}
         <Badge
           variant={isOnline ? 'default' : 'destructive'}
@@ -266,7 +266,7 @@ function CameraStreamCard({
         {/* Streaming indicator */}
         {hasStream && isOnline && (
           <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5 gap-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+            <div role="main" aria-label="Painel de controle principal" className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
             REC
           </Badge>
         )}
@@ -282,7 +282,7 @@ function CameraStreamCard({
 
       {/* Alert count */}
       {hasAlerts && (
-        <div className="absolute top-2 right-2">
+        <div role="main" aria-label="Painel de controle principal" className="absolute top-2 right-2">
           <Badge variant="destructive" className="text-[10px] animate-pulse">
             {camera.alerts} alertas
           </Badge>
@@ -290,13 +290,13 @@ function CameraStreamCard({
       )}
 
       {/* Bottom info */}
-      <div className="absolute bottom-0 left-0 right-0 p-3">
-        <div className="flex items-center justify-between">
+      <div role="main" aria-label="Painel de controle principal" className="absolute bottom-0 left-0 right-0 p-3">
+        <div role="main" aria-label="Painel de controle principal" className="flex items-center justify-between">
           <div>
             <h3 className="font-medium text-white text-sm truncate">{camera.name}</h3>
             <p className="text-[10px] text-white/70 truncate">{camera.location}</p>
           </div>
-          <div className="flex items-center gap-1 text-white/80">
+          <div role="main" aria-label="Painel de controle principal" className="flex items-center gap-1 text-white/80">
             <Users className="w-3 h-3" />
             <span className="text-xs">{camera.detectedPeople}</span>
           </div>
@@ -304,7 +304,7 @@ function CameraStreamCard({
       </div>
 
       {/* Quick actions (on hover) */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+      <div role="main" aria-label="Painel de controle principal" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
         <Button aria-label="Ação" size="icon" variant="secondary" className="h-8 w-8">
           <Maximize2 className="w-4 h-4" />
         </Button>
@@ -338,10 +338,10 @@ function SettingsSheet({ settings, onSettingsChange }: SettingsSheetProps) {
           </SheetDescription>
         </SheetHeader>
         
-        <div className="space-y-6 mt-6">
+        <div role="main" aria-label="Painel de controle principal" className="space-y-6 mt-6">
           {/* Streaming */}
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
+          <div role="main" aria-label="Painel de controle principal" className="flex items-center justify-between">
+            <div role="main" aria-label="Painel de controle principal" className="space-y-0.5">
               <Label>Streaming ao Vivo</Label>
               <p className="text-xs text-muted-foreground">Exibir vídeo em tempo real</p>
             </div>
@@ -354,8 +354,8 @@ function SettingsSheet({ settings, onSettingsChange }: SettingsSheetProps) {
           </div>
 
           {/* Analysis */}
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
+          <div role="main" aria-label="Painel de controle principal" className="flex items-center justify-between">
+            <div role="main" aria-label="Painel de controle principal" className="space-y-0.5">
               <Label>Análise Contínua</Label>
               <p className="text-xs text-muted-foreground">Análise automática por IA</p>
             </div>
@@ -368,8 +368,8 @@ function SettingsSheet({ settings, onSettingsChange }: SettingsSheetProps) {
           </div>
 
           {/* Face Recognition */}
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
+          <div role="main" aria-label="Painel de controle principal" className="flex items-center justify-between">
+            <div role="main" aria-label="Painel de controle principal" className="space-y-0.5">
               <Label>Reconhecimento Facial</Label>
               <p className="text-xs text-muted-foreground">Detectar e identificar rostos</p>
             </div>
@@ -382,8 +382,8 @@ function SettingsSheet({ settings, onSettingsChange }: SettingsSheetProps) {
           </div>
 
           {/* Zones */}
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
+          <div role="main" aria-label="Painel de controle principal" className="flex items-center justify-between">
+            <div role="main" aria-label="Painel de controle principal" className="space-y-0.5">
               <Label>Zonas de Interesse</Label>
               <p className="text-xs text-muted-foreground">Exibir zonas sobre o vídeo</p>
             </div>
@@ -395,10 +395,10 @@ function SettingsSheet({ settings, onSettingsChange }: SettingsSheetProps) {
             />
           </div>
 
-          <div className="border-t pt-4">
+          <div role="main" aria-label="Painel de controle principal" className="border-t pt-4">
             {/* Auto Refresh */}
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
+            <div role="main" aria-label="Painel de controle principal" className="flex items-center justify-between">
+              <div role="main" aria-label="Painel de controle principal" className="space-y-0.5">
                 <Label>Atualização Automática</Label>
                 <p className="text-xs text-muted-foreground">Recarregar dados periodicamente</p>
               </div>
@@ -411,7 +411,7 @@ function SettingsSheet({ settings, onSettingsChange }: SettingsSheetProps) {
             </div>
 
             {settings.autoRefresh && (
-              <div className="mt-4">
+              <div role="main" aria-label="Painel de controle principal" className="mt-4">
                 <Label>Intervalo (segundos)</Label>
                 <Select
                   value={String(settings.refreshInterval / 1000)}
@@ -550,8 +550,8 @@ export function DashboardV2() {
   // Loading state
   if (loading) {
     return (
-      <div className="p-6 space-y-6 overflow-auto h-[calc(100vh-4rem)]">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div role="main" aria-label="Painel de controle principal" className="p-6 space-y-6 overflow-auto h-[calc(100vh-4rem)]">
+        <div role="main" aria-label="Painel de controle principal" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
             <Skeleton key={i} className="h-32" />
           ))}
@@ -562,9 +562,9 @@ export function DashboardV2() {
   }
 
   return (
-    <div className="p-6 space-y-6 overflow-auto h-[calc(100vh-4rem)]">
+    <div role="main" aria-label="Painel de controle principal" className="p-6 space-y-6 overflow-auto h-[calc(100vh-4rem)]">
       {/* Header com controles */}
-      <div className="flex items-center justify-between">
+      <div role="main" aria-label="Painel de controle principal" className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">{t('dashboard.title', 'Dashboard')}</h1>
           <p className="text-sm text-muted-foreground">
@@ -572,7 +572,7 @@ export function DashboardV2() {
           </p>
         </div>
         
-        <div className="flex items-center gap-2">
+        <div role="main" aria-label="Painel de controle principal" className="flex items-center gap-2">
           {/* View mode tabs */}
           <Tabs
             value={settings.viewMode}
@@ -625,7 +625,7 @@ export function DashboardV2() {
 
       {/* Stats Grid */}
       {settings.showStats && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 animate-fade-in">
+        <div role="main" aria-label="Painel de controle principal" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 animate-fade-in">
           <StatsCard
             title="Câmeras Online"
             value={`${onlineCameras}/${uiCameras.length}`}
@@ -665,7 +665,7 @@ export function DashboardV2() {
       )}
 
       {/* Search */}
-      <div className="flex items-center gap-4">
+      <div role="main" aria-label="Painel de controle principal" className="flex items-center gap-4">
         <SearchInput
           value={searchQuery}
           onChange={setSearchQuery}
@@ -680,13 +680,13 @@ export function DashboardV2() {
       </div>
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div role="main" aria-label="Painel de controle principal" className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Cameras Grid - 3 cols */}
-        <div className="lg:col-span-3 space-y-4">
+        <div role="main" aria-label="Painel de controle principal" className="lg:col-span-3 space-y-4">
           {/* Priority cameras */}
           {priorityCameras.length > 0 && (
             <div>
-              <div className="flex items-center gap-2 mb-3">
+              <div role="main" aria-label="Painel de controle principal" className="flex items-center gap-2 mb-3">
                 <AlertTriangle className="w-5 h-5 text-destructive" />
                 <h2 className="font-semibold">Câmeras com Alertas</h2>
                 <Badge variant="destructive">{priorityCameras.length}</Badge>
@@ -708,8 +708,8 @@ export function DashboardV2() {
 
           {/* Normal cameras */}
           <div>
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
+            <div role="main" aria-label="Painel de controle principal" className="flex items-center justify-between mb-3">
+              <div role="main" aria-label="Painel de controle principal" className="flex items-center gap-2">
                 <Activity className="w-5 h-5 text-primary" />
                 <h2 className="font-semibold">Todas as Câmeras</h2>
                 <Badge variant="secondary">{normalCameras.length}</Badge>
@@ -737,7 +737,7 @@ export function DashboardV2() {
           {/* Map (opcional) */}
           {settings.showMap && settings.viewMode === 'map' && (
             <div>
-              <div className="flex items-center gap-2 mb-3">
+              <div role="main" aria-label="Painel de controle principal" className="flex items-center gap-2 mb-3">
                 <Map className="w-5 h-5 text-primary" />
                 <h2 className="font-semibold">Mapa das Câmeras</h2>
               </div>
@@ -753,7 +753,7 @@ export function DashboardV2() {
           )}
 
           {/* Charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div role="main" aria-label="Painel de controle principal" className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <AlertTrendsChart alerts={uiAlerts} />
             <AlertsByCameraChart 
               alerts={uiAlerts} 
@@ -765,16 +765,16 @@ export function DashboardV2() {
         </div>
 
         {/* Sidebar - Alerts */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+        <div role="main" aria-label="Painel de controle principal" className="space-y-4">
+          <div role="main" aria-label="Painel de controle principal" className="flex items-center justify-between">
+            <div role="main" aria-label="Painel de controle principal" className="flex items-center gap-2">
               <AlertTriangle className="w-5 h-5 text-warning" />
               <h2 className="font-semibold">Alertas</h2>
               {unreadCount > 0 && (
                 <Badge variant="destructive">{unreadCount}</Badge>
               )}
             </div>
-            <div className="flex items-center gap-1">
+            <div role="main" aria-label="Painel de controle principal" className="flex items-center gap-1">
               <Select value={alertSortBy} onValueChange={(v) => setAlertSortBy(v as AlertSortOption)}>
                 <SelectTrigger className="h-7 w-28 text-xs">
                   <ArrowUpDown className="w-3 h-3 mr-1" />
@@ -794,7 +794,7 @@ export function DashboardV2() {
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div role="main" aria-label="Painel de controle principal" className="space-y-2">
             {paginatedAlerts.map(alert => (
               <AlertCard
                 key={alert.id}
@@ -806,7 +806,7 @@ export function DashboardV2() {
               />
             ))}
             {filteredAlerts.length === 0 && (
-              <div className="text-center py-8 text-muted-foreground text-sm">
+              <div role="main" aria-label="Painel de controle principal" className="text-center py-8 text-muted-foreground text-sm">
                 Nenhum alerta
               </div>
             )}
@@ -824,19 +824,19 @@ export function DashboardV2() {
           )}
 
           {/* Productivity */}
-          <div className="glass-card p-4 mt-4">
-            <div className="flex items-center gap-2 mb-3">
+          <div role="main" aria-label="Painel de controle principal" className="glass-card p-4 mt-4">
+            <div role="main" aria-label="Painel de controle principal" className="flex items-center gap-2 mb-3">
               <TrendingUp className="w-5 h-5 text-primary" />
               <h3 className="font-semibold text-sm">Produtividade</h3>
             </div>
-            <div className="flex items-center justify-between mb-2">
+            <div role="main" aria-label="Painel de controle principal" className="flex items-center justify-between mb-2">
               <span className="text-2xl font-bold text-primary">87%</span>
               <Badge variant="outline" className="text-green-500 border-green-500">
                 +3%
               </Badge>
             </div>
-            <div className="h-2 bg-secondary rounded-full overflow-hidden">
-              <div className="h-full bg-primary rounded-full" style={{ width: '87%' }} />
+            <div role="main" aria-label="Painel de controle principal" className="h-2 bg-secondary rounded-full overflow-hidden">
+              <div role="main" aria-label="Painel de controle principal" className="h-full bg-primary rounded-full" style={{ width: '87%' }} />
             </div>
           </div>
         </div>
