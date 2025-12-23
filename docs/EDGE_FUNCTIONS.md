@@ -1,43 +1,44 @@
-# Edge Functions - VISÃO
+# ⚡ Edge Functions - VISÃO
 
 ## Funções Disponíveis
 
-### analyze-image
-Analisa imagem para detecção de objetos/pessoas
-```typescript
-POST /functions/v1/analyze-image
-{ imageUrl: string, analysisType: 'security' | 'ppe' }
-```
+| Função | Propósito |
+|--------|-----------|
+| `analyze-image` | Análise de imagens com IA |
+| `analyze-license-plate` | OCR de placas |
+| `compare-faces` | Comparação facial |
+| `detect-faces` | Detecção de faces |
+| `generate-face-encoding` | Encoding facial |
+| `send-alert-notification` | Envio de alertas |
+| `send-telegram` | Notificações Telegram |
+| `get-mapbox-token` | Token Mapbox |
 
-### detect-faces
-Detecta faces em imagem
-```typescript
-POST /functions/v1/detect-faces
-{ imageBase64: string }
-```
+## Estrutura
 
-### compare-faces
-Compara duas faces
-```typescript
-POST /functions/v1/compare-faces
-{ face1: string, face2: string }
 ```
-
-### send-alert-notification
-Envia notificação de alerta
-```typescript
-POST /functions/v1/send-alert-notification
-{ alertId: string, channels: string[] }
-```
-
-### send-telegram
-Envia mensagem via Telegram
-```typescript
-POST /functions/v1/send-telegram
-{ chatId: string, message: string }
+supabase/functions/
+├── _shared/
+│   └── validation.ts
+├── analyze-image/
+│   └── index.ts
+└── ...
 ```
 
 ## Deploy
+
 ```bash
-supabase functions deploy <function-name>
+supabase functions deploy
 ```
+
+## Testes Locais
+
+```bash
+supabase functions serve
+```
+
+## Logs
+
+```bash
+supabase functions logs analyze-image
+```
+
