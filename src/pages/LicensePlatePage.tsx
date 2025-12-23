@@ -21,7 +21,7 @@ export default function LicensePlatePage() {
         <meta name="description" content="Sistema de reconhecimento automático de placas veiculares" />
       </Helmet>
       
-      <div className="flex min-h-screen w-full bg-background">
+      <div role="main" aria-label="Reconhecimento de placas" className="flex min-h-screen w-full bg-background">
         <Sidebar />
         <main className="flex-1 p-6 overflow-auto">
           <Tabs defaultValue="dashboard" className="space-y-6">
