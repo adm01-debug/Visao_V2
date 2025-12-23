@@ -213,13 +213,13 @@ function CameraCard({
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-muted">
+          <div role="main" aria-label="Gerenciamento de câmeras" className="w-full h-full flex items-center justify-center bg-muted">
             <Camera className="w-12 h-12 text-muted-foreground" />
           </div>
         )}
 
         {/* Status Indicator */}
-        <div className="absolute top-2 left-2 flex items-center gap-2">
+        <div role="main" aria-label="Gerenciamento de câmeras" className="absolute top-2 left-2 flex items-center gap-2">
           <Badge 
             variant={isOnline ? 'default' : 'secondary'}
             className={cn(
@@ -244,8 +244,8 @@ function CameraCard({
           'absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent',
           'opacity-0 group-hover:opacity-100 transition-opacity'
         )}>
-          <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
-            <div className="flex items-center gap-1">
+          <div role="main" aria-label="Gerenciamento de câmeras" className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
+            <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center gap-1">
               <Button
                 variant="ghost"
                 size="icon"
@@ -270,7 +270,7 @@ function CameraCard({
               </Button>
             </div>
             
-            <div className="flex items-center gap-1">
+            <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center gap-1">
               <ClipRecorderControls
                 cameraId={camera.id}
                 cameraName={camera.name}
@@ -295,8 +295,8 @@ function CameraCard({
       {/* Info */}
       {viewMode !== 'grid-4x4' && (
         <CardContent className="p-3">
-          <div className="flex items-start justify-between">
-            <div className="min-w-0">
+          <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-start justify-between">
+            <div role="main" aria-label="Gerenciamento de câmeras" className="min-w-0">
               <h3 className="font-medium truncate">{camera.name}</h3>
               {camera.location && (
                 <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
@@ -332,7 +332,7 @@ function CameraCard({
 
           {/* Stats (quando não compacto) */}
           {!isCompact && stats && (
-            <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+            <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
               {stats.alertsToday > 0 && (
                 <span className="flex items-center gap-1 text-yellow-500">
                   <AlertTriangle className="w-3 h-3" />
@@ -406,12 +406,12 @@ function CameraDetailView({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl max-h-[95vh] p-0 overflow-hidden">
-        <div className="flex h-[90vh]">
+        <div role="main" aria-label="Gerenciamento de câmeras" className="flex h-[90vh]">
           {/* Main Video Area */}
-          <div className="flex-1 flex flex-col bg-black relative">
+          <div role="main" aria-label="Gerenciamento de câmeras" className="flex-1 flex flex-col bg-black relative">
             {/* Header */}
-            <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-gradient-to-b from-black/80 to-transparent">
-              <div className="flex items-center justify-between">
+            <div role="main" aria-label="Gerenciamento de câmeras" className="absolute top-0 left-0 right-0 z-10 p-4 bg-gradient-to-b from-black/80 to-transparent">
+              <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center justify-between">
                 <div>
                   <h2 className="text-white font-bold text-lg">{camera.name}</h2>
                   {camera.location && (
@@ -421,7 +421,7 @@ function CameraDetailView({
                     </p>
                   )}
                 </div>
-                <div className="flex items-center gap-2">
+                <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center gap-2">
                   <Badge variant={camera.status !== 'offline' ? 'default' : 'secondary'}>
                     {camera.status !== 'offline' ? 'Online' : 'Offline'}
                   </Badge>
@@ -433,7 +433,7 @@ function CameraDetailView({
             </div>
 
             {/* Video */}
-            <div className="flex-1 relative">
+            <div role="main" aria-label="Gerenciamento de câmeras" className="flex-1 relative">
               {camera.stream_url ? (
                 <>
                   <VideoStreamPlayer
@@ -453,8 +453,8 @@ function CameraDetailView({
                   )}
                 </>
               ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="text-center text-white/70">
+                <div role="main" aria-label="Gerenciamento de câmeras" className="w-full h-full flex items-center justify-center">
+                  <div role="main" aria-label="Gerenciamento de câmeras" className="text-center text-white/70">
                     <Camera className="w-16 h-16 mx-auto mb-4 opacity-50" />
                     <p{t('cameras.streamUnavailable', 'Stream não disponível')}</p>
                   </div>
@@ -485,9 +485,9 @@ function CameraDetailView({
             </div>
 
             {/* Bottom Controls */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+            <div role="main" aria-label="Gerenciamento de câmeras" className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+              <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center justify-between">
+                <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center gap-2">
                   <Button
                     variant="ghost"
                     size="sm"
@@ -504,7 +504,7 @@ function CameraDetailView({
                   />
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center gap-2">
                   <Button
                     variant={showZones ? 'secondary' : 'ghost'}
                     size="sm"
@@ -538,7 +538,7 @@ function CameraDetailView({
           </div>
 
           {/* Side Panel */}
-          <div className="w-80 bg-background border-l flex flex-col">
+          <div role="main" aria-label="Gerenciamento de câmeras" className="w-80 bg-background border-l flex flex-col">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
               <TabsList className="mx-4 mt-4">
                 <TabsTrigger value="live"{t('cameras.live', 'Ao Vivo')}</TabsTrigger>
@@ -554,15 +554,15 @@ function CameraDetailView({
                       <CardTitle className="text-sm"{t('cameras.status', 'Status')}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2 text-sm">
-                      <div className="flex justify-between">
+                      <div role="main" aria-label="Gerenciamento de câmeras" className="flex justify-between">
                         <span className="text-muted-foreground"{t('cameras.resolution', 'Resolução')}</span>
                         <span>1920x1080</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div role="main" aria-label="Gerenciamento de câmeras" className="flex justify-between">
                         <span className="text-muted-foreground">FPS</span>
                         <span>30</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div role="main" aria-label="Gerenciamento de câmeras" className="flex justify-between">
                         <span className="text-muted-foreground"{t('cameras.protocol', 'Protocolo')}</span>
                         <span className="uppercase">HLS</span>
                       </div>
@@ -575,19 +575,19 @@ function CameraDetailView({
                       <CardTitle className="text-sm"{t('cameras.statsToday', 'Estatísticas Hoje')}</CardTitle>
                     </CardHeader>
                     <CardContent className="grid grid-cols-2 gap-2">
-                      <div className="p-2 bg-muted rounded text-center">
+                      <div role="main" aria-label="Gerenciamento de câmeras" className="p-2 bg-muted rounded text-center">
                         <p className="text-lg font-bold">0</p>
                         <p className="text-[10px] text-muted-foreground"{t('cameras.alerts', 'Alertas')}</p>
                       </div>
-                      <div className="p-2 bg-muted rounded text-center">
+                      <div role="main" aria-label="Gerenciamento de câmeras" className="p-2 bg-muted rounded text-center">
                         <p className="text-lg font-bold">0</p>
                         <p className="text-[10px] text-muted-foreground"{t('cameras.people', 'Pessoas')}</p>
                       </div>
-                      <div className="p-2 bg-muted rounded text-center">
+                      <div role="main" aria-label="Gerenciamento de câmeras" className="p-2 bg-muted rounded text-center">
                         <p className="text-lg font-bold">0</p>
                         <p className="text-[10px] text-muted-foreground"{t('cameras.analyses', 'Análises')}</p>
                       </div>
-                      <div className="p-2 bg-muted rounded text-center">
+                      <div role="main" aria-label="Gerenciamento de câmeras" className="p-2 bg-muted rounded text-center">
                         <p className="text-lg font-bold">0min</p>
                         <p className="text-[10px] text-muted-foreground"{t('cameras.recorded', 'Gravado')}</p>
                       </div>
@@ -596,7 +596,7 @@ function CameraDetailView({
                 </TabsContent>
 
                 <TabsContent value="alerts" className="m-0">
-                  <div className="text-center py-8 text-muted-foreground">
+                  <div role="main" aria-label="Gerenciamento de câmeras" className="text-center py-8 text-muted-foreground">
                     <AlertTriangle className="w-10 h-10 mx-auto mb-2 opacity-50" />
                     <p className="text-sm"{t('cameras.noRecentAlerts', 'Nenhum alerta recente')}</p>
                   </div>
@@ -608,19 +608,19 @@ function CameraDetailView({
                       <CardTitle className="text-sm"{t('cameras.features', 'Funcionalidades')}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      <div className="flex items-center justify-between">
+                      <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center justify-between">
                         <Label className="text-sm"{t('cameras.aiAnalysis', 'Análise de IA')}</Label>
                         <Switch defaultChecked={false} />
                       </div>
-                      <div className="flex items-center justify-between">
+                      <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center justify-between">
                         <Label className="text-sm"{t('cameras.faceRecognition', 'Reconhecimento Facial')}</Label>
                         <Switch defaultChecked={false} />
                       </div>
-                      <div className="flex items-center justify-between">
+                      <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center justify-between">
                         <Label className="text-sm"{t('cameras.zonesOfInterest', 'Zonas de Interesse')}</Label>
                         <Switch defaultChecked={false} />
                       </div>
-                      <div className="flex items-center justify-between">
+                      <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center justify-between">
                         <Label className="text-sm">Áudio</Label>
                         <Switch defaultChecked={false} />
                       </div>
@@ -708,9 +708,9 @@ export function CamerasPage() {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-6">
+      <div role="main" aria-label="Gerenciamento de câmeras" className="p-6 space-y-6">
         <Skeleton className="h-8 w-48" />
-        <div className="grid grid-cols-2 gap-4">
+        <div role="main" aria-label="Gerenciamento de câmeras" className="grid grid-cols-2 gap-4">
           {[...Array(4)].map((_, i) => (
             <Skeleton key={i} className="aspect-video" />
           ))}
@@ -720,9 +720,9 @@ export function CamerasPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
+    <div role="main" aria-label="Gerenciamento de câmeras" className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Camera className="w-6 h-6" />
@@ -734,7 +734,7 @@ export function CamerasPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center gap-2">
           <Button aria-label="Ação" variant="outline" size="sm" onClick={() => refetch()}>
             <RefreshCw className="w-4 h-4 mr-2" />
             {t('common.refresh', 'Atualizar')}
@@ -747,8 +747,8 @@ export function CamerasPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <div className="relative flex-1 max-w-md">
+      <div role="main" aria-label="Gerenciamento de câmeras" className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div role="main" aria-label="Gerenciamento de câmeras" className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder={t('cameras.searchPlaceholder', 'Buscar câmeras...')}
@@ -785,7 +785,7 @@ export function CamerasPage() {
         )}
 
         {/* View Mode */}
-        <div className="flex items-center gap-1 border rounded-lg p-1 ml-auto">
+        <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center gap-1 border rounded-lg p-1 ml-auto">
           <Button
             variant={viewMode === 'grid-1x1' ? 'secondary' : 'ghost'}
             size="icon"
@@ -830,13 +830,13 @@ export function CamerasPage() {
       </div>
 
       {/* Results info */}
-      <div className="text-sm text-muted-foreground">
+      <div role="main" aria-label="Gerenciamento de câmeras" className="text-sm text-muted-foreground">
         {filteredCameras.length} câmeras
       </div>
 
       {/* Camera Grid */}
       {filteredCameras.length === 0 ? (
-        <div className="text-center py-12">
+        <div role="main" aria-label="Gerenciamento de câmeras" className="text-center py-12">
           <Camera className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
           <h3 className="text-lg font-medium mb-2"{t('cameras.noCameraFound', 'Nenhuma câmera encontrada')}</h3>
           <p className="text-sm text-muted-foreground mb-4">
@@ -891,4 +891,3 @@ export function CamerasPage() {
 }
 
 export default CamerasPage;
-
