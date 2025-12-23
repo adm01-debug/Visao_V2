@@ -203,8 +203,8 @@ export default function RecognitionLogsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="p-6 space-y-6">
+    <div role="main" aria-label="Logs de reconhecimento" className="min-h-screen bg-background">
+      <div role="main" aria-label="Logs de reconhecimento" className="p-6 space-y-6">
         {/* Header */}
         <div role="main" className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
@@ -219,11 +219,11 @@ export default function RecognitionLogsPage() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div role="main" aria-label="Logs de reconhecimento" className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="p-4">
               <div role="main" className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
+                <div role="main" aria-label="Logs de reconhecimento" className="p-2 rounded-lg bg-primary/10">
                   <Clock className="h-5 w-5 text-primary" />
                 </div>
                 <div>
@@ -237,7 +237,7 @@ export default function RecognitionLogsPage() {
           <Card>
             <CardContent className="p-4">
               <div role="main" className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-green-500/10">
+                <div role="main" aria-label="Logs de reconhecimento" className="p-2 rounded-lg bg-green-500/10">
                   <CheckCircle className="h-5 w-5 text-green-500" />
                 </div>
                 <div>
@@ -251,7 +251,7 @@ export default function RecognitionLogsPage() {
           <Card>
             <CardContent className="p-4">
               <div role="main" className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-amber-500/10">
+                <div role="main" aria-label="Logs de reconhecimento" className="p-2 rounded-lg bg-amber-500/10">
                   <AlertTriangle className="h-5 w-5 text-amber-500" />
                 </div>
                 <div>
@@ -265,7 +265,7 @@ export default function RecognitionLogsPage() {
           <Card>
             <CardContent className="p-4">
               <div role="main" className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-blue-500/10">
+                <div role="main" aria-label="Logs de reconhecimento" className="p-2 rounded-lg bg-blue-500/10">
                   <Percent className="h-5 w-5 text-blue-500" />
                 </div>
                 <div>
@@ -286,9 +286,9 @@ export default function RecognitionLogsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+            <div role="main" aria-label="Logs de reconhecimento" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
               {/* Search */}
-              <div className="relative lg:col-span-2">
+              <div role="main" aria-label="Logs de reconhecimento" className="relative lg:col-span-2">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Buscar pessoa ou câmera..."
@@ -353,7 +353,7 @@ export default function RecognitionLogsPage() {
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
                   <div role="main" className="flex">
-                    <div className="border-r">
+                    <div role="main" aria-label="Logs de reconhecimento" className="border-r">
                       <p className="p-2 text-sm font-medium text-center">De</p>
                       <CalendarComponent
                         mode="single"
@@ -417,13 +417,13 @@ export default function RecognitionLogsPage() {
         <Card>
           <CardContent className="p-0">
             {logsLoading ? (
-              <div className="p-6 space-y-4">
+              <div role="main" aria-label="Logs de reconhecimento" className="p-6 space-y-4">
                 {[...Array(5)].map((_, i) => (
                   <Skeleton key={i} className="h-16 w-full" />
                 ))}
               </div>
             ) : filteredLogs.length === 0 ? (
-              <div className="p-12 text-center">
+              <div role="main" aria-label="Logs de reconhecimento" className="p-12 text-center">
                 <Search className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
                 <h3 className="text-lg font-medium">Nenhum registro encontrado</h3>
                 <p className="text-muted-foreground">
@@ -500,7 +500,7 @@ export default function RecognitionLogsPage() {
                           <TableCell>
                             {log.confidence ? (
                               <div role="main" className="flex items-center gap-2">
-                                <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
+                                <div role="main" aria-label="Logs de reconhecimento" className="w-16 h-2 bg-muted rounded-full overflow-hidden">
                                   <div 
                                     className="h-full bg-primary rounded-full"
                                     style={{ width: `${Number(log.confidence) * 100}%` }}
@@ -530,9 +530,9 @@ export default function RecognitionLogsPage() {
                                   <DialogTitle>Detalhes do Reconhecimento</DialogTitle>
                                 </DialogHeader>
                                 {selectedLog && (
-                                  <div className="space-y-4">
+                                  <div role="main" aria-label="Logs de reconhecimento" className="space-y-4">
                                     {selectedLog.image_url && (
-                                      <div className="aspect-video bg-muted rounded-lg overflow-hidden">
+                                      <div role="main" aria-label="Logs de reconhecimento" className="aspect-video bg-muted rounded-lg overflow-hidden">
                                         <img 
                                           src={selectedLog.image_url} 
                                           alt="Captura" 
@@ -540,7 +540,7 @@ export default function RecognitionLogsPage() {
                                         />
                                       </div>
                                     )}
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div role="main" aria-label="Logs de reconhecimento" className="grid grid-cols-2 gap-4">
                                       <div>
                                         <p className="text-sm text-muted-foreground">Data/Hora</p>
                                         <p className="font-medium">
@@ -579,7 +579,7 @@ export default function RecognitionLogsPage() {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="p-4 border-t">
+                  <div role="main" aria-label="Logs de reconhecimento" className="p-4 border-t">
                     <PaginationControls
                       currentPage={currentPage}
                       totalPages={totalPages}
