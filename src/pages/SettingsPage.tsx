@@ -191,8 +191,8 @@ interface SettingRowProps {
 
 function SettingRow({ label, description, children }: SettingRowProps) {
   return (
-    <div className="flex items-center justify-between py-2">
-      <div className="space-y-0.5">
+    <div role="main" aria-label="Configurações do sistema" className="flex items-center justify-between py-2">
+      <div role="main" aria-label="Configurações do sistema" className="space-y-0.5">
         <Label className="text-sm font-medium">{label}</Label>
         {description && <p className="text-xs text-muted-foreground">{description}</p>}
       </div>
@@ -502,9 +502,9 @@ export function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-6">
+      <div role="main" aria-label="Configurações do sistema" className="p-6 space-y-6">
         <Skeleton className="h-8 w-48" />
-        <div className="grid gap-6">
+        <div role="main" aria-label="Configurações do sistema" className="grid gap-6">
           {[...Array(4)].map((_, i) => (
             <Skeleton key={i} className="h-48" />
           ))}
@@ -514,9 +514,9 @@ export function SettingsPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
+    <div role="main" aria-label="Configurações do sistema" className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div role="main" aria-label="Configurações do sistema" className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Settings className="w-6 h-6" />
@@ -526,7 +526,7 @@ export function SettingsPage() {
             Gerencie as configurações do sistema
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div role="main" aria-label="Configurações do sistema" className="flex items-center gap-2">
           <Button aria-label="Ação" variant="outline" onClick={loadSettings}>
             <RefreshCw className="w-4 h-4 mr-2" />
             Recarregar
@@ -660,9 +660,9 @@ export function SettingsPage() {
             {notificationSettings.emailEnabled && (
               <>
                 <Separator />
-                <div className="space-y-2">
+                <div role="main" aria-label="Configurações do sistema" className="space-y-2">
                   <Label>Destinatários</Label>
-                  <div className="flex gap-2">
+                  <div role="main" aria-label="Configurações do sistema" className="flex gap-2">
                     <Input
                       type="email"
                       placeholder="email@exemplo.com"
@@ -672,7 +672,7 @@ export function SettingsPage() {
                     />
                     <Button aria-label="Ação" onClick={addEmail} variant="secondary">Adicionar</Button>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div role="main" aria-label="Configurações do sistema" className="flex flex-wrap gap-2">
                     {notificationSettings.emailRecipients.map(email => (
                       <Badge key={email} variant="secondary" className="gap-1">
                         {email}
@@ -700,9 +700,9 @@ export function SettingsPage() {
             {notificationSettings.whatsappEnabled && (
               <>
                 <Separator />
-                <div className="space-y-2">
+                <div role="main" aria-label="Configurações do sistema" className="space-y-2">
                   <Label>Números</Label>
-                  <div className="flex gap-2">
+                  <div role="main" aria-label="Configurações do sistema" className="flex gap-2">
                     <Input
                       placeholder="5511999999999"
                       value={newPhone}
@@ -711,7 +711,7 @@ export function SettingsPage() {
                     />
                     <Button aria-label="Ação" onClick={addPhone} variant="secondary">Adicionar</Button>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div role="main" aria-label="Configurações do sistema" className="flex flex-wrap gap-2">
                     {notificationSettings.whatsappNumbers.map(phone => (
                       <Badge key={phone} variant="secondary" className="gap-1">
                         {phone}
@@ -739,7 +739,7 @@ export function SettingsPage() {
             {notificationSettings.webhookEnabled && (
               <>
                 <Separator />
-                <div className="space-y-2">
+                <div role="main" aria-label="Configurações do sistema" className="space-y-2">
                   <Label>URL do Webhook</Label>
                   <Input
                     placeholder="https://..."
@@ -757,7 +757,7 @@ export function SettingsPage() {
             icon={Clock}
           >
             <SettingRow label="Severidade" description="Notificar apenas">
-              <div className="flex gap-1">
+              <div role="main" aria-label="Configurações do sistema" className="flex gap-1">
                 {['low', 'medium', 'high', 'critical'].map(sev => (
                   <Badge
                     key={sev}
@@ -838,7 +838,7 @@ export function SettingsPage() {
               label="Confiança Mínima"
               description={`≥ ${Math.round(analysisSettings.minConfidence * 100)}%`}
             >
-              <div className="w-40 flex items-center gap-2">
+              <div role="main" aria-label="Configurações do sistema" className="w-40 flex items-center gap-2">
                 <Slider
                   value={[analysisSettings.minConfidence * 100]}
                   onValueChange={([v]) => setAnalysisSettings(prev => ({ ...prev, minConfidence: v / 100 }))}
@@ -890,7 +890,7 @@ export function SettingsPage() {
               label="Limiar de Match"
               description={`≥ ${Math.round(faceSettings.matchThreshold * 100)}%`}
             >
-              <div className="w-40 flex items-center gap-2">
+              <div role="main" aria-label="Configurações do sistema" className="w-40 flex items-center gap-2">
                 <Slider
                   value={[faceSettings.matchThreshold * 100]}
                   onValueChange={([v]) => setFaceSettings(prev => ({ ...prev, matchThreshold: v / 100 }))}
@@ -908,7 +908,7 @@ export function SettingsPage() {
               label="Qualidade Mínima"
               description={`≥ ${Math.round(faceSettings.minFaceQuality * 100)}%`}
             >
-              <div className="w-40 flex items-center gap-2">
+              <div role="main" aria-label="Configurações do sistema" className="w-40 flex items-center gap-2">
                 <Slider
                   value={[faceSettings.minFaceQuality * 100]}
                   onValueChange={([v]) => setFaceSettings(prev => ({ ...prev, minFaceQuality: v / 100 }))}
@@ -952,10 +952,10 @@ export function SettingsPage() {
         {/* ==================== SYSTEM ==================== */}
         <TabsContent value="system" className="space-y-6 mt-6">
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div role="main" aria-label="Configurações do sistema" className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card>
               <CardContent className="p-4">
-                <div className="flex items-center gap-2">
+                <div role="main" aria-label="Configurações do sistema" className="flex items-center gap-2">
                   <Camera className="w-5 h-5 text-blue-500" />
                   <div>
                     <p className="text-xs text-muted-foreground">Câmeras</p>
@@ -966,7 +966,7 @@ export function SettingsPage() {
             </Card>
             <Card>
               <CardContent className="p-4">
-                <div className="flex items-center gap-2">
+                <div role="main" aria-label="Configurações do sistema" className="flex items-center gap-2">
                   <AlertTriangle className="w-5 h-5 text-yellow-500" />
                   <div>
                     <p className="text-xs text-muted-foreground">Alertas</p>
@@ -977,7 +977,7 @@ export function SettingsPage() {
             </Card>
             <Card>
               <CardContent className="p-4">
-                <div className="flex items-center gap-2">
+                <div role="main" aria-label="Configurações do sistema" className="flex items-center gap-2">
                   <Users className="w-5 h-5 text-green-500" />
                   <div>
                     <p className="text-xs text-muted-foreground">Pessoas</p>
@@ -988,7 +988,7 @@ export function SettingsPage() {
             </Card>
             <Card>
               <CardContent className="p-4">
-                <div className="flex items-center gap-2">
+                <div role="main" aria-label="Configurações do sistema" className="flex items-center gap-2">
                   <Activity className="w-5 h-5 text-purple-500" />
                   <div>
                     <p className="text-xs text-muted-foreground">Zonas</p>
@@ -1004,21 +1004,21 @@ export function SettingsPage() {
             description="Uso de disco e banco de dados"
             icon={HardDrive}
           >
-            <div className="space-y-4">
+            <div role="main" aria-label="Configurações do sistema" className="space-y-4">
               <div>
-                <div className="flex items-center justify-between text-sm mb-2">
+                <div role="main" aria-label="Configurações do sistema" className="flex items-center justify-between text-sm mb-2">
                   <span>Espaço Utilizado</span>
                   <span>{systemStats.storageUsed}% de {systemStats.storageTotal} GB</span>
                 </div>
                 <Progress value={systemStats.storageUsed} className="h-2" />
               </div>
 
-              <div className="flex items-center justify-between text-sm">
+              <div role="main" aria-label="Configurações do sistema" className="flex items-center justify-between text-sm">
                 <span>Tamanho do Banco</span>
                 <span className="font-medium">{systemStats.dbSize}</span>
               </div>
 
-              <div className="flex items-center justify-between text-sm">
+              <div role="main" aria-label="Configurações do sistema" className="flex items-center justify-between text-sm">
                 <span>Uptime</span>
                 <span className="font-medium">{systemStats.uptime}</span>
               </div>
@@ -1030,8 +1030,8 @@ export function SettingsPage() {
             description="Limpeza de dados"
             icon={Trash2}
           >
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
+            <div role="main" aria-label="Configurações do sistema" className="space-y-3">
+              <div role="main" aria-label="Configurações do sistema" className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium">Limpar Alertas</p>
                   <p className="text-xs text-muted-foreground">Remove todos os alertas</p>
@@ -1047,7 +1047,7 @@ export function SettingsPage() {
 
               <Separator />
 
-              <div className="flex items-center justify-between">
+              <div role="main" aria-label="Configurações do sistema" className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium">Limpar Histórico</p>
                   <p className="text-xs text-muted-foreground">Análises e reconhecimentos</p>
@@ -1063,7 +1063,7 @@ export function SettingsPage() {
 
               <Separator />
 
-              <div className="flex items-center justify-between">
+              <div role="main" aria-label="Configurações do sistema" className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium">Limpar Eventos de Zonas</p>
                   <p className="text-xs text-muted-foreground">Contagens e eventos</p>
@@ -1084,7 +1084,7 @@ export function SettingsPage() {
             description="Exportar configurações"
             icon={Download}
           >
-            <div className="flex items-center gap-2">
+            <div role="main" aria-label="Configurações do sistema" className="flex items-center gap-2">
               <Button aria-label="Ação" variant="outline" onClick={() => {
                 const data = {
                   general: generalSettings,
