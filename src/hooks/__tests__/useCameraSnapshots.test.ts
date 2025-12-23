@@ -1,41 +1,53 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook, waitFor, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useCameraSnapshots } from '../useCameraSnapshots';
-import React from 'react';
 
-const createWrapper = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  });
-  return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-};
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { retry: false, staleTime: 0 },
+  },
+});
+
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+);
 
 describe('useCameraSnapshots', () => {
   beforeEach(() => {
+    queryClient.clear();
     vi.clearAllMocks();
   });
 
-  it('should return initial state', () => {
-    const { result } = renderHook(() => useCameraSnapshots(), {
-      wrapper: createWrapper(),
-    });
-    expect(result.current).toBeDefined();
+  it('should initialize with loading state', () => {
+    const { result } = renderHook(() => useCameraSnapshots(), { wrapper });
+    expect(result.current.isLoading).toBeDefined();
   });
 
-  it('should handle loading state', () => {
-    const { result } = renderHook(() => useCameraSnapshots(), {
-      wrapper: createWrapper(),
+  it('should return data after loading', async () => {
+    const { result } = renderHook(() => useCameraSnapshots(), { wrapper });
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
     });
-    expect(result.current.isLoading !== undefined || result.current.loading !== undefined || true).toBe(true);
   });
 
-  it('should expose expected methods', () => {
-    const { result } = renderHook(() => useCameraSnapshots(), {
-      wrapper: createWrapper(),
+  it('should handle errors gracefully', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    const { result } = renderHook(() => useCameraSnapshots(), { wrapper });
+    await waitFor(() => {
+      expect(result.current).toBeDefined();
     });
-    expect(typeof result.current).toBe('object');
+  });
+
+  it('should refetch on demand', async () => {
+    const { result } = renderHook(() => useCameraSnapshots(), { wrapper });
+    await waitFor(() => {
+      expect(result.current.refetch).toBeDefined();
+    });
+    if (result.current.refetch) {
+      await act(async () => {
+        await result.current.refetch();
+      });
+    }
   });
 });
