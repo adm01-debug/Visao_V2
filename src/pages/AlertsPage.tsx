@@ -175,12 +175,12 @@ function AlertItem({
 
         <div className={cn('w-2 h-2 rounded-full', severity.color)} />
 
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
+        <div role="main" aria-label="Central de alertas" className="flex-1 min-w-0">
+          <div role="main" aria-label="Central de alertas" className="flex items-center gap-2">
             <TypeIcon className={cn('w-4 h-4', type.color)} />
             <span className="font-medium truncate">{alert.message}</span>
           </div>
-          <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
+          <div role="main" aria-label="Central de alertas" className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
             <Camera className="w-3 h-3" />
             <span>{alert.camera_name}</span>
             <span>•</span>
@@ -189,7 +189,7 @@ function AlertItem({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div role="main" aria-label="Central de alertas" className="flex items-center gap-2">
           <Badge variant="outline" className={type.color}>
             {type.label}
           </Badge>
@@ -247,8 +247,8 @@ function AlertItem({
       onClick={onView}
     >
       <CardHeader className="p-4 pb-2">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-2">
+        <div role="main" aria-label="Central de alertas" className="flex items-start justify-between">
+          <div role="main" aria-label="Central de alertas" className="flex items-center gap-2">
             <Checkbox
               checked={isSelected}
               onCheckedChange={onSelect}
@@ -266,7 +266,7 @@ function AlertItem({
       </CardHeader>
       <CardContent className="p-4 pt-0">
         {alert.thumbnail && (
-          <div className="mb-3 rounded-lg overflow-hidden">
+          <div role="main" aria-label="Central de alertas" className="mb-3 rounded-lg overflow-hidden">
             <img
               src={alert.thumbnail}
               alt="Snapshot"
@@ -275,8 +275,8 @@ function AlertItem({
           </div>
         )}
         <p className="font-medium text-sm line-clamp-2 mb-2">{alert.message}</p>
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <div className="flex items-center gap-1">
+        <div role="main" aria-label="Central de alertas" className="flex items-center justify-between text-xs text-muted-foreground">
+          <div role="main" aria-label="Central de alertas" className="flex items-center gap-1">
             <Camera className="w-3 h-3" />
             <span className="truncate max-w-[100px]">{alert.camera_name}</span>
           </div>
@@ -325,9 +325,9 @@ function AlertDetailsDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div role="main" aria-label="Central de alertas" className="space-y-4">
           {/* Badges */}
-          <div className="flex items-center gap-2">
+          <div role="main" aria-label="Central de alertas" className="flex items-center gap-2">
             <Badge className={cn('text-white', severity.color)}>
               {severity.label}
             </Badge>
@@ -348,7 +348,7 @@ function AlertDetailsDialog({
           {/* Camera */}
           <div>
             <h4 className="text-sm font-medium text-muted-foreground mb-1">Câmera</h4>
-            <div className="flex items-center gap-2">
+            <div role="main" aria-label="Central de alertas" className="flex items-center gap-2">
               <Camera className="w-4 h-4" />
               <span>{alert.camera_name}</span>
             </div>
@@ -367,7 +367,7 @@ function AlertDetailsDialog({
           )}
 
           {/* Actions */}
-          <div className="flex items-center gap-2 pt-4 border-t">
+          <div role="main" aria-label="Central de alertas" className="flex items-center gap-2 pt-4 border-t">
             <Button aria-label="Ação" variant="outline" onClick={onMarkRead}>
               {alert.is_read ? (
                 <>
@@ -568,12 +568,12 @@ export function AlertsPage() {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-6">
-        <div className="flex items-center justify-between">
+      <div role="main" aria-label="Central de alertas" className="p-6 space-y-6">
+        <div role="main" aria-label="Central de alertas" className="flex items-center justify-between">
           <Skeleton className="h-8 w-48" />
           <Skeleton className="h-10 w-32" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div role="main" aria-label="Central de alertas" className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
             <Skeleton key={i} className="h-24" />
           ))}
@@ -584,9 +584,9 @@ export function AlertsPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
+    <div role="main" aria-label="Central de alertas" className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div role="main" aria-label="Central de alertas" className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Bell className="w-6 h-6" />
@@ -597,7 +597,7 @@ export function AlertsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div role="main" aria-label="Central de alertas" className="flex items-center gap-2">
           <Button aria-label="Ação" variant="outline" size="sm" onClick={() => refetch()}>
             <RefreshCw className="w-4 h-4 mr-2" />
             Atualizar
@@ -616,10 +616,10 @@ export function AlertsPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div role="main" aria-label="Central de alertas" className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+            <div role="main" aria-label="Central de alertas" className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total</p>
                 <p className="text-2xl font-bold">{stats.total}</p>
@@ -630,7 +630,7 @@ export function AlertsPage() {
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+            <div role="main" aria-label="Central de alertas" className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Não Lidos</p>
                 <p className="text-2xl font-bold text-primary">{stats.unread}</p>
@@ -641,7 +641,7 @@ export function AlertsPage() {
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+            <div role="main" aria-label="Central de alertas" className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Críticos</p>
                 <p className="text-2xl font-bold text-red-500">{stats.critical}</p>
@@ -652,7 +652,7 @@ export function AlertsPage() {
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+            <div role="main" aria-label="Central de alertas" className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Hoje</p>
                 <p className="text-2xl font-bold">{stats.today}</p>
@@ -664,9 +664,9 @@ export function AlertsPage() {
       </div>
 
       {/* Filters & Controls */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <div role="main" aria-label="Central de alertas" className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         {/* Search */}
-        <div className="relative flex-1 max-w-md">
+        <div role="main" aria-label="Central de alertas" className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder={t("alerts.searchPlaceholder", "Buscar alertas...")}
@@ -677,7 +677,7 @@ export function AlertsPage() {
         </div>
 
         {/* Quick filters */}
-        <div className="flex items-center gap-2">
+        <div role="main" aria-label="Central de alertas" className="flex items-center gap-2">
           <Select
             value={filters.severity}
             onValueChange={(v) => setFilters(f => ({ ...f, severity: v }))}
@@ -734,7 +734,7 @@ export function AlertsPage() {
         </div>
 
         {/* View mode */}
-        <div className="flex items-center gap-1 border rounded-lg p-1">
+        <div role="main" aria-label="Central de alertas" className="flex items-center gap-1 border rounded-lg p-1">
           <Button
             variant={viewMode === 'list' ? 'secondary' : 'ghost'}
             size="icon"
@@ -756,7 +756,7 @@ export function AlertsPage() {
 
       {/* Bulk actions */}
       {selectedAlerts.size > 0 && (
-        <div className="flex items-center gap-4 p-3 bg-primary/10 rounded-lg">
+        <div role="main" aria-label="Central de alertas" className="flex items-center gap-4 p-3 bg-primary/10 rounded-lg">
           <span className="text-sm font-medium">
             {selectedAlerts.size} alertas selecionados
           </span>
@@ -775,8 +775,8 @@ export function AlertsPage() {
       )}
 
       {/* Results info */}
-      <div className="flex items-center justify-between text-sm text-muted-foreground">
-        <div className="flex items-center gap-2">
+      <div role="main" aria-label="Central de alertas" className="flex items-center justify-between text-sm text-muted-foreground">
+        <div role="main" aria-label="Central de alertas" className="flex items-center gap-2">
           <Checkbox
             checked={paginatedItems.length > 0 && paginatedItems.every(a => selectedAlerts.has(a.id))}
             onCheckedChange={handleSelectAll}
@@ -809,7 +809,7 @@ export function AlertsPage() {
 
       {/* Empty state */}
       {filteredAlerts.length === 0 && (
-        <div className="text-center py-12">
+        <div role="main" aria-label="Central de alertas" className="text-center py-12">
           <BellOff className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
           <h3 className="text-lg font-medium mb-2">Nenhum alerta encontrado</h3>
           <p className="text-sm text-muted-foreground">
