@@ -1,4 +1,5 @@
 import { ErrorBoundary, getRelativeTime, formatDuration } from "@/lib/dateUtils";
+import { TableSkeleton } from '@/components/TableSkeleton';
 import { EmptyState } from '@/components/EmptyState';
 import { formatDate } from '@/lib/dateUtils';
 import { useInterval } from '@/hooks/useInterval';
