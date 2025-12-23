@@ -98,10 +98,10 @@ export default function StreamSettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div role="main" aria-label="Configurações de streaming" className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
+        <div role="main" aria-label="Configurações de streaming" className="container mx-auto px-4 py-4">
           <div role="main" className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
               <ArrowLeft className="h-5 w-5" />
@@ -118,9 +118,9 @@ export default function StreamSettingsPage() {
       </header>
 
       <main className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div role="main" aria-label="Configurações de streaming" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Lista de Câmeras */}
-          <div className="space-y-4">
+          <div role="main" aria-label="Configurações de streaming" className="space-y-4">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -137,7 +137,7 @@ export default function StreamSettingsPage() {
                     <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
                   </div>
                 ) : cameras.length === 0 ? (
-                  <div className="text-center py-8">
+                  <div role="main" aria-label="Configurações de streaming" className="text-center py-8">
                     <Camera className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
                     <p className="text-muted-foreground">Nenhuma câmera cadastrada</p>
                     <Button variant="outline" className="mt-4" onClick={() => navigate('/cameras')}>
@@ -196,7 +196,7 @@ export default function StreamSettingsPage() {
           </div>
 
           {/* Configuração do Stream */}
-          <div className="lg:col-span-2 space-y-6">
+          <div role="main" aria-label="Configurações de streaming" className="lg:col-span-2 space-y-6">
             {selectedCamera ? (
               <>
                 {/* Preview do Stream */}
@@ -231,7 +231,7 @@ export default function StreamSettingsPage() {
               </>
             ) : (
               <Card className="h-96 flex items-center justify-center">
-                <div className="text-center">
+                <div role="main" aria-label="Configurações de streaming" className="text-center">
                   <Settings className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
                   <p className="text-muted-foreground">
                     Selecione uma câmera para configurar o stream
