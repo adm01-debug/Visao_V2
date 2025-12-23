@@ -1,5 +1,5 @@
-import { formatDate, formatNumber } from "@/lib/formatters";
-import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/components";
+import { ErrorBoundary, formatDate, formatNumber } from "@/lib/formatters";
+import { ErrorBoundary, EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Analytics
@@ -11,8 +11,8 @@ import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/
  * - Exportação de dados
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useI18n } from '@/contexts/i18n';
+import { ErrorBoundary, useState, useEffect, useCallback, useMemo } from 'react';
+import { ErrorBoundary, useI18n } from '@/contexts/i18n';
 import {
   BarChart3,
   TrendingUp,
@@ -40,11 +40,11 @@ import {
   Shield,
   Zap,
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Progress } from '@/components/ui/progress';
+import { ErrorBoundary, supabase } from '@/integrations/supabase/client';
+import { ErrorBoundary, Button } from '@/components/ui/button';
+import { ErrorBoundary, Badge } from '@/components/ui/badge';
+import { ErrorBoundary, Skeleton } from '@/components/ui/skeleton';
+import { ErrorBoundary, Progress } from '@/components/ui/progress';
 import {
   Select,
   SelectContent,
@@ -59,17 +59,17 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ErrorBoundary, Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
-import { format, subDays, startOfDay, endOfDay, eachDayOfInterval, eachHourOfInterval, startOfWeek, startOfMonth } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
-import { toast } from 'sonner';
+import { ErrorBoundary, cn } from '@/lib/utils';
+import { ErrorBoundary, format, subDays, startOfDay, endOfDay, eachDayOfInterval, eachHourOfInterval, startOfWeek, startOfMonth } from 'date-fns';
+import { ErrorBoundary, ptBR } from 'date-fns/locale';
+import { ErrorBoundary, toast } from 'sonner';
 
 // ============================================
 // TIPOS
