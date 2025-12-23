@@ -1,4 +1,5 @@
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { StatusBadge } from '@/components/StatusBadge';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Câmeras
