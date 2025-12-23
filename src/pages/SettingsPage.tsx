@@ -1,4 +1,5 @@
 import { ErrorBoundary, useLocalStorage } from "@/hooks";
+import { Divider } from '@/components/Divider';
 import { ErrorBoundary, EmptyState, ErrorState, LoadingSpinner, StatusBadge, SeverityBadge, TimeAgo, ConfirmDialog } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
