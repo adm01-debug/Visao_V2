@@ -1,4 +1,5 @@
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { formatNumber } from '@/lib/formatters';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { StatCard } from '@/components/StatCard';
 import { CountUp } from '@/components/CountUp';
