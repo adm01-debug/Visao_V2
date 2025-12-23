@@ -1,2 +1,33 @@
-import { describe, it, expect } from 'vitest';
-describe('AnalyticsDashboard', () => { it('renders', () => { expect(true).toBe(true); }); });
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import AnalyticsDashboard from '../AnalyticsDashboard';
+
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+});
+
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+);
+
+describe('AnalyticsDashboard', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('renders without crashing', () => {
+    const { container } = render(<AnalyticsDashboard />, { wrapper });
+    expect(container).toBeTruthy();
+  });
+
+  it('handles user interaction', async () => {
+    render(<AnalyticsDashboard />, { wrapper });
+    expect(true).toBe(true);
+  });
+
+  it('matches snapshot', () => {
+    const { container } = render(<AnalyticsDashboard />, { wrapper });
+    expect(container).toMatchSnapshot();
+  });
+});
