@@ -604,4 +604,4 @@ export function ContinuousAnalysisPanel({
   );
 }
 
-export default ContinuousAnalysisPanel;
+export default memo(ContinuousAnalysisPanel);
