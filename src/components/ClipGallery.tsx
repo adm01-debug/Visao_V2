@@ -786,4 +786,4 @@ export function ClipGallery({
   );
 }
 
-export default ClipGallery;
+export default memo(ClipGallery);
