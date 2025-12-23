@@ -111,7 +111,7 @@ export default function HeatmapPage() {
           
           {/* Cards de estatísticas */}
           {stats && (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div role="main" aria-label="Mapa de calor" className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <Card>
                 <CardContent className="pt-4">
                   <div role="main" className="flex items-center justify-between">
