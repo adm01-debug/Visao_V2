@@ -1,4 +1,5 @@
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { unique } from '@/lib/arrayUtils';
 import { useScrollPosition } from '@/hooks/useScrollPosition';
 import { CardSkeleton } from '@/components/CardSkeleton';
 import { APP_NAME } from '@/lib/constants';
