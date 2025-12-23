@@ -209,7 +209,6 @@ Respond in JSON format:
 
       return [];
     } catch (err) {
-      
       return [];
     }
   }, []);
@@ -430,7 +429,6 @@ Respond in JSON format:
 
       return results;
     } catch (err) {
-      
       onError?.(err instanceof Error ? err : new Error(String(err)));
       return [];
     }
@@ -451,7 +449,6 @@ Respond in JSON format:
         image_url: violation.imageUrl,
       });
     } catch (err) {
-      
     }
   };
 
