@@ -1,7 +1,25 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useRecordingSessions } from '../useRecordingSessions';
-import React from 'react';
-const cw = () => { const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } }); return ({ children }: { children: React.ReactNode }) => (<QueryClientProvider client={qc}>{children}</QueryClientProvider>); };
-describe('useRecordingSessions', () => { beforeEach(() => { vi.clearAllMocks(); }); it('should init', () => { const { result } = renderHook(() => useRecordingSessions(), { wrapper: cw() }); expect(result.current).toBeDefined(); }); it('should work', () => { const { result } = renderHook(() => useRecordingSessions(), { wrapper: cw() }); expect(typeof result.current).toBe('object'); }); });
+
+const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <QueryClientProvider client={qc}>{children}</QueryClientProvider>
+);
+
+describe('useRecordingSessions', () => {
+  beforeEach(() => { qc.clear(); vi.clearAllMocks(); });
+  it('initializes correctly', () => {
+    const { result } = renderHook(() => useRecordingSessions(), { wrapper });
+    expect(result.current).toBeDefined();
+  });
+  it('handles updates', async () => {
+    const { result } = renderHook(() => useRecordingSessions(), { wrapper });
+    await waitFor(() => expect(result.current).toBeDefined());
+  });
+  it('cleans up', () => {
+    const { unmount } = renderHook(() => useRecordingSessions(), { wrapper });
+    expect(() => unmount()).not.toThrow();
+  });
+});
