@@ -130,7 +130,7 @@ function ClipCard({ clip, isSelected, onSelect, onPlay, onDownload, onDelete }: 
       isSelected && 'ring-2 ring-primary'
     )}>
       {/* Thumbnail */}
-      <div className="relative aspect-video bg-black cursor-pointer" onClick={onPlay}>
+      <div role="main" aria-label="Gravações" className="relative aspect-video bg-black cursor-pointer" onClick={onPlay}>
         {clip.thumbnail_url ? (
           <img 
             src={clip.thumbnail_url} 
@@ -138,14 +138,14 @@ function ClipCard({ clip, isSelected, onSelect, onPlay, onDownload, onDelete }: 
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-muted">
+          <div role="main" aria-label="Gravações" className="w-full h-full flex items-center justify-center bg-muted">
             <Video className="w-12 h-12 text-muted-foreground" />
           </div>
         )}
 
         {/* Play overlay */}
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center">
+        <div role="main" aria-label="Gravações" className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div role="main" aria-label="Gravações" className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center">
             <Play className="w-6 h-6 text-black ml-1" />
           </div>
         </div>
@@ -179,7 +179,7 @@ function ClipCard({ clip, isSelected, onSelect, onPlay, onDownload, onDelete }: 
       {/* Info */}
       <CardContent className="p-3">
         <div role="main" className="flex items-start justify-between gap-2">
-          <div className="min-w-0 flex-1">
+          <div role="main" aria-label="Gravações" className="min-w-0 flex-1">
             <p className="font-medium text-sm flex items-center gap-1">
               <Camera className="w-3 h-3 text-muted-foreground" />
               {clip.camera_name}
@@ -264,7 +264,7 @@ function VideoPlayerDialog({
           </DialogHeader>
 
           {/* Video */}
-          <div className="relative aspect-video bg-black mt-4">
+          <div role="main" aria-label="Gravações" className="relative aspect-video bg-black mt-4">
             <video
               src={clip.file_url || undefined}
               className="w-full h-full"
@@ -301,7 +301,7 @@ function VideoPlayerDialog({
           </div>
 
           {/* Controls */}
-          <div className="p-4 space-y-2">
+          <div role="main" aria-label="Gravações" className="p-4 space-y-2">
             {/* Progress bar */}
             <Slider
               value={[progress]}
@@ -405,7 +405,7 @@ export function RecordingsPage() {
 
       const formattedClips: VideoClipWithCamera[] = (data || []).map(clip => ({
         ...clip,
-        camera_name: (clip.cameras as unknown)?.name || 'Câmera desconhecida',
+        camera_name: (clip.cameras as any)?.name || 'Câmera desconhecida',
       }));
 
       setClips(formattedClips);
@@ -537,10 +537,10 @@ export function RecordingsPage() {
   }), [clips]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div role="main" aria-label="Gravações" className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b bg-card">
-        <div className="container py-6">
+      <div role="main" aria-label="Gravações" className="border-b bg-card">
+        <div role="main" aria-label="Gravações" className="container py-6">
           <div role="main" className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-2xl font-bold flex items-center gap-2">
@@ -575,11 +575,11 @@ export function RecordingsPage() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div role="main" aria-label="Gravações" className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card>
               <CardContent className="p-4">
                 <div role="main" className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <div role="main" aria-label="Gravações" className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                     <Video className="w-5 h-5 text-primary" />
                   </div>
                   <div>
@@ -592,7 +592,7 @@ export function RecordingsPage() {
             <Card>
               <CardContent className="p-4">
                 <div role="main" className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center">
+                  <div role="main" aria-label="Gravações" className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center">
                     <Clock className="w-5 h-5 text-blue-500" />
                   </div>
                   <div>
@@ -607,10 +607,10 @@ export function RecordingsPage() {
       </div>
 
       {/* Content */}
-      <div className="container py-6">
+      <div role="main" aria-label="Gravações" className="container py-6">
         {/* Filters */}
         <div role="main" className="flex flex-wrap items-center gap-4 mb-6">
-          <div className="relative flex-1 min-w-[200px] max-w-md">
+          <div role="main" aria-label="Gravações" className="relative flex-1 min-w-[200px] max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Buscar por câmera..."
@@ -706,7 +706,7 @@ export function RecordingsPage() {
 
         {/* Empty state */}
         {!loading && filteredClips.length === 0 && (
-          <div className="text-center py-16">
+          <div role="main" aria-label="Gravações" className="text-center py-16">
             <Video className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
             <h3 className="text-lg font-medium mb-1"{t('recordings.noRecordings', 'Nenhuma gravação encontrada')}</h3>
             <p className="text-muted-foreground">
@@ -717,7 +717,7 @@ export function RecordingsPage() {
 
         {/* Grid View */}
         {!loading && viewMode === 'grid' && paginatedClips.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div role="main" aria-label="Gravações" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {paginatedClips.map(clip => (
               <ClipCard
                 key={clip.id}
@@ -734,7 +734,7 @@ export function RecordingsPage() {
 
         {/* List View */}
         {!loading && viewMode === 'list' && paginatedClips.length > 0 && (
-          <div className="space-y-2">
+          <div role="main" aria-label="Gravações" className="space-y-2">
             {paginatedClips.map(clip => (
               <Card key={clip.id} className={cn(
                 'overflow-hidden transition-all hover:shadow-md cursor-pointer',
@@ -758,7 +758,7 @@ export function RecordingsPage() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center">
+                      <div role="main" aria-label="Gravações" className="w-full h-full flex items-center justify-center">
                         <Video className="w-8 h-8 text-muted-foreground" />
                       </div>
                     )}
