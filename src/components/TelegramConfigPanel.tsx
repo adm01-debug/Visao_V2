@@ -97,7 +97,11 @@ export function TelegramConfigPanel({ className, onConfigChange }: TelegramConfi
         body: {
           botToken: config.botToken,
           chatId: config.chatId,
-          message: `🔔 <b>Teste de Conexão - VISÃO</b>\n\n✅ Sua configuração do Telegram está funcionando corretamente!\n\n📅 Data: ${new Date().toLocaleString('pt-BR')}`
+          message: `🔔 <b>Teste de Conexão - VISÃO</b>
+
+✅ Sua configuração do Telegram está funcionando corretamente!
+
+📅 Data: ${new Date().toLocaleString('pt-BR')}`
         }
       });
 
