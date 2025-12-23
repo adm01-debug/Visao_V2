@@ -1,31 +1,35 @@
-# Security Guide - VISÃO
+# 🔐 Segurança - VISÃO
 
 ## Práticas de Segurança
 
 ### Autenticação
-- Supabase Auth com JWT
-- Tokens renovados automaticamente
-- Sessões gerenciadas pelo cliente
+- Supabase Auth com Row Level Security (RLS)
+- JWT tokens com expiração configurável
+- Refresh tokens automáticos
 
-### Autorização
-- Row Level Security (RLS) no Supabase
-- Policies por usuário/organização
-- Validação server-side em Edge Functions
-
-### Dados Sensíveis
-- Senhas nunca armazenadas em texto plano
-- API keys em variáveis de ambiente
-- Dados pessoais criptografados
-
-### Validação
-- Input validation em todos os endpoints
-- Sanitização de HTML/XSS
-- Rate limiting em APIs
+### Sanitização
+- DOMPurify para HTML
+- Validação de inputs com Zod
+- Escape de SQL via Supabase client
 
 ### Headers de Segurança
-- CSP configurado
-- X-Frame-Options: DENY
-- X-Content-Type-Options: nosniff
+```
+Content-Security-Policy: default-src self
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+```
 
-## Reportar Vulnerabilidades
-Envie para: security@example.com
+### Variáveis de Ambiente
+- Nunca commitar `.env`
+- Usar `.env.example` como template
+- Secrets no Supabase Dashboard
+
+### Rate Limiting
+- Edge Functions com rate limit
+- Debounce em inputs de busca
+- Throttle em requisições frequentes
+
+## Reportando Vulnerabilidades
+
+Envie para: security@visao.app
+
