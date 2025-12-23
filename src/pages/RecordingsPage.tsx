@@ -1,4 +1,5 @@
 import { ErrorBoundary, formatDate, formatNumber } from "@/lib/formatters";
+import { DateRangePicker } from '@/components/DateRangePicker';
 import { ErrorBoundary, EmptyState, ErrorState, LoadingSpinner, TimeAgo } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
