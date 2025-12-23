@@ -1,4 +1,5 @@
 import { formatDate, formatNumber } from "@/lib/formatters";
+import { generatePDF } from '@/lib/pdfGenerator';
 import { exportToCSV } from '@/lib/exportUtils';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
