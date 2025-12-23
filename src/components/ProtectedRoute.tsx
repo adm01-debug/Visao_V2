@@ -1,4 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom';
+import { usePermissions } from '@/hooks/usePermissions';
 import { useAuth } from '@/contexts/AuthContext';
 import { PageSkeletons } from '@/components/PageSkeletons';
 
