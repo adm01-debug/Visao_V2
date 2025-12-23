@@ -1,46 +1,59 @@
-# Testing Guide - VISÃO
-
-## Overview
-Este projeto usa Vitest para testes unitários e de integração.
-
-## Executar Testes
-
-```bash
-# Todos os testes
-npm test
-
-# Com coverage
-npm run test:coverage
-
-# Com UI
-npm run test:ui
-```
+# 🧪 Guia de Testes - VISÃO
 
 ## Estrutura de Testes
 
 ```
 src/
-├── hooks/__tests__/    # Testes de hooks
-├── components/__tests__/ # Testes de componentes
-└── test/
-    └── setup.ts        # Configuração global
+├── components/__tests__/   # Testes de componentes
+├── hooks/__tests__/        # Testes de hooks
+└── test/setup.ts           # Configuração global
 ```
 
-## Convenções
-- Arquivos de teste: `*.test.ts` ou `*.test.tsx`
-- Use `describe` para agrupar testes relacionados
-- Use `it` ou `test` para casos individuais
-- Mock externos com `vi.mock()`
+## Executando Testes
 
-## Exemplo
-```typescript
-import { describe, it, expect } from 'vitest';
-import { renderHook } from '@testing-library/react';
+```bash
+# Todos os testes
+npm run test
 
-describe('useMyHook', () => {
-  it('should return expected value', () => {
-    const { result } = renderHook(() => useMyHook());
+# Watch mode
+npm run test:watch
+
+# Coverage
+npm run test:coverage
+```
+
+## Padrões
+
+### Componentes
+```tsx
+import { render, screen } from "@testing-library/react";
+import Component from "../Component";
+
+describe("Component", () => {
+  it("renders correctly", () => {
+    render(<Component />);
+    expect(screen.getByRole("button")).toBeInTheDocument();
+  });
+});
+```
+
+### Hooks
+```tsx
+import { renderHook, act } from "@testing-library/react";
+import { useHook } from "../useHook";
+
+describe("useHook", () => {
+  it("returns correct value", () => {
+    const { result } = renderHook(() => useHook());
     expect(result.current).toBeDefined();
   });
 });
 ```
+
+## Coverage Mínimo
+
+- Statements: 80%
+- Branches: 75%
+- Functions: 80%
+- Lines: 80%
+
