@@ -16,7 +16,8 @@
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "test:e2e": "cypress run",
-    "analyze": "vite-bundle-visualizer"
+    "analyze": "vite-bundle-analyzer",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
