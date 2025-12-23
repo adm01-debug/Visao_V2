@@ -1,32 +1,45 @@
-# Accessibility Guide - VISÃO
+# ♿ Acessibilidade - VISÃO
 
-## Padrões WCAG 2.1
+## Padrões WCAG 2.1 AA
 
-### Implementado
-- `lang="pt-BR"` no HTML
-- `id="main-content"` para skip link
-- `role="main"` em containers
-- `aria-label` em elementos interativos
-- Contraste de cores adequado
-- Fontes legíveis (min 16px)
+### Navegação
+- Skip links implementados
+- Focus visível em todos elementos
+- Navegação por teclado completa
 
-### Navegação por Teclado
-- Tab navega entre elementos
-- Enter/Space ativa botões
-- Escape fecha modais
-- Arrow keys em menus
-
-### Screen Readers
-- Alt text em imagens
-- Labels em formulários
-- Live regions para updates
+### Semântica
+- Landmarks ARIA (main, nav, etc)
 - Headings hierárquicos
+- Labels em todos os forms
 
-### Testes
-- axe-core para audits
-- Lighthouse accessibility
-- Teste manual com NVDA/VoiceOver
+### Visual
+- Contraste mínimo 4.5:1
+- Tamanho de fonte ajustável
+- Modo escuro acessível
+
+### Interação
+- Áreas de clique mínimo 44px
+- Estados de hover/focus claros
+- Feedback de ações
+
+## Componentes Acessíveis
+
+- `SkipLink` - Pular navegação
+- `VisuallyHidden` - Texto só para leitores
+- `aria-labels` em todas as páginas
+
+## Testes
+
+```bash
+# Lighthouse
+npm run lighthouse
+
+# axe-core
+npm run test:a11y
+```
 
 ## Recursos
-- [WCAG 2.1](https://www.w3.org/WAI/WCAG21/quickref/)
-- [MDN ARIA](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA)
+
+- [WCAG Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+- [MDN ARIA](https://developer.mozilla.org/docs/Web/Accessibility/ARIA)
+
