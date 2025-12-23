@@ -111,7 +111,6 @@ class ModelCache {
         return 'webgl';
       }
     } catch (e) {
-      
     }
 
     try {
@@ -122,7 +121,6 @@ class ModelCache {
       debugLog('[ML] TensorFlow.js usando WASM');
       return 'wasm';
     } catch (e) {
-      
     }
 
     // Fallback para CPU
@@ -304,7 +302,6 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
       case 'movenet':
         return loadMoveNet();
       default:
-        
         return false;
     }
   }, [loadCocoSsd, loadMoveNet]);
@@ -350,7 +347,6 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
           bbox: p.bbox as [number, number, number, number],
         }));
     } catch (err) {
-      
       return [];
     }
   }, [config.maxDetections, config.minScore, updateModelInfo]);
@@ -378,7 +374,6 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
         score: pose.score || 0,
       }));
     } catch (err) {
-      
       return [];
     }
   }, [updateModelInfo]);
