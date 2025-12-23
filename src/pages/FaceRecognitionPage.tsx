@@ -96,11 +96,11 @@ export default function FaceRecognitionPage() {
         <meta name="description" content="Sistema de reconhecimento facial em tempo real para vigilância inteligente" />
       </Helmet>
 
-      <div className="flex flex-col h-full">
+      <div role="main" aria-label="Reconhecimento facial" className="flex flex-col h-full">
         {/* Header */}
         <header className="flex items-center justify-between px-6 py-4 border-b bg-card">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary/10">
+          <div role="main" aria-label="Reconhecimento facial" className="flex items-center gap-3">
+            <div role="main" aria-label="Reconhecimento facial" className="p-2 rounded-lg bg-primary/10">
               <ScanFace className="w-6 h-6 text-primary" />
             </div>
             <div>
@@ -111,9 +111,9 @@ export default function FaceRecognitionPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div role="main" aria-label="Reconhecimento facial" className="flex items-center gap-2">
             {/* Tab Switcher */}
-            <div className="flex items-center bg-muted rounded-lg p-1">
+            <div role="main" aria-label="Reconhecimento facial" className="flex items-center bg-muted rounded-lg p-1">
               <Button
                 variant={activeTab === 'multicam' ? 'default' : 'ghost'}
                 size="sm"
@@ -143,14 +143,14 @@ export default function FaceRecognitionPage() {
         {activeTab === 'multicam' ? (
           <MultiCameraRecognition />
         ) : (
-          <div className="flex-1 p-6 overflow-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+          <div role="main" aria-label="Reconhecimento facial" className="flex-1 p-6 overflow-auto">
+            <div role="main" aria-label="Reconhecimento facial" className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
               {/* Câmera Principal */}
-              <div className="lg:col-span-2">
+              <div role="main" aria-label="Reconhecimento facial" className="lg:col-span-2">
                 <Card className="h-full">
                 <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
+                  <div role="main" aria-label="Reconhecimento facial" className="flex items-center justify-between">
+                    <div role="main" aria-label="Reconhecimento facial" className="flex items-center gap-2">
                       <Camera className="w-5 h-5 text-muted-foreground" />
                       <CardTitle className="text-lg">Webcam</CardTitle>
                     </div>
@@ -175,36 +175,36 @@ export default function FaceRecognitionPage() {
             </div>
 
             {/* Painel Lateral */}
-            <div className="space-y-6">
+            <div role="main" aria-label="Reconhecimento facial" className="space-y-6">
               {/* Estatísticas do Dia */}
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium">Estatísticas do Dia</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-muted/50">
+                  <div role="main" aria-label="Reconhecimento facial" className="grid grid-cols-2 gap-3">
+                    <div role="main" aria-label="Reconhecimento facial" className="flex items-center gap-2 p-2 rounded-lg bg-muted/50">
                       <Users className="w-4 h-4 text-muted-foreground" />
                       <div>
                         <p className="text-lg font-semibold">{stats.totalToday}</p>
                         <p className="text-[10px] text-muted-foreground">Total</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-green-500/10">
+                    <div role="main" aria-label="Reconhecimento facial" className="flex items-center gap-2 p-2 rounded-lg bg-green-500/10">
                       <UserCheck className="w-4 h-4 text-green-600" />
                       <div>
                         <p className="text-lg font-semibold text-green-600">{stats.knownToday}</p>
                         <p className="text-[10px] text-muted-foreground">Conhecidos</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-muted/50">
+                    <div role="main" aria-label="Reconhecimento facial" className="flex items-center gap-2 p-2 rounded-lg bg-muted/50">
                       <UserX className="w-4 h-4 text-muted-foreground" />
                       <div>
                         <p className="text-lg font-semibold">{stats.unknownToday}</p>
                         <p className="text-[10px] text-muted-foreground">Desconhecidos</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-destructive/10">
+                    <div role="main" aria-label="Reconhecimento facial" className="flex items-center gap-2 p-2 rounded-lg bg-destructive/10">
                       <AlertTriangle className="w-4 h-4 text-destructive" />
                       <div>
                         <p className="text-lg font-semibold text-destructive">{stats.alertsToday}</p>
@@ -226,13 +226,13 @@ export default function FaceRecognitionPage() {
                 <CardContent className="p-0">
                   <ScrollArea className="h-[400px]">
                     {recognitionHistory.length === 0 ? (
-                      <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
+                      <div role="main" aria-label="Reconhecimento facial" className="flex flex-col items-center justify-center py-8 text-muted-foreground">
                         <ScanFace className="w-10 h-10 mb-2 opacity-50" />
                         <p className="text-sm">Nenhum reconhecimento ainda</p>
                         <p className="text-xs">Inicie a câmera para começar</p>
                       </div>
                     ) : (
-                      <div className="divide-y">
+                      <div role="main" aria-label="Reconhecimento facial" className="divide-y">
                         {recognitionHistory.map((event) => (
                           <div
                             key={event.id}
@@ -256,13 +256,13 @@ export default function FaceRecognitionPage() {
                               </AvatarFallback>
                             </Avatar>
 
-                            <div className="flex-1 min-w-0">
+                            <div role="main" aria-label="Reconhecimento facial" className="flex-1 min-w-0">
                               <p className="text-sm font-medium truncate">
                                 {event.face.isKnown
                                   ? event.face.bestMatch?.personName
                                   : 'Pessoa desconhecida'}
                               </p>
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <div role="main" aria-label="Reconhecimento facial" className="flex items-center gap-2 text-xs text-muted-foreground">
                                 <span>{event.cameraName}</span>
                                 <span>•</span>
                                 <span>
@@ -297,4 +297,3 @@ export default function FaceRecognitionPage() {
     </>
   );
 }
-
