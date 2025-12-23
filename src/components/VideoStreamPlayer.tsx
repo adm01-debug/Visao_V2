@@ -1,4 +1,5 @@
 import { useInterval, useTimeout } from "@/hooks";
+import { usePrevious } from '@/hooks/usePrevious';
 import { memo } from "react";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
