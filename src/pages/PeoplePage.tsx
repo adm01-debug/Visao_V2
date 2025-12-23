@@ -404,6 +404,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
       toast.success(person ? 'Pessoa atualizada' : 'Pessoa cadastrada');
     } catch (error) {
       toast.error('Erro ao salvar');
+      console.error(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -434,7 +435,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div role="main" aria-label="Cadastro de pessoas" className="space-y-4">
           {/* Webcam ou Foto */}
           {showWebcam ? (
             <WebcamCapture
@@ -446,7 +447,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
             />
           ) : (
             <div role="main" className="flex flex-col items-center gap-4">
-              <div className="relative">
+              <div role="main" aria-label="Cadastro de pessoas" className="relative">
                 <Avatar className={cn(
                   "w-24 h-24 ring-2 ring-offset-2",
                   faceValidation?.valid ? "ring-green-500" : 
@@ -471,17 +472,17 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
                 )}
                 {/* Indicador de detecção facial */}
                 {faceDetection.isDetecting && (
-                  <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground rounded-full p-1">
+                  <div role="main" aria-label="Cadastro de pessoas" className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground rounded-full p-1">
                     <RefreshCw className="w-4 h-4 animate-spin" />
                   </div>
                 )}
                 {!faceDetection.isDetecting && faceValidation?.valid && (
-                  <div className="absolute -bottom-1 -right-1 bg-green-500 text-white rounded-full p-1">
+                  <div role="main" aria-label="Cadastro de pessoas" className="absolute -bottom-1 -right-1 bg-green-500 text-white rounded-full p-1">
                     <CheckCircle className="w-4 h-4" />
                   </div>
                 )}
                 {!faceDetection.isDetecting && faceValidation && !faceValidation.valid && (
-                  <div className="absolute -bottom-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-1">
+                  <div role="main" aria-label="Cadastro de pessoas" className="absolute -bottom-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-1">
                     <XCircle className="w-4 h-4" />
                   </div>
                 )}
@@ -536,12 +537,12 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
 
               {/* Informações do encoding */}
               {faceEncoding && faceEncoding.primaryFace && (
-                <div className="text-xs text-muted-foreground bg-muted/50 rounded-md p-2 space-y-1">
+                <div role="main" aria-label="Cadastro de pessoas" className="text-xs text-muted-foreground bg-muted/50 rounded-md p-2 space-y-1">
                   <div role="main" className="flex items-center gap-2">
                     <ScanFace className="w-3 h-3" />
                     <span>Encoding facial gerado</span>
                   </div>
-                  <div className="grid grid-cols-2 gap-1 text-[10px]">
+                  <div role="main" aria-label="Cadastro de pessoas" className="grid grid-cols-2 gap-1 text-[10px]">
                     <span>Qualidade: {Math.round(faceEncoding.primaryFace.quality * 100)}%</span>
                     <span>Confiança: {Math.round(faceEncoding.primaryFace.confidence * 100)}%</span>
                     {faceEncoding.primaryFace.attributes?.age && (
@@ -556,8 +557,8 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
 
               {/* Upload Progress */}
               {storage.isUploading && storage.progress > 0 && storage.progress < 100 && (
-                <div className="w-full max-w-xs">
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                <div role="main" aria-label="Cadastro de pessoas" className="w-full max-w-xs">
+                  <div role="main" aria-label="Cadastro de pessoas" className="h-2 bg-muted rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-primary transition-all duration-300"
                       style={{ width: `${storage.progress}%` }}
@@ -572,7 +573,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
           )}
 
           {/* Dados */}
-          <div className="space-y-4">
+          <div role="main" aria-label="Cadastro de pessoas" className="space-y-4">
             <div>
               <Label htmlFor="name">Nome *</Label>
               <Input
@@ -686,6 +687,7 @@ function PersonDetailsDialog({
       
       setRecognitionLogs(data || []);
     } catch (error) {
+      console.error('Erro ao carregar logs:', error);
     } finally {
       setLoadingLogs(false);
     }
@@ -721,7 +723,7 @@ function PersonDetailsDialog({
 
           <ScrollArea className="flex-1 mt-4">
             <TabsContent value="info" className="m-0 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div role="main" aria-label="Cadastro de pessoas" className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="text-muted-foreground">Departamento</Label>
                   <p className="font-medium">{person.department || '-'}</p>
@@ -747,13 +749,13 @@ function PersonDetailsDialog({
 
             <TabsContent value="history" className="m-0">
               {loadingLogs ? (
-                <div className="space-y-2">
+                <div role="main" aria-label="Cadastro de pessoas" className="space-y-2">
                   {[...Array(3)].map((_, i) => (
                     <Skeleton key={i} className="h-16" />
                   ))}
                 </div>
               ) : recognitionLogs.length > 0 ? (
-                <div className="space-y-2">
+                <div role="main" aria-label="Cadastro de pessoas" className="space-y-2">
                   {recognitionLogs.map(log => (
                     <div 
                       key={log.id}
@@ -791,7 +793,7 @@ function PersonDetailsDialog({
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-muted-foreground">
+                <div role="main" aria-label="Cadastro de pessoas" className="text-center py-8 text-muted-foreground">
                   <ScanFace className="w-10 h-10 mx-auto mb-2 opacity-50" />
                   <p>Nenhum reconhecimento registrado</p>
                 </div>
@@ -850,6 +852,7 @@ export default function PeoplePage() {
       if (error) throw error;
       setPeople(data || []);
     } catch (error) {
+      console.error('Erro ao carregar pessoas:', error);
       toast.error('Erro ao carregar dados');
     } finally {
       setLoading(false);
@@ -931,6 +934,7 @@ export default function PeoplePage() {
       loadPeople();
     } catch (error) {
       toast.error('Erro ao remover');
+      console.error(error);
     } finally {
       setDeleteConfirm(null);
       setSelectedPerson(null);
@@ -945,10 +949,10 @@ export default function PeoplePage() {
   }), [people]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div role="main" aria-label="Cadastro de pessoas" className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b bg-card">
-        <div className="container py-6">
+      <div role="main" aria-label="Cadastro de pessoas" className="border-b bg-card">
+        <div role="main" aria-label="Cadastro de pessoas" className="container py-6">
           <div role="main" className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-2xl font-bold flex items-center gap-2">
@@ -977,11 +981,11 @@ export default function PeoplePage() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-4">
+          <div role="main" aria-label="Cadastro de pessoas" className="grid grid-cols-3 gap-4">
             <Card>
               <CardContent className="p-4">
                 <div role="main" className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <div role="main" aria-label="Cadastro de pessoas" className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                     <Users className="w-5 h-5 text-primary" />
                   </div>
                   <div>
@@ -994,7 +998,7 @@ export default function PeoplePage() {
             <Card>
               <CardContent className="p-4">
                 <div role="main" className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center">
+                  <div role="main" aria-label="Cadastro de pessoas" className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center">
                     <CheckCircle className="w-5 h-5 text-green-500" />
                   </div>
                   <div>
@@ -1007,7 +1011,7 @@ export default function PeoplePage() {
             <Card>
               <CardContent className="p-4">
                 <div role="main" className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gray-500/10 flex items-center justify-center">
+                  <div role="main" aria-label="Cadastro de pessoas" className="w-10 h-10 rounded-full bg-gray-500/10 flex items-center justify-center">
                     <XCircle className="w-5 h-5 text-gray-500" />
                   </div>
                   <div>
@@ -1022,10 +1026,10 @@ export default function PeoplePage() {
       </div>
 
       {/* Content */}
-      <div className="container py-6">
+      <div role="main" aria-label="Cadastro de pessoas" className="container py-6">
         {/* Filters */}
         <div role="main" className="flex items-center gap-4 mb-6">
-          <div className="relative flex-1 max-w-md">
+          <div role="main" aria-label="Cadastro de pessoas" className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Buscar por nome, departamento, cargo..."
@@ -1090,7 +1094,7 @@ export default function PeoplePage() {
 
         {/* Empty state */}
         {!loading && filteredPeople.length === 0 && (
-          <div className="text-center py-16">
+          <div role="main" aria-label="Cadastro de pessoas" className="text-center py-16">
             <Users className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
             <h3 className="text-lg font-medium mb-1">
               {filters.search || filters.activeOnly
@@ -1115,7 +1119,7 @@ export default function PeoplePage() {
 
         {/* Grid View */}
         {!loading && viewMode === 'grid' && paginatedPeople.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div role="main" aria-label="Cadastro de pessoas" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {paginatedPeople.map(person => (
               <PersonCard
                 key={person.id}
