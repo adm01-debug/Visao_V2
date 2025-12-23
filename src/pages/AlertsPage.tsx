@@ -1,4 +1,5 @@
 import { ErrorBoundary, getRelativeTime, formatDuration } from "@/lib/dateUtils";
+import { SeverityBadge } from '@/components/SeverityBadge';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Alertas
