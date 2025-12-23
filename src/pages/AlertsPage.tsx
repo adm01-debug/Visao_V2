@@ -1,4 +1,5 @@
 import { ErrorBoundary, getRelativeTime, formatDuration } from "@/lib/dateUtils";
+import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 import { TableSkeleton } from '@/components/TableSkeleton';
 import { EmptyState } from '@/components/EmptyState';
 import { formatDate } from '@/lib/dateUtils';
