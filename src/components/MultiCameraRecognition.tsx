@@ -180,6 +180,7 @@ export function MultiCameraRecognition() {
       });
 
       if (error) {
+        console.error('Analysis error:', error);
         return;
       }
 
@@ -238,6 +239,7 @@ export function MultiCameraRecognition() {
         setRecognitionResults(prev => [result, ...prev.slice(0, 49)]);
       }
     } catch (err) {
+      console.error('Frame analysis failed:', err);
     }
   }, [captureFrame, matchThreshold, soundEnabled]);
 
