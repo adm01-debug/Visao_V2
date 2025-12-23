@@ -1,4 +1,4 @@
-import { getRelativeTime, formatDuration } from "@/lib/dateUtils";
+import { ErrorBoundary, getRelativeTime, formatDuration } from "@/lib/dateUtils";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Alertas
@@ -12,7 +12,7 @@ import { getRelativeTime, formatDuration } from "@/lib/dateUtils";
  * - Notificações em tempo real
  */
 
-import { useState, useMemo, useCallback } from 'react';
+import { ErrorBoundary, useState, useMemo, useCallback } from 'react';
 import {
   AlertTriangle,
   Bell,
@@ -36,16 +36,16 @@ import {
   X,
   Zap,
 } from 'lucide-react';
-import { useAlerts } from '@/hooks/useAlerts';
-import { useCameras } from '@/hooks/useCameras';
-import { useRealtimeAlerts } from '@/hooks/useRealtimeAlerts';
-import { useFaceRecognitionAlerts } from '@/hooks/useFaceRecognitionAlerts';
-import { useI18n } from '@/contexts/i18n';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Skeleton } from '@/components/ui/skeleton';
+import { ErrorBoundary, useAlerts } from '@/hooks/useAlerts';
+import { ErrorBoundary, useCameras } from '@/hooks/useCameras';
+import { ErrorBoundary, useRealtimeAlerts } from '@/hooks/useRealtimeAlerts';
+import { ErrorBoundary, useFaceRecognitionAlerts } from '@/hooks/useFaceRecognitionAlerts';
+import { ErrorBoundary, useI18n } from '@/contexts/i18n';
+import { ErrorBoundary, Button } from '@/components/ui/button';
+import { ErrorBoundary, Badge } from '@/components/ui/badge';
+import { ErrorBoundary, Input } from '@/components/ui/input';
+import { ErrorBoundary, Checkbox } from '@/components/ui/checkbox';
+import { ErrorBoundary, Skeleton } from '@/components/ui/skeleton';
 import {
   Select,
   SelectContent,
@@ -74,15 +74,15 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { PaginationControls, usePagination } from '@/components/PaginationControls';
-import { ExportMenu } from '@/components/ExportMenu';
-import { EventTimeline } from '@/components/EventTimeline';
-import { cn } from '@/lib/utils';
-import { formatDistanceToNow } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
-import { toast } from 'sonner';
+import { ErrorBoundary, Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ErrorBoundary, ScrollArea } from '@/components/ui/scroll-area';
+import { ErrorBoundary, PaginationControls, usePagination } from '@/components/PaginationControls';
+import { ErrorBoundary, ExportMenu } from '@/components/ExportMenu';
+import { ErrorBoundary, EventTimeline } from '@/components/EventTimeline';
+import { ErrorBoundary, cn } from '@/lib/utils';
+import { ErrorBoundary, formatDistanceToNow } from 'date-fns';
+import { ErrorBoundary, ptBR } from 'date-fns/locale';
+import { ErrorBoundary, toast } from 'sonner';
 
 // ============================================
 // TIPOS
