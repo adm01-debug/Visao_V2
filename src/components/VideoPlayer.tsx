@@ -1,6 +1,6 @@
-import { useInterval, useTimeout } from "@/hooks";
-import { useState, useRef, useEffect } from 'react';
-import { 
+import { memo, useInterval, useTimeout } from "@/hooks";
+import { memo, useState, useRef, useEffect } from 'react';
+import { memo, 
   Play, 
   Pause, 
   Volume2, 
@@ -12,9 +12,9 @@ import {
   Camera as CameraIcon,
   AlertTriangle
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
-import { Slider } from '@/components/ui/slider';
+import { memo, cn } from '@/lib/utils';
+import { memo, Badge } from '@/components/ui/badge';
+import { memo, Slider } from '@/components/ui/slider';
 
 interface TimelineEvent {
   id: string;
