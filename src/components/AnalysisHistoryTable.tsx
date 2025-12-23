@@ -250,7 +250,6 @@ export function AnalysisHistoryTable({
       setRecords(filtered);
       setTotalCount(count || 0);
     } catch (error) {
-      console.error('Erro ao carregar histórico:', error);
       toast.error('Erro ao carregar histórico de análises');
     } finally {
       setLoading(false);
