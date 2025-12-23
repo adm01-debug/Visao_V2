@@ -689,4 +689,4 @@ export function AnalysisHistoryTable({
   );
 }
 
-export default AnalysisHistoryTable;
+export default memo(AnalysisHistoryTable);
