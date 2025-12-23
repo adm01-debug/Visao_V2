@@ -1,4 +1,5 @@
 import { APP_CONFIG, API_ENDPOINTS } from "@/lib/constants";
+import { usePerformance } from '@/hooks/usePerformance';
 import { VisuallyHidden } from '@/components/VisuallyHidden';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { storage } from '@/lib/storage';
