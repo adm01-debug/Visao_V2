@@ -153,7 +153,8 @@ export function useBlacklistAlerts({
     if (notificationsEnabled && getBrowserNotificationsEnabled() && getNotificationPermission() === 'granted') {
       showBrowserNotification({
         title: `🚨 ALERTA DE SEGURANÇA`,
-        body: `${personInfo.name} detectado em ${cameraName}\nConfiança: ${(confidence * 100).toFixed(0)}%`,
+        body: `${personInfo.name} detectado em ${cameraName}
+Confiança: ${(confidence * 100).toFixed(0)}%`,
         tag: `blacklist-${logId}`,
         requireInteraction: true,
         onClick: () => {
