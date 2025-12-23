@@ -277,7 +277,7 @@ function AccessEventCard({ event }: AccessEventCardProps) {
     )}>
       <div role="main" className="flex items-start gap-3">
         {/* Photo */}
-        <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+        <div role="main" aria-label="Configurações de segurança" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
           {event.personPhoto ? (
             <img src={event.personPhoto} alt={event.personName} className="w-full h-full object-cover" />
           ) : (
@@ -594,9 +594,9 @@ export function SecurityPage() {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-6">
+      <div role="main" aria-label="Configurações de segurança" className="p-6 space-y-6">
         <Skeleton className="h-8 w-48" />
-        <div className="grid grid-cols-4 gap-4">
+        <div role="main" aria-label="Configurações de segurança" className="grid grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-24" />)}
         </div>
         <Skeleton className="h-[400px]" />
@@ -605,7 +605,7 @@ export function SecurityPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
+    <div role="main" aria-label="Configurações de segurança" className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
       {/* Header */}
       <div role="main" className="flex items-center justify-between">
         <div>
@@ -632,10 +632,10 @@ export function SecurityPage() {
 
       {/* Stats */}
       {stats && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div role="main" aria-label="Configurações de segurança" className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
           <Card>
             <CardContent className="p-4 flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-blue-500/10">
+              <div role="main" aria-label="Configurações de segurança" className="p-2 rounded-lg bg-blue-500/10">
                 <FileText className="w-5 h-5 text-blue-500" />
               </div>
               <div>
@@ -646,7 +646,7 @@ export function SecurityPage() {
           </Card>
           <Card>
             <CardContent className="p-4 flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-red-500/10">
+              <div role="main" aria-label="Configurações de segurança" className="p-2 rounded-lg bg-red-500/10">
                 <AlertTriangle className="w-5 h-5 text-red-500" />
               </div>
               <div>
@@ -657,7 +657,7 @@ export function SecurityPage() {
           </Card>
           <Card>
             <CardContent className="p-4 flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-green-500/10">
+              <div role="main" aria-label="Configurações de segurança" className="p-2 rounded-lg bg-green-500/10">
                 <UserCheck className="w-5 h-5 text-green-500" />
               </div>
               <div>
@@ -668,7 +668,7 @@ export function SecurityPage() {
           </Card>
           <Card>
             <CardContent className="p-4 flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-red-500/10">
+              <div role="main" aria-label="Configurações de segurança" className="p-2 rounded-lg bg-red-500/10">
                 <UserX className="w-5 h-5 text-red-500" />
               </div>
               <div>
@@ -679,7 +679,7 @@ export function SecurityPage() {
           </Card>
           <Card>
             <CardContent className="p-4 flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-green-500/10">
+              <div role="main" aria-label="Configurações de segurança" className="p-2 rounded-lg bg-green-500/10">
                 <ShieldCheck className="w-5 h-5 text-green-500" />
               </div>
               <div>
@@ -690,7 +690,7 @@ export function SecurityPage() {
           </Card>
           <Card>
             <CardContent className="p-4 flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-red-500/10">
+              <div role="main" aria-label="Configurações de segurança" className="p-2 rounded-lg bg-red-500/10">
                 <ShieldOff className="w-5 h-5 text-red-500" />
               </div>
               <div>
@@ -723,7 +723,7 @@ export function SecurityPage() {
         <TabsContent value="logs" className="mt-4 space-y-4">
           {/* Filters */}
           <div role="main" className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <div className="relative flex-1 max-w-md">
+            <div role="main" aria-label="Configurações de segurança" className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Buscar logs..."
@@ -790,7 +790,7 @@ export function SecurityPage() {
 
         {/* Access Tab */}
         <TabsContent value="access" className="mt-4 space-y-4">
-          <div className="grid gap-3">
+          <div role="main" aria-label="Configurações de segurança" className="grid gap-3">
             {accessEvents.length === 0 ? (
               <Card>
                 <CardContent className="py-8 text-center text-muted-foreground">
@@ -823,7 +823,7 @@ export function SecurityPage() {
             </Button>
           </div>
 
-          <div className="grid gap-4">
+          <div role="main" aria-label="Configurações de segurança" className="grid gap-4">
             {(['whitelist', 'blacklist', 'watchlist'] as ListType[]).map(listType => {
               const config = listTypeConfig[listType];
               const persons = securityPersons.filter(p => p.listType === listType);
@@ -844,14 +844,14 @@ export function SecurityPage() {
                         Nenhuma pessoa nesta lista
                       </p>
                     ) : (
-                      <div className="grid gap-2">
+                      <div role="main" aria-label="Configurações de segurança" className="grid gap-2">
                         {persons.map(person => (
                           <div 
                             key={person.id}
                             className="flex items-center justify-between p-2 rounded-lg bg-muted/50"
                           >
                             <div role="main" className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+                              <div role="main" aria-label="Configurações de segurança" className="w-8 h-8 rounded-full bg-muted flex items-center justify-center overflow-hidden">
                                 {person.photo ? (
                                   <img src={person.photo} alt="" className="w-full h-full object-cover" />
                                 ) : (
@@ -892,8 +892,8 @@ export function SecurityPage() {
             <DialogTitle>Detalhes do Log</DialogTitle>
           </DialogHeader>
           {selectedLog && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4 text-sm">
+            <div role="main" aria-label="Configurações de segurança" className="space-y-4">
+              <div role="main" aria-label="Configurações de segurança" className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <Label className="text-muted-foreground">Data/Hora</Label>
                   <p>{format(new Date(selectedLog.timestamp), "dd/MM/yyyy 'às' HH:mm:ss")}</p>
@@ -942,7 +942,7 @@ export function SecurityPage() {
               Adicionar à {addPersonDialog && listTypeConfig[addPersonDialog].label}
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div role="main" aria-label="Configurações de segurança" className="space-y-4">
             <div>
               <Label>Nome</Label>
               <Input 
