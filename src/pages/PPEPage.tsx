@@ -94,7 +94,7 @@ function ComplianceCard({
           </div>
         </div>
         {trend && (
-          <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
+          <div role="main" aria-label="Detecção de EPIs" className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
             <TrendingUp className={cn("w-3 h-3", trend === 'up' ? 'text-green-500' : 'text-red-500 rotate-180')} />
             <span>{trend === 'up' ? 'Melhoria' : 'Queda'} vs. ontem</span>
           </div>
@@ -179,7 +179,7 @@ export default function PPEPage() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div role="main" aria-label="Detecção de EPIs" className="container mx-auto p-6 space-y-6">
       {/* Header */}
       <div role="main" className="flex items-center justify-between">
         <div>
@@ -225,7 +225,7 @@ export default function PPEPage() {
       </div>
 
       {/* Cards de Estatísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div role="main" aria-label="Detecção de EPIs" className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <ComplianceCard
           title="Detecções Atuais"
           value={ppeDetection.stats.totalDetections}
@@ -291,8 +291,8 @@ export default function PPEPage() {
                       Defina uma área que requer uso de EPIs específicos
                     </DialogDescription>
                   </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <div className="space-y-2">
+                  <div role="main" aria-label="Detecção de EPIs" className="space-y-4 py-4">
+                    <div role="main" aria-label="Detecção de EPIs" className="space-y-2">
                       <Label>Nome da Zona</Label>
                       <Input
                         placeholder="Ex: Área de Produção"
@@ -300,9 +300,9 @@ export default function PPEPage() {
                         onChange={e => setNewZone(prev => ({ ...prev, name: e.target.value }))}
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div role="main" aria-label="Detecção de EPIs" className="space-y-2">
                       <Label>EPIs Obrigatórios</Label>
-                      <div className="grid grid-cols-4 gap-2">
+                      <div role="main" aria-label="Detecção de EPIs" className="grid grid-cols-4 gap-2">
                         {(Object.keys(PPE_LABELS) as PPEType[]).map(type => (
                           <Button
                             key={type}
@@ -324,7 +324,7 @@ export default function PPEPage() {
                         onCheckedChange={v => setNewZone(prev => ({ ...prev, alertOnViolation: v }))}
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div role="main" aria-label="Detecção de EPIs" className="space-y-2">
                       <Label>Período de tolerância (segundos)</Label>
                       <Input
                         type="number"
@@ -348,7 +348,7 @@ export default function PPEPage() {
             </CardHeader>
             <CardContent>
               {ppeDetection.zones.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
+                <div role="main" aria-label="Detecção de EPIs" className="text-center py-12 text-muted-foreground">
                   <HardHat className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p>Nenhuma zona PPE configurada</p>
                   <p className="text-sm">Clique em "Nova Zona" para começar</p>
@@ -415,7 +415,7 @@ export default function PPEPage() {
             </CardHeader>
             <CardContent>
               {ppeDetection.recentViolations.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
+                <div role="main" aria-label="Detecção de EPIs" className="text-center py-12 text-muted-foreground">
                   <CheckCircle2 className="w-12 h-12 mx-auto mb-4 text-green-500" />
                   <p>Nenhuma violação registrada</p>
                 </div>
@@ -491,7 +491,7 @@ export default function PPEPage() {
             </CardHeader>
             <CardContent>
               {ppeDetection.currentDetections.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
+                <div role="main" aria-label="Detecção de EPIs" className="text-center py-12 text-muted-foreground">
                   <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p>Nenhuma pessoa detectada no momento</p>
                   <p className="text-sm">
@@ -501,7 +501,7 @@ export default function PPEPage() {
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div role="main" aria-label="Detecção de EPIs" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {ppeDetection.currentDetections.map(detection => (
                     <Card key={detection.personId} className={cn(
                       "border-2",
@@ -526,7 +526,7 @@ export default function PPEPage() {
                             {format(detection.timestamp, 'HH:mm:ss')}
                           </span>
                         </div>
-                        <div className="space-y-2">
+                        <div role="main" aria-label="Detecção de EPIs" className="space-y-2">
                           {detection.items.map(item => (
                             <div key={item.type} className="flex items-center justify-between">
                               <div role="main" className="flex items-center gap-2">
