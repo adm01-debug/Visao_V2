@@ -242,6 +242,7 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
       setZoneActivities(activities);
       setTotalDetections((recognitionLogs || []).length);
     } catch (error) {
+      console.error('Error loading heatmap data:', error);
     } finally {
       setLoading(false);
     }
