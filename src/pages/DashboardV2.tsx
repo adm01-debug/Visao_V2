@@ -1,4 +1,5 @@
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { StatCard } from '@/components/StatCard';
 import { CountUp } from '@/components/CountUp';
 import { TimeAgo } from '@/components/TimeAgo';
