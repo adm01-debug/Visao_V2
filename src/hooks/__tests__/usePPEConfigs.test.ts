@@ -1,7 +1,38 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook } from '@testing-library/react';
+import { renderHook, waitFor, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { usePPEConfigs } from '../usePPEConfigs';
-import React from 'react';
-const cw = () => { const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } }); return ({ children }: { children: React.ReactNode }) => (<QueryClientProvider client={qc}>{children}</QueryClientProvider>); };
-describe('usePPEConfigs', () => { beforeEach(() => { vi.clearAllMocks(); }); it('should init', () => { const { result } = renderHook(() => usePPEConfigs(), { wrapper: cw() }); expect(result.current).toBeDefined(); }); it('should work', () => { const { result } = renderHook(() => usePPEConfigs(), { wrapper: cw() }); expect(typeof result.current).toBe('object'); }); });
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { retry: false, staleTime: 0 },
+  },
+});
+
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+);
+
+describe('usePPEConfigs', () => {
+  beforeEach(() => {
+    queryClient.clear();
+    vi.clearAllMocks();
+  });
+
+  it('should initialize correctly', () => {
+    const { result } = renderHook(() => usePPEConfigs(), { wrapper });
+    expect(result.current).toBeDefined();
+  });
+
+  it('should handle state updates', async () => {
+    const { result } = renderHook(() => usePPEConfigs(), { wrapper });
+    await waitFor(() => {
+      expect(result.current).toBeDefined();
+    });
+  });
+
+  it('should cleanup on unmount', () => {
+    const { unmount } = renderHook(() => usePPEConfigs(), { wrapper });
+    expect(() => unmount()).not.toThrow();
+  });
+});
