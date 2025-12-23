@@ -578,4 +578,4 @@ function calculateArrowPoints(start: Point, end: Point): string {
   return `${p1x}%,${p1y}% ${p2x}%,${p2y}% ${p3x}%,${p3y}%`;
 }
 
-export default ZoneEditor;
+export default memo(ZoneEditor);
