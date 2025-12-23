@@ -85,7 +85,7 @@ export function AlertsByCameraChart({ alerts, className = '', onCameraClick }: A
 
   const totalAlerts = chartData.reduce((sum, d) => sum + d.count, 0);
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: unknown) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
