@@ -211,7 +211,6 @@ export function useFaceRecognition(
       personsRef.current = persons;
       return persons;
     } catch (err) {
-      
       return [];
     }
   }, []);
@@ -253,7 +252,6 @@ export function useFaceRecognition(
 
       return faces;
     } catch (err) {
-      
       throw err;
     }
   }, [cameraId, onFaceDetected]);
@@ -425,7 +423,6 @@ export function useFaceRecognition(
           });
         }
       } catch (logErr) {
-        
       }
 
       const log: Partial<RecognitionLog> = {
@@ -603,7 +600,6 @@ export function useFaceRecognition(
   // Carregar pessoas ao montar
   useEffect(() => {
     if (!initialPersons) {
-      fetchPersons().catch(
     }
   }, [fetchPersons, initialPersons]);
 
