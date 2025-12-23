@@ -507,4 +507,3 @@ export function useFaceAPI(options: UseFaceAPIOptions = {}): UseFaceAPIReturn {
 }
 
 export default useFaceAPI;
-
