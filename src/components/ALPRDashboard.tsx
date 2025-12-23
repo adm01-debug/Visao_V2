@@ -129,14 +129,14 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
       return acc;
     }, {} as Record<string, any>);
 
-    return Object.values(grouped).sort((a: any, b: any) => 
+    return Object.values(grouped).sort((a: unknown, b: unknown) => 
       b.lastSeen.getTime() - a.lastSeen.getTime()
     );
   }, [detections]);
 
   // Filtrar histórico
   const filteredHistory = useMemo(() => {
-    return vehicleHistory.filter((v: any) => {
+    return vehicleHistory.filter((v: unknown) => {
       const matchesSearch = v.plate.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            v.vehicleType?.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesStatus = statusFilter === 'all' || v.status === statusFilter;
@@ -440,7 +440,7 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
         <CardContent>
           <ScrollArea className="h-[400px]">
             <div className="space-y-2">
-              {filteredHistory.map((vehicle: any) => (
+              {filteredHistory.map((vehicle: unknown) => (
                 <div 
                   key={vehicle.plate}
                   className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
