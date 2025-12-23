@@ -1,4 +1,5 @@
 import { useMediaQuery, useWindowSize } from "@/hooks";
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { memo } from "react";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
