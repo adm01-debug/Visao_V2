@@ -263,7 +263,7 @@ function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, onView 
       'transition-all hover:shadow-md cursor-pointer group',
       !zone.is_active && 'opacity-60'
     )} onClick={onView}>
-      <div className="p-4 pb-2">
+      <div role="main" aria-label="Gerenciamento de zonas" className="p-4 pb-2">
         <div role="main" className="flex items-start justify-between">
           <div role="main" className="flex items-center gap-2">
             <div 
@@ -313,7 +313,7 @@ function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, onView 
           </DropdownMenu>
         </div>
       </div>
-      <div className="p-4 pt-2">
+      <div role="main" aria-label="Gerenciamento de zonas" className="p-4 pt-2">
         <p className="text-xs text-muted-foreground flex items-center gap-1 mb-3">
           <Camera className="w-3 h-3" />
           {cameraName}
@@ -321,18 +321,18 @@ function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, onView 
 
         {/* Stats */}
         {stats && (
-          <div className="grid grid-cols-3 gap-2 text-center">
+          <div role="main" aria-label="Gerenciamento de zonas" className="grid grid-cols-3 gap-2 text-center">
             {(zone.type === 'counting' || zone.type === 'tripwire' || zone.type === 'occupancy') && (
               <>
-                <div className="p-2 bg-muted rounded">
+                <div role="main" aria-label="Gerenciamento de zonas" className="p-2 bg-muted rounded">
                   <p className="text-lg font-bold text-green-500">{stats.countIn}</p>
                   <p className="text-[10px] text-muted-foreground"{t('zones.entry', 'Entrada')}</p>
                 </div>
-                <div className="p-2 bg-muted rounded">
+                <div role="main" aria-label="Gerenciamento de zonas" className="p-2 bg-muted rounded">
                   <p className="text-lg font-bold text-red-500">{stats.countOut}</p>
                   <p className="text-[10px] text-muted-foreground"{t('zones.exit', 'Saída')}</p>
                 </div>
-                <div className="p-2 bg-muted rounded">
+                <div role="main" aria-label="Gerenciamento de zonas" className="p-2 bg-muted rounded">
                   <p className="text-lg font-bold">{stats.currentOccupancy}</p>
                   <p className="text-[10px] text-muted-foreground"{t('zones.current', 'Atual')}</p>
                 </div>
@@ -340,18 +340,18 @@ function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, onView 
             )}
             {zone.type === 'dwell' && (
               <>
-                <div className="p-2 bg-muted rounded col-span-2">
+                <div role="main" aria-label="Gerenciamento de zonas" className="p-2 bg-muted rounded col-span-2">
                   <p className="text-lg font-bold">{Math.round(stats.avgDwellTime)}s</p>
                   <p className="text-[10px] text-muted-foreground"{t('zones.avgTime', 'Tempo médio')}</p>
                 </div>
-                <div className="p-2 bg-muted rounded">
+                <div role="main" aria-label="Gerenciamento de zonas" className="p-2 bg-muted rounded">
                   <p className="text-lg font-bold text-yellow-500">{stats.alertsToday}</p>
                   <p className="text-[10px] text-muted-foreground"{t('zones.alerts', 'Alertas')}</p>
                 </div>
               </>
             )}
             {(zone.type === 'restricted' || zone.type === 'safety') && (
-              <div className="p-2 bg-muted rounded col-span-3">
+              <div role="main" aria-label="Gerenciamento de zonas" className="p-2 bg-muted rounded col-span-3">
                 <p className="text-lg font-bold text-red-500">{stats.alertsToday}</p>
                 <p className="text-[10px] text-muted-foreground"{t('zones.alertsToday', 'Alertas hoje')}</p>
               </div>
@@ -492,9 +492,9 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
           </SheetDescription>
         </SheetHeader>
 
-        <div className="space-y-6 mt-6">
+        <div role="main" aria-label="Gerenciamento de zonas" className="space-y-6 mt-6">
           {/* Video com editor de zona */}
-          <div className="space-y-2">
+          <div role="main" aria-label="Gerenciamento de zonas" className="space-y-2">
             <div role="main" className="flex items-center justify-between">
               <Label{t('zones.draw', 'Desenhar Zona')}</Label>
               <div role="main" className="flex items-center gap-1 border rounded-lg p-1">
@@ -525,7 +525,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
               </div>
             </div>
             
-            <div className="aspect-video bg-black rounded-lg overflow-hidden relative border-2 border-dashed border-muted">
+            <div role="main" aria-label="Gerenciamento de zonas" className="aspect-video bg-black rounded-lg overflow-hidden relative border-2 border-dashed border-muted">
               {camera?.stream_url ? (
                 <VideoStreamPlayer
                   cameraId={camera.id}
@@ -540,13 +540,13 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-muted">
+                <div role="main" aria-label="Gerenciamento de zonas" className="w-full h-full flex items-center justify-center bg-muted">
                   <Camera className="w-12 h-12 text-muted-foreground" />
                 </div>
               )}
               
               {/* Canvas de desenho sobreposto */}
-              <div className="absolute inset-0">
+              <div role="main" aria-label="Gerenciamento de zonas" className="absolute inset-0">
                 <ZoneEditor
                   existingZones={formData.pointsData ? [{
                     id: 'temp',
@@ -590,8 +590,8 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
           </div>
 
           {/* Formulário */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2">
+          <div role="main" aria-label="Gerenciamento de zonas" className="grid grid-cols-2 gap-4">
+            <div role="main" aria-label="Gerenciamento de zonas" className="col-span-2">
               <Label htmlFor="name"{t('zones.nameLabel', 'Nome da Zona')} *</Label>
               <Input
                 id="name"
@@ -641,7 +641,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
               </div>
             </div>
 
-            <div className="col-span-2">
+            <div role="main" aria-label="Gerenciamento de zonas" className="col-span-2">
               <Label>Opacidade: {Math.round(opacity * 100)}%</Label>
               <Slider
                 value={[opacity * 100]}
@@ -739,7 +739,7 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
 
           <ScrollArea className="flex-1 mt-4">
             <TabsContent value="preview" className="m-0">
-              <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
+              <div role="main" aria-label="Gerenciamento de zonas" className="aspect-video bg-black rounded-lg overflow-hidden relative">
                 {camera?.stream_url ? (
                   <VideoStreamPlayer
                     cameraId={camera.id}
@@ -754,7 +754,7 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-muted">
+                  <div role="main" aria-label="Gerenciamento de zonas" className="w-full h-full flex items-center justify-center bg-muted">
                     <Camera className="w-12 h-12 text-muted-foreground" />
                   </div>
                 )}
@@ -785,7 +785,7 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-4 mt-4">
+              <div role="main" aria-label="Gerenciamento de zonas" className="grid grid-cols-2 gap-4 mt-4">
                 <div>
                   <Label className="text-xs text-muted-foreground"{t('zones.type', 'Tipo')}</Label>
                   <p className="font-medium">{typeConfig.label}</p>
@@ -801,7 +801,7 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
 
             <TabsContent value="stats" className="m-0">
               {stats ? (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div role="main" aria-label="Gerenciamento de zonas" className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <Card>
                     <CardContent className="p-4 text-center">
                       <p className="text-3xl font-bold text-green-500">{stats.countIn}</p>
@@ -828,7 +828,7 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
                   </Card>
                 </div>
               ) : (
-                <div className="text-center py-8 text-muted-foreground">
+                <div role="main" aria-label="Gerenciamento de zonas" className="text-center py-8 text-muted-foreground">
                   <Activity className="w-12 h-12 mx-auto mb-2 opacity-50" />
                   <p>Sem estatísticas disponíveis</p>
                 </div>
@@ -837,12 +837,12 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
 
             <TabsContent value="events" className="m-0">
               {events.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
+                <div role="main" aria-label="Gerenciamento de zonas" className="text-center py-8 text-muted-foreground">
                   <Clock className="w-12 h-12 mx-auto mb-2 opacity-50" />
                   <p>Nenhum evento registrado</p>
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div role="main" aria-label="Gerenciamento de zonas" className="space-y-2">
                   {events.map(event => (
                     <div key={event.id} className="flex items-center gap-3 p-3 rounded-lg border bg-card">
                       <div className={cn(
@@ -1070,15 +1070,15 @@ export function ZonesPage() {
   // Loading
   if (loading) {
     return (
-      <div className="p-6 space-y-6">
+      <div role="main" aria-label="Gerenciamento de zonas" className="p-6 space-y-6">
         <div role="main" className="flex items-center justify-between">
           <Skeleton className="h-8 w-48" />
           <Skeleton className="h-10 w-32" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div role="main" aria-label="Gerenciamento de zonas" className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-24" />)}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div role="main" aria-label="Gerenciamento de zonas" className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[...Array(6)].map((_, i) => <Skeleton key={i} className="h-40" />)}
         </div>
       </div>
@@ -1086,7 +1086,7 @@ export function ZonesPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
+    <div role="main" aria-label="Gerenciamento de zonas" className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
       {/* Header */}
       <div role="main" className="flex items-center justify-between">
         <div>
@@ -1114,7 +1114,7 @@ export function ZonesPage() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               {cameras.length === 0 ? (
-                <div className="p-3 text-sm text-muted-foreground text-center">
+                <div role="main" aria-label="Gerenciamento de zonas" className="p-3 text-sm text-muted-foreground text-center">
                   Nenhuma câmera disponível
                 </div>
               ) : (
@@ -1134,7 +1134,7 @@ export function ZonesPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div role="main" aria-label="Gerenciamento de zonas" className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4">
             <div role="main" className="flex items-center justify-between">
@@ -1183,7 +1183,7 @@ export function ZonesPage() {
 
       {/* Filters */}
       <div role="main" className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <div className="relative flex-1 max-w-md">
+        <div role="main" aria-label="Gerenciamento de zonas" className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Buscar zonas..."
@@ -1253,13 +1253,13 @@ export function ZonesPage() {
       </div>
 
       {/* Results */}
-      <div className="text-sm text-muted-foreground">
+      <div role="main" aria-label="Gerenciamento de zonas" className="text-sm text-muted-foreground">
         {filteredZones.length} zonas encontradas
       </div>
 
       {/* Zones Grid */}
       {filteredZones.length === 0 ? (
-        <div className="text-center py-12">
+        <div role="main" aria-label="Gerenciamento de zonas" className="text-center py-12">
           <Target className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
           <h3 className="text-lg font-medium mb-2">Nenhuma zona encontrada</h3>
           <p className="text-sm text-muted-foreground mb-4">
