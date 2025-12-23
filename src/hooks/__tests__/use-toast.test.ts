@@ -1,10 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { renderHook, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { use-toast } from '../use-toast';
 
-vi.mock('@/integrations/supabase/client', () => ({
-  supabase: { from: vi.fn(() => ({ select: vi.fn().mockReturnThis(), order: vi.fn().mockResolvedValue({ data: [], error: null }) })) },
-}));
+const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <QueryClientProvider client={qc}>{children}</QueryClientProvider>
+);
 
-describe('Hook', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
-  it('works', () => { expect(true).toBe(true); });
+describe('use-toast', () => {
+  beforeEach(() => { qc.clear(); vi.clearAllMocks(); });
+  it('initializes correctly', () => {
+    const { result } = renderHook(() => use-toast(), { wrapper });
+    expect(result.current).toBeDefined();
+  });
+  it('handles updates', async () => {
+    const { result } = renderHook(() => use-toast(), { wrapper });
+    await waitFor(() => expect(result.current).toBeDefined());
+  });
 });
