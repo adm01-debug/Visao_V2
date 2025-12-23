@@ -106,7 +106,7 @@ export default function Auth() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div role="main" aria-label="Autenticação" className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
@@ -119,11 +119,11 @@ export default function Auth() {
         <meta name="description" content="Acesse sua conta VisionAI para monitoramento de segurança inteligente." />
       </Helmet>
       
-      <div className="min-h-screen flex items-center justify-center bg-background p-4">
-        <div className="w-full max-w-md">
+      <div role="main" aria-label="Autenticação" className="min-h-screen flex items-center justify-center bg-background p-4">
+        <div role="main" aria-label="Autenticação" className="w-full max-w-md">
           {/* Logo */}
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
+          <div role="main" aria-label="Autenticação" className="flex items-center justify-center gap-3 mb-8">
+            <div role="main" aria-label="Autenticação" className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
               <Shield className="w-7 h-7 text-primary-foreground" />
             </div>
             <div>
@@ -150,7 +150,7 @@ export default function Auth() {
                   </CardDescription>
                   
                   <form onSubmit={handleSignIn} className="space-y-4">
-                    <div className="space-y-2">
+                    <div role="main" aria-label="Autenticação" className="space-y-2">
                       <Label htmlFor="login-email">Email</Label>
                       <Input
                         id="login-email"
@@ -166,9 +166,9 @@ export default function Auth() {
                       )}
                     </div>
                     
-                    <div className="space-y-2">
+                    <div role="main" aria-label="Autenticação" className="space-y-2">
                       <Label htmlFor="login-password">Senha</Label>
-                      <div className="relative">
+                      <div role="main" aria-label="Autenticação" className="relative">
                         <Input
                           id="login-password"
                           type={showPassword ? 'text' : 'password'}
@@ -218,7 +218,7 @@ export default function Auth() {
                   </CardDescription>
                   
                   <form onSubmit={handleSignUp} className="space-y-4">
-                    <div className="space-y-2">
+                    <div role="main" aria-label="Autenticação" className="space-y-2">
                       <Label htmlFor="register-name">Nome completo</Label>
                       <Input
                         id="register-name"
@@ -230,7 +230,7 @@ export default function Auth() {
                       />
                     </div>
                     
-                    <div className="space-y-2">
+                    <div role="main" aria-label="Autenticação" className="space-y-2">
                       <Label htmlFor="register-email">Email</Label>
                       <Input
                         id="register-email"
@@ -246,9 +246,9 @@ export default function Auth() {
                       )}
                     </div>
                     
-                    <div className="space-y-2">
+                    <div role="main" aria-label="Autenticação" className="space-y-2">
                       <Label htmlFor="register-password">Senha</Label>
-                      <div className="relative">
+                      <div role="main" aria-label="Autenticação" className="relative">
                         <Input
                           id="register-password"
                           type={showPassword ? 'text' : 'password'}
@@ -297,4 +297,3 @@ export default function Auth() {
     </>
   );
 }
-
