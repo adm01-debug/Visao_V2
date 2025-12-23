@@ -1,43 +1,26 @@
-// Core UI Components
-export { EmptyState } from './EmptyState';
-export { ErrorState } from './ErrorState';
-export { LoadingSpinner } from './LoadingSpinner';
-export { LoadingOverlay } from './LoadingOverlay';
-export { PageWrapper } from './PageWrapper';
-export { PageHeader } from './PageHeader';
+// Barrel exports for components - VISÃO
+export * from './EmptyState';
+export * from './ErrorState';
+export * from './LoadingSpinner';
+export * from './StatusBadge';
+export * from './SeverityBadge';
+export * from './PageHeader';
+export * from './Breadcrumbs';
+export * from './StatCard';
+export * from './TableSkeleton';
+export * from './CardSkeleton';
+export * from './TimeAgo';
+export * from './ConfirmDialog';
+export * from './Divider';
+export * from './KeyValue';
+export * from './CopyButton';
+export * from './CountUp';
+export * from './ProgressRing';
+export * from './InfoTooltip';
+export * from './FilterDropdown';
+export * from './DateRangePicker';
+export * from './NotificationBell';
+export * from './UserAvatar';
+export * from './VisuallyHidden';
+export * from './SearchBar';
 
-// Data Display
-export { StatCard } from './StatCard';
-export { MetricCard } from './MetricCard';
-export { StatusBadge } from './StatusBadge';
-export { SeverityBadge } from './SeverityBadge';
-export { StatusIndicator } from './StatusIndicator';
-export { KeyValue } from './KeyValue';
-export { TimeAgo } from './TimeAgo';
-export { DataTable } from './DataTable';
-
-// Form Components
-export { SearchInput } from './SearchInput';
-export { SearchBar } from './SearchBar';
-export { FilterDropdown } from './FilterDropdown';
-export { DateRangePicker } from './DateRangePicker';
-
-// Navigation
-export { Breadcrumbs } from './Breadcrumbs';
-
-// Feedback
-export { ConfirmDialog } from './ConfirmDialog';
-export { InfoTooltip } from './InfoTooltip';
-export { NotificationBell } from './NotificationBell';
-
-// Skeleton
-export { TableSkeleton } from './TableSkeleton';
-export { CardSkeleton } from './CardSkeleton';
-
-// Misc
-export { Divider } from './Divider';
-export { CopyButton } from './CopyButton';
-export { CountUp } from './CountUp';
-export { ProgressRing } from './ProgressRing';
-export { UserAvatar } from './UserAvatar';
-export { VisuallyHidden } from './VisuallyHidden';
