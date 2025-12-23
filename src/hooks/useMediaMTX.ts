@@ -152,7 +152,7 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
 
       const data = await response.json();
       return data.items || [];
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (err.name === 'AbortError') {
         return paths; // Retorna estado atual se abortado
       }
@@ -169,7 +169,7 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
       const fetchedPaths = await fetchPaths();
       setPaths(fetchedPaths);
       setConnected(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       const message = err.message || 'Erro ao conectar ao MediaMTX';
       setError(message);
       setConnected(false);
@@ -237,7 +237,7 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
       toast.success(`Stream "${name}" adicionado`);
       await refresh();
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error(`Erro ao adicionar stream: ${err.message}`);
       return false;
     }
@@ -257,7 +257,7 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
       toast.success(`Stream "${name}" removido`);
       await refresh();
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error(`Erro ao remover stream: ${err.message}`);
       return false;
     }
