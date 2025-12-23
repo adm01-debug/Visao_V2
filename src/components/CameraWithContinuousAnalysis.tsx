@@ -305,7 +305,6 @@ export function CameraWithContinuousAnalysis({
   } = useMLModels({
     models: ['coco-ssd'],
     autoLoad: true,
-    onModelLoaded: (model) => console.log(`[ML] ${model} carregado para ${camera.name}`),
   });
 
 
