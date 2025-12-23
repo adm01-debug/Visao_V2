@@ -1,5 +1,5 @@
-import { formatDate, formatNumber } from "@/lib/formatters";
-import { EmptyState, ErrorState, LoadingSpinner, TimeAgo } from "@/components";
+import { ErrorBoundary, formatDate, formatNumber } from "@/lib/formatters";
+import { ErrorBoundary, EmptyState, ErrorState, LoadingSpinner, TimeAgo } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Gravações / Clips
@@ -11,8 +11,8 @@ import { EmptyState, ErrorState, LoadingSpinner, TimeAgo } from "@/components";
  * - Download e exclusão
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useI18n } from '@/contexts/i18n';
+import { ErrorBoundary, useState, useEffect, useCallback, useMemo } from 'react';
+import { ErrorBoundary, useI18n } from '@/contexts/i18n';
 import {
   Video,
   Play,
@@ -33,13 +33,13 @@ import {
   Volume2,
   VolumeX,
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { useCameras } from '@/hooks/useCameras';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Checkbox } from '@/components/ui/checkbox';
+import { ErrorBoundary, supabase } from '@/integrations/supabase/client';
+import { ErrorBoundary, useCameras } from '@/hooks/useCameras';
+import { ErrorBoundary, Button } from '@/components/ui/button';
+import { ErrorBoundary, Input } from '@/components/ui/input';
+import { ErrorBoundary, Badge } from '@/components/ui/badge';
+import { ErrorBoundary, Skeleton } from '@/components/ui/skeleton';
+import { ErrorBoundary, Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -75,13 +75,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Slider } from '@/components/ui/slider';
-import { cn } from '@/lib/utils';
-import { format, formatDistanceToNow, startOfDay, subDays } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
-import { toast } from 'sonner';
-import { Tables } from '@/integrations/supabase/types';
-import { ClipGallery } from '@/components/ClipGallery';
+import { ErrorBoundary, Slider } from '@/components/ui/slider';
+import { ErrorBoundary, cn } from '@/lib/utils';
+import { ErrorBoundary, format, formatDistanceToNow, startOfDay, subDays } from 'date-fns';
+import { ErrorBoundary, ptBR } from 'date-fns/locale';
+import { ErrorBoundary, toast } from 'sonner';
+import { ErrorBoundary, Tables } from '@/integrations/supabase/types';
+import { ErrorBoundary, ClipGallery } from '@/components/ClipGallery';
 
 // ============================================
 // TIPOS - Alinhados com schema do banco
