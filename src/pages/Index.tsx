@@ -27,7 +27,7 @@ const Index = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div role="main" aria-label="Página inicial" className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
@@ -49,16 +49,16 @@ const Index = () => {
         return <AnalyticsDashboard />;
       case 'ai-vision':
         return (
-          <div className="p-6 overflow-auto h-full">
-            <div className="max-w-xl mx-auto">
+          <div role="main" aria-label="Página inicial" className="p-6 overflow-auto h-full">
+            <div role="main" aria-label="Página inicial" className="max-w-xl mx-auto">
               <AIAnalysisPanel />
             </div>
           </div>
         );
       default:
         return (
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center">
+          <div role="main" aria-label="Página inicial" className="flex items-center justify-center h-full">
+            <div role="main" aria-label="Página inicial" className="text-center">
               <p className="text-2xl font-semibold text-muted-foreground mb-2">
                 {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
               </p>
@@ -76,10 +76,10 @@ const Index = () => {
         <meta name="description" content="Plataforma de vigilância inteligente com análise de vídeo por IA para monitoramento de segurança e produtividade." />
       </Helmet>
       
-      <div className="flex h-screen bg-background overflow-hidden">
+      <div role="main" aria-label="Página inicial" className="flex h-screen bg-background overflow-hidden">
         <Sidebar />
         
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div role="main" aria-label="Página inicial" className="flex-1 flex flex-col overflow-hidden">
           <Header />
           
           <main className="flex-1 overflow-hidden">
