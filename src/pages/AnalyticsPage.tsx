@@ -216,9 +216,9 @@ function SimpleBarChart({ data, dataKey, color, height = 200 }: SimpleBarChartPr
             key={index}
             className="flex-1 flex flex-col items-center gap-1 group"
           >
-            <div className="relative w-full flex flex-col items-center">
+            <div role="main" aria-label="Analytics e relatórios" className="relative w-full flex flex-col items-center">
               {/* Tooltip */}
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-popover text-popover-foreground px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-lg">
+              <div role="main" aria-label="Analytics e relatórios" className="absolute -top-8 left-1/2 -translate-x-1/2 bg-popover text-popover-foreground px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-lg">
                 {item.label}: {value}
               </div>
               {/* Bar */}
@@ -273,7 +273,7 @@ function DonutChart({ data, size = 160 }: DonutChartProps) {
   };
 
   return (
-    <div className="relative" style={{ width: size, height: size }}>
+    <div role="main" aria-label="Analytics e relatórios" className="relative" style={{ width: size, height: size }}>
       <svg width={size} height={size}>
         {segments.map((segment, index) => (
           <path
@@ -284,7 +284,7 @@ function DonutChart({ data, size = 160 }: DonutChartProps) {
           />
         ))}
       </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
+      <div role="main" aria-label="Analytics e relatórios" className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-2xl font-bold">{total}</span>
         <span className="text-xs text-muted-foreground"{t('analytics.total', 'Total')}</span>
       </div>
@@ -301,7 +301,7 @@ function HourlyHeatmap({ data }: HourlyHeatmapProps) {
   const maxAlerts = Math.max(...data.map(d => d.alerts), 1);
   
   return (
-    <div className="grid grid-cols-12 gap-1">
+    <div role="main" aria-label="Analytics e relatórios" className="grid grid-cols-12 gap-1">
       {data.map((item, index) => {
         const intensity = item.alerts / maxAlerts;
         return (
@@ -568,7 +568,7 @@ export function AnalyticsPage() {
   };
 
   return (
-    <div className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
+    <div role="main" aria-label="Analytics e relatórios" className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
       {/* Header */}
       <div role="main" className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -636,7 +636,7 @@ export function AnalyticsPage() {
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div role="main" aria-label="Analytics e relatórios" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {loading ? (
           Array.from({ length: 4 }).map((_, i) => (
             <KPICard key={i} data={{} as KPIData} loading />
@@ -649,7 +649,7 @@ export function AnalyticsPage() {
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div role="main" aria-label="Analytics e relatórios" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Chart */}
         <Card className="lg:col-span-2">
           <CardHeader>
@@ -682,7 +682,7 @@ export function AnalyticsPage() {
             ) : (
               <>
                 <DonutChart data={alertsByType} />
-                <div className="grid grid-cols-2 gap-2 mt-4 w-full">
+                <div role="main" aria-label="Analytics e relatórios" className="grid grid-cols-2 gap-2 mt-4 w-full">
                   {alertsByType.slice(0, 6).map((item, i) => (
                     <div key={i} className="flex items-center gap-2 text-xs">
                       <div 
@@ -701,7 +701,7 @@ export function AnalyticsPage() {
       </div>
 
       {/* Second Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div role="main" aria-label="Analytics e relatórios" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Camera Performance */}
         <Card>
           <CardHeader>
@@ -710,18 +710,18 @@ export function AnalyticsPage() {
           </CardHeader>
           <CardContent>
             {loading ? (
-              <div className="space-y-3">
+              <div role="main" aria-label="Analytics e relatórios" className="space-y-3">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Skeleton key={i} className="h-12 w-full" />
                 ))}
               </div>
             ) : cameraPerformance.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
+              <div role="main" aria-label="Analytics e relatórios" className="text-center py-8 text-muted-foreground">
                 <Camera className="w-10 h-10 mx-auto mb-2 opacity-50" />
                 <p className="text-sm"{t('analytics.noCameraFound', 'Nenhuma câmera encontrada')}</p>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div role="main" aria-label="Analytics e relatórios" className="space-y-3">
                 {cameraPerformance.map((camera, i) => (
                   <div key={camera.id} className="flex items-center gap-3">
                     <span className="text-sm font-medium w-6 text-muted-foreground">
@@ -785,7 +785,7 @@ export function AnalyticsPage() {
           <CardTitle className="text-base"{t('analytics.periodSummary', 'Resumo do Período')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div role="main" aria-label="Analytics e relatórios" className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
             {[
               { label: 'Média Alertas/Dia', value: chartData.length > 0 ? Math.round(chartData.reduce((s, d) => s + d.alerts, 0) / chartData.length) : 0, icon: AlertTriangle, color: 'text-red-500' },
               { label: 'Pico de Alertas', value: Math.max(...chartData.map(d => d.alerts), 0), icon: TrendingUp, color: 'text-orange-500' },
