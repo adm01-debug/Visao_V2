@@ -1,4 +1,5 @@
 import { ErrorBoundary, useLocalStorage } from "@/hooks";
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { isValidEmail } from '@/lib/validators';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { Divider } from '@/components/Divider';
