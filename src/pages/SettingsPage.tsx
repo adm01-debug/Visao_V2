@@ -1,11 +1,11 @@
-import { useLocalStorage } from "@/hooks";
-import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, SeverityBadge, TimeAgo, ConfirmDialog } from "@/components";
+import { ErrorBoundary, useLocalStorage } from "@/hooks";
+import { ErrorBoundary, EmptyState, ErrorState, LoadingSpinner, StatusBadge, SeverityBadge, TimeAgo, ConfirmDialog } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Configurações (Completa)
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { ErrorBoundary, useState, useEffect, useCallback } from 'react';
 import {
   Settings,
   Bell,
@@ -45,17 +45,17 @@ import {
   Wifi,
   Server,
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { useI18n } from '@/contexts/i18n';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Slider } from '@/components/ui/slider';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Separator } from '@/components/ui/separator';
-import { Progress } from '@/components/ui/progress';
+import { ErrorBoundary, supabase } from '@/integrations/supabase/client';
+import { ErrorBoundary, useI18n } from '@/contexts/i18n';
+import { ErrorBoundary, Button } from '@/components/ui/button';
+import { ErrorBoundary, Input } from '@/components/ui/input';
+import { ErrorBoundary, Label } from '@/components/ui/label';
+import { ErrorBoundary, Switch } from '@/components/ui/switch';
+import { ErrorBoundary, Slider } from '@/components/ui/slider';
+import { ErrorBoundary, Badge } from '@/components/ui/badge';
+import { ErrorBoundary, Skeleton } from '@/components/ui/skeleton';
+import { ErrorBoundary, Separator } from '@/components/ui/separator';
+import { ErrorBoundary, Progress } from '@/components/ui/progress';
 import {
   Select,
   SelectContent,
@@ -86,12 +86,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { cn } from '@/lib/utils';
-import { useSettings } from '@/hooks/useSettings';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
-import { toast } from 'sonner';
+import { ErrorBoundary, ScrollArea } from '@/components/ui/scroll-area';
+import { ErrorBoundary, cn } from '@/lib/utils';
+import { ErrorBoundary, useSettings } from '@/hooks/useSettings';
+import { ErrorBoundary, format } from 'date-fns';
+import { ErrorBoundary, ptBR } from 'date-fns/locale';
+import { ErrorBoundary, toast } from 'sonner';
 
 // ============================================
 // TIPOS
