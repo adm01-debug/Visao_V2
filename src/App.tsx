@@ -1,4 +1,5 @@
 import { APP_CONFIG, API_ENDPOINTS } from "@/lib/constants";
+import { useFeatureFlags } from '@/hooks/useFeatureFlags';
 import { eventEmitter } from '@/lib/eventEmitter';
 import { usePerformance } from '@/hooks/usePerformance';
 import { VisuallyHidden } from '@/components/VisuallyHidden';
