@@ -1,34 +1,38 @@
-# Performance Guide - VISÃO
+# ⚡ Performance - VISÃO
 
 ## Otimizações Implementadas
 
 ### React
-- `React.memo` em componentes pesados
-- `useMemo`/`useCallback` em hooks
+- React.memo em componentes grandes
+- useMemo para cálculos pesados
+- useCallback para funções estáveis
 - Lazy loading de rotas
-- Code splitting automático
 
-### Renderização
-- Virtualização de listas longas
-- Debounce em inputs de busca
-- Throttle em eventos frequentes
+### Imagens
+- Lazy loading de imagens
+- Placeholders blur
+- WebP quando suportado
 
-### Rede
-- Cache de dados com React Query
-- Stale-while-revalidate
-- Compressão de assets
+### Bundle
+- Code splitting por rota
+- Tree shaking
+- Minificação
 
-### Vídeo
-- Streaming HLS adaptativo
-- Resolution switching automático
-- Frame dropping sob carga
+### Cache
+- React Query com staleTime
+- Service Worker para assets
+- LocalStorage para preferências
 
-## Métricas
-- LCP < 2.5s
-- FID < 100ms
-- CLS < 0.1
+## Métricas Alvo
+
+- LCP: < 2.5s
+- FID: < 100ms
+- CLS: < 0.1
+- TTI: < 3.5s
 
 ## Monitoramento
+
+- Web Vitals
 - React DevTools Profiler
-- Performance tab do Chrome
-- Lighthouse audits
+- Network tab
+
