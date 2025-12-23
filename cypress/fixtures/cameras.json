@@ -1,0 +1,16 @@
+[
+  {
+    "id": "cam-001",
+    "name": "Entrada Principal",
+    "stream_url": "rtsp://example.com/cam1",
+    "status": "online",
+    "location": "Portaria"
+  },
+  {
+    "id": "cam-002",
+    "name": "Estacionamento",
+    "stream_url": "rtsp://example.com/cam2",
+    "status": "offline",
+    "location": "Área Externa"
+  }
+]
