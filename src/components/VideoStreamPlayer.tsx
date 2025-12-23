@@ -397,6 +397,7 @@ export function VideoStreamPlayer({
   // Carregar modelo ML quando overlay for habilitado
   useEffect(() => {
     if (enableMLOverlay && !isModelLoaded && !isMLLoading) {
+      loadModel("coco-ssd").catch(console.error);
     }
   }, [enableMLOverlay, isModelLoaded, isMLLoading, loadModel]);
   useEffect(() => {
@@ -747,4 +748,4 @@ export function VideoStreamPlayer({
   );
 }
 
-export default VideoStreamPlayer;
+export default memo(VideoStreamPlayer);
