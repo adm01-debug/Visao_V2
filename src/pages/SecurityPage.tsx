@@ -478,7 +478,6 @@ export function SecurityPage() {
       });
 
     } catch (error) {
-      console.error('Erro ao carregar dados:', error);
       toast.error('Erro ao carregar dados de segurança');
     } finally {
       setLoading(false);
@@ -543,7 +542,6 @@ export function SecurityPage() {
       setNewPersonName('');
       setNewPersonReason('');
     } catch (error) {
-      console.error('Erro ao adicionar:', error);
       toast.error('Erro ao adicionar pessoa');
     }
   };
@@ -562,7 +560,6 @@ export function SecurityPage() {
       toast.success('Pessoa removida da lista');
       setDeleteConfirm(null);
     } catch (error) {
-      console.error('Erro ao remover:', error);
       toast.error('Erro ao remover pessoa');
     }
   };
@@ -580,7 +577,8 @@ export function SecurityPage() {
       log.ipAddress || '',
     ]);
     
-    const csv = [headers.join(','), ...rows.map(r => r.map(c => `"${c}"`).join(','))].join('\n');
+    const csv = [headers.join(','), ...rows.map(r => r.map(c => `"${c}"`).join(','))].join('
+');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -986,4 +984,3 @@ export function SecurityPage() {
 }
 
 export default SecurityPage;
-
