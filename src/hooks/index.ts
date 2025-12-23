@@ -1,60 +1,22 @@
-// Data Hooks
-export { useAlerts } from './useAlerts';
-export { useCameras } from './useCameras';
-export { useRules } from './useRules';
-export { useNotifications } from './useNotifications';
-export { useSettings } from './useSettings';
+// Barrel exports for hooks - VISÃO
+export * from './useDebounce';
+export * from './useLocalStorage';
+export * from './useMediaQuery';
+export * from './useOnClickOutside';
+export * from './usePrevious';
+export * from './useToggle';
+export * from './useInterval';
+export * from './useDocumentTitle';
+export * from './useWindowSize';
+export * from './useOnlineStatus';
+export * from './useFeatureFlags';
+export * from './usePermissions';
+export * from './useCopyToClipboard';
+export * from './usePerformance';
+export * from './useScrollPosition';
+export * from './useTimeout';
+export * from './useAlerts';
+export * from './useCameras';
+export * from './useSettings';
+export * from './useNotifications';
 
-// Detection Hooks
-export { useFaceDetection } from './useFaceDetection';
-export { useFaceRecognition } from './useFaceRecognition';
-export { useZoneDetection } from './useZoneDetection';
-export { usePlateDetections } from './usePlateDetections';
-export { usePPEDetection } from './usePPEDetection';
-
-// Media Hooks
-export { useVideoStream } from './useVideoStream';
-export { useClipRecorder } from './useClipRecorder';
-export { useMediaMTX } from './useMediaMTX';
-
-// Utility Hooks
-export { useDebounce } from './useDebounce';
-export { useLocalStorage } from './useLocalStorage';
-export { useMediaQuery, useIsMobile, useIsTablet, useIsDesktop } from './useMediaQuery';
-export { useOnClickOutside } from './useOnClickOutside';
-export { usePrevious } from './usePrevious';
-export { useToggle } from './useToggle';
-export { useInterval } from './useInterval';
-export { useTimeout } from './useTimeout';
-export { useDocumentTitle } from './useDocumentTitle';
-export { useWindowSize } from './useWindowSize';
-export { useScrollPosition } from './useScrollPosition';
-export { useCopyToClipboard } from './useCopyToClipboard';
-export { useOnlineStatus } from './useOnlineStatus';
-export { useFeatureFlags } from './useFeatureFlags';
-export { usePermissions } from './usePermissions';
-
-// Utility Hooks (Added)
-export { useDebounce } from './useDebounce';
-export { useLocalStorage } from './useLocalStorage';
-export { useMediaQuery } from './useMediaQuery';
-export { useOnClickOutside } from './useOnClickOutside';
-export { usePrevious } from './usePrevious';
-export { useToggle } from './useToggle';
-export { useInterval } from './useInterval';
-export { useDocumentTitle } from './useDocumentTitle';
-export { useWindowSize } from './useWindowSize';
-export { useOnlineStatus } from './useOnlineStatus';
-export { useFeatureFlags } from './useFeatureFlags';
-export { usePermissions } from './usePermissions';
-export { useCopyToClipboard } from './useCopyToClipboard';
-export { usePerformance } from './usePerformance';
-export { useScrollPosition } from './useScrollPosition';
-export { useTimeout } from './useTimeout';
-
-// Additional Utility Hooks
-export { useAsync } from './useAsync';
-export { useMounted } from './useMounted';
-export { useEventListener } from './useEventListener';
-export { useLatest } from './useLatest';
-export { useUpdateEffect } from './useUpdateEffect';
