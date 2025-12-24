@@ -1,0 +1,1 @@
+import{describe,it,expect}from"vitest";import{ApiError,handleApiError}from"../apiError";describe("apiError",()=>{it("creates ApiError",()=>{const e=new ApiError("test",500);expect(e.message).toBe("test");expect(e.statusCode).toBe(500);});});
