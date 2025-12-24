@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{SkipLink}from"./SkipLink";const meta:Meta<typeof SkipLink>={title:"A11y/SkipLink",component:SkipLink,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof SkipLink>;export const Default:Story={args:{href:"#main"}};
