@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{NotificationSecretsConfig}from"./NotificationSecretsConfig";const meta:Meta<typeof NotificationSecretsConfig>={title:"Settings/NotificationSecretsConfig",component:NotificationSecretsConfig,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof NotificationSecretsConfig>;export const Default:Story={args:{}};
