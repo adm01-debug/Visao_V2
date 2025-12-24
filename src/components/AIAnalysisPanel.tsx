@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -44,7 +45,7 @@ export function AIAnalysisPanel() {
   // Carregar modelo ML quando componente montar
   useEffect(() => {
     if (!isModelLoaded && !isMLLoading) {
-      loadModel("coco-ssd").catch(console.error);
+      loadModel("coco-ssd").catch((e) => logger.error("Model load error", e));
     }
   }, [isModelLoaded, isMLLoading, loadModel]);
 
@@ -332,4 +333,3 @@ export function AIAnalysisPanel() {
     </Card>
   );
 }
-
