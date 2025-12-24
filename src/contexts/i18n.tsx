@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Internacionalização (i18n)
@@ -1187,7 +1188,7 @@ export function I18nProvider({ children, defaultLocale = 'pt-BR' }: I18nProvider
     }
 
     if (typeof value !== 'string') {
-      console.warn(`[i18n] Missing translation: ${key}`);
+      logger.warn(`[i18n] Missing translation: ${key}`);
       return key;
     }
 
@@ -1290,4 +1291,3 @@ export function useI18n() {
 
 export { translations };
 export default useI18n;
-
