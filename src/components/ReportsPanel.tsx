@@ -42,7 +42,7 @@ interface ReportType {
   id: string;
   title: string;
   description: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
   sections: string[];
 }
 
@@ -209,7 +209,7 @@ export function ReportsPanel() {
             headers: ['Data/Hora', 'Pessoa', 'Status', 'Confiança'],
             rows: logsList.slice(0, 50).map((l) => [
               format(new Date(l.timestamp), 'dd/MM/yy HH:mm', { locale: ptBR }),
-              (l.registered_persons as any)?.name || 'Desconhecido',
+              (l.registered_persons .name || "Desconhecido")?.name || 'Desconhecido',
               l.recognized ? 'Reconhecido' : 'Não reconhecido',
               `${((l.confidence || 0) * 100).toFixed(1)}%`,
             ]),
