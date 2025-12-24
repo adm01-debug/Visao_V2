@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { useMediaQuery, useWindowSize } from "@/hooks";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
@@ -174,12 +175,12 @@ const StreamCell = memo(function StreamCell({
           pc.ontrack = (event) => {
             if (event.streams && event.streams[0]) {
               video.srcObject = event.streams[0];
-              video.play().catch(console.error);
+              video.play().catch((e) => logger.error("Stream error", e));
             }
           };
 
           pc.oniceconnectionstatechange = () => {
-            console.log(`[WebRTC] ${camera.name}: ${pc.iceConnectionState}`);
+            logger.debug(`[WebRTC] ${camera.name}: ${pc.iceConnectionState}`);
             if (pc.iceConnectionState === 'failed') {
               setError('Conexão WebRTC falhou');
             }
@@ -206,7 +207,7 @@ const StreamCell = memo(function StreamCell({
               type: 'answer',
               sdp: answerSdp,
             });
-            console.log(`[WebRTC] ${camera.name}: Conectado`);
+            logger.debug(`[WebRTC] ${camera.name}: Conectado`);
           } else {
             throw new Error(`WHEP failed: ${response.status}`);
           }
@@ -216,11 +217,11 @@ const StreamCell = memo(function StreamCell({
             pc.close();
           };
         } catch (err: any) {
-          console.error(`[WebRTC] ${camera.name}: Erro:`, err);
+          logger.error(`[WebRTC] ${camera.name}: Erro:`, err);
           setError(err.message);
           // Fallback para HLS
           if (camera.stream_url) {
-            console.log(`[WebRTC] ${camera.name}: Fallback para HLS`);
+            logger.debug(`[WebRTC] ${camera.name}: Fallback para HLS`);
           }
         }
       };
@@ -255,7 +256,7 @@ const StreamCell = memo(function StreamCell({
         if (data.fatal) {
           setHasError(true);
           setIsLoading(false);
-          console.error(`[HLS] Error on ${camera.name}:`, data);
+          logger.error(`[HLS] Error on ${camera.name}:`, data);
           
           // Retry após erro fatal
           setTimeout(() => {
