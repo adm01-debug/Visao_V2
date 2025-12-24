@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{CameraLayoutControls}from"./CameraLayoutControls";const meta:Meta<typeof CameraLayoutControls>={title:"Controls/CameraLayoutControls",component:CameraLayoutControls,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof CameraLayoutControls>;export const Default:Story={args:{}};
