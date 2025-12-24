@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{ImageAnalysis}from"./ImageAnalysis";const meta:Meta<typeof ImageAnalysis>={title:"AI/ImageAnalysis",component:ImageAnalysis,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof ImageAnalysis>;export const Default:Story={args:{}};
