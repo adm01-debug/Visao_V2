@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { formatDate, formatNumber } from "@/lib/formatters";
 import { generatePDF } from '@/lib/pdfGenerator';
 import { exportToCSV } from '@/lib/exportUtils';
@@ -106,7 +107,7 @@ export function ReportsPanel() {
 
       toast.success('Relatório gerado com sucesso!');
     } catch (error) {
-      console.error('Erro ao gerar relatório:', error);
+      logger.error('Erro ao gerar relatório:', error);
       toast.error('Erro ao gerar relatório');
     } finally {
       setIsGenerating(false);
