@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{FaceRecognitionOverlay}from"./FaceRecognitionOverlay";const meta:Meta<typeof FaceRecognitionOverlay>={title:"Recognition/FaceRecognitionOverlay",component:FaceRecognitionOverlay,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof FaceRecognitionOverlay>;export const Default:Story={args:{}};
