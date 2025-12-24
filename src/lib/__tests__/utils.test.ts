@@ -1,0 +1,1 @@
+import{describe,it,expect}from"vitest";import{cn,sleep,debounce}from"../utils";describe("utils",()=>{it("cn merges classes",()=>{expect(cn("a","b")).toContain("a");});it("sleep returns promise",()=>{expect(sleep(1)).toBeInstanceOf(Promise);});});
