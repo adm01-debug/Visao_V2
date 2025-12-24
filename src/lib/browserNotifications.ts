@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 // Browser Push Notifications using Web Notifications API
 
 export type NotificationPermissionStatus = 'granted' | 'denied' | 'default';
@@ -11,7 +12,7 @@ export const getNotificationPermission = (): NotificationPermissionStatus => {
 
 export const requestNotificationPermission = async (): Promise<NotificationPermissionStatus> => {
   if (!('Notification' in window)) {
-    console.warn('This browser does not support notifications');
+    logger.warn('This browser does not support notifications');
     return 'denied';
   }
 
@@ -19,7 +20,7 @@ export const requestNotificationPermission = async (): Promise<NotificationPermi
     const permission = await Notification.requestPermission();
     return permission as NotificationPermissionStatus;
   } catch (error) {
-    console.error('Error requesting notification permission:', error);
+    logger.error('Error requesting notification permission:', error);
     return 'denied';
   }
 };
@@ -46,12 +47,12 @@ export const showBrowserNotification = ({
   onClick,
 }: ShowNotificationOptions): Notification | null => {
   if (!isNotificationSupported()) {
-    console.warn('Notifications not supported');
+    logger.warn('Notifications not supported');
     return null;
   }
 
   if (Notification.permission !== 'granted') {
-    console.warn('Notification permission not granted');
+    logger.warn('Notification permission not granted');
     return null;
   }
 
@@ -78,7 +79,7 @@ export const showBrowserNotification = ({
 
     return notification;
   } catch (error) {
-    console.error('Error showing notification:', error);
+    logger.error('Error showing notification:', error);
     return null;
   }
 };
