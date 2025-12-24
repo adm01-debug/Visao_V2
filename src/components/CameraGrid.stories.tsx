@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{CameraGrid}from"./CameraGrid";const meta:Meta<typeof CameraGrid>={title:"Components/CameraGrid",component:CameraGrid,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof CameraGrid>;export const Default:Story={args:{cameras:[]}};
