@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{ZoneOverlay}from"./ZoneOverlay";const meta:Meta<typeof ZoneOverlay>={title:"Components/ZoneOverlay",component:ZoneOverlay,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof ZoneOverlay>;export const Default:Story={args:{zones:[]}};
