@@ -1,0 +1,8 @@
+{
+  "common": {"save": "Save", "cancel": "Cancel", "delete": "Delete", "edit": "Edit", "loading": "Loading...", "error": "Error", "success": "Success", "confirm": "Confirm", "search": "Search", "filter": "Filter", "export": "Export", "refresh": "Refresh"},
+  "auth": {"login": "Login", "logout": "Logout", "email": "Email", "password": "Password", "forgotPassword": "Forgot password?", "register": "Register"},
+  "dashboard": {"title": "Dashboard", "cameras": "Cameras", "alerts": "Alerts", "zones": "Zones", "recordings": "Recordings", "analytics": "Analytics"},
+  "cameras": {"online": "Online", "offline": "Offline", "addCamera": "Add Camera", "editCamera": "Edit Camera", "deleteCamera": "Delete Camera"},
+  "alerts": {"new": "New Alert", "critical": "Critical", "warning": "Warning", "info": "Info", "markAsRead": "Mark as Read"},
+  "settings": {"title": "Settings", "notifications": "Notifications", "security": "Security", "appearance": "Appearance", "language": "Language"}
+}
