@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{RecordingPlayer}from"./RecordingPlayer";const meta:Meta<typeof RecordingPlayer>={title:"Media/RecordingPlayer",component:RecordingPlayer,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof RecordingPlayer>;export const Default:Story={args:{}};
