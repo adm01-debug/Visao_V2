@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{TimeRangePicker}from"./TimeRangePicker";const meta:Meta<typeof TimeRangePicker>={title:"Forms/TimeRangePicker",component:TimeRangePicker,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof TimeRangePicker>;export const Default:Story={args:{}};
