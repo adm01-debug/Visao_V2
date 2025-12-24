@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{LiveIndicator}from"./LiveIndicator";const meta:Meta<typeof LiveIndicator>={title:"UI/LiveIndicator",component:LiveIndicator,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof LiveIndicator>;export const Default:Story={args:{}};export const Recording:Story={args:{recording:true}};
