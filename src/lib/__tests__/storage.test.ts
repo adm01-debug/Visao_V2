@@ -1,0 +1,1 @@
+import{describe,it,expect}from"vitest";import{storage}from"../storage";describe("storage",()=>{it("has get/set methods",()=>{expect(typeof storage.get).toBe("function");expect(typeof storage.set).toBe("function");});});
