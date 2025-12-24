@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{PersonCard}from"./PersonCard";const meta:Meta<typeof PersonCard>={title:"Components/PersonCard",component:PersonCard,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof PersonCard>;export const Default:Story={args:{person:{id:"1",name:"John Doe"}}};
