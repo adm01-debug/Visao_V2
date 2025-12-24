@@ -1,19 +1,21 @@
-import { describe, it, expect, vi } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
-import { useDocumentTitle } from '../useDocumentTitle';
+import { describe, it, expect, afterEach } from "vitest";
+import { renderHook } from "@testing-library/react";
+import { useDocumentTitle } from "../useDocumentTitle";
 
-describe('useDocumentTitle', () => {
-  it('should be defined', () => {
-    expect(useDocumentTitle).toBeDefined();
+describe("useDocumentTitle", () => {
+  const originalTitle = document.title;
+
+  afterEach(() => {
+    document.title = originalTitle;
   });
 
-  it('should initialize correctly', () => {
-    const { result } = renderHook(() => useDocumentTitle());
-    expect(result.current).toBeDefined();
+  it("should set document title", () => {
+    renderHook(() => useDocumentTitle("Test Page"));
+    expect(document.title).toBe("Test Page | VISÃO");
   });
 
-  it('should handle state changes', () => {
-    const { result } = renderHook(() => useDocumentTitle());
-    expect(result.current).toBeDefined();
+  it("should use default title when empty", () => {
+    renderHook(() => useDocumentTitle(""));
+    expect(document.title).toBe("VISÃO");
   });
 });
