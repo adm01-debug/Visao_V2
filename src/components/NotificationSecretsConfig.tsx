@@ -179,7 +179,7 @@ export function NotificationSecretsConfig() {
         resend: { configured: true, tested: true, lastTest: new Date() },
       }));
       toast.success('Email de teste enviado com sucesso!');
-    } catch (error: any) {
+    } catch (error: unknown) {
       setStatus(prev => ({
         ...prev,
         resend: { configured: true, tested: false, error: error.message },
@@ -209,7 +209,7 @@ export function NotificationSecretsConfig() {
         evolution: { configured: true, tested: true, lastTest: new Date() },
       }));
       toast.success('Mensagem WhatsApp enviada com sucesso!');
-    } catch (error: any) {
+    } catch (error: unknown) {
       setStatus(prev => ({
         ...prev,
         evolution: { configured: true, tested: false, error: error.message },
@@ -238,7 +238,7 @@ export function NotificationSecretsConfig() {
         telegram: { configured: true, tested: true, lastTest: new Date() },
       }));
       toast.success('Mensagem Telegram enviada com sucesso!');
-    } catch (error: any) {
+    } catch (error: unknown) {
       setStatus(prev => ({
         ...prev,
         telegram: { configured: true, tested: false, error: error.message },
@@ -273,7 +273,7 @@ export function NotificationSecretsConfig() {
         webhook: { configured: true, tested: true, lastTest: new Date() },
       }));
       toast.success('Webhook testado com sucesso!');
-    } catch (error: any) {
+    } catch (error: unknown) {
       setStatus(prev => ({
         ...prev,
         webhook: { configured: true, tested: false, error: error.message },
@@ -657,7 +657,11 @@ TELEGRAM_BOT_TOKEN=123456:ABC-DEF...`}
               variant="ghost"
               size="sm"
               className="mt-2"
-              onClick={() => copyToClipboard(`RESEND_API_KEY=\nEVOLUTION_API_URL=\nEVOLUTION_API_KEY=\nEVOLUTION_INSTANCE=\nTELEGRAM_BOT_TOKEN=`)}
+              onClick={() => copyToClipboard(`RESEND_API_KEY=
+EVOLUTION_API_URL=
+EVOLUTION_API_KEY=
+EVOLUTION_INSTANCE=
+TELEGRAM_BOT_TOKEN=`)}
             >
               <Copy className="w-3 h-3 mr-1" /> Copiar template
             </Button>
