@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: WebcamCapture
@@ -94,7 +95,7 @@ export function WebcamCapture({
         setStatus('ready');
       }
     } catch (err) {
-      console.error('Camera error:', err);
+      logger.error('Camera error:', err);
       
       if (err instanceof Error) {
         if (err.name === 'NotAllowedError') {
