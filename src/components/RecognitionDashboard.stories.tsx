@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{RecognitionDashboard}from"./RecognitionDashboard";const meta:Meta<typeof RecognitionDashboard>={title:"Dashboard/RecognitionDashboard",component:RecognitionDashboard,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof RecognitionDashboard>;export const Default:Story={args:{}};
