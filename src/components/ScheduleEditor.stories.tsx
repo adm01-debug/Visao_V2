@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{ScheduleEditor}from"./ScheduleEditor";const meta:Meta<typeof ScheduleEditor>={title:"Components/ScheduleEditor",component:ScheduleEditor,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof ScheduleEditor>;export const Default:Story={args:{}};
