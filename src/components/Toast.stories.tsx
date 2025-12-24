@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{Toast}from"./Toast";const meta:Meta<typeof Toast>={title:"Feedback/Toast",component:Toast,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof Toast>;export const Success:Story={args:{type:"success",message:"Operation successful"}};export const Error:Story={args:{type:"error",message:"An error occurred"}};
