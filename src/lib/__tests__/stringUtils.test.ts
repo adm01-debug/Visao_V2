@@ -1,0 +1,1 @@
+import{describe,it,expect}from"vitest";import{capitalize,truncate,slugify}from"../stringUtils";describe("stringUtils",()=>{it("capitalize works",()=>{expect(capitalize("hello")).toBe("Hello");});it("truncate works",()=>{expect(truncate("hello world",5)).toBe("hello...");});});
