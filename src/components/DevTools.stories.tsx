@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{DevTools}from"./DevTools";const meta:Meta<typeof DevTools>={title:"Dev/DevTools",component:DevTools,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof DevTools>;export const Default:Story={args:{}};
