@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{StreamControls}from"./StreamControls";const meta:Meta<typeof StreamControls>={title:"Controls/StreamControls",component:StreamControls,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof StreamControls>;export const Default:Story={args:{}};
