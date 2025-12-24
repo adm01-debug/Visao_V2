@@ -1,0 +1,1 @@
+import{describe,it,expect}from"vitest";import{unique,chunk,groupBy}from"../arrayUtils";describe("arrayUtils",()=>{it("unique removes duplicates",()=>{expect(unique([1,2,2,3])).toEqual([1,2,3]);});it("chunk splits array",()=>{expect(chunk([1,2,3,4],2)).toEqual([[1,2],[3,4]]);});});
