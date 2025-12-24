@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{FaceEnrollment}from"./FaceEnrollment";const meta:Meta<typeof FaceEnrollment>={title:"Recognition/FaceEnrollment",component:FaceEnrollment,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof FaceEnrollment>;export const Default:Story={args:{}};
