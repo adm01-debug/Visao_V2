@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 // Alert notification sounds using Web Audio API
 
 export type AlertSeverity = 'low' | 'medium' | 'high' | 'critical';
@@ -140,7 +141,7 @@ export async function playAlertSound(severity: AlertSeverity, forcePlay = false)
   try {
     await playAlertPattern(config);
   } catch (error) {
-    console.warn('Failed to play alert sound:', error);
+    logger.warn('Failed to play alert sound:', error);
   }
 }
 
@@ -209,6 +210,6 @@ export async function playCriticalAlertSound(): Promise<void> {
       await new Promise(r => setTimeout(r, 150));
     }
   } catch (error) {
-    console.warn('Failed to play critical alert sound:', error);
+    logger.warn('Failed to play critical alert sound:', error);
   }
 }
