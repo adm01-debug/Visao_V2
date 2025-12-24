@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{ReportsPanel}from"./ReportsPanel";const meta:Meta<typeof ReportsPanel>={title:"Reports/ReportsPanel",component:ReportsPanel,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof ReportsPanel>;export const Default:Story={args:{}};
