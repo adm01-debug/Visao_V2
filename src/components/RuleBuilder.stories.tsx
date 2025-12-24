@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{RuleBuilder}from"./RuleBuilder";const meta:Meta<typeof RuleBuilder>={title:"Components/RuleBuilder",component:RuleBuilder,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof RuleBuilder>;export const Default:Story={args:{}};
