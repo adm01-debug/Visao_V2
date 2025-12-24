@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{PPEDetectionPanel}from"./PPEDetectionPanel";const meta:Meta<typeof PPEDetectionPanel>={title:"Safety/PPEDetectionPanel",component:PPEDetectionPanel,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof PPEDetectionPanel>;export const Default:Story={args:{}};
