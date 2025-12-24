@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{ZoneSettings}from"./ZoneSettings";const meta:Meta<typeof ZoneSettings>={title:"Settings/ZoneSettings",component:ZoneSettings,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof ZoneSettings>;export const Default:Story={args:{}};
