@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{HLSStreamGrid}from"./HLSStreamGrid";const meta:Meta<typeof HLSStreamGrid>={title:"Media/HLSStreamGrid",component:HLSStreamGrid,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof HLSStreamGrid>;export const Default:Story={args:{streams:[]}};
