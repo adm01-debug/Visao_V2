@@ -1,0 +1,1 @@
+import{describe,it,expect}from"vitest";import{deepMerge,pick,omit}from"../objectUtils";describe("objectUtils",()=>{it("deepMerge works",()=>{const r=deepMerge({a:1},{b:2});expect(r).toEqual({a:1,b:2});});it("pick works",()=>{expect(pick({a:1,b:2},["a"])).toEqual({a:1});});});
