@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{CameraCard}from"./CameraCard";const meta:Meta<typeof CameraCard>={title:"Components/CameraCard",component:CameraCard,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof CameraCard>;export const Default:Story={args:{camera:{id:"1",name:"Camera 1",status:"online",stream_url:"rtsp://example.com"}}};
