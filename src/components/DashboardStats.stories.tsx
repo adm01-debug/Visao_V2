@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{DashboardStats}from"./DashboardStats";const meta:Meta<typeof DashboardStats>={title:"Dashboard/DashboardStats",component:DashboardStats,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof DashboardStats>;export const Default:Story={args:{}};
