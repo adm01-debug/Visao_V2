@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{TimestampOverlay}from"./TimestampOverlay";const meta:Meta<typeof TimestampOverlay>={title:"UI/TimestampOverlay",component:TimestampOverlay,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof TimestampOverlay>;export const Default:Story={args:{timestamp:new Date().toISOString()}};
