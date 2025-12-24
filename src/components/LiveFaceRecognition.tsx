@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { useInterval, useTimeout } from "@/hooks";
 /**
  * Componente de Reconhecimento Facial em Tempo Real
@@ -136,7 +137,7 @@ export function LiveFaceRecognition({
         setIsCameraOn(true);
       }
     } catch (err) {
-      console.error('Erro ao acessar câmera:', err);
+      logger.error('Erro ao acessar câmera:', err);
       setHasCamera(false);
     }
   }, []);
