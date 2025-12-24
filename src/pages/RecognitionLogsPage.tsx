@@ -46,7 +46,7 @@ export default function RecognitionLogsPage() {
   const [dateFrom, setDateFrom] = useState<Date | undefined>();
   const [dateTo, setDateTo] = useState<Date | undefined>();
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedLog, setSelectedLog] = useState<any>(null);
+  const [selectedLog, setSelectedLog] = useState<RecognitionLog | null>(null);
 
   // Fetch recognition logs
   const { data: logs, isLoading: logsLoading } = useQuery({
