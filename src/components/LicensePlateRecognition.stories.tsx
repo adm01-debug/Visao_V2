@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{LicensePlateRecognition}from"./LicensePlateRecognition";const meta:Meta<typeof LicensePlateRecognition>={title:"Recognition/LicensePlateRecognition",component:LicensePlateRecognition,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof LicensePlateRecognition>;export const Default:Story={args:{}};
