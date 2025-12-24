@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{PlateBlacklistManager}from"./PlateBlacklistManager";const meta:Meta<typeof PlateBlacklistManager>={title:"Recognition/PlateBlacklistManager",component:PlateBlacklistManager,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof PlateBlacklistManager>;export const Default:Story={args:{}};
