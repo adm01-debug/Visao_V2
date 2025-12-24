@@ -74,7 +74,7 @@ const listTypeStyles: Record<ListType, {
   borderColor: string;
   bgColor: string;
   textColor: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
   label: string;
 }> = {
   whitelist: {
