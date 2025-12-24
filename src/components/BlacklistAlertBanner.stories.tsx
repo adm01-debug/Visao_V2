@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{BlacklistAlertBanner}from"./BlacklistAlertBanner";const meta:Meta<typeof BlacklistAlertBanner>={title:"Alerts/BlacklistAlertBanner",component:BlacklistAlertBanner,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof BlacklistAlertBanner>;export const Default:Story={args:{plate:"ABC-1234"}};
