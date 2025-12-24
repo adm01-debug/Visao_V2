@@ -369,7 +369,7 @@ export const Landmark = forwardRef<HTMLElement, LandmarkProps>(
 
     return (
       <Component
-        ref={ref as any}
+        ref={ref as React.Ref<HTMLElement>}
         role={role === 'region' ? 'region' : undefined}
         aria-label={label}
         aria-labelledby={labelledBy}
