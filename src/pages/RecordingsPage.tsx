@@ -407,7 +407,7 @@ export function RecordingsPage() {
 
       const formattedClips: VideoClipWithCamera[] = (data || []).map(clip => ({
         ...clip,
-        camera_name: (clip.cameras as any)?.name || 'Câmera desconhecida',
+        camera_name: (clip.cameras as { name?: string } | null)?.name || 'Câmera desconhecida',
       }));
 
       setClips(formattedClips);
