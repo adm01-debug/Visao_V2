@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{ClipGallery}from"./ClipGallery";const meta:Meta<typeof ClipGallery>={title:"Media/ClipGallery",component:ClipGallery,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof ClipGallery>;export const Default:Story={args:{clips:[]}};
