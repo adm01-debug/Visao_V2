@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{ContentArea}from"./ContentArea";const meta:Meta<typeof ContentArea>={title:"Layout/ContentArea",component:ContentArea,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof ContentArea>;export const Default:Story={args:{children:<div>Content</div>}};
