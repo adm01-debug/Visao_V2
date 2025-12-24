@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{ActivityFeed}from"./ActivityFeed";const meta:Meta<typeof ActivityFeed>={title:"Components/ActivityFeed",component:ActivityFeed,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof ActivityFeed>;export const Default:Story={args:{activities:[]}};
