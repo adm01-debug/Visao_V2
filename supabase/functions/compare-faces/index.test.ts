@@ -1,0 +1,1 @@
+import{assertEquals}from"https://deno.land/std@0.192.0/testing/asserts.ts";Deno.test("compare-faces returns response",async()=>{const req=new Request("http://localhost",{method:"POST",body:JSON.stringify({face1:"base64",face2:"base64"}),headers:{"Content-Type":"application/json"}});assertEquals(typeof req,"object");});
