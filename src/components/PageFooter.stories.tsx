@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{PageFooter}from"./PageFooter";const meta:Meta<typeof PageFooter>={title:"Layout/PageFooter",component:PageFooter,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof PageFooter>;export const Default:Story={args:{}};
