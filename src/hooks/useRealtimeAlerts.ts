@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { playAlertSound } from "@/lib/alertSounds";
 import { showNotification } from "@/lib/browserNotifications";
 import { useEffect } from 'react';
@@ -53,7 +54,7 @@ export function useRealtimeAlerts({
         },
         (payload) => {
           const newAlert = payload.new as DbAlert;
-          console.log('New alert received:', newAlert);
+          logger.debug('New alert received:', newAlert);
           
           // Show toast notification
           const typeLabel = alertTypeLabels[newAlert.type] || newAlert.type;
@@ -85,7 +86,8 @@ export function useRealtimeAlerts({
             const isCritical = newAlert.severity === 'critical' || newAlert.severity === 'high';
             showBrowserNotification({
               title: isCritical ? `🚨 ${typeLabel.toUpperCase()}` : typeLabel,
-              body: `${newAlert.message}\n📍 ${newAlert.camera_name}`,
+              body: `${newAlert.message}
+📍 ${newAlert.camera_name}`,
               tag: newAlert.id,
               requireInteraction: newAlert.severity === 'critical',
               onClick: () => {
@@ -106,7 +108,7 @@ export function useRealtimeAlerts({
         },
         (payload) => {
           const updatedAlert = payload.new as DbAlert;
-          console.log('Alert updated:', updatedAlert);
+          logger.debug('Alert updated:', updatedAlert);
           onAlertUpdated(updatedAlert);
         }
       )
@@ -119,16 +121,16 @@ export function useRealtimeAlerts({
         },
         (payload) => {
           const deletedId = payload.old.id as string;
-          console.log('Alert deleted:', deletedId);
+          logger.debug('Alert deleted:', deletedId);
           onAlertDeleted(deletedId);
         }
       )
       .subscribe((status) => {
-        console.log('Realtime subscription status:', status);
+        logger.debug('Realtime subscription status:', status);
       });
 
     return () => {
-      console.log('Unsubscribing from alerts realtime');
+      logger.debug('Unsubscribing from alerts realtime');
       supabase.removeChannel(channel);
     };
   }, [enabled, onNewAlert, onAlertUpdated, onAlertDeleted]);
