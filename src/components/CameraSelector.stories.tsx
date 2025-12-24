@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{CameraSelector}from"./CameraSelector";const meta:Meta<typeof CameraSelector>={title:"Forms/CameraSelector",component:CameraSelector,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof CameraSelector>;export const Default:Story={args:{cameras:[]}};
