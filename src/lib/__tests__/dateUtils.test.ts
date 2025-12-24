@@ -1,0 +1,1 @@
+import{describe,it,expect}from"vitest";import{formatDate,getRelativeTime}from"../dateUtils";describe("dateUtils",()=>{it("formatDate works",()=>{const d=new Date("2024-01-01");expect(formatDate(d)).toContain("2024");});});
