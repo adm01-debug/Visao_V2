@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{CameraModal}from"./CameraModal";const meta:Meta<typeof CameraModal>={title:"Modals/CameraModal",component:CameraModal,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof CameraModal>;export const Default:Story={args:{open:true,onClose:()=>{}}};
