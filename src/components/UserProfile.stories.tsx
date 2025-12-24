@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{UserProfile}from"./UserProfile";const meta:Meta<typeof UserProfile>={title:"User/UserProfile",component:UserProfile,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof UserProfile>;export const Default:Story={args:{user:{name:"John",email:"john@test.com"}}};
