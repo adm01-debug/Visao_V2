@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{ContinuousAnalysisPanel}from"./ContinuousAnalysisPanel";const meta:Meta<typeof ContinuousAnalysisPanel>={title:"Components/ContinuousAnalysisPanel",component:ContinuousAnalysisPanel,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof ContinuousAnalysisPanel>;export const Default:Story={args:{}};
