@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{AlertNotification}from"./AlertNotification";const meta:Meta<typeof AlertNotification>={title:"Feedback/AlertNotification",component:AlertNotification,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof AlertNotification>;export const Default:Story={args:{alert:{id:"1",type:"motion",message:"Motion detected"}}};
