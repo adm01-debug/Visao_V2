@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { useEffect, useRef } from 'react';
 
 export function usePerformanceMonitor(componentName: string) {
@@ -8,7 +9,7 @@ export function usePerformanceMonitor(componentName: string) {
     renderCount.current++;
     const elapsed = performance.now() - startTime.current;
     if (import.meta.env.DEV && elapsed > 16) {
-      console.warn(`[Performance] ${componentName} render #${renderCount.current} took ${elapsed.toFixed(2)}ms`);
+      logger.warn(`[Performance] ${componentName} render #${renderCount.current} took ${elapsed.toFixed(2)}ms`);
     }
   });
 }
