@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{RulesEngine}from"./RulesEngine";const meta:Meta<typeof RulesEngine>={title:"Components/RulesEngine",component:RulesEngine,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof RulesEngine>;export const Default:Story={args:{}};
