@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{DataGrid}from"./DataGrid";const meta:Meta<typeof DataGrid>={title:"Data/DataGrid",component:DataGrid,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof DataGrid>;export const Default:Story={args:{data:[],columns:[]}};
