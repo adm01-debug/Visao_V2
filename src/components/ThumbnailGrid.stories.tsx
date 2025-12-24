@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{ThumbnailGrid}from"./ThumbnailGrid";const meta:Meta<typeof ThumbnailGrid>={title:"Media/ThumbnailGrid",component:ThumbnailGrid,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof ThumbnailGrid>;export const Default:Story={args:{thumbnails:[]}};
