@@ -125,9 +125,9 @@ export function ClipRecorderControls({
       if (streamRef?.current?.srcObject instanceof MediaStream) {
         stream = streamRef.current.srcObject;
       } else if (streamRef?.current && 'captureStream' in streamRef.current) {
-        stream = (streamRef.current as any).captureStream();
+        stream = (streamRef.current as unknown).captureStream();
       } else if (streamRef?.current && 'mozCaptureStream' in streamRef.current) {
-        stream = (streamRef.current as any).mozCaptureStream();
+        stream = (streamRef.current as unknown).mozCaptureStream();
       }
 
       if (!stream) {
