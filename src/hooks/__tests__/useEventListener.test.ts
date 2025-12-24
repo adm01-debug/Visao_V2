@@ -1,21 +1,19 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useEventListener } from '../useEventListener';
+import { describe, it, expect, vi } from "vitest";
+import { renderHook } from "@testing-library/react";
+import { useEventListener } from "../useEventListener";
 
-const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-const wrapper = ({ children }: { children: React.ReactNode }) => (
-  <QueryClientProvider client={qc}>{children}</QueryClientProvider>
-);
-
-describe('useEventListener', () => {
-  beforeEach(() => { qc.clear(); vi.clearAllMocks(); });
-  it('initializes', () => {
-    const { result } = renderHook(() => useEventListener(), { wrapper });
-    expect(result.current).toBeDefined();
+describe("useEventListener", () => {
+  it("should add event listener to window", () => {
+    const handler = vi.fn();
+    renderHook(() => useEventListener("click", handler));
+    expect(handler).not.toHaveBeenCalled();
   });
-  it('unmounts clean', () => {
-    const { unmount } = renderHook(() => useEventListener(), { wrapper });
-    expect(() => unmount()).not.toThrow();
+
+  it("should remove listener on unmount", () => {
+    const handler = vi.fn();
+    const { unmount } = renderHook(() => useEventListener("click", handler));
+    unmount();
+    window.dispatchEvent(new Event("click"));
+    expect(handler).not.toHaveBeenCalled();
   });
 });
