@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{TelegramConfig}from"./TelegramConfig";const meta:Meta<typeof TelegramConfig>={title:"Settings/TelegramConfig",component:TelegramConfig,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof TelegramConfig>;export const Default:Story={args:{}};
