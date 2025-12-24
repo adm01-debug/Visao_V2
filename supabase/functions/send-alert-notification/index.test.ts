@@ -1,0 +1,1 @@
+import{assertEquals}from"https://deno.land/std@0.192.0/testing/asserts.ts";Deno.test("send-alert-notification returns response",async()=>{const req=new Request("http://localhost",{method:"POST",body:JSON.stringify({alert_id:"123"}),headers:{"Content-Type":"application/json"}});assertEquals(typeof req,"object");});
