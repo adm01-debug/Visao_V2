@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{VideoControls}from"./VideoControls";const meta:Meta<typeof VideoControls>={title:"Media/VideoControls",component:VideoControls,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof VideoControls>;export const Default:Story={args:{}};
