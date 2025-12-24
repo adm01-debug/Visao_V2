@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{StatsCard}from"./StatsCard";const meta:Meta<typeof StatsCard>={title:"UI/StatsCard",component:StatsCard,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof StatsCard>;export const Default:Story={args:{title:"Total",value:100}};export const WithTrend:Story={args:{title:"Alerts",value:42,trend:"+12%"}};
