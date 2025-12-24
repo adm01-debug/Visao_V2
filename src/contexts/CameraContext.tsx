@@ -1,7 +1,7 @@
 import React,{createContext,useContext,useState,ReactNode}from"react";
 import{useQuery}from"@tanstack/react-query";
 import{supabase}from"@/integrations/supabase/client";
-interface CameraContextType{cameras:any[];selectedCamera:any|null;setSelectedCamera:(c:any)=>void;refresh:()=>void}
+interface CameraContextType{cameras:Camera[];selectedCamera:Camera|null;setSelectedCamera:(c:Camera|null)=>void;refresh:()=>void}
 const CameraContext=createContext<CameraContextType|undefined>(undefined);
 export function CameraProvider({children}:{children:ReactNode}){
   const[selectedCamera,setSelectedCamera]=useState<any|null>(null);
