@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{LiveFaceRecognition}from"./LiveFaceRecognition";const meta:Meta<typeof LiveFaceRecognition>={title:"Recognition/LiveFaceRecognition",component:LiveFaceRecognition,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof LiveFaceRecognition>;export const Default:Story={args:{}};
