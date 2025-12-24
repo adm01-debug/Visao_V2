@@ -216,7 +216,7 @@ const StreamCell = memo(function StreamCell({
           return () => {
             pc.close();
           };
-        } catch (err: any) {
+        } catch (err: unknown) {
           logger.error(`[WebRTC] ${camera.name}: Erro:`, err);
           setError(err.message);
           // Fallback para HLS
