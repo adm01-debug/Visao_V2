@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{ZoneEditor}from"./ZoneEditor";const meta:Meta<typeof ZoneEditor>={title:"Components/ZoneEditor",component:ZoneEditor,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof ZoneEditor>;export const Default:Story={args:{}};
