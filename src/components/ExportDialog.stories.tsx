@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{ExportDialog}from"./ExportDialog";const meta:Meta<typeof ExportDialog>={title:"Modals/ExportDialog",component:ExportDialog,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof ExportDialog>;export const Default:Story={args:{open:true,onClose:()=>{}}};
