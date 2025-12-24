@@ -1,5 +1,17 @@
 import { useInterval, useTimeout } from "@/hooks";
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
 import { memo } from "react";
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: CameraWithContinuousAnalysis
@@ -9,16 +21,82 @@ import { memo } from "react";
  */
 
 import { useState, useRef, useCallback, useEffect } from 'react';
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
 import { cn } from '@/lib/utils';
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
 import { ContinuousAnalysisPanel } from '@/components/ContinuousAnalysisPanel';
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
 import { useContinuousAnalysis } from '@/hooks/useContinuousAnalysis';
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
 import { useAlerts } from '@/hooks/useAlerts';
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
 import { useRules } from '@/hooks/useRules';
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
 import { DbCamera } from '@/hooks/useCameras';
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
 import { useVideoStream } from '@/hooks/useVideoStream';
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
 import { useMLModels } from '@/hooks/useMLModels';
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
 import { usePPEDetection } from '@/hooks/usePPEDetection';
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
 import { 
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
   AnalysisResult, 
   SecurityAnalysis,
   SafetyAnalysis,
@@ -27,9 +105,33 @@ import {
   AnalysisType,
 } from '@/hooks/useImageAnalysis';
 import { Card } from '@/components/ui/card';
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
 import { Badge } from '@/components/ui/badge';
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
 import { Button } from '@/components/ui/button';
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
 import {
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
   Play,
   Pause,
   Volume2,
@@ -49,12 +151,24 @@ import {
   EyeOff,
 } from 'lucide-react';
 import {
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { toast } from 'sonner';
+
+interface Detection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+}
 
 // ============================================
 // TIPOS
@@ -290,7 +404,7 @@ export function CameraWithContinuousAnalysis({
   const [showDetections, setShowDetections] = useState(initialShowDetections);
   const [showStats, setShowStats] = useState(true);
   const [controlsVisible, setControlsVisible] = useState(true);
-  const [mlDetections, setMlDetections] = useState<any[]>([]);
+  const [mlDetections, setMlDetections] = useState<Detection[]>([]);
   
   // Hooks externos
   const { rules } = useRules();
