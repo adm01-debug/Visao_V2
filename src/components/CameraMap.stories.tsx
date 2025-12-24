@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{CameraMap}from"./CameraMap";const meta:Meta<typeof CameraMap>={title:"Components/CameraMap",component:CameraMap,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof CameraMap>;export const Default:Story={args:{cameras:[]}};
