@@ -1,0 +1,1 @@
+import{describe,it,expect}from"vitest";import{APP_NAME,API_TIMEOUT}from"../constants";describe("constants",()=>{it("has APP_NAME",()=>{expect(APP_NAME).toBeDefined();});it("has API_TIMEOUT",()=>{expect(typeof API_TIMEOUT).toBe("number");});});
