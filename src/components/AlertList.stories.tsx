@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{AlertList}from"./AlertList";const meta:Meta<typeof AlertList>={title:"Alerts/AlertList",component:AlertList,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof AlertList>;export const Default:Story={args:{alerts:[]}};
