@@ -1,0 +1,1 @@
+import{describe,it,expect}from"vitest";import{eventEmitter}from"../eventEmitter";describe("eventEmitter",()=>{it("emits and listens",()=>{let called=false;eventEmitter.on("test",()=>{called=true;});eventEmitter.emit("test");expect(called).toBe(true);});});
