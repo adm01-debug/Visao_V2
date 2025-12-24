@@ -1,0 +1,1 @@
+import{describe,it,expect}from"vitest";import{isValidEmail,isValidUrl}from"../validators";describe("validators",()=>{it("validates email",()=>{expect(isValidEmail("test@test.com")).toBe(true);expect(isValidEmail("invalid")).toBe(false);});});
