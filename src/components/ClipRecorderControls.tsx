@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: ClipRecorderControls
@@ -193,14 +194,14 @@ export function ClipRecorderControls({
           onClipSaved?.(clip);
           toast.success(`Clip salvo: ${formatDuration(clipDuration)}`);
         } catch (error) {
-          console.error('Erro ao processar clip:', error);
+          logger.error('Erro ao processar clip', error);
           setState('idle');
           toast.error('Erro ao processar gravação');
         }
       };
 
       mediaRecorder.onerror = (event) => {
-        console.error('Erro no MediaRecorder:', event);
+        logger.error('Erro no MediaRecorder', event);
         setState('idle');
         toast.error('Erro na gravação');
       };
@@ -227,7 +228,7 @@ export function ClipRecorderControls({
 
       toast.success('Gravação iniciada');
     } catch (error) {
-      console.error('Erro ao iniciar gravação:', error);
+      logger.error('Erro ao iniciar gravação', error);
       toast.error('Não foi possível iniciar a gravação');
     }
   }, [cameraId, cameraName, streamRef, maxDuration, onClipSaved]);
