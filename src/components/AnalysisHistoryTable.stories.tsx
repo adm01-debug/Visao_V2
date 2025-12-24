@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{AnalysisHistoryTable}from"./AnalysisHistoryTable";const meta:Meta<typeof AnalysisHistoryTable>={title:"Data/AnalysisHistoryTable",component:AnalysisHistoryTable,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof AnalysisHistoryTable>;export const Default:Story={args:{data:[]}};
