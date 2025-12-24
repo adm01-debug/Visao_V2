@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: LicensePlateRecognition
@@ -113,7 +114,7 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
         toast.info('Nenhuma placa detectada na imagem');
       }
     } catch (error) {
-      console.error('Error analyzing image:', error);
+      logger.error('Error analyzing image:', error);
       toast.error('Erro ao analisar imagem. Usando detecção simulada.');
       
       // Simulação para demo
