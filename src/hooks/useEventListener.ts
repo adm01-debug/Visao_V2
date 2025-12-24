@@ -1,9 +1,29 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
+
+type EventHandler<T extends Event = Event> = (event: T) => void;
 
 export function useEventListener<K extends keyof WindowEventMap>(
   eventName: K,
-  handler: (event: WindowEventMap[K]) => void,
-  element: Window | HTMLElement | null = window
+  handler: EventHandler<WindowEventMap[K]>,
+  element?: undefined,
+  options?: boolean | AddEventListenerOptions
+): void;
+
+export function useEventListener<
+  K extends keyof HTMLElementEventMap,
+  T extends HTMLElement = HTMLDivElement
+>(
+  eventName: K,
+  handler: EventHandler<HTMLElementEventMap[K]>,
+  element: React.RefObject<T>,
+  options?: boolean | AddEventListenerOptions
+): void;
+
+export function useEventListener(
+  eventName: string,
+  handler: EventHandler,
+  element?: React.RefObject<HTMLElement>,
+  options?: boolean | AddEventListenerOptions
 ) {
   const savedHandler = useRef(handler);
 
@@ -12,13 +32,16 @@ export function useEventListener<K extends keyof WindowEventMap>(
   }, [handler]);
 
   useEffect(() => {
-    if (!element) return;
+    const targetElement = element?.current ?? window;
+    if (!targetElement?.addEventListener) return;
 
-    const eventListener = (event: Event) => {
-      savedHandler.current(event as WindowEventMap[K]);
+    const listener: EventHandler = (event) => savedHandler.current(event);
+    targetElement.addEventListener(eventName, listener, options);
+
+    return () => {
+      targetElement.removeEventListener(eventName, listener, options);
     };
-
-    element.addEventListener(eventName, eventListener);
-    return () => element.removeEventListener(eventName, eventListener);
-  }, [eventName, element]);
+  }, [eventName, element, options]);
 }
+
+export default useEventListener;
