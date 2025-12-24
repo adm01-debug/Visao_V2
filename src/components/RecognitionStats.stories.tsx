@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{RecognitionStats}from"./RecognitionStats";const meta:Meta<typeof RecognitionStats>={title:"Dashboard/RecognitionStats",component:RecognitionStats,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof RecognitionStats>;export const Default:Story={args:{}};
