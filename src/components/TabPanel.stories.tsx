@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{TabPanel}from"./TabPanel";const meta:Meta<typeof TabPanel>={title:"UI/TabPanel",component:TabPanel,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof TabPanel>;export const Default:Story={args:{children:<div>Tab Content</div>}};
