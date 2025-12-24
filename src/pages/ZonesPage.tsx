@@ -890,7 +890,7 @@ export function ZonesPage() {
   
   // Editor state
   const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const [editorCamera, setEditorCamera] = useState<any>(null);
+  const [editorCamera, setEditorCamera] = useState<Camera | null>(null);
   const [editingZone, setEditingZone] = useState<DbZone | null>(null);
   
   // View state
