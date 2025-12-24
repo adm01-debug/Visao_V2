@@ -411,7 +411,7 @@ export function AlertsPage() {
   const [sortBy, setSortBy] = useState<SortOption>('date-desc');
   const [filters, setFilters] = useState<AlertFilters>(defaultFilters);
   const [selectedAlerts, setSelectedAlerts] = useState<Set<string>>(new Set());
-  const [detailsAlert, setDetailsAlert] = useState<any>(null);
+  const [detailsAlert, setDetailsAlert] = useState<Alert | null>(null);
   const [showFilters, setShowFilters] = useState(false);
 
   // Hooks
