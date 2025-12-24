@@ -1,0 +1,1 @@
+import type{Meta,StoryObj}from"@storybook/react";import{ALPRDashboard}from"./ALPRDashboard";const meta:Meta<typeof ALPRDashboard>={title:"Components/ALPRDashboard",component:ALPRDashboard,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof ALPRDashboard>;export const Default:Story={args:{}};
