@@ -17,7 +17,7 @@ export interface ReportData {
 export interface ReportSection {
   title: string;
   type: 'table' | 'chart' | 'summary' | 'text';
-  data: any;
+  data: Record<string, unknown>;
 }
 
 export interface TableRow {
