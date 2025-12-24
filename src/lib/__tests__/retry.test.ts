@@ -1,0 +1,1 @@
+import{describe,it,expect}from"vitest";import{retry,withRetry}from"../retry";describe("retry",()=>{it("retries function",async()=>{let count=0;await retry(async()=>{count++;if(count<2)throw new Error();},{maxRetries:3});expect(count).toBe(2);});});
