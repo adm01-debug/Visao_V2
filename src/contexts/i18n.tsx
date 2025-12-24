@@ -1172,7 +1172,7 @@ export function I18nProvider({ children, defaultLocale = 'pt-BR' }: I18nProvider
   // Traduzir chave
   const t = useCallback((key: string, params?: TranslationParams): string => {
     const keys = key.split('.');
-    let value: any = translations[locale];
+    let value: unknown = translations[locale];
 
     for (const k of keys) {
       value = value?.[k];
@@ -1205,7 +1205,7 @@ export function I18nProvider({ children, defaultLocale = 'pt-BR' }: I18nProvider
   // Traduzir com pluralização
   const tp = useCallback((key: string, count: number, params?: TranslationParams): string => {
     const keys = key.split('.');
-    let value: any = translations[locale];
+    let value: unknown = translations[locale];
 
     for (const k of keys) {
       value = value?.[k];
