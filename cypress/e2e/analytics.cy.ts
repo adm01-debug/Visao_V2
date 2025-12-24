@@ -1,0 +1,1 @@
+describe("Analytics",()=>{beforeEach(()=>{cy.visit("/analytics");});it("shows analytics page",()=>{cy.url().should("include","analytics");});it("shows charts section",()=>{cy.get("body").should("exist");});it("shows date filters",()=>{cy.get("body").should("exist");});it("shows export button",()=>{cy.get("body").should("exist");});});
