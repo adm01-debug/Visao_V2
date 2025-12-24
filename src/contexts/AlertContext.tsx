@@ -1,7 +1,7 @@
 import React,{createContext,useContext,useState,useCallback,ReactNode}from"react";
 import{useQuery}from"@tanstack/react-query";
 import{supabase}from"@/integrations/supabase/client";
-interface AlertContextType{alerts:any[];unreadCount:number;markAsRead:(id:string)=>void;refresh:()=>void}
+interface AlertContextType{alerts:Alert[];unreadCount:number;markAsRead:(id:string)=>void;refresh:()=>void}
 const AlertContext=createContext<AlertContextType|undefined>(undefined);
 export function AlertProvider({children}:{children:ReactNode}){
   const{data:alerts=[],refetch}=useQuery({queryKey:["alerts"],queryFn:async()=>{const{data}=await supabase.from("alerts").select("*").order("created_at",{ascending:false});return data||[];}});
