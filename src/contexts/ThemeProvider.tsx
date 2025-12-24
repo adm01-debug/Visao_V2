@@ -259,7 +259,7 @@ interface ThemeSelectorProps {
 export function ThemeSelector({ className }: ThemeSelectorProps) {
   const { theme, setTheme } = useTheme();
 
-  const themes: { value: Theme; label: string; icon: any; description: string }[] = [
+  const themes: { value: Theme; label: string; icon: React.ComponentType<{ className?: string }>; description: string }[] = [
     {
       value: 'light',
       label: 'Claro',
