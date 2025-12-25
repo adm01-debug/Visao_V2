@@ -1,93 +1,98 @@
-# Development Guide
+# Guia de Desenvolvimento - VISÃO
 
-## Prerequisites
+## 🚀 Início Rápido
 
+### Pré-requisitos
 - Node.js 18+
-- npm 9+
-- Docker (optional)
-- Supabase CLI (optional)
+- npm ou yarn
+- Docker (opcional)
 
-## Getting Started
-
-### 1. Clone the Repository
+### Instalação
 
 ```bash
+# Clonar o repositório
 git clone https://github.com/adm01-debug/vis-o.git
 cd vis-o
-```
 
-### 2. Install Dependencies
-
-```bash
+# Instalar dependências
 npm install
-```
 
-### 3. Environment Setup
+# Configurar variáveis de ambiente
+cp .env.example .env.local
 
-```bash
-cp .env.example .env
-# Edit .env with your Supabase credentials
-```
-
-### 4. Start Development Server
-
-```bash
+# Iniciar servidor de desenvolvimento
 npm run dev
 ```
 
-## Available Scripts
-
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start dev server |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build |
-| `npm run test` | Run unit tests |
-| `npm run test:e2e` | Run E2E tests |
-| `npm run lint` | Lint code |
-| `npm run storybook` | Start Storybook |
-
-## Project Structure
+## 📁 Estrutura do Projeto
 
 ```
 src/
-├── components/     # React components
-├── contexts/       # React contexts
+├── components/     # Componentes React reutilizáveis
+├── contexts/       # Contextos React (Auth, Theme, etc.)
 ├── hooks/          # Custom hooks
-├── lib/            # Utility libraries
-├── pages/          # Page components
-├── services/       # API services
-├── stores/         # State management
-├── types/          # TypeScript types
-└── utils/          # Utility functions
+├── lib/            # Utilitários e bibliotecas
+├── pages/          # Páginas da aplicação
+├── services/       # Serviços de API
+├── types/          # Definições TypeScript
+└── utils/          # Funções utilitárias
 ```
 
-## Code Style
+## 🧪 Testes
 
-- Use TypeScript for all new files
-- Follow ESLint rules
-- Use Prettier for formatting
-- Write tests for new features
+```bash
+# Testes unitários
+npm run test
 
-## Git Workflow
+# Testes com cobertura
+npm run test:coverage
 
-1. Create feature branch from `main`
-2. Make changes with descriptive commits
-3. Open Pull Request
-4. Wait for CI checks
-5. Request review
-6. Merge after approval
+# Testes E2E
+npm run cypress:open
+```
 
-## Troubleshooting
+## 📚 Storybook
 
-### Common Issues
+```bash
+# Iniciar Storybook
+npm run storybook
 
-1. **Port already in use**: Kill process on port 5173
-2. **Module not found**: Run `npm install`
-3. **Type errors**: Run `npm run typecheck`
+# Build do Storybook
+npm run build-storybook
+```
 
-## Resources
+## 🐳 Docker
 
-- [React Documentation](https://react.dev)
-- [Supabase Documentation](https://supabase.com/docs)
-- [Tailwind CSS](https://tailwindcss.com/docs)
+```bash
+# Desenvolvimento
+docker-compose -f docker-compose.dev.yml up
+
+# Produção
+docker-compose up -d
+```
+
+## 🔧 Scripts Disponíveis
+
+| Comando | Descrição |
+|---------|-----------|
+| `npm run dev` | Inicia servidor de desenvolvimento |
+| `npm run build` | Build de produção |
+| `npm run test` | Executa testes |
+| `npm run lint` | Verifica código com ESLint |
+| `npm run format` | Formata código com Prettier |
+| `npm run storybook` | Inicia Storybook |
+
+## 🤝 Contribuindo
+
+1. Fork o projeto
+2. Crie uma branch (`git checkout -b feature/nova-feature`)
+3. Commit suas mudanças (`git commit -m 'feat: adiciona nova feature'`)
+4. Push para a branch (`git push origin feature/nova-feature`)
+5. Abra um Pull Request
+
+## 📝 Padrões de Código
+
+- Use TypeScript strict mode
+- Siga o padrão de commits convencionais
+- Escreva testes para novas funcionalidades
+- Documente componentes no Storybook
