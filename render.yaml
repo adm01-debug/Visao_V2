@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: visao
+    env: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
