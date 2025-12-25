@@ -1,0 +1,5 @@
+{
+  "common": { "save": "保存", "cancel": "取消", "delete": "删除", "edit": "编辑", "loading": "加载中...", "error": "错误", "success": "成功" },
+  "alerts": { "title": "警报", "new": "新警报", "acknowledge": "确认" },
+  "cameras": { "title": "摄像头", "online": "在线", "offline": "离线" }
+}
