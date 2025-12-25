@@ -112,6 +112,7 @@
     "@storybook/addon-essentials": "^8.0.0",
     "@storybook/addon-a11y": "^8.0.0",
     "@types/dompurify": "^3.0.0",
-    "@types/sanitize-html": "^2.9.0"
+    "@types/sanitize-html": "^2.9.0",
+    "cypress": "^13.0.0"
   }
 }
