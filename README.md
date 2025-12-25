@@ -1,7 +1,10 @@
+![Version](https://img.shields.io/badge/version-11.0.0-purple)
 ![Quality Score](https://img.shields.io/badge/quality-A+-brightgreen)
-![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-269%20passing-brightgreen)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)
-![Coverage](https://img.shields.io/badge/coverage-80%25-green)
+![Coverage](https://img.shields.io/badge/coverage-85%25-green)
+![Components](https://img.shields.io/badge/components-304-orange)
+![Languages](https://img.shields.io/badge/i18n-17%20languages-yellow)
 
 # 🎥 VISÃO - Sistema de Vigilância Inteligente
 
