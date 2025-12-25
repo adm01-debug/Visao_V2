@@ -1,0 +1,10 @@
+export const chunk = <T>(arr: T[], size: number): T[][] => Array.from({ length: Math.ceil(arr.length / size) }, (_, i) => arr.slice(i * size, i * size + size));
+export const unique = <T>(arr: T[]): T[] => [...new Set(arr)];
+export const uniqueBy = <T, K>(arr: T[], key: (item: T) => K): T[] => [...new Map(arr.map(item => [key(item), item])).values()];
+export const groupBy = <T, K extends string | number>(arr: T[], key: (item: T) => K): Record<K, T[]> => arr.reduce((acc, item) => { const k = key(item); (acc[k] = acc[k] || []).push(item); return acc; }, {} as Record<K, T[]>);
+export const sortBy = <T>(arr: T[], key: keyof T | ((item: T) => any), order: 'asc' | 'desc' = 'asc'): T[] => [...arr].sort((a, b) => { const va = typeof key === 'function' ? key(a) : a[key]; const vb = typeof key === 'function' ? key(b) : b[key]; return (va < vb ? -1 : va > vb ? 1 : 0) * (order === 'asc' ? 1 : -1); });
+export const shuffle = <T>(arr: T[]): T[] => [...arr].sort(() => Math.random() - 0.5);
+export const first = <T>(arr: T[]): T | undefined => arr[0];
+export const last = <T>(arr: T[]): T | undefined => arr[arr.length - 1];
+export const compact = <T>(arr: (T | null | undefined)[]): T[] => arr.filter((x): x is T => x != null);
+export const range = (start: number, end: number, step = 1): number[] => Array.from({ length: Math.ceil((end - start) / step) }, (_, i) => start + i * step);
