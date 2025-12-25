@@ -1,0 +1,13 @@
+/* TEAM */
+Developer: VISÃO Team
+Site: https://visao.app
+Location: Brazil
+
+/* THANKS */
+Supabase, React, Tailwind CSS, Vite
+
+/* SITE */
+Last update: 2024/12/25
+Standards: HTML5, CSS3, ES6+
+Components: React, TypeScript
+Software: VSCode, Git
