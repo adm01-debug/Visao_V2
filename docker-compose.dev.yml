@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 
 services:
   app:
@@ -15,7 +15,7 @@ services:
       - NODE_ENV=development
       - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
       - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
-    command: npm run dev -- --host 0.0.0.0
+    command: npm run dev -- --host
 
   storybook:
     build:
@@ -37,8 +37,6 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-    command: npm run test:watch
-
-networks:
-  default:
-    name: visao-dev
+    environment:
+      - CI=true
+    command: npm run test:coverage
