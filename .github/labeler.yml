@@ -1,0 +1,27 @@
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: ['docs/**', '*.md']
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', 'cypress/**']
+
+components:
+  - changed-files:
+      - any-glob-to-any-file: 'src/components/**'
+
+hooks:
+  - changed-files:
+      - any-glob-to-any-file: 'src/hooks/**'
+
+styles:
+  - changed-files:
+      - any-glob-to-any-file: ['**/*.css', 'tailwind.config.ts']
+
+config:
+  - changed-files:
+      - any-glob-to-any-file: ['*.config.*', '.github/**', 'package.json']
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file: '.github/workflows/**'
