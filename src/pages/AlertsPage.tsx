@@ -1,15 +1,15 @@
-import { ErrorBoundary, getRelativeTime, formatDuration } from "@/lib/dateUtils";
-import { TimeAgo } from '@/components/TimeAgo';
-import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
-import { TableSkeleton } from '@/components/TableSkeleton';
-import { EmptyState } from '@/components/EmptyState';
-import { formatDate } from '@/lib/dateUtils';
-import { useInterval } from '@/hooks/useInterval';
-import { SeverityBadge } from '@/components/SeverityBadge';
+import { getRelativeTime, formatDuration, formatDate } from "@/lib/dateUtils";
+import { TimeAgo } from "@/components/TimeAgo";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
+import { TableSkeleton } from "@/components/TableSkeleton";
+import { EmptyState } from "@/components/EmptyState";
+import { useInterval } from "@/hooks/useInterval";
+import { SeverityBadge } from "@/components/SeverityBadge";
+
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Alertas
- * 
+ *
  * Funcionalidades:
  * - Lista completa de alertas com paginação
  * - Filtros avançados (tipo, severidade, câmera, data)
@@ -19,7 +19,7 @@ import { SeverityBadge } from '@/components/SeverityBadge';
  * - Notificações em tempo real
  */
 
-import { ErrorBoundary, useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback } from "react";
 import {
   AlertTriangle,
   Bell,
@@ -42,54 +42,55 @@ import {
   Trash2,
   X,
   Zap,
-} from 'lucide-react';
-import { ErrorBoundary, useAlerts } from '@/hooks/useAlerts';
-import { ErrorBoundary, useCameras } from '@/hooks/useCameras';
-import { ErrorBoundary, useRealtimeAlerts } from '@/hooks/useRealtimeAlerts';
-import { ErrorBoundary, useFaceRecognitionAlerts } from '@/hooks/useFaceRecognitionAlerts';
-import { ErrorBoundary, useI18n } from '@/contexts/i18n';
-import { ErrorBoundary, Button } from '@/components/ui/button';
-import { ErrorBoundary, Badge } from '@/components/ui/badge';
-import { ErrorBoundary, Input } from '@/components/ui/input';
-import { ErrorBoundary, Checkbox } from '@/components/ui/checkbox';
-import { ErrorBoundary, Skeleton } from '@/components/ui/skeleton';
+} from "lucide-react";
+import { useAlerts } from "@/hooks/useAlerts";
+import { useCameras } from "@/hooks/useCameras";
+import { useRealtimeAlerts } from "@/hooks/useRealtimeAlerts";
+import { useFaceRecognitionAlerts } from "@/hooks/useFaceRecognitionAlerts";
+import { useI18n } from "@/contexts/i18n";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { ErrorBoundary, Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ErrorBoundary, ScrollArea } from '@/components/ui/scroll-area';
-import { ErrorBoundary, PaginationControls, usePagination } from '@/components/PaginationControls';
-import { ErrorBoundary, ExportMenu } from '@/components/ExportMenu';
-import { ErrorBoundary, EventTimeline } from '@/components/EventTimeline';
-import { ErrorBoundary, cn } from '@/lib/utils';
-import { ErrorBoundary, formatDistanceToNow } from 'date-fns';
-import { ErrorBoundary, ptBR } from 'date-fns/locale';
-import { ErrorBoundary, toast } from 'sonner';
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { PaginationControls, usePagination } from "@/components/PaginationControls";
+import { ExportMenu } from "@/components/ExportMenu";
+import { EventTimeline } from "@/components/EventTimeline";
+import { cn } from "@/lib/utils";
+import { formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { toast } from "sonner";
+
 
 // ============================================
 // TIPOS
@@ -415,14 +416,14 @@ export function AlertsPage() {
   const [showFilters, setShowFilters] = useState(false);
 
   // Hooks
-  const { 
   const { t } = useI18n();
-    alerts, 
-    loading, 
-    unreadCount, 
-    markAsRead, 
-    markAllAsRead, 
-    deleteAlert, 
+  const {
+    alerts,
+    loading,
+    unreadCount,
+    markAsRead,
+    markAllAsRead,
+    deleteAlert,
     refetch,
   } = useAlerts();
   const { cameras } = useCameras();
