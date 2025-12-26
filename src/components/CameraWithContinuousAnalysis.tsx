@@ -1,178 +1,66 @@
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { useInterval, useTimeout } from "@/hooks";
+import { cn } from "@/lib/utils";
 
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
-import { memo } from "react";
-
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
-/**
- * VISÃO - Sistema de Vigilância Inteligente
- * Componente: CameraWithContinuousAnalysis
- * 
- * Integração completa de streaming de vídeo com análise contínua.
- * Combina VideoStreamPlayer com useContinuousAnalysis.
- */
-
-import { useState, useRef, useCallback, useEffect } from 'react';
-
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
-import { cn } from '@/lib/utils';
-
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
-import { ContinuousAnalysisPanel } from '@/components/ContinuousAnalysisPanel';
-
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
-import { useContinuousAnalysis } from '@/hooks/useContinuousAnalysis';
-
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
-import { useAlerts } from '@/hooks/useAlerts';
-
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
-import { useRules } from '@/hooks/useRules';
-
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
-import { DbCamera } from '@/hooks/useCameras';
-
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
-import { useVideoStream } from '@/hooks/useVideoStream';
-
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
-import { useMLModels } from '@/hooks/useMLModels';
-
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
-import { usePPEDetection } from '@/hooks/usePPEDetection';
-
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
-import { 
-
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
-  AnalysisResult, 
-  SecurityAnalysis,
-  SafetyAnalysis,
-  ProductivityAnalysis,
-  Detection,
-  AnalysisType,
-} from '@/hooks/useImageAnalysis';
-import { Card } from '@/components/ui/card';
-
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
-import { Badge } from '@/components/ui/badge';
-
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
-import { Button } from '@/components/ui/button';
-
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
+import { ContinuousAnalysisPanel } from "@/components/ContinuousAnalysisPanel";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
-
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  Maximize,
-  Settings,
-  Activity,
-  AlertTriangle,
-  Users,
-  Camera as CameraIcon,
-  Loader2,
-  RefreshCw,
-  Download,
-  Wifi,
-  WifiOff,
-  Eye,
-  EyeOff,
-} from 'lucide-react';
-import {
-
-interface Detection {
-  class: string;
-  confidence: number;
-  bbox: [number, number, number, number];
-}
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { toast } from 'sonner';
+} from "@/components/ui/tooltip";
+
+import {
+  Activity,
+  AlertTriangle,
+  Camera as CameraIcon,
+  Download,
+  Eye,
+  EyeOff,
+  Loader2,
+  Maximize,
+  Pause,
+  Play,
+  RefreshCw,
+  Settings,
+  Users,
+  Volume2,
+  VolumeX,
+  Wifi,
+  WifiOff,
+} from "lucide-react";
+
+import { toast } from "sonner";
+
+import { useContinuousAnalysis } from "@/hooks/useContinuousAnalysis";
+import { useAlerts } from "@/hooks/useAlerts";
+import { useRules } from "@/hooks/useRules";
+import { DbCamera } from "@/hooks/useCameras";
+import { useVideoStream } from "@/hooks/useVideoStream";
+import { useMLModels } from "@/hooks/useMLModels";
+import { usePPEDetection } from "@/hooks/usePPEDetection";
+
+import type {
+  AnalysisResult,
+  AnalysisType,
+  ProductivityAnalysis,
+  SafetyAnalysis,
+  SecurityAnalysis,
+  Detection as ImageDetection,
+} from "@/hooks/useImageAnalysis";
+
+// ============================================
+// TIPOS
+// ============================================
 
 interface Detection {
   class: string;
   confidence: number;
   bbox: [number, number, number, number];
 }
-
-// ============================================
-// TIPOS
-// ============================================
 
 interface StreamDetection {
   id: string;
