@@ -1,10 +1,11 @@
-import { ErrorBoundary, formatDate, formatNumber } from "@/lib/formatters";
-import { ProgressRing } from '@/components/ProgressRing';
-import { ErrorBoundary, EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/components";
+import { formatDate, formatNumber } from "@/lib/formatters";
+import { ProgressRing } from "@/components/ProgressRing";
+import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/components";
+
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Analytics
- * 
+ *
  * Dashboard analítico com:
  * - KPIs principais
  * - Gráficos de tendência
@@ -12,8 +13,8 @@ import { ErrorBoundary, EmptyState, ErrorState, LoadingSpinner, StatusBadge, Tim
  * - Exportação de dados
  */
 
-import { ErrorBoundary, useState, useEffect, useCallback, useMemo } from 'react';
-import { ErrorBoundary, useI18n } from '@/contexts/i18n';
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { useI18n } from "@/contexts/i18n";
 import {
   BarChart3,
   TrendingUp,
@@ -40,37 +41,47 @@ import {
   ScanFace,
   Shield,
   Zap,
-} from 'lucide-react';
-import { ErrorBoundary, supabase } from '@/integrations/supabase/client';
-import { ErrorBoundary, Button } from '@/components/ui/button';
-import { ErrorBoundary, Badge } from '@/components/ui/badge';
-import { ErrorBoundary, Skeleton } from '@/components/ui/skeleton';
-import { ErrorBoundary, Progress } from '@/components/ui/progress';
+} from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Progress } from "@/components/ui/progress";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { ErrorBoundary, Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { ErrorBoundary, cn } from '@/lib/utils';
-import { ErrorBoundary, format, subDays, startOfDay, endOfDay, eachDayOfInterval, eachHourOfInterval, startOfWeek, startOfMonth } from 'date-fns';
-import { ErrorBoundary, ptBR } from 'date-fns/locale';
-import { ErrorBoundary, toast } from 'sonner';
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+import {
+  format,
+  subDays,
+  startOfDay,
+  endOfDay,
+  eachDayOfInterval,
+  eachHourOfInterval,
+  startOfWeek,
+  startOfMonth,
+} from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { toast } from "sonner";
+
 
 // ============================================
 // TIPOS
@@ -171,7 +182,9 @@ function KPICard({ data, loading }: KPICardProps) {
           {isNeutral ? (
             <>
               <Minus className="w-3 h-3 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground"{t('analytics.noChange', 'Sem alteração')}</span>
+              <span className="text-xs text-muted-foreground">
+                {t('analytics.noChange', 'Sem alteração')}
+              </span>
             </>
           ) : (
             <>
@@ -287,7 +300,7 @@ function DonutChart({ data, size = 160 }: DonutChartProps) {
       </svg>
       <div role="main" aria-label="Analytics e relatórios" className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-2xl font-bold">{total}</span>
-        <span className="text-xs text-muted-foreground"{t('analytics.total', 'Total')}</span>
+        <span className="text-xs text-muted-foreground">{t('analytics.total', 'Total')}</span>
       </div>
     </div>
   );
@@ -653,8 +666,8 @@ export function AnalyticsPage() {
         {/* Main Chart */}
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle className="text-base"{t('analytics.alertTrend', 'Tendência de Alertas')}</CardTitle>
-            <CardDescription{t('analytics.alertsPerDay', 'Alertas por dia no período selecionado')}</CardDescription>
+            <CardTitle className="text-base">{t('analytics.alertTrend', 'Tendência de Alertas')}</CardTitle>
+            <CardDescription>{t('analytics.alertsPerDay', 'Alertas por dia no período selecionado')}</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -673,8 +686,8 @@ export function AnalyticsPage() {
         {/* Donut Chart */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base"{t('analytics.alertsByType', 'Alertas por Tipo')}</CardTitle>
-            <CardDescription{t('analytics.distributionByCategory', 'Distribuição por categoria')}</CardDescription>
+            <CardTitle className="text-base">{t('analytics.alertsByType', 'Alertas por Tipo')}</CardTitle>
+            <CardDescription>{t('analytics.distributionByCategory', 'Distribuição por categoria')}</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center">
             {loading ? (
@@ -705,8 +718,8 @@ export function AnalyticsPage() {
         {/* Camera Performance */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base"{t('analytics.cameraPerformance', 'Performance por Câmera')}</CardTitle>
-            <CardDescription{t('analytics.top5Cameras', 'Top 5 câmeras com mais atividade')}</CardDescription>
+            <CardTitle className="text-base">{t('analytics.cameraPerformance', 'Performance por Câmera')}</CardTitle>
+            <CardDescription>{t('analytics.top5Cameras', 'Top 5 câmeras com mais atividade')}</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -718,7 +731,7 @@ export function AnalyticsPage() {
             ) : cameraPerformance.length === 0 ? (
               <div role="main" aria-label="Analytics e relatórios" className="text-center py-8 text-muted-foreground">
                 <Camera className="w-10 h-10 mx-auto mb-2 opacity-50" />
-                <p className="text-sm"{t('analytics.noCameraFound', 'Nenhuma câmera encontrada')}</p>
+                <p className="text-sm">{t('analytics.noCameraFound', 'Nenhuma câmera encontrada')}</p>
               </div>
             ) : (
               <div role="main" aria-label="Analytics e relatórios" className="space-y-3">
@@ -751,8 +764,8 @@ export function AnalyticsPage() {
         {/* Hourly Distribution */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base"{t('analytics.hourlyDistribution', 'Distribuição por Hora')}</CardTitle>
-            <CardDescription{t('analytics.alertConcentration', 'Concentração de alertas ao longo do dia')}</CardDescription>
+            <CardTitle className="text-base">{t('analytics.hourlyDistribution', 'Distribuição por Hora')}</CardTitle>
+            <CardDescription>{t('analytics.alertConcentration', 'Concentração de alertas ao longo do dia')}</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -782,7 +795,7 @@ export function AnalyticsPage() {
       {/* Quick Stats */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base"{t('analytics.periodSummary', 'Resumo do Período')}</CardTitle>
+          <CardTitle className="text-base">{t('analytics.periodSummary', 'Resumo do Período')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div role="main" aria-label="Analytics e relatórios" className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
