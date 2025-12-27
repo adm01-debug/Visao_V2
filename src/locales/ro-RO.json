@@ -1,8 +1,0 @@
-{
-  "common": { "save": "Salvar", "cancel": "Cancelar", "delete": "Excluir", "edit": "Editar", "loading": "Carregando..." },
-  "auth": { "login": "Entrar", "logout": "Sair", "email": "E-mail", "password": "Senha" },
-  "camera": { "add": "Adicionar câmera", "remove": "Remover", "status": "Status" },
-  "alerts": { "title": "Alertas", "new": "Novo alerta", "dismiss": "Dispensar" },
-  "_locale": "ro-RO",
-  "_name": "Romeno"
-}
