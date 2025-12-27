@@ -17,4 +17,4 @@ export const ROUTE_PATHS = {
 } as const;
 
 export type RoutePath = typeof ROUTE_PATHS[keyof typeof ROUTE_PATHS];
-export const buildPath = (path: string, params: Record<string, string>): string => Object.entries(params).reduce((p, [key, value]) => p.replace(\`:$\{key}\`, value), path);
+export const buildPath = (path: string, params: Record<string, string>): string => Object.entries(params).reduce((p, [key, value]) => p.replace(`:${key}`, value), path);

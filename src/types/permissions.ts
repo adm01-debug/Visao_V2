@@ -1,6 +1,6 @@
 export type PermissionAction = 'create' | 'read' | 'update' | 'delete' | 'export' | 'manage';
 export type PermissionResource = 'cameras' | 'alerts' | 'recordings' | 'users' | 'settings' | 'reports';
-export type Permission = \`\${PermissionResource}:\${PermissionAction}\`;
+export type Permission = `${PermissionResource}:${PermissionAction}`;
 
 export interface PermissionCheck { resource: PermissionResource; action: PermissionAction; }
 export interface UserPermissions { role: string; permissions: Permission[]; }

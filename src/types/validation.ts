@@ -9,8 +9,8 @@ export const createRule = (test: (value: any) => boolean, message: string): Vali
 export const rules = {
   required: (msg = 'Campo obrigatório') => createRule(v => v !== '' && v !== null && v !== undefined, msg),
   email: (msg = 'Email inválido') => createRule(v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), msg),
-  minLength: (min: number, msg?: string) => createRule(v => String(v).length >= min, msg || \`Mínimo \${min} caracteres\`),
-  maxLength: (max: number, msg?: string) => createRule(v => String(v).length <= max, msg || \`Máximo \${max} caracteres\`),
-  min: (min: number, msg?: string) => createRule(v => Number(v) >= min, msg || \`Valor mínimo: \${min}\`),
-  max: (max: number, msg?: string) => createRule(v => Number(v) <= max, msg || \`Valor máximo: \${max}\`),
+  minLength: (min: number, msg?: string) => createRule(v => String(v).length >= min, msg || `Mínimo ${min} caracteres`),
+  maxLength: (max: number, msg?: string) => createRule(v => String(v).length <= max, msg || `Máximo ${max} caracteres`),
+  min: (min: number, msg?: string) => createRule(v => Number(v) >= min, msg || `Valor mínimo: ${min}`),
+  max: (max: number, msg?: string) => createRule(v => Number(v) <= max, msg || `Valor máximo: ${max}`),
 };
