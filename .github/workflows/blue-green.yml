@@ -1,0 +1,9 @@
+name: blue-green
+on: [push, workflow_dispatch]
+jobs:
+  blue-green:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run blue-green
+        run: echo "Running blue-green"
