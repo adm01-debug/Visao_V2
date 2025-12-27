@@ -17,7 +17,6 @@
 | Páginas | 23 |
 | Componentes UI | 48 |
 | Hooks | 81 |
-| Locales | 9 idiomas |
 
 ---
 
@@ -34,7 +33,6 @@
 | Testes | ~150 | Média |
 | Domínio | 23 | Alta |
 | Integrações | 12 | Média |
-| i18n | 8 | Baixa |
 
 **TOTAL: ~339 melhorias identificadas**
 
@@ -77,8 +75,6 @@
 | 019 | `e2e:headed` | `cypress open` | E2E com interface |
 | 020 | `e2e:ci` | `cypress run --headless` | E2E para CI |
 | 021 | `format:fix` | `prettier --write .` | Corrigir formatação |
-| 022 | `i18n:extract` | `i18next-parser` | Extrair traduções |
-| 023 | `i18n:compile` | `i18next-compile` | Compilar traduções |
 | 024 | `lint:css` | `stylelint "**/*.css"` | Lint de CSS |
 | 025 | `lint:types` | `tsc --noEmit` | Verificar tipos |
 | 026 | `release` | `semantic-release` | Release automático |
@@ -263,7 +259,6 @@
 
 ---
 
-# FASE 9: UTILS
 ## Prioridade: 🟡 MÉDIA | Itens: 24
 
 | # | Util | Arquivo | Descrição |
@@ -447,16 +442,7 @@
 # FASE 16: INTERNACIONALIZAÇÃO
 ## Prioridade: 🟢 BAIXA | Itens: 8
 
-| # | Locale | Arquivo | Idioma |
 |---|--------|---------|--------|
-| 204 | ar-SA | `src/locales/ar-SA.json` | Árabe |
-| 205 | ru-RU | `src/locales/ru-RU.json` | Russo |
-| 206 | hi-IN | `src/locales/hi-IN.json` | Hindi |
-| 207 | th-TH | `src/locales/th-TH.json` | Tailandês |
-| 208 | vi-VN | `src/locales/vi-VN.json` | Vietnamita |
-| 209 | nl-NL | `src/locales/nl-NL.json` | Holandês |
-| 210 | pl-PL | `src/locales/pl-PL.json` | Polonês |
-| 211 | tr-TR | `src/locales/tr-TR.json` | Turco |
 
 ---
 
@@ -506,7 +492,6 @@
 | 13 | SEO/PWA | 7 | 1 dia |
 | 14 | Domínio | 23 | 5 dias |
 | 15 | Integrações | 12 | 4 dias |
-| 16 | i18n | 8 | 2 dias |
 | 17 | Testes | ~128 | 10 dias |
 
 **TOTAL ESTIMADO: ~44 dias de desenvolvimento**
@@ -533,7 +518,6 @@
 - Fase 15: Integrações (12 itens)
 
 ### Sprint 5 (Baixa)
-- Fase 16: i18n (8 itens)
 - Fase 17: Testes (~128 itens)
 
 ---
@@ -555,7 +539,6 @@
 - [ ] Fase 13: SEO/PWA (7 itens)
 - [ ] Fase 14: Domínio (23 itens)
 - [ ] Fase 15: Integrações (12 itens)
-- [ ] Fase 16: i18n (8 itens)
 - [ ] Fase 17: Testes (~128 itens)
 
 ---
