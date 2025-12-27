@@ -140,16 +140,37 @@ export function useStreamFaceDetection({
     }
   }, []);
 
-  // Buscar pessoa registrada pelo encoding (simulado)
+  // Buscar pessoa registrada pelo encoding usando edge function compare-faces
   const matchFaceWithRegistered = useCallback(async (
-    _faceEncoding: unknown
+    faceEncoding: unknown
   ): Promise<{ personId?: string; personName?: string; listType: ListType; isKnown: boolean }> => {
-    // Por enquanto, retorna como desconhecido
-    // TODO: Implementar comparação com registered_persons usando compare-faces edge function
-    return {
-      listType: 'unknown',
-      isKnown: false,
-    };
+    try {
+      // Chamar edge function compare-faces
+      const response = await supabase.functions.invoke('compare-faces', {
+        body: { encoding: faceEncoding, threshold: 0.6 }
+      });
+
+      if (response.error) {
+        console.error('Erro ao comparar faces:', response.error);
+        return { listType: 'unknown', isKnown: false };
+      }
+
+      const result = response.data;
+      
+      if (result?.match && result?.person) {
+        return {
+          personId: result.person.id,
+          personName: result.person.name,
+          listType: result.person.list_type || 'whitelist',
+          isKnown: true,
+        };
+      }
+
+      return { listType: 'unknown', isKnown: false };
+    } catch (error) {
+      console.error('Erro na comparação de faces:', error);
+      return { listType: 'unknown', isKnown: false };
+    }
   }, []);
 
   // Processar frame e detectar rostos
