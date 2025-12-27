@@ -16,7 +16,6 @@
 | Utils | 30 |
 | Types | 46 |
 | Integrations | 14 |
-| Locales | 18 |
 | Lib Files | 42 |
 | Constants | 22 |
 | Docs | 69 |
@@ -39,7 +38,6 @@
 | Types | ✅ Completo | 46 |
 | Utils | ⚠️ Parcial | 29/30 |
 | Integrations | ✅ Completo | 14 |
-| Locales | ✅ Completo | 18 |
 | Componentes UI | ✅ Completo | 51 |
 | Segurança (lib) | ⚠️ Parcial | 5/7 |
 
