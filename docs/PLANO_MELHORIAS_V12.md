@@ -18,7 +18,6 @@
 | Utils | 30 | 40+ |
 | Types | 46 | 55+ |
 | Integrations | 14 | 25+ |
-| Locales | 18 | 25+ |
 | Tests | 269 | 400+ |
 | Docs | 69 | 85+ |
 | E2E Tests | 17 | 30+ |
@@ -106,7 +105,6 @@
 | 46 | `aiService.ts` | Integração com modelos AI (OpenAI, Claude) | Alta |
 | 47 | `mlService.ts` | Machine Learning local (TensorFlow.js) | Alta |
 | 48 | `ocrService.ts` | Reconhecimento de texto em imagens | Alta |
-| 49 | `translationService.ts` | Tradução automática | Média |
 | 50 | `geocodingService.ts` | Geocodificação de endereços | Média |
 | 51 | `weatherService.ts` | Dados meteorológicos | Baixa |
 | 52 | `paymentService.ts` | Integração de pagamentos | Média |
@@ -263,22 +261,6 @@
 
 ---
 
-# 🌍 FASE 9: INTERNACIONALIZAÇÃO (8 itens)
-
-| # | Locale | Descrição | Prioridade |
-|---|--------|-----------|------------|
-| 146 | `he-IL.json` | Hebraico (Israel) | Baixa |
-| 147 | `id-ID.json` | Indonésio | Baixa |
-| 148 | `ms-MY.json` | Malaio | Baixa |
-| 149 | `cs-CZ.json` | Tcheco | Baixa |
-| 150 | `ro-RO.json` | Romeno | Baixa |
-| 151 | `uk-UA.json` | Ucraniano | Baixa |
-| 152 | `sv-SE.json` | Sueco | Baixa |
-| 153 | `da-DK.json` | Dinamarquês | Baixa |
-
----
-
-# 🔐 FASE 10: SEGURANÇA AVANÇADA (10 itens)
 
 | # | Arquivo | Descrição | Prioridade |
 |---|---------|-----------|------------|
@@ -376,7 +358,6 @@
 
 ## Semana 7-8: DevOps e Segurança
 - [ ] Itens 136-145 (CI/CD)
-- [ ] Itens 146-163 (i18n e Segurança)
 
 ## Semana 9-10: Observabilidade e PWA
 - [ ] Itens 164-180 (Observabilidade e PWA)
