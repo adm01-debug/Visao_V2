@@ -1,8 +1,0 @@
-{
-  "common": {"save": "Salvar", "cancel": "Cancelar", "delete": "Excluir", "edit": "Editar", "loading": "Carregando...", "error": "Erro", "success": "Sucesso", "confirm": "Confirmar", "search": "Buscar", "filter": "Filtrar", "export": "Exportar", "refresh": "Atualizar"},
-  "auth": {"login": "Entrar", "logout": "Sair", "email": "E-mail", "password": "Senha", "forgotPassword": "Esqueceu a senha?", "register": "Cadastrar"},
-  "dashboard": {"title": "Dashboard", "cameras": "Câmeras", "alerts": "Alertas", "zones": "Zonas", "recordings": "Gravações", "analytics": "Análises"},
-  "cameras": {"online": "Online", "offline": "Offline", "addCamera": "Adicionar Câmera", "editCamera": "Editar Câmera", "deleteCamera": "Excluir Câmera"},
-  "alerts": {"new": "Novo Alerta", "critical": "Crítico", "warning": "Aviso", "info": "Informação", "markAsRead": "Marcar como Lido"},
-  "settings": {"title": "Configurações", "notifications": "Notificações", "security": "Segurança", "appearance": "Aparência", "language": "Idioma"}
-}
