@@ -561,8 +561,7 @@ export function AnalyticsPage() {
     if (formatType === 'csv') {
       const headers = ['Data', 'Alertas', 'Análises', 'Detecções', 'Gravações'];
       const rows = chartData.map(d => [d.label, d.alerts, d.analyses, d.detections, d.recordings]);
-      const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('
-');
+      const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
       
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
@@ -772,8 +771,8 @@ export function AnalyticsPage() {
               <>
                 <HourlyHeatmap data={hourlyData} />
                 <div role="main" className="flex items-center justify-between mt-4 text-xs text-muted-foreground">
-                  <span{t('analytics.lowerActivity', 'Menor atividade')}</span>
-                  <div role="main" className="flex items-center gap-1">
+                  <span>{t('analytics.lowerActivity', 'Menor atividade')}</span>
+                  <div className="flex items-center gap-1">
                     {[0.1, 0.3, 0.5, 0.7, 0.9].map((intensity, i) => (
                       <div
                         key={i}
@@ -782,7 +781,7 @@ export function AnalyticsPage() {
                       />
                     ))}
                   </div>
-                  <span{t('analytics.higherActivity', 'Maior atividade')}</span>
+                  <span>{t('analytics.higherActivity', 'Maior atividade')}</span>
                 </div>
               </>
             )}

@@ -584,20 +584,20 @@ export function RecordingsPage() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold">{stats.total}</p>
-                    <p className="text-xs text-muted-foreground"{t('recordings.clips', 'Clips')}</p>
+                    <p className="text-xs text-muted-foreground">{t('recordings.clips', 'Clips')}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
-                <div role="main" className="flex items-center gap-3">
-                  <div role="main" aria-label="Gravações" className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center">
                     <Clock className="w-5 h-5 text-blue-500" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold">{formatDuration(stats.totalDuration)}</p>
-                    <p className="text-xs text-muted-foreground"{t('recordings.totalDuration', 'Duração total')}</p>
+                    <p className="text-xs text-muted-foreground">{t('recordings.totalDuration', 'Duração total')}</p>
                   </div>
                 </div>
               </CardContent>
@@ -636,7 +636,7 @@ export function RecordingsPage() {
               <SelectValue placeholder="Câmera" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all"{t('recordings.allCameras', 'Todas as câmeras')}</SelectItem>
+              <SelectItem value="all">{t('recordings.allCameras', 'Todas as câmeras')}</SelectItem>
               {cameras.map(cam => (
                 <SelectItem key={cam.id} value={cam.id}>
                   {cam.name}
@@ -651,11 +651,11 @@ export function RecordingsPage() {
               <SelectValue placeholder="Período" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="today"{t('recordings.today', 'Hoje')}</SelectItem>
-              <SelectItem value="yesterday"{t('recordings.yesterday', 'Ontem')}</SelectItem>
+              <SelectItem value="today">{t('recordings.today', 'Hoje')}</SelectItem>
+              <SelectItem value="yesterday">{t('recordings.yesterday', 'Ontem')}</SelectItem>
               <SelectItem value="week">Última semana</SelectItem>
               <SelectItem value="month">Último mês</SelectItem>
-              <SelectItem value="all"{t('recordings.all', 'Todos')}</SelectItem>
+              <SelectItem value="all">{t('recordings.all', 'Todos')}</SelectItem>
             </SelectContent>
           </Select>
 
@@ -706,9 +706,9 @@ export function RecordingsPage() {
 
         {/* Empty state */}
         {!loading && filteredClips.length === 0 && (
-          <div role="main" aria-label="Gravações" className="text-center py-16">
+          <div className="text-center py-16">
             <Video className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
-            <h3 className="text-lg font-medium mb-1"{t('recordings.noRecordings', 'Nenhuma gravação encontrada')}</h3>
+            <h3 className="text-lg font-medium mb-1">{t('recordings.noRecordings', 'Nenhuma gravação encontrada')}</h3>
             <p className="text-muted-foreground">
               Ajuste os filtros ou grave novos clips
             </p>
@@ -854,14 +854,14 @@ export function RecordingsPage() {
       <AlertDialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle{t('recordings.confirmDelete', 'Confirmar exclusão')}</AlertDialogTitle>
+            <AlertDialogTitle>{t('recordings.confirmDelete', 'Confirmar exclusão')}</AlertDialogTitle>
             <AlertDialogDescription>
               Tem certeza que deseja excluir esta gravação?
               Esta ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel{t('common.cancel', 'Cancelar')}</AlertDialogCancel>
+            <AlertDialogCancel>{t('common.cancel', 'Cancelar')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteClip}
               className="bg-destructive hover:bg-destructive/90"
