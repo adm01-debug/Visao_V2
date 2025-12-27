@@ -247,7 +247,7 @@ function StreamCameraCard({ camera, onClick, compact, showStream = true }: Strea
   );
 }
 
-export function Dashboard() {
+function DashboardComponent() {
   const { cameras, loading: camerasLoading, updateCamera } = useCameras();
   const { alerts, loading: alertsLoading, unreadCount, markAllAsRead } = useAlerts();
   const [selectedCamera, setSelectedCamera] = useState<ReturnType<typeof mapDbCameraToUI> | null>(null);
@@ -675,3 +675,5 @@ export function Dashboard() {
     </TooltipProvider>
   );
 }
+-e 
+export const Dashboard = memo(DashboardComponent);
