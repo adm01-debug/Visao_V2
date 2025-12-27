@@ -233,10 +233,10 @@ function CameraCard({
               camera.status === 'alert' ? (
                 <><Circle className="w-2 h-2 mr-1 fill-current" /> ALERTA</>
               ) : (
-                <><Wifi className="w-3 h-3 mr-1" />{t('cameras.online', 'Online')}</>
+                <><Wifi className="w-3 h-3 mr-1" />Online</>
               )
             ) : (
-              <><WifiOff className="w-3 h-3 mr-1" />{t('cameras.offline', 'Offline')}</>
+              <><WifiOff className="w-3 h-3 mr-1" />Offline</>
             )}
           </Badge>
         </div>
@@ -458,7 +458,7 @@ function CameraDetailView({
                 <div role="main" aria-label="Gerenciamento de câmeras" className="w-full h-full flex items-center justify-center">
                   <div role="main" aria-label="Gerenciamento de câmeras" className="text-center text-white/70">
                     <Camera className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                    <p>{t('cameras.streamUnavailable', 'Stream não disponível')}</p>
+                    <p>Stream não disponível</p>
                   </div>
                 </div>
               )}
@@ -543,9 +543,9 @@ function CameraDetailView({
           <div role="main" aria-label="Gerenciamento de câmeras" className="w-80 bg-background border-l flex flex-col">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
               <TabsList className="mx-4 mt-4">
-                <TabsTrigger value="live">{t('cameras.live', 'Ao Vivo')}</TabsTrigger>
-                <TabsTrigger value="alerts">{t('cameras.alerts', 'Alertas')}</TabsTrigger>
-                <TabsTrigger value="config">{t('cameras.config', 'Config')}</TabsTrigger>
+                <TabsTrigger value="live">Ao Vivo</TabsTrigger>
+                <TabsTrigger value="alerts">Alertas</TabsTrigger>
+                <TabsTrigger value="config">Config</TabsTrigger>
               </TabsList>
 
               <ScrollArea className="flex-1 p-4">
@@ -553,11 +553,11 @@ function CameraDetailView({
                   {/* Status */}
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm">{t('cameras.status', 'Status')}</CardTitle>
+                      <CardTitle className="text-sm">Status</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t('cameras.resolution', 'Resolução')}</span>
+                        <span className="text-muted-foreground">Resolução</span>
                         <span>1920x1080</span>
                       </div>
                       <div className="flex justify-between">
@@ -565,7 +565,7 @@ function CameraDetailView({
                         <span>30</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t('cameras.protocol', 'Protocolo')}</span>
+                        <span className="text-muted-foreground">Protocolo</span>
                         <span className="uppercase">HLS</span>
                       </div>
                     </CardContent>
@@ -574,24 +574,24 @@ function CameraDetailView({
                   {/* Quick Stats */}
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm">{t('cameras.statsToday', 'Estatísticas Hoje')}</CardTitle>
+                      <CardTitle className="text-sm">Estatísticas Hoje</CardTitle>
                     </CardHeader>
                     <CardContent className="grid grid-cols-2 gap-2">
                       <div className="p-2 bg-muted rounded text-center">
                         <p className="text-lg font-bold">0</p>
-                        <p className="text-[10px] text-muted-foreground">{t('cameras.alerts', 'Alertas')}</p>
+                        <p className="text-[10px] text-muted-foreground">Alertas</p>
                       </div>
                       <div className="p-2 bg-muted rounded text-center">
                         <p className="text-lg font-bold">0</p>
-                        <p className="text-[10px] text-muted-foreground">{t('cameras.people', 'Pessoas')}</p>
+                        <p className="text-[10px] text-muted-foreground">Pessoas</p>
                       </div>
                       <div className="p-2 bg-muted rounded text-center">
                         <p className="text-lg font-bold">0</p>
-                        <p className="text-[10px] text-muted-foreground">{t('cameras.analyses', 'Análises')}</p>
+                        <p className="text-[10px] text-muted-foreground">Análises</p>
                       </div>
                       <div className="p-2 bg-muted rounded text-center">
                         <p className="text-lg font-bold">0min</p>
-                        <p className="text-[10px] text-muted-foreground">{t('cameras.recorded', 'Gravado')}</p>
+                        <p className="text-[10px] text-muted-foreground">Gravado</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -600,26 +600,26 @@ function CameraDetailView({
                 <TabsContent value="alerts" className="m-0">
                   <div className="text-center py-8 text-muted-foreground">
                     <AlertTriangle className="w-10 h-10 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">{t('cameras.noRecentAlerts', 'Nenhum alerta recente')}</p>
+                    <p className="text-sm">Nenhum alerta recente</p>
                   </div>
                 </TabsContent>
 
                 <TabsContent value="config" className="m-0 space-y-4">
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm">{t('cameras.features', 'Funcionalidades')}</CardTitle>
+                      <CardTitle className="text-sm">Funcionalidades</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <Label className="text-sm">{t('cameras.aiAnalysis', 'Análise de IA')}</Label>
+                        <Label className="text-sm">Análise de IA</Label>
                         <Switch defaultChecked={false} />
                       </div>
                       <div className="flex items-center justify-between">
-                        <Label className="text-sm">{t('cameras.faceRecognition', 'Reconhecimento Facial')}</Label>
+                        <Label className="text-sm">Reconhecimento Facial</Label>
                         <Switch defaultChecked={false} />
                       </div>
                       <div className="flex items-center justify-between">
-                        <Label className="text-sm">{t('cameras.zonesOfInterest', 'Zonas de Interesse')}</Label>
+                        <Label className="text-sm">Zonas de Interesse</Label>
                         <Switch defaultChecked={false} />
                       </div>
                       <div className="flex items-center justify-between">
@@ -726,22 +726,22 @@ export function CamerasPage() {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Camera className="w-6 h-6" />
-            {t('cameras.title', 'Câmeras')}
+            Câmeras
           </h1>
           <p className="text-sm text-muted-foreground">
-            {stats.online} {t('cameras.of', 'de')} {stats.total} {t('cameras.online', 'online')}
-            {stats.alert > 0 && ` • ${stats.alert} ${t('cameras.inAlert', 'em alerta')}`}
+            {stats.online} de {stats.total} online
+            {stats.alert > 0 && ` • ${stats.alert} $em alerta`}
           </p>
         </div>
 
         <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center gap-2">
           <Button aria-label="Ação" variant="outline" size="sm" onClick={() => refetch()}>
             <RefreshCw className="w-4 h-4 mr-2" />
-            {t('common.refresh', 'Atualizar')}
+            Atualizar
           </Button>
           <Button>
             <Plus className="w-4 h-4 mr-2" />
-            {t('common.add', 'Adicionar')}
+            Adicionar
           </Button>
         </div>
       </div>
@@ -751,7 +751,7 @@ export function CamerasPage() {
         <div role="main" aria-label="Gerenciamento de câmeras" className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder={t('cameras.searchPlaceholder', 'Buscar câmeras...')}
+            placeholder="Buscar câmeras..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
@@ -763,9 +763,9 @@ export function CamerasPage() {
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">{t('cameras.all', 'Todos')}</SelectItem>
+            <SelectItem value="all">Todos</SelectItem>
             <SelectItem value="online">Online</SelectItem>
-            <SelectItem value="recording">{t('cameras.recording', 'Gravando')}</SelectItem>
+            <SelectItem value="recording">Gravando</SelectItem>
             <SelectItem value="offline">Offline</SelectItem>
           </SelectContent>
         </Select>
@@ -838,7 +838,7 @@ export function CamerasPage() {
       {filteredCameras.length === 0 ? (
         <div className="text-center py-12">
           <Camera className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium mb-2">{t('cameras.noCameraFound', 'Nenhuma câmera encontrada')}</h3>
+          <h3 className="text-lg font-medium mb-2">Nenhuma câmera encontrada</h3>
           <p className="text-sm text-muted-foreground mb-4">
             {cameras.length === 0 
               ? 'Adicione sua primeira câmera'
@@ -880,7 +880,7 @@ export function CamerasPage() {
       <Sheet open={!!settingsCamera} onOpenChange={() => setSettingsCamera(null)}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>{t('cameras.settings', 'Configurações da Câmera')}</SheetTitle>
+            <SheetTitle>Configurações da Câmera</SheetTitle>
             <SheetDescription>{settingsCamera?.name}</SheetDescription>
           </SheetHeader>
           {/* TODO: Formulário de configurações */}
