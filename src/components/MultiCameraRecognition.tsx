@@ -72,7 +72,7 @@ interface RecognitionResult {
 
 type LayoutType = '1x1' | '2x2' | '3x3' | '4x4';
 
-export function MultiCameraRecognition() {
+function MultiCameraRecognitionComponent() {
   const [activeFeeds, setActiveFeeds] = useState<Set<string>>(new Set());
   const [layout, setLayout] = useState<LayoutType>('2x2');
   const [captureInterval, setCaptureInterval] = useState(3000);
@@ -685,3 +685,5 @@ function CameraFeedCard({
     </Card>
   );
 }
+-e 
+export const MultiCameraRecognition = memo(MultiCameraRecognitionComponent);
