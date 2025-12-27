@@ -1,5 +1,0 @@
-{
-  "common": { "save": "Enregistrer", "cancel": "Annuler", "delete": "Supprimer", "edit": "Modifier", "loading": "Chargement...", "error": "Erreur", "success": "Succès" },
-  "alerts": { "title": "Alertes", "new": "Nouvelle alerte", "acknowledge": "Reconnaître" },
-  "cameras": { "title": "Caméras", "online": "En ligne", "offline": "Hors ligne" }
-}
