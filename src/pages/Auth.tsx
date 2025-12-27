@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useI18n } from '@/contexts/i18n';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,7 +16,6 @@ const passwordSchema = z.string().min(6, 'Senha deve ter no mínimo 6 caracteres
 const nameSchema = z.string().max(100).optional();
 
 export default function Auth() {
-  const { t } = useI18n();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
