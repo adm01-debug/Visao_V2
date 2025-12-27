@@ -883,7 +883,34 @@ export function CamerasPage() {
             <SheetTitle>Configurações da Câmera</SheetTitle>
             <SheetDescription>{settingsCamera?.name}</SheetDescription>
           </SheetHeader>
-          {/* TODO: Formulário de configurações */}
+          {settingsCamera && (
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="cam-name">Nome da Câmera</Label>
+                <Input id="cam-name" defaultValue={settingsCamera.name} placeholder="Ex: Entrada Principal" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="cam-location">Localização</Label>
+                <Input id="cam-location" defaultValue={settingsCamera.location || ""} placeholder="Ex: Portaria" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="cam-stream">URL do Stream</Label>
+                <Input id="cam-stream" defaultValue={settingsCamera.stream_url || ""} placeholder="rtsp://..." />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="cam-recording">Gravação Ativa</Label>
+                <Switch id="cam-recording" defaultChecked={settingsCamera.is_recording} />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="cam-ai">Análise de IA</Label>
+                <Switch id="cam-ai" defaultChecked={settingsCamera.ai_enabled} />
+              </div>
+              <div className="pt-4 flex gap-2">
+                <Button className="flex-1" onClick={() => setSettingsCamera(null)}>Salvar</Button>
+                <Button variant="outline" onClick={() => setSettingsCamera(null)}>Cancelar</Button>
+              </div>
+            </div>
+          )}
         </SheetContent>
       </Sheet>
     </div>
