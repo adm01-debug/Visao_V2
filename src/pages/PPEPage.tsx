@@ -183,10 +183,10 @@ export default function PPEPage() {
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <HardHat className="w-8 h-8 text-primary" />
-            {t('ppe.title', 'Detecção de EPIs')}
+            Detecção de EPIs
           </h1>
           <p className="text-muted-foreground mt-1">
-            {t('ppe.subtitle', 'Monitore o uso de Equipamentos de Proteção Individual em tempo real')}
+            Monitore o uso de Equipamentos de Proteção Individual em tempo real
           </p>
         </div>
         <div role="main" className="flex items-center gap-2">
