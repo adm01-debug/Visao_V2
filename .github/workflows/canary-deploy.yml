@@ -1,0 +1,9 @@
+name: canary-deploy
+on: [push, workflow_dispatch]
+jobs:
+  canary-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run canary-deploy
+        run: echo "Running canary-deploy"
