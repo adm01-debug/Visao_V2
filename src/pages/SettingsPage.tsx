@@ -535,7 +535,7 @@ export function SettingsPage() {
           </Button>
           <Button aria-label="Ação" onClick={saveSettings} disabled={saving}>
             <Save className="w-4 h-4 mr-2" />
-            {saving ? {t('settings.saving', 'Salvando...')} : {t('settings.save', 'Salvar')}}
+            {saving ? 'Salvando...' : 'Salvar'}
           </Button>
         </div>
       </div>
