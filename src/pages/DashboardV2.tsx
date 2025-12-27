@@ -572,9 +572,9 @@ export function DashboardV2() {
       {/* Header com controles */}
       <div role="main" aria-label="Painel de controle principal" className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{t('dashboard.title', 'Dashboard')}</h1>
+          <h1 className="text-2xl font-bold">Dashboard</h1>
           <p className="text-sm text-muted-foreground">
-            {uiCameras.length} {t('dashboard.cameras', 'câmeras')} • {streamingCameras} {t('dashboard.withStreaming', 'com streaming')}
+            {uiCameras.length} câmeras • {streamingCameras} com streaming
           </p>
         </div>
         
