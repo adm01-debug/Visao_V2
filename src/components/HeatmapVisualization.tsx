@@ -411,7 +411,7 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
                   <table className="w-full text-sm">
                     <thead>
                       <tr>
-                        <th className="text-left p-2 font-medium">{t('common.zone', 'Zona')}</th>
+                        <th className="text-left p-2 font-medium">Zona</th>
                         {Array.from({ length: 24 }, (_, i) => (
                           <th key={i} className="p-1 text-center text-xs text-muted-foreground">
                             {i.toString().padStart(2, '0')}
