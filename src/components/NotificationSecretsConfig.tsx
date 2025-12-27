@@ -1,3 +1,4 @@
+import { memo } from "react";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: NotificationSecretsConfig
@@ -128,7 +129,7 @@ const providerInfo = {
 // COMPONENTE PRINCIPAL
 // ============================================
 
-export function NotificationSecretsConfig() {
+function NotificationSecretsConfigComponent() {
   const [secrets, setSecrets] = useState<SecretsConfig>({
     resend: { apiKey: '', fromEmail: '', fromName: 'VISÃO Alertas' },
     evolution: { apiUrl: '', apiKey: '', instanceName: '' },
@@ -680,4 +681,5 @@ TELEGRAM_BOT_TOKEN=`)}
   );
 }
 
+export const NotificationSecretsConfig = memo(NotificationSecretsConfigComponent);
 export default NotificationSecretsConfig;
