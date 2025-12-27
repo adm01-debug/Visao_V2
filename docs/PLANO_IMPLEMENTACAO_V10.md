@@ -20,7 +20,6 @@
 | 🟢 BAIXO | Estrutura de código | 45 | 2 dias |
 | 🟢 BAIXO | Documentação | 11 | 1 dia |
 | 🟢 BAIXO | PWA e Deploy | 26 | 1 dia |
-| 🟢 BAIXO | Internacionalização | 6 | 1 dia |
 | **TOTAL** | | **199** | **12 dias** |
 
 ---
@@ -272,7 +271,6 @@
 | 135 | settings | src/types/settings.ts |
 | 136 | notification | src/types/notification.ts |
 | 137 | supabase | src/types/supabase.ts |
-| 138 | i18n | src/types/i18n.ts |
 | 139 | theme | src/types/theme.ts |
 | 140 | env.d | src/types/env.d.ts |
 | 141 | global.d | src/types/global.d.ts |
@@ -320,7 +318,6 @@
 
 ---
 
-## 🟢 FASE 9: BAIXO - PWA E DEPLOY (26 itens)
 
 ### 9.1 PWA Files (17 itens)
 
@@ -364,12 +361,6 @@
 
 | # | Idioma | Arquivo |
 |---|--------|---------|
-| 192 | Français | src/locales/fr-FR.json |
-| 193 | Deutsch | src/locales/de-DE.json |
-| 194 | 中文 | src/locales/zh-CN.json |
-| 195 | 日本語 | src/locales/ja-JP.json |
-| 196 | Italiano | src/locales/it-IT.json |
-| 197 | 한국어 | src/locales/ko-KR.json |
 
 ---
 
@@ -401,7 +392,6 @@
 ### Semana 3 (Dias 7-10): BAIXO
 - **Dia 7:** Fase 7.1-7.2 (Constants + Config) = 17 itens
 - **Dia 8:** Fase 7.3-7.5 (Types + Middlewares + Providers) = 28 itens
-- **Dia 9:** Fase 8 (Documentação) + Fase 10 (i18n) = 17 itens
 - **Dia 10:** Fase 9 (PWA + Deploy) = 26 itens
 
 ### Dia 11-12: FINALIZAÇÃO
