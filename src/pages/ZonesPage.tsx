@@ -15,7 +15,6 @@ import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, SeverityBadge, Tim
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useI18n } from '@/contexts/i18n';
 import {
   Target,
   Plus,
@@ -876,7 +875,6 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
 // ============================================
 
 export function ZonesPage() {
-  const { t } = useI18n();
   const { user } = useAuth();
   const { cameras } = useCameras();
   
