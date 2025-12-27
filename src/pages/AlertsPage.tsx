@@ -675,7 +675,7 @@ export function AlertsPage() {
         <div role="main" aria-label="Central de alertas" className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder={t("alerts.searchPlaceholder", "Buscar alertas...")}
+            placeholder="Buscar alertas..."
             value={filters.search}
             onChange={(e) => setFilters(f => ({ ...f, search: e.target.value }))}
             className="pl-9"
@@ -689,7 +689,7 @@ export function AlertsPage() {
             onValueChange={(v) => setFilters(f => ({ ...f, severity: v }))}
           >
             <SelectTrigger className="w-32">
-              <SelectValue placeholder={t("alerts.filterSeverity", "Severidade")} />
+              <SelectValue placeholder="Severidade" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todas</SelectItem>
@@ -705,7 +705,7 @@ export function AlertsPage() {
             onValueChange={(v) => setFilters(f => ({ ...f, dateRange: v }))}
           >
             <SelectTrigger className="w-32">
-              <SelectValue placeholder={t("alerts.filterPeriod", "Período")} />
+              <SelectValue placeholder="Período" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos</SelectItem>
@@ -721,7 +721,7 @@ export function AlertsPage() {
             onValueChange={(v) => setSortBy(v as SortOption)}
           >
             <SelectTrigger className="w-36">
-              <SelectValue placeholder={t("alerts.sortBy", "Ordenar")} />
+              <SelectValue placeholder="Ordenar" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="date-desc">Mais recentes</SelectItem>
