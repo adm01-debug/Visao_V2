@@ -1,0 +1,9 @@
+name: k8s-deploy
+on: [push, workflow_dispatch]
+jobs:
+  k8s-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run k8s-deploy
+        run: echo "Running k8s-deploy"
