@@ -52,7 +52,6 @@ import {
   Server,
 } from 'lucide-react';
 import { ErrorBoundary, supabase } from '@/integrations/supabase/client';
-import { ErrorBoundary, useI18n } from '@/contexts/i18n';
 import { ErrorBoundary, Button } from '@/components/ui/button';
 import { ErrorBoundary, Input } from '@/components/ui/input';
 import { ErrorBoundary, Label } from '@/components/ui/label';
@@ -214,7 +213,6 @@ function SettingRow({ label, description, children }: SettingRowProps) {
 export function SettingsPage() {
   const { settings, updateSettings, resetSettings, loading: settingsLoading } = useSettings();
 
-  const { t } = useI18n();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
