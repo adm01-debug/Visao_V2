@@ -1,0 +1,9 @@
+name: feature-flags
+on: [push, workflow_dispatch]
+jobs:
+  feature-flags:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run feature-flags
+        run: echo "Running feature-flags"
