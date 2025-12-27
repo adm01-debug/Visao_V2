@@ -20,7 +20,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { useCameras } from '@/hooks/useCameras';
 import { usePPEDetection, PPE_LABELS, PPEType, PPEZoneConfig } from '@/hooks/usePPEDetection';
-import { useI18n } from '@/contexts/i18n';
 import { 
   HardHat,
   Shield,
@@ -109,7 +108,6 @@ function ComplianceCard({
 // ============================================
 
 export default function PPEPage() {
-  const { t } = useI18n();
   const { cameras } = useCameras();
   const [selectedCamera, setSelectedCamera] = useState<string>('');
   const [isAddingZone, setIsAddingZone] = useState(false);
