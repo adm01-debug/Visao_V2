@@ -14,7 +14,6 @@ import { ErrorBoundary, EmptyState, ErrorState, LoadingSpinner, TimeAgo } from "
  */
 
 import { ErrorBoundary, useState, useEffect, useCallback, useMemo } from 'react';
-import { ErrorBoundary, useI18n } from '@/contexts/i18n';
 import {
   Video,
   Play,
@@ -350,7 +349,6 @@ function VideoPlayerDialog({
 // ============================================
 
 export function RecordingsPage() {
-  const { t } = useI18n();
   
   // Estado
   const [clips, setClips] = useState<VideoClipWithCamera[]>([]);
