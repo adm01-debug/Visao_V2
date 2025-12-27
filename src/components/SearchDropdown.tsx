@@ -98,7 +98,7 @@ const STORAGE_KEY = 'search-history';
 const FILTERS_STORAGE_KEY = 'saved-filters';
 const MAX_HISTORY_ITEMS = 10;
 
-export function SearchDropdown() {
+function SearchDropdownComponent() {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -975,3 +975,5 @@ export function SearchDropdown() {
     </>
   );
 }
+
+export const SearchDropdown = memo(SearchDropdownComponent);
