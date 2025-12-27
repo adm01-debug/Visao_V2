@@ -1,7 +1,6 @@
 export * from "./AuthContext";
 export * from "./ThemeProvider";
 export * from "./accessibility";
-export * from "./i18n";
 export * from "./NotificationContext";
 export * from "./AlertContext";
 export * from "./CameraContext";
