@@ -6,7 +6,6 @@
  */
 
 import { memo, useState, useEffect, useMemo, useRef } from 'react';
-import { memo, useI18n } from '@/contexts/i18n';
 import { memo, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { memo, Button } from '@/components/ui/button';
 import { memo, Badge } from '@/components/ui/badge';
@@ -95,7 +94,6 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
   const { cameras } = useCameras();
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<'1h' | '6h' | '24h' | '7d'>('24h');
-  const { t } = useI18n();
   const [selectedCamera, setSelectedCamera] = useState<string>('all');
   const [zoneActivities, setZoneActivities] = useState<ZoneActivity[]>([]);
   const [totalDetections, setTotalDetections] = useState(0);
