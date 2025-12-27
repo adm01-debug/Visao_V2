@@ -6,10 +6,8 @@
 import { Helmet } from 'react-helmet-async';
 import { Sidebar } from '@/components/Sidebar';
 import { TelegramConfigPanel } from '@/components/TelegramConfigPanel';
-import { useI18n } from '@/contexts/i18n';
 
 export default function TelegramSettingsPage() {
-  const { t } = useI18n();
 
   return (
     <>
