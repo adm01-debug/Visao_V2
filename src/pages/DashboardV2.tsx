@@ -22,7 +22,6 @@ import { TimeAgo } from '@/components/TimeAgo';
  */
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useI18n } from '@/contexts/i18n';
 import { 
   Camera, 
   AlertTriangle, 
@@ -452,8 +451,6 @@ function SettingsSheet({ settings, onSettingsChange }: SettingsSheetProps) {
 // ============================================
 
 export function DashboardV2() {
-  // i18n
-  const { t } = useI18n();
   
   // Estado
   const [selectedCamera, setSelectedCamera] = useState<ReturnType<typeof mapDbCameraToUI> | null>(null);
