@@ -197,7 +197,6 @@ function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
 
 import { useStorage, STORAGE_BUCKETS } from '@/hooks/useStorage';
 import { useFaceDetection, FaceEncoding } from '@/hooks/useFaceDetection';
-import { useI18n } from '@/contexts/i18n';
 
 interface PersonFormDialogProps {
   person?: DbPerson | null;
@@ -820,7 +819,6 @@ function PersonDetailsDialog({
 // ============================================
 
 export default function PeoplePage() {
-  const { t } = useI18n();
   const { user } = useAuth();
   
   // Estado
