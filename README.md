@@ -4,7 +4,6 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)
 ![Coverage](https://img.shields.io/badge/coverage-85%25-green)
 ![Components](https://img.shields.io/badge/components-304-orange)
-![Languages](https://img.shields.io/badge/i18n-17%20languages-yellow)
 
 # 🎥 VISÃO - Sistema de Vigilância Inteligente
 
@@ -74,7 +73,6 @@
 - Relatórios em PDF
 - Exportação CSV/JSON
 
-### 🌍 Internacionalização
 - Português (Brasil)
 - English (US)
 - Español (ES)
@@ -239,7 +237,6 @@ vis-o/
 │   │   ├── ui/         # shadcn/ui components
 │   │   └── ...         # Componentes customizados
 │   ├── contexts/       # React Contexts
-│   │   ├── i18n.tsx    # Internacionalização
 │   │   ├── accessibility.tsx
 │   │   └── ...
 │   ├── hooks/          # Custom Hooks
