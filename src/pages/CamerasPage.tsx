@@ -15,7 +15,6 @@ import { StatusBadge } from '@/components/StatusBadge';
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useI18n } from '@/contexts/i18n';
 import {
   Camera,
   Grid3X3,
@@ -644,8 +643,6 @@ function CameraDetailView({
 // ============================================
 
 export function CamerasPage() {
-  // i18n
-  const { t } = useI18n();
   
   // Estado
   const [viewMode, setViewMode] = useState<ViewMode>('grid-2x2');
