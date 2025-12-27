@@ -55,8 +55,8 @@ export default function HeatmapPage() {
   return (
     <>
       <Helmet>
-        <title>{t('heatmap.pageTitle', 'Mapa de Calor')} | VISÃO</title>
-        <meta name="description" content={t('heatmap.pageDescription', 'Visualize mapas de calor de movimento por zona e câmera')} />
+        <title>Mapa de Calor | VISÃO</title>
+        <meta name="description" content="Visualize mapas de calor de movimento por zona e câmera" />
       </Helmet>
       
       <div role="main" className="flex min-h-screen w-full bg-background">
@@ -66,10 +66,10 @@ export default function HeatmapPage() {
           <div role="main" className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-2xl font-bold tracking-tight">
-                {t('heatmap.title', 'Mapa de Calor')}
+                Mapa de Calor
               </h1>
               <p className="text-muted-foreground">
-                {t('heatmap.subtitle', 'Visualize a intensidade de movimento por área')}
+                Visualize a intensidade de movimento por área
               </p>
             </div>
             
