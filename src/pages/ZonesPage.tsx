@@ -327,15 +327,15 @@ function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, onView 
               <>
                 <div role="main" aria-label="Gerenciamento de zonas" className="p-2 bg-muted rounded">
                   <p className="text-lg font-bold text-green-500">{stats.countIn}</p>
-                  <p className="text-[10px] text-muted-foreground"{t('zones.entry', 'Entrada')}</p>
+                  <p className="text-[10px] text-muted-foreground">Entrada</p>
                 </div>
                 <div role="main" aria-label="Gerenciamento de zonas" className="p-2 bg-muted rounded">
                   <p className="text-lg font-bold text-red-500">{stats.countOut}</p>
-                  <p className="text-[10px] text-muted-foreground"{t('zones.exit', 'Saída')}</p>
+                  <p className="text-[10px] text-muted-foreground">Saída</p>
                 </div>
                 <div role="main" aria-label="Gerenciamento de zonas" className="p-2 bg-muted rounded">
                   <p className="text-lg font-bold">{stats.currentOccupancy}</p>
-                  <p className="text-[10px] text-muted-foreground"{t('zones.current', 'Atual')}</p>
+                  <p className="text-[10px] text-muted-foreground">Atual</p>
                 </div>
               </>
             )}
@@ -343,18 +343,18 @@ function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, onView 
               <>
                 <div role="main" aria-label="Gerenciamento de zonas" className="p-2 bg-muted rounded col-span-2">
                   <p className="text-lg font-bold">{Math.round(stats.avgDwellTime)}s</p>
-                  <p className="text-[10px] text-muted-foreground"{t('zones.avgTime', 'Tempo médio')}</p>
+                  <p className="text-[10px] text-muted-foreground">Tempo médio</p>
                 </div>
                 <div role="main" aria-label="Gerenciamento de zonas" className="p-2 bg-muted rounded">
                   <p className="text-lg font-bold text-yellow-500">{stats.alertsToday}</p>
-                  <p className="text-[10px] text-muted-foreground"{t('zones.alerts', 'Alertas')}</p>
+                  <p className="text-[10px] text-muted-foreground">Alertas</p>
                 </div>
               </>
             )}
             {(zone.type === 'restricted' || zone.type === 'safety') && (
               <div role="main" aria-label="Gerenciamento de zonas" className="p-2 bg-muted rounded col-span-3">
                 <p className="text-lg font-bold text-red-500">{stats.alertsToday}</p>
-                <p className="text-[10px] text-muted-foreground"{t('zones.alertsToday', 'Alertas hoje')}</p>
+                <p className="text-[10px] text-muted-foreground">Alertas hoje</p>
               </div>
             )}
           </div>
@@ -496,7 +496,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
           {/* Video com editor de zona */}
           <div role="main" aria-label="Gerenciamento de zonas" className="space-y-2">
             <div role="main" className="flex items-center justify-between">
-              <Label{t('zones.draw', 'Desenhar Zona')}</Label>
+              <Label>Desenhar Zona</Label>
               <div role="main" className="flex items-center gap-1 border rounded-lg p-1">
                 <Button
                   variant={drawingMode === 'rectangle' ? 'secondary' : 'ghost'}
@@ -592,7 +592,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
           {/* Formulário */}
           <div role="main" aria-label="Gerenciamento de zonas" className="grid grid-cols-2 gap-4">
             <div role="main" aria-label="Gerenciamento de zonas" className="col-span-2">
-              <Label htmlFor="name"{t('zones.nameLabel', 'Nome da Zona')} *</Label>
+              <Label htmlFor="name">Nome da Zona *</Label>
               <Input
                 id="name"
                 value={formData.name}
@@ -602,7 +602,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
             </div>
 
             <div>
-              <Label htmlFor="type"{t('zones.type', 'Tipo')}</Label>
+              <Label htmlFor="type">Tipo</Label>
               <Select
                 value={formData.type}
                 onValueChange={(v) => setFormData(f => ({ ...f, type: v as ZoneType }))}
@@ -625,7 +625,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
             </div>
 
             <div>
-              <Label{t('zones.color', 'Cor')}</Label>
+              <Label>Cor</Label>
               <div role="main" className="flex items-center gap-2 mt-2">
                 {defaultColors.map(color => (
                   <button
@@ -657,7 +657,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
           {/* Zona ativa */}
           <div role="main" className="flex items-center justify-between p-4 bg-muted rounded-lg">
             <div>
-              <p className="text-sm font-medium"{t('zones.active', 'Zona Ativa')}</p>
+              <p className="text-sm font-medium">Zona Ativa</p>
               <p className="text-xs text-muted-foreground">Desative para pausar monitoramento</p>
             </div>
             <Switch
@@ -727,8 +727,8 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
 
         <Tabs defaultValue="preview" className="flex-1 overflow-hidden">
           <TabsList>
-            <TabsTrigger value="preview"{t('zones.visualization', 'Visualização')}</TabsTrigger>
-            <TabsTrigger value="stats"{t('zones.statistics', 'Estatísticas')}</TabsTrigger>
+            <TabsTrigger value="preview">Visualização</TabsTrigger>
+            <TabsTrigger value="stats">Estatísticas</TabsTrigger>
             <TabsTrigger value="events">
               Eventos
               {events.length > 0 && (
@@ -787,11 +787,11 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
 
               <div role="main" aria-label="Gerenciamento de zonas" className="grid grid-cols-2 gap-4 mt-4">
                 <div>
-                  <Label className="text-xs text-muted-foreground"{t('zones.type', 'Tipo')}</Label>
+                  <Label className="text-xs text-muted-foreground">Tipo</Label>
                   <p className="font-medium">{typeConfig.label}</p>
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground"{t('zones.status', 'Status')}</Label>
+                  <Label className="text-xs text-muted-foreground">Status</Label>
                   <p className={cn('font-medium', zone.is_active ? 'text-green-500' : 'text-gray-500')}>
                     {zone.is_active ? 'Ativa' : 'Desativada'}
                   </p>
@@ -805,25 +805,25 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
                   <Card>
                     <CardContent className="p-4 text-center">
                       <p className="text-3xl font-bold text-green-500">{stats.countIn}</p>
-                      <p className="text-sm text-muted-foreground"{t('zones.entries', 'Entradas')}</p>
+                      <p className="text-sm text-muted-foreground">Entradas</p>
                     </CardContent>
                   </Card>
                   <Card>
                     <CardContent className="p-4 text-center">
                       <p className="text-3xl font-bold text-red-500">{stats.countOut}</p>
-                      <p className="text-sm text-muted-foreground"{t('zones.exits', 'Saídas')}</p>
+                      <p className="text-sm text-muted-foreground">Saídas</p>
                     </CardContent>
                   </Card>
                   <Card>
                     <CardContent className="p-4 text-center">
                       <p className="text-3xl font-bold">{stats.currentOccupancy}</p>
-                      <p className="text-sm text-muted-foreground"{t('zones.currentOccupancy', 'Ocupação Atual')}</p>
+                      <p className="text-sm text-muted-foreground">Ocupação Atual</p>
                     </CardContent>
                   </Card>
                   <Card>
                     <CardContent className="p-4 text-center">
                       <p className="text-3xl font-bold text-yellow-500">{stats.alertsToday}</p>
-                      <p className="text-sm text-muted-foreground"{t('zones.alertsToday', 'Alertas Hoje')}</p>
+                      <p className="text-sm text-muted-foreground">Alertas Hoje</p>
                     </CardContent>
                   </Card>
                 </div>
@@ -1087,17 +1087,17 @@ export function ZonesPage() {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Target className="w-6 h-6" />
-            {t('zones.title', 'Zonas de Interesse')}
+            Zonas de Interesse
           </h1>
           <p className="text-sm text-muted-foreground">
-            {stats.total} {t('zones.zones', 'zonas')} • {stats.active} {t('zones.active', 'ativas')}
+            {stats.total} zonas • {stats.active} ativas
           </p>
         </div>
 
         <div role="main" className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={loadZones}>
             <RefreshCw className="w-4 h-4 mr-2" />
-            {t('common.refresh', 'Atualizar')}
+            Atualizar
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -1134,7 +1134,7 @@ export function ZonesPage() {
           <CardContent className="p-4">
             <div role="main" className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground"{t('zones.total', 'Total')}</p>
+                <p className="text-xs text-muted-foreground">Total</p>
                 <p className="text-2xl font-bold">{stats.total}</p>
               </div>
               <Target className="w-8 h-8 text-muted-foreground" />
@@ -1145,7 +1145,7 @@ export function ZonesPage() {
           <CardContent className="p-4">
             <div role="main" className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground"{t('zones.activeCount', 'Ativas')}</p>
+                <p className="text-xs text-muted-foreground">Ativas</p>
                 <p className="text-2xl font-bold text-green-500">{stats.active}</p>
               </div>
               <Activity className="w-8 h-8 text-green-500" />
@@ -1156,7 +1156,7 @@ export function ZonesPage() {
           <CardContent className="p-4">
             <div role="main" className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground"{t('zones.restricted', 'Restritas')}</p>
+                <p className="text-xs text-muted-foreground">Restritas</p>
                 <p className="text-2xl font-bold text-red-500">{stats.restricted}</p>
               </div>
               <AlertTriangle className="w-8 h-8 text-red-500" />
@@ -1167,7 +1167,7 @@ export function ZonesPage() {
           <CardContent className="p-4">
             <div role="main" className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground"{t('zones.counting', 'Contagem')}</p>
+                <p className="text-xs text-muted-foreground">Contagem</p>
                 <p className="text-2xl font-bold text-blue-500">{stats.counting}</p>
               </div>
               <Users className="w-8 h-8 text-blue-500" />
@@ -1193,7 +1193,7 @@ export function ZonesPage() {
             <SelectValue placeholder="Câmera" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all"{t('zones.allCameras', 'Todas câmeras')}</SelectItem>
+            <SelectItem value="all">Todas câmeras</SelectItem>
             {cameras.map(c => (
               <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
             ))}
@@ -1205,7 +1205,7 @@ export function ZonesPage() {
             <SelectValue placeholder="Tipo" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all"{t('zones.allTypes', 'Todos tipos')}</SelectItem>
+            <SelectItem value="all">Todos tipos</SelectItem>
             {Object.entries(zoneTypeConfig).map(([key, config]) => (
               <SelectItem key={key} value={key}>{config.label}</SelectItem>
             ))}
