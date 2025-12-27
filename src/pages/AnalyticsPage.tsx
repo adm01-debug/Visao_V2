@@ -14,7 +14,6 @@ import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/
  */
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useI18n } from "@/contexts/i18n";
 import {
   BarChart3,
   TrendingUp,
@@ -341,7 +340,6 @@ function HourlyHeatmap({ data }: HourlyHeatmapProps) {
 // ============================================
 
 export function AnalyticsPage() {
-  const { t } = useI18n();
   
   // Estado
   const [dateRange, setDateRange] = useState<DateRange>('7d');
