@@ -47,7 +47,6 @@ import { useAlerts } from "@/hooks/useAlerts";
 import { useCameras } from "@/hooks/useCameras";
 import { useRealtimeAlerts } from "@/hooks/useRealtimeAlerts";
 import { useFaceRecognitionAlerts } from "@/hooks/useFaceRecognitionAlerts";
-import { useI18n } from "@/contexts/i18n";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -416,7 +415,6 @@ export function AlertsPage() {
   const [showFilters, setShowFilters] = useState(false);
 
   // Hooks
-  const { t } = useI18n();
   const {
     alerts,
     loading,
