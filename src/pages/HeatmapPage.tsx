@@ -13,7 +13,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Sidebar } from '@/components/Sidebar';
 import { HeatmapVisualization } from '@/components/HeatmapVisualization';
-import { useI18n } from '@/contexts/i18n';
 import { useHeatmap } from '@/hooks/useHeatmap';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,7 +21,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RefreshCw, Activity, Calendar, MapPin, Download } from 'lucide-react';
 
 export default function HeatmapPage() {
-  const { t } = useI18n();
   const [selectedCameraId, setSelectedCameraId] = useState<string | undefined>();
   const [selectedZoneId, setSelectedZoneId] = useState<string | undefined>();
   const [timeRange, setTimeRange] = useState<'1h' | '6h' | '24h' | '7d' | '30d'>('24h');
