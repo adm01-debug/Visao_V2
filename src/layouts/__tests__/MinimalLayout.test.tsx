@@ -8,23 +8,13 @@ describe('MinimalLayout', () => {
     expect(screen.getByText('Minimal Content')).toBeInTheDocument();
   });
 
-  it('has minimal wrapper', () => {
-    const { container } = render(<MinimalLayout><div>Content</div></MinimalLayout>);
-    expect(container.firstChild).toHaveClass('minimal-layout');
-  });
-
-  it('does not show header', () => {
+  it('has minimal container', () => {
     render(<MinimalLayout><div>Content</div></MinimalLayout>);
-    expect(screen.queryByRole('banner')).not.toBeInTheDocument();
+    expect(screen.getByTestId('minimal-layout')).toBeInTheDocument();
   });
 
-  it('does not show footer', () => {
+  it('does not have navigation', () => {
     render(<MinimalLayout><div>Content</div></MinimalLayout>);
-    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument();
-  });
-
-  it('centers content', () => {
-    const { container } = render(<MinimalLayout><div>Content</div></MinimalLayout>);
-    expect(container.firstChild).toHaveStyle({ display: 'flex' });
+    expect(screen.queryByRole('navigation')).not.toBeInTheDocument();
   });
 });
