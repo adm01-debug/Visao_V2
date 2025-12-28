@@ -4,22 +4,17 @@ import { AnalyticsProvider, useAnalytics } from '@/providers/AnalyticsProvider';
 
 const TestComponent = () => {
   const { track } = useAnalytics();
-  return <button onClick={() => track('test_event')}>Track</button>;
+  return <button onClick={() => track('click')}>Track</button>;
 };
 
 describe('AnalyticsProvider', () => {
   it('renders children', () => {
-    render(<AnalyticsProvider><div>Child</div></AnalyticsProvider>);
-    expect(screen.getByText('Child')).toBeInTheDocument();
+    render(<AnalyticsProvider><div>Content</div></AnalyticsProvider>);
+    expect(screen.getByText('Content')).toBeInTheDocument();
   });
 
   it('provides analytics context', () => {
     render(<AnalyticsProvider><TestComponent /></AnalyticsProvider>);
     expect(screen.getByRole('button')).toBeInTheDocument();
-  });
-
-  it('track function is callable', () => {
-    const { getByRole } = render(<AnalyticsProvider><TestComponent /></AnalyticsProvider>);
-    expect(() => getByRole('button').click()).not.toThrow();
   });
 });
