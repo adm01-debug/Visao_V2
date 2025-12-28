@@ -1,0 +1,66 @@
+{
+  "common": {
+    "loading": "טוען...",
+    "error": "שגיאה",
+    "success": "הצלחה",
+    "cancel": "ביטול",
+    "save": "שמור",
+    "delete": "מחק",
+    "edit": "ערוך",
+    "add": "הוסף",
+    "search": "חיפוש",
+    "filter": "סינון",
+    "export": "ייצוא",
+    "import": "ייבוא",
+    "settings": "הגדרות",
+    "logout": "התנתק",
+    "login": "התחבר",
+    "yes": "כן",
+    "no": "לא",
+    "confirm": "אישור",
+    "back": "חזרה",
+    "next": "הבא",
+    "previous": "הקודם",
+    "close": "סגור",
+    "open": "פתח"
+  },
+  "navigation": {
+    "dashboard": "לוח בקרה",
+    "cameras": "מצלמות",
+    "alerts": "התראות",
+    "people": "אנשים",
+    "reports": "דוחות",
+    "analytics": "ניתוח",
+    "settings": "הגדרות",
+    "recordings": "הקלטות"
+  },
+  "cameras": {
+    "title": "מצלמות",
+    "add": "הוסף מצלמה",
+    "edit": "ערוך מצלמה",
+    "delete": "מחק מצלמה",
+    "name": "שם",
+    "url": "כתובת URL",
+    "status": "סטטוס",
+    "online": "מקוון",
+    "offline": "לא מקוון",
+    "recording": "מקליט"
+  },
+  "alerts": {
+    "title": "התראות",
+    "new": "התראה חדשה",
+    "type": "סוג",
+    "severity": "חומרה",
+    "timestamp": "זמן",
+    "camera": "מצלמה",
+    "resolved": "נפתרה",
+    "pending": "ממתינה"
+  },
+  "auth": {
+    "email": "דואר אלקטרוני",
+    "password": "סיסמה",
+    "login": "התחבר",
+    "logout": "התנתק",
+    "forgotPassword": "שכחת סיסמה?"
+  }
+}
