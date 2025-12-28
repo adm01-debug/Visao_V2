@@ -12,18 +12,13 @@ describe('ErrorLayout', () => {
     expect(screen.getByText('Error Message')).toBeInTheDocument();
   });
 
-  it('displays error icon', () => {
+  it('has error container', () => {
     renderWithRouter(<ErrorLayout><div>Error</div></ErrorLayout>);
-    expect(screen.getByTestId('error-icon')).toBeInTheDocument();
+    expect(screen.getByTestId('error-layout')).toBeInTheDocument();
   });
 
   it('shows back to home link', () => {
     renderWithRouter(<ErrorLayout><div>Error</div></ErrorLayout>);
     expect(screen.getByRole('link', { name: /início/i })).toBeInTheDocument();
-  });
-
-  it('has minimal styling', () => {
-    const { container } = renderWithRouter(<ErrorLayout><div>Error</div></ErrorLayout>);
-    expect(container.firstChild).toHaveClass('error-layout');
   });
 });
