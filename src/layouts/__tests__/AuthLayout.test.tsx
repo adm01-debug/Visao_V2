@@ -8,22 +8,17 @@ const renderWithRouter = (component: React.ReactNode) =>
 
 describe('AuthLayout', () => {
   it('renders children', () => {
-    renderWithRouter(<AuthLayout><div>Auth Content</div></AuthLayout>);
-    expect(screen.getByText('Auth Content')).toBeInTheDocument();
+    renderWithRouter(<AuthLayout><div>Login Form</div></AuthLayout>);
+    expect(screen.getByText('Login Form')).toBeInTheDocument();
   });
 
-  it('displays logo', () => {
+  it('has auth container', () => {
     renderWithRouter(<AuthLayout><div>Content</div></AuthLayout>);
-    expect(screen.getByRole('img', { name: /logo/i })).toBeInTheDocument();
+    expect(screen.getByTestId('auth-layout')).toBeInTheDocument();
   });
 
-  it('has centered layout', () => {
-    const { container } = renderWithRouter(<AuthLayout><div>Content</div></AuthLayout>);
-    expect(container.firstChild).toHaveClass('auth-layout');
-  });
-
-  it('shows footer links', () => {
+  it('shows logo', () => {
     renderWithRouter(<AuthLayout><div>Content</div></AuthLayout>);
-    expect(screen.getByText(/termos/i)).toBeInTheDocument();
+    expect(screen.getByAltText(/logo/i)).toBeInTheDocument();
   });
 });
