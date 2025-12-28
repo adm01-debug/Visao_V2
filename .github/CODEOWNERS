@@ -1,13 +1,34 @@
-# Default owners
+# CODEOWNERS - vis-o Project
+
+# Global owners - All files
 * @adm01-debug
 
 # Frontend
 /src/components/ @adm01-debug
 /src/pages/ @adm01-debug
 /src/hooks/ @adm01-debug
+/src/styles/ @adm01-debug
 
-# Backend
+# Backend / API
+/src/services/ @adm01-debug
+/src/integrations/ @adm01-debug
+/src/middleware/ @adm01-debug
 /supabase/ @adm01-debug
 
-# Docs
+# Infrastructure
+/.github/ @adm01-debug
+/docker/ @adm01-debug
+/scripts/ @adm01-debug
+
+# Security
+/src/lib/auth.ts @adm01-debug
+/src/lib/encryption.ts @adm01-debug
+/src/lib/csrf.ts @adm01-debug
+
+# Documentation
 /docs/ @adm01-debug
+*.md @adm01-debug
+
+# Configuration
+*.config.* @adm01-debug
+*.json @adm01-debug
