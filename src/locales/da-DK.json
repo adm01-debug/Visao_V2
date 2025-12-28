@@ -1,0 +1,66 @@
+{
+  "common": {
+    "loading": "Indlæser...",
+    "error": "Fejl",
+    "success": "Succes",
+    "cancel": "Annuller",
+    "save": "Gem",
+    "delete": "Slet",
+    "edit": "Rediger",
+    "add": "Tilføj",
+    "search": "Søg",
+    "filter": "Filter",
+    "export": "Eksporter",
+    "import": "Importer",
+    "settings": "Indstillinger",
+    "logout": "Log ud",
+    "login": "Log ind",
+    "yes": "Ja",
+    "no": "Nej",
+    "confirm": "Bekræft",
+    "back": "Tilbage",
+    "next": "Næste",
+    "previous": "Forrige",
+    "close": "Luk",
+    "open": "Åbn"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "cameras": "Kameraer",
+    "alerts": "Alarmer",
+    "people": "Personer",
+    "reports": "Rapporter",
+    "analytics": "Analyse",
+    "settings": "Indstillinger",
+    "recordings": "Optagelser"
+  },
+  "cameras": {
+    "title": "Kameraer",
+    "add": "Tilføj kamera",
+    "edit": "Rediger kamera",
+    "delete": "Slet kamera",
+    "name": "Navn",
+    "url": "URL",
+    "status": "Status",
+    "online": "Online",
+    "offline": "Offline",
+    "recording": "Optager"
+  },
+  "alerts": {
+    "title": "Alarmer",
+    "new": "Ny alarm",
+    "type": "Type",
+    "severity": "Alvorlighed",
+    "timestamp": "Tidspunkt",
+    "camera": "Kamera",
+    "resolved": "Løst",
+    "pending": "Afventer"
+  },
+  "auth": {
+    "email": "E-mail",
+    "password": "Adgangskode",
+    "login": "Log ind",
+    "logout": "Log ud",
+    "forgotPassword": "Glemt adgangskode?"
+  }
+}
