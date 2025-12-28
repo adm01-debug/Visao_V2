@@ -1,0 +1,66 @@
+{
+  "common": {
+    "loading": "Načítání...",
+    "error": "Chyba",
+    "success": "Úspěch",
+    "cancel": "Zrušit",
+    "save": "Uložit",
+    "delete": "Smazat",
+    "edit": "Upravit",
+    "add": "Přidat",
+    "search": "Hledat",
+    "filter": "Filtr",
+    "export": "Export",
+    "import": "Import",
+    "settings": "Nastavení",
+    "logout": "Odhlásit",
+    "login": "Přihlásit",
+    "yes": "Ano",
+    "no": "Ne",
+    "confirm": "Potvrdit",
+    "back": "Zpět",
+    "next": "Další",
+    "previous": "Předchozí",
+    "close": "Zavřít",
+    "open": "Otevřít"
+  },
+  "navigation": {
+    "dashboard": "Přehled",
+    "cameras": "Kamery",
+    "alerts": "Výstrahy",
+    "people": "Osoby",
+    "reports": "Sestavy",
+    "analytics": "Analytika",
+    "settings": "Nastavení",
+    "recordings": "Nahrávky"
+  },
+  "cameras": {
+    "title": "Kamery",
+    "add": "Přidat kameru",
+    "edit": "Upravit kameru",
+    "delete": "Smazat kameru",
+    "name": "Název",
+    "url": "URL",
+    "status": "Stav",
+    "online": "Online",
+    "offline": "Offline",
+    "recording": "Nahrávání"
+  },
+  "alerts": {
+    "title": "Výstrahy",
+    "new": "Nová výstraha",
+    "type": "Typ",
+    "severity": "Závažnost",
+    "timestamp": "Čas",
+    "camera": "Kamera",
+    "resolved": "Vyřešeno",
+    "pending": "Nevyřízeno"
+  },
+  "auth": {
+    "email": "E-mail",
+    "password": "Heslo",
+    "login": "Přihlásit",
+    "logout": "Odhlásit",
+    "forgotPassword": "Zapomenuté heslo?"
+  }
+}
