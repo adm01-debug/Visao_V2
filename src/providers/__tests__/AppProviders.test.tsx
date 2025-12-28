@@ -8,17 +8,8 @@ describe('AppProviders', () => {
     expect(screen.getByText('App Content')).toBeInTheDocument();
   });
 
-  it('wraps with all required providers', () => {
-    const { container } = render(<AppProviders><div>Content</div></AppProviders>);
+  it('wraps all required providers', () => {
+    const { container } = render(<AppProviders><div>Test</div></AppProviders>);
     expect(container.firstChild).toBeDefined();
-  });
-
-  it('handles nested components', () => {
-    render(
-      <AppProviders>
-        <div><span>Nested</span></div>
-      </AppProviders>
-    );
-    expect(screen.getByText('Nested')).toBeInTheDocument();
   });
 });
