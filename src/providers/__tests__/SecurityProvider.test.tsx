@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { SecurityProvider, useSecurity } from '@/providers/SecurityProvider';
 
 const TestComponent = () => {
-  const { csrfToken, isSecure } = useSecurity();
-  return <div data-testid="security">{isSecure ? 'Secure' : 'Insecure'}</div>;
+  const { isAuthenticated } = useSecurity();
+  return <div>{isAuthenticated ? 'Logged In' : 'Guest'}</div>;
 };
 
 describe('SecurityProvider', () => {
@@ -15,11 +15,6 @@ describe('SecurityProvider', () => {
 
   it('provides security context', () => {
     render(<SecurityProvider><TestComponent /></SecurityProvider>);
-    expect(screen.getByTestId('security')).toBeInTheDocument();
-  });
-
-  it('provides CSRF token', () => {
-    render(<SecurityProvider><TestComponent /></SecurityProvider>);
-    expect(screen.getByTestId('security')).toBeDefined();
+    expect(screen.getByText(/guest|logged in/i)).toBeInTheDocument();
   });
 });
