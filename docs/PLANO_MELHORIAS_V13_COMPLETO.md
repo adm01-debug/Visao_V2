@@ -2,8 +2,9 @@
 
 > **Projeto:** vis-o (Sistema de Vigilância com IA)  
 > **Data:** 28/12/2025  
-> **Versão:** 13.0  
-> **Total de Melhorias Identificadas:** 267 itens
+> **Versão:** 13.1 (Atualizado - Sem i18n)  
+> **Idioma:** Português do Brasil (exclusivo)  
+> **Total de Melhorias Identificadas:** 256 itens
 
 ---
 
@@ -13,7 +14,7 @@
 
 | Categoria | Existentes | Com Testes | Sem Testes | % Cobertura |
 |-----------|------------|------------|------------|-------------|
-| Components | 150 | 101 | 49 | 67.3% |
+| Components | 149 | 100 | 49 | 67.1% |
 | Hooks | 116 | 48 | 68 | 41.4% |
 | Services | 35 | 33 | 2 | 94.3% |
 | Stores | 21 | 21 | 0 | 100% |
@@ -25,7 +26,6 @@
 | Providers | 7 | 0 | 7 | 0% |
 | Layouts | 5 | 0 | 5 | 0% |
 | Pages | 23 | 22 | 1 | 95.7% |
-| Locales | 8 | - | 19 faltando | 29.6% |
 | Edge Functions | 9 | 9 | 0 | 100% |
 
 ### Total de Melhorias por Categoria
@@ -40,9 +40,8 @@
 | 6 | Testes de Middlewares | 7 |
 | 7 | Testes de Providers | 7 |
 | 8 | Testes de Layouts | 5 |
-| 9 | Locales (i18n) | 19 |
-| 10 | Arquivos de Configuração | 5 |
-| **TOTAL** | | **275** |
+| 9 | Arquivos de Configuração | 5 |
+| **TOTAL** | | **256** |
 
 ---
 
@@ -116,7 +115,6 @@
 | 47 | Treemap | Treemap | Alta |
 | 48 | TwitterCard | Twitter Card | Baixa |
 | 49 | UpdateBanner | Banner de atualização PWA | Baixa |
-| 50 | WordCloud | Nuvem de palavras | Alta |
 
 ---
 
@@ -216,9 +214,9 @@
 | 63 | useThrottle | Throttle | Baixa |
 | 64 | useTimeout | Timeout | Baixa |
 | 65 | useToggle | Toggle | Baixa |
-| 66 | useTranslation | Tradução | Média |
-| 67 | useUpdateEffect | Update effect | Baixa |
-| 68 | useWindowSize | Tamanho da janela | Baixa |
+| 66 | useUpdateEffect | Update effect | Baixa |
+| 67 | useWindowSize | Tamanho da janela | Baixa |
+| 68 | useWordCloud | Word cloud (removido) | - |
 
 ---
 
@@ -425,33 +423,7 @@
 
 ---
 
-## 📋 FASE 9: LOCALES FALTANTES (19 itens)
-
-| # | Locale | Idioma | Prioridade |
-|---|--------|--------|------------|
-| 1 | pt-BR | Português (Brasil) | Alta |
-| 2 | en-US | Inglês (EUA) | Alta |
-| 3 | es-ES | Espanhol (Espanha) | Alta |
-| 4 | fr-FR | Francês | Alta |
-| 5 | de-DE | Alemão | Média |
-| 6 | it-IT | Italiano | Média |
-| 7 | ja-JP | Japonês | Média |
-| 8 | ko-KR | Coreano | Média |
-| 9 | zh-CN | Chinês Simplificado | Alta |
-| 10 | ru-RU | Russo | Média |
-| 11 | ar-SA | Árabe | Média |
-| 12 | nl-NL | Holandês | Baixa |
-| 13 | pl-PL | Polonês | Baixa |
-| 14 | tr-TR | Turco | Baixa |
-| 15 | vi-VN | Vietnamita | Baixa |
-| 16 | th-TH | Tailandês | Baixa |
-| 17 | hi-IN | Hindi | Baixa |
-| 18 | pt-PT | Português (Portugal) | Média |
-| 19 | zh-TW | Chinês Tradicional | Média |
-
----
-
-## 📋 FASE 10: ARQUIVOS DE CONFIGURAÇÃO (5 itens)
+## 📋 FASE 9: ARQUIVOS DE CONFIGURAÇÃO (5 itens)
 
 | # | Arquivo | Descrição | Prioridade |
 |---|---------|-----------|------------|
@@ -459,7 +431,7 @@
 | 2 | vitest.setup.ts | Setup do Vitest | Alta |
 | 3 | CODEOWNERS | Proprietários de código | Média |
 | 4 | .github/FUNDING.yml | Configuração de funding | Baixa |
-| 5 | src/locales/index.ts | Índice de locales | Alta |
+| 5 | src/config/locale.ts | Configuração PT-BR | Alta |
 
 ---
 
@@ -467,7 +439,7 @@
 
 ### Sprint 1: Fundamentos (Dias 1-3)
 1. Arquivos de configuração (5 itens)
-2. Locales principais pt-BR, en-US, es-ES (3 itens)
+2. Configuração PT-BR hardcoded
 
 ### Sprint 2: Cobertura Core (Dias 4-7)
 3. Testes de Middlewares (7 itens)
@@ -490,9 +462,8 @@
 12. Testes de Hooks - Parte 2 (34 itens)
 13. Testes de Componentes - Parte 1 (25 itens)
 
-### Sprint 7: Componentes e Locales (Dias 36-42)
+### Sprint 7: Componentes Finais (Dias 36-40)
 14. Testes de Componentes - Parte 2 (24 itens)
-15. Locales restantes (16 itens)
 
 ---
 
@@ -502,7 +473,7 @@
 
 | Categoria | Atual | Alvo | Incremento |
 |-----------|-------|------|------------|
-| Components | 67.3% | 100% | +32.7% |
+| Components | 67.1% | 100% | +32.9% |
 | Hooks | 41.4% | 100% | +58.6% |
 | Services | 94.3% | 100% | +5.7% |
 | Libs | 31.0% | 100% | +69.0% |
@@ -511,7 +482,6 @@
 | Middlewares | 0% | 100% | +100% |
 | Providers | 0% | 100% | +100% |
 | Layouts | 0% | 100% | +100% |
-| Locales | 29.6% | 100% | +70.4% |
 
 ### KPIs
 
@@ -519,6 +489,7 @@
 - **Testes passando:** 100%
 - **Tempo médio de build:** <5min
 - **Tempo de testes:** <10min
+- **Idioma:** 100% Português do Brasil
 
 ---
 
@@ -533,21 +504,36 @@
 [ ] Fase 6: Testes de Middlewares (7 itens)
 [ ] Fase 7: Testes de Providers (7 itens)
 [ ] Fase 8: Testes de Layouts (5 itens)
-[ ] Fase 9: Locales (19 itens)
-[ ] Fase 10: Configurações (5 itens)
+[ ] Fase 9: Configurações (5 itens)
 ```
 
 ---
 
 ## 📝 NOTAS IMPORTANTES
 
-1. **Priorização:** Focar primeiro em arquivos de alta utilização
-2. **Testes de integração:** Usar mocks adequados para APIs externas
-3. **i18n:** Manter consistência com estrutura existente
-4. **Performance:** Testes não devem exceder 10s individualmente
-5. **CI/CD:** Garantir que todos os testes passem no pipeline
+1. **Idioma:** Sistema exclusivamente em Português do Brasil
+2. **Sem i18n:** Estrutura de internacionalização removida
+3. **Priorização:** Focar primeiro em arquivos de alta utilização
+4. **Testes de integração:** Usar mocks adequados para APIs externas
+5. **Performance:** Testes não devem exceder 10s individualmente
+6. **CI/CD:** Garantir que todos os testes passem no pipeline
+
+---
+
+## 🗑️ ITENS REMOVIDOS DA VERSÃO ANTERIOR
+
+| Item | Motivo |
+|------|--------|
+| src/locales/*.json (8 arquivos) | Sistema apenas PT-BR |
+| cypress/e2e/localization.cy.ts | Sem i18n |
+| docs/I18N.md | Sem i18n |
+| docs/INTERNATIONALIZATION.md | Sem i18n |
+| LanguageSelector.test.tsx | Componente removido |
+| LanguageSelector.stories.tsx | Componente removido |
+| Fase 9 Locales (19 itens) | Sistema apenas PT-BR |
 
 ---
 
 **Documento gerado automaticamente via análise exaustiva do repositório GitHub**  
-**Última atualização:** 28/12/2025 às 14:45 UTC
+**Última atualização:** 28/12/2025 às 15:00 UTC  
+**Versão:** 13.1 (Sem internacionalização)
