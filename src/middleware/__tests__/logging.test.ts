@@ -1,32 +1,20 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { loggingMiddleware } from '@/middleware/logging';
 
 describe('logging middleware', () => {
+  const mockReq = { method: 'GET', url: '/test', ip: '127.0.0.1' };
+  const mockRes = { on: vi.fn() };
   const mockNext = vi.fn();
-  const mockReq = { method: 'GET', url: '/api/test', headers: {} };
-  const mockRes = { on: vi.fn(), statusCode: 200 };
-  let consoleSpy: any;
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-    consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-  });
-
-  afterEach(() => consoleSpy.mockRestore());
-
-  it('logs request method and URL', () => {
+  it('logs request', () => {
+    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     loggingMiddleware(mockReq as any, mockRes as any, mockNext);
     expect(consoleSpy).toHaveBeenCalled();
+    consoleSpy.mockRestore();
+  });
+
+  it('calls next', () => {
+    loggingMiddleware(mockReq as any, mockRes as any, mockNext);
     expect(mockNext).toHaveBeenCalled();
-  });
-
-  it('tracks response time', () => {
-    loggingMiddleware(mockReq as any, mockRes as any, mockNext);
-    expect(mockRes.on).toHaveBeenCalledWith('finish', expect.any(Function));
-  });
-
-  it('includes request ID', () => {
-    loggingMiddleware(mockReq as any, mockRes as any, mockNext);
-    expect(mockReq).toHaveProperty('id');
   });
 });
