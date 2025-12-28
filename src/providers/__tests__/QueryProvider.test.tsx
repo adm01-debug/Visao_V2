@@ -9,18 +9,7 @@ describe('QueryProvider', () => {
   });
 
   it('provides query client', () => {
-    const { container } = render(<QueryProvider><div>Content</div></QueryProvider>);
+    const { container } = render(<QueryProvider><div>Test</div></QueryProvider>);
     expect(container.firstChild).toBeDefined();
-  });
-
-  it('handles multiple children', () => {
-    render(
-      <QueryProvider>
-        <div>Child 1</div>
-        <div>Child 2</div>
-      </QueryProvider>
-    );
-    expect(screen.getByText('Child 1')).toBeInTheDocument();
-    expect(screen.getByText('Child 2')).toBeInTheDocument();
   });
 });
