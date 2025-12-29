@@ -36,6 +36,7 @@ const LicensePlatePage = lazy(() => import('@/pages/LicensePlatePage'));
 const TelegramSettingsPage = lazy(() => import('@/pages/TelegramSettingsPage'));
 const ReportsPage = lazy(() => import('@/pages/ReportsPage'));
 const PPEPage = lazy(() => import('@/pages/PPEPage'));
+const AcessoNegado = lazy(() => import('@/pages/AcessoNegado'));
 
 // Loading fallback
 function PageLoader() {
@@ -116,6 +117,9 @@ export function AppRoutes() {
           <Route path="/login" element={<Navigate to="/auth" replace />} />
           
           {/* 404 */}
+
+          {/* Página de Acesso Negado */}
+          <Route path="/acesso-negado" element={<AcessoNegado />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
@@ -124,3 +128,4 @@ export function AppRoutes() {
 }
 
 export default AppRoutes;
+
