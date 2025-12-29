@@ -12,5 +12,7 @@ export * from "./CameraContext";
 export * from "./NotificationContext";
 export * from "./SettingsContext";
 export * from "./ThemeProvider";
+export * from "./ThemeContext";
 export * from "./UserContext";
 export * from "./accessibility";
+
