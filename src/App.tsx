@@ -32,6 +32,7 @@ const StreamSettingsPage = lazy(() => import("@/pages/StreamSettingsPage"));
 const TelegramSettingsPage = lazy(() => import("@/pages/TelegramSettingsPage"));
 const NotificationSettingsPage = lazy(() => import("@/pages/NotificationSettingsPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
+const AcessoNegado = lazy(() => import("@/pages/AcessoNegado"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -84,6 +85,7 @@ const App = () => (
                   <Route path="/stream-settings" element={<ProtectedRoute><StreamSettingsPage /></ProtectedRoute>} />
                   <Route path="/telegram-settings" element={<ProtectedRoute><TelegramSettingsPage /></ProtectedRoute>} />
                   <Route path="/notification-settings" element={<ProtectedRoute><NotificationSettingsPage /></ProtectedRoute>} />
+                  <Route path="/acesso-negado" element={<AcessoNegado />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
@@ -96,3 +98,4 @@ const App = () => (
 );
 
 export default App;
+
