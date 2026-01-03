@@ -1,6 +1,5 @@
-import { memo, formatDate, formatNumber } from "@/lib/formatters";
-import { memo, Badge } from '@/components/ui/badge';
-import { memo, 
+import { Badge } from '@/components/ui/badge';
+import { 
   AlertTriangle, 
   Shield, 
   Clock, 
@@ -9,10 +8,10 @@ import { memo,
   Cog,
   BarChart3
 } from 'lucide-react';
-import { memo, cn } from '@/lib/utils';
-import { memo, formatDistanceToNow } from 'date-fns';
-import { memo, ptBR } from 'date-fns/locale';
-import { memo, HighlightText } from './HighlightText';
+import { cn } from '@/lib/utils';
+import { formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { HighlightText } from './HighlightText';
 
 export type AlertType = 'security' | 'safety' | 'operations' | 'access' | 'analytics';
 export type AlertSeverity = 'low' | 'medium' | 'high' | 'critical';
