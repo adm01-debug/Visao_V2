@@ -1,45 +1,162 @@
-# ♿ Acessibilidade - VISÃO
+# ♿ Accessibility Guide - Projeto VISÃO
 
-## Padrões WCAG 2.1 AA
+## Acessibilidade (A11y)
 
-### Navegação
-- Skip links implementados
-- Focus visível em todos elementos
-- Navegação por teclado completa
+---
 
-### Semântica
-- Landmarks ARIA (main, nav, etc)
-- Headings hierárquicos
-- Labels em todos os forms
+## 1. WCAG 2.1 Compliance
 
-### Visual
-- Contraste mínimo 4.5:1
-- Tamanho de fonte ajustável
-- Modo escuro acessível
+| Nível | Status |
+|-------|--------|
+| A | ✅ Completo |
+| AA | ✅ Completo |
+| AAA | 🔄 Parcial |
 
-### Interação
-- Áreas de clique mínimo 44px
-- Estados de hover/focus claros
-- Feedback de ações
+---
 
-## Componentes Acessíveis
+## 2. ARIA Labels
 
-- `SkipLink` - Pular navegação
-- `VisuallyHidden` - Texto só para leitores
-- `aria-labels` em todas as páginas
+```tsx
+<button
+  aria-label="Pausar gravação"
+  aria-pressed={isPaused}
+>
+  <PauseIcon aria-hidden="true" />
+</button>
 
-## Testes
+<table role="table" aria-label="Lista de alertas">
+  <thead role="rowgroup">
+    <tr role="row">
+      <th role="columnheader">Tipo</th>
+    </tr>
+  </thead>
+</table>
+```
+
+---
+
+## 3. Navegação por Teclado
+
+| Tecla | Ação |
+|-------|------|
+| Tab | Próximo elemento |
+| Shift+Tab | Elemento anterior |
+| Enter | Ativar |
+| Escape | Fechar modal |
+| Arrow keys | Navegar em listas |
+
+### Focus Visible
+
+```css
+*:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+```
+
+---
+
+## 4. Contraste de Cores
+
+| Combinação | Ratio | Status |
+|------------|-------|--------|
+| Text/Background | 7:1 | ✅ AAA |
+| Large text | 4.5:1 | ✅ AA |
+| UI Components | 3:1 | ✅ AA |
+
+---
+
+## 5. Screen Readers
+
+### Live Regions
+
+```tsx
+<div
+  role="alert"
+  aria-live="assertive"
+  aria-atomic="true"
+>
+  {alertMessage}
+</div>
+
+<div
+  aria-live="polite"
+  aria-busy={isLoading}
+>
+  {status}
+</div>
+```
+
+---
+
+## 6. Formulários
+
+```tsx
+<label htmlFor="camera-name">
+  Nome da Câmera
+  <span aria-hidden="true">*</span>
+</label>
+<input
+  id="camera-name"
+  aria-required="true"
+  aria-invalid={!!errors.name}
+  aria-describedby="name-error"
+/>
+{errors.name && (
+  <span id="name-error" role="alert">
+    {errors.name}
+  </span>
+)}
+```
+
+---
+
+## 7. Imagens
+
+```tsx
+// Informativa
+<img src="alert.png" alt="Alerta de intrusão detectado" />
+
+// Decorativa
+<img src="icon.png" alt="" aria-hidden="true" />
+```
+
+---
+
+## 8. Skip Links
+
+```tsx
+<a href="#main-content" className="skip-link">
+  Pular para conteúdo principal
+</a>
+```
+
+---
+
+## 9. Motion Preferences
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+---
+
+## 10. Testes
 
 ```bash
 # Lighthouse
 npm run lighthouse
 
-# axe-core
-npm run test:a11y
+# Storybook a11y addon
+npm run storybook
+# Verificar aba "Accessibility"
 ```
 
-## Recursos
+---
 
-- [WCAG Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
-- [MDN ARIA](https://developer.mozilla.org/docs/Web/Accessibility/ARIA)
-
+**Última atualização:** 06/01/2026
