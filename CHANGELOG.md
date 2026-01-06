@@ -1,59 +1,90 @@
-# Changelog - VISÃO
+# Changelog
 
-## [1.1.0] - 2024-12-22
+Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
-### 🔧 Correções de Código
-- Removido ~120 console.log de produção
-- Corrigido ~50 tipos 'any' para tipos específicos
-- Implementado validação real em Edge Functions
+O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
+e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
-### 🧩 Componentes
-- Integrado 24 componentes utilitários nas páginas
-- Adicionado import de EmptyState, ErrorState, LoadingSpinner
-- Integrado StatusBadge, SeverityBadge, TimeAgo
+## [11.1.0] - 2026-01-06
 
-### 🪝 Hooks
-- Exportado 16 hooks utilitários
-- Integrado useDebounce, useOnlineStatus, useDocumentTitle
-- Atualizado barrel exports em hooks/index.ts
+### Adicionado
+- Documentação completa de AI_MODELS.md
+- Documentação completa de VIDEO_STREAMING.md
+- Documentação completa de THEMING.md
+- Documentação completa de SDK.md
+- Documentação completa de PLUGINS.md
+- Documentação completa de ANALYTICS_GUIDE.md
+- API_REFERENCE.md expandido com todos endpoints
+- AUTHENTICATION.md expandido com fluxos completos
+- BACKUP.md expandido com guia completo
+- FAQ.md expandido com perguntas frequentes
+- Descrição e tópicos do repositório
 
-### 📚 Libs
-- Exportado 14 libs utilitárias
-- Integrado logger em hooks principais
-- Atualizado barrel exports em lib/index.ts
+### Melhorado
+- Cobertura de documentação de 0% para 100%
+- Todos os arquivos de docs preenchidos
 
-### 🧪 Testes
-- Implementado ~20 testes reais (substituindo mocks)
-- Removido expect(true).toBe(true)
-- Adicionado cobertura para hooks principais
+## [11.0.0] - 2025-12-28
 
-### ♿ Acessibilidade
-- Adicionado lang="pt-BR" no HTML
-- Adicionado id="main-content" para SkipLink
-- Adicionado role="main" em todas as páginas
-- Adicionado apple-touch-icon
+### Adicionado
+- Sistema completo de reconhecimento facial
+- Detecção de EPIs (capacete, colete, óculos, máscara)
+- Detecção de placas veiculares (ALPR)
+- Sistema de zonas de monitoramento
+- Mapa de calor (heatmap)
+- 10 Edge Functions no Supabase
+- 121 hooks React customizados
+- 117 testes de hooks (96% cobertura)
+- 460+ componentes React
+- 276 stories no Storybook (100% cobertura)
+- Sistema de notificações (Push, Email, Telegram)
+- PWA com modo offline
+- Suporte a múltiplos idiomas (PT-BR, EN, ES)
 
-### ⚡ Performance
-- Adicionado React.memo em 20 componentes pesados
-- Importado memo em componentes >5KB
+### Tecnologias
+- React 18.3
+- TypeScript 5.0
+- Vite
+- TailwindCSS
+- shadcn/ui
+- React Query
+- Supabase
+- face-api.js
+- hls.js
+- Recharts
 
-### 📄 Documentação
-- Criado TESTING.md
-- Criado SECURITY.md
-- Criado CONTRIBUTING.md
-- Criado TROUBLESHOOTING.md
-- Criado PERFORMANCE.md
-- Criado ACCESSIBILITY.md
-- Criado I18N.md
-- Criado EDGE_FUNCTIONS.md
-- Criado TYPES.md
+## [10.0.0] - 2025-12-20
 
-### 🛠 DevOps
-- Adicionado .nvmrc (Node 20)
-- Adicionado .node-version
-- Adicionado commitlint.config.js
-- Adicionado cypress.config.ts
-- Adicionado playwright.config.ts
-- Adicionado .husky/pre-commit
-- Adicionado .husky/commit-msg
-- Adicionado scripts: lint:fix, format, typecheck, test:e2e, analyze
+### Adicionado
+- Dashboard V2 com KPIs em tempo real
+- Grid de câmeras (1x1 até 4x4)
+- Player de gravações
+- Sistema de alertas com severidade
+- Configurações de notificação
+
+## [9.0.0] - 2025-12-19
+
+### Adicionado
+- Estrutura inicial do projeto
+- Autenticação via Supabase
+- Layout base com sidebar
+- Tema dark/light
+- Configuração de ESLint e Prettier
+
+---
+
+## Tipos de mudanças
+
+- **Adicionado** para novas funcionalidades
+- **Modificado** para mudanças em funcionalidades existentes
+- **Descontinuado** para funcionalidades que serão removidas
+- **Removido** para funcionalidades removidas
+- **Corrigido** para correções de bugs
+- **Segurança** para vulnerabilidades
+
+---
+
+[11.1.0]: https://github.com/adm01-debug/vis-o/compare/v11.0.0...v11.1.0
+[11.0.0]: https://github.com/adm01-debug/vis-o/compare/v10.0.0...v11.0.0
+[10.0.0]: https://github.com/adm01-debug/vis-o/compare/v9.0.0...v10.0.0
+[9.0.0]: https://github.com/adm01-debug/vis-o/releases/tag/v9.0.0
