@@ -26,6 +26,7 @@ import {
   Settings, 
   Sliders, 
   MessageSquare,
+  Zap,
   type LucideIcon 
 } from "lucide-react";
 import { ROUTES } from "@/constants/routes";
@@ -83,6 +84,12 @@ export const sidebarCategories: SidebarCategory[] = [
         href: ROUTES.ALERTS,
         icon: Bell,
         badge: 3, // Dynamic badge example
+      },
+      {
+        id: "automation-rules",
+        label: "Automação",
+        href: ROUTES.AUTOMATION_RULES,
+        icon: Zap,
       },
       {
         id: "security-rules",

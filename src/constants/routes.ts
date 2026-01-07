@@ -13,6 +13,7 @@ export const ROUTES = {
   ZONES: '/zones',
   PERSONS: '/persons',
   VEHICLES: '/vehicles',
+  AUTOMATION_RULES: '/automation-rules',
 } as const;
 
 export type RouteKey = keyof typeof ROUTES;
