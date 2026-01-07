@@ -1,17 +1,11 @@
-import { ErrorBoundary, useLocalStorage } from "@/hooks";
-import { deepMerge } from '@/lib/objectUtils';
-import { KeyValue } from '@/components/KeyValue';
-import { ConfirmDialog } from '@/components/ConfirmDialog';
-import { isValidEmail } from '@/lib/validators';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { Divider } from '@/components/Divider';
-import { ErrorBoundary, EmptyState, ErrorState, LoadingSpinner, StatusBadge, SeverityBadge, TimeAgo, ConfirmDialog } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Configurações (Completa)
  */
 
-import { ErrorBoundary, useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useTheme } from '@/contexts/ThemeProvider';
+import { THEME_VARIANTS, type ThemeVariant } from '@/types/themes';
 import {
   Settings,
   Bell,
@@ -51,16 +45,16 @@ import {
   Wifi,
   Server,
 } from 'lucide-react';
-import { ErrorBoundary, supabase } from '@/integrations/supabase/client';
-import { ErrorBoundary, Button } from '@/components/ui/button';
-import { ErrorBoundary, Input } from '@/components/ui/input';
-import { ErrorBoundary, Label } from '@/components/ui/label';
-import { ErrorBoundary, Switch } from '@/components/ui/switch';
-import { ErrorBoundary, Slider } from '@/components/ui/slider';
-import { ErrorBoundary, Badge } from '@/components/ui/badge';
-import { ErrorBoundary, Skeleton } from '@/components/ui/skeleton';
-import { ErrorBoundary, Separator } from '@/components/ui/separator';
-import { ErrorBoundary, Progress } from '@/components/ui/progress';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Separator } from '@/components/ui/separator';
+import { Progress } from '@/components/ui/progress';
 import {
   Select,
   SelectContent,
@@ -91,12 +85,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { ErrorBoundary, ScrollArea } from '@/components/ui/scroll-area';
-import { ErrorBoundary, cn } from '@/lib/utils';
-import { ErrorBoundary, useSettings } from '@/hooks/useSettings';
-import { ErrorBoundary, format } from 'date-fns';
-import { ErrorBoundary, ptBR } from 'date-fns/locale';
-import { ErrorBoundary, toast } from 'sonner';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { cn } from '@/lib/utils';
+import { useSettings } from '@/hooks/useSettings';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { toast } from 'sonner';
+import { Palette, Check } from 'lucide-react';
 
 // ============================================
 // TIPOS
@@ -212,6 +207,7 @@ function SettingRow({ label, description, children }: SettingRowProps) {
 
 export function SettingsPage() {
   const { settings, updateSettings, resetSettings, loading: settingsLoading } = useSettings();
+  const { mode, variant, setMode, setVariant } = useTheme();
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -581,10 +577,10 @@ export function SettingsPage() {
 
             <Separator />
 
-            <SettingRow label="Tema" description="Aparência visual">
+            <SettingRow label="Modo de Aparência" description="Tema claro, escuro ou automático">
               <Select
-                value={generalSettings.theme}
-                onValueChange={(v) => setGeneralSettings(prev => ({ ...prev, theme: v as unknown }))}
+                value={mode}
+                onValueChange={(v) => setMode(v as 'light' | 'dark' | 'system')}
               >
                 <SelectTrigger className="w-36">
                   <SelectValue />
@@ -602,6 +598,62 @@ export function SettingsPage() {
                 </SelectContent>
               </Select>
             </SettingRow>
+
+            <Separator />
+
+            {/* Seletor de Variantes de Tema */}
+            <div className="space-y-3 py-2">
+              <div className="flex items-center gap-2">
+                <Palette className="w-4 h-4 text-muted-foreground" />
+                <Label className="text-sm font-medium">Variante do Tema</Label>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Escolha a paleta de cores ideal para seu ambiente de trabalho
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
+                {THEME_VARIANTS.map(themeVariant => (
+                  <button
+                    key={themeVariant.id}
+                    onClick={() => setVariant(themeVariant.id)}
+                    className={cn(
+                      'relative flex items-start gap-3 p-3 rounded-lg border-2 text-left transition-all',
+                      variant === themeVariant.id
+                        ? 'border-primary bg-primary/10'
+                        : 'border-border hover:border-primary/50'
+                    )}
+                  >
+                    {/* Preview Colors */}
+                    <div
+                      className="w-10 h-10 rounded-lg flex items-center justify-center text-lg shrink-0"
+                      style={{ backgroundColor: themeVariant.previewColors.background }}
+                    >
+                      <div
+                        className="w-4 h-4 rounded-full"
+                        style={{ backgroundColor: themeVariant.previewColors.primary }}
+                      />
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">{themeVariant.icon}</span>
+                        <span className="font-medium text-sm">{themeVariant.name}</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
+                        {themeVariant.description}
+                      </p>
+                    </div>
+
+                    {variant === themeVariant.id && (
+                      <div className="absolute top-2 right-2">
+                        <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                          <Check className="h-3 w-3 text-primary-foreground" />
+                        </div>
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             <Separator />
 
