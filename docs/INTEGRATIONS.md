@@ -4,156 +4,128 @@
 
 ---
 
-## 1. Notificações
+## 1. Telegram
 
-### Telegram
+### Configuração
 ```typescript
-// Configurar bot
-const telegram = {
+const telegramConfig = {
   botToken: 'YOUR_BOT_TOKEN',
-  chatId: '123456789',
+  chatIds: ['123456789', '-100123456789'],
+  alertTypes: ['intrusion', 'blacklist', 'ppe_missing'],
 };
-
-// Enviar alerta
-await sendTelegramAlert(alert, telegram);
 ```
 
-### Email (Resend)
+### Comandos do Bot
+| Comando | Descrição |
+|---------|-----------|
+| `/start` | Iniciar bot |
+| `/status` | Status do sistema |
+| `/cameras` | Listar câmeras |
+| `/alerts` | Últimos alertas |
+
+---
+
+## 2. Email (Resend)
+
 ```typescript
-await resend.emails.send({
+const emailConfig = {
+  apiKey: 'YOUR_RESEND_KEY',
   from: 'alerts@visao.app',
-  to: 'user@example.com',
-  subject: `Alerta: ${alert.type}`,
-  html: alertTemplate(alert),
-});
-```
-
-### Push Notifications
-```typescript
-await webpush.sendNotification(subscription, JSON.stringify({
-  title: 'Novo Alerta',
-  body: alert.message,
-  icon: '/icon.png',
-}));
+  templates: {
+    alert: 'tmpl_alert_v1',
+    report: 'tmpl_report_v1',
+  },
+};
 ```
 
 ---
 
-## 2. Storage
+## 3. Push Notifications
 
-### Supabase Storage
 ```typescript
-const { data } = await supabase.storage
-  .from('recordings')
-  .upload(`${cameraId}/${timestamp}.mp4`, file);
-```
+// Service Worker
+navigator.serviceWorker.register('/sw.js');
 
-### AWS S3
-```typescript
-await s3.putObject({
-  Bucket: 'visao-recordings',
-  Key: `${cameraId}/${timestamp}.mp4`,
-  Body: buffer,
-});
+// Solicitar permissão
+Notification.requestPermission();
 ```
 
 ---
 
-## 3. Streaming
+## 4. Webhooks
 
-### MediaMTX
+| Evento | Payload |
+|--------|---------|
+| `alert.created` | Alert object |
+| `recognition.match` | Match object |
+| `zone.violation` | Violation object |
+
+---
+
+## 5. Supabase
+
+### Database
+- PostgreSQL com RLS
+- Realtime subscriptions
+- Edge Functions
+
+### Storage
+- Buckets para gravações
+- CDN integrado
+
+---
+
+## 6. MediaMTX
+
 ```yaml
-# Configuração
-paths:
-  camera1:
-    source: rtsp://192.168.1.100:554/stream
-```
-
-### HLS.js
-```typescript
-const hls = new Hls();
-hls.loadSource('http://mediamtx:8888/camera1/index.m3u8');
-hls.attachMedia(videoElement);
+# Streaming server
+hlsAddress: :8888
+rtspAddress: :8554
+webrtcAddress: :8889
 ```
 
 ---
 
-## 4. Analytics
+## 7. Mapbox
 
-### Google Analytics
 ```typescript
-gtag('event', 'alert_created', {
-  alert_type: alert.type,
-  severity: alert.severity,
-});
-```
-
-### Mixpanel
-```typescript
-mixpanel.track('Recognition Match', {
-  confidence: match.confidence,
-  camera: match.cameraId,
-});
+// Token via Edge Function
+const token = await getMapboxToken();
 ```
 
 ---
 
-## 5. Mapas
+## 8. Face-api.js
 
-### Mapbox
-```typescript
-const map = new mapboxgl.Map({
-  container: 'map',
-  style: 'mapbox://styles/mapbox/dark-v11',
-  center: [-46.63, -23.55],
-  zoom: 12,
-});
-```
+| Modelo | Uso |
+|--------|-----|
+| ssdMobilenetv1 | Detecção |
+| faceLandmark68Net | Landmarks |
+| faceRecognitionNet | Encoding |
 
 ---
 
-## 6. Calendário
+## 9. Slack (via Webhook)
 
-### Google Calendar
 ```typescript
-await calendar.events.insert({
-  calendarId: 'primary',
-  requestBody: {
-    summary: `Alerta: ${alert.type}`,
-    start: { dateTime: alert.timestamp },
-    end: { dateTime: endTime },
-  },
-});
-```
-
----
-
-## 7. Webhooks
-
-### Outgoing
-```typescript
-await fetch(webhookUrl, {
+await fetch(SLACK_WEBHOOK_URL, {
   method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'X-Signature': signature,
-  },
-  body: JSON.stringify(payload),
+  body: JSON.stringify({
+    text: `🚨 Alerta: ${alert.type}`,
+    attachments: [{ image_url: alert.imageUrl }],
+  }),
 });
 ```
 
 ---
 
-## 8. MQTT (IoT)
+## 10. APIs Externas
 
-```typescript
-const client = mqtt.connect('mqtt://broker:1883');
-
-client.subscribe('visao/alerts/#');
-client.on('message', (topic, message) => {
-  handleAlert(JSON.parse(message.toString()));
-});
-```
+| API | Uso |
+|-----|-----|
+| OpenAI | Análise de imagem |
+| Twilio | SMS |
+| SendGrid | Email alternativo |
 
 ---
 
