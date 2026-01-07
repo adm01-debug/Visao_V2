@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { NotificationProvider } from "@/contexts/NotificationContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 
@@ -62,33 +63,35 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <AuthProvider>
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="/dashboard" element={<ProtectedRoute><DashboardV2 /></ProtectedRoute>} />
-                  <Route path="/cameras" element={<ProtectedRoute><CamerasPage /></ProtectedRoute>} />
-                  <Route path="/alerts" element={<ProtectedRoute><AlertsPage /></ProtectedRoute>} />
-                  <Route path="/zones" element={<ProtectedRoute><ZonesPage /></ProtectedRoute>} />
-                  <Route path="/recordings" element={<ProtectedRoute><RecordingsPage /></ProtectedRoute>} />
-                  <Route path="/analytics" element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
-                  <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-                  <Route path="/security" element={<ProtectedRoute><SecurityPage /></ProtectedRoute>} />
-                  <Route path="/face-recognition" element={<ProtectedRoute><FaceRecognitionPage /></ProtectedRoute>} />
-                  <Route path="/license-plate" element={<ProtectedRoute><LicensePlatePage /></ProtectedRoute>} />
-                  <Route path="/heatmap" element={<ProtectedRoute><HeatmapPage /></ProtectedRoute>} />
-                  <Route path="/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
-                  <Route path="/ppe" element={<ProtectedRoute><PPEPage /></ProtectedRoute>} />
-                  <Route path="/people" element={<ProtectedRoute><PeoplePage /></ProtectedRoute>} />
-                  <Route path="/recognition-logs" element={<ProtectedRoute><RecognitionLogsPage /></ProtectedRoute>} />
-                  <Route path="/recognition-analytics" element={<ProtectedRoute><RecognitionAnalyticsPage /></ProtectedRoute>} />
-                  <Route path="/stream-settings" element={<ProtectedRoute><StreamSettingsPage /></ProtectedRoute>} />
-                  <Route path="/telegram-settings" element={<ProtectedRoute><TelegramSettingsPage /></ProtectedRoute>} />
-                  <Route path="/notification-settings" element={<ProtectedRoute><NotificationSettingsPage /></ProtectedRoute>} />
-                  <Route path="/acesso-negado" element={<AcessoNegado />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
+              <NotificationProvider>
+                <Suspense fallback={<PageLoader />}>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="/dashboard" element={<ProtectedRoute><DashboardV2 /></ProtectedRoute>} />
+                    <Route path="/cameras" element={<ProtectedRoute><CamerasPage /></ProtectedRoute>} />
+                    <Route path="/alerts" element={<ProtectedRoute><AlertsPage /></ProtectedRoute>} />
+                    <Route path="/zones" element={<ProtectedRoute><ZonesPage /></ProtectedRoute>} />
+                    <Route path="/recordings" element={<ProtectedRoute><RecordingsPage /></ProtectedRoute>} />
+                    <Route path="/analytics" element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
+                    <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+                    <Route path="/security" element={<ProtectedRoute><SecurityPage /></ProtectedRoute>} />
+                    <Route path="/face-recognition" element={<ProtectedRoute><FaceRecognitionPage /></ProtectedRoute>} />
+                    <Route path="/license-plate" element={<ProtectedRoute><LicensePlatePage /></ProtectedRoute>} />
+                    <Route path="/heatmap" element={<ProtectedRoute><HeatmapPage /></ProtectedRoute>} />
+                    <Route path="/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
+                    <Route path="/ppe" element={<ProtectedRoute><PPEPage /></ProtectedRoute>} />
+                    <Route path="/people" element={<ProtectedRoute><PeoplePage /></ProtectedRoute>} />
+                    <Route path="/recognition-logs" element={<ProtectedRoute><RecognitionLogsPage /></ProtectedRoute>} />
+                    <Route path="/recognition-analytics" element={<ProtectedRoute><RecognitionAnalyticsPage /></ProtectedRoute>} />
+                    <Route path="/stream-settings" element={<ProtectedRoute><StreamSettingsPage /></ProtectedRoute>} />
+                    <Route path="/telegram-settings" element={<ProtectedRoute><TelegramSettingsPage /></ProtectedRoute>} />
+                    <Route path="/notification-settings" element={<ProtectedRoute><NotificationSettingsPage /></ProtectedRoute>} />
+                    <Route path="/acesso-negado" element={<AcessoNegado />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
+              </NotificationProvider>
             </AuthProvider>
           </BrowserRouter>
         </TooltipProvider>

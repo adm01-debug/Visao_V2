@@ -2,10 +2,19 @@ import { UserAvatar } from "@/components/UserAvatar";
 import { NotificationBell } from "@/components/NotificationBell";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { useNotifications } from "@/contexts/NotificationContext";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Volume2, VolumeX } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function Header({ className }: { className?: string }) {
   const isOnline = useOnlineStatus();
+  const { isAlertSoundEnabled, toggleAlertSound } = useNotifications();
 
   return (
     <header className={cn("border-b bg-card/60 backdrop-blur supports-[backdrop-filter]:bg-card/50", className)}>
@@ -31,6 +40,27 @@ export function Header({ className }: { className?: string }) {
             />
             {isOnline ? "Online" : "Offline"}
           </span>
+
+          {/* Sound Toggle */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9"
+                onClick={() => toggleAlertSound(!isAlertSoundEnabled)}
+              >
+                {isAlertSoundEnabled ? (
+                  <Volume2 className="h-4 w-4" />
+                ) : (
+                  <VolumeX className="h-4 w-4 text-muted-foreground" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {isAlertSoundEnabled ? "Som de alertas ativo" : "Som de alertas desativado"}
+            </TooltipContent>
+          </Tooltip>
 
           <NotificationBell />
           <UserAvatar />
