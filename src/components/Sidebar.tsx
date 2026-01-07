@@ -9,6 +9,7 @@
  */
 
 import { memo, useState, useEffect, useCallback, useMemo } from "react";
+import { OfflineIndicator } from "@/components/OfflineIndicator";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -910,21 +911,14 @@ function Sidebar({ className }: SidebarProps) {
           )}
         </Button>
 
-        {/* Status indicator */}
-        <div
-          className={cn(
-            "flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/50",
-            collapsed && !isMobile && "justify-center px-2"
-          )}
-        >
-          <div className="relative">
-            <Activity className="w-4 h-4 text-green-500" />
-            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+        {/* Offline/Online Status indicator */}
+        {collapsed && !isMobile ? (
+          <div className="flex justify-center py-2">
+            <OfflineIndicator variant="minimal" />
           </div>
-          {(!collapsed || isMobile) && (
-            <span className="text-xs text-muted-foreground">Sistema Online</span>
-          )}
-        </div>
+        ) : (
+          <OfflineIndicator variant="full" className="w-full justify-start" />
+        )}
 
         {/* Help */}
         {!collapsed || isMobile ? (
