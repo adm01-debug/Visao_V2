@@ -4,74 +4,51 @@
 
 ---
 
-## 1. Primeiros Passos
+## 1. Fork e Clone
 
 ```bash
-# Fork o repositório
-# Clone seu fork
 git clone https://github.com/SEU_USER/vis-o.git
-
-# Adicione upstream
-git remote add upstream https://github.com/adm01-debug/vis-o.git
-```
-
----
-
-## 2. Setup Local
-
-```bash
 cd vis-o
 npm install
-cp .env.example .env
-npm run dev
 ```
 
 ---
 
-## 3. Criar Branch
+## 2. Criar Branch
 
 ```bash
 git checkout -b feature/minha-feature
 # ou
-git checkout -b fix/correcao-bug
-```
-
-### Convenção de Nomes
-
-| Tipo | Prefixo |
-|------|---------|
-| Feature | `feature/` |
-| Bugfix | `fix/` |
-| Docs | `docs/` |
-| Refactor | `refactor/` |
-
----
-
-## 4. Commits
-
-### Conventional Commits
-
-```bash
-feat: adiciona reconhecimento de placas
-fix: corrige delay no streaming
-docs: atualiza README
-refactor: melhora performance do hook
-test: adiciona testes para alerts
+git checkout -b fix/meu-bugfix
 ```
 
 ---
 
-## 5. Antes do PR
+## 3. Convenções de Commit
+
+| Tipo | Uso |
+|------|-----|
+| `feat:` | Nova feature |
+| `fix:` | Correção de bug |
+| `docs:` | Documentação |
+| `style:` | Formatação |
+| `refactor:` | Refatoração |
+| `test:` | Testes |
+| `chore:` | Manutenção |
+
+---
+
+## 4. Antes do PR
 
 ```bash
 # Lint
 npm run lint
 
-# Tipos
-npm run typecheck
-
 # Testes
 npm run test
+
+# Type check
+npm run typecheck
 
 # Build
 npm run build
@@ -79,74 +56,66 @@ npm run build
 
 ---
 
-## 6. Pull Request
+## 5. Pull Request
 
-1. Push para seu fork
-2. Abra PR para `main`
-3. Preencha o template
-4. Aguarde review
+1. Título descritivo
+2. Descrição do que foi feito
+3. Screenshots se visual
+4. Link para issue (se houver)
 
-### Template PR
+---
 
-```markdown
-## Descrição
-Breve descrição da mudança
+## 6. Code Review
 
-## Tipo
-- [ ] Feature
-- [ ] Bugfix
-- [ ] Docs
-- [ ] Refactor
+- Aguarde 1+ aprovação
+- Responda comentários
+- Faça alterações solicitadas
 
-## Checklist
-- [ ] Testes passando
-- [ ] Lint sem erros
-- [ ] Documentação atualizada
+---
+
+## 7. Estrutura do Projeto
+
+```
+src/
+├── components/   # Componentes React
+├── hooks/        # Custom hooks
+├── pages/        # Páginas/rotas
+├── services/     # Serviços/APIs
+├── stores/       # Estado global
+└── types/        # TypeScript types
 ```
 
 ---
 
-## 7. Code Review
-
-- Seja respeitoso
-- Explique o "porquê"
-- Sugira melhorias
-- Aprove quando estiver OK
-
----
-
-## 8. Após Merge
+## 8. Testes
 
 ```bash
-git checkout main
-git pull upstream main
-git branch -d feature/minha-feature
+# Unitários
+npm run test
+
+# E2E
+npm run test:e2e
+
+# Cobertura
+npm run coverage
 ```
 
 ---
 
-## 9. Issues
+## 9. Storybook
 
-### Reportar Bug
-- Descreva o problema
-- Passos para reproduzir
-- Comportamento esperado
-- Screenshots/logs
-
-### Sugerir Feature
-- Descreva a feature
-- Caso de uso
-- Mockups (se aplicável)
+```bash
+# Criar story para novo componente
+npm run storybook
+```
 
 ---
 
-## 10. Código de Conduta
+## 10. Dúvidas?
 
-- Seja respeitoso
-- Aceite feedback
-- Ajude outros
-- Mantenha profissionalismo
+- Issues: GitHub Issues
+- Discussões: GitHub Discussions
 
 ---
 
-**Última atualização:** 06/01/2026
+**Obrigado por contribuir! 🎉**
