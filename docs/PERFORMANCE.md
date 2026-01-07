@@ -6,12 +6,12 @@
 
 ## 1. Métricas Alvo
 
-| Métrica | Alvo |
-|---------|------|
-| LCP | < 2.5s |
-| FID | < 100ms |
-| CLS | < 0.1 |
-| TTI | < 3.5s |
+| Métrica | Alvo | Crítico |
+|---------|------|---------|
+| LCP | < 2.5s | > 4s |
+| FID | < 100ms | > 300ms |
+| CLS | < 0.1 | > 0.25 |
+| TTI | < 3.8s | > 7.3s |
 
 ---
 
@@ -20,39 +20,34 @@
 ```typescript
 // Lazy loading de páginas
 const DashboardPage = lazy(() => import('./pages/DashboardV2'));
-const CamerasPage = lazy(() => import('./pages/CamerasPage'));
-
-<Suspense fallback={<PageSkeleton />}>
-  <Routes>
-    <Route path="/" element={<DashboardPage />} />
-    <Route path="/cameras" element={<CamerasPage />} />
-  </Routes>
-</Suspense>
+const AlertsPage = lazy(() => import('./pages/AlertsPage'));
 ```
 
 ---
 
-## 3. React Optimization
+## 3. Memoization
 
-### Memoization
 ```typescript
-const MemoizedComponent = React.memo(({ data }) => {
-  return <div>{data.name}</div>;
-});
+// useMemo para cálculos pesados
+const filteredAlerts = useMemo(() => 
+  alerts.filter(a => a.severity === 'high'),
+  [alerts]
+);
 
-const memoizedValue = useMemo(() => {
-  return expensiveCalculation(data);
-}, [data]);
-
-const memoizedCallback = useCallback(() => {
-  handleAction(id);
-}, [id]);
+// useCallback para funções
+const handleClick = useCallback(() => {
+  // ...
+}, [dependency]);
 ```
 
-### Virtual Lists
-```typescript
+---
+
+## 4. Virtual Scrolling
+
+```tsx
 import { useVirtualizer } from '@tanstack/react-virtual';
 
+// Para listas longas (100+ itens)
 const virtualizer = useVirtualizer({
   count: items.length,
   getScrollElement: () => parentRef.current,
@@ -62,106 +57,71 @@ const virtualizer = useVirtualizer({
 
 ---
 
-## 4. Bundle Size
+## 5. Image Optimization
 
-```bash
-# Analisar bundle
-npm run build -- --analyze
-
-# Verificar tamanho
-npm run size
-```
-
-### Limites
-
-| Chunk | Limite |
-|-------|--------|
-| Main | < 200KB |
-| Vendor | < 500KB |
-| Total | < 1MB |
-
----
-
-## 5. Imagens
-
-```typescript
+```tsx
 // Lazy loading
-<img loading="lazy" src={url} alt={alt} />
+<img loading="lazy" src={url} />
 
-// Responsive
+// WebP format
 <picture>
-  <source media="(min-width: 1024px)" srcSet={large} />
-  <source media="(min-width: 640px)" srcSet={medium} />
-  <img src={small} alt={alt} />
+  <source srcset={webpUrl} type="image/webp" />
+  <img src={jpgUrl} />
 </picture>
 ```
 
 ---
 
-## 6. Caching
+## 6. Bundle Size
 
-### React Query
-```typescript
-const { data } = useQuery({
-  queryKey: ['cameras'],
-  queryFn: fetchCameras,
-  staleTime: 5 * 60 * 1000, // 5 min
-  cacheTime: 30 * 60 * 1000, // 30 min
-});
-```
+```bash
+# Analisar bundle
+npm run build -- --analyze
 
-### Service Worker
-```typescript
-// PWA caching
-workbox.precaching.precacheAndRoute([
-  { url: '/index.html', revision: 'v1' },
-  { url: '/models/ssd_mobilenetv1.weights', revision: 'v1' },
-]);
+# Limite recomendado
+- Initial JS: < 200KB
+- Vendor: < 500KB
 ```
 
 ---
 
-## 7. Streaming
+## 7. Streaming Otimizado
 
-### Adaptive Bitrate
-```typescript
-const hls = new Hls({
-  abrEwmaDefaultEstimate: 500000,
-  abrMaxWithRealBitrate: true,
-});
-```
-
-### Canvas Optimization
-```typescript
-const ctx = canvas.getContext('2d', {
-  alpha: false,
-  desynchronized: true,
-});
-```
+| Técnica | Benefício |
+|---------|-----------|
+| Adaptive bitrate | Qualidade dinâmica |
+| Hardware decode | Menor CPU |
+| Buffer tuning | Menos stalls |
 
 ---
 
 ## 8. Database
 
-### Índices
 ```sql
+-- Índices importantes
 CREATE INDEX idx_alerts_created ON alerts(created_at DESC);
-CREATE INDEX idx_recognition_camera ON recognition_logs(camera_id, created_at);
-```
-
-### Query Optimization
-```typescript
-// Paginação
-const { data } = await supabase
-  .from('alerts')
-  .select('*')
-  .order('created_at', { ascending: false })
-  .range(0, 19);
+CREATE INDEX idx_alerts_severity ON alerts(severity);
 ```
 
 ---
 
-## 9. Monitoring
+## 9. Caching
+
+```typescript
+// React Query cache
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 min
+      cacheTime: 30 * 60 * 1000, // 30 min
+    },
+  },
+});
+```
+
+---
+
+## 10. Monitoring
 
 ```typescript
 // Web Vitals
