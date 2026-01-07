@@ -120,6 +120,7 @@ export * from "./ReportsPanel";
 export * from "./RichTextEditor";
 export * from "./RuleCard";
 export * from "./RuleEditor";
+export * from "./RuleExecutionHistory";
 export * from "./RulesPanel";
 export * from "./SEO";
 export * from "./Sankey";

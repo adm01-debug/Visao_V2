@@ -493,6 +493,60 @@ export type Database = {
         }
         Relationships: []
       }
+      rule_executions: {
+        Row: {
+          actions_executed: string[]
+          alert_id: string | null
+          created_at: string
+          error_message: string | null
+          execution_time_ms: number | null
+          id: string
+          rule_id: string | null
+          status: string
+          triggered_at: string
+          user_id: string
+        }
+        Insert: {
+          actions_executed?: string[]
+          alert_id?: string | null
+          created_at?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          rule_id?: string | null
+          status?: string
+          triggered_at?: string
+          user_id: string
+        }
+        Update: {
+          actions_executed?: string[]
+          alert_id?: string | null
+          created_at?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          rule_id?: string | null
+          status?: string
+          triggered_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rule_executions_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "alerts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rule_executions_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "rules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rules: {
         Row: {
           actions: Database["public"]["Enums"]["rule_action"][]

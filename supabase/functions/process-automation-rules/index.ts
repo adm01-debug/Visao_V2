@@ -230,25 +230,39 @@ async function executeActions(supabase: any, rule: Rule, alert: Alert): Promise<
   return results;
 }
 
-// Log rule execution
+// Log rule execution to rule_executions table
 // deno-lint-ignore no-explicit-any
-async function logRuleExecution(supabase: any, rule: Rule, alert: Alert, results: ActionResult[]): Promise<void> {
+async function logRuleExecution(supabase: any, rule: Rule, alert: Alert, results: ActionResult[], startTime: number): Promise<void> {
   try {
-    const logData = {
+    const endTime = Date.now();
+    const executionTimeMs = endTime - startTime;
+    
+    const hasErrors = results.some(r => !r.success);
+    const allFailed = results.every(r => !r.success);
+    
+    const status = allFailed ? 'error' : (hasErrors ? 'partial' : 'success');
+    const errorMessage = hasErrors 
+      ? results.filter(r => !r.success).map(r => r.message).join('; ')
+      : null;
+
+    const executionData = {
+      rule_id: rule.id,
       user_id: alert.user_id,
-      camera_id: alert.camera_id,
-      analysis_type: "rule_execution",
-      result: {
-        rule_id: rule.id,
-        rule_name: rule.name,
-        alert_id: alert.id,
-        actions: results,
-        executed_at: new Date().toISOString(),
-      },
-      confidence: results.every(r => r.success) ? 1.0 : 0.5,
+      alert_id: alert.id,
+      triggered_at: new Date().toISOString(),
+      actions_executed: results.map(r => r.action),
+      status,
+      error_message: errorMessage,
+      execution_time_ms: executionTimeMs,
     };
 
-    await supabase.from("analysis_history").insert(logData);
+    const { error } = await supabase.from("rule_executions").insert(executionData);
+    
+    if (error) {
+      console.error("[ERROR] Failed to log rule execution:", error);
+    } else {
+      console.log(`[INFO] Rule execution logged: ${rule.name} - ${status}`);
+    }
   } catch (error) {
     console.error("[ERROR] Failed to log rule execution:", error);
   }
@@ -296,10 +310,11 @@ const handler = async (req: Request): Promise<Response> => {
       if (ruleMatchesAlert(rule, alert)) {
         console.log(`[INFO] Rule "${rule.name}" matched alert ${alert.id}`);
         
+        const startTime = Date.now();
         const results = await executeActions(supabase, rule, alert);
         matchedRules.push({ rule, results });
         
-        await logRuleExecution(supabase, rule, alert, results);
+        await logRuleExecution(supabase, rule, alert, results, startTime);
       }
     }
 
