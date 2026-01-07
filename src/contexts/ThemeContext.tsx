@@ -6,4 +6,5 @@
  */
 
 // Re-export tudo de ThemeProvider para manter compatibilidade de imports
-export * from "./ThemeProvider";
+export { ThemeProvider, useTheme, toggleTheme } from "./ThemeProvider";
+export type { ThemeMode, ThemeVariant, ThemeState } from "./ThemeProvider";

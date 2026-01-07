@@ -1,22 +1,31 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import type { ThemeMode, ThemeVariant, ThemeState } from '@/types/themes';
 
-type Theme = 'light' | 'dark' | 'system';
-
-interface ThemeStore {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
-  toggleTheme: () => void;
+interface ThemeStore extends ThemeState {
+  setMode: (mode: ThemeMode) => void;
+  setVariant: (variant: ThemeVariant) => void;
+  toggle: () => void;
+  reset: () => void;
 }
+
+const defaultState: ThemeState = {
+  mode: 'dark',
+  variant: 'default',
+};
 
 export const useThemeStore = create<ThemeStore>()(
   persist(
-    (set) => ({
-      theme: 'system',
-      setTheme: (theme) => set({ theme }),
-      toggleTheme: () => set((state) => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
+    (set, get) => ({
+      ...defaultState,
+      setMode: (mode) => set({ mode }),
+      setVariant: (variant) => set({ variant }),
+      toggle: () => set((state) => ({ 
+        mode: state.mode === 'dark' ? 'light' : 'dark' 
+      })),
+      reset: () => set(defaultState),
     }),
-    { name: 'theme-store' }
+    { name: 'visao-theme-store' }
   )
 );
 
