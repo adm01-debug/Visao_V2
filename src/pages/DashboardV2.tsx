@@ -568,21 +568,22 @@ export function DashboardV2() {
   }
 
   return (
-    <div role="main" aria-label="Painel de controle principal" className="p-6 space-y-6 overflow-auto h-[calc(100vh-4rem)]">
-      {/* Header com controles */}
-      <div role="main" aria-label="Painel de controle principal" className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p className="text-sm text-muted-foreground">
+    <div className="page-container space-y-4 sm:space-y-6 overflow-auto h-[calc(100vh-4rem)] mb-mobile-nav">
+      {/* Header com controles - responsivo */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold">Dashboard</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground">
             {uiCameras.length} câmeras • {streamingCameras} com streaming
           </p>
         </div>
         
-        <div role="main" aria-label="Painel de controle principal" className="flex items-center gap-2">
-          {/* View mode tabs */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
+          {/* View mode tabs - oculto em mobile pequeno */}
           <Tabs
             value={settings.viewMode}
             onValueChange={(v) => setSettings(s => ({ ...s, viewMode: v as ViewMode }))}
+            className="hidden sm:block"
           >
             <TabsList className="h-9">
               <TabsTrigger value="grid" className="h-7 px-3">
@@ -602,7 +603,7 @@ export function DashboardV2() {
             value={settings.gridLayout}
             onValueChange={(v) => setSettings(s => ({ ...s, gridLayout: v as GridLayout }))}
           >
-            <SelectTrigger className="w-24 h-9">
+            <SelectTrigger className="w-20 sm:w-24 h-9">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -615,12 +616,12 @@ export function DashboardV2() {
           </Select>
 
           {/* Refresh */}
-          <Button aria-label="Ação" variant="outline" size="icon" onClick={handleRefresh}>
+          <Button variant="outline" size="icon" onClick={handleRefresh} className="shrink-0">
             <RefreshCw className="w-4 h-4" />
           </Button>
 
-          {/* Fullscreen */}
-          <Button aria-label="Ação" variant="outline" size="icon" onClick={toggleFullscreen}>
+          {/* Fullscreen - oculto em mobile */}
+          <Button variant="outline" size="icon" onClick={toggleFullscreen} className="hidden sm:inline-flex shrink-0">
             <Maximize2 className="w-4 h-4" />
           </Button>
 
@@ -629,41 +630,41 @@ export function DashboardV2() {
         </div>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats Grid - responsivo com classe utilitária */}
       {settings.showStats && (
-        <div role="main" aria-label="Painel de controle principal" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 animate-fade-in">
+        <div className="stats-grid animate-fade-in">
           <StatsCard
-            title="Câmeras Online"
+            title="Câmeras"
             value={`${onlineCameras}/${uiCameras.length}`}
-            subtitle={`${streamingCameras} com streaming`}
+            subtitle="online"
             icon={Camera}
             variant="primary"
           />
           <StatsCard
-            title="Alertas Ativos"
+            title="Alertas"
             value={activeAlerts}
             subtitle={`${uiAlerts.length} total`}
             icon={AlertTriangle}
             variant="danger"
           />
           <StatsCard
-            title="Pessoas Detectadas"
+            title="Pessoas"
             value={totalPeople}
-            subtitle="Em tempo real"
+            subtitle="detectadas"
             icon={Users}
             variant="default"
           />
           <StatsCard
-            title="Score de Segurança"
+            title="Segurança"
             value="94%"
-            subtitle="Excelente"
+            subtitle="score"
             icon={Shield}
             variant="success"
           />
           <StatsCard
-            title="IA Ativa"
-            value={settings.enableAnalysis ? 'Sim' : 'Não'}
-            subtitle={settings.enableFaceRecognition ? 'Face + Análise' : 'Análise básica'}
+            title="IA"
+            value={settings.enableAnalysis ? 'Ativa' : 'Não'}
+            subtitle={settings.enableFaceRecognition ? 'Face+' : 'Básica'}
             icon={Brain}
             variant={settings.enableAnalysis ? 'success' : 'default'}
           />
