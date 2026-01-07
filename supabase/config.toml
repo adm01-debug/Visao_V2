@@ -17,3 +17,9 @@ verify_jwt = false
 
 [functions.send-alert-notification]
 verify_jwt = false
+
+[functions.analyze-license-plate]
+verify_jwt = false
+
+[functions.process-automation-rules]
+verify_jwt = false

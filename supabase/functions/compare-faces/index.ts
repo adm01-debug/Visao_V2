@@ -6,11 +6,8 @@
  * Usa IA para gerar encoding da face e calcula similaridade com pessoas cadastradas.
  */
 
-import { validateRequest, corsHeaders, errorResponse } from '../_shared/validation.ts';
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.89.0";
-
-import { validateRequest } from "../_shared/validation.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',

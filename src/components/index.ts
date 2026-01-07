@@ -14,6 +14,7 @@ export * from './admin';
 // Main components
 export * from "./A11yAnnouncer";
 export * from "./AIAnalysisPanel";
+export * from "./AutomationRulesManager";
 export * from "./ALPRDashboard";
 export * from "./AccessDenied";
 export * from "./AddressAutocomplete";
