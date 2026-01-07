@@ -121,6 +121,7 @@ export * from "./RichTextEditor";
 export * from "./RuleCard";
 export * from "./RuleEditor";
 export * from "./RuleExecutionHistory";
+export * from "./RuleTemplateSelector";
 export * from "./RulesPanel";
 export * from "./SEO";
 export * from "./Sankey";
