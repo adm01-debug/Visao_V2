@@ -1,7 +1,4 @@
-import { validateRequest, validateImageBase64, corsHeaders, errorResponse } from '../_shared/validation.ts';
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-import { validateRequest } from "../_shared/validation.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
