@@ -1,10 +1,10 @@
 # ♿ Accessibility Guide - Projeto VISÃO
 
-## Acessibilidade (A11y)
+## Conformidade WCAG 2.1
 
 ---
 
-## 1. WCAG 2.1 Compliance
+## 1. Níveis de Conformidade
 
 | Nível | Status |
 |-------|--------|
@@ -23,14 +23,6 @@
 >
   <PauseIcon aria-hidden="true" />
 </button>
-
-<table role="table" aria-label="Lista de alertas">
-  <thead role="rowgroup">
-    <tr role="row">
-      <th role="columnheader">Tipo</th>
-    </tr>
-  </thead>
-</table>
 ```
 
 ---
@@ -43,97 +35,50 @@
 | Shift+Tab | Elemento anterior |
 | Enter | Ativar |
 | Escape | Fechar modal |
-| Arrow keys | Navegar em listas |
+| Arrow Keys | Navegar em listas |
 
-### Focus Visible
+---
 
-```css
-*:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
-}
+## 4. Focus Management
+
+```tsx
+// Focus trap em modais
+import { FocusTrap } from 'focus-trap-react';
+
+<FocusTrap>
+  <Dialog>...</Dialog>
+</FocusTrap>
 ```
 
 ---
 
-## 4. Contraste de Cores
+## 5. Contraste de Cores
 
 | Combinação | Ratio | Status |
 |------------|-------|--------|
 | Text/Background | 7:1 | ✅ AAA |
 | Large text | 4.5:1 | ✅ AA |
-| UI Components | 3:1 | ✅ AA |
+| Icons | 3:1 | ✅ AA |
 
 ---
 
-## 5. Screen Readers
-
-### Live Regions
+## 6. Screen Readers
 
 ```tsx
-<div
-  role="alert"
-  aria-live="assertive"
-  aria-atomic="true"
->
-  {alertMessage}
-</div>
+// Texto apenas para leitores
+<span className="sr-only">
+  Novo alerta de alta severidade
+</span>
 
-<div
-  aria-live="polite"
-  aria-busy={isLoading}
->
-  {status}
+// Live regions
+<div aria-live="polite" aria-atomic="true">
+  {alertCount} novos alertas
 </div>
 ```
 
 ---
 
-## 6. Formulários
-
-```tsx
-<label htmlFor="camera-name">
-  Nome da Câmera
-  <span aria-hidden="true">*</span>
-</label>
-<input
-  id="camera-name"
-  aria-required="true"
-  aria-invalid={!!errors.name}
-  aria-describedby="name-error"
-/>
-{errors.name && (
-  <span id="name-error" role="alert">
-    {errors.name}
-  </span>
-)}
-```
-
----
-
-## 7. Imagens
-
-```tsx
-// Informativa
-<img src="alert.png" alt="Alerta de intrusão detectado" />
-
-// Decorativa
-<img src="icon.png" alt="" aria-hidden="true" />
-```
-
----
-
-## 8. Skip Links
-
-```tsx
-<a href="#main-content" className="skip-link">
-  Pular para conteúdo principal
-</a>
-```
-
----
-
-## 9. Motion Preferences
+## 7. Reduced Motion
 
 ```css
 @media (prefers-reduced-motion: reduce) {
@@ -146,15 +91,45 @@
 
 ---
 
-## 10. Testes
+## 8. Forms Acessíveis
+
+```tsx
+<label htmlFor="camera-name">
+  Nome da câmera
+</label>
+<input
+  id="camera-name"
+  aria-required="true"
+  aria-describedby="name-hint"
+/>
+<span id="name-hint">
+  Nome único para identificação
+</span>
+```
+
+---
+
+## 9. Skip Links
+
+```tsx
+<a href="#main-content" className="skip-link">
+  Pular para conteúdo principal
+</a>
+```
+
+---
+
+## 10. Testing
 
 ```bash
+# Addon Storybook
+@storybook/addon-a11y
+
 # Lighthouse
 npm run lighthouse
 
-# Storybook a11y addon
-npm run storybook
-# Verificar aba "Accessibility"
+# axe-core
+npm run test:a11y
 ```
 
 ---
