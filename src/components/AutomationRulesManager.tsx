@@ -58,6 +58,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useRules, type Rule, type RuleCondition } from '@/hooks/useRules';
 import { useCameras } from '@/hooks/useCameras';
 import { cn } from '@/lib/utils';
+import { RuleTemplateSelector } from './RuleTemplateSelector';
+import { RuleTemplate } from '@/data/ruleTemplates';
 
 const CATEGORIES = [
   { value: 'security', label: 'Segurança', icon: Shield },
@@ -151,6 +153,31 @@ export function AutomationRulesManager() {
   const openCreateDialog = () => {
     setEditingRule(null);
     setFormData(defaultFormData);
+    setIsDialogOpen(true);
+  };
+
+  const handleSelectTemplate = (template: RuleTemplate) => {
+    setEditingRule(null);
+    setFormData({
+      name: template.name,
+      description: template.description,
+      category: template.category,
+      severity: template.severity,
+      conditions: template.conditions.map(c => ({
+        type: c.type,
+        operator: c.operator,
+        value: String(c.value)
+      })),
+      actions: template.actions,
+      cameras: [],
+      schedule: {
+        enabled: false,
+        days: [1, 2, 3, 4, 5],
+        start_time: '08:00',
+        end_time: '18:00',
+      },
+      is_active: true,
+    });
     setIsDialogOpen(true);
   };
 
@@ -297,10 +324,13 @@ export function AutomationRulesManager() {
             Configure ações automáticas baseadas em condições de alertas
           </p>
         </div>
-        <Button onClick={openCreateDialog}>
-          <Plus className="h-4 w-4 mr-2" />
-          Nova Regra
-        </Button>
+        <div className="flex gap-2">
+          <RuleTemplateSelector onSelectTemplate={handleSelectTemplate} />
+          <Button onClick={openCreateDialog}>
+            <Plus className="h-4 w-4 mr-2" />
+            Nova Regra
+          </Button>
+        </div>
       </div>
 
       {/* Rules List */}
