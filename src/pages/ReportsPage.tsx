@@ -4,11 +4,10 @@
  */
 
 import { Helmet } from 'react-helmet-async';
-import { Sidebar } from '@/components/Sidebar';
+import { PageContent } from '@/components/MainLayout';
 import { ReportsPanel } from '@/components/ReportsPanel';
 
 export default function ReportsPage() {
-
   return (
     <>
       <Helmet>
@@ -16,12 +15,9 @@ export default function ReportsPage() {
         <meta name="description" content="Gere relatórios em PDF de alertas, reconhecimento e analytics" />
       </Helmet>
       
-      <div className="flex min-h-screen w-full bg-background">
-        <Sidebar />
-        <main className="flex-1 p-6 overflow-auto">
-          <ReportsPanel />
-        </main>
-      </div>
+      <PageContent>
+        <ReportsPanel />
+      </PageContent>
     </>
   );
 }

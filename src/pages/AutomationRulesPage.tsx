@@ -3,7 +3,7 @@
  * Página de Regras de Automação
  */
 
-import { Sidebar } from "@/components/Sidebar";
+import { PageContent, PageHeader } from "@/components/MainLayout";
 import { AutomationRulesManager } from "@/components/AutomationRulesManager";
 import { RuleExecutionHistory } from "@/components/RuleExecutionHistory";
 import { Zap } from "lucide-react";
@@ -11,40 +11,28 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function AutomationRulesPage() {
   return (
-    <div className="flex min-h-screen bg-background">
-      <Sidebar />
-      <main className="flex-1 overflow-auto">
-        <div className="p-6 space-y-6">
-          {/* Header */}
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <Zap className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold">Regras de Automação</h1>
-              <p className="text-muted-foreground">
-                Configure ações automáticas baseadas em condições de alertas
-              </p>
-            </div>
-          </div>
+    <PageContent>
+      <PageHeader
+        title="Regras de Automação"
+        subtitle="Configure ações automáticas baseadas em condições de alertas"
+        icon={<Zap className="h-5 w-5 text-primary" />}
+      />
 
-          {/* Tabs for Rules and History */}
-          <Tabs defaultValue="rules" className="space-y-4">
-            <TabsList>
-              <TabsTrigger value="rules">Regras</TabsTrigger>
-              <TabsTrigger value="history">Histórico de Execuções</TabsTrigger>
-            </TabsList>
+      {/* Tabs for Rules and History */}
+      <Tabs defaultValue="rules" className="mt-6 space-y-4">
+        <TabsList className="w-full sm:w-auto overflow-x-auto">
+          <TabsTrigger value="rules" className="flex-1 sm:flex-none">Regras</TabsTrigger>
+          <TabsTrigger value="history" className="flex-1 sm:flex-none">Histórico</TabsTrigger>
+        </TabsList>
 
-            <TabsContent value="rules">
-              <AutomationRulesManager />
-            </TabsContent>
+        <TabsContent value="rules">
+          <AutomationRulesManager />
+        </TabsContent>
 
-            <TabsContent value="history">
-              <RuleExecutionHistory />
-            </TabsContent>
-          </Tabs>
-        </div>
-      </main>
-    </div>
+        <TabsContent value="history">
+          <RuleExecutionHistory />
+        </TabsContent>
+      </Tabs>
+    </PageContent>
   );
 }
