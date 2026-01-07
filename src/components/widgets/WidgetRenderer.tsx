@@ -10,6 +10,7 @@ import { PeopleCountWidget } from './PeopleCountWidget';
 import { SystemHealthWidget } from './SystemHealthWidget';
 import { AlertsChartWidget } from './AlertsChartWidget';
 import { CameraMapWidget } from './CameraMapWidget';
+import { motion } from 'framer-motion';
 
 interface WidgetRendererProps {
   widget: WidgetInstance;
@@ -17,6 +18,21 @@ interface WidgetRendererProps {
   onRemove: (id: string) => void;
   onResize: (id: string, size: { cols: number; rows: number }) => void;
 }
+
+const widgetVariants = {
+  hidden: { opacity: 0, scale: 0.95, y: 10 },
+  visible: { 
+    opacity: 1, 
+    scale: 1, 
+    y: 0,
+    transition: { duration: 0.3, ease: 'easeOut' }
+  },
+  exit: { 
+    opacity: 0, 
+    scale: 0.95,
+    transition: { duration: 0.2 }
+  }
+};
 
 export function WidgetRenderer({ 
   widget, 
@@ -57,15 +73,23 @@ export function WidgetRenderer({
   };
 
   return (
-    <WidgetWrapper
-      widget={widget}
-      isEditing={isEditing}
-      onRemove={() => onRemove(widget.id)}
-      onResize={(size) => onResize(widget.id, size)}
-      title={config.title}
-      icon={config.icon}
+    <motion.div
+      variants={widgetVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      layout
     >
-      {renderContent()}
-    </WidgetWrapper>
+      <WidgetWrapper
+        widget={widget}
+        isEditing={isEditing}
+        onRemove={() => onRemove(widget.id)}
+        onResize={(size) => onResize(widget.id, size)}
+        title={config.title}
+        icon={config.icon}
+      >
+        {renderContent()}
+      </WidgetWrapper>
+    </motion.div>
   );
 }
