@@ -6,66 +6,50 @@
 
 ## 1. Autenticação
 
-### JWT Tokens
-- Access token: 1 hora
-- Refresh token: 7 dias
-- Rotação automática
-
-### MFA (Multi-Factor)
-```typescript
-await supabase.auth.mfa.enroll({ factorType: 'totp' });
-```
+| Método | Uso |
+|--------|-----|
+| JWT | API requests |
+| Session | Web app |
+| API Key | Integrações |
 
 ---
 
 ## 2. Row Level Security (RLS)
 
 ```sql
--- Usuários só veem seus dados
+-- Exemplo de política
 CREATE POLICY "Users see own data"
 ON cameras FOR SELECT
 USING (auth.uid() = user_id);
-
--- Admins veem tudo
-CREATE POLICY "Admins see all"
-ON cameras FOR ALL
-USING (is_admin(auth.uid()));
 ```
 
 ---
 
-## 3. Validação de Input
+## 3. HTTPS
 
-```typescript
-import { z } from 'zod';
-
-const cameraSchema = z.object({
-  name: z.string().min(1).max(100),
-  rtspUrl: z.string().url(),
-  location: z.object({
-    lat: z.number().min(-90).max(90),
-    lng: z.number().min(-180).max(180),
-  }).optional(),
-});
-```
-
----
-
-## 4. HTTPS/TLS
-
-- Todas conexões via HTTPS
-- TLS 1.3 mínimo
+- Todas comunicações via HTTPS
+- Certificados TLS 1.3
 - HSTS habilitado
 
 ---
 
-## 5. Content Security Policy
+## 4. Criptografia
 
-```html
-<meta http-equiv="Content-Security-Policy" 
-  content="default-src 'self'; 
-           img-src 'self' blob: data:; 
-           script-src 'self' 'unsafe-inline';">
+| Dado | Método |
+|------|--------|
+| Senhas | bcrypt |
+| Face encodings | AES-256 |
+| API keys | SHA-256 |
+
+---
+
+## 5. Headers de Segurança
+
+```nginx
+add_header X-Frame-Options "SAMEORIGIN";
+add_header X-Content-Type-Options "nosniff";
+add_header X-XSS-Protection "1; mode=block";
+add_header Content-Security-Policy "default-src 'self'";
 ```
 
 ---
@@ -74,34 +58,43 @@ const cameraSchema = z.object({
 
 | Endpoint | Limite |
 |----------|--------|
-| Auth | 10/min |
-| API | 100/min |
-| Recognition | 50/min |
+| `/api/*` | 100/min |
+| `/auth/*` | 10/min |
+| `/recognition` | 50/min |
 
 ---
 
-## 7. Criptografia
+## 7. Validação de Input
 
-### Em Trânsito
-- TLS 1.3
-- Certificate pinning
+```typescript
+import { z } from 'zod';
 
-### Em Repouso
-- AES-256 para dados sensíveis
-- Face encodings criptografados
+const alertSchema = z.object({
+  type: z.enum(['intrusion', 'blacklist']),
+  severity: z.enum(['low', 'medium', 'high', 'critical']),
+  cameraId: z.string().uuid(),
+});
+```
 
 ---
 
-## 8. Auditoria
+## 8. LGPD Compliance
+
+- ✅ Consentimento explícito
+- ✅ Direito ao esquecimento
+- ✅ Exportação de dados
+- ✅ Logs de auditoria
+
+---
+
+## 9. Auditoria
 
 ```sql
--- Log de ações
 CREATE TABLE audit_logs (
   id UUID PRIMARY KEY,
   user_id UUID,
   action TEXT,
   resource TEXT,
-  details JSONB,
   ip_address INET,
   created_at TIMESTAMPTZ
 );
@@ -109,22 +102,11 @@ CREATE TABLE audit_logs (
 
 ---
 
-## 9. Proteções OWASP
-
-| Vulnerabilidade | Proteção |
-|-----------------|----------|
-| SQL Injection | Prepared statements |
-| XSS | Sanitização, CSP |
-| CSRF | Tokens, SameSite |
-| IDOR | RLS, validação |
-
----
-
 ## 10. Reportar Vulnerabilidades
 
 Email: security@visao.app
 
-**Não divulgue publicamente antes de contato.**
+**Não divulgue publicamente** até correção.
 
 ---
 
