@@ -300,6 +300,13 @@
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
 
+  @media (max-width: 640px) {
+    .camera-grid {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+  }
+
   .status-indicator {
     @apply w-2 h-2 rounded-full;
     animation: pulse 2s infinite;
@@ -325,6 +332,92 @@
     height: 2px;
     background: linear-gradient(90deg, transparent, hsl(var(--primary)), transparent);
     animation: scan 3s linear infinite;
+  }
+
+  /* Safe area para dispositivos móveis */
+  .safe-area-inset-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .safe-area-inset-left {
+    padding-left: env(safe-area-inset-left, 0px);
+  }
+
+  .safe-area-inset-right {
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  /* Container responsivo para páginas */
+  .page-container {
+    @apply px-4 py-4 sm:px-6 sm:py-6 lg:px-8;
+  }
+
+  /* Grid responsivo para stats cards */
+  .stats-grid {
+    @apply grid gap-3 sm:gap-4;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 640px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .stats-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .stats-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .stats-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+
+  /* Touch-friendly targets */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Margin bottom para navegação móvel */
+  .mb-mobile-nav {
+    @apply mb-0 md:mb-0;
+  }
+
+  @media (max-width: 767px) {
+    .mb-mobile-nav {
+      margin-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+    }
+  }
+
+  /* Texto truncado responsivo */
+  .text-responsive-truncate {
+    @apply truncate;
+    max-width: 100%;
+  }
+
+  @media (min-width: 640px) {
+    .text-responsive-truncate {
+      max-width: 200px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .text-responsive-truncate {
+      max-width: 300px;
+    }
   }
 }
 

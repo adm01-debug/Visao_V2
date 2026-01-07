@@ -720,28 +720,28 @@ export function CamerasPage() {
   }
 
   return (
-    <div role="main" aria-label="Gerenciamento de câmeras" className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
-      {/* Header */}
-      <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Camera className="w-6 h-6" />
+    <div className="page-container space-y-4 sm:space-y-6 h-[calc(100vh-4rem)] overflow-auto mb-mobile-nav">
+      {/* Header - responsivo */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+            <Camera className="w-5 h-5 sm:w-6 sm:h-6" />
             Câmeras
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             {stats.online} de {stats.total} online
-            {stats.alert > 0 && ` • ${stats.alert} $em alerta`}
+            {stats.alert > 0 && ` • ${stats.alert} em alerta`}
           </p>
         </div>
 
-        <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center gap-2">
-          <Button aria-label="Ação" variant="outline" size="sm" onClick={() => refetch()}>
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Atualizar
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => refetch()} className="text-xs sm:text-sm">
+            <RefreshCw className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Atualizar</span>
           </Button>
-          <Button>
-            <Plus className="w-4 h-4 mr-2" />
-            Adicionar
+          <Button size="sm" className="text-xs sm:text-sm">
+            <Plus className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Adicionar</span>
           </Button>
         </div>
       </div>
