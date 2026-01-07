@@ -1,10 +1,10 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Sidebar com 5 Categorias Animadas + Quick Search (Cmd+K):
- * - Monitoramento (status: câmeras online)
- * - Segurança (status: alertas ativos)
- * - Inteligência (status: análises)
- * - Gestão (status: pessoas/zonas)
+ * - Monitoramento (status: câmeras online) [DADOS REAIS]
+ * - Segurança (status: alertas ativos) [DADOS REAIS]
+ * - Inteligência (status: análises) [DADOS REAIS]
+ * - Gestão (status: pessoas/zonas) [DADOS REAIS]
  * - Configurações (status: sistema)
  */
 
@@ -75,6 +75,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeProvider";
+import { useSidebarStatus, type SidebarStatus } from "@/hooks/useSidebarStatus";
 
 // ============================================
 // TIPOS
@@ -229,37 +230,40 @@ CategoryStatusIndicator.displayName = "CategoryStatusIndicator";
 // CONFIGURAÇÃO - 5 CATEGORIAS COM STATUS
 // ============================================
 
-const createSidebarCategories = (alertCount: number, camerasOnline: number): NavCategory[] => [
+const createSidebarCategories = (status: SidebarStatus): NavCategory[] => [
   {
     id: "monitoring",
     label: "Monitoramento",
     icon: Camera,
     items: [
       { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-      { id: "cameras", label: "Câmeras", icon: Camera, path: "/cameras" },
+      { id: "cameras", label: "Câmeras", icon: Camera, path: "/cameras", badge: status.totalCameras > 0 ? `${status.onlineCameras}/${status.totalCameras}` : undefined },
       { id: "recordings", label: "Gravações", icon: Video, path: "/recordings" },
     ],
-    getStatus: () => ({
-      type: camerasOnline > 0 ? "success" : "neutral",
-      label: camerasOnline > 0 ? "Online" : "Offline",
-      count: camerasOnline,
-      pulse: camerasOnline > 0,
-    }),
+    getStatus: () => {
+      const ratio = status.totalCameras > 0 ? status.onlineCameras / status.totalCameras : 0;
+      return {
+        type: ratio >= 0.8 ? "success" : ratio >= 0.5 ? "warning" : status.totalCameras > 0 ? "danger" : "neutral",
+        label: status.totalCameras > 0 ? `${status.onlineCameras}/${status.totalCameras}` : "Sem câmeras",
+        count: status.onlineCameras,
+        pulse: ratio < 0.5 && status.totalCameras > 0,
+      };
+    },
   },
   {
     id: "security",
     label: "Segurança",
     icon: Shield,
     items: [
-      { id: "alerts", label: "Alertas", icon: Bell, path: "/alerts", badge: 0, badgeVariant: "destructive" },
-      { id: "security-rules", label: "Regras", icon: Shield, path: "/security" },
+      { id: "alerts", label: "Alertas", icon: Bell, path: "/alerts", badge: status.unreadAlerts > 0 ? status.unreadAlerts : undefined, badgeVariant: "destructive" as const },
+      { id: "security-rules", label: "Regras", icon: Shield, path: "/security", badge: status.activeRules > 0 ? status.activeRules : undefined },
       { id: "ppe", label: "EPIs", icon: HardHat, path: "/ppe" },
     ],
     getStatus: () => ({
-      type: alertCount > 5 ? "danger" : alertCount > 0 ? "warning" : "success",
-      label: alertCount > 0 ? "Alertas" : "Seguro",
-      count: alertCount,
-      pulse: alertCount > 0,
+      type: status.unreadAlerts > 5 ? "danger" : status.unreadAlerts > 0 ? "warning" : "success",
+      label: status.unreadAlerts > 0 ? "Alertas" : "Seguro",
+      count: status.unreadAlerts,
+      pulse: status.unreadAlerts > 0,
     }),
   },
   {
@@ -274,9 +278,10 @@ const createSidebarCategories = (alertCount: number, camerasOnline: number): Nav
       { id: "heatmap", label: "Mapa de Calor", icon: Flame, path: "/heatmap" },
     ],
     getStatus: () => ({
-      type: "info",
-      label: "Ativo",
-      pulse: true,
+      type: status.activeRules > 0 ? "info" : "neutral",
+      label: status.activeRules > 0 ? "Ativo" : "Inativo",
+      count: status.activeRules,
+      pulse: status.activeRules > 0,
     }),
   },
   {
@@ -284,12 +289,13 @@ const createSidebarCategories = (alertCount: number, camerasOnline: number): Nav
     label: "Gestão",
     icon: Users,
     items: [
-      { id: "people", label: "Colaboradores", icon: Users, path: "/people" },
-      { id: "zones", label: "Zonas", icon: Target, path: "/zones" },
+      { id: "people", label: "Colaboradores", icon: Users, path: "/people", badge: status.registeredPersons > 0 ? status.registeredPersons : undefined },
+      { id: "zones", label: "Zonas", icon: Target, path: "/zones", badge: status.activeZones > 0 ? status.activeZones : undefined },
     ],
     getStatus: () => ({
-      type: "neutral",
-      label: "Gestão",
+      type: status.registeredPersons > 0 || status.activeZones > 0 ? "success" : "neutral",
+      label: `${status.registeredPersons}P / ${status.activeZones}Z`,
+      count: status.registeredPersons + status.activeZones,
     }),
   },
   {
@@ -561,6 +567,9 @@ function Sidebar({ className }: SidebarProps) {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { resolvedTheme, toggleTheme } = useTheme();
+  
+  // Hook para dados reais do banco de dados
+  const sidebarStatus = useSidebarStatus();
 
   const [collapsed, setCollapsed] = useState(() => {
     if (typeof window !== "undefined") {
@@ -571,15 +580,26 @@ function Sidebar({ className }: SidebarProps) {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [alertCount, setAlertCount] = useState(3);
-  const [camerasOnline, setCamerasOnline] = useState(8);
   
-  // Gerar categorias com status dinâmico
-  const sidebarCategories = createSidebarCategories(alertCount, camerasOnline);
+  // Gerar categorias com dados reais do banco
+  const sidebarCategories = useMemo(
+    () => createSidebarCategories(sidebarStatus),
+    [sidebarStatus]
+  );
 
   const [expandedCategories, setExpandedCategories] = useState<string[]>(() => {
     // Abrir categoria que contém a rota ativa
-    const categories = createSidebarCategories(0, 0);
+    const defaultStatus: SidebarStatus = {
+      unreadAlerts: 0,
+      onlineCameras: 0,
+      totalCameras: 0,
+      activeRules: 0,
+      totalRules: 0,
+      registeredPersons: 0,
+      activeZones: 0,
+      isLoading: true,
+    };
+    const categories = createSidebarCategories(defaultStatus);
     const activeCategory = categories.find((cat) =>
       cat.items.some((item) => location.pathname.startsWith(item.path))
     );
@@ -603,20 +623,6 @@ function Sidebar({ className }: SidebarProps) {
   useEffect(() => {
     localStorage.setItem("sidebar-collapsed", String(collapsed));
   }, [collapsed]);
-
-  // Fechar mobile ao navegar
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [location.pathname]);
-
-  // Simular contagem de alertas e câmeras online
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAlertCount((prev) => Math.max(0, Math.min(12, prev + Math.floor(Math.random() * 5) - 2)));
-      setCamerasOnline((prev) => Math.max(3, Math.min(12, prev + Math.floor(Math.random() * 3) - 1)));
-    }, 8000);
-    return () => clearInterval(interval);
-  }, []);
 
   const toggleCollapsed = () => setCollapsed(!collapsed);
 
