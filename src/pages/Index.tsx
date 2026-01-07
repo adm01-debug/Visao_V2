@@ -11,7 +11,9 @@ import { BlacklistAlertBanner } from '@/components/BlacklistAlertBanner';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAlerts } from '@/hooks/useAlerts';
 import { Helmet } from 'react-helmet-async';
-import { Loader2 } from 'lucide-react';
+import { PageLoadingSkeleton } from '@/components/ui/LoadingState';
+import { PageTransition } from '@/components/ui/MotionComponents';
+import { SkipLink } from '@/components/ui/Accessibility';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -26,11 +28,7 @@ const Index = () => {
   }, [user, loading, navigate]);
 
   if (loading) {
-    return (
-      <div role="main" aria-label="Página inicial" className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <PageLoadingSkeleton />;
   }
 
   if (!user) {
@@ -49,16 +47,16 @@ const Index = () => {
         return <AnalyticsDashboard />;
       case 'ai-vision':
         return (
-          <div role="main" aria-label="Página inicial" className="p-6 overflow-auto h-full">
-            <div role="main" aria-label="Página inicial" className="max-w-xl mx-auto">
+          <div className="p-6 overflow-auto h-full">
+            <div className="max-w-xl mx-auto">
               <AIAnalysisPanel />
             </div>
           </div>
         );
       default:
         return (
-          <div role="main" aria-label="Página inicial" className="flex items-center justify-center h-full">
-            <div role="main" aria-label="Página inicial" className="text-center">
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
               <p className="text-2xl font-semibold text-muted-foreground mb-2">
                 {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
               </p>
@@ -76,18 +74,21 @@ const Index = () => {
         <meta name="description" content="Plataforma de vigilância inteligente com análise de vídeo por IA para monitoramento de segurança e produtividade." />
       </Helmet>
       
-      <div role="main" aria-label="Página inicial" className="flex h-screen bg-background overflow-hidden">
+      <SkipLink href="#main-content">Pular para conteúdo principal</SkipLink>
+      
+      <div className="flex h-screen bg-background overflow-hidden">
         <Sidebar />
         
-        <div role="main" aria-label="Página inicial" className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden">
           <Header />
           
-          <main className="flex-1 overflow-hidden">
-            {renderContent()}
-          </main>
+          <PageTransition>
+            <main id="main-content" className="flex-1 overflow-hidden" role="main" aria-label="Conteúdo principal">
+              {renderContent()}
+            </main>
+          </PageTransition>
         </div>
         
-        {/* Blacklist Alert Banner */}
         <BlacklistAlertBanner />
       </div>
     </>
