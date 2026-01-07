@@ -38,6 +38,7 @@ const TelegramSettingsPage = lazy(() => import('@/pages/TelegramSettingsPage'));
 const ReportsPage = lazy(() => import('@/pages/ReportsPage'));
 const PPEPage = lazy(() => import('@/pages/PPEPage'));
 const AcessoNegado = lazy(() => import('@/pages/AcessoNegado'));
+const AutomationRulesPage = lazy(() => import('@/pages/AutomationRulesPage'));
 
 // Loading fallback
 function PageLoader() {
@@ -99,6 +100,9 @@ export function AppRoutes() {
           
           {/* Segurança */}
           <Route path="/security" element={<ProtectedRoute><SecurityPage /></ProtectedRoute>} />
+          
+          {/* Automação */}
+          <Route path="/automation-rules" element={<ProtectedRoute><AutomationRulesPage /></ProtectedRoute>} />
           
           {/* PPE - Equipamentos de Proteção */}
           <Route path="/ppe" element={<ProtectedRoute><PPEPage /></ProtectedRoute>} />

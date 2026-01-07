@@ -13,6 +13,7 @@ export { default as AcessoNegado } from "./AcessoNegado";
 export { default as AlertsPage } from "./AlertsPage";
 export { default as AnalyticsPage } from "./AnalyticsPage";
 export { default as Auth } from "./Auth";
+export { default as AutomationRulesPage } from "./AutomationRulesPage";
 export { default as CamerasPage } from "./CamerasPage";
 export { default as DashboardV2 } from "./DashboardV2";
 export { default as FaceRecognitionPage } from "./FaceRecognitionPage";
