@@ -1,17 +1,11 @@
-import { memo, useMediaQuery, useWindowSize } from "@/hooks";
+import { memo, useCallback } from "react";
+import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: Dashboard (Refatorado)
- * 
- * Melhorias:
- * - Integração com VideoStreamPlayer em vez de thumbnails estáticos
- * - Suporte a streaming HLS/RTSP
- * - Grid responsivo com streams ao vivo
- * - Análise contínua integrada
  */
-
-import { memo, useState, useEffect, useMemo, useCallback } from 'react';
-import { memo, 
+import { 
   Camera, 
   AlertTriangle, 
   Users, 
@@ -31,30 +25,31 @@ import { memo,
   Zap,
   Eye,
 } from 'lucide-react';
-import { memo, StatsCard } from './StatsCard';
-import { memo, CameraCard } from './CameraCard';
-import { memo, AlertCard, UIAlert } from './AlertCard';
-import { memo, CameraModal } from './CameraModal';
-import { memo, ExportMenu } from './ExportMenu';
-import { memo, CameraMap } from './CameraMap';
-import { memo, AlertTrendsChart } from './AlertTrendsChart';
-import { memo, AlertsByCameraChart } from './AlertsByCameraChart';
-import { memo, CameraLayoutControls, CameraLayout } from './CameraLayoutControls';
-import { memo, AlertFiltersComponent, filterAlerts, defaultFilters, AlertFilters, CameraOption } from './AlertFilters';
-import { memo, SearchInput, filterCamerasBySearch, filterAlertsBySearch } from './SearchInput';
-import { memo, PaginationControls, usePagination } from './PaginationControls';
-import { memo, VideoStreamPlayer } from './VideoStreamPlayer';
-import { memo, useCameras, DbCamera } from '@/hooks/useCameras';
-import { memo, useAlerts } from '@/hooks/useAlerts';
-import { memo, Skeleton } from '@/components/ui/skeleton';
-import { memo, Button } from '@/components/ui/button';
-import { memo, Badge } from '@/components/ui/badge';
-import { memo, Switch } from '@/components/ui/switch';
-import { memo, Label } from '@/components/ui/label';
-import { memo, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { memo, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { memo, exportAlerts, exportCameras } from '@/lib/exportUtils';
-import { memo, cn } from '@/lib/utils';
+import { StatsCard } from './StatsCard';
+import { CameraCard } from './CameraCard';
+import { AlertCard, UIAlert } from './AlertCard';
+import { CameraModal } from './CameraModal';
+import { ExportMenu } from './ExportMenu';
+import { CameraMap } from './CameraMap';
+import { AlertTrendsChart } from './AlertTrendsChart';
+import { AlertsByCameraChart } from './AlertsByCameraChart';
+import { CameraLayoutControls, CameraLayout } from './CameraLayoutControls';
+import { AlertFiltersComponent, filterAlerts, defaultFilters, AlertFilters, CameraOption } from './AlertFilters';
+import { SearchInput, filterCamerasBySearch, filterAlertsBySearch } from './SearchInput';
+import { PaginationControls, usePagination } from './PaginationControls';
+import { VideoStreamPlayer } from './VideoStreamPlayer';
+import { useCameras, DbCamera } from '@/hooks/useCameras';
+import { useAlerts } from '@/hooks/useAlerts';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { PullToRefresh, useSwipe } from '@/components/ui/MobileInteractions';
+import { exportAlerts, exportCameras } from '@/lib/exportUtils';
+import { cn } from '@/lib/utils';
 
 type AlertSortOption = 'date-desc' | 'date-asc' | 'severity-desc' | 'severity-asc' | 'type';
 type ViewMode = 'cards' | 'streams' | 'hybrid';
@@ -248,8 +243,9 @@ function StreamCameraCard({ camera, onClick, compact, showStream = true }: Strea
 }
 
 function DashboardComponent() {
-  const { cameras, loading: camerasLoading, updateCamera } = useCameras();
-  const { alerts, loading: alertsLoading, unreadCount, markAllAsRead } = useAlerts();
+  const navigate = useNavigate();
+  const { cameras, loading: camerasLoading, updateCamera, refetch: refetchCameras } = useCameras();
+  const { alerts, loading: alertsLoading, unreadCount, markAllAsRead, refetch: refetchAlerts } = useAlerts();
   const [selectedCamera, setSelectedCamera] = useState<ReturnType<typeof mapDbCameraToUI> | null>(null);
   const [cameraLayout, setCameraLayout] = useState<CameraLayout>(() => {
     return (localStorage.getItem('camera-layout') as CameraLayout) || '2x2';
@@ -263,6 +259,17 @@ function DashboardComponent() {
   const [alertSortBy, setAlertSortBy] = useState<AlertSortOption>('date-desc');
   const [showMap, setShowMap] = useState(true);
   const [enableStreams, setEnableStreams] = useState(true);
+
+  // Swipe navigation
+  const { handleTouchStart, handleTouchEnd } = useSwipe(
+    () => navigate('/cameras'), // Swipe left -> Cameras
+    () => navigate('/settings') // Swipe right -> Settings
+  );
+
+  // Pull to refresh
+  const handleRefresh = useCallback(async () => {
+    await Promise.all([refetchCameras?.(), refetchAlerts?.()]);
+  }, [refetchCameras, refetchAlerts]);
   
   useEffect(() => {
     localStorage.setItem('camera-layout', cameraLayout);
@@ -370,8 +377,13 @@ function DashboardComponent() {
 
   return (
     <TooltipProvider>
-      <div className="p-6 h-full overflow-auto">
-        <div className="space-y-6">
+      <PullToRefresh onRefresh={handleRefresh} className="h-full">
+        <div 
+          className="p-6"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div className="space-y-6">
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 animate-fade-in">
             <StatsCard
@@ -671,9 +683,15 @@ function DashboardComponent() {
             }}
           />
         )}
-      </div>
+
+        {/* Swipe hint for mobile */}
+        <p className="text-center text-xs text-muted-foreground md:hidden pb-4">
+          ← Deslize para navegar →
+        </p>
+        </div>
+      </PullToRefresh>
     </TooltipProvider>
   );
 }
--e 
+
 export const Dashboard = memo(DashboardComponent);

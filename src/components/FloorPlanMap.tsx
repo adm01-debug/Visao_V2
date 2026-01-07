@@ -1,11 +1,13 @@
-import { memo } from "react";
+import { memo, useCallback } from "react";
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Camera, AlertTriangle, Eye, EyeOff, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 import { useCameras, DbCamera } from '@/hooks/useCameras';
 import { CameraModal } from './CameraModal';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PullToRefresh, useSwipe } from '@/components/ui/MobileInteractions';
 import {
   Tooltip,
   TooltipContent,
@@ -53,11 +55,23 @@ const statusGlow: Record<string, string> = {
 };
 
 export function FloorPlanMap() {
-  const { cameras, loading } = useCameras();
+  const navigate = useNavigate();
+  const { cameras, loading, refetch } = useCameras();
   const [selectedCamera, setSelectedCamera] = useState<ReturnType<typeof mapDbCameraToUI> | null>(null);
   const [hoveredCamera, setHoveredCamera] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
   const [showOffline, setShowOffline] = useState(true);
+
+  // Swipe navigation
+  const { handleTouchStart, handleTouchEnd } = useSwipe(
+    () => navigate('/alerts'), // Swipe left -> Alerts
+    () => navigate('/dashboard') // Swipe right -> Dashboard
+  );
+
+  // Pull to refresh
+  const handleRefresh = useCallback(async () => {
+    await refetch?.();
+  }, [refetch]);
 
   const uiCameras = cameras.map(mapDbCameraToUI);
 
@@ -92,7 +106,12 @@ export function FloorPlanMap() {
   }
 
   return (
-    <div className="p-6 space-y-6 overflow-auto h-[calc(100vh-4rem)]">
+    <PullToRefresh onRefresh={handleRefresh} className="h-[calc(100vh-4rem)]">
+      <div 
+        className="p-6 space-y-6"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
       {/* Header */}
       <div className="flex items-center justify-between animate-fade-in">
         <div>
@@ -343,13 +362,20 @@ export function FloorPlanMap() {
       </div>
 
       {/* Camera Modal */}
-      {selectedCamera && (
-        <CameraModal
-          camera={selectedCamera}
-          isOpen={!!selectedCamera}
-          onClose={() => setSelectedCamera(null)}
-        />
-      )}
-    </div>
+        {/* Camera Modal */}
+        {selectedCamera && (
+          <CameraModal
+            camera={selectedCamera}
+            isOpen={!!selectedCamera}
+            onClose={() => setSelectedCamera(null)}
+          />
+        )}
+
+        {/* Swipe hint for mobile */}
+        <p className="text-center text-xs text-muted-foreground md:hidden pb-4">
+          ← Deslize para navegar →
+        </p>
+      </div>
+    </PullToRefresh>
   );
 }
