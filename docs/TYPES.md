@@ -1,76 +1,99 @@
 # 📝 Types Reference - Projeto VISÃO
 
-## Tipagens TypeScript
+## Tipos TypeScript
 
 ---
 
-## 1. Entidades Principais
+## 1. Camera Types
 
-### Camera
 ```typescript
 interface Camera {
   id: string;
   name: string;
   rtsp_url: string;
   status: 'online' | 'offline' | 'error';
-  location?: {
-    lat: number;
-    lng: number;
-    address?: string;
-  };
+  location?: { lat: number; lng: number };
   created_at: string;
   updated_at: string;
 }
+
+type CameraStatus = Camera['status'];
 ```
 
-### Alert
+---
+
+## 2. Alert Types
+
 ```typescript
 interface Alert {
   id: string;
   type: AlertType;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: AlertSeverity;
   camera_id: string;
-  message: string;
   image_url?: string;
   acknowledged: boolean;
-  acknowledged_by?: string;
-  acknowledged_at?: string;
   created_at: string;
 }
 
 type AlertType = 
   | 'intrusion'
-  | 'blacklist_match'
+  | 'blacklist'
   | 'ppe_missing'
   | 'zone_violation'
   | 'plate_detected';
+
+type AlertSeverity = 
+  | 'low'
+  | 'medium'
+  | 'high'
+  | 'critical';
 ```
 
-### Person
+---
+
+## 3. Recognition Types
+
 ```typescript
 interface Person {
   id: string;
   name: string;
-  group: 'employees' | 'visitors' | 'blacklist' | 'vip';
-  face_encoding: number[];
+  group: PersonGroup;
+  encoding: number[];
   images: string[];
-  notes?: string;
-  created_at: string;
+}
+
+type PersonGroup = 
+  | 'employees'
+  | 'vip'
+  | 'blacklist'
+  | 'unknown';
+
+interface RecognitionMatch {
+  person_id: string;
+  confidence: number;
+  timestamp: string;
 }
 ```
 
-### Zone
+---
+
+## 4. Zone Types
+
 ```typescript
 interface Zone {
   id: string;
   name: string;
-  type: 'restricted' | 'counting' | 'tripwire' | 'dwell';
+  type: ZoneType;
   camera_id: string;
   polygon: Point[];
-  color: string;
-  alert_enabled: boolean;
-  created_at: string;
+  config: ZoneConfig;
 }
+
+type ZoneType = 
+  | 'restricted'
+  | 'counting'
+  | 'tripwire'
+  | 'dwell';
 
 interface Point {
   x: number;
@@ -80,96 +103,63 @@ interface Point {
 
 ---
 
-## 2. Recognition
+## 5. Recording Types
 
 ```typescript
-interface RecognitionMatch {
-  person_id: string;
-  person_name: string;
-  confidence: number;
-  bounding_box: BoundingBox;
-  camera_id: string;
-  timestamp: string;
-}
-
-interface BoundingBox {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
-interface FaceDetection {
-  id: string;
-  box: BoundingBox;
-  landmarks?: FaceLandmarks;
-  encoding?: number[];
-  expressions?: FaceExpressions;
-}
-```
-
----
-
-## 3. Streaming
-
-```typescript
-interface StreamConfig {
-  url: string;
-  type: 'hls' | 'rtsp' | 'webrtc';
-  quality: 'low' | 'medium' | 'high';
-  lowLatency: boolean;
-}
-
 interface Recording {
   id: string;
   camera_id: string;
   start_time: string;
-  end_time: string;
+  end_time?: string;
   duration: number;
   file_url: string;
-  thumbnail_url: string;
-  size_bytes: number;
+  type: RecordingType;
 }
+
+type RecordingType = 
+  | 'continuous'
+  | 'event'
+  | 'manual'
+  | 'scheduled';
 ```
 
 ---
 
-## 4. Analytics
+## 6. User Types
 
 ```typescript
-interface DashboardStats {
-  total_alerts: number;
-  alerts_by_severity: Record<string, number>;
-  cameras_online: number;
-  cameras_total: number;
-  recognitions_today: number;
+interface User {
+  id: string;
+  email: string;
+  full_name?: string;
+  role: UserRole;
+  avatar_url?: string;
 }
 
-interface TimeSeriesData {
-  timestamp: string;
-  value: number;
-}
+type UserRole = 
+  | 'admin'
+  | 'manager'
+  | 'operator'
+  | 'viewer';
 ```
 
 ---
 
-## 5. Notificações
+## 7. Notification Types
 
 ```typescript
 interface NotificationConfig {
   email_enabled: boolean;
-  email_address?: string;
   push_enabled: boolean;
   telegram_enabled: boolean;
   telegram_chat_id?: string;
   alert_types: AlertType[];
-  severities: string[];
 }
 ```
 
 ---
 
-## 6. API Responses
+## 8. API Response Types
 
 ```typescript
 interface ApiResponse<T> {
@@ -184,27 +174,31 @@ interface ApiResponse<T> {
 
 interface PaginatedResponse<T> {
   data: T[];
-  total: number;
-  page: number;
-  totalPages: number;
+  meta: PaginationMeta;
 }
 ```
 
 ---
 
-## 7. Supabase Types
+## 9. Supabase Types
 
 ```bash
-# Gerar tipos
-supabase gen types typescript --local > src/types/supabase.ts
+# Gerar tipos do banco
+npx supabase gen types typescript --local > src/types/supabase.ts
 ```
 
-```typescript
-import { Database } from '@/types/supabase';
+---
 
-type Tables = Database['public']['Tables'];
-type Camera = Tables['cameras']['Row'];
-type Alert = Tables['alerts']['Row'];
+## 10. Utility Types
+
+```typescript
+type Nullable<T> = T | null;
+type Optional<T> = T | undefined;
+type AsyncState<T> = {
+  data: T | null;
+  loading: boolean;
+  error: Error | null;
+};
 ```
 
 ---
