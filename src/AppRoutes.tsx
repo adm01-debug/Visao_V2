@@ -16,6 +16,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 // Lazy loading das páginas
 const Dashboard = lazy(() => import('@/pages/Index'));
 const DashboardV2 = lazy(() => import('@/pages/DashboardV2'));
+const CustomizableDashboard = lazy(() => import('@/components/CustomizableDashboard'));
 const CamerasPage = lazy(() => import('@/pages/CamerasPage'));
 const AlertsPage = lazy(() => import('@/pages/AlertsPage'));
 const PeoplePage = lazy(() => import('@/pages/PeoplePage'));
@@ -69,6 +70,7 @@ export function AppRoutes() {
           {/* Dashboard */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<ProtectedRoute><DashboardV2 /></ProtectedRoute>} />
+          <Route path="/dashboard/custom" element={<ProtectedRoute><CustomizableDashboard /></ProtectedRoute>} />
           <Route path="/dashboard/classic" element={<Dashboard />} />
           
           {/* Câmeras */}
