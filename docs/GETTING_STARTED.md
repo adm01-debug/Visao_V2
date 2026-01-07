@@ -32,13 +32,13 @@ cp .env.example .env
 
 ## 3. Configurar Supabase
 
-1. Crie um projeto em [supabase.com](https://supabase.com)
-2. Copie URL e Anon Key
-3. Adicione ao `.env`:
+1. Criar projeto em [supabase.com](https://supabase.com)
+2. Copiar URL e Anon Key
+3. Atualizar `.env`:
 
 ```env
 VITE_SUPABASE_URL=https://xxx.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+VITE_SUPABASE_ANON_KEY=eyJhbG...
 ```
 
 ---
@@ -46,17 +46,8 @@ VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ## 4. Executar Migrations
 
 ```bash
-# Instalar Supabase CLI
-npm install -g supabase
-
-# Login
-supabase login
-
-# Link projeto
-supabase link --project-ref YOUR_PROJECT_REF
-
-# Aplicar migrations
-supabase db push
+npx supabase link --project-ref xxx
+npx supabase db push
 ```
 
 ---
@@ -65,62 +56,62 @@ supabase db push
 
 ```bash
 npm run dev
-# Abre em http://localhost:5173
+# Acesse http://localhost:5173
 ```
 
 ---
 
 ## 6. Primeiro Acesso
 
-1. Acesse `http://localhost:5173`
-2. Crie uma conta
-3. Adicione sua primeira câmera
-4. Configure zonas de monitoramento
-5. Ative notificações
+1. Criar conta em `/auth`
+2. Configurar primeira câmera
+3. Testar streaming
 
 ---
 
-## 7. Scripts Disponíveis
+## 7. Adicionar Câmera
 
-| Script | Descrição |
-|--------|-----------|
+1. Vá em **Câmeras** → **Adicionar**
+2. Insira nome e URL RTSP
+3. Teste conexão
+4. Salvar
+
+---
+
+## 8. Configurar Reconhecimento
+
+1. Vá em **Pessoas** → **Adicionar**
+2. Upload de foto
+3. Definir grupo (VIP/Blacklist)
+
+---
+
+## 9. Criar Zona
+
+1. Vá em **Zonas** → **Nova Zona**
+2. Selecione câmera
+3. Desenhe polígono
+4. Configure tipo (restrita/contagem)
+
+---
+
+## 10. Próximos Passos
+
+- [ ] Configurar notificações
+- [ ] Adicionar mais câmeras
+- [ ] Personalizar alertas
+- [ ] Explorar analytics
+
+---
+
+## Comandos Úteis
+
+| Comando | Descrição |
+|---------|-----------|
 | `npm run dev` | Desenvolvimento |
 | `npm run build` | Build produção |
 | `npm run test` | Executar testes |
-| `npm run lint` | Verificar código |
-| `npm run storybook` | Documentação |
-
----
-
-## 8. Estrutura do Projeto
-
-```
-src/
-├── components/    # Componentes React
-├── hooks/         # Hooks customizados
-├── pages/         # Páginas da aplicação
-├── services/      # Serviços e APIs
-├── stores/        # Estado global (Zustand)
-└── types/         # Tipagens TypeScript
-```
-
----
-
-## 9. Próximos Passos
-
-- [ ] Configurar câmeras RTSP
-- [ ] Cadastrar pessoas para reconhecimento
-- [ ] Criar zonas de monitoramento
-- [ ] Configurar alertas
-- [ ] Integrar Telegram/Email
-
----
-
-## 10. Suporte
-
-- 📖 [Documentação](./README.md)
-- 🐛 [Issues](https://github.com/adm01-debug/vis-o/issues)
-- 💬 [Discussões](https://github.com/adm01-debug/vis-o/discussions)
+| `npm run storybook` | Storybook |
 
 ---
 
