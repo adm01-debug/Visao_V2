@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/contexts/ThemeProvider';
 import { THEME_VARIANTS, type ThemeVariant } from '@/types/themes';
 import {
@@ -611,27 +612,36 @@ export function SettingsPage() {
                 Escolha a paleta de cores ideal para seu ambiente de trabalho
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
-                {THEME_VARIANTS.map(themeVariant => (
-                  <button
+                {THEME_VARIANTS.map((themeVariant, index) => (
+                  <motion.button
                     key={themeVariant.id}
                     onClick={() => setVariant(themeVariant.id)}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05, duration: 0.3 }}
+                    whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+                    whileTap={{ scale: 0.98 }}
                     className={cn(
-                      'relative flex items-start gap-3 p-3 rounded-lg border-2 text-left transition-all',
+                      'relative flex items-start gap-3 p-3 rounded-lg border-2 text-left transition-colors',
                       variant === themeVariant.id
                         ? 'border-primary bg-primary/10'
                         : 'border-border hover:border-primary/50'
                     )}
                   >
-                    {/* Preview Colors */}
-                    <div
+                    {/* Preview Colors with animation */}
+                    <motion.div
                       className="w-10 h-10 rounded-lg flex items-center justify-center text-lg shrink-0"
                       style={{ backgroundColor: themeVariant.previewColors.background }}
+                      animate={variant === themeVariant.id ? { scale: [1, 1.1, 1] } : {}}
+                      transition={{ duration: 0.3 }}
                     >
-                      <div
+                      <motion.div
                         className="w-4 h-4 rounded-full"
                         style={{ backgroundColor: themeVariant.previewColors.primary }}
+                        animate={variant === themeVariant.id ? { scale: [1, 1.3, 1] } : {}}
+                        transition={{ duration: 0.4, delay: 0.1 }}
                       />
-                    </div>
+                    </motion.div>
                     
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
@@ -643,14 +653,38 @@ export function SettingsPage() {
                       </p>
                     </div>
 
-                    {variant === themeVariant.id && (
-                      <div className="absolute top-2 right-2">
-                        <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                          <Check className="h-3 w-3 text-primary-foreground" />
-                        </div>
-                      </div>
-                    )}
-                  </button>
+                    <AnimatePresence>
+                      {variant === themeVariant.id && (
+                        <motion.div
+                          className="absolute top-2 right-2"
+                          initial={{ scale: 0, rotate: -180 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          exit={{ scale: 0, rotate: 180 }}
+                          transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                        >
+                          <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                            <Check className="h-3 w-3 text-primary-foreground" />
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    {/* Ripple effect on selection */}
+                    <AnimatePresence>
+                      {variant === themeVariant.id && (
+                        <motion.div
+                          className="absolute inset-0 rounded-lg pointer-events-none"
+                          initial={{ opacity: 0.5 }}
+                          animate={{ opacity: 0 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.5 }}
+                          style={{
+                            background: `radial-gradient(circle at center, ${themeVariant.previewColors.primary}33, transparent 70%)`
+                          }}
+                        />
+                      )}
+                    </AnimatePresence>
+                  </motion.button>
                 ))}
               </div>
             </div>
