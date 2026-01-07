@@ -31,6 +31,7 @@ import {
   Info
 } from 'lucide-react';
 import { useNotificationFlow } from '@/hooks/useNotificationFlow';
+import { NotificationSettingsPanel } from '@/components/settings/NotificationSettingsPanel';
 
 interface NotificationConfig {
   id: string;
@@ -336,12 +337,18 @@ export default function NotificationSettingsPage() {
           </CardContent>
         </Card>
 
-        <Tabs defaultValue="channels" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+        <Tabs defaultValue="realtime" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="realtime">Tempo Real</TabsTrigger>
             <TabsTrigger value="channels">Canais</TabsTrigger>
             <TabsTrigger value="schedule">Horários</TabsTrigger>
             <TabsTrigger value="filters">Filtros</TabsTrigger>
           </TabsList>
+
+          {/* Realtime Tab */}
+          <TabsContent value="realtime" className="space-y-6">
+            <NotificationSettingsPanel />
+          </TabsContent>
 
           {/* Channels Tab */}
           <TabsContent value="channels" className="space-y-6">

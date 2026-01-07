@@ -1,12 +1,21 @@
 /**
  * Hook para notificações de alertas em tempo real
- * Com toast visual e som opcional
+ * Com toast visual, som opcional e push notifications do navegador
  */
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import {
+  showBrowserNotification,
+  requestNotificationPermission,
+  getNotificationPermission,
+  isNotificationSupported,
+  getBrowserNotificationsEnabled,
+  setBrowserNotificationsEnabled,
+  type NotificationPermissionStatus,
+} from "@/lib/browserNotifications";
 
 interface AlertPayload {
   id: string;
@@ -17,17 +26,63 @@ interface AlertPayload {
   timestamp: string;
 }
 
-const NOTIFICATION_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3";
+interface RealtimeAlertOptions {
+  enabled?: boolean;
+  soundEnabled?: boolean;
+  pushEnabled?: boolean;
+  severityFilter?: ("low" | "medium" | "high" | "critical")[];
+  onAlert?: (alert: AlertPayload) => void;
+}
 
-export function useRealtimeAlertNotifications(enabled: boolean = true) {
+interface RealtimeAlertReturn {
+  // Sound controls
+  toggleSound: (enabled: boolean) => void;
+  isSoundEnabled: () => boolean;
+  
+  // Push notification controls
+  pushPermission: NotificationPermissionStatus;
+  isPushEnabled: boolean;
+  togglePush: (enabled: boolean) => void;
+  requestPushPermission: () => Promise<NotificationPermissionStatus>;
+  
+  // Test functions
+  sendTestPush: () => void;
+  sendTestSound: () => void;
+}
+
+const NOTIFICATION_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3";
+const CRITICAL_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2870/2870-preview.mp3";
+
+export function useRealtimeAlertNotifications(
+  options: RealtimeAlertOptions = {}
+): RealtimeAlertReturn {
+  const {
+    enabled = true,
+    soundEnabled: initialSoundEnabled = true,
+    pushEnabled: initialPushEnabled = true,
+    severityFilter = ["high", "critical"],
+    onAlert,
+  } = options;
+
   const queryClient = useQueryClient();
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const soundEnabledRef = useRef(true);
+  const criticalAudioRef = useRef<HTMLAudioElement | null>(null);
+  const soundEnabledRef = useRef(initialSoundEnabled);
+  
+  const [pushPermission, setPushPermission] = useState<NotificationPermissionStatus>(
+    isNotificationSupported() ? getNotificationPermission() : "denied"
+  );
+  const [isPushEnabled, setIsPushEnabled] = useState(
+    getBrowserNotificationsEnabled() && initialPushEnabled
+  );
 
   // Initialize audio
   useEffect(() => {
     audioRef.current = new Audio(NOTIFICATION_SOUND_URL);
     audioRef.current.volume = 0.5;
+    
+    criticalAudioRef.current = new Audio(CRITICAL_SOUND_URL);
+    criticalAudioRef.current.volume = 0.7;
     
     // Check localStorage for sound preference
     const soundPref = localStorage.getItem("alert-sound-enabled");
@@ -38,42 +93,91 @@ export function useRealtimeAlertNotifications(enabled: boolean = true) {
         audioRef.current.pause();
         audioRef.current = null;
       }
+      if (criticalAudioRef.current) {
+        criticalAudioRef.current.pause();
+        criticalAudioRef.current = null;
+      }
     };
   }, []);
 
-  const playSound = useCallback(() => {
-    if (soundEnabledRef.current && audioRef.current) {
-      audioRef.current.currentTime = 0;
-      audioRef.current.play().catch(() => {
+  // Check push permission on mount
+  useEffect(() => {
+    if (isNotificationSupported()) {
+      setPushPermission(getNotificationPermission());
+    }
+  }, []);
+
+  const playSound = useCallback((isCritical: boolean = false) => {
+    if (!soundEnabledRef.current) return;
+    
+    const audio = isCritical ? criticalAudioRef.current : audioRef.current;
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play().catch(() => {
         // Autoplay blocked - user interaction required
       });
     }
   }, []);
 
-  const toggleSound = useCallback((enabled: boolean) => {
-    soundEnabledRef.current = enabled;
-    localStorage.setItem("alert-sound-enabled", String(enabled));
+  const toggleSound = useCallback((newEnabled: boolean) => {
+    soundEnabledRef.current = newEnabled;
+    localStorage.setItem("alert-sound-enabled", String(newEnabled));
+  }, []);
+
+  const togglePush = useCallback((newEnabled: boolean) => {
+    setIsPushEnabled(newEnabled);
+    setBrowserNotificationsEnabled(newEnabled);
+  }, []);
+
+  const requestPushPermission = useCallback(async (): Promise<NotificationPermissionStatus> => {
+    const permission = await requestNotificationPermission();
+    setPushPermission(permission);
+    if (permission === "granted") {
+      setIsPushEnabled(true);
+      setBrowserNotificationsEnabled(true);
+    }
+    return permission;
   }, []);
 
   const getSeverityConfig = (severity: string) => {
     switch (severity) {
       case "critical":
-        return { label: "CRÍTICO", color: "destructive" as const };
+        return { label: "🚨 CRÍTICO", color: "destructive" as const, icon: "🚨" };
       case "high":
-        return { label: "ALTO", color: "destructive" as const };
+        return { label: "⚠️ ALTO", color: "destructive" as const, icon: "⚠️" };
       case "medium":
-        return { label: "MÉDIO", color: "warning" as const };
+        return { label: "📢 MÉDIO", color: "warning" as const, icon: "📢" };
       default:
-        return { label: "BAIXO", color: "default" as const };
+        return { label: "ℹ️ BAIXO", color: "default" as const, icon: "ℹ️" };
     }
   };
+
+  const showPushNotification = useCallback((alert: AlertPayload) => {
+    if (!isPushEnabled || pushPermission !== "granted") return;
+
+    showBrowserNotification({
+      title: `${getSeverityConfig(alert.severity).icon} VISÃO - ${alert.camera_name}`,
+      body: alert.message,
+      tag: `alert-${alert.id}`,
+      requireInteraction: alert.severity === "critical",
+      onClick: () => {
+        // Navigate to alerts page when clicked
+        window.location.href = "/alertas";
+      },
+    });
+  }, [isPushEnabled, pushPermission]);
 
   const showAlertToast = useCallback((alert: AlertPayload) => {
     const config = getSeverityConfig(alert.severity);
 
     // Play sound for high/critical alerts
     if (alert.severity === "critical" || alert.severity === "high") {
-      playSound();
+      playSound(alert.severity === "critical");
+    }
+
+    // Show browser push notification for filtered severities
+    if (severityFilter.includes(alert.severity)) {
+      showPushNotification(alert);
     }
 
     const toastFn = alert.severity === "critical" || alert.severity === "high" 
@@ -86,9 +190,39 @@ export function useRealtimeAlertNotifications(enabled: boolean = true) {
       description: `${config.label} • ${alert.camera_name} • ${new Date(alert.timestamp).toLocaleTimeString("pt-BR")}`,
       duration: alert.severity === "critical" ? 10000 : 5000,
       position: "top-right",
+      action: alert.severity === "critical" ? {
+        label: "Ver",
+        onClick: () => window.location.href = "/alertas",
+      } : undefined,
     });
+
+    // Call custom handler
+    onAlert?.(alert);
+  }, [playSound, showPushNotification, severityFilter, onAlert]);
+
+  // Test functions
+  const sendTestPush = useCallback(() => {
+    if (pushPermission !== "granted") {
+      toast.error("Permissão de notificação não concedida");
+      return;
+    }
+
+    showBrowserNotification({
+      title: "🔔 VISÃO - Teste",
+      body: "Esta é uma notificação de teste do sistema de alertas em tempo real.",
+      tag: "test-notification",
+      requireInteraction: false,
+    });
+    
+    toast.success("Notificação de teste enviada!");
+  }, [pushPermission]);
+
+  const sendTestSound = useCallback(() => {
+    playSound(false);
+    toast.success("Som de teste reproduzido!");
   }, [playSound]);
 
+  // Realtime subscription
   useEffect(() => {
     if (!enabled) return;
 
@@ -117,5 +251,14 @@ export function useRealtimeAlertNotifications(enabled: boolean = true) {
     };
   }, [enabled, showAlertToast, queryClient]);
 
-  return { toggleSound, isSoundEnabled: () => soundEnabledRef.current };
+  return { 
+    toggleSound, 
+    isSoundEnabled: () => soundEnabledRef.current,
+    pushPermission,
+    isPushEnabled,
+    togglePush,
+    requestPushPermission,
+    sendTestPush,
+    sendTestSound,
+  };
 }
