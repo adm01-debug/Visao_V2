@@ -1,15 +1,16 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
- * Sidebar com 5 Categorias:
- * - Monitoramento
- * - Segurança  
- * - Inteligência
- * - Gestão
- * - Configurações
+ * Sidebar com 5 Categorias Animadas:
+ * - Monitoramento (status: câmeras online)
+ * - Segurança (status: alertas ativos)
+ * - Inteligência (status: análises)
+ * - Gestão (status: pessoas/zonas)
+ * - Configurações (status: sistema)
  */
 
 import { memo, useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
   Camera,
@@ -35,10 +36,12 @@ import {
   Shield,
   HardHat,
   Brain,
-  MapPin,
   Sliders,
   MessageSquare,
   type LucideIcon,
+  AlertTriangle,
+  CheckCircle2,
+  Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -77,11 +80,19 @@ interface NavItem {
   badgeVariant?: "default" | "secondary" | "destructive" | "outline";
 }
 
+interface CategoryStatus {
+  type: "success" | "warning" | "danger" | "info" | "neutral";
+  label: string;
+  count?: number;
+  pulse?: boolean;
+}
+
 interface NavCategory {
   id: string;
   label: string;
   icon: LucideIcon;
   items: NavItem[];
+  getStatus?: () => CategoryStatus;
 }
 
 interface SidebarProps {
@@ -89,10 +100,127 @@ interface SidebarProps {
 }
 
 // ============================================
-// CONFIGURAÇÃO - 5 CATEGORIAS
+// COMPONENTE: Ícone Animado da Categoria
 // ============================================
 
-const sidebarCategories: NavCategory[] = [
+const AnimatedCategoryIcon = memo(({ 
+  icon: Icon, 
+  status, 
+  isExpanded,
+  isActive 
+}: { 
+  icon: LucideIcon; 
+  status: CategoryStatus;
+  isExpanded: boolean;
+  isActive: boolean;
+}) => {
+  const statusColors = {
+    success: "text-green-500",
+    warning: "text-amber-500",
+    danger: "text-red-500",
+    info: "text-blue-500",
+    neutral: "text-muted-foreground",
+  };
+
+  const pulseColors = {
+    success: "bg-green-500",
+    warning: "bg-amber-500",
+    danger: "bg-red-500",
+    info: "bg-blue-500",
+    neutral: "bg-muted-foreground",
+  };
+
+  return (
+    <div className="relative">
+      <motion.div
+        animate={{
+          scale: isExpanded ? 1.1 : 1,
+          rotate: isExpanded ? 5 : 0,
+        }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      >
+        <Icon className={cn(
+          "h-4 w-4 transition-colors duration-200",
+          isActive ? "text-primary" : statusColors[status.type]
+        )} />
+      </motion.div>
+      
+      {/* Status Pulse Indicator */}
+      {status.pulse && (
+        <motion.span
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className={cn(
+            "absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full",
+            pulseColors[status.type]
+          )}
+        >
+          <span className={cn(
+            "absolute inset-0 rounded-full animate-ping opacity-75",
+            pulseColors[status.type]
+          )} />
+        </motion.span>
+      )}
+    </div>
+  );
+});
+AnimatedCategoryIcon.displayName = "AnimatedCategoryIcon";
+
+// ============================================
+// COMPONENTE: Indicador de Status da Categoria
+// ============================================
+
+const CategoryStatusIndicator = memo(({ status, collapsed }: { status: CategoryStatus; collapsed: boolean }) => {
+  const statusConfig = {
+    success: { bg: "bg-green-500/10", text: "text-green-500", border: "border-green-500/30" },
+    warning: { bg: "bg-amber-500/10", text: "text-amber-500", border: "border-amber-500/30" },
+    danger: { bg: "bg-red-500/10", text: "text-red-500", border: "border-red-500/30" },
+    info: { bg: "bg-blue-500/10", text: "text-blue-500", border: "border-blue-500/30" },
+    neutral: { bg: "bg-muted", text: "text-muted-foreground", border: "border-border" },
+  };
+
+  const config = statusConfig[status.type];
+
+  if (collapsed) {
+    return status.count !== undefined && status.count > 0 ? (
+      <motion.span
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        className={cn(
+          "absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center",
+          "text-[10px] font-bold rounded-full",
+          config.bg, config.text
+        )}
+      >
+        {status.count > 99 ? "99+" : status.count}
+      </motion.span>
+    ) : null;
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      className={cn(
+        "flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium",
+        "border",
+        config.bg, config.text, config.border
+      )}
+    >
+      {status.count !== undefined && (
+        <span className="font-bold">{status.count}</span>
+      )}
+      <span className="truncate max-w-[60px]">{status.label}</span>
+    </motion.div>
+  );
+});
+CategoryStatusIndicator.displayName = "CategoryStatusIndicator";
+
+// ============================================
+// CONFIGURAÇÃO - 5 CATEGORIAS COM STATUS
+// ============================================
+
+const createSidebarCategories = (alertCount: number, camerasOnline: number): NavCategory[] => [
   {
     id: "monitoring",
     label: "Monitoramento",
@@ -102,6 +230,12 @@ const sidebarCategories: NavCategory[] = [
       { id: "cameras", label: "Câmeras", icon: Camera, path: "/cameras" },
       { id: "recordings", label: "Gravações", icon: Video, path: "/recordings" },
     ],
+    getStatus: () => ({
+      type: camerasOnline > 0 ? "success" : "neutral",
+      label: camerasOnline > 0 ? "Online" : "Offline",
+      count: camerasOnline,
+      pulse: camerasOnline > 0,
+    }),
   },
   {
     id: "security",
@@ -112,6 +246,12 @@ const sidebarCategories: NavCategory[] = [
       { id: "security-rules", label: "Regras", icon: Shield, path: "/security" },
       { id: "ppe", label: "EPIs", icon: HardHat, path: "/ppe" },
     ],
+    getStatus: () => ({
+      type: alertCount > 5 ? "danger" : alertCount > 0 ? "warning" : "success",
+      label: alertCount > 0 ? "Alertas" : "Seguro",
+      count: alertCount,
+      pulse: alertCount > 0,
+    }),
   },
   {
     id: "intelligence",
@@ -124,6 +264,11 @@ const sidebarCategories: NavCategory[] = [
       { id: "license-plate", label: "Placas", icon: Car, path: "/license-plate" },
       { id: "heatmap", label: "Mapa de Calor", icon: Flame, path: "/heatmap" },
     ],
+    getStatus: () => ({
+      type: "info",
+      label: "Ativo",
+      pulse: true,
+    }),
   },
   {
     id: "management",
@@ -133,6 +278,10 @@ const sidebarCategories: NavCategory[] = [
       { id: "people", label: "Colaboradores", icon: Users, path: "/people" },
       { id: "zones", label: "Zonas", icon: Target, path: "/zones" },
     ],
+    getStatus: () => ({
+      type: "neutral",
+      label: "Gestão",
+    }),
   },
   {
     id: "settings",
@@ -144,6 +293,10 @@ const sidebarCategories: NavCategory[] = [
       { id: "streams", label: "Streams", icon: Sliders, path: "/stream-settings" },
       { id: "telegram", label: "Telegram", icon: MessageSquare, path: "/telegram-settings" },
     ],
+    getStatus: () => ({
+      type: "success",
+      label: "OK",
+    }),
   },
 ];
 
@@ -164,10 +317,16 @@ function Sidebar({ className }: SidebarProps) {
   });
 
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [alertCount, setAlertCount] = useState(0);
+  const [alertCount, setAlertCount] = useState(3);
+  const [camerasOnline, setCamerasOnline] = useState(8);
+  
+  // Gerar categorias com status dinâmico
+  const sidebarCategories = createSidebarCategories(alertCount, camerasOnline);
+
   const [expandedCategories, setExpandedCategories] = useState<string[]>(() => {
     // Abrir categoria que contém a rota ativa
-    const activeCategory = sidebarCategories.find((cat) =>
+    const categories = createSidebarCategories(0, 0);
+    const activeCategory = categories.find((cat) =>
       cat.items.some((item) => location.pathname.startsWith(item.path))
     );
     return activeCategory ? [activeCategory.id] : ["monitoring"];
@@ -183,11 +342,12 @@ function Sidebar({ className }: SidebarProps) {
     setMobileOpen(false);
   }, [location.pathname]);
 
-  // Simular contagem de alertas
+  // Simular contagem de alertas e câmeras online
   useEffect(() => {
     const interval = setInterval(() => {
-      setAlertCount((prev) => Math.max(0, prev + Math.floor(Math.random() * 3) - 1));
-    }, 10000);
+      setAlertCount((prev) => Math.max(0, Math.min(12, prev + Math.floor(Math.random() * 5) - 2)));
+      setCamerasOnline((prev) => Math.max(3, Math.min(12, prev + Math.floor(Math.random() * 3) - 1)));
+    }, 8000);
     return () => clearInterval(interval);
   }, []);
 
@@ -274,16 +434,60 @@ function Sidebar({ className }: SidebarProps) {
     return <div key={item.path}>{content}</div>;
   };
 
-  // Renderizar categoria com collapsible
+  // Renderizar categoria com collapsible e animações
   const renderCategory = (category: NavCategory, isMobile = false) => {
     const CategoryIcon = category.icon;
     const isExpanded = isCategoryExpanded(category.id);
     const hasActiveItem = isCategoryActive(category);
+    const status = category.getStatus?.() || { type: "neutral" as const, label: "" };
 
     if (collapsed && !isMobile) {
-      // Modo colapsado: mostrar apenas ícones dos itens
+      // Modo colapsado: mostrar apenas ícones dos itens com indicador
       return (
-        <div key={category.id} className="space-y-1 mb-2">
+        <div key={category.id} className="space-y-1 mb-3 relative">
+          {/* Category indicator in collapsed mode */}
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger asChild>
+              <div className="flex justify-center py-1 relative">
+                <AnimatedCategoryIcon 
+                  icon={CategoryIcon} 
+                  status={status} 
+                  isExpanded={false}
+                  isActive={hasActiveItem}
+                />
+                {status.count !== undefined && status.count > 0 && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className={cn(
+                      "absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] flex items-center justify-center",
+                      "text-[9px] font-bold rounded-full",
+                      status.type === "danger" ? "bg-red-500 text-white" :
+                      status.type === "warning" ? "bg-amber-500 text-white" :
+                      status.type === "success" ? "bg-green-500 text-white" :
+                      "bg-blue-500 text-white"
+                    )}
+                  >
+                    {status.count > 99 ? "+" : status.count}
+                  </motion.span>
+                )}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="right" className="flex items-center gap-2">
+              <span className="font-medium">{category.label}</span>
+              {status.label && (
+                <Badge variant="outline" className={cn(
+                  "text-[10px] h-5",
+                  status.type === "success" && "border-green-500/50 text-green-500",
+                  status.type === "warning" && "border-amber-500/50 text-amber-500",
+                  status.type === "danger" && "border-red-500/50 text-red-500",
+                  status.type === "info" && "border-blue-500/50 text-blue-500"
+                )}>
+                  {status.count !== undefined && `${status.count} `}{status.label}
+                </Badge>
+              )}
+            </TooltipContent>
+          </Tooltip>
           {category.items.map((item) => renderNavItem(item, isMobile))}
         </div>
       );
@@ -297,27 +501,62 @@ function Sidebar({ className }: SidebarProps) {
         className="mb-1"
       >
         <CollapsibleTrigger asChild>
-          <button
+          <motion.button
+            whileHover={{ x: 2 }}
+            whileTap={{ scale: 0.98 }}
             className={cn(
-              "flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-              "text-muted-foreground hover:bg-muted hover:text-foreground",
-              hasActiveItem && "text-primary"
+              "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+              "text-muted-foreground hover:bg-muted/80 hover:text-foreground",
+              hasActiveItem && "bg-muted/50 text-primary",
+              isExpanded && "bg-muted/30"
             )}
           >
-            <div className="flex items-center gap-2">
-              <CategoryIcon className="h-4 w-4" />
+            <div className="flex items-center gap-2.5">
+              <AnimatedCategoryIcon 
+                icon={CategoryIcon} 
+                status={status} 
+                isExpanded={isExpanded}
+                isActive={hasActiveItem}
+              />
               <span>{category.label}</span>
             </div>
-            <ChevronDown
-              className={cn(
-                "h-4 w-4 transition-transform duration-200",
-                isExpanded && "rotate-180"
-              )}
-            />
-          </button>
+            
+            <div className="flex items-center gap-2">
+              {/* Status Indicator */}
+              <AnimatePresence mode="wait">
+                {!isExpanded && status.label && (
+                  <CategoryStatusIndicator status={status} collapsed={false} />
+                )}
+              </AnimatePresence>
+              
+              <motion.div
+                animate={{ rotate: isExpanded ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              </motion.div>
+            </div>
+          </motion.button>
         </CollapsibleTrigger>
-        <CollapsibleContent className="mt-1 ml-4 space-y-1 border-l border-border pl-2">
-          {category.items.map((item) => renderNavItem(item, isMobile))}
+        
+        <CollapsibleContent>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="mt-1 ml-4 space-y-0.5 border-l-2 border-border/50 pl-3"
+          >
+            {category.items.map((item, index) => (
+              <motion.div
+                key={item.path}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05 }}
+              >
+                {renderNavItem(item, isMobile)}
+              </motion.div>
+            ))}
+          </motion.div>
         </CollapsibleContent>
       </Collapsible>
     );
