@@ -72,6 +72,7 @@ export * from "./useNotificationPermission";
 export * from "./useNotificationTemplates";
 export * from "./useNotifications";
 export * from "./useOffline";
+export * from "./useOfflineSync";
 export * from "./useOnClickOutside";
 export * from "./useOnScreen";
 export * from "./useOnboardingTour";

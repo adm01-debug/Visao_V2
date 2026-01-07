@@ -101,6 +101,7 @@ export * from "./NetworkGraph";
 export * from "./NotificationBell";
 export * from "./NotificationSecretsConfig";
 export * from "./NotificationsPanel";
+export * from "./OfflineIndicator";
 export * from "./OnboardingTour";
 export * from "./OpenGraph";
 export * from "./PageHeader";
