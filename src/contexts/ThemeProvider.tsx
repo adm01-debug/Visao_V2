@@ -1,31 +1,51 @@
-import { useLocalStorage } from "@/hooks";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
- * Hook e Componente: Theme Provider
- * 
- * Gerencia o tema da aplicação (dark/light/system)
+ * ThemeProvider - Sistema completo de temas
  */
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 
 // ============================================
 // TIPOS
 // ============================================
 
-type Theme = 'dark' | 'light' | 'system';
+export type ThemeMode = 'dark' | 'light' | 'system';
+export type ThemeVariant = 'default' | 'soc' | 'midnight' | 'contrast' | 'industrial';
 
-interface ThemeContextType {
-  theme: Theme;
+interface ThemeState {
+  mode: ThemeMode;
+  variant: ThemeVariant;
+}
+
+interface ThemeContextType extends ThemeState {
+  setMode: (mode: ThemeMode) => void;
+  setVariant: (variant: ThemeVariant) => void;
+  toggleMode: () => void;
+  isDark: boolean;
+  // Aliases para compatibilidade
+  theme: ThemeMode;
   resolvedTheme: 'dark' | 'light';
-  setTheme: (theme: Theme) => void;
+  setTheme: (theme: ThemeMode) => void;
   toggleTheme: () => void;
 }
 
 interface ThemeProviderProps {
   children: ReactNode;
-  defaultTheme?: Theme;
+  defaultTheme?: ThemeMode;
+  defaultVariant?: ThemeVariant;
   storageKey?: string;
 }
+
+// ============================================
+// CONSTANTES
+// ============================================
+
+const STORAGE_KEY = 'visao-theme';
+
+const defaultState: ThemeState = {
+  mode: 'dark',
+  variant: 'default',
+};
 
 // ============================================
 // CONTEXTO
@@ -34,94 +54,138 @@ interface ThemeProviderProps {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 // ============================================
+// HELPERS
+// ============================================
+
+function getStoredTheme(): ThemeState {
+  if (typeof window === 'undefined') return defaultState;
+  
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      return { ...defaultState, ...JSON.parse(stored) };
+    }
+  } catch {
+    // Ignore parse errors
+  }
+  return defaultState;
+}
+
+function getSystemDarkPreference(): boolean {
+  if (typeof window === 'undefined') return true;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+// ============================================
 // PROVIDER
 // ============================================
 
 export function ThemeProvider({
   children,
-  defaultTheme = 'system',
-  storageKey = 'visao-theme',
+  defaultTheme = 'dark',
+  defaultVariant = 'default',
+  storageKey = STORAGE_KEY,
 }: ThemeProviderProps) {
-  const [theme, setThemeState] = useState<Theme>(() => {
-    // Recuperar do localStorage
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem(storageKey);
-      if (stored === 'dark' || stored === 'light' || stored === 'system') {
-        return stored;
-      }
-    }
-    return defaultTheme;
+  const [state, setState] = useState<ThemeState>(() => {
+    const stored = getStoredTheme();
+    return {
+      mode: stored.mode || defaultTheme,
+      variant: stored.variant || defaultVariant,
+    };
   });
 
-  const [resolvedTheme, setResolvedTheme] = useState<'dark' | 'light'>('dark');
+  const [isDark, setIsDark] = useState(() => {
+    const stored = getStoredTheme();
+    return stored.mode === 'dark' || (stored.mode === 'system' && getSystemDarkPreference());
+  });
 
-  // Resolver tema baseado em preferência do sistema
+  // Apply theme classes to document
   useEffect(() => {
-    const root = window.document.documentElement;
-
-    // Remover classes antigas
-    root.classList.remove('light', 'dark');
-
-    let resolved: 'dark' | 'light';
-
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light';
-      resolved = systemTheme;
-    } else {
-      resolved = theme;
+    const root = document.documentElement;
+    
+    // Add transition class
+    root.classList.add('theme-transition');
+    
+    // Determine if dark mode
+    const shouldBeDark = state.mode === 'dark' || (state.mode === 'system' && getSystemDarkPreference());
+    setIsDark(shouldBeDark);
+    
+    // Remove all theme classes
+    root.classList.remove('light', 'dark', 'theme-soc', 'theme-midnight', 'theme-contrast', 'theme-industrial');
+    
+    // Apply dark/light class
+    root.classList.add(shouldBeDark ? 'dark' : 'light');
+    
+    // Apply variant class if not default
+    if (state.variant !== 'default') {
+      root.classList.add(`theme-${state.variant}`);
     }
-
-    // Aplicar tema
-    root.classList.add(resolved);
-    setResolvedTheme(resolved);
-
-    // Atualizar meta theme-color
+    
+    // Update meta theme-color
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
-      metaThemeColor.setAttribute(
-        'content',
-        resolved === 'dark' ? '#0f172a' : '#ffffff'
-      );
+      metaThemeColor.setAttribute('content', shouldBeDark ? '#0f172a' : '#ffffff');
     }
-  }, [theme]);
-
-  // Ouvir mudanças na preferência do sistema
-  useEffect(() => {
-    if (theme !== 'system') return;
-
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     
-    const handleChange = (e: MediaQueryListEvent) => {
-      const root = window.document.documentElement;
+    // Remove transition class after animation
+    const timeout = setTimeout(() => {
+      root.classList.remove('theme-transition');
+    }, 300);
+    
+    return () => clearTimeout(timeout);
+  }, [state.mode, state.variant]);
+
+  // Listen for system preference changes
+  useEffect(() => {
+    if (state.mode !== 'system') return;
+    
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = (e: MediaQueryListEvent) => {
+      const root = document.documentElement;
       root.classList.remove('light', 'dark');
-      const newTheme = e.matches ? 'dark' : 'light';
-      root.classList.add(newTheme);
-      setResolvedTheme(newTheme);
+      root.classList.add(e.matches ? 'dark' : 'light');
+      setIsDark(e.matches);
     };
+    
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, [state.mode]);
 
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, [theme]);
+  // Persist theme changes
+  useEffect(() => {
+    localStorage.setItem(storageKey, JSON.stringify(state));
+  }, [state, storageKey]);
 
-  // Função para definir tema
-  const setTheme = (newTheme: Theme) => {
-    localStorage.setItem(storageKey, newTheme);
-    setThemeState(newTheme);
-  };
+  const setMode = useCallback((mode: ThemeMode) => {
+    setState(prev => ({ ...prev, mode }));
+  }, []);
 
-  // Toggle entre dark e light
-  const toggleTheme = () => {
-    const newTheme = resolvedTheme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-  };
+  const setVariant = useCallback((variant: ThemeVariant) => {
+    setState(prev => ({ ...prev, variant }));
+  }, []);
+
+  const toggleMode = useCallback(() => {
+    setState(prev => ({
+      ...prev,
+      mode: (prev.mode === 'dark' || (prev.mode === 'system' && getSystemDarkPreference())) 
+        ? 'light' 
+        : 'dark',
+    }));
+  }, []);
+
+  const resolvedTheme = isDark ? 'dark' : 'light';
 
   const value: ThemeContextType = {
-    theme,
+    ...state,
+    setMode,
+    setVariant,
+    toggleMode,
+    isDark,
+    // Aliases para compatibilidade
+    theme: state.mode,
     resolvedTheme,
-    setTheme,
-    toggleTheme,
+    setTheme: setMode,
+    toggleTheme: toggleMode,
   };
 
   return (
@@ -146,205 +210,7 @@ export function useTheme(): ThemeContextType {
 }
 
 // ============================================
-// COMPONENTE: Theme Toggle Button
-// ============================================
-
-import { Moon, Sun, Monitor } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
-
-interface ThemeToggleProps {
-  variant?: 'button' | 'dropdown';
-  size?: 'sm' | 'default' | 'lg' | 'icon';
-  showLabel?: boolean;
-  className?: string;
-}
-
-export function ThemeToggle({
-  variant = 'button',
-  size = 'icon',
-  showLabel = false,
-  className,
-}: ThemeToggleProps) {
-  const { theme, resolvedTheme, setTheme, toggleTheme } = useTheme();
-
-  // Versão simples: botão que alterna
-  if (variant === 'button') {
-    return (
-      <Button
-        variant="ghost"
-        size={size}
-        onClick={toggleTheme}
-        className={cn('relative', className)}
-        title={resolvedTheme === 'dark' ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
-      >
-        <Sun className={cn(
-          'h-5 w-5 transition-all',
-          resolvedTheme === 'dark' ? 'rotate-90 scale-0' : 'rotate-0 scale-100'
-        )} />
-        <Moon className={cn(
-          'absolute h-5 w-5 transition-all',
-          resolvedTheme === 'dark' ? 'rotate-0 scale-100' : '-rotate-90 scale-0'
-        )} />
-        {showLabel && (
-          <span className="ml-2">
-            {resolvedTheme === 'dark' ? 'Escuro' : 'Claro'}
-          </span>
-        )}
-        <span className="sr-only">Alternar tema</span>
-      </Button>
-    );
-  }
-
-  // Versão dropdown: permite escolher dark/light/system
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size={size} className={className}>
-          <Sun className={cn(
-            'h-5 w-5 transition-all',
-            resolvedTheme === 'dark' ? 'rotate-90 scale-0' : 'rotate-0 scale-100'
-          )} />
-          <Moon className={cn(
-            'absolute h-5 w-5 transition-all',
-            resolvedTheme === 'dark' ? 'rotate-0 scale-100' : '-rotate-90 scale-0'
-          )} />
-          {showLabel && (
-            <span className="ml-2">Tema</span>
-          )}
-          <span className="sr-only">Selecionar tema</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem 
-          onClick={() => setTheme('light')}
-          className={cn(theme === 'light' && 'bg-accent')}
-        >
-          <Sun className="w-4 h-4 mr-2" />
-          Claro
-        </DropdownMenuItem>
-        <DropdownMenuItem 
-          onClick={() => setTheme('dark')}
-          className={cn(theme === 'dark' && 'bg-accent')}
-        >
-          <Moon className="w-4 h-4 mr-2" />
-          Escuro
-        </DropdownMenuItem>
-        <DropdownMenuItem 
-          onClick={() => setTheme('system')}
-          className={cn(theme === 'system' && 'bg-accent')}
-        >
-          <Monitor className="w-4 h-4 mr-2" />
-          Sistema
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
-
-// ============================================
-// COMPONENTE: Theme Selector (Cards)
-// ============================================
-
-interface ThemeSelectorProps {
-  className?: string;
-}
-
-export function ThemeSelector({ className }: ThemeSelectorProps) {
-  const { theme, setTheme } = useTheme();
-
-  const themes: { value: Theme; label: string; icon: React.ComponentType<{ className?: string }>; description: string }[] = [
-    {
-      value: 'light',
-      label: 'Claro',
-      icon: Sun,
-      description: 'Tema claro para ambientes iluminados',
-    },
-    {
-      value: 'dark',
-      label: 'Escuro',
-      icon: Moon,
-      description: 'Tema escuro para reduzir fadiga ocular',
-    },
-    {
-      value: 'system',
-      label: 'Sistema',
-      icon: Monitor,
-      description: 'Segue a preferência do seu sistema',
-    },
-  ];
-
-  return (
-    <div className={cn('grid grid-cols-3 gap-4', className)}>
-      {themes.map(({ value, label, icon: Icon, description }) => (
-        <button
-          key={value}
-          onClick={() => setTheme(value)}
-          className={cn(
-            'relative flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all',
-            theme === value
-              ? 'border-primary bg-primary/5'
-              : 'border-muted hover:border-muted-foreground/50'
-          )}
-        >
-          {/* Preview */}
-          <div className={cn(
-            'w-full aspect-video rounded-md overflow-hidden',
-            value === 'dark' ? 'bg-slate-900' : value === 'light' ? 'bg-white' : 'bg-gradient-to-r from-white to-slate-900'
-          )}>
-            <div className="flex h-full">
-              <div className={cn(
-                'w-1/4 h-full',
-                value === 'dark' ? 'bg-slate-800' : value === 'light' ? 'bg-slate-100' : 'bg-gradient-to-b from-slate-100 to-slate-800'
-              )} />
-              <div className="flex-1 p-1">
-                <div className={cn(
-                  'h-2 w-3/4 rounded-sm mb-1',
-                  value === 'dark' ? 'bg-slate-700' : 'bg-slate-200'
-                )} />
-                <div className={cn(
-                  'h-1 w-1/2 rounded-sm',
-                  value === 'dark' ? 'bg-slate-700' : 'bg-slate-200'
-                )} />
-              </div>
-            </div>
-          </div>
-
-          <Icon className="w-5 h-5" />
-          <span className="text-sm font-medium">{label}</span>
-          
-          {/* Check indicator */}
-          {theme === value && (
-            <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
-              <svg
-                className="w-3 h-3 text-primary-foreground"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-          )}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-// ============================================
 // EXPORTS
 // ============================================
 
-export type { Theme, ThemeContextType };
+export type { ThemeState, ThemeContextType };
