@@ -7,149 +7,147 @@
 ## 1. Layout Principal
 
 ```tsx
-<div className="min-h-screen bg-background">
+<AppLayout>
   <Sidebar />
-  <main className="ml-64 p-6">
-    <PageHeader title="Dashboard" />
-    <div className="mt-6">
-      {children}
-    </div>
+  <main>
+    <Header />
+    <PageContent />
   </main>
-</div>
+</AppLayout>
 ```
 
 ---
 
 ## 2. Sidebar
 
-```tsx
-<aside className="fixed left-0 top-0 h-screen w-64 border-r bg-card">
-  <Logo />
-  <Navigation items={navItems} />
-  <UserMenu />
-</aside>
-```
+| Seção | Itens |
+|-------|-------|
+| Principal | Dashboard, Câmeras, Alertas |
+| Análise | Analytics, Heatmap, Relatórios |
+| IA | Reconhecimento, Zonas, PPE |
+| Config | Settings, Notificações |
 
 ---
 
 ## 3. Grid de Câmeras
 
-| Layout | Grid | Câmeras |
-|--------|------|---------|
-| 1x1 | `grid-cols-1` | 1 |
-| 2x1 | `grid-cols-2` | 2 |
-| 2x2 | `grid-cols-2` | 4 |
-| 3x2 | `grid-cols-3` | 6 |
-| 3x3 | `grid-cols-3` | 9 |
-| 4x4 | `grid-cols-4` | 16 |
+| Layout | Grid | Uso |
+|--------|------|-----|
+| Single | 1x1 | Foco único |
+| Dual | 2x1 | Comparação |
+| Quad | 2x2 | Monitoramento |
+| Six | 3x2 | Visão geral |
+| Nine | 3x3 | Vigilância |
+| Sixteen | 4x4 | Central |
+
+---
+
+## 4. Responsividade
 
 ```tsx
-<div className={`grid gap-2 ${layoutClass}`}>
-  {cameras.map((camera) => (
-    <CameraPlayer key={camera.id} camera={camera} />
-  ))}
-</div>
+// Breakpoints
+const breakpoints = {
+  sm: '640px',
+  md: '768px',
+  lg: '1024px',
+  xl: '1280px',
+  '2xl': '1536px',
+};
+
+// Grid responsivo
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 ```
 
 ---
 
-## 4. Dashboard
+## 5. Dashboard Layout
 
-```tsx
-<div className="grid gap-6">
-  {/* KPIs */}
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-    <StatCard title="Alertas" value={stats.alerts} />
-    <StatCard title="Câmeras" value={stats.cameras} />
-  </div>
-  
-  {/* Charts */}
-  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <AlertsChart data={alertsData} />
-    <RecognitionChart data={recData} />
-  </div>
-  
-  {/* Table */}
-  <Card>
-    <AlertsTable alerts={alerts} />
-  </Card>
-</div>
+```
+┌─────────────────────────────────┐
+│         Header + KPIs           │
+├───────────┬─────────────────────┤
+│  Sidebar  │                     │
+│           │    Main Content     │
+│           │                     │
+│           │    (Charts/Grid)    │
+│           │                     │
+└───────────┴─────────────────────┘
 ```
 
 ---
 
-## 5. Responsividade
+## 6. Page Layout
 
 ```tsx
-// Mobile first
-<div className="
-  grid 
-  grid-cols-1 
-  sm:grid-cols-2 
-  md:grid-cols-3 
-  lg:grid-cols-4 
-  gap-4
-">
+<PageWrapper>
+  <PageHeader
+    title="Alertas"
+    breadcrumbs={[...]}
+    actions={<Button>Novo</Button>}
+  />
+  <PageContent>
+    {children}
+  </PageContent>
+</PageWrapper>
 ```
-
-### Breakpoints
-
-| Breakpoint | Tamanho |
-|------------|---------|
-| sm | 640px |
-| md | 768px |
-| lg | 1024px |
-| xl | 1280px |
-| 2xl | 1536px |
 
 ---
 
-## 6. Modais
+## 7. Modal Layout
 
 ```tsx
 <Dialog>
-  <DialogTrigger asChild>
-    <Button>Abrir</Button>
-  </DialogTrigger>
-  <DialogContent className="max-w-2xl">
-    <DialogHeader>
-      <DialogTitle>Título</DialogTitle>
-    </DialogHeader>
-    {content}
-    <DialogFooter>
-      <Button>Confirmar</Button>
-    </DialogFooter>
-  </DialogContent>
+  <DialogHeader>Título</DialogHeader>
+  <DialogContent>Conteúdo</DialogContent>
+  <DialogFooter>
+    <Button variant="ghost">Cancelar</Button>
+    <Button>Confirmar</Button>
+  </DialogFooter>
 </Dialog>
 ```
 
 ---
 
-## 7. Formulários
+## 8. Form Layout
 
 ```tsx
-<form className="space-y-6">
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <FormField name="name" label="Nome" />
-    <FormField name="email" label="Email" />
-  </div>
-  <div className="flex justify-end gap-2">
-    <Button variant="outline">Cancelar</Button>
+<Form>
+  <FormSection title="Informações Básicas">
+    <FormField label="Nome" />
+    <FormField label="URL" />
+  </FormSection>
+  <FormSection title="Configurações">
+    <FormField label="Opção" />
+  </FormSection>
+  <FormActions>
     <Button type="submit">Salvar</Button>
-  </div>
-</form>
+  </FormActions>
+</Form>
 ```
 
 ---
 
-## 8. Fullscreen
+## 9. Split View
 
 ```tsx
-const [isFullscreen, setFullscreen] = useState(false);
+<SplitPane
+  left={<CameraList />}
+  right={<CameraDetails />}
+  defaultSize={300}
+/>
+```
 
-<div className={isFullscreen ? 'fixed inset-0 z-50' : ''}>
-  <CameraPlayer camera={camera} />
-</div>
+---
+
+## 10. Mobile Layout
+
+```tsx
+// Bottom navigation no mobile
+<MobileNav>
+  <NavItem icon={Home} label="Home" />
+  <NavItem icon={Camera} label="Câmeras" />
+  <NavItem icon={Bell} label="Alertas" />
+</MobileNav>
 ```
 
 ---
