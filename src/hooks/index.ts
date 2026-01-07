@@ -99,6 +99,7 @@ export * from "./useRetry";
 export * from "./useRuleActions";
 export * from "./useRuleViolations";
 export * from "./useRules";
+export * from "./useRuleExecutions";
 export * from "./useScreenShare";
 export * from "./useScrollPosition";
 export * from "./useServiceWorker";

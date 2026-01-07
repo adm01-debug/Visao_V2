@@ -5,7 +5,9 @@
 
 import { Sidebar } from "@/components/Sidebar";
 import { AutomationRulesManager } from "@/components/AutomationRulesManager";
+import { RuleExecutionHistory } from "@/components/RuleExecutionHistory";
 import { Zap } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function AutomationRulesPage() {
   return (
@@ -26,8 +28,21 @@ export default function AutomationRulesPage() {
             </div>
           </div>
 
-          {/* Automation Rules Manager */}
-          <AutomationRulesManager />
+          {/* Tabs for Rules and History */}
+          <Tabs defaultValue="rules" className="space-y-4">
+            <TabsList>
+              <TabsTrigger value="rules">Regras</TabsTrigger>
+              <TabsTrigger value="history">Histórico de Execuções</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="rules">
+              <AutomationRulesManager />
+            </TabsContent>
+
+            <TabsContent value="history">
+              <RuleExecutionHistory />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
     </div>
