@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { MainLayout } from "@/components/MainLayout";
 
 // Lazy loaded pages
 const Index = lazy(() => import("@/pages/Index"));
@@ -32,6 +33,7 @@ const RecognitionAnalyticsPage = lazy(() => import("@/pages/RecognitionAnalytics
 const StreamSettingsPage = lazy(() => import("@/pages/StreamSettingsPage"));
 const TelegramSettingsPage = lazy(() => import("@/pages/TelegramSettingsPage"));
 const NotificationSettingsPage = lazy(() => import("@/pages/NotificationSettingsPage"));
+const AutomationRulesPage = lazy(() => import("@/pages/AutomationRulesPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const AcessoNegado = lazy(() => import("@/pages/AcessoNegado"));
 
@@ -54,6 +56,14 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+// Layout wrapper para rotas protegidas com MainLayout
+const ProtectedLayoutRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useAuth();
+  if (loading) return <PageLoader />;
+  if (!user) return <Navigate to="/auth" replace />;
+  return <MainLayout>{children}</MainLayout>;
+};
+
 const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
@@ -68,25 +78,26 @@ const App = () => (
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/auth" element={<Auth />} />
-                    <Route path="/dashboard" element={<ProtectedRoute><DashboardV2 /></ProtectedRoute>} />
-                    <Route path="/cameras" element={<ProtectedRoute><CamerasPage /></ProtectedRoute>} />
-                    <Route path="/alerts" element={<ProtectedRoute><AlertsPage /></ProtectedRoute>} />
-                    <Route path="/zones" element={<ProtectedRoute><ZonesPage /></ProtectedRoute>} />
-                    <Route path="/recordings" element={<ProtectedRoute><RecordingsPage /></ProtectedRoute>} />
-                    <Route path="/analytics" element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
-                    <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-                    <Route path="/security" element={<ProtectedRoute><SecurityPage /></ProtectedRoute>} />
-                    <Route path="/face-recognition" element={<ProtectedRoute><FaceRecognitionPage /></ProtectedRoute>} />
-                    <Route path="/license-plate" element={<ProtectedRoute><LicensePlatePage /></ProtectedRoute>} />
-                    <Route path="/heatmap" element={<ProtectedRoute><HeatmapPage /></ProtectedRoute>} />
-                    <Route path="/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
-                    <Route path="/ppe" element={<ProtectedRoute><PPEPage /></ProtectedRoute>} />
-                    <Route path="/people" element={<ProtectedRoute><PeoplePage /></ProtectedRoute>} />
-                    <Route path="/recognition-logs" element={<ProtectedRoute><RecognitionLogsPage /></ProtectedRoute>} />
-                    <Route path="/recognition-analytics" element={<ProtectedRoute><RecognitionAnalyticsPage /></ProtectedRoute>} />
-                    <Route path="/stream-settings" element={<ProtectedRoute><StreamSettingsPage /></ProtectedRoute>} />
-                    <Route path="/telegram-settings" element={<ProtectedRoute><TelegramSettingsPage /></ProtectedRoute>} />
-                    <Route path="/notification-settings" element={<ProtectedRoute><NotificationSettingsPage /></ProtectedRoute>} />
+                    <Route path="/dashboard" element={<ProtectedLayoutRoute><DashboardV2 /></ProtectedLayoutRoute>} />
+                    <Route path="/cameras" element={<ProtectedLayoutRoute><CamerasPage /></ProtectedLayoutRoute>} />
+                    <Route path="/alerts" element={<ProtectedLayoutRoute><AlertsPage /></ProtectedLayoutRoute>} />
+                    <Route path="/zones" element={<ProtectedLayoutRoute><ZonesPage /></ProtectedLayoutRoute>} />
+                    <Route path="/recordings" element={<ProtectedLayoutRoute><RecordingsPage /></ProtectedLayoutRoute>} />
+                    <Route path="/analytics" element={<ProtectedLayoutRoute><AnalyticsPage /></ProtectedLayoutRoute>} />
+                    <Route path="/settings" element={<ProtectedLayoutRoute><SettingsPage /></ProtectedLayoutRoute>} />
+                    <Route path="/security" element={<ProtectedLayoutRoute><SecurityPage /></ProtectedLayoutRoute>} />
+                    <Route path="/face-recognition" element={<ProtectedLayoutRoute><FaceRecognitionPage /></ProtectedLayoutRoute>} />
+                    <Route path="/license-plate" element={<ProtectedLayoutRoute><LicensePlatePage /></ProtectedLayoutRoute>} />
+                    <Route path="/heatmap" element={<ProtectedLayoutRoute><HeatmapPage /></ProtectedLayoutRoute>} />
+                    <Route path="/reports" element={<ProtectedLayoutRoute><ReportsPage /></ProtectedLayoutRoute>} />
+                    <Route path="/ppe" element={<ProtectedLayoutRoute><PPEPage /></ProtectedLayoutRoute>} />
+                    <Route path="/people" element={<ProtectedLayoutRoute><PeoplePage /></ProtectedLayoutRoute>} />
+                    <Route path="/recognition-logs" element={<ProtectedLayoutRoute><RecognitionLogsPage /></ProtectedLayoutRoute>} />
+                    <Route path="/recognition-analytics" element={<ProtectedLayoutRoute><RecognitionAnalyticsPage /></ProtectedLayoutRoute>} />
+                    <Route path="/stream-settings" element={<ProtectedLayoutRoute><StreamSettingsPage /></ProtectedLayoutRoute>} />
+                    <Route path="/telegram-settings" element={<ProtectedLayoutRoute><TelegramSettingsPage /></ProtectedLayoutRoute>} />
+                    <Route path="/notification-settings" element={<ProtectedLayoutRoute><NotificationSettingsPage /></ProtectedLayoutRoute>} />
+                    <Route path="/automation-rules" element={<ProtectedLayoutRoute><AutomationRulesPage /></ProtectedLayoutRoute>} />
                     <Route path="/acesso-negado" element={<AcessoNegado />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
@@ -101,4 +112,3 @@ const App = () => (
 );
 
 export default App;
-
