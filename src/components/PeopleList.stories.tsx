@@ -1,1 +1,0 @@
-import type{Meta,StoryObj}from"@storybook/react";import{PeopleList}from"./PeopleList";const meta:Meta<typeof PeopleList>={title:"Components/PeopleList",component:PeopleList,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof PeopleList>;export const Default:Story={args:{people:[]}};

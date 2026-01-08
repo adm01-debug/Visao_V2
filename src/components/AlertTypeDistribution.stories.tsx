@@ -1,1 +1,0 @@
-import type{Meta,StoryObj}from"@storybook/react";import{AlertTypeDistribution}from"./AlertTypeDistribution";const meta:Meta<typeof AlertTypeDistribution>={title:"Charts/AlertTypeDistribution",component:AlertTypeDistribution,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof AlertTypeDistribution>;export const Default:Story={args:{}};

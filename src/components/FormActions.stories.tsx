@@ -1,1 +1,0 @@
-import type{Meta,StoryObj}from"@storybook/react";import{FormActions}from"./FormActions";const meta:Meta<typeof FormActions>={title:"Forms/FormActions",component:FormActions,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof FormActions>;export const Default:Story={args:{}};

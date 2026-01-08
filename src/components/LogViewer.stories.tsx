@@ -1,1 +1,0 @@
-import type{Meta,StoryObj}from"@storybook/react";import{LogViewer}from"./LogViewer";const meta:Meta<typeof LogViewer>={title:"Dev/LogViewer",component:LogViewer,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof LogViewer>;export const Default:Story={args:{logs:[]}};
