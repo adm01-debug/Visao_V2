@@ -56,6 +56,7 @@ export * from "./memoryManager";
 export * from "./metrics";
 export * from "./objectUtils";
 export * from "./offline";
+export * from "./offlineStorage";
 export * from "./opentelemetry";
 export * from "./passwordPolicy";
 export * from "./pdfGenerator";

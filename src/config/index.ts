@@ -13,5 +13,6 @@ export * from "./locale";
 export * from "./models_config";
 export * from "./routes";
 export * from "./sentry";
+export * from "./sidebar-config";
 export * from "./supabase";
 export * from "./theme";

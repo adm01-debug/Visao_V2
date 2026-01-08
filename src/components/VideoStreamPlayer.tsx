@@ -1,6 +1,3 @@
-import { useInterval, useTimeout } from "@/hooks";
-import { usePrevious } from '@/hooks/usePrevious';
-import { memo } from "react";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: VideoStreamPlayer
@@ -15,7 +12,7 @@ import { memo } from "react";
  * - Overlay de detecção de IA
  */
 
-import { useState, useRef, useEffect } from 'react';
+import { memo, useState, useRef, useEffect } from 'react';
 import {
   Play,
   Pause,
