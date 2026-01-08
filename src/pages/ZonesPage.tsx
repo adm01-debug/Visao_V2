@@ -1,7 +1,3 @@
-import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { PageHeader } from '@/components/PageHeader';
-import { InfoTooltip } from '@/components/InfoTooltip';
-import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, SeverityBadge, TimeAgo, ConfirmDialog } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Zonas de Interesse
@@ -13,6 +9,11 @@ import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, SeverityBadge, Tim
  * - Estatísticas em tempo real
  * - Histórico de eventos
  */
+
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { PageHeader } from '@/components/PageHeader';
+import { InfoTooltip } from '@/components/InfoTooltip';
+import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, SeverityBadge, TimeAgo, ConfirmDialog } from "@/components";
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import {

@@ -1,7 +1,3 @@
-import { ErrorBoundary, formatDate, formatNumber } from "@/lib/formatters";
-import { FilterDropdown } from '@/components/FilterDropdown';
-import { DateRangePicker } from '@/components/DateRangePicker';
-import { ErrorBoundary, EmptyState, ErrorState, LoadingSpinner, TimeAgo } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Gravações / Clips
@@ -13,7 +9,12 @@ import { ErrorBoundary, EmptyState, ErrorState, LoadingSpinner, TimeAgo } from "
  * - Download e exclusão
  */
 
-import { ErrorBoundary, useState, useEffect, useCallback, useMemo } from 'react';
+import { formatDate, formatNumber } from "@/lib/formatters";
+import { FilterDropdown } from '@/components/FilterDropdown';
+import { DateRangePicker } from '@/components/DateRangePicker';
+import { ErrorBoundary, EmptyState, ErrorState, LoadingSpinner, TimeAgo } from "@/components";
+
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Video,
   Play,
@@ -34,13 +35,13 @@ import {
   Volume2,
   VolumeX,
 } from 'lucide-react';
-import { ErrorBoundary, supabase } from '@/integrations/supabase/client';
-import { ErrorBoundary, useCameras } from '@/hooks/useCameras';
-import { ErrorBoundary, Button } from '@/components/ui/button';
-import { ErrorBoundary, Input } from '@/components/ui/input';
-import { ErrorBoundary, Badge } from '@/components/ui/badge';
-import { ErrorBoundary, Skeleton } from '@/components/ui/skeleton';
-import { ErrorBoundary, Checkbox } from '@/components/ui/checkbox';
+import { supabase } from '@/integrations/supabase/client';
+import { useCameras } from '@/hooks/useCameras';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
   SelectContent,

@@ -1,5 +1,3 @@
-import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Colaboradores / Pessoas
@@ -9,6 +7,9 @@ import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/
  * - Cadastro com foto
  * - Gestão básica
  */
+
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/components";
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import {

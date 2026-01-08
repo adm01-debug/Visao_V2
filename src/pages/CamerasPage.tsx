@@ -1,7 +1,3 @@
-import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { useWindowSize } from '@/hooks/useWindowSize';
-import { ErrorState } from '@/components/ErrorState';
-import { StatusBadge } from '@/components/StatusBadge';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Câmeras
@@ -13,6 +9,11 @@ import { StatusBadge } from '@/components/StatusBadge';
  * - Análise de IA por câmera
  * - Configurações por câmera
  */
+
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { useWindowSize } from '@/hooks/useWindowSize';
+import { ErrorState } from '@/components/ErrorState';
+import { StatusBadge } from '@/components/StatusBadge';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import {

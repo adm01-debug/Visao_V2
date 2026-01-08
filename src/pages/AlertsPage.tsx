@@ -1,11 +1,3 @@
-import { getRelativeTime, formatDuration, formatDate } from "@/lib/dateUtils";
-import { TimeAgo } from "@/components/TimeAgo";
-import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import { TableSkeleton } from "@/components/TableSkeleton";
-import { EmptyState } from "@/components/EmptyState";
-import { useInterval } from "@/hooks/useInterval";
-import { SeverityBadge } from "@/components/SeverityBadge";
-
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Alertas
@@ -18,6 +10,14 @@ import { SeverityBadge } from "@/components/SeverityBadge";
  * - Timeline de alertas
  * - Notificações em tempo real
  */
+
+import { getRelativeTime, formatDuration, formatDate } from "@/lib/dateUtils";
+import { TimeAgo } from "@/components/TimeAgo";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
+import { TableSkeleton } from "@/components/TableSkeleton";
+import { EmptyState } from "@/components/EmptyState";
+import { useInterval } from "@/hooks/useInterval";
+import { SeverityBadge } from "@/components/SeverityBadge";
 
 import { useState, useMemo, useCallback } from "react";
 import {

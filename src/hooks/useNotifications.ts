@@ -1,4 +1,3 @@
-import { logger } from "@/lib/logger";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useNotifications

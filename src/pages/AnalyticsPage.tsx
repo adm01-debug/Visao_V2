@@ -1,7 +1,3 @@
-import { formatDate, formatNumber } from "@/lib/formatters";
-import { ProgressRing } from "@/components/ProgressRing";
-import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/components";
-
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Analytics
@@ -12,6 +8,10 @@ import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/
  * - Relatórios por período
  * - Exportação de dados
  */
+
+import { formatDate, formatNumber } from "@/lib/formatters";
+import { ProgressRing } from "@/components/ProgressRing";
+import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/components";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import {
