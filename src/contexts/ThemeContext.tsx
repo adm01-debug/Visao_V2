@@ -6,5 +6,10 @@
  */
 
 // Re-export tudo de ThemeProvider para manter compatibilidade de imports
-export { ThemeProvider, useTheme, toggleTheme } from "./ThemeProvider";
-export type { ThemeMode, ThemeVariant, ThemeState } from "./ThemeProvider";
+export { ThemeProvider, useTheme } from "./ThemeProvider";
+export type { ThemeMode, ThemeVariant, ThemeState, ThemeContextType } from "./ThemeProvider";
+
+// Helper function for legacy compatibility
+export const toggleTheme = () => {
+  console.warn('toggleTheme() é deprecated. Use useTheme().toggleMode() ao invés.');
+};

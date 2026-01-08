@@ -8,6 +8,7 @@
 export * from "./aiStore";
 export * from "./alertStore";
 export * from "./analyticsStore";
+export * from "./appStore";
 export * from "./authStore";
 export * from "./cameraStore";
 export * from "./filterStore";
