@@ -1,1 +1,0 @@
-import type{Meta,StoryObj}from"@storybook/react";import{CardSkeleton}from"./CardSkeleton";const meta:Meta<typeof CardSkeleton>={title:"UI/CardSkeleton",component:CardSkeleton,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof CardSkeleton>;export const Default:Story={args:{}};
