@@ -1,1 +1,0 @@
-import type{Meta,StoryObj}from"@storybook/react";import{PlateCard}from"./PlateCard";const meta:Meta<typeof PlateCard>={title:"Recognition/PlateCard",component:PlateCard,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof PlateCard>;export const Default:Story={args:{plate:"ABC-1234"}};

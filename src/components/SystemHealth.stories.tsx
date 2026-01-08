@@ -1,1 +1,0 @@
-import type{Meta,StoryObj}from"@storybook/react";import{SystemHealth}from"./SystemHealth";const meta:Meta<typeof SystemHealth>={title:"Dashboard/SystemHealth",component:SystemHealth,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof SystemHealth>;export const Default:Story={args:{}};export const AllHealthy:Story={args:{status:"healthy"}};

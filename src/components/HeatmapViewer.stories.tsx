@@ -1,1 +1,0 @@
-import type{Meta,StoryObj}from"@storybook/react";import{HeatmapViewer}from"./HeatmapViewer";const meta:Meta<typeof HeatmapViewer>={title:"Analytics/HeatmapViewer",component:HeatmapViewer,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof HeatmapViewer>;export const Default:Story={args:{}};

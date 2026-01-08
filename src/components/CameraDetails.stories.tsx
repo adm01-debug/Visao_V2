@@ -1,1 +1,0 @@
-import type{Meta,StoryObj}from"@storybook/react";import{CameraDetails}from"./CameraDetails";const meta:Meta<typeof CameraDetails>={title:"Components/CameraDetails",component:CameraDetails,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof CameraDetails>;export const Default:Story={args:{}};

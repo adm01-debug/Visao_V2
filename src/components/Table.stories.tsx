@@ -1,1 +1,0 @@
-import type{Meta,StoryObj}from"@storybook/react";import{Table}from"./Table";const meta:Meta<typeof Table>={title:"Data/Table",component:Table,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof Table>;export const Default:Story={args:{columns:[{key:"name",label:"Name"}],data:[{name:"Item 1"}]}};

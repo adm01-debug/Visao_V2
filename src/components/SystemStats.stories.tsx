@@ -1,1 +1,0 @@
-import type{Meta,StoryObj}from"@storybook/react";import{SystemStats}from"./SystemStats";const meta:Meta<typeof SystemStats>={title:"Dashboard/SystemStats",component:SystemStats,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof SystemStats>;export const Default:Story={args:{}};
