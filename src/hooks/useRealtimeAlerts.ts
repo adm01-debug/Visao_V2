@@ -1,6 +1,4 @@
 import { logger } from "@/lib/logger";
-import { playAlertSound } from "@/lib/alertSounds";
-import { showNotification } from "@/lib/browserNotifications";
 import { useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
