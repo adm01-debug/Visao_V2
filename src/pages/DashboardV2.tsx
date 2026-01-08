@@ -1,13 +1,3 @@
-import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { unique } from '@/lib/arrayUtils';
-import { useScrollPosition } from '@/hooks/useScrollPosition';
-import { CardSkeleton } from '@/components/PageSkeletons';
-import { APP_NAME } from '@/lib/constants';
-import { formatNumber } from '@/lib/formatters';
-import { useDocumentTitle } from '@/hooks/useDocumentTitle';
-import { StatCard } from '@/components/StatCard';
-import { CountUp } from '@/components/CountUp';
-import { TimeAgo } from '@/components/TimeAgo';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Dashboard V2 - Integração Completa
@@ -20,6 +10,16 @@ import { TimeAgo } from '@/components/TimeAgo';
  * - FaceRecognitionOverlay para detecção facial
  * - Análise contínua por câmera
  */
+
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { unique } from '@/lib/arrayUtils';
+import { useScrollPosition } from '@/hooks/useScrollPosition';
+import { CardSkeleton } from '@/components/PageSkeletons';
+import { formatNumber } from '@/lib/formatters';
+import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+import { StatCard } from '@/components/StatCard';
+import { CountUp } from '@/components/CountUp';
+import { TimeAgo } from '@/components/TimeAgo';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { 

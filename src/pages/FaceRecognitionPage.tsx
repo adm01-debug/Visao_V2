@@ -1,4 +1,3 @@
-import { ErrorBoundary } from "@/components/ErrorBoundary";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Reconhecimento Facial
@@ -6,6 +5,8 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
  * Página dedicada para reconhecimento facial em tempo real
  * com visualização de câmeras e identificação de pessoas
  */
+
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';

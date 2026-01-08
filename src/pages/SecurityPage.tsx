@@ -1,6 +1,3 @@
-import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { CopyButton } from '@/components/CopyButton';
-import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/components";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Segurança
@@ -12,6 +9,10 @@ import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/
  * - Eventos de segurança
  * - Configurações de segurança
  */
+
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { CopyButton } from '@/components/CopyButton';
+import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/components";
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import {

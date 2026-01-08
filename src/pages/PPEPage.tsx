@@ -1,10 +1,11 @@
-import { ErrorBoundary } from "@/components/ErrorBoundary";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: PPEPage (Equipamentos de Proteção Individual)
  * 
  * Gerenciamento de zonas PPE e monitoramento de conformidade
  */
+
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
