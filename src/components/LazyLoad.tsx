@@ -4,7 +4,7 @@
 
 import { ReactNode, Suspense } from "react";
 import { useInView } from "@/hooks/usePerformance";
-import { Skeleton } from "@/components/skeletons/Skeletons";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 interface LazyLoadProps {

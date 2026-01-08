@@ -551,4 +551,22 @@ export function PageSkeleton({ type = 'dashboard' }: PageSkeletonProps) {
   }
 }
 
+// ============================================
+// SKELETON: Namespace export para uso como PageSkeletons.Dashboard, etc.
+// ============================================
+
+export const PageSkeletons = {
+  Dashboard: DashboardSkeleton,
+  Cameras: CamerasSkeleton,
+  Alerts: AlertsSkeleton,
+  People: PeopleSkeleton,
+  Zones: ZonesSkeleton,
+  Recordings: RecordingsSkeleton,
+  Analytics: AnalyticsSkeleton,
+  Security: SecuritySkeleton,
+  Settings: SettingsSkeleton,
+  Card: CardSkeleton,
+  Table: TableSkeleton,
+};
+
 export default PageSkeleton;

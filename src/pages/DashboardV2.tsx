@@ -1,7 +1,7 @@
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { unique } from '@/lib/arrayUtils';
 import { useScrollPosition } from '@/hooks/useScrollPosition';
-import { CardSkeleton } from '@/components/CardSkeleton';
+import { CardSkeleton } from '@/components/PageSkeletons';
 import { APP_NAME } from '@/lib/constants';
 import { formatNumber } from '@/lib/formatters';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
