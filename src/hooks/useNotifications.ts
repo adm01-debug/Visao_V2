@@ -1,5 +1,4 @@
-import { logger } from "@/lib";
-import { rateLimiter } from '@/lib/rateLimiter';
+import { logger } from "@/lib/logger";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useNotifications
