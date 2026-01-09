@@ -1,25 +1,56 @@
-/**
- * useAmbientLight Hook
- * Ambient Light Sensor API
- */
 import { useState, useEffect } from 'react';
 
-export function useAmbientLight() {
-  const [illuminance, setIlluminance] = useState<number | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-  const isSupported = typeof window !== 'undefined' && 'AmbientLightSensor' in window;
+export interface AmbientLightState {
+  illuminance: number | null;
+  isSupported: boolean;
+  error: string | null;
+}
+
+interface AmbientLightSensorInterface extends EventTarget {
+  illuminance: number;
+  start: () => void;
+  stop: () => void;
+  onerror: ((event: Event) => void) | null;
+  onreading: ((event: Event) => void) | null;
+}
+
+declare global {
+  interface Window { AmbientLightSensor?: new () => AmbientLightSensorInterface; }
+}
+
+export const useAmbientLight = (): AmbientLightState => {
+  const [state, setState] = useState<AmbientLightState>({
+    illuminance: null, isSupported: false, error: null,
+  });
 
   useEffect(() => {
-    if (!isSupported) return;
-    try {
-      const sensor = new (window as any).AmbientLightSensor();
-      sensor.onreading = () => setIlluminance(sensor.illuminance);
-      sensor.onerror = (e: any) => setError(new Error(e.error.message));
-      sensor.start();
-      return () => sensor.stop();
-    } catch (e) { setError(e as Error); }
-  }, [isSupported]);
+    if (!window.AmbientLightSensor) {
+      setState(s => ({ ...s, error: 'AmbientLightSensor not supported' }));
+      return;
+    }
 
-  return { illuminance, isSupported, error };
-}
+    try {
+      const sensor = new window.AmbientLightSensor();
+      
+      sensor.onreading = () => {
+        setState({ illuminance: sensor.illuminance, isSupported: true, error: null });
+      };
+
+      sensor.onerror = (event) => {
+        const e = event as { error?: { message?: string } };
+        setState(s => ({ ...s, error: e.error?.message || 'Sensor error' }));
+      };
+
+      sensor.start();
+      setState(s => ({ ...s, isSupported: true }));
+
+      return () => sensor.stop();
+    } catch (e) {
+      setState(s => ({ ...s, error: e instanceof Error ? e.message : 'Init failed' }));
+    }
+  }, []);
+
+  return state;
+};
+
 export default useAmbientLight;
