@@ -1,9 +1,32 @@
-name: blue-green
-on: [push, workflow_dispatch]
+name: Blue-Green Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'staging'
+
 jobs:
   blue-green:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run blue-green
-        run: echo "Running blue-green"
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build
+        run: npm run build
+        continue-on-error: true
+      
+      - name: Deploy Blue-Green
+        run: echo "Blue-Green deploy to ${{ github.event.inputs.environment }}"
+        continue-on-error: true
