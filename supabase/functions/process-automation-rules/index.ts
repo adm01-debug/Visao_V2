@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -125,8 +125,8 @@ function ruleMatchesAlert(rule: Rule, alert: Alert): boolean {
 }
 
 // Execute actions for a matched rule
-// deno-lint-ignore no-explicit-any
-async function executeActions(supabase: any, rule: Rule, alert: Alert): Promise<ActionResult[]> {
+
+async function executeActions(supabase: SupabaseClient, rule: Rule, alert: Alert): Promise<ActionResult[]> {
   const results: ActionResult[] = [];
 
   for (const action of rule.actions) {
@@ -231,8 +231,8 @@ async function executeActions(supabase: any, rule: Rule, alert: Alert): Promise<
 }
 
 // Log rule execution to rule_executions table
-// deno-lint-ignore no-explicit-any
-async function logRuleExecution(supabase: any, rule: Rule, alert: Alert, results: ActionResult[], startTime: number): Promise<void> {
+
+async function logRuleExecution(supabase: SupabaseClient, rule: Rule, alert: Alert, results: ActionResult[], startTime: number): Promise<void> {
   try {
     const endTime = Date.now();
     const executionTimeMs = endTime - startTime;
