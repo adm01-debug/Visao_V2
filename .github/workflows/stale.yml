@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  contents: read
   issues: write
   pull-requests: write
 
@@ -15,15 +16,15 @@ jobs:
     steps:
       - uses: actions/stale@v9
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
           stale-issue-message: "Este issue está inativo há 30 dias. Será fechado em 7 dias se não houver atividade."
           stale-pr-message: "Este PR está inativo há 30 dias. Será fechado em 7 dias se não houver atividade."
           close-issue-message: "Este issue foi fechado por inatividade."
           close-pr-message: "Este PR foi fechado por inatividade."
-          stale-issue-label: "stale"
-          stale-pr-label: "stale"
           days-before-stale: 30
           days-before-close: 7
+          stale-issue-label: "stale"
+          stale-pr-label: "stale"
           exempt-issue-labels: "pinned,security,bug,enhancement"
           exempt-pr-labels: "pinned,security"
           operations-per-run: 100
+
