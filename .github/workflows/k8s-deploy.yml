@@ -1,9 +1,25 @@
-name: k8s-deploy
-on: [push, workflow_dispatch]
+name: K8s Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'staging'
+
 jobs:
   k8s-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run k8s-deploy
-        run: echo "Running k8s-deploy"
+      
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+        continue-on-error: true
+      
+      - name: Deploy to Kubernetes
+        run: |
+          echo "K8s deploy to ${{ github.event.inputs.environment }}"
+          echo "Requires KUBECONFIG secret to be configured"
+        continue-on-error: true
