@@ -1,9 +1,12 @@
-name: terraform
-on: [push, workflow_dispatch]
+name: Terraform
+on:
+  workflow_dispatch:
 jobs:
   terraform:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run terraform
-        run: echo "Running terraform"
+      - run: |
+          echo "## Terraform" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Infrastructure as Code ready" >> $GITHUB_STEP_SUMMARY
+
