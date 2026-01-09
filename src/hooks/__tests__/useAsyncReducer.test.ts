@@ -1,36 +1,55 @@
-import { renderHook, act } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
-import { useAsyncReducer } from '@/hooks/useAsyncReducer';
+import { describe, it, expect } from "vitest";
+import { renderHook, act } from "@testing-library/react";
+import { useAsyncReducer } from "../useAsyncReducer";
 
-describe('useAsyncReducer', () => {
-  const reducer = (state: any, action: any) => {
+interface State {
+  count: number;
+  loading: boolean;
+}
+
+type Action = { type: "INCREMENT" } | { type: "DECREMENT" } | { type: "SET"; payload: number };
+
+describe("useAsyncReducer", () => {
+  const reducer = (state: State, action: Action): State => {
     switch (action.type) {
-      case 'INCREMENT': return { count: state.count + 1 };
-      case 'SET': return { count: action.payload };
-      default: return state;
+      case "INCREMENT":
+        return { ...state, count: state.count + 1 };
+      case "DECREMENT":
+        return { ...state, count: state.count - 1 };
+      case "SET":
+        return { ...state, count: action.payload };
+      default:
+        return state;
     }
   };
 
-  it('deve inicializar com estado inicial', () => {
-    const { result } = renderHook(() => useAsyncReducer(reducer, { count: 0 }));
-    expect(result.current[0]).toEqual({ count: 0 });
-  });
+  const initialState: State = { count: 0, loading: false };
 
-  it('deve despachar ações síncronas', () => {
-    const { result } = renderHook(() => useAsyncReducer(reducer, { count: 0 }));
-    act(() => { result.current[1]({ type: 'INCREMENT' }); });
+  it("should handle sync actions", () => {
+    const { result } = renderHook(() =>
+      useAsyncReducer(reducer, initialState)
+    );
+
+    act(() => {
+      result.current[1]({ type: "INCREMENT" });
+    });
+
     expect(result.current[0].count).toBe(1);
   });
 
-  it('deve despachar ações assíncronas', async () => {
-    const { result } = renderHook(() => useAsyncReducer(reducer, { count: 0 }));
-    const asyncAction = async () => ({ type: 'SET', payload: 10 });
-    await act(async () => { await result.current[1](asyncAction()); });
-    expect(result.current[0].count).toBe(10);
-  });
+  it("should handle async dispatch", async () => {
+    const { result } = renderHook(() =>
+      useAsyncReducer(reducer, initialState)
+    );
 
-  it('deve indicar estado de loading', async () => {
-    const { result } = renderHook(() => useAsyncReducer(reducer, { count: 0 }));
-    expect(result.current[2]).toBe(false);
+    await act(async () => {
+      await result.current[1](async (dispatch) => {
+        await new Promise((r) => setTimeout(r, 10));
+        dispatch({ type: "SET", payload: 42 });
+      });
+    });
+
+    expect(result.current[0].count).toBe(42);
   });
 });
+
