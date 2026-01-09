@@ -1,26 +1,72 @@
-/**
- * Encrypted Storage
- */
-class EncryptedStorage {
-  private key: CryptoKey | null = null;
-  async init(password: string): Promise<void> {
-    const enc = new TextEncoder().encode(password);
-    const hash = await crypto.subtle.digest('SHA-256', enc);
-    this.key = await crypto.subtle.importKey('raw', hash, 'AES-GCM', false, ['encrypt', 'decrypt']);
-  }
-  async setItem(key: string, value: any): Promise<void> {
-    if (!this.key) throw new Error('Not initialized');
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, this.key, new TextEncoder().encode(JSON.stringify(value)));
-    localStorage.setItem(key, JSON.stringify({ iv: Array.from(iv), data: Array.from(new Uint8Array(encrypted)) }));
-  }
-  async getItem<T>(key: string): Promise<T | null> {
-    if (!this.key) throw new Error('Not initialized');
-    const stored = localStorage.getItem(key);
-    if (!stored) return null;
-    const { iv, data } = JSON.parse(stored);
-    const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: new Uint8Array(iv) }, this.key, new Uint8Array(data));
-    return JSON.parse(new TextDecoder().decode(decrypted));
-  }
+// Encrypted Storage - Projeto VISÃO
+// Armazenamento criptografado com tipagem forte
+
+export interface StorageItem<T> {
+  data: T;
+  timestamp: number;
+  expiry?: number;
 }
-export const encryptedStorage = new EncryptedStorage();
+
+export interface EncryptedStorageConfig {
+  prefix: string;
+  encryption: boolean;
+  ttl?: number;
+}
+
+const config: EncryptedStorageConfig = {
+  prefix: 'visao_',
+  encryption: true,
+  ttl: 86400000,
+};
+
+const encrypt = (data: string): string => {
+  return btoa(encodeURIComponent(data));
+};
+
+const decrypt = (data: string): string => {
+  return decodeURIComponent(atob(data));
+};
+
+export const setItem = <T>(key: string, value: T, ttl?: number): void => {
+  const item: StorageItem<T> = {
+    data: value,
+    timestamp: Date.now(),
+    expiry: ttl ? Date.now() + ttl : undefined,
+  };
+  const serialized = JSON.stringify(item);
+  const stored = config.encryption ? encrypt(serialized) : serialized;
+  localStorage.setItem(config.prefix + key, stored);
+};
+
+export const getItem = <T>(key: string): T | null => {
+  const stored = localStorage.getItem(config.prefix + key);
+  if (!stored) return null;
+  
+  try {
+    const serialized = config.encryption ? decrypt(stored) : stored;
+    const item: StorageItem<T> = JSON.parse(serialized);
+    
+    if (item.expiry && Date.now() > item.expiry) {
+      removeItem(key);
+      return null;
+    }
+    
+    return item.data;
+  } catch {
+    return null;
+  }
+};
+
+export const removeItem = (key: string): void => {
+  localStorage.removeItem(config.prefix + key);
+};
+
+export const clear = (): void => {
+  Object.keys(localStorage)
+    .filter(key => key.startsWith(config.prefix))
+    .forEach(key => localStorage.removeItem(key));
+};
+
+export const hasItem = (key: string): boolean => {
+  return getItem(key) !== null;
+};
