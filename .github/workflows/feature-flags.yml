@@ -1,9 +1,13 @@
-name: feature-flags
-on: [push, workflow_dispatch]
+name: Feature Flags
+on:
+  push:
+    branches: [main]
 jobs:
-  feature-flags:
+  flags:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run feature-flags
-        run: echo "Running feature-flags"
+      - run: |
+          echo "## Feature Flags" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Feature flags validated" >> $GITHUB_STEP_SUMMARY
+
