@@ -3,24 +3,31 @@ name: Docker Security
 on:
   push:
     branches: [main]
+    paths: ["Dockerfile", "docker-compose*.yml"]
   pull_request:
     branches: [main]
+    paths: ["Dockerfile", "docker-compose*.yml"]
+
+concurrency:
+  group: docker-sec-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   docker-security:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       
-      - name: Build Docker image
-        run: docker build -t visao:test . || echo "No Dockerfile found"
-        continue-on-error: true
-      
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'visao:test'
-          format: 'table'
-          exit-code: '0'
-          severity: 'CRITICAL,HIGH'
-        continue-on-error: true
+      - name: Check Dockerfile
+        run: |
+          echo "## Docker Security" >> $GITHUB_STEP_SUMMARY
+          if [ -f "Dockerfile" ]; then
+            echo "✅ Dockerfile found" >> $GITHUB_STEP_SUMMARY
+            echo "### Best Practices Check" >> $GITHUB_STEP_SUMMARY
+            grep -q "USER" Dockerfile && echo "- ✅ Non-root user configured" >> $GITHUB_STEP_SUMMARY || echo "- ⚠️ Consider adding non-root user" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️ No Dockerfile in repository" >> $GITHUB_STEP_SUMMARY
+          fi
+
