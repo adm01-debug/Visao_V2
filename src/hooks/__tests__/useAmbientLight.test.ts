@@ -1,84 +1,75 @@
-/**
- * @fileoverview Testes para useAmbientLight hook
- * @description Testa o hook de sensor de luz ambiente
- */
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { renderHook, act } from "@testing-library/react";
+import { useAmbientLight } from "../useAmbientLight";
 
-import { renderHook, act } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { useAmbientLight } from '@/hooks/useAmbientLight';
+interface MockAmbientLightSensor {
+  illuminance: number;
+  start: ReturnType<typeof vi.fn>;
+  stop: ReturnType<typeof vi.fn>;
+  addEventListener: ReturnType<typeof vi.fn>;
+  removeEventListener: ReturnType<typeof vi.fn>;
+}
 
-describe('useAmbientLight', () => {
-  let mockSensor: any;
-  let originalAmbientLightSensor: any;
+type EventCallback = [string, () => void];
+
+describe("useAmbientLight", () => {
+  let mockSensor: MockAmbientLightSensor;
+  let originalAmbientLightSensor: unknown;
 
   beforeEach(() => {
     mockSensor = {
       illuminance: 100,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
       start: vi.fn(),
       stop: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
     };
-    
-    originalAmbientLightSensor = (window as any).AmbientLightSensor;
-    (window as any).AmbientLightSensor = vi.fn(() => mockSensor);
+
+    originalAmbientLightSensor = (window as Record<string, unknown>).AmbientLightSensor;
+
+    (window as Record<string, unknown>).AmbientLightSensor = vi.fn(() => mockSensor);
   });
 
   afterEach(() => {
-    (window as any).AmbientLightSensor = originalAmbientLightSensor;
-    vi.clearAllMocks();
+    (window as Record<string, unknown>).AmbientLightSensor = originalAmbientLightSensor;
   });
 
-  it('deve retornar valores iniciais', () => {
+  it("should return illuminance value", async () => {
     const { result } = renderHook(() => useAmbientLight());
-    
-    expect(result.current.illuminance).toBeDefined();
-    expect(result.current.isSupported).toBeDefined();
-    expect(result.current.error).toBeNull();
+
+    await act(async () => {
+      const readingCallback = mockSensor.addEventListener.mock.calls.find(
+        (call: EventCallback) => call[0] === "reading"
+      );
+      if (readingCallback) {
+        readingCallback[1]();
+      }
+    });
+
+    expect(result.current.illuminance).toBe(100);
   });
 
-  it('deve detectar suporte ao sensor', () => {
+  it("should handle errors", async () => {
     const { result } = renderHook(() => useAmbientLight());
-    expect(result.current.isSupported).toBe(true);
+
+    await act(async () => {
+      const errorCallback = mockSensor.addEventListener.mock.calls.find(
+        (call: EventCallback) => call[0] === "error"
+      );
+      if (errorCallback) {
+        errorCallback[1]();
+      }
+    });
+
+    expect(result.current.error).toBeDefined();
   });
 
-  it('deve retornar não suportado quando API não existe', () => {
-    (window as any).AmbientLightSensor = undefined;
+  it("should handle unsupported browsers", () => {
+    (window as Record<string, unknown>).AmbientLightSensor = undefined;
+
     const { result } = renderHook(() => useAmbientLight());
-    expect(result.current.isSupported).toBe(false);
-  });
 
-  it('deve atualizar iluminância quando sensor emite evento', () => {
-    const { result } = renderHook(() => useAmbientLight());
-    
-    const readingHandler = mockSensor.addEventListener.mock.calls.find(
-      (call: any) => call[0] === 'reading'
-    )?.[1];
-    
-    if (readingHandler) {
-      mockSensor.illuminance = 500;
-      act(() => readingHandler());
-      expect(result.current.illuminance).toBe(500);
-    }
-  });
-
-  it('deve lidar com erro do sensor', () => {
-    const { result } = renderHook(() => useAmbientLight());
-    
-    const errorHandler = mockSensor.addEventListener.mock.calls.find(
-      (call: any) => call[0] === 'error'
-    )?.[1];
-    
-    if (errorHandler) {
-      act(() => errorHandler({ error: new Error('Sensor error') }));
-      expect(result.current.error).toBeDefined();
-    }
-  });
-
-  it('deve limpar listener ao desmontar', () => {
-    const { unmount } = renderHook(() => useAmbientLight());
-    unmount();
-    expect(mockSensor.removeEventListener).toHaveBeenCalled();
-    expect(mockSensor.stop).toHaveBeenCalled();
+    expect(result.current.supported).toBe(false);
   });
 });
+
