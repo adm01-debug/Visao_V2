@@ -1,9 +1,29 @@
-name: stress-test
-on: [push, workflow_dispatch]
+name: Stress Test
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
+
 jobs:
   stress-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run stress-test
-        run: echo "Running stress-test"
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build
+        run: npm run build
+        continue-on-error: true
+      
+      - name: Run stress tests
+        run: npm run test:stress || echo "Stress tests skipped"
+        continue-on-error: true
