@@ -1,56 +1,88 @@
-/**
- * Geocoding Service
- * Address to coordinates conversion
- */
-export interface GeocodingResult {
+// Geocoding Service - Projeto VISÃO
+// Serviço de geocodificação com tipagem forte
+
+export interface GeoCoordinates {
   lat: number;
   lng: number;
-  formattedAddress: string;
-  components?: { type: string; value: string }[];
 }
 
-class GeocodingService {
-  private apiKey = '';
-
-  configure(apiKey: string) { this.apiKey = apiKey; }
-
-  async geocode(address: string): Promise<GeocodingResult | null> {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`,
-      { headers: { 'User-Agent': 'VisaoApp/1.0' } }
-    );
-    const data = await response.json();
-    if (!data[0]) return null;
-    return {
-      lat: parseFloat(data[0].lat),
-      lng: parseFloat(data[0].lon),
-      formattedAddress: data[0].display_name,
-    };
-  }
-
-  async reverseGeocode(lat: number, lng: number): Promise<GeocodingResult | null> {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-      { headers: { 'User-Agent': 'VisaoApp/1.0' } }
-    );
-    const data = await response.json();
-    if (!data.display_name) return null;
-    return { lat, lng, formattedAddress: data.display_name };
-  }
-
-  async autocomplete(query: string): Promise<GeocodingResult[]> {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`,
-      { headers: { 'User-Agent': 'VisaoApp/1.0' } }
-    );
-    const data = await response.json();
-    return data.map((item: any) => ({
-      lat: parseFloat(item.lat),
-      lng: parseFloat(item.lon),
-      formattedAddress: item.display_name,
-    }));
-  }
+export interface GeoAddress {
+  street?: string;
+  number?: string;
+  neighborhood?: string;
+  city: string;
+  state: string;
+  country: string;
+  postalCode?: string;
+  formatted: string;
 }
 
-export const geocodingService = new GeocodingService();
+export interface GeocodingResult {
+  coordinates: GeoCoordinates;
+  address: GeoAddress;
+  confidence: number;
+  placeId?: string;
+}
+
+export interface ReverseGeocodingResult {
+  address: GeoAddress;
+  coordinates: GeoCoordinates;
+}
+
+export interface GeocodingOptions {
+  language?: string;
+  region?: string;
+  bounds?: {
+    northeast: GeoCoordinates;
+    southwest: GeoCoordinates;
+  };
+}
+
+export interface GeocodingService {
+  geocode: (address: string, options?: GeocodingOptions) => Promise<GeocodingResult[]>;
+  reverseGeocode: (coordinates: GeoCoordinates) => Promise<ReverseGeocodingResult>;
+  calculateDistance: (from: GeoCoordinates, to: GeoCoordinates) => number;
+}
+
+const toRadians = (degrees: number): number => degrees * (Math.PI / 180);
+
+export const calculateDistance = (from: GeoCoordinates, to: GeoCoordinates): number => {
+  const R = 6371;
+  const dLat = toRadians(to.lat - from.lat);
+  const dLng = toRadians(to.lng - from.lng);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRadians(from.lat)) * Math.cos(toRadians(to.lat)) *
+    Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+};
+
+export const geocode = async (address: string, options?: GeocodingOptions): Promise<GeocodingResult[]> => {
+  const params = new URLSearchParams({
+    address,
+    language: options?.language || 'pt-BR',
+  });
+  
+  const response = await fetch(`/api/geocode?${params}`);
+  const data = await response.json();
+  return data.results || [];
+};
+
+export const reverseGeocode = async (coordinates: GeoCoordinates): Promise<ReverseGeocodingResult> => {
+  const params = new URLSearchParams({
+    lat: coordinates.lat.toString(),
+    lng: coordinates.lng.toString(),
+  });
+  
+  const response = await fetch(`/api/reverse-geocode?${params}`);
+  return response.json();
+};
+
+export const geocodingService: GeocodingService = {
+  geocode,
+  reverseGeocode,
+  calculateDistance,
+};
+
 export default geocodingService;
