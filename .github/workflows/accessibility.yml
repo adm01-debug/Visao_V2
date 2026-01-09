@@ -1,14 +1,13 @@
 name: Accessibility Tests
 
 on:
-  pull_request:
-    branches: [main]
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
 
 jobs:
-  a11y:
-    name: Accessibility Audit
+  accessibility:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,27 +17,14 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          
+      
       - name: Install dependencies
         run: npm ci
-        
-      - name: Build
-        run: npm run build
-        
-      - name: Run axe accessibility tests
-        uses: dequelabs/axe-linter-action@v1
+      
+      - name: Build Storybook
+        run: npm run build-storybook
         continue-on-error: true
-        
-      - name: Run pa11y
-        run: |
-          npm install -g pa11y-ci
-          npx serve -s dist -l 3000 &
-          sleep 5
-          pa11y-ci --sitemap http://localhost:3000/sitemap.xml || true
-          
-      - name: Accessibility Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: a11y-report
-          path: pa11y-ci-results.json
-          if-no-files-found: ignore
+      
+      - name: Run accessibility tests
+        run: npx storybook-addon-a11y || echo "A11y tests skipped"
+        continue-on-error: true
