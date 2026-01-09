@@ -1,68 +1,121 @@
-type ValidationRule = (value: any) => string | null;
+// Validation Service - Projeto VISÃO
+// Serviço de validação com tipagem forte usando Zod patterns
 
-interface ValidationResult { valid: boolean; errors: Record<string, string>; }
-
-class ValidationService {
-  required(message = 'Campo obrigatório'): ValidationRule {
-    return (value) => (value === undefined || value === null || value === '') ? message : null;
-  }
-
-  email(message = 'Email inválido'): ValidationRule {
-    return (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? null : message;
-  }
-
-  minLength(min: number, message?: string): ValidationRule {
-    return (value) => String(value).length >= min ? null : message || `Mínimo ${min} caracteres`;
-  }
-
-  maxLength(max: number, message?: string): ValidationRule {
-    return (value) => String(value).length <= max ? null : message || `Máximo ${max} caracteres`;
-  }
-
-  min(min: number, message?: string): ValidationRule {
-    return (value) => Number(value) >= min ? null : message || `Valor mínimo: ${min}`;
-  }
-
-  max(max: number, message?: string): ValidationRule {
-    return (value) => Number(value) <= max ? null : message || `Valor máximo: ${max}`;
-  }
-
-  pattern(regex: RegExp, message = 'Formato inválido'): ValidationRule {
-    return (value) => regex.test(value) ? null : message;
-  }
-
-  cpf(message = 'CPF inválido'): ValidationRule {
-    return (value) => {
-      const cpf = String(value).replace(/\D/g, '');
-      if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return message;
-      // Simplified validation
-      return null;
-    };
-  }
-
-  phone(message = 'Telefone inválido'): ValidationRule {
-    return (value) => /^\d{10,11}$/.test(String(value).replace(/\D/g, '')) ? null : message;
-  }
-
-  validate(value: any, rules: ValidationRule[]): string | null {
-    for (const rule of rules) {
-      const error = rule(value);
-      if (error) return error;
-    }
-    return null;
-  }
-
-  validateForm(data: Record<string, any>, schema: Record<string, ValidationRule[]>): ValidationResult {
-    const errors: Record<string, string> = {};
-    
-    for (const [field, rules] of Object.entries(schema)) {
-      const error = this.validate(data[field], rules);
-      if (error) errors[field] = error;
-    }
-
-    return { valid: Object.keys(errors).length === 0, errors };
-  }
+export interface ValidationError {
+  field: string;
+  message: string;
+  code: string;
 }
 
-export const validationService = new ValidationService();
-export default validationService;
+export interface ValidationResult<T> {
+  success: boolean;
+  data?: T;
+  errors?: ValidationError[];
+}
+
+export type ValidatorFn<T> = (value: T) => string | null;
+
+export interface FieldValidators<T> {
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  min?: number;
+  max?: number;
+  pattern?: RegExp;
+  email?: boolean;
+  url?: boolean;
+  custom?: ValidatorFn<T>;
+}
+
+export type Schema<T> = {
+  [K in keyof T]?: FieldValidators<T[K]>;
+};
+
+const validators = {
+  required: <T>(value: T): string | null =>
+    value === undefined || value === null || value === '' ? 'Campo obrigatório' : null,
+  
+  minLength: (min: number) => (value: string): string | null =>
+    value.length < min ? `Mínimo ${min} caracteres` : null,
+  
+  maxLength: (max: number) => (value: string): string | null =>
+    value.length > max ? `Máximo ${max} caracteres` : null,
+  
+  min: (min: number) => (value: number): string | null =>
+    value < min ? `Valor mínimo: ${min}` : null,
+  
+  max: (max: number) => (value: number): string | null =>
+    value > max ? `Valor máximo: ${max}` : null,
+  
+  email: (value: string): string | null =>
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? 'Email inválido' : null,
+  
+  url: (value: string): string | null => {
+    try { new URL(value); return null; }
+    catch { return 'URL inválida'; }
+  },
+  
+  pattern: (regex: RegExp, message = 'Formato inválido') => (value: string): string | null =>
+    !regex.test(value) ? message : null,
+};
+
+export const validate = <T extends Record<string, unknown>>(
+  data: T,
+  schema: Schema<T>
+): ValidationResult<T> => {
+  const errors: ValidationError[] = [];
+
+  for (const [field, rules] of Object.entries(schema)) {
+    if (!rules) continue;
+    const value = data[field as keyof T];
+    const fieldRules = rules as FieldValidators<typeof value>;
+
+    if (fieldRules.required) {
+      const error = validators.required(value);
+      if (error) errors.push({ field, message: error, code: 'required' });
+    }
+
+    if (typeof value === 'string') {
+      if (fieldRules.minLength) {
+        const error = validators.minLength(fieldRules.minLength)(value);
+        if (error) errors.push({ field, message: error, code: 'minLength' });
+      }
+      if (fieldRules.maxLength) {
+        const error = validators.maxLength(fieldRules.maxLength)(value);
+        if (error) errors.push({ field, message: error, code: 'maxLength' });
+      }
+      if (fieldRules.email) {
+        const error = validators.email(value);
+        if (error) errors.push({ field, message: error, code: 'email' });
+      }
+      if (fieldRules.url) {
+        const error = validators.url(value);
+        if (error) errors.push({ field, message: error, code: 'url' });
+      }
+      if (fieldRules.pattern) {
+        const error = validators.pattern(fieldRules.pattern)(value);
+        if (error) errors.push({ field, message: error, code: 'pattern' });
+      }
+    }
+
+    if (typeof value === 'number') {
+      if (fieldRules.min !== undefined) {
+        const error = validators.min(fieldRules.min)(value);
+        if (error) errors.push({ field, message: error, code: 'min' });
+      }
+      if (fieldRules.max !== undefined) {
+        const error = validators.max(fieldRules.max)(value);
+        if (error) errors.push({ field, message: error, code: 'max' });
+      }
+    }
+
+    if (fieldRules.custom) {
+      const error = fieldRules.custom(value);
+      if (error) errors.push({ field, message: error, code: 'custom' });
+    }
+  }
+
+  return errors.length > 0 ? { success: false, errors } : { success: true, data };
+};
+
+export default { validate, validators };
