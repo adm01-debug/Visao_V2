@@ -1,16 +1,57 @@
-export type ValidationRule<T = any> = (value: T) => string | null;
-export type ValidationRules<T> = { [K in keyof T]?: ValidationRule<T[K]>[]; };
-export interface ValidationResult { valid: boolean; errors: Record<string, string>; }
+// Validation Types - Projeto VISÃO
+// Tipagem forte para validação de dados
 
-export interface FieldValidation { required?: boolean | string; min?: number | { value: number; message: string }; max?: number | { value: number; message: string }; pattern?: RegExp | { value: RegExp; message: string }; custom?: ValidationRule; }
+export type ValidationRule<T = unknown> = (value: T) => string | null;
 
-export const createRule = (test: (value: any) => boolean, message: string): ValidationRule => (value) => test(value) ? null : message;
+export interface ValidationResult {
+  valid: boolean;
+  errors: Record<string, string>;
+}
 
-export const rules = {
-  required: (msg = 'Campo obrigatório') => createRule(v => v !== '' && v !== null && v !== undefined, msg),
-  email: (msg = 'Email inválido') => createRule(v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), msg),
-  minLength: (min: number, msg?: string) => createRule(v => String(v).length >= min, msg || `Mínimo ${min} caracteres`),
-  maxLength: (max: number, msg?: string) => createRule(v => String(v).length <= max, msg || `Máximo ${max} caracteres`),
-  min: (min: number, msg?: string) => createRule(v => Number(v) >= min, msg || `Valor mínimo: ${min}`),
-  max: (max: number, msg?: string) => createRule(v => Number(v) <= max, msg || `Valor máximo: ${max}`),
+export interface FieldValidation<T> {
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  min?: number;
+  max?: number;
+  pattern?: RegExp;
+  custom?: ValidationRule<T>;
+  message?: string;
+}
+
+export type ValidationSchema<T> = {
+  [K in keyof T]?: FieldValidation<T[K]>;
 };
+
+export interface Validator<T> {
+  validate: (data: T) => ValidationResult;
+  validateField: <K extends keyof T>(field: K, value: T[K]) => string | null;
+  isValid: (data: T) => boolean;
+}
+
+export type AsyncValidationRule<T = unknown> = (value: T) => Promise<string | null>;
+
+export interface AsyncValidator<T> {
+  validate: (data: T) => Promise<ValidationResult>;
+  validateField: <K extends keyof T>(field: K, value: T[K]) => Promise<string | null>;
+}
+
+export interface ValidationError {
+  field: string;
+  message: string;
+  code: string;
+}
+
+export type ValidationErrors = ValidationError[];
+
+export interface ValidatedData<T> {
+  success: true;
+  data: T;
+}
+
+export interface InvalidData {
+  success: false;
+  errors: ValidationErrors;
+}
+
+export type ValidationResponse<T> = ValidatedData<T> | InvalidData;
