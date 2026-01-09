@@ -1,9 +1,70 @@
-export interface CameraEvent { type: 'connected' | 'disconnected' | 'error' | 'snapshot'; cameraId: string; timestamp: Date; data?: any; }
-export interface AlertEvent { type: 'new' | 'updated' | 'acknowledged' | 'deleted'; alertId: string; timestamp: Date; alert?: any; }
-export interface RecordingEvent { type: 'started' | 'stopped' | 'completed' | 'failed'; recordingId: string; cameraId: string; timestamp: Date; }
-export interface AuthEvent { type: 'login' | 'logout' | 'session_expired' | 'token_refreshed'; userId?: string; timestamp: Date; }
-export interface SystemEvent { type: 'online' | 'offline' | 'error' | 'maintenance'; message?: string; timestamp: Date; }
+// Event Types - Projeto VISÃO
+// Tipagem forte para eventos do sistema
 
-export type AppEvent = CameraEvent | AlertEvent | RecordingEvent | AuthEvent | SystemEvent;
-export type EventHandler<T extends AppEvent = AppEvent> = (event: T) => void;
-export interface EventSubscription { unsubscribe: () => void; }
+export type EventType = 
+  | 'alert.created'
+  | 'alert.acknowledged'
+  | 'alert.resolved'
+  | 'camera.online'
+  | 'camera.offline'
+  | 'camera.error'
+  | 'recognition.match'
+  | 'recognition.unknown'
+  | 'zone.entered'
+  | 'zone.exited'
+  | 'zone.violation'
+  | 'recording.started'
+  | 'recording.stopped'
+  | 'system.error'
+  | 'system.warning'
+  | 'user.login'
+  | 'user.logout';
+
+export interface BaseEvent<T extends EventType, P = unknown> {
+  type: T;
+  payload: P;
+  timestamp: Date;
+  source: string;
+  correlationId?: string;
+}
+
+export interface AlertEvent extends BaseEvent<'alert.created', {
+  alertId: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  cameraId: string;
+  imageUrl?: string;
+}> {}
+
+export interface CameraEvent extends BaseEvent<'camera.online' | 'camera.offline' | 'camera.error', {
+  cameraId: string;
+  status: string;
+  error?: string;
+}> {}
+
+export interface RecognitionEvent extends BaseEvent<'recognition.match' | 'recognition.unknown', {
+  personId?: string;
+  confidence: number;
+  cameraId: string;
+  faceBox: { x: number; y: number; width: number; height: number };
+}> {}
+
+export interface ZoneEvent extends BaseEvent<'zone.entered' | 'zone.exited' | 'zone.violation', {
+  zoneId: string;
+  cameraId: string;
+  objectId?: string;
+  count?: number;
+}> {}
+
+export type SystemEvent = AlertEvent | CameraEvent | RecognitionEvent | ZoneEvent;
+
+export type EventHandler<E extends SystemEvent> = (event: E) => void | Promise<void>;
+
+export interface EventSubscription {
+  unsubscribe: () => void;
+}
+
+export interface EventEmitter {
+  emit: <E extends SystemEvent>(event: E) => void;
+  on: <E extends SystemEvent>(type: E['type'], handler: EventHandler<E>) => EventSubscription;
+  off: <E extends SystemEvent>(type: E['type'], handler: EventHandler<E>) => void;
+}
