@@ -1,81 +1,100 @@
-type MessageHandler = (data: any) => void;
+// WebSocket Service - Projeto VISÃO
+// Serviço de WebSocket com tipagem forte
 
-class WebSocketService {
-  private ws: WebSocket | null = null;
-  private url: string = '';
-  private handlers = new Map<string, MessageHandler[]>();
-  private reconnectAttempts = 0;
-  private maxReconnectAttempts = 5;
-  private reconnectDelay = 1000;
+export type WSConnectionState = 'connecting' | 'connected' | 'disconnected' | 'error';
 
-  connect(url: string): void {
-    this.url = url;
-    this.ws = new WebSocket(url);
-
-    this.ws.onopen = () => {
-      console.log('WebSocket connected');
-      this.reconnectAttempts = 0;
-      this.emit('connected', null);
-    };
-
-    this.ws.onmessage = (event) => {
-      try {
-        const { type, data } = JSON.parse(event.data);
-        this.emit(type, data);
-      } catch {
-        this.emit('message', event.data);
-      }
-    };
-
-    this.ws.onclose = () => {
-      console.log('WebSocket disconnected');
-      this.emit('disconnected', null);
-      this.tryReconnect();
-    };
-
-    this.ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-      this.emit('error', error);
-    };
-  }
-
-  private tryReconnect(): void {
-    if (this.reconnectAttempts < this.maxReconnectAttempts) {
-      this.reconnectAttempts++;
-      setTimeout(() => this.connect(this.url), this.reconnectDelay * this.reconnectAttempts);
-    }
-  }
-
-  send(type: string, data?: any): void {
-    if (this.ws?.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify({ type, data }));
-    }
-  }
-
-  on(event: string, handler: MessageHandler): () => void {
-    if (!this.handlers.has(event)) this.handlers.set(event, []);
-    this.handlers.get(event)!.push(handler);
-    return () => this.off(event, handler);
-  }
-
-  off(event: string, handler: MessageHandler): void {
-    const handlers = this.handlers.get(event);
-    if (handlers) this.handlers.set(event, handlers.filter(h => h !== handler));
-  }
-
-  private emit(event: string, data: any): void {
-    this.handlers.get(event)?.forEach(h => h(data));
-  }
-
-  disconnect(): void {
-    this.ws?.close();
-    this.ws = null;
-  }
-
-  isConnected(): boolean {
-    return this.ws?.readyState === WebSocket.OPEN;
-  }
+export interface WSMessage<T = unknown> {
+  type: string;
+  payload: T;
+  timestamp: number;
+  id?: string;
 }
 
-export const websocketService = new WebSocketService();
-export default websocketService;
+export interface WSConfig {
+  url: string;
+  reconnect: boolean;
+  reconnectInterval: number;
+  maxReconnectAttempts: number;
+  heartbeatInterval: number;
+}
+
+export type WSMessageHandler<T = unknown> = (message: WSMessage<T>) => void;
+
+export interface WebSocketService {
+  connect: () => void;
+  disconnect: () => void;
+  send: <T>(type: string, payload: T) => void;
+  subscribe: <T>(type: string, handler: WSMessageHandler<T>) => () => void;
+  getState: () => WSConnectionState;
+}
+
+const defaultConfig: WSConfig = {
+  url: '',
+  reconnect: true,
+  reconnectInterval: 3000,
+  maxReconnectAttempts: 5,
+  heartbeatInterval: 30000,
+};
+
+export const createWebSocketService = (config: Partial<WSConfig> = {}): WebSocketService => {
+  const mergedConfig = { ...defaultConfig, ...config };
+  let ws: WebSocket | null = null;
+  let state: WSConnectionState = 'disconnected';
+  let reconnectAttempts = 0;
+  const handlers = new Map<string, Set<WSMessageHandler>>();
+
+  const connect = () => {
+    if (!mergedConfig.url) return;
+    
+    state = 'connecting';
+    ws = new WebSocket(mergedConfig.url);
+    
+    ws.onopen = () => {
+      state = 'connected';
+      reconnectAttempts = 0;
+    };
+    
+    ws.onclose = () => {
+      state = 'disconnected';
+      if (mergedConfig.reconnect && reconnectAttempts < mergedConfig.maxReconnectAttempts) {
+        reconnectAttempts++;
+        setTimeout(connect, mergedConfig.reconnectInterval);
+      }
+    };
+    
+    ws.onerror = () => {
+      state = 'error';
+    };
+    
+    ws.onmessage = (event) => {
+      const message: WSMessage = JSON.parse(event.data);
+      const typeHandlers = handlers.get(message.type);
+      typeHandlers?.forEach(handler => handler(message));
+    };
+  };
+
+  const disconnect = () => {
+    ws?.close();
+    ws = null;
+    state = 'disconnected';
+  };
+
+  const send = <T>(type: string, payload: T) => {
+    if (ws?.readyState === WebSocket.OPEN) {
+      const message: WSMessage<T> = { type, payload, timestamp: Date.now() };
+      ws.send(JSON.stringify(message));
+    }
+  };
+
+  const subscribe = <T>(type: string, handler: WSMessageHandler<T>): (() => void) => {
+    if (!handlers.has(type)) handlers.set(type, new Set());
+    handlers.get(type)!.add(handler as WSMessageHandler);
+    return () => handlers.get(type)?.delete(handler as WSMessageHandler);
+  };
+
+  const getState = () => state;
+
+  return { connect, disconnect, send, subscribe, getState };
+};
+
+export default createWebSocketService;
