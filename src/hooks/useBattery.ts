@@ -1,61 +1,60 @@
 import { useState, useEffect } from 'react';
 
-interface BatteryState {
-  supported: boolean;
-  loading: boolean;
-  level: number | null;
-  charging: boolean | null;
-  chargingTime: number | null;
-  dischargingTime: number | null;
+export interface BatteryState {
+  charging: boolean;
+  chargingTime: number;
+  dischargingTime: number;
+  level: number;
+  isSupported: boolean;
+}
+
+interface BatteryManager extends EventTarget {
+  charging: boolean;
+  chargingTime: number;
+  dischargingTime: number;
+  level: number;
+}
+
+declare global {
+  interface Navigator { getBattery?: () => Promise<BatteryManager>; }
 }
 
 export const useBattery = (): BatteryState => {
   const [state, setState] = useState<BatteryState>({
-    supported: true,
-    loading: true,
-    level: null,
-    charging: null,
-    chargingTime: null,
-    dischargingTime: null,
+    charging: false, chargingTime: Infinity, dischargingTime: Infinity, level: 1, isSupported: false,
   });
 
   useEffect(() => {
-    const nav = navigator as any;
-    
-    if (!nav.getBattery) {
-      setState(prev => ({ ...prev, supported: false, loading: false }));
-      return;
-    }
+    if (!navigator.getBattery) return;
 
-    let battery: any = null;
+    let battery: BatteryManager | null = null;
 
     const updateBattery = () => {
+      if (!battery) return;
       setState({
-        supported: true,
-        loading: false,
-        level: battery.level,
         charging: battery.charging,
         chargingTime: battery.chargingTime,
         dischargingTime: battery.dischargingTime,
+        level: battery.level,
+        isSupported: true,
       });
     };
 
-    nav.getBattery().then((b: any) => {
+    navigator.getBattery().then((b) => {
       battery = b;
       updateBattery();
-      
-      battery.addEventListener('levelchange', updateBattery);
       battery.addEventListener('chargingchange', updateBattery);
       battery.addEventListener('chargingtimechange', updateBattery);
       battery.addEventListener('dischargingtimechange', updateBattery);
+      battery.addEventListener('levelchange', updateBattery);
     });
 
     return () => {
       if (battery) {
-        battery.removeEventListener('levelchange', updateBattery);
         battery.removeEventListener('chargingchange', updateBattery);
         battery.removeEventListener('chargingtimechange', updateBattery);
         battery.removeEventListener('dischargingtimechange', updateBattery);
+        battery.removeEventListener('levelchange', updateBattery);
       }
     };
   }, []);
