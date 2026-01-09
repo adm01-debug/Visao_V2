@@ -1,8 +1,49 @@
-export interface FieldConfig { name: string; label: string; type: 'text' | 'email' | 'password' | 'number' | 'select' | 'checkbox' | 'textarea' | 'date'; placeholder?: string; required?: boolean; options?: { label: string; value: string }[]; validation?: Record<string, any>; }
-export interface FormConfig { fields: FieldConfig[]; submitLabel?: string; cancelLabel?: string; }
+// Form Types - Projeto VISÃO
+// Tipagem forte para formulários
 
-export interface FormState<T> { values: T; errors: Partial<Record<keyof T, string>>; touched: Partial<Record<keyof T, boolean>>; isSubmitting: boolean; isValid: boolean; }
-export interface FormActions<T> { setValue: (field: keyof T, value: any) => void; setError: (field: keyof T, error: string) => void; setTouched: (field: keyof T) => void; reset: () => void; submit: () => Promise<void>; }
+export interface FormState<T> {
+  values: T;
+  errors: Partial<Record<keyof T, string>>;
+  touched: Partial<Record<keyof T, boolean>>;
+  isSubmitting: boolean;
+  isValid: boolean;
+  isDirty: boolean;
+}
+
+export interface FormActions<T> {
+  setValue: <K extends keyof T>(field: K, value: T[K]) => void;
+  setError: (field: keyof T, error: string) => void;
+  setTouched: (field: keyof T, touched: boolean) => void;
+  reset: () => void;
+  submit: () => Promise<void>;
+  validate: () => boolean;
+}
+
+export type FormValidator<T> = (values: T) => Partial<Record<keyof T, string>>;
+
+export interface FormConfig<T> {
+  initialValues: T;
+  validate?: FormValidator<T>;
+  onSubmit: (values: T) => Promise<void>;
+  validateOnChange?: boolean;
+  validateOnBlur?: boolean;
+}
+
+export interface FormFieldProps<T, K extends keyof T> {
+  name: K;
+  value: T[K];
+  error?: string;
+  touched?: boolean;
+  onChange: (value: T[K]) => void;
+  onBlur: () => void;
+}
 
 export type FormSubmitHandler<T> = (values: T) => Promise<void> | void;
-export type FormValidateHandler<T> = (values: T) => Partial<Record<keyof T, string>>;
+
+export interface FormArrayActions<T> {
+  push: (item: T) => void;
+  remove: (index: number) => void;
+  move: (from: number, to: number) => void;
+  insert: (index: number, item: T) => void;
+  update: (index: number, item: T) => void;
+}
