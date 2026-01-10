@@ -46,8 +46,7 @@ class SmsService {
    */
   initialize(config: SmsConfig): void {
     this.config = config;
-    console.log(`[SMS] Service initialized with ${config.provider}`);
-  }
+      }
 
   /**
    * Format phone number to E.164
@@ -133,8 +132,7 @@ class SmsService {
         status: data.status,
       };
     } catch (error) {
-      console.error('[SMS] Twilio error:', error);
-      return { success: false, error: String(error) };
+            return { success: false, error: String(error) };
     }
   }
 
@@ -192,8 +190,7 @@ class SmsService {
         messageId: messageIdMatch?.[1],
       };
     } catch (error) {
-      console.error('[SMS] SNS error:', error);
-      return { success: false, error: String(error) };
+            return { success: false, error: String(error) };
     }
   }
 
@@ -312,8 +309,7 @@ class SmsService {
         status: data.status,
       };
     } catch (error) {
-      console.error('[SMS] Status check error:', error);
-      return { success: false, error: String(error) };
+            return { success: false, error: String(error) };
     }
   }
 
