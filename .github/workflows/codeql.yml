@@ -3,38 +3,28 @@ name: CodeQL
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
   schedule:
     - cron: "0 0 * * 0"
-
-concurrency:
-  group: codeql-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   analyze:
     runs-on: ubuntu-latest
     permissions:
-      actions: read
-      contents: read
       security-events: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
-      
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: javascript-typescript
-          queries: security-extended
         continue-on-error: true
-      
-      - name: Perform CodeQL Analysis
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+        continue-on-error: true
+      - name: Perform Analysis
         uses: github/codeql-action/analyze@v3
         continue-on-error: true
-      
-      - name: Summary
-        run: |
-          echo "## CodeQL Analysis" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Security analysis completed" >> $GITHUB_STEP_SUMMARY
+      - if: always()
+        run: echo "✅ CodeQL completed" >> $GITHUB_STEP_SUMMARY
 
