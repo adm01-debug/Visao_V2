@@ -340,8 +340,7 @@ export class Bitrix24SyncService {
         .eq('id', personId);
 
     } catch (error) {
-      console.error('Erro ao sincronizar foto:', error);
-    }
+          }
   }
 
   /**
@@ -350,18 +349,8 @@ export class Bitrix24SyncService {
   private async logSync(result: SyncResult): Promise<void> {
     try {
       // Log to console for now - table sync_logs doesn't exist
-      console.log('Bitrix24 sync completed:', {
-        success: result.success,
-        totalProcessed: result.totalProcessed,
-        created: result.created,
-        updated: result.updated,
-        skipped: result.skipped,
-        errors: result.errors,
-        timestamp: result.timestamp,
-      });
-    } catch (error) {
-      console.error('Erro ao registrar log:', error);
-    }
+          } catch (error) {
+          }
   }
 }
 
@@ -409,8 +398,7 @@ export async function handleBitrix24Webhook(
 
     return { success: true, message: 'Event processed' };
   } catch (error) {
-    console.error('Webhook error:', error);
-    return { success: false, message: `Error: ${error}` };
+        return { success: false, message: `Error: ${error}` };
   }
 }
 
