@@ -1,167 +1,82 @@
-# ⚡ Edge Functions Guide - Projeto VISÃO
+# ⚡ Edge Functions - Guia Completo
 
 ## Visão Geral
 
-Funções serverless no Supabase para processamento de IA e integrações.
+O VISÃO utiliza 10 Edge Functions no Supabase para processamento serverless.
 
----
+## Funções Disponíveis
 
-## 1. Funções Disponíveis
+### 🤖 IA e Detecção
 
-| Função | Descrição | Método |
-|--------|-----------|--------|
-| `analyze-image` | Análise geral de imagem | POST |
-| `detect-faces` | Detecção facial | POST |
-| `compare-faces` | Comparação 1:1 | POST |
-| `generate-face-encoding` | Gerar encoding | POST |
-| `analyze-license-plate` | OCR de placas | POST |
-| `send-alert-notification` | Enviar notificação | POST |
-| `send-telegram` | Enviar Telegram | POST |
-| `check-ip` | Verificar IP | POST |
-| `get-mapbox-token` | Token Mapbox | GET |
+#### analyze-image
+Análise de imagem com OpenAI Vision API.
+- **Input:** URL da imagem
+- **Output:** Descrição e objetos detectados
 
----
+#### detect-faces
+Detecção de faces em imagens.
+- **Input:** Base64 da imagem
+- **Output:** Array de faces detectadas com coordenadas
 
-## 2. Estrutura
+#### compare-faces
+Comparação entre duas faces.
+- **Input:** Duas imagens em base64
+- **Output:** Score de similaridade (0-100)
 
-```
-supabase/functions/
-├── _shared/
-│   ├── cors.ts
-│   └── utils.ts
-├── analyze-image/
-│   └── index.ts
-├── detect-faces/
-│   └── index.ts
-└── ...
-```
+#### generate-face-encoding
+Gera encoding de face para armazenamento.
+- **Input:** Imagem de face
+- **Output:** Vector de 128 dimensões
 
----
+#### analyze-license-plate
+OCR para leitura de placas de veículos.
+- **Input:** Imagem da placa
+- **Output:** Texto da placa, confiança
 
-## 3. Exemplo: detect-faces
+### 🔔 Notificações
 
-### Código
+#### send-alert-notification
+Envia alertas multi-canal.
+- **Canais:** Email, SMS, Push, Webhook
+
+#### send-telegram
+Notificações via Telegram Bot.
+- **Input:** chat_id, message
+- **Output:** success/error
+
+### ⚙️ Sistema
+
+#### check-ip
+Verifica se IP está na whitelist.
+- **Input:** IP address
+- **Output:** allowed/denied
+
+#### get-mapbox-token
+Retorna token do Mapbox para mapas.
+- **Output:** Token temporário
+
+#### process-automation-rules
+Executa regras de automação configuradas.
+- **Input:** Evento trigger
+- **Output:** Ações executadas
+
+## Uso
 
 ```typescript
-// supabase/functions/detect-faces/index.ts
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
-import { corsHeaders } from '../_shared/cors.ts';
+import { supabase } from "@/integrations/supabase/client";
 
-serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
-  }
+// Detectar faces
+const { data } = await supabase.functions.invoke("detect-faces", {
+  body: { image: base64Image }
+});
 
-  try {
-    const { imageBase64 } = await req.json();
-    
-    // Processar imagem com face-api
-    const faces = await detectFaces(imageBase64);
-    
-    return new Response(
-      JSON.stringify({ faces }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
-  } catch (error) {
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 400, headers: corsHeaders }
-    );
-  }
+// Enviar alerta
+await supabase.functions.invoke("send-alert-notification", {
+  body: { alertId: "123", channels: ["email", "telegram"] }
 });
 ```
 
 ---
 
-## 4. Chamando Funções
+*Atualizado em 10/01/2026*
 
-### Via SDK
-
-```typescript
-const { data, error } = await supabase.functions.invoke('detect-faces', {
-  body: { imageBase64: 'data:image/jpeg;base64,...' },
-});
-```
-
-### Via REST
-
-```bash
-curl -X POST \
-  https://xxx.supabase.co/functions/v1/detect-faces \
-  -H "Authorization: Bearer $ANON_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"imageBase64": "..."}'
-```
-
----
-
-## 5. Variáveis de Ambiente
-
-```bash
-# Definir secrets
-supabase secrets set OPENAI_API_KEY=xxx
-supabase secrets set TELEGRAM_BOT_TOKEN=xxx
-```
-
-### Acessar no código
-
-```typescript
-const apiKey = Deno.env.get('OPENAI_API_KEY');
-```
-
----
-
-## 6. CORS
-
-```typescript
-// _shared/cors.ts
-export const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
-```
-
----
-
-## 7. Deploy
-
-```bash
-# Deploy todas
-supabase functions deploy
-
-# Deploy específica
-supabase functions deploy detect-faces
-
-# Logs
-supabase functions logs detect-faces
-```
-
----
-
-## 8. Limites
-
-| Recurso | Limite |
-|---------|--------|
-| Timeout | 60s |
-| Memory | 150MB |
-| Payload | 6MB |
-| Concurrent | 50 |
-
----
-
-## 9. Testes Locais
-
-```bash
-# Iniciar Supabase local
-supabase start
-
-# Servir funções
-supabase functions serve
-
-# Testar
-curl http://localhost:54321/functions/v1/detect-faces
-```
-
----
-
-**Última atualização:** 06/01/2026
