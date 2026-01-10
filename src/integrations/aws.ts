@@ -62,8 +62,7 @@ class AwsService {
    */
   async initialize(config: AwsConfig): Promise<void> {
     this.config = config;
-    console.log('[AWS] Service initialized for region:', config.region);
-  }
+      }
 
   /**
    * Get S3 client
