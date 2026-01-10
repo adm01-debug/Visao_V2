@@ -35,10 +35,9 @@ export function useReducerWithMiddleware<S, A>(
 // Logger Middleware
 export const loggerMiddleware: Middleware<any, any> = (store) => (next) => (action) => {
   console.group(action.type || 'Action');
-  console.log('Previous State:', store.getState());
-  console.log('Action:', action);
-  next(action);
-  console.log('Next State:', store.getState());
+  );
+    next(action);
+  );
   console.groupEnd();
 };
 
