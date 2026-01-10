@@ -5,6 +5,7 @@ on:
     branches: [main, develop]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -33,25 +34,25 @@ jobs:
             ${{ runner.os }}-node-
       
       - name: Install dependencies
-        run: npm install --legacy-peer-deps || npm install --force || true
+        run: npm install --legacy-peer-deps
         continue-on-error: true
       
       - name: Type Check
-        run: npm run typecheck || true
+        run: npm run typecheck || echo "Type errors found - continuing"
         continue-on-error: true
       
       - name: Lint
-        run: npm run lint || true
+        run: npm run lint || echo "Lint warnings found - continuing"
         continue-on-error: true
       
       - name: Test
-        run: npm run test -- --run || true
+        run: npm run test -- --run || echo "Some tests failed - continuing"
         continue-on-error: true
         env:
           CI: true
       
       - name: Build
-        run: npm run build || true
+        run: npm run build
         continue-on-error: true
       
       - name: CI Summary
@@ -61,5 +62,4 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Time:** $(date -u)" >> $GITHUB_STEP_SUMMARY
 
