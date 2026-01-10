@@ -102,8 +102,7 @@ class WhatsAppService {
     if (config.apiVersion) {
       this.apiVersion = config.apiVersion;
     }
-    console.log('[WhatsApp] Service initialized');
-  }
+      }
 
   /**
    * Get API URL
