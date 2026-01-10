@@ -57,8 +57,7 @@ class EmailService {
    */
   initialize(config: EmailConfig): void {
     this.config = config;
-    console.log(`[Email] Service initialized with ${config.provider}`);
-  }
+      }
 
   /**
    * Send email
@@ -119,8 +118,7 @@ class EmailService {
 
       return { success: true, messageId: data.id };
     } catch (error) {
-      console.error('[Email] Resend error:', error);
-      return { success: false, error: String(error) };
+            return { success: false, error: String(error) };
     }
   }
 
@@ -182,8 +180,7 @@ class EmailService {
       const messageId = response.headers.get('X-Message-Id');
       return { success: true, messageId: messageId || undefined };
     } catch (error) {
-      console.error('[Email] SendGrid error:', error);
-      return { success: false, error: String(error) };
+            return { success: false, error: String(error) };
     }
   }
 
