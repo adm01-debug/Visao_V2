@@ -23,8 +23,7 @@ class S3Service {
 
   initialize(config: S3Config): void {
     this.config = config;
-    console.log('[S3] Service initialized');
-  }
+      }
 
   private getEndpoint(): string {
     if (this.config?.endpoint) return this.config.endpoint;
