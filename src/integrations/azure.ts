@@ -62,8 +62,7 @@ class AzureService {
    */
   async initialize(config: AzureConfig): Promise<void> {
     this.config = config;
-    console.log('[Azure] Service initialized');
-  }
+      }
 
   /**
    * Get Blob Service Client
