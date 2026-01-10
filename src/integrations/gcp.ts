@@ -83,8 +83,7 @@ class GcpService {
    */
   async initialize(config: GcpConfig): Promise<void> {
     this.config = config;
-    console.log('[GCP] Service initialized for project:', config.projectId);
-  }
+      }
 
   /**
    * Get access token
