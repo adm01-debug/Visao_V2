@@ -70,8 +70,7 @@ class FFmpegService {
       // Set up logging
       if (config?.log !== false) {
         this.ffmpeg.on('log', ({ message }) => {
-          console.log('[FFmpeg]', message);
-        });
+                  });
       }
 
       // Set up progress tracking
@@ -87,11 +86,9 @@ class FFmpegService {
       });
 
       this.isLoaded = true;
-      console.log('[FFmpeg] Loaded successfully');
-      return true;
+            return true;
     } catch (error) {
-      console.error('[FFmpeg] Failed to load:', error);
-      this.isLoaded = false;
+            this.isLoaded = false;
       return false;
     } finally {
       this.isLoading = false;
@@ -170,8 +167,7 @@ class FFmpegService {
 
       return blob;
     } catch (error) {
-      console.error('[FFmpeg] Transcode failed:', error);
-      return null;
+            return null;
     }
   }
 
@@ -227,8 +223,7 @@ class FFmpegService {
 
       return blob;
     } catch (error) {
-      console.error('[FFmpeg] Thumbnail extraction failed:', error);
-      return null;
+            return null;
     }
   }
 
@@ -267,8 +262,7 @@ class FFmpegService {
 
       return blob;
     } catch (error) {
-      console.error('[FFmpeg] Sprite extraction failed:', error);
-      return null;
+            return null;
     }
   }
 
@@ -330,8 +324,7 @@ class FFmpegService {
 
       return blob;
     } catch (error) {
-      console.error('[FFmpeg] Audio extraction failed:', error);
-      return null;
+            return null;
     }
   }
 
@@ -368,8 +361,7 @@ class FFmpegService {
 
       return metadata;
     } catch (error) {
-      console.error('[FFmpeg] Metadata extraction failed:', error);
-      return null;
+            return null;
     }
   }
 
@@ -423,8 +415,7 @@ class FFmpegService {
 
       return blob;
     } catch (error) {
-      console.error('[FFmpeg] GIF conversion failed:', error);
-      return null;
+            return null;
     }
   }
 
