@@ -95,11 +95,9 @@ class FirebaseService {
       this.messaging = getMessaging(app);
       this.isInitialized = true;
       
-      console.log('[Firebase] Initialized successfully');
-      return true;
+            return true;
     } catch (error) {
-      console.error('[Firebase] Initialization error:', error);
-      return false;
+            return false;
     }
   }
 
@@ -127,15 +125,13 @@ class FirebaseService {
 
       if (token) {
         this.currentToken = token;
-        console.log('[Firebase] Token obtained');
-        return token;
+                return token;
       }
 
       console.warn('[Firebase] No token available');
       return null;
     } catch (error) {
-      console.error('[Firebase] Permission error:', error);
-      return null;
+            return null;
     }
   }
 
@@ -223,8 +219,7 @@ class FirebaseService {
         error: data.results?.[0]?.error || 'FCM send failed' 
       };
     } catch (error) {
-      console.error('[Firebase] Send error:', error);
-      return { success: false, error: String(error) };
+            return { success: false, error: String(error) };
     }
   }
 
@@ -266,8 +261,7 @@ class FirebaseService {
         failureCount: data.failure,
       };
     } catch (error) {
-      console.error('[Firebase] Bulk send error:', error);
-      return { success: false, error: String(error) };
+            return { success: false, error: String(error) };
     }
   }
 
@@ -309,8 +303,7 @@ class FirebaseService {
 
       return { success: false, error: data.error || 'Topic send failed' };
     } catch (error) {
-      console.error('[Firebase] Topic send error:', error);
-      return { success: false, error: String(error) };
+            return { success: false, error: String(error) };
     }
   }
 
@@ -336,8 +329,7 @@ class FirebaseService {
 
       return response.ok;
     } catch (error) {
-      console.error('[Firebase] Subscribe error:', error);
-      return false;
+            return false;
     }
   }
 
@@ -368,8 +360,7 @@ class FirebaseService {
 
       return response.ok;
     } catch (error) {
-      console.error('[Firebase] Unsubscribe error:', error);
-      return false;
+            return false;
     }
   }
 
