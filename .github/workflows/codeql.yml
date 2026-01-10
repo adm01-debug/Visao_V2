@@ -5,6 +5,11 @@ on:
     branches: [main]
   schedule:
     - cron: "0 0 * * 0"
+  workflow_dispatch:
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   analyze:
@@ -14,17 +19,21 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+      
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: javascript-typescript
         continue-on-error: true
+      
       - name: Autobuild
         uses: github/codeql-action/autobuild@v3
         continue-on-error: true
+      
       - name: Perform Analysis
         uses: github/codeql-action/analyze@v3
         continue-on-error: true
+      
       - if: always()
-        run: echo "✅ CodeQL completed" >> $GITHUB_STEP_SUMMARY
+        run: echo "## ✅ CodeQL analysis completed" >> $GITHUB_STEP_SUMMARY
 
