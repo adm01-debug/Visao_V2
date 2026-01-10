@@ -54,8 +54,7 @@ class WebRTCService {
       this.localStream = await navigator.mediaDevices.getUserMedia(constraints);
       return this.localStream;
     } catch (error) {
-      console.error('[WebRTC] Failed to get local stream:', error);
-      throw error;
+            throw error;
     }
   }
 
@@ -96,8 +95,7 @@ class WebRTCService {
 
     // Handle ICE connection state
     connection.oniceconnectionstatechange = () => {
-      console.log(`[WebRTC] ICE state for ${peerId}:`, connection.iceConnectionState);
-    };
+          };
 
     // Store the peer connection
     this.peers.set(peerId, {
@@ -194,8 +192,7 @@ class WebRTCService {
     });
 
     dataChannel.onopen = () => {
-      console.log(`[WebRTC] Data channel ${label} opened for ${peerId}`);
-    };
+          };
 
     dataChannel.onmessage = (event) => {
       try {
@@ -236,8 +233,7 @@ class WebRTCService {
     peer.remoteStream?.getTracks().forEach((track) => track.stop());
     
     this.peers.delete(peerId);
-    console.log(`[WebRTC] Closed connection to ${peerId}`);
-  }
+      }
 
   /**
    * Close all connections
