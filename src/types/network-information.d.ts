@@ -1,26 +1,32 @@
 /**
  * Network Information API Type Declarations
- * @see https://developer.mozilla.org/en-US/docs/Web/API/Network_Information_API
+ * @see https://wicg.github.io/netinfo/
  */
 
 type ConnectionType = 'bluetooth' | 'cellular' | 'ethernet' | 'none' | 'wifi' | 'wimax' | 'other' | 'unknown';
 type EffectiveConnectionType = 'slow-2g' | '2g' | '3g' | '4g';
 
 interface NetworkInformation extends EventTarget {
-  /** Connection type */
+  /** The type of connection */
   readonly type?: ConnectionType;
-  /** Effective connection type */
+  /** Effective type of the connection */
   readonly effectiveType?: EffectiveConnectionType;
-  /** Downlink speed in Mbps */
+  /** Estimated downlink speed in Mbps */
   readonly downlink?: number;
   /** Maximum downlink speed in Mbps */
   readonly downlinkMax?: number;
-  /** Round-trip time in milliseconds */
+  /** Estimated round-trip time in ms */
   readonly rtt?: number;
-  /** Whether data saver is enabled */
+  /** True if user has requested reduced data usage */
   readonly saveData?: boolean;
-  /** Event handler for connection changes */
+  /** Handler for connection changes */
   onchange?: ((this: NetworkInformation, ev: Event) => void) | null;
+}
+
+interface NavigatorWithConnection extends Navigator {
+  readonly connection?: NetworkInformation;
+  readonly mozConnection?: NetworkInformation;
+  readonly webkitConnection?: NetworkInformation;
 }
 
 declare global {
@@ -28,7 +34,8 @@ declare global {
     readonly connection?: NetworkInformation;
     readonly mozConnection?: NetworkInformation;
     readonly webkitConnection?: NetworkInformation;
+    readonly deviceMemory?: number;
   }
 }
 
-export {};
+export { NetworkInformation, ConnectionType, EffectiveConnectionType };
