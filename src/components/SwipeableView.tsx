@@ -46,7 +46,7 @@ export function SwipeableView({ children, className }: SwipeableViewProps) {
   const prevRoute = currentIndex > 0 ? ROUTES[currentIndex - 1] : ROUTES[ROUTES.length - 1];
   const nextRoute = currentIndex < ROUTES.length - 1 ? ROUTES[currentIndex + 1] : ROUTES[0];
 
-  const handleDragEnd = (_: any, info: { offset: { x: number }; velocity: { x: number } }) => {
+  const handleDragEnd = (_: unknown, info: { offset: { x: number }; velocity: { x: number } }) => {
     const threshold = 100;
     const velocity = 500;
 
@@ -61,7 +61,7 @@ export function SwipeableView({ children, className }: SwipeableViewProps) {
     setShowIndicator(null);
   };
 
-  const handleDrag = (_: any, info: { offset: { x: number } }) => {
+  const handleDrag = (_: unknown, info: { offset: { x: number } }) => {
     if (info.offset.x > 50) {
       setShowIndicator("right");
     } else if (info.offset.x < -50) {
