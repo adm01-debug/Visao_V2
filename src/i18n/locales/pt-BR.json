@@ -25,67 +25,55 @@
     "login": "Entrar",
     "logout": "Sair",
     "register": "Cadastrar",
-    "forgotPassword": "Esqueci minha senha",
     "email": "E-mail",
     "password": "Senha",
-    "confirmPassword": "Confirmar senha"
+    "forgotPassword": "Esqueci a senha",
+    "rememberMe": "Lembrar de mim"
   },
-  "navigation": {
-    "dashboard": "Dashboard",
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Bem-vindo",
     "cameras": "Câmeras",
     "alerts": "Alertas",
-    "analytics": "Análises",
-    "settings": "Configurações",
-    "users": "Usuários",
-    "zones": "Zonas",
-    "reports": "Relatórios",
-    "integrations": "Integrações",
-    "profile": "Perfil",
-    "notifications": "Notificações"
-  },
-  "alerts": {
-    "title": "Alertas",
-    "new": "Novo alerta",
-    "unread": "Não lidos",
-    "read": "Lidos",
-    "high": "Alta prioridade",
-    "medium": "Média prioridade",
-    "low": "Baixa prioridade",
-    "markAsRead": "Marcar como lido",
-    "markAllAsRead": "Marcar todos como lidos"
+    "events": "Eventos",
+    "analytics": "Análises"
   },
   "cameras": {
     "title": "Câmeras",
     "online": "Online",
     "offline": "Offline",
     "recording": "Gravando",
-    "live": "Ao vivo",
-    "addCamera": "Adicionar câmera",
-    "editCamera": "Editar câmera",
-    "deleteCamera": "Excluir câmera"
+    "addCamera": "Adicionar Câmera",
+    "editCamera": "Editar Câmera",
+    "deleteCamera": "Excluir Câmera"
+  },
+  "alerts": {
+    "title": "Alertas",
+    "new": "Novo Alerta",
+    "critical": "Crítico",
+    "warning": "Aviso",
+    "info": "Informação",
+    "resolved": "Resolvido",
+    "pending": "Pendente"
+  },
+  "settings": {
+    "title": "Configurações",
+    "general": "Geral",
+    "notifications": "Notificações",
+    "security": "Segurança",
+    "integrations": "Integrações"
   },
   "errors": {
     "generic": "Ocorreu um erro. Tente novamente.",
-    "networkError": "Erro de conexão. Verifique sua internet.",
+    "network": "Erro de conexão. Verifique sua internet.",
     "unauthorized": "Acesso não autorizado.",
     "notFound": "Recurso não encontrado.",
-    "serverError": "Erro no servidor. Tente novamente mais tarde.",
-    "validationError": "Dados inválidos. Verifique os campos."
+    "validation": "Dados inválidos."
   },
   "messages": {
-    "savedSuccess": "Salvo com sucesso!",
-    "deletedSuccess": "Excluído com sucesso!",
-    "updatedSuccess": "Atualizado com sucesso!",
-    "confirmDelete": "Tem certeza que deseja excluir?",
-    "noData": "Nenhum dado encontrado.",
-    "noResults": "Nenhum resultado encontrado."
-  },
-  "time": {
-    "now": "Agora",
-    "today": "Hoje",
-    "yesterday": "Ontem",
-    "lastWeek": "Última semana",
-    "lastMonth": "Último mês",
-    "allTime": "Todo o período"
+    "saved": "Salvo com sucesso!",
+    "deleted": "Excluído com sucesso!",
+    "updated": "Atualizado com sucesso!",
+    "created": "Criado com sucesso!"
   }
 }
