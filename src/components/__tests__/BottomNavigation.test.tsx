@@ -12,6 +12,11 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
   <BrowserRouter>{children}</BrowserRouter>
 );
 
+
+vi.mock('@/hooks/useSidebarStatus', () => ({
+  useSidebarStatus: () => ({ isOpen: false, toggle: vi.fn() }),
+}));
+
 describe('BottomNavigation', () => {
   it('renders without crashing', () => {
     render(<BottomNavigation />, { wrapper });
