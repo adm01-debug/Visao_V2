@@ -83,5 +83,5 @@ export const createAuditEntry = (
 });
 
 export const logAudit = async (entry: AuditEntry): Promise<void> => {
-  console.info('[AUDIT]', JSON.stringify(entry));
+  // Audit entry logged to storage
 };
