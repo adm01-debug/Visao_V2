@@ -75,7 +75,7 @@ export const ScreenCapture: React.FC<ScreenCaptureProps> = ({
   const startRecording = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: { cursor: 'always' } as any,
+        video: { cursor: 'always' },
         audio: true,
       });
 
