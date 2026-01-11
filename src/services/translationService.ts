@@ -126,8 +126,7 @@ export async function detectLanguage(text: string): Promise<DetectedLanguage> {
       isReliable: data.confidence > 0.8,
     };
   } catch (error) {
-    console.error('Erro ao detectar idioma:', error);
-    // Fallback: detecção básica por caracteres
+// Fallback: detecção básica por caracteres
     return detectLanguageBasic(text);
   }
 }
@@ -209,8 +208,7 @@ async function translateWithFallback(
       return await translateWithProvider(text, sourceLang, targetLang, provider);
     } catch (error) {
       lastError = error as Error;
-      console.warn(`Provider ${provider} falhou:`, error);
-      continue;
+continue;
     }
   }
 
