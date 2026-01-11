@@ -14,11 +14,11 @@ const registerServiceWorker = async () => {
       });
 
       if (registration.installing) {
-        console.log('[SW] Service Worker installing');
+        if (import.meta.env.DEV) console.log('[SW] Service Worker installing');
       } else if (registration.waiting) {
-        console.log('[SW] Service Worker installed, waiting to activate');
+        if (import.meta.env.DEV) console.log('[SW] Service Worker installed, waiting to activate');
       } else if (registration.active) {
-        console.log('[SW] Service Worker active');
+        if (import.meta.env.DEV) console.log('[SW] Service Worker active');
       }
 
       // Verificar atualizações periodicamente
@@ -33,7 +33,7 @@ const registerServiceWorker = async () => {
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
               // Nova versão disponível
-              console.log('[SW] New version available');
+              if (import.meta.env.DEV) console.log('[SW] New version available');
               
               // Notificar usuário (opcional)
               if (window.confirm('Nova versão disponível! Deseja atualizar?')) {
@@ -46,7 +46,7 @@ const registerServiceWorker = async () => {
       });
 
     } catch (error) {
-      console.error('[SW] Registration failed:', error);
+      if (import.meta.env.DEV) console.error('[SW] Registration failed:', error);
     }
   }
 };
@@ -58,7 +58,7 @@ const registerServiceWorker = async () => {
 const requestNotificationPermission = async () => {
   if ('Notification' in window) {
     const permission = await Notification.requestPermission();
-    console.log('[Notifications] Permission:', permission);
+    if (import.meta.env.DEV) console.log('[Notifications] Permission:', permission);
   }
 };
 
@@ -89,11 +89,11 @@ setTimeout(() => {
 // Report Web Vitals
 if (import.meta.env.DEV) {
   import('web-vitals').then(({ onCLS, onFID, onFCP, onLCP, onTTFB }) => {
-    onCLS(console.log);
-    onFID(console.log);
-    onFCP(console.log);
-    onLCP(console.log);
-    onTTFB(console.log);
+    onCLS(import.meta.env.DEV ? console.log : () => {});
+    onFID(import.meta.env.DEV ? console.log : () => {});
+    onFCP(import.meta.env.DEV ? console.log : () => {});
+    onLCP(import.meta.env.DEV ? console.log : () => {});
+    onTTFB(import.meta.env.DEV ? console.log : () => {});
   }).catch(() => {
     // web-vitals não instalado, ignorar
   });
