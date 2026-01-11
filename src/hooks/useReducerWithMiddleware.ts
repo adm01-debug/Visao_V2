@@ -34,11 +34,11 @@ export function useReducerWithMiddleware<S, A>(
 
 // Logger Middleware
 export const loggerMiddleware: Middleware<any, any> = (store) => (next) => (action) => {
-  console.group(action.type || 'Action');
+  if (import.meta.env.DEV) console.group(action.type || 'Action');
   );
     next(action);
   );
-  console.groupEnd();
+  if (import.meta.env.DEV) console.groupEnd();
 };
 
 // Thunk Middleware
