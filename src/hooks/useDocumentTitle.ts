@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { safeExecute } from '@/lib/safeExecute';
 
 export const useDocumentTitle = (title: string, restoreOnUnmount = true) => {
   const previousTitle = useRef(document.title);
