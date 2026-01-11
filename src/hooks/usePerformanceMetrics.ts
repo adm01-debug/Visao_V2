@@ -22,7 +22,7 @@ export function usePerformanceMetrics(enabled: boolean = true) {
     connectionType: "unknown",
     downlink: 0,
     cpuCores: navigator.hardwareConcurrency || 0,
-    deviceMemory: (navigator as any).deviceMemory || 0,
+    deviceMemory: navigator.deviceMemory || 0,
   });
 
   const frameCountRef = useRef(0);
@@ -52,7 +52,7 @@ export function usePerformanceMetrics(enabled: boolean = true) {
   const updateMemory = useCallback(() => {
     if (!enabled) return;
 
-    const perfMemory = (performance as any).memory;
+    const perfMemory = performance.memory;
     if (perfMemory) {
       const used = Math.round(perfMemory.usedJSHeapSize / 1048576);
       const total = Math.round(perfMemory.jsHeapSizeLimit / 1048576);
@@ -88,7 +88,7 @@ export function usePerformanceMetrics(enabled: boolean = true) {
   const updateConnectionInfo = useCallback(() => {
     if (!enabled) return;
 
-    const connection = (navigator as any).connection;
+    const connection = navigator.connection;
     if (connection) {
       setMetrics((prev) => ({
         ...prev,
@@ -113,7 +113,7 @@ export function usePerformanceMetrics(enabled: boolean = true) {
 
     // Update connection info
     updateConnectionInfo();
-    const connection = (navigator as any).connection;
+    const connection = navigator.connection;
     if (connection) {
       connection.addEventListener("change", updateConnectionInfo);
     }
