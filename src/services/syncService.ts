@@ -36,8 +36,7 @@ class SyncService {
         await operation();
       } catch (error) {
         this.setStatus('error');
-        console.error('Sync error:', error);
-      }
+}
     }
 
     this.syncing = false;
