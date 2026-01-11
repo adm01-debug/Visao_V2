@@ -10,6 +10,11 @@ vi.mock('react-router-dom', async () => {
 
 const wrapper = ({ children }: { children: React.ReactNode }) => <BrowserRouter>{children}</BrowserRouter>;
 
+
+vi.mock('@/hooks/useAlerts', () => ({
+  useAlerts: () => ({ alerts: [], unreadCount: 0, markAsRead: vi.fn() }),
+}));
+
 describe('MobileBottomNav', () => {
   it('renders on mobile', () => {
     render(<MobileBottomNav />, { wrapper });
