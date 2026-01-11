@@ -1,3 +1,4 @@
+/// <reference types="./types/file-system-access" />
 /**
  * useFileSystemAccess Hook
  * File System Access API
