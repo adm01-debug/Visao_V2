@@ -1,5 +1,42 @@
 # Changelog
 
+## [2.3.0] - 2026-01-11
+
+### 🚀 V19 - Melhorias de Infraestrutura e Qualidade
+
+#### Dependências
+- Adicionado `i18next`, `react-i18next`, `i18next-browser-languagedetector`
+
+#### React
+- Habilitado React StrictMode para melhor detecção de problemas
+
+#### Novos Utilitários (6)
+- `src/lib/sanitization.ts` - Sanitização de inputs
+- `src/lib/accessibility.ts` - Utilitários de acessibilidade WCAG 2.1
+- `src/lib/cacheUtils.ts` - Cache com TTL em memória e localStorage
+- `src/lib/errorReporting.ts` - Relatório de erros centralizado
+- `src/lib/crashReporting.ts` - Detecção de crashes e freezes
+
+#### Novos Hooks (2)
+- `src/hooks/useVirtualList.ts` - Virtualização de listas longas
+- `src/hooks/useIntersectionObserver.ts` - Observação de visibilidade
+
+#### Infraestrutura
+- `nginx.conf` - Configuração Nginx otimizada
+- `k8s/deployment.yaml` - Deploy Kubernetes
+- `k8s/service.yaml` - Service Kubernetes
+- `k8s/ingress.yaml` - Ingress com TLS
+- `k8s/configmap.yaml` - ConfigMap
+- `k8s/hpa.yaml` - Auto-scaling horizontal
+
+#### SEO
+- Adicionado canonical URL no index.html
+- Adicionado robots meta tags
+
+#### Testes (7)
+- Testes para todos os novos utilitários e hooks
+- Teste para appStore.ts
+
 ## [2.2.0] - 2026-01-11
 
 ### 🚀 V18 - 101 Melhorias Implementadas
