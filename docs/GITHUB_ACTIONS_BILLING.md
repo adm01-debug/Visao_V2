@@ -1,85 +1,89 @@
-# 🔧 Guia para Resolver GitHub Actions Billing
+# ⚠️ GitHub Actions Billing Issue
 
-## Problema Atual
+## Problema
 
-Os workflows do GitHub Actions estão falhando porque o repositório é **privado** e os minutos gratuitos foram consumidos.
+Os workflows do GitHub Actions estão falhando devido ao limite de minutos gratuitos para repositórios privados.
+
+## Status Atual
+
+| Workflow | Status |
+|----------|--------|
+| CI | ❌ Falha (billing) |
+| Lint | ❌ Falha (billing) |
+| Test | ❌ Falha (billing) |
+| Deploy | ❌ Falha (billing) |
+| Security | ❌ Falha (billing) |
+| ... | ❌ (34 workflows) |
 
 ## Soluções Disponíveis
 
-### Opção 1: Adicionar Billing (Recomendado para Produção)
+### Opção A: Adicionar Billing (Recomendado para produção)
 
-1. Acesse [GitHub Settings > Billing](https://github.com/settings/billing)
-2. Adicione um método de pagamento
-3. Configure um spending limit para Actions
-4. Os workflows voltarão a funcionar automaticamente
+1. Acesse: `https://github.com/settings/billing`
+2. Em "Actions", clique em "Set up payment"
+3. Configure um método de pagamento
+4. Defina um limite de gastos
 
-**Custo estimado:** ~$0.008/minuto para Linux runners
+**Custo estimado:** ~$0.008/min para Linux
 
-### Opção 2: Tornar o Repositório Público (Temporário)
+### Opção B: Tornar Repositório Público
 
-1. Vá em Settings > General > Danger Zone
-2. Clique em "Change repository visibility"
-3. Mude para Public
-4. Repositórios públicos têm Actions ilimitados!
+1. Acesse: `https://github.com/adm01-debug/vis-o/settings`
+2. Role até "Danger Zone"
+3. Clique em "Change repository visibility"
+4. Selecione "Public"
 
-⚠️ **Atenção:** Só faça isso se não houver dados sensíveis no código.
+**Nota:** Repositórios públicos têm Actions ilimitados
 
-### Opção 3: Usar Self-Hosted Runners
+### Opção C: Self-Hosted Runners
 
-1. Configure um servidor próprio como runner
-2. Acesse Settings > Actions > Runners
-3. Clique em "New self-hosted runner"
-4. Siga as instruções de instalação
+1. Configure uma máquina ou VM
+2. Instale o GitHub Actions Runner
+3. Registre no repositório
 
-**Vantagem:** Sem custo de minutos
-**Desvantagem:** Requer infraestrutura própria
+**Docs:** https://docs.github.com/en/actions/hosting-your-own-runners
 
-### Opção 4: Executar Testes Localmente
+### Opção D: Reduzir Workflows (Temporário)
 
-Enquanto o billing não é resolvido, execute localmente:
+Desabilitar workflows não essenciais:
 
 ```bash
-# Instalar dependências
-npm install
-
-# Rodar testes
-npm run test
-
-# Rodar linting
-npm run lint
-
-# Rodar build
-npm run build
-
-# Rodar Storybook
-npm run storybook
+# Em .github/workflows/, renomeie para .disabled:
+mv visual-regression.yml visual-regression.yml.disabled
+mv lighthouse.yml lighthouse.yml.disabled
 ```
 
-## Verificando Status Atual
+## Workflows Essenciais (Manter Ativos)
 
-```bash
-# Via GitHub CLI
-gh run list --repo adm01-debug/vis-o
+1. `ci.yml` - Build e validação
+2. `test.yml` - Testes automatizados
+3. `lint.yml` - Linting de código
+4. `security.yml` - Análise de segurança
 
-# Via API
-curl -H "Authorization: token YOUR_TOKEN" \
-  https://api.github.com/repos/adm01-debug/vis-o/actions/runs
-```
+## Workflows Opcionais (Podem ser desabilitados)
 
-## Configuração Recomendada
+- Visual Regression
+- Lighthouse CI
+- Accessibility Tests
+- Coverage Report
+- Storybook Deploy
+- etc.
 
-Para um projeto de produção, recomendamos:
+## Próximos Passos
 
-1. **Billing configurado** com spending limit de $50-100/mês
-2. **Branch protection** com required status checks
-3. **Caching habilitado** nos workflows para economizar minutos
-
-## Links Úteis
-
-- [GitHub Actions Pricing](https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions)
-- [Managing Spending Limits](https://docs.github.com/en/billing/managing-billing-for-github-actions/managing-your-spending-limit-for-github-actions)
-- [Self-hosted Runners](https://docs.github.com/en/actions/hosting-your-own-runners/about-self-hosted-runners)
+1. [ ] Escolher uma das opções acima
+2. [ ] Implementar a solução
+3. [ ] Verificar que workflows voltaram a funcionar
+4. [ ] Atualizar este documento
 
 ---
 
-*Documento criado em 11/01/2026*
+## Links Úteis
+
+- [GitHub Actions Billing](https://docs.github.com/en/billing/managing-billing-for-github-actions)
+- [Actions Usage Limits](https://docs.github.com/en/actions/learn-github-actions/usage-limits-billing-and-administration)
+- [Self-Hosted Runners](https://docs.github.com/en/actions/hosting-your-own-runners)
+
+---
+
+*Documento criado como parte do Sprint 8 de CI/CD*
