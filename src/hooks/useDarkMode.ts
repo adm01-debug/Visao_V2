@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { safeExecute } from '@/lib/safeExecute';
 
 type Theme = 'light' | 'dark' | 'system';
 
