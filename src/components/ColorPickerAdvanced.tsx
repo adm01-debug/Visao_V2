@@ -137,8 +137,7 @@ export const ColorPickerAdvanced: React.FC<ColorPickerAdvancedProps> = ({
         const result = await eyeDropper.open();
         onChange?.(result.sRGBHex);
       } catch (e) {
-        console.log('Eye dropper cancelled');
-      }
+              }
     }
   }, [onChange]);
 
