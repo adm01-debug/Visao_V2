@@ -78,8 +78,7 @@ export const sendDiscordMessage = async (
 
     return response.ok;
   } catch (error) {
-    console.error('[Discord] Send error:', error);
-    return false;
+return false;
   }
 };
 
