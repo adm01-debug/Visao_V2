@@ -1,28 +1,24 @@
 /**
  * File System Access API Type Declarations
- * @see https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API
+ * @see https://wicg.github.io/file-system-access/
  */
 
-interface FileSystemHandlePermissionDescriptor {
-  mode?: 'read' | 'readwrite';
-}
-
 interface FileSystemHandle {
-  kind: 'file' | 'directory';
-  name: string;
+  readonly kind: 'file' | 'directory';
+  readonly name: string;
   isSameEntry(other: FileSystemHandle): Promise<boolean>;
   queryPermission(descriptor?: FileSystemHandlePermissionDescriptor): Promise<PermissionState>;
   requestPermission(descriptor?: FileSystemHandlePermissionDescriptor): Promise<PermissionState>;
 }
 
 interface FileSystemFileHandle extends FileSystemHandle {
-  kind: 'file';
+  readonly kind: 'file';
   getFile(): Promise<File>;
   createWritable(options?: FileSystemCreateWritableOptions): Promise<FileSystemWritableFileStream>;
 }
 
 interface FileSystemDirectoryHandle extends FileSystemHandle {
-  kind: 'directory';
+  readonly kind: 'directory';
   getDirectoryHandle(name: string, options?: FileSystemGetDirectoryOptions): Promise<FileSystemDirectoryHandle>;
   getFileHandle(name: string, options?: FileSystemGetFileOptions): Promise<FileSystemFileHandle>;
   removeEntry(name: string, options?: FileSystemRemoveOptions): Promise<void>;
@@ -32,15 +28,25 @@ interface FileSystemDirectoryHandle extends FileSystemHandle {
   entries(): AsyncIterableIterator<[string, FileSystemHandle]>;
 }
 
+interface FileSystemWritableFileStream extends WritableStream {
+  write(data: FileSystemWriteChunkType): Promise<void>;
+  seek(position: number): Promise<void>;
+  truncate(size: number): Promise<void>;
+}
+
+interface FileSystemHandlePermissionDescriptor {
+  mode?: 'read' | 'readwrite';
+}
+
 interface FileSystemCreateWritableOptions {
   keepExistingData?: boolean;
 }
 
-interface FileSystemGetDirectoryOptions {
+interface FileSystemGetFileOptions {
   create?: boolean;
 }
 
-interface FileSystemGetFileOptions {
+interface FileSystemGetDirectoryOptions {
   create?: boolean;
 }
 
@@ -48,39 +54,32 @@ interface FileSystemRemoveOptions {
   recursive?: boolean;
 }
 
-interface FileSystemWritableFileStream extends WritableStream {
-  write(data: FileSystemWriteChunkType): Promise<void>;
-  seek(position: number): Promise<void>;
-  truncate(size: number): Promise<void>;
-}
-
-type FileSystemWriteChunkType = BufferSource | Blob | string | WriteParams;
-
-interface WriteParams {
-  type: 'write' | 'seek' | 'truncate';
-  size?: number;
-  position?: number;
-  data?: BufferSource | Blob | string;
-}
+type FileSystemWriteChunkType = 
+  | { type: 'write'; position?: number; data: BufferSource | Blob | string }
+  | { type: 'seek'; position: number }
+  | { type: 'truncate'; size: number }
+  | BufferSource
+  | Blob
+  | string;
 
 interface OpenFilePickerOptions {
   multiple?: boolean;
   excludeAcceptAllOption?: boolean;
   types?: FilePickerAcceptType[];
-  startIn?: StartInDirectory;
+  startIn?: FileSystemHandle | WellKnownDirectory;
 }
 
 interface SaveFilePickerOptions {
   excludeAcceptAllOption?: boolean;
   suggestedName?: string;
   types?: FilePickerAcceptType[];
-  startIn?: StartInDirectory;
+  startIn?: FileSystemHandle | WellKnownDirectory;
 }
 
 interface DirectoryPickerOptions {
   id?: string;
   mode?: 'read' | 'readwrite';
-  startIn?: StartInDirectory;
+  startIn?: FileSystemHandle | WellKnownDirectory;
 }
 
 interface FilePickerAcceptType {
@@ -88,7 +87,7 @@ interface FilePickerAcceptType {
   accept: Record<string, string | string[]>;
 }
 
-type StartInDirectory = 'desktop' | 'documents' | 'downloads' | 'music' | 'pictures' | 'videos' | FileSystemHandle;
+type WellKnownDirectory = 'desktop' | 'documents' | 'downloads' | 'music' | 'pictures' | 'videos';
 
 declare global {
   interface Window {
