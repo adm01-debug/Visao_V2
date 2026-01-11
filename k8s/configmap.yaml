@@ -1,0 +1,15 @@
+# VIS-O Kubernetes ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vis-o-config
+  labels:
+    app: vis-o
+data:
+  VITE_APP_NAME: "VIS-O"
+  VITE_APP_VERSION: "2.2.0"
+  VITE_APP_ENV: "production"
+  VITE_API_TIMEOUT: "30000"
+  VITE_ENABLE_ANALYTICS: "true"
+  VITE_ENABLE_ERROR_REPORTING: "true"
+  VITE_LOG_LEVEL: "error"
