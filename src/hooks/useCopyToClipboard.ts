@@ -11,3 +11,6 @@ export function useCopyToClipboard(): [boolean, (text: string) => Promise<void>]
 
   return [copied, copy];
 }
+
+
+// Note: Error handling should be added to async operations
