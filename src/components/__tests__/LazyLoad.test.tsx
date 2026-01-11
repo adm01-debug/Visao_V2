@@ -2,6 +2,11 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { LazyLoad } from '../LazyLoad';
 
+
+vi.mock('@/hooks/useInView', () => ({
+  useInView: () => ({ ref: { current: null }, inView: true }),
+}));
+
 describe('LazyLoad', () => {
   it('renders without crashing', () => {
     render(<LazyLoad><div>Lazy Content</div></LazyLoad>);
