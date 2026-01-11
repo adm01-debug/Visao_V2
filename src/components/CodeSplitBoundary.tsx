@@ -28,8 +28,7 @@ export class CodeSplitBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error) {
     this.props.onError?.(error);
-    console.error('[CodeSplit] Chunk load failed:', error);
-  }
+}
 
   handleRetry = () => {
     this.setState(prev => ({
