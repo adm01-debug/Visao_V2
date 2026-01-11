@@ -73,8 +73,7 @@ class FirebaseService {
       // Check if messaging is supported
       const supported = await isSupported();
       if (!supported) {
-        console.warn('[Firebase] Messaging not supported in this browser');
-        return false;
+return false;
       }
 
       // Initialize or get existing app
@@ -113,8 +112,7 @@ class FirebaseService {
       const permission = await Notification.requestPermission();
       
       if (permission !== 'granted') {
-        console.warn('[Firebase] Notification permission denied');
-        return null;
+return null;
       }
 
       const { getToken } = await import('firebase/messaging');
@@ -127,9 +125,7 @@ class FirebaseService {
         this.currentToken = token;
                 return token;
       }
-
-      console.warn('[Firebase] No token available');
-      return null;
+return null;
     } catch (error) {
             return null;
     }
