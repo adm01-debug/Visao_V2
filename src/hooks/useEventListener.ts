@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { safeExecute } from '@/lib/safeExecute';
 
 type EventHandler<T extends Event = Event> = (event: T) => void;
 
