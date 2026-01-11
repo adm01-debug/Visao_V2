@@ -13,7 +13,7 @@ class StripeIntegration {
         'Authorization': `Bearer ${this.secretKey}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: body ? new URLSearchParams(body as any).toString() : undefined,
+      body: body ? new URLSearchParams(body as Record<string, string>).toString() : undefined,
     });
     return response.json();
   }
