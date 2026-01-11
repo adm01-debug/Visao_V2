@@ -13,7 +13,7 @@ export function useFileSystemAccess() {
   const openFile = useCallback(async (options?: OpenFilePickerOptions) => {
     if (!isSupported) { setError(new Error('Not supported')); return null; }
     try {
-      const [handle] = await (window as any).showOpenFilePicker(options);
+      const [handle] = await window.showOpenFilePicker(options);
       const f = await handle.getFile();
       setFileHandle(handle);
       setFile(f);
@@ -25,7 +25,7 @@ export function useFileSystemAccess() {
   const saveFile = useCallback(async (content: string | Blob, options?: SaveFilePickerOptions) => {
     if (!isSupported) { setError(new Error('Not supported')); return false; }
     try {
-      const handle = fileHandle || await (window as any).showSaveFilePicker(options);
+      const handle = fileHandle || await window.showSaveFilePicker(options);
       const writable = await handle.createWritable();
       await writable.write(content);
       await writable.close();
