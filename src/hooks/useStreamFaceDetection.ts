@@ -151,8 +151,7 @@ export function useStreamFaceDetection({
       });
 
       if (response.error) {
-        console.error('Erro ao comparar faces:', response.error);
-        return { listType: 'unknown', isKnown: false };
+return { listType: 'unknown', isKnown: false };
       }
 
       const result = response.data;
@@ -168,8 +167,7 @@ export function useStreamFaceDetection({
 
       return { listType: 'unknown', isKnown: false };
     } catch (error) {
-      console.error('Erro na comparação de faces:', error);
-      return { listType: 'unknown', isKnown: false };
+return { listType: 'unknown', isKnown: false };
     }
   }, []);
 
