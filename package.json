@@ -1,7 +1,7 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "vis-o",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.1.0",
   "type": "module",
   "scripts": {
     "analyze": "vite-bundle-analyzer",
@@ -188,5 +188,26 @@
     "vite-plugin-pwa": "^1.2.0",
     "vitest": "^4.0.16",
     "workbox-window": "^7.0.0"
-  }
+  },
+  "description": "Sistema de Vigilância Inteligente com IA - Reconhecimento Facial, Detecção de EPIs, Placas e Alertas em Tempo Real",
+  "author": "adm01-debug",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adm01-debug/vis-o.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adm01-debug/vis-o/issues"
+  },
+  "homepage": "https://github.com/adm01-debug/vis-o#readme",
+  "keywords": [
+    "surveillance",
+    "ai",
+    "face-recognition",
+    "epi-detection",
+    "real-time",
+    "alerts",
+    "react",
+    "typescript"
+  ]
 }
