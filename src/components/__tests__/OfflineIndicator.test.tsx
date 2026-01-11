@@ -6,6 +6,11 @@ vi.mock('@/hooks/useNetworkState', () => ({
   useNetworkState: () => ({ online: false }),
 }));
 
+
+vi.mock('@/hooks/useOfflineSync', () => ({
+  useOfflineSync: () => ({ isOffline: false, pendingChanges: 0, sync: vi.fn() }),
+}));
+
 describe('OfflineIndicator', () => {
   it('renders when offline', () => {
     render(<OfflineIndicator />);
