@@ -82,8 +82,7 @@ export function useWebRTCPeer(config: PeerConnectionConfig = {}): UseWebRTCPeerR
       await pc.setLocalDescription(offer);
       return offer;
     } catch (error) {
-      console.error('Create offer failed:', error);
-      return null;
+return null;
     }
   }, [initPeerConnection]);
 
@@ -95,8 +94,7 @@ export function useWebRTCPeer(config: PeerConnectionConfig = {}): UseWebRTCPeerR
       await pc.setLocalDescription(answer);
       return answer;
     } catch (error) {
-      console.error('Create answer failed:', error);
-      return null;
+return null;
     }
   }, [initPeerConnection]);
 
@@ -106,8 +104,7 @@ export function useWebRTCPeer(config: PeerConnectionConfig = {}): UseWebRTCPeerR
     try {
       await pc.setRemoteDescription(new RTCSessionDescription(answer));
     } catch (error) {
-      console.error('Set remote answer failed:', error);
-    }
+}
   }, []);
 
   const addIceCandidate = useCallback(async (candidate: RTCIceCandidateInit): Promise<void> => {
@@ -116,8 +113,7 @@ export function useWebRTCPeer(config: PeerConnectionConfig = {}): UseWebRTCPeerR
     try {
       await pc.addIceCandidate(new RTCIceCandidate(candidate));
     } catch (error) {
-      console.error('Add ICE candidate failed:', error);
-    }
+}
   }, []);
 
   const addLocalStream = useCallback((stream: MediaStream) => {
@@ -135,8 +131,7 @@ export function useWebRTCPeer(config: PeerConnectionConfig = {}): UseWebRTCPeerR
       setDataChannel(channel);
       return channel;
     } catch (error) {
-      console.error('Create data channel failed:', error);
-      return null;
+return null;
     }
   }, [initPeerConnection]);
 
