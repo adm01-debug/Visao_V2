@@ -10,7 +10,7 @@ export const initAnalytics = (): void => {
 
 export const trackEvent = (name: EventName, properties?: EventProperties): void => {
   if (!initialized) return;
-  console.debug('[Analytics] Event:', name, properties);
+  // Analytics event tracked silently
 };
 
 export const trackPageView = (path: string, title?: string): void => {
@@ -22,7 +22,7 @@ export const trackError = (error: Error, context?: Record<string, unknown>): voi
 };
 
 export const setUser = (userId: string, traits?: Record<string, unknown>): void => {
-  console.debug('[Analytics] User:', userId, traits);
+  // User set silently
 };
 
 export const trackTiming = (category: string, variable: string, value: number): void => {
