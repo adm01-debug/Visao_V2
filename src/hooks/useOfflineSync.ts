@@ -133,8 +133,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
       const actions = await getPendingActions();
       setState(prev => ({ ...prev, pendingActionsCount: actions.length }));
     } catch (error) {
-      console.error('Error getting pending count:', error);
-    }
+}
   };
 
   const syncPendingActions = useCallback(async () => {
@@ -248,8 +247,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
 
       setState(prev => ({ ...prev, lastSyncAt: new Date() }));
     } catch (error) {
-      console.error('Error refreshing cache:', error);
-    }
+}
   }, []);
 
   const getAlerts = useCallback(async (): Promise<unknown[]> => {
@@ -266,8 +264,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           return data;
         }
       } catch (error) {
-        console.error('Error fetching alerts:', error);
-      }
+}
     }
     
     return getCachedAlerts();
@@ -286,8 +283,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           return data;
         }
       } catch (error) {
-        console.error('Error fetching cameras:', error);
-      }
+}
     }
     
     return getCachedCameras();
@@ -306,8 +302,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           return data;
         }
       } catch (error) {
-        console.error('Error fetching persons:', error);
-      }
+}
     }
     
     return getCachedPersons();
