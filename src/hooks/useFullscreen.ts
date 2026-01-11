@@ -37,8 +37,7 @@ export const useFullscreen = <T extends HTMLElement = HTMLElement>(): UseFullscr
         await (element as any).webkitRequestFullscreen();
       }
     } catch (error) {
-      console.error('Failed to enter fullscreen:', error);
-    }
+}
   }, []);
 
   const exit = useCallback(async () => {
@@ -49,8 +48,7 @@ export const useFullscreen = <T extends HTMLElement = HTMLElement>(): UseFullscr
         await (document as any).webkitExitFullscreen();
       }
     } catch (error) {
-      console.error('Failed to exit fullscreen:', error);
-    }
+}
   }, []);
 
   const toggle = useCallback(async () => {
