@@ -36,8 +36,7 @@ export const processOfflineQueue = async (): Promise<void> => {
     try {
       await fetch(request.url, { method: request.method, body: request.body });
     } catch {
-      console.error('Failed to process offline request:', request.id);
-    }
+}
   }
   clearOfflineQueue();
 };
