@@ -39,3 +39,6 @@ export const useCounter = (options: UseCounterOptions = {}): UseCounterReturn =>
 };
 
 export default useCounter;
+
+
+// Note: Error handling should be added to async operations
