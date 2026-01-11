@@ -29,10 +29,12 @@ export function useEventListener(
   const savedHandler = useRef(handler);
 
   useEffect(() => {
+    try {
     savedHandler.current = handler;
   }, [handler]);
 
   useEffect(() => {
+    try {
     const targetElement = element?.current ?? window;
     if (!targetElement?.addEventListener) return;
 
