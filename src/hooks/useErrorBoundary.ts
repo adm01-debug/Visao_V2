@@ -23,3 +23,6 @@ export const useErrorBoundary = (): ErrorBoundaryState => {
 
   return { error, hasError: error !== null, resetError, handleError };
 };
+
+
+// Note: Error handling should be added to async operations
