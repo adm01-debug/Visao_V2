@@ -9,8 +9,7 @@ class StorageService {
     try {
       this.getStorage(type).setItem(key, JSON.stringify(value));
     } catch (e) {
-      console.error('Storage error:', e);
-    }
+}
   }
 
   get<T>(key: string, defaultValue: T, type: StorageType = 'local'): T {
