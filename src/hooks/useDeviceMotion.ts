@@ -54,3 +54,6 @@ export function useDeviceMotion() {
   return { motion, isSupported, error };
 }
 export default useDeviceMotion;
+
+
+// Note: Error handling should be added to async operations
