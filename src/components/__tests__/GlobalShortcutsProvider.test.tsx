@@ -2,6 +2,11 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { GlobalShortcutsProvider } from '../GlobalShortcutsProvider';
 
+
+vi.mock('@/hooks/useGlobalShortcuts', () => ({
+  useGlobalShortcuts: () => ({ shortcuts: [], registerShortcut: vi.fn(), unregisterShortcut: vi.fn() }),
+}));
+
 describe('GlobalShortcutsProvider', () => {
   it('renders children', () => {
     render(<GlobalShortcutsProvider><div>Test Child</div></GlobalShortcutsProvider>);
