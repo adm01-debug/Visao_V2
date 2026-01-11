@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { safeExecute } from '@/lib/safeExecute';
 
 interface FeatureFlags {
   enablePPE: boolean;
