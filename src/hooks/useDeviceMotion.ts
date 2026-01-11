@@ -13,6 +13,7 @@ declare global {
  * Device motion sensors
  */
 import { useState, useEffect } from 'react';
+import { safeExecute } from '@/lib/safeExecute';
 
 export interface MotionData {
   acceleration: DeviceMotionEventAcceleration | null;
