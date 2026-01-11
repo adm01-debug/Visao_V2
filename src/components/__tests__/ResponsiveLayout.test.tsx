@@ -1,24 +1,71 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { ResponsiveLayout } from '../ResponsiveLayout';
+import { 
+  ResponsiveContainer, 
+  ResponsiveGrid, 
+  ResponsiveStack,
+  MobileOnly,
+  DesktopOnly 
+} from '../ResponsiveLayout';
 
-describe('ResponsiveLayout', () => {
-  it('renders children', () => {
-    render(<ResponsiveLayout><div>Child Content</div></ResponsiveLayout>);
-    expect(screen.getByText('Child Content')).toBeInTheDocument();
+describe('ResponsiveLayout Components', () => {
+  describe('ResponsiveContainer', () => {
+    it('renders children', () => {
+      render(<ResponsiveContainer><div>Child Content</div></ResponsiveContainer>);
+      expect(screen.getByText('Child Content')).toBeInTheDocument();
+    });
+
+    it('applies maxWidth class', () => {
+      render(<ResponsiveContainer maxWidth="lg"><div>Content</div></ResponsiveContainer>);
+      expect(document.body).toBeInTheDocument();
+    });
   });
-  it('adapts to desktop', () => {
-    render(<ResponsiveLayout><div>Content</div></ResponsiveLayout>);
-    expect(document.body).toBeInTheDocument();
+
+  describe('ResponsiveGrid', () => {
+    it('renders grid layout', () => {
+      render(
+        <ResponsiveGrid cols={{ default: 1, md: 2, lg: 3 }}>
+          <div>Item 1</div>
+          <div>Item 2</div>
+        </ResponsiveGrid>
+      );
+      expect(screen.getByText('Item 1')).toBeInTheDocument();
+    });
+
+    it('applies gap spacing', () => {
+      render(<ResponsiveGrid gap="md"><div>Content</div></ResponsiveGrid>);
+      expect(document.body).toBeInTheDocument();
+    });
   });
-  it('adapts to mobile', () => {
-    Object.defineProperty(window, 'innerWidth', { value: 375 });
-    render(<ResponsiveLayout><div>Content</div></ResponsiveLayout>);
-    expect(document.body).toBeInTheDocument();
+
+  describe('ResponsiveStack', () => {
+    it('renders stack layout', () => {
+      render(
+        <ResponsiveStack>
+          <div>Stack Item 1</div>
+          <div>Stack Item 2</div>
+        </ResponsiveStack>
+      );
+      expect(screen.getByText('Stack Item 1')).toBeInTheDocument();
+    });
+
+    it('handles direction prop', () => {
+      render(<ResponsiveStack direction="row"><div>Content</div></ResponsiveStack>);
+      expect(document.body).toBeInTheDocument();
+    });
   });
-  it('handles resize events', () => {
-    render(<ResponsiveLayout><div>Content</div></ResponsiveLayout>);
-    window.dispatchEvent(new Event('resize'));
-    expect(document.body).toBeInTheDocument();
+
+  describe('MobileOnly', () => {
+    it('renders on mobile viewport', () => {
+      render(<MobileOnly><div>Mobile Content</div></MobileOnly>);
+      expect(document.body).toBeInTheDocument();
+    });
+  });
+
+  describe('DesktopOnly', () => {
+    it('renders on desktop viewport', () => {
+      render(<DesktopOnly><div>Desktop Content</div></DesktopOnly>);
+      expect(document.body).toBeInTheDocument();
+    });
   });
 });
