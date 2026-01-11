@@ -11,5 +11,5 @@ export type { ThemeMode, ThemeVariant, ThemeState, ThemeContextType } from "./Th
 
 // Helper function for legacy compatibility
 export const toggleTheme = () => {
-  console.warn('toggleTheme() é deprecated. Use useTheme().toggleMode() ao invés.');
+é deprecated. Use useTheme().toggleMode() ao invés.');
 };
