@@ -6,6 +6,8 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { cn } from '@/utils/cn';
 import { Camera, Video, Square, Download, Trash2, Monitor, Copy, Check } from 'lucide-react';
+import type { ImageCapture } from '@/types/image-capture';
+
 
 export interface ScreenCaptureProps {
   onCapture?: (blob: Blob, url: string, type: 'image' | 'video') => void;
@@ -42,8 +44,7 @@ export const ScreenCapture: React.FC<ScreenCaptureProps> = ({
       const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
       const track = stream.getVideoTracks()[0];
       
-      // @ts-ignore - ImageCapture API
-      const imageCapture = new ImageCapture(track);
+            const imageCapture = new ImageCapture(track);
       const bitmap = await imageCapture.grabFrame();
       
       const canvas = document.createElement('canvas');
