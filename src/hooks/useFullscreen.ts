@@ -1,3 +1,20 @@
+// Type declarations for fullscreen vendor prefixes
+declare global {
+  interface HTMLElement {
+    webkitRequestFullscreen?(): Promise<void>;
+    mozRequestFullScreen?(): Promise<void>;
+    msRequestFullscreen?(): Promise<void>;
+  }
+  interface Document {
+    webkitExitFullscreen?(): Promise<void>;
+    mozCancelFullScreen?(): Promise<void>;
+    msExitFullscreen?(): Promise<void>;
+    webkitFullscreenElement?: Element | null;
+    mozFullScreenElement?: Element | null;
+    msFullscreenElement?: Element | null;
+  }
+}
+
 import { useState, useCallback, useRef, useEffect } from 'react';
 
 interface UseFullscreenReturn<T extends HTMLElement> {
@@ -33,8 +50,8 @@ export const useFullscreen = <T extends HTMLElement = HTMLElement>(): UseFullscr
     try {
       if (element.requestFullscreen) {
         await element.requestFullscreen();
-      } else if ((element as any).webkitRequestFullscreen) {
-        await (element as any).webkitRequestFullscreen();
+      } else if (element.webkitRequestFullscreen) {
+        await element.webkitRequestFullscreen();
       }
     } catch (error) {
 }
@@ -44,8 +61,8 @@ export const useFullscreen = <T extends HTMLElement = HTMLElement>(): UseFullscr
     try {
       if (document.exitFullscreen) {
         await document.exitFullscreen();
-      } else if ((document as any).webkitExitFullscreen) {
-        await (document as any).webkitExitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        await document.webkitExitFullscreen();
       }
     } catch (error) {
 }
