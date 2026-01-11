@@ -103,8 +103,8 @@ export function useIndexedDBSync<T>(
       request.onsuccess = () => {
         setData(prev => {
           const keyPath = config.stores.find(s => s.name === storeName)?.keyPath || 'id';
-          const key = (item as any)[keyPath];
-          const exists = prev.findIndex(p => (p as any)[keyPath] === key);
+          const key = (item as Record<string, unknown>)[keyPath];
+          const exists = prev.findIndex(p => (p as Record<string, unknown>)[keyPath] === key);
           if (exists >= 0) {
             const updated = [...prev];
             updated[exists] = item;
@@ -130,7 +130,7 @@ export function useIndexedDBSync<T>(
       request.onsuccess = () => {
         setData(prev => {
           const keyPath = config.stores.find(s => s.name === storeName)?.keyPath || 'id';
-          return prev.filter(p => (p as any)[keyPath] !== key);
+          return prev.filter(p => (p as Record<string, unknown>)[keyPath] !== key);
         });
         resolve();
       };
