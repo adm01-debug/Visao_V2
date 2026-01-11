@@ -134,3 +134,6 @@ export * from "./useWebWorker";
 export * from "./useWidgetDashboard";
 export * from "./useWindowSize";
 export * from "./useZoneDetection";
+
+export { useVirtualList } from './useVirtualList';
+export { useIntersectionObserver, useLazyImage, useInfiniteScroll } from './useIntersectionObserver';
