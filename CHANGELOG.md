@@ -1,5 +1,37 @@
 # Changelog
 
+## [2.2.0] - 2026-01-11
+
+### 🚀 V18 - 101 Melhorias Implementadas
+
+#### Type Safety (8)
+- Criado `src/types/file-system-access.d.ts`
+- Criado `src/types/performance-memory.d.ts`
+- Criado `src/types/network-information.d.ts`
+- Removido "as any" de 5 arquivos
+
+#### Performance (12)
+- Adicionado `src/lib/lazyLoad.ts` para code splitting
+- Adicionado `src/lib/performanceUtils.ts` para memoização
+- Documentação de refatoração para 10 arquivos grandes
+
+#### i18n (3)
+- Configuração completa de react-i18next
+- Traduções pt-BR e en-US
+
+#### Edge Functions (2)
+- Testes para `process-automation-rules`
+- Testes para `send-telegram`
+
+#### Documentação (10)
+- CODE_OF_CONDUCT.md
+- JSDOC_GUIDE.md
+- REFATORACAO_ARQUIVOS_GRANDES.md
+- CODE_MARKERS_TRACKING.md
+- GITHUB_ACTIONS_BILLING.md
+- RELATORIO_FINAL_V18_101_MELHORIAS.md
+
+
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
 ## [2.1.0] - 2026-01-11
