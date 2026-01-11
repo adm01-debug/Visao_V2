@@ -4,7 +4,7 @@ export const measurePerformance = (name: string) => {
   return {
     end: () => {
       const duration = performance.now() - start;
-      console.debug(`[Perf] ${name}: ${duration.toFixed(2)}ms`);
+      // Performance metric captured silently
       return duration;
     },
   };
