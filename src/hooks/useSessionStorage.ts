@@ -16,8 +16,7 @@ export function useSessionStorage<T>(key: string, initialValue: T): [T, (value: 
       setStoredValue(valueToStore);
       sessionStorage.setItem(key, JSON.stringify(valueToStore));
     } catch (error) {
-      console.error('Error setting sessionStorage:', error);
-    }
+}
   }, [key, storedValue]);
 
   const removeValue = useCallback(() => {
@@ -25,8 +24,7 @@ export function useSessionStorage<T>(key: string, initialValue: T): [T, (value: 
       sessionStorage.removeItem(key);
       setStoredValue(initialValue);
     } catch (error) {
-      console.error('Error removing from sessionStorage:', error);
-    }
+}
   }, [key, initialValue]);
 
   return [storedValue, setValue, removeValue];
