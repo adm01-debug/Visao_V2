@@ -1,7 +1,11 @@
 /**
- * i18n Configuration
- * @description Internationalization setup using react-i18next
+ * Internationalization (i18n) Configuration
+ * @see https://react.i18next.com/
  */
+
+// Note: Install dependencies:
+// npm install react-i18next i18next i18next-browser-languagedetector
+
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
@@ -10,30 +14,36 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import ptBR from './locales/pt-BR.json';
 import enUS from './locales/en-US.json';
 
-const resources = {
+export const defaultNS = 'translation';
+export const resources = {
   'pt-BR': { translation: ptBR },
   'en-US': { translation: enUS },
-};
+} as const;
 
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
+    defaultNS,
     fallbackLng: 'pt-BR',
-    defaultNS: 'translation',
-    debug: import.meta.env.DEV,
+    supportedLngs: ['pt-BR', 'en-US'],
+    
     interpolation: {
-      escapeValue: false,
+      escapeValue: false, // React already escapes
     },
+    
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
+    },
+    
+    react: {
+      useSuspense: true,
     },
   });
 
 export default i18n;
 
-// Re-export useful types
-export type { TFunction } from 'i18next';
+// Type-safe translation hook
 export { useTranslation } from 'react-i18next';
