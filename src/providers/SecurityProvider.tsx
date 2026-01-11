@@ -69,8 +69,7 @@ export const SecurityProvider = ({
       // Em caso de erro, bloqueia por segurança
       setIsIPAllowed(false);
       setError('Erro ao verificar acesso');
-      console.error('Security check failed:', err);
-    } finally {
+} finally {
       setIsLoading(false);
     }
   }, [requireIPCheck]);
