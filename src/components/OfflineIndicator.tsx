@@ -61,7 +61,7 @@ export function OfflineIndicator({
   }, [isOnline]);
 
   useEffect(() => {
-    getStats().then(setStats).catch(console.error);
+    getStats().then(setStats).catch(() => { /* Error handled silently */ });
   }, [getStats, pendingActionsCount]);
 
   if (variant === 'minimal') {
