@@ -60,8 +60,7 @@ class IntrusionDetector {
   }
 
   private triggerAlert(type: AlertType): void {
-    console.warn("Intrusion detected:", type);
-  }
+}
 
   setThresholds(thresholds: Partial<IntrusionThresholds>): void {
     this.thresholds = { ...this.thresholds, ...thresholds };
