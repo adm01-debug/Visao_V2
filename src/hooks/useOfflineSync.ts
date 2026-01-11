@@ -66,7 +66,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
 
   // Initialize DB on mount
   useEffect(() => {
-    initOfflineDB().catch(console.error);
+    initOfflineDB().catch(() => { /* Error handled silently */ });
     updatePendingCount();
   }, []);
 
