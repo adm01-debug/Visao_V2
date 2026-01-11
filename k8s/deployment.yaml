@@ -1,0 +1,65 @@
+# VIS-O Kubernetes Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vis-o
+  labels:
+    app: vis-o
+    version: v2.2.0
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: vis-o
+  template:
+    metadata:
+      labels:
+        app: vis-o
+        version: v2.2.0
+    spec:
+      containers:
+        - name: vis-o
+          image: vis-o:latest
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          envFrom:
+            - configMapRef:
+                name: vis-o-config
+            - secretRef:
+                name: vis-o-secrets
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - vis-o
+                topologyKey: kubernetes.io/hostname
