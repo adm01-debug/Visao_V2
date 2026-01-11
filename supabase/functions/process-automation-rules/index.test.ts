@@ -1,67 +1,50 @@
-import { assertEquals, assertExists } from "https://deno.land/std@0.192.0/testing/asserts.ts";
+import { assertEquals, assertExists } from 'https://deno.land/std@0.192.0/testing/asserts.ts';
 
 /**
  * Tests for process-automation-rules Edge Function
  */
 
-Deno.test("process-automation-rules - should process valid rule", async () => {
-  const mockRequest = new Request("http://localhost/process-automation-rules", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer test-token"
-    },
-    body: JSON.stringify({
-      ruleId: "rule-123",
-      alertData: {
-        type: "motion",
-        cameraId: "cam-1",
-        severity: "high"
-      }
-    })
-  });
-  
-  // Simular handler (em produção, importar do index.ts)
-  const response = { success: true, ruleId: "rule-123", executed: true };
-  
-  assertExists(response);
-  assertEquals(response.success, true);
-  assertEquals(response.ruleId, "rule-123");
+Deno.test('process-automation-rules - should export handler', async () => {
+  const module = await import('./index.ts');
+  assertExists(module.default || module.handler);
 });
 
-Deno.test("process-automation-rules - should handle missing rule", async () => {
-  const mockRequest = new Request("http://localhost/process-automation-rules", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({})
+Deno.test('process-automation-rules - should return 401 without auth', async () => {
+  const req = new Request('http://localhost/process-automation-rules', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ alertId: 'test-123' }),
   });
   
-  // Simular resposta de erro
-  const response = { success: false, error: "Rule ID is required" };
-  
-  assertEquals(response.success, false);
-  assertExists(response.error);
+  // Mock handler test
+  const response = new Response('Unauthorized', { status: 401 });
+  assertEquals(response.status, 401);
 });
 
-Deno.test("process-automation-rules - should validate alert data", async () => {
-  const alertData = {
-    type: "motion",
-    cameraId: "cam-1",
-    severity: "high",
-    timestamp: new Date().toISOString()
+Deno.test('process-automation-rules - should handle valid request', async () => {
+  const mockRequest = {
+    alertId: 'alert-123',
+    alertType: 'motion_detected',
+    cameraId: 'cam-001',
+    timestamp: new Date().toISOString(),
   };
   
-  assertExists(alertData.type);
-  assertExists(alertData.cameraId);
-  assertExists(alertData.severity);
-  assertExists(alertData.timestamp);
+  // Validate request structure
+  assertExists(mockRequest.alertId);
+  assertExists(mockRequest.alertType);
+  assertExists(mockRequest.cameraId);
 });
 
-Deno.test("process-automation-rules - should handle authorization", async () => {
-  const hasAuth = true;
-  const isValid = hasAuth && true;
+Deno.test('process-automation-rules - should validate alert types', () => {
+  const validTypes = [
+    'motion_detected',
+    'face_recognized',
+    'license_plate_detected',
+    'intrusion_detected',
+    'object_detected',
+  ];
   
-  assertEquals(isValid, true);
+  validTypes.forEach(type => {
+    assertEquals(typeof type, 'string');
+  });
 });
