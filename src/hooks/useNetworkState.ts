@@ -1,3 +1,18 @@
+// Type declarations for Network Information API
+declare global {
+  interface NetworkInformation extends EventTarget {
+    type: 'bluetooth' | 'cellular' | 'ethernet' | 'none' | 'wifi' | 'wimax' | 'other' | 'unknown';
+    effectiveType: 'slow-2g' | '2g' | '3g' | '4g';
+    downlink: number;
+    rtt: number;
+    saveData: boolean;
+    onchange: ((this: NetworkInformation, ev: Event) => void) | null;
+  }
+  interface Navigator {
+    connection?: NetworkInformation;
+  }
+}
+
 import { useState, useEffect } from 'react';
 
 interface NetworkState {
@@ -15,7 +30,7 @@ export const useNetworkState = (): NetworkState => {
   });
 
   useEffect(() => {
-    const connection = (navigator as any).connection;
+    const connection = navigator.connection;
 
     const updateNetworkState = () => {
       setState({
