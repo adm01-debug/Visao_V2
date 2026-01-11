@@ -12,6 +12,11 @@ vi.mock('@/hooks/useRuleExecutions', () => ({
   }),
 }));
 
+
+vi.mock('@/hooks/useRules', () => ({
+  useRules: () => ({ rules: [], isLoading: false }),
+}));
+
 describe('RuleExecutionHistory', () => {
   it('renders execution list', () => {
     render(<RuleExecutionHistory />);
