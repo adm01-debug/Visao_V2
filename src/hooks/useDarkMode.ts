@@ -21,6 +21,7 @@ export const useDarkMode = (defaultTheme: Theme = 'system'): UseDarkModeReturn =
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
+    try {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     
     const updateDarkMode = () => {
