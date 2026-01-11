@@ -1,28 +1,26 @@
 /**
  * Performance Memory API Type Declarations
- * Non-standard API available in Chrome/Edge
+ * Non-standard Chrome API for memory monitoring
  */
 
 interface MemoryInfo {
-  /** Total heap size in bytes */
-  totalJSHeapSize: number;
-  /** Used heap size in bytes */
-  usedJSHeapSize: number;
-  /** Maximum heap size in bytes */
-  jsHeapSizeLimit: number;
+  /** Total JavaScript heap size in bytes */
+  readonly totalJSHeapSize: number;
+  /** Used JavaScript heap size in bytes */
+  readonly usedJSHeapSize: number;
+  /** JavaScript heap size limit in bytes */
+  readonly jsHeapSizeLimit: number;
 }
 
-interface PerformanceMemory {
-  memory?: MemoryInfo;
+interface PerformanceWithMemory extends Performance {
+  /** Memory information (Chrome only) */
+  readonly memory?: MemoryInfo;
 }
 
 declare global {
-  interface Performance extends PerformanceMemory {}
-  
-  interface Navigator {
-    /** Device memory in gigabytes (approximate) */
-    deviceMemory?: number;
+  interface Performance {
+    readonly memory?: MemoryInfo;
   }
 }
 
-export {};
+export { MemoryInfo, PerformanceWithMemory };
