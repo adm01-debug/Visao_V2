@@ -37,7 +37,7 @@ class Scheduler {
     this.options = {
       maxConcurrent: options.maxConcurrent ?? 10,
       defaultRetries: options.defaultRetries ?? 3,
-      onError: options.onError ?? console.error,
+      onError: options.onError ?? (() => { /* Error handled silently */ }),
     };
   }
 
