@@ -1,91 +1,44 @@
 /**
- * VISÃO - Sistema de Vigilância Inteligente
- * Lib barrel export - Exportação centralizada de todas as bibliotecas utilitárias
- * 
- * @module lib
+ * VIS-O Library Utilities
+ * Central export point for all lib utilities
  */
 
-export * from "./alertManager";
-export * from "./alertSounds";
-export * from "./analytics";
-export * from "./anomalyDetection";
-export * from "./apiError";
-export * from "./arrayUtils";
-export * from "./auditLogger";
-export * from "./auditTrail";
-export * from "./auth";
-export * from "./backgroundSync";
-export * from "./batch";
-export * from "./biometricAuth";
-export * from "./browserNotifications";
-export * from "./bundleOptimizer";
-export * from "./cache";
-export * from "./cacheStrategy";
-export * from "./circuit-breaker";
-export * from "./colorUtils";
-export * from "./complianceChecker";
-export * from "./compression";
-export * from "./connectionPool";
-export * from "./constants";
-export * from "./contentSecurityPolicy";
-export * from "./costMonitor";
-export * from "./criticalCSS";
-export * from "./csrf";
-export * from "./dateUtils";
-export * from "./deviceFingerprint";
-export * from "./diff";
-export * from "./encryptedStorage";
-export * from "./encryption";
-export * from "./errorTracking";
-export * from "./eventEmitter";
-export * from "./exportUtils";
-export * from "./formatters";
-export * from "./grafana";
-export * from "./healthCheck";
-export * from "./imageOptimizer";
-export * from "./incidentManager";
-export * from "./indexedDB";
-export * from "./intrusionDetection";
-export * from "./ipUtils";
-export * from "./jaeger";
-export * from "./keyRotation";
-export * from "./lazyModules";
-export * from "./logger";
-export * from "./memoize";
-export * from "./memoryManager";
-export * from "./metrics";
-export * from "./objectUtils";
-export * from "./offline";
-export * from "./offlineStorage";
-export * from "./opentelemetry";
-export * from "./passwordPolicy";
-export * from "./pdfGenerator";
-export * from "./performance";
-export * from "./performanceMonitoring";
-export * from "./pool";
-export * from "./prometheus";
-export * from "./pushManager";
-export * from "./rateLimiter";
-export * from "./renderOptimizer";
-export * from "./requestDedup";
-export * from "./resourceHints";
-export * from "./retry";
-export * from "./sanitize";
-export * from "./scheduler";
-export * from "./secureSession";
-export * from "./security";
-export * from "./sentry";
-export * from "./sessionManager";
-export * from "./sla";
-export * from "./statusPage";
-export * from "./storage";
-export * from "./stringUtils";
-export * from "./telemetry";
-export * from "./threatMonitor";
-export * from "./throttle";
-export * from "./tokenBlacklist";
-export * from "./twoFactorAuth";
-export * from "./utils";
-export * from "./validators";
-export * from "./webVitals";
-export * from "./xss";
+// Core utilities
+export * from './logger';
+export * from './api';
+export * from './supabase';
+
+// Security
+export * from './security';
+export * from './auth';
+export * from './encryption';
+export * from './csrf';
+export * from './xss';
+export * from './sanitization';
+
+// Performance
+export * from './lazyLoad';
+export * from './performanceUtils';
+export * from './imageOptimizer';
+export * from './renderOptimizer';
+export * from './bundleOptimizer';
+export * from './memoization';
+export * from './cacheUtils';
+
+// Error handling
+export * from './errorHandler';
+export * from './sentry';
+export * from './errorReporting';
+export * from './crashReporting';
+
+// Accessibility
+export * from './accessibility';
+
+// Offline
+export * from './offline';
+
+// Internationalization
+export { default as i18n } from '../i18n';
+
+// Utils
+export * from './intrusionDetection';
