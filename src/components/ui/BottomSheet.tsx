@@ -194,14 +194,14 @@ export function FilterBottomSheet({
   onApply,
   onReset,
 }: FilterBottomSheetProps) {
-  const handleValueChange = (groupId: string, value: any) => {
+  const handleValueChange = (groupId: string, value: unknown) => {
     onChange({ ...values, [groupId]: value });
   };
 
-  const handleMultiToggle = (groupId: string, optionValue: any) => {
+  const handleMultiToggle = (groupId: string, optionValue: unknown) => {
     const current = values[groupId] || [];
     const newValue = current.includes(optionValue)
-      ? current.filter((v: any) => v !== optionValue)
+      ? current.filter((v: unknown) => v !== optionValue)
       : [...current, optionValue];
     handleValueChange(groupId, newValue);
   };
