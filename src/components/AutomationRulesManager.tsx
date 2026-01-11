@@ -232,8 +232,7 @@ export function AutomationRulesManager() {
       }
       setIsDialogOpen(false);
     } catch (error) {
-      console.error('Error saving rule:', error);
-    }
+}
   };
 
   const handleDelete = async (id: string) => {
