@@ -137,7 +137,7 @@ return null;
 
   const sendData = useCallback((data: string | ArrayBuffer) => {
     if (dataChannel?.readyState === 'open') {
-      dataChannel.send(data as any);
+      dataChannel.send(typeof data === 'string' ? data : JSON.stringify(data));
     }
   }, [dataChannel]);
 
