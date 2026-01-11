@@ -6,6 +6,8 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { cn } from '@/utils/cn';
 import { Pipette, Copy, Check } from 'lucide-react';
+import type { EyeDropper } from '@/types/eye-dropper';
+
 
 export interface ColorPickerAdvancedProps {
   value?: string;
@@ -132,8 +134,7 @@ export const ColorPickerAdvanced: React.FC<ColorPickerAdvancedProps> = ({
   const handleEyeDropper = useCallback(async () => {
     if ('EyeDropper' in window) {
       try {
-        // @ts-ignore
-        const eyeDropper = new window.EyeDropper();
+        const eyeDropper = new (window as { EyeDropper: typeof EyeDropper }).EyeDropper();
         const result = await eyeDropper.open();
         onChange?.(result.sRGBHex);
       } catch (e) {
