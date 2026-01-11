@@ -39,6 +39,7 @@ export function useBlacklistAlerts({
 
   // Load persons and cameras cache
   useEffect(() => {
+    try {
     const loadCache = async () => {
       // Load blacklisted persons
       const { data: persons } = await supabase
@@ -184,6 +185,7 @@ Confiança: ${(confidence * 100).toFixed(0)}%`,
 
   // Subscribe to realtime recognition logs
   useEffect(() => {
+    try {
     if (!enabled) return;
 
     // rm
