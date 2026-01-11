@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { captureException } from '@/lib/errorTracking';
+import { safeExecute } from '@/lib/safeExecute';
 
 interface ErrorBoundaryState {
   error: Error | null;
