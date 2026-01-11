@@ -156,7 +156,7 @@ export function SwipeableCard({
   const rightOpacity = useTransform(x, [0, 50, 100], [0, 0.5, 1]);
   const scale = useTransform(x, [-100, 0, 100], [0.95, 1, 0.95]);
 
-  const handleDragEnd = (_: any, info: PanInfo) => {
+  const handleDragEnd = (_: unknown, info: PanInfo) => {
     setIsDragging(false);
     if (info.offset.x < -100 && onSwipeLeft) {
       onSwipeLeft();
@@ -237,7 +237,7 @@ export function Carousel({
     goTo((currentIndex - 1 + items.length) % items.length);
   }, [currentIndex, items.length, goTo]);
 
-  const handleDragEnd = (_: any, info: PanInfo) => {
+  const handleDragEnd = (_: unknown, info: PanInfo) => {
     if (info.offset.x < -50) goNext();
     else if (info.offset.x > 50) goPrev();
   };
@@ -326,7 +326,7 @@ export function BottomSheet({
   const [snapIndex, setSnapIndex] = useState(0);
   const y = useMotionValue(0);
 
-  const handleDragEnd = (_: any, info: PanInfo) => {
+  const handleDragEnd = (_: unknown, info: PanInfo) => {
     if (info.velocity.y > 500 || info.offset.y > 100) {
       onClose();
     } else if (info.offset.y < -50 && snapIndex < snapPoints.length - 1) {
