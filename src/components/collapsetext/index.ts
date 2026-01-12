@@ -1,0 +1,1 @@
+export { CollapseText } from './CollapseText';
