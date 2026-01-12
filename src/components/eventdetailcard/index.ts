@@ -1,0 +1,1 @@
+export { EventDetailCard } from './EventDetailCard';
