@@ -1,212 +1,181 @@
-/**
- * VISÃO - Sistema de Vigilância Inteligente
- * Components barrel export - Exportação centralizada de todos os componentes
- * 
- * @module components
- */
+// Auto-generated component index
+// VIS-O Component Library
 
-// Re-export UI components
-export * from './ui';
+// Cards
+export * from './cards';
 
-// Re-export admin components
-export * from './admin';
+// Typography
+export * from './typography';
 
-// Main components
-export * from "./A11yAnnouncer";
-export * from "./AIAnalysisPanel";
-export * from "./AutomationRulesManager";
-export * from "./ALPRDashboard";
-export * from "./AccessDenied";
-export * from "./AddressAutocomplete";
-export * from "./AlertCard";
-export * from "./AlertDetail";
-export * from "./AlertFilters";
-export * from "./AlertHistory";
-export * from "./AlertList";
-export * from "./AlertNotification";
-export * from "./AlertStats";
-export * from "./AlertTrendsChart";
-export * from "./AlertsByCameraChart";
-export * from "./AnalysisHistoryTable";
-export * from "./AnalyticsDashboard";
-export * from "./AriaLive";
-export * from "./AudioPlayer";
-export * from "./AuthCallback";
-export * from "./BottomNavigation";
-export * from "./BlacklistAlertBanner";
-export * from "./Breadcrumbs";
-export * from "./CameraCard";
-export * from "./CameraForm";
-export * from "./CameraGrid";
-export * from "./CameraLayoutControls";
-export * from "./CameraMap";
-export * from "./CameraModal";
-export * from "./CameraWithContinuousAnalysis";
-export * from "./Changelog";
-export * from "./ClipGallery";
-export * from "./ClipRecorderControls";
-export * from "./CodeEditor";
-export * from "./CodeSplitBoundary";
-export * from "./ColorPickerAdvanced";
-export * from "./CommandPalette";
-export * from "./Confetti";
-export * from "./ConfirmDialog";
-export * from "./ContextualHelp";
-export * from "./ContinuousAnalysisPanel";
-export * from "./CopyButton";
-export * from "./CountUp";
-export * from "./CustomizableDashboard";
-export * from "./Dashboard";
-export * from "./DataTable";
-export * from "./DateRangePicker";
-export * from "./DetectionOverlay";
-export * from "./DevTools";
-export * from "./Divider";
-export * from "./Dock";
-export * from "./EmptyState";
-export * from "./ErrorBoundary";
-export * from "./ErrorFallback";
-export * from "./ErrorState";
-export * from "./EventTimeline";
-export * from "./ExportMenu";
-export * from "./FaceEnrollment";
-export * from "./FaceRecognitionOverlay";
-export * from "./FaceRegistration";
-export * from "./FeedbackWidget";
-export * from "./FileUploadZone";
-export * from "./FilterDropdown";
-export * from "./FloatingAction";
-export * from "./FloorPlanMap";
-export * from "./FocusTrap";
-export * from "./Gantt";
-export * from "./Gauge";
-export * from "./GlobalSearch";
-export * from "./GlobalShortcutsHelp";
-export * from "./GlobalShortcutsProvider";
-export * from "./HLSStreamGrid";
-export * from "./Head";
-export * from "./Header";
-export * from "./HeatmapVisualization";
-export * from "./HighlightText";
-export * from "./Hotkeys";
-export * from "./ImageAnalysis";
-export * from "./ImageCropper";
-export * from "./ImageGallery";
-export * from "./InfiniteScroll";
-export * from "./InfoTooltip";
-export * from "./InstallBanner";
-export * from "./JsonLd";
-export * from "./Kanban";
-export * from "./KeyValue";
-export * from "./KeyboardShortcuts";
-export * from "./KeyboardShortcutsHelp";
-export * from "./LazyComponent";
-export * from "./LazyImage";
-export * from "./LazyLoad";
-export * from "./LicensePlateRecognition";
-export * from "./LiveFaceRecognition";
-export * from "./LiveRegion";
-export * from "./LoadingOverlay";
-export * from "./LoadingSpinner";
-export * from "./MainLayout";
-export * from "./MaskedInput";
-export * from "./MediaRecorder";
-export * from "./Meta";
-export * from "./MetricCard";
-export * from "./MobileBottomNav";
-export * from "./MultiCameraRecognition";
-export * from "./MultiCameraView";
-export * from "./NavLink";
-export * from "./NetworkGraph";
-export * from "./NotificationBell";
-export * from "./NotificationConfig";
-export * from "./NotificationSecretsConfig";
-export * from "./NotificationSettings";
-export * from "./NotificationsPanel";
-export * from "./ObjectDetectionConfig";
-export * from "./OfflineIndicator";
-export * from "./OnboardingTour";
-export * from "./OpenGraph";
-export * from "./PPEDetectionPanel";
-export * from "./PageHeader";
-export * from "./PageSkeletons";
-export * from "./PageWrapper";
-export * from "./Pagination";
-export * from "./PaginationControls";
-export * from "./PasswordInput";
-export * from "./PerformancePanel";
-export * from "./PersonCard";
-export * from "./PersonForm";
-export * from "./PhoneInput";
-export * from "./PlateBlacklistManager";
-export * from "./PreferencesPanel";
-export * from "./ProgressRing";
-export * from "./ProtectedRoute";
-export * from "./RecognitionAnalytics";
-export * from "./RecognitionDashboard";
-export * from "./RecognitionLogs";
-export * from "./RecordingPlayer";
-export * from "./ReportsPanel";
-export * from "./ResponsiveDialog";
-export * from "./ResponsiveLayout";
-export * from "./RichTextEditor";
-export * from "./RuleBuilder";
-export * from "./RuleCard";
-export * from "./RuleEditor";
-export * from "./RuleEngine";
-export * from "./RuleExecutionHistory";
-export * from "./RuleTemplateSelector";
-export * from "./RulesPanel";
-export * from "./SEO";
-export * from "./Sankey";
-export * from "./ScheduleEditor";
-export * from "./ScreenCapture";
-export * from "./ScreenReaderOnly";
-export * from "./SearchBar";
-export * from "./SearchDropdown";
-export * from "./SearchInput";
-export * from "./SecuritySettings";
-export * from "./SeverityBadge";
-export * from "./Sidebar";
-export * from "./SignaturePad";
-export * from "./SkipLink";
-export * from "./SoundSettingsPanel";
-export * from "./Spotlight";
-export * from "./StatCard";
-export * from "./StatsCard";
-export * from "./StatusBadge";
-export * from "./StatusIndicator";
-export * from "./StreamConfigPanel";
-export * from "./StreamControls";
-export * from "./StreamPlayer";
-export * from "./StreamingCameraGrid";
-export * from "./StructuredData";
-export * from "./Sunburst";
-export * from "./SwipeableView";
-export * from "./TableSkeleton";
-export * from "./TagsInput";
-export * from "./TelegramConfig";
-export * from "./TelegramConfigPanel";
-export * from "./TelegramSettings";
-export * from "./ThemeSelector";
-export * from "./ThemeToggle";
-export * from "./TimeAgo";
-export * from "./Timeline";
-export * from "./Tooltip";
-export * from "./Tour";
-export * from "./TourHighlight";
-export * from "./TreeView";
-export * from "./Treemap";
-export * from "./TwitterCard";
-export * from "./UpdateBanner";
-export * from "./UserAvatar";
-export * from "./VehicleForm";
-export * from "./VideoControls";
-export * from "./VideoPlayer";
-export * from "./VideoStreamPlayer";
-export * from "./VirtualList";
-export * from "./VisuallyHidden";
-export * from "./WebcamCapture";
-export * from "./WordCloud";
-export * from "./ZoneEditor";
-export * from "./ZoneOverlay";
+// Alerts
+export * from './alerts';
+
+// Tabs
+export * from './tabs';
+
+// Accordion
+export * from './accordion';
+
+// Tooltip
+export * from './tooltip';
+
+// Dropdown
+export * from './dropdown';
+
+// Switch
+export * from './switch';
+
+// Radio
+export * from './radio';
+
+// Checkbox
+export * from './checkbox';
+
+// Select
+export * from './select';
+
+// Charts
+export * from './charts';
+
+// Inputs
+export * from './inputs';
+
+// HOCs
+export * from './hoc';
+
+// Overlays
+export * from './overlays';
+
+// Media
+export * from './media';
+
+// Progress
+export * from './progress';
+
+// Timeline
+export * from './timeline';
+
+// Stepper
+export * from './stepper';
+
+// Divider
+export * from './divider';
+
+// Rating
+export * from './rating';
+
+// Slider
+export * from './slider';
+
+// Copy
+export * from './copy';
+
+// Chip
+export * from './chip';
+
+// Search
+export * from './searchbar';
+
+// Empty States
+export * from './empty';
+export * from './errorstate';
+export * from './emptylist';
+
+// Loading
+export * from './loadingoverlay';
+
+// Truncate
+export * from './truncate';
+
+// Highlight
+export * from './highlight';
+
+// Countdown
+export * from './countdown';
+
+// Confirm Dialog
+export * from './confirmdialog';
+
+// Scroll
+export * from './scrolltotop';
+
+// Info
+export * from './infotip';
+
+// Masked Input
+export * from './maskedinput';
+
+// Keyboard
+export * from './keyboardshortcut';
+
+// Status
+export * from './statusdot';
+
+// Color
+export * from './colorindicator';
+
+// Counter
+export * from './counter';
+
+// Diff
+export * from './textdiff';
+
+// Password
+export * from './passwordstrength';
+export * from './passwordinput';
+
+// File
+export * from './filesize';
+
+// Time
+export * from './relativetime';
+
+// Avatar
+export * from './avatargroup';
+
+// Link
+export * from './linkpreview';
+
+// Currency
+export * from './currencyinput';
+
+// Notification
+export * from './notification';
+
+// Command
+export * from './commandmenu';
+
+// Progress Steps
+export * from './progresssteps';
+
+// Collapse
+export * from './collapsetext';
+export * from './collapsible';
+
+// Price
+export * from './pricetag';
+
+// Gallery
+export * from './imagegallery';
+
+// Sort
+export * from './sortableheader';
+
+// Filter
+export * from './filterchips';
+
+// Label
+export * from './labelvalue';
+
+// Dot
+export * from './dotindicator';
+
+// Form
+export * from './formfield';
+export * from './textinput';
+export * from './textarea';
+export * from './tagsinput';
+export * from './autocomplete';
+export * from './dateinput';
+export * from './phoneinput';
+export * from './cpfinput';
