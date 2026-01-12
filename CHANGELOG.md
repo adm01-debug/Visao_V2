@@ -1,5 +1,28 @@
 # Changelog
 
+## [2.3.0] - 2026-01-12
+
+### 🚀 V19 - Melhorias Completas de Infraestrutura
+
+#### Arquivos Criados (100+)
+- 15+ utilitários em src/lib/
+- 10+ hooks em src/hooks/
+- 25+ componentes
+- 35+ testes
+- 8 scripts de deploy
+- 7 configurações k8s
+- 15+ documentações
+
+#### Destaques
+- Sistema de toast notifications
+- Componentes de navegação (Breadcrumb, Pagination)
+- Componentes de dados (Table, List)
+- Sistema de formulários (useForm)
+- Utilitários de validação, cache, sanitização
+- Configuração completa Kubernetes
+- Scripts de deploy automatizado
+- Documentação técnica completa
+
 ## [2.3.0] - 2026-01-11
 
 ### 🚀 V19 - Melhorias de Infraestrutura e Qualidade
