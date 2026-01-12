@@ -1,0 +1,1 @@
+export { MotionHistogram } from './MotionHistogram';
