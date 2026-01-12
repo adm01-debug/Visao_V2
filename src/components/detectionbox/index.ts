@@ -1,0 +1,1 @@
+export { DetectionBox } from './DetectionBox';
