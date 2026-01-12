@@ -1,44 +1,56 @@
-/**
- * VIS-O Library Utilities
- * Central export point for all lib utilities
- */
+// Auto-generated lib/utils index
+// VIS-O Utilities Library
 
-// Core utilities
-export * from './logger';
-export * from './api';
-export * from './supabase';
+// Core
+export * from './utils';
 
-// Security
-export * from './security';
-export * from './auth';
-export * from './encryption';
-export * from './csrf';
-export * from './xss';
-export * from './sanitization';
+// Feature flags
+export * from './featureFlags';
 
 // Performance
-export * from './lazyLoad';
-export * from './performanceUtils';
-export * from './imageOptimizer';
-export * from './renderOptimizer';
-export * from './bundleOptimizer';
-export * from './memoization';
-export * from './cacheUtils';
+export * from './performanceMonitor';
 
-// Error handling
-export * from './errorHandler';
-export * from './sentry';
-export * from './errorReporting';
-export * from './crashReporting';
+// A/B Testing
+export * from './abTesting';
 
-// Accessibility
-export * from './accessibility';
+// Security
+export * from './securityUtils';
 
-// Offline
-export * from './offline';
+// URL
+export * from './urlUtils';
 
-// Internationalization
-export { default as i18n } from '../i18n';
+// Date
+export * from './dateHelpers';
 
-// Utils
-export * from './intrusionDetection';
+// Storage
+export * from './localStorageUtils';
+export * from './sessionStorageUtils';
+
+// Format
+export * from './formatCurrency';
+export * from './formatPhone';
+export * from './formatDocument';
+
+// Mask
+export * from './mask';
+
+// Text
+export * from './capitalize';
+export * from './truncate';
+export * from './slugify';
+export * from './pluralize';
+
+// Numbers
+export * from './clamp';
+
+// Sleep
+export * from './sleep';
+
+// Retry
+export * from './retry';
+
+// File
+export * from './fileUtils';
+
+// Random
+export * from './randomUtils';
