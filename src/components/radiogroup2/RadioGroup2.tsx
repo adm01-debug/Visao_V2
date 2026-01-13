@@ -1,0 +1,4 @@
+import React from 'react';import { cn } from '@/lib/utils';
+interface Props { options: { value: string; label: string }[]; selected: string; onChange: (v: string) => void; className?: string; }
+export function RadioGroup2({ options, selected, onChange, className }: Props) { return (<div className={cn('space-y-2', className)}>{options.map(o => (<label key={o.value} className="flex items-center gap-2 cursor-pointer" onClick={() => onChange(o.value)}><div className={cn('w-5 h-5 rounded-full border-2 flex items-center justify-center', selected === o.value ? 'border-primary' : 'border-muted-foreground')}>{selected === o.value && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}</div><span className="text-sm">{o.label}</span></label>))}</div>); }
+export default RadioGroup2;
