@@ -1,38 +1,51 @@
 /**
- * DOM utilities
+ * DOM utilities - Re-exports from @/utils/dom
  */
 
-export function $(selector: string): Element | null {
-  return document.querySelector(selector);
-}
+export {
+  $,
+  $$,
+  addClass,
+  removeClass,
+  toggleClass,
+  hasClass,
+  getOffset,
+  isVisible,
+  scrollTo,
+  copyToClipboard,
+} from '@/utils/dom';
 
-export function $$(selector: string): NodeListOf<Element> {
-  return document.querySelectorAll(selector);
-}
+// Legacy API compatibility
+import {
+  $ as _$,
+  $$ as _$$,
+  addClass as _addClass,
+  removeClass as _removeClass,
+  toggleClass as _toggleClass,
+  hasClass as _hasClass,
+} from '@/utils/dom';
 
-export function addClass(element: Element, className: string): void {
-  element.classList.add(className);
-}
-
-export function removeClass(element: Element, className: string): void {
-  element.classList.remove(className);
-}
-
-export function toggleClass(element: Element, className: string): void {
-  element.classList.toggle(className);
-}
-
-export function hasClass(element: Element, className: string): boolean {
-  return element.classList.contains(className);
-}
-
+/**
+ * @deprecated Use element.style.display = '' instead
+ */
 export function show(element: HTMLElement): void {
   element.style.display = "";
 }
 
+/**
+ * @deprecated Use element.style.display = 'none' instead
+ */
 export function hide(element: HTMLElement): void {
   element.style.display = "none";
 }
 
-export default { $, $$, addClass, removeClass, toggleClass, hasClass, show, hide };
-
+export default {
+  $: _$,
+  $$: _$$,
+  addClass: _addClass,
+  removeClass: _removeClass,
+  toggleClass: _toggleClass,
+  hasClass: _hasClass,
+  show,
+  hide,
+};
