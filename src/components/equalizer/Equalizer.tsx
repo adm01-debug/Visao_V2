@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface EqualizerProps { bands: number[]; onChange?: (bands: number[]) => void; className?: string; }
+export function Equalizer({ bands, onChange, className }: EqualizerProps) { return (<div className={cn('flex items-end gap-4 p-4 bg-card rounded-lg', className)}>{bands.map((v, i) => (<div key={i} className="flex flex-col items-center gap-2"><input type="range" min={0} max={100} value={v} onChange={e => { const newBands = [...bands]; newBands[i] = Number(e.target.value); onChange?.(newBands); }} className="h-24 -rotate-90 origin-center" /><span className="text-xs text-muted-foreground">{['32', '64', '125', '250', '500', '1K', '2K', '4K', '8K', '16K'][i] || i}</span></div>))}</div>); }
+export default Equalizer;
