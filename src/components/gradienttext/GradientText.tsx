@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface GradientTextProps { children: React.ReactNode; from?: string; to?: string; direction?: string; className?: string; }
+export function GradientText({ children, from = '#3b82f6', to = '#8b5cf6', direction = 'to right', className }: GradientTextProps) { return <span className={cn('bg-clip-text text-transparent', className)} style={{ backgroundImage: `linear-gradient(${direction}, ${from}, ${to})` }}>{children}</span>; }
+export default GradientText;
