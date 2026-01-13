@@ -1,0 +1,4 @@
+import React from 'react';import { cn } from '@/lib/utils';import { Sun, Moon, Monitor } from 'lucide-react';interface ThemeSwitchProps { value: 'light' | 'dark' | 'system'; onChange: (theme: 'light' | 'dark' | 'system') => void; className?: string; }
+const themes = [{ id: 'light', icon: Sun, label: 'Claro' }, { id: 'dark', icon: Moon, label: 'Escuro' }, { id: 'system', icon: Monitor, label: 'Sistema' }];
+export function ThemeSwitch({ value, onChange, className }: ThemeSwitchProps) { return (<div className={cn('flex gap-1 p-1 bg-muted rounded-lg', className)}>{themes.map(t => <button key={t.id} onClick={() => onChange(t.id as 'light' | 'dark' | 'system')} className={cn('flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors', value === t.id ? 'bg-background shadow' : 'hover:bg-background/50')}><t.icon className="h-4 w-4" />{t.label}</button>)}</div>); }
+export default ThemeSwitch;
