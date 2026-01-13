@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface ReactionBarProps { reactions: { emoji: string; count: number; active?: boolean }[]; onReact?: (emoji: string) => void; className?: string; }
+export function ReactionBar({ reactions, onReact, className }: ReactionBarProps) { return (<div className={cn('flex flex-wrap gap-1', className)}>{reactions.map(r => (<button key={r.emoji} onClick={() => onReact?.(r.emoji)} className={cn('flex items-center gap-1 px-2 py-1 rounded-full border text-sm', r.active ? 'bg-primary/10 border-primary' : 'hover:bg-accent')}>{r.emoji}<span>{r.count}</span></button>))}</div>); }
+export default ReactionBar;
