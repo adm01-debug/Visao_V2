@@ -1,0 +1,1 @@
+export { MentionsInput } from './MentionsInput';
