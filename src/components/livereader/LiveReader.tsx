@@ -1,0 +1,3 @@
+import React, { useEffect, useState } from 'react';import { cn } from '@/lib/utils';interface LiveReaderProps { message: string; politeness?: 'polite' | 'assertive'; clearAfter?: number; className?: string; }
+export function LiveReader({ message, politeness = 'polite', clearAfter = 1000, className }: LiveReaderProps) { const [current, setCurrent] = useState(''); useEffect(() => { setCurrent(message); if (clearAfter > 0) { const timer = setTimeout(() => setCurrent(''), clearAfter); return () => clearTimeout(timer); } }, [message, clearAfter]); return (<div aria-live={politeness} aria-atomic="true" className={cn('sr-only', className)}>{current}</div>); }
+export default LiveReader;
