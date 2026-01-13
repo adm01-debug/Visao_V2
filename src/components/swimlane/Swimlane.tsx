@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface SwimLane { id: string; title: string; items: { id: string; content: React.ReactNode }[]; }interface SwimlaneProps { lanes: SwimLane[]; className?: string; }
+export function Swimlane({ lanes, className }: SwimlaneProps) { return (<div className={cn('space-y-4', className)}>{lanes.map(lane => (<div key={lane.id} className="border rounded-lg"><div className="bg-muted/50 px-4 py-3 font-semibold border-b">{lane.title}</div><div className="p-4 flex gap-4 overflow-x-auto">{lane.items.map(item => <div key={item.id} className="flex-shrink-0 bg-card p-4 rounded-lg border min-w-[200px]">{item.content}</div>)}</div></div>))}</div>); }
+export default Swimlane;
