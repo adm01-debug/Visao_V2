@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface FixedHeaderProps { children: React.ReactNode; className?: string; }
+export function FixedHeader({ children, className }: FixedHeaderProps) { return (<header className={cn('fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60', className)}>{children}</header>); }
+export default FixedHeader;
