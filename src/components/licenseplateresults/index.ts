@@ -1,0 +1,1 @@
+export { LicensePlateResults } from './LicensePlateResults';
