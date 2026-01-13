@@ -1,0 +1,1 @@
+export { NutritionLabel } from './NutritionLabel';
