@@ -1,0 +1,1 @@
+export { CNPJFormat } from './CNPJFormat';
