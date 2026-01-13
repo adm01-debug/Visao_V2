@@ -1,0 +1,1 @@
+export { FaceRecognitionPanel } from './FaceRecognitionPanel';
