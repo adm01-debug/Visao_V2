@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface PhoneFormatProps { value: string; country?: string; className?: string; }
+export function PhoneFormat({ value, country = 'BR', className }: PhoneFormatProps) { const clean = value.replace(/\D/g, ''); const formatted = country === 'BR' ? clean.length === 11 ? clean.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3') : clean.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3') : clean; return <span className={cn('font-mono', className)}>{formatted}</span>; }
+export default PhoneFormat;
