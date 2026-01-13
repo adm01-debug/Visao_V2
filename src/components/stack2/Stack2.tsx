@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface Stack2Props { children: React.ReactNode; spacing?: number; direction?: 'vertical' | 'horizontal'; className?: string; }
+export function Stack2({ children, spacing = 4, direction = 'vertical', className }: Stack2Props) { return <div className={cn('flex', direction === 'vertical' ? 'flex-col' : 'flex-row', `gap-${spacing}`, className)}>{children}</div>; }
+export default Stack2;
