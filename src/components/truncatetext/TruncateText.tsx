@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface TruncateTextProps { text: string; maxLength?: number; showTooltip?: boolean; className?: string; }
+export function TruncateText({ text, maxLength = 100, showTooltip = true, className }: TruncateTextProps) { const truncated = text.length > maxLength ? text.slice(0, maxLength) + '...' : text; return <span className={cn(className)} title={showTooltip && text.length > maxLength ? text : undefined}>{truncated}</span>; }
+export default TruncateText;
