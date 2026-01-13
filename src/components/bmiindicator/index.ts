@@ -1,0 +1,1 @@
+export { BMIIndicator } from './BMIIndicator';
