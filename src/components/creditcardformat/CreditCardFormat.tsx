@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface CreditCardFormatProps { value: string; masked?: boolean; className?: string; }
+export function CreditCardFormat({ value, masked = true, className }: CreditCardFormatProps) { const clean = value.replace(/\D/g, '').slice(0, 16); const groups = clean.match(/.{1,4}/g) || []; const display = masked ? groups.map((g, i) => i < groups.length - 1 ? '****' : g).join(' ') : groups.join(' '); return <span className={cn('font-mono tracking-wider', className)}>{display}</span>; }
+export default CreditCardFormat;
