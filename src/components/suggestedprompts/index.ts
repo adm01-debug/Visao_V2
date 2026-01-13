@@ -1,0 +1,1 @@
+export { SuggestedPrompts } from './SuggestedPrompts';
