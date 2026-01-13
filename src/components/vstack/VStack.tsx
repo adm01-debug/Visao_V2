@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface VStackProps { children: React.ReactNode; spacing?: number; align?: 'start' | 'center' | 'end' | 'stretch'; className?: string; }
+export function VStack({ children, spacing = 4, align, className }: VStackProps) { return <div className={cn('flex flex-col', `gap-${spacing}`, align && `items-${align}`, className)}>{children}</div>; }
+export default VStack;
