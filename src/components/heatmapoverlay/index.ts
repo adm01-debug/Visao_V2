@@ -1,0 +1,1 @@
+export { HeatmapOverlay } from './HeatmapOverlay';
