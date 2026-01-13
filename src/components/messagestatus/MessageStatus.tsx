@@ -1,0 +1,4 @@
+import React from 'react';import { cn } from '@/lib/utils';import { Clock, Check, CheckCheck } from 'lucide-react';interface MessageStatusProps { status: 'sending' | 'sent' | 'delivered' | 'read' | 'failed'; className?: string; }
+const icons = { sending: Clock, sent: Check, delivered: CheckCheck, read: CheckCheck, failed: Clock };
+export function MessageStatus({ status, className }: MessageStatusProps) { const Icon = icons[status]; return <Icon className={cn('h-4 w-4', status === 'read' ? 'text-blue-500' : status === 'failed' ? 'text-red-500' : 'text-muted-foreground', className)} />; }
+export default MessageStatus;
