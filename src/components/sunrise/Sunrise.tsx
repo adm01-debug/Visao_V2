@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';import { Sunrise as SunriseIcon, Sunset } from 'lucide-react';interface SunriseProps { sunrise: string; sunset: string; className?: string; }
+export function Sunrise({ sunrise, sunset, className }: SunriseProps) { return (<div className={cn('flex justify-between', className)}><div className="flex items-center gap-2"><SunriseIcon className="h-5 w-5 text-yellow-500" /><div><p className="text-xs text-muted-foreground">Nascer</p><p className="font-medium">{sunrise}</p></div></div><div className="flex items-center gap-2"><Sunset className="h-5 w-5 text-orange-500" /><div><p className="text-xs text-muted-foreground">Pôr</p><p className="font-medium">{sunset}</p></div></div></div>); }
+export default Sunrise;
