@@ -1,0 +1,4 @@
+import React from 'react';import { cn } from '@/lib/utils';interface EmojiRatingProps { value?: string; onChange?: (value: string) => void; options?: { emoji: string; label: string }[]; className?: string; }
+const defaults = [{ emoji: '😠', label: 'Péssimo' }, { emoji: '😟', label: 'Ruim' }, { emoji: '😐', label: 'Ok' }, { emoji: '😊', label: 'Bom' }, { emoji: '😍', label: 'Ótimo' }];
+export function EmojiRating({ value, onChange, options = defaults, className }: EmojiRatingProps) { return (<div className={cn('flex gap-2', className)}>{options.map(o => (<button key={o.emoji} onClick={() => onChange?.(o.emoji)} className={cn('p-2 text-2xl rounded-lg transition-all', value === o.emoji ? 'bg-primary/20 scale-125' : 'hover:bg-accent')} title={o.label}>{o.emoji}</button>))}</div>); }
+export default EmojiRating;
