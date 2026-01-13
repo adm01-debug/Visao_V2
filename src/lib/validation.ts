@@ -1,8 +1,22 @@
 /**
- * Validation Utilities
- * Input validation and schema checking
- * @module lib/validation
+ * Validation Utilities - Re-exports from @/utils/validation
+ * src/utils/validation is the source of truth
  */
+
+export {
+  isValidEmail,
+  isValidPassword,
+  isValidUrl,
+  isValidPhone,
+  sanitizeInput,
+} from '@/utils/validation';
+
+import {
+  isValidEmail as _isValidEmail,
+  isValidPassword,
+  isValidUrl as _isValidUrl,
+  isValidPhone as _isValidPhone,
+} from '@/utils/validation';
 
 /**
  * Validation result
@@ -13,35 +27,7 @@ interface ValidationResult {
 }
 
 /**
- * Validate email format
- */
-export function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email.trim());
-}
-
-/**
- * Validate phone number
- */
-export function isValidPhone(phone: string): boolean {
-  const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-  return phoneRegex.test(phone.replace(/[\s-()]/g, ''));
-}
-
-/**
- * Validate URL
- */
-export function isValidUrl(url: string): boolean {
-  try {
-    const parsed = new URL(url);
-    return ['http:', 'https:'].includes(parsed.protocol);
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Validate password strength
+ * Validate password strength with detailed errors
  */
 export function validatePassword(password: string): ValidationResult {
   const errors: string[] = [];
@@ -179,9 +165,9 @@ export function isValidCNPJ(cnpj: string): boolean {
 }
 
 export default {
-  isValidEmail,
-  isValidPhone,
-  isValidUrl,
+  isValidEmail: _isValidEmail,
+  isValidPhone: _isValidPhone,
+  isValidUrl: _isValidUrl,
   validatePassword,
   validateRequired,
   validateLength,
