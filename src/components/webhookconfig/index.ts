@@ -1,0 +1,1 @@
+export { WebhookConfig } from './WebhookConfig';
