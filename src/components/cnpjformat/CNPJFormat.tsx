@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface CNPJFormatProps { value: string; masked?: boolean; className?: string; }
+export function CNPJFormat({ value, masked, className }: CNPJFormatProps) { const clean = value.replace(/\D/g, '').slice(0, 14); const formatted = clean.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5'); const display = masked ? formatted.replace(/\d(?=\d{2})/g, '*') : formatted; return <span className={cn('font-mono', className)}>{display}</span>; }
+export default CNPJFormat;
