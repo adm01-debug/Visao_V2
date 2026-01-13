@@ -1,0 +1,1 @@
+export { MusicPlayerMini } from './MusicPlayerMini';
