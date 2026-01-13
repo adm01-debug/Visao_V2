@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';import { Menu, Search, Bell, User } from 'lucide-react';interface AppBarProps { title?: string; leftAction?: React.ReactNode; rightActions?: React.ReactNode[]; onMenuClick?: () => void; className?: string; }
+export function AppBar({ title, leftAction, rightActions, onMenuClick, className }: AppBarProps) { return (<header className={cn('sticky top-0 z-40 h-14 bg-card border-b flex items-center px-4 gap-4', className)}>{leftAction || <button onClick={onMenuClick} className="p-2 hover:bg-accent rounded-lg"><Menu className="h-5 w-5" /></button>}<h1 className="flex-1 font-semibold truncate">{title}</h1><div className="flex items-center gap-2">{rightActions}</div></header>); }
+export default AppBar;
