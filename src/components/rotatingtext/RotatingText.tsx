@@ -1,0 +1,3 @@
+import React, { useState, useEffect } from 'react';import { cn } from '@/lib/utils';interface RotatingTextProps { words: string[]; interval?: number; className?: string; }
+export function RotatingText({ words, interval = 2000, className }: RotatingTextProps) { const [index, setIndex] = useState(0); useEffect(() => { const timer = setInterval(() => setIndex(i => (i + 1) % words.length), interval); return () => clearInterval(timer); }, [words.length, interval]); return <span className={cn('inline-block transition-all animate-in fade-in', className)} key={index}>{words[index]}</span>; }
+export default RotatingText;
