@@ -1,0 +1,1 @@
+export { EmergencyButton } from './EmergencyButton';
