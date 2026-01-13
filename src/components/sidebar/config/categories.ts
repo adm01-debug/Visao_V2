@@ -1,5 +1,6 @@
 /**
- * Sidebar Configuration - Navegação e categorias
+ * VISÃO - Sistema de Vigilância Inteligente
+ * Sidebar Categories Configuration with Dynamic Status
  */
 
 import {
@@ -21,7 +22,7 @@ import {
   MessageSquare,
   Activity,
 } from "lucide-react";
-import type { NavCategory } from "./types";
+import type { NavCategory, CategoryStatus } from "../types";
 import type { SidebarStatus } from "@/hooks/useSidebarStatus";
 
 export const createSidebarCategories = (status: SidebarStatus): NavCategory[] => [
@@ -134,7 +135,7 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
       { id: "telegram", label: "Telegram", icon: MessageSquare, path: "/telegram-settings" },
     ],
     getStatus: () => ({
-      type: "success",
+      type: "success" as const,
       label: "OK",
     }),
   },
