@@ -1,0 +1,1 @@
+export { BadgePrinter } from './BadgePrinter';
