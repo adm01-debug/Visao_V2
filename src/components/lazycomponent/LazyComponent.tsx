@@ -1,0 +1,3 @@
+import React, { Suspense } from 'react';import { Loader2 } from 'lucide-react';interface LazyComponentProps { children: React.ReactNode; fallback?: React.ReactNode; }
+export function LazyComponent({ children, fallback }: LazyComponentProps) { return (<Suspense fallback={fallback || <div className="flex items-center justify-center p-4"><Loader2 className="h-6 w-6 animate-spin" /></div>}>{children}</Suspense>); }
+export default LazyComponent;
