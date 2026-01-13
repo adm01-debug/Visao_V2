@@ -1,0 +1,3 @@
+import React, { useState } from 'react';import { cn } from '@/lib/utils';interface BlurImageProps { src: string; alt?: string; blurDataUrl?: string; className?: string; }
+export function BlurImage({ src, alt, blurDataUrl, className }: BlurImageProps) { const [loaded, setLoaded] = useState(false); return (<div className={cn('relative overflow-hidden', className)}>{blurDataUrl && !loaded && <img src={blurDataUrl} alt="" className="absolute inset-0 w-full h-full object-cover blur-sm scale-110" />}<img src={src} alt={alt || ''} onLoad={() => setLoaded(true)} className={cn('w-full h-full object-cover transition-opacity duration-300', loaded ? 'opacity-100' : 'opacity-0')} /></div>); }
+export default BlurImage;
