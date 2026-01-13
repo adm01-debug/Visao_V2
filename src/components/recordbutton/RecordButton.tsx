@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';import { Mic, Square } from 'lucide-react';interface RecordButtonProps { recording?: boolean; onStart?: () => void; onStop?: () => void; className?: string; }
+export function RecordButton({ recording, onStart, onStop, className }: RecordButtonProps) { return (<button onClick={recording ? onStop : onStart} className={cn('relative p-4 rounded-full transition-all', recording ? 'bg-red-500 text-white animate-pulse' : 'bg-muted hover:bg-accent', className)}>{recording ? <Square className="h-6 w-6" /> : <Mic className="h-6 w-6" />}{recording && <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping" />}</button>); }
+export default RecordButton;
