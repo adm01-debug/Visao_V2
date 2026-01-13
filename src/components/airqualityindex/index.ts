@@ -1,0 +1,1 @@
+export { AirQualityIndex } from './AirQualityIndex';
