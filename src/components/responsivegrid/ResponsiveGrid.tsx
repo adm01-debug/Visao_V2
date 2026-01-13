@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface ResponsiveGridProps { children: React.ReactNode; cols?: { sm?: number; md?: number; lg?: number; xl?: number }; gap?: number; className?: string; }
+export function ResponsiveGrid({ children, cols = { sm: 1, md: 2, lg: 3, xl: 4 }, gap = 4, className }: ResponsiveGridProps) { return <div className={cn('grid', `gap-${gap}`, cols.sm && `grid-cols-${cols.sm}`, cols.md && `md:grid-cols-${cols.md}`, cols.lg && `lg:grid-cols-${cols.lg}`, cols.xl && `xl:grid-cols-${cols.xl}`, className)}>{children}</div>; }
+export default ResponsiveGrid;
