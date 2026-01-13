@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface PressableCardProps { children: React.ReactNode; onPress?: () => void; disabled?: boolean; className?: string; }
+export function PressableCard({ children, onPress, disabled, className }: PressableCardProps) { return <button onClick={onPress} disabled={disabled} className={cn('bg-card rounded-xl border p-4 text-left w-full transition-all active:scale-[0.98]', disabled && 'opacity-50 cursor-not-allowed', className)}>{children}</button>; }
+export default PressableCard;
