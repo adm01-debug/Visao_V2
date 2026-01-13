@@ -1,0 +1,1 @@
+export { HeatmapCell } from './HeatmapCell';
