@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface JustifiedProps { children: React.ReactNode; rowHeight?: number; className?: string; }
+export function Justified({ children, rowHeight = 200, className }: JustifiedProps) { return <div className={cn('flex flex-wrap gap-2', className)}>{React.Children.map(children, child => <div style={{ height: rowHeight }} className="flex-grow">{child}</div>)}</div>; }
+export default Justified;
