@@ -1,0 +1,1 @@
+export { FilterableTable } from './FilterableTable';
