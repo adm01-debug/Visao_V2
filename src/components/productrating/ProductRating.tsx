@@ -1,0 +1,4 @@
+import React from 'react';import { cn } from '@/lib/utils';import { Star } from 'lucide-react';interface ProductRatingProps { rating: number; reviews?: number; size?: 'sm' | 'md' | 'lg'; className?: string; }
+const sizes = { sm: 'h-3 w-3', md: 'h-4 w-4', lg: 'h-5 w-5' };
+export function ProductRating({ rating, reviews, size = 'md', className }: ProductRatingProps) { return (<div className={cn('flex items-center gap-1', className)}>{[1, 2, 3, 4, 5].map(i => <Star key={i} className={cn(sizes[size], i <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300')} />)}<span className="ml-1 text-sm font-medium">{rating.toFixed(1)}</span>{reviews !== undefined && <span className="text-sm text-muted-foreground">({reviews})</span>}</div>); }
+export default ProductRating;
