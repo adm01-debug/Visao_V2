@@ -1,40 +1,44 @@
 /**
- * Random utilities
- * @module lib/random
+ * Random utilities - Re-exports from @/utils/random
+ * src/utils/random is the source of truth
  */
 
-export function randomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+export {
+  randomInt,
+  randomFloat,
+  randomBoolean,
+  randomItem,
+  randomItems,
+  shuffle,
+  randomString,
+  randomHex,
+  randomAlpha,
+  randomNumeric,
+  randomColor,
+  randomRgb,
+  randomHsl,
+  randomDate,
+  weightedRandom,
+  randomGaussian,
+} from '@/utils/random';
 
-export function randomFloat(min: number, max: number): number {
-  return Math.random() * (max - min) + min;
-}
+import {
+  randomInt as _randomInt,
+  randomFloat as _randomFloat,
+  randomItem as _randomItem,
+  shuffle as _shuffle,
+  randomString as _randomString,
+  randomColor as _randomColor,
+} from '@/utils/random';
 
-export function randomItem<T>(array: T[]): T {
-  return array[Math.floor(Math.random() * array.length)];
-}
+// Legacy alias
+export const randomElement = _randomItem;
 
-export function shuffle<T>(array: T[]): T[] {
-  const result = [...array];
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-  return result;
-}
-
-export function randomString(length: number): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
-}
-
-export function randomColor(): string {
-  return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
-}
-
-export default { randomInt, randomFloat, randomItem, shuffle, randomString, randomColor };
+export default {
+  randomInt: _randomInt,
+  randomFloat: _randomFloat,
+  randomItem: _randomItem,
+  shuffle: _shuffle,
+  randomString: _randomString,
+  randomColor: _randomColor,
+};

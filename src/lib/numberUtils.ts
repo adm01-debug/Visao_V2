@@ -1,48 +1,65 @@
 /**
- * Number Utilities
- * @module lib/numberUtils
+ * Number Utilities - Re-exports from @/utils/number and @/utils/math
+ * src/utils is the source of truth
  */
 
-export function clamp(value: number, min: number, max: number): number {
-  return Math.min(Math.max(value, min), max);
-}
+export {
+  isNumber,
+  isInteger,
+  isPositive,
+  isNegative,
+  isZero,
+  isEven,
+  isOdd,
+  toNumber,
+  parseNumber,
+  formatNumber,
+  formatCompact,
+  formatOrdinal,
+  padZero,
+  randomInt,
+  randomFloat,
+  inRange,
+  toPercentage,
+  fromPercentage,
+  abbreviate,
+} from '@/utils/number';
 
-export function round(value: number, decimals = 2): number {
-  return Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
-}
+export {
+  clamp,
+  round,
+  sum,
+  average,
+  min,
+  max,
+  percentage,
+} from '@/utils/math';
 
-export function percentage(value: number, total: number, decimals = 1): number {
-  if (total === 0) return 0;
-  return round((value / total) * 100, decimals);
-}
+import {
+  clamp as _clamp,
+  round as _round,
+  sum as _sum,
+  average as _average,
+  min as _min,
+  max as _max,
+  percentage as _percentage,
+} from '@/utils/math';
 
-export function average(numbers: number[]): number {
-  if (numbers.length === 0) return 0;
-  return numbers.reduce((a, b) => a + b, 0) / numbers.length;
-}
+import {
+  isEven as _isEven,
+  isOdd as _isOdd,
+  inRange as _inRange,
+} from '@/utils/number';
 
-export function sum(numbers: number[]): number {
-  return numbers.reduce((a, b) => a + b, 0);
-}
-
-export function min(numbers: number[]): number {
-  return Math.min(...numbers);
-}
-
-export function max(numbers: number[]): number {
-  return Math.max(...numbers);
-}
-
-export function isEven(n: number): boolean {
-  return n % 2 === 0;
-}
-
-export function isOdd(n: number): boolean {
-  return n % 2 !== 0;
-}
-
-export function inRange(value: number, min: number, max: number): boolean {
-  return value >= min && value <= max;
-}
-
-export default { clamp, round, percentage, average, sum, min, max, isEven, isOdd, inRange };
+export default {
+  clamp: _clamp,
+  round: _round,
+  percentage: _percentage,
+  average: _average,
+  sum: _sum,
+  min: _min,
+  max: _max,
+  isEven: _isEven,
+  isOdd: _isOdd,
+  inRange: _inRange,
+};

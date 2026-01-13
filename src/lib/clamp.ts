@@ -1,18 +1,18 @@
 /**
- * Clamp utilities
- * @module lib/clamp
+ * Clamp utilities - Re-exports from @/utils/math
+ * src/utils/math is the source of truth for clamp
  */
 
-export function clamp(value: number, min: number, max: number): number {
-  return Math.min(Math.max(value, min), max);
-}
+export { clamp } from '@/utils/math';
+
+import { clamp as _clamp } from '@/utils/math';
 
 export function clampPercentage(value: number): number {
-  return clamp(value, 0, 100);
+  return _clamp(value, 0, 100);
 }
 
 export function clampOpacity(value: number): number {
-  return clamp(value, 0, 1);
+  return _clamp(value, 0, 1);
 }
 
 export function clampArray<T>(arr: T[], maxLength: number): T[] {
@@ -24,4 +24,10 @@ export function clampString(str: string, maxLength: number, suffix = '...'): str
   return str.slice(0, maxLength - suffix.length) + suffix;
 }
 
-export default { clamp, clampPercentage, clampOpacity, clampArray, clampString };
+export default {
+  clamp: _clamp,
+  clampPercentage,
+  clampOpacity,
+  clampArray,
+  clampString,
+};

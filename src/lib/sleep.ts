@@ -1,28 +1,10 @@
 /**
- * Sleep Utility
- * @module lib/sleep
+ * Sleep Utility - Re-exports from @/utils/promise
+ * src/utils/promise is the source of truth
  */
 
-export function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+export { sleep, sleepUntil, delay, wait } from '@/utils/promise';
 
-export function sleepUntil(condition: () => boolean, interval = 100, timeout = 5000): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const start = Date.now();
-    
-    const check = () => {
-      if (condition()) {
-        resolve();
-      } else if (Date.now() - start > timeout) {
-        reject(new Error('Timeout'));
-      } else {
-        setTimeout(check, interval);
-      }
-    };
-    
-    check();
-  });
-}
+import { sleep as _sleep, sleepUntil as _sleepUntil } from '@/utils/promise';
 
-export default { sleep, sleepUntil };
+export default { sleep: _sleep, sleepUntil: _sleepUntil, delay: _sleep, wait: _sleep };

@@ -1,39 +1,46 @@
 /**
- * Random Utilities
- * @module lib/randomUtils
+ * Random Utilities - Re-exports from @/utils/random
+ * src/utils/random is the source of truth
  */
 
-export function randomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+export {
+  randomInt,
+  randomFloat,
+  randomBoolean,
+  randomItem,
+  randomItems,
+  shuffle,
+  randomString,
+  randomHex,
+  randomAlpha,
+  randomNumeric,
+  randomColor,
+  randomRgb,
+  randomHsl,
+  randomDate,
+  weightedRandom,
+  randomGaussian,
+} from '@/utils/random';
 
-export function randomFloat(min: number, max: number, decimals = 2): number {
-  return parseFloat((Math.random() * (max - min) + min).toFixed(decimals));
-}
+import {
+  randomInt as _randomInt,
+  randomFloat as _randomFloat,
+  randomBoolean as _randomBoolean,
+  randomItem,
+  shuffle as _shuffle,
+  randomColor as _randomColor,
+  randomString as _randomString,
+} from '@/utils/random';
 
-export function randomBoolean(): boolean {
-  return Math.random() >= 0.5;
-}
+// Legacy alias
+export const randomElement = randomItem;
 
-export function randomElement<T>(array: T[]): T {
-  return array[randomInt(0, array.length - 1)];
-}
-
-export function shuffle<T>(array: T[]): T[] {
-  const result = [...array];
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-  return result;
-}
-
-export function randomColor(): string {
-  return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
-}
-
-export function randomString(length: number, charset = 'abcdefghijklmnopqrstuvwxyz0123456789'): string {
-  return Array.from({ length }, () => charset[randomInt(0, charset.length - 1)]).join('');
-}
-
-export default { randomInt, randomFloat, randomBoolean, randomElement, shuffle, randomColor, randomString };
+export default {
+  randomInt: _randomInt,
+  randomFloat: _randomFloat,
+  randomBoolean: _randomBoolean,
+  randomElement: randomItem,
+  shuffle: _shuffle,
+  randomColor: _randomColor,
+  randomString: _randomString,
+};
