@@ -1,0 +1,4 @@
+import React from 'react';import { cn } from '@/lib/utils';import { Info, X } from 'lucide-react';interface InfoBannerProps { message: string; variant?: 'info' | 'success' | 'warning' | 'error'; dismissible?: boolean; onDismiss?: () => void; className?: string; }
+const variants = { info: 'bg-blue-50 border-blue-200 text-blue-800', success: 'bg-green-50 border-green-200 text-green-800', warning: 'bg-yellow-50 border-yellow-200 text-yellow-800', error: 'bg-red-50 border-red-200 text-red-800' };
+export function InfoBanner({ message, variant = 'info', dismissible, onDismiss, className }: InfoBannerProps) { return (<div className={cn('flex items-center gap-3 px-4 py-3 border rounded-lg', variants[variant], className)}><Info className="h-5 w-5 shrink-0" /><p className="flex-1 text-sm">{message}</p>{dismissible && <button onClick={onDismiss} className="p-1 hover:bg-black/10 rounded"><X className="h-4 w-4" /></button>}</div>); }
+export default InfoBanner;
