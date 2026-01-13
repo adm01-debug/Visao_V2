@@ -1,0 +1,1 @@
+export { RevealEffect } from './RevealEffect';
