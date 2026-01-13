@@ -1,0 +1,1 @@
+export { LicensePlateDetection } from './LicensePlateDetection';
