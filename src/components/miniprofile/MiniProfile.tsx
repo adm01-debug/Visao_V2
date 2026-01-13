@@ -1,0 +1,4 @@
+import React from 'react';import { cn } from '@/lib/utils';interface MiniProfileProps { name: string; role?: string; avatar?: string; status?: 'online' | 'offline' | 'busy'; className?: string; }
+const statusColors = { online: 'bg-green-500', offline: 'bg-gray-400', busy: 'bg-red-500' };
+export function MiniProfile({ name, role, avatar, status, className }: MiniProfileProps) { return (<div className={cn('flex items-center gap-3', className)}><div className="relative"><div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">{avatar ? <img src={avatar} className="w-full h-full rounded-full object-cover" /> : name[0]}</div>{status && <span className={cn('absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-background', statusColors[status])} />}</div><div><p className="font-medium text-sm">{name}</p>{role && <p className="text-xs text-muted-foreground">{role}</p>}</div></div>); }
+export default MiniProfile;
