@@ -1,19 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sidebar } from '@/components/Sidebar';
-import { Header } from '@/components/Header';
+import { Helmet } from 'react-helmet-async';
+
+// Layout Components from barrel export
+import { MainLayout, Header, Sidebar, SkipLink } from '@/components';
+
+// Feature Components
 import { Dashboard } from '@/components/Dashboard';
 import { RulesPanel } from '@/components/RulesPanel';
 import { FloorPlanMap } from '@/components/FloorPlanMap';
 import { AIAnalysisPanel } from '@/components/AIAnalysisPanel';
 import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
 import { BlacklistAlertBanner } from '@/components/BlacklistAlertBanner';
+
+// Hooks and Context
 import { useAuth } from '@/contexts/AuthContext';
 import { useAlerts } from '@/hooks/useAlerts';
-import { Helmet } from 'react-helmet-async';
+
+// UI Components
 import { PageLoadingSkeleton } from '@/components/ui/LoadingState';
 import { PageTransition } from '@/components/ui/MotionComponents';
-import { SkipLink } from '@/components/ui/Accessibility';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -76,21 +82,14 @@ const Index = () => {
       
       <SkipLink targetId="main-content" />
       
-      <div className="flex h-screen bg-background overflow-hidden">
-        <Sidebar />
-        
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <Header />
-          
-          <PageTransition>
-            <main id="main-content" className="flex-1 overflow-hidden" role="main" aria-label="Conteúdo principal">
-              {renderContent()}
-            </main>
-          </PageTransition>
-        </div>
-        
+      <MainLayout>
+        <PageTransition>
+          <div id="main-content" role="main" aria-label="Conteúdo principal" className="h-full">
+            {renderContent()}
+          </div>
+        </PageTransition>
         <BlacklistAlertBanner />
-      </div>
+      </MainLayout>
     </>
   );
 };
