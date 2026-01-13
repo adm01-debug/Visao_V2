@@ -1,0 +1,3 @@
+import React, { Suspense } from 'react';import { Loader2 } from 'lucide-react';interface AsyncBoundaryProps { children: React.ReactNode; loading?: React.ReactNode; error?: React.ReactNode; }
+export function AsyncBoundary({ children, loading, error }: AsyncBoundaryProps) { return (<Suspense fallback={loading || <div className="flex justify-center p-4"><Loader2 className="h-6 w-6 animate-spin" /></div>}>{children}</Suspense>); }
+export default AsyncBoundary;
