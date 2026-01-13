@@ -1,0 +1,3 @@
+import React, { useState, useEffect } from 'react';import { cn } from '@/lib/utils';interface TypingEffectProps { text: string; speed?: number; className?: string; }
+export function TypingEffect({ text, speed = 50, className }: TypingEffectProps) { const [displayed, setDisplayed] = useState(''); useEffect(() => { let i = 0; setDisplayed(''); const interval = setInterval(() => { if (i < text.length) { setDisplayed(prev => prev + text[i]); i++; } else clearInterval(interval); }, speed); return () => clearInterval(interval); }, [text, speed]); return <span className={cn(className)}>{displayed}<span className="animate-pulse">|</span></span>; }
+export default TypingEffect;
