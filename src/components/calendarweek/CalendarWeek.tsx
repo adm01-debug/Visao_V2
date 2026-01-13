@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface CalendarWeekProps { weekNumber: number; dates: Date[]; renderDay: (date: Date) => React.ReactNode; className?: string; }
+export function CalendarWeek({ weekNumber, dates, renderDay, className }: CalendarWeekProps) { return (<div className={cn('grid grid-cols-7 gap-2', className)}>{dates.map((date, i) => (<div key={i}>{renderDay(date)}</div>))}</div>); }
+export default CalendarWeek;
