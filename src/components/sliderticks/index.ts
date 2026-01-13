@@ -1,0 +1,1 @@
+export { SliderTicks } from './SliderTicks';
