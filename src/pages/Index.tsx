@@ -74,7 +74,7 @@ const Index = () => {
         <meta name="description" content="Plataforma de vigilância inteligente com análise de vídeo por IA para monitoramento de segurança e produtividade." />
       </Helmet>
       
-      <SkipLink href="#main-content">Pular para conteúdo principal</SkipLink>
+      <SkipLink targetId="main-content" />
       
       <div className="flex h-screen bg-background overflow-hidden">
         <Sidebar />
