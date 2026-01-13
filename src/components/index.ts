@@ -1,5 +1,15 @@
-// Auto-generated component index
-// VIS-O Component Library
+/**
+ * VISÃO - Sistema de Vigilância Inteligente
+ * Components Barrel Export
+ * 
+ * Centralized exports for all project components
+ */
+
+// Layout Components
+export * from './layout';
+
+// Common Components
+export * from './common';
 
 // Cards
 export * from './cards';
