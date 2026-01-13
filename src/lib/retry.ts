@@ -1,27 +1,11 @@
-interface RetryOptions {
-  maxAttempts?: number;
-  delayMs?: number;
-  backoff?: boolean;
-}
+/**
+ * Retry utilities - Re-exports from @/utils/retry
+ * src/utils/retry is the source of truth
+ */
 
-export async function retry<T>(
-  fn: () => Promise<T>,
-  options: RetryOptions = {}
-): Promise<T> {
-  const { maxAttempts = 3, delayMs = 1000, backoff = true } = options;
-  let lastError: Error;
+export { retry } from '@/utils/retry';
+export type { RetryOptions } from '@/utils/retry';
 
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    try {
-      return await fn();
-    } catch (error) {
-      lastError = error as Error;
-      if (attempt < maxAttempts) {
-        const delay = backoff ? delayMs * attempt : delayMs;
-        await new Promise(r => setTimeout(r, delay));
-      }
-    }
-  }
+import { retry as _retry } from '@/utils/retry';
 
-  throw lastError!;
-}
+export default _retry;
