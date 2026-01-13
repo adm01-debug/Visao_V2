@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface DividerTextProps { children: React.ReactNode; className?: string; }
+export function DividerText({ children, className }: DividerTextProps) { return (<div className={cn('flex items-center gap-4', className)}><div className="flex-1 h-px bg-border" /><span className="text-sm text-muted-foreground">{children}</span><div className="flex-1 h-px bg-border" /></div>); }
+export default DividerText;
