@@ -1,31 +1,16 @@
 /**
  * Clipboard utilities
+ * Re-exports from @/utils/clipboard for backward compatibility
  */
 
-export async function copy(text: string): Promise<boolean> {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    return false;
-  }
-}
+export {
+  copy,
+  paste,
+  copyToClipboard,
+  readFromClipboard,
+  copyImage,
+  copyRichText,
+} from '@/utils/clipboard';
 
-export async function paste(): Promise<string> {
-  try {
-    return await navigator.clipboard.readText();
-  } catch {
-    return "";
-  }
-}
-
-export async function copyToClipboard(text: string): Promise<boolean> {
-  return copy(text);
-}
-
-export async function readFromClipboard(): Promise<string> {
-  return paste();
-}
-
-export default { copy, paste, copyToClipboard, readFromClipboard };
-
+import clipboard from '@/utils/clipboard';
+export default clipboard;
