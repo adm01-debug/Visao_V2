@@ -1,0 +1,5 @@
+import React from 'react';import { cn } from '@/lib/utils';import { ArrowRight, Sparkles } from 'lucide-react';interface CTAButtonProps { children: React.ReactNode; variant?: 'primary' | 'gradient' | 'outline'; size?: 'sm' | 'md' | 'lg'; showArrow?: boolean; showSparkle?: boolean; onClick?: () => void; className?: string; }
+const variants = { primary: 'bg-primary text-primary-foreground hover:bg-primary/90', gradient: 'bg-gradient-to-r from-primary to-purple-500 text-white hover:opacity-90', outline: 'border-2 border-primary text-primary hover:bg-primary/10' };
+const sizes = { sm: 'px-4 py-2 text-sm', md: 'px-6 py-3', lg: 'px-8 py-4 text-lg' };
+export function CTAButton({ children, variant = 'primary', size = 'md', showArrow, showSparkle, onClick, className }: CTAButtonProps) { return (<button onClick={onClick} className={cn('inline-flex items-center gap-2 rounded-lg font-semibold transition-all', variants[variant], sizes[size], className)}>{showSparkle && <Sparkles className="h-4 w-4" />}{children}{showArrow && <ArrowRight className="h-4 w-4" />}</button>); }
+export default CTAButton;
