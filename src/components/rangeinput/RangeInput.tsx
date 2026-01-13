@@ -1,0 +1,4 @@
+import React from 'react';import { cn } from '@/lib/utils';
+interface Props { min?: number; max?: number; step?: number; value?: number; onChange?: (v: number) => void; showValue?: boolean; className?: string; }
+export function RangeInput({ min = 0, max = 100, step = 1, value = 50, onChange, showValue = true, className }: Props) { return (<div className={cn('flex items-center gap-3', className)}><input type="range" min={min} max={max} step={step} value={value} onChange={e => onChange?.(Number(e.target.value))} className="flex-1 h-2 bg-muted rounded-lg appearance-none cursor-pointer" />{showValue && <span className="text-sm font-medium w-12 text-right">{value}</span>}</div>); }
+export default RangeInput;
