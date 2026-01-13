@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface IsotopeProps { children: React.ReactNode; filter?: string; className?: string; }
+export function Isotope({ children, filter, className }: IsotopeProps) { return <div className={cn('grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4', className)}>{React.Children.map(children, child => { const elem = child as React.ReactElement; if (!filter || elem.props?.['data-category'] === filter) return child; return null; })}</div>; }
+export default Isotope;
