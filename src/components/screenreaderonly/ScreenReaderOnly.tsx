@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface ScreenReaderOnlyProps { children: React.ReactNode; as?: 'span' | 'div' | 'p' | 'h1' | 'h2' | 'h3'; className?: string; }
+export function ScreenReaderOnly({ children, as: Component = 'span', className }: ScreenReaderOnlyProps) { return (<Component className={cn('sr-only', className)}>{children}</Component>); }
+export default ScreenReaderOnly;
