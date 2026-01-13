@@ -1,9 +1,7 @@
-import { useOnClickOutside } from "@/hooks";
+import { memo, useState, useEffect, useRef, useCallback } from 'react';
 import { useOnClickOutside } from '@/hooks/useOnClickOutside';
+import { useDebounce } from "@/hooks/useDebounce";
 import { capitalize } from '@/lib/stringUtils';
-import { memo } from "react";
-import { useDebounce } from "@/hooks";
-import { useState, useEffect, useRef, useCallback } from 'react';
 import { Search, Camera, AlertTriangle, X, Loader2, MapPin, Clock, Filter, Calendar, History, Trash2, Star, Plus, Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Badge } from '@/components/ui/badge';

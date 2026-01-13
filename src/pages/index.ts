@@ -6,7 +6,7 @@
  * @description Este arquivo facilita a importação lazy de páginas
  */
 
-// Lazy imports são feitos diretamente em AppRoutes.tsx
+// Lazy imports são feitos diretamente em App.tsx
 // Este arquivo serve como referência e para importações diretas quando necessário
 
 export { default as AcessoNegado } from "./AcessoNegado";

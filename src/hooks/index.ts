@@ -1,6 +1,11 @@
-// Auto-generated hooks index
-// VIS-O Hooks Library
+/**
+ * VISÃO - Sistema de Vigilância Inteligente
+ * Hooks barrel export - Exportação centralizada dos hooks
+ * 
+ * @module hooks
+ */
 
+// Core UI hooks
 export { useCountdown } from './useCountdown';
 export { useHover } from './useHover';
 export { useFocus } from './useFocus';
@@ -9,24 +14,36 @@ export { useLockBodyScroll } from './useLockBodyScroll';
 export { useScript } from './useScript';
 export { useTitle } from './useTitle';
 
-// Re-export existing hooks
+// State hooks
 export * from './useDebounce';
 export * from './useThrottle';
 export * from './useLocalStorage';
 export * from './useToggle';
 export * from './useDisclosure';
+
+// Form hooks
 export * from './useForm';
+
+// Data hooks
 export * from './useFetch';
-export * from './useToast';
+export * from './useAsync';
+
+// Toast (correct file name)
+export { useToast, toast } from './use-toast';
+
+// UI hooks
 export * from './useMediaQuery';
 export * from './useKeyPress';
 export * from './useWindowSize';
 export * from './useScrollPosition';
 export * from './useEventListener';
+
+// Timing hooks
 export * from './useInterval';
 export * from './useTimeout';
+
+// Utility hooks
 export * from './usePrevious';
 export * from './useOnlineStatus';
-export * from './useAsync';
 export * from './useClipboard';
 export * from './useCopyToClipboard';
