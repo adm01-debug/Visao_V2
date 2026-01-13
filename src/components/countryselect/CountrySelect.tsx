@@ -1,0 +1,4 @@
+import React from 'react';import { cn } from '@/lib/utils';interface CountrySelectProps { value: string; onChange: (value: string) => void; className?: string; }
+const countries = [{ code: 'BR', name: 'Brasil', flag: '🇧🇷' }, { code: 'US', name: 'Estados Unidos', flag: '🇺🇸' }, { code: 'PT', name: 'Portugal', flag: '🇵🇹' }, { code: 'ES', name: 'Espanha', flag: '🇪🇸' }, { code: 'FR', name: 'França', flag: '🇫🇷' }];
+export function CountrySelect({ value, onChange, className }: CountrySelectProps) { return (<select value={value} onChange={e => onChange(e.target.value)} className={cn('w-full px-3 py-2 border rounded-lg bg-background', className)}><option value="">Selecione um país</option>{countries.map(c => <option key={c.code} value={c.code}>{c.flag} {c.name}</option>)}</select>); }
+export default CountrySelect;
