@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface BoletoFormatProps { value: string; className?: string; }
+export function BoletoFormat({ value, className }: BoletoFormatProps) { const clean = value.replace(/\D/g, '').slice(0, 47); const formatted = clean.replace(/(\d{5})(\d{5})(\d{5})(\d{6})(\d{5})(\d{6})(\d)(\d{14})/, '$1.$2 $3.$4 $5.$6 $7 $8'); return <span className={cn('font-mono text-sm', className)}>{formatted}</span>; }
+export default BoletoFormat;
