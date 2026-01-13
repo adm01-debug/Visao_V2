@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';import { Image as ImageIcon } from 'lucide-react';interface ImagePlaceholderProps { width?: number; height?: number; text?: string; className?: string; }
+export function ImagePlaceholder({ width = 300, height = 200, text, className }: ImagePlaceholderProps) { return (<div className={cn('bg-muted flex items-center justify-center', className)} style={{ width, height }}>{text ? <span className="text-muted-foreground">{text}</span> : <ImageIcon className="h-12 w-12 text-muted-foreground" />}</div>); }
+export default ImagePlaceholder;
