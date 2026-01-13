@@ -1,0 +1,1 @@
+export { MotionTrail } from './MotionTrail';
