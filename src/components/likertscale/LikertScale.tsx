@@ -1,0 +1,4 @@
+import React from 'react';import { cn } from '@/lib/utils';interface LikertScaleProps { value?: number; onChange?: (value: number) => void; labels?: string[]; className?: string; }
+const defaultLabels = ['Discordo totalmente', 'Discordo', 'Neutro', 'Concordo', 'Concordo totalmente'];
+export function LikertScale({ value, onChange, labels = defaultLabels, className }: LikertScaleProps) { return (<div className={cn('flex flex-col gap-2', className)}><div className="flex gap-2">{labels.map((_, i) => (<button key={i} onClick={() => onChange?.(i + 1)} className={cn('flex-1 h-10 rounded-lg transition-colors', value === i + 1 ? 'bg-primary text-white' : 'bg-muted hover:bg-muted/80')}>{i + 1}</button>))}</div><div className="flex justify-between text-xs text-muted-foreground">{labels.map((l, i) => <span key={i} className="text-center flex-1">{l}</span>)}</div></div>); }
+export default LikertScale;
