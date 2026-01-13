@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface RangeSelectProps { min: number; max: number; value: [number, number]; onChange: (value: [number, number]) => void; step?: number; className?: string; }
+export function RangeSelect({ min, max, value, onChange, step = 1, className }: RangeSelectProps) { return (<div className={cn('space-y-2', className)}><div className="flex justify-between text-sm text-muted-foreground"><span>{value[0]}</span><span>{value[1]}</span></div><div className="relative h-2 bg-muted rounded-full"><div className="absolute h-full bg-primary rounded-full" style={{ left: `${((value[0] - min) / (max - min)) * 100}%`, right: `${100 - ((value[1] - min) / (max - min)) * 100}%` }} /></div></div>); }
+export default RangeSelect;
