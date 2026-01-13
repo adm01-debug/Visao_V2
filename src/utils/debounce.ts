@@ -1,11 +1,13 @@
-export function debounce<T extends (...args: unknown[]) => unknown>(
-  fn: T,
-  delay: number
-): (...args: Parameters<T>) => void {
-  let timeoutId: ReturnType<typeof setTimeout>;
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => fn(...args), delay);
-  };
-}
-export default debounce;
+/**
+ * Debounce utility
+ * Re-exports from throttle module for consistency
+ * 
+ * @module utils/debounce
+ */
+
+import { debounce as _debounce } from './throttle';
+
+export { debounce } from './throttle';
+export type { DebouncedFunction, DebounceOptions } from './throttle';
+
+export default _debounce;

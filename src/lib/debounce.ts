@@ -1,41 +1,24 @@
 /**
- * Debounce utility
+ * Debounce & Throttle utilities
+ * Re-exports from consolidated utils/throttle module
+ * 
  * @module lib/debounce
  */
 
-export function debounce<T extends (...args: unknown[]) => unknown>(
-  func: T,
-  wait: number
-): (...args: Parameters<T>) => void {
-  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+import { 
+  debounce as _debounce, 
+  throttle as _throttle, 
+  rafThrottle 
+} from '@/utils/throttle';
 
-  return function (...args: Parameters<T>) {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
+export { debounce, throttle, rafThrottle } from '@/utils/throttle';
 
-    timeoutId = setTimeout(() => {
-      func.apply(this, args);
-      timeoutId = null;
-    }, wait);
-  };
-}
+export type { 
+  AnyFunction, 
+  ThrottleOptions, 
+  DebounceOptions, 
+  ThrottledFunction, 
+  DebouncedFunction 
+} from '@/utils/throttle';
 
-export function throttle<T extends (...args: unknown[]) => unknown>(
-  func: T,
-  limit: number
-): (...args: Parameters<T>) => void {
-  let inThrottle = false;
-
-  return function (...args: Parameters<T>) {
-    if (!inThrottle) {
-      func.apply(this, args);
-      inThrottle = true;
-      setTimeout(() => {
-        inThrottle = false;
-      }, limit);
-    }
-  };
-}
-
-export default { debounce, throttle };
+export default { debounce: _debounce, throttle: _throttle, rafThrottle };
