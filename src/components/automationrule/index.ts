@@ -1,0 +1,1 @@
+export { AutomationRule } from './AutomationRule';
