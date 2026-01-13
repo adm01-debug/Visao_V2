@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface ToggleGroupProps { options: { value: string; label: string; icon?: React.ReactNode }[]; value: string; onChange: (value: string) => void; className?: string; }
+export function ToggleGroup({ options, value, onChange, className }: ToggleGroupProps) { return (<div className={cn('flex rounded-lg border p-1 bg-muted', className)}>{options.map(o => (<button key={o.value} onClick={() => onChange(o.value)} className={cn('flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors', value === o.value ? 'bg-background shadow' : 'hover:bg-background/50')}>{o.icon}{o.label}</button>))}</div>); }
+export default ToggleGroup;
