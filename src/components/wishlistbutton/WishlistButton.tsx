@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';import { Heart } from 'lucide-react';interface WishlistButtonProps { wishlisted?: boolean; onToggle?: () => void; className?: string; }
+export function WishlistButton({ wishlisted, onToggle, className }: WishlistButtonProps) { return (<button onClick={onToggle} className={cn('p-2 rounded-full transition-colors', wishlisted ? 'text-red-500' : 'text-muted-foreground hover:text-red-500', className)}><Heart className={cn('h-5 w-5', wishlisted && 'fill-current')} /></button>); }
+export default WishlistButton;
