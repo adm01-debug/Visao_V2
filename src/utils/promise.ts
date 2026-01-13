@@ -2,8 +2,29 @@
  * Promise Utilities
  */
 
-export const delay = (ms: number): Promise<void> => 
+export const sleep = (ms: number): Promise<void> => 
   new Promise(resolve => setTimeout(resolve, ms));
+
+export const delay = sleep;
+export const wait = sleep;
+
+export const sleepUntil = (condition: () => boolean, interval = 100, timeout = 5000): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    const start = Date.now();
+    
+    const check = () => {
+      if (condition()) {
+        resolve();
+      } else if (Date.now() - start > timeout) {
+        reject(new Error('Timeout'));
+      } else {
+        setTimeout(check, interval);
+      }
+    };
+    
+    check();
+  });
+};
 
 export const timeout = <T>(promise: Promise<T>, ms: number, message = 'Timeout'): Promise<T> =>
   Promise.race([
