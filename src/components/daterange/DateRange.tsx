@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';import { Calendar } from 'lucide-react';interface DateRangeProps { startDate?: Date; endDate?: Date; onChange?: (range: { start?: Date; end?: Date }) => void; className?: string; }
+export function DateRange({ startDate, endDate, onChange, className }: DateRangeProps) { const format = (d?: Date) => d?.toLocaleDateString('pt-BR') || '--/--/----'; return (<div className={cn('flex items-center gap-2 p-2 rounded-lg border', className)}><Calendar className="h-4 w-4 text-muted-foreground" /><span className="text-sm">{format(startDate)}</span><span className="text-muted-foreground">→</span><span className="text-sm">{format(endDate)}</span></div>); }
+export default DateRange;
