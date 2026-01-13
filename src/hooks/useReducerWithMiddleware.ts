@@ -33,18 +33,22 @@ export function useReducerWithMiddleware<S, A>(
 }
 
 // Logger Middleware
-export const loggerMiddleware: Middleware<any, any> = (store) => (next) => (action) => {
-  if (import.meta.env.DEV) console.group(action.type || 'Action');
-  );
-    next(action);
-  );
-  if (import.meta.env.DEV) console.groupEnd();
+export const loggerMiddleware: Middleware<unknown, { type?: string }> = (store) => (next) => (action) => {
+  if (import.meta.env.DEV) {
+    console.group(action.type || 'Action');
+    console.log('Previous state:', store.getState());
+  }
+  next(action);
+  if (import.meta.env.DEV) {
+    console.log('Next state:', store.getState());
+    console.groupEnd();
+  }
 };
 
 // Thunk Middleware
-export const thunkMiddleware: Middleware<any, any> = (store) => (next) => (action) => {
+export const thunkMiddleware: Middleware<unknown, unknown> = (store) => (next) => (action) => {
   if (typeof action === 'function') {
-    return action(store.dispatch, store.getState);
+    return (action as (dispatch: Dispatch<unknown>, getState: () => unknown) => unknown)(store.dispatch, store.getState);
   }
   return next(action);
 };

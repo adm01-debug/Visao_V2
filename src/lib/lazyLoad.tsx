@@ -29,7 +29,7 @@ export const PageLoadingFallback = () => (
 /**
  * Wrapper for lazy-loaded components with Suspense
  */
-export function withLazyLoad<T extends ComponentType<unknown>>(
+export function withLazyLoad<T extends ComponentType<Record<string, unknown>>>(
   importFn: () => Promise<{ default: T }>,
   fallback: React.ReactNode = <LoadingFallback />
 ) {

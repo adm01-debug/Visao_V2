@@ -85,18 +85,21 @@ class GStreamerService {
         this.ws = new WebSocket(serverUrl);
 
         this.ws.onopen = () => {
-                    this.reconnectAttempts = 0;
+          console.log('[GStreamer] Connected to server');
+          this.reconnectAttempts = 0;
           this.isConnecting = false;
           resolve(true);
         };
 
         this.ws.onclose = () => {
-                    this.isConnecting = false;
+          console.log('[GStreamer] Connection closed');
+          this.isConnecting = false;
           this.attemptReconnect();
         };
 
-        this.ws.onerror = (error) => {
-                    this.isConnecting = false;
+        this.ws.onerror = () => {
+          console.error('[GStreamer] Connection error');
+          this.isConnecting = false;
           resolve(false);
         };
 
@@ -105,10 +108,12 @@ class GStreamerService {
             const message = JSON.parse(event.data) as GStreamerMessage;
             this.handleMessage(message);
           } catch (error) {
-                      }
+            console.error('[GStreamer] Failed to parse message:', error);
+          }
         };
       } catch (error) {
-                this.isConnecting = false;
+        console.error('[GStreamer] Failed to connect:', error);
+        this.isConnecting = false;
         resolve(false);
       }
     });
@@ -119,13 +124,14 @@ class GStreamerService {
    */
   private attemptReconnect(): void {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-            return;
+      console.log('[GStreamer] Max reconnection attempts reached');
+      return;
     }
 
     this.reconnectAttempts++;
     const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
     
-    `);
+    console.log(`[GStreamer] Reconnecting in ${delay}ms...`);
     
     setTimeout(() => {
       if (this.serverUrl) {
@@ -149,7 +155,8 @@ class GStreamerService {
       try {
         handler(message);
       } catch (error) {
-              }
+        console.error('[GStreamer] Handler error:', error);
+      }
     });
   }
 
@@ -158,7 +165,8 @@ class GStreamerService {
    */
   private send(command: Record<string, unknown>): boolean {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-            return false;
+      console.error('[GStreamer] Not connected');
+      return false;
     }
 
     this.ws.send(JSON.stringify(command));

@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import { safeExecute } from '@/lib/safeExecute';
 
 type EventHandler<T extends Event = Event> = (event: T) => void;
 
@@ -29,12 +28,10 @@ export function useEventListener(
   const savedHandler = useRef(handler);
 
   useEffect(() => {
-    try {
     savedHandler.current = handler;
   }, [handler]);
 
   useEffect(() => {
-    try {
     const targetElement = element?.current ?? window;
     if (!targetElement?.addEventListener) return;
 

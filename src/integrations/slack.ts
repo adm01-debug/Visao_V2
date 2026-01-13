@@ -90,7 +90,8 @@ class SlackService {
    */
   initialize(config: SlackConfig): void {
     this.config = config;
-      }
+    console.log('[Slack] Service initialized');
+  }
 
   /**
    * Send message via webhook
@@ -109,7 +110,8 @@ class SlackService {
 
       return response.ok;
     } catch (error) {
-            return false;
+      console.error('[Slack] Webhook error:', error);
+      return false;
     }
   }
 
@@ -376,7 +378,7 @@ class SlackService {
     // In a real implementation, you would verify the HMAC signature
     // This is a placeholder that would need crypto implementation
     const baseString = `v0:${timestamp}:${body}`;
-    );
+    console.log('[Slack] Verifying signature for:', baseString.substring(0, 50));
     
     return signature.startsWith('v0=');
   }

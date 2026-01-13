@@ -25,7 +25,6 @@ export const useBattery = (): BatteryState => {
   });
 
   useEffect(() => {
-    try {
     if (!navigator.getBattery) return;
 
     let battery: BatteryManager | null = null;

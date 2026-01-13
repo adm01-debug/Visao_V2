@@ -10,7 +10,6 @@ export function useBroadcastChannel<T = unknown>(channelName: string) {
   const isSupported = typeof BroadcastChannel !== 'undefined';
 
   useEffect(() => {
-    try {
     if (!isSupported) return;
     const channel = new BroadcastChannel(channelName);
     channel.onmessage = (e) => setLastMessage(e.data);
@@ -24,4 +23,5 @@ export function useBroadcastChannel<T = unknown>(channelName: string) {
 
   return { lastMessage, isSupported, postMessage };
 }
+
 export default useBroadcastChannel;

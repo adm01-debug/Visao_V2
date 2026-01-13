@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { safeExecute } from '@/lib/safeExecute';
 
 interface FeatureFlags {
   enablePPE: boolean;
@@ -23,10 +22,13 @@ export function useFeatureFlags(): FeatureFlags {
   const [flags, setFlags] = useState<FeatureFlags>(defaultFlags);
 
   useEffect(() => {
-    try {
     const stored = localStorage.getItem('featureFlags');
     if (stored) {
-      setFlags({ ...defaultFlags, ...JSON.parse(stored) });
+      try {
+        setFlags({ ...defaultFlags, ...JSON.parse(stored) });
+      } catch {
+        // Invalid JSON, use defaults
+      }
     }
   }, []);
 
