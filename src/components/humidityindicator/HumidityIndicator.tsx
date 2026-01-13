@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';import { Droplets } from 'lucide-react';interface HumidityIndicatorProps { value: number; className?: string; }
+export function HumidityIndicator({ value, className }: HumidityIndicatorProps) { const getColor = (v: number) => v < 30 ? 'text-yellow-500' : v < 60 ? 'text-green-500' : 'text-blue-500'; return (<div className={cn('flex items-center gap-2', className)}><Droplets className={cn('h-5 w-5', getColor(value))} /><span className="text-lg font-bold">{value}%</span></div>); }
+export default HumidityIndicator;
