@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface Point { x: number; y: number; timestamp: number; }interface MotionTrailProps { points: Point[]; color?: string; className?: string; }
+export function MotionTrail({ points, color = '#ef4444', className }: MotionTrailProps) { if (points.length < 2) return null; const path = points.map((p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`)).join(' '); return (<svg className={cn('absolute inset-0 pointer-events-none', className)}><path d={path} fill="none" stroke={color} strokeWidth="2" strokeOpacity="0.7" />{points.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r={3} fill={color} opacity={0.3 + (i / points.length) * 0.7} />)}</svg>); }
+export default MotionTrail;
