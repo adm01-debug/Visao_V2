@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface SpectrumProps { bars?: number; animated?: boolean; className?: string; }
+export function Spectrum({ bars = 5, animated = true, className }: SpectrumProps) { return (<div className={cn('flex items-end gap-1 h-8', className)}>{Array.from({ length: bars }, (_, i) => (<div key={i} className={cn('w-1 bg-primary rounded-full', animated && 'animate-pulse')} style={{ height: `${Math.random() * 80 + 20}%`, animationDelay: `${i * 0.1}s` }} />))}</div>); }
+export default Spectrum;
