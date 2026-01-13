@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface InteractiveCardProps { children: React.ReactNode; onHover?: () => void; onLeave?: () => void; onClick?: () => void; className?: string; }
+export function InteractiveCard({ children, onHover, onLeave, onClick, className }: InteractiveCardProps) { return <div onMouseEnter={onHover} onMouseLeave={onLeave} onClick={onClick} className={cn('bg-card rounded-xl border p-4 transition-all hover:shadow-lg hover:scale-[1.02] cursor-pointer', className)}>{children}</div>; }
+export default InteractiveCard;
