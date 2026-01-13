@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';import { CheckCircle } from 'lucide-react';import { Button } from '@/components/ui/button';interface SuccessCardProps { title?: string; message: string; action?: { label: string; onClick: () => void }; className?: string; }
+export function SuccessCard({ title = 'Sucesso!', message, action, className }: SuccessCardProps) { return (<div className={cn('p-6 rounded-lg border border-green-200 bg-green-50 text-center', className)}><CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" /><h3 className="font-bold text-lg text-green-700 mb-2">{title}</h3><p className="text-green-600 mb-4">{message}</p>{action && <Button onClick={action.onClick}>{action.label}</Button>}</div>); }
+export default SuccessCard;
