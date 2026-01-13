@@ -1,0 +1,1 @@
+export { PIXKeyFormat } from './PIXKeyFormat';
