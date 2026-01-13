@@ -1,0 +1,1 @@
+export { NPSRating } from './NPSRating';
