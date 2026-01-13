@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface ShortcutKeyProps { keys: string[]; className?: string; }
+export function ShortcutKey({ keys, className }: ShortcutKeyProps) { return (<div className={cn('inline-flex items-center gap-1', className)}>{keys.map((k, i) => (<React.Fragment key={i}>{i > 0 && <span className="text-muted-foreground">+</span>}<kbd className="px-2 py-1 bg-muted rounded border text-xs font-mono">{k}</kbd></React.Fragment>))}</div>); }
+export default ShortcutKey;
