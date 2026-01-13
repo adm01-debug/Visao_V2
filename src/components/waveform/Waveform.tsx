@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface WaveformProps { data: number[]; progress?: number; color?: string; className?: string; }
+export function Waveform({ data, progress = 0, color = 'primary', className }: WaveformProps) { return (<div className={cn('flex items-center gap-0.5 h-12', className)}>{data.map((v, i) => <div key={i} className={cn('w-1 rounded-full transition-colors', (i / data.length) * 100 <= progress ? `bg-${color}` : 'bg-muted')} style={{ height: `${v * 100}%` }} />)}</div>); }
+export default Waveform;
