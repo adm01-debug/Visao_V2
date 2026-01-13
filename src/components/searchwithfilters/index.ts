@@ -1,0 +1,1 @@
+export { SearchWithFilters } from './SearchWithFilters';
