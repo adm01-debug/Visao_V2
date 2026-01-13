@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';import { GripVertical } from 'lucide-react';interface SortableItemProps { children: React.ReactNode; onDragStart?: () => void; onDragEnd?: () => void; className?: string; }
+export function SortableItem({ children, onDragStart, onDragEnd, className }: SortableItemProps) { return (<div draggable onDragStart={onDragStart} onDragEnd={onDragEnd} className={cn('flex items-center gap-2 p-3 rounded-lg border bg-card cursor-move hover:shadow-sm', className)}><GripVertical className="h-4 w-4 text-muted-foreground shrink-0" />{children}</div>); }
+export default SortableItem;
