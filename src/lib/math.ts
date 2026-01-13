@@ -1,38 +1,50 @@
 /**
- * Math utilities
+ * Math utilities - Re-exports from @/utils/math
+ * src/utils/math is the source of truth
  */
 
-export function sum(numbers: number[]): number {
-  return numbers.reduce((a, b) => a + b, 0);
-}
+export {
+  clamp,
+  lerp,
+  inverseLerp,
+  remap,
+  round,
+  floor,
+  ceil,
+  sum,
+  average,
+  median,
+  standardDeviation,
+  min,
+  max,
+  percentage,
+  degToRad,
+  radToDeg,
+  distance,
+  isPowerOfTwo,
+  factorial,
+  gcd,
+  lcm,
+} from '@/utils/math';
 
-export function average(numbers: number[]): number {
-  return numbers.length ? sum(numbers) / numbers.length : 0;
-}
+import {
+  clamp as _clamp,
+  lerp as _lerp,
+  sum as _sum,
+  average as _average,
+  min as _min,
+  max as _max,
+  degToRad as _degToRad,
+  radToDeg as _radToDeg,
+} from '@/utils/math';
 
-export function min(numbers: number[]): number {
-  return Math.min(...numbers);
-}
-
-export function max(numbers: number[]): number {
-  return Math.max(...numbers);
-}
-
-export function clamp(value: number, minVal: number, maxVal: number): number {
-  return Math.min(Math.max(value, minVal), maxVal);
-}
-
-export function lerp(start: number, end: number, t: number): number {
-  return start + (end - start) * t;
-}
-
-export function degToRad(degrees: number): number {
-  return degrees * (Math.PI / 180);
-}
-
-export function radToDeg(radians: number): number {
-  return radians * (180 / Math.PI);
-}
-
-export default { sum, average, min, max, clamp, lerp, degToRad, radToDeg };
-
+export default {
+  sum: _sum,
+  average: _average,
+  min: _min,
+  max: _max,
+  clamp: _clamp,
+  lerp: _lerp,
+  degToRad: _degToRad,
+  radToDeg: _radToDeg,
+};

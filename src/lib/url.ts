@@ -1,10 +1,42 @@
 /**
- * URL utilities
+ * URL utilities - Re-exports from @/utils/url
+ * src/utils/url is the source of truth
  */
 
-export function parseURL(url: string): URL {
-  return new URL(url);
-}
+export {
+  isAbsoluteUrl,
+  isRelativeUrl,
+  joinUrl,
+  getBasename,
+  getDirname,
+  getExtension,
+  removeExtension,
+  getOrigin,
+  getHostname,
+  getProtocol,
+  getPort,
+  getPathname,
+  getHash,
+  setHash,
+  removeHash,
+  parseUrl,
+  isValidUrl,
+  normalizeUrl,
+  encodeUrlComponent,
+  decodeUrlComponent,
+  isSameOrigin,
+} from '@/utils/url';
+
+import {
+  parseUrl as _parseUrl,
+  isValidUrl as _isValidUrl,
+  getPathname,
+  getOrigin,
+} from '@/utils/url';
+
+// Legacy aliases for backward compatibility
+export const parseURL = _parseUrl;
+export const isValidURL = _isValidUrl;
 
 export function buildURL(base: string, params: Record<string, string>): string {
   const url = new URL(base);
@@ -23,14 +55,13 @@ export function getQueryParams(url: string): Record<string, string> {
   return result;
 }
 
-export function isValidURL(url: string): boolean {
-  try {
-    new URL(url);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-export default { parseURL, buildURL, getQueryParams, isValidURL };
-
+export default {
+  parseURL: _parseUrl,
+  buildURL,
+  getQueryParams,
+  isValidURL: _isValidUrl,
+  parseUrl: _parseUrl,
+  isValidUrl: _isValidUrl,
+  getPathname,
+  getOrigin,
+};

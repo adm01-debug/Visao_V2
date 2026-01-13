@@ -1,3 +1,77 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Users, Clock, Heart, MessageCircle, TrendingUp, DollarSign } from 'lucide-react';interface StreamStatsProps { viewers: number; peakViewers?: number; duration: number; likes: number; comments: number; revenue?: number; className?: string; }
-export function StreamStats({ viewers, peakViewers, duration, likes, comments, revenue, className }: StreamStatsProps) { const formatDuration = (seconds: number) => { const h = Math.floor(seconds / 3600); const m = Math.floor((seconds % 3600) / 60); return h > 0 ? \`\${h}h \${m}m\` : \`\${m}m\`; }; const stats = [{ icon: Users, label: 'Espectadores', value: viewers.toLocaleString(), sub: peakViewers ? \`Pico: \${peakViewers.toLocaleString()}\` : undefined }, { icon: Clock, label: 'Duração', value: formatDuration(duration) }, { icon: Heart, label: 'Curtidas', value: likes.toLocaleString() }, { icon: MessageCircle, label: 'Comentários', value: comments.toLocaleString() }]; if (revenue !== undefined) { stats.push({ icon: DollarSign, label: 'Receita', value: \`R$ \${revenue.toFixed(2)}\` }); } return (<div className={cn('grid grid-cols-2 md:grid-cols-5 gap-4', className)}>{stats.map((stat, i) => (<div key={i} className="p-4 bg-card rounded-xl border"><stat.icon className="h-5 w-5 text-primary mb-2" /><p className="text-2xl font-bold">{stat.value}</p><p className="text-sm text-muted-foreground">{stat.label}</p>{stat.sub && <p className="text-xs text-muted-foreground">{stat.sub}</p>}</div>))}</div>); }
+import React from 'react';
+import { cn } from '@/lib/utils';
+import { Users, Clock, Heart, MessageCircle, DollarSign } from 'lucide-react';
+
+interface StreamStatsProps {
+  viewers: number;
+  peakViewers?: number;
+  duration: number;
+  likes: number;
+  comments: number;
+  revenue?: number;
+  className?: string;
+}
+
+export function StreamStats({
+  viewers,
+  peakViewers,
+  duration,
+  likes,
+  comments,
+  revenue,
+  className
+}: StreamStatsProps) {
+  const formatDuration = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    return h > 0 ? `${h}h ${m}m` : `${m}m`;
+  };
+
+  const stats = [
+    {
+      icon: Users,
+      label: 'Espectadores',
+      value: viewers.toLocaleString(),
+      sub: peakViewers ? `Pico: ${peakViewers.toLocaleString()}` : undefined
+    },
+    {
+      icon: Clock,
+      label: 'Duração',
+      value: formatDuration(duration)
+    },
+    {
+      icon: Heart,
+      label: 'Curtidas',
+      value: likes.toLocaleString()
+    },
+    {
+      icon: MessageCircle,
+      label: 'Comentários',
+      value: comments.toLocaleString()
+    }
+  ];
+
+  if (revenue !== undefined) {
+    stats.push({
+      icon: DollarSign,
+      label: 'Receita',
+      value: `R$ ${revenue.toFixed(2)}`,
+      sub: undefined
+    });
+  }
+
+  return (
+    <div className={cn('grid grid-cols-2 md:grid-cols-5 gap-4', className)}>
+      {stats.map((stat, i) => (
+        <div key={i} className="p-4 bg-card rounded-xl border">
+          <stat.icon className="h-5 w-5 text-primary mb-2" />
+          <p className="text-2xl font-bold">{stat.value}</p>
+          <p className="text-sm text-muted-foreground">{stat.label}</p>
+          {stat.sub && <p className="text-xs text-muted-foreground">{stat.sub}</p>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default StreamStats;
