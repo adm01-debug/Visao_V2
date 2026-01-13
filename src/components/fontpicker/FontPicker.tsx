@@ -1,0 +1,4 @@
+import React from 'react';import { cn } from '@/lib/utils';interface FontPickerProps { value: string; onChange: (font: string) => void; fonts?: string[]; className?: string; }
+const defaultFonts = ['Inter', 'Arial', 'Helvetica', 'Georgia', 'Times New Roman', 'Courier New', 'Roboto', 'Open Sans'];
+export function FontPicker({ value, onChange, fonts = defaultFonts, className }: FontPickerProps) { return (<select value={value} onChange={e => onChange(e.target.value)} className={cn('px-4 py-2 border rounded-lg', className)} style={{ fontFamily: value }}>{fonts.map(f => <option key={f} value={f} style={{ fontFamily: f }}>{f}</option>)}</select>); }
+export default FontPicker;
