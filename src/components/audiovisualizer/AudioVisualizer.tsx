@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface AudioVisualizerProps { levels: number[]; color?: string; className?: string; }
+export function AudioVisualizer({ levels, color = '#3b82f6', className }: AudioVisualizerProps) { return (<div className={cn('flex items-center justify-center gap-1 h-12', className)}>{levels.map((level, i) => <div key={i} className="w-1 bg-current rounded-full transition-all duration-75" style={{ height: `${Math.max(4, level * 100)}%`, backgroundColor: color }} />)}</div>); }
+export default AudioVisualizer;
