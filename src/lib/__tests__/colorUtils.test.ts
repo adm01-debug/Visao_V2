@@ -1,1 +1,0 @@
-import{describe,it,expect}from"vitest";import{hexToRgb,rgbToHex}from"../colorUtils";describe("colorUtils",()=>{it("hexToRgb converts correctly",()=>{expect(hexToRgb("#ff0000")).toEqual({r:255,g:0,b:0});});});

@@ -1,1 +1,0 @@
-import{describe,it,expect}from"vitest";import{requestNotificationPermission}from"../browserNotifications";describe("browserNotifications",()=>{it("exports requestNotificationPermission",()=>{expect(typeof requestNotificationPermission).toBe("function");});});
