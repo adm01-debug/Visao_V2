@@ -1,0 +1,4 @@
+import React from 'react';import { cn } from '@/lib/utils';interface FadeTextProps { text: string; direction?: 'up' | 'down' | 'left' | 'right'; delay?: number; className?: string; }
+const directions = { up: 'animate-in slide-in-from-bottom fade-in', down: 'animate-in slide-in-from-top fade-in', left: 'animate-in slide-in-from-right fade-in', right: 'animate-in slide-in-from-left fade-in' };
+export function FadeText({ text, direction = 'up', delay = 0, className }: FadeTextProps) { return <span className={cn(directions[direction], className)} style={{ animationDelay: `${delay}ms` }}>{text}</span>; }
+export default FadeText;
