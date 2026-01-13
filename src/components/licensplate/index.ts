@@ -1,0 +1,1 @@
+export { LicensePlateRecognition } from './LicensePlateRecognition';
