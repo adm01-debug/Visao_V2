@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface ProgressCardProps { title: string; progress: number; status?: string; className?: string; }
+export function ProgressCard({ title, progress, status, className }: ProgressCardProps) { return (<div className={cn('p-4 bg-card rounded-xl border', className)}><div className="flex items-center justify-between mb-3"><span className="font-medium">{title}</span><span className="text-lg font-bold">{progress}%</span></div><div className="h-2 bg-muted rounded-full overflow-hidden"><div className="h-full bg-primary rounded-full transition-all" style={{ width: `${progress}%` }} /></div>{status && <p className="text-sm text-muted-foreground mt-2">{status}</p>}</div>); }
+export default ProgressCard;
