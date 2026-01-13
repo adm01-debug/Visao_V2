@@ -3,13 +3,11 @@
  */
 
 export function parse(csv: string, delimiter = ","): string[][] {
-  return csv.split("
-").map(row => row.split(delimiter));
+  return csv.split("\n").map(row => row.split(delimiter));
 }
 
 export function stringify(data: string[][], delimiter = ","): string {
-  return data.map(row => row.join(delimiter)).join("
-");
+  return data.map(row => row.join(delimiter)).join("\n");
 }
 
 export function toObjects<T>(csv: string, delimiter = ","): T[] {
@@ -24,4 +22,3 @@ export function toObjects<T>(csv: string, delimiter = ","): T[] {
 }
 
 export default { parse, stringify, toObjects };
-

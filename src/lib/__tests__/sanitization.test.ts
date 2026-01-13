@@ -71,7 +71,7 @@ describe('sanitization', () => {
 
   describe('escapeSpecialChars', () => {
     it('should escape HTML entities', () => {
-      expect(escapeSpecialChars('<>&"\')).toBe('&lt;&gt;&amp;&quot;&#039;');
+      expect(escapeSpecialChars('<>&"\'')).toBe('&lt;&gt;&amp;&quot;&#039;');
     });
   });
 

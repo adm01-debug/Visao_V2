@@ -17,8 +17,7 @@ export function match(regex: RegExp, value: string): RegExpMatchArray | null {
 }
 
 export function escape(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\]/g, "\$&");
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 export default { EMAIL, URL, PHONE, UUID, IP, test, match, escape };
-

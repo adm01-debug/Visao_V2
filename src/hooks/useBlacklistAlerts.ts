@@ -39,7 +39,6 @@ export function useBlacklistAlerts({
 
   // Load persons and cameras cache
   useEffect(() => {
-    try {
     const loadCache = async () => {
       // Load blacklisted persons
       const { data: persons } = await supabase
@@ -127,8 +126,6 @@ export function useBlacklistAlerts({
       imageUrl,
     };
 
-    // rm
-
     // Update state
     setRecentAlerts(prev => [alert, ...prev.slice(0, 9)]);
     setAlertCount(prev => prev + 1);
@@ -154,8 +151,7 @@ export function useBlacklistAlerts({
     if (notificationsEnabled && getBrowserNotificationsEnabled() && getNotificationPermission() === 'granted') {
       showBrowserNotification({
         title: `🚨 ALERTA DE SEGURANÇA`,
-        body: `${personInfo.name} detectado em ${cameraName}
-Confiança: ${(confidence * 100).toFixed(0)}%`,
+        body: `${personInfo.name} detectado em ${cameraName}\nConfiança: ${(confidence * 100).toFixed(0)}%`,
         tag: `blacklist-${logId}`,
         requireInteraction: true,
         onClick: () => {
@@ -185,10 +181,7 @@ Confiança: ${(confidence * 100).toFixed(0)}%`,
 
   // Subscribe to realtime recognition logs
   useEffect(() => {
-    try {
     if (!enabled) return;
-
-    // rm
 
     const channel = supabase
       .channel('blacklist-alerts')
@@ -209,8 +202,6 @@ Confiança: ${(confidence * 100).toFixed(0)}%`,
             image_url: string | null;
           };
 
-          // rm
-
           // Only process if person was recognized and has confidence
           if (log.recognized && log.person_id && log.confidence) {
             await handleBlacklistAlert(
@@ -223,12 +214,9 @@ Confiança: ${(confidence * 100).toFixed(0)}%`,
           }
         }
       )
-      .subscribe((status) => {
-        // rm
-      });
+      .subscribe();
 
     return () => {
-      // rm
       supabase.removeChannel(channel);
     };
   }, [enabled, handleBlacklistAlert]);

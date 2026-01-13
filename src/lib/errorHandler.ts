@@ -28,8 +28,7 @@ export function isAppError(error: unknown): error is AppError {
 }
 
 export function logError(error: unknown): void {
-);
+  console.error('[Error]:', error);
 }
 
 export default { AppError, handleError, isAppError, logError };
-
