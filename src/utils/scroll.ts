@@ -98,3 +98,29 @@ export const smoothScrollTo = (targetY: number, duration = 500): void => {
 
   requestAnimationFrame(step);
 };
+
+/**
+ * Register scroll event listener
+ */
+export const onScroll = (callback: () => void): (() => void) => {
+  window.addEventListener('scroll', callback);
+  return () => window.removeEventListener('scroll', callback);
+};
+
+export default {
+  scrollToTop,
+  scrollToBottom,
+  scrollToElement,
+  getScrollPosition,
+  getScrollPercent,
+  isScrolledToBottom,
+  isScrolledToTop,
+  lockScroll,
+  unlockScroll,
+  isElementInViewport,
+  getElementScrollPercent,
+  scrollElementToTop,
+  scrollElementToBottom,
+  smoothScrollTo,
+  onScroll,
+};
