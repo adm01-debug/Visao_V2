@@ -1,0 +1,1 @@
+export { AIDetectionBox } from './AIDetectionBox';
