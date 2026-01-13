@@ -1,11 +1,15 @@
 /**
- * VISÃO - Sistema de Vigilância Inteligente
- * Sidebar Components - Barrel Export
+ * VISÃO - Sidebar Module Barrel Export
  */
 
-export * from './AnimatedCategoryIcon';
-export * from './CategoryStatusIndicator';
-export * from './QuickSearchDialog';
-export * from './SidebarComponents';
-export * from './config';
-export * from './types';
+// Components
+export * from "./components";
+
+// Hooks
+export { useSidebarState } from "./hooks/useSidebarState";
+
+// Config
+export { createSidebarCategories } from "./config/categories";
+
+// Types
+export * from "./types";
