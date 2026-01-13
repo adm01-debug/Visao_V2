@@ -5,14 +5,14 @@
 
 import { memo } from "react";
 import { cn } from "@/lib/utils";
-import { useSidebarState } from "./hooks/useSidebarState";
-import { SidebarContent, SidebarMobile, QuickSearchDialog } from "./components";
+import { useSidebarState } from "./sidebar/hooks/useSidebarState";
+import { SidebarContent, SidebarMobile, QuickSearchDialog } from "./sidebar/components";
 
 interface SidebarProps {
   className?: string;
 }
 
-function Sidebar({ className }: SidebarProps) {
+function SidebarComponent({ className }: SidebarProps) {
   const state = useSidebarState();
 
   return (
@@ -39,4 +39,5 @@ function Sidebar({ className }: SidebarProps) {
   );
 }
 
-export default memo(Sidebar);
+export const Sidebar = memo(SidebarComponent);
+export default Sidebar;
