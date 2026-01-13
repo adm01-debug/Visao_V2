@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';import { Button } from '@/components/ui/button';interface FormActionsProps { onSubmit?: () => void; onCancel?: () => void; submitText?: string; cancelText?: string; loading?: boolean; className?: string; }
+export function FormActions({ onSubmit, onCancel, submitText = 'Salvar', cancelText = 'Cancelar', loading, className }: FormActionsProps) { return (<div className={cn('flex justify-end gap-3 pt-4', className)}>{onCancel && <Button variant="outline" onClick={onCancel} disabled={loading}>{cancelText}</Button>}{onSubmit && <Button onClick={onSubmit} disabled={loading}>{loading ? 'Salvando...' : submitText}</Button>}</div>); }
+export default FormActions;
