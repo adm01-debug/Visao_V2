@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface Gradient2Props { from: string; to: string; direction?: 'r' | 'l' | 't' | 'b' | 'tr' | 'tl' | 'br' | 'bl'; className?: string; children?: React.ReactNode; }
+export function Gradient2({ from, to, direction = 'r', className, children }: Gradient2Props) { return <div className={cn(`bg-gradient-to-${direction}`, className)} style={{ '--tw-gradient-from': from, '--tw-gradient-to': to } as React.CSSProperties}>{children}</div>; }
+export default Gradient2;
