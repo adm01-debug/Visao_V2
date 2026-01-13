@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface PulseEffectProps { color?: string; size?: number; duration?: number; children?: React.ReactNode; className?: string; }
+export function PulseEffect({ color = '#3b82f6', size = 40, duration = 2, children, className }: PulseEffectProps) { return (<div className={cn('relative inline-flex items-center justify-center', className)}><span className="absolute rounded-full animate-ping opacity-75" style={{ width: size, height: size, backgroundColor: color, animationDuration: `${duration}s` }} /><span className="relative rounded-full flex items-center justify-center" style={{ width: size * 0.6, height: size * 0.6, backgroundColor: color }}>{children}</span></div>); }
+export default PulseEffect;
