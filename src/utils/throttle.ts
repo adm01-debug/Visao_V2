@@ -9,25 +9,25 @@
 // TIPOS
 // ============================================
 
-type AnyFunction = (...args: never[]) => unknown;
+export type AnyFunction = (...args: never[]) => unknown;
 
-interface ThrottleOptions {
+export interface ThrottleOptions {
   leading?: boolean;
   trailing?: boolean;
 }
 
-interface DebounceOptions {
+export interface DebounceOptions {
   leading?: boolean;
   maxWait?: number;
 }
 
-interface ThrottledFunction<T extends AnyFunction> {
+export interface ThrottledFunction<T extends AnyFunction> {
   (...args: Parameters<T>): ReturnType<T> | undefined;
   cancel: () => void;
   flush: () => ReturnType<T> | undefined;
 }
 
-interface DebouncedFunction<T extends AnyFunction> {
+export interface DebouncedFunction<T extends AnyFunction> {
   (...args: Parameters<T>): ReturnType<T> | undefined;
   cancel: () => void;
   flush: () => ReturnType<T> | undefined;

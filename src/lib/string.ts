@@ -1,34 +1,45 @@
 /**
  * String utilities
+ * Re-exports from consolidated utils/string module
+ * 
+ * @module lib/string
  */
 
-export function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
+import * as stringUtils from '@/utils/string';
 
-export function truncate(str: string, length: number): string {
-  return str.length > length ? str.slice(0, length) + "..." : str;
-}
+export {
+  capitalize,
+  capitalizeWords,
+  camelCase,
+  pascalCase,
+  kebabCase,
+  snakeCase,
+  truncate,
+  truncateWords,
+  slugify,
+  stripHtml,
+  escapeHtml,
+  unescapeHtml,
+  reverse,
+  isPalindrome,
+  countWords,
+  countChars,
+  padStart,
+  padEnd,
+  padCenter,
+  removeAccents,
+  mask,
+  isBlank,
+  isEmpty,
+  wordWrap,
+} from '@/utils/string';
 
-export function slugify(str: string): string {
-  return str
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_-]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
-export function camelCase(str: string): string {
-  return str.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
-}
-
-export function kebabCase(str: string): string {
-  return str.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
-}
-
+// Legacy template function for backward compatibility
 export function template(str: string, data: Record<string, unknown>): string {
   return str.replace(/\{\{(\w+)\}\}/g, (_, key) => String(data[key] || ""));
 }
 
-export default { capitalize, truncate, slugify, camelCase, kebabCase, template };
-
+export default { 
+  ...stringUtils, 
+  template 
+};

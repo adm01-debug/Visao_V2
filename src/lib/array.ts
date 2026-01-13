@@ -1,40 +1,41 @@
 /**
  * Array utilities
+ * Re-exports from consolidated utils/array module
+ * 
+ * @module lib/array
  */
 
-export function unique<T>(arr: T[]): T[] {
-  return [...new Set(arr)];
-}
+import arrayUtils from '@/utils/array';
 
-export function chunk<T>(arr: T[], size: number): T[][] {
-  const result: T[][] = [];
-  for (let i = 0; i < arr.length; i += size) {
-    result.push(arr.slice(i, i + size));
-  }
-  return result;
-}
+export {
+  chunk,
+  unique,
+  uniqueBy,
+  groupBy,
+  sortBy,
+  shuffle,
+  first,
+  last,
+  at,
+  compact,
+  truthy,
+  difference,
+  intersection,
+  range,
+  fill,
+  sum,
+  average,
+  min,
+  max,
+  countBy,
+} from '@/utils/array';
 
-export function shuffle<T>(arr: T[]): T[] {
-  const result = [...arr];
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-  return result;
-}
-
+// Legacy flatten function for backward compatibility
 export function flatten<T>(arr: (T | T[])[]): T[] {
   return arr.flat() as T[];
 }
 
-export function groupBy<T>(arr: T[], key: keyof T): Record<string, T[]> {
-  return arr.reduce((acc, item) => {
-    const k = String(item[key]);
-    acc[k] = acc[k] || [];
-    acc[k].push(item);
-    return acc;
-  }, {} as Record<string, T[]>);
-}
-
-export default { unique, chunk, shuffle, flatten, groupBy };
-
+export default {
+  ...arrayUtils,
+  flatten,
+};
