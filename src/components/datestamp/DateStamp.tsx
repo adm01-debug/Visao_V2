@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface DateStampProps { date: Date; className?: string; }
+export function DateStamp({ date, className }: DateStampProps) { const today = new Date(); const yesterday = new Date(today); yesterday.setDate(yesterday.getDate() - 1); const isToday = date.toDateString() === today.toDateString(); const isYesterday = date.toDateString() === yesterday.toDateString(); const label = isToday ? 'Hoje' : isYesterday ? 'Ontem' : date.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' }); return (<div className={cn('flex items-center justify-center py-2', className)}><span className="px-3 py-1 bg-muted text-muted-foreground text-xs rounded-full">{label}</span></div>); }
+export default DateStamp;
