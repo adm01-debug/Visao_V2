@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';import { Link } from 'lucide-react';
+export function UrlInput({ className, ...props }: React.InputHTMLAttributes<HTMLInputElement>) { return (<div className={cn('relative', className)}><Link className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /><input {...props} type="url" placeholder="https://" className="w-full pl-10 pr-3 py-2 border rounded-lg" /></div>); }
+export default UrlInput;
