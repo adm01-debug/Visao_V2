@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface CharacterCountProps { current: number; max: number; className?: string; }
+export function CharacterCount({ current, max, className }: CharacterCountProps) { const pct = (current / max) * 100; const color = pct > 100 ? 'text-red-500' : pct > 90 ? 'text-yellow-500' : 'text-muted-foreground'; return (<span className={cn('text-sm', color, className)}>{current}/{max}</span>); }
+export default CharacterCount;
