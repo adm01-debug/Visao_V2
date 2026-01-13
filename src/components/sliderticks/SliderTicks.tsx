@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface SliderTicksProps { value: number; onChange: (value: number) => void; ticks: { value: number; label: string }[]; className?: string; }
+export function SliderTicks({ value, onChange, ticks, className }: SliderTicksProps) { return (<div className={cn('space-y-2', className)}><input type="range" min={ticks[0].value} max={ticks[ticks.length - 1].value} value={value} onChange={e => onChange(Number(e.target.value))} className="w-full" /><div className="flex justify-between text-xs text-muted-foreground">{ticks.map(t => (<span key={t.value} className={cn(value === t.value && 'text-primary font-medium')}>{t.label}</span>))}</div></div>); }
+export default SliderTicks;
