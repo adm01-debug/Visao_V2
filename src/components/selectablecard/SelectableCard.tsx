@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';import { Check } from 'lucide-react';interface SelectableCardProps { children: React.ReactNode; selected?: boolean; onSelect?: () => void; className?: string; }
+export function SelectableCard({ children, selected, onSelect, className }: SelectableCardProps) { return <div onClick={onSelect} className={cn('relative bg-card rounded-xl border-2 p-4 cursor-pointer transition-all', selected ? 'border-primary' : 'border-transparent hover:border-muted-foreground/25', className)}>{selected && <div className="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center"><Check className="h-4 w-4 text-primary-foreground" /></div>}{children}</div>; }
+export default SelectableCard;
