@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface WaterfallProps { children: React.ReactNode; columns?: number; className?: string; }
+export function Waterfall({ children, columns = 3, className }: WaterfallProps) { return <div className={cn(`columns-${columns} gap-4`, className)}>{React.Children.map(children, child => <div className="break-inside-avoid mb-4">{child}</div>)}</div>; }
+export default Waterfall;
