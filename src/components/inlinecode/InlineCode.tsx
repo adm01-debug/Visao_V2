@@ -1,0 +1,4 @@
+import React from 'react';import { cn } from '@/lib/utils';interface InlineCodeProps { children: React.ReactNode; variant?: 'default' | 'success' | 'error' | 'warning'; className?: string; }
+const variants = { default: 'bg-muted text-foreground', success: 'bg-green-100 text-green-700', error: 'bg-red-100 text-red-700', warning: 'bg-yellow-100 text-yellow-700' };
+export function InlineCode({ children, variant = 'default', className }: InlineCodeProps) { return (<code className={cn('px-1.5 py-0.5 rounded text-sm font-mono', variants[variant], className)}>{children}</code>); }
+export default InlineCode;
