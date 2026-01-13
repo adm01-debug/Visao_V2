@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface PivotTableProps { rows: string[]; cols: string[]; data: Record<string, Record<string, number>>; className?: string; }
+export function PivotTable({ rows, cols, data, className }: PivotTableProps) { return (<table className={cn('w-full', className)}><thead><tr className="border-b"><th className="px-4 py-3" />{cols.map(col => <th key={col} className="px-4 py-3 text-center">{col}</th>)}</tr></thead><tbody>{rows.map(row => <tr key={row} className="border-b"><th className="px-4 py-3 text-left font-medium">{row}</th>{cols.map(col => <td key={col} className="px-4 py-3 text-center">{data[row]?.[col] ?? '-'}</td>)}</tr>)}</tbody></table>); }
+export default PivotTable;
