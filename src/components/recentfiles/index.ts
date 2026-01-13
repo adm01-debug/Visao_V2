@@ -1,0 +1,1 @@
+export { RecentFiles } from './RecentFiles';
