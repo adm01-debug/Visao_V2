@@ -1,0 +1,4 @@
+import React from 'react';import { cn } from '@/lib/utils';interface SkillBadgeProps { name: string; level?: 'beginner' | 'intermediate' | 'advanced' | 'expert'; verified?: boolean; className?: string; }
+const levelColors = { beginner: 'bg-gray-100 text-gray-700', intermediate: 'bg-blue-100 text-blue-700', advanced: 'bg-purple-100 text-purple-700', expert: 'bg-green-100 text-green-700' };
+export function SkillBadge({ name, level, verified, className }: SkillBadgeProps) { return (<span className={cn('inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium', level ? levelColors[level] : 'bg-muted', className)}>{name}{verified && <span className="text-primary">✓</span>}</span>); }
+export default SkillBadge;
