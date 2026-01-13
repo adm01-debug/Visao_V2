@@ -1,0 +1,1 @@
+export { CNPJInput } from './CNPJInput';
