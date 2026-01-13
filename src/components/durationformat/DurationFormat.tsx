@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';interface DurationFormatProps { seconds: number; format?: 'short' | 'long'; className?: string; }
+export function DurationFormat({ seconds, format = 'short', className }: DurationFormatProps) { const h = Math.floor(seconds / 3600); const m = Math.floor((seconds % 3600) / 60); const s = seconds % 60; if (format === 'short') return <span className={cn('font-mono', className)}>{h > 0 ? `${h}:` : ''}{m.toString().padStart(2, '0')}:{s.toString().padStart(2, '0')}</span>; const parts = []; if (h) parts.push(`${h}h`); if (m) parts.push(`${m}min`); if (s || parts.length === 0) parts.push(`${s}s`); return <span className={className}>{parts.join(' ')}</span>; }
+export default DurationFormat;
