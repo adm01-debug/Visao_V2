@@ -1,0 +1,3 @@
+import React from 'react';import { cn } from '@/lib/utils';import { Loader2 } from 'lucide-react';interface LoadingCardProps { message?: string; className?: string; }
+export function LoadingCard({ message = 'Carregando...', className }: LoadingCardProps) { return (<div className={cn('p-6 rounded-lg border bg-card text-center', className)}><Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" /><p className="text-muted-foreground">{message}</p></div>); }
+export default LoadingCard;
