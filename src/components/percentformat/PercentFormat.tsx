@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface PercentFormatProps { value: number; decimals?: number; showSign?: boolean; className?: string; }
-export function PercentFormat({ value, decimals = 1, showSign, className }: PercentFormatProps) { const formatted = value.toFixed(decimals); const sign = showSign && value > 0 ? '+' : ''; const color = value > 0 ? 'text-green-500' : value < 0 ? 'text-red-500' : ''; return <span className={cn('tabular-nums', color, className)}>{sign}{formatted}%</span>; }
-export default PercentFormat;

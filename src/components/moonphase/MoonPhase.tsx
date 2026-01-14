@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Moon } from 'lucide-react';interface MoonPhaseProps { phase: 'new' | 'waxing-crescent' | 'first-quarter' | 'waxing-gibbous' | 'full' | 'waning-gibbous' | 'last-quarter' | 'waning-crescent'; className?: string; }
-const phases = { 'new': 'Lua Nova', 'waxing-crescent': 'Crescente Côncava', 'first-quarter': 'Quarto Crescente', 'waxing-gibbous': 'Crescente Convexa', 'full': 'Lua Cheia', 'waning-gibbous': 'Minguante Convexa', 'last-quarter': 'Quarto Minguante', 'waning-crescent': 'Minguante Côncava' };
-export function MoonPhase({ phase, className }: MoonPhaseProps) { return (<div className={cn('flex items-center gap-3', className)}><Moon className={cn('h-6 w-6', phase === 'full' ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground')} /><span className="font-medium">{phases[phase]}</span></div>); }
-export default MoonPhase;

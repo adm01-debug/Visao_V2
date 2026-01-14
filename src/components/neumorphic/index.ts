@@ -1,1 +1,0 @@
-export { Neumorphic } from './Neumorphic';

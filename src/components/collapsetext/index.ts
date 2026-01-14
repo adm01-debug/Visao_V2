@@ -1,1 +1,0 @@
-export { CollapseText } from './CollapseText';

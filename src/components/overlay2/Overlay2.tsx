@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface Overlay2Props { children?: React.ReactNode; visible: boolean; onClick?: () => void; blur?: boolean; className?: string; }
-export function Overlay2({ children, visible, onClick, blur, className }: Overlay2Props) { if (!visible) return null; return <div onClick={onClick} className={cn('fixed inset-0 z-50 bg-black/50', blur && 'backdrop-blur-sm', className)}>{children}</div>; }
-export default Overlay2;

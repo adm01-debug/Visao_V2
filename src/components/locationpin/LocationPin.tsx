@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { MapPin } from 'lucide-react';interface LocationPinProps { address: string; city?: string; onClick?: () => void; className?: string; }
-export function LocationPin({ address, city, onClick, className }: LocationPinProps) { return (<button onClick={onClick} className={cn('flex items-start gap-3 p-3 bg-card rounded-lg border hover:bg-accent text-left', className)}><MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" /><div><p className="font-medium">{address}</p>{city && <p className="text-sm text-muted-foreground">{city}</p>}</div></button>); }
-export default LocationPin;

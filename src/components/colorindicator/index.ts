@@ -1,1 +1,0 @@
-export { ColorIndicator } from './ColorIndicator';

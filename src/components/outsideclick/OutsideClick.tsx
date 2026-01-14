@@ -1,3 +1,0 @@
-import React, { useEffect, useRef } from 'react';interface OutsideClickProps { children: React.ReactNode; onOutsideClick: () => void; }
-export function OutsideClick({ children, onOutsideClick }: OutsideClickProps) { const ref = useRef<HTMLDivElement>(null); useEffect(() => { const handler = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) onOutsideClick(); }; document.addEventListener('mousedown', handler); return () => document.removeEventListener('mousedown', handler); }, [onOutsideClick]); return <div ref={ref}>{children}</div>; }
-export default OutsideClick;

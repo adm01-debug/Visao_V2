@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Users } from 'lucide-react';interface OnlineCounterProps { online: number; total?: number; className?: string; }
-export function OnlineCounter({ online, total, className }: OnlineCounterProps) { return (<div className={cn('flex items-center gap-2 px-3 py-2 bg-card rounded-lg border', className)}><Users className="h-4 w-4 text-green-500" /><span className="text-sm font-medium">{online} online</span>{total && <span className="text-xs text-muted-foreground">/ {total}</span>}</div>); }
-export default OnlineCounter;

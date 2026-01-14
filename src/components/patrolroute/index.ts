@@ -1,1 +1,0 @@
-export { PatrolRoute } from './PatrolRoute';

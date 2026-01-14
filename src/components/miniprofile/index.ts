@@ -1,1 +1,0 @@
-export { MiniProfile } from './MiniProfile';
