@@ -1,1 +1,0 @@
-export { CountUpEffect } from './CountUpEffect';

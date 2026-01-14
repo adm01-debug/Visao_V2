@@ -1,3 +1,0 @@
-import React from 'react';import { AlertTriangle } from 'lucide-react';interface Props { children: React.ReactNode; fallback?: React.ReactNode; }interface State { hasError: boolean; error?: Error; }
-export class ErrorBoundary2 extends React.Component<Props, State> { state: State = { hasError: false }; static getDerivedStateFromError(error: Error) { return { hasError: true, error }; } render() { if (this.state.hasError) { return this.props.fallback || (<div className="p-6 text-center"><AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" /><h3 className="font-bold text-lg mb-2">Algo deu errado</h3><p className="text-muted-foreground">{this.state.error?.message}</p></div>); } return this.props.children; } }
-export default ErrorBoundary2;

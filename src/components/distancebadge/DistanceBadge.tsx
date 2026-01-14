@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Navigation } from 'lucide-react';interface DistanceBadgeProps { distance: number; unit?: 'km' | 'm'; className?: string; }
-export function DistanceBadge({ distance, unit = 'km', className }: DistanceBadgeProps) { const formatted = unit === 'km' ? `${distance.toFixed(1)} km` : `${Math.round(distance)} m`; return (<span className={cn('inline-flex items-center gap-1.5 px-2 py-1 bg-muted rounded-full text-xs font-medium', className)}><Navigation className="h-3 w-3" />{formatted}</span>); }
-export default DistanceBadge;

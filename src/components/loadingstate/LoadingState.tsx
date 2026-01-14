@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Loader2 } from 'lucide-react';interface LoadingStateProps { title?: string; message?: string; size?: 'sm' | 'md' | 'lg'; className?: string; }
-const sizes = { sm: { spinner: 'h-6 w-6', title: 'text-sm', message: 'text-xs' }, md: { spinner: 'h-10 w-10', title: 'text-base', message: 'text-sm' }, lg: { spinner: 'h-16 w-16', title: 'text-lg', message: 'text-base' } };
-export function LoadingState({ title = 'Carregando...', message, size = 'md', className }: LoadingStateProps) { const s = sizes[size]; return (<div className={cn('flex flex-col items-center justify-center py-12 px-4 text-center', className)}><Loader2 className={cn('animate-spin text-primary mb-4', s.spinner)} /><h3 className={cn('font-semibold', s.title)}>{title}</h3>{message && <p className={cn('text-muted-foreground mt-1', s.message)}>{message}</p>}</div>); }
-export default LoadingState;

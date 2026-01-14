@@ -1,1 +1,0 @@
-export { FixedHeader } from './FixedHeader';

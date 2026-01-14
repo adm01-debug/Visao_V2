@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface ImageFilterProps { src: string; filter?: 'grayscale' | 'sepia' | 'blur' | 'brightness' | 'contrast' | 'saturate' | 'none'; intensity?: number; className?: string; }
-const filters = { none: '', grayscale: 'grayscale', sepia: 'sepia', blur: 'blur', brightness: 'brightness', contrast: 'contrast', saturate: 'saturate' };
-export function ImageFilter({ src, filter = 'none', intensity = 100, className }: ImageFilterProps) { const style = filter === 'none' ? {} : filter === 'blur' ? { filter: `blur(${intensity / 25}px)` } : { filter: `${filters[filter]}(${intensity}%)` }; return <img src={src} alt="" className={cn(className)} style={style} />; }
-export default ImageFilter;

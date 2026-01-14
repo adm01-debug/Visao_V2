@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { GripVertical } from 'lucide-react';interface DraggableListProps { items: { id: string; content: React.ReactNode }[]; onReorder: (items: { id: string }[]) => void; className?: string; }
-export function DraggableList({ items, onReorder, className }: DraggableListProps) { return (<div className={cn('space-y-2', className)}>{items.map((item, i) => (<div key={item.id} draggable className="flex items-center gap-2 p-3 bg-card border rounded-lg cursor-move hover:bg-accent"><GripVertical className="h-4 w-4 text-muted-foreground" /><div className="flex-1">{item.content}</div></div>))}</div>); }
-export default DraggableList;

@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Forward } from 'lucide-react';interface ForwardMessageProps { from: string; className?: string; children: React.ReactNode; }
-export function ForwardMessage({ from, className, children }: ForwardMessageProps) { return (<div className={cn('space-y-1', className)}><div className="flex items-center gap-1 text-xs text-muted-foreground"><Forward className="h-3 w-3" /><span>Encaminhada de {from}</span></div>{children}</div>); }
-export default ForwardMessage;

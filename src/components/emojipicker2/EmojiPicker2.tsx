@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface EmojiPicker2Props { onSelect?: (emoji: string) => void; className?: string; }
-const emojis = ['😀', '😂', '😍', '🥰', '😎', '🤔', '😢', '😡', '👍', '👎', '❤️', '🔥', '🎉', '👏', '🙏', '💪', '🤝', '👋', '🙌', '💯'];
-export function EmojiPicker2({ onSelect, className }: EmojiPicker2Props) { return (<div className={cn('grid grid-cols-5 gap-1 p-2 bg-card border rounded-lg shadow-lg', className)}>{emojis.map(emoji => (<button key={emoji} onClick={() => onSelect?.(emoji)} className="w-8 h-8 text-xl hover:bg-accent rounded">{emoji}</button>))}</div>); }
-export default EmojiPicker2;

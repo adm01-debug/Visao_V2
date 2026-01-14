@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface FunnelStage { label: string; value: number; color?: string; }interface FunnelProps { stages: FunnelStage[]; className?: string; }
-export function Funnel({ stages, className }: FunnelProps) { const max = stages[0]?.value || 1; return (<div className={cn('space-y-2', className)}>{stages.map((stage, i) => { const width = (stage.value / max) * 100; return (<div key={i} className="text-center"><div className="h-12 rounded flex items-center justify-center text-white font-medium mx-auto transition-all" style={{ width: `${width}%`, backgroundColor: stage.color || '#3b82f6' }}>{stage.value}</div><p className="text-sm text-muted-foreground mt-1">{stage.label}</p></div>); })}</div>); }
-export default Funnel;

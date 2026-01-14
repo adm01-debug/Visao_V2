@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Crosshair, Copy } from 'lucide-react';interface CoordinatesDisplayProps { lat: number; lng: number; onCopy?: () => void; className?: string; }
-export function CoordinatesDisplay({ lat, lng, onCopy, className }: CoordinatesDisplayProps) { return (<div className={cn('flex items-center gap-3 p-3 bg-muted rounded-lg font-mono text-sm', className)}><Crosshair className="h-4 w-4 text-muted-foreground" /><span>{lat.toFixed(6)}, {lng.toFixed(6)}</span><button onClick={onCopy} className="p-1 hover:bg-accent rounded ml-auto"><Copy className="h-4 w-4" /></button></div>); }
-export default CoordinatesDisplay;

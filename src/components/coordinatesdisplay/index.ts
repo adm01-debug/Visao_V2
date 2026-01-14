@@ -1,1 +1,0 @@
-export { CoordinatesDisplay } from './CoordinatesDisplay';

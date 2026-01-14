@@ -1,1 +1,0 @@
-export { CompactStat } from './CompactStat';

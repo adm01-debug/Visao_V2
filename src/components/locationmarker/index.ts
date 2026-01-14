@@ -1,1 +1,0 @@
-export { LocationMarker } from './LocationMarker';

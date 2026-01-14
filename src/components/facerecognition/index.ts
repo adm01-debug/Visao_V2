@@ -1,1 +1,0 @@
-export { FaceRecognition } from './FaceRecognition';

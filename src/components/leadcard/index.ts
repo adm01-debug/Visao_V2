@@ -1,1 +1,0 @@
-export { LeadCard } from './LeadCard';

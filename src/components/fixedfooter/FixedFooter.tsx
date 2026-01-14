@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface FixedFooterProps { children: React.ReactNode; className?: string; }
-export function FixedFooter({ children, className }: FixedFooterProps) { return (<footer className={cn('fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60', className)}>{children}</footer>); }
-export default FixedFooter;

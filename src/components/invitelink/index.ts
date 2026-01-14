@@ -1,1 +1,0 @@
-export { InviteLink } from './InviteLink';

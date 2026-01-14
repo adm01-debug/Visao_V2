@@ -1,1 +1,0 @@
-export { HumidityIndicator } from './HumidityIndicator';

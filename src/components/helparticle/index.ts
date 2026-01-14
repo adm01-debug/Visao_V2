@@ -1,1 +1,0 @@
-export { HelpArticle } from './HelpArticle';

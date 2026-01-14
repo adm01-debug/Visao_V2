@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface CompactStatProps { label: string; value: string | number; sublabel?: string; className?: string; }
-export function CompactStat({ label, value, sublabel, className }: CompactStatProps) { return (<div className={cn('text-center', className)}><p className="text-xs text-muted-foreground uppercase tracking-wide">{label}</p><p className="text-2xl font-bold mt-1">{value}</p>{sublabel && <p className="text-xs text-muted-foreground mt-1">{sublabel}</p>}</div>); }
-export default CompactStat;

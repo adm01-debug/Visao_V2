@@ -1,1 +1,0 @@
-export { IncidentReport } from './IncidentReport';
