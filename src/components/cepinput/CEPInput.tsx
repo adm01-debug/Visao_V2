@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { MapPin } from 'lucide-react';interface CEPInputProps { value: string; onChange: (value: string) => void; className?: string; }
-export function CEPInput({ value, onChange, className }: CEPInputProps) { const format = (v: string) => { const n = v.replace(/\D/g, ''); return n.length <= 5 ? n : `${n.slice(0,5)}-${n.slice(5,8)}`; }; return (<div className="relative"><MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /><input value={format(value)} onChange={e => onChange(e.target.value.replace(/\D/g, '').slice(0, 8))} placeholder="00000-000" className={cn('w-full pl-10 pr-4 py-2 rounded-lg border bg-background', className)} /></div>); }
-export default CEPInput;

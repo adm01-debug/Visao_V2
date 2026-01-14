@@ -1,1 +1,0 @@
-export { CNPJFormat } from './CNPJFormat';

@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface BentoItem { content: React.ReactNode; colSpan?: number; rowSpan?: number; }interface BentoProps { items: BentoItem[]; columns?: number; gap?: number; className?: string; }
-export function Bento({ items, columns = 4, gap = 4, className }: BentoProps) { return <div className={cn('grid', `grid-cols-${columns}`, `gap-${gap}`, className)}>{items.map((item, i) => <div key={i} className={cn(item.colSpan && `col-span-${item.colSpan}`, item.rowSpan && `row-span-${item.rowSpan}`)}>{item.content}</div>)}</div>; }
-export default Bento;

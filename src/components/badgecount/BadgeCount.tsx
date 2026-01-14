@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface BadgeCountProps { count: number; max?: number; variant?: 'default' | 'primary' | 'danger'; className?: string; }
-const variants = { default: 'bg-muted text-muted-foreground', primary: 'bg-primary text-primary-foreground', danger: 'bg-red-500 text-white' };
-export function BadgeCount({ count, max = 99, variant = 'default', className }: BadgeCountProps) { const display = count > max ? `${max}+` : count.toString(); return (<span className={cn('inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-xs font-medium', variants[variant], className)}>{display}</span>); }
-export default BadgeCount;

@@ -1,1 +1,0 @@
-export { AIDetectionCard } from './AIDetectionCard';

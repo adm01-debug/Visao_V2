@@ -1,5 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface BigNumberProps { value: number | string; label?: string; prefix?: string; suffix?: string; trend?: 'up' | 'down' | 'neutral'; size?: 'sm' | 'md' | 'lg' | 'xl'; className?: string; }
-const sizes = { sm: 'text-2xl', md: 'text-4xl', lg: 'text-6xl', xl: 'text-8xl' };
-const trendColors = { up: 'text-green-500', down: 'text-red-500', neutral: 'text-muted-foreground' };
-export function BigNumber({ value, label, prefix, suffix, trend, size = 'lg', className }: BigNumberProps) { return (<div className={cn('text-center', className)}>{label && <p className="text-sm text-muted-foreground mb-2">{label}</p>}<p className={cn('font-bold tabular-nums', sizes[size], trend && trendColors[trend])}>{prefix}{value}{suffix}</p></div>); }
-export default BigNumber;

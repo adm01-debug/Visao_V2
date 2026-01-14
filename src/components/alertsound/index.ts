@@ -1,1 +1,0 @@
-export { AlertSound } from './AlertSound';

@@ -1,1 +1,0 @@
-export { BadgeCount } from './BadgeCount';

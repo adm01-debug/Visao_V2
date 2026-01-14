@@ -1,1 +1,0 @@
-export { BoletoFormat } from './BoletoFormat';

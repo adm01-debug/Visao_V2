@@ -1,1 +1,0 @@
-export { AirQualityIndex } from './AirQualityIndex';
