@@ -2,6 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Battery, BatteryCharging, BatteryLow, BatteryWarning } from 'lucide-react';
 
+interface BatteryManager {
+  charging: boolean;
+  chargingTime: number;
+  dischargingTime: number;
+  level: number;
+  addEventListener(type: string, listener: EventListener): void;
+  removeEventListener(type: string, listener: EventListener): void;
+}
+
+declare global {
+  interface Navigator {
+    getBattery?(): Promise<BatteryManager>;
+  }
+}
+
+
 interface BatteryStatusProps {
   showPercentage?: boolean;
   className?: string;
@@ -13,7 +29,7 @@ export function BatteryStatus({ showPercentage = true, className }: BatteryStatu
   useEffect(() => {
     const getBattery = async () => {
       try {
-        const batt = await (navigator as any).getBattery?.();
+        const batt = await (navigator as BatteryManager).getBattery?.();
         if (batt) {
           const update = () => setBattery({ level: batt.level * 100, charging: batt.charging });
           update();
