@@ -1,1 +1,0 @@
-export { SuggestedPrompts } from './SuggestedPrompts';

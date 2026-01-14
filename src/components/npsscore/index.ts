@@ -1,1 +1,0 @@
-export { NPSScore } from './NPSScore';

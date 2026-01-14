@@ -1,1 +1,0 @@
-export { ObjectDetection } from './ObjectDetection';

@@ -1,1 +1,0 @@
-export { Pinterest } from './Pinterest';

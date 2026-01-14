@@ -1,1 +1,0 @@
-export { LabelValue } from './LabelValue';

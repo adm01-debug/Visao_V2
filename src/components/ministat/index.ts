@@ -1,1 +1,0 @@
-export { MiniStat } from './MiniStat';

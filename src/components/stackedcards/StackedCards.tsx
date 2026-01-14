@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface StackedCardsProps { cards: React.ReactNode[]; offset?: number; className?: string; }
-export function StackedCards({ cards, offset = 8, className }: StackedCardsProps) { return <div className={cn('relative', className)} style={{ height: cards.length * offset + 200 }}>{cards.map((card, i) => <div key={i} className="absolute w-full" style={{ top: i * offset, zIndex: cards.length - i }}>{card}</div>)}</div>; }
-export default StackedCards;

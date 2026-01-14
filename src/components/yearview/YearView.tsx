@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface YearViewProps { year: number; onMonthClick?: (month: number) => void; highlightedMonths?: number[]; className?: string; }
-const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-export function YearView({ year, onMonthClick, highlightedMonths = [], className }: YearViewProps) { return (<div className={cn('', className)}><h2 className="text-2xl font-bold mb-6 text-center">{year}</h2><div className="grid grid-cols-3 md:grid-cols-4 gap-4">{months.map((m, i) => <button key={i} onClick={() => onMonthClick?.(i)} className={cn('p-4 rounded-lg border text-center hover:bg-accent transition-colors', highlightedMonths.includes(i) && 'bg-primary/10 border-primary')}><div className="font-semibold">{m}</div></button>)}</div></div>); }
-export default YearView;

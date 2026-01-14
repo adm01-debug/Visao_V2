@@ -1,1 +1,0 @@
-export { SelectSetting } from './SelectSetting';
