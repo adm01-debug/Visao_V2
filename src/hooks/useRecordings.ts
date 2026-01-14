@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook para gerenciar gravações de vídeo
@@ -82,7 +83,7 @@ export const useRecordings = (cameraId?: string): UseRecordingsReturn => {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Falha ao buscar gravações';
       setError(message);
-      console.error('useRecordings fetch error:', err);
+      logger.error('recordings',('useRecordings fetch error:', err);
     } finally {
       setLoading(false);
     }
@@ -130,7 +131,7 @@ export const useRecordings = (cameraId?: string): UseRecordingsReturn => {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Falha ao iniciar gravação';
       setError(message);
-      console.error('startRecording error:', err);
+      logger.error('recordings',('startRecording error:', err);
       return null;
     }
   }, [user]);
@@ -168,7 +169,7 @@ export const useRecordings = (cameraId?: string): UseRecordingsReturn => {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Falha ao parar gravação';
       setError(message);
-      console.error('stopRecording error:', err);
+      logger.error('recordings',('stopRecording error:', err);
       throw err;
     }
   }, [recordings]);
@@ -196,7 +197,7 @@ export const useRecordings = (cameraId?: string): UseRecordingsReturn => {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Falha ao deletar gravação';
       setError(message);
-      console.error('deleteRecording error:', err);
+      logger.error('recordings',('deleteRecording error:', err);
       throw err;
     }
   }, [recordings]);
