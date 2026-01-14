@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface Action { id: string; label: string; icon: React.ReactNode; onClick?: () => void; color?: string; }interface QuickActionsProps { actions: Action[]; className?: string; }
-export function QuickActions({ actions, className }: QuickActionsProps) { return (<div className={cn('grid grid-cols-4 gap-4', className)}>{actions.map(a => (<button key={a.id} onClick={a.onClick} className="flex flex-col items-center gap-2 p-4 hover:bg-accent rounded-xl"><div className={cn('p-3 rounded-full', a.color || 'bg-primary/10')}>{a.icon}</div><span className="text-sm font-medium text-center">{a.label}</span></button>))}</div>); }
-export default QuickActions;

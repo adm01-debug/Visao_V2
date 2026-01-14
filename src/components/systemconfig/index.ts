@@ -1,1 +1,0 @@
-export { SystemConfig } from './SystemConfig';

@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';interface SortButtonProps { label: string; direction?: 'asc' | 'desc' | null; onClick?: () => void; className?: string; }
-export function SortButton({ label, direction, onClick, className }: SortButtonProps) { const Icon = direction === 'asc' ? ArrowUp : direction === 'desc' ? ArrowDown : ArrowUpDown; return (<button onClick={onClick} className={cn('inline-flex items-center gap-1 text-sm font-medium hover:text-primary', className)}>{label}<Icon className={cn('h-4 w-4', direction && 'text-primary')} /></button>); }
-export default SortButton;

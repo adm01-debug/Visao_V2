@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { RefreshCw } from 'lucide-react';interface PullToRefreshProps { children: React.ReactNode; onRefresh: () => Promise<void>; className?: string; }
-export function PullToRefresh({ children, onRefresh, className }: PullToRefreshProps) { const [refreshing, setRefreshing] = React.useState(false); const handleRefresh = async () => { setRefreshing(true); await onRefresh(); setRefreshing(false); }; return (<div className={cn('relative', className)}>{refreshing && <div className="absolute top-0 left-0 right-0 flex justify-center py-4 bg-background/80 z-10"><RefreshCw className="h-5 w-5 animate-spin text-primary" /></div>}<div onTouchEnd={handleRefresh}>{children}</div></div>); }
-export default PullToRefresh;

@@ -13,7 +13,7 @@ export { TimeAgo } from './timeago';
 export { ErrorBoundary } from './ErrorBoundary';
 
 // MainLayout
-export { MainLayout, PageContent } from './MainLayout';
+export { MainLayout, PageContent } from './layout';
 
 // Sidebar
 export { Sidebar } from './Sidebar';

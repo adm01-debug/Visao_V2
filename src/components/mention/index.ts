@@ -1,1 +1,0 @@
-export { MentionInput } from './MentionInput';
