@@ -1,1 +1,0 @@
-export { SatisfactionScore } from './SatisfactionScore';

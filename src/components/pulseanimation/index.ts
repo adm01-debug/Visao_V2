@@ -1,1 +1,0 @@
-export { PulseAnimation } from './PulseAnimation';

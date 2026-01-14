@@ -1,1 +1,0 @@
-export { SecurityScore } from './SecurityScore';

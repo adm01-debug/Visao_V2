@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface ResponsiveImageProps { src: string; alt?: string; sizes?: string; className?: string; }
-export function ResponsiveImage({ src, alt, sizes = '100vw', className }: ResponsiveImageProps) { return <img src={src} alt={alt || ''} sizes={sizes} loading="lazy" className={cn('w-full h-auto', className)} />; }
-export default ResponsiveImage;

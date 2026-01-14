@@ -1,1 +1,0 @@
-export { SearchWithFilters } from './SearchWithFilters';

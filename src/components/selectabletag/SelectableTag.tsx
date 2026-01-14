@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Check } from 'lucide-react';interface SelectableTagProps { children: React.ReactNode; selected?: boolean; onClick?: () => void; className?: string; }
-export function SelectableTag({ children, selected, onClick, className }: SelectableTagProps) { return (<button onClick={onClick} className={cn('inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors', selected ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/80', className)}>{selected && <Check className="h-3 w-3" />}{children}</button>); }
-export default SelectableTag;
