@@ -132,7 +132,7 @@ class GStreamerService {
     this.reconnectAttempts++;
     const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
     
-    console.log(`[GStreamer] Reconnecting in ${delay}ms...`);
+    logger.info('gstreamer', `[GStreamer] Reconnecting in ${delay}ms...`);
     
     setTimeout(() => {
       if (this.serverUrl) {
