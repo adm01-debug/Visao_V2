@@ -66,6 +66,7 @@ const ProtectedLayoutRoute = ({ children }: { children: React.ReactNode }) => {
   return <MainLayout>{children}</MainLayout>;
 };
 
+// VISÃO App Component
 const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
