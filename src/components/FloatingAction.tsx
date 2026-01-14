@@ -3,7 +3,7 @@
  */
 import React, { useState } from 'react';
 import { Plus, X } from 'lucide-react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 export interface FloatingActionItem { icon: React.ReactNode; label: string; onClick: () => void; }
 export const FloatingAction: React.FC<{ items: FloatingActionItem[] }> = ({ items }) => {
   const [isOpen, setIsOpen] = useState(false);

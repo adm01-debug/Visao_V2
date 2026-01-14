@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 import { Copy, Check, Download, Maximize2, Minimize2 } from 'lucide-react';
 
 export type CodeLanguage = 

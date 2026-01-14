@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Repeat, Shuffle, Download } from 'lucide-react';
 
 export interface AudioTrack {

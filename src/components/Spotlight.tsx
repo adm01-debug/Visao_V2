@@ -2,7 +2,7 @@
  * Spotlight Component for Onboarding
  */
 import React from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 export interface SpotlightProps { target: string; title: string; description: string; onNext?: () => void; onSkip?: () => void; step?: number; totalSteps?: number; }
 export const Spotlight: React.FC<SpotlightProps> = ({ target, title, description, onNext, onSkip, step = 1, totalSteps = 1 }) => {
   const el = document.querySelector(target);

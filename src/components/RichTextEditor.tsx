@@ -4,7 +4,7 @@
  */
 
 import React, { useRef, useState, useCallback, useEffect } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 import {
   Bold, Italic, Underline, Strikethrough, AlignLeft, AlignCenter, AlignRight, AlignJustify,
   List, ListOrdered, Link, Image, Code, Quote, Undo, Redo, Type, Heading1, Heading2, Heading3

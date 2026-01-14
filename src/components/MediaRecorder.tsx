@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 import { Mic, Video, Square, Pause, Play, Download, Trash2, Settings } from 'lucide-react';
 
 export type RecordingType = 'audio' | 'video' | 'screen';

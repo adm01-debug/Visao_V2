@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useCallback } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 import { Plus, MoreHorizontal, GripVertical } from 'lucide-react';
 
 export interface KanbanCard {

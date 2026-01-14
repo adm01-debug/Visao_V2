@@ -4,7 +4,7 @@
  */
 
 import React, { useMemo } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 
 export interface GaugeSegment {
   value: number;

@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useCallback, useRef } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 import { Upload, X, File, Image, FileText, Film, Music } from 'lucide-react';
 
 export interface UploadedFile {

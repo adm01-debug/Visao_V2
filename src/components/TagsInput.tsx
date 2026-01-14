@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useRef, useCallback, useMemo } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
 
 export interface Tag {
