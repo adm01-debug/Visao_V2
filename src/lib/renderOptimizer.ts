@@ -1,3 +1,5 @@
+import { logger } from './logger';
+
 // Type declarations for requestIdleCallback
 declare global {
   interface IdleDeadline {
@@ -28,6 +30,6 @@ export function measureRender(name: string, callback: () => void): number {
   const start = performance.now();
   callback();
   const duration = performance.now() - start;
-  console.log(`[Render] ${name}: ${duration}ms`);
+  logger.debug('render', `${name}: ${duration}ms`);
   return duration;
 }
