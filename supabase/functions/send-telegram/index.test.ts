@@ -6,7 +6,7 @@ import { assertEquals, assertExists } from 'https://deno.land/std@0.192.0/testin
 
 Deno.test('send-telegram - should export handler', async () => {
   const module = await import('./index.ts');
-  assertExists(module.default || module.handler);
+  assertExists(module.default);
 });
 
 Deno.test('send-telegram - should return 401 without auth', async () => {

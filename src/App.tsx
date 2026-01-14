@@ -35,6 +35,7 @@ const TelegramSettingsPage = lazy(() => import("@/pages/TelegramSettingsPage"));
 const NotificationSettingsPage = lazy(() => import("@/pages/NotificationSettingsPage"));
 const AutomationRulesPage = lazy(() => import("@/pages/AutomationRulesPage"));
 const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
+const HelpPage = lazy(() => import("@/pages/HelpPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const AcessoNegado = lazy(() => import("@/pages/AcessoNegado"));
 
@@ -100,6 +101,7 @@ const App = () => (
                     <Route path="/notification-settings" element={<ProtectedLayoutRoute><NotificationSettingsPage /></ProtectedLayoutRoute>} />
                     <Route path="/automation-rules" element={<ProtectedLayoutRoute><AutomationRulesPage /></ProtectedLayoutRoute>} />
                     <Route path="/profile" element={<ProtectedLayoutRoute><ProfilePage /></ProtectedLayoutRoute>} />
+                    <Route path="/help" element={<ProtectedLayoutRoute><HelpPage /></ProtectedLayoutRoute>} />
                     <Route path="/acesso-negado" element={<AcessoNegado />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
