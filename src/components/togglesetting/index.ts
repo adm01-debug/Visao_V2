@@ -1,1 +1,0 @@
-export { ToggleSetting } from './ToggleSetting';

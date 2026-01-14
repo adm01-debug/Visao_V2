@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface TypingIndicatorProps { users: string[]; className?: string; }
-export function TypingIndicator({ users, className }: TypingIndicatorProps) { if (!users.length) return null; const text = users.length === 1 ? `${users[0]} está digitando` : users.length === 2 ? `${users.join(' e ')} estão digitando` : `${users.length} pessoas estão digitando`; return (<div className={cn('flex items-center gap-2 text-sm text-muted-foreground', className)}><div className="flex gap-1">{[0,1,2].map(i => <span key={i} className="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />)}</div><span>{text}...</span></div>); }
-export default TypingIndicator;

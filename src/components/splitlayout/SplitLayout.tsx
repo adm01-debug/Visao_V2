@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface SplitLayoutProps { left: React.ReactNode; right: React.ReactNode; ratio?: '1:1' | '1:2' | '2:1' | '1:3' | '3:1'; className?: string; }
-const ratios = { '1:1': 'grid-cols-2', '1:2': 'grid-cols-3', '2:1': 'grid-cols-3', '1:3': 'grid-cols-4', '3:1': 'grid-cols-4' };
-export function SplitLayout({ left, right, ratio = '1:1', className }: SplitLayoutProps) { return (<div className={cn('grid gap-6', ratios[ratio], className)}><div className={ratio === '2:1' || ratio === '3:1' ? 'col-span-2' : ''}>{left}</div><div className={ratio === '1:2' || ratio === '1:3' ? 'col-span-2' : ''}>{right}</div></div>); }
-export default SplitLayout;

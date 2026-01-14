@@ -1,1 +1,0 @@
-export { WaterIntake } from './WaterIntake';

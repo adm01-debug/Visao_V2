@@ -1,1 +1,0 @@
-export { PeopleCounter } from './PeopleCounter';

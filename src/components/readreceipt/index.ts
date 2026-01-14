@@ -1,1 +1,0 @@
-export { ReadReceipt } from './ReadReceipt';

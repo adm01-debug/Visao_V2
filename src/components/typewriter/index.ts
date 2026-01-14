@@ -1,1 +1,0 @@
-export { TypewriterEffect } from './TypewriterEffect';

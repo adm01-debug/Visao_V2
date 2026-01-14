@@ -1,1 +1,0 @@
-export { SpotlightSearch } from './SpotlightSearch';

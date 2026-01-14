@@ -1,1 +1,0 @@
-export { TypingEffect } from './TypingEffect';

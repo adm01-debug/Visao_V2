@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface ShimmerEffectProps { width?: number | string; height?: number | string; borderRadius?: number | string; className?: string; }
-export function ShimmerEffect({ width = '100%', height = 20, borderRadius = 4, className }: ShimmerEffectProps) { return (<div className={cn('relative overflow-hidden bg-muted', className)} style={{ width, height, borderRadius }}><div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" /><style>{String.raw`@keyframes shimmer { 100% { transform: translateX(100%); } } .animate-shimmer { animation: shimmer 2s infinite; }`}</style></div>); }
-export default ShimmerEffect;

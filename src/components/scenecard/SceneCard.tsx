@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Play, Sun, Moon, Home, Coffee } from 'lucide-react';interface SceneCardProps { name: string; icon?: 'morning' | 'night' | 'home' | 'away'; devicesCount: number; active?: boolean; onActivate?: () => void; className?: string; }
-const icons = { morning: Sun, night: Moon, home: Home, away: Coffee };
-export function SceneCard({ name, icon = 'home', devicesCount, active, onActivate, className }: SceneCardProps) { const Icon = icons[icon]; return (<button onClick={onActivate} className={cn('p-4 rounded-xl border text-left transition-colors', active ? 'bg-primary text-primary-foreground' : 'bg-card hover:bg-accent', className)}><Icon className={cn('h-8 w-8 mb-3', active ? '' : 'text-primary')} /><h4 className="font-semibold">{name}</h4><p className={cn('text-sm', active ? 'text-primary-foreground/80' : 'text-muted-foreground')}>{devicesCount} dispositivos</p></button>); }
-export default SceneCard;
