@@ -1,11 +1,22 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
- * Profile Page
+ * Profile Page - Com upload de avatar
  */
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Mail, Shield, Camera, Bell, Save, Loader2 } from "lucide-react";
+import { 
+  User, 
+  Mail, 
+  Shield, 
+  Camera, 
+  Bell, 
+  Save, 
+  Loader2, 
+  Upload, 
+  Trash2,
+  ImagePlus
+} from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,26 +26,87 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAvatarUpload } from "@/hooks/useAvatarUpload";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { uploading, uploadAvatar, removeAvatar, avatarUrl, setAvatarUrl } = useAvatarUpload();
+  
   const [isLoading, setIsLoading] = useState(false);
   const [fullName, setFullName] = useState("");
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(true);
 
+  // Load profile data
+  useEffect(() => {
+    async function loadProfile() {
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('full_name, avatar_url')
+        .eq('user_id', user.id)
+        .single();
+
+      if (data) {
+        setFullName(data.full_name || '');
+        setAvatarUrl(data.avatar_url);
+      }
+    }
+
+    loadProfile();
+  }, [user, setAvatarUrl]);
+
   const handleSave = async () => {
+    if (!user) return;
+    
     setIsLoading(true);
-    // Simular salvamento
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    toast.success("Perfil atualizado com sucesso!");
-    setIsLoading(false);
+    
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ 
+          full_name: fullName,
+          updated_at: new Date().toISOString()
+        })
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+      
+      toast.success("Perfil atualizado com sucesso!");
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      toast.error("Erro ao salvar perfil");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      await uploadAvatar(file);
+    }
+    // Reset input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleRemoveAvatar = async () => {
+    await removeAvatar();
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
   };
 
   return (
-    <div className="p-6 space-y-6 max-w-4xl mx-auto">
+    <div className="p-6 space-y-6 max-w-4xl mx-auto animate-fade-in">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -62,27 +134,82 @@ export default function ProfilePage() {
         {/* Avatar Card */}
         <Card>
           <CardHeader className="text-center">
-            <Avatar className="h-24 w-24 mx-auto">
-              <AvatarImage src="/placeholder.svg" alt="Foto do perfil" />
-              <AvatarFallback className="text-2xl">
-                {user?.email?.charAt(0).toUpperCase() || "U"}
-              </AvatarFallback>
-            </Avatar>
+            <div className="relative inline-block mx-auto group">
+              <Avatar className="h-24 w-24 mx-auto ring-4 ring-background shadow-lg">
+                <AvatarImage 
+                  src={avatarUrl || "/placeholder.svg"} 
+                  alt="Foto do perfil" 
+                  className="object-cover"
+                />
+                <AvatarFallback className="text-2xl bg-primary/10 text-primary">
+                  {fullName?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "U"}
+                </AvatarFallback>
+              </Avatar>
+              
+              {/* Overlay on hover */}
+              <button
+                onClick={triggerFileInput}
+                disabled={uploading}
+                className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer disabled:cursor-not-allowed"
+              >
+                {uploading ? (
+                  <Loader2 className="h-6 w-6 text-white animate-spin" />
+                ) : (
+                  <ImagePlus className="h-6 w-6 text-white" />
+                )}
+              </button>
+            </div>
+            
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/gif,image/webp"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
+            
             <CardTitle className="mt-4">
               {fullName || user?.email?.split("@")[0] || "Usuário"}
             </CardTitle>
             <CardDescription>{user?.email}</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3">
             <div className="flex items-center justify-center gap-2">
               <Badge variant="secondary">
                 <Shield className="mr-1 h-3 w-3" />
                 Administrador
               </Badge>
             </div>
-            <Button variant="outline" className="w-full">
-              Alterar Foto
-            </Button>
+            
+            <div className="grid grid-cols-2 gap-2">
+              <Button 
+                variant="outline" 
+                onClick={triggerFileInput}
+                disabled={uploading}
+                className="flex items-center gap-2"
+              >
+                {uploading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Upload className="h-4 w-4" />
+                )}
+                {uploading ? "Enviando..." : "Alterar"}
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                onClick={handleRemoveAvatar}
+                disabled={uploading || !avatarUrl}
+                className="flex items-center gap-2 text-destructive hover:text-destructive"
+              >
+                <Trash2 className="h-4 w-4" />
+                Remover
+              </Button>
+            </div>
+            
+            <p className="text-xs text-muted-foreground text-center">
+              JPG, PNG, GIF ou WebP. Máx 5MB.
+            </p>
           </CardContent>
         </Card>
 
