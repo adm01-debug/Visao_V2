@@ -1,8 +1,12 @@
-// Auto-generated lib/utils index
-// VIS-O Utilities Library
+/**
+ * VISÃO - Sistema de Vigilância Inteligente
+ * Lib Index - Exportações centralizadas
+ * 
+ * @module lib
+ */
 
-// Core
-export * from './utils';
+// Core utilities
+export { cn } from '@/utils/cn';
 
 // Feature flags
 export * from './featureFlags';
@@ -13,44 +17,33 @@ export * from './performanceMonitor';
 // A/B Testing
 export * from './abTesting';
 
-// Security
-export * from './securityUtils';
+// Cache
+export * from './cache';
 
-// URL
-export * from './urlUtils';
+// Error handling
+export * from './errorHandler';
 
-// Date
-export * from './dateHelpers';
+// Analytics
+export * from './analytics';
 
-// Storage
-export * from './localStorageUtils';
-export * from './sessionStorageUtils';
+// Auth
+export * from './auth';
 
-// Format
-export * from './formatCurrency';
-export * from './formatPhone';
-export * from './formatDocument';
+// Config
+export * from './config';
 
-// Mask
-export * from './mask';
+// Constants
+export * from './constants';
 
-// Text
-export * from './capitalize';
-export * from './truncate';
-export * from './slugify';
-export * from './pluralize';
+// Logger
+export * from './logger';
 
-// Numbers
-export * from './clamp';
+// API Client
+export * from './apiClient';
+export * from './apiError';
 
-// Sleep
-export * from './sleep';
+// Metrics
+export * from './metrics';
 
-// Retry
-export * from './retry';
-
-// File
-export * from './fileUtils';
-
-// Random
-export * from './randomUtils';
+// Sentry
+export * from './sentry';

@@ -28,12 +28,11 @@ export * from './useForm';
 export * from './useFetch';
 export * from './useAsync';
 
-// Toast (correct file name)
+// Toast
 export { useToast, toast } from './use-toast';
 
 // UI hooks
 export * from './useMediaQuery';
-export * from './useKeyPress';
 export * from './useWindowSize';
 export * from './useScrollPosition';
 export * from './useEventListener';
@@ -44,6 +43,23 @@ export * from './useTimeout';
 
 // Utility hooks
 export * from './usePrevious';
-export * from './useOnlineStatus';
 export * from './useClipboard';
-export * from './useCopyToClipboard';
+export * from './useOffline';
+
+// Keyboard hooks
+export * from './useKeyboardShortcut';
+export * from './useKeyboardShortcuts';
+
+// Network hook
+export * from './useNetworkState';
+
+// Fullscreen
+export * from './useFullscreen';
+
+// Mount hooks
+export * from './useMount';
+export * from './useMounted';
+
+// Speech hooks
+export * from './useSpeechRecognition';
+export * from './useSpeechSynthesis';
