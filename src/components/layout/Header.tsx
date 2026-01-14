@@ -4,7 +4,8 @@
  */
 
 import { memo } from "react";
-import { Bell, Search, Settings, User, Menu } from "lucide-react";
+import { Bell, Search, Settings, User, Menu, Moon, Sun, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { useTheme } from "@/contexts/ThemeContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useAlerts } from "@/hooks/useAlerts";
 
 interface HeaderProps {
   className?: string;
@@ -26,6 +30,16 @@ interface HeaderProps {
 }
 
 function HeaderComponent({ className, onMenuToggle, showMenuButton = false }: HeaderProps) {
+  const navigate = useNavigate();
+  const { isDark, toggleMode } = useTheme();
+  const { user, signOut } = useAuth();
+  const { unreadCount } = useAlerts();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/auth");
+  };
+
   return (
     <header
       className={cn(
@@ -58,40 +72,64 @@ function HeaderComponent({ className, onMenuToggle, showMenuButton = false }: He
       </div>
 
       <div className="flex items-center gap-2">
+        {/* Theme Toggle */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleMode}
+          aria-label={isDark ? "Mudar para tema claro" : "Mudar para tema escuro"}
+        >
+          {isDark ? (
+            <Sun className="h-5 w-5 text-yellow-500 transition-transform hover:rotate-12" />
+          ) : (
+            <Moon className="h-5 w-5 text-slate-700 transition-transform hover:-rotate-12" />
+          )}
+        </Button>
+
         {/* Notifications */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
-              <Badge
-                variant="destructive"
-                className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-              >
-                3
-              </Badge>
+              {unreadCount > 0 && (
+                <Badge
+                  variant="destructive"
+                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                >
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </Badge>
+              )}
               <span className="sr-only">Notificações</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-80">
-            <DropdownMenuLabel>Notificações</DropdownMenuLabel>
+            <DropdownMenuLabel className="flex items-center justify-between">
+              <span>Notificações</span>
+              {unreadCount > 0 && (
+                <Badge variant="secondary" className="text-xs">
+                  {unreadCount} não lido{unreadCount !== 1 ? "s" : ""}
+                </Badge>
+              )}
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex flex-col items-start gap-1">
-              <span className="font-medium">Alerta de segurança</span>
+            <DropdownMenuItem 
+              className="flex flex-col items-start gap-1 cursor-pointer"
+              onClick={() => navigate("/alerts")}
+            >
+              <span className="font-medium">Ver todos os alertas</span>
               <span className="text-xs text-muted-foreground">
-                Movimento detectado na Câmera 3
-              </span>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex flex-col items-start gap-1">
-              <span className="font-medium">Sistema atualizado</span>
-              <span className="text-xs text-muted-foreground">
-                Versão 2.1.0 instalada com sucesso
+                Clique para acessar a página de alertas
               </span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
         {/* Settings */}
-        <Button variant="ghost" size="icon">
+        <Button 
+          variant="ghost" 
+          size="icon"
+          onClick={() => navigate("/settings")}
+        >
           <Settings className="h-5 w-5" />
           <span className="sr-only">Configurações</span>
         </Button>
@@ -109,12 +147,31 @@ function HeaderComponent({ className, onMenuToggle, showMenuButton = false }: He
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
+            <DropdownMenuLabel>
+              <div className="flex flex-col">
+                <span>Minha Conta</span>
+                {user?.email && (
+                  <span className="text-xs font-normal text-muted-foreground truncate max-w-[180px]">
+                    {user.email}
+                  </span>
+                )}
+              </div>
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Perfil</DropdownMenuItem>
-            <DropdownMenuItem>Configurações</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
+              <User className="mr-2 h-4 w-4" />
+              Perfil
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/settings")} className="cursor-pointer">
+              <Settings className="mr-2 h-4 w-4" />
+              Configurações
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">
+            <DropdownMenuItem 
+              onClick={handleSignOut} 
+              className="text-destructive cursor-pointer focus:text-destructive"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
               Sair
             </DropdownMenuItem>
           </DropdownMenuContent>
