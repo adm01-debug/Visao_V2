@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Shield, User, Crown, Eye } from 'lucide-react';interface RoleSelectProps { value: string; onChange: (role: string) => void; className?: string; }
-const roles = [{ id: 'viewer', label: 'Visualizador', icon: Eye }, { id: 'member', label: 'Membro', icon: User }, { id: 'admin', label: 'Administrador', icon: Shield }, { id: 'owner', label: 'Proprietário', icon: Crown }];
-export function RoleSelect({ value, onChange, className }: RoleSelectProps) { return (<div className={cn('grid grid-cols-2 gap-2', className)}>{roles.map(r => <button key={r.id} onClick={() => onChange(r.id)} className={cn('p-3 rounded-lg border flex items-center gap-2', value === r.id ? 'bg-primary text-primary-foreground border-primary' : 'bg-card hover:bg-accent')}><r.icon className="h-4 w-4" /><span className="text-sm">{r.label}</span></button>)}</div>); }
-export default RoleSelect;

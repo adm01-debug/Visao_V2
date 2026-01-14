@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface PulseAnimationProps { color?: string; size?: number; className?: string; }
-export function PulseAnimation({ color = '#3b82f6', size = 40, className }: PulseAnimationProps) { return (<div className={cn('relative', className)} style={{ width: size, height: size }}><span className="absolute inset-0 rounded-full animate-ping" style={{ backgroundColor: color, opacity: 0.75 }} /><span className="absolute inset-0 rounded-full animate-pulse" style={{ backgroundColor: color, opacity: 0.5 }} /><span className="relative block rounded-full" style={{ backgroundColor: color, width: size, height: size }} /></div>); }
-export default PulseAnimation;

@@ -1,1 +1,0 @@
-export { PerimeterAlert } from './PerimeterAlert';

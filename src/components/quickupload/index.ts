@@ -1,1 +1,0 @@
-export { QuickUpload } from './QuickUpload';

@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface PhonePrefixProps { value: string; onChange: (value: string) => void; prefixes?: { code: string; flag: string; country: string }[]; className?: string; }
-const defaultPrefixes = [{ code: '+55', flag: '🇧🇷', country: 'Brasil' }, { code: '+1', flag: '🇺🇸', country: 'EUA' }, { code: '+351', flag: '🇵🇹', country: 'Portugal' }];
-export function PhonePrefix({ value, onChange, prefixes = defaultPrefixes, className }: PhonePrefixProps) { return (<select value={value} onChange={e => onChange(e.target.value)} className={cn('px-3 py-2 border rounded-lg bg-background', className)}>{prefixes.map(p => <option key={p.code} value={p.code}>{p.flag} {p.code}</option>)}</select>); }
-export default PhonePrefix;

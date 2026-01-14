@@ -1,3 +1,0 @@
-import React from 'react';import { createPortal } from 'react-dom';interface PortalRootProps { children: React.ReactNode; containerId?: string; }
-export function PortalRoot({ children, containerId = 'portal-root' }: PortalRootProps) { const [mounted, setMounted] = React.useState(false); React.useEffect(() => { setMounted(true); }, []); if (!mounted) return null; let container = document.getElementById(containerId); if (!container) { container = document.createElement('div'); container.id = containerId; document.body.appendChild(container); } return createPortal(children, container); }
-export default PortalRoot;

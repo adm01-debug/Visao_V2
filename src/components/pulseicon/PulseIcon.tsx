@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface PulseIconProps { icon: React.ReactNode; color?: string; size?: 'sm' | 'md' | 'lg'; className?: string; }
-const sizes = { sm: 'w-8 h-8', md: 'w-12 h-12', lg: 'w-16 h-16' };
-export function PulseIcon({ icon, color = 'bg-primary', size = 'md', className }: PulseIconProps) { return (<div className={cn('relative', className)}><div className={cn('absolute inset-0 rounded-full animate-ping opacity-25', color)} /><div className={cn('relative rounded-full flex items-center justify-center', color, sizes[size])}>{icon}</div></div>); }
-export default PulseIcon;

@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface ProfileStatsProps { stats: { label: string; value: number | string }[]; className?: string; }
-export function ProfileStats({ stats, className }: ProfileStatsProps) { return (<div className={cn('flex justify-around py-4 border-y', className)}>{stats.map((s, i) => (<div key={i} className="text-center"><p className="text-xl font-bold">{typeof s.value === 'number' && s.value >= 1000 ? `${(s.value / 1000).toFixed(1)}K` : s.value}</p><p className="text-sm text-muted-foreground">{s.label}</p></div>))}</div>); }
-export default ProfileStats;

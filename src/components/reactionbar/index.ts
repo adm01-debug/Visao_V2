@@ -1,1 +1,0 @@
-export { ReactionBar } from './ReactionBar';

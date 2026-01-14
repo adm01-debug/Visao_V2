@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Repeat } from 'lucide-react';interface RecurrencePickerProps { value: string; onChange: (value: string) => void; className?: string; }
-const options = [{ value: 'none', label: 'Não repetir' }, { value: 'daily', label: 'Diariamente' }, { value: 'weekly', label: 'Semanalmente' }, { value: 'monthly', label: 'Mensalmente' }, { value: 'yearly', label: 'Anualmente' }];
-export function RecurrencePicker({ value, onChange, className }: RecurrencePickerProps) { return (<div className={cn('relative', className)}><Repeat className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /><select value={value} onChange={e => onChange(e.target.value)} className="w-full pl-10 pr-4 py-2 border rounded-lg bg-background appearance-none">{options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}</select></div>); }
-export default RecurrencePicker;

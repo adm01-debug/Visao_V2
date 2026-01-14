@@ -1,1 +1,0 @@
-export { RecordingBadge } from './RecordingBadge';
