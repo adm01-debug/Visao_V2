@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
 // Layout Components from barrel export
-import { MainLayout, Header, Sidebar, SkipLink } from '@/components';
+import { MainLayout, SkipLink } from '@/components';
 
 // Feature Components
 import { Dashboard } from '@/components/Dashboard';
@@ -15,17 +15,15 @@ import { BlacklistAlertBanner } from '@/components/BlacklistAlertBanner';
 
 // Hooks and Context
 import { useAuth } from '@/contexts/AuthContext';
-import { useAlerts } from '@/hooks/useAlerts';
 
 // UI Components
 import { PageLoadingSkeleton } from '@/components/ui/LoadingState';
 import { PageTransition } from '@/components/ui/MotionComponents';
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab] = useState('dashboard');
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const { unreadCount } = useAlerts();
 
   useEffect(() => {
     if (!loading && !user) {
