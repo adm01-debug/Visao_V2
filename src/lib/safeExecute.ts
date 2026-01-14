@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 /**
  * Safe execution wrapper for error handling in hooks and utilities
  * Catches errors gracefully and logs them only in development
@@ -19,7 +20,7 @@ export function safeExecute<T>(
     return fn();
   } catch (error) {
     if (import.meta.env.DEV) {
-      console.error(`[${context || 'safeExecute'}] Error:`, error);
+      logger.error('safeExecute',(`[${context || 'safeExecute'}] Error:`, error);
     }
     return fallback;
   }
@@ -41,7 +42,7 @@ export async function safeExecuteAsync<T>(
     return await fn();
   } catch (error) {
     if (import.meta.env.DEV) {
-      console.error(`[${context || 'safeExecuteAsync'}] Error:`, error);
+      logger.error('safeExecute',(`[${context || 'safeExecuteAsync'}] Error:`, error);
     }
     return fallback;
   }
@@ -62,7 +63,7 @@ export function createSafeCallback<T extends (...args: unknown[]) => unknown>(
       return callback(...args);
     } catch (error) {
       if (import.meta.env.DEV) {
-        console.error(`[${context || 'callback'}] Error:`, error);
+        logger.error('safeExecute',(`[${context || 'callback'}] Error:`, error);
       }
     }
   }) as T;
