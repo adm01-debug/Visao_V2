@@ -9,7 +9,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
-import { MainLayout } from "@/components/MainLayout";
+import { MainLayout } from "@/components/layout/MainLayout";
 
 // Lazy loaded pages
 const Index = lazy(() => import("@/pages/Index"));
