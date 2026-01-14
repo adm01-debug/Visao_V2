@@ -1,1 +1,0 @@
-export { LicenseInfo } from './LicenseInfo';

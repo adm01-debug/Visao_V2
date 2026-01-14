@@ -1,1 +1,0 @@
-export { CPFFormat } from './CPFFormat';

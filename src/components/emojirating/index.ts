@@ -1,1 +1,0 @@
-export { EmojiRating } from './EmojiRating';

@@ -1,1 +1,0 @@
-export { InterviewSlot } from './InterviewSlot';

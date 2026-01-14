@@ -1,1 +1,0 @@
-export { EmergencyButton } from './EmergencyButton';

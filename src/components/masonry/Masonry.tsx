@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface MasonryProps { children: React.ReactNode; columns?: number; gap?: number; className?: string; }
-export function Masonry({ children, columns = 3, gap = 4, className }: MasonryProps) { return <div className={cn('columns-1 md:columns-2 lg:columns-3', `gap-${gap}`, className)}>{React.Children.map(children, child => <div className="break-inside-avoid mb-4">{child}</div>)}</div>; }
-export default Masonry;

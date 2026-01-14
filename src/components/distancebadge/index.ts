@@ -1,1 +1,0 @@
-export { DistanceBadge } from './DistanceBadge';

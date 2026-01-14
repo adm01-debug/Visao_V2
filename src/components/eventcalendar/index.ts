@@ -1,1 +1,0 @@
-export { EventCalendar } from './EventCalendar';

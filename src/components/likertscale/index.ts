@@ -1,1 +1,0 @@
-export { LikertScale } from './LikertScale';

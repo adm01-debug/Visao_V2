@@ -1,3 +1,0 @@
-import React from 'react';interface ForLoopProps<T> { items: T[]; render: (item: T, index: number) => React.ReactNode; keyExtractor?: (item: T, index: number) => string | number; empty?: React.ReactNode; }
-export function ForLoop<T>({ items, render, keyExtractor, empty }: ForLoopProps<T>) { if (items.length === 0 && empty) return <>{empty}</>; return <>{items.map((item, i) => <React.Fragment key={keyExtractor?.(item, i) ?? i}>{render(item, i)}</React.Fragment>)}</>; }
-export default ForLoop;

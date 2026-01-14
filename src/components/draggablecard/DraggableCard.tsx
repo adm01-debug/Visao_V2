@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { GripVertical } from 'lucide-react';interface DraggableCardProps { children: React.ReactNode; onDragStart?: () => void; onDragEnd?: () => void; className?: string; }
-export function DraggableCard({ children, onDragStart, onDragEnd, className }: DraggableCardProps) { return <div draggable onDragStart={onDragStart} onDragEnd={onDragEnd} className={cn('flex items-center gap-2 bg-card rounded-xl border p-4 cursor-move', className)}><GripVertical className="h-5 w-5 text-muted-foreground shrink-0" /><div className="flex-1">{children}</div></div>; }
-export default DraggableCard;

@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Activity } from 'lucide-react';interface LiveStatProps { label: string; value: string | number; live?: boolean; className?: string; }
-export function LiveStat({ label, value, live = true, className }: LiveStatProps) { return (<div className={cn('flex items-center gap-3 p-3 bg-card rounded-lg border', className)}><div className="flex-1"><p className="text-xs text-muted-foreground">{label}</p><p className="text-xl font-bold">{value}</p></div>{live && <Activity className="h-5 w-5 text-green-500 animate-pulse" />}</div>); }
-export default LiveStat;

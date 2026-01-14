@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Filter, ChevronDown } from 'lucide-react';interface FilterButtonProps { label: string; active?: boolean; count?: number; onClick?: () => void; className?: string; }
-export function FilterButton({ label, active, count, onClick, className }: FilterButtonProps) { return (<button onClick={onClick} className={cn('inline-flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors', active ? 'bg-primary/10 border-primary text-primary' : 'hover:bg-accent', className)}><Filter className="h-4 w-4" />{label}{count !== undefined && <span className="px-1.5 py-0.5 bg-muted rounded text-xs">{count}</span>}<ChevronDown className="h-4 w-4" /></button>); }
-export default FilterButton;

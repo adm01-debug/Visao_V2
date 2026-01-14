@@ -1,1 +1,0 @@
-export { DeviceInfo } from './DeviceInfo';

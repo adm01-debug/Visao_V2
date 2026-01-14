@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface FlexProps { children: React.ReactNode; direction?: 'row' | 'col' | 'row-reverse' | 'col-reverse'; align?: 'start' | 'center' | 'end' | 'stretch' | 'baseline'; justify?: 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly'; wrap?: boolean; gap?: number; className?: string; }
-export function Flex({ children, direction = 'row', align, justify, wrap, gap, className }: FlexProps) { return <div className={cn('flex', `flex-${direction}`, align && `items-${align}`, justify && `justify-${justify}`, wrap && 'flex-wrap', gap && `gap-${gap}`, className)}>{children}</div>; }
-export default Flex;

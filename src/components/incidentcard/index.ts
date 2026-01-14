@@ -1,1 +1,0 @@
-export { IncidentCard } from './IncidentCard';

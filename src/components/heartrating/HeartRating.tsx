@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Heart } from 'lucide-react';interface HeartRatingProps { value: number; onChange?: (value: number) => void; max?: number; className?: string; }
-export function HeartRating({ value, onChange, max = 5, className }: HeartRatingProps) { return (<div className={cn('flex', className)}>{Array.from({ length: max }).map((_, i) => (<button key={i} onClick={() => onChange?.(i + 1)} className="p-0.5"><Heart className={cn('h-5 w-5', i < value ? 'fill-red-500 text-red-500' : 'text-muted-foreground')} /></button>))}</div>); }
-export default HeartRating;

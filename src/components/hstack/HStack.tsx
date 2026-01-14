@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface HStackProps { children: React.ReactNode; spacing?: number; align?: 'start' | 'center' | 'end' | 'stretch'; className?: string; }
-export function HStack({ children, spacing = 4, align = 'center', className }: HStackProps) { return <div className={cn('flex flex-row', `gap-${spacing}`, `items-${align}`, className)}>{children}</div>; }
-export default HStack;

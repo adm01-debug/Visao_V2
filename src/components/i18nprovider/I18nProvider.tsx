@@ -1,6 +1,0 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';type Locale = 'pt-BR' | 'en-US' | 'es-ES';interface I18nContextValue { locale: Locale; setLocale: (locale: Locale) => void; t: (key: string) => string; }
-const I18nContext = createContext<I18nContextValue | null>(null);
-const translations: Record<Locale, Record<string, string>> = { 'pt-BR': { hello: 'Olá', goodbye: 'Tchau' }, 'en-US': { hello: 'Hello', goodbye: 'Goodbye' }, 'es-ES': { hello: 'Hola', goodbye: 'Adiós' } };
-export function I18nProvider({ children, defaultLocale = 'pt-BR' }: { children: React.ReactNode; defaultLocale?: Locale }) { const [locale, setLocale] = useState<Locale>(defaultLocale); const t = useCallback((key: string) => translations[locale][key] || key, [locale]); return <I18nContext.Provider value={{ locale, setLocale, t }}>{children}</I18nContext.Provider>; }
-export function useI18n() { const ctx = useContext(I18nContext); if (!ctx) throw new Error('useI18n must be used within I18nProvider'); return ctx; }
-export default I18nProvider;

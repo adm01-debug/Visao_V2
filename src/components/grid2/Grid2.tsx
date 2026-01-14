@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface Grid2Props { children: React.ReactNode; cols?: number; rows?: number; gap?: number; className?: string; }
-export function Grid2({ children, cols, rows, gap = 4, className }: Grid2Props) { return <div className={cn('grid', cols && `grid-cols-${cols}`, rows && `grid-rows-${rows}`, `gap-${gap}`, className)}>{children}</div>; }
-export default Grid2;

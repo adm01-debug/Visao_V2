@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface CPFFormatProps { value: string; masked?: boolean; className?: string; }
-export function CPFFormat({ value, masked, className }: CPFFormatProps) { const clean = value.replace(/\D/g, '').slice(0, 11); const formatted = clean.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4'); const display = masked ? formatted.replace(/\d(?=\d{2})/g, '*') : formatted; return <span className={cn('font-mono', className)}>{display}</span>; }
-export default CPFFormat;

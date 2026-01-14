@@ -1,1 +1,0 @@
-export { FeatureHighlight } from './FeatureHighlight';

@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface InputWithIconProps extends React.InputHTMLAttributes<HTMLInputElement> { icon: React.ReactNode; iconPosition?: 'left' | 'right'; }
-export function InputWithIcon({ icon, iconPosition = 'left', className, ...props }: InputWithIconProps) { return (<div className="relative"><span className={cn('absolute top-1/2 -translate-y-1/2 text-muted-foreground', iconPosition === 'left' ? 'left-3' : 'right-3')}>{icon}</span><input className={cn('w-full py-2 rounded-lg border bg-background', iconPosition === 'left' ? 'pl-10 pr-4' : 'pl-4 pr-10', className)} {...props} /></div>); }
-export default InputWithIcon;

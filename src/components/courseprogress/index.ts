@@ -1,1 +1,0 @@
-export { CourseProgress } from './CourseProgress';

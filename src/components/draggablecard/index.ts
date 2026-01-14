@@ -1,1 +1,0 @@
-export { DraggableCard } from './DraggableCard';

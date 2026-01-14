@@ -1,1 +1,0 @@
-export { HealthMetric } from './HealthMetric';

@@ -1,1 +1,0 @@
-export { EvidenceGallery } from './EvidenceGallery';

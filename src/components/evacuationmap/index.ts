@@ -1,1 +1,0 @@
-export { EvacuationMap } from './EvacuationMap';

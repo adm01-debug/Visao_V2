@@ -1,1 +1,0 @@
-export { ImageCompare } from './ImageCompare';
