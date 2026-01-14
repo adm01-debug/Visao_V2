@@ -1,1 +1,0 @@
-export { MiniChart } from './MiniChart';

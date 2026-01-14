@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Eye, EyeOff } from 'lucide-react';interface MaskedTextProps { text: string; maskChar?: string; revealed?: boolean; onToggle?: () => void; className?: string; }
-export function MaskedText({ text, maskChar = '•', revealed = false, onToggle, className }: MaskedTextProps) { return (<span className={cn('inline-flex items-center gap-2', className)}>{revealed ? text : maskChar.repeat(text.length)}{onToggle && <button onClick={onToggle} className="text-muted-foreground hover:text-foreground">{revealed ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button>}</span>); }
-export default MaskedText;

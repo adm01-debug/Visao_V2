@@ -1,1 +1,0 @@
-export { MeetingCard } from './MeetingCard';
