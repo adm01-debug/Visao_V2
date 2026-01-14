@@ -9,4 +9,3 @@ export * from './mockData';
 export * from './mockRules';
 export * from './ruleTemplates';
 export * from './sampleData';
-export * from './testData';
