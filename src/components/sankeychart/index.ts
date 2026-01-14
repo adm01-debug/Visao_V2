@@ -1,1 +1,0 @@
-export { SankeyChart } from './SankeyChart';

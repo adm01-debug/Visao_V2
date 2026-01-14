@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface NumberFormatProps { value: number; type?: 'number' | 'percent' | 'currency'; currency?: string; decimals?: number; className?: string; }
-export function NumberFormat({ value, type = 'number', currency = 'BRL', decimals, className }: NumberFormatProps) { const opts: Intl.NumberFormatOptions = type === 'currency' ? { style: 'currency', currency } : type === 'percent' ? { style: 'percent', minimumFractionDigits: decimals ?? 1 } : { minimumFractionDigits: decimals ?? 0 }; const formatted = new Intl.NumberFormat('pt-BR', opts).format(type === 'percent' ? value / 100 : value); return <span className={cn('tabular-nums', className)}>{formatted}</span>; }
-export default NumberFormat;

@@ -1,1 +1,0 @@
-export { PulseEffect } from './PulseEffect';

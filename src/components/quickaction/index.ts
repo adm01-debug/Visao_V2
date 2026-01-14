@@ -1,1 +1,0 @@
-export { QuickAction } from './QuickAction';
