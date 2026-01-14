@@ -1,1 +1,0 @@
-export { BadgePrinter } from './BadgePrinter';

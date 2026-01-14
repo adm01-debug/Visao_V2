@@ -1,1 +1,0 @@
-export { BarsLoader } from './BarsLoader';

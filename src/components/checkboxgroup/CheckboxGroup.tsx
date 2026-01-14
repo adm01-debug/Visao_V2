@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Check } from 'lucide-react';
-interface Props { options: { value: string; label: string }[]; selected: string[]; onChange: (s: string[]) => void; className?: string; }
-export function CheckboxGroup({ options, selected, onChange, className }: Props) { const toggle = (v: string) => { onChange(selected.includes(v) ? selected.filter(x => x !== v) : [...selected, v]); }; return (<div className={cn('space-y-2', className)}>{options.map(o => (<label key={o.value} className="flex items-center gap-2 cursor-pointer"><div className={cn('w-5 h-5 rounded border flex items-center justify-center', selected.includes(o.value) ? 'bg-primary border-primary' : 'border-muted-foreground')} onClick={() => toggle(o.value)}>{selected.includes(o.value) && <Check className="h-3 w-3 text-primary-foreground" />}</div><span className="text-sm">{o.label}</span></label>))}</div>); }
-export default CheckboxGroup;

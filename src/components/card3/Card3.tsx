@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface Card3Props { children: React.ReactNode; hoverable?: boolean; clickable?: boolean; onClick?: () => void; className?: string; }
-export function Card3({ children, hoverable, clickable, onClick, className }: Card3Props) { return <div onClick={onClick} className={cn('bg-card rounded-xl border p-4', hoverable && 'transition-all hover:shadow-lg hover:-translate-y-1', clickable && 'cursor-pointer', className)}>{children}</div>; }
-export default Card3;

@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Palette } from 'lucide-react';
-export function ColorInput({ value, onChange, className }: { value?: string; onChange?: (c: string) => void; className?: string }) { return (<div className={cn('flex items-center gap-2', className)}><input type="color" value={value || '#000000'} onChange={e => onChange?.(e.target.value)} className="w-10 h-10 rounded cursor-pointer" /><input type="text" value={value || '#000000'} onChange={e => onChange?.(e.target.value)} className="flex-1 px-3 py-2 border rounded-lg font-mono text-sm" /></div>); }
-export default ColorInput;

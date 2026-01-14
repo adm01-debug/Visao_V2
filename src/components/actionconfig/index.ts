@@ -1,1 +1,0 @@
-export { ActionConfig } from './ActionConfig';

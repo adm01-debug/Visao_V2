@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface ChatBubbleProps { children: React.ReactNode; variant?: 'sent' | 'received'; tail?: boolean; className?: string; }
-export function ChatBubble({ children, variant = 'received', tail = true, className }: ChatBubbleProps) { return (<div className={cn('relative px-4 py-2 rounded-2xl max-w-[280px]', variant === 'sent' ? 'bg-primary text-primary-foreground ml-auto' : 'bg-muted', tail && (variant === 'sent' ? 'rounded-br-sm' : 'rounded-bl-sm'), className)}>{children}</div>); }
-export default ChatBubble;

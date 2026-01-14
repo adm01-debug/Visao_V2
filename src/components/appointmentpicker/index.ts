@@ -1,1 +1,0 @@
-export { AppointmentPicker } from './AppointmentPicker';
