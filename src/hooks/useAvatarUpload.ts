@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook para upload de avatar do usuário
@@ -79,14 +80,14 @@ export function useAvatarUpload(): UseAvatarUploadReturn {
         .eq('user_id', user.id);
 
       if (updateError) {
-        console.error('Error updating profile:', updateError);
+        logger.error('avatarUpload',('Error updating profile:', updateError);
       }
 
       setAvatarUrl(publicUrl);
       toast.success('Avatar atualizado com sucesso!');
       return publicUrl;
     } catch (error) {
-      console.error('Error uploading avatar:', error);
+      logger.error('avatarUpload',('Error uploading avatar:', error);
       toast.error('Erro ao fazer upload do avatar');
       return null;
     } finally {
@@ -115,14 +116,14 @@ export function useAvatarUpload(): UseAvatarUploadReturn {
         .eq('user_id', user.id);
 
       if (updateError) {
-        console.error('Error updating profile:', updateError);
+        logger.error('avatarUpload',('Error updating profile:', updateError);
       }
 
       setAvatarUrl(null);
       toast.success('Avatar removido com sucesso!');
       return true;
     } catch (error) {
-      console.error('Error removing avatar:', error);
+      logger.error('avatarUpload',('Error removing avatar:', error);
       toast.error('Erro ao remover avatar');
       return false;
     } finally {
