@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useCallback, useMemo } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 import { ChevronRight, ChevronDown, Folder, FolderOpen, File } from 'lucide-react';
 
 export interface TreeNode {

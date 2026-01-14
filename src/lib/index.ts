@@ -6,7 +6,7 @@
  */
 
 // Core utilities
-export { cn } from '@/utils/cn';
+export { cn } from '@/lib/utils';
 
 // Feature flags
 export * from './featureFlags';

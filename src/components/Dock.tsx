@@ -2,7 +2,7 @@
  * macOS-style Dock
  */
 import React, { useState } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 export interface DockItem { id: string; icon: React.ReactNode; label: string; onClick?: () => void; badge?: number; }
 export const Dock: React.FC<{ items: DockItem[] }> = ({ items }) => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);

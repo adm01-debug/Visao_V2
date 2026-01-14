@@ -4,7 +4,7 @@
  */
 
 import React, { useMemo, useState, useCallback } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 import { format, differenceInDays, addDays, startOfDay, endOfDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 

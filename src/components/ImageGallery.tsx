@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Maximize2 } from 'lucide-react';
 
 export interface GalleryImage {

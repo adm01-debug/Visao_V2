@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useRef, useCallback } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 import { Camera, Video, Square, Download, Trash2, Monitor, Copy, Check } from 'lucide-react';
 import type { ImageCapture } from '@/types/image-capture';
 

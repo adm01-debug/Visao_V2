@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useCallback, useMemo, forwardRef } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 import { ChevronDown, Phone } from 'lucide-react';
 
 export interface Country {

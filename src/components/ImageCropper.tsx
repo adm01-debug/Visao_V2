@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 import { ZoomIn, ZoomOut, RotateCw, FlipHorizontal, FlipVertical, Check, X } from 'lucide-react';
 
 export interface CropArea {

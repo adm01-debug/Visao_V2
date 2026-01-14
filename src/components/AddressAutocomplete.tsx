@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 import { MapPin, Loader2, X } from 'lucide-react';
 
 export interface AddressResult {
