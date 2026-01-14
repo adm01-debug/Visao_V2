@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 /**
  * GStreamer Integration Service
  * WebSocket-based interface for GStreamer pipelines on the server
@@ -85,20 +86,20 @@ class GStreamerService {
         this.ws = new WebSocket(serverUrl);
 
         this.ws.onopen = () => {
-          console.log('[GStreamer] Connected to server');
+          logger.info('gstreamer', Connected to server');
           this.reconnectAttempts = 0;
           this.isConnecting = false;
           resolve(true);
         };
 
         this.ws.onclose = () => {
-          console.log('[GStreamer] Connection closed');
+          logger.info('gstreamer', Connection closed');
           this.isConnecting = false;
           this.attemptReconnect();
         };
 
         this.ws.onerror = () => {
-          console.error('[GStreamer] Connection error');
+          logger.error('gstreamer', Connection error');
           this.isConnecting = false;
           resolve(false);
         };
@@ -108,11 +109,11 @@ class GStreamerService {
             const message = JSON.parse(event.data) as GStreamerMessage;
             this.handleMessage(message);
           } catch (error) {
-            console.error('[GStreamer] Failed to parse message:', error);
+            logger.error('gstreamer', Failed to parse message:', error);
           }
         };
       } catch (error) {
-        console.error('[GStreamer] Failed to connect:', error);
+        logger.error('gstreamer', Failed to connect:', error);
         this.isConnecting = false;
         resolve(false);
       }
@@ -124,7 +125,7 @@ class GStreamerService {
    */
   private attemptReconnect(): void {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.log('[GStreamer] Max reconnection attempts reached');
+      logger.info('gstreamer', Max reconnection attempts reached');
       return;
     }
 
@@ -155,7 +156,7 @@ class GStreamerService {
       try {
         handler(message);
       } catch (error) {
-        console.error('[GStreamer] Handler error:', error);
+        logger.error('gstreamer', Handler error:', error);
       }
     });
   }
@@ -165,7 +166,7 @@ class GStreamerService {
    */
   private send(command: Record<string, unknown>): boolean {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      console.error('[GStreamer] Not connected');
+      logger.error('gstreamer', Not connected');
       return false;
     }
 
