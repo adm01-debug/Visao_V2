@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 /**
  * Slack Integration Service
  * Handles messaging through Slack webhooks and API
@@ -90,7 +91,7 @@ class SlackService {
    */
   initialize(config: SlackConfig): void {
     this.config = config;
-    console.log('[Slack] Service initialized');
+    logger.info('slack', Service initialized');
   }
 
   /**
@@ -110,7 +111,7 @@ class SlackService {
 
       return response.ok;
     } catch (error) {
-      console.error('[Slack] Webhook error:', error);
+      logger.error('slack', Webhook error:', error);
       return false;
     }
   }
@@ -378,7 +379,7 @@ class SlackService {
     // In a real implementation, you would verify the HMAC signature
     // This is a placeholder that would need crypto implementation
     const baseString = `v0:${timestamp}:${body}`;
-    console.log('[Slack] Verifying signature for:', baseString.substring(0, 50));
+    logger.info('slack', Verifying signature for:', baseString.substring(0, 50));
     
     return signature.startsWith('v0=');
   }
