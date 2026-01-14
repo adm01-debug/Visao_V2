@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { useReducer, useRef, useCallback, Dispatch } from 'react';
 
 type Middleware<S, A> = (
@@ -35,13 +36,13 @@ export function useReducerWithMiddleware<S, A>(
 // Logger Middleware
 export const loggerMiddleware: Middleware<unknown, { type?: string }> = (store) => (next) => (action) => {
   if (import.meta.env.DEV) {
-    console.group(action.type || 'Action');
-    console.log('Previous state:', store.getState());
+    logger.group(action.type || 'Action');
+    logger.debug('state', 'Previous:', store.getState());
   }
   next(action);
   if (import.meta.env.DEV) {
-    console.log('Next state:', store.getState());
-    console.groupEnd();
+    logger.debug('state', 'Next:', store.getState());
+    logger.groupEnd();
   }
 };
 
