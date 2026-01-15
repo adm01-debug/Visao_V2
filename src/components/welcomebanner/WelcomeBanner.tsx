@@ -1,7 +1,7 @@
 /**
  * VIS-O - Sistema de Vigilância Inteligente
  * WelcomeBanner - Welcome banner for dashboard
- * 
+ *
  * @module components/welcomebanner
  */
 
