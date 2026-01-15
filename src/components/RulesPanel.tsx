@@ -165,7 +165,7 @@ export function RulesPanel() {
                 Nenhuma regra encontrada
               </h3>
               <p className="text-muted-foreground mb-4">
-                {searchQuery 
+                {searchQuery
                   ? 'Tente ajustar sua busca'
                   : 'Crie sua primeira regra de detecção'
                 }
