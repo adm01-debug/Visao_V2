@@ -75,7 +75,7 @@ export const createQueueService = <T>(config: QueueConfig): QueueService<T> => {
       const pending = Array.from(jobs.values())
         .filter(j => j.status === 'pending')
         .slice(0, config.concurrency);
-      
+
       for (const job of pending) {
         job.status = 'active';
         job.processedAt = new Date();
