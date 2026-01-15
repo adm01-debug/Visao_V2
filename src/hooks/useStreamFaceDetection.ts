@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useStreamFaceDetection
- * 
+ *
  * Detecta rostos em frames de vídeo em tempo real usando a edge function detect-faces.
  * Integra com o FaceRecognitionOverlay para exibir detecções.
  */
@@ -33,22 +33,22 @@ interface FaceDetectionResult {
 interface UseStreamFaceDetectionOptions {
   /** ID da câmera */
   cameraId: string;
-  
+
   /** Intervalo entre detecções em ms */
   detectionIntervalMs?: number;
-  
+
   /** Ativar detecção automaticamente */
   autoStart?: boolean;
-  
+
   /** Callback quando rosto é detectado */
   onFaceDetected?: (faces: DetectedFace[]) => void;
-  
+
   /** Callback para alertas (blacklist) */
   onAlert?: (face: DetectedFace) => void;
-  
+
   /** Limiar de confiança mínimo */
   minConfidence?: number;
-  
+
   /** Habilitar som de alerta */
   enableAlertSound?: boolean;
 }
@@ -56,16 +56,16 @@ interface UseStreamFaceDetectionOptions {
 interface UseStreamFaceDetectionReturn {
   /** Rostos detectados atualmente */
   faces: DetectedFace[];
-  
+
   /** Se está processando */
   isProcessing: boolean;
-  
+
   /** Se está ativo */
   isActive: boolean;
-  
+
   /** Último erro */
   error: string | null;
-  
+
   /** Estatísticas */
   stats: {
     totalDetections: number;
@@ -74,16 +74,16 @@ interface UseStreamFaceDetectionReturn {
     alerts: number;
     avgProcessingTime: number;
   };
-  
+
   /** Iniciar detecção */
   start: () => void;
-  
+
   /** Parar detecção */
   stop: () => void;
-  
+
   /** Processar frame manualmente */
   processFrame: (videoElement: HTMLVideoElement) => Promise<DetectedFace[]>;
-  
+
   /** Limpar rostos */
   clearFaces: () => void;
 }
@@ -126,12 +126,12 @@ export function useStreamFaceDetection({
       const canvas = document.createElement('canvas');
       canvas.width = videoElement.videoWidth || 640;
       canvas.height = videoElement.videoHeight || 480;
-      
+
       const ctx = canvas.getContext('2d');
       if (!ctx) return null;
-      
+
       ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-      
+
       // Retornar base64 sem o prefixo data:image/jpeg;base64,
       const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
       return dataUrl.replace(/^data:image\/\w+;base64,/, '');
@@ -155,7 +155,7 @@ return { listType: 'unknown', isKnown: false };
       }
 
       const result = response.data;
-      
+
       if (result?.match && result?.person) {
         return {
           personId: result.person.id,
@@ -174,7 +174,7 @@ return { listType: 'unknown', isKnown: false };
   // Processar frame e detectar rostos
   const processFrame = useCallback(async (videoElement: HTMLVideoElement): Promise<DetectedFace[]> => {
     if (isProcessing) return [];
-    
+
     setIsProcessing(true);
     setError(null);
     const startTime = performance.now();
@@ -191,9 +191,9 @@ return { listType: 'unknown', isKnown: false };
       });
 
       if (fnError) throw fnError;
-      
+
       const result = data as FaceDetectionResult;
-      
+
       if (!result?.faces || result.faces.length === 0) {
         setFaces([]);
         return [];
@@ -202,16 +202,16 @@ return { listType: 'unknown', isKnown: false };
       // Converter para formato do overlay
       const videoWidth = videoElement.videoWidth || 640;
       const videoHeight = videoElement.videoHeight || 480;
-      
+
       const detectedFaces: DetectedFace[] = await Promise.all(
         result.faces
           .filter(f => f.confidence >= minConfidence)
           .map(async (face, index) => {
             const [x, y, width, height] = face.bbox;
-            
+
             // Buscar match com pessoas registradas
             const matchResult = await matchFaceWithRegistered(null);
-            
+
             const detectedFace: DetectedFace = {
               id: `${cameraId}-face-${index}-${Date.now()}`,
               boundingBox: {
@@ -247,7 +247,7 @@ return { listType: 'unknown', isKnown: false };
       }
 
       const avgTime = processingTimesRef.current.reduce((a, b) => a + b, 0) / processingTimesRef.current.length;
-      
+
       setStats(prev => ({
         totalDetections: prev.totalDetections + detectedFaces.length,
         knownFaces: prev.knownFaces + detectedFaces.filter(f => f.isKnown).length,
@@ -261,20 +261,20 @@ return { listType: 'unknown', isKnown: false };
         if (face.listType === 'blacklist') {
           const lastAlert = lastAlertTimeRef.current.get(face.personId || 'unknown');
           const now = Date.now();
-          
+
           // Cooldown de 30 segundos entre alertas para mesma pessoa
           if (!lastAlert || now - lastAlert > 30000) {
             lastAlertTimeRef.current.set(face.personId || 'unknown', now);
-            
+
             if (enableAlertSound) {
               playAlertSound('critical');
             }
-            
+
             toast.error('ALERTA: Pessoa bloqueada detectada!', {
               description: face.personName || 'Pessoa não identificada',
               duration: 10000,
             });
-            
+
             onAlert?.(face);
           }
         }
@@ -282,7 +282,7 @@ return { listType: 'unknown', isKnown: false };
 
       setFaces(detectedFaces);
       onFaceDetected?.(detectedFaces);
-      
+
       return detectedFaces;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro desconhecido';
@@ -322,7 +322,7 @@ return { listType: 'unknown', isKnown: false };
       // Tentar encontrar por data attribute
       const video = document.querySelector(`video[data-camera-id="${cameraId}"]`) as HTMLVideoElement;
       if (video) return video;
-      
+
       // Fallback: primeiro vídeo visível
       const videos = document.querySelectorAll('video');
       for (const v of videos) {
@@ -330,7 +330,7 @@ return { listType: 'unknown', isKnown: false };
           return v as HTMLVideoElement;
         }
       }
-      
+
       return null;
     };
 
