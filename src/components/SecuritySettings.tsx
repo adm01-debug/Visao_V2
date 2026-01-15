@@ -4,11 +4,11 @@
  */
 
 import { memo, useState } from 'react';
-import { 
-  Shield, 
-  Lock, 
-  Key, 
-  Eye, 
+import {
+  Shield,
+  Lock,
+  Key,
+  Eye,
   EyeOff,
   AlertTriangle,
   CheckCircle,
@@ -115,7 +115,7 @@ function SecuritySettingsComponent({
               Gerencie as configurações de segurança do sistema
             </CardDescription>
           </div>
-          <Badge 
+          <Badge
             variant={securityScore >= 80 ? 'default' : securityScore >= 50 ? 'secondary' : 'destructive'}
             className="gap-1"
           >
@@ -146,8 +146,8 @@ function SecuritySettingsComponent({
         {/* Session Timeout */}
         <div className="space-y-2">
           <Label>Tempo Limite da Sessão</Label>
-          <Select 
-            value={String(settings.sessionTimeout)} 
+          <Select
+            value={String(settings.sessionTimeout)}
             onValueChange={(v) => updateSettings({ sessionTimeout: parseInt(v) })}
           >
             <SelectTrigger>
@@ -171,12 +171,12 @@ function SecuritySettingsComponent({
             <Lock className="w-4 h-4" />
             Política de Senhas
           </Label>
-          
+
           <div className="grid grid-cols-2 gap-4 pl-6">
             <div className="space-y-2">
               <Label className="text-sm">Tamanho mínimo</Label>
-              <Select 
-                value={String(settings.passwordPolicy.minLength)} 
+              <Select
+                value={String(settings.passwordPolicy.minLength)}
                 onValueChange={(v) => updateSettings({
                   passwordPolicy: { ...settings.passwordPolicy, minLength: parseInt(v) }
                 })}
