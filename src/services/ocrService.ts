@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * OCR Service - Reconhecimento Óptico de Caracteres
- * 
+ *
  * @module services/ocrService
  */
 
@@ -57,9 +57,9 @@ class OCRService {
     if (this.worker && this.currentLang === lang) {
       return;
     }
-    
+
     await this.terminate();
-    
+
     const Tesseract = await import('tesseract.js');
     this.worker = await Tesseract.createWorker(lang);
     this.currentLang = lang;
@@ -72,9 +72,9 @@ class OCRService {
     if (!this.worker || (lang && lang !== this.currentLang)) {
       await this.initialize(lang || this.currentLang);
     }
-    
+
     const { data } = await this.worker!.recognize(image) as RecognizeResult;
-    
+
     const blocks: OCRBlock[] = (data.blocks || []).map((block: TesseractBlock) => ({
       text: block.text,
       confidence: block.confidence / 100,
@@ -85,7 +85,7 @@ class OCRService {
         height: block.bbox.y1 - block.bbox.y0,
       },
     }));
-    
+
     return {
       text: data.text,
       confidence: data.confidence / 100,
