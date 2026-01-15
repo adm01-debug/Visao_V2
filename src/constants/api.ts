@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * API Constants - Endpoints da API
- * 
+ *
  * @module constants/api
  */
 
