@@ -59,13 +59,13 @@ export function RecognitionAnalytics({ className, dateRange = 7 }: RecognitionAn
     queryKey: ['recognition-analytics', dateRange],
     queryFn: async () => {
       const startDate = subDays(new Date(), dateRange).toISOString();
-      
+
       const { data, error } = await supabase
         .from('recognition_logs')
         .select('*')
         .gte('timestamp', startDate)
         .order('timestamp', { ascending: false });
-      
+
       if (error) throw error;
       return data || [];
     },
@@ -78,7 +78,7 @@ export function RecognitionAnalytics({ className, dateRange = 7 }: RecognitionAn
       const { data, error } = await supabase
         .from('cameras')
         .select('id, name, location');
-      
+
       if (error) throw error;
       return data || [];
     },
@@ -91,7 +91,7 @@ export function RecognitionAnalytics({ className, dateRange = 7 }: RecognitionAn
       const { data, error } = await supabase
         .from('registered_persons')
         .select('id, name, list_type');
-      
+
       if (error) throw error;
       return data || [];
     },
@@ -211,11 +211,11 @@ export function RecognitionAnalytics({ className, dateRange = 7 }: RecognitionAn
     ];
 
     // Peak hours
-    const peakHour = hourlyData.reduce((max, curr) => 
+    const peakHour = hourlyData.reduce((max, curr) =>
       curr.total > max.total ? curr : max, hourlyData[0]);
 
     // Peak day
-    const peakDay = dailyData.reduce((max, curr) => 
+    const peakDay = dailyData.reduce((max, curr) =>
       curr.total > max.total ? curr : max, dailyData[0]);
 
     return {
@@ -399,9 +399,9 @@ export function RecognitionAnalytics({ className, dateRange = 7 }: RecognitionAn
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={analytics.hourlyData}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                  <XAxis 
-                    dataKey="hour" 
-                    className="text-xs" 
+                  <XAxis
+                    dataKey="hour"
+                    className="text-xs"
                     tick={{ fill: 'hsl(var(--muted-foreground))' }}
                     interval={2}
                   />
