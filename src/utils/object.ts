@@ -5,7 +5,7 @@
 export const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
-export const isEmptyObject = (obj: object): boolean => 
+export const isEmptyObject = (obj: object): boolean =>
   Object.keys(obj).length === 0;
 
 export const pick = <T extends object, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> =>
@@ -54,16 +54,16 @@ export const merge = <T extends object>(...objects: Partial<T>[]): T =>
 
 export const clone = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
-export const equals = (a: unknown, b: unknown): boolean => 
+export const equals = (a: unknown, b: unknown): boolean =>
   JSON.stringify(a) === JSON.stringify(b);
 
-export const keys = <T extends object>(obj: T): (keyof T)[] => 
+export const keys = <T extends object>(obj: T): (keyof T)[] =>
   Object.keys(obj) as (keyof T)[];
 
-export const values = <T extends object>(obj: T): T[keyof T][] => 
+export const values = <T extends object>(obj: T): T[keyof T][] =>
   Object.values(obj) as T[keyof T][];
 
-export const entries = <T extends object>(obj: T): [keyof T, T[keyof T]][] => 
+export const entries = <T extends object>(obj: T): [keyof T, T[keyof T]][] =>
   Object.entries(obj) as [keyof T, T[keyof T]][];
 
 export const fromEntries = <K extends string, V>(entries: [K, V][]): Record<K, V> =>
