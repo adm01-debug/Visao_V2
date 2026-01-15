@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Cameras Service - Gerenciamento de câmeras
- * 
+ *
  * @module services/camerasService
  */
 
@@ -62,7 +62,7 @@ export const camerasService = {
       .from("cameras")
       .select("*")
       .order("name");
-    
+
     if (error) throw error;
     return data || [];
   },
@@ -76,7 +76,7 @@ export const camerasService = {
       .select("*")
       .eq("id", id)
       .single();
-    
+
     if (error) throw error;
     return data;
   },
@@ -90,7 +90,7 @@ export const camerasService = {
       .insert(camera)
       .select()
       .single();
-    
+
     if (error) throw error;
     return data;
   },
@@ -105,7 +105,7 @@ export const camerasService = {
       .eq("id", id)
       .select()
       .single();
-    
+
     if (error) throw error;
     return data;
   },
@@ -118,7 +118,7 @@ export const camerasService = {
       .from("cameras")
       .delete()
       .eq("id", id);
-    
+
     if (error) throw error;
   },
 
@@ -130,7 +130,7 @@ export const camerasService = {
       .from("cameras")
       .select("*")
       .eq("status", "online");
-    
+
     if (error) throw error;
     return data || [];
   },
@@ -151,7 +151,7 @@ export const camerasService = {
       .select("*")
       .eq("zone_id", zoneId)
       .order("name");
-    
+
     if (error) throw error;
     return data || [];
   },
@@ -163,22 +163,22 @@ export const camerasService = {
     const { data, error } = await supabase
       .from("cameras")
       .select("status");
-    
+
     if (error) throw error;
-    
+
     const counts: Record<string, number> = {
       online: 0,
       offline: 0,
       recording: 0,
       error: 0,
     };
-    
+
     data?.forEach((camera) => {
       if (camera.status in counts) {
         counts[camera.status]++;
       }
     });
-    
+
     return counts as Record<Camera['status'], number>;
   },
 };
