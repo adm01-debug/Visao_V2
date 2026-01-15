@@ -34,7 +34,7 @@ export function CameraMapWidget() {
       {/* Placeholder map visualization */}
       <div className="relative h-full bg-muted/30 rounded-lg overflow-hidden">
         {/* Grid background */}
-        <div 
+        <div
           className="absolute inset-0 opacity-10"
           style={{
             backgroundImage: 'linear-gradient(hsl(var(--border)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px)',
@@ -60,7 +60,7 @@ export function CameraMapWidget() {
               >
                 <MapPin className={cn(
                   'h-3 w-3',
-                  hasAlert ? 'text-destructive' : 
+                  hasAlert ? 'text-destructive' :
                   onlineCount === totalCount ? 'text-success' : 'text-warning'
                 )} />
                 <span className="max-w-[80px] truncate">{location}</span>
