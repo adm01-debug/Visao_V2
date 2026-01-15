@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Currency Utilities - Formatação de moeda e números
- * 
+ *
  * @module utils/currency
  */
 
@@ -62,7 +62,7 @@ export const formatCurrencyAdvanced = (
     minimumFractionDigits = 2,
     maximumFractionDigits = 2,
   } = options;
-  
+
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
@@ -78,7 +78,7 @@ export const formatCurrencyAdvanced = (
 export const parseCurrency = (value: string): number => {
   // Remover tudo exceto dígitos, vírgula, ponto e sinal negativo
   const cleaned = value.replace(/[^\d,.-]/g, '');
-  
+
   // Converter formato brasileiro (1.234,56) para padrão (1234.56)
   if (cleaned.includes(',') && cleaned.includes('.')) {
     // Formato com separador de milhar e decimal
@@ -89,12 +89,12 @@ export const parseCurrency = (value: string): number => {
     // Americano: 1,234.56
     return parseFloat(cleaned.replace(/,/g, ''));
   }
-  
+
   // Apenas vírgula - assumir decimal brasileiro
   if (cleaned.includes(',')) {
     return parseFloat(cleaned.replace(',', '.'));
   }
-  
+
   return parseFloat(cleaned);
 };
 
