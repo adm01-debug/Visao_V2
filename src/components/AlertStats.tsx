@@ -4,9 +4,9 @@
  */
 
 import { memo, useMemo } from 'react';
-import { 
-  AlertTriangle, 
-  Shield, 
+import {
+  AlertTriangle,
+  Shield,
   TrendingUp,
   TrendingDown,
   Activity
@@ -42,7 +42,7 @@ interface StatItemProps {
 
 function StatItem({ label, value, total, trend, color = 'bg-primary' }: StatItemProps) {
   const percentage = total ? Math.round((value / total) * 100) : 0;
-  
+
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
@@ -71,14 +71,14 @@ function AlertStatsComponent({ alerts, previousPeriodAlerts, className }: AlertS
   const stats = useMemo(() => {
     const total = alerts.length;
     const unread = alerts.filter(a => !a.isRead).length;
-    
+
     const bySeverity = {
       low: alerts.filter(a => a.severity === 'low').length,
       medium: alerts.filter(a => a.severity === 'medium').length,
       high: alerts.filter(a => a.severity === 'high').length,
       critical: alerts.filter(a => a.severity === 'critical').length,
     };
-    
+
     const byType = {
       security: alerts.filter(a => a.type === 'security').length,
       safety: alerts.filter(a => a.type === 'safety').length,
@@ -90,11 +90,11 @@ function AlertStatsComponent({ alerts, previousPeriodAlerts, className }: AlertS
     // Calculate trends if previous period data is available
     let totalTrend: number | undefined;
     let criticalTrend: number | undefined;
-    
+
     if (previousPeriodAlerts) {
       const prevTotal = previousPeriodAlerts.length;
       const prevCritical = previousPeriodAlerts.filter(a => a.severity === 'critical').length;
-      
+
       if (prevTotal > 0) {
         totalTrend = Math.round(((total - prevTotal) / prevTotal) * 100);
       }
@@ -114,7 +114,7 @@ function AlertStatsComponent({ alerts, previousPeriodAlerts, className }: AlertS
           Estatísticas de Alertas
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="space-y-6">
         {/* Summary */}
         <div className="grid grid-cols-2 gap-4">
@@ -136,7 +136,7 @@ function AlertStatsComponent({ alerts, previousPeriodAlerts, className }: AlertS
               )}
             </div>
           </div>
-          
+
           <div className="p-4 rounded-lg bg-destructive/10">
             <div className="flex items-center gap-2 mb-1">
               <Shield className="w-4 h-4 text-destructive" />
