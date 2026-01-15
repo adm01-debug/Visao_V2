@@ -11,7 +11,7 @@ export interface QueryParams {
 export const parseQuery = (query: string): Record<string, string | string[]> => {
   const params = new URLSearchParams(query.startsWith('?') ? query.slice(1) : query);
   const result: Record<string, string | string[]> = {};
-  
+
   params.forEach((value, key) => {
     if (key in result) {
       const existing = result[key];
@@ -20,13 +20,13 @@ export const parseQuery = (query: string): Record<string, string | string[]> => 
       result[key] = value;
     }
   });
-  
+
   return result;
 };
 
 export const stringifyQuery = (params: QueryParams): string => {
   const searchParams = new URLSearchParams();
-  
+
   Object.entries(params).forEach(([key, value]) => {
     if (value === undefined || value === null) return;
     if (Array.isArray(value)) {
@@ -37,7 +37,7 @@ export const stringifyQuery = (params: QueryParams): string => {
       searchParams.append(key, String(value));
     }
   });
-  
+
   return searchParams.toString();
 };
 
