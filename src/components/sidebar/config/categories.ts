@@ -32,12 +32,12 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
     icon: Camera,
     items: [
       { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-      { 
-        id: "cameras", 
-        label: "Câmeras", 
-        icon: Camera, 
-        path: "/cameras", 
-        badge: status.totalCameras > 0 ? `${status.onlineCameras}/${status.totalCameras}` : undefined 
+      {
+        id: "cameras",
+        label: "Câmeras",
+        icon: Camera,
+        path: "/cameras",
+        badge: status.totalCameras > 0 ? `${status.onlineCameras}/${status.totalCameras}` : undefined
       },
       { id: "recordings", label: "Gravações", icon: Video, path: "/recordings" },
     ],
@@ -56,20 +56,20 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
     label: "Segurança",
     icon: Shield,
     items: [
-      { 
-        id: "alerts", 
-        label: "Alertas", 
-        icon: Bell, 
-        path: "/alerts", 
-        badge: status.unreadAlerts > 0 ? status.unreadAlerts : undefined, 
-        badgeVariant: "destructive" as const 
+      {
+        id: "alerts",
+        label: "Alertas",
+        icon: Bell,
+        path: "/alerts",
+        badge: status.unreadAlerts > 0 ? status.unreadAlerts : undefined,
+        badgeVariant: "destructive" as const
       },
-      { 
-        id: "security-rules", 
-        label: "Regras", 
-        icon: Shield, 
-        path: "/security", 
-        badge: status.activeRules > 0 ? status.activeRules : undefined 
+      {
+        id: "security-rules",
+        label: "Regras",
+        icon: Shield,
+        path: "/security",
+        badge: status.activeRules > 0 ? status.activeRules : undefined
       },
       { id: "ppe", label: "EPIs", icon: HardHat, path: "/ppe" },
     ],
@@ -103,19 +103,19 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
     label: "Gestão",
     icon: Users,
     items: [
-      { 
-        id: "people", 
-        label: "Colaboradores", 
-        icon: Users, 
-        path: "/people", 
-        badge: status.registeredPersons > 0 ? status.registeredPersons : undefined 
+      {
+        id: "people",
+        label: "Colaboradores",
+        icon: Users,
+        path: "/people",
+        badge: status.registeredPersons > 0 ? status.registeredPersons : undefined
       },
-      { 
-        id: "zones", 
-        label: "Zonas", 
-        icon: Target, 
-        path: "/zones", 
-        badge: status.activeZones > 0 ? status.activeZones : undefined 
+      {
+        id: "zones",
+        label: "Zonas",
+        icon: Target,
+        path: "/zones",
+        badge: status.activeZones > 0 ? status.activeZones : undefined
       },
     ],
     getStatus: () => ({
