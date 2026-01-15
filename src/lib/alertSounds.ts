@@ -95,7 +95,7 @@ function getAudioContext(): AudioContext {
 function playBeep(frequency: number, duration: number, volume: number, tone: ToneType): Promise<void> {
   return new Promise((resolve) => {
     const ctx = getAudioContext();
-    
+
     // Resume context if suspended (browser autoplay policy)
     if (ctx.state === 'suspended') {
       ctx.resume();
@@ -134,7 +134,7 @@ async function playAlertPattern(config: SoundConfig): Promise<void> {
 
 export async function playAlertSound(severity: AlertSeverity, forcePlay = false): Promise<void> {
   if (isMuted && !forcePlay) return;
-  
+
   const config = soundSettings[severity];
   if (!config) return;
 
@@ -147,7 +147,7 @@ export async function playAlertSound(severity: AlertSeverity, forcePlay = false)
 
 export function setAlertSoundsMuted(muted: boolean): void {
   isMuted = muted;
-  
+
   // Store preference
   try {
     localStorage.setItem('alert-sounds-muted', String(muted));
@@ -201,7 +201,7 @@ export async function playCriticalAlertSound(): Promise<void> {
     }
 
     const config = soundSettings.critical;
-    
+
     // Play urgent siren-like pattern
     for (let i = 0; i < 3; i++) {
       await playBeep(config.frequency, 200, config.volume * 0.85, config.tone);
