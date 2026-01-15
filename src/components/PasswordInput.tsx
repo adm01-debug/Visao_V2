@@ -45,18 +45,18 @@ const PasswordInputComponent = forwardRef<HTMLInputElement, PasswordInputProps>(
 }, ref) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  
+
   const password = String(value);
-  
+
   const metRequirements = requirements.filter(req => req.test(password));
   const strength = Math.round((metRequirements.length / requirements.length) * 100);
-  
+
   const getStrengthColor = () => {
     if (strength < 40) return 'bg-destructive';
     if (strength < 70) return 'bg-warning';
     return 'bg-green-500';
   };
-  
+
   const getStrengthLabel = () => {
     if (strength < 40) return 'Fraca';
     if (strength < 70) return 'Média';
@@ -71,7 +71,7 @@ const PasswordInputComponent = forwardRef<HTMLInputElement, PasswordInputProps>(
           {label}
         </Label>
       )}
-      
+
       <div className="relative">
         <Input
           ref={ref}
@@ -101,11 +101,11 @@ const PasswordInputComponent = forwardRef<HTMLInputElement, PasswordInputProps>(
           )}
         </Button>
       </div>
-      
+
       {error && (
         <p className="text-sm text-destructive">{error}</p>
       )}
-      
+
       {showStrengthIndicator && password.length > 0 && (
         <div className="space-y-1">
           <div className="flex items-center justify-between text-xs">
@@ -118,20 +118,20 @@ const PasswordInputComponent = forwardRef<HTMLInputElement, PasswordInputProps>(
             </span>
           </div>
           <div className="h-2 rounded-full bg-secondary overflow-hidden">
-            <div 
+            <div
               className={cn("h-full transition-all duration-300", getStrengthColor())}
               style={{ width: `${strength}%` }}
             />
           </div>
         </div>
       )}
-      
+
       {showRequirements && isFocused && (
         <div className="space-y-1 p-3 rounded-lg bg-secondary/50 text-sm">
           {requirements.map((req, index) => {
             const isMet = req.test(password);
             return (
-              <div 
+              <div
                 key={index}
                 className={cn(
                   "flex items-center gap-2 transition-colors",
