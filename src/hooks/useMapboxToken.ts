@@ -10,12 +10,12 @@ export function useMapboxToken() {
     async function fetchToken() {
       try {
         const { data, error } = await supabase.functions.invoke('get-mapbox-token');
-        
+
         if (error) {
           setError(error.message);
           return;
         }
-        
+
         if (data?.token) {
           setToken(data.token);
         } else if (data?.error) {
