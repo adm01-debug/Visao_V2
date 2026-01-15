@@ -2,7 +2,7 @@ import { logger } from "@/lib/logger";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: ErrorBoundary
- * 
+ *
  * Captura erros em componentes filhos e exibe fallback amigável
  */
 
@@ -168,8 +168,8 @@ export function ErrorBoundaryWrapper({ children, fallbackRender }: ErrorBoundary
       key={key}
       fallback={
         fallbackRender ? (
-          <ErrorBoundaryFallbackRenderer 
-            fallbackRender={fallbackRender} 
+          <ErrorBoundaryFallbackRenderer
+            fallbackRender={fallbackRender}
             onReset={handleReset}
           />
         ) : undefined
