@@ -138,10 +138,10 @@ interface KPICardProps {
 }
 
 function KPICard({ data, loading }: KPICardProps) {
-  const change = data.previousValue > 0 
-    ? ((data.value - data.previousValue) / data.previousValue) * 100 
+  const change = data.previousValue > 0
+    ? ((data.value - data.previousValue) / data.previousValue) * 100
     : 0;
-  
+
   const isPositive = change > 0;
   const isNeutral = change === 0;
   const Icon = data.icon;
@@ -167,7 +167,7 @@ function KPICard({ data, loading }: KPICardProps) {
             <Icon className="w-4 h-4 text-white" />
           </div>
         </div>
-        
+
         <div role="main" className="flex items-baseline gap-2">
           <span className="text-3xl font-bold">
             {data.value.toLocaleString('pt-BR')}
@@ -176,7 +176,7 @@ function KPICard({ data, loading }: KPICardProps) {
             <span className="text-sm text-muted-foreground">{data.unit}</span>
           )}
         </div>
-        
+
         <div role="main" className="flex items-center gap-1 mt-2">
           {isNeutral ? (
             <>
@@ -217,15 +217,15 @@ interface SimpleBarChartProps {
 
 function SimpleBarChart({ data, dataKey, color, height = 200 }: SimpleBarChartProps) {
   const maxValue = Math.max(...data.map(d => Number(d[dataKey]) || 0), 1);
-  
+
   return (
     <div role="main" className="flex items-end gap-1 h-full" style={{ height }}>
       {data.map((item, index) => {
         const value = Number(item[dataKey]) || 0;
         const barHeight = (value / maxValue) * 100;
-        
+
         return (
-          <div 
+          <div
             key={index}
             className="flex-1 flex flex-col items-center gap-1 group"
           >
@@ -235,7 +235,7 @@ function SimpleBarChart({ data, dataKey, color, height = 200 }: SimpleBarChartPr
                 {item.label}: {value}
               </div>
               {/* Bar */}
-              <div 
+              <div
                 className={cn('w-full rounded-t transition-all', color)}
                 style={{ height: `${barHeight}%`, minHeight: value > 0 ? 4 : 0 }}
               />
@@ -259,7 +259,7 @@ interface DonutChartProps {
 function DonutChart({ data, size = 160 }: DonutChartProps) {
   const total = data.reduce((sum, item) => sum + item.count, 0);
   let currentAngle = 0;
-  
+
   const segments = data.map(item => {
     const angle = (item.count / total) * 360;
     const startAngle = currentAngle;
@@ -270,7 +270,7 @@ function DonutChart({ data, size = 160 }: DonutChartProps) {
   const getArcPath = (startAngle: number, angle: number, innerRadius: number, outerRadius: number) => {
     const startRad = (startAngle - 90) * Math.PI / 180;
     const endRad = (startAngle + angle - 90) * Math.PI / 180;
-    
+
     const x1 = size/2 + outerRadius * Math.cos(startRad);
     const y1 = size/2 + outerRadius * Math.sin(startRad);
     const x2 = size/2 + outerRadius * Math.cos(endRad);
@@ -279,9 +279,9 @@ function DonutChart({ data, size = 160 }: DonutChartProps) {
     const y3 = size/2 + innerRadius * Math.sin(endRad);
     const x4 = size/2 + innerRadius * Math.cos(startRad);
     const y4 = size/2 + innerRadius * Math.sin(startRad);
-    
+
     const largeArc = angle > 180 ? 1 : 0;
-    
+
     return `M ${x1} ${y1} A ${outerRadius} ${outerRadius} 0 ${largeArc} 1 ${x2} ${y2} L ${x3} ${y3} A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${x4} ${y4} Z`;
   };
 
@@ -312,7 +312,7 @@ interface HourlyHeatmapProps {
 
 function HourlyHeatmap({ data }: HourlyHeatmapProps) {
   const maxAlerts = Math.max(...data.map(d => d.alerts), 1);
-  
+
   return (
     <div role="main" aria-label="Analytics e relatórios" className="grid grid-cols-12 gap-1">
       {data.map((item, index) => {
@@ -340,12 +340,12 @@ function HourlyHeatmap({ data }: HourlyHeatmapProps) {
 // ============================================
 
 export function AnalyticsPage() {
-  
+
   // Estado
   const [dateRange, setDateRange] = useState<DateRange>('7d');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  
+
   // Dados
   const [kpis, setKpis] = useState<KPIData[]>([]);
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
@@ -357,7 +357,7 @@ export function AnalyticsPage() {
   const dateInterval = useMemo(() => {
     const end = endOfDay(new Date());
     let start: Date;
-    
+
     switch (dateRange) {
       case '24h':
         start = subDays(end, 1);
@@ -374,7 +374,7 @@ export function AnalyticsPage() {
       default:
         start = subDays(end, 7);
     }
-    
+
     return { start: startOfDay(start), end };
   }, [dateRange]);
 
@@ -383,17 +383,17 @@ export function AnalyticsPage() {
     setLoading(true);
     try {
       const { start, end } = dateInterval;
-      
+
       // Período anterior para comparação
       const prevStart = subDays(start, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
-      
+
       // Carregar alertas
       const { data: alertsData } = await supabase
         .from('alerts')
         .select('*')
         .gte('created_at', start.toISOString())
         .lte('created_at', end.toISOString());
-      
+
       const { data: prevAlertsData } = await supabase
         .from('alerts')
         .select('id')
@@ -420,7 +420,7 @@ export function AnalyticsPage() {
           .gte('created_at', start.toISOString())
           .lte('created_at', end.toISOString());
         analysisCount = count || 0;
-        
+
         const { count: prevCount } = await supabase
           .from('analysis_history')
           .select('*', { count: 'exact', head: true })
@@ -435,7 +435,7 @@ export function AnalyticsPage() {
       const totalCameras = camerasData?.length || 0;
       const onlineCameras = camerasData?.filter(c => c.status !== 'offline').length || 0;
       const totalPersons = personsData?.length || 0;
-      
+
       setKpis([
         {
           label: 'Total de Alertas',
@@ -472,10 +472,10 @@ export function AnalyticsPage() {
       const days = eachDayOfInterval({ start, end });
       const chartPoints: ChartDataPoint[] = days.map(day => {
         const dayStr = format(day, 'yyyy-MM-dd');
-        const dayAlerts = alertsData?.filter(a => 
+        const dayAlerts = alertsData?.filter(a =>
           a.created_at.startsWith(dayStr)
         ).length || 0;
-        
+
         return {
           date: dayStr,
           label: format(day, 'dd/MM', { locale: ptBR }),
@@ -496,13 +496,13 @@ export function AnalyticsPage() {
         zone: '#ef4444',
         other: '#6b7280',
       };
-      
+
       const typeCount: Record<string, number> = {};
       alertsData?.forEach(alert => {
         const type = alert.type || 'other';
         typeCount[type] = (typeCount[type] || 0) + 1;
       });
-      
+
       const alertTypes: AlertsByType[] = Object.entries(typeCount).map(([type, count]) => ({
         type,
         count,
@@ -533,7 +533,7 @@ export function AnalyticsPage() {
           const alertHour = new Date(a.created_at).getHours();
           return alertHour === hour;
         }).length || 0;
-        
+
         return {
           hour,
           alerts: hourAlerts,
@@ -557,12 +557,12 @@ export function AnalyticsPage() {
   // Exportar relatório
   const exportReport = (formatType: 'pdf' | 'csv' | 'xlsx') => {
     toast.success(`Exportando relatório em ${formatType.toUpperCase()}...`);
-    
+
     if (formatType === 'csv') {
       const headers = ['Data', 'Alertas', 'Análises', 'Detecções', 'Gravações'];
       const rows = chartData.map(d => [d.label, d.alerts, d.analyses, d.detections, d.recordings]);
       const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-      
+
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -670,9 +670,9 @@ export function AnalyticsPage() {
             {loading ? (
               <Skeleton className="h-[200px] w-full" />
             ) : (
-              <SimpleBarChart 
-                data={chartData} 
-                dataKey="alerts" 
+              <SimpleBarChart
+                data={chartData}
+                dataKey="alerts"
                 color="bg-red-500"
                 height={200}
               />
@@ -695,8 +695,8 @@ export function AnalyticsPage() {
                 <div role="main" aria-label="Analytics e relatórios" className="grid grid-cols-2 gap-2 mt-4 w-full">
                   {alertsByType.slice(0, 6).map((item, i) => (
                     <div key={i} className="flex items-center gap-2 text-xs">
-                      <div 
-                        className="w-3 h-3 rounded-full" 
+                      <div
+                        className="w-3 h-3 rounded-full"
                         style={{ backgroundColor: item.color }}
                       />
                       <span className="truncate">{item.type}</span>
