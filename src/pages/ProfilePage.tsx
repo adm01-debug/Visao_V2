@@ -5,15 +5,15 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { 
-  User, 
-  Mail, 
-  Shield, 
-  Camera, 
-  Bell, 
-  Save, 
-  Loader2, 
-  Upload, 
+import {
+  User,
+  Mail,
+  Shield,
+  Camera,
+  Bell,
+  Save,
+  Loader2,
+  Upload,
   Trash2,
   ImagePlus
 } from "lucide-react";
@@ -36,7 +36,7 @@ export default function ProfilePage() {
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { uploading, uploadAvatar, removeAvatar, avatarUrl, setAvatarUrl } = useAvatarUpload();
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [fullName, setFullName] = useState("");
   const [emailNotifications, setEmailNotifications] = useState(true);
@@ -64,20 +64,20 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     if (!user) return;
-    
+
     setIsLoading(true);
-    
+
     try {
       const { error } = await supabase
         .from('profiles')
-        .update({ 
+        .update({
           full_name: fullName,
           updated_at: new Date().toISOString()
         })
         .eq('user_id', user.id);
 
       if (error) throw error;
-      
+
       toast.success("Perfil atualizado com sucesso!");
     } catch (error) {
       logger.error('profile', 'Error saving profile:', error);
@@ -137,16 +137,16 @@ export default function ProfilePage() {
           <CardHeader className="text-center">
             <div className="relative inline-block mx-auto group">
               <Avatar className="h-24 w-24 mx-auto ring-4 ring-background shadow-lg">
-                <AvatarImage 
-                  src={avatarUrl || "/placeholder.svg"} 
-                  alt="Foto do perfil" 
+                <AvatarImage
+                  src={avatarUrl || "/placeholder.svg"}
+                  alt="Foto do perfil"
                   className="object-cover"
                 />
                 <AvatarFallback className="text-2xl bg-primary/10 text-primary">
                   {fullName?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
-              
+
               {/* Overlay on hover */}
               <button
                 onClick={triggerFileInput}
@@ -160,7 +160,7 @@ export default function ProfilePage() {
                 )}
               </button>
             </div>
-            
+
             <input
               ref={fileInputRef}
               type="file"
@@ -168,7 +168,7 @@ export default function ProfilePage() {
               onChange={handleFileSelect}
               className="hidden"
             />
-            
+
             <CardTitle className="mt-4">
               {fullName || user?.email?.split("@")[0] || "Usuário"}
             </CardTitle>
@@ -181,10 +181,10 @@ export default function ProfilePage() {
                 Administrador
               </Badge>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={triggerFileInput}
                 disabled={uploading}
                 className="flex items-center gap-2"
@@ -196,9 +196,9 @@ export default function ProfilePage() {
                 )}
                 {uploading ? "Enviando..." : "Alterar"}
               </Button>
-              
-              <Button 
-                variant="outline" 
+
+              <Button
+                variant="outline"
                 onClick={handleRemoveAvatar}
                 disabled={uploading || !avatarUrl}
                 className="flex items-center gap-2 text-destructive hover:text-destructive"
@@ -207,7 +207,7 @@ export default function ProfilePage() {
                 Remover
               </Button>
             </div>
-            
+
             <p className="text-xs text-muted-foreground text-center">
               JPG, PNG, GIF ou WebP. Máx 5MB.
             </p>
