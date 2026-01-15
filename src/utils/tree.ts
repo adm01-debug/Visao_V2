@@ -121,7 +121,7 @@ export const countNodes = <T>(tree: TreeNode<T>[]): number =>
 
 export const getMaxDepth = <T>(tree: TreeNode<T>[], depth = 0): number => {
   if (!tree.length) return depth;
-  return Math.max(...tree.map(node => 
+  return Math.max(...tree.map(node =>
     node.children?.length ? getMaxDepth(node.children, depth + 1) : depth + 1
   ));
 };
