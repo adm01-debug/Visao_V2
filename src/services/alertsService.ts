@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Alerts Service - Gerenciamento de alertas
- * 
+ *
  * @module services/alertsService
  */
 
@@ -107,7 +107,7 @@ export const alertsService = {
       .select("*")
       .eq("id", id)
       .single();
-    
+
     if (error) throw error;
     return data;
   },
@@ -125,7 +125,7 @@ export const alertsService = {
       })
       .select()
       .single();
-    
+
     if (error) throw error;
     return data;
   },
@@ -140,7 +140,7 @@ export const alertsService = {
       .eq("id", id)
       .select()
       .single();
-    
+
     if (error) throw error;
     return data;
   },
@@ -153,7 +153,7 @@ export const alertsService = {
       .from("alerts")
       .delete()
       .eq("id", id);
-    
+
     if (error) throw error;
   },
 
@@ -172,7 +172,7 @@ export const alertsService = {
       .from("alerts")
       .update({ read: true })
       .in("id", ids);
-    
+
     if (error) throw error;
   },
 
@@ -213,7 +213,7 @@ export const alertsService = {
       .from("alerts")
       .select("*", { count: "exact", head: true })
       .eq("read", false);
-    
+
     if (error) throw error;
     return count || 0;
   },
@@ -226,9 +226,9 @@ export const alertsService = {
       .from("alerts")
       .select("severity")
       .eq("status", "active");
-    
+
     if (error) throw error;
-    
+
     const counts: Record<string, number> = {
       critical: 0,
       high: 0,
@@ -236,13 +236,13 @@ export const alertsService = {
       low: 0,
       info: 0,
     };
-    
+
     data?.forEach((alert) => {
       if (alert.severity in counts) {
         counts[alert.severity]++;
       }
     });
-    
+
     return counts as Record<AlertSeverity, number>;
   },
 
@@ -252,14 +252,14 @@ export const alertsService = {
   async getRecent(limit = 10): Promise<Alert[]> {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
-    
+
     const { data, error } = await supabase
       .from("alerts")
       .select("*")
       .gte("created_at", yesterday.toISOString())
       .order("created_at", { ascending: false })
       .limit(limit);
-    
+
     if (error) throw error;
     return data || [];
   },
