@@ -3,13 +3,14 @@
  * Página: AuthCallback - Callback de autenticação OAuth
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 
 export default function AuthCallback() {
   const navigate = useNavigate();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('Processando autenticação...');
 
@@ -28,7 +29,7 @@ export default function AuthCallback() {
           setMessage('Login realizado com sucesso!');
           
           // Redirect to dashboard after short delay
-          setTimeout(() => {
+          timeoutRef.current = setTimeout(() => {
             navigate('/dashboard', { replace: true });
           }, 1500);
         } else {
@@ -50,7 +51,7 @@ export default function AuthCallback() {
             setStatus('success');
             setMessage('Login realizado com sucesso!');
             
-            setTimeout(() => {
+            timeoutRef.current = setTimeout(() => {
               navigate('/dashboard', { replace: true });
             }, 1500);
           } else {
@@ -62,13 +63,19 @@ export default function AuthCallback() {
         setStatus('error');
         setMessage('Erro na autenticação. Redirecionando...');
         
-        setTimeout(() => {
+        timeoutRef.current = setTimeout(() => {
           navigate('/auth', { replace: true });
         }, 2000);
       }
     };
 
     handleCallback();
+    
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, [navigate]);
 
   return (
