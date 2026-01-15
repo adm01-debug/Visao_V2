@@ -26,7 +26,7 @@ class SyncService {
 
   private async processQueue(): Promise<void> {
     if (this.syncing || this.queue.length === 0) return;
-    
+
     this.syncing = true;
     this.setStatus('syncing');
 
