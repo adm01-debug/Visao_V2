@@ -107,10 +107,10 @@ export function AriaLive({
       timeoutRef.current = setTimeout(() => {
         // Clear first to ensure re-announcement of same message
         setAnnouncement('');
-        
+
         requestAnimationFrame(() => {
           setAnnouncement(message);
-          
+
           if (clearOnAnnounce) {
             timeoutRef.current = setTimeout(() => {
               setAnnouncement('');
@@ -131,7 +131,7 @@ export function AriaLive({
     <>
       {/* Visual content if provided */}
       {children && <div className={className}>{children}</div>}
-      
+
       {/* Screen reader only announcement */}
       <div
         role="status"
@@ -171,7 +171,7 @@ export function withAriaAnnouncement<P extends object>(
 ) {
   return function AnnouncementWrapper(props: P) {
     const announcement = getAnnouncement(props);
-    
+
     return (
       <>
         <WrappedComponent {...props} />
