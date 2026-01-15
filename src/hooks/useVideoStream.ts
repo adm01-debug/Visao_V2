@@ -2,17 +2,17 @@ import { retry, withRetry } from "@/lib/retry";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useVideoStream
- * 
+ *
  * Gerencia conexão e reprodução de streams de vídeo.
  * Suporta HLS (via hls.js), WebRTC e fallback para vídeo nativo.
- * 
+ *
  * @example
- * const { 
- *   videoRef, 
- *   state, 
- *   play, 
- *   pause, 
- *   takeSnapshot 
+ * const {
+ *   videoRef,
+ *   state,
+ *   play,
+ *   pause,
+ *   takeSnapshot
  * } = useVideoStream({
  *   url: 'https://example.com/stream.m3u8',
  *   protocol: 'hls',
@@ -41,10 +41,10 @@ import {
 interface UseVideoStreamOptions extends Partial<StreamConfig>, StreamEvents {
   /** URL do stream (obrigatório) */
   url: string;
-  
+
   /** Auto-play ao conectar */
   autoPlay?: boolean;
-  
+
   /** Ref externo do vídeo (opcional) */
   externalVideoRef?: React.RefObject<HTMLVideoElement>;
 }
@@ -52,43 +52,43 @@ interface UseVideoStreamOptions extends Partial<StreamConfig>, StreamEvents {
 interface UseVideoStreamReturn {
   /** Ref para o elemento <video> */
   videoRef: React.RefObject<HTMLVideoElement>;
-  
+
   /** Estado atual do stream */
   state: StreamState;
-  
+
   /** Conectar ao stream */
   connect: () => Promise<void>;
-  
+
   /** Desconectar do stream */
   disconnect: () => void;
-  
+
   /** Reproduzir */
   play: () => Promise<void>;
-  
+
   /** Pausar */
   pause: () => void;
-  
+
   /** Toggle play/pause */
   togglePlay: () => Promise<void>;
-  
+
   /** Toggle mute */
   toggleMute: () => void;
-  
+
   /** Definir volume (0-1) */
   setVolume: (volume: number) => void;
-  
+
   /** Mudar qualidade */
   setQuality: (quality: StreamQuality) => void;
-  
+
   /** Capturar snapshot */
   takeSnapshot: () => string | null;
-  
+
   /** Entrar/sair fullscreen */
   toggleFullscreen: () => Promise<void>;
-  
+
   /** Forçar reconexão */
   reconnect: () => Promise<void>;
-  
+
   /** Obter frame atual para análise */
   getCurrentFrame: () => ImageData | null;
 }
@@ -203,8 +203,8 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
       latency: 0,
       droppedFrames: 0,
       buffered: 0,
-      connectionTime: connectionStartRef.current 
-        ? Date.now() - connectionStartRef.current 
+      connectionTime: connectionStartRef.current
+        ? Date.now() - connectionStartRef.current
         : 0,
       reconnectAttempts: state.stats.reconnectAttempts,
     };
@@ -297,7 +297,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
     });
 
     hls.on(Hls.Events.MANIFEST_PARSED, (_, data) => {
-      
+
       // Extrair qualidades disponíveis
       const qualities: StreamQuality[] = ['auto'];
       data.levels.forEach(level => {
@@ -306,8 +306,8 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
         else if (level.height >= 480) qualities.push('480p');
         else if (level.height >= 360) qualities.push('360p');
       });
-      
-      updateState({ 
+
+      updateState({
         status: 'connected',
         availableQualities: [...new Set(qualities)],
       });
@@ -325,15 +325,15 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
         else if (level.height >= 720) quality = '720p';
         else if (level.height >= 480) quality = '480p';
         else if (level.height >= 360) quality = '360p';
-        
+
         updateState({ currentQuality: quality });
         onQualityChange?.(quality);
       }
     });
 
     hls.on(Hls.Events.ERROR, (_, data) => {
-      
-      
+
+
       if (data.fatal) {
         switch (data.type) {
           case Hls.ErrorTypes.NETWORK_ERROR:
@@ -380,7 +380,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
     clearError();
 
     video.src = url;
-    
+
     video.onloadeddata = () => {
       setStatus('connected');
       updateState({
@@ -406,21 +406,21 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
 
   const handleReconnect = useCallback(async () => {
     if (!reconnection?.enabled) return;
-    
+
     const attempts = state.stats.reconnectAttempts + 1;
-    
+
     if (attempts > (reconnection.maxAttempts || 5)) {
       setError('TIMEOUT', `Falha após ${attempts} tentativas`, false);
       return;
     }
 
     setStatus('reconnecting');
-    updateState({ 
-      stats: { ...state.stats, reconnectAttempts: attempts } 
+    updateState({
+      stats: { ...state.stats, reconnectAttempts: attempts }
     });
 
     const delay = reconnection.delayMs! * Math.pow(reconnection.backoffMultiplier || 1.5, attempts - 1);
-    
+
     reconnectTimeoutRef.current = setTimeout(() => {
       connect();
     }, delay);
@@ -480,7 +480,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
       updateState({ status: 'playing', isPlaying: true });
       onPlay?.();
     } catch (error) {
-      
+
       // Auto-play bloqueado - comum em navegadores
       updateState({ isPlaying: false });
     }
@@ -556,7 +556,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
 
     ctx.drawImage(video, 0, 0);
     const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
-    
+
     onSnapshot?.(dataUrl);
     return dataUrl;
   }, [videoRef, onSnapshot]);
@@ -578,7 +578,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
 
     ctx.drawImage(video, 0, 0);
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    
+
     onFrame?.(imageData);
     return imageData;
   }, [videoRef, onFrame]);
@@ -596,7 +596,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
         updateState({ isFullscreen: true });
       }
     } catch (error) {
-      
+
     }
   }, [videoRef, updateState]);
 
