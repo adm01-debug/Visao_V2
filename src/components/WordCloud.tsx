@@ -54,7 +54,7 @@ function spiralPosition(step: number, type: 'archimedean' | 'rectangular'): [num
       return [side / 2, offset - side - side / 2];
     }
   }
-  
+
   // Archimedean spiral
   const angle = step * 0.1;
   const radius = step * 0.5;
@@ -107,15 +107,15 @@ export const WordCloud: React.FC<WordCloudProps> = ({
       // Calculate font size based on value
       const normalized = (word.value - minValue) / valueRange;
       const fontSize = minFontSize + normalized * (maxFontSize - minFontSize);
-      
+
       // Estimate word dimensions (rough approximation)
       const charWidth = fontSize * 0.6;
       const wordWidth = word.text.length * charWidth;
       const wordHeight = fontSize * 1.2;
-      
+
       // Choose rotation
       const rotation = rotations[index % rotations.length];
-      
+
       // Find position using spiral
       let step = 0;
       let x = centerX;
