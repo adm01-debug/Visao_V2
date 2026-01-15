@@ -20,15 +20,15 @@ class PerformanceMonitor {
   end(name: string): number {
     const mark = this.marks.get(name);
     if (!mark) return 0;
-    
+
     const duration = performance.now() - mark.startTime;
     mark.duration = duration;
-    
+
     if (!this.metrics.has(name)) {
       this.metrics.set(name, []);
     }
     this.metrics.get(name)!.push(duration);
-    
+
     return duration;
   }
 
@@ -54,7 +54,7 @@ class PerformanceMonitor {
   getMetrics(name: string): { avg: number; min: number; max: number; count: number } | null {
     const values = this.metrics.get(name);
     if (!values || values.length === 0) return null;
-    
+
     return {
       avg: values.reduce((a, b) => a + b, 0) / values.length,
       min: Math.min(...values),
@@ -70,13 +70,13 @@ class PerformanceMonitor {
 
   reportWebVitals(): void {
     if (typeof window === 'undefined') return;
-    
+
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         // Log or send to analytics
       }
     });
-    
+
     observer.observe({ entryTypes: ['paint', 'largest-contentful-paint'] });
   }
 }
