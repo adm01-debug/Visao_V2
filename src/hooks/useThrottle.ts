@@ -6,7 +6,7 @@ export function useThrottle<T>(value: T, interval: number): T {
 
   useEffect(() => {
     const now = Date.now();
-    
+
     if (now >= lastUpdated.current + interval) {
       lastUpdated.current = now;
       setThrottledValue(value);
@@ -15,7 +15,7 @@ export function useThrottle<T>(value: T, interval: number): T {
         lastUpdated.current = Date.now();
         setThrottledValue(value);
       }, interval - (now - lastUpdated.current));
-      
+
       return () => clearTimeout(timer);
     }
   }, [value, interval]);
