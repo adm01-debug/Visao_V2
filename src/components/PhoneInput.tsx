@@ -46,7 +46,7 @@ const DEFAULT_COUNTRIES: Country[] = [
 
 const formatPhone = (value: string, format?: string): string => {
   if (!format) return value;
-  
+
   const digits = value.replace(/\D/g, '');
   let formatted = '';
   let digitIndex = 0;
@@ -77,7 +77,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(({
 }, ref) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
-  
+
   const availableCountries = useMemo(() => {
     let list = countries;
     if (onlyCountries) {
@@ -103,7 +103,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(({
   const filteredCountries = useMemo(() => {
     const searchLower = search.toLowerCase();
     let filtered = availableCountries.filter(
-      c => c.name.toLowerCase().includes(searchLower) || 
+      c => c.name.toLowerCase().includes(searchLower) ||
            c.dialCode.includes(searchLower) ||
            c.code.toLowerCase().includes(searchLower)
     );
@@ -139,11 +139,11 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(({
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value.replace(/[^\d\s\-()]/g, '');
     setPhoneNumber(newValue);
-    
+
     const digits = newValue.replace(/\D/g, '');
     const full = digits ? `${selectedCountry.dialCode}${digits}` : '';
     const formatted = formatPhone(digits, selectedCountry.format);
-    
+
     onChange?.(full, selectedCountry, formatted);
   }, [selectedCountry, onChange]);
 
