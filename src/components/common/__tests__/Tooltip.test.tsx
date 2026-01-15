@@ -9,7 +9,7 @@ describe('Tooltip', () => {
         <button>Hover me</button>
       </Tooltip>
     );
-    
+
     fireEvent.mouseEnter(screen.getByText('Hover me'));
     expect(screen.getByRole('tooltip')).toBeInTheDocument();
   });
@@ -20,7 +20,7 @@ describe('Tooltip', () => {
         <button>Hover me</button>
       </Tooltip>
     );
-    
+
     fireEvent.mouseEnter(screen.getByText('Hover me'));
     fireEvent.mouseLeave(screen.getByText('Hover me'));
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
