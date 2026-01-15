@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Dashboard V2 - Integração Completa
- * 
+ *
  * Melhorias integradas:
  * - VideoStreamPlayer em vez de thumbnails estáticos
  * - StreamingCameraGrid com layouts dinâmicos
@@ -22,10 +22,10 @@ import { CountUp } from '@/components/CountUp';
 import { TimeAgo } from '@/components/TimeAgo';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { 
-  Camera, 
-  AlertTriangle, 
-  Users, 
+import {
+  Camera,
+  AlertTriangle,
+  Users,
   Shield,
   TrendingUp,
   Activity,
@@ -192,10 +192,10 @@ interface CameraStreamCardProps {
   compact?: boolean;
 }
 
-function CameraStreamCard({ 
-  camera, 
-  isSelected, 
-  onClick, 
+function CameraStreamCard({
+  camera,
+  isSelected,
+  onClick,
   settings,
   compact = false,
 }: CameraStreamCardProps) {
@@ -229,7 +229,7 @@ function CameraStreamCard({
             protocol={camera.streamProtocol as unknown}
             cameraName={camera.name}
           />
-          
+
           {/* Zone Overlay */}
           {settings.enableZones && zones.length > 0 && (
             <ZoneOverlay
@@ -345,7 +345,7 @@ function SettingsSheet({ settings, onSettingsChange }: SettingsSheetProps) {
             Configure as funcionalidades e visualização
           </SheetDescription>
         </SheetHeader>
-        
+
         <div role="main" aria-label="Painel de controle principal" className="space-y-6 mt-6">
           {/* Streaming */}
           <div role="main" aria-label="Painel de controle principal" className="flex items-center justify-between">
@@ -355,7 +355,7 @@ function SettingsSheet({ settings, onSettingsChange }: SettingsSheetProps) {
             </div>
             <Switch
               checked={settings.enableStreaming}
-              onCheckedChange={(checked) => 
+              onCheckedChange={(checked) =>
                 onSettingsChange({ ...settings, enableStreaming: checked })
               }
             />
@@ -369,7 +369,7 @@ function SettingsSheet({ settings, onSettingsChange }: SettingsSheetProps) {
             </div>
             <Switch
               checked={settings.enableAnalysis}
-              onCheckedChange={(checked) => 
+              onCheckedChange={(checked) =>
                 onSettingsChange({ ...settings, enableAnalysis: checked })
               }
             />
@@ -383,7 +383,7 @@ function SettingsSheet({ settings, onSettingsChange }: SettingsSheetProps) {
             </div>
             <Switch
               checked={settings.enableFaceRecognition}
-              onCheckedChange={(checked) => 
+              onCheckedChange={(checked) =>
                 onSettingsChange({ ...settings, enableFaceRecognition: checked })
               }
             />
@@ -397,7 +397,7 @@ function SettingsSheet({ settings, onSettingsChange }: SettingsSheetProps) {
             </div>
             <Switch
               checked={settings.enableZones}
-              onCheckedChange={(checked) => 
+              onCheckedChange={(checked) =>
                 onSettingsChange({ ...settings, enableZones: checked })
               }
             />
@@ -412,7 +412,7 @@ function SettingsSheet({ settings, onSettingsChange }: SettingsSheetProps) {
               </div>
               <Switch
                 checked={settings.autoRefresh}
-                onCheckedChange={(checked) => 
+                onCheckedChange={(checked) =>
                   onSettingsChange({ ...settings, autoRefresh: checked })
                 }
               />
@@ -423,7 +423,7 @@ function SettingsSheet({ settings, onSettingsChange }: SettingsSheetProps) {
                 <Label>Intervalo (segundos)</Label>
                 <Select
                   value={String(settings.refreshInterval / 1000)}
-                  onValueChange={(v) => 
+                  onValueChange={(v) =>
                     onSettingsChange({ ...settings, refreshInterval: Number(v) * 1000 })
                   }
                 >
@@ -451,7 +451,7 @@ function SettingsSheet({ settings, onSettingsChange }: SettingsSheetProps) {
 // ============================================
 
 export function DashboardV2() {
-  
+
   // Estado
   const [selectedCamera, setSelectedCamera] = useState<ReturnType<typeof mapDbCameraToUI> | null>(null);
   const [alertFilters, setAlertFilters] = useState<AlertFilters>(defaultFilters);
@@ -474,7 +474,7 @@ export function DashboardV2() {
   // Auto refresh
   useEffect(() => {
     if (!settings.autoRefresh) return;
-    
+
     const interval = setInterval(() => {
       refetchCameras();
       refetchAlerts();
@@ -577,7 +577,7 @@ export function DashboardV2() {
             {uiCameras.length} câmeras • {streamingCameras} com streaming
           </p>
         </div>
-        
+
         <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
           {/* View mode tabs - oculto em mobile pequeno */}
           <Tabs
@@ -762,8 +762,8 @@ export function DashboardV2() {
           {/* Charts */}
           <div role="main" aria-label="Painel de controle principal" className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <AlertTrendsChart alerts={uiAlerts} />
-            <AlertsByCameraChart 
-              alerts={uiAlerts} 
+            <AlertsByCameraChart
+              alerts={uiAlerts}
               onCameraClick={(cameraId) => {
                 setAlertFilters(prev => ({ ...prev, cameraId }));
               }}
