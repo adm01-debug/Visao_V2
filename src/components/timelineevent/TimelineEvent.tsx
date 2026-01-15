@@ -1,7 +1,7 @@
 /**
  * VIS-O - Sistema de Vigilância Inteligente
  * TimelineEvent - Single event item for timeline view
- * 
+ *
  * @module components/timelineevent
  */
 
