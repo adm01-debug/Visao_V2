@@ -130,7 +130,7 @@ export function GlobalSearch() {
     const handleOpenSearch = () => setOpen(true);
     document.addEventListener("open-search", handleOpenSearch);
     document.addEventListener("keydown", down);
-    
+
     return () => {
       document.removeEventListener("keydown", down);
       document.removeEventListener("open-search", handleOpenSearch);
@@ -378,8 +378,8 @@ export function GlobalSearch() {
                   </div>
                   <Badge variant="outline" className={cn(
                     "text-xs",
-                    zone.is_active 
-                      ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" 
+                    zone.is_active
+                      ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
                       : "bg-muted text-muted-foreground"
                   )}>
                     {zone.is_active ? "Ativa" : "Inativa"}
