@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componentes: Skeleton Loaders
- * 
+ *
  * Skeletons para todas as páginas do sistema
  * para melhor experiência de loading
  */
