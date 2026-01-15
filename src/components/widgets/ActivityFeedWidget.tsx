@@ -49,7 +49,7 @@ export function ActivityFeedWidget() {
         {activities.map((activity) => {
           const Icon = activityIcons[activity.type] || Activity;
           const colorClass = activityColors[activity.type] || 'text-muted-foreground bg-muted';
-          
+
           return (
             <div key={activity.id} className="flex items-start gap-2">
               <div className={cn(
@@ -58,13 +58,13 @@ export function ActivityFeedWidget() {
               )}>
                 <Icon className="h-3.5 w-3.5" />
               </div>
-              
+
               <div className="flex-1 min-w-0">
                 <p className="text-xs leading-tight">{activity.message}</p>
                 <p className="text-[10px] text-muted-foreground mt-0.5">
-                  {activity.camera_name} • {formatDistanceToNow(new Date(activity.timestamp), { 
-                    addSuffix: true, 
-                    locale: ptBR 
+                  {activity.camera_name} • {formatDistanceToNow(new Date(activity.timestamp), {
+                    addSuffix: true,
+                    locale: ptBR
                   })}
                 </p>
               </div>
