@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Acessibilidade (ARIA)
- * 
+ *
  * Componentes e hooks para acessibilidade:
  * - Skip links
  * - Anúncios para leitores de tela
@@ -11,12 +11,12 @@
  * - Preferências de usuário
  */
 
-import { 
-  createContext, 
-  useContext, 
-  useState, 
-  useCallback, 
-  useEffect, 
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
   useRef,
   ReactNode,
   KeyboardEvent,
@@ -211,11 +211,11 @@ export function AccessibilityProvider({ children }: AccessibilityProviderProps) 
 
 export function useAccessibility() {
   const context = useContext(AccessibilityContext);
-  
+
   if (!context) {
     throw new Error('useAccessibility must be used within AccessibilityProvider');
   }
-  
+
   return context;
 }
 
@@ -361,7 +361,7 @@ interface LandmarkProps {
 
 export const Landmark = forwardRef<HTMLElement, LandmarkProps>(
   ({ children, role, label, labelledBy, id, className }, ref) => {
-    const Component = role === 'banner' ? 'header' 
+    const Component = role === 'banner' ? 'header'
       : role === 'navigation' ? 'nav'
       : role === 'main' ? 'main'
       : role === 'contentinfo' ? 'footer'
@@ -395,9 +395,9 @@ interface LiveRegionProps {
   className?: string;
 }
 
-export function LiveRegion({ 
-  children, 
-  mode = 'polite', 
+export function LiveRegion({
+  children,
+  mode = 'polite',
   atomic = true,
   relevant = 'additions',
   className,
