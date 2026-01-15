@@ -35,21 +35,21 @@ export function EnhancedWidgetCatalog({
   // Filter widgets
   const filteredWidgets = useMemo(() => {
     let widgets = WIDGET_CATALOG;
-    
+
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      widgets = widgets.filter(w => 
+      widgets = widgets.filter(w =>
         w.title.toLowerCase().includes(query) ||
         w.description?.toLowerCase().includes(query)
       );
     }
-    
+
     if (selectedCategory) {
-      widgets = widgets.filter(w => 
+      widgets = widgets.filter(w =>
         getCategoryFromType(w.type) === selectedCategory
       );
     }
-    
+
     return widgets;
   }, [searchQuery, selectedCategory]);
 
