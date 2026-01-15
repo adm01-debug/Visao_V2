@@ -147,7 +147,7 @@ const TreemapRect: React.FC<{
         strokeWidth={1}
         className="transition-all hover:brightness-110"
       />
-      
+
       {showLabels && canShowLabel && (
         <text
           x={node.x + node.width / 2}
