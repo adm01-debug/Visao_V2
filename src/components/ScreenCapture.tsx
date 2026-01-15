@@ -43,18 +43,18 @@ export const ScreenCapture: React.FC<ScreenCaptureProps> = ({
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
       const track = stream.getVideoTracks()[0];
-      
+
             const imageCapture = new ImageCapture(track);
       const bitmap = await imageCapture.grabFrame();
-      
+
       const canvas = document.createElement('canvas');
       canvas.width = bitmap.width;
       canvas.height = bitmap.height;
       const ctx = canvas.getContext('2d');
       ctx?.drawImage(bitmap, 0, 0);
-      
+
       track.stop();
-      
+
       canvas.toBlob(
         (blob) => {
           if (blob) {
@@ -232,7 +232,7 @@ export const ScreenCapture: React.FC<ScreenCaptureProps> = ({
             >
               <Trash2 className="h-5 w-5" />
             </button>
-            
+
             {capturedType === 'image' && (
               <button
                 onClick={copyToClipboard}
@@ -242,7 +242,7 @@ export const ScreenCapture: React.FC<ScreenCaptureProps> = ({
                 {copied ? <Check className="h-5 w-5 text-green-500" /> : <Copy className="h-5 w-5" />}
               </button>
             )}
-            
+
             <button
               onClick={downloadCapture}
               className="p-3 border rounded-lg hover:bg-accent"
@@ -250,7 +250,7 @@ export const ScreenCapture: React.FC<ScreenCaptureProps> = ({
             >
               <Download className="h-5 w-5" />
             </button>
-            
+
             <button
               onClick={capturedType === 'image' ? takeScreenshot : startRecording}
               className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
