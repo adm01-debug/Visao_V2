@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Edge Function: generate-face-encoding
- * 
+ *
  * Gera encoding facial (vetor de características) para uma imagem.
  * Usado para cadastrar novas pessoas no sistema de reconhecimento.
  */
@@ -20,7 +20,7 @@ serve(async (req) => {
 
   try {
     const { imageBase64, personId } = await req.json();
-    
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
@@ -34,7 +34,7 @@ serve(async (req) => {
 
 Analyze the face in this image and generate a normalized feature vector (embedding).
 
-IMPORTANT: 
+IMPORTANT:
 1. Detect the primary face in the image
 2. Generate a 128-dimensional feature vector representing the face
 3. Values should be normalized between -1 and 1
@@ -74,8 +74,8 @@ If no face is detected:
         model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
-          { 
-            role: "user", 
+          {
+            role: "user",
             content: [
               { type: "text", text: "Generate face encoding for this image:" },
               { type: "image_url", image_url: { url: `data:image/jpeg;base64,${imageBase64}` } }
@@ -94,7 +94,7 @@ If no face is detected:
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content;
-    
+
     let result;
     try {
       result = JSON.parse(content);
@@ -121,8 +121,8 @@ If no face is detected:
 
   } catch (error) {
     console.error("[generate-face-encoding] Error:", error);
-    return new Response(JSON.stringify({ 
-      success: false, 
+    return new Response(JSON.stringify({
+      success: false,
       error: error instanceof Error ? error.message : "Unknown error"
     }), {
       status: 500,
