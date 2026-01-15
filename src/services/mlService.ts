@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * ML Service - Machine Learning com TensorFlow.js
- * 
+ *
  * @module services/mlService
  */
 
@@ -68,19 +68,19 @@ class MLService {
   async predict(modelName: string, input: number[] | Float32Array): Promise<number[]> {
     const tf = await import('@tensorflow/tfjs');
     const model = this.models.get(modelName);
-    
+
     if (!model) {
       throw new Error(`Model ${modelName} not loaded`);
     }
-    
+
     const tensor = tf.tensor(input);
     const prediction = model.predict(tensor) as Tensor;
     const result = await prediction.array() as number[] | number[][];
-    
+
     // Cleanup
     tensor.dispose();
     prediction.dispose();
-    
+
     return Array.isArray(result[0]) ? (result as number[][]).flat() : result as number[];
   }
 
@@ -91,7 +91,7 @@ class MLService {
     const mobilenet = await import('@tensorflow-models/mobilenet');
     const model = await mobilenet.load();
     const predictions = await model.classify(imageElement);
-    
+
     return predictions.map((p) => ({
       class: p.className,
       score: p.probability,
@@ -105,7 +105,7 @@ class MLService {
     const cocoSsd = await import('@tensorflow-models/coco-ssd');
     const model = await cocoSsd.load();
     const predictions = await model.detect(imageElement);
-    
+
     return predictions.map((p) => ({
       class: p.class,
       score: p.score,
@@ -120,7 +120,7 @@ class MLService {
     const blazeface = await import('@tensorflow-models/blazeface');
     const model = await blazeface.load();
     const predictions = await model.estimateFaces(imageElement, false);
-    
+
     return predictions.map((p: FaceDetection) => ({
       class: 'face',
       score: p.probability?.[0] ?? 1,
@@ -140,7 +140,7 @@ class MLService {
     const posenet = await import('@tensorflow-models/posenet');
     const net = await posenet.load();
     const pose = await net.estimateSinglePose(imageElement);
-    
+
     return pose.keypoints
       .filter((kp) => kp.score > 0.5)
       .map((kp) => ({
