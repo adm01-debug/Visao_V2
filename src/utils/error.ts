@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Error Utilities - Classes e helpers de erro
- * 
+ *
  * @module utils/error
  */
 
@@ -35,7 +35,7 @@ export interface ErrorDetails {
  */
 export class AppError extends Error {
   public readonly timestamp: Date;
-  
+
   constructor(
     public override message: string,
     public code: ErrorCode,
@@ -44,13 +44,13 @@ export class AppError extends Error {
     super(message);
     this.name = 'AppError';
     this.timestamp = new Date();
-    
+
     // Manter stack trace correta
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, this.constructor);
     }
   }
-  
+
   toJSON(): Record<string, unknown> {
     return {
       name: this.name,
@@ -234,9 +234,9 @@ export const fromHttpStatus = (status: number, message?: string): AppError => {
     503: 'Serviço indisponível',
     504: 'Timeout do gateway',
   };
-  
+
   const errorMessage = message || defaultMessages[status] || 'Erro desconhecido';
-  
+
   switch (status) {
     case 401:
       return new AuthError(errorMessage);
