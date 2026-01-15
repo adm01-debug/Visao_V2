@@ -4,10 +4,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { DbAlert } from './useAlerts';
 import { playAlertSound, playCriticalAlertSound } from '@/lib/alertSounds';
-import { 
-  showBrowserNotification, 
+import {
+  showBrowserNotification,
   getBrowserNotificationsEnabled,
-  getNotificationPermission 
+  getNotificationPermission
 } from '@/lib/browserNotifications';
 
 const alertTypeLabels: Record<string, string> = {
@@ -53,11 +53,11 @@ export function useRealtimeAlerts({
         (payload) => {
           const newAlert = payload.new as DbAlert;
           logger.debug('New alert received:', newAlert);
-          
+
           // Show toast notification
           const typeLabel = alertTypeLabels[newAlert.type] || newAlert.type;
           const severityLabel = severityLabels[newAlert.severity] || newAlert.severity;
-          
+
           // Play sound based on severity
           if (newAlert.severity === 'critical') {
             playCriticalAlertSound();
@@ -78,7 +78,7 @@ export function useRealtimeAlerts({
               duration: 5000,
             });
           }
-          
+
           // Show browser push notification if enabled and permission granted
           if (getBrowserNotificationsEnabled() && getNotificationPermission() === 'granted') {
             const isCritical = newAlert.severity === 'critical' || newAlert.severity === 'high';
@@ -93,7 +93,7 @@ export function useRealtimeAlerts({
               },
             });
           }
-          
+
           onNewAlert(newAlert);
         }
       )
