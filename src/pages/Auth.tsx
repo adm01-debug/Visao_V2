@@ -22,6 +22,8 @@ export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmailSent, setResetEmailSent] = useState(false>>({});
 
   const { signIn, signUp, user, loading } = useAuth();
   const navigate = useNavigate();
@@ -200,7 +202,48 @@ export default function Auth() {
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                           Entrando...
-                        </>
+                        
+      {/* Forgot Password Dialog */}
+      {showForgotPassword && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-background p-6 rounded-lg max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-2">Recuperar Senha</h3>
+            {resetEmailSent ? (
+              <div className="text-center py-4">
+                <p className="text-muted-foreground mb-4">
+                  Email de recuperação enviado! Verifique sua caixa de entrada.
+                </p>
+                <Button onClick={() => { setShowForgotPassword(false); setResetEmailSent(false); }}>
+                  Fechar
+                </Button>
+              </div>
+            ) : (
+              <>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Digite seu email para receber o link de recuperação de senha.
+                </p>
+                <Input
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mb-4"
+                />
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={() => setShowForgotPassword(false)}>
+                    Cancelar
+                  </Button>
+                  <Button onClick={handleForgotPassword} disabled={isLoading}>
+                    {isLoading ? 'Enviando...' : 'Enviar'}
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+    </>
                       ) : (
                         'Entrar'
                       )}
@@ -280,7 +323,48 @@ export default function Auth() {
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                           Criando conta...
-                        </>
+                        
+      {/* Forgot Password Dialog */}
+      {showForgotPassword && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-background p-6 rounded-lg max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-2">Recuperar Senha</h3>
+            {resetEmailSent ? (
+              <div className="text-center py-4">
+                <p className="text-muted-foreground mb-4">
+                  Email de recuperação enviado! Verifique sua caixa de entrada.
+                </p>
+                <Button onClick={() => { setShowForgotPassword(false); setResetEmailSent(false); }}>
+                  Fechar
+                </Button>
+              </div>
+            ) : (
+              <>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Digite seu email para receber o link de recuperação de senha.
+                </p>
+                <Input
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mb-4"
+                />
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={() => setShowForgotPassword(false)}>
+                    Cancelar
+                  </Button>
+                  <Button onClick={handleForgotPassword} disabled={isLoading}>
+                    {isLoading ? 'Enviando...' : 'Enviar'}
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+    </>
                       ) : (
                         'Criar conta'
                       )}
@@ -292,6 +376,47 @@ export default function Auth() {
           </Card>
         </div>
       </div>
+    
+      {/* Forgot Password Dialog */}
+      {showForgotPassword && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-background p-6 rounded-lg max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-2">Recuperar Senha</h3>
+            {resetEmailSent ? (
+              <div className="text-center py-4">
+                <p className="text-muted-foreground mb-4">
+                  Email de recuperação enviado! Verifique sua caixa de entrada.
+                </p>
+                <Button onClick={() => { setShowForgotPassword(false); setResetEmailSent(false); }}>
+                  Fechar
+                </Button>
+              </div>
+            ) : (
+              <>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Digite seu email para receber o link de recuperação de senha.
+                </p>
+                <Input
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mb-4"
+                />
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={() => setShowForgotPassword(false)}>
+                    Cancelar
+                  </Button>
+                  <Button onClick={handleForgotPassword} disabled={isLoading}>
+                    {isLoading ? 'Enviando...' : 'Enviar'}
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
     </>
   );
 }
