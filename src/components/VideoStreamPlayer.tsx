@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: VideoStreamPlayer
- * 
+ *
  * Player de vídeo profissional com suporte a:
  * - Streaming HLS em tempo real
  * - Controles de reprodução
@@ -85,46 +85,46 @@ interface Detection {
 interface VideoStreamPlayerProps {
   /** ID da câmera */
   cameraId: string;
-  
+
   /** Nome da câmera */
   cameraName: string;
-  
+
   /** Localização */
   location?: string;
-  
+
   /** URL do stream (ou usa teste) */
   streamUrl?: string;
-  
+
   /** Protocolo de streaming */
   protocol?: StreamConfig['protocol'];
-  
+
   /** É ao vivo? */
   isLive?: boolean;
-  
+
   /** Detecções de IA para overlay */
   detections?: Detection[];
-  
+
   /** Mostrar estatísticas */
   showStats?: boolean;
-  
+
   /** Habilitar detecção facial */
   enableFaceDetection?: boolean;
-  
+
   /** Intervalo de detecção facial em ms */
   faceDetectionInterval?: number;
-  
+
   /** Altura fixa (default: aspect-video) */
   height?: number | string;
-  
+
   /** Callback ao tirar snapshot */
   onSnapshot?: (imageData: string) => void;
-  
+
   /** Callback de erro */
   onError?: (error: string) => void;
-  
+
   /** Callback ao clicar na câmera */
   onClick?: () => void;
-  
+
   /** Classe CSS adicional */
   className?: string;
 }
