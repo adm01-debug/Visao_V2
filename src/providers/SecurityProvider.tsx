@@ -58,7 +58,7 @@ export const SecurityProvider = ({
 
       // Verificar whitelist
       const result: IPCheckResult = checkIPWhitelist(ip);
-      
+
       setIsIPAllowed(result.allowed);
       setIsAdmin(result.isAdmin);
 
