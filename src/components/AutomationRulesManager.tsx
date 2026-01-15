@@ -5,11 +5,11 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Plus, 
-  Trash2, 
-  Edit2, 
-  Power, 
+import {
+  Plus,
+  Trash2,
+  Edit2,
+  Power,
   PowerOff,
   Zap,
   Clock,
@@ -144,7 +144,7 @@ const defaultFormData: RuleFormData = {
 export function AutomationRulesManager() {
   const { rules, isLoading, createRule, updateRule, deleteRule, toggleActive } = useRules();
   const { cameras } = useCameras();
-  
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingRule, setEditingRule] = useState<Rule | null>(null);
   const [formData, setFormData] = useState<RuleFormData>(defaultFormData);
@@ -257,7 +257,7 @@ export function AutomationRulesManager() {
   const updateCondition = (index: number, field: keyof RuleCondition, value: string | number) => {
     setFormData(prev => ({
       ...prev,
-      conditions: prev.conditions.map((c, i) => 
+      conditions: prev.conditions.map((c, i) =>
         i === index ? { ...c, [field]: value } : c
       ),
     }));
@@ -375,7 +375,7 @@ export function AutomationRulesManager() {
                               rule.is_active ? 'text-primary' : 'text-muted-foreground'
                             )} />
                           </div>
-                          
+
                           <div>
                             <div className="flex items-center gap-2">
                               <h3 className="font-medium">{rule.name}</h3>
@@ -535,7 +535,7 @@ export function AutomationRulesManager() {
                     Adicionar
                   </Button>
                 </div>
-                
+
                 {formData.conditions.length === 0 ? (
                   <div className="text-sm text-muted-foreground text-center py-4 border border-dashed rounded-lg">
                     Nenhuma condição. A regra será acionada para todos os alertas da severidade selecionada.
@@ -618,7 +618,7 @@ export function AutomationRulesManager() {
                       ) : (
                         <>
                           <p className="text-sm text-muted-foreground mb-2">
-                            {formData.cameras.length === 0 
+                            {formData.cameras.length === 0
                               ? 'Aplica a todas as câmeras. Selecione para restringir:'
                               : 'Selecionadas:'
                             }
@@ -658,7 +658,7 @@ export function AutomationRulesManager() {
                       <div className="flex items-center gap-2">
                         <Switch
                           checked={formData.schedule.enabled}
-                          onCheckedChange={(checked) => 
+                          onCheckedChange={(checked) =>
                             setFormData(prev => ({
                               ...prev,
                               schedule: { ...prev.schedule, enabled: checked }
@@ -690,7 +690,7 @@ export function AutomationRulesManager() {
                               <Input
                                 type="time"
                                 value={formData.schedule.start_time}
-                                onChange={(e) => 
+                                onChange={(e) =>
                                   setFormData(prev => ({
                                     ...prev,
                                     schedule: { ...prev.schedule, start_time: e.target.value }
@@ -703,7 +703,7 @@ export function AutomationRulesManager() {
                               <Input
                                 type="time"
                                 value={formData.schedule.end_time}
-                                onChange={(e) => 
+                                onChange={(e) =>
                                   setFormData(prev => ({
                                     ...prev,
                                     schedule: { ...prev.schedule, end_time: e.target.value }
@@ -746,8 +746,8 @@ export function AutomationRulesManager() {
             <Button variant="outline" onClick={() => setDeleteConfirmId(null)}>
               Cancelar
             </Button>
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               onClick={() => deleteConfirmId && handleDelete(deleteConfirmId)}
             >
               Excluir
