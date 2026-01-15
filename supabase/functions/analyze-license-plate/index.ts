@@ -12,7 +12,7 @@ serve(async (req) => {
 
   try {
     const { image } = await req.json();
-    
+
     if (!image) {
       return new Response(
         JSON.stringify({ error: 'Image is required' }),
@@ -21,7 +21,7 @@ serve(async (req) => {
     }
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    
+
     if (!LOVABLE_API_KEY) {
       console.error('LOVABLE_API_KEY not configured');
       return new Response(
@@ -93,7 +93,7 @@ Formato de resposta:
           { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
-      
+
       const errorText = await response.text();
       console.error('AI API error:', response.status, errorText);
       throw new Error(`AI API error: ${response.status}`);
@@ -116,23 +116,23 @@ Formato de resposta:
       // Remove markdown code blocks if present
       const jsonStr = content.replace(/```json\n?|\n?```/g, '').trim();
       const result = JSON.parse(jsonStr);
-      
+
       console.log('Parsed result:', result);
-      
+
       return new Response(
         JSON.stringify(result),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     } catch (parseError) {
       console.error('Error parsing AI response:', parseError);
-      
+
       // Try to extract plate using regex
-      const plateMatch = content.match(/[A-Z]{3}[0-9][A-Z0-9][0-9]{2}/i) || 
+      const plateMatch = content.match(/[A-Z]{3}[0-9][A-Z0-9][0-9]{2}/i) ||
                          content.match(/[A-Z]{3}-?[0-9]{4}/i);
-      
+
       if (plateMatch) {
         return new Response(
-          JSON.stringify({ 
+          JSON.stringify({
             plate: plateMatch[0].toUpperCase().replace('-', ''),
             confidence: 0.8,
             vehicleType: 'unknown'
@@ -140,7 +140,7 @@ Formato de resposta:
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
-      
+
       return new Response(
         JSON.stringify({ plate: null, error: 'Could not parse response' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
