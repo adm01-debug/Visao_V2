@@ -9,13 +9,13 @@ export function validateRequest<T>(
   requiredFields: (keyof T)[]
 ): ValidationResult {
   const errors: string[] = [];
-  
+
   if (!body || typeof body !== 'object') {
     return { valid: false, errors: ['Request body must be a valid object'] };
   }
 
   const obj = body as Record<string, unknown>;
-  
+
   for (const field of requiredFields) {
     if (!(field as string in obj) || obj[field as string] === undefined || obj[field as string] === null) {
       errors.push(`Missing required field: ${String(field)}`);
@@ -29,7 +29,7 @@ export function validateImageBase64(base64: unknown): ValidationResult {
   if (typeof base64 !== 'string') {
     return { valid: false, errors: ['Image must be a base64 string'] };
   }
-  
+
   if (base64.length < 100) {
     return { valid: false, errors: ['Image data too short'] };
   }
