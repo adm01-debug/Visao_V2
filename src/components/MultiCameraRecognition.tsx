@@ -2,12 +2,12 @@ import { useInterval, useTimeout } from "@/hooks";
 import { memo } from "react";
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { 
-  Camera, 
-  Play, 
-  Pause, 
-  Settings, 
-  Maximize2, 
+import {
+  Camera,
+  Play,
+  Pause,
+  Settings,
+  Maximize2,
   Minimize2,
   Grid,
   LayoutGrid,
@@ -81,7 +81,7 @@ function MultiCameraRecognitionComponent() {
   const [isGlobalRunning, setIsGlobalRunning] = useState(false);
   const [recognitionResults, setRecognitionResults] = useState<RecognitionResult[]>([]);
   const [fullscreenCamera, setFullscreenCamera] = useState<string | null>(null);
-  
+
   const videoRefs = useRef<Map<string, HTMLVideoElement>>(new Map());
   const canvasRefs = useRef<Map<string, HTMLCanvasElement>>(new Map());
   const intervalsRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
@@ -95,7 +95,7 @@ function MultiCameraRecognitionComponent() {
         .from('cameras')
         .select('*')
         .order('name');
-      
+
       if (error) throw error;
       return data || [];
     },
@@ -108,18 +108,18 @@ function MultiCameraRecognitionComponent() {
       const { data, error } = await supabase
         .from('registered_persons')
         .select('id, name, list_type, photo_url');
-      
+
       if (error) throw error;
-      
+
       // Update cache
       data?.forEach(p => {
-        personsCache.current.set(p.id, { 
-          name: p.name, 
+        personsCache.current.set(p.id, {
+          name: p.name,
           listType: p.list_type || 'none',
-          photoUrl: p.photo_url 
+          photoUrl: p.photo_url
         });
       });
-      
+
       return data || [];
     },
   });
@@ -158,7 +158,7 @@ function MultiCameraRecognitionComponent() {
 
     canvas.width = video.videoWidth || 640;
     canvas.height = video.videoHeight || 480;
-    
+
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
 
@@ -173,7 +173,7 @@ function MultiCameraRecognitionComponent() {
 
     try {
       const { data, error } = await supabase.functions.invoke('compare-faces', {
-        body: { 
+        body: {
           image: imageData,
           matchThreshold,
         },
@@ -301,7 +301,7 @@ function MultiCameraRecognitionComponent() {
   // Handle video loaded
   const handleVideoLoaded = (cameraId: string, video: HTMLVideoElement) => {
     videoRefs.current.set(cameraId, video);
-    
+
     if (isGlobalRunning) {
       const camera = cameras?.find(c => c.id === cameraId);
       if (camera) {
@@ -413,8 +413,8 @@ function MultiCameraRecognitionComponent() {
                       key={camera.id}
                       className={cn(
                         'flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors',
-                        activeFeeds.has(camera.id) 
-                          ? 'bg-primary/10 border-primary' 
+                        activeFeeds.has(camera.id)
+                          ? 'bg-primary/10 border-primary'
                           : 'hover:bg-muted'
                       )}
                       onClick={() => toggleCamera(camera.id)}
@@ -647,8 +647,8 @@ function CameraFeedCard({
         {latestDetection && (
           <div className={cn(
             'absolute bottom-0 left-0 right-0 p-2',
-            latestDetection.isBlacklist 
-              ? 'bg-destructive/90' 
+            latestDetection.isBlacklist
+              ? 'bg-destructive/90'
               : 'bg-background/90'
           )}>
             <div className="flex items-center gap-2">
@@ -685,5 +685,5 @@ function CameraFeedCard({
     </Card>
   );
 }
--e 
+-e
 export const MultiCameraRecognition = memo(MultiCameraRecognitionComponent);
