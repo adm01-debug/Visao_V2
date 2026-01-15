@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Edge Function: send-alert-notification
- * 
+ *
  * Envia notificações de alertas via múltiplos canais:
  * - Email (via Resend)
  * - WhatsApp (via Evolution API / Z-API)
@@ -153,7 +153,7 @@ ${notification.message}
 
           for (const phone of phones) {
             const cleanPhone = phone.replace(/\D/g, '');
-            
+
             const whatsappResponse = await fetch(`${WHATSAPP_API_URL}/message/sendText/${WHATSAPP_INSTANCE}`, {
               method: 'POST',
               headers: {
@@ -222,7 +222,7 @@ ${notification.message}
     // RESPOSTA
     // ==========================================
     const allSuccessful = Object.values(results).every(r => r.success);
-    
+
     return new Response(JSON.stringify({
       success: allSuccessful,
       alertId: notification.alertId,
@@ -234,8 +234,8 @@ ${notification.message}
 
   } catch (error) {
     console.error("[send-alert-notification] Error:", error);
-    return new Response(JSON.stringify({ 
-      success: false, 
+    return new Response(JSON.stringify({
+      success: false,
       error: error instanceof Error ? error.message : "Unknown error"
     }), {
       status: 500,
