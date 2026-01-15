@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useMLModels (IMPLEMENTAÇÃO REAL)
- * 
+ *
  * Gerenciamento de modelos TensorFlow.js:
  * - COCO-SSD para detecção de objetos
  * - MoveNet para detecção de poses
