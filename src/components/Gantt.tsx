@@ -76,7 +76,7 @@ export const Gantt: React.FC<GanttProps> = ({
     const allDates = tasks.flatMap(t => [t.start, t.end]);
     const minDate = propStartDate || new Date(Math.min(...allDates.map(d => d.getTime())));
     const maxDate = propEndDate || new Date(Math.max(...allDates.map(d => d.getTime())));
-    
+
     const start = startOfDay(addDays(minDate, -2));
     const end = endOfDay(addDays(maxDate, 2));
     const days = differenceInDays(end, start) + 1;
@@ -140,7 +140,7 @@ export const Gantt: React.FC<GanttProps> = ({
         <div className="w-64 flex-shrink-0 border-r bg-muted/30 p-2 font-medium">
           Tarefa
         </div>
-        
+
         {/* Timeline header */}
         <div className="flex">
           {dateHeaders.map((header, index) => (
@@ -237,7 +237,7 @@ export const Gantt: React.FC<GanttProps> = ({
                   style={{ width: `${task.progress}%` }}
                 />
               )}
-              
+
               {/* Task label */}
               <div className="absolute inset-0 flex items-center px-2 text-white text-xs font-medium truncate">
                 {task.name}
