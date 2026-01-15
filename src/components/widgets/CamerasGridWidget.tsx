@@ -26,7 +26,7 @@ export function CamerasGridWidget() {
       {displayCameras.map((camera) => {
         const isOnline = camera.status === 'online' || camera.status === 'alert';
         const hasAlert = camera.status === 'alert';
-        
+
         return (
           <div
             key={camera.id}
