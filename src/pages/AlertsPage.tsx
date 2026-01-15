@@ -18,6 +18,7 @@ import { TableSkeleton } from "@/components/TableSkeleton";
 import { EmptyState } from "@/components/EmptyState";
 import { useInterval } from "@/hooks/useInterval";
 import { SeverityBadge } from "@/components/SeverityBadge";
+import { exportAlerts } from '@/lib/exportUtils';
 
 import { useState, useMemo, useCallback } from "react";
 import {
@@ -615,8 +616,8 @@ export function AlertsPage() {
             </Button>
           )}
           <ExportMenu
-            onExportCSV={() => {}}
-            onExportPDF={() => {}}
+            onExportCSV={() => exportAlerts(filteredAlerts, 'csv')}
+            onExportPDF={() => exportAlerts(filteredAlerts, 'pdf')}
           />
         </div>
       </div>
