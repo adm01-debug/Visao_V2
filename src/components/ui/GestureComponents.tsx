@@ -114,10 +114,10 @@ export function PullToRefresh({
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if (!isPulling.current || isRefreshing) return;
-    
+
     const currentY = e.touches[0].clientY;
     const diff = currentY - startY.current;
-    
+
     if (diff > 0) {
       setPullDistance(Math.min(diff * 0.5, threshold * 1.5));
     }
@@ -132,7 +132,7 @@ export function PullToRefresh({
       await onRefresh();
       setIsRefreshing(false);
     }
-    
+
     setPullDistance(0);
   }, [pullDistance, threshold, isRefreshing, onRefresh]);
 
@@ -165,7 +165,7 @@ export function PullToRefresh({
 
       {/* Content */}
       <motion.div
-        style={{ 
+        style={{
           y: isRefreshing ? threshold / 2 : pullDistance / 2,
         }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
@@ -212,12 +212,12 @@ export function PinchToZoom({
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       const distance = Math.sqrt(dx * dx + dy * dy);
-      
+
       const newScale = Math.min(
         maxScale,
         Math.max(minScale, lastScale.current * (distance / lastDistance.current))
       );
-      
+
       setScale(newScale);
     }
   }, [minScale, maxScale]);
