@@ -23,11 +23,11 @@ const isLocalhost = (ip: string): boolean => {
 const isPrivateIP = (ip: string): boolean => {
   const parts = ip.split('.').map(Number);
   if (parts.length !== 4) return false;
-  
+
   if (parts[0] === 10) return true;
   if (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) return true;
   if (parts[0] === 192 && parts[1] === 168) return true;
-  
+
   return false;
 };
 
@@ -38,14 +38,14 @@ const getClientIP = (request: Request): string => {
     'cf-connecting-ip',
     'true-client-ip',
   ];
-  
+
   for (const header of headers) {
     const value = request.headers.get(header);
     if (value) {
       return value.split(',')[0].trim();
     }
   }
-  
+
   return 'unknown';
 };
 
@@ -99,7 +99,7 @@ serve(async (req: Request) => {
   try {
     const clientIP = getClientIP(req);
     const result = checkIPAccess(clientIP);
-    
+
     // Log da tentativa
     console.log(`IP Check: ${clientIP} - ${result.allowed ? 'ALLOWED' : 'DENIED'} - ${result.reason}`);
 
@@ -121,7 +121,7 @@ serve(async (req: Request) => {
     );
   } catch (error) {
     console.error('IP Check Error:', error);
-    
+
     return new Response(
       JSON.stringify({
         error: 'Internal server error',
