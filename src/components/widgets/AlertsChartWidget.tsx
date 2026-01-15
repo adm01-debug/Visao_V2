@@ -10,14 +10,14 @@ export function AlertsChartWidget() {
   const chartData = React.useMemo(() => {
     const today = new Date();
     const sevenDaysAgo = subDays(today, 6);
-    
+
     const days = eachDayOfInterval({ start: sevenDaysAgo, end: today });
-    
+
     return days.map(day => {
       const dayStart = startOfDay(day);
       const dayEnd = new Date(dayStart);
       dayEnd.setHours(23, 59, 59, 999);
-      
+
       const dayAlerts = alerts?.filter(alert => {
         const alertDate = new Date(alert.timestamp);
         return alertDate >= dayStart && alertDate <= dayEnd;
@@ -55,14 +55,14 @@ export function AlertsChartWidget() {
               <stop offset="95%" stopColor="hsl(var(--destructive))" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <XAxis 
-            dataKey="date" 
-            axisLine={false} 
+          <XAxis
+            dataKey="date"
+            axisLine={false}
             tickLine={false}
             tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
           />
-          <YAxis 
-            axisLine={false} 
+          <YAxis
+            axisLine={false}
             tickLine={false}
             tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
           />
