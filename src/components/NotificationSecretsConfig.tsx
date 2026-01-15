@@ -2,7 +2,7 @@ import { memo } from "react";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: NotificationSecretsConfig
- * 
+ *
  * Interface para configurar e testar secrets de notificações:
  * - Resend (Email)
  * - Evolution API (WhatsApp)
@@ -174,7 +174,7 @@ function NotificationSecretsConfigComponent() {
       });
 
       if (error) throw error;
-      
+
       setStatus(prev => ({
         ...prev,
         resend: { configured: true, tested: true, lastTest: new Date() },
@@ -204,7 +204,7 @@ function NotificationSecretsConfigComponent() {
       });
 
       if (error) throw error;
-      
+
       setStatus(prev => ({
         ...prev,
         evolution: { configured: true, tested: true, lastTest: new Date() },
@@ -233,7 +233,7 @@ function NotificationSecretsConfigComponent() {
       });
 
       if (error) throw error;
-      
+
       setStatus(prev => ({
         ...prev,
         telegram: { configured: true, tested: true, lastTest: new Date() },
@@ -268,7 +268,7 @@ function NotificationSecretsConfigComponent() {
       });
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      
+
       setStatus(prev => ({
         ...prev,
         webhook: { configured: true, tested: true, lastTest: new Date() },
@@ -291,7 +291,7 @@ function NotificationSecretsConfigComponent() {
     try {
       // Em produção, estas configurações seriam salvas como secrets do Supabase
       // Por segurança, não salvamos diretamente no frontend
-      
+
       localStorage.setItem('visao-notification-config', JSON.stringify({
         resend: { fromEmail: secrets.resend.fromEmail, fromName: secrets.resend.fromName },
         evolution: { instanceName: secrets.evolution.instanceName },
@@ -325,7 +325,7 @@ function NotificationSecretsConfigComponent() {
         {Object.entries(providerInfo).map(([key, info]) => {
           const s = status[key];
           const Icon = info.icon;
-          
+
           return (
             <Card key={key} className="relative">
               <CardContent className="pt-6 text-center">
@@ -372,9 +372,9 @@ function NotificationSecretsConfigComponent() {
                     <Input
                       type={showSecrets.resend ? 'text' : 'password'}
                       value={secrets.resend.apiKey}
-                      onChange={(e) => setSecrets(prev => ({ 
-                        ...prev, 
-                        resend: { ...prev.resend, apiKey: e.target.value } 
+                      onChange={(e) => setSecrets(prev => ({
+                        ...prev,
+                        resend: { ...prev.resend, apiKey: e.target.value }
                       }))}
                       placeholder="re_..."
                     />
@@ -395,9 +395,9 @@ function NotificationSecretsConfigComponent() {
                   <Input
                     type="email"
                     value={secrets.resend.fromEmail}
-                    onChange={(e) => setSecrets(prev => ({ 
-                      ...prev, 
-                      resend: { ...prev.resend, fromEmail: e.target.value } 
+                    onChange={(e) => setSecrets(prev => ({
+                      ...prev,
+                      resend: { ...prev.resend, fromEmail: e.target.value }
                     }))}
                     placeholder="alertas@seudominio.com"
                   />
@@ -406,9 +406,9 @@ function NotificationSecretsConfigComponent() {
                   <Label>Nome do Remetente</Label>
                   <Input
                     value={secrets.resend.fromName}
-                    onChange={(e) => setSecrets(prev => ({ 
-                      ...prev, 
-                      resend: { ...prev.resend, fromName: e.target.value } 
+                    onChange={(e) => setSecrets(prev => ({
+                      ...prev,
+                      resend: { ...prev.resend, fromName: e.target.value }
                     }))}
                     placeholder="VISÃO Alertas"
                   />
@@ -416,16 +416,16 @@ function NotificationSecretsConfigComponent() {
               </div>
             </div>
             <div className="flex items-center justify-between pt-2">
-              <a 
-                href="https://resend.com/api-keys" 
-                target="_blank" 
+              <a
+                href="https://resend.com/api-keys"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-muted-foreground hover:underline flex items-center gap-1"
               >
                 Obter API Key <ExternalLink className="w-3 h-3" />
               </a>
-              <Button 
-                onClick={testResend} 
+              <Button
+                onClick={testResend}
                 disabled={!secrets.resend.apiKey || testing === 'resend'}
               >
                 {testing === 'resend' && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
@@ -450,9 +450,9 @@ function NotificationSecretsConfigComponent() {
                 <Label>URL da API</Label>
                 <Input
                   value={secrets.evolution.apiUrl}
-                  onChange={(e) => setSecrets(prev => ({ 
-                    ...prev, 
-                    evolution: { ...prev.evolution, apiUrl: e.target.value } 
+                  onChange={(e) => setSecrets(prev => ({
+                    ...prev,
+                    evolution: { ...prev.evolution, apiUrl: e.target.value }
                   }))}
                   placeholder="https://api.evolution.com.br"
                 />
@@ -463,9 +463,9 @@ function NotificationSecretsConfigComponent() {
                   <Input
                     type={showSecrets.evolution ? 'text' : 'password'}
                     value={secrets.evolution.apiKey}
-                    onChange={(e) => setSecrets(prev => ({ 
-                      ...prev, 
-                      evolution: { ...prev.evolution, apiKey: e.target.value } 
+                    onChange={(e) => setSecrets(prev => ({
+                      ...prev,
+                      evolution: { ...prev.evolution, apiKey: e.target.value }
                     }))}
                     placeholder="Sua API Key"
                   />
@@ -483,25 +483,25 @@ function NotificationSecretsConfigComponent() {
                 <Label>Nome da Instância</Label>
                 <Input
                   value={secrets.evolution.instanceName}
-                  onChange={(e) => setSecrets(prev => ({ 
-                    ...prev, 
-                    evolution: { ...prev.evolution, instanceName: e.target.value } 
+                  onChange={(e) => setSecrets(prev => ({
+                    ...prev,
+                    evolution: { ...prev.evolution, instanceName: e.target.value }
                   }))}
                   placeholder="visao-instance"
                 />
               </div>
             </div>
             <div className="flex items-center justify-between pt-2">
-              <a 
-                href="https://doc.evolution-api.com/" 
-                target="_blank" 
+              <a
+                href="https://doc.evolution-api.com/"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-muted-foreground hover:underline flex items-center gap-1"
               >
                 Documentação <ExternalLink className="w-3 h-3" />
               </a>
-              <Button 
-                onClick={testEvolution} 
+              <Button
+                onClick={testEvolution}
                 disabled={!secrets.evolution.apiKey || testing === 'evolution'}
               >
                 {testing === 'evolution' && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
@@ -528,9 +528,9 @@ function NotificationSecretsConfigComponent() {
                   <Input
                     type={showSecrets.telegram ? 'text' : 'password'}
                     value={secrets.telegram.botToken}
-                    onChange={(e) => setSecrets(prev => ({ 
-                      ...prev, 
-                      telegram: { ...prev.telegram, botToken: e.target.value } 
+                    onChange={(e) => setSecrets(prev => ({
+                      ...prev,
+                      telegram: { ...prev.telegram, botToken: e.target.value }
                     }))}
                     placeholder="123456:ABC-DEF..."
                   />
@@ -551,9 +551,9 @@ function NotificationSecretsConfigComponent() {
                 <Label>Chat ID Padrão</Label>
                 <Input
                   value={secrets.telegram.defaultChatId}
-                  onChange={(e) => setSecrets(prev => ({ 
-                    ...prev, 
-                    telegram: { ...prev.telegram, defaultChatId: e.target.value } 
+                  onChange={(e) => setSecrets(prev => ({
+                    ...prev,
+                    telegram: { ...prev.telegram, defaultChatId: e.target.value }
                   }))}
                   placeholder="-1001234567890"
                 />
@@ -563,8 +563,8 @@ function NotificationSecretsConfigComponent() {
               </div>
             </div>
             <div className="flex justify-end pt-2">
-              <Button 
-                onClick={testTelegram} 
+              <Button
+                onClick={testTelegram}
                 disabled={!secrets.telegram.botToken || !secrets.telegram.defaultChatId || testing === 'telegram'}
               >
                 {testing === 'telegram' && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
@@ -589,9 +589,9 @@ function NotificationSecretsConfigComponent() {
                 <Label>URL do Webhook</Label>
                 <Input
                   value={secrets.webhook.url}
-                  onChange={(e) => setSecrets(prev => ({ 
-                    ...prev, 
-                    webhook: { ...prev.webhook, url: e.target.value } 
+                  onChange={(e) => setSecrets(prev => ({
+                    ...prev,
+                    webhook: { ...prev.webhook, url: e.target.value }
                   }))}
                   placeholder="https://seu-servidor.com/webhook"
                 />
@@ -602,9 +602,9 @@ function NotificationSecretsConfigComponent() {
                   <Input
                     type={showSecrets.webhook ? 'text' : 'password'}
                     value={secrets.webhook.secret}
-                    onChange={(e) => setSecrets(prev => ({ 
-                      ...prev, 
-                      webhook: { ...prev.webhook, secret: e.target.value } 
+                    onChange={(e) => setSecrets(prev => ({
+                      ...prev,
+                      webhook: { ...prev.webhook, secret: e.target.value }
                     }))}
                     placeholder="Chave para validação"
                   />
@@ -620,8 +620,8 @@ function NotificationSecretsConfigComponent() {
               </div>
             </div>
             <div className="flex justify-end pt-2">
-              <Button 
-                onClick={testWebhook} 
+              <Button
+                onClick={testWebhook}
                 disabled={!secrets.webhook.url || testing === 'webhook'}
               >
                 {testing === 'webhook' && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
