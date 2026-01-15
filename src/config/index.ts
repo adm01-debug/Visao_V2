@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Config barrel export - Exportação centralizada de todas as configurações
- * 
+ *
  * @module config
  */
 
