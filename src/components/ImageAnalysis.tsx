@@ -4,11 +4,11 @@
  */
 
 import { memo, useState, useRef, useCallback } from 'react';
-import { 
-  Upload, 
-  Camera, 
-  Scan, 
-  User, 
+import {
+  Upload,
+  Camera,
+  Scan,
+  User,
   Car,
   AlertTriangle,
   Loader2,
@@ -55,7 +55,7 @@ function ImageAnalysisComponent({
   const [error, setError] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
   const [activeTab, setActiveTab] = useState('image');
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -74,10 +74,10 @@ function ImageAnalysisComponent({
 
   const handleAnalyze = useCallback(async () => {
     if (!imageData) return;
-    
+
     setIsAnalyzing(true);
     setError(null);
-    
+
     try {
       const analysisResult = await onAnalyze(imageData);
       setResult(analysisResult);
@@ -155,7 +155,7 @@ function ImageAnalysisComponent({
                   Resultados {result && `(${result.detections.length})`}
                 </TabsTrigger>
               </TabsList>
-              
+
               <div className="flex items-center gap-2">
                 <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.max(0.5, z - 0.25))}>
                   <ZoomOut className="w-4 h-4" />
@@ -178,7 +178,7 @@ function ImageAnalysisComponent({
                   style={{ transform: `scale(${zoom})`, transformOrigin: 'top left' }}
                   className="transition-transform"
                 />
-                
+
                 {/* Detection overlays */}
                 {result && (
                   <svg
@@ -278,8 +278,8 @@ function ImageAnalysisComponent({
         )}
 
         {imageData && !result && (
-          <Button 
-            onClick={handleAnalyze} 
+          <Button
+            onClick={handleAnalyze}
             disabled={isAnalyzing}
             className="w-full gap-2"
           >
