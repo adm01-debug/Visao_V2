@@ -1,7 +1,7 @@
 /**
  * VIS-O - Sistema de Vigilância Inteligente
  * VehicleList - List of vehicles with details
- * 
+ *
  * @module components/vehiclelist
  */
 
