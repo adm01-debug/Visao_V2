@@ -32,16 +32,16 @@ class FeatureFlagService {
     const flag = this.flags[flagName];
     if (!flag) return false;
     if (!flag.enabled) return false;
-    
+
     if (flag.allowList && this.userId) {
       if (flag.allowList.includes(this.userId)) return true;
     }
-    
+
     if (flag.percentage !== undefined) {
       const hash = this.hashUserId(this.userId || 'anonymous');
       return hash < flag.percentage;
     }
-    
+
     return flag.enabled;
   }
 
