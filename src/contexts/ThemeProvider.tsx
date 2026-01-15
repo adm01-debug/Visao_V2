@@ -59,7 +59,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 function getStoredTheme(): ThemeState {
   if (typeof window === 'undefined') return defaultState;
-  
+
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
@@ -102,43 +102,43 @@ export function ThemeProvider({
   // Apply theme classes to document
   useEffect(() => {
     const root = document.documentElement;
-    
+
     // Add transition class
     root.classList.add('theme-transition');
-    
+
     // Determine if dark mode
     const shouldBeDark = state.mode === 'dark' || (state.mode === 'system' && getSystemDarkPreference());
     setIsDark(shouldBeDark);
-    
+
     // Remove all theme classes
     root.classList.remove('light', 'dark', 'theme-soc', 'theme-midnight', 'theme-contrast', 'theme-industrial');
-    
+
     // Apply dark/light class
     root.classList.add(shouldBeDark ? 'dark' : 'light');
-    
+
     // Apply variant class if not default
     if (state.variant !== 'default') {
       root.classList.add(`theme-${state.variant}`);
     }
-    
+
     // Update meta theme-color
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
       metaThemeColor.setAttribute('content', shouldBeDark ? '#0f172a' : '#ffffff');
     }
-    
+
     // Remove transition class after animation
     const timeout = setTimeout(() => {
       root.classList.remove('theme-transition');
     }, 300);
-    
+
     return () => clearTimeout(timeout);
   }, [state.mode, state.variant]);
 
   // Listen for system preference changes
   useEffect(() => {
     if (state.mode !== 'system') return;
-    
+
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handler = (e: MediaQueryListEvent) => {
       const root = document.documentElement;
@@ -146,7 +146,7 @@ export function ThemeProvider({
       root.classList.add(e.matches ? 'dark' : 'light');
       setIsDark(e.matches);
     };
-    
+
     mediaQuery.addEventListener('change', handler);
     return () => mediaQuery.removeEventListener('change', handler);
   }, [state.mode]);
@@ -167,8 +167,8 @@ export function ThemeProvider({
   const toggleMode = useCallback(() => {
     setState(prev => ({
       ...prev,
-      mode: (prev.mode === 'dark' || (prev.mode === 'system' && getSystemDarkPreference())) 
-        ? 'light' 
+      mode: (prev.mode === 'dark' || (prev.mode === 'system' && getSystemDarkPreference()))
+        ? 'light'
         : 'dark',
     }));
   }, []);
@@ -201,11 +201,11 @@ export function ThemeProvider({
 
 export function useTheme(): ThemeContextType {
   const context = useContext(ThemeContext);
-  
+
   if (context === undefined) {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
-  
+
   return context;
 }
 
