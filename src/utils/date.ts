@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Date Utilities - Funções utilitárias para datas
- * 
+ *
  * @module utils/date
  */
 
