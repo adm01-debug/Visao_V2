@@ -21,7 +21,7 @@ export function useFetch<T>(url: string, options: UseFetchOptions = {}) {
 
   const fetchData = useCallback(async () => {
     setState(prev => ({ ...prev, isLoading: true, error: null }));
-    
+
     try {
       const response = await fetch(url, { headers });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
