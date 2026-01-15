@@ -62,16 +62,16 @@ export function isServer(): boolean {
 
 export function getBrowserInfo(): { name: string; version: string } {
   if (!isBrowser()) return { name: 'unknown', version: 'unknown' };
-  
+
   const ua = navigator.userAgent;
   let name = 'unknown';
   let version = 'unknown';
-  
+
   if (ua.includes('Chrome')) { name = 'Chrome'; version = ua.match(/Chrome\/([\d.]+)/)?.[1] || ''; }
   else if (ua.includes('Firefox')) { name = 'Firefox'; version = ua.match(/Firefox\/([\d.]+)/)?.[1] || ''; }
   else if (ua.includes('Safari')) { name = 'Safari'; version = ua.match(/Version\/([\d.]+)/)?.[1] || ''; }
   else if (ua.includes('Edge')) { name = 'Edge'; version = ua.match(/Edge\/([\d.]+)/)?.[1] || ''; }
-  
+
   return { name, version };
 }
 
