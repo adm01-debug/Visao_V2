@@ -14,10 +14,10 @@ export interface CameraCardProps {
 
 export function CameraCard({ camera, onClick, compact = false, searchQuery = '' }: CameraCardProps) {
   const hasAlerts = camera.alerts && camera.alerts > 0;
-  
+
   if (compact) {
     return (
-      <div 
+      <div
         className={cn(
           "glass-card p-3 cursor-pointer transition-all duration-300 hover:border-primary/50 group flex items-center gap-4",
           hasAlerts && "border-destructive/50"
@@ -32,7 +32,7 @@ export function CameraCard({ camera, onClick, compact = false, searchQuery = '' 
             <StatusIndicator status={camera.status} size="sm" />
           </div>
         </div>
-        
+
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
             <HighlightText text={camera.name} highlight={searchQuery} />
@@ -48,7 +48,7 @@ export function CameraCard({ camera, onClick, compact = false, searchQuery = '' 
             </span>
           </div>
         </div>
-        
+
         {hasAlerts && (
           <Badge variant="alert" className="gap-1 flex-shrink-0">
             <AlertTriangle className="w-3 h-3" />
@@ -60,7 +60,7 @@ export function CameraCard({ camera, onClick, compact = false, searchQuery = '' 
   }
 
   return (
-    <div 
+    <div
       className={cn(
         "glass-card overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:border-primary/50 group",
         hasAlerts && "border-destructive/50 alert-glow"
@@ -73,7 +73,7 @@ export function CameraCard({ camera, onClick, compact = false, searchQuery = '' 
         <div className="absolute inset-0 bg-gradient-to-br from-secondary to-background flex items-center justify-center">
           <Video className="w-12 h-12 text-muted-foreground/30" />
         </div>
-        
+
         {/* Scan line effect */}
         <div className="scan-line opacity-30" />
 
@@ -83,12 +83,12 @@ export function CameraCard({ camera, onClick, compact = false, searchQuery = '' 
             <Play className="w-6 h-6" />
           </div>
         </div>
-        
+
         {/* Status overlay */}
         <div className="absolute top-3 left-3">
           <StatusIndicator status={camera.status} size="sm" />
         </div>
-        
+
         {/* Alerts badge */}
         {hasAlerts && (
           <div className="absolute top-3 right-3">
@@ -98,13 +98,13 @@ export function CameraCard({ camera, onClick, compact = false, searchQuery = '' 
             </Badge>
           </div>
         )}
-        
+
         {/* People count */}
         <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-background/80 backdrop-blur-sm rounded-full px-2 py-1">
           <Users className="w-3 h-3 text-primary" />
           <span className="text-xs font-medium">{camera.detectedPeople || 0}</span>
         </div>
-        
+
         {/* Live indicator */}
         {camera.status === 'online' && (
           <div className="absolute bottom-3 right-3 flex items-center gap-1.5 bg-destructive/90 backdrop-blur-sm rounded-full px-2 py-1">
@@ -113,7 +113,7 @@ export function CameraCard({ camera, onClick, compact = false, searchQuery = '' 
           </div>
         )}
       </div>
-      
+
       {/* Camera Info */}
       <div className="p-4">
         <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
