@@ -4,13 +4,13 @@
  */
 
 import { memo, useRef, useState, useCallback, useEffect } from 'react';
-import { 
-  Play, 
-  Pause, 
-  SkipBack, 
-  SkipForward, 
-  Volume2, 
-  VolumeX, 
+import {
+  Play,
+  Pause,
+  SkipBack,
+  SkipForward,
+  Volume2,
+  VolumeX,
   Maximize,
   Download,
   Camera,
@@ -48,7 +48,7 @@ function formatDuration(seconds: number): string {
   const hrs = Math.floor(seconds / 3600);
   const mins = Math.floor((seconds % 3600) / 60);
   const secs = Math.floor(seconds % 60);
-  
+
   if (hrs > 0) {
     return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
@@ -63,7 +63,7 @@ function RecordingPlayerComponent({
 }: RecordingPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(100);
@@ -72,8 +72,8 @@ function RecordingPlayerComponent({
   const [playbackRate, setPlaybackRate] = useState(1);
   const [error, setError] = useState<string | null>(null);
 
-  const startTime = recording.startTime instanceof Date 
-    ? recording.startTime 
+  const startTime = recording.startTime instanceof Date
+    ? recording.startTime
     : new Date(recording.startTime);
 
   useEffect(() => {
@@ -100,7 +100,7 @@ function RecordingPlayerComponent({
 
   const togglePlay = useCallback(() => {
     if (!videoRef.current) return;
-    
+
     if (isPlaying) {
       videoRef.current.pause();
     } else {
@@ -146,13 +146,13 @@ function RecordingPlayerComponent({
 
   const handleSnapshot = useCallback(() => {
     if (!videoRef.current || !canvasRef.current || !onSnapshot) return;
-    
+
     const canvas = canvasRef.current;
     const video = videoRef.current;
-    
+
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    
+
     const ctx = canvas.getContext('2d');
     if (ctx) {
       ctx.drawImage(video, 0, 0);
@@ -163,7 +163,7 @@ function RecordingPlayerComponent({
 
   const handleFullscreen = useCallback(() => {
     if (!videoRef.current) return;
-    
+
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
@@ -204,7 +204,7 @@ function RecordingPlayerComponent({
             className="w-full h-full object-contain"
             playsInline
           />
-          
+
           {error && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/80 text-white">
               <div className="text-center">
@@ -249,11 +249,11 @@ function RecordingPlayerComponent({
           <Button variant="ghost" size="icon" onClick={() => skipSeconds(-10)}>
             <SkipBack className="w-4 h-4" />
           </Button>
-          
+
           <Button variant="ghost" size="icon" className="h-10 w-10" onClick={togglePlay}>
             {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
           </Button>
-          
+
           <Button variant="ghost" size="icon" onClick={() => skipSeconds(10)}>
             <SkipForward className="w-4 h-4" />
           </Button>
