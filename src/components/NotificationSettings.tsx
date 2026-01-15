@@ -4,8 +4,8 @@
  */
 
 import { memo } from 'react';
-import { 
-  Bell, 
+import {
+  Bell,
   BellOff,
   Volume2,
   VolumeX,
@@ -99,7 +99,7 @@ function NotificationSettingsComponent({
               onCheckedChange={(checked) => updateSettings({ sound: checked })}
             />
           </div>
-          
+
           {settings.sound && (
             <div className="pl-8 space-y-2">
               <Label className="text-sm">Volume: {settings.soundVolume}%</Label>
