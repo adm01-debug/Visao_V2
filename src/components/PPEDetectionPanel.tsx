@@ -4,9 +4,9 @@
  */
 
 import { memo, useState } from 'react';
-import { 
-  HardHat, 
-  Eye, 
+import {
+  HardHat,
+  Eye,
   Shield,
   AlertTriangle,
   CheckCircle,
@@ -75,7 +75,7 @@ function PPEDetectionPanelComponent({
     updateConfig({ requiredPPE: newRequired });
   };
 
-  const complianceRate = detectionStats 
+  const complianceRate = detectionStats
     ? Math.round((detectionStats.compliant / Math.max(detectionStats.compliant + detectionStats.nonCompliant, 1)) * 100)
     : null;
 
@@ -133,8 +133,8 @@ function PPEDetectionPanelComponent({
                   onClick={() => togglePPE(option.value)}
                   className={cn(
                     "flex flex-col items-center gap-1 p-3 rounded-lg border transition-colors",
-                    isSelected 
-                      ? "bg-primary/10 border-primary" 
+                    isSelected
+                      ? "bg-primary/10 border-primary"
                       : "border-border hover:bg-accent"
                   )}
                 >
