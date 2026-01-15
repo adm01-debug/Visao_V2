@@ -4,12 +4,12 @@
  */
 
 import { memo } from 'react';
-import { 
-  Play, 
-  Pause, 
-  Volume2, 
-  VolumeX, 
-  Maximize, 
+import {
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Maximize,
   Minimize,
   Settings,
   RefreshCw,
@@ -18,11 +18,11 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 
@@ -99,7 +99,7 @@ function StreamControlsComponent({
             <Volume2 className={compact ? "w-3 h-3" : "w-4 h-4"} />
           )}
         </Button>
-        
+
         {!compact && (
           <Slider
             value={[volume]}
