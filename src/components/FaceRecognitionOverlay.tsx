@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: FaceRecognitionOverlay
- * 
+ *
  * Overlay para exibir detecções faciais sobre o vídeo:
  * - Bounding boxes em rostos detectados
  * - Nome/identificação da pessoa
@@ -267,21 +267,21 @@ function StatsPanel({ faces }: StatsPanelProps) {
         <User className="w-3 h-3" />
         <span>{stats.total} detectado{stats.total !== 1 ? 's' : ''}</span>
       </div>
-      
+
       {stats.known > 0 && (
         <div className="flex items-center gap-1 px-2 py-1 rounded bg-green-500/80 text-white">
           <UserCheck className="w-3 h-3" />
           <span>{stats.known} conhecido{stats.known !== 1 ? 's' : ''}</span>
         </div>
       )}
-      
+
       {stats.blacklisted > 0 && (
         <div className="flex items-center gap-1 px-2 py-1 rounded bg-red-500/80 text-white animate-pulse">
           <Ban className="w-3 h-3" />
           <span>{stats.blacklisted} bloqueado{stats.blacklisted !== 1 ? 's' : ''}</span>
         </div>
       )}
-      
+
       {stats.vip > 0 && (
         <div className="flex items-center gap-1 px-2 py-1 rounded bg-yellow-500/80 text-white">
           <Star className="w-3 h-3" />
@@ -309,7 +309,7 @@ export function FaceRecognitionOverlay({
   const activeFaces = useMemo(() => {
     const now = Date.now();
     const maxAge = 5000; // 5 segundos
-    
+
     return faces.filter(face => {
       const age = now - new Date(face.timestamp).getTime();
       return age < maxAge;
