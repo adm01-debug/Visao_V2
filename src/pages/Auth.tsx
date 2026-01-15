@@ -22,7 +22,7 @@ export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  
+
   const { signIn, signUp, user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -35,24 +35,24 @@ export default function Auth() {
 
   const validateForm = (isSignUp: boolean) => {
     const newErrors: Record<string, string> = {};
-    
+
     const emailResult = emailSchema.safeParse(email);
     if (!emailResult.success) {
       newErrors.email = emailResult.error.errors[0].message;
     }
-    
+
     const passwordResult = passwordSchema.safeParse(password);
     if (!passwordResult.success) {
       newErrors.password = passwordResult.error.errors[0].message;
     }
-    
+
     if (isSignUp && fullName) {
       const nameResult = nameSchema.safeParse(fullName);
       if (!nameResult.success) {
         newErrors.fullName = nameResult.error.errors[0].message;
       }
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -60,15 +60,15 @@ export default function Auth() {
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm(false)) return;
-    
+
     setIsLoading(true);
     const { error } = await signIn(email, password);
     setIsLoading(false);
-    
+
     if (error) {
       toast({
         title: 'Erro ao entrar',
-        description: error.message === 'Invalid login credentials' 
+        description: error.message === 'Invalid login credentials'
           ? 'Email ou senha incorretos'
           : error.message,
         variant: 'destructive',
@@ -79,11 +79,11 @@ export default function Auth() {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm(true)) return;
-    
+
     setIsLoading(true);
     const { error } = await signUp(email, password, fullName);
     setIsLoading(false);
-    
+
     if (error) {
       let message = error.message;
       if (error.message.includes('already registered')) {
@@ -116,7 +116,7 @@ export default function Auth() {
         <title>Login - VisionAI</title>
         <meta name="description" content="Acesse sua conta VisionAI para monitoramento de segurança inteligente." />
       </Helmet>
-      
+
       <div role="main" aria-label="Autenticação" className="min-h-screen flex items-center justify-center bg-background p-4">
         <div role="main" aria-label="Autenticação" className="w-full max-w-md">
           {/* Logo */}
@@ -138,7 +138,7 @@ export default function Auth() {
                   <TabsTrigger value="register">Criar Conta</TabsTrigger>
                 </TabsList>
               </CardHeader>
-              
+
               <CardContent>
                 {/* Login Tab */}
                 <TabsContent value="login" className="mt-0">
@@ -146,7 +146,7 @@ export default function Auth() {
                   <CardDescription className="mb-6">
                     Entre com suas credenciais para acessar o sistema
                   </CardDescription>
-                  
+
                   <form onSubmit={handleSignIn} className="space-y-4">
                     <div role="main" aria-label="Autenticação" className="space-y-2">
                       <Label htmlFor="login-email">Email</Label>
@@ -163,7 +163,7 @@ export default function Auth() {
                         <p className="text-xs text-destructive">{errors.email}</p>
                       )}
                     </div>
-                    
+
                     <div role="main" aria-label="Autenticação" className="space-y-2">
                       <Label htmlFor="login-password">Senha</Label>
                       <div role="main" aria-label="Autenticação" className="relative">
@@ -194,7 +194,7 @@ export default function Auth() {
                         <p className="text-xs text-destructive">{errors.password}</p>
                       )}
                     </div>
-                    
+
                     <Button type="submit" className="w-full" disabled={isLoading}>
                       {isLoading ? (
                         <>
@@ -214,7 +214,7 @@ export default function Auth() {
                   <CardDescription className="mb-6">
                     Preencha os dados para começar a usar o VisionAI
                   </CardDescription>
-                  
+
                   <form onSubmit={handleSignUp} className="space-y-4">
                     <div role="main" aria-label="Autenticação" className="space-y-2">
                       <Label htmlFor="register-name">Nome completo</Label>
@@ -227,7 +227,7 @@ export default function Auth() {
                         disabled={isLoading}
                       />
                     </div>
-                    
+
                     <div role="main" aria-label="Autenticação" className="space-y-2">
                       <Label htmlFor="register-email">Email</Label>
                       <Input
@@ -243,7 +243,7 @@ export default function Auth() {
                         <p className="text-xs text-destructive">{errors.email}</p>
                       )}
                     </div>
-                    
+
                     <div role="main" aria-label="Autenticação" className="space-y-2">
                       <Label htmlFor="register-password">Senha</Label>
                       <div role="main" aria-label="Autenticação" className="relative">
@@ -274,7 +274,7 @@ export default function Auth() {
                         <p className="text-xs text-destructive">{errors.password}</p>
                       )}
                     </div>
-                    
+
                     <Button type="submit" className="w-full" disabled={isLoading}>
                       {isLoading ? (
                         <>
