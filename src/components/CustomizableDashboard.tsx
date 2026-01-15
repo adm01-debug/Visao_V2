@@ -49,7 +49,7 @@ export function CustomizableDashboard() {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    
+
     if (over && active.id !== over.id) {
       reorderWidgets(active.id as string, over.id as string);
     }
@@ -92,12 +92,12 @@ export function CustomizableDashboard() {
         <div className="flex items-center gap-2">
           {isEditing && (
             <>
-              <WidgetCatalog 
+              <WidgetCatalog
                 onAddWidget={addWidget}
                 activeWidgetIds={activeWidgetIds}
               />
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={handleReset}
                 className="gap-2"
@@ -107,7 +107,7 @@ export function CustomizableDashboard() {
               </Button>
             </>
           )}
-          
+
           <Button
             variant={isEditing ? 'default' : 'outline'}
             size="sm"
@@ -140,7 +140,7 @@ export function CustomizableDashboard() {
             items={layout.widgets.map(w => w.id)}
             strategy={rectSortingStrategy}
           >
-            <div 
+            <div
               className={cn(
                 'grid gap-4 auto-rows-[minmax(180px,1fr)]',
                 `grid-cols-1 md:grid-cols-2 lg:grid-cols-${layout.columns}`,
@@ -176,7 +176,7 @@ export function CustomizableDashboard() {
             <p className="text-muted-foreground mb-4">
               Adicione widgets para personalizar seu dashboard
             </p>
-            <WidgetCatalog 
+            <WidgetCatalog
               onAddWidget={addWidget}
               activeWidgetIds={[]}
             />
