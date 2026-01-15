@@ -7,7 +7,7 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Copy, Check, Download, Maximize2, Minimize2 } from 'lucide-react';
 
-export type CodeLanguage = 
+export type CodeLanguage =
   | 'javascript' | 'typescript' | 'python' | 'java' | 'cpp' | 'csharp'
   | 'go' | 'rust' | 'ruby' | 'php' | 'swift' | 'kotlin'
   | 'html' | 'css' | 'scss' | 'json' | 'xml' | 'yaml' | 'markdown'
