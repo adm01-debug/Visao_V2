@@ -12,7 +12,7 @@ export interface RequestConfig extends RequestInit {
 
 export async function request<T>(url: string, config: RequestConfig = {}): Promise<T> {
   const { baseUrl, timeout = 30000, params, ...init } = config;
-  
+
   const fullUrl = new URL(url, baseUrl);
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
@@ -64,11 +64,11 @@ export function parseQueryString(query: string): Record<string, string> {
 
 export const http = {
   get: <T>(url: string, config?: RequestConfig) => request<T>(url, { ...config, method: 'GET' }),
-  post: <T>(url: string, body?: unknown, config?: RequestConfig) => 
+  post: <T>(url: string, body?: unknown, config?: RequestConfig) =>
     request<T>(url, { ...config, method: 'POST', body: JSON.stringify(body), headers: { 'Content-Type': 'application/json', ...config?.headers } }),
-  put: <T>(url: string, body?: unknown, config?: RequestConfig) => 
+  put: <T>(url: string, body?: unknown, config?: RequestConfig) =>
     request<T>(url, { ...config, method: 'PUT', body: JSON.stringify(body), headers: { 'Content-Type': 'application/json', ...config?.headers } }),
-  patch: <T>(url: string, body?: unknown, config?: RequestConfig) => 
+  patch: <T>(url: string, body?: unknown, config?: RequestConfig) =>
     request<T>(url, { ...config, method: 'PATCH', body: JSON.stringify(body), headers: { 'Content-Type': 'application/json', ...config?.headers } }),
   delete: <T>(url: string, config?: RequestConfig) => request<T>(url, { ...config, method: 'DELETE' }),
 };
