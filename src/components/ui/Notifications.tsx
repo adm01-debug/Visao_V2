@@ -130,7 +130,7 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
         <div className="flex-shrink-0 mt-0.5">
           {icons[toast.type]}
         </div>
-        
+
         <div className="flex-1 min-w-0">
           <p className="font-medium text-sm text-foreground">
             {toast.title}
@@ -268,7 +268,7 @@ export function InlineNotification({
         <div className="flex-shrink-0 mt-0.5">
           {icons[type]}
         </div>
-        
+
         <div className="flex-1 min-w-0">
           <p className="font-medium text-sm text-foreground">
             {title}
@@ -385,7 +385,7 @@ export function NotificationCenter({
                     'w-2 h-2 rounded-full mt-2 flex-shrink-0',
                     notification.read ? 'bg-muted-foreground/30' : 'bg-primary'
                   )} />
-                  
+
                   <div className="flex-1 min-w-0">
                     <p className={cn(
                       'text-sm',
