@@ -2,7 +2,7 @@ import { useOnClickOutside } from "@/hooks";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: KeyboardShortcutsHelp
- * 
+ *
  * Modal com lista de atalhos de teclado disponíveis
  */
 
@@ -103,7 +103,7 @@ export function KeyboardShortcutsHelp({
                   <Icon className="h-4 w-4" />
                   {label}
                 </div>
-                
+
                 <div className="grid gap-2">
                   {categoryShortcuts.map((shortcut, index) => (
                     <div
@@ -123,8 +123,8 @@ export function KeyboardShortcutsHelp({
 
           {/* Dica */}
           <div className="text-xs text-muted-foreground text-center pt-4 border-t">
-            Pressione <Badge variant="outline" className="font-mono text-xs mx-1">Shift + ?</Badge> 
-            ou <Badge variant="outline" className="font-mono text-xs mx-1">F1</Badge> 
+            Pressione <Badge variant="outline" className="font-mono text-xs mx-1">Shift + ?</Badge>
+            ou <Badge variant="outline" className="font-mono text-xs mx-1">F1</Badge>
             para abrir esta ajuda a qualquer momento
           </div>
         </div>
