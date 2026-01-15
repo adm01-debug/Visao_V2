@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Stores barrel export - Exportação centralizada de todas as stores Zustand
- * 
+ *
  * @module stores
  */
 
