@@ -69,13 +69,13 @@ class AwsService {
    */
   private async getS3Client(): Promise<unknown> {
     if (this.s3Client) return this.s3Client;
-    
+
     if (!this.config) {
       throw new Error('AWS not initialized');
     }
 
     const { S3Client } = await import('@aws-sdk/client-s3');
-    
+
     this.s3Client = new S3Client({
       region: this.config.region,
       credentials: {
@@ -107,7 +107,7 @@ class AwsService {
     await (client as { send: (cmd: unknown) => Promise<void> }).send(command);
 
     const url = `https://${options.bucket}.s3.${this.config!.region}.amazonaws.com/${options.key}`;
-    
+
     return { url, key: options.key };
   }
 
@@ -125,7 +125,7 @@ class AwsService {
 
     const response = await (client as { send: (cmd: unknown) => Promise<{ Body: { transformToByteArray: () => Promise<Uint8Array> } }> }).send(command);
     const bytes = await response.Body.transformToByteArray();
-    
+
     return new Blob([bytes]);
   }
 
@@ -154,7 +154,7 @@ class AwsService {
     const { GetObjectCommand, PutObjectCommand } = await import('@aws-sdk/client-s3');
 
     const Command = options.operation === 'putObject' ? PutObjectCommand : GetObjectCommand;
-    
+
     const command = new Command({
       Bucket: options.bucket,
       Key: options.key,
@@ -180,7 +180,7 @@ class AwsService {
     });
 
     const response = await (client as { send: (cmd: unknown) => Promise<{ Contents?: Array<{ Key: string; Size: number; LastModified: Date }> }> }).send(command);
-    
+
     return (response.Contents || []).map((obj) => ({
       key: obj.Key || '',
       size: obj.Size || 0,
@@ -193,13 +193,13 @@ class AwsService {
    */
   private async getRekognitionClient(): Promise<unknown> {
     if (this.rekognitionClient) return this.rekognitionClient;
-    
+
     if (!this.config) {
       throw new Error('AWS not initialized');
     }
 
     const { RekognitionClient } = await import('@aws-sdk/client-rekognition');
-    
+
     this.rekognitionClient = new RekognitionClient({
       region: this.config.region,
       credentials: {
@@ -225,7 +225,7 @@ class AwsService {
     });
 
     const response = await (client as { send: (cmd: unknown) => Promise<{ FaceDetails?: unknown[] }> }).send(command);
-    
+
     return (response.FaceDetails || []).map((face: unknown) => {
       const f = face as { BoundingBox: object; Confidence: number; Emotions?: object[] };
       return {
@@ -249,7 +249,7 @@ class AwsService {
     });
 
     const response = await (client as { send: (cmd: unknown) => Promise<{ Labels?: unknown[] }> }).send(command);
-    
+
     return (response.Labels || []).map((label: unknown) => {
       const l = label as { Name: string; Confidence: number; Instances?: unknown[] };
       return {
@@ -284,7 +284,7 @@ class AwsService {
     });
 
     const response = await (client as { send: (cmd: unknown) => Promise<{ FaceMatches?: unknown[] }> }).send(command);
-    
+
     return (response.FaceMatches || []).map((match: unknown) => {
       const m = match as { Similarity: number; Face: { FaceId: string; BoundingBox: object; Confidence: number } };
       return {
@@ -303,13 +303,13 @@ class AwsService {
    */
   private async getKinesisVideoClient(): Promise<unknown> {
     if (this.kinesisVideoClient) return this.kinesisVideoClient;
-    
+
     if (!this.config) {
       throw new Error('AWS not initialized');
     }
 
     const { KinesisVideoClient } = await import('@aws-sdk/client-kinesis-video');
-    
+
     this.kinesisVideoClient = new KinesisVideoClient({
       region: this.config.region,
       credentials: {
@@ -336,7 +336,7 @@ class AwsService {
     });
 
     const response = await (client as { send: (cmd: unknown) => Promise<{ StreamARN: string }> }).send(command);
-    
+
     return {
       streamName,
       streamARN: response.StreamARN,
