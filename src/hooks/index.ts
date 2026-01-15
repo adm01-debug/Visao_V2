@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hooks barrel export - Exportação centralizada dos hooks
- * 
+ *
  * @module hooks
  */
 
