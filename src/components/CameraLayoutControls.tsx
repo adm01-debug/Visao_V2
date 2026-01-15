@@ -18,11 +18,11 @@ interface CameraLayoutControlsProps {
   className?: string;
 }
 
-export function CameraLayoutControls({ 
-  layout, 
-  onLayoutChange, 
+export function CameraLayoutControls({
+  layout,
+  onLayoutChange,
   onFullscreen,
-  className 
+  className
 }: CameraLayoutControlsProps) {
   const layouts: { id: CameraLayout; icon: typeof LayoutGrid; label: string }[] = [
     { id: '2x2', icon: LayoutGrid, label: 'Grid 2x2' },
@@ -53,7 +53,7 @@ export function CameraLayoutControls({
             </TooltipContent>
           </Tooltip>
         ))}
-        
+
         {onFullscreen && (
           <>
             <div className="w-px h-6 bg-border mx-1" />
