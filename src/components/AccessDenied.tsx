@@ -55,7 +55,7 @@ export const AccessDenied = ({
             {customMessage || IP_MESSAGES.blocked}
           </CardDescription>
         </CardHeader>
-        
+
         <CardContent className="space-y-6">
           {/* Informações do acesso */}
           <div className="bg-muted/50 rounded-lg p-4 space-y-2">
@@ -85,14 +85,14 @@ export const AccessDenied = ({
                 Para solicitar acesso, entre em contato:
               </p>
               <div className="flex flex-col gap-2">
-                <a 
+                <a
                   href="mailto:admin@visao.app"
                   className="flex items-center gap-2 text-sm text-primary hover:underline justify-center"
                 >
                   <Mail className="w-4 h-4" />
                   admin@visao.app
                 </a>
-                <a 
+                <a
                   href="tel:+5511999999999"
                   className="flex items-center gap-2 text-sm text-primary hover:underline justify-center"
                 >
@@ -110,8 +110,8 @@ export const AccessDenied = ({
                 Tentar Novamente
               </Button>
             )}
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               className="w-full text-muted-foreground"
               onClick={() => window.history.back()}
             >
