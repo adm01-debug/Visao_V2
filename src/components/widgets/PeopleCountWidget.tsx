@@ -37,7 +37,7 @@ export function PeopleCountWidget() {
           {Math.abs(trend)}%
         </div>
       </div>
-      
+
       <span className="text-3xl font-bold mt-2">{totalPeople}</span>
       <span className="text-xs text-muted-foreground">pessoas detectadas</span>
     </div>
