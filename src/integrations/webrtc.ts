@@ -87,7 +87,7 @@ class WebRTCService {
     // Handle connection state changes
     connection.onconnectionstatechange = () => {
       this.onConnectionStateCallback?.(peerId, connection.connectionState);
-      
+
       if (connection.connectionState === 'failed' || connection.connectionState === 'closed') {
         this.closePeerConnection(peerId);
       }
@@ -120,7 +120,7 @@ class WebRTCService {
       offerToReceiveVideo: true,
       offerToReceiveAudio: true,
     });
-    
+
     await peer.connection.setLocalDescription(offer);
     return offer;
   }
@@ -231,7 +231,7 @@ class WebRTCService {
     peer.dataChannel?.close();
     peer.connection.close();
     peer.remoteStream?.getTracks().forEach((track) => track.stop());
-    
+
     this.peers.delete(peerId);
       }
 
@@ -242,7 +242,7 @@ class WebRTCService {
     this.peers.forEach((_, peerId) => {
       this.closePeerConnection(peerId);
     });
-    
+
     this.localStream?.getTracks().forEach((track) => track.stop());
     this.localStream = null;
   }
