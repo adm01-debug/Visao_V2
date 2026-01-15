@@ -2,7 +2,7 @@ import { memo } from "react";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: ContinuousAnalysisPanel
- * 
+ *
  * Painel de controle para análise contínua de vídeo.
  * Permite configurar, iniciar, pausar e monitorar análises automáticas.
  */
@@ -76,13 +76,13 @@ import { ptBR } from 'date-fns/locale';
 interface ContinuousAnalysisPanelProps {
   /** Sessão atual */
   session: AnalysisSession | null;
-  
+
   /** Histórico de análises */
   history: AnalysisHistoryEntry[];
-  
+
   /** Está analisando agora? */
   isAnalyzing: boolean;
-  
+
   /** Callbacks */
   onStart: (config?: Partial<ContinuousAnalysisConfig>) => void;
   onStop: () => void;
@@ -92,10 +92,10 @@ interface ContinuousAnalysisPanelProps {
   onClearHistory: () => void;
   onExportHistory: () => AnalysisHistoryEntry[];
   onAnalyzeOnce: (type?: AnalysisType) => Promise<AnalysisResult | null>;
-  
+
   /** Mostrar configurações expandidas inicialmente */
   showConfigByDefault?: boolean;
-  
+
   /** Classe CSS */
   className?: string;
 }
@@ -244,7 +244,7 @@ export function ContinuousAnalysisPanel({
   // Estados locais para configuração
   const [showConfig, setShowConfig] = useState(showConfigByDefault);
   const [showHistory, setShowHistory] = useState(true);
-  
+
   // Configurações editáveis
   const [interval, setInterval] = useState(5000);
   const [analysisTypes, setAnalysisTypes] = useState<AnalysisType[]>(['security']);
@@ -306,7 +306,7 @@ export function ContinuousAnalysisPanel({
     const newTypes = analysisTypes.includes(type)
       ? analysisTypes.filter(t => t !== type)
       : [...analysisTypes, type];
-    
+
     if (newTypes.length > 0) {
       setAnalysisTypes(newTypes);
       if (session) {
@@ -374,7 +374,7 @@ export function ContinuousAnalysisPanel({
                 </Button>
               </>
             )}
-            
+
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -503,7 +503,7 @@ export function ContinuousAnalysisPanel({
               {/* Thresholds */}
               <div className="space-y-3">
                 <Label className="text-xs text-muted-foreground">Thresholds para Alertas</Label>
-                
+
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Máximo de pessoas</span>
