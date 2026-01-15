@@ -19,10 +19,10 @@ interface AuthCallbackProps {
   onError?: (error: Error) => void;
 }
 
-function AuthCallbackComponent({ 
+function AuthCallbackComponent({
   redirectTo = '/dashboard',
   onSuccess,
-  onError 
+  onError
 }: AuthCallbackProps) {
   const [status, setStatus] = useState<AuthCallbackStatus>('loading');
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -34,13 +34,13 @@ function AuthCallbackComponent({
       try {
         const error = searchParams.get('error');
         const errorDescription = searchParams.get('error_description');
-        
+
         if (error) {
           throw new Error(errorDescription || error);
         }
 
         const type = searchParams.get('type');
-        
+
         if (type === 'recovery') {
           // Password recovery flow
           navigate('/reset-password');
@@ -58,7 +58,7 @@ function AuthCallbackComponent({
 
         // Handle OAuth callback
         const { data, error: authError } = await supabase.auth.getSession();
-        
+
         if (authError) {
           throw authError;
         }
@@ -103,14 +103,14 @@ function AuthCallbackComponent({
               <p className="text-muted-foreground">Processando autenticação...</p>
             </>
           )}
-          
+
           {status === 'success' && (
             <>
               <CheckCircle className="w-16 h-16 text-green-500" />
               <p className="text-muted-foreground">Redirecionando...</p>
             </>
           )}
-          
+
           {status === 'email-confirmed' && (
             <>
               <Mail className="w-16 h-16 text-primary" />
@@ -118,7 +118,7 @@ function AuthCallbackComponent({
               <p className="text-sm text-muted-foreground">Redirecionando para o dashboard...</p>
             </>
           )}
-          
+
           {status === 'error' && (
             <>
               <XCircle className="w-16 h-16 text-destructive" />
