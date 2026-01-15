@@ -106,7 +106,7 @@ export function RuleEditor({ rule, isOpen, onClose, onSave }: RuleEditorProps) {
         conditions: [...rule.conditions],
         actions: [...rule.actions],
         cameras: [...rule.cameras],
-        schedule: { 
+        schedule: {
           enabled: rule.schedule.enabled,
           startTime: rule.schedule.startTime || '08:00',
           endTime: rule.schedule.endTime || '18:00',
@@ -132,7 +132,7 @@ export function RuleEditor({ rule, isOpen, onClose, onSave }: RuleEditorProps) {
   const updateCondition = (index: number, updates: Partial<RuleCondition>) => {
     setFormData(prev => ({
       ...prev,
-      conditions: prev.conditions.map((c, i) => 
+      conditions: prev.conditions.map((c, i) =>
         i === index ? { ...c, ...updates } : c
       ),
     }));
@@ -320,7 +320,7 @@ export function RuleEditor({ rule, isOpen, onClose, onSave }: RuleEditorProps) {
                         )}
                       </div>
                     </div>
-                    
+
                     <Button
                       type="button"
                       variant="ghost"
@@ -384,7 +384,7 @@ export function RuleEditor({ rule, isOpen, onClose, onSave }: RuleEditorProps) {
               <Label className="text-base">Agendamento</Label>
               <Switch
                 checked={formData.schedule.enabled}
-                onCheckedChange={(enabled) => 
+                onCheckedChange={(enabled) =>
                   setFormData(prev => ({ ...prev, schedule: { ...prev.schedule, enabled } }))
                 }
               />
@@ -398,10 +398,10 @@ export function RuleEditor({ rule, isOpen, onClose, onSave }: RuleEditorProps) {
                     <Input
                       type="time"
                       value={formData.schedule.startTime}
-                      onChange={e => 
-                        setFormData(prev => ({ 
-                          ...prev, 
-                          schedule: { ...prev.schedule, startTime: e.target.value } 
+                      onChange={e =>
+                        setFormData(prev => ({
+                          ...prev,
+                          schedule: { ...prev.schedule, startTime: e.target.value }
                         }))
                       }
                     />
@@ -411,10 +411,10 @@ export function RuleEditor({ rule, isOpen, onClose, onSave }: RuleEditorProps) {
                     <Input
                       type="time"
                       value={formData.schedule.endTime}
-                      onChange={e => 
-                        setFormData(prev => ({ 
-                          ...prev, 
-                          schedule: { ...prev.schedule, endTime: e.target.value } 
+                      onChange={e =>
+                        setFormData(prev => ({
+                          ...prev,
+                          schedule: { ...prev.schedule, endTime: e.target.value }
                         }))
                       }
                     />
