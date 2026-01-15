@@ -34,15 +34,15 @@ const sizeConfig = {
 
 export function StatusIndicator({ status, size = 'md', showLabel = false }: StatusIndicatorProps) {
   const config = statusConfig[status];
-  
+
   return (
     <div className="flex items-center gap-2">
-      <span 
+      <span
         className={cn(
           'rounded-full animate-pulse',
           config.color,
           sizeConfig[size]
-        )} 
+        )}
       />
       {showLabel && (
         <span className="text-sm text-muted-foreground">{config.label}</span>
