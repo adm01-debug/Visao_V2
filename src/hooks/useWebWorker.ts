@@ -44,11 +44,11 @@ export function useWebWorker<T = unknown, R = unknown>(
   options: UseWebWorkerOptions<T, R>
 ): UseWebWorkerReturn<T, R> {
   const { workerFunction, onSuccess, onError } = options;
-  
+
   const [result, setResult] = useState<R | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [isRunning, setIsRunning] = useState(false);
-  
+
   const workerRef = useRef<Worker | null>(null);
   const blobUrlRef = useRef<string | null>(null);
 
@@ -75,7 +75,7 @@ export function useWebWorker<T = unknown, R = unknown>(
 
       workerRef.current.onmessage = (e) => {
         const { success, result: workerResult, error: workerError } = e.data;
-        
+
         if (success) {
           setResult(workerResult);
           onSuccess?.(workerResult);
@@ -84,7 +84,7 @@ export function useWebWorker<T = unknown, R = unknown>(
           setError(err);
           onError?.(err);
         }
-        
+
         setIsRunning(false);
         terminate();
       };
