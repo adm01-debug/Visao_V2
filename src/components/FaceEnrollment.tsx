@@ -37,7 +37,7 @@ function FaceEnrollmentComponent({
   const [imageData, setImageData] = useState<string | null>(null);
   const [isCapturing, setIsCapturing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -46,10 +46,10 @@ function FaceEnrollmentComponent({
   const startCamera = useCallback(async () => {
     try {
       setError(null);
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'user', width: 640, height: 480 } 
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: 640, height: 480 }
       });
-      
+
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         streamRef.current = stream;
@@ -72,10 +72,10 @@ function FaceEnrollmentComponent({
     if (videoRef.current && canvasRef.current) {
       const canvas = canvasRef.current;
       const video = videoRef.current;
-      
+
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      
+
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.drawImage(video, 0, 0);
@@ -102,7 +102,7 @@ function FaceEnrollmentComponent({
       setError('Nome e foto são obrigatórios');
       return;
     }
-    
+
     await onEnroll({
       name: name.trim(),
       imageData,
@@ -124,23 +124,23 @@ function FaceEnrollmentComponent({
           Cadastro Facial
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         {/* Image Capture/Upload Area */}
         <div className="space-y-2">
           <Label>Foto</Label>
-          
+
           {!imageData && !isCapturing && (
             <div className="flex gap-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={startCamera}
                 className="flex-1 gap-2"
               >
                 <Camera className="w-4 h-4" />
                 Usar Câmera
               </Button>
-              <Button 
+              <Button
                 variant="outline"
                 onClick={() => fileInputRef.current?.click()}
                 className="flex-1 gap-2"
@@ -157,7 +157,7 @@ function FaceEnrollmentComponent({
               />
             </div>
           )}
-          
+
           {isCapturing && (
             <div className="space-y-2">
               <video
@@ -178,11 +178,11 @@ function FaceEnrollmentComponent({
               </div>
             </div>
           )}
-          
+
           {imageData && (
             <div className="space-y-2">
-              <img 
-                src={imageData} 
+              <img
+                src={imageData}
                 alt="Foto capturada"
                 className="w-full rounded-lg border"
               />
@@ -193,9 +193,9 @@ function FaceEnrollmentComponent({
             </div>
           )}
         </div>
-        
+
         <canvas ref={canvasRef} className="hidden" />
-        
+
         {/* Form Fields */}
         <div className="space-y-3">
           <div>
@@ -207,7 +207,7 @@ function FaceEnrollmentComponent({
               placeholder="Nome completo"
             />
           </div>
-          
+
           <div>
             <Label htmlFor="department">Departamento</Label>
             <Input
@@ -217,7 +217,7 @@ function FaceEnrollmentComponent({
               placeholder="Ex: Segurança, TI, RH"
             />
           </div>
-          
+
           <div>
             <Label htmlFor="notes">Observações</Label>
             <Input
@@ -228,11 +228,11 @@ function FaceEnrollmentComponent({
             />
           </div>
         </div>
-        
+
         {error && (
           <p className="text-sm text-destructive">{error}</p>
         )}
-        
+
         {/* Actions */}
         <div className="flex gap-2 pt-2">
           {onCancel && (
@@ -240,7 +240,7 @@ function FaceEnrollmentComponent({
               Cancelar
             </Button>
           )}
-          <Button 
+          <Button
             onClick={handleSubmit}
             disabled={!name.trim() || !imageData || isProcessing}
             className="flex-1 gap-2"
