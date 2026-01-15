@@ -25,7 +25,7 @@ export const usePermission = (permissionName: PermissionName): UsePermissionStat
       .then((permissionStatus) => {
         if (mounted) {
           setState(permissionStatus.state);
-          
+
           permissionStatus.onchange = () => {
             if (mounted) setState(permissionStatus.state);
           };
