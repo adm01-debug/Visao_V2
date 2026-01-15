@@ -16,7 +16,7 @@ interface UseIntersectionObserverResult {
 /**
  * Hook for observing element visibility
  * Useful for lazy loading, infinite scroll, animations
- * 
+ *
  * @example
  * const { ref, isIntersecting } = useIntersectionObserver({
  *   threshold: 0.1,
@@ -37,10 +37,10 @@ export function useIntersectionObserver({
 
   const updateEntry = useCallback(([newEntry]: IntersectionObserverEntry[]) => {
     if (frozen.current) return;
-    
+
     setEntry(newEntry);
     setIsIntersecting(newEntry.isIntersecting);
-    
+
     if (freezeOnceVisible && newEntry.isIntersecting) {
       frozen.current = true;
     }
@@ -49,7 +49,7 @@ export function useIntersectionObserver({
   useEffect(() => {
     const node = ref.current;
     const hasIOSupport = !!window.IntersectionObserver;
-    
+
     if (!hasIOSupport || !node) return;
 
     const observerParams = { threshold, root, rootMargin };
@@ -71,7 +71,7 @@ interface UseLazyImageResult {
 
 /**
  * Hook for lazy loading images
- * 
+ *
  * @example
  * const { ref, imageSrc, isLoaded } = useLazyImage('/image.jpg', '/placeholder.jpg');
  */
@@ -80,7 +80,7 @@ export function useLazyImage(src: string, placeholder?: string): UseLazyImageRes
     threshold: 0.1,
     freezeOnceVisible: true,
   });
-  
+
   const [imageSrc, setImageSrc] = useState(placeholder || '');
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -103,7 +103,7 @@ export function useLazyImage(src: string, placeholder?: string): UseLazyImageRes
 
 /**
  * Hook for infinite scroll
- * 
+ *
  * @example
  * const { ref } = useInfiniteScroll(() => loadMore());
  */
