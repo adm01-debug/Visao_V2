@@ -91,7 +91,7 @@ export const Sankey: React.FC<SankeyProps> = ({
     // Build adjacency and compute layers
     const sourceNodes = new Set(links.map(l => l.source));
     const targetNodes = new Set(links.map(l => l.target));
-    
+
     // Nodes that are only sources (leftmost)
     const startNodes = nodes.filter(n => sourceNodes.has(n.id) && !targetNodes.has(n.id));
     // Nodes that are only targets (rightmost)
@@ -132,7 +132,7 @@ export const Sankey: React.FC<SankeyProps> = ({
     });
 
     // Calculate total value per layer for scaling
-    const layerTotals = layers.map(layer => 
+    const layerTotals = layers.map(layer =>
       layer.reduce((sum, node) => sum + (node.value || 0), 0)
     );
     const maxTotal = Math.max(...layerTotals);
@@ -141,7 +141,7 @@ export const Sankey: React.FC<SankeyProps> = ({
     layers.forEach((layer, layerIndex) => {
       const x = layerIndex * layerWidth;
       const availableHeight = height - (layer.length - 1) * nodePadding;
-      
+
       let currentY = 0;
       layer.forEach(node => {
         node.x = x;
@@ -163,25 +163,25 @@ export const Sankey: React.FC<SankeyProps> = ({
     const computedLinksList: ComputedLink[] = links.map((link, index) => {
       const sourceNode = nodeMap.get(link.source)!;
       const targetNode = nodeMap.get(link.target)!;
-      
+
       // Calculate link width proportional to value
       const sourceTotal = links.filter(l => l.source === link.source).reduce((sum, l) => sum + l.value, 0);
       const targetTotal = links.filter(l => l.target === link.target).reduce((sum, l) => sum + l.value, 0);
-      
+
       const sourceRatio = sourceTotal > 0 ? link.value / sourceTotal : 1;
       const targetRatio = targetTotal > 0 ? link.value / targetTotal : 1;
-      
+
       const linkWidth = Math.min(sourceNode.height * sourceRatio, targetNode.height * targetRatio);
 
       // Calculate y positions
       const prevSourceLinks = links.filter(l => l.source === link.source).slice(0, index);
       const prevTargetLinks = links.filter(l => l.target === link.target).slice(0, index);
-      
+
       const sourceOffset = prevSourceLinks.reduce((sum, l) => {
         const ratio = sourceTotal > 0 ? l.value / sourceTotal : 0;
         return sum + sourceNode.height * ratio;
       }, 0);
-      
+
       const targetOffset = prevTargetLinks.reduce((sum, l) => {
         const ratio = targetTotal > 0 ? l.value / targetTotal : 0;
         return sum + targetNode.height * ratio;
@@ -211,9 +211,9 @@ export const Sankey: React.FC<SankeyProps> = ({
     const y0 = link.y0;
     const y1 = link.y1;
     const curvature = 0.5;
-    
+
     const xi = (x0 + x1) / 2;
-    
+
     return `
       M${x0},${y0}
       C${xi},${y0} ${xi},${y1} ${x1},${y1}
