@@ -85,8 +85,8 @@ const TimelineItemComponent: React.FC<{
     'absolute bg-border',
     connectorStyle === 'dashed' && 'border-dashed',
     connectorStyle === 'dotted' && 'border-dotted',
-    orientation === 'vertical' 
-      ? 'w-0.5 left-1/2 -translate-x-1/2 top-8 bottom-0' 
+    orientation === 'vertical'
+      ? 'w-0.5 left-1/2 -translate-x-1/2 top-8 bottom-0'
       : 'h-0.5 top-1/2 -translate-y-1/2 left-8 right-0'
   );
 
