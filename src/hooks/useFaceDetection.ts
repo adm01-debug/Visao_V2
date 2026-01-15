@@ -1,11 +1,11 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useFaceDetection (CONSOLIDADO)
- * 
+ *
  * Este hook agora é um wrapper que usa:
  * - useFaceAPI para detecção local via face-api.js
  * - Edge functions como fallback para servidor
- * 
+ *
  * Mantido para retrocompatibilidade com componentes Lovable
  */
 
@@ -98,7 +98,7 @@ export function useFaceDetection(options: UseFaceDetectionOptions = {}) {
       if (fnError) throw fnError;
       return data?.faces || [];
     } catch (err: unknown) {
-      
+
       throw err;
     }
   }, []);
