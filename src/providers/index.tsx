@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Providers barrel export
- * 
+ *
  * @module providers
  */
 
