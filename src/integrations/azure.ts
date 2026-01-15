@@ -69,13 +69,13 @@ class AzureService {
    */
   private async getBlobServiceClient(): Promise<unknown> {
     if (this.blobServiceClient) return this.blobServiceClient;
-    
+
     if (!this.config?.storageAccountName || !this.config?.storageAccountKey) {
       throw new Error('Azure Storage not configured');
     }
 
     const { BlobServiceClient, StorageSharedKeyCredential } = await import('@azure/storage-blob');
-    
+
     const credential = new StorageSharedKeyCredential(
       this.config.storageAccountName,
       this.config.storageAccountKey
@@ -100,18 +100,18 @@ class AzureService {
         };
       };
     };
-    
+
     const containerClient = client.getContainerClient(options.containerName);
     const blockBlobClient = containerClient.getBlockBlobClient(options.blobName);
 
-    const content = options.content instanceof Blob 
+    const content = options.content instanceof Blob
       ? await options.content.arrayBuffer()
       : options.content;
 
-    const size = content instanceof ArrayBuffer 
-      ? content.byteLength 
-      : typeof content === 'string' 
-        ? content.length 
+    const size = content instanceof ArrayBuffer
+      ? content.byteLength
+      : typeof content === 'string'
+        ? content.length
         : (content as Buffer).length;
 
     await blockBlobClient.upload(content, size, {
@@ -120,7 +120,7 @@ class AzureService {
     });
 
     const url = `https://${this.config!.storageAccountName}.blob.core.windows.net/${options.containerName}/${options.blobName}`;
-    
+
     return { url, blobName: options.blobName };
   }
 
@@ -135,7 +135,7 @@ class AzureService {
         };
       };
     };
-    
+
     const containerClient = client.getContainerClient(containerName);
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
@@ -154,7 +154,7 @@ class AzureService {
         };
       };
     };
-    
+
     const containerClient = client.getContainerClient(containerName);
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
@@ -174,7 +174,7 @@ class AzureService {
       throw new Error('Azure Storage not configured');
     }
 
-    const { generateBlobSASQueryParameters, BlobSASPermissions, StorageSharedKeyCredential } = 
+    const { generateBlobSASQueryParameters, BlobSASPermissions, StorageSharedKeyCredential } =
       await import('@azure/storage-blob');
 
     const credential = new StorageSharedKeyCredential(
@@ -202,7 +202,7 @@ class AzureService {
         listBlobsFlat: (options?: object) => AsyncIterable<{ name: string; properties: { contentLength: number; createdOn: Date } }>;
       };
     };
-    
+
     const containerClient = client.getContainerClient(containerName);
     const blobs: Array<{ name: string; contentLength: number; createdOn: Date }> = [];
 
