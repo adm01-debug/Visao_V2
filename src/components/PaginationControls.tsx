@@ -111,7 +111,7 @@ export function PaginationControls({
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        
+
         {totalPages <= 5 ? (
           // Show all pages if 5 or fewer
           Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -136,9 +136,9 @@ export function PaginationControls({
             >
               1
             </Button>
-            
+
             {currentPage > 3 && <span className="px-1 text-muted-foreground">...</span>}
-            
+
             {Array.from({ length: 3 }, (_, i) => {
               const page = Math.max(2, Math.min(currentPage - 1 + i, totalPages - 1));
               return page;
@@ -155,9 +155,9 @@ export function PaginationControls({
                   {page}
                 </Button>
               ))}
-            
+
             {currentPage < totalPages - 2 && <span className="px-1 text-muted-foreground">...</span>}
-            
+
             <Button
               variant={currentPage === totalPages ? 'default' : 'outline'}
               size="icon"
@@ -168,7 +168,7 @@ export function PaginationControls({
             </Button>
           </>
         )}
-        
+
         <Button
           variant="outline"
           size="icon"
