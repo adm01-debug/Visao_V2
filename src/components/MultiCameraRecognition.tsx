@@ -1,6 +1,5 @@
 import { useInterval, useTimeout } from "@/hooks";
-import { memo } from "react";
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   Camera,
