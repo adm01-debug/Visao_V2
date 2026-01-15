@@ -4,10 +4,10 @@
  */
 
 import { memo, useState, useMemo } from 'react';
-import { 
-  Users, 
-  UserCheck, 
-  UserX, 
+import {
+  Users,
+  UserCheck,
+  UserX,
   Clock,
   Camera as CameraIcon,
   Search,
@@ -20,13 +20,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -63,7 +63,7 @@ function RecognitionLogsComponent({
   const [currentPage, setCurrentPage] = useState(1);
 
   const filteredLogs = useMemo(() => {
-    return logs.filter(log => 
+    return logs.filter(log =>
       (log.personName?.toLowerCase().includes(searchQuery.toLowerCase())) ||
       log.cameraName.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -89,7 +89,7 @@ function RecognitionLogsComponent({
             <Users className="w-5 h-5" />
             Logs de Reconhecimento
           </CardTitle>
-          
+
           <div className="flex gap-2">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -100,7 +100,7 @@ function RecognitionLogsComponent({
                 className="pl-10 w-48"
               />
             </div>
-            
+
             {onExport && (
               <Button variant="outline" size="sm" onClick={onExport} className="gap-2">
                 <Download className="w-4 h-4" />
@@ -110,7 +110,7 @@ function RecognitionLogsComponent({
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent>
         {paginatedLogs.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
@@ -133,12 +133,12 @@ function RecognitionLogsComponent({
                 </TableHeader>
                 <TableBody>
                   {paginatedLogs.map((log) => {
-                    const timestamp = log.timestamp instanceof Date 
-                      ? log.timestamp 
+                    const timestamp = log.timestamp instanceof Date
+                      ? log.timestamp
                       : new Date(log.timestamp);
-                    
+
                     return (
-                      <TableRow 
+                      <TableRow
                         key={log.id}
                         className="cursor-pointer hover:bg-accent"
                         onClick={() => onLogClick?.(log)}
@@ -187,7 +187,7 @@ function RecognitionLogsComponent({
                 </TableBody>
               </Table>
             </div>
-            
+
             {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex items-center justify-between pt-4">
