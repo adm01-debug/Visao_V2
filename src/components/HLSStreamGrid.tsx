@@ -3,7 +3,7 @@ import { useMediaQuery, useWindowSize } from "@/hooks";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: HLSStreamGrid
- * 
+ *
  * Grid de câmeras com streaming HLS integrado:
  * - Layouts dinâmicos (1x1, 2x2, 3x3, 4x4)
  * - Auto-play quando visível
@@ -125,8 +125,8 @@ const StreamCell = memo(function StreamCell({
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const [streamStats, setStreamStats] = useState({ bitrate: 0, buffered: 0 });
 
-  const streamUrl = protocol === 'webrtc' && camera.webrtcUrl 
-    ? camera.webrtcUrl 
+  const streamUrl = protocol === 'webrtc' && camera.webrtcUrl
+    ? camera.webrtcUrl
     : camera.hlsUrl;
 
   const isOnline = camera.status !== 'offline';
@@ -257,7 +257,7 @@ const StreamCell = memo(function StreamCell({
           setHasError(true);
           setIsLoading(false);
           logger.error(`[HLS] Error on ${camera.name}:`, data);
-          
+
           // Retry após erro fatal
           setTimeout(() => {
             if (hlsRef.current) {
@@ -270,8 +270,8 @@ const StreamCell = memo(function StreamCell({
       hls.on(Hls.Events.FRAG_LOADED, (_, data) => {
         setStreamStats({
           bitrate: Math.round((data.frag.stats?.total || 0) * 8 / 1000),
-          buffered: video.buffered.length > 0 
-            ? video.buffered.end(0) - video.currentTime 
+          buffered: video.buffered.length > 0
+            ? video.buffered.end(0) - video.currentTime
             : 0,
         });
       });
@@ -362,7 +362,7 @@ const StreamCell = memo(function StreamCell({
   };
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className={cn(
         'relative rounded-lg overflow-hidden bg-black group cursor-pointer',
@@ -380,7 +380,7 @@ const StreamCell = memo(function StreamCell({
           autoPlay={autoPlay}
         />
       ) : camera.thumbnailUrl ? (
-        <img 
+        <img
           src={camera.thumbnailUrl}
           alt={camera.name}
           className="w-full h-full object-cover"
@@ -420,7 +420,7 @@ const StreamCell = memo(function StreamCell({
               </span>
             )}
           </div>
-          
+
           {/* Live badge */}
           {isOnline && isPlaying && !hasError && (
             <Badge className="bg-red-500 text-white text-[10px] h-5">
@@ -458,7 +458,7 @@ const StreamCell = memo(function StreamCell({
               </TooltipProvider>
 
               {/* Volume */}
-              <div 
+              <div
                 className="relative flex items-center"
                 onMouseEnter={() => setShowVolumeSlider(true)}
                 onMouseLeave={() => setShowVolumeSlider(false)}
@@ -471,7 +471,7 @@ const StreamCell = memo(function StreamCell({
                 >
                   {isMuted || volume === 0 ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                 </Button>
-                
+
                 {showVolumeSlider && (
                   <div className="absolute left-8 bottom-0 bg-black/80 rounded px-2 py-1 w-24">
                     <Slider
@@ -606,7 +606,7 @@ export function HLSStreamGrid({
       className
     )}>
       {visibleCameras.map(camera => (
-        <div 
+        <div
           key={camera.id}
           className={cn(
             layout === '1x1' ? 'aspect-video' : 'aspect-video'
@@ -627,9 +627,9 @@ export function HLSStreamGrid({
       ))}
 
       {/* Placeholder cells */}
-      {visibleCameras.length < maxCameras[layout] && 
+      {visibleCameras.length < maxCameras[layout] &&
         Array.from({ length: maxCameras[layout] - visibleCameras.length }).map((_, i) => (
-          <div 
+          <div
             key={`placeholder-${i}`}
             className="aspect-video rounded-lg bg-muted/30 flex items-center justify-center"
           >
