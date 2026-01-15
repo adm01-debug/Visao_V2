@@ -6,7 +6,7 @@ import { memo } from "react";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: NotificationsPanel
- * 
+ *
  * Painel de notificações com:
  * - Lista de notificações
  * - Marcar como lida
@@ -144,7 +144,7 @@ function NotificationItem({
         <div className={cn('p-2 rounded-full', config.bgColor)}>
           <Icon className={cn('w-4 h-4', config.color)} />
         </div>
-        
+
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
@@ -161,7 +161,7 @@ function NotificationItem({
                 </p>
               )}
             </div>
-            
+
             <Button
               variant="ghost"
               size="icon"
@@ -174,11 +174,11 @@ function NotificationItem({
               <X className="w-3 h-3" />
             </Button>
           </div>
-          
+
           <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
             {message}
           </p>
-          
+
           <div className="flex items-center gap-2 mt-2">
             <Badge variant="secondary" className={cn('text-[10px] h-5', config.color)}>
               {config.label}
@@ -201,7 +201,7 @@ function NotificationItem({
 export function NotificationsPanel() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
-  
+
   const {
     notifications,
     unreadCount,
@@ -230,8 +230,8 @@ export function NotificationsPanel() {
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="w-5 h-5" />
           {unreadCount > 0 && (
-            <Badge 
-              variant="destructive" 
+            <Badge
+              variant="destructive"
               className="absolute -top-1 -right-1 h-5 min-w-[20px] px-1 text-[10px]"
             >
               {unreadCount > 99 ? '99+' : unreadCount}
@@ -239,7 +239,7 @@ export function NotificationsPanel() {
           )}
         </Button>
       </PopoverTrigger>
-      
+
       <PopoverContent className="w-96 p-0" align="end">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           {/* Header */}
@@ -275,7 +275,7 @@ export function NotificationsPanel() {
                     <div className="px-2 py-1.5">
                       <div className="flex items-center justify-between">
                         <Label className="text-sm">Sons</Label>
-                        <Switch 
+                        <Switch
                           checked={config?.soundEnabled ?? true}
                           onCheckedChange={(checked) => saveConfig({ soundEnabled: checked })}
                         />
@@ -285,7 +285,7 @@ export function NotificationsPanel() {
                 </DropdownMenu>
               </div>
             </div>
-            
+
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="all" className="text-xs">
                 Todas
@@ -312,7 +312,7 @@ export function NotificationsPanel() {
                 <div className="text-center py-8">
                   <BellOff className="w-10 h-10 mx-auto text-muted-foreground mb-2" />
                   <p className="text-sm text-muted-foreground">
-                    {activeTab === 'all' 
+                    {activeTab === 'all'
                       ? 'Nenhuma notificação'
                       : activeTab === 'unread'
                       ? 'Nenhuma notificação não lida'
