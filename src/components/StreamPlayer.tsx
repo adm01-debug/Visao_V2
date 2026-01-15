@@ -4,12 +4,12 @@
  */
 
 import { memo, useRef, useEffect, useState, useCallback } from 'react';
-import { 
-  Play, 
-  Pause, 
-  Volume2, 
-  VolumeX, 
-  Maximize, 
+import {
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Maximize,
   RefreshCw,
   AlertTriangle
 } from 'lucide-react';
@@ -41,7 +41,7 @@ function StreamPlayerComponent({
 }: StreamPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
-  
+
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [isMuted, setIsMuted] = useState(muted);
   const [volume, setVolume] = useState(muted ? 0 : 100);
@@ -123,7 +123,7 @@ function StreamPlayerComponent({
 
   const togglePlay = useCallback(() => {
     if (!videoRef.current) return;
-    
+
     if (isPlaying) {
       videoRef.current.pause();
       onPause?.();
@@ -136,7 +136,7 @@ function StreamPlayerComponent({
 
   const toggleMute = useCallback(() => {
     if (!videoRef.current) return;
-    
+
     const newMuted = !isMuted;
     videoRef.current.muted = newMuted;
     setIsMuted(newMuted);
@@ -150,7 +150,7 @@ function StreamPlayerComponent({
 
   const handleVolumeChange = useCallback((value: number[]) => {
     if (!videoRef.current) return;
-    
+
     const vol = value[0];
     setVolume(vol);
     videoRef.current.volume = vol / 100;
@@ -159,7 +159,7 @@ function StreamPlayerComponent({
 
   const handleFullscreen = useCallback(() => {
     if (!videoRef.current) return;
-    
+
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
