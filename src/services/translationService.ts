@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Service: translationService
- * 
+ *
  * Serviço de tradução automática utilizando múltiplos providers
  * Suporta: Google Translate, DeepL, Azure Translator, LibreTranslate
  */
@@ -77,14 +77,14 @@ function getCacheKey(text: string, sourceLang: string, targetLang: string): stri
  */
 function checkCache(text: string, sourceLang: string, targetLang: string): TranslationResult | null {
   if (!config.cacheEnabled) return null;
-  
+
   const key = getCacheKey(text, sourceLang, targetLang);
   const cached = translationCache.get(key);
-  
+
   if (cached && Date.now() - cached.timestamp < config.cacheTTL * 1000) {
     return cached.result;
   }
-  
+
   return null;
 }
 
@@ -93,10 +93,10 @@ function checkCache(text: string, sourceLang: string, targetLang: string): Trans
  */
 function saveCache(text: string, sourceLang: string, targetLang: string, result: TranslationResult): void {
   if (!config.cacheEnabled) return;
-  
+
   const key = getCacheKey(text, sourceLang, targetLang);
   translationCache.set(key, { result, timestamp: Date.now() });
-  
+
   // Limpa cache antigo periodicamente
   if (translationCache.size > 1000) {
     const now = Date.now();
@@ -169,7 +169,7 @@ export async function translate(request: TranslationRequest): Promise<Translatio
   for (const text of texts) {
     // Detectar idioma de origem se não especificado
     const sourceLang = request.sourceLang || (await detectLanguage(text)).language;
-    
+
     // Verificar cache
     const cached = checkCache(text, sourceLang, request.targetLang);
     if (cached) {
@@ -180,7 +180,7 @@ export async function translate(request: TranslationRequest): Promise<Translatio
     // Tentar traduzir
     const result = await translateWithFallback(text, sourceLang, request.targetLang, request.provider);
     results.push(result);
-    
+
     // Salvar no cache
     saveCache(text, sourceLang, request.targetLang, result);
   }
@@ -256,7 +256,7 @@ export async function translateBatch(
 ): Promise<TranslationResult[]> {
   // Agrupa textos por idioma de origem detectado
   const groups = new Map<string, string[]>();
-  
+
   for (const text of texts) {
     const lang = sourceLang || (await detectLanguage(text)).language;
     if (!groups.has(lang)) {
@@ -267,14 +267,14 @@ export async function translateBatch(
 
   // Traduz cada grupo
   const results: TranslationResult[] = [];
-  
+
   for (const [lang, groupTexts] of groups.entries()) {
     const groupResults = await translate({
       text: groupTexts,
       sourceLang: lang,
       targetLang,
     }) as TranslationResult[];
-    
+
     results.push(...groupResults);
   }
 
