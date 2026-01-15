@@ -38,13 +38,13 @@ interface RealtimeAlertReturn {
   // Sound controls
   toggleSound: (enabled: boolean) => void;
   isSoundEnabled: () => boolean;
-  
+
   // Push notification controls
   pushPermission: NotificationPermissionStatus;
   isPushEnabled: boolean;
   togglePush: (enabled: boolean) => void;
   requestPushPermission: () => Promise<NotificationPermissionStatus>;
-  
+
   // Test functions
   sendTestPush: () => void;
   sendTestSound: () => void;
@@ -68,7 +68,7 @@ export function useRealtimeAlertNotifications(
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const criticalAudioRef = useRef<HTMLAudioElement | null>(null);
   const soundEnabledRef = useRef(initialSoundEnabled);
-  
+
   const [pushPermission, setPushPermission] = useState<NotificationPermissionStatus>(
     isNotificationSupported() ? getNotificationPermission() : "denied"
   );
@@ -80,10 +80,10 @@ export function useRealtimeAlertNotifications(
   useEffect(() => {
     audioRef.current = new Audio(NOTIFICATION_SOUND_URL);
     audioRef.current.volume = 0.5;
-    
+
     criticalAudioRef.current = new Audio(CRITICAL_SOUND_URL);
     criticalAudioRef.current.volume = 0.7;
-    
+
     // Check localStorage for sound preference
     const soundPref = localStorage.getItem("alert-sound-enabled");
     soundEnabledRef.current = soundPref !== "false";
@@ -109,7 +109,7 @@ export function useRealtimeAlertNotifications(
 
   const playSound = useCallback((isCritical: boolean = false) => {
     if (!soundEnabledRef.current) return;
-    
+
     const audio = isCritical ? criticalAudioRef.current : audioRef.current;
     if (audio) {
       audio.currentTime = 0;
@@ -180,10 +180,10 @@ export function useRealtimeAlertNotifications(
       showPushNotification(alert);
     }
 
-    const toastFn = alert.severity === "critical" || alert.severity === "high" 
-      ? toast.error 
-      : alert.severity === "medium" 
-        ? toast.warning 
+    const toastFn = alert.severity === "critical" || alert.severity === "high"
+      ? toast.error
+      : alert.severity === "medium"
+        ? toast.warning
         : toast.info;
 
     toastFn(alert.message, {
@@ -213,7 +213,7 @@ export function useRealtimeAlertNotifications(
       tag: "test-notification",
       requireInteraction: false,
     });
-    
+
     toast.success("Notificação de teste enviada!");
   }, [pushPermission]);
 
@@ -238,7 +238,7 @@ export function useRealtimeAlertNotifications(
         (payload) => {
           const newAlert = payload.new as AlertPayload;
           showAlertToast(newAlert);
-          
+
           // Invalidate queries
           queryClient.invalidateQueries({ queryKey: ["sidebar-alerts-count"] });
           queryClient.invalidateQueries({ queryKey: ["alerts"] });
@@ -251,8 +251,8 @@ export function useRealtimeAlertNotifications(
     };
   }, [enabled, showAlertToast, queryClient]);
 
-  return { 
-    toggleSound, 
+  return {
+    toggleSound,
     isSoundEnabled: () => soundEnabledRef.current,
     pushPermission,
     isPushEnabled,
