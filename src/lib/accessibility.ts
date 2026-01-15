@@ -31,7 +31,7 @@ export function getFocusableElements(container: HTMLElement): HTMLElement[] {
     'textarea:not([disabled])',
     '[tabindex]:not([tabindex="-1"])',
   ].join(', ');
-  
+
   return Array.from(container.querySelectorAll<HTMLElement>(selector));
 }
 
