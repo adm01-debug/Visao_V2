@@ -63,7 +63,7 @@ export const geocode = async (address: string, options?: GeocodingOptions): Prom
     address,
     language: options?.language || 'pt-BR',
   });
-  
+
   const response = await fetch(`/api/geocode?${params}`);
   const data = await response.json();
   return data.results || [];
@@ -74,7 +74,7 @@ export const reverseGeocode = async (coordinates: GeoCoordinates): Promise<Rever
     lat: coordinates.lat.toString(),
     lng: coordinates.lng.toString(),
   });
-  
+
   const response = await fetch(`/api/reverse-geocode?${params}`);
   return response.json();
 };
