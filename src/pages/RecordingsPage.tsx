@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Gravações / Clips
- * 
+ *
  * Funcionalidades:
  * - Lista de clips gravados
  * - Filtros por câmera, data
@@ -134,8 +134,8 @@ function ClipCard({ clip, isSelected, onSelect, onPlay, onDownload, onDelete }: 
       {/* Thumbnail */}
       <div role="main" aria-label="Gravações" className="relative aspect-video bg-black cursor-pointer" onClick={onPlay}>
         {clip.thumbnail_url ? (
-          <img 
-            src={clip.thumbnail_url} 
+          <img
+            src={clip.thumbnail_url}
             alt={`Clip ${clip.id}`}
             className="w-full h-full object-cover"
           />
@@ -158,11 +158,11 @@ function ClipCard({ clip, isSelected, onSelect, onPlay, onDownload, onDelete }: 
         </Badge>
 
         {/* Checkbox */}
-        <div 
+        <div
           className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity"
           onClick={(e) => e.stopPropagation()}
         >
-          <Checkbox 
+          <Checkbox
             checked={isSelected}
             onCheckedChange={onSelect}
             className="bg-white/80"
@@ -170,8 +170,8 @@ function ClipCard({ clip, isSelected, onSelect, onPlay, onDownload, onDelete }: 
         </div>
 
         {/* Status */}
-        <Badge 
-          variant="secondary" 
+        <Badge
+          variant="secondary"
           className="absolute top-2 right-2 text-xs"
         >
           {clip.status}
@@ -350,7 +350,7 @@ function VideoPlayerDialog({
 // ============================================
 
 export function RecordingsPage() {
-  
+
   // Estado
   const [clips, setClips] = useState<VideoClipWithCamera[]>([]);
   const [loading, setLoading] = useState(true);
@@ -411,7 +411,7 @@ export function RecordingsPage() {
 
       setClips(formattedClips);
     } catch (error) {
-      
+
       toast.error('Erro ao carregar gravações');
     } finally {
       setLoading(false);
@@ -425,7 +425,7 @@ export function RecordingsPage() {
   // Filtrar por busca
   const filteredClips = useMemo(() => {
     if (!searchQuery) return clips;
-    
+
     const query = searchQuery.toLowerCase();
     return clips.filter(clip =>
       clip.camera_name.toLowerCase().includes(query)
@@ -487,7 +487,7 @@ export function RecordingsPage() {
       toast.success('Clip excluído');
       loadClips();
     } catch (error) {
-      
+
       toast.error('Erro ao excluir clip');
     } finally {
       setDeleteConfirm(null);
@@ -509,7 +509,7 @@ export function RecordingsPage() {
       setSelectedClips(new Set());
       loadClips();
     } catch (error) {
-      
+
       toast.error('Erro ao excluir clips');
     }
   };
@@ -563,8 +563,8 @@ export function RecordingsPage() {
                 <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
               </Button>
               {selectedClips.size > 0 && (
-                <Button 
-                  variant="destructive" 
+                <Button
+                  variant="destructive"
                   size="sm"
                   onClick={handleDeleteSelected}
                 >
@@ -747,15 +747,15 @@ export function RecordingsPage() {
                     onCheckedChange={(checked) => handleSelectClip(clip.id, !!checked)}
                     onClick={(e) => e.stopPropagation()}
                   />
-                  
-                  <div 
+
+                  <div
                     className="w-32 h-20 bg-muted rounded overflow-hidden flex-shrink-0 cursor-pointer"
                     onClick={() => setPlayingClip(clip)}
                   >
                     {clip.thumbnail_url ? (
-                      <img 
-                        src={clip.thumbnail_url} 
-                        alt="" 
+                      <img
+                        src={clip.thumbnail_url}
+                        alt=""
                         className="w-full h-full object-cover"
                       />
                     ) : (
