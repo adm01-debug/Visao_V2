@@ -224,7 +224,7 @@ export function AlertFiltersComponent({ filters, onFiltersChange, cameras = [] }
                   <PopoverTrigger asChild>
                     <Button variant="outline" size="sm" className="w-full justify-start text-left font-normal">
                       <Calendar className="mr-2 h-4 w-4" />
-                      {filters.customDateStart 
+                      {filters.customDateStart
                         ? format(filters.customDateStart, 'dd/MM/yyyy', { locale: ptBR })
                         : 'Selecionar'}
                     </Button>
@@ -249,7 +249,7 @@ export function AlertFiltersComponent({ filters, onFiltersChange, cameras = [] }
                   <PopoverTrigger asChild>
                     <Button variant="outline" size="sm" className="w-full justify-start text-left font-normal">
                       <Calendar className="mr-2 h-4 w-4" />
-                      {filters.customDateEnd 
+                      {filters.customDateEnd
                         ? format(filters.customDateEnd, 'dd/MM/yyyy', { locale: ptBR })
                         : 'Selecionar'}
                     </Button>
