@@ -1,4 +1,4 @@
-export type WidgetType = 
+export type WidgetType =
   | 'cameras-grid'
   | 'alerts-list'
   | 'stats-overview'
