@@ -36,46 +36,46 @@ export function SystemHealthWidget() {
 
   return (
     <div className="flex flex-col items-center justify-center h-full">
-      <div className={cn('w-12 h-12 rounded-full flex items-center justify-center', 
-        healthStatus.overall === 'healthy' ? 'bg-success/10' : 
+      <div className={cn('w-12 h-12 rounded-full flex items-center justify-center',
+        healthStatus.overall === 'healthy' ? 'bg-success/10' :
         healthStatus.overall === 'warning' ? 'bg-warning/10' : 'bg-destructive/10'
       )}>
         <Activity className={cn('h-6 w-6', overallColor)} />
       </div>
 
       <span className={cn('text-lg font-bold mt-2', overallColor)}>
-        {healthStatus.overall === 'healthy' ? 'Saudável' : 
+        {healthStatus.overall === 'healthy' ? 'Saudável' :
          healthStatus.overall === 'warning' ? 'Atenção' : 'Crítico'}
       </span>
 
       <div className="flex items-center gap-3 mt-2">
-        <StatusIndicator 
-          icon={Wifi} 
-          status={healthStatus.networkStatus === 'online'} 
-          label="Rede" 
+        <StatusIndicator
+          icon={Wifi}
+          status={healthStatus.networkStatus === 'online'}
+          label="Rede"
         />
-        <StatusIndicator 
-          icon={Database} 
-          status={healthStatus.databaseStatus === 'online'} 
-          label="DB" 
+        <StatusIndicator
+          icon={Database}
+          status={healthStatus.databaseStatus === 'online'}
+          label="DB"
         />
-        <StatusIndicator 
-          icon={Cpu} 
-          status={healthStatus.cameraHealth >= 50} 
-          label={`${Math.round(healthStatus.cameraHealth)}%`} 
+        <StatusIndicator
+          icon={Cpu}
+          status={healthStatus.cameraHealth >= 50}
+          label={`${Math.round(healthStatus.cameraHealth)}%`}
         />
       </div>
     </div>
   );
 }
 
-function StatusIndicator({ 
-  icon: Icon, 
-  status, 
-  label 
-}: { 
-  icon: React.ElementType; 
-  status: boolean; 
+function StatusIndicator({
+  icon: Icon,
+  status,
+  label
+}: {
+  icon: React.ElementType;
+  status: boolean;
   label: string;
 }) {
   return (
