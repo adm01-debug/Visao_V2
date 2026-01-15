@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Excel Service - Geração e leitura de planilhas
- * 
+ *
  * @module services/excelService
  */
 
@@ -63,23 +63,23 @@ class ExcelService {
   async createWorkbook(sheets: SheetData[]): Promise<Blob> {
     const ExcelJS = await import('exceljs');
     const workbook = new ExcelJS.Workbook();
-    
+
     workbook.creator = 'VISÃO';
     workbook.created = new Date();
-    
+
     sheets.forEach((sheet) => {
       const ws = workbook.addWorksheet(sheet.name);
-      
+
       // Configurar colunas
       ws.columns = sheet.columns.map((col) => ({
         header: col.header,
         key: col.key,
         width: col.width || 15,
       }));
-      
+
       // Adicionar dados
       sheet.data.forEach((row) => ws.addRow(row));
-      
+
       // Estilizar cabeçalho
       const headerRow = ws.getRow(1);
       headerRow.font = { bold: true };
@@ -88,7 +88,7 @@ class ExcelService {
         pattern: 'solid',
         fgColor: { argb: 'FFE0E0E0' },
       };
-      
+
       // Aplicar estilos personalizados às colunas
       sheet.columns.forEach((col, index) => {
         if (col.style) {
@@ -98,11 +98,11 @@ class ExcelService {
           }
         }
       });
-      
+
       // Congelar cabeçalho
       ws.views = [{ state: 'frozen', ySplit: 1 }];
     });
-    
+
     const buffer = await workbook.xlsx.writeBuffer();
     return new Blob([buffer], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -119,14 +119,14 @@ class ExcelService {
     if (!data.length) {
       throw new Error('Data array is empty');
     }
-    
+
     const headers = Object.keys(data[0]);
     const columns: ExcelColumn[] = headers.map((key) => ({
       header: key,
       key,
       width: Math.max(key.length, 10) + 5,
     }));
-    
+
     return this.createWorkbook([
       {
         name: options.sheetName || 'Sheet1',
@@ -144,11 +144,11 @@ class ExcelService {
     const workbook = new ExcelJS.Workbook();
     const buffer = await file.arrayBuffer();
     await workbook.xlsx.load(buffer);
-    
+
     return workbook.worksheets.map((ws) => {
       const headers: string[] = [];
       const data: Record<string, unknown>[] = [];
-      
+
       ws.eachRow((row, rowNumber) => {
         if (rowNumber === 1) {
           // Extrair cabeçalhos
@@ -167,7 +167,7 @@ class ExcelService {
           data.push(rowData);
         }
       });
-      
+
       return { name: ws.name, data };
     });
   }
@@ -182,7 +182,7 @@ class ExcelService {
     if (!data.length) {
       throw new Error('Data array is empty');
     }
-    
+
     const headers = Object.keys(data[0]);
     const rows = data.map((row) =>
       headers.map((h) => {
@@ -194,10 +194,10 @@ class ExcelService {
           : str;
       }).join(',')
     );
-    
+
     const csv = [headers.join(','), ...rows].join('\n');
     const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' }); // BOM para Excel
-    
+
     this.downloadBlob(blob, filename);
   }
 
@@ -232,10 +232,10 @@ class ExcelService {
   parseCSV(csvContent: string): Record<string, string>[] {
     const lines = csvContent.split('\n').filter((line) => line.trim());
     if (lines.length < 2) return [];
-    
+
     const headers = this.parseCSVLine(lines[0]);
     const data: Record<string, string>[] = [];
-    
+
     for (let i = 1; i < lines.length; i++) {
       const values = this.parseCSVLine(lines[i]);
       const row: Record<string, string> = {};
@@ -244,7 +244,7 @@ class ExcelService {
       });
       data.push(row);
     }
-    
+
     return data;
   }
 
@@ -255,10 +255,10 @@ class ExcelService {
     const result: string[] = [];
     let current = '';
     let inQuotes = false;
-    
+
     for (let i = 0; i < line.length; i++) {
       const char = line[i];
-      
+
       if (char === '"') {
         if (inQuotes && line[i + 1] === '"') {
           current += '"';
@@ -273,7 +273,7 @@ class ExcelService {
         current += char;
       }
     }
-    
+
     result.push(current.trim());
     return result;
   }
