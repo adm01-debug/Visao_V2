@@ -2,7 +2,7 @@ import { logger } from "@/lib";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useSettings
- * 
+ *
  * Gerencia todas as configurações do sistema
  */
 
@@ -198,21 +198,21 @@ interface UseSettingsReturn {
   loading: boolean;
   saving: boolean;
   error: string | null;
-  
+
   general: GeneralSettings;
   notifications: NotificationSettings;
   analysis: AnalysisSettings;
   faceRecognition: FaceRecognitionSettings;
   recording: RecordingSettings;
   security: SecuritySettings;
-  
+
   setGeneral: (settings: Partial<GeneralSettings>) => void;
   setNotifications: (settings: Partial<NotificationSettings>) => void;
   setAnalysis: (settings: Partial<AnalysisSettings>) => void;
   setFaceRecognition: (settings: Partial<FaceRecognitionSettings>) => void;
   setRecording: (settings: Partial<RecordingSettings>) => void;
   setSecurity: (settings: Partial<SecuritySettings>) => void;
-  
+
   load: () => Promise<void>;
   save: () => Promise<boolean>;
   saveSection: (section: keyof AllSettings) => Promise<boolean>;
@@ -242,7 +242,7 @@ export function useSettings(options: UseSettingsOptions = {}): UseSettingsReturn
       setLoading(false);
       return;
     }
-    
+
     setLoading(true);
     setError(null);
 
@@ -388,8 +388,8 @@ export function useSettings(options: UseSettingsOptions = {}): UseSettingsReturn
       localStorage.setItem('visao-settings-security', JSON.stringify(security));
 
       if (syncTabs) {
-        window.dispatchEvent(new CustomEvent('visao-settings-updated', { 
-          detail: { timestamp: Date.now() } 
+        window.dispatchEvent(new CustomEvent('visao-settings-updated', {
+          detail: { timestamp: Date.now() }
         }));
       }
 
@@ -473,7 +473,7 @@ export function useSettings(options: UseSettingsOptions = {}): UseSettingsReturn
   const importSettings = useCallback((json: string): boolean => {
     try {
       const data = JSON.parse(json);
-      
+
       if (data.general) setGeneralState(prev => ({ ...prev, ...data.general }));
       if (data.notifications) setNotificationsState(prev => ({ ...prev, ...data.notifications }));
       if (data.analysis) setAnalysisState(prev => ({ ...prev, ...data.analysis }));
