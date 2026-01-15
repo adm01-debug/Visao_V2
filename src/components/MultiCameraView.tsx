@@ -4,11 +4,11 @@
  */
 
 import { memo, useState, useCallback } from 'react';
-import { 
-  Camera, 
-  Maximize2, 
-  Minimize2, 
-  Grid, 
+import {
+  Camera,
+  Maximize2,
+  Minimize2,
+  Grid,
   LayoutGrid,
   Volume2,
   VolumeX,
@@ -95,7 +95,7 @@ function MultiCameraViewComponent({
     setFullscreenCamera(prev => prev === cameraId ? null : cameraId);
   }, []);
 
-  const displayedCameras = fullscreenCamera 
+  const displayedCameras = fullscreenCamera
     ? cameras.filter(c => c.id === fullscreenCamera)
     : cameras.slice(0, layoutConfig[layout].cols ** 2);
 
@@ -130,7 +130,7 @@ function MultiCameraViewComponent({
       </div>
 
       {/* Camera Grid */}
-      <div 
+      <div
         className="grid gap-2"
         style={{ gridTemplateColumns: `repeat(${gridCols}, 1fr)` }}
       >
@@ -152,8 +152,8 @@ function MultiCameraViewComponent({
             >
               {/* Video/Thumbnail */}
               {camera.thumbnail ? (
-                <img 
-                  src={camera.thumbnail} 
+                <img
+                  src={camera.thumbnail}
                   alt={camera.name}
                   className="w-full h-full object-cover"
                 />
