@@ -2,16 +2,16 @@ import { retry, withRetry } from "@/lib/retry";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useContinuousAnalysis
- * 
+ *
  * Motor principal para análise contínua de vídeo com IA.
  * Gerencia sessões de análise, avaliação de regras e geração de alertas.
- * 
+ *
  * @example
- * const { 
- *   startAnalysis, 
- *   stopAnalysis, 
+ * const {
+ *   startAnalysis,
+ *   stopAnalysis,
  *   session,
- *   history 
+ *   history
  * } = useContinuousAnalysis({
  *   cameraId: 'cam-001',
  *   getFrame: () => videoRef.current?.getCurrentFrame(),
@@ -54,25 +54,25 @@ import { DbRule } from '@/types/rules';
 interface UseContinuousAnalysisOptions extends ContinuousAnalysisEvents {
   /** ID da câmera */
   cameraId: string;
-  
+
   /** Nome da câmera (para alertas) */
   cameraName?: string;
-  
+
   /** Função para obter frame atual */
   getFrame: () => string | null;
-  
+
   /** Configuração inicial */
   config?: Partial<ContinuousAnalysisConfig>;
-  
+
   /** Regras a avaliar */
   rules?: DbRule[];
-  
+
   /** Auto-start quando montado */
   autoStart?: boolean;
-  
+
   /** Criar alertas no banco? */
   createAlerts?: boolean;
-  
+
   /** Salvar histórico no banco? */
   saveToDatabase?: boolean;
 }
@@ -80,37 +80,37 @@ interface UseContinuousAnalysisOptions extends ContinuousAnalysisEvents {
 interface UseContinuousAnalysisReturn {
   /** Sessão atual */
   session: AnalysisSession | null;
-  
+
   /** Histórico de análises */
   history: AnalysisHistoryEntry[];
-  
+
   /** Última análise */
   lastAnalysis: AnalysisResult | null;
-  
+
   /** Está analisando agora? */
   isAnalyzing: boolean;
-  
+
   /** Iniciar análise contínua */
   startAnalysis: (config?: Partial<ContinuousAnalysisConfig>) => void;
-  
+
   /** Parar análise */
   stopAnalysis: () => void;
-  
+
   /** Pausar análise */
   pauseAnalysis: () => void;
-  
+
   /** Retomar análise */
   resumeAnalysis: () => void;
-  
+
   /** Executar uma análise manual */
   analyzeOnce: (type?: AnalysisType) => Promise<AnalysisResult | null>;
-  
+
   /** Atualizar configuração */
   updateConfig: (updates: Partial<ContinuousAnalysisConfig>) => void;
-  
+
   /** Limpar histórico */
   clearHistory: () => void;
-  
+
   /** Exportar histórico */
   exportHistory: () => AnalysisHistoryEntry[];
 }
@@ -198,7 +198,7 @@ export function useContinuousAnalysis(
 
       return data.analysis as AnalysisResult;
     } catch (error) {
-      
+
       throw error;
     }
   }, []);
@@ -212,8 +212,8 @@ export function useContinuousAnalysis(
     analysisType: AnalysisType
   ): RuleEvaluation[] => {
     const evaluations: RuleEvaluation[] = [];
-    const activeRules = rulesRef.current.filter(r => 
-      r.is_active && 
+    const activeRules = rulesRef.current.filter(r =>
+      r.is_active &&
       (r.cameras.length === 0 || r.cameras.includes(cameraId))
     );
 
@@ -328,8 +328,8 @@ export function useContinuousAnalysis(
     if ('ppe_compliance' in analysis && thresholds.minPPECompliance !== undefined) {
       const safetyAnalysis = analysis as SafetyAnalysis;
       const total = safetyAnalysis.ppe_compliance.compliant + safetyAnalysis.ppe_compliance.non_compliant;
-      const complianceRate = total > 0 
-        ? (safetyAnalysis.ppe_compliance.compliant / total) * 100 
+      const complianceRate = total > 0
+        ? (safetyAnalysis.ppe_compliance.compliant / total) * 100
         : 100;
 
       if (complianceRate < thresholds.minPPECompliance) {
@@ -365,7 +365,7 @@ export function useContinuousAnalysis(
         if (meetsSeverityThreshold(detection.severity, thresholds.minSeverity)) {
           if (detection.confidence >= thresholds.minConfidence) {
             // Verificar tipo de detecção
-            if (!thresholds.alertOnDetectionTypes || 
+            if (!thresholds.alertOnDetectionTypes ||
                 thresholds.alertOnDetectionTypes.includes(detection.type)) {
               alerts.push({
                 type: 'security',
@@ -411,7 +411,7 @@ export function useContinuousAnalysis(
         is_read: false,
       });
     } catch (error) {
-      
+
     }
   }, [createAlerts, cameraName]);
 
@@ -425,7 +425,7 @@ export function useContinuousAnalysis(
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        
+
         return;
       }
 
@@ -440,9 +440,9 @@ export function useContinuousAnalysis(
         image_url: entry.snapshot || null,
       });
 
-      
+
     } catch (err) {
-      
+
     }
   }, [saveToDatabase, cameraId]);
 
@@ -455,7 +455,7 @@ export function useContinuousAnalysis(
   ): Promise<AnalysisHistoryEntry | null> => {
     const config = configRef.current;
     const currentSession = sessionRef.current;
-    
+
     if (!config || !currentSession) return null;
 
     const startTime = Date.now();
@@ -490,7 +490,7 @@ export function useContinuousAnalysis(
       // Notificar violações de regras
       for (const evaluation of ruleEvaluations.filter(e => e.violated)) {
         onRuleViolation?.(cameraId, evaluation, result);
-        
+
         // Criar alerta para regra violada
         const ruleAlert: AnalysisAlert = {
           type: 'security',
@@ -536,21 +536,21 @@ export function useContinuousAnalysis(
       // Atualizar estatísticas da sessão
       setSession(prev => {
         if (!prev) return null;
-        
+
         const newStats: SessionStats = {
           ...prev.stats,
           totalAnalyses: prev.stats.totalAnalyses + 1,
           successfulAnalyses: prev.stats.successfulAnalyses + 1,
           alertsGenerated: prev.stats.alertsGenerated + alerts.length,
           totalPeopleDetected: prev.stats.totalPeopleDetected + (result.people_count || 0),
-          avgPeoplePerAnalysis: 
-            (prev.stats.totalPeopleDetected + (result.people_count || 0)) / 
+          avgPeoplePerAnalysis:
+            (prev.stats.totalPeopleDetected + (result.people_count || 0)) /
             (prev.stats.totalAnalyses + 1),
-          avgAnalysisTime: 
-            analysisTimesRef.current.reduce((a, b) => a + b, 0) / 
+          avgAnalysisTime:
+            analysisTimesRef.current.reduce((a, b) => a + b, 0) /
             analysisTimesRef.current.length,
           totalRuntime: Date.now() - prev.startedAt.getTime(),
-          successRate: 
+          successRate:
             ((prev.stats.successfulAnalyses + 1) / (prev.stats.totalAnalyses + 1)) * 100,
         };
 
@@ -594,12 +594,12 @@ export function useContinuousAnalysis(
       // Atualizar sessão com erro
       setSession(prev => {
         if (!prev) return null;
-        
+
         const newStats: SessionStats = {
           ...prev.stats,
           totalAnalyses: prev.stats.totalAnalyses + 1,
           failedAnalyses: prev.stats.failedAnalyses + 1,
-          successRate: 
+          successRate:
             (prev.stats.successfulAnalyses / (prev.stats.totalAnalyses + 1)) * 100,
         };
 
@@ -646,15 +646,15 @@ export function useContinuousAnalysis(
     // Verificar agendamento
     if (!isWithinSchedule(config.schedule)) {
       setSession(prev => prev ? { ...prev, status: 'scheduled' } : null);
-      
+
       // Agendar próxima verificação
       const nextTime = getNextScheduledTime(config.schedule, config.interval);
       const delay = nextTime.getTime() - Date.now();
-      
+
       intervalRef.current = setTimeout(() => {
         runAnalysisLoop();
       }, Math.min(delay, 60000)); // Verificar no máximo a cada minuto
-      
+
       return;
     }
 
@@ -754,13 +754,13 @@ export function useContinuousAnalysis(
 
     if (sessionRef.current && configRef.current) {
       configRef.current.enabled = false;
-      
+
       const pausedSession = {
         ...sessionRef.current,
         status: 'paused' as const,
         pausedAt: new Date(),
       };
-      
+
       sessionRef.current = pausedSession;
       setSession(pausedSession);
       onSessionPause?.(pausedSession);
@@ -770,17 +770,17 @@ export function useContinuousAnalysis(
   const resumeAnalysis = useCallback(() => {
     if (sessionRef.current && configRef.current) {
       configRef.current.enabled = true;
-      
+
       const resumedSession = {
         ...sessionRef.current,
         status: 'running' as const,
         pausedAt: null,
       };
-      
+
       sessionRef.current = resumedSession;
       setSession(resumedSession);
       onSessionResume?.(resumedSession);
-      
+
       runAnalysisLoop();
     }
   }, [runAnalysisLoop, onSessionResume]);
