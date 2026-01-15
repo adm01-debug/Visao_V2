@@ -15,7 +15,7 @@ export interface Rule {
   updatedAt: Date;
 }
 
-export type RuleTriggerType = 
+export type RuleTriggerType =
   | 'alert_created'
   | 'person_detected'
   | 'zone_violation'
@@ -28,7 +28,7 @@ export interface RuleTrigger {
   config: Record<string, unknown>;
 }
 
-export type RuleConditionOperator = 
+export type RuleConditionOperator =
   | 'equals'
   | 'not_equals'
   | 'contains'
@@ -44,7 +44,7 @@ export interface RuleCondition {
   logicalOperator?: 'and' | 'or';
 }
 
-export type RuleActionType = 
+export type RuleActionType =
   | 'send_notification'
   | 'send_email'
   | 'send_telegram'
