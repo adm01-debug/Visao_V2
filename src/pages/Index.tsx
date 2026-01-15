@@ -77,9 +77,9 @@ const Index = () => {
         <title>VisionAI - Sistema de Vigilância Inteligente</title>
         <meta name="description" content="Plataforma de vigilância inteligente com análise de vídeo por IA para monitoramento de segurança e produtividade." />
       </Helmet>
-      
+
       <SkipLink targetId="main-content" />
-      
+
       <MainLayout>
         <PageTransition>
           <div id="main-content" role="main" aria-label="Conteúdo principal" className="h-full">
