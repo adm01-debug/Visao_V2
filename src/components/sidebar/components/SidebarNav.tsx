@@ -242,7 +242,7 @@ const CollapsedCategory = memo(function CollapsedCategory({
           )}
         </TooltipContent>
       </Tooltip>
-      
+
       {category.items.map((item) => (
         <NavItemCollapsed
           key={item.path}
