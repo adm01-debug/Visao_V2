@@ -179,7 +179,7 @@ export function useRealtimeRecognition(options: UseRealtimeRecognitionOptions = 
           if (result.bestMatch.listType === 'blacklist' && config.alertOnBlacklist) {
             const cooldownKey = `blacklist-${result.bestMatch.personId}`;
             const lastAlert = alertCooldownRef.current.get(cooldownKey) || 0;
-            
+
             if (Date.now() - lastAlert > config.alertCooldown * 1000) {
               alertCooldownRef.current.set(cooldownKey, Date.now());
               onBlacklistDetected?.(face);
@@ -194,7 +194,7 @@ export function useRealtimeRecognition(options: UseRealtimeRecognitionOptions = 
           if (config.alertOnUnknown) {
             const cooldownKey = `unknown-${cameraId}`;
             const lastAlert = alertCooldownRef.current.get(cooldownKey) || 0;
-            
+
             if (Date.now() - lastAlert > config.alertCooldown * 1000) {
               alertCooldownRef.current.set(cooldownKey, Date.now());
               toast.warning('Pessoa não identificada detectada', {
