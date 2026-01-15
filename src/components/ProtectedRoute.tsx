@@ -9,8 +9,8 @@ interface ProtectedRouteProps {
   redirectTo?: string;
 }
 
-export const ProtectedRoute = ({ 
-  children, 
+export const ProtectedRoute = ({
+  children,
   requireAuth = true,
   redirectTo = '/auth'
 }: ProtectedRouteProps) => {
