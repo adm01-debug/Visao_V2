@@ -2,7 +2,7 @@ import { logger } from "@/lib";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useStorage
- * 
+ *
  * Hook reutilizável para gerenciar uploads de arquivos
  * para qualquer bucket do Supabase Storage.
  */
@@ -146,7 +146,7 @@ export function useStorage(): UseStorageReturn {
       const fileExt = file.name.split('.').pop()?.toLowerCase() || 'bin';
       const baseName = options.customFileName || crypto.randomUUID();
       const fileName = `${baseName}.${fileExt}`;
-      
+
       // Definir pasta (padrão: user_id)
       const folder = options.folder ?? user.id;
       const filePath = folder ? `${folder}/${fileName}` : fileName;
@@ -255,12 +255,12 @@ export function useStorage(): UseStorageReturn {
     url: string
   ): string | null => {
     if (!url) return null;
-    
+
     const marker = `/${bucket}/`;
     const index = url.indexOf(marker);
-    
+
     if (index === -1) return null;
-    
+
     return url.substring(index + marker.length);
   }, []);
 
