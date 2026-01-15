@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
+import {
   ShieldAlert, Shield, Clock, Package, HardHat, Users, AlertTriangle,
   Scan, UserX, Car, TrendingUp, BarChart, Sparkles, Check
 } from 'lucide-react';
@@ -66,7 +66,7 @@ export function RuleTemplateSelector({ onSelectTemplate }: RuleTemplateSelectorP
     const isSelected = selectedTemplate?.id === template.id;
 
     return (
-      <Card 
+      <Card
         key={template.id}
         className={`cursor-pointer transition-all hover:shadow-md ${
           isSelected ? 'ring-2 ring-primary border-primary' : 'hover:border-primary/50'
