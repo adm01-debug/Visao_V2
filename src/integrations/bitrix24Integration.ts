@@ -1,13 +1,13 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Integração: Bitrix24
- * 
+ *
  * Sync de funcionários do Bitrix24 para o sistema VISÃO:
  * - Importar funcionários como pessoas cadastradas
  * - Sincronizar fotos de perfil
  * - Mapear departamentos para grupos
  * - Webhook para atualizações em tempo real
- * 
+ *
  * NOTE: This is a placeholder integration. Full implementation requires
  * additional database columns (metadata, email, phone, etc.) on registered_persons table.
  */
@@ -89,7 +89,7 @@ class Bitrix24Client {
    */
   private async request<T>(method: string, params: Record<string, any> = {}): Promise<T> {
     const url = `${this.webhookUrl}/${method}`;
-    
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -103,7 +103,7 @@ class Bitrix24Client {
     }
 
     const data = await response.json();
-    
+
     if (data.error) {
       throw new Error(`Bitrix24 error: ${data.error_description || data.error}`);
     }
@@ -126,9 +126,9 @@ class Bitrix24Client {
       });
 
       if (!result || result.length === 0) break;
-      
+
       employees.push(...result);
-      
+
       if (result.length < limit) break;
       start += limit;
     }
@@ -200,7 +200,7 @@ export class Bitrix24SyncService {
         try {
           const person = this.mapEmployeeToPerson(employee);
           const syncResult = await this.syncPerson(person);
-          
+
           switch (syncResult) {
             case 'created':
               result.created++;
@@ -218,7 +218,7 @@ export class Bitrix24SyncService {
       }
 
       result.success = result.errors.length === 0;
-      
+
       // Registrar log
       await this.logSync(result);
 
@@ -275,7 +275,7 @@ export class Bitrix24SyncService {
         .eq('id', existing.id);
 
       if (error) throw error;
-      
+
       // Sync foto se necessário
       if (person.photo_url) {
         await this.syncPhoto(existing.id, person.photo_url);
@@ -425,7 +425,7 @@ export async function testBitrix24Connection(webhookUrl: string): Promise<{
   try {
     const client = new Bitrix24Client(webhookUrl);
     const employees = await client.getActiveEmployees();
-    
+
     return {
       success: true,
       message: `Conexão estabelecida. ${employees.length} funcionários ativos encontrados.`,
