@@ -97,11 +97,11 @@ interface LiveRegionProps {
   className?: string;
 }
 
-export function LiveRegion({ 
-  message, 
+export function LiveRegion({
+  message,
   politeness = 'polite',
   atomic = true,
-  className 
+  className
 }: LiveRegionProps) {
   return (
     <div
@@ -354,12 +354,12 @@ interface AriaProgressProps {
   className?: string;
 }
 
-export function AriaProgress({ 
-  value, 
-  max = 100, 
-  min = 0, 
+export function AriaProgress({
+  value,
+  max = 100,
+  min = 0,
   label,
-  className 
+  className
 }: AriaProgressProps) {
   const percentage = ((value - min) / (max - min)) * 100;
 
@@ -373,7 +373,7 @@ export function AriaProgress({
       className={cn('w-full', className)}
     >
       <div className="h-2 bg-muted rounded-full overflow-hidden">
-        <div 
+        <div
           className="h-full bg-primary transition-all duration-300"
           style={{ width: `${percentage}%` }}
         />
