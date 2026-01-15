@@ -2,25 +2,25 @@
  * Math Utilities
  */
 
-export const clamp = (value: number, min: number, max: number): number => 
+export const clamp = (value: number, min: number, max: number): number =>
   Math.min(Math.max(value, min), max);
 
-export const lerp = (start: number, end: number, t: number): number => 
+export const lerp = (start: number, end: number, t: number): number =>
   start + (end - start) * t;
 
-export const inverseLerp = (start: number, end: number, value: number): number => 
+export const inverseLerp = (start: number, end: number, value: number): number =>
   (value - start) / (end - start);
 
 export const remap = (value: number, inMin: number, inMax: number, outMin: number, outMax: number): number =>
   lerp(outMin, outMax, inverseLerp(inMin, inMax, value));
 
-export const round = (value: number, decimals = 0): number => 
+export const round = (value: number, decimals = 0): number =>
   Math.round(value * 10 ** decimals) / 10 ** decimals;
 
-export const floor = (value: number, decimals = 0): number => 
+export const floor = (value: number, decimals = 0): number =>
   Math.floor(value * 10 ** decimals) / 10 ** decimals;
 
-export const ceil = (value: number, decimals = 0): number => 
+export const ceil = (value: number, decimals = 0): number =>
   Math.ceil(value * 10 ** decimals) / 10 ** decimals;
 
 export const sum = (arr: number[]): number => arr.reduce((a, b) => a + b, 0);
@@ -41,7 +41,7 @@ export const standardDeviation = (arr: number[]): number => {
 export const min = (arr: number[]): number => Math.min(...arr);
 export const max = (arr: number[]): number => Math.max(...arr);
 
-export const percentage = (value: number, total: number): number => 
+export const percentage = (value: number, total: number): number =>
   total === 0 ? 0 : (value / total) * 100;
 
 export const degToRad = (deg: number): number => deg * (Math.PI / 180);
