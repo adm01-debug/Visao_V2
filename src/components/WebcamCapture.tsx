@@ -2,7 +2,7 @@ import { logger } from "@/lib/logger";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: WebcamCapture
- * 
+ *
  * Captura de foto via webcam para reconhecimento facial
  */
 
@@ -96,7 +96,7 @@ export function WebcamCapture({
       }
     } catch (err) {
       logger.error('Camera error:', err);
-      
+
       if (err instanceof Error) {
         if (err.name === 'NotAllowedError') {
           setError('Permissão de câmera negada. Por favor, permita o acesso à câmera.');
@@ -110,7 +110,7 @@ export function WebcamCapture({
       } else {
         setError('Erro desconhecido ao acessar a câmera.');
       }
-      
+
       setStatus('error');
     }
   }, [facingMode, maxWidth, maxHeight]);
@@ -130,7 +130,7 @@ export function WebcamCapture({
   const capturePhoto = useCallback(() => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
-    
+
     if (!video || !canvas) return;
 
     const ctx = canvas.getContext('2d');
