@@ -14,7 +14,7 @@ export default function ReportsPage() {
         <title>Relatórios | VISÃO</title>
         <meta name="description" content="Gere relatórios em PDF de alertas, reconhecimento e analytics" />
       </Helmet>
-      
+
       <PageContent>
         <ReportsPanel />
       </PageContent>
