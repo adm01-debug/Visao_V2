@@ -2,7 +2,7 @@
  * Promise Utilities
  */
 
-export const sleep = (ms: number): Promise<void> => 
+export const sleep = (ms: number): Promise<void> =>
   new Promise(resolve => setTimeout(resolve, ms));
 
 export const delay = sleep;
@@ -11,7 +11,7 @@ export const wait = sleep;
 export const sleepUntil = (condition: () => boolean, interval = 100, timeout = 5000): Promise<void> => {
   return new Promise((resolve, reject) => {
     const start = Date.now();
-    
+
     const check = () => {
       if (condition()) {
         resolve();
@@ -21,7 +21,7 @@ export const sleepUntil = (condition: () => boolean, interval = 100, timeout = 5
         setTimeout(check, interval);
       }
     };
-    
+
     check();
   });
 };
@@ -56,10 +56,10 @@ export const debouncePromise = <T extends (...args: Parameters<T>) => Promise<Re
 ): ((...args: Parameters<T>) => Promise<ReturnType<T>>) => {
   let timeoutId: NodeJS.Timeout | undefined;
   let pendingPromise: Promise<ReturnType<T>> | undefined;
-  
+
   return (...args: Parameters<T>) => {
     if (timeoutId) clearTimeout(timeoutId);
-    
+
     return new Promise((resolve, reject) => {
       timeoutId = setTimeout(async () => {
         try {
@@ -89,7 +89,7 @@ export const sequential = async <T>(fns: (() => Promise<T>)[]): Promise<T[]> => 
 
 export const parallel = <T>(fns: (() => Promise<T>)[], limit = Infinity): Promise<T[]> => {
   if (limit === Infinity) return Promise.all(fns.map(fn => fn()));
-  
+
   return new Promise((resolve, reject) => {
     const results: T[] = [];
     let running = 0;
