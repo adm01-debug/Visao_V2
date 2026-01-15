@@ -11,10 +11,10 @@ const colors = {
 
 function log(level: LogLevel, message: string, data?: unknown) {
   if (!isDev && level === 'debug') return;
-  
+
   const timestamp = new Date().toISOString();
   const style = `color: ${colors[level]}; font-weight: bold`;
-  
+
   console.log(`%c[${level.toUpperCase()}] ${timestamp}`, style, message, data || '');
 }
 
