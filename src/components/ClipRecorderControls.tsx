@@ -2,7 +2,7 @@ import { logger } from "@/lib/logger";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: ClipRecorderControls
- * 
+ *
  * Controles para gravação de clips de vídeo:
  * - Botão de iniciar/parar gravação
  * - Timer de duração
@@ -99,7 +99,7 @@ export function ClipRecorderControls({
   const [duration, setDuration] = useState(0);
   const [savedClip, setSavedClip] = useState<SavedClip | null>(null);
   const [clipDurationSetting, setClipDurationSetting] = useState(60);
-  
+
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -157,7 +157,7 @@ export function ClipRecorderControls({
 
       mediaRecorder.onstop = async () => {
         setState('processing');
-        
+
         try {
           const blob = new Blob(chunksRef.current, { type: mimeType });
           const url = URL.createObjectURL(blob);
@@ -313,8 +313,8 @@ export function ClipRecorderControls({
 
           {(state === 'recording' || state === 'paused') && (
             <>
-              <Badge 
-                variant="destructive" 
+              <Badge
+                variant="destructive"
                 className="gap-1 animate-pulse"
               >
                 <Circle className="w-2 h-2 fill-current" />
@@ -391,9 +391,9 @@ export function ClipRecorderControls({
           <Video className="w-4 h-4" />
           <span className="text-sm font-medium">Gravação</span>
         </div>
-        
+
         {state !== 'idle' && (
-          <Badge 
+          <Badge
             variant={state === 'recording' ? 'destructive' : 'secondary'}
             className={cn(state === 'recording' && 'animate-pulse')}
           >
@@ -429,7 +429,7 @@ export function ClipRecorderControls({
               <Circle className="w-4 h-4 mr-2 fill-current" />
               Gravar
             </Button>
-            
+
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" size="icon" className="h-9 w-9">
@@ -471,7 +471,7 @@ export function ClipRecorderControls({
                 </>
               )}
             </Button>
-            
+
             <Button
               variant="destructive"
               size="sm"
@@ -502,7 +502,7 @@ export function ClipRecorderControls({
               <Download className="w-4 h-4 mr-2" />
               Download
             </Button>
-            
+
             <Button
               variant="outline"
               size="sm"
@@ -519,9 +519,9 @@ export function ClipRecorderControls({
       {state === 'saved' && savedClip && (
         <div className="p-3 bg-muted rounded-lg space-y-2">
           {savedClip.thumbnail && (
-            <img 
-              src={savedClip.thumbnail} 
-              alt="Thumbnail" 
+            <img
+              src={savedClip.thumbnail}
+              alt="Thumbnail"
               className="w-full h-20 object-cover rounded"
             />
           )}
