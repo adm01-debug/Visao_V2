@@ -41,7 +41,7 @@ interface AlertResult {
   thumbnail?: string;
 }
 
-type SearchItem = 
+type SearchItem =
   | { type: 'camera'; data: CameraResult }
   | { type: 'alert'; data: AlertResult };
 
@@ -131,7 +131,7 @@ function SearchDropdownComponent() {
       }
     } catch (error) {
     }
-    
+
     // Load saved filters
     try {
       const storedFilters = localStorage.getItem(FILTERS_STORAGE_KEY);
@@ -201,7 +201,7 @@ function SearchDropdownComponent() {
 
       setIsLoading(true);
       setActiveIndex(-1);
-      
+
       try {
         const searchTerm = query.trim().length >= 2 ? `%${query.trim()}%` : null;
         const timeFilter = getTimeFilterDate();
@@ -210,15 +210,15 @@ function SearchDropdownComponent() {
         let camerasQuery = supabase
           .from('cameras')
           .select('id, name, location, status, thumbnail, detected_people, last_activity');
-        
+
         if (searchTerm) {
           camerasQuery = camerasQuery.or(`name.ilike.${searchTerm},location.ilike.${searchTerm}`);
         }
-        
+
         if (filters.cameraStatus.length > 0) {
           camerasQuery = camerasQuery.in('status', filters.cameraStatus as ('online' | 'offline' | 'alert' | 'warning')[]);
         }
-        
+
         if (timeFilter) {
           camerasQuery = camerasQuery.gte('last_activity', timeFilter);
         }
@@ -228,15 +228,15 @@ function SearchDropdownComponent() {
           .from('alerts')
           .select('id, message, camera_name, severity, timestamp, type, thumbnail')
           .order('timestamp', { ascending: false });
-        
+
         if (searchTerm) {
           alertsQuery = alertsQuery.or(`message.ilike.${searchTerm},camera_name.ilike.${searchTerm}`);
         }
-        
+
         if (filters.alertSeverity.length > 0) {
           alertsQuery = alertsQuery.in('severity', filters.alertSeverity as ('low' | 'medium' | 'high' | 'critical')[]);
         }
-        
+
         if (timeFilter) {
           alertsQuery = alertsQuery.gte('timestamp', timeFilter);
         }
@@ -269,7 +269,7 @@ function SearchDropdownComponent() {
 
   const addToHistory = useCallback((term: string) => {
     if (term.trim().length < 2) return;
-    
+
     setSearchHistory(prev => {
       const filtered = prev.filter(item => item.toLowerCase() !== term.toLowerCase());
       const newHistory = [term.trim(), ...filtered].slice(0, MAX_HISTORY_ITEMS);
@@ -286,7 +286,7 @@ function SearchDropdownComponent() {
     if (query.trim().length >= 2) {
       addToHistory(query.trim());
     }
-    
+
     setIsOpen(false);
     setActiveIndex(-1);
     setQuery('');
@@ -312,13 +312,13 @@ function SearchDropdownComponent() {
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setActiveIndex(prev => 
+        setActiveIndex(prev =>
           prev < allItems.length - 1 ? prev + 1 : 0
         );
         break;
       case 'ArrowUp':
         e.preventDefault();
-        setActiveIndex(prev => 
+        setActiveIndex(prev =>
           prev > 0 ? prev - 1 : allItems.length - 1
         );
         break;
@@ -407,13 +407,13 @@ function SearchDropdownComponent() {
 
   const saveCurrentFilter = () => {
     if (!newFilterName.trim() || !hasActiveFilters) return;
-    
+
     const newFilter: SavedFilter = {
       id: Date.now().toString(),
       name: newFilterName.trim(),
       filters: { ...filters },
     };
-    
+
     setSavedFilters(prev => {
       const updated = [...prev, newFilter];
       try {
@@ -422,7 +422,7 @@ function SearchDropdownComponent() {
       }
       return updated;
     });
-    
+
     setNewFilterName('');
     setShowSaveInput(false);
   };
@@ -674,9 +674,9 @@ function SearchDropdownComponent() {
                     </Button>
                   )
                 )}
-                
-                <Button 
-                  className="w-full" 
+
+                <Button
+                  className="w-full"
                   size="sm"
                   onClick={() => {
                     setShowFilters(false);
@@ -775,8 +775,8 @@ function SearchDropdownComponent() {
                         onClick={() => handleSelect({ type: 'camera', data: camera })}
                         onMouseEnter={() => setActiveIndex(index)}
                         className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left border-b border-border/50 last:border-0 ${
-                          activeIndex === index 
-                            ? 'bg-primary/10 border-l-2 border-l-primary' 
+                          activeIndex === index
+                            ? 'bg-primary/10 border-l-2 border-l-primary'
                             : 'hover:bg-secondary/50'
                         }`}
                       >
@@ -815,8 +815,8 @@ function SearchDropdownComponent() {
                           onClick={() => handleSelect({ type: 'alert', data: alert })}
                           onMouseEnter={() => setActiveIndex(itemIndex)}
                           className={`w-full px-4 py-3 flex items-start gap-3 transition-colors text-left border-b border-border/50 last:border-0 ${
-                            activeIndex === itemIndex 
-                              ? 'bg-primary/10 border-l-2 border-l-primary' 
+                            activeIndex === itemIndex
+                              ? 'bg-primary/10 border-l-2 border-l-primary'
                               : 'hover:bg-secondary/50'
                           }`}
                         >
@@ -869,8 +869,8 @@ function SearchDropdownComponent() {
             <div className="space-y-4">
               {selectedCamera.thumbnail && (
                 <div className="aspect-video rounded-lg overflow-hidden bg-secondary">
-                  <img 
-                    src={selectedCamera.thumbnail} 
+                  <img
+                    src={selectedCamera.thumbnail}
                     alt={selectedCamera.name}
                     className="w-full h-full object-cover"
                   />
@@ -930,8 +930,8 @@ function SearchDropdownComponent() {
             <div className="space-y-4">
               {selectedAlert.thumbnail && (
                 <div className="aspect-video rounded-lg overflow-hidden bg-secondary">
-                  <img 
-                    src={selectedAlert.thumbnail} 
+                  <img
+                    src={selectedAlert.thumbnail}
                     alt="Captura do alerta"
                     className="w-full h-full object-cover"
                   />
