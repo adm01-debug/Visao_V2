@@ -15,7 +15,7 @@ export default function TelegramSettingsPage() {
         <title>Alertas Telegram | VISÃO</title>
         <meta name="description" content="Configure alertas automáticos via Telegram" />
       </Helmet>
-      
+
       <div className="flex min-h-screen w-full bg-background">
         <Sidebar />
         <main className="flex-1 p-6 overflow-auto">
