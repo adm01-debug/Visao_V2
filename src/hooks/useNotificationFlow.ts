@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useNotificationFlow
- * 
+ *
  * Gerencia o fluxo de notificações (versão simplificada)
  */
 
