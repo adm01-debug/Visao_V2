@@ -79,7 +79,7 @@ export const useIPRestriction = (options: UseIPRestrictionOptions = {}) => {
         onAllow?.(data.ip);
       } else {
         onBlock?.(data.ip);
-        
+
         if (redirectOnBlock && typeof window !== 'undefined') {
           window.location.href = redirectUrl;
         }
