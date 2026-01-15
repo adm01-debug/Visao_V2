@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Layouts barrel export
- * 
+ *
  * @module layouts
  */
 
