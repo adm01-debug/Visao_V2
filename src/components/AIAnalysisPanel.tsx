@@ -5,12 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  Brain, 
-  Upload, 
-  Camera, 
-  Shield, 
-  HardHat, 
+import {
+  Brain,
+  Upload,
+  Camera,
+  Shield,
+  HardHat,
   Activity,
   AlertTriangle,
   Users,
@@ -220,7 +220,7 @@ export function AIAnalysisPanel() {
           <span className="font-bold">{analysis.occupancy_rate || 0}%</span>
         </div>
         <div className="w-full bg-muted rounded-full h-2">
-          <div 
+          <div
             className="bg-primary h-2 rounded-full transition-all"
             style={{ width: `${analysis.occupancy_rate || 0}%` }}
           />
@@ -284,15 +284,15 @@ export function AIAnalysisPanel() {
           className="hidden"
           onChange={handleFileSelect}
         />
-        
-        <div 
+
+        <div
           onClick={() => fileInputRef.current?.click()}
           className="border-2 border-dashed border-border/50 rounded-lg p-6 text-center cursor-pointer hover:border-primary/50 transition-colors"
         >
           {previewImage ? (
-            <img 
-              src={previewImage} 
-              alt="Preview" 
+            <img
+              src={previewImage}
+              alt="Preview"
               className="max-h-32 mx-auto rounded-lg mb-2"
             />
           ) : (
@@ -303,8 +303,8 @@ export function AIAnalysisPanel() {
           </p>
         </div>
 
-        <Button 
-          className="w-full" 
+        <Button
+          className="w-full"
           onClick={() => fileInputRef.current?.click()}
           disabled={isAnalyzing}
         >
