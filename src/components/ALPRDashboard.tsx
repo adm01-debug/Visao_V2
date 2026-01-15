@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: ALPRDashboard
- * 
+ *
  * Dashboard consolidado com métricas de placas detectadas e histórico de veículos
  */
 
@@ -12,12 +12,12 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { usePlateDetections } from '@/hooks/usePlateDetections';
-import { 
-  Car, 
-  TrendingUp, 
-  AlertTriangle, 
-  CheckCircle2, 
-  Clock, 
+import {
+  Car,
+  TrendingUp,
+  AlertTriangle,
+  CheckCircle2,
+  Clock,
   Search,
   Calendar,
   MapPin,
@@ -74,11 +74,11 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
     // Detecções por dia (últimos 7 dias)
     const dailyData = Array.from({ length: 7 }, (_, i) => {
       const date = subDays(new Date(), 6 - i);
-      const count = detections.filter(d => 
+      const count = detections.filter(d =>
         format(d.timestamp, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
       ).length;
-      return { 
-        dia: format(date, 'EEE', { locale: ptBR }), 
+      return {
+        dia: format(date, 'EEE', { locale: ptBR }),
         detecções: count,
         date: format(date, 'dd/MM')
       };
@@ -129,7 +129,7 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
       return acc;
     }, {} as Record<string, any>);
 
-    return Object.values(grouped).sort((a: unknown, b: unknown) => 
+    return Object.values(grouped).sort((a: unknown, b: unknown) =>
       b.lastSeen.getTime() - a.lastSeen.getTime()
     );
   }, [detections]);
@@ -296,12 +296,12 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
                   <XAxis dataKey="dia" tick={{ fontSize: 12 }} className="fill-muted-foreground" />
                   <YAxis tick={{ fontSize: 12 }} className="fill-muted-foreground" />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <Area 
-                    type="monotone" 
-                    dataKey="detecções" 
-                    fill="hsl(var(--primary))" 
+                  <Area
+                    type="monotone"
+                    dataKey="detecções"
+                    fill="hsl(var(--primary))"
                     fillOpacity={0.2}
-                    stroke="hsl(var(--primary))" 
+                    stroke="hsl(var(--primary))"
                     strokeWidth={2}
                   />
                 </AreaChart>
@@ -441,7 +441,7 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
           <ScrollArea className="h-[400px]">
             <div className="space-y-2">
               {filteredHistory.map((vehicle: unknown) => (
-                <div 
+                <div
                   key={vehicle.plate}
                   className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
                 >
@@ -461,7 +461,7 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="text-right">
                     <div className="flex items-center gap-4 text-sm">
                       <div>
@@ -470,7 +470,7 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
                       <div className="text-right">
                         <p className="text-xs text-muted-foreground">Última vez</p>
                         <p className="text-sm font-medium">
-                          {isToday(vehicle.lastSeen) 
+                          {isToday(vehicle.lastSeen)
                             ? format(vehicle.lastSeen, 'HH:mm')
                             : isYesterday(vehicle.lastSeen)
                               ? 'Ontem'
@@ -482,7 +482,7 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
                   </div>
                 </div>
               ))}
-              
+
               {filteredHistory.length === 0 && (
                 <div className="text-center py-12">
                   <Car className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
