@@ -3,20 +3,20 @@
  * Middleware para restringir acesso apenas a IPs autorizados
  */
 
-import { 
-  IP_WHITELIST_CONFIG, 
-  PRODUCTION_WHITELIST, 
+import {
+  IP_WHITELIST_CONFIG,
+  PRODUCTION_WHITELIST,
   ADMIN_IPS,
   IP_MESSAGES,
-  type IPWhitelistConfig 
+  type IPWhitelistConfig
 } from '@/config/ipWhitelist';
-import { 
-  isLocalhost, 
-  isPrivateIP, 
-  isIPInRanges, 
+import {
+  isLocalhost,
+  isPrivateIP,
+  isIPInRanges,
   getClientIP,
   maskIP,
-  isValidIPv4 
+  isValidIPv4
 } from '@/lib/ipUtils';
 import { logger } from '@/lib/logger';
 
@@ -29,7 +29,7 @@ export interface IPCheckResult {
 
 // Verificar se IP está na whitelist
 export const checkIPWhitelist = (
-  ip: string, 
+  ip: string,
   config: IPWhitelistConfig = IP_WHITELIST_CONFIG
 ): IPCheckResult => {
   const result: IPCheckResult = {
@@ -173,7 +173,7 @@ export const useIPCheck = () => {
 // Adicionar IP dinamicamente à whitelist
 export const addToWhitelist = (ip: string): boolean => {
   if (!isValidIPv4(ip)) return false;
-  
+
   if (!IP_WHITELIST_CONFIG.trustedIPs.includes(ip)) {
     IP_WHITELIST_CONFIG.trustedIPs.push(ip);
     logger.info('IP added to whitelist', { ip: maskIP(ip) });
@@ -196,7 +196,7 @@ export const removeFromWhitelist = (ip: string): boolean => {
 // Bloquear IP
 export const blockIP = (ip: string): boolean => {
   if (!isValidIPv4(ip)) return false;
-  
+
   if (!IP_WHITELIST_CONFIG.blockedIPs.includes(ip)) {
     IP_WHITELIST_CONFIG.blockedIPs.push(ip);
     logger.warn('IP blocked', { ip: maskIP(ip) });
