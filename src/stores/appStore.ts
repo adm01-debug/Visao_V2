@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * App Store - Store principal da aplicação
- * 
+ *
  * @module stores/appStore
  */
 
@@ -13,11 +13,11 @@ interface AppState {
   isInitialized: boolean;
   isLoading: boolean;
   error: string | null;
-  
+
   // Sidebar e navegação
   sidebarOpen: boolean;
   currentPage: string;
-  
+
   // Actions
   setInitialized: (value: boolean) => void;
   setLoading: (value: boolean) => void;
@@ -41,7 +41,7 @@ export const useAppStore = create<AppState>()(
     persist(
       (set) => ({
         ...initialState,
-        
+
         setInitialized: (value) => set({ isInitialized: value }),
         setLoading: (value) => set({ isLoading: value }),
         setError: (error) => set({ error }),
