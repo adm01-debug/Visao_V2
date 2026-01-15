@@ -80,6 +80,8 @@ import {
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
+import { RealTimeStats } from '@/components/RealTimeStats';
+import { AnalyticsComparison } from '@/components/AnalyticsComparison';
 
 
 // ============================================
