@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useClipRecorder
- * 
+ *
  * Gerencia gravação de clips de vídeo:
  * - MediaRecorder API
  * - Geração de thumbnails
@@ -73,11 +73,11 @@ interface UseClipRecorderReturn {
   progress: number;
   currentClip: RecordedClip | null;
   clips: RecordedClip[];
-  
+
   // Configuração
   config: RecordingConfig;
   updateConfig: (config: Partial<RecordingConfig>) => void;
-  
+
   // Ações
   startRecording: (videoElement: HTMLVideoElement, triggerType?: TriggerType) => Promise<boolean>;
   stopRecording: () => Promise<RecordedClip | null>;
@@ -88,7 +88,7 @@ interface UseClipRecorderReturn {
   downloadClip: (clip: RecordedClip) => void;
   deleteClip: (clipId: string) => Promise<boolean>;
   clearClips: () => void;
-  
+
   // Utilitários
   canRecord: boolean;
   supportedMimeTypes: string[];
@@ -152,8 +152,8 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
 
   // Verificar suporte
   const canRecord = typeof MediaRecorder !== 'undefined';
-  
-  const supportedMimeTypes = SUPPORTED_MIME_TYPES.filter(type => 
+
+  const supportedMimeTypes = SUPPORTED_MIME_TYPES.filter(type =>
     MediaRecorder.isTypeSupported(type)
   );
 
@@ -171,19 +171,19 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       const canvas = document.createElement('canvas');
       canvas.width = videoElement.videoWidth || 320;
       canvas.height = videoElement.videoHeight || 240;
-      
+
       const ctx = canvas.getContext('2d');
       if (!ctx) return null;
-      
+
       ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-      
+
       return new Promise((resolve) => {
         canvas.toBlob((blob) => {
           resolve(blob);
         }, 'image/jpeg', 0.8);
       });
     } catch (error) {
-      
+
       return null;
     }
   }, []);
@@ -205,7 +205,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
     try {
       // Obter stream do vídeo
       let stream: MediaStream;
-      
+
       if ('captureStream' in videoElement) {
         stream = (videoElement as unknown).captureStream();
       } else if ('mozCaptureStream' in videoElement) {
@@ -236,7 +236,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       };
 
       recorder.onerror = (event) => {
-        
+
         onError?.(new Error('Erro na gravação'));
         setState('idle');
         clearTimer();
@@ -247,7 +247,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       };
 
       mediaRecorderRef.current = recorder;
-      
+
       // Iniciar gravação
       recorder.start(1000); // Chunks de 1 segundo
       setState('recording');
@@ -257,12 +257,12 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       timerRef.current = setInterval(() => {
         setDuration(prev => {
           const newDuration = prev + 1;
-          
+
           // Auto-stop quando atingir duração máxima
           if (newDuration >= config.maxDurationSeconds) {
             stopRecording();
           }
-          
+
           return newDuration;
         });
       }, 1000);
@@ -271,7 +271,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       return true;
 
     } catch (error) {
-      
+
       onError?.(error as Error);
       return false;
     }
@@ -288,12 +288,12 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       clearTimer();
 
       const recorder = mediaRecorderRef.current!;
-      
+
       recorder.onstop = async () => {
         try {
           const endTime = new Date();
           const startTime = startTimeRef.current || new Date();
-          
+
           // Criar blob do vídeo
           const mimeType = recorder.mimeType || 'video/webm';
           const blob = new Blob(chunksRef.current, { type: mimeType });
@@ -323,7 +323,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
 
           setCurrentClip(clip);
           setClips(prev => [...prev, clip]);
-          
+
           onRecordingStop?.(clip);
 
           // Auto-save se configurado
@@ -333,12 +333,12 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
 
           setState('idle');
           setDuration(0);
-          
+
           // Limpar
           mediaRecorderRef.current = null;
           chunksRef.current = [];
           startTimeRef.current = null;
-          
+
           if (streamRef.current) {
             streamRef.current.getTracks().forEach(track => track.stop());
             streamRef.current = null;
@@ -347,7 +347,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
           resolve(clip);
 
         } catch (error) {
-          
+
           onError?.(error as Error);
           setState('idle');
           resolve(null);
@@ -372,7 +372,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
     if (mediaRecorderRef.current && state === 'paused') {
       mediaRecorderRef.current.resume();
       setState('recording');
-      
+
       timerRef.current = setInterval(() => {
         setDuration(prev => {
           if (prev >= config.maxDurationSeconds) {
@@ -389,18 +389,18 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
     }
-    
+
     clearTimer();
     setState('idle');
     setDuration(0);
     chunksRef.current = [];
     startTimeRef.current = null;
-    
+
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
       streamRef.current = null;
     }
-    
+
     mediaRecorderRef.current = null;
   }, [clearTimer]);
 
@@ -466,18 +466,18 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
 
       // Atualizar clip com ID
       clip.id = clipRecord.id;
-      setClips(prev => 
+      setClips(prev =>
         prev.map(c => c.url === clip.url ? { ...c, id: clipRecord.id } : c)
       );
 
       setState('idle');
       onRecordingSave?.(clipRecord.id);
       toast.success('Gravação salva');
-      
+
       return clipRecord.id;
 
     } catch (error) {
-      
+
       onError?.(error as Error);
       toast.error('Erro ao salvar gravação');
       setState('idle');
@@ -511,7 +511,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       return true;
 
     } catch (error) {
-      
+
       toast.error('Erro ao excluir gravação');
       return false;
     }
@@ -556,7 +556,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
   }, [clearTimer, clips]);
 
   // Progresso (0-100)
-  const progress = config.maxDurationSeconds > 0 
+  const progress = config.maxDurationSeconds > 0
     ? Math.min((duration / config.maxDurationSeconds) * 100, 100)
     : 0;
 
@@ -569,11 +569,11 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
     progress,
     currentClip,
     clips,
-    
+
     // Configuração
     config,
     updateConfig,
-    
+
     // Ações
     startRecording,
     stopRecording,
@@ -584,7 +584,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
     downloadClip,
     deleteClip,
     clearClips,
-    
+
     // Utilitários
     canRecord,
     supportedMimeTypes,
