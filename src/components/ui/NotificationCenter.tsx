@@ -5,11 +5,11 @@
 
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Bell, 
-  Check, 
-  CheckCheck, 
-  X, 
+import {
+  Bell,
+  Check,
+  CheckCheck,
+  X,
   Filter,
   AlertTriangle,
   Info,
@@ -75,7 +75,7 @@ export function NotificationCenter({
   );
 
   const filteredNotifications = useMemo(
-    () => filter === 'unread' 
+    () => filter === 'unread'
       ? notifications.filter(n => !n.isRead)
       : notifications,
     [notifications, filter]
@@ -259,10 +259,10 @@ interface ToastStackProps {
   position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 }
 
-export function ToastStack({ 
-  toasts, 
+export function ToastStack({
+  toasts,
   onDismiss,
-  position = 'top-right' 
+  position = 'top-right'
 }: ToastStackProps) {
   const positionClasses = {
     'top-right': 'top-4 right-4',
