@@ -95,10 +95,10 @@ export function ThemeSelector({ compact = false }: ThemeSelectorProps) {
               {mode === option.id && <Check className="ml-auto h-4 w-4" />}
             </DropdownMenuItem>
           ))}
-          
+
           <DropdownMenuSeparator />
           <DropdownMenuLabel>Tema do Ambiente</DropdownMenuLabel>
-          
+
           {THEME_VARIANTS.map(themeVariant => (
             <DropdownMenuItem
               key={themeVariant.id}
@@ -110,7 +110,7 @@ export function ThemeSelector({ compact = false }: ThemeSelectorProps) {
               {variant === themeVariant.id && <Check className="ml-auto h-4 w-4" />}
             </DropdownMenuItem>
           ))}
-          
+
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setShowCustomizer(true)} className="gap-2">
             <Settings2 className="h-4 w-4" />
@@ -197,7 +197,7 @@ function ThemeCustomizerDialog({ open, onOpenChange }: ThemeCustomizerDialogProp
                       />
                     </div>
                   </div>
-                  
+
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <span className="text-lg">{themeVariant.icon}</span>
