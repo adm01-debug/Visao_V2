@@ -33,33 +33,33 @@ export function CameraModal({ camera, isOpen, onClose, onUpdateCoordinates }: Ca
 
   const handleSaveCoordinates = async () => {
     if (!onUpdateCoordinates) return;
-    
+
     setSaving(true);
     try {
       const lat = latitude ? parseFloat(latitude) : null;
       const lng = longitude ? parseFloat(longitude) : null;
-      
+
       if (latitude && isNaN(lat!)) {
         return;
       }
       if (longitude && isNaN(lng!)) {
         return;
       }
-      
+
       await onUpdateCoordinates(camera.id, lat, lng);
     } finally {
       setSaving(false);
     }
   };
 
-  const hasCoordinatesChanged = 
+  const hasCoordinatesChanged =
     latitude !== (camera.latitude?.toString() || '') ||
     longitude !== (camera.longitude?.toString() || '');
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-background/80 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
       />
@@ -91,7 +91,7 @@ export function CameraModal({ camera, isOpen, onClose, onUpdateCoordinates }: Ca
             <button className="p-2 rounded-lg hover:bg-secondary transition-colors">
               <ExternalLink className="w-5 h-5 text-muted-foreground" />
             </button>
-            <button 
+            <button
               onClick={onClose}
               className="p-2 rounded-lg hover:bg-secondary transition-colors ml-2"
             >
@@ -133,7 +133,7 @@ export function CameraModal({ camera, isOpen, onClose, onUpdateCoordinates }: Ca
                 <TabsContent value="info" className="mt-4 space-y-4">
                   <div className="glass-card p-4 space-y-3">
                     <h4 className="font-semibold text-foreground">Informações da Câmera</h4>
-                    
+
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">ID</span>
@@ -168,7 +168,7 @@ export function CameraModal({ camera, isOpen, onClose, onUpdateCoordinates }: Ca
                       <MapPin className="w-4 h-4 text-primary" />
                       <h4 className="font-semibold text-foreground">Localização no Mapa</h4>
                     </div>
-                    
+
                     <div className="space-y-3">
                       <div className="space-y-1.5">
                         <Label htmlFor="latitude" className="text-xs text-muted-foreground">
@@ -214,7 +214,7 @@ export function CameraModal({ camera, isOpen, onClose, onUpdateCoordinates }: Ca
 
                   <div className="glass-card p-4 space-y-3">
                     <h4 className="font-semibold text-foreground">Análise AI</h4>
-                    
+
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Modelo</span>
