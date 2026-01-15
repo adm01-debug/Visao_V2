@@ -11,11 +11,11 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCameras, DbCamera } from '@/hooks/useCameras';
 import { StreamConfigPanel } from '@/components/StreamConfigPanel';
 import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';
-import { 
-  ArrowLeft, 
-  Video, 
-  Camera, 
-  Wifi, 
+import {
+  ArrowLeft,
+  Video,
+  Camera,
+  Wifi,
   WifiOff,
   Settings,
   Play,
@@ -35,7 +35,7 @@ export default function StreamSettingsPage() {
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const { cameras, loading: camerasLoading, updateCamera } = useCameras();
-  
+
   const [selectedCamera, setSelectedCamera] = useState<DbCamera | null>(null);
   const [testingStream, setTestingStream] = useState(false);
   const [streamStatus, setStreamStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
@@ -56,7 +56,7 @@ export default function StreamSettingsPage() {
       await updateCamera(selectedCamera.id, {
         stream_url: config.url,
       });
-      
+
       toast.success('Configuração de stream salva');
     } catch (error) {
       toast.error('Erro ao salvar configuração');
@@ -75,7 +75,7 @@ export default function StreamSettingsPage() {
         setStreamStatus('success');
         return true;
       }
-      
+
       // Para RTSP, não podemos testar diretamente do browser
       // Apenas validamos o formato da URL
       if (url.startsWith('rtsp://')) {
