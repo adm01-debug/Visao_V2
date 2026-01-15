@@ -2,18 +2,18 @@ import { useMediaQuery, useWindowSize } from "@/hooks";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: StreamingCameraGrid
- * 
+ *
  * Grid de câmeras com streaming em tempo real.
  * Suporta layouts 2x2, 3x3, 4x4 e lista.
  * Permite seleção de câmera para visualização expandida.
  */
 
 import { useState, useMemo } from 'react';
-import { 
-  Grid2X2, 
-  Grid3X3, 
-  LayoutGrid, 
-  List, 
+import {
+  Grid2X2,
+  Grid3X3,
+  LayoutGrid,
+  List,
   Maximize2,
   X,
   ChevronLeft,
@@ -48,22 +48,22 @@ type GridLayout = '2x2' | '3x3' | '4x4' | 'list' | 'single';
 interface StreamingCameraGridProps {
   /** Lista de câmeras */
   cameras: DbCamera[];
-  
+
   /** Layout inicial */
   initialLayout?: GridLayout;
-  
+
   /** Mostrar controles de layout */
   showLayoutControls?: boolean;
-  
+
   /** Altura máxima do grid */
   maxHeight?: string | number;
-  
+
   /** Callback ao selecionar câmera */
   onCameraSelect?: (camera: DbCamera) => void;
-  
+
   /** Callback ao tirar snapshot */
   onSnapshot?: (cameraId: string, imageData: string) => void;
-  
+
   /** Classe CSS adicional */
   className?: string;
 }
@@ -399,7 +399,7 @@ export function StreamingCameraGrid({
               </Button>
             </div>
           </DialogHeader>
-          
+
           {expandedCamera && (
             <VideoStreamPlayer
               cameraId={expandedCamera.id}
