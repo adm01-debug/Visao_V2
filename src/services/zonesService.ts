@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Zones Service - Gerenciamento de zonas de monitoramento
- * 
+ *
  * @module services/zonesService
  */
 
@@ -62,7 +62,7 @@ export const zonesService = {
       .from("zones")
       .select("*")
       .order("name");
-    
+
     if (error) throw error;
     return data || [];
   },
@@ -76,7 +76,7 @@ export const zonesService = {
       .select("*")
       .eq("id", id)
       .single();
-    
+
     if (error) throw error;
     return data;
   },
@@ -93,7 +93,7 @@ export const zonesService = {
       })
       .select()
       .single();
-    
+
     if (error) throw error;
     return data;
   },
@@ -108,7 +108,7 @@ export const zonesService = {
       .eq("id", id)
       .select()
       .single();
-    
+
     if (error) throw error;
     return data;
   },
@@ -121,7 +121,7 @@ export const zonesService = {
       .from("zones")
       .delete()
       .eq("id", id);
-    
+
     if (error) throw error;
   },
 
@@ -134,7 +134,7 @@ export const zonesService = {
       .select("*")
       .eq("camera_id", cameraId)
       .order("name");
-    
+
     if (error) throw error;
     return data || [];
   },
@@ -155,7 +155,7 @@ export const zonesService = {
       .select("*")
       .eq("type", type)
       .order("name");
-    
+
     if (error) throw error;
     return data || [];
   },
