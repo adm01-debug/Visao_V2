@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Throttle & Debounce Utilities
- * 
+ *
  * @module utils/throttle
  */
 
@@ -50,22 +50,22 @@ export function throttle<T extends AnyFunction>(
   options: ThrottleOptions = {}
 ): ThrottledFunction<T> {
   const { leading = true, trailing = true } = options;
-  
+
   let lastCall = 0;
   let lastResult: ReturnType<T> | undefined;
   let timer: ReturnType<typeof setTimeout> | null = null;
   let lastArgs: Parameters<T> | null = null;
-  
+
   const invoke = (args: Parameters<T>): ReturnType<T> => {
     lastCall = Date.now();
     lastResult = fn(...args) as ReturnType<T>;
     return lastResult;
   };
-  
+
   const throttled = (...args: Parameters<T>): ReturnType<T> | undefined => {
     const now = Date.now();
     const remaining = limit - (now - lastCall);
-    
+
     if (remaining <= 0) {
       if (timer) {
         clearTimeout(timer);
@@ -84,10 +84,10 @@ export function throttle<T extends AnyFunction>(
         }
       }, remaining);
     }
-    
+
     return lastResult;
   };
-  
+
   throttled.cancel = (): void => {
     if (timer) {
       clearTimeout(timer);
@@ -96,7 +96,7 @@ export function throttle<T extends AnyFunction>(
     lastCall = 0;
     lastArgs = null;
   };
-  
+
   throttled.flush = (): ReturnType<T> | undefined => {
     if (timer && lastArgs) {
       clearTimeout(timer);
@@ -107,7 +107,7 @@ export function throttle<T extends AnyFunction>(
     }
     return lastResult;
   };
-  
+
   return throttled;
 }
 
@@ -123,33 +123,33 @@ export function debounce<T extends AnyFunction>(
   options: DebounceOptions = {}
 ): DebouncedFunction<T> {
   const { leading = false, maxWait } = options;
-  
+
   let timer: ReturnType<typeof setTimeout> | null = null;
   let maxTimer: ReturnType<typeof setTimeout> | null = null;
   let lastArgs: Parameters<T> | null = null;
   let lastResult: ReturnType<T> | undefined;
   let lastCallTime = 0;
   let leadingExecuted = false;
-  
+
   const invoke = (args: Parameters<T>): ReturnType<T> => {
     lastResult = fn(...args) as ReturnType<T>;
     lastCallTime = Date.now();
     leadingExecuted = false;
     return lastResult;
   };
-  
+
   const debounced = (...args: Parameters<T>): ReturnType<T> | undefined => {
     lastArgs = args;
-    
+
     if (leading && !leadingExecuted && !timer) {
       leadingExecuted = true;
       return invoke(args);
     }
-    
+
     if (timer) {
       clearTimeout(timer);
     }
-    
+
     timer = setTimeout(() => {
       timer = null;
       if (maxTimer) {
@@ -161,7 +161,7 @@ export function debounce<T extends AnyFunction>(
         lastArgs = null;
       }
     }, delay);
-    
+
     if (maxWait && !maxTimer) {
       maxTimer = setTimeout(() => {
         maxTimer = null;
@@ -175,10 +175,10 @@ export function debounce<T extends AnyFunction>(
         }
       }, maxWait);
     }
-    
+
     return lastResult;
   };
-  
+
   debounced.cancel = (): void => {
     if (timer) {
       clearTimeout(timer);
@@ -191,7 +191,7 @@ export function debounce<T extends AnyFunction>(
     lastArgs = null;
     leadingExecuted = false;
   };
-  
+
   debounced.flush = (): ReturnType<T> | undefined => {
     if (timer) {
       clearTimeout(timer);
@@ -208,9 +208,9 @@ export function debounce<T extends AnyFunction>(
     }
     return lastResult;
   };
-  
+
   debounced.pending = (): boolean => timer !== null;
-  
+
   return debounced;
 }
 
@@ -224,10 +224,10 @@ export function rafThrottle<T extends AnyFunction>(
   let rafId: number | null = null;
   let lastArgs: Parameters<T> | null = null;
   let lastResult: ReturnType<T> | undefined;
-  
+
   const throttled = (...args: Parameters<T>): ReturnType<T> | undefined => {
     lastArgs = args;
-    
+
     if (rafId === null) {
       rafId = requestAnimationFrame(() => {
         rafId = null;
@@ -237,10 +237,10 @@ export function rafThrottle<T extends AnyFunction>(
         }
       });
     }
-    
+
     return lastResult;
   };
-  
+
   throttled.cancel = (): void => {
     if (rafId !== null) {
       cancelAnimationFrame(rafId);
@@ -248,7 +248,7 @@ export function rafThrottle<T extends AnyFunction>(
     }
     lastArgs = null;
   };
-  
+
   throttled.flush = (): ReturnType<T> | undefined => {
     if (rafId !== null) {
       cancelAnimationFrame(rafId);
@@ -260,7 +260,7 @@ export function rafThrottle<T extends AnyFunction>(
     }
     return lastResult;
   };
-  
+
   return throttled;
 }
 
