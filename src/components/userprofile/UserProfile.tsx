@@ -1,7 +1,7 @@
 /**
  * VIS-O - Sistema de Vigilância Inteligente
  * UserProfile - User profile display component
- * 
+ *
  * @module components/userprofile
  */
 
