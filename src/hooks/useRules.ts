@@ -31,7 +31,7 @@ export function useRules() {
 
   const createRule = async (rule: Omit<DbRuleInsert, 'user_id'>) => {
     if (!user) throw new Error('Usuário não autenticado');
-    
+
     try {
       const { data, error } = await supabase
         .from('rules')
