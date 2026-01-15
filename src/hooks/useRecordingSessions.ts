@@ -36,7 +36,7 @@ export const useRecordingSessions = (cameraId?: string) => {
 
       const { data, error } = await query;
       if (error) throw error;
-      
+
       setSessions(data || []);
       setActiveSession(data?.find(s => s.status === 'recording') || null);
     } catch (err) {
