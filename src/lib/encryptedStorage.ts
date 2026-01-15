@@ -41,16 +41,16 @@ export const setItem = <T>(key: string, value: T, ttl?: number): void => {
 export const getItem = <T>(key: string): T | null => {
   const stored = localStorage.getItem(config.prefix + key);
   if (!stored) return null;
-  
+
   try {
     const serialized = config.encryption ? decrypt(stored) : stored;
     const item: StorageItem<T> = JSON.parse(serialized);
-    
+
     if (item.expiry && Date.now() > item.expiry) {
       removeItem(key);
       return null;
     }
-    
+
     return item.data;
   } catch {
     return null;
