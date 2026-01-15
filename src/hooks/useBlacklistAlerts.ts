@@ -2,10 +2,10 @@ import { useEffect, useCallback, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { playCriticalAlertSound } from '@/lib/alertSounds';
-import { 
-  showBrowserNotification, 
+import {
+  showBrowserNotification,
   getBrowserNotificationsEnabled,
-  getNotificationPermission 
+  getNotificationPermission
 } from '@/lib/browserNotifications';
 
 interface BlacklistAlert {
@@ -45,7 +45,7 @@ export function useBlacklistAlerts({
         .from('registered_persons')
         .select('id, name, list_type')
         .eq('list_type', 'blacklist');
-      
+
       if (persons) {
         persons.forEach(p => {
           personsCache.current.set(p.id, { name: p.name, listType: p.list_type || 'none' });
@@ -56,7 +56,7 @@ export function useBlacklistAlerts({
       const { data: cameras } = await supabase
         .from('cameras')
         .select('id, name');
-      
+
       if (cameras) {
         cameras.forEach(c => {
           camerasCache.current.set(c.id, c.name);
@@ -76,7 +76,7 @@ export function useBlacklistAlerts({
   ) => {
     // Get person info
     let personInfo = personsCache.current.get(personId);
-    
+
     if (!personInfo) {
       // Fetch from DB if not in cache
       const { data } = await supabase
@@ -84,7 +84,7 @@ export function useBlacklistAlerts({
         .select('name, list_type')
         .eq('id', personId)
         .maybeSingle();
-      
+
       if (data) {
         personInfo = { name: data.name, listType: data.list_type || 'none' };
         personsCache.current.set(personId, personInfo);
@@ -100,14 +100,14 @@ export function useBlacklistAlerts({
     let cameraName = 'Câmera desconhecida';
     if (cameraId) {
       cameraName = camerasCache.current.get(cameraId) || cameraName;
-      
+
       if (!camerasCache.current.has(cameraId)) {
         const { data } = await supabase
           .from('cameras')
           .select('name')
           .eq('id', cameraId)
           .maybeSingle();
-        
+
         if (data) {
           cameraName = data.name;
           camerasCache.current.set(cameraId, cameraName);
