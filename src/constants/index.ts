@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Constants barrel export - Exportação centralizada de todas as constantes
- * 
+ *
  * @module constants
  */
 
