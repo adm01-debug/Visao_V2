@@ -1,7 +1,7 @@
 /**
  * VIS-O - Sistema de Vigilância Inteligente
  * UserMenu - User menu dropdown with profile actions
- * 
+ *
  * @module components/usermenu
  */
 
