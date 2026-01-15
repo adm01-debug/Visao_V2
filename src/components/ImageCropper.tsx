@@ -223,7 +223,7 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
             <div className="absolute inset-0 pointer-events-none">
               {/* Dark overlay */}
               <div className="absolute inset-0 bg-black/50" />
-              
+
               {/* Crop area (clear) */}
               <div
                 className={cn(
