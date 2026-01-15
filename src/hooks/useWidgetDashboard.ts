@@ -6,7 +6,7 @@ const STORAGE_KEY = 'visao-dashboard-layout';
 export function useWidgetDashboard() {
   const [layout, setLayout] = useState<DashboardLayout>(() => {
     if (typeof window === 'undefined') return DEFAULT_LAYOUT;
-    
+
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
@@ -55,7 +55,7 @@ export function useWidgetDashboard() {
   const updateWidget = useCallback((instanceId: string, updates: Partial<WidgetInstance>) => {
     setLayout(prev => ({
       ...prev,
-      widgets: prev.widgets.map(w => 
+      widgets: prev.widgets.map(w =>
         w.id === instanceId ? { ...w, ...updates } : w
       ),
       updatedAt: new Date().toISOString(),
@@ -66,13 +66,13 @@ export function useWidgetDashboard() {
     setLayout(prev => {
       const oldIndex = prev.widgets.findIndex(w => w.id === activeId);
       const newIndex = prev.widgets.findIndex(w => w.id === overId);
-      
+
       if (oldIndex === -1 || newIndex === -1) return prev;
-      
+
       const newWidgets = [...prev.widgets];
       const [removed] = newWidgets.splice(oldIndex, 1);
       newWidgets.splice(newIndex, 0, removed);
-      
+
       return {
         ...prev,
         widgets: newWidgets,
