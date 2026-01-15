@@ -110,7 +110,7 @@ function ScheduleEditorComponent({
               <Button variant="ghost" size="sm" onClick={selectWeekends}>Fim de Semana</Button>
             </div>
           </div>
-          
+
           <div className="flex gap-2">
             {dayNames.map((day, index) => (
               <button
