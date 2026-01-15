@@ -65,15 +65,15 @@ export function FloatingActionButton({
               <motion.button
                 key={index}
                 initial={{ opacity: 0, scale: 0.5, y: 20 }}
-                animate={{ 
-                  opacity: 1, 
-                  scale: 1, 
+                animate={{
+                  opacity: 1,
+                  scale: 1,
                   y: 0,
                   transition: { delay: index * 0.05 }
                 }}
-                exit={{ 
-                  opacity: 0, 
-                  scale: 0.5, 
+                exit={{
+                  opacity: 0,
+                  scale: 0.5,
                   y: 20,
                   transition: { delay: (actions.length - index) * 0.03 }
                 }}
@@ -83,7 +83,7 @@ export function FloatingActionButton({
                 <span className="px-3 py-1.5 bg-card rounded-lg shadow-lg text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                   {action.label}
                 </span>
-                <div 
+                <div
                   className={cn(
                     "w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110",
                     action.color || "bg-secondary text-secondary-foreground"
@@ -154,12 +154,12 @@ interface ExtendedFABProps {
   expanded?: boolean;
 }
 
-export function ExtendedFAB({ 
-  icon, 
-  label, 
-  onClick, 
+export function ExtendedFAB({
+  icon,
+  label,
+  onClick,
   className,
-  expanded = true 
+  expanded = true
 }: ExtendedFABProps) {
   return (
     <motion.button
