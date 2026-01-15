@@ -6,7 +6,7 @@ import { useTheme } from '@/contexts/ThemeProvider';
 
 export const ThemeToggle: React.FC = () => {
   const { isDark, toggleMode } = useTheme();
-  
+
   return (
     <Button variant="ghost" size="icon" onClick={toggleMode} aria-label="Alternar tema">
       <AnimatePresence mode="wait">
