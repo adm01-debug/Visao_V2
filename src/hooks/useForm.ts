@@ -20,9 +20,9 @@ export function useForm<T extends Record<string, unknown>>({
     (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       const { name, value, type } = e.target;
       const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
-      
+
       setValues(prev => ({ ...prev, [name]: newValue }));
-      
+
       if (errors[name as keyof T]) {
         setErrors(prev => ({ ...prev, [name]: undefined }));
       }
@@ -34,7 +34,7 @@ export function useForm<T extends Record<string, unknown>>({
     (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       const { name } = e.target;
       setTouched(prev => ({ ...prev, [name]: true }));
-      
+
       if (validate) {
         const validationErrors = validate(values);
         setErrors(prev => ({ ...prev, [name]: validationErrors[name as keyof T] }));
@@ -46,16 +46,16 @@ export function useForm<T extends Record<string, unknown>>({
   const handleSubmit = useCallback(
     async (e?: React.FormEvent) => {
       e?.preventDefault();
-      
+
       if (validate) {
         const validationErrors = validate(values);
         setErrors(validationErrors);
-        
+
         if (Object.keys(validationErrors).length > 0) {
           return;
         }
       }
-      
+
       setIsSubmitting(true);
       try {
         await onSubmit?.(values);
