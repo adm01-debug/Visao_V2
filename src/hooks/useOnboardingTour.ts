@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useOnboardingTour
- * 
+ *
  * Gerencia o estado do tour de onboarding para novos usuários
  */
 
@@ -52,7 +52,7 @@ export function useOnboardingTour({
   useEffect(() => {
     const completed = localStorage.getItem(storageKey) === 'true';
     setHasCompleted(completed);
-    
+
     if (autoStart && !completed) {
       // Delay para garantir que a UI foi renderizada
       const timer = setTimeout(() => {
