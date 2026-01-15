@@ -1,5 +1,5 @@
 import { useCopyToClipboard } from "@/hooks";
-import { memo } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: AnalysisHistoryTable
@@ -12,7 +12,6 @@ import { memo } from "react";
  * - Visualização de detalhes
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Camera,
   Clock,
