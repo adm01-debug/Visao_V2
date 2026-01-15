@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useNotifications
- * 
+ *
  * Gerencia notificações do sistema:
  * - Push notifications (Web Push API)
  * - Notificações in-app
@@ -73,7 +73,7 @@ interface UseNotificationsReturn {
   stats: NotificationStats;
   loading: boolean;
   pushPermission: NotificationPermission | null;
-  
+
   // Ações
   loadNotifications: () => Promise<void>;
   loadConfig: () => Promise<void>;
@@ -259,7 +259,7 @@ export function useNotifications(
   const markAllAsRead = useCallback(async () => {
     try {
       const unreadIds = notifications.filter(n => n.status !== 'read').map(n => n.id);
-      
+
       if (unreadIds.length === 0) return;
 
       await supabase
@@ -295,7 +295,7 @@ export function useNotifications(
   const clearAll = useCallback(async () => {
     try {
       const ids = notifications.map(n => n.id);
-      
+
       if (ids.length === 0) return;
 
       await supabase
