@@ -1,11 +1,11 @@
 import { memo, useState, useRef, useEffect } from 'react';
-import { 
-  Play, 
-  Pause, 
-  Volume2, 
-  VolumeX, 
-  Maximize, 
-  SkipBack, 
+import {
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Maximize,
+  SkipBack,
   SkipForward,
   Download,
   Camera as CameraIcon,
@@ -36,11 +36,11 @@ const mockEvents: TimelineEvent[] = [
   { id: '4', timestamp: 78, type: 'alert', label: 'Aglomeração detectada' },
 ];
 
-export function VideoPlayer({ 
-  cameraName, 
-  cameraLocation, 
+export function VideoPlayer({
+  cameraName,
+  cameraLocation,
   isLive = true,
-  events = mockEvents 
+  events = mockEvents
 }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(isLive);
   const [isMuted, setIsMuted] = useState(true);
