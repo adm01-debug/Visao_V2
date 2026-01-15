@@ -1,7 +1,7 @@
 /**
  * VIS-O - Sistema de Vigilância Inteligente
  * TextArea - Textarea component for multi-line text input
- * 
+ *
  * @module components/textarea
  */
 
