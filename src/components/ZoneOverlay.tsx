@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: ZoneOverlay
- * 
+ *
  * Overlay para exibir zonas de interesse sobre o vídeo:
  * - Renderização de polígonos, retângulos e linhas
  * - Indicadores de ocupação em tempo real
@@ -98,7 +98,7 @@ interface ZoneLabelProps {
 function ZoneLabel({ zone, position, showStats }: ZoneLabelProps) {
   const Icon = zoneTypeIcons[zone.type];
   const isAlerted = zone.stats?.isAlerted;
-  const occupancyPercent = zone.stats?.maxOccupancy 
+  const occupancyPercent = zone.stats?.maxOccupancy
     ? Math.round((zone.stats.currentOccupancy / zone.stats.maxOccupancy) * 100)
     : null;
   const isOverCapacity = occupancyPercent !== null && occupancyPercent >= 100;
@@ -124,7 +124,7 @@ function ZoneLabel({ zone, position, showStats }: ZoneLabelProps) {
             <Icon className="w-3 h-3" />
             <span className="truncate max-w-[60px]">{zone.name}</span>
           </div>
-          
+
           {showStats && zone.stats && (
             <div className="flex items-center gap-2 mt-0.5 text-[9px] opacity-90">
               {(zone.type === 'counting' || zone.type === 'occupancy') && (
@@ -171,7 +171,7 @@ function ZoneShape({ zone, animate, onClick }: ZoneShapeProps) {
   if (geometry.shape === 'line') {
     const start = geometry.points[0];
     const end = geometry.points[1];
-    
+
     if (!start || !end) return null;
 
     // Calcular ângulo para a seta
@@ -192,7 +192,7 @@ function ZoneShape({ zone, animate, onClick }: ZoneShapeProps) {
           strokeDasharray="10,5"
           style={alertAnimation}
         />
-        
+
         {/* Seta de direção no meio */}
         <g transform={`translate(${midX}%, ${midY}%) rotate(${angle})`}>
           <polygon
@@ -354,17 +354,17 @@ export function ZoneOverlay({
   // Calcular centro de cada zona para posicionar labels
   const zoneCenters = useMemo(() => {
     const centers: Record<string, Point> = {};
-    
+
     activeZones.forEach(zone => {
       const points = zone.geometry.points;
       if (points.length === 0) return;
-      
+
       centers[zone.id] = {
         x: points.reduce((sum, p) => sum + p.x, 0) / points.length,
         y: points.reduce((sum, p) => sum + p.y, 0) / points.length,
       };
     });
-    
+
     return centers;
   }, [activeZones]);
 
@@ -408,7 +408,7 @@ export function ZoneOverlay({
         {showLabels && sortedZones.map(zone => {
           const center = zoneCenters[zone.id];
           if (!center) return null;
-          
+
           return (
             <ZoneLabel
               key={`label-${zone.id}`}
@@ -425,7 +425,7 @@ export function ZoneOverlay({
           .map(zone => {
             const center = zoneCenters[zone.id];
             if (!center) return null;
-            
+
             return (
               <OccupancyIndicator
                 key={`occupancy-${zone.id}`}
