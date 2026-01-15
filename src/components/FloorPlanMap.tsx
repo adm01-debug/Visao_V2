@@ -85,8 +85,8 @@ export function FloorPlanMap() {
     return positions;
   }, [uiCameras]);
 
-  const filteredCameras = showOffline 
-    ? uiCameras 
+  const filteredCameras = showOffline
+    ? uiCameras
     : uiCameras.filter(c => c.status !== 'offline');
 
   const alertCameras = uiCameras.filter(c => c.status === 'alert' || c.status === 'warning');
@@ -107,7 +107,7 @@ export function FloorPlanMap() {
 
   return (
     <PullToRefresh onRefresh={handleRefresh} className="h-[calc(100vh-4rem)]">
-      <div 
+      <div
         className="p-6 space-y-6"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
@@ -120,7 +120,7 @@ export function FloorPlanMap() {
             Visualização da planta com localização das câmeras
           </p>
         </div>
-        
+
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
@@ -198,16 +198,16 @@ export function FloorPlanMap() {
               <Maximize2 className="w-4 h-4" />
             </Button>
           </div>
-          
+
           <p className="text-sm text-muted-foreground">
             Clique em uma câmera para visualizar
           </p>
         </div>
 
         {/* Floor Plan */}
-        <div 
+        <div
           className="relative bg-secondary/30 rounded-xl overflow-hidden border border-border"
-          style={{ 
+          style={{
             height: '500px',
             transform: `scale(${zoom})`,
             transformOrigin: 'top left',
@@ -215,7 +215,7 @@ export function FloorPlanMap() {
           }}
         >
           {/* Grid Pattern */}
-          <div 
+          <div
             className="absolute inset-0 opacity-10"
             style={{
               backgroundImage: `
@@ -266,7 +266,7 @@ export function FloorPlanMap() {
                 <TooltipTrigger asChild>
                   <button
                     className={`
-                      absolute transform -translate-x-1/2 -translate-y-1/2 
+                      absolute transform -translate-x-1/2 -translate-y-1/2
                       transition-all duration-300 z-10
                       ${isHovered ? 'scale-150' : 'scale-100'}
                     `}
@@ -309,7 +309,7 @@ export function FloorPlanMap() {
                       `}
                     >
                       <Camera className="w-4 h-4 text-white" />
-                      
+
                       {/* Alert Badge */}
                       {hasAlert && camera.alerts && camera.alerts > 0 && (
                         <span className="absolute -top-1 -right-1 w-4 h-4 bg-destructive text-destructive-foreground text-[10px] font-bold rounded-full flex items-center justify-center">
