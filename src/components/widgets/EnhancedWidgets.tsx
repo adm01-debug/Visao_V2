@@ -194,13 +194,13 @@ interface StatCardProps {
   className?: string;
 }
 
-export function StatCard({ 
-  label, 
-  value, 
-  icon, 
-  trend, 
+export function StatCard({
+  label,
+  value,
+  icon,
+  trend,
   color = 'primary',
-  className 
+  className
 }: StatCardProps) {
   const colorClasses = {
     primary: 'bg-primary/10 text-primary',
@@ -225,7 +225,7 @@ export function StatCard({
           <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
             {label}
           </p>
-          <motion.p 
+          <motion.p
             className="text-2xl font-bold mt-1"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -233,7 +233,7 @@ export function StatCard({
           >
             {value}
           </motion.p>
-          
+
           {trend && (
             <div className={cn(
               'flex items-center gap-1 mt-1 text-xs font-medium',
@@ -245,7 +245,7 @@ export function StatCard({
             </div>
           )}
         </div>
-        
+
         <div className={cn(
           'p-2 rounded-lg',
           colorClasses[color]
@@ -280,9 +280,9 @@ export function MiniChart({ data, color = 'hsl(var(--primary))', height = 40, cl
   }).join(' ');
 
   return (
-    <svg 
-      className={cn('w-full', className)} 
-      height={height} 
+    <svg
+      className={cn('w-full', className)}
+      height={height}
       viewBox={`0 0 100 ${height}`}
       preserveAspectRatio="none"
     >
@@ -292,7 +292,7 @@ export function MiniChart({ data, color = 'hsl(var(--primary))', height = 40, cl
           <stop offset="100%" stopColor={color} stopOpacity={0} />
         </linearGradient>
       </defs>
-      
+
       {/* Area */}
       <motion.path
         d={`M0,${height} L${points} L100,${height} Z`}
@@ -301,7 +301,7 @@ export function MiniChart({ data, color = 'hsl(var(--primary))', height = 40, cl
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       />
-      
+
       {/* Line */}
       <motion.polyline
         points={points}
