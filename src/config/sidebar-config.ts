@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Sidebar Configuration - Menu organizado em 5 categorias
- * 
+ *
  * Categorias:
  * 1. Monitoramento - Visualização em tempo real
  * 2. Segurança - Alertas e controle de acesso
@@ -10,24 +10,24 @@
  * 5. Configurações - Setup do sistema
  */
 
-import { 
-  Camera, 
-  Video, 
+import {
+  Camera,
+  Video,
   LayoutDashboard,
-  Bell, 
-  Shield, 
+  Bell,
+  Shield,
   Lock,
-  Brain, 
-  BarChart3, 
+  Brain,
+  BarChart3,
   Scan,
-  Users, 
-  Car, 
+  Users,
+  Car,
   MapPin,
-  Settings, 
-  Sliders, 
+  Settings,
+  Sliders,
   MessageSquare,
   Zap,
-  type LucideIcon 
+  type LucideIcon
 } from "lucide-react";
 import { ROUTES } from "@/constants/routes";
 
@@ -195,7 +195,7 @@ export const sidebarCategories: SidebarCategory[] = [
 ];
 
 // Helper to get all items flattened
-export const getAllSidebarItems = (): SidebarItem[] => 
+export const getAllSidebarItems = (): SidebarItem[] =>
   sidebarCategories.flatMap(cat => cat.items);
 
 // Helper to find category by item href
