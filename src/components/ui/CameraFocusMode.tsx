@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  X, 
-  Maximize2, 
-  Minimize2, 
-  Volume2, 
+import {
+  X,
+  Maximize2,
+  Minimize2,
+  Volume2,
   VolumeX,
   Camera,
   Settings,
@@ -199,8 +199,8 @@ export function CameraFocusMode({
             style={{ scale: zoom }}
           >
             {thumbnail ? (
-              <img 
-                src={thumbnail} 
+              <img
+                src={thumbnail}
                 alt={cameraName}
                 className="max-w-full max-h-full object-contain"
               />
@@ -246,18 +246,18 @@ export function CameraFocusMode({
                 disabled={zoom <= 1}
                 label="Diminuir zoom"
               />
-              
+
               <span className="text-white text-sm min-w-[3rem] text-center">
                 {Math.round(zoom * 100)}%
               </span>
-              
+
               <ControlButton
                 icon={<ZoomIn className="w-5 h-5" />}
                 onClick={handleZoomIn}
                 disabled={zoom >= 3}
                 label="Aumentar zoom"
               />
-              
+
               <ControlButton
                 icon={<RotateCcw className="w-4 h-4" />}
                 onClick={handleResetZoom}
@@ -294,8 +294,8 @@ function ControlButton({ icon, onClick, disabled, label, active }: ControlButton
     <motion.button
       className={cn(
         'p-2 rounded-full transition-colors',
-        active 
-          ? 'bg-primary text-primary-foreground' 
+        active
+          ? 'bg-primary text-primary-foreground'
           : 'bg-white/10 text-white hover:bg-white/20',
         disabled && 'opacity-50 cursor-not-allowed'
       )}
@@ -365,8 +365,8 @@ export function CameraGridLayout({
           transition={{ delay: index * 0.05 }}
         >
           {camera.thumbnail ? (
-            <img 
-              src={camera.thumbnail} 
+            <img
+              src={camera.thumbnail}
               alt={camera.name}
               className="w-full h-full object-cover"
             />
@@ -378,9 +378,9 @@ export function CameraGridLayout({
 
           {/* Status indicator */}
           <div className="absolute top-2 left-2">
-            <PulseIndicator 
-              color={camera.status === 'online' ? 'success' : 'destructive'} 
-              size="sm" 
+            <PulseIndicator
+              color={camera.status === 'online' ? 'success' : 'destructive'}
+              size="sm"
             />
           </div>
 
