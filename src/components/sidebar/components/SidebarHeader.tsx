@@ -31,7 +31,7 @@ export const SidebarHeader = memo(function SidebarHeader({
           <span className="font-bold text-lg">VISÃO</span>
         </div>
       )}
-      
+
       {collapsed && !isMobile && <Eye className="w-6 h-6 text-primary" />}
 
       {!isMobile && (
