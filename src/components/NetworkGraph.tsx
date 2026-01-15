@@ -90,7 +90,7 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({
   // Initialize simulation
   useEffect(() => {
     const nodeMap = new Map<string, SimNode>();
-    
+
     // Create nodes with initial positions
     const initialNodes: SimNode[] = nodes.map((node, i) => {
       const angle = (2 * Math.PI * i) / nodes.length;
@@ -224,7 +224,7 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({
     e.preventDefault();
     setDraggedNode(nodeId);
 
-    setSimNodes(prev => prev.map(n => 
+    setSimNodes(prev => prev.map(n =>
       n.id === nodeId ? { ...n, fx: n.x, fy: n.y } : n
     ));
   }, [draggable]);
@@ -236,14 +236,14 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({
     const x = (e.clientX - rect.left - zoom.x) / zoom.k;
     const y = (e.clientY - rect.top - zoom.y) / zoom.k;
 
-    setSimNodes(prev => prev.map(n => 
+    setSimNodes(prev => prev.map(n =>
       n.id === draggedNode ? { ...n, fx: x, fy: y, x, y } : n
     ));
   }, [draggedNode, zoom]);
 
   const handleMouseUp = useCallback(() => {
     if (draggedNode) {
-      setSimNodes(prev => prev.map(n => 
+      setSimNodes(prev => prev.map(n =>
         n.id === draggedNode ? { ...n, fx: null, fy: null } : n
       ));
       setDraggedNode(null);
