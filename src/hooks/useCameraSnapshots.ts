@@ -54,7 +54,7 @@ export const useCameraSnapshots = (cameraId?: string) => {
   ) => {
     try {
       const fileName = `snapshots/${cameraId}/${Date.now()}.jpg`;
-      
+
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('camera-snapshots')
         .upload(fileName, imageBlob);
