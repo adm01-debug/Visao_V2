@@ -104,13 +104,13 @@ export function exportToPDF<T extends Record<string, unknown>>(
                 let cellClass = '';
                 const strKey = String(key);
                 const strValue = String(value ?? '');
-                
+
                 if (strKey === 'severity') {
                   cellClass = `severity-${strValue}`;
                 } else if (strKey === 'status') {
                   cellClass = `status-${strValue}`;
                 }
-                
+
                 return `<td class="${cellClass}">${formatValue(value, strKey)}</td>`;
               }).join('')}
             </tr>
@@ -136,15 +136,15 @@ export function exportToPDF<T extends Record<string, unknown>>(
 
 function formatValue(value: unknown, key: string): string {
   if (value === null || value === undefined) return '-';
-  
+
   if (key === 'timestamp' || key === 'created_at' || key === 'updated_at') {
     return format(new Date(String(value)), "dd/MM/yyyy HH:mm", { locale: ptBR });
   }
-  
+
   if (key === 'is_read') {
     return value ? 'Sim' : 'Não';
   }
-  
+
   if (key === 'severity') {
     const severityMap: Record<string, string> = {
       low: 'Baixo',
@@ -154,7 +154,7 @@ function formatValue(value: unknown, key: string): string {
     };
     return severityMap[String(value)] || String(value);
   }
-  
+
   if (key === 'status') {
     const statusMap: Record<string, string> = {
       online: 'Online',
@@ -164,7 +164,7 @@ function formatValue(value: unknown, key: string): string {
     };
     return statusMap[String(value)] || String(value);
   }
-  
+
   if (key === 'type') {
     const typeMap: Record<string, string> = {
       security: 'Segurança',
@@ -175,7 +175,7 @@ function formatValue(value: unknown, key: string): string {
     };
     return typeMap[String(value)] || String(value);
   }
-  
+
   return String(value);
 }
 
@@ -211,7 +211,7 @@ export const cameraExportHeaders = [
 
 export function exportAlerts(alerts: ExportableAlert[], format: 'csv' | 'pdf') {
   const filename = `alertas_${format === 'csv' ? new Date().toISOString().split('T')[0] : ''}`;
-  
+
   if (format === 'csv') {
     exportToCSV(alerts, filename, alertExportHeaders);
   } else {
@@ -221,7 +221,7 @@ export function exportAlerts(alerts: ExportableAlert[], format: 'csv' | 'pdf') {
 
 export function exportCameras(cameras: ExportableCamera[], format: 'csv' | 'pdf') {
   const filename = `cameras_${format === 'csv' ? new Date().toISOString().split('T')[0] : ''}`;
-  
+
   if (format === 'csv') {
     exportToCSV(cameras, filename, cameraExportHeaders);
   } else {
