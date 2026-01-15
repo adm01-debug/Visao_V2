@@ -206,7 +206,7 @@ export const Kanban: React.FC<KanbanProps> = ({
     if (!draggedCard) return;
 
     // Find source column
-    const sourceColumn = columns.find(col => 
+    const sourceColumn = columns.find(col =>
       col.cards.some(card => card.id === draggedCard)
     );
 
