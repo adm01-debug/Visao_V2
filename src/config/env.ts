@@ -1,51 +1,40 @@
 /**
- * VISÃO - Sistema de Vigilância Inteligente
- * Configuração de variáveis de ambiente
- * 
- * @module config/env
+ * Environment Configuration
+ * Validates and exports environment variables
  */
 
-export const ENV = {
-  // App Mode
-  MODE: import.meta.env.MODE,
-  DEV: import.meta.env.DEV,
-  PROD: import.meta.env.PROD,
-  
-  // API
-  API_URL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
-  
-  // Supabase - Padronizado para PUBLISHABLE_KEY
-  SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL || '',
-  SUPABASE_PUBLISHABLE_KEY: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '',
-  // Alias para compatibilidade com código legado
-  SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '',
-  
-  // Sentry
-  SENTRY_DSN: import.meta.env.VITE_SENTRY_DSN || '',
-  
-  // Features
-  ENABLE_ANALYTICS: import.meta.env.VITE_ENABLE_ANALYTICS === 'true',
-  
-  // MediaMTX
-  MEDIAMTX_URL: import.meta.env.VITE_MEDIAMTX_URL || 'http://localhost:8888',
-  MEDIAMTX_API_URL: import.meta.env.VITE_MEDIAMTX_API_URL || 'http://localhost:9997',
-  MEDIAMTX_WEBRTC_URL: import.meta.env.VITE_MEDIAMTX_WEBRTC_URL || 'http://localhost:8889',
-  
-  // App Info
-  APP_NAME: import.meta.env.VITE_APP_NAME || 'VISÃO',
-  APP_VERSION: import.meta.env.VITE_APP_VERSION || '1.0.0',
-  API_TIMEOUT: Number(import.meta.env.VITE_API_TIMEOUT) || 30000,
-} as const;
+// Supabase configuration
+export const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+export const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-// Helper functions
-export const isDev = () => ENV.DEV;
-export const isProd = () => ENV.PROD;
-export const isTest = () => ENV.MODE === 'test';
+// API configuration
+export const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
-// Validação de variáveis obrigatórias
-export const validateEnv = () => {
-  const required = ['SUPABASE_URL', 'SUPABASE_PUBLISHABLE_KEY'];
-  const missing = required.filter(key => !ENV[key as keyof typeof ENV]);
+// Sentry configuration
+export const sentryDsn = import.meta.env.VITE_SENTRY_DSN || '';
+
+// Feature flags
+export const enableAnalytics = import.meta.env.VITE_ENABLE_ANALYTICS === 'true';
+
+// Environment checks
+export const isDevelopment = import.meta.env.DEV;
+export const isProduction = import.meta.env.PROD;
+
+// Required environment variables
+const requiredEnvVars = [
+  'VITE_SUPABASE_URL',
+  'VITE_SUPABASE_ANON_KEY',
+];
+
+// Validate environment
+export const validateEnv = (): boolean => {
+  const missing: string[] = [];
+  
+  for (const envVar of requiredEnvVars) {
+    if (!import.meta.env[envVar]) {
+      missing.push(envVar);
+    }
+  }
   
   if (missing.length > 0) {
     if (import.meta.env.DEV) {
@@ -53,5 +42,20 @@ export const validateEnv = () => {
     }
     return false;
   }
+  
   return true;
 };
+
+// Export all env variables
+export const env = {
+  supabaseUrl,
+  supabaseAnonKey,
+  apiUrl,
+  sentryDsn,
+  enableAnalytics,
+  isDevelopment,
+  isProduction,
+  validateEnv,
+};
+
+export default env;
