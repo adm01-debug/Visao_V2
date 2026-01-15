@@ -29,6 +29,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useAvatarUpload } from "@/hooks/useAvatarUpload";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { logger } from '@/lib/logger';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -79,7 +80,7 @@ export default function ProfilePage() {
       
       toast.success("Perfil atualizado com sucesso!");
     } catch (error) {
-      console.error('Error saving profile:', error);
+      logger.error('profile', 'Error saving profile:', error);
       toast.error("Erro ao salvar perfil");
     } finally {
       setIsLoading(false);
