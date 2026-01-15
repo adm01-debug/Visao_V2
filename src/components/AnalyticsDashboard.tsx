@@ -1,11 +1,11 @@
 import { formatDate, formatNumber } from "@/lib/formatters";
 import { useMemo } from 'react';
-import { 
+import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
-import { 
-  TrendingUp, AlertTriangle, Shield, Clock, 
+import {
+  TrendingUp, AlertTriangle, Shield, Clock,
   Activity, Users, Camera, Eye
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -265,31 +265,31 @@ export function AnalyticsDashboard() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(222, 30%, 20%)" />
-                  <XAxis 
-                    dataKey="date" 
-                    stroke="hsl(215, 20%, 55%)" 
+                  <XAxis
+                    dataKey="date"
+                    stroke="hsl(215, 20%, 55%)"
                     fontSize={12}
                     tickLine={false}
                   />
-                  <YAxis 
-                    stroke="hsl(215, 20%, 55%)" 
+                  <YAxis
+                    stroke="hsl(215, 20%, 55%)"
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}
                   />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'hsl(222, 47%, 10%)', 
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'hsl(222, 47%, 10%)',
                       border: '1px solid hsl(222, 30%, 20%)',
                       borderRadius: '8px',
                     }}
                     labelFormatter={(_, payload) => payload[0]?.payload?.fullDate || ''}
                   />
-                  <Area 
-                    type="monotone" 
-                    dataKey="total" 
-                    stroke={COLORS.primary} 
-                    fillOpacity={1} 
+                  <Area
+                    type="monotone"
+                    dataKey="total"
+                    stroke={COLORS.primary}
+                    fillOpacity={1}
                     fill="url(#colorTotal)"
                     name="Total"
                   />
@@ -314,9 +314,9 @@ export function AnalyticsDashboard() {
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(222, 30%, 20%)" />
                   <XAxis type="number" stroke="hsl(215, 20%, 55%)" fontSize={12} />
                   <YAxis dataKey="date" type="category" stroke="hsl(215, 20%, 55%)" fontSize={12} width={40} />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'hsl(222, 47%, 10%)', 
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'hsl(222, 47%, 10%)',
                       border: '1px solid hsl(222, 30%, 20%)',
                       borderRadius: '8px',
                     }}
@@ -351,31 +351,31 @@ export function AnalyticsDashboard() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(222, 30%, 20%)" />
-                  <XAxis 
-                    dataKey="hour" 
-                    stroke="hsl(215, 20%, 55%)" 
+                  <XAxis
+                    dataKey="hour"
+                    stroke="hsl(215, 20%, 55%)"
                     fontSize={10}
                     tickLine={false}
                     interval={3}
                   />
-                  <YAxis 
-                    stroke="hsl(215, 20%, 55%)" 
+                  <YAxis
+                    stroke="hsl(215, 20%, 55%)"
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}
                   />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'hsl(222, 47%, 10%)', 
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'hsl(222, 47%, 10%)',
                       border: '1px solid hsl(222, 30%, 20%)',
                       borderRadius: '8px',
                     }}
                   />
-                  <Area 
-                    type="monotone" 
-                    dataKey="total" 
-                    stroke={COLORS.warning} 
-                    fillOpacity={1} 
+                  <Area
+                    type="monotone"
+                    dataKey="total"
+                    stroke={COLORS.warning}
+                    fillOpacity={1}
                     fill="url(#colorHour)"
                     name="Alertas"
                   />
@@ -413,15 +413,15 @@ export function AnalyticsDashboard() {
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'hsl(222, 47%, 10%)', 
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'hsl(222, 47%, 10%)',
                         border: '1px solid hsl(222, 30%, 20%)',
                         borderRadius: '8px',
                       }}
                     />
-                    <Legend 
-                      verticalAlign="bottom" 
+                    <Legend
+                      verticalAlign="bottom"
                       height={36}
                       formatter={(value) => <span className="text-xs text-muted-foreground">{value}</span>}
                     />
@@ -447,15 +447,15 @@ export function AnalyticsDashboard() {
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'hsl(222, 47%, 10%)', 
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'hsl(222, 47%, 10%)',
                         border: '1px solid hsl(222, 30%, 20%)',
                         borderRadius: '8px',
                       }}
                     />
-                    <Legend 
-                      verticalAlign="bottom" 
+                    <Legend
+                      verticalAlign="bottom"
                       height={36}
                       formatter={(value) => <span className="text-xs text-muted-foreground">{value}</span>}
                     />
