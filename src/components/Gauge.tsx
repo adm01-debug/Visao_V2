@@ -103,7 +103,7 @@ export const Gauge: React.FC<GaugeProps> = ({
     segments.forEach(segment => {
       const segmentPercentage = (segment.value - prevValue) / (max - min);
       const segmentEndAngle = prevAngle + segmentPercentage * angleRange;
-      
+
       arcs.push({
         path: createArc(prevAngle, segmentEndAngle, radius),
         color: segment.color,
@@ -119,19 +119,19 @@ export const Gauge: React.FC<GaugeProps> = ({
   // Generate tick marks
   const ticks = useMemo(() => {
     const tickMarks: { x1: number; y1: number; x2: number; y2: number; value: number; labelPos: { x: number; y: number } }[] = [];
-    
+
     for (let i = 0; i <= tickCount; i++) {
       const tickValue = min + (i / tickCount) * (max - min);
       const tickAngle = startAngle + (i / tickCount) * angleRange;
-      
+
       const innerR = radius - thickness / 2 - 5;
       const outerR = radius - thickness / 2 + 5;
       const labelR = radius - thickness / 2 - 20;
-      
+
       const innerPoint = getPoint(tickAngle, innerR);
       const outerPoint = getPoint(tickAngle, outerR);
       const labelPoint = getPoint(tickAngle, labelR);
-      
+
       tickMarks.push({
         x1: innerPoint.x,
         y1: innerPoint.y,
@@ -141,7 +141,7 @@ export const Gauge: React.FC<GaugeProps> = ({
         labelPos: labelPoint,
       });
     }
-    
+
     return tickMarks;
   }, [tickCount, min, max, startAngle, angleRange, radius, thickness]);
 
@@ -152,7 +152,7 @@ export const Gauge: React.FC<GaugeProps> = ({
     const tip = getPoint(needleAngle, needleLength);
     const base1 = getPoint(needleAngle + 90, needleWidth);
     const base2 = getPoint(needleAngle - 90, needleWidth);
-    
+
     return `M ${tip.x} ${tip.y} L ${base1.x} ${base1.y} L ${base2.x} ${base2.y} Z`;
   }, [needleAngle, radius, thickness]);
 
