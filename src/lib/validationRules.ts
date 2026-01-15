@@ -3,7 +3,7 @@
  * @module lib/validationRules
  */
 
-export const required = (message = 'Campo obrigatório') => (value: unknown) => 
+export const required = (message = 'Campo obrigatório') => (value: unknown) =>
   value !== null && value !== undefined && value !== '' ? null : message;
 
 export const minLength = (min: number, message?: string) => (value: string) =>
