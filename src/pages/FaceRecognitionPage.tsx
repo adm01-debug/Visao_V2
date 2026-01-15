@@ -21,7 +21,7 @@ import {
   History,
   Grid,
   MonitorPlay,
-} from 'lucide-react';
+} , ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -35,6 +35,7 @@ import { RecognizedFace } from '@/hooks/useRealtimeRecognition';
 import { useFaceAPI } from '@/hooks/useFaceAPI';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { FaceBlacklistManager } from '@/components/FaceBlacklistManager';
 
 // Histórico de reconhecimentos
 interface RecognitionEvent {
