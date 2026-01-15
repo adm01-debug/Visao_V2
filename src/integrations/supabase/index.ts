@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Supabase integration barrel export
- * 
+ *
  * @module integrations/supabase
  */
 
