@@ -293,7 +293,7 @@ class WhatsAppService {
     imageUrl?: string
   ): Promise<WhatsAppResponse> {
     const formattedTime = timestamp.toLocaleString('pt-BR');
-    
+
     if (imageUrl) {
       return this.sendImage(
         to,
