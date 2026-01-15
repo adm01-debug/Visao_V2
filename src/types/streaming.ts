@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Tipos para Streaming de Vídeo
- * 
+ *
  * Suporta múltiplos protocolos:
  * - HLS (HTTP Live Streaming) - Compatibilidade máxima
  * - WebRTC - Baixa latência
@@ -16,7 +16,7 @@ export type StreamProtocol = 'hls' | 'webrtc' | 'rtsp' | 'mjpeg';
 
 export type StreamQuality = 'auto' | '1080p' | '720p' | '480p' | '360p';
 
-export type StreamStatus = 
+export type StreamStatus =
   | 'disconnected'    // Sem conexão
   | 'connecting'      // Tentando conectar
   | 'connected'       // Conectado, aguardando dados
@@ -33,19 +33,19 @@ export type StreamStatus =
 export interface StreamConfig {
   /** URL do stream (HLS m3u8, WebRTC signaling, RTSP) */
   url: string;
-  
+
   /** Protocolo de streaming */
   protocol: StreamProtocol;
-  
+
   /** Qualidade preferida */
   preferredQuality?: StreamQuality;
-  
+
   /** Credenciais de autenticação */
   credentials?: {
     username: string;
     password: string;
   };
-  
+
   /** Configurações de reconexão */
   reconnection?: {
     enabled: boolean;
@@ -53,13 +53,13 @@ export interface StreamConfig {
     delayMs: number;
     backoffMultiplier: number;
   };
-  
+
   /** Buffer de vídeo em segundos */
   bufferLength?: number;
-  
+
   /** Latência alvo para WebRTC (ms) */
   targetLatency?: number;
-  
+
   /** Habilitar áudio */
   enableAudio?: boolean;
 }
@@ -86,34 +86,34 @@ export const defaultStreamConfig: Partial<StreamConfig> = {
 export interface StreamState {
   /** Status atual da conexão */
   status: StreamStatus;
-  
+
   /** Está reproduzindo? */
   isPlaying: boolean;
-  
+
   /** Está mutado? */
   isMuted: boolean;
-  
+
   /** Volume (0-1) */
   volume: number;
-  
+
   /** Qualidade atual */
   currentQuality: StreamQuality;
-  
+
   /** Qualidades disponíveis */
   availableQualities: StreamQuality[];
-  
+
   /** Estatísticas de rede */
   stats: StreamStats;
-  
+
   /** Erro atual (se houver) */
   error: StreamError | null;
-  
+
   /** Timestamp do último frame */
   lastFrameTime: number | null;
-  
+
   /** Está em fullscreen? */
   isFullscreen: boolean;
-  
+
   /** Mostrando controles? */
   showControls: boolean;
 }
@@ -121,25 +121,25 @@ export interface StreamState {
 export interface StreamStats {
   /** Bitrate atual (kbps) */
   bitrate: number;
-  
+
   /** FPS atual */
   fps: number;
-  
+
   /** Resolução atual */
   resolution: { width: number; height: number };
-  
+
   /** Latência estimada (ms) */
   latency: number;
-  
+
   /** Frames perdidos */
   droppedFrames: number;
-  
+
   /** Buffer atual (segundos) */
   buffered: number;
-  
+
   /** Tempo de conexão (ms) */
   connectionTime: number;
-  
+
   /** Tentativas de reconexão */
   reconnectAttempts: number;
 }
@@ -147,21 +147,21 @@ export interface StreamStats {
 export interface StreamError {
   /** Código do erro */
   code: StreamErrorCode;
-  
+
   /** Mensagem amigável */
   message: string;
-  
+
   /** Detalhes técnicos */
   details?: string;
-  
+
   /** Timestamp do erro */
   timestamp: Date;
-  
+
   /** Pode tentar novamente? */
   recoverable: boolean;
 }
 
-export type StreamErrorCode = 
+export type StreamErrorCode =
   | 'NETWORK_ERROR'       // Erro de rede
   | 'PROTOCOL_ERROR'      // Erro de protocolo
   | 'AUTH_ERROR'          // Falha de autenticação
@@ -179,28 +179,28 @@ export type StreamErrorCode =
 export interface StreamEvents {
   /** Chamado quando conecta */
   onConnect?: () => void;
-  
+
   /** Chamado quando desconecta */
   onDisconnect?: (reason?: string) => void;
-  
+
   /** Chamado quando começa a reproduzir */
   onPlay?: () => void;
-  
+
   /** Chamado quando pausa */
   onPause?: () => void;
-  
+
   /** Chamado quando ocorre erro */
   onError?: (error: StreamError) => void;
-  
+
   /** Chamado quando stats atualizam */
   onStatsUpdate?: (stats: StreamStats) => void;
-  
+
   /** Chamado quando qualidade muda */
   onQualityChange?: (quality: StreamQuality) => void;
-  
+
   /** Chamado quando captura snapshot */
   onSnapshot?: (imageData: string) => void;
-  
+
   /** Chamado a cada frame (para análise) */
   onFrame?: (frameData: ImageData) => void;
 }
@@ -212,16 +212,16 @@ export interface StreamEvents {
 export interface PTZCapabilities {
   /** Suporta pan (horizontal) */
   canPan: boolean;
-  
+
   /** Suporta tilt (vertical) */
   canTilt: boolean;
-  
+
   /** Suporta zoom */
   canZoom: boolean;
-  
+
   /** Suporta presets */
   canPreset: boolean;
-  
+
   /** Limites de movimento */
   limits?: {
     panMin: number;
@@ -231,7 +231,7 @@ export interface PTZCapabilities {
     zoomMin: number;
     zoomMax: number;
   };
-  
+
   /** Presets disponíveis */
   presets?: PTZPreset[];
 }
@@ -256,25 +256,25 @@ export interface PTZCommand {
 export interface CameraStream {
   /** ID da câmera */
   cameraId: string;
-  
+
   /** Nome da câmera */
   cameraName: string;
-  
+
   /** Configuração do stream */
   config: StreamConfig;
-  
+
   /** Capacidades PTZ */
   ptz?: PTZCapabilities;
-  
+
   /** Streams alternativos (multi-qualidade) */
   alternativeStreams?: {
     quality: StreamQuality;
     url: string;
   }[];
-  
+
   /** Thumbnail atual */
   currentThumbnail?: string;
-  
+
   /** Última atualização */
   lastUpdated: Date;
 }
