@@ -1,7 +1,7 @@
 /**
  * VIS-O - Sistema de Vigilância Inteligente
  * TimestampOverlay - Timestamp overlay for video/camera feeds
- * 
+ *
  * @module components/timestampoverlay
  */
 
