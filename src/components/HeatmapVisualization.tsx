@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: HeatmapVisualization
- * 
+ *
  * Mapa de calor de movimentação por zona em tempo real
  */
 
@@ -15,11 +15,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCameras } from '@/hooks/useCameras';
 import { useHeatmap, TimeRange } from '@/hooks/useHeatmap';
-import { 
-  Activity, 
-  Clock, 
-  TrendingUp, 
-  Users, 
+import {
+  Activity,
+  Clock,
+  TrendingUp,
+  Users,
   MapPin,
   Calendar,
   RefreshCw,
@@ -183,7 +183,7 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
       // Processar dados por zona
       const activities: ZoneActivity[] = (zones || []).map(zone => {
         const zoneEvents = (events || []).filter(e => e.zone_id === zone.id);
-        
+
         // Agrupar por hora
         const hourlyMap = new Map<number, number>();
         for (let i = 0; i < 24; i++) {
@@ -210,9 +210,9 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
         });
 
         const peak = hourlyData.reduce((max, h) => h.count > max.count ? h : max, { hour: 0, count: 0 });
-        
+
         // Calcular tendência
-        const recentEvents = zoneEvents.filter(e => 
+        const recentEvents = zoneEvents.filter(e =>
           new Date(e.timestamp) > subHours(new Date(), 1)
         ).length;
         const previousEvents = zoneEvents.filter(e => {
@@ -248,18 +248,18 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
   // Calcular estatísticas gerais
   const stats = useMemo(() => {
     const totalEvents = zoneActivities.reduce((sum, z) => sum + z.total, 0);
-    const avgPerZone = zoneActivities.length > 0 
-      ? Math.round(totalEvents / zoneActivities.length) 
+    const avgPerZone = zoneActivities.length > 0
+      ? Math.round(totalEvents / zoneActivities.length)
       : 0;
     const hotZone = zoneActivities[0];
-    
+
     return { totalEvents, avgPerZone, hotZone };
   }, [zoneActivities]);
 
   // Gerar matriz de heatmap por hora
   const hourlyMatrix = useMemo(() => {
     const matrix: { hour: number; zones: { name: string; intensity: number }[] }[] = [];
-    
+
     for (let hour = 0; hour < 24; hour++) {
       matrix.push({
         hour,
@@ -269,7 +269,7 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
         }))
       });
     }
-    
+
     return matrix;
   }, [zoneActivities]);
 
@@ -466,7 +466,7 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-base">{zone.name}</CardTitle>
-                    <Badge 
+                    <Badge
                       variant={zone.trend === 'up' ? 'destructive' : zone.trend === 'down' ? 'secondary' : 'outline'}
                       className="gap-1"
                     >
@@ -486,7 +486,7 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
                       <span className="text-muted-foreground">Horário de pico:</span>
                       <span className="font-medium">{zone.peak.hour}h ({zone.peak.count} eventos)</span>
                     </div>
-                    
+
                     {/* Mini heatmap */}
                     <div className="flex gap-0.5 mt-2">
                       {zone.hourly.map((h, idx) => (
@@ -529,8 +529,8 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
                     <div className="relative h-4 bg-muted rounded-full overflow-hidden">
                       <div
                         className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-primary/50 rounded-full"
-                        style={{ 
-                          width: `${(zone.total / (stats.hotZone?.total || 1)) * 100}%` 
+                        style={{
+                          width: `${(zone.total / (stats.hotZone?.total || 1)) * 100}%`
                         }}
                       />
                     </div>
