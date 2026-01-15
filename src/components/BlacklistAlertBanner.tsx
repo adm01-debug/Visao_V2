@@ -9,11 +9,11 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useBlacklistAlerts } from '@/hooks/useBlacklistAlerts';
-import { 
-  requestNotificationPermission, 
+import {
+  requestNotificationPermission,
   getNotificationPermission,
   setBrowserNotificationsEnabled,
-  getBrowserNotificationsEnabled 
+  getBrowserNotificationsEnabled
 } from '@/lib/browserNotifications';
 
 interface BlacklistAlertBannerProps {
@@ -174,8 +174,8 @@ export function BlacklistAlertBanner({ className }: BlacklistAlertBannerProps) {
             {expanded && (
               <div className="max-h-48 overflow-y-auto border-t border-destructive-foreground/20">
                 {recentAlerts.slice(1).map((alert) => (
-                  <div 
-                    key={alert.id} 
+                  <div
+                    key={alert.id}
                     className="flex items-center gap-3 p-3 border-b border-destructive-foreground/10 last:border-0"
                   >
                     <Avatar className="h-8 w-8">
