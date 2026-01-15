@@ -1,10 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Camera, 
-  Bell, 
-  Users, 
-  MapPin, 
+import {
+  Camera,
+  Bell,
+  Users,
+  MapPin,
   Activity,
   Shield,
   Search,
@@ -18,12 +18,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-type EmptyStateType = 
-  | 'cameras' 
-  | 'alerts' 
-  | 'people' 
-  | 'zones' 
-  | 'search' 
+type EmptyStateType =
+  | 'cameras'
+  | 'alerts'
+  | 'people'
+  | 'zones'
+  | 'search'
   | 'activity'
   | 'notifications'
   | 'reports'
@@ -248,7 +248,7 @@ export function EmptyState({
           className="flex flex-col sm:flex-row gap-2 mt-2"
         >
           {action && (
-            <Button 
+            <Button
               onClick={action.onClick}
               className="gap-2"
             >
@@ -257,8 +257,8 @@ export function EmptyState({
             </Button>
           )}
           {secondaryAction && (
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={secondaryAction.onClick}
             >
               {secondaryAction.label}
