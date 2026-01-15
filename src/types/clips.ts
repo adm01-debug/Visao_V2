@@ -19,7 +19,7 @@ export interface Clip {
 
 export type ClipFormat = 'mp4' | 'webm' | 'hls' | 'dash';
 
-export type ClipStatus = 
+export type ClipStatus =
   | 'recording'
   | 'processing'
   | 'ready'
