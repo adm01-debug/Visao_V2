@@ -1,7 +1,7 @@
 /**
  * VIS-O - Sistema de Vigilância Inteligente
  * TextareaField - Form field wrapper for textarea
- * 
+ *
  * @module components/textareafield
  */
 
