@@ -71,8 +71,8 @@ export function usePerformanceMetrics(enabled: boolean = true) {
 
     try {
       const start = performance.now();
-      await fetch("/favicon.ico", { 
-        method: "HEAD", 
+      await fetch("/favicon.ico", {
+        method: "HEAD",
         cache: "no-store",
         mode: "no-cors"
       });
