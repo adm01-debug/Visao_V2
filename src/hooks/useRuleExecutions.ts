@@ -42,13 +42,13 @@ export function useRuleExecutions(ruleId?: string) {
         `)
         .order('triggered_at', { ascending: false })
         .limit(100);
-      
+
       if (ruleId) {
         query = query.eq('rule_id', ruleId);
       }
-      
+
       const { data, error } = await query;
-      
+
       if (error) throw error;
       return data as RuleExecution[];
     },
@@ -67,7 +67,7 @@ export function useRuleExecutions(ruleId?: string) {
     const success = executions.filter(e => e.status === 'success').length;
     const errors = executions.filter(e => e.status === 'error').length;
     const avgTime = executions.reduce((acc, e) => acc + (e.execution_time_ms || 0), 0) / (total || 1);
-    
+
     return { total, success, errors, avgTime: Math.round(avgTime) };
   };
 
