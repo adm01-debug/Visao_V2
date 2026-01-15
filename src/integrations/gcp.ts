@@ -112,7 +112,7 @@ class GcpService {
     // This is a simplified implementation
     const base64Header = btoa(JSON.stringify(header));
     const base64Payload = btoa(JSON.stringify(payload));
-    
+
     // For full implementation, sign with private key using crypto
     // This would require a crypto library for RS256 signing
     const unsignedToken = `${base64Header}.${base64Payload}`;
@@ -140,13 +140,13 @@ class GcpService {
   async uploadToStorage(options: GcsUploadOptions): Promise<{ url: string; filename: string }> {
     const token = await this.getAccessToken();
     const bucket = options.bucket || this.config?.storageBucket;
-    
+
     if (!bucket) {
       throw new Error('Storage bucket not specified');
     }
 
     const contentType = options.contentType || 'application/octet-stream';
-    const content = options.content instanceof Blob 
+    const content = options.content instanceof Blob
       ? await options.content.arrayBuffer()
       : options.content;
 
@@ -381,7 +381,7 @@ class GcpService {
 
     const result = await response.json();
     return (result.results || []).map(
-      (r: { alternatives: Array<{ transcript: string }> }) => 
+      (r: { alternatives: Array<{ transcript: string }> }) =>
         r.alternatives[0]?.transcript || ''
     );
   }
