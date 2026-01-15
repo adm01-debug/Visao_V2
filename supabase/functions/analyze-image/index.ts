@@ -12,7 +12,7 @@ serve(async (req) => {
 
   try {
     const { imageUrl, imageBase64, analysisType = 'security' } = await req.json();
-    
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
@@ -22,7 +22,7 @@ serve(async (req) => {
       throw new Error("Either imageUrl or imageBase64 is required");
     }
 
-    const imageContent = imageBase64 
+    const imageContent = imageBase64
       ? { type: "image_url", image_url: { url: `data:image/jpeg;base64,${imageBase64}` } }
       : { type: "image_url", image_url: { url: imageUrl } };
 
@@ -50,14 +50,14 @@ Respond in JSON format:
   "alerts": [
     {
       "type": "security" | "safety" | "operations" | "access",
-      "severity": "low" | "medium" | "high" | "critical", 
+      "severity": "low" | "medium" | "high" | "critical",
       "message": string,
       "recommendation": string
     }
   ],
   "summary": string
 }`,
-      
+
       productivity: `You are an AI workplace analyst. Analyze the image for productivity metrics:
 - Number of people working/idle
 - Workstation occupancy
@@ -73,7 +73,7 @@ Respond in JSON format:
   "observations": [string],
   "summary": string
 }`,
-      
+
       safety: `You are an AI safety inspector. Analyze the image for safety compliance:
 - PPE compliance (helmets, vests, gloves, goggles)
 - Hazardous conditions
@@ -114,8 +114,8 @@ Respond in JSON format:
         model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
-          { 
-            role: "user", 
+          {
+            role: "user",
             content: [
               { type: "text", text: "Analyze this surveillance camera image:" },
               imageContent
@@ -129,7 +129,7 @@ Respond in JSON format:
     if (!response.ok) {
       const errorText = await response.text();
       console.error("AI gateway error:", response.status, errorText);
-      
+
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again later." }), {
           status: 429,
@@ -142,13 +142,13 @@ Respond in JSON format:
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      
+
       throw new Error(`AI gateway error: ${response.status}`);
     }
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content;
-    
+
     let analysis;
     try {
       analysis = JSON.parse(content);
@@ -159,8 +159,8 @@ Respond in JSON format:
 
     console.log("Analysis completed:", JSON.stringify(analysis).substring(0, 200));
 
-    return new Response(JSON.stringify({ 
-      success: true, 
+    return new Response(JSON.stringify({
+      success: true,
       analysisType,
       analysis,
       timestamp: new Date().toISOString()
@@ -170,9 +170,9 @@ Respond in JSON format:
 
   } catch (error) {
     console.error("Error in analyze-image function:", error);
-    return new Response(JSON.stringify({ 
-      success: false, 
-      error: error instanceof Error ? error.message : "Unknown error" 
+    return new Response(JSON.stringify({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
     }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
