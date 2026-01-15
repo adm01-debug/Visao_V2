@@ -7,7 +7,7 @@ export function useScript(src: string): ScriptStatus {
 
   useEffect(() => {
     const existingScript = document.querySelector(`script[src="${src}"]`);
-    
+
     if (existingScript) {
       setStatus('ready');
       return;
