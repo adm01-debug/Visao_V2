@@ -1,6 +1,6 @@
-import { 
-  Shield, 
-  AlertTriangle, 
+import {
+  Shield,
+  AlertTriangle,
   Lock,
   Bell,
   Video,
@@ -66,7 +66,7 @@ export function RuleCard({ rule, onToggle, onEdit, onDelete }: RuleCardProps) {
           <div className={`p-2 rounded-lg bg-secondary/50 ${categoryInfo?.color}`}>
             <CategoryIcon className="w-5 h-5" />
           </div>
-          
+
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="font-semibold text-foreground truncate">{rule.name}</h3>
@@ -74,7 +74,7 @@ export function RuleCard({ rule, onToggle, onEdit, onDelete }: RuleCardProps) {
                 {severityInfo?.label}
               </Badge>
             </div>
-            
+
             <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
               {rule.description}
             </p>
@@ -106,8 +106,8 @@ export function RuleCard({ rule, onToggle, onEdit, onDelete }: RuleCardProps) {
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Camera className="w-3.5 h-3.5" />
                 <span>
-                  {rule.cameras.length === 0 
-                    ? 'Todas as câmeras' 
+                  {rule.cameras.length === 0
+                    ? 'Todas as câmeras'
                     : `${rule.cameras.length} câmera${rule.cameras.length > 1 ? 's' : ''}`
                   }
                 </span>
@@ -121,7 +121,7 @@ export function RuleCard({ rule, onToggle, onEdit, onDelete }: RuleCardProps) {
             checked={rule.isActive}
             onCheckedChange={(checked) => onToggle(rule.id, checked)}
           />
-          
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -137,7 +137,7 @@ export function RuleCard({ rule, onToggle, onEdit, onDelete }: RuleCardProps) {
                 <Power className="w-4 h-4 mr-2" />
                 {rule.isActive ? 'Desativar' : 'Ativar'}
               </DropdownMenuItem>
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={() => onDelete(rule.id)}
                 className="text-destructive focus:text-destructive"
               >
