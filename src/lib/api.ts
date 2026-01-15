@@ -1,7 +1,7 @@
 /**
  * VIS-O - Sistema de Vigilância Inteligente
  * API Client Module
- * 
+ *
  * @module lib/api
  */
 
@@ -49,7 +49,7 @@ class APIClient {
   ): Promise<APIResponse<T>> {
     const url = `${this.config.baseURL}${endpoint}`;
     const requestId = `${method}-${endpoint}-${Date.now()}`;
-    
+
     // Create abort controller for this request
     const controller = new AbortController();
     this.abortControllers.set(requestId, controller);
