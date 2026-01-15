@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Reconhecimento Facial
- * 
+ *
  * Página dedicada para reconhecimento facial em tempo real
  * com visualização de câmeras e identificação de pessoas
  */
