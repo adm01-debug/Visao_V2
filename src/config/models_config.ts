@@ -1,9 +1,9 @@
 /**
  * VISÃO - Configuração de Modelos face-api.js
- * 
+ *
  * Por padrão, o sistema usa CDN (jsdelivr) para carregar os modelos.
  * Isso elimina a necessidade de hospedar modelos localmente.
- * 
+ *
  * Para usar modelos locais (offline):
  * 1. Baixe os modelos de: https://github.com/justadudewhohacks/face-api.js/tree/master/weights
  * 2. Copie para: /public/models/
@@ -15,13 +15,13 @@ export type ModelSource = 'cdn' | 'local';
 export const MODEL_CONFIG = {
   // Fonte dos modelos: 'cdn' (recomendado) ou 'local'
   source: 'cdn' as ModelSource,
-  
+
   // URLs das fontes
   urls: {
     cdn: 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights',
     local: '/models'
   },
-  
+
   // Modelos disponíveis
   models: {
     ssdMobilenetv1: {
