@@ -16,7 +16,7 @@ describe('Switch', () => {
   it('calls onChange when clicked', () => {
     const onChange = vi.fn();
     render(<Switch checked={false} onChange={onChange} />);
-    
+
     fireEvent.click(screen.getByRole('switch'));
     expect(onChange).toHaveBeenCalledWith(true);
   });
