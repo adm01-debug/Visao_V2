@@ -28,16 +28,16 @@ i18n
     defaultNS,
     fallbackLng: 'pt-BR',
     supportedLngs: ['pt-BR', 'en-US'],
-    
+
     interpolation: {
       escapeValue: false, // React already escapes
     },
-    
+
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
     },
-    
+
     react: {
       useSuspense: true,
     },
