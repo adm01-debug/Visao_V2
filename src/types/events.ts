@@ -1,7 +1,7 @@
 // Event Types - Projeto VISÃO
 // Tipagem forte para eventos do sistema
 
-export type EventType = 
+export type EventType =
   | 'alert.created'
   | 'alert.acknowledged'
   | 'alert.resolved'
