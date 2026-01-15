@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useCallback, useState } from 'react';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: NotificationSecretsConfig
@@ -10,7 +10,6 @@ import { memo } from "react";
  * - Webhook URLs
  */
 
-import { useState, useCallback } from 'react';
 import {
   Mail,
   MessageSquare,
