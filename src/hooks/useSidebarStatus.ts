@@ -19,7 +19,7 @@ export function useSidebarStatus(): SidebarStatus {
   // ============================================
   // REALTIME SUBSCRIPTIONS
   // ============================================
-  
+
   useEffect(() => {
     // Subscribe to alerts changes (new alerts, read status updates)
     const alertsChannel = supabase
@@ -123,7 +123,7 @@ export function useSidebarStatus(): SidebarStatus {
         .from("alerts")
         .select("*", { count: "exact", head: true })
         .eq("is_read", false);
-      
+
       if (error) throw error;
       return count || 0;
     },
@@ -137,12 +137,12 @@ export function useSidebarStatus(): SidebarStatus {
       const { data, error } = await supabase
         .from("cameras")
         .select("status");
-      
+
       if (error) throw error;
-      
+
       const online = data?.filter(c => c.status === "online").length || 0;
       const total = data?.length || 0;
-      
+
       return { online, total };
     },
     refetchInterval: 60000,
@@ -155,12 +155,12 @@ export function useSidebarStatus(): SidebarStatus {
       const { data, error } = await supabase
         .from("rules")
         .select("is_active");
-      
+
       if (error) throw error;
-      
+
       const active = data?.filter(r => r.is_active).length || 0;
       const total = data?.length || 0;
-      
+
       return { active, total };
     },
     refetchInterval: 120000,
@@ -174,7 +174,7 @@ export function useSidebarStatus(): SidebarStatus {
         .from("registered_persons")
         .select("*", { count: "exact", head: true })
         .eq("is_active", true);
-      
+
       if (error) throw error;
       return count || 0;
     },
@@ -189,7 +189,7 @@ export function useSidebarStatus(): SidebarStatus {
         .from("zones")
         .select("*", { count: "exact", head: true })
         .eq("is_active", true);
-      
+
       if (error) throw error;
       return count || 0;
     },
