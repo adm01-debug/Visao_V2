@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Utility: encryption
- * 
+ *
  * Criptografia avançada usando Web Crypto API
  */
 
@@ -80,7 +80,7 @@ export async function deriveKey(
 ): Promise<{ key: CryptoKey; salt: Uint8Array }> {
   const enc = new TextEncoder();
   const usedSalt = salt || crypto.getRandomValues(new Uint8Array(16));
-  
+
   const keyMaterial = await crypto.subtle.importKey(
     'raw',
     enc.encode(password),
