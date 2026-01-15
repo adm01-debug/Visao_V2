@@ -21,11 +21,11 @@ export const useDarkMode = (defaultTheme: Theme = 'system'): UseDarkModeReturn =
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
+
     const updateDarkMode = () => {
       const shouldBeDark = theme === 'dark' || (theme === 'system' && mediaQuery.matches);
       setIsDark(shouldBeDark);
-      
+
       if (shouldBeDark) {
         document.documentElement.classList.add('dark');
       } else {
