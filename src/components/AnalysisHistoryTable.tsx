@@ -3,7 +3,7 @@ import { memo } from "react";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: AnalysisHistoryTable
- * 
+ *
  * Tabela detalhada do histórico de análises com:
  * - Filtros por câmera, tipo, data
  * - Ordenação por colunas
@@ -241,7 +241,7 @@ export function AnalysisHistoryTable({
 
       // Filtrar por busca
       const filtered = search
-        ? mapped.filter(r => 
+        ? mapped.filter(r =>
             r.camera_name.toLowerCase().includes(search.toLowerCase()) ||
             r.analysis_type.toLowerCase().includes(search.toLowerCase())
           )
@@ -274,7 +274,7 @@ export function AnalysisHistoryTable({
   // Ícone de ordenação
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) return <ChevronsUpDown className="w-4 h-4 opacity-50" />;
-    return sortDirection === 'asc' 
+    return sortDirection === 'asc'
       ? <ChevronUp className="w-4 h-4" />
       : <ChevronDown className="w-4 h-4" />;
   };
@@ -422,8 +422,8 @@ export function AnalysisHistoryTable({
         <span>
           {loading ? 'Carregando...' : `${totalCount} registros encontrados`}
         </span>
-        <Select 
-          value={String(pageSize)} 
+        <Select
+          value={String(pageSize)}
           onValueChange={(v) => { setPageSize(Number(v)); setPage(1); }}
         >
           <SelectTrigger className="w-20 h-8">
@@ -442,7 +442,7 @@ export function AnalysisHistoryTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead 
+              <TableHead
                 className="cursor-pointer hover:bg-muted/50"
                 onClick={() => toggleSort('timestamp')}
               >
@@ -450,7 +450,7 @@ export function AnalysisHistoryTable({
                   Data/Hora <SortIcon field="timestamp" />
                 </div>
               </TableHead>
-              <TableHead 
+              <TableHead
                 className="cursor-pointer hover:bg-muted/50"
                 onClick={() => toggleSort('camera_name')}
               >
@@ -458,7 +458,7 @@ export function AnalysisHistoryTable({
                   Câmera <SortIcon field="camera_name" />
                 </div>
               </TableHead>
-              <TableHead 
+              <TableHead
                 className="cursor-pointer hover:bg-muted/50"
                 onClick={() => toggleSort('analysis_type')}
               >
@@ -467,7 +467,7 @@ export function AnalysisHistoryTable({
                 </div>
               </TableHead>
               <TableHead>Resultado</TableHead>
-              <TableHead 
+              <TableHead
                 className="cursor-pointer hover:bg-muted/50 text-right"
                 onClick={() => toggleSort('confidence')}
               >
@@ -475,7 +475,7 @@ export function AnalysisHistoryTable({
                   Confiança <SortIcon field="confidence" />
                 </div>
               </TableHead>
-              <TableHead 
+              <TableHead
                 className="cursor-pointer hover:bg-muted/50 text-right"
                 onClick={() => toggleSort('alerts_generated')}
               >
@@ -513,7 +513,7 @@ export function AnalysisHistoryTable({
                 const ResultIcon = resultInfo.icon;
 
                 return (
-                  <TableRow 
+                  <TableRow
                     key={record.id}
                     className="cursor-pointer hover:bg-muted/50"
                     onClick={() => setSelectedRecord(record)}
@@ -531,8 +531,8 @@ export function AnalysisHistoryTable({
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge 
-                        variant="outline" 
+                      <Badge
+                        variant="outline"
                         className={cn('gap-1', resultInfo.color)}
                       >
                         <ResultIcon className="w-3 h-3" />
@@ -630,7 +630,7 @@ export function AnalysisHistoryTable({
               {selectedRecord && format(new Date(selectedRecord.timestamp), "dd 'de' MMMM 'às' HH:mm:ss", { locale: ptBR })}
             </DialogDescription>
           </DialogHeader>
-          
+
           {selectedRecord && (
             <div className="space-y-4">
               {/* Info básica */}
