@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Segurança
- * 
+ *
  * Funcionalidades:
  * - Logs de auditoria
  * - Controle de acesso
@@ -295,7 +295,7 @@ function AccessEventCard({ event }: AccessEventCardProps) {
               {isGranted ? 'Liberado' : isDenied ? 'Negado' : 'Pendente'}
             </Badge>
           </div>
-          
+
           <div role="main" className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
             {event.cameraName && (
               <span className="flex items-center gap-1">
@@ -343,13 +343,13 @@ export function SecurityPage() {
   const [levelFilter, setLevelFilter] = useState<string>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [dateFilter, setDateFilter] = useState<string>('7d');
-  
+
   // Dados
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [accessEvents, setAccessEvents] = useState<AccessEvent[]>([]);
   const [securityPersons, setSecurityPersons] = useState<SecurityPerson[]>([]);
   const [stats, setStats] = useState<SecurityStats | null>(null);
-  
+
   // Dialogs
   const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
   const [addPersonDialog, setAddPersonDialog] = useState<ListType | null>(null);
@@ -576,7 +576,7 @@ export function SecurityPage() {
       log.userName || '',
       log.ipAddress || '',
     ]);
-    
+
     const csv = [headers.join(','), ...rows.map(r => r.map(c => `"${c}"`).join(','))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
@@ -584,7 +584,7 @@ export function SecurityPage() {
     a.href = url;
     a.download = `logs-seguranca-${format(new Date(), 'yyyy-MM-dd')}.csv`;
     a.click();
-    
+
     toast.success('Logs exportados');
   };
 
@@ -824,7 +824,7 @@ export function SecurityPage() {
               const config = listTypeConfig[listType];
               const persons = securityPersons.filter(p => p.listType === listType);
               const Icon = config.icon;
-              
+
               return (
                 <Card key={listType}>
                   <CardHeader className="pb-2">
@@ -842,7 +842,7 @@ export function SecurityPage() {
                     ) : (
                       <div role="main" aria-label="Configurações de segurança" className="grid gap-2">
                         {persons.map(person => (
-                          <div 
+                          <div
                             key={person.id}
                             className="flex items-center justify-between p-2 rounded-lg bg-muted/50"
                           >
@@ -861,9 +861,9 @@ export function SecurityPage() {
                                 )}
                               </div>
                             </div>
-                            <Button 
-                              variant="ghost" 
-                              size="icon" 
+                            <Button
+                              variant="ghost"
+                              size="icon"
                               className="h-8 w-8"
                               onClick={() => setDeleteConfirm(person)}
                             >
@@ -941,7 +941,7 @@ export function SecurityPage() {
           <div role="main" aria-label="Configurações de segurança" className="space-y-4">
             <div>
               <Label>Nome</Label>
-              <Input 
+              <Input
                 value={newPersonName}
                 onChange={(e) => setNewPersonName(e.target.value)}
                 placeholder="Nome da pessoa"
@@ -949,7 +949,7 @@ export function SecurityPage() {
             </div>
             <div>
               <Label>Motivo (opcional)</Label>
-              <Textarea 
+              <Textarea
                 value={newPersonReason}
                 onChange={(e) => setNewPersonReason(e.target.value)}
                 placeholder="Motivo para adicionar à lista"
