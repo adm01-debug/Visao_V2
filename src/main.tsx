@@ -36,7 +36,7 @@ const registerServiceWorker = async () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
               // Nova versão disponível
               if (import.meta.env.DEV) console.log('[SW] New version available');
-              
+
               // Notificar usuário (opcional)
               if (window.confirm('Nova versão disponível! Deseja atualizar?')) {
                 newWorker.postMessage({ type: 'SKIP_WAITING' });
