@@ -14,16 +14,16 @@ import { Slider } from '@/components/ui/slider';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { 
-  ArrowLeft, 
-  Bell, 
-  Mail, 
-  Phone, 
-  Webhook, 
-  Clock, 
-  Shield, 
-  Plus, 
-  X, 
+import {
+  ArrowLeft,
+  Bell,
+  Mail,
+  Phone,
+  Webhook,
+  Clock,
+  Shield,
+  Plus,
+  X,
   Save,
   TestTube,
   AlertTriangle,
@@ -82,7 +82,7 @@ export default function NotificationSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [config, setConfig] = useState<NotificationConfig | null>(null);
-  
+
   // Form states
   const [newEmail, setNewEmail] = useState('');
   const [newPhone, setNewPhone] = useState('');
@@ -94,7 +94,7 @@ export default function NotificationSettingsPage() {
 
   const loadConfig = async () => {
     if (!user) return;
-    
+
     try {
       const { data, error } = await supabase
         .from('notification_configs')
@@ -136,7 +136,7 @@ export default function NotificationSettingsPage() {
         setConfig(newConfig);
       }
     } catch (error) {
-      
+
       toast.error('Erro ao carregar configurações');
     } finally {
       setLoading(false);
@@ -169,7 +169,7 @@ export default function NotificationSettingsPage() {
       if (error) throw error;
       toast.success('Configurações salvas com sucesso');
     } catch (error) {
-      
+
       toast.error('Erro ao salvar configurações');
     } finally {
       setSaving(false);
@@ -257,7 +257,7 @@ export default function NotificationSettingsPage() {
 
   const testNotification = async (channel: string) => {
     toast.info(`Testando notificação via ${channel}...`);
-    
+
     try {
       const { error } = await supabase.functions.invoke('send-alert-notification', {
         body: {
@@ -277,7 +277,7 @@ export default function NotificationSettingsPage() {
       if (error) throw error;
       toast.success(`Notificação de teste enviada via ${channel}`);
     } catch (error) {
-      
+
       toast.error(`Erro ao testar notificação via ${channel}`);
     }
   };
@@ -368,8 +368,8 @@ export default function NotificationSettingsPage() {
                         key={channel.value}
                         onClick={() => toggleChannel(channel.value)}
                         className={`p-4 rounded-lg border-2 transition-all flex flex-col items-center gap-2 ${
-                          isActive 
-                            ? 'border-primary bg-primary/10' 
+                          isActive
+                            ? 'border-primary bg-primary/10'
                             : 'border-border hover:border-primary/50'
                         }`}
                       >
@@ -630,8 +630,8 @@ export default function NotificationSettingsPage() {
                         key={severity.value}
                         onClick={() => toggleSeverity(severity.value)}
                         className={`p-4 rounded-lg border-2 transition-all flex flex-col items-center gap-2 ${
-                          isActive 
-                            ? 'border-primary bg-primary/10' 
+                          isActive
+                            ? 'border-primary bg-primary/10'
                             : 'border-border hover:border-primary/50'
                         }`}
                       >
@@ -646,7 +646,7 @@ export default function NotificationSettingsPage() {
                   })}
                 </div>
                 <p className="text-sm text-muted-foreground text-center mt-4">
-                  {config.severity_filter.length === 0 
+                  {config.severity_filter.length === 0
                     ? 'Nenhum filtro selecionado - você não receberá notificações'
                     : `Você receberá notificações de severidade: ${config.severity_filter.join(', ')}`
                   }
