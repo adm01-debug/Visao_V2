@@ -21,7 +21,7 @@ export function useReducerWithMiddleware<S, A>(
     };
 
     const chain = middlewares.map((middleware) => middleware(store));
-    
+
     const composedDispatch = chain.reduceRight(
       (next, middleware) => middleware(next),
       dispatch
