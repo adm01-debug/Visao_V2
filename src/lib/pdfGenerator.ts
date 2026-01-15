@@ -48,16 +48,16 @@ export async function generatePDFReport(data: ReportData): Promise<jsPDF> {
   // Header
   doc.setFillColor(...COLORS.primary);
   doc.rect(0, 0, pageWidth, 40, 'F');
-  
+
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(24);
   doc.setFont('helvetica', 'bold');
   doc.text('VISÃO', margin, 20);
-  
+
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
   doc.text('Sistema de Vigilância Inteligente', margin, 28);
-  
+
   // Data de geração
   doc.setFontSize(8);
   doc.text(
@@ -161,7 +161,7 @@ function renderSummary(
 ): number {
   const cardWidth = (pageWidth - margin * 2 - 10 * (data.length - 1)) / Math.min(data.length, 4);
   const cardHeight = 25;
-  
+
   let xPosition = margin;
   let currentY = yPosition;
   let itemsInRow = 0;
@@ -215,15 +215,15 @@ function renderTable(
   // Header da tabela
   doc.setFillColor(...COLORS.primary);
   doc.rect(margin, currentY, pageWidth - margin * 2, rowHeight, 'F');
-  
+
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(9);
   doc.setFont('helvetica', 'bold');
-  
+
   headers.forEach((header, i) => {
     doc.text(header, margin + i * colWidth + 2, currentY + 5.5);
   });
-  
+
   currentY += rowHeight;
 
   // Linhas da tabela
@@ -236,7 +236,7 @@ function renderTable(
     if (currentY > pageHeight - 30) {
       doc.addPage();
       currentY = margin;
-      
+
       // Repetir header
       doc.setFillColor(...COLORS.primary);
       doc.rect(margin, currentY, pageWidth - margin * 2, rowHeight, 'F');
@@ -287,10 +287,10 @@ function renderText(
   doc.setTextColor(...COLORS.dark);
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
-  
+
   const lines = doc.splitTextToSize(data, pageWidth - margin * 2);
   doc.text(lines, margin, yPosition);
-  
+
   return yPosition + lines.length * 5;
 }
 
