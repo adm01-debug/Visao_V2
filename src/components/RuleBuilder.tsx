@@ -4,10 +4,10 @@
  */
 
 import { memo, useState } from 'react';
-import { 
-  Plus, 
-  Trash2, 
-  Settings, 
+import {
+  Plus,
+  Trash2,
+  Settings,
   Save,
   AlertTriangle,
   Clock,
@@ -27,10 +27,10 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 
-export type ConditionType = 
-  | 'people_count' 
-  | 'face_recognition' 
-  | 'vehicle_detection' 
+export type ConditionType =
+  | 'people_count'
+  | 'face_recognition'
+  | 'vehicle_detection'
   | 'motion_detection'
   | 'loitering'
   | 'restricted_area';
@@ -139,12 +139,12 @@ function RuleBuilderComponent({
 
   const handleSubmit = async () => {
     setError(null);
-    
+
     if (!name.trim()) {
       setError('Nome é obrigatório');
       return;
     }
-    
+
     if (conditions.length === 0) {
       setError('Adicione pelo menos uma condição');
       return;
@@ -236,8 +236,8 @@ function RuleBuilderComponent({
                 return (
                   <div key={condition.id} className="flex items-center gap-3 p-3 rounded-lg border">
                     <Icon className="w-5 h-5 text-primary" />
-                    <Select 
-                      value={condition.type} 
+                    <Select
+                      value={condition.type}
                       onValueChange={(v) => updateCondition(condition.id, { type: v as ConditionType })}
                     >
                       <SelectTrigger className="w-48">
