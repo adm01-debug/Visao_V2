@@ -16,16 +16,16 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Slider } from '@/components/ui/slider';
-import { 
-  getSoundEnabled, 
-  setSoundEnabled, 
-  getSoundVolume, 
-  setSoundVolume 
+import {
+  getSoundEnabled,
+  setSoundEnabled,
+  getSoundVolume,
+  setSoundVolume
 } from '@/lib/alertSounds';
-import { 
-  getBrowserNotificationsEnabled, 
+import {
+  getBrowserNotificationsEnabled,
   setBrowserNotificationsEnabled,
-  requestNotificationPermission 
+  requestNotificationPermission
 } from '@/lib/browserNotifications';
 import { toast } from 'sonner';
 
@@ -118,7 +118,7 @@ export function PreferencesPanel() {
               Aparência
             </div>
             <Separator />
-            
+
             <div className="space-y-3">
               <Label className="text-sm text-muted-foreground">Tema</Label>
               <RadioGroup
@@ -184,7 +184,7 @@ export function PreferencesPanel() {
               Layout das Câmeras
             </div>
             <Separator />
-            
+
             <RadioGroup
               value={cameraLayout}
               onValueChange={(value) => handleCameraLayoutChange(value as CameraLayoutType)}
@@ -254,7 +254,7 @@ export function PreferencesPanel() {
               Sons
             </div>
             <Separator />
-            
+
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label htmlFor="sound-alerts">Sons de alertas</Label>
@@ -295,7 +295,7 @@ export function PreferencesPanel() {
               Notificações
             </div>
             <Separator />
-            
+
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label htmlFor="browser-notifications">Notificações do navegador</Label>
@@ -317,7 +317,7 @@ export function PreferencesPanel() {
               Atalhos de Teclado
             </div>
             <Separator />
-            
+
             <div className="space-y-2 text-sm">
               <div className="flex items-center justify-between py-1">
                 <span className="text-muted-foreground">Alternar tema</span>
