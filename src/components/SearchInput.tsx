@@ -133,8 +133,8 @@ export function SearchInput({ value, onChange, placeholder = 'Buscar...', classN
           </kbd>
         </div>
       </PopoverTrigger>
-      <PopoverContent 
-        className="w-[var(--radix-popover-trigger-width)] p-0" 
+      <PopoverContent
+        className="w-[var(--radix-popover-trigger-width)] p-0"
         align="start"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
@@ -205,9 +205,9 @@ export function filterCamerasBySearch<T extends { name: string; location: string
   query: string
 ): T[] {
   if (!query.trim()) return cameras;
-  
-  return cameras.filter(camera => 
-    searchInText(camera.name, query) || 
+
+  return cameras.filter(camera =>
+    searchInText(camera.name, query) ||
     searchInText(camera.location, query)
   );
 }
@@ -218,9 +218,9 @@ export function filterAlertsBySearch<T extends { message: string; camera_name?: 
   query: string
 ): T[] {
   if (!query.trim()) return alerts;
-  
-  return alerts.filter(alert => 
-    searchInText(alert.message, query) || 
+
+  return alerts.filter(alert =>
+    searchInText(alert.message, query) ||
     searchInText(alert.camera_name || alert.cameraName, query)
   );
 }
