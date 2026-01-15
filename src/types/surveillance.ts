@@ -35,7 +35,7 @@ export interface AnalyticsData {
 }
 
 // Rule System Types
-export type RuleConditionType = 
+export type RuleConditionType =
   | 'people_count'
   | 'idle_time'
   | 'restricted_area'
