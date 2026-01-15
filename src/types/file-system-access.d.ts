@@ -54,7 +54,7 @@ interface FileSystemRemoveOptions {
   recursive?: boolean;
 }
 
-type FileSystemWriteChunkType = 
+type FileSystemWriteChunkType =
   | { type: 'write'; position?: number; data: BufferSource | Blob | string }
   | { type: 'seek'; position: number }
   | { type: 'truncate'; size: number }
