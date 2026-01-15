@@ -77,7 +77,7 @@ function computeArcs(
     node.children.forEach(child => {
       const childValue = computeValue(child);
       const childAngle = total > 0 ? (childValue / total) * (endAngle - startAngle) : 0;
-      
+
       const childArcs = computeArcs(
         child,
         currentAngle,
@@ -88,7 +88,7 @@ function computeArcs(
         ringWidth,
         arc
       );
-      
+
       result.push(...childArcs);
       currentAngle += childAngle;
     });
@@ -151,19 +151,19 @@ export const Sunburst: React.FC<SunburstProps> = ({
     const rootNode = focusedNode || data;
     const maxDepth = 4;
     const ringWidth = (maxRadius - innerRadius) / maxDepth;
-    
+
     return computeArcs(rootNode, 0, 360, innerRadius, innerRadius + ringWidth, 0, ringWidth);
   }, [data, focusedNode, innerRadius, maxRadius]);
 
   const getColor = (arc: ArcData): string => {
     if (arc.color) return arc.color;
-    
+
     // Find root ancestor to determine color
     let root = arc;
     while (root.parent && root.parent.depth > 0) {
       root = root.parent;
     }
-    
+
     const rootIndex = arcs.filter(a => a.depth === 0).findIndex(a => a.id === root.id);
     return colorScale[rootIndex % colorScale.length];
   };
@@ -172,7 +172,7 @@ export const Sunburst: React.FC<SunburstProps> = ({
     if (arc.children && arc.children.length > 0) {
       setFocusedNode(arc);
     }
-    
+
     // Build path
     const path: SunburstNode[] = [];
     let current: ArcData | undefined = arc;
@@ -180,7 +180,7 @@ export const Sunburst: React.FC<SunburstProps> = ({
       path.unshift(current);
       current = current.parent;
     }
-    
+
     onNodeClick?.(arc, path);
   };
 
