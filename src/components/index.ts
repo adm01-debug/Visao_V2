@@ -21,5 +21,5 @@ export { Sidebar } from './Sidebar';
 // ConfirmDialog
 export { ConfirmDialog } from './confirmdialog';
 
-// SeverityBadge  
+// SeverityBadge
 export { SeverityBadge } from './SeverityBadge';
