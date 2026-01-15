@@ -45,19 +45,19 @@ export const Touchable = forwardRef<HTMLButtonElement, TouchableProps>(
 
     const handleClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
       if (disabled) return;
-      
+
       const rect = e.currentTarget.getBoundingClientRect();
       const size = Math.max(rect.width, rect.height) * 2;
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      
+
       const newRipple = { x, y, size };
       setRipples(prev => [...prev, newRipple]);
-      
+
       setTimeout(() => {
         setRipples(prev => prev.slice(1));
       }, 600);
-      
+
       onClick?.(e);
     }, [disabled, onClick]);
 
@@ -110,10 +110,10 @@ export function PressAndHold({
   const startHold = useCallback(() => {
     setIsHolding(true);
     setProgress(0);
-    
+
     const step = 16; // ~60fps
     const increment = (step / duration) * 100;
-    
+
     intervalRef.current = setInterval(() => {
       setProgress(prev => {
         const next = prev + increment;
@@ -145,7 +145,7 @@ export function PressAndHold({
       whileTap={{ scale: 0.98 }}
     >
       {children}
-      
+
       {isHolding && (
         <div className="absolute inset-0 overflow-hidden rounded-inherit">
           <motion.div
@@ -233,9 +233,9 @@ export function DoubleTap({
   const handleTap = useCallback(() => {
     const now = Date.now();
     const timeDiff = now - lastTap.current;
-    
+
     clearTimeout(timerRef.current);
-    
+
     if (timeDiff < delay && timeDiff > 0) {
       onDoubleTap();
       lastTap.current = 0;
@@ -268,11 +268,11 @@ interface ScaleOnPressProps {
   onClick?: () => void;
 }
 
-export function ScaleOnPress({ 
-  children, 
-  scale = 0.95, 
+export function ScaleOnPress({
+  children,
+  scale = 0.95,
   className,
-  onClick 
+  onClick
 }: ScaleOnPressProps) {
   return (
     <motion.div
