@@ -38,6 +38,7 @@ const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
 const HelpPage = lazy(() => import("@/pages/HelpPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const AcessoNegado = lazy(() => import("@/pages/AcessoNegado"));
+const AuthCallback = lazy(() => import('./pages/AuthCallback'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -74,6 +75,7 @@ const App = () => (
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/auth" element={<Auth />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
                     <Route path="/dashboard" element={<ProtectedLayoutRoute><DashboardV2 /></ProtectedLayoutRoute>} />
                     <Route path="/cameras" element={<ProtectedLayoutRoute><CamerasPage /></ProtectedLayoutRoute>} />
                     <Route path="/alerts" element={<ProtectedLayoutRoute><AlertsPage /></ProtectedLayoutRoute>} />
