@@ -87,13 +87,13 @@ return false;
         measurementId: config.measurementId,
       };
 
-      const app = getApps().length === 0 
+      const app = getApps().length === 0
         ? initializeApp(firebaseConfig)
         : getApp();
 
       this.messaging = getMessaging(app);
       this.isInitialized = true;
-      
+
             return true;
     } catch (error) {
             return false;
@@ -110,13 +110,13 @@ return false;
 
     try {
       const permission = await Notification.requestPermission();
-      
+
       if (permission !== 'granted') {
 return null;
       }
 
       const { getToken } = await import('firebase/messaging');
-      
+
       const token = await getToken(this.messaging as never, {
         vapidKey: this.config.vapidKey,
       });
@@ -147,9 +147,9 @@ return null;
     }
 
     this.onMessageCallback = callback;
-    
+
     const { onMessage } = await import('firebase/messaging');
-    
+
     return onMessage(this.messaging as never, (payload) => {
       const notification: PushNotification & { data?: Record<string, string> } = {
         title: payload.notification?.title || '',
@@ -158,7 +158,7 @@ return null;
         image: payload.notification?.image,
         data: payload.data,
       };
-      
+
       this.onMessageCallback?.(notification);
     });
   }
@@ -210,9 +210,9 @@ return null;
         return { success: true, messageId: data.results?.[0]?.message_id };
       }
 
-      return { 
-        success: false, 
-        error: data.results?.[0]?.error || 'FCM send failed' 
+      return {
+        success: false,
+        error: data.results?.[0]?.error || 'FCM send failed'
       };
     } catch (error) {
             return { success: false, error: String(error) };
