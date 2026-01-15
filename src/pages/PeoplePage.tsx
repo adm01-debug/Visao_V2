@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Colaboradores / Pessoas
- * 
+ *
  * Funcionalidades simplificadas para alinhamento com schema do banco:
  * - Lista de pessoas cadastradas
  * - Cadastro com foto
@@ -113,7 +113,7 @@ interface PersonCardProps {
 
 function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
   return (
-    <Card 
+    <Card
       className="cursor-pointer hover:shadow-md transition-all group"
       onClick={onView}
     >
@@ -129,7 +129,7 @@ function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
           <div role="main" className="flex-1 min-w-0">
             <div role="main" className="flex items-center gap-2 mb-1">
               <h3 className="font-semibold truncate">{person.name}</h3>
-              <Badge 
+              <Badge
                 variant={person.is_active ? 'default' : 'secondary'}
                 className="text-xs"
               >
@@ -149,9 +149,9 @@ function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
 
             <div role="main" className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
               <span>
-                Cadastrado: {formatDistanceToNow(new Date(person.created_at), { 
-                  addSuffix: true, 
-                  locale: ptBR 
+                Cadastrado: {formatDistanceToNow(new Date(person.created_at), {
+                  addSuffix: true,
+                  locale: ptBR
                 })}
               </span>
             </div>
@@ -159,9 +159,9 @@ function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-              <Button 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                variant="ghost"
+                size="icon"
                 className="opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <MoreHorizontal className="w-4 h-4" />
@@ -177,7 +177,7 @@ function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
                 Editar
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 className="text-destructive"
                 onClick={(e) => { e.stopPropagation(); onDelete(); }}
               >
@@ -261,9 +261,9 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
   const detectFacesInPhoto = async (imageData: string, file: File) => {
     setFaceEncoding(null);
     setFaceValidation(null);
-    
+
     toast.loading('Analisando rosto...', { id: 'face-detection' });
-    
+
     const result = await faceDetection.detectFromBase64(imageData);
     const validation = faceDetection.validateFaceQuality(result);
     setFaceValidation(validation);
@@ -285,7 +285,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
         maxSize: 5 * 1024 * 1024,
         allowedTypes: ['image/jpeg', 'image/png', 'image/webp'],
       });
-      
+
       if (!validation.valid) {
         toast.error(validation.error || 'Arquivo inválido');
         return;
@@ -320,17 +320,17 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
     if (!photoFile && !photoPreview) {
       return !REQUIRE_FACE_FOR_NEW || !!person;
     }
-    
+
     // Se tem foto nova, precisa ter validação de rosto válida
     if (photoFile) {
       return faceValidation?.valid === true;
     }
-    
+
     // Se está editando e mantendo foto antiga com encoding existente
     if (person?.face_encoding) {
       return true;
     }
-    
+
     return faceValidation?.valid === true;
   }, [photoFile, photoPreview, faceValidation, person]);
 
@@ -381,21 +381,21 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
             await storage.remove(STORAGE_BUCKETS.PERSON_PHOTOS, oldPath);
           }
         }
-        
+
         const result = await storage.upload(photoFile, {
           bucket: STORAGE_BUCKETS.PERSON_PHOTOS,
         });
-        
+
         if (!result) {
           toast.error(storage.error || 'Erro ao fazer upload da foto');
           return;
         }
-        
+
         photoUrl = result.url;
       }
 
-      await onSave({ 
-        ...formData, 
+      await onSave({
+        ...formData,
         photo_url: photoUrl,
         // Salvar encoding facial se disponível (convertido para Json)
         face_encoding: faceEncoding ? JSON.parse(JSON.stringify(faceEncoding)) : null,
@@ -449,8 +449,8 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
               <div role="main" aria-label="Cadastro de pessoas" className="relative">
                 <Avatar className={cn(
                   "w-24 h-24 ring-2 ring-offset-2",
-                  faceValidation?.valid ? "ring-green-500" : 
-                  faceValidation && !faceValidation.valid ? "ring-destructive" : 
+                  faceValidation?.valid ? "ring-green-500" :
+                  faceValidation && !faceValidation.valid ? "ring-destructive" :
                   "ring-transparent"
                 )}>
                   <AvatarImage src={photoPreview || undefined} />
@@ -486,7 +486,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
                   </div>
                 )}
               </div>
-              
+
               <div role="main" className="flex items-center gap-3">
                 <Label htmlFor="photo" className="cursor-pointer">
                   <div role="main" className="flex items-center gap-2 text-sm text-primary hover:underline">
@@ -521,8 +521,8 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
               {photoPreview && faceValidation && (
                 <div className={cn(
                   "flex items-center gap-2 px-3 py-2 rounded-md text-sm",
-                  faceValidation.valid 
-                    ? "bg-green-500/10 text-green-700 dark:text-green-400" 
+                  faceValidation.valid
+                    ? "bg-green-500/10 text-green-700 dark:text-green-400"
                     : "bg-destructive/10 text-destructive"
                 )}>
                   {faceValidation.valid ? (
@@ -558,7 +558,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
               {storage.isUploading && storage.progress > 0 && storage.progress < 100 && (
                 <div role="main" aria-label="Cadastro de pessoas" className="w-full max-w-xs">
                   <div role="main" aria-label="Cadastro de pessoas" className="h-2 bg-muted rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-primary transition-all duration-300"
                       style={{ width: `${storage.progress}%` }}
                     />
@@ -618,8 +618,8 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
           <Button variant="outline" onClick={onClose} disabled={isSubmitting || faceDetection.isDetecting}>
             Cancelar
           </Button>
-          <Button 
-            onClick={handleSubmit} 
+          <Button
+            onClick={handleSubmit}
             disabled={isSubmitting || faceDetection.isDetecting || !canSave}
             className={cn(
               !canSave && !isSubmitting && !faceDetection.isDetecting && "opacity-50"
@@ -683,7 +683,7 @@ function PersonDetailsDialog({
         .eq('person_id', person.id)
         .order('created_at', { ascending: false })
         .limit(50);
-      
+
       setRecognitionLogs(data || []);
     } catch (error) {
     } finally {
@@ -755,12 +755,12 @@ function PersonDetailsDialog({
               ) : recognitionLogs.length > 0 ? (
                 <div role="main" aria-label="Cadastro de pessoas" className="space-y-2">
                   {recognitionLogs.map(log => (
-                    <div 
+                    <div
                       key={log.id}
                       className={cn(
                         'p-3 rounded-lg border-l-4',
-                        log.recognized 
-                          ? 'border-l-green-500 bg-green-500/5' 
+                        log.recognized
+                          ? 'border-l-green-500 bg-green-500/5'
                           : 'border-l-red-500 bg-red-500/5'
                       )}
                     >
@@ -776,9 +776,9 @@ function PersonDetailsDialog({
                           </span>
                         </div>
                         <span className="text-xs text-muted-foreground">
-                          {formatDistanceToNow(new Date(log.created_at), { 
-                            addSuffix: true, 
-                            locale: ptBR 
+                          {formatDistanceToNow(new Date(log.created_at), {
+                            addSuffix: true,
+                            locale: ptBR
                           })}
                         </span>
                       </div>
@@ -821,7 +821,7 @@ function PersonDetailsDialog({
 
 export default function PeoplePage() {
   const { user } = useAuth();
-  
+
   // Estado
   const [people, setPeople] = useState<DbPerson[]>([]);
   const [loading, setLoading] = useState(true);
@@ -845,7 +845,7 @@ export default function PeoplePage() {
         .from('registered_persons')
         .select('*')
         .order('name');
-      
+
       if (error) throw error;
       setPeople(data || []);
     } catch (error) {
@@ -870,7 +870,7 @@ export default function PeoplePage() {
           person.department,
           person.role,
         ].filter(Boolean).map(f => f!.toLowerCase());
-        
+
         if (!searchFields.some(f => f.includes(query))) {
           return false;
         }
@@ -1143,8 +1143,8 @@ export default function PeoplePage() {
               </TableHeader>
               <TableBody>
                 {paginatedPeople.map(person => (
-                  <TableRow 
-                    key={person.id} 
+                  <TableRow
+                    key={person.id}
                     className="cursor-pointer"
                     onClick={() => setSelectedPerson(person)}
                   >
@@ -1186,7 +1186,7 @@ export default function PeoplePage() {
                             Editar
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             className="text-destructive"
                             onClick={(e) => { e.stopPropagation(); setDeleteConfirm(person); }}
                           >
