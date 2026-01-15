@@ -16,11 +16,11 @@ export function set(name: string, value: string, days = 7, options?: {
 }): void {
   const expires = new Date(Date.now() + days * 864e5).toUTCString();
   let cookieString = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=${options?.path || '/'}`;
-  
+
   if (options?.domain) cookieString += `; domain=${options.domain}`;
   if (options?.secure) cookieString += '; secure';
   if (options?.sameSite) cookieString += `; samesite=${options.sameSite}`;
-  
+
   document.cookie = cookieString;
 }
 
