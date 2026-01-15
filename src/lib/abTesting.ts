@@ -57,19 +57,19 @@ class ABTestingService {
 
   private assignVariant(experiment: Experiment): string {
     const { variants, weights } = experiment;
-    
+
     if (!weights) {
       return variants[Math.floor(Math.random() * variants.length)];
     }
 
     const total = weights.reduce((a, b) => a + b, 0);
     let random = Math.random() * total;
-    
+
     for (let i = 0; i < variants.length; i++) {
       random -= weights[i];
       if (random <= 0) return variants[i];
     }
-    
+
     return variants[0];
   }
 
