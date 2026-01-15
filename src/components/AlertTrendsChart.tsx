@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
-import { 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   BarChart,
   Bar,
@@ -78,7 +78,7 @@ export function AlertTrendsChart({ alerts, className = '' }: AlertTrendsChartPro
 
     return intervals.map((interval) => {
       const periodStart = startOfDay(interval);
-      const periodEnd = period === '24h' 
+      const periodEnd = period === '24h'
         ? new Date(interval.getTime() + 60 * 60 * 1000)
         : new Date(periodStart.getTime() + 24 * 60 * 60 * 1000);
 
@@ -114,8 +114,8 @@ export function AlertTrendsChart({ alerts, className = '' }: AlertTrendsChartPro
   }, [chartData]);
 
   const colors = groupBy === 'severity' ? severityColors : typeColors;
-  const keys = groupBy === 'severity' 
-    ? ['critical', 'high', 'medium', 'low'] 
+  const keys = groupBy === 'severity'
+    ? ['critical', 'high', 'medium', 'low']
     : ['security', 'productivity', 'safety', 'intrusion'];
 
   const labels: Record<string, string> = {
@@ -183,13 +183,13 @@ export function AlertTrendsChart({ alerts, className = '' }: AlertTrendsChartPro
                 ))}
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.5} />
-              <XAxis 
-                dataKey="name" 
+              <XAxis
+                dataKey="name"
                 tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
                 axisLine={{ stroke: 'hsl(var(--border))' }}
                 tickLine={false}
               />
-              <YAxis 
+              <YAxis
                 tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
                 axisLine={{ stroke: 'hsl(var(--border))' }}
                 tickLine={false}
@@ -204,7 +204,7 @@ export function AlertTrendsChart({ alerts, className = '' }: AlertTrendsChartPro
                 }}
                 labelStyle={{ color: 'hsl(var(--foreground))' }}
               />
-              <Legend 
+              <Legend
                 formatter={(value) => labels[value] || value}
                 wrapperStyle={{ fontSize: '11px' }}
               />
@@ -224,13 +224,13 @@ export function AlertTrendsChart({ alerts, className = '' }: AlertTrendsChartPro
           ) : (
             <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.5} />
-              <XAxis 
-                dataKey="name" 
+              <XAxis
+                dataKey="name"
                 tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
                 axisLine={{ stroke: 'hsl(var(--border))' }}
                 tickLine={false}
               />
-              <YAxis 
+              <YAxis
                 tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
                 axisLine={{ stroke: 'hsl(var(--border))' }}
                 tickLine={false}
@@ -245,7 +245,7 @@ export function AlertTrendsChart({ alerts, className = '' }: AlertTrendsChartPro
                 }}
                 labelStyle={{ color: 'hsl(var(--foreground))' }}
               />
-              <Legend 
+              <Legend
                 formatter={(value) => labels[value] || value}
                 wrapperStyle={{ fontSize: '11px' }}
               />
