@@ -83,7 +83,7 @@ class SessionManager {
     if (!this.session || !this.config.onRefresh) return;
 
     const timeUntilRefresh = this.session.expiresAt - Date.now() - this.config.refreshThreshold;
-    
+
     if (timeUntilRefresh > 0) {
       this.refreshTimer = setTimeout(() => this.refresh(), timeUntilRefresh);
     } else if (this.session.expiresAt > Date.now()) {
@@ -103,7 +103,7 @@ class SessionManager {
       lastActivity: now,
       metadata,
     };
-    
+
     this.saveSession();
     this.scheduleRefresh();
     return this.session;
