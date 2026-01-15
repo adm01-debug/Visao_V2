@@ -60,7 +60,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   // Check active formats
   const checkActiveFormats = useCallback(() => {
     const formats = new Set<string>();
-    
+
     if (document.queryCommandState('bold')) formats.add('bold');
     if (document.queryCommandState('italic')) formats.add('italic');
     if (document.queryCommandState('underline')) formats.add('underline');
@@ -226,7 +226,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   return (
     <div className={cn('rich-text-editor border rounded-lg overflow-hidden', className)}>
       {showToolbar && toolbarPosition === 'top' && Toolbar}
-      
+
       <div
         ref={editorRef}
         contentEditable={!readOnly}
