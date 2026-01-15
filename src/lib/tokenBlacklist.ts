@@ -73,15 +73,15 @@ class TokenBlacklist {
   isBlacklisted(token: string): boolean {
     const hash = this.hashToken(token);
     const entry = this.blacklist.get(hash);
-    
+
     if (!entry) return false;
-    
+
     if (entry.expiresAt <= Date.now()) {
       this.blacklist.delete(hash);
       this.save();
       return false;
     }
-    
+
     return true;
   }
 
@@ -95,14 +95,14 @@ class TokenBlacklist {
   cleanup(): void {
     const now = Date.now();
     let changed = false;
-    
+
     this.blacklist.forEach((entry, hash) => {
       if (entry.expiresAt <= now) {
         this.blacklist.delete(hash);
         changed = true;
       }
     });
-    
+
     if (changed) this.save();
   }
 
