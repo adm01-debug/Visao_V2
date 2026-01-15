@@ -4,10 +4,10 @@
  */
 
 import { memo, useState, useMemo } from 'react';
-import { 
-  Car, 
-  Plus, 
-  Trash2, 
+import {
+  Car,
+  Plus,
+  Trash2,
   Search,
   Upload,
   Download,
@@ -89,7 +89,7 @@ function PlateBlacklistManagerComponent({
 
   const handleAdd = async () => {
     if (!newPlate.trim()) return;
-    
+
     setIsAdding(true);
     try {
       await onAdd({
