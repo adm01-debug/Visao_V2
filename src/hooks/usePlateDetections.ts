@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: usePlateDetections
- * 
+ *
  * Hook para gerenciar detecções de placas com persistência no Supabase
  * Integração com alertas Telegram para blacklist
  */
@@ -142,7 +142,7 @@ export function usePlateDetections() {
     const registered = registeredPlates.find(
       p => p.plate.toUpperCase().replace(/[^A-Z0-9]/g, '') === normalizedPlate && p.is_active
     );
-    
+
     if (!registered) return 'unknown';
     if (registered.list_type === 'blacklist') return 'blacklist';
     if (registered.list_type === 'whitelist') return 'authorized';
@@ -197,7 +197,7 @@ ${ownerName ? `👤 <b>Proprietário:</b> ${ownerName}` : ''}
       });
 
       if (error) throw error;
-      
+
       if (data?.success) {
       }
     } catch (error) {
@@ -214,7 +214,7 @@ ${ownerName ? `👤 <b>Proprietário:</b> ${ownerName}` : ''}
 
     try {
       const status = checkPlateStatus(detection.plate);
-      
+
       const { data, error } = await supabase
         .from('plate_detections')
         .insert({
@@ -241,12 +241,12 @@ ${ownerName ? `👤 <b>Proprietário:</b> ${ownerName}` : ''}
       };
 
       setDetections(prev => [newDetection, ...prev].slice(0, 500));
-      
+
       // Alertar se for blacklist
       if (status === 'blacklist') {
         // Play critical sound
         playCriticalAlertSound();
-        
+
         // Show toast
         toast.error(`🚨 ALERTA: Veículo na blacklist detectado! Placa: ${detection.plate}`, {
           duration: 15000,
@@ -390,8 +390,8 @@ ${ownerName ? `👤 <b>Proprietário:</b> ${ownerName}` : ''}
     }).length,
     uniquePlates: new Set(detections.map(d => d.plate)).size,
     blacklistAlerts: detections.filter(d => d.status === 'blacklist').length,
-    authorizedRate: detections.length > 0 
-      ? (detections.filter(d => d.status === 'authorized').length / detections.length) * 100 
+    authorizedRate: detections.length > 0
+      ? (detections.filter(d => d.status === 'authorized').length / detections.length) * 100
       : 0,
     avgConfidence: detections.length > 0
       ? detections.reduce((sum, d) => sum + d.confidence, 0) / detections.length * 100
