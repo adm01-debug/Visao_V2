@@ -48,11 +48,11 @@ interface PullToRefreshProps {
   disabled?: boolean;
 }
 
-export function PullToRefresh({ 
-  onRefresh, 
-  children, 
+export function PullToRefresh({
+  onRefresh,
+  children,
   className,
-  disabled = false 
+  disabled = false
 }: PullToRefreshProps) {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [pullDistance, setPullDistance] = useState(0);
@@ -111,8 +111,8 @@ export function PullToRefresh({
             isRefreshing && "bg-primary/20"
           )}
           animate={{ rotate: isRefreshing ? 360 : progress * 180 }}
-          transition={{ 
-            rotate: isRefreshing 
+          transition={{
+            rotate: isRefreshing
               ? { duration: 1, repeat: Infinity, ease: "linear" }
               : { duration: 0.1 }
           }}
@@ -120,7 +120,7 @@ export function PullToRefresh({
           <RefreshCw className="w-5 h-5 text-primary" />
         </motion.div>
       </motion.div>
-      
+
       <motion.div
         animate={{ y: pullDistance }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -151,7 +151,7 @@ export function SwipeableCard({
 }: SwipeableCardProps) {
   const x = useMotionValue(0);
   const [isDragging, setIsDragging] = useState(false);
-  
+
   const leftOpacity = useTransform(x, [-100, -50, 0], [1, 0.5, 0]);
   const rightOpacity = useTransform(x, [0, 50, 100], [0, 0.5, 1]);
   const scale = useTransform(x, [-100, 0, 100], [0.95, 1, 0.95]);
@@ -168,16 +168,16 @@ export function SwipeableCard({
   return (
     <div className={cn("relative overflow-hidden", className)}>
       {leftAction && (
-        <motion.div 
+        <motion.div
           className="absolute inset-y-0 left-0 w-24 flex items-center justify-center bg-destructive/20"
           style={{ opacity: leftOpacity }}
         >
           {leftAction}
         </motion.div>
       )}
-      
+
       {rightAction && (
-        <motion.div 
+        <motion.div
           className="absolute inset-y-0 right-0 w-24 flex items-center justify-center bg-success/20"
           style={{ opacity: rightOpacity }}
         >
@@ -294,8 +294,8 @@ export function Carousel({
               onClick={() => goTo(index)}
               className={cn(
                 "w-2 h-2 rounded-full transition-all",
-                index === currentIndex 
-                  ? "bg-primary w-6" 
+                index === currentIndex
+                  ? "bg-primary w-6"
                   : "bg-primary/30 hover:bg-primary/50"
               )}
               aria-label={`Ir para slide ${index + 1}`}
@@ -364,13 +364,13 @@ export function BottomSheet({
         <div className="flex justify-center py-3">
           <div className="w-12 h-1.5 bg-muted-foreground/30 rounded-full" />
         </div>
-        
+
         {title && (
           <div className="px-6 pb-4 border-b">
             <h3 className="text-lg font-semibold">{title}</h3>
           </div>
         )}
-        
+
         <div className="overflow-auto p-6" style={{ maxHeight: `calc(${height} - 80px)` }}>
           {children}
         </div>
