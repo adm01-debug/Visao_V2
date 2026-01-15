@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Color Utilities - Manipulação de cores
- * 
+ *
  * @module utils/color
  */
 
@@ -36,7 +36,7 @@ export interface RGBA extends RGB {
 export const hexToRgb = (hex: string): RGB | null => {
   // Remover # se presente
   const cleanHex = hex.replace(/^#/, '');
-  
+
   // Suportar formato curto (#RGB)
   let fullHex = cleanHex;
   if (cleanHex.length === 3) {
@@ -45,11 +45,11 @@ export const hexToRgb = (hex: string): RGB | null => {
       .map((c) => c + c)
       .join('');
   }
-  
+
   const result = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(fullHex);
-  
+
   if (!result) return null;
-  
+
   return {
     r: parseInt(result[1], 16),
     g: parseInt(result[2], 16),
@@ -65,7 +65,7 @@ export const hexToRgb = (hex: string): RGB | null => {
  */
 export const rgbToHex = (r: number, g: number, b: number): string => {
   const clamp = (val: number): number => Math.max(0, Math.min(255, Math.round(val)));
-  
+
   return (
     '#' +
     [clamp(r), clamp(g), clamp(b)]
@@ -85,18 +85,18 @@ export const rgbToHsl = (r: number, g: number, b: number): HSL => {
   const rNorm = r / 255;
   const gNorm = g / 255;
   const bNorm = b / 255;
-  
+
   const max = Math.max(rNorm, gNorm, bNorm);
   const min = Math.min(rNorm, gNorm, bNorm);
   const l = (max + min) / 2;
-  
+
   if (max === min) {
     return { h: 0, s: 0, l };
   }
-  
+
   const d = max - min;
   const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-  
+
   let h = 0;
   switch (max) {
     case rNorm:
@@ -109,7 +109,7 @@ export const rgbToHsl = (r: number, g: number, b: number): HSL => {
       h = ((rNorm - gNorm) / d + 4) / 6;
       break;
   }
-  
+
   return { h, s, l };
 };
 
@@ -121,7 +121,7 @@ export const hslToRgb = (h: number, s: number, l: number): RGB => {
     const val = Math.round(l * 255);
     return { r: val, g: val, b: val };
   }
-  
+
   const hue2rgb = (p: number, q: number, t: number): number => {
     let tNorm = t;
     if (tNorm < 0) tNorm += 1;
@@ -131,10 +131,10 @@ export const hslToRgb = (h: number, s: number, l: number): RGB => {
     if (tNorm < 2 / 3) return p + (q - p) * (2 / 3 - tNorm) * 6;
     return p;
   };
-  
+
   const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
   const p = 2 * l - q;
-  
+
   return {
     r: Math.round(hue2rgb(p, q, h + 1 / 3) * 255),
     g: Math.round(hue2rgb(p, q, h) * 255),
@@ -154,7 +154,7 @@ export const hslToRgb = (h: number, s: number, l: number): RGB => {
 export const lighten = (hex: string, amount: number): string => {
   const rgb = hexToRgb(hex);
   if (!rgb) return hex;
-  
+
   return rgbToHex(
     rgb.r + amount,
     rgb.g + amount,
@@ -179,10 +179,10 @@ export const darken = (hex: string, amount: number): string => {
 export const saturate = (hex: string, amount: number): string => {
   const rgb = hexToRgb(hex);
   if (!rgb) return hex;
-  
+
   const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
   hsl.s = Math.max(0, Math.min(1, hsl.s + amount));
-  
+
   const newRgb = hslToRgb(hsl.h, hsl.s, hsl.l);
   return rgbToHex(newRgb.r, newRgb.g, newRgb.b);
 };
@@ -195,7 +195,7 @@ export const saturate = (hex: string, amount: number): string => {
 export const opacity = (hex: string, alpha: number): string => {
   const rgb = hexToRgb(hex);
   if (!rgb) return hex;
-  
+
   const clampedAlpha = Math.max(0, Math.min(1, alpha));
   return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${clampedAlpha})`;
 };
@@ -212,7 +212,7 @@ export const opacity = (hex: string, alpha: number): string => {
 export const isLight = (hex: string): boolean => {
   const rgb = hexToRgb(hex);
   if (!rgb) return true;
-  
+
   // Fórmula de luminância relativa
   const luminance = rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114;
   return luminance > 186;
@@ -235,14 +235,14 @@ export const contrastColor = (hex: string): string => {
 export const luminance = (hex: string): number => {
   const rgb = hexToRgb(hex);
   if (!rgb) return 0;
-  
+
   const [r, g, b] = [rgb.r, rgb.g, rgb.b].map((val) => {
     const sRGB = val / 255;
     return sRGB <= 0.03928
       ? sRGB / 12.92
       : Math.pow((sRGB + 0.055) / 1.055, 2.4);
   });
-  
+
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 };
 
@@ -255,10 +255,10 @@ export const luminance = (hex: string): number => {
 export const contrastRatio = (hex1: string, hex2: string): number => {
   const lum1 = luminance(hex1);
   const lum2 = luminance(hex2);
-  
+
   const lighter = Math.max(lum1, lum2);
   const darker = Math.min(lum1, lum2);
-  
+
   return (lighter + 0.05) / (darker + 0.05);
 };
 
@@ -282,11 +282,11 @@ export const randomColor = (): string => {
 export const mix = (hex1: string, hex2: string, weight = 0.5): string => {
   const rgb1 = hexToRgb(hex1);
   const rgb2 = hexToRgb(hex2);
-  
+
   if (!rgb1 || !rgb2) return hex1;
-  
+
   const w = Math.max(0, Math.min(1, weight));
-  
+
   return rgbToHex(
     Math.round(rgb1.r * w + rgb2.r * (1 - w)),
     Math.round(rgb1.g * w + rgb2.g * (1 - w)),
