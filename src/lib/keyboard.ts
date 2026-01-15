@@ -10,7 +10,7 @@ export function onKey(key: string, handler: KeyHandler): () => void {
     handlers.set(key, []);
   }
   handlers.get(key)!.push(handler);
-  
+
   return () => offKey(key, handler);
 }
 
@@ -34,4 +34,3 @@ export function isPressed(event: KeyboardEvent, key: string): boolean {
 }
 
 export default { onKey, offKey, init, isPressed };
-
