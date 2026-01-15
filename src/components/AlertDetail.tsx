@@ -4,10 +4,10 @@
  */
 
 import { memo } from 'react';
-import { 
-  AlertTriangle, 
-  Shield, 
-  Clock, 
+import {
+  AlertTriangle,
+  Shield,
+  Clock,
   Camera,
   ShieldAlert,
   Cog,
@@ -67,12 +67,12 @@ const severityConfig: Record<AlertSeverity, { label: string; variant: 'secondary
   critical: { label: 'Crítica', variant: 'destructive' },
 };
 
-function AlertDetailComponent({ 
-  alert, 
-  onAcknowledge, 
-  onDismiss, 
+function AlertDetailComponent({
+  alert,
+  onAcknowledge,
+  onDismiss,
   onNavigateToCamera,
-  className 
+  className
 }: AlertDetailProps) {
   const config = alertTypeConfig[alert.type] || alertTypeConfig.security;
   const severity = severityConfig[alert.severity] || severityConfig.low;
@@ -101,28 +101,28 @@ function AlertDetailComponent({
           )}
         </div>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         <p className="text-foreground">{alert.message}</p>
-        
+
         {alert.thumbnail && (
           <div className="rounded-lg overflow-hidden border">
-            <img 
-              src={alert.thumbnail} 
-              alt="Captura do alerta" 
+            <img
+              src={alert.thumbnail}
+              alt="Captura do alerta"
               className="w-full h-48 object-cover"
             />
           </div>
         )}
-        
+
         <Separator />
-        
+
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div className="flex items-center gap-2 text-muted-foreground">
             <Clock className="w-4 h-4" />
             <span>{format(timestamp, "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</span>
           </div>
-          
+
           <button
             onClick={() => onNavigateToCamera?.(alert.cameraId)}
             className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
@@ -130,14 +130,14 @@ function AlertDetailComponent({
             <Camera className="w-4 h-4" />
             <span>{alert.cameraName}</span>
           </button>
-          
+
           {alert.location && (
             <div className="flex items-center gap-2 text-muted-foreground">
               <MapPin className="w-4 h-4" />
               <span>{alert.location}</span>
             </div>
           )}
-          
+
           {alert.acknowledgedBy && (
             <div className="flex items-center gap-2 text-muted-foreground">
               <User className="w-4 h-4" />
@@ -145,14 +145,14 @@ function AlertDetailComponent({
             </div>
           )}
         </div>
-        
+
         {!alert.isRead && onAcknowledge && (
           <Button onClick={onAcknowledge} className="w-full gap-2">
             <CheckCircle className="w-4 h-4" />
             Reconhecer Alerta
           </Button>
         )}
-        
+
         {alert.isRead && (
           <div className="flex items-center gap-2 text-green-500 justify-center">
             <CheckCircle className="w-4 h-4" />
