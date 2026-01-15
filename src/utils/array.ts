@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Array Utilities - Funções utilitárias para arrays
- * 
+ *
  * @module utils/array
  */
 
@@ -87,11 +87,11 @@ export const sortBy = <T>(
     }
     return item[key] as ComparableValue;
   };
-  
+
   return [...arr].sort((a, b) => {
     const va = getValue(a);
     const vb = getValue(b);
-    
+
     if (va < vb) return order === 'asc' ? -1 : 1;
     if (va > vb) return order === 'asc' ? 1 : -1;
     return 0;
@@ -189,7 +189,7 @@ export const range = (start: number, end: number, step = 1): number[] => {
  * Gerar array de tamanho fixo com valor
  */
 export const fill = <T>(length: number, value: T | ((index: number) => T)): T[] => {
-  return Array.from({ length }, (_, i) => 
+  return Array.from({ length }, (_, i) =>
     typeof value === 'function' ? (value as (index: number) => T)(i) : value
   );
 };
