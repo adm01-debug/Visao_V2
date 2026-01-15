@@ -53,7 +53,7 @@ function DetectionOverlayComponent({
         const color = detection.color || defaultColors[detection.type];
         const label = detection.label || detection.type;
         const confidenceText = `${Math.round(detection.confidence * 100)}%`;
-        
+
         return (
           <g key={detection.id}>
             {/* Bounding Box */}
@@ -68,7 +68,7 @@ function DetectionOverlayComponent({
               rx={4}
               className="animate-pulse"
             />
-            
+
             {/* Corner accents */}
             <path
               d={`
@@ -110,7 +110,7 @@ function DetectionOverlayComponent({
               stroke={color}
               strokeWidth={3}
             />
-            
+
             {/* Label background */}
             {showLabels && (
               <>
@@ -118,7 +118,7 @@ function DetectionOverlayComponent({
                   x={detection.x}
                   y={detection.y - 22}
                   width={Math.max(
-                    showConfidence 
+                    showConfidence
                       ? (label.length * 7) + (confidenceText.length * 6) + 16
                       : (label.length * 7) + 8,
                     60
