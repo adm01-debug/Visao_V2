@@ -1,13 +1,13 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useZoneDetection
- * 
+ *
  * Motor de detecção de objetos em zonas de interesse.
  * - Tracking de objetos entre frames
  * - Detecção de entrada/saída
  * - Contagem e ocupação
  * - Cruzamento de linhas (tripwire)
- * 
+ *
  * @example
  * const {
  *   zones,
@@ -47,19 +47,19 @@ import { toast } from 'sonner';
 interface UseZoneDetectionOptions extends ZoneEvents {
   /** ID da câmera */
   cameraId: string;
-  
+
   /** Nome da câmera */
   cameraName?: string;
-  
+
   /** Configuração de detecção */
   config?: Partial<ZoneDetectionConfig>;
-  
+
   /** Zonas pré-carregadas */
   initialZones?: Zone[];
-  
+
   /** Criar alertas no banco */
   createAlerts?: boolean;
-  
+
   /** Salvar eventos no banco */
   saveEvents?: boolean;
 }
@@ -67,40 +67,40 @@ interface UseZoneDetectionOptions extends ZoneEvents {
 interface UseZoneDetectionReturn {
   /** Zonas configuradas */
   zones: Zone[];
-  
+
   /** Objetos rastreados atualmente */
   trackedObjects: Map<string, TrackedObject>;
-  
+
   /** Estatísticas por zona */
   stats: Map<string, ZoneStats>;
-  
+
   /** Eventos recentes */
   recentEvents: ZoneEvent[];
-  
+
   /** Processar detecções de um frame */
   processDetections: (detections: DetectionInput[]) => void;
-  
+
   /** Adicionar zona */
   addZone: (zone: Omit<Zone, 'id' | 'createdAt' | 'updatedAt' | 'stats'>) => Promise<Zone>;
-  
+
   /** Atualizar zona */
   updateZone: (zoneId: string, updates: Partial<Zone>) => Promise<void>;
-  
+
   /** Remover zona */
   removeZone: (zoneId: string) => Promise<void>;
-  
+
   /** Habilitar/desabilitar zona */
   toggleZone: (zoneId: string) => void;
-  
+
   /** Buscar zonas do banco */
   fetchZones: () => Promise<Zone[]>;
-  
+
   /** Resetar estatísticas */
   resetStats: (zoneId?: string) => void;
-  
+
   /** Atualizar configuração */
   updateConfig: (updates: Partial<ZoneDetectionConfig>) => void;
-  
+
   /** Erro */
   error: string | null;
 }
@@ -286,11 +286,11 @@ export function useZoneDetection(
         position: centerPoint,
         boundingBox: detection.boundingBox,
         enteredAt: existingObject?.enteredAt || new Date(),
-        dwellTime: existingObject 
-          ? (currentTime - existingObject.enteredAt.getTime()) / 1000 
+        dwellTime: existingObject
+          ? (currentTime - existingObject.enteredAt.getTime()) / 1000
           : 0,
-        path: existingObject?.path 
-          ? [...existingObject.path.slice(-20), centerPoint] 
+        path: existingObject?.path
+          ? [...existingObject.path.slice(-20), centerPoint]
           : [centerPoint],
       };
 
@@ -339,7 +339,7 @@ export function useZoneDetection(
           zoneObjectsRef.current.set(zone.id, zoneObjects);
 
           const newOccupancy = zoneObjects.size;
-          
+
           createEvent(zone, 'enter', trackedObj, newOccupancy, zone.config.alertOnEnter);
           onEnter?.(zone, trackedObj);
 
@@ -434,7 +434,7 @@ export function useZoneDetection(
         const obj = newTrackedObjects.get(objId);
         if (obj) currentObjects.push(obj);
       });
-      
+
       updateZoneStats(zone.id, s => ({
         ...s,
         currentObjects,
@@ -530,7 +530,7 @@ export function useZoneDetection(
   }, []);
 
   const toggleZone = useCallback((zoneId: string) => {
-    setZones(prev => prev.map(z => 
+    setZones(prev => prev.map(z =>
       z.id === zoneId ? { ...z, enabled: !z.enabled } : z
     ));
   }, []);
