@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Zonas de Interesse
- * 
+ *
  * Funcionalidades:
  * - Lista de zonas por câmera
  * - Editor visual para desenhar zonas
@@ -146,72 +146,72 @@ interface ZoneFormData {
 // CONFIGURAÇÃO
 // ============================================
 
-const zoneTypeConfig: Record<ZoneType, { 
-  label: string; 
-  icon: unknown; 
+const zoneTypeConfig: Record<ZoneType, {
+  label: string;
+  icon: unknown;
   color: string;
   bgColor: string;
   description: string;
 }> = {
-  restricted: { 
-    label: 'Área Restrita', 
-    icon: AlertTriangle, 
+  restricted: {
+    label: 'Área Restrita',
+    icon: AlertTriangle,
     color: 'text-red-500',
     bgColor: 'bg-red-500',
     description: 'Alerta quando alguém entra na área',
   },
-  counting: { 
-    label: 'Contagem', 
-    icon: Users, 
+  counting: {
+    label: 'Contagem',
+    icon: Users,
     color: 'text-blue-500',
     bgColor: 'bg-blue-500',
     description: 'Conta pessoas entrando e saindo',
   },
-  tripwire: { 
-    label: 'Linha de Contagem', 
-    icon: ArrowLeftRight, 
+  tripwire: {
+    label: 'Linha de Contagem',
+    icon: ArrowLeftRight,
     color: 'text-purple-500',
     bgColor: 'bg-purple-500',
     description: 'Conta pessoas cruzando uma linha',
   },
-  dwell: { 
-    label: 'Tempo de Permanência', 
-    icon: Timer, 
+  dwell: {
+    label: 'Tempo de Permanência',
+    icon: Timer,
     color: 'text-orange-500',
     bgColor: 'bg-orange-500',
     description: 'Monitora tempo na área',
   },
-  occupancy: { 
-    label: 'Ocupação', 
-    icon: Users, 
+  occupancy: {
+    label: 'Ocupação',
+    icon: Users,
     color: 'text-green-500',
     bgColor: 'bg-green-500',
     description: 'Controla capacidade máxima',
   },
-  parking: { 
-    label: 'Estacionamento', 
-    icon: MapPin, 
+  parking: {
+    label: 'Estacionamento',
+    icon: MapPin,
     color: 'text-cyan-500',
     bgColor: 'bg-cyan-500',
     description: 'Monitora vagas de estacionamento',
   },
-  queue: { 
-    label: 'Fila', 
-    icon: Users, 
+  queue: {
+    label: 'Fila',
+    icon: Users,
     color: 'text-yellow-500',
     bgColor: 'bg-yellow-500',
     description: 'Monitora filas e tempo de espera',
   },
-  safety: { 
-    label: 'Segurança', 
-    icon: AlertTriangle, 
+  safety: {
+    label: 'Segurança',
+    icon: AlertTriangle,
     color: 'text-amber-500',
     bgColor: 'bg-amber-500',
     description: 'Área de segurança do trabalho',
   },
-  custom: { 
-    label: 'Personalizada', 
-    icon: Target, 
+  custom: {
+    label: 'Personalizada',
+    icon: Target,
     color: 'text-gray-500',
     bgColor: 'bg-gray-500',
     description: 'Configuração personalizada',
@@ -268,7 +268,7 @@ function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, onView 
       <div role="main" aria-label="Gerenciamento de zonas" className="p-4 pb-2">
         <div role="main" className="flex items-start justify-between">
           <div role="main" className="flex items-center gap-2">
-            <div 
+            <div
               className="w-4 h-4 rounded"
               style={{ backgroundColor: zone.color || '#3B82F6' }}
             />
@@ -364,9 +364,9 @@ function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, onView 
         {stats?.lastEvent && (
           <p className="text-[10px] text-muted-foreground mt-2 flex items-center gap-1">
             <Clock className="w-3 h-3" />
-            Último evento: {formatDistanceToNow(new Date(stats.lastEvent), { 
-              addSuffix: true, 
-              locale: ptBR 
+            Último evento: {formatDistanceToNow(new Date(stats.lastEvent), {
+              addSuffix: true,
+              locale: ptBR
             })}
           </p>
         )}
@@ -424,7 +424,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
   }, [zone, isOpen]);
 
   const handleZoneDrawn = useCallback((points: { x: number; y: number }[]) => {
-    const shape = drawingMode === 'line' ? 'line' : 
+    const shape = drawingMode === 'line' ? 'line' :
                   drawingMode === 'rectangle' ? 'rectangle' : 'polygon';
     setFormData(f => ({
       ...f,
@@ -450,7 +450,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
     setIsSubmitting(true);
     try {
       const pointsWithOpacity = { ...formData.pointsData, opacity };
-      
+
       if (zone) {
         // Update
         await onSave({
@@ -525,7 +525,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
                 </Button>
               </div>
             </div>
-            
+
             <div role="main" aria-label="Gerenciamento de zonas" className="aspect-video bg-black rounded-lg overflow-hidden relative border-2 border-dashed border-muted">
               {camera?.stream_url ? (
                 <VideoStreamPlayer
@@ -535,8 +535,8 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
                   cameraName={camera.name}
                 />
               ) : camera?.thumbnail ? (
-                <img 
-                  src={camera.thumbnail} 
+                <img
+                  src={camera.thumbnail}
                   alt={camera.name}
                   className="w-full h-full object-cover"
                 />
@@ -545,7 +545,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
                   <Camera className="w-12 h-12 text-muted-foreground" />
                 </div>
               )}
-              
+
               {/* Canvas de desenho sobreposto */}
               <div role="main" aria-label="Gerenciamento de zonas" className="absolute inset-0">
                 <ZoneEditor
@@ -553,9 +553,9 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
                     id: 'temp',
                     name: formData.name || 'Nova Zona',
                     type: formData.type,
-                    geometry: { 
-                      shape: formData.pointsData.shape, 
-                      points: formData.pointsData.coordinates 
+                    geometry: {
+                      shape: formData.pointsData.shape,
+                      points: formData.pointsData.coordinates
                     },
                     color: formData.color,
                     opacity: opacity,
@@ -572,9 +572,9 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
               <div role="main" className="flex items-center gap-2 text-sm text-green-600 bg-green-50 dark:bg-green-950 p-2 rounded">
                 <Check className="w-4 h-4" />
                 Zona desenhada: {formData.pointsData.shape} com {formData.pointsData.coordinates.length} pontos
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   className="ml-auto h-6 text-xs"
                   onClick={() => setFormData(f => ({ ...f, pointsData: null }))}
                 >
@@ -582,7 +582,7 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
                 </Button>
               </div>
             )}
-            
+
             <p className="text-xs text-muted-foreground">
               {drawingMode === 'rectangle' && 'Clique e arraste para desenhar um retângulo'}
               {drawingMode === 'polygon' && 'Clique para adicionar pontos, duplo-clique para finalizar'}
@@ -672,8 +672,8 @@ function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSh
             <Button variant="outline" onClick={onClose} className="flex-1">
               Cancelar
             </Button>
-            <Button 
-              onClick={handleSubmit} 
+            <Button
+              onClick={handleSubmit}
               disabled={isSubmitting || !formData.pointsData}
               className="flex-1"
             >
@@ -711,7 +711,7 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <div 
+            <div
               className="w-4 h-4 rounded"
               style={{ backgroundColor: zone.color || '#3B82F6' }}
             />
@@ -749,8 +749,8 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
                     cameraName={camera.name}
                   />
                 ) : camera?.thumbnail ? (
-                  <img 
-                    src={camera.thumbnail} 
+                  <img
+                    src={camera.thumbnail}
                     alt={camera.name}
                     className="w-full h-full object-cover"
                   />
@@ -759,7 +759,7 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
                     <Camera className="w-12 h-12 text-muted-foreground" />
                   </div>
                 )}
-                
+
                 {/* Zona sobreposta */}
                 {pointsData && (
                   <svg className="absolute inset-0 w-full h-full pointer-events-none">
@@ -878,7 +878,7 @@ function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneVi
 export function ZonesPage() {
   const { user } = useAuth();
   const { cameras } = useCameras();
-  
+
   // State
   const [zones, setZones] = useState<DbZone[]>([]);
   const [loading, setLoading] = useState(true);
@@ -886,17 +886,17 @@ export function ZonesPage() {
   const [selectedCameraFilter, setSelectedCameraFilter] = useState<string>('all');
   const [selectedTypeFilter, setSelectedTypeFilter] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  
+
   // Editor state
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editorCamera, setEditorCamera] = useState<Camera | null>(null);
   const [editingZone, setEditingZone] = useState<DbZone | null>(null);
-  
+
   // View state
   const [viewingZone, setViewingZone] = useState<DbZone | null>(null);
   const [zoneStats, setZoneStats] = useState<Record<string, ZoneStats>>({});
   const [zoneEvents, setZoneEvents] = useState<Record<string, ZoneEvent[]>>({});
-  
+
   // Delete confirmation
   const [deleteConfirm, setDeleteConfirm] = useState<DbZone | null>(null);
 
@@ -927,7 +927,7 @@ export function ZonesPage() {
             const countIn = eventsData.filter(e => e.event_type.includes('enter')).length;
             const countOut = eventsData.filter(e => e.event_type.includes('exit')).length;
             const alertsToday = eventsData.filter(e => e.event_type.includes('alert')).length;
-            
+
             statsMap[zone.id] = {
               currentOccupancy: Math.max(0, countIn - countOut),
               countIn,
@@ -956,7 +956,7 @@ export function ZonesPage() {
         .eq('zone_id', zoneId)
         .order('created_at', { ascending: false })
         .limit(50);
-      
+
       setZoneEvents(prev => ({ ...prev, [zoneId]: data || [] }));
     } catch (error) {
     }
@@ -1017,7 +1017,7 @@ export function ZonesPage() {
         .from('zones')
         .delete()
         .eq('id', zone.id);
-      
+
       if (error) throw error;
       toast.success('Zona excluída');
       loadZones();
@@ -1033,7 +1033,7 @@ export function ZonesPage() {
         .from('zones')
         .update({ is_active: !zone.is_active })
         .eq('id', zone.id);
-      
+
       if (error) throw error;
       toast.success(zone.is_active ? 'Zona desativada' : 'Zona ativada');
       loadZones();
@@ -1115,7 +1115,7 @@ export function ZonesPage() {
                 </div>
               ) : (
                 cameras.map(camera => (
-                  <DropdownMenuItem 
+                  <DropdownMenuItem
                     key={camera.id}
                     onClick={() => openEditor(camera)}
                   >
@@ -1214,8 +1214,8 @@ export function ZonesPage() {
         </Select>
 
         {(searchQuery || selectedCameraFilter !== 'all' || selectedTypeFilter !== 'all') && (
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="sm"
             onClick={() => {
               setSearchQuery('');
@@ -1259,7 +1259,7 @@ export function ZonesPage() {
           <Target className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
           <h3 className="text-lg font-medium mb-2">Nenhuma zona encontrada</h3>
           <p className="text-sm text-muted-foreground mb-4">
-            {zones.length === 0 
+            {zones.length === 0
               ? 'Crie sua primeira zona de interesse'
               : 'Tente ajustar os filtros'}
           </p>
@@ -1272,7 +1272,7 @@ export function ZonesPage() {
         </div>
       ) : (
         <div className={cn(
-          viewMode === 'grid' 
+          viewMode === 'grid'
             ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
             : 'flex flex-col gap-2'
         )}>
