@@ -1,6 +1,6 @@
 /**
  * VISÃO - Tipos Adicionais
- * 
+ *
  * Tipos para tabelas criadas depois da geração inicial do Supabase
  * Importar junto com os tipos gerados automaticamente
  */
@@ -9,7 +9,7 @@
 // PPE (Equipamentos de Proteção Individual)
 // ============================================
 
-export type PPEType = 
+export type PPEType =
   | 'helmet'
   | 'vest'
   | 'goggles'
