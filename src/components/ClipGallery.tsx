@@ -3,7 +3,7 @@ import { memo } from "react";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: ClipGallery
- * 
+ *
  * Galeria para visualizar, filtrar e gerenciar clips gravados.
  */
 
@@ -84,23 +84,23 @@ import { ptBR } from 'date-fns/locale';
 interface ClipGalleryProps {
   /** Lista de clips */
   clips: VideoClip[];
-  
+
   /** Callbacks */
   onPlay?: (clip: VideoClip) => void;
   onDownload?: (clip: VideoClip) => void;
   onDelete?: (clipId: string) => void;
   onToggleFavorite?: (clipId: string) => void;
   onMarkViewed?: (clipId: string) => void;
-  
+
   /** Layout inicial */
   defaultLayout?: 'grid' | 'list';
-  
+
   /** Mostrar filtros */
   showFilters?: boolean;
-  
+
   /** Altura máxima */
   maxHeight?: number | string;
-  
+
   /** Classe CSS */
   className?: string;
 }
