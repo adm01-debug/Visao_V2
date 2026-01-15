@@ -2,18 +2,18 @@ import { memo } from "react";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: StreamConfigPanel
- * 
+ *
  * Painel de configuração de streams RTSP/HLS para câmeras IP profissionais
  */
 
 import { useState, useEffect } from 'react';
-import { 
-  Video, 
-  Settings, 
-  Play, 
-  AlertCircle, 
-  CheckCircle2, 
-  Copy, 
+import {
+  Video,
+  Settings,
+  Play,
+  AlertCircle,
+  CheckCircle2,
+  Copy,
   ExternalLink,
   Info,
   Wifi,
@@ -35,7 +35,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
-import { 
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -121,7 +121,7 @@ export function StreamConfigPanel({
     transcodingEnabled: true,
     transcodingPreset: 'veryfast',
   });
-  
+
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState<'success' | 'error' | null>(null);
   const [copied, setCopied] = useState(false);
@@ -144,7 +144,7 @@ export function StreamConfigPanel({
   const getFFmpegCommand = () => {
     const inputUrl = config.url || 'rtsp://camera:554/stream';
     const outputPath = `/var/www/streams/${cameraId || 'camera1'}`;
-    
+
     return `ffmpeg -rtsp_transport tcp -i "${inputUrl}" \
   -c:v libx264 -preset ${config.transcodingPreset || 'veryfast'} \
   -tune zerolatency -g 30 -sc_threshold 0 \
@@ -347,7 +347,7 @@ export function StreamConfigPanel({
             <Info className="h-4 w-4" />
             <AlertTitle>Sobre Transcodificação</AlertTitle>
             <AlertDescription>
-              Streams RTSP não são suportados diretamente pelos navegadores. 
+              Streams RTSP não são suportados diretamente pelos navegadores.
               É necessário um servidor de mídia para converter para HLS.
             </AlertDescription>
           </Alert>
@@ -385,8 +385,8 @@ export function StreamConfigPanel({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label>Comando FFmpeg</Label>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     size="sm"
                     onClick={() => copyToClipboard(getFFmpegCommand())}
                   >
@@ -394,9 +394,9 @@ export function StreamConfigPanel({
                     Copiar
                   </Button>
                 </div>
-                <Textarea 
-                  value={getFFmpegCommand()} 
-                  readOnly 
+                <Textarea
+                  value={getFFmpegCommand()}
+                  readOnly
                   className="font-mono text-xs h-40"
                 />
               </div>
@@ -417,8 +417,8 @@ export function StreamConfigPanel({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label>Comando Docker</Label>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     size="sm"
                     onClick={() => copyToClipboard(getDockerCommand())}
                   >
@@ -426,9 +426,9 @@ export function StreamConfigPanel({
                     Copiar
                   </Button>
                 </div>
-                <Textarea 
-                  value={getDockerCommand()} 
-                  readOnly 
+                <Textarea
+                  value={getDockerCommand()}
+                  readOnly
                   className="font-mono text-xs h-24"
                 />
               </div>
