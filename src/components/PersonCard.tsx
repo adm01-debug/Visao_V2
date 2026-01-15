@@ -1,5 +1,5 @@
 import { useCopyToClipboard } from "@/hooks";
-import { memo } from "react";
+import { memo, useState } from 'react';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: PersonCard
@@ -7,7 +7,6 @@ import { memo } from "react";
  * Card para exibição de pessoa cadastrada no sistema de reconhecimento facial.
  */
 
-import { useState } from 'react';
 import {
   User,
   Mail,
