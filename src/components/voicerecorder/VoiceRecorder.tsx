@@ -20,14 +20,14 @@ export function VoiceRecorder({ onRecordingComplete, className }: VoiceRecorderP
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     mediaRecorderRef.current = new MediaRecorder(stream);
     chunksRef.current = [];
-    
+
     mediaRecorderRef.current.ondataavailable = e => chunksRef.current.push(e.data);
     mediaRecorderRef.current.onstop = () => {
       const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
       setAudioUrl(URL.createObjectURL(blob));
       onRecordingComplete?.(blob);
     };
-    
+
     mediaRecorderRef.current.start();
     setRecording(true);
   };
