@@ -60,7 +60,7 @@ class S3Service {
 
     const endpoint = `https://${this.config.bucket}.s3.${this.config.region}.amazonaws.com/${key}`;
     const response = await fetch(endpoint);
-    
+
     if (!response.ok) throw new Error(`S3 download failed: ${response.statusText}`);
     return response.blob();
   }
@@ -70,7 +70,7 @@ class S3Service {
 
     const endpoint = `https://${this.config.bucket}.s3.${this.config.region}.amazonaws.com/${key}`;
     const response = await fetch(endpoint, { method: 'DELETE' });
-    
+
     return response.ok;
   }
 
@@ -79,7 +79,7 @@ class S3Service {
 
     const endpoint = `https://${this.config.bucket}.s3.${this.config.region}.amazonaws.com/${key}`;
     const response = await fetch(endpoint, { method: 'HEAD' });
-    
+
     return response.ok;
   }
 
