@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { Shield, Loader2, Eye, EyeOff } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
+import { OAuthButtons } from '@/components/OAuthButtons';
 
 const emailSchema = z.string().email('Email inválido').max(255);
 const passwordSchema = z.string().min(6, 'Senha deve ter no mínimo 6 caracteres').max(72);
@@ -248,7 +249,9 @@ export default function Auth() {
                         'Entrar'
                       )}
                     </Button>
-                  </form>
+                  
+          <OAuthButtons disabled={isLoading} />
+        </form>
                 </TabsContent>
 
                 {/* Register Tab */}
@@ -369,7 +372,9 @@ export default function Auth() {
                         'Criar conta'
                       )}
                     </Button>
-                  </form>
+                  
+          <OAuthButtons disabled={isLoading} />
+        </form>
                 </TabsContent>
               </CardContent>
             </Tabs>
