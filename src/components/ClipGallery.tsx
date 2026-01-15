@@ -1,5 +1,5 @@
 import { getRelativeTime, formatDuration } from "@/lib/dateUtils";
-import { memo } from "react";
+import { memo, useMemo, useState } from 'react';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: ClipGallery
@@ -7,7 +7,6 @@ import { memo } from "react";
  * Galeria para visualizar, filtrar e gerenciar clips gravados.
  */
 
-import { useState, useMemo } from 'react';
 import {
   Video,
   Play,
