@@ -4,14 +4,14 @@
  */
 
 import { useState } from "react";
-import { 
-  HelpCircle, 
-  Book, 
-  MessageSquare, 
-  Video, 
-  Shield, 
-  Camera, 
-  Bell, 
+import {
+  HelpCircle,
+  Book,
+  MessageSquare,
+  Video,
+  Shield,
+  Camera,
+  Bell,
   Settings,
   Search,
   ChevronDown,
@@ -345,7 +345,7 @@ export default function HelpPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-muted-foreground">
-                  Nossa equipe de suporte está disponível para ajudar com questões técnicas, 
+                  Nossa equipe de suporte está disponível para ajudar com questões técnicas,
                   configurações e problemas gerais.
                 </p>
                 <Button className="w-full gap-2">
