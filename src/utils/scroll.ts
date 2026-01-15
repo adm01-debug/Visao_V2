@@ -16,9 +16,9 @@ export const scrollToElement = (
 ): void => {
   const el = typeof element === 'string' ? document.querySelector(element) : element;
   if (!el) return;
-  
+
   const { behavior = 'smooth', offset = 0, block = 'start' } = options;
-  
+
   if (offset) {
     const y = el.getBoundingClientRect().top + window.scrollY + offset;
     window.scrollTo({ top: y, behavior });
