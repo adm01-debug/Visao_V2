@@ -2,11 +2,11 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { 
-  Camera, 
-  Bell, 
-  User, 
-  Shield, 
+import {
+  Camera,
+  Bell,
+  User,
+  Shield,
   Activity,
   AlertTriangle,
   CheckCircle,
@@ -20,7 +20,7 @@ import { cn } from '@/lib/utils';
 // EVENT TYPES
 // ============================================
 
-export type EventType = 
+export type EventType =
   | 'camera_online'
   | 'camera_offline'
   | 'alert_triggered'
@@ -57,11 +57,11 @@ interface EventTimelineProps {
   maxItems?: number;
 }
 
-export function EventTimeline({ 
-  events, 
+export function EventTimeline({
+  events,
   className,
   showConnector = true,
-  maxItems 
+  maxItems
 }: EventTimelineProps) {
   const displayEvents = maxItems ? events.slice(0, maxItems) : events;
 
@@ -118,7 +118,7 @@ function TimelineItem({ event, isFirst, isLast, showConnector, index }: Timeline
         config.bgColor
       )}>
         <Icon className={cn('w-4 h-4', config.iconColor)} />
-        
+
         {/* Pulse for new events */}
         {isFirst && (
           <motion.div
@@ -151,9 +151,9 @@ function TimelineItem({ event, isFirst, isLast, showConnector, index }: Timeline
 
           <span className="text-xs text-muted-foreground whitespace-nowrap flex items-center gap-1">
             <Clock className="w-3 h-3" />
-            {formatDistanceToNow(event.timestamp, { 
-              addSuffix: true, 
-              locale: ptBR 
+            {formatDistanceToNow(event.timestamp, {
+              addSuffix: true,
+              locale: ptBR
             })}
           </span>
         </div>
@@ -167,12 +167,12 @@ function TimelineItem({ event, isFirst, isLast, showConnector, index }: Timeline
 
         {/* Thumbnail */}
         {event.metadata?.imageUrl && (
-          <motion.div 
+          <motion.div
             className="mt-2 rounded-lg overflow-hidden w-32 h-20"
             whileHover={{ scale: 1.05 }}
           >
-            <img 
-              src={event.metadata.imageUrl} 
+            <img
+              src={event.metadata.imageUrl}
               alt="Event thumbnail"
               className="w-full h-full object-cover"
             />
@@ -244,7 +244,7 @@ export function CompactTimeline({ events, className }: CompactTimelineProps) {
             )}>
               <Icon className={cn('w-3 h-3', config.iconColor)} />
             </div>
-            
+
             <div className="flex-1 min-w-0">
               <p className="text-sm text-foreground truncate">
                 {event.title}
@@ -266,9 +266,9 @@ export function CompactTimeline({ events, className }: CompactTimelineProps) {
 // ============================================
 
 function getEventConfig(type: EventType) {
-  const configs: Record<EventType, { 
-    icon: React.ElementType; 
-    bgColor: string; 
+  const configs: Record<EventType, {
+    icon: React.ElementType;
+    bgColor: string;
     iconColor: string;
   }> = {
     camera_online: {
