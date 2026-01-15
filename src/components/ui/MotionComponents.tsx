@@ -8,13 +8,13 @@ import { cn } from '@/lib/utils';
 
 export const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     transition: { duration: 0.4, ease: 'easeOut' }
   },
-  exit: { 
-    opacity: 0, 
+  exit: {
+    opacity: 0,
     y: -10,
     transition: { duration: 0.2 }
   }
@@ -22,11 +22,11 @@ export const fadeInUp: Variants = {
 
 export const fadeIn: Variants = {
   hidden: { opacity: 0 },
-  visible: { 
+  visible: {
     opacity: 1,
     transition: { duration: 0.3, ease: 'easeOut' }
   },
-  exit: { 
+  exit: {
     opacity: 0,
     transition: { duration: 0.2 }
   }
@@ -34,13 +34,13 @@ export const fadeIn: Variants = {
 
 export const scaleIn: Variants = {
   hidden: { opacity: 0, scale: 0.9 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     scale: 1,
     transition: { type: 'spring', stiffness: 300, damping: 20 }
   },
-  exit: { 
-    opacity: 0, 
+  exit: {
+    opacity: 0,
     scale: 0.9,
     transition: { duration: 0.15 }
   }
@@ -48,13 +48,13 @@ export const scaleIn: Variants = {
 
 export const slideInRight: Variants = {
   hidden: { opacity: 0, x: 50 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     x: 0,
     transition: { type: 'spring', stiffness: 300, damping: 25 }
   },
-  exit: { 
-    opacity: 0, 
+  exit: {
+    opacity: 0,
     x: 50,
     transition: { duration: 0.2 }
   }
@@ -62,13 +62,13 @@ export const slideInRight: Variants = {
 
 export const slideInLeft: Variants = {
   hidden: { opacity: 0, x: -50 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     x: 0,
     transition: { type: 'spring', stiffness: 300, damping: 25 }
   },
-  exit: { 
-    opacity: 0, 
+  exit: {
+    opacity: 0,
     x: -50,
     transition: { duration: 0.2 }
   }
@@ -76,13 +76,13 @@ export const slideInLeft: Variants = {
 
 export const slideInBottom: Variants = {
   hidden: { opacity: 0, y: 100 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     transition: { type: 'spring', stiffness: 300, damping: 25 }
   },
-  exit: { 
-    opacity: 0, 
+  exit: {
+    opacity: 0,
     y: 100,
     transition: { duration: 0.2 }
   }
@@ -117,12 +117,12 @@ interface MotionCardProps extends HTMLMotionProps<'div'> {
   tap?: boolean;
 }
 
-export function MotionCard({ 
-  children, 
-  className, 
-  hover = true, 
+export function MotionCard({
+  children,
+  className,
+  hover = true,
   tap = true,
-  ...props 
+  ...props
 }: MotionCardProps) {
   return (
     <motion.div
@@ -131,9 +131,9 @@ export function MotionCard({
         hover && 'hover:border-primary/50 hover:bg-card/80',
         className
       )}
-      whileHover={hover ? { 
-        y: -2, 
-        boxShadow: '0 8px 30px -10px hsl(var(--primary) / 0.15)' 
+      whileHover={hover ? {
+        y: -2,
+        boxShadow: '0 8px 30px -10px hsl(var(--primary) / 0.15)'
       } : undefined}
       whileTap={tap ? { scale: 0.98 } : undefined}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
@@ -148,11 +148,11 @@ interface MotionButtonProps extends HTMLMotionProps<'button'> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'destructive';
 }
 
-export function MotionButton({ 
-  children, 
-  className, 
+export function MotionButton({
+  children,
+  className,
   variant = 'primary',
-  ...props 
+  ...props
 }: MotionButtonProps) {
   const variantClasses = {
     primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
@@ -220,10 +220,10 @@ interface PulseIndicatorProps {
   className?: string;
 }
 
-export function PulseIndicator({ 
-  color = 'success', 
+export function PulseIndicator({
+  color = 'success',
   size = 'md',
-  className 
+  className
 }: PulseIndicatorProps) {
   const colorClasses = {
     success: 'bg-success',
@@ -268,12 +268,12 @@ interface RippleButtonProps extends HTMLMotionProps<'button'> {
   rippleColor?: string;
 }
 
-export function RippleButton({ 
-  children, 
+export function RippleButton({
+  children,
   className,
   rippleColor = 'hsl(var(--primary-foreground) / 0.3)',
   onClick,
-  ...props 
+  ...props
 }: RippleButtonProps) {
   const [ripples, setRipples] = React.useState<{ x: number; y: number; id: number }[]>([]);
 
@@ -282,7 +282,7 @@ export function RippleButton({
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     const id = Date.now();
-    
+
     setRipples(prev => [...prev, { x, y, id }]);
     setTimeout(() => {
       setRipples(prev => prev.filter(r => r.id !== id));
@@ -312,12 +312,12 @@ export function RippleButton({
             backgroundColor: rippleColor,
           }}
           initial={{ width: 0, height: 0, x: 0, y: 0, opacity: 0.5 }}
-          animate={{ 
-            width: 300, 
-            height: 300, 
-            x: -150, 
-            y: -150, 
-            opacity: 0 
+          animate={{
+            width: 300,
+            height: 300,
+            x: -150,
+            y: -150,
+            opacity: 0
           }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
         />
@@ -356,9 +356,9 @@ interface AnimatedNumberProps {
   suffix?: string;
 }
 
-export function AnimatedNumber({ 
-  value, 
-  duration = 1, 
+export function AnimatedNumber({
+  value,
+  duration = 1,
   className,
   prefix = '',
   suffix = ''
@@ -372,7 +372,7 @@ export function AnimatedNumber({
     const animate = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
-      
+
       setDisplayValue(Math.floor(progress * value));
 
       if (progress < 1) {
