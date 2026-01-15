@@ -1,11 +1,11 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: usePPEDetection (VERSÃO MELHORADA)
- * 
+ *
  * Detecção de EPIs usando:
  * 1. GPT-4 Vision (primário, via Edge Function) - Alta precisão
  * 2. COCO-SSD local (fallback) - Heurísticas baseadas em posição
- * 
+ *
  * EPIs suportados:
  * - Capacete (helmet)
  * - Colete (vest)
@@ -26,14 +26,14 @@ import { toast } from 'sonner';
 // TIPOS
 // ============================================
 
-export type PPEType = 
-  | 'helmet' 
-  | 'vest' 
-  | 'gloves' 
-  | 'boots' 
-  | 'goggles' 
-  | 'mask' 
-  | 'earmuffs' 
+export type PPEType =
+  | 'helmet'
+  | 'vest'
+  | 'gloves'
+  | 'boots'
+  | 'goggles'
+  | 'mask'
+  | 'earmuffs'
   | 'harness';
 
 export type PPEStatus = 'detected' | 'missing' | 'unknown';
@@ -166,7 +166,7 @@ export function usePPEDetection(options: UsePPEDetectionOptions = {}) {
   // ============================================
   // DETECÇÃO VIA VISION AI (GPT-4)
   // ============================================
-  
+
   const detectWithVisionAI = useCallback(async (
     imageData: string,
     requiredPPE: PPEType[]
@@ -344,7 +344,7 @@ Respond in JSON format:
       for (const person of persons) {
         const [x, y, width, height] = person.bbox;
         const personKey = `${Math.round(x/50)}-${Math.round(y/50)}`;
-        
+
         // Tracking ID
         let trackingId: string;
         const cached = trackingCache.current.get(personKey);
@@ -381,8 +381,8 @@ Respond in JSON format:
         const missingItems = items
           .filter(i => i.status === 'missing')
           .map(i => i.type);
-        
-        const isCompliant = missingItems.length === 0 && 
+
+        const isCompliant = missingItems.length === 0 &&
           items.filter(i => i.status === 'detected').length >= requiredPPE.length * 0.5;
 
         const detection: PersonPPEDetection = {
@@ -604,7 +604,7 @@ Respond in JSON format:
       .eq('id', id);
 
     if (!error) {
-      setViolations(prev => prev.map(v => 
+      setViolations(prev => prev.map(v =>
         v.id === id ? { ...v, acknowledged: true } : v
       ));
     }
@@ -648,22 +648,22 @@ Respond in JSON format:
     stats,
     config,
     ppeTypes: PPE_TYPES,
-    
+
     // Detecção
     detectPPE,
     startContinuousDetection,
     stopContinuousDetection,
-    
+
     // Zonas
     loadZones,
     createZone,
     updateZone,
     deleteZone,
-    
+
     // Violações
     loadViolations,
     acknowledgeViolation,
-    
+
     // Config
     updateConfig,
   };
