@@ -5,12 +5,12 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Wifi, 
-  WifiOff, 
-  RefreshCw, 
-  CloudOff, 
-  Cloud, 
+import {
+  Wifi,
+  WifiOff,
+  RefreshCw,
+  CloudOff,
+  Cloud,
   CheckCircle2,
   AlertCircle,
   Database
@@ -35,9 +35,9 @@ interface OfflineIndicatorProps {
   className?: string;
 }
 
-export function OfflineIndicator({ 
+export function OfflineIndicator({
   variant = 'minimal',
-  className 
+  className
 }: OfflineIndicatorProps) {
   const {
     isOnline,
@@ -87,8 +87,8 @@ export function OfflineIndicator({
               <WifiOff className="h-4 w-4" />
             )}
             {pendingActionsCount > 0 && (
-              <Badge 
-                variant="destructive" 
+              <Badge
+                variant="destructive"
                 className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px]"
               >
                 {pendingActionsCount}
@@ -97,11 +97,11 @@ export function OfflineIndicator({
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          {isSyncing 
-            ? 'Sincronizando...' 
-            : isOnline 
-              ? pendingActionsCount > 0 
-                ? `${pendingActionsCount} ações pendentes` 
+          {isSyncing
+            ? 'Sincronizando...'
+            : isOnline
+              ? pendingActionsCount > 0
+                ? `${pendingActionsCount} ações pendentes`
                 : 'Online - Clique para sincronizar'
               : 'Offline - Trabalhando com cache local'
           }
@@ -244,7 +244,7 @@ export function OfflineIndicator({
 
             {/* Info */}
             <p className="text-[10px] text-muted-foreground text-center">
-              {isOnline 
+              {isOnline
                 ? 'Dados sincronizados automaticamente a cada 5 min'
                 : 'Trabalhando com dados em cache local'
               }
