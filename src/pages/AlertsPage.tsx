@@ -150,12 +150,12 @@ interface AlertItemProps {
   viewMode: ViewMode;
 }
 
-function AlertItem({ 
-  alert, 
-  isSelected, 
-  onSelect, 
-  onView, 
-  onMarkRead, 
+function AlertItem({
+  alert,
+  isSelected,
+  onSelect,
+  onView,
+  onMarkRead,
   onDelete,
   viewMode,
 }: AlertItemProps) {
@@ -230,8 +230,8 @@ function AlertItem({
               )}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem 
-              className="text-destructive" 
+            <DropdownMenuItem
+              className="text-destructive"
               onClick={(e) => { e.stopPropagation(); onDelete(); }}
             >
               <Trash2 className="w-4 h-4 mr-2" />
@@ -435,7 +435,7 @@ export function AlertsPage() {
     // Search
     if (filters.search) {
       const query = filters.search.toLowerCase();
-      result = result.filter(a => 
+      result = result.filter(a =>
         a.message.toLowerCase().includes(query) ||
         a.camera_name.toLowerCase().includes(query)
       );
@@ -795,7 +795,7 @@ export function AlertsPage() {
 
       {/* Alerts List/Grid */}
       <div className={cn(
-        viewMode === 'grid' 
+        viewMode === 'grid'
           ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
           : 'flex flex-col gap-2'
       )}>
@@ -819,7 +819,7 @@ export function AlertsPage() {
           <BellOff className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
           <h3 className="text-lg font-medium mb-2">Nenhum alerta encontrado</h3>
           <p className="text-sm text-muted-foreground">
-            {hasActiveFilters 
+            {hasActiveFilters
               ? 'Tente ajustar os filtros de busca'
               : 'Quando houver alertas, eles aparecerão aqui'}
           </p>
