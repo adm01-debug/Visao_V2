@@ -72,11 +72,11 @@ export function ResponsiveDialog({
               <DialogDescription>{description}</DialogDescription>
             )}
           </DialogHeader>
-          
+
           <ScrollArea className="flex-1 -mx-6 px-6">
             {children}
           </ScrollArea>
-          
+
           {footer && (
             <DialogFooter className="mt-4 pt-4 border-t">
               {footer}
@@ -96,11 +96,11 @@ export function ResponsiveDialog({
             <DrawerDescription>{description}</DrawerDescription>
           )}
         </DrawerHeader>
-        
+
         <ScrollArea className="flex-1 px-4 overflow-auto" style={{ maxHeight: '60vh' }}>
           {children}
         </ScrollArea>
-        
+
         {footer && (
           <DrawerFooter className="pt-4 border-t">
             {footer}
@@ -134,13 +134,13 @@ export function ResponsiveSheet({
   className,
 }: ResponsiveSheetProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)');
-  
+
   // Em mobile, sempre usa drawer de baixo
   const actualSide = isDesktop ? side : 'bottom';
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent 
+      <DrawerContent
         className={cn(
           actualSide === 'bottom' ? 'max-h-[85vh]' : 'h-full w-80',
           className
@@ -152,7 +152,7 @@ export function ResponsiveSheet({
             <DrawerDescription>{description}</DrawerDescription>
           )}
         </DrawerHeader>
-        
+
         <ScrollArea className="flex-1 px-4 pb-4">
           {children}
         </ScrollArea>
