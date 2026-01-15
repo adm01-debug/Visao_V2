@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Mapa de Calor
- * 
+ *
  * Visualização de mapas de calor com integração direta do hook useHeatmap
  * para controle de dados e configurações na página.
  */
@@ -25,7 +25,7 @@ export default function HeatmapPage() {
   const [selectedCameraId, setSelectedCameraId] = useState<string | undefined>();
   const [selectedZoneId, setSelectedZoneId] = useState<string | undefined>();
   const [timeRange, setTimeRange] = useState<'1h' | '6h' | '24h' | '7d' | '30d'>('24h');
-  
+
   // Hook de heatmap com controle direto na página
   const {
     heatmapData,
@@ -59,7 +59,7 @@ export default function HeatmapPage() {
         <title>Mapa de Calor | VISÃO</title>
         <meta name="description" content="Visualize mapas de calor de movimento por zona e câmera" />
       </Helmet>
-      
+
       <div role="main" className="flex min-h-screen w-full bg-background">
         <Sidebar />
         <main className="flex-1 p-6 overflow-auto">
@@ -73,7 +73,7 @@ export default function HeatmapPage() {
                 Visualize a intensidade de movimento por área
               </p>
             </div>
-            
+
             <div role="main" className="flex items-center gap-4">
               {/* Seletor de período */}
               <Select value={timeRange} onValueChange={(value: unknown) => setTimeRange(value)}>
@@ -89,17 +89,17 @@ export default function HeatmapPage() {
                   <SelectItem value="30d">Últimos 30 dias</SelectItem>
                 </SelectContent>
               </Select>
-              
+
               {/* Botão de atualizar */}
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="icon"
                 onClick={() => refreshData()}
                 disabled={isLoading}
               >
                 <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
               </Button>
-              
+
               {/* Botão de exportar */}
               <Button variant="outline" onClick={handleExport}>
                 <Download className="h-4 w-4 mr-2" />
@@ -107,7 +107,7 @@ export default function HeatmapPage() {
               </Button>
             </div>
           </div>
-          
+
           {/* Cards de estatísticas */}
           {stats && (
             <div role="main" aria-label="Mapa de calor" className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -122,7 +122,7 @@ export default function HeatmapPage() {
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardContent className="pt-4">
                   <div role="main" className="flex items-center justify-between">
@@ -134,7 +134,7 @@ export default function HeatmapPage() {
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardContent className="pt-4">
                   <div role="main" className="flex items-center justify-between">
@@ -146,7 +146,7 @@ export default function HeatmapPage() {
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardContent className="pt-4">
                   <div role="main" className="flex items-center justify-between">
@@ -160,9 +160,9 @@ export default function HeatmapPage() {
               </Card>
             </div>
           )}
-          
+
           {/* Visualização do Heatmap */}
-          <HeatmapVisualization 
+          <HeatmapVisualization
             data={heatmapData}
             isLoading={isLoading}
             error={error}
