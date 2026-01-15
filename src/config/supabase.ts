@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Configuração do Supabase
- * 
+ *
  * @module config/supabase
  */
 
@@ -13,7 +13,7 @@ export const SUPABASE_CONFIG = {
   anonKey: ENV.SUPABASE_PUBLISHABLE_KEY,
   // Alias para compatibilidade
   publishableKey: ENV.SUPABASE_PUBLISHABLE_KEY,
-  
+
   // Configurações de Auth
   auth: {
     storage: typeof window !== 'undefined' ? window.localStorage : undefined,
@@ -21,7 +21,7 @@ export const SUPABASE_CONFIG = {
     autoRefreshToken: true,
     detectSessionInUrl: true,
   },
-  
+
   // Configurações de Realtime
   realtime: {
     params: {
