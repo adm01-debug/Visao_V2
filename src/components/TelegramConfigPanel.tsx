@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: TelegramConfigPanel
- * 
+ *
  * Configuração de alertas via Telegram
  */
 
@@ -16,11 +16,11 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { 
-  MessageCircle, 
-  Send, 
-  CheckCircle2, 
-  AlertCircle, 
+import {
+  MessageCircle,
+  Send,
+  CheckCircle2,
+  AlertCircle,
   HelpCircle,
   Copy,
   ExternalLink,
@@ -221,8 +221,8 @@ export function TelegramConfigPanel({ className, onConfigChange }: TelegramConfi
             <Button onClick={saveConfig} className="flex-1">
               Salvar Configuração
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={testConnection}
               disabled={testing || !config.botToken || !config.chatId}
             >
@@ -269,9 +269,9 @@ export function TelegramConfigPanel({ className, onConfigChange }: TelegramConfi
               <li>Escolha um username único terminando em "bot" (ex: "visao_alertas_bot")</li>
               <li>Copie o token fornecido e cole no campo acima</li>
             </ol>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => window.open('https://t.me/BotFather', '_blank')}
             >
               <ExternalLink className="h-4 w-4 mr-2" />
@@ -311,9 +311,9 @@ export function TelegramConfigPanel({ className, onConfigChange }: TelegramConfi
                 <li>Ele mostrará o ID do canal</li>
               </ol>
             </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => window.open('https://t.me/userinfobot', '_blank')}
             >
               <ExternalLink className="h-4 w-4 mr-2" />
