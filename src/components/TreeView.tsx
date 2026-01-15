@@ -120,7 +120,7 @@ const TreeNodeItem: React.FC<TreeNodeItemProps> = ({
   const getIcon = () => {
     if (node.icon) return node.icon;
     if (isLeaf) return <File className="h-4 w-4 text-muted-foreground" />;
-    return isExpanded 
+    return isExpanded
       ? <FolderOpen className="h-4 w-4 text-yellow-500" />
       : <Folder className="h-4 w-4 text-yellow-500" />;
   };
@@ -159,7 +159,7 @@ const TreeNodeItem: React.FC<TreeNodeItemProps> = ({
           onClick={handleExpandClick}
         >
           {hasChildren && (
-            isExpanded 
+            isExpanded
               ? <ChevronDown className="h-4 w-4" />
               : <ChevronRight className="h-4 w-4" />
           )}
@@ -258,13 +258,13 @@ export const TreeView: React.FC<TreeViewProps> = ({
     new Set(selectedIds)
   );
 
-  const expandedIds = controlledExpandedIds 
-    ? new Set(controlledExpandedIds) 
+  const expandedIds = controlledExpandedIds
+    ? new Set(controlledExpandedIds)
     : internalExpandedIds;
 
   const handleSelect = useCallback((node: TreeNode) => {
     const isSelected = internalSelectedIds.has(node.id);
-    
+
     if (multiSelect) {
       const newSelected = new Set(internalSelectedIds);
       if (isSelected) {
@@ -276,13 +276,13 @@ export const TreeView: React.FC<TreeViewProps> = ({
     } else {
       setInternalSelectedIds(new Set([node.id]));
     }
-    
+
     onSelect?.(node, !isSelected);
   }, [internalSelectedIds, multiSelect, onSelect]);
 
   const handleExpand = useCallback((node: TreeNode) => {
     const isExpanded = expandedIds.has(node.id);
-    
+
     if (!controlledExpandedIds) {
       const newExpanded = new Set(internalExpandedIds);
       if (isExpanded) {
@@ -292,7 +292,7 @@ export const TreeView: React.FC<TreeViewProps> = ({
       }
       setInternalExpandedIds(newExpanded);
     }
-    
+
     onExpand?.(node, !isExpanded);
   }, [expandedIds, controlledExpandedIds, internalExpandedIds, onExpand]);
 
@@ -309,14 +309,14 @@ export const TreeView: React.FC<TreeViewProps> = ({
       return nodes.reduce<TreeNode[]>((acc, node) => {
         const matchesFilter = node.label.toLowerCase().includes(filterText.toLowerCase());
         const filteredChildren = node.children ? filterNodes(node.children) : [];
-        
+
         if (matchesFilter || filteredChildren.length > 0) {
           acc.push({
             ...node,
             children: filteredChildren.length > 0 ? filteredChildren : node.children
           });
         }
-        
+
         return acc;
       }, []);
     };
