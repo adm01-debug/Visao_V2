@@ -1,7 +1,7 @@
 /**
  * VIS-O - Sistema de Vigilância Inteligente
  * ThumbnailGrid - Grid layout for thumbnails/images
- * 
+ *
  * @module components/thumbnailgrid
  */
 
