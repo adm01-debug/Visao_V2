@@ -2,10 +2,10 @@
  * Number Utilities
  */
 
-export const isNumber = (value: unknown): value is number => 
+export const isNumber = (value: unknown): value is number =>
   typeof value === 'number' && !isNaN(value);
 
-export const isInteger = (value: unknown): value is number => 
+export const isInteger = (value: unknown): value is number =>
   Number.isInteger(value);
 
 export const isPositive = (value: number): boolean => value > 0;
@@ -24,7 +24,7 @@ export const parseNumber = (str: string): number | null => {
   return isNaN(num) ? null : num;
 };
 
-export const formatNumber = (value: number, locale = 'pt-BR'): string => 
+export const formatNumber = (value: number, locale = 'pt-BR'): string =>
   new Intl.NumberFormat(locale).format(value);
 
 export const formatCompact = (value: number, locale = 'pt-BR'): string =>
@@ -37,22 +37,22 @@ export const formatOrdinal = (n: number, locale = 'pt-BR'): string => {
   return `${n}${suffixes[rules.select(n)] || 'th'}`;
 };
 
-export const padZero = (num: number, length: number): string => 
+export const padZero = (num: number, length: number): string =>
   String(num).padStart(length, '0');
 
-export const randomInt = (min: number, max: number): number => 
+export const randomInt = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
-export const randomFloat = (min: number, max: number): number => 
+export const randomFloat = (min: number, max: number): number =>
   Math.random() * (max - min) + min;
 
-export const inRange = (value: number, min: number, max: number): boolean => 
+export const inRange = (value: number, min: number, max: number): boolean =>
   value >= min && value <= max;
 
-export const toPercentage = (value: number, decimals = 0): string => 
+export const toPercentage = (value: number, decimals = 0): string =>
   `${(value * 100).toFixed(decimals)}%`;
 
-export const fromPercentage = (str: string): number => 
+export const fromPercentage = (str: string): number =>
   parseFloat(str.replace('%', '')) / 100;
 
 export const abbreviate = (num: number): string => {
