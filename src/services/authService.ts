@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Auth Service - Serviço de autenticação
- * 
+ *
  * @module services/authService
  */
 
@@ -40,7 +40,7 @@ export const authService = {
       email,
       password,
     });
-    
+
     if (error) throw error;
     return {
       user: data.user,
@@ -59,7 +59,7 @@ export const authService = {
         data: metadata,
       },
     });
-    
+
     if (error) throw error;
     return {
       user: data.user,
