@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * useUtilities - Re-exports centralized hooks for backward compatibility
- * 
+ *
  * @module hooks/useUtilities
  * @deprecated Use individual hook imports from @/hooks instead
  */
