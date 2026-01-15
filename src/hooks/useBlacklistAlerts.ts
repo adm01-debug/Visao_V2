@@ -1,4 +1,5 @@
 import { useEffect, useCallback, useRef, useState } from 'react';
+import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { playCriticalAlertSound } from '@/lib/alertSounds';
@@ -40,6 +41,7 @@ export function useBlacklistAlerts({
   // Load persons and cameras cache
   useEffect(() => {
     const loadCache = async () => {
+    try {
       // Load blacklisted persons
       const { data: persons } = await supabase
         .from('registered_persons')
@@ -74,6 +76,7 @@ export function useBlacklistAlerts({
     logId: string,
     imageUrl?: string
   ) => {
+    try {
     // Get person info
     let personInfo = personsCache.current.get(personId);
 
@@ -193,6 +196,7 @@ export function useBlacklistAlerts({
           table: 'recognition_logs',
         },
         async (payload) => {
+    try {
           const log = payload.new as {
             id: string;
             person_id: string | null;
