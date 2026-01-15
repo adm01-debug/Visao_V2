@@ -1,10 +1,10 @@
 import React from 'react';
-import { 
-  Camera, 
-  Bell, 
-  Video, 
-  Users, 
-  Settings, 
+import {
+  Camera,
+  Bell,
+  Video,
+  Users,
+  Settings,
   Map,
   Plus,
   Download,
