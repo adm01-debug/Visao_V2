@@ -62,8 +62,8 @@ export function WidgetWrapper({
       style={style}
       layout
       initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ 
-        opacity: isDragging ? 0.5 : 1, 
+      animate={{
+        opacity: isDragging ? 0.5 : 1,
         scale: isDragging ? 1.02 : 1,
       }}
       exit={{ opacity: 0, scale: 0.9 }}
