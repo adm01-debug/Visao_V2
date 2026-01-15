@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useFaceRecognitionAlerts
- * 
+ *
  * Integra reconhecimento facial com sistema de alertas (versão simplificada)
  */
 
@@ -114,8 +114,8 @@ export function useFaceRecognitionAlerts(
     unknownCount: events.filter(e => e.status === 'unknown').length,
     blacklistAlerts: events.filter(e => e.status === 'blacklist').length,
     vipVisits: events.filter(e => e.status === 'vip').length,
-    averageSimilarity: events.length > 0 
-      ? events.reduce((acc, e) => acc + e.similarity, 0) / events.length 
+    averageSimilarity: events.length > 0
+      ? events.reduce((acc, e) => acc + e.similarity, 0) / events.length
       : 0,
   };
 
