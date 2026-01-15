@@ -27,7 +27,7 @@ interface VirtualListResult<T> {
 /**
  * Hook for virtualizing long lists
  * Renders only visible items for better performance
- * 
+ *
  * @example
  * const { virtualItems, containerProps, totalHeight } = useVirtualList({
  *   items: data,
@@ -50,13 +50,13 @@ export function useVirtualList<T>({
     const start = Math.max(0, Math.floor(scrollTop / itemHeight) - overscan);
     const visibleCount = Math.ceil(containerHeight / itemHeight);
     const end = Math.min(items.length - 1, start + visibleCount + overscan * 2);
-    
+
     return { start, end };
   }, [scrollTop, itemHeight, containerHeight, items.length, overscan]);
 
   const virtualItems = useMemo(() => {
     const result: VirtualItem<T>[] = [];
-    
+
     for (let i = visibleRange.start; i <= visibleRange.end; i++) {
       if (items[i] !== undefined) {
         result.push({
@@ -72,7 +72,7 @@ export function useVirtualList<T>({
         });
       }
     }
-    
+
     return result;
   }, [items, visibleRange, itemHeight]);
 
