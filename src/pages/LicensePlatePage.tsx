@@ -18,7 +18,7 @@ export default function LicensePlatePage() {
         <title>Reconhecimento de Placas | VISÃO</title>
         <meta name="description" content="Sistema de reconhecimento automático de placas veiculares" />
       </Helmet>
-      
+
       <div role="main" aria-label="Reconhecimento de placas" className="flex min-h-screen w-full bg-background">
         <Sidebar />
         <main className="flex-1 p-6 overflow-auto">
@@ -33,11 +33,11 @@ export default function LicensePlatePage() {
                 Detecção
               </TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="dashboard">
               <ALPRDashboard />
             </TabsContent>
-            
+
             <TabsContent value="detection">
               <LicensePlateRecognition />
             </TabsContent>
