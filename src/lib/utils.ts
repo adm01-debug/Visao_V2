@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Utility functions
- * 
+ *
  * @module lib/utils
  */
 
