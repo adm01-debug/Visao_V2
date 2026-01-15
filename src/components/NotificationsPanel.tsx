@@ -2,7 +2,7 @@ import { playAlertSound } from "@/lib/alertSounds";
 import { showNotification } from '@/lib/browserNotifications';
 import { useTimeout } from '@/hooks/useTimeout';
 import { showNotification } from "@/lib/browserNotifications";
-import { memo } from "react";
+import { memo, useState } from 'react';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: NotificationsPanel
@@ -14,7 +14,6 @@ import { memo } from "react";
  * - Configurações
  */
 
-import { useState } from 'react';
 import {
   Bell,
   BellOff,
