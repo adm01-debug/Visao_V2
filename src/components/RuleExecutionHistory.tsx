@@ -220,7 +220,7 @@ function ExecutionItem({ execution }: { execution: RuleExecution }) {
 export function RuleExecutionHistory() {
   const [filterRuleId, setFilterRuleId] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
-  
+
   const { rules } = useRules();
   const { executions, loading, refetch, getStats } = useRuleExecutions(
     filterRuleId !== "all" ? filterRuleId : undefined
