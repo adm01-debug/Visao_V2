@@ -115,7 +115,7 @@ function ruleMatchesAlert(rule: Rule, alert: Alert): boolean {
   const severityLevels = ["low", "medium", "high", "critical"];
   const ruleSeverityIndex = severityLevels.indexOf(rule.severity);
   const alertSeverityIndex = severityLevels.indexOf(alert.severity);
-  
+
   if (alertSeverityIndex < ruleSeverityIndex) return false;
 
   const conditions = Array.isArray(rule.conditions) ? rule.conditions : [];
@@ -167,7 +167,7 @@ async function executeActions(supabase: SupabaseClient, rule: Rule, alert: Alert
 
         case "record":
           console.log(`[ACTION] Record - Starting recording on camera ${alert.camera_name}`);
-          
+
           const clipData = {
             camera_id: alert.camera_id,
             user_id: alert.user_id,
@@ -188,7 +188,7 @@ async function executeActions(supabase: SupabaseClient, rule: Rule, alert: Alert
 
         case "lockdown":
           console.log(`[ACTION] Lockdown triggered for rule "${rule.name}"`);
-          
+
           const { error: lockdownError } = await supabase
             .from("cameras")
             .update({ status: "alert" })
@@ -236,12 +236,12 @@ async function logRuleExecution(supabase: SupabaseClient, rule: Rule, alert: Ale
   try {
     const endTime = Date.now();
     const executionTimeMs = endTime - startTime;
-    
+
     const hasErrors = results.some(r => !r.success);
     const allFailed = results.every(r => !r.success);
-    
+
     const status = allFailed ? 'error' : (hasErrors ? 'partial' : 'success');
-    const errorMessage = hasErrors 
+    const errorMessage = hasErrors
       ? results.filter(r => !r.success).map(r => r.message).join('; ')
       : null;
 
@@ -257,7 +257,7 @@ async function logRuleExecution(supabase: SupabaseClient, rule: Rule, alert: Ale
     };
 
     const { error } = await supabase.from("rule_executions").insert(executionData);
-    
+
     if (error) {
       console.error("[ERROR] Failed to log rule execution:", error);
     } else {
@@ -309,11 +309,11 @@ const handler = async (req: Request): Promise<Response> => {
     for (const rule of (rules || []) as Rule[]) {
       if (ruleMatchesAlert(rule, alert)) {
         console.log(`[INFO] Rule "${rule.name}" matched alert ${alert.id}`);
-        
+
         const startTime = Date.now();
         const results = await executeActions(supabase, rule, alert);
         matchedRules.push({ rule, results });
-        
+
         await logRuleExecution(supabase, rule, alert, results, startTime);
       }
     }
