@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useGlobalStreaming
- * 
+ *
  * Gerencia streaming global em todas as páginas:
  * - Pool de conexões HLS
  * - Priorização de streams visíveis
@@ -87,7 +87,7 @@ interface GlobalStreamingContextValue {
   connections: Map<string, StreamConnection>;
   stats: GlobalStreamingStats;
   config: GlobalStreamingConfig;
-  
+
   // Ações
   connect: (cameraId: string, hlsUrl: string, videoElement: HTMLVideoElement) => void;
   disconnect: (cameraId: string) => void;
@@ -110,16 +110,16 @@ interface GlobalStreamingProviderProps {
   config?: Partial<GlobalStreamingConfig>;
 }
 
-export function GlobalStreamingProvider({ 
-  children, 
-  config: initialConfig 
+export function GlobalStreamingProvider({
+  children,
+  config: initialConfig
 }: GlobalStreamingProviderProps) {
   const [connections, setConnections] = useState<Map<string, StreamConnection>>(new Map());
   const [config, setConfig] = useState<GlobalStreamingConfig>({
     ...DEFAULT_CONFIG,
     ...initialConfig,
   });
-  
+
   const visibleCameras = useRef<Set<string>>(new Set());
   const reconnectTimers = useRef<Map<string, NodeJS.Timeout>>(new Map());
   const thumbnailIntervals = useRef<Map<string, NodeJS.Timeout>>(new Map());
@@ -127,12 +127,12 @@ export function GlobalStreamingProvider({
   // Calcular estatísticas
   const stats: GlobalStreamingStats = {
     totalConnections: connections.size,
-    activeConnections: Array.from(connections.values()).filter(c => 
+    activeConnections: Array.from(connections.values()).filter(c =>
       c.status === 'connected' || c.status === 'playing'
     ).length,
     totalBitrate: Array.from(connections.values()).reduce((sum, c) => sum + c.bitrate, 0),
-    averageLatency: connections.size > 0 
-      ? Array.from(connections.values()).reduce((sum, c) => sum + c.latency, 0) / connections.size 
+    averageLatency: connections.size > 0
+      ? Array.from(connections.values()).reduce((sum, c) => sum + c.latency, 0) / connections.size
       : 0,
     errorRate: connections.size > 0
       ? Array.from(connections.values()).filter(c => c.status === 'error').length / connections.size
@@ -141,12 +141,12 @@ export function GlobalStreamingProvider({
 
   // Conectar a um stream
   const connect = useCallback((
-    cameraId: string, 
-    hlsUrl: string, 
+    cameraId: string,
+    hlsUrl: string,
     videoElement: HTMLVideoElement
   ) => {
     // Verificar limite de conexões
-    const activeCount = Array.from(connections.values()).filter(c => 
+    const activeCount = Array.from(connections.values()).filter(c =>
       c.status === 'connected' || c.status === 'playing' || c.status === 'connecting'
     ).length;
 
@@ -199,7 +199,7 @@ export function GlobalStreamingProvider({
         connection.status = 'connected';
         connection.connectedAt = new Date();
         videoElement.play().catch(() => {});
-        
+
         setConnections(prev => new Map(prev).set(cameraId, { ...connection, hlsInstance: hls }));
       });
 
@@ -208,9 +208,9 @@ export function GlobalStreamingProvider({
           connection.status = 'error';
           connection.errorCount++;
           connection.lastError = data.details;
-          
+
           setConnections(prev => new Map(prev).set(cameraId, { ...connection }));
-          
+
           // Reconectar
           scheduleReconnect(cameraId, hlsUrl, videoElement);
         }
@@ -220,14 +220,14 @@ export function GlobalStreamingProvider({
         const stats = data.frag.stats;
         if (stats) {
           connection.bitrate = Math.round((stats.total || 0) * 8 / 1000);
-          connection.latency = stats.loading?.end 
-            ? stats.loading.end - stats.loading.start 
+          connection.latency = stats.loading?.end
+            ? stats.loading.end - stats.loading.start
             : 0;
         }
         connection.buffered = videoElement.buffered.length > 0
           ? videoElement.buffered.end(0) - videoElement.currentTime
           : 0;
-          
+
         setConnections(prev => new Map(prev).set(cameraId, { ...connection }));
       });
 
@@ -299,7 +299,7 @@ export function GlobalStreamingProvider({
     if (!connection?.hlsInstance) return;
 
     const hls = connection.hlsInstance;
-    
+
     switch (quality) {
       case 'auto':
         hls.currentLevel = -1;
@@ -342,8 +342,8 @@ export function GlobalStreamingProvider({
 
   // Agendar reconexão
   const scheduleReconnect = useCallback((
-    cameraId: string, 
-    hlsUrl: string, 
+    cameraId: string,
+    hlsUrl: string,
     videoElement: HTMLVideoElement
   ) => {
     const connection = connections.get(cameraId);
@@ -378,7 +378,7 @@ export function GlobalStreamingProvider({
         if (ctx) {
           ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
           const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
-          
+
           setConnections(prev => {
             const next = new Map(prev);
             const conn = next.get(cameraId);
@@ -431,11 +431,11 @@ export function GlobalStreamingProvider({
 
 export function useGlobalStreaming() {
   const context = useContext(GlobalStreamingContext);
-  
+
   if (!context) {
     throw new Error('useGlobalStreaming must be used within GlobalStreamingProvider');
   }
-  
+
   return context;
 }
 
@@ -449,10 +449,10 @@ interface UseCameraStreamOptions {
   autoConnect?: boolean;
 }
 
-export function useCameraStream({ 
-  cameraId, 
-  hlsUrl, 
-  autoConnect = true 
+export function useCameraStream({
+  cameraId,
+  hlsUrl,
+  autoConnect = true
 }: UseCameraStreamOptions) {
   const { connect, disconnect, getConnection, setVisible, setQuality } = useGlobalStreaming();
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -465,9 +465,9 @@ export function useCameraStream({
 
   useEffect(() => {
     if (!mounted || !autoConnect || !videoRef.current || !hlsUrl) return;
-    
+
     connect(cameraId, hlsUrl, videoRef.current);
-    
+
     return () => {
       disconnect(cameraId);
     };
