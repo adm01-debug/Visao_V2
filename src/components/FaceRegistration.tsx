@@ -69,12 +69,12 @@ function FaceRegistrationComponent({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    
+
     if (!name.trim()) {
       setError('Nome é obrigatório');
       return;
     }
-    
+
     await onSubmit({
       name: name.trim(),
       listType,
@@ -94,7 +94,7 @@ function FaceRegistrationComponent({
           {initialData ? 'Editar Pessoa' : 'Cadastrar Pessoa'}
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Photo Upload */}
