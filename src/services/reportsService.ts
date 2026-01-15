@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Reports Service - Geração de relatórios
- * 
+ *
  * @module services/reportsService
  */
 
@@ -73,7 +73,7 @@ export const reportsService = {
       .gte("created_at", startDate)
       .lte("created_at", endDate)
       .order("created_at", { ascending: false });
-    
+
     if (error) throw error;
     return data || [];
   },
@@ -85,7 +85,7 @@ export const reportsService = {
     const { data, error } = await supabase
       .from("cameras")
       .select("id, name, status");
-    
+
     if (error) throw error;
     return (data || []) as CameraStats[];
   },
@@ -99,21 +99,21 @@ export const reportsService = {
       .select("*")
       .gte("created_at", startDate)
       .lte("created_at", endDate);
-    
+
     if (error) throw error;
-    
+
     const logs = data || [];
     const successful = logs.filter((l) => l.confidence >= 0.7).length;
     const avgConfidence = logs.length > 0
       ? logs.reduce((sum, l) => sum + (l.confidence || 0), 0) / logs.length
       : 0;
-    
+
     const byType: Record<string, number> = {};
     logs.forEach((l) => {
       const type = l.type || 'unknown';
       byType[type] = (byType[type] || 0) + 1;
     });
-    
+
     return {
       total: logs.length,
       successful,
@@ -149,34 +149,34 @@ export const reportsService = {
    */
   async generateAlertReport(filters: ReportFilters): Promise<AlertsSummary> {
     const alerts = await this.getAlertsSummary(filters.startDate, filters.endDate);
-    
+
     const bySeverity: Record<string, number> = {};
     const byType: Record<string, number> = {};
     const byCamera: Record<string, number> = {};
     const byDate: Record<string, number> = {};
-    
+
     alerts.forEach((alert) => {
       // Por severidade
       const sev = alert.severity || 'unknown';
       bySeverity[sev] = (bySeverity[sev] || 0) + 1;
-      
+
       // Por tipo
       const type = alert.type || 'unknown';
       byType[type] = (byType[type] || 0) + 1;
-      
+
       // Por câmera
       const cam = alert.camera_id || 'unknown';
       byCamera[cam] = (byCamera[cam] || 0) + 1;
-      
+
       // Por data
       const date = alert.created_at.split('T')[0];
       byDate[date] = (byDate[date] || 0) + 1;
     });
-    
+
     const timeline = Object.entries(byDate)
       .map(([date, count]) => ({ date, count }))
       .sort((a, b) => a.date.localeCompare(b.date));
-    
+
     return {
       total: alerts.length,
       bySeverity,
