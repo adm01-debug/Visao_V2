@@ -2,7 +2,7 @@ import { logger } from "@/lib";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useRuleActions
- * 
+ *
  * Executa ações das regras quando disparadas
  */
 import { useCallback, useRef, useEffect } from 'react';
@@ -185,7 +185,7 @@ export function useRuleActions(options: UseRuleActionsOptions = {}): UseRuleActi
    * Executar uma ação específica
    */
   const executeAction = useCallback(async (
-    action: RuleActionType, 
+    action: RuleActionType,
     event: RuleEvent
   ): Promise<boolean> => {
     let success = false;
