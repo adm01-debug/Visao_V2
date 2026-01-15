@@ -117,7 +117,7 @@ export const TagsInput: React.FC<TagsInputProps> = ({
       removeTag(value[value.length - 1].id);
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setHighlightedIndex(prev => 
+      setHighlightedIndex(prev =>
         prev < filteredSuggestions.length - 1 ? prev + 1 : prev
       );
     } else if (e.key === 'ArrowUp') {
