@@ -101,8 +101,8 @@ class EmailService {
           reply_to: message.replyTo || this.config!.replyTo,
           attachments: message.attachments?.map((att) => ({
             filename: att.filename,
-            content: typeof att.content === 'string' 
-              ? att.content 
+            content: typeof att.content === 'string'
+              ? att.content
               : att.content.toString('base64'),
             content_type: att.contentType,
           })),
@@ -128,7 +128,7 @@ class EmailService {
   private async sendViaSendGrid(message: EmailMessage): Promise<EmailResponse> {
     try {
       const toEmails = Array.isArray(message.to) ? message.to : [message.to];
-      
+
       const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
         method: 'POST',
         headers: {
@@ -196,7 +196,7 @@ class EmailService {
     detailsUrl?: string
   ): Promise<EmailResponse> {
     const formattedTime = timestamp.toLocaleString('pt-BR');
-    
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -281,7 +281,7 @@ Sistema VISÃO - Videomonitoramento Inteligente
     }
   ): Promise<EmailResponse> {
     const formattedDate = date.toLocaleDateString('pt-BR');
-    
+
     const alertsHtml = Object.entries(stats.alertsByType)
       .map(([type, count]) => `<li>${type}: <strong>${count}</strong></li>`)
       .join('');
@@ -325,10 +325,10 @@ Sistema VISÃO - Videomonitoramento Inteligente
                 <div class="stat-label">Câmeras Online</div>
               </div>
             </div>
-            
+
             <h3>Alertas por Tipo</h3>
             <ul>${alertsHtml}</ul>
-            
+
             <h3>Câmeras com Mais Alertas</h3>
             <ul>${topCamerasHtml}</ul>
           </div>
