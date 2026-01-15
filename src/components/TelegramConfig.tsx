@@ -4,11 +4,11 @@
  */
 
 import { memo, useState } from 'react';
-import { 
-  MessageSquare, 
-  Send, 
-  Check, 
-  X, 
+import {
+  MessageSquare,
+  Send,
+  Check,
+  X,
   Loader2,
   AlertTriangle,
   HelpCircle
@@ -55,10 +55,10 @@ function TelegramConfigComponent({
 
   const handleTest = async () => {
     if (!onTest) return;
-    
+
     setIsTesting(true);
     setTestResult(null);
-    
+
     try {
       const success = await onTest();
       setTestResult(success ? 'success' : 'error');
@@ -181,7 +181,7 @@ function TelegramConfigComponent({
               )}
             </Button>
           )}
-          
+
           {onSave && (
             <Button
               onClick={onSave}
