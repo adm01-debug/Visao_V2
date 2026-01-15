@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Diff Utilities - Comparação de objetos e arrays
- * 
+ *
  * @module utils/diff
  */
 
@@ -43,16 +43,16 @@ export function diffObjects<T extends Record<string, unknown>>(
 ): Partial<T> {
   const diff: Partial<T> = {};
   const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
-  
+
   keys.forEach((key) => {
     const oldValue = a[key as keyof T];
     const newValue = b[key as keyof T];
-    
+
     if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
       (diff as Record<string, unknown>)[key] = newValue;
     }
   });
-  
+
   return diff;
 }
 
@@ -67,13 +67,13 @@ export function diffObjectsDetailed<T extends Record<string, unknown>>(
 ): ObjectDiffEntry<unknown>[] {
   const entries: ObjectDiffEntry<unknown>[] = [];
   const allKeys = new Set([...Object.keys(a), ...Object.keys(b)]);
-  
+
   allKeys.forEach((key) => {
     const oldValue = a[key as keyof T];
     const newValue = b[key as keyof T];
     const oldExists = key in a;
     const newExists = key in b;
-    
+
     if (!oldExists && newExists) {
       entries.push({
         key,
@@ -97,7 +97,7 @@ export function diffObjectsDetailed<T extends Record<string, unknown>>(
       });
     }
   });
-  
+
   return entries;
 }
 
@@ -113,11 +113,11 @@ export function diffObjectsDetailed<T extends Record<string, unknown>>(
 export function diffArrays<T>(a: T[], b: T[]): ArrayDiff<T> {
   const setA = new Set(a);
   const setB = new Set(b);
-  
+
   const added = b.filter((x) => !setA.has(x));
   const removed = a.filter((x) => !setB.has(x));
   const unchanged = a.filter((x) => setB.has(x));
-  
+
   return { added, removed, unchanged };
 }
 
@@ -134,11 +134,11 @@ export function diffArraysBy<T, K>(
 ): ArrayDiff<T> {
   const mapA = new Map(a.map((item) => [keyFn(item), item]));
   const mapB = new Map(b.map((item) => [keyFn(item), item]));
-  
+
   const added: T[] = [];
   const removed: T[] = [];
   const unchanged: T[] = [];
-  
+
   b.forEach((item) => {
     const key = keyFn(item);
     if (!mapA.has(key)) {
@@ -147,14 +147,14 @@ export function diffArraysBy<T, K>(
       unchanged.push(item);
     }
   });
-  
+
   a.forEach((item) => {
     const key = keyFn(item);
     if (!mapB.has(key)) {
       removed.push(item);
     }
   });
-  
+
   return { added, removed, unchanged };
 }
 
@@ -171,13 +171,13 @@ export function diffText(a: string, b: string): TextDiffEntry[] {
   const aLines = a.split('\n');
   const bLines = b.split('\n');
   const result: TextDiffEntry[] = [];
-  
+
   const maxLines = Math.max(aLines.length, bLines.length);
-  
+
   for (let i = 0; i < maxLines; i++) {
     const aLine = aLines[i];
     const bLine = bLines[i];
-    
+
     if (aLine === undefined) {
       result.push({
         type: 'add',
@@ -209,7 +209,7 @@ export function diffText(a: string, b: string): TextDiffEntry[] {
       });
     }
   }
-  
+
   return result;
 }
 
