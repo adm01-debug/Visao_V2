@@ -2,7 +2,7 @@
  * Audit Logger - Security event tracking
  */
 
-export type AuditAction = 
+export type AuditAction =
   | 'login' | 'logout' | 'login_failed' | 'password_change'
   | 'create' | 'read' | 'update' | 'delete'
   | 'export' | 'import' | 'share'
@@ -72,7 +72,7 @@ class AuditLogger {
 
   getEntries(filter?: Partial<Pick<AuditEntry, 'userId' | 'action' | 'resource'>>): AuditEntry[] {
     if (!filter) return [...this.entries];
-    
+
     return this.entries.filter(e => {
       if (filter.userId && e.userId !== filter.userId) return false;
       if (filter.action && e.action !== filter.action) return false;
@@ -86,7 +86,7 @@ class AuditLogger {
   }
 
   getFailedLogins(userId?: string): AuditEntry[] {
-    return this.entries.filter(e => 
+    return this.entries.filter(e =>
       e.action === 'login_failed' && (!userId || e.userId === userId)
     );
   }
