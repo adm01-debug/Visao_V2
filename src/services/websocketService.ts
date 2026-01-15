@@ -45,15 +45,15 @@ export const createWebSocketService = (config: Partial<WSConfig> = {}): WebSocke
 
   const connect = () => {
     if (!mergedConfig.url) return;
-    
+
     state = 'connecting';
     ws = new WebSocket(mergedConfig.url);
-    
+
     ws.onopen = () => {
       state = 'connected';
       reconnectAttempts = 0;
     };
-    
+
     ws.onclose = () => {
       state = 'disconnected';
       if (mergedConfig.reconnect && reconnectAttempts < mergedConfig.maxReconnectAttempts) {
@@ -61,11 +61,11 @@ export const createWebSocketService = (config: Partial<WSConfig> = {}): WebSocke
         setTimeout(connect, mergedConfig.reconnectInterval);
       }
     };
-    
+
     ws.onerror = () => {
       state = 'error';
     };
-    
+
     ws.onmessage = (event) => {
       const message: WSMessage = JSON.parse(event.data);
       const typeHandlers = handlers.get(message.type);
