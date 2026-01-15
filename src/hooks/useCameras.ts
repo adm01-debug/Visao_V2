@@ -38,7 +38,7 @@ export function useCameras() {
 
   const seedCameras = async () => {
     if (!user) return;
-    
+
     try {
       const { data: existingCameras } = await supabase
         .from('cameras')
@@ -73,7 +73,7 @@ export function useCameras() {
 
   const createCamera = async (camera: Omit<DbCameraInsert, 'user_id'>) => {
     if (!user) throw new Error('Usuário não autenticado');
-    
+
     try {
       const { data, error } = await supabase
         .from('cameras')
