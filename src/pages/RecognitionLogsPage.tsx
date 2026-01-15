@@ -3,11 +3,11 @@ import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { 
-  Search, 
-  Calendar, 
-  Camera, 
-  User, 
+import {
+  Search,
+  Calendar,
+  Camera,
+  User,
   Filter,
   Download,
   Eye,
@@ -54,7 +54,7 @@ export default function RecognitionLogsPage() {
         .from('recognition_logs')
         .select('*')
         .order('timestamp', { ascending: false });
-      
+
       if (error) throw error;
       return data || [];
     }
@@ -68,7 +68,7 @@ export default function RecognitionLogsPage() {
         .from('registered_persons')
         .select('id, name, photo_url')
         .order('name');
-      
+
       if (error) throw error;
       return data || [];
     }
@@ -82,7 +82,7 @@ export default function RecognitionLogsPage() {
         .from('cameras')
         .select('id, name')
         .order('name');
-      
+
       if (error) throw error;
       return data || [];
     }
@@ -142,7 +142,7 @@ export default function RecognitionLogsPage() {
   // Stats
   const stats = useMemo(() => {
     if (!filteredLogs.length) return { total: 0, recognized: 0, unknown: 0, avgConfidence: 0 };
-    
+
     const recognized = filteredLogs.filter(l => l.recognized).length;
     const avgConfidence = filteredLogs
       .filter(l => l.confidence)
@@ -209,8 +209,8 @@ export default function RecognitionLogsPage() {
             <h1 className="text-2xl font-bold text-foreground">Logs de Reconhecimento</h1>
             <p className="text-muted-foreground">Histórico completo de detecções faciais</p>
           </div>
-          <ExportMenu 
-            onExportCSV={handleExportCSV} 
+          <ExportMenu
+            onExportCSV={handleExportCSV}
             onExportPDF={handleExportPDF}
             disabled={filteredLogs.length === 0}
           />
@@ -425,8 +425,8 @@ export default function RecognitionLogsPage() {
                 <Search className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
                 <h3 className="text-lg font-medium">Nenhum registro encontrado</h3>
                 <p className="text-muted-foreground">
-                  {logs?.length === 0 
-                    ? 'Ainda não há logs de reconhecimento facial.' 
+                  {logs?.length === 0
+                    ? 'Ainda não há logs de reconhecimento facial.'
                     : 'Tente ajustar os filtros para encontrar registros.'}
                 </p>
               </div>
@@ -499,7 +499,7 @@ export default function RecognitionLogsPage() {
                             {log.confidence ? (
                               <div role="main" className="flex items-center gap-2">
                                 <div role="main" aria-label="Logs de reconhecimento" className="w-16 h-2 bg-muted rounded-full overflow-hidden">
-                                  <div 
+                                  <div
                                     className="h-full bg-primary rounded-full"
                                     style={{ width: `${Number(log.confidence) * 100}%` }}
                                   />
@@ -515,8 +515,8 @@ export default function RecognitionLogsPage() {
                           <TableCell>
                             <Dialog>
                               <DialogTrigger asChild>
-                                <Button 
-                                  variant="ghost" 
+                                <Button
+                                  variant="ghost"
                                   size="icon"
                                   onClick={() => setSelectedLog(log)}
                                 >
@@ -531,9 +531,9 @@ export default function RecognitionLogsPage() {
                                   <div role="main" aria-label="Logs de reconhecimento" className="space-y-4">
                                     {selectedLog.image_url && (
                                       <div role="main" aria-label="Logs de reconhecimento" className="aspect-video bg-muted rounded-lg overflow-hidden">
-                                        <img 
-                                          src={selectedLog.image_url} 
-                                          alt="Captura" 
+                                        <img
+                                          src={selectedLog.image_url}
+                                          alt="Captura"
                                           className="w-full h-full object-cover"
                                         />
                                       </div>
@@ -558,8 +558,8 @@ export default function RecognitionLogsPage() {
                                       <div>
                                         <p className="text-sm text-muted-foreground">Confiança</p>
                                         <p className="font-medium">
-                                          {selectedLog.confidence 
-                                            ? `${(Number(selectedLog.confidence) * 100).toFixed(1)}%` 
+                                          {selectedLog.confidence
+                                            ? `${(Number(selectedLog.confidence) * 100).toFixed(1)}%`
                                             : '-'}
                                         </p>
                                       </div>
