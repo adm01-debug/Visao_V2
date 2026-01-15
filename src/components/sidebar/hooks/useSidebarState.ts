@@ -113,12 +113,12 @@ export function useSidebarState() {
     categories,
     expandedCategories,
     sidebarStatus,
-    
+
     // Setters
     setCollapsed,
     setMobileOpen,
     setSearchOpen,
-    
+
     // Actions
     toggleCollapsed,
     toggleCategory,
