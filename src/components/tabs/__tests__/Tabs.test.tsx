@@ -14,7 +14,7 @@ describe('Tabs', () => {
         <TabsContent value="tab2">Content 2</TabsContent>
       </Tabs>
     );
-    
+
     expect(screen.getByText('Content 1')).toBeInTheDocument();
     expect(screen.queryByText('Content 2')).not.toBeInTheDocument();
   });
@@ -30,7 +30,7 @@ describe('Tabs', () => {
         <TabsContent value="tab2">Content 2</TabsContent>
       </Tabs>
     );
-    
+
     fireEvent.click(screen.getByText('Tab 2'));
     expect(screen.queryByText('Content 1')).not.toBeInTheDocument();
     expect(screen.getByText('Content 2')).toBeInTheDocument();
