@@ -37,7 +37,7 @@ export function useAlerts() {
 
   const seedAlerts = async () => {
     if (!user) return;
-    
+
     try {
       const { data: existingAlerts } = await supabase
         .from('alerts')
@@ -82,7 +82,7 @@ export function useAlerts() {
 
   const createAlert = async (alert: Omit<DbAlertInsert, 'user_id'>) => {
     if (!user) throw new Error('Usuário não autenticado');
-    
+
     try {
       const { data, error } = await supabase
         .from('alerts')
