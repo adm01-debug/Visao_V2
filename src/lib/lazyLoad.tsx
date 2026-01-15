@@ -34,7 +34,7 @@ export function withLazyLoad<T extends ComponentType<Record<string, unknown>>>(
   fallback: React.ReactNode = <LoadingFallback />
 ) {
   const LazyComponent = lazy(importFn);
-  
+
   return function LazyWrapper(props: React.ComponentProps<T>) {
     return (
       <Suspense fallback={fallback}>
