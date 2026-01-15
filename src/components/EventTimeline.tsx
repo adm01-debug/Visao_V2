@@ -1,8 +1,8 @@
 import { getRelativeTime, formatDuration } from "@/lib/dateUtils";
-import { 
-  AlertTriangle, 
-  Users, 
-  Shield, 
+import {
+  AlertTriangle,
+  Users,
+  Shield,
   Activity,
   Clock,
   ChevronRight
@@ -90,9 +90,9 @@ const mockTimelineEvents: TimelineEvent[] = [
   },
 ];
 
-export function EventTimeline({ 
-  events = mockTimelineEvents, 
-  onEventClick 
+export function EventTimeline({
+  events = mockTimelineEvents,
+  onEventClick
 }: Partial<EventTimelineProps>) {
   return (
     <div className="space-y-3">
