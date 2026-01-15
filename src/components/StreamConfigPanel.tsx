@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect, useState } from 'react';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: StreamConfigPanel
@@ -6,7 +6,6 @@ import { memo } from "react";
  * Painel de configuração de streams RTSP/HLS para câmeras IP profissionais
  */
 
-import { useState, useEffect } from 'react';
 import {
   Video,
   Settings,
