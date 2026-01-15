@@ -3,7 +3,7 @@ import { memo } from "react";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: ZoneEditor
- * 
+ *
  * Editor visual para desenhar zonas de interesse:
  * - Desenho de polígonos
  * - Desenho de retângulos
@@ -92,7 +92,7 @@ export function ZoneEditor({
   // Converter coordenadas do mouse para porcentagem
   const getMousePosition = useCallback((e: React.MouseEvent | MouseEvent): Point => {
     if (!containerRef.current) return { x: 0, y: 0 };
-    
+
     const rect = containerRef.current.getBoundingClientRect();
     return {
       x: Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100)),
@@ -110,7 +110,7 @@ export function ZoneEditor({
   // Handler de clique
   const handleClick = useCallback((e: React.MouseEvent) => {
     if (readOnly) return;
-    
+
     const pos = getMousePosition(e);
 
     if (mode === 'select') {
@@ -125,7 +125,7 @@ export function ZoneEditor({
       } else {
         const startPoint = currentPoints[0];
         const endPoint = pos;
-        
+
         // Criar retângulo com 4 pontos
         const rectPoints: Point[] = [
           { x: Math.min(startPoint.x, endPoint.x), y: Math.min(startPoint.y, endPoint.y) },
@@ -209,7 +209,7 @@ export function ZoneEditor({
   // Handler de movimento
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     const pos = getMousePosition(e);
-    
+
     // Atualizar preview
     if (isDrawing) {
       setPreviewPoint(pos);
@@ -233,7 +233,7 @@ export function ZoneEditor({
   const handleDoubleClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (mode === 'polygon' && isDrawing && currentPoints.length >= 3) {
       onZoneCreated?.({
         geometry: {
@@ -416,7 +416,7 @@ export function ZoneEditor({
         {/* Zonas existentes */}
         {existingZones.map(zone => {
           const isSelected = selectedZoneId === zone.id;
-          
+
           return (
             <g key={zone.id}>
               {zone.geometry.shape === 'line' ? (
@@ -511,8 +511,8 @@ export function ZoneEditor({
             {mode === 'polygon' && (
               <>
                 <span>
-                  {currentPoints.length < 3 
-                    ? 'Clique para adicionar pontos (mín. 3)' 
+                  {currentPoints.length < 3
+                    ? 'Clique para adicionar pontos (mín. 3)'
                     : 'Clique no primeiro ponto ou duplo-clique para fechar'}
                 </span>
                 <span className="opacity-60">|</span>
@@ -522,7 +522,7 @@ export function ZoneEditor({
             {mode === 'line' && (
               <span>Clique para definir o ponto final da linha</span>
             )}
-            
+
             <Button
               variant="ghost"
               size="sm"
@@ -567,14 +567,14 @@ function calculateArrowPoints(start: Point, end: Point): string {
   const midY = (start.y + end.y) / 2;
   const angle = Math.atan2(end.y - start.y, end.x - start.x);
   const arrowSize = 1.5; // porcentagem
-  
+
   const p1x = midX + arrowSize * Math.cos(angle);
   const p1y = midY + arrowSize * Math.sin(angle);
   const p2x = midX - arrowSize * Math.cos(angle - Math.PI / 6);
   const p2y = midY - arrowSize * Math.sin(angle - Math.PI / 6);
   const p3x = midX - arrowSize * Math.cos(angle + Math.PI / 6);
   const p3y = midY - arrowSize * Math.sin(angle + Math.PI / 6);
-  
+
   return `${p1x}%,${p1y}% ${p2x}%,${p2y}% ${p3x}%,${p3y}%`;
 }
 
