@@ -4,11 +4,11 @@
  */
 
 import { memo, useState } from 'react';
-import { 
-  Bell, 
-  Mail, 
-  Phone, 
-  MessageSquare, 
+import {
+  Bell,
+  Mail,
+  Phone,
+  MessageSquare,
   Globe,
   Save,
   Plus,
