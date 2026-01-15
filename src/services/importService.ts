@@ -8,7 +8,7 @@ class ImportService {
     const text = await file.text();
     const lines = text.split('\n').filter(l => l.trim());
     if (lines.length === 0) return [];
-    
+
     const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
     return lines.slice(1).map(line => {
       const values = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
