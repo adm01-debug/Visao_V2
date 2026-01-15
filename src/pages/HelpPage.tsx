@@ -123,7 +123,10 @@ const quickLinks = [
 ];
 
 export default function HelpPage() {
-  const [searchQuery, setSearchQuery] = useState("");
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+const [searchQuery, setSearchQuery] = useState("");
   const [expandedCategory, setExpandedCategory] = useState<string | null>("geral");
 
   // Filter FAQs based on search
