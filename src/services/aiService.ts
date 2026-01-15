@@ -51,7 +51,7 @@ class AIService {
 
     if (!response.ok) throw new Error(`AI API error: ${response.status}`);
     const data = await response.json();
-    
+
     return {
       content: data.choices?.[0]?.message?.content || data.content?.[0]?.text || '',
       usage: data.usage ? {
