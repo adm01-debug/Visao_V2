@@ -31,7 +31,7 @@ export const useAmbientLight = (): AmbientLightState => {
 
     try {
       const sensor = new window.AmbientLightSensor();
-      
+
       sensor.onreading = () => {
         setState({ illuminance: sensor.illuminance, isSupported: true, error: null });
       };
