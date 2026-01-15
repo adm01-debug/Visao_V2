@@ -211,7 +211,7 @@ export function NotificationSettingsPanel() {
         <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
           <Info className="h-4 w-4 text-muted-foreground mt-0.5" />
           <p className="text-xs text-muted-foreground">
-            As notificações push funcionam em tempo real através do Supabase Realtime. 
+            As notificações push funcionam em tempo real através do Supabase Realtime.
             Alertas críticos requerem interação para serem descartados.
           </p>
         </div>
