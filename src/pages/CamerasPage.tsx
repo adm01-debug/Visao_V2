@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Câmeras
- * 
+ *
  * Funcionalidades:
  * - Grid de câmeras com streaming ao vivo
  * - Visualização individual expandida
@@ -171,7 +171,7 @@ function CameraCard({
   const isCompact = viewMode === 'grid-4x4' || viewMode === 'list';
 
   return (
-    <Card 
+    <Card
       className={cn(
         'relative overflow-hidden transition-all cursor-pointer group',
         isSelected && 'ring-2 ring-primary',
@@ -192,16 +192,16 @@ function CameraCard({
               protocol="hls"
               cameraName={camera.name}
             />
-            
+
             {/* Overlays */}
             {showOverlays && (
               <>
-                <ZoneOverlay 
+                <ZoneOverlay
                   zones={[]}
                   showLabels={!isCompact}
                   showStats={!isCompact}
                 />
-                <FaceRecognitionOverlay 
+                <FaceRecognitionOverlay
                   faces={[]}
                   showLabels={!isCompact}
                   showSimilarity={!isCompact}
@@ -210,8 +210,8 @@ function CameraCard({
             )}
           </>
         ) : camera.thumbnail ? (
-          <img 
-            src={camera.thumbnail} 
+          <img
+            src={camera.thumbnail}
             alt={camera.name}
             className="w-full h-full object-cover"
           />
@@ -223,7 +223,7 @@ function CameraCard({
 
         {/* Status Indicator */}
         <div role="main" aria-label="Gerenciamento de câmeras" className="absolute top-2 left-2 flex items-center gap-2">
-          <Badge 
+          <Badge
             variant={isOnline ? 'default' : 'secondary'}
             className={cn(
               'text-xs',
@@ -272,7 +272,7 @@ function CameraCard({
                 {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
               </Button>
             </div>
-            
+
             <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center gap-1">
               <ClipRecorderControls
                 cameraId={camera.id}
@@ -308,7 +308,7 @@ function CameraCard({
                 </p>
               )}
             </div>
-            
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
                 <Button aria-label="Ação" variant="ghost" size="icon" className="h-8 w-8 -mr-2">
@@ -351,9 +351,9 @@ function CameraCard({
               {camera.last_activity && (
                 <span className="flex items-center gap-1">
                   <Clock className="w-3 h-3" />
-                  {formatDistanceToNow(new Date(camera.last_activity), { 
-                    addSuffix: true, 
-                    locale: ptBR 
+                  {formatDistanceToNow(new Date(camera.last_activity), {
+                    addSuffix: true,
+                    locale: ptBR
                   })}
                 </span>
               )}
@@ -446,7 +446,7 @@ function CameraDetailView({
                     cameraName={camera.name}
                     className="w-full h-full"
                   />
-                  
+
                   {/* Overlays */}
                   {showZones && (
                     <ZoneOverlay zones={[]} showLabels showStats />
@@ -499,7 +499,7 @@ function CameraDetailView({
                   >
                     {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                   </Button>
-                  
+
                   <ClipRecorderControls
                     cameraId={camera.id}
                     cameraName={camera.name}
@@ -644,7 +644,7 @@ function CameraDetailView({
 // ============================================
 
 export function CamerasPage() {
-  
+
   // Estado
   const [viewMode, setViewMode] = useState<ViewMode>('grid-2x2');
   const [searchQuery, setSearchQuery] = useState('');
@@ -682,16 +682,16 @@ export function CamerasPage() {
   }), [cameras]);
 
   // Navegação entre câmeras no modo expandido
-  const currentIndex = expandedCamera 
+  const currentIndex = expandedCamera
     ? filteredCameras.findIndex(c => c.id === expandedCamera.id)
     : -1;
-  
+
   const goToPrev = () => {
     if (currentIndex > 0) {
       setExpandedCamera(filteredCameras[currentIndex - 1]);
     }
   };
-  
+
   const goToNext = () => {
     if (currentIndex < filteredCameras.length - 1) {
       setExpandedCamera(filteredCameras[currentIndex + 1]);
@@ -772,8 +772,8 @@ export function CamerasPage() {
         </Select>
 
         {(searchQuery || statusFilter !== 'all') && (
-          <Button aria-label="Ação" 
-            variant="ghost" 
+          <Button aria-label="Ação"
+            variant="ghost"
             size="sm"
             onClick={() => {
               setSearchQuery('');
@@ -841,7 +841,7 @@ export function CamerasPage() {
           <Camera className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
           <h3 className="text-lg font-medium mb-2">Nenhuma câmera encontrada</h3>
           <p className="text-sm text-muted-foreground mb-4">
-            {cameras.length === 0 
+            {cameras.length === 0
               ? 'Adicione sua primeira câmera'
               : 'Tente ajustar os filtros'}
           </p>
