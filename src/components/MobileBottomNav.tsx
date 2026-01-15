@@ -5,10 +5,10 @@
 
 import { memo } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Camera, 
-  Bell, 
+import {
+  LayoutDashboard,
+  Camera,
+  Bell,
   Users,
   Settings,
   MoreHorizontal,
@@ -36,8 +36,8 @@ function MobileBottomNavComponent() {
     { icon: Settings, label: 'Config', path: '/settings' },
   ];
 
-  const isActive = (path: string) => 
-    location.pathname === path || 
+  const isActive = (path: string) =>
+    location.pathname === path ||
     (path !== '/dashboard' && location.pathname.startsWith(path));
 
   return (
@@ -53,7 +53,7 @@ function MobileBottomNavComponent() {
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path);
-          
+
           return (
             <NavLink
               key={item.path}
@@ -61,8 +61,8 @@ function MobileBottomNavComponent() {
               className={cn(
                 'flex flex-col items-center justify-center gap-0.5 px-3 py-2 min-w-[60px] relative',
                 'transition-colors duration-200',
-                active 
-                  ? 'text-primary' 
+                active
+                  ? 'text-primary'
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >
@@ -70,17 +70,17 @@ function MobileBottomNavComponent() {
               {active && (
                 <span className="absolute top-1 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full bg-primary" />
               )}
-              
+
               <div className="relative">
                 <Icon className={cn(
                   'w-5 h-5 transition-transform duration-200',
                   active && 'scale-110'
                 )} />
-                
+
                 {/* Badge de notificação */}
                 {item.badge !== undefined && item.badge > 0 && (
-                  <Badge 
-                    variant="destructive" 
+                  <Badge
+                    variant="destructive"
                     className={cn(
                       'absolute -top-1 -right-2 h-4 min-w-[16px] px-1',
                       'text-[10px] font-bold flex items-center justify-center'
@@ -90,7 +90,7 @@ function MobileBottomNavComponent() {
                   </Badge>
                 )}
               </div>
-              
+
               <span className={cn(
                 'text-[10px] font-medium leading-tight',
                 active && 'font-semibold'
