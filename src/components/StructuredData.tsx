@@ -7,7 +7,7 @@ interface StructuredDataProps {
 
 export const StructuredData = ({ type, data }: StructuredDataProps) => {
   let schema: Record<string, unknown> = {};
-  
+
   switch (type) {
     case 'organization':
       schema = createOrganizationSchema(data.name, data.url, data.logo);
@@ -18,6 +18,6 @@ export const StructuredData = ({ type, data }: StructuredDataProps) => {
     default:
       schema = { '@context': 'https://schema.org', '@type': type, ...data };
   }
-  
+
   return <JsonLd data={schema} />;
 };
