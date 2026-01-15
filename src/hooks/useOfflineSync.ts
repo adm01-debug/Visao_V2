@@ -35,12 +35,12 @@ interface UseOfflineSyncReturn extends OfflineSyncState {
   getAlerts: () => Promise<unknown[]>;
   getCameras: () => Promise<unknown[]>;
   getPersons: () => Promise<unknown[]>;
-  
+
   // Actions
   queueAction: (action: Omit<OfflineAction, 'id' | 'timestamp' | 'retries'>) => Promise<void>;
   syncNow: () => Promise<void>;
   refreshCache: () => Promise<void>;
-  
+
   // Stats
   getStats: () => Promise<{
     pendingActionsCount: number;
@@ -60,7 +60,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
     lastSyncAt: null,
     syncError: null
   });
-  
+
   const syncingRef = useRef(false);
   const syncIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -138,7 +138,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
 
   const syncPendingActions = useCallback(async () => {
     if (syncingRef.current || !navigator.onLine) return;
-    
+
     syncingRef.current = true;
     setState(prev => ({ ...prev, isSyncing: true, syncError: null }));
 
@@ -258,7 +258,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           .select('*')
           .order('timestamp', { ascending: false })
           .limit(100);
-        
+
         if (!error && data) {
           await cacheAlerts(data);
           return data;
@@ -266,7 +266,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
       } catch (error) {
 }
     }
-    
+
     return getCachedAlerts();
   }, []);
 
@@ -277,7 +277,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           .from('cameras')
           .select('*')
           .order('name');
-        
+
         if (!error && data) {
           await cacheCameras(data);
           return data;
@@ -285,7 +285,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
       } catch (error) {
 }
     }
-    
+
     return getCachedCameras();
   }, []);
 
@@ -296,7 +296,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           .from('registered_persons')
           .select('*')
           .order('name');
-        
+
         if (!error && data) {
           await cachePersons(data);
           return data;
@@ -304,7 +304,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
       } catch (error) {
 }
     }
-    
+
     return getCachedPersons();
   }, []);
 
@@ -313,11 +313,11 @@ export function useOfflineSync(): UseOfflineSyncReturn {
   ): Promise<void> => {
     if (navigator.onLine) {
       // Execute immediately when online
-      await executeSyncAction({ 
-        ...action, 
-        id: '', 
-        timestamp: Date.now(), 
-        retries: 0 
+      await executeSyncAction({
+        ...action,
+        id: '',
+        timestamp: Date.now(),
+        retries: 0
       });
     } else {
       // Queue for later sync
