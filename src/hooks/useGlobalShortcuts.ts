@@ -26,13 +26,13 @@ export function useGlobalShortcuts() {
     { key: "p", meta: true, action: () => navigate("/people"), description: "Ir para Pessoas", category: "Navegação" },
     { key: "z", meta: true, action: () => navigate("/zones"), description: "Ir para Zonas", category: "Navegação" },
     { key: "y", meta: true, action: () => navigate("/analytics"), description: "Ir para Analytics", category: "Navegação" },
-    
+
     // Ações Rápidas
     { key: "k", meta: true, action: () => document.dispatchEvent(new CustomEvent('open-search')), description: "Abrir busca global", category: "Ações" },
     { key: "/", action: () => document.dispatchEvent(new CustomEvent('open-search')), description: "Abrir busca (alternativo)", category: "Ações" },
     { key: "n", meta: true, shift: true, action: () => document.dispatchEvent(new CustomEvent('new-camera')), description: "Nova câmera", category: "Ações" },
     { key: "f", meta: true, action: () => toggleFullscreen(), description: "Tela cheia", category: "Ações" },
-    
+
     // Configurações
     { key: ",", meta: true, action: () => navigate("/settings"), description: "Configurações", category: "Sistema" },
     { key: "?", shift: true, action: () => setShowHelp(prev => !prev), description: "Mostrar atalhos", category: "Sistema" },
@@ -49,7 +49,7 @@ export function useGlobalShortcuts() {
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (!enabled) return;
-    
+
     // Ignorar se estiver em input, textarea ou contenteditable
     const target = event.target as HTMLElement;
     if (
