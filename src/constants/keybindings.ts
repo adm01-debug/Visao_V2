@@ -1,39 +1,39 @@
 export const KEYBINDINGS = {
-  GLOBAL: { 
-    SEARCH: 'meta+k', 
-    HELP: 'shift+?', 
-    ESCAPE: 'escape', 
-    FULLSCREEN: 'meta+f' 
+  GLOBAL: {
+    SEARCH: 'meta+k',
+    HELP: 'shift+?',
+    ESCAPE: 'escape',
+    FULLSCREEN: 'meta+f'
   },
-  NAVIGATION: { 
+  NAVIGATION: {
     DASHBOARD: 'meta+d',
-    CAMERAS: 'meta+c', 
-    ALERTS: 'meta+a', 
-    RECORDINGS: 'meta+r', 
+    CAMERAS: 'meta+c',
+    ALERTS: 'meta+a',
+    RECORDINGS: 'meta+r',
     PEOPLE: 'meta+p',
     ZONES: 'meta+z',
     ANALYTICS: 'meta+y',
-    SETTINGS: 'meta+,' 
+    SETTINGS: 'meta+,'
   },
-  CAMERA: { 
-    SNAPSHOT: 's', 
-    RECORD: 'r', 
-    ZOOM_IN: '+', 
-    ZOOM_OUT: '-', 
-    PTZ_UP: 'arrowup', 
-    PTZ_DOWN: 'arrowdown', 
-    PTZ_LEFT: 'arrowleft', 
-    PTZ_RIGHT: 'arrowright' 
+  CAMERA: {
+    SNAPSHOT: 's',
+    RECORD: 'r',
+    ZOOM_IN: '+',
+    ZOOM_OUT: '-',
+    PTZ_UP: 'arrowup',
+    PTZ_DOWN: 'arrowdown',
+    PTZ_LEFT: 'arrowleft',
+    PTZ_RIGHT: 'arrowright'
   },
-  LIST: { 
-    NEXT: 'j', 
-    PREVIOUS: 'k', 
-    SELECT: 'enter', 
-    DELETE: 'delete' 
+  LIST: {
+    NEXT: 'j',
+    PREVIOUS: 'k',
+    SELECT: 'enter',
+    DELETE: 'delete'
   },
-  MODAL: { 
-    CLOSE: 'escape', 
-    CONFIRM: 'enter' 
+  MODAL: {
+    CLOSE: 'escape',
+    CONFIRM: 'enter'
   },
   ACTIONS: {
     NEW_CAMERA: 'meta+shift+n',
