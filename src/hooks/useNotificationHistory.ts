@@ -50,7 +50,7 @@ export const useNotificationHistory = (configId?: string) => {
   const clearHistory = useCallback(async (olderThanDays?: number) => {
     try {
       let query = supabase.from('notification_history').delete();
-      
+
       if (olderThanDays) {
         const cutoffDate = new Date();
         cutoffDate.setDate(cutoffDate.getDate() - olderThanDays);
@@ -59,7 +59,7 @@ export const useNotificationHistory = (configId?: string) => {
 
       const { error } = await query;
       if (error) throw error;
-      
+
       await fetchHistory();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to clear history');
