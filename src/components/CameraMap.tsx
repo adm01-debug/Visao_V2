@@ -139,8 +139,8 @@ export function CameraMap({ cameras, onCameraClick, className = '' }: CameraMapP
             color: ${getStatusColor(camera.status)};
             font-weight: 500;
           ">
-            ${camera.status === 'online' ? 'Online' : 
-              camera.status === 'offline' ? 'Offline' : 
+            ${camera.status === 'online' ? 'Online' :
+              camera.status === 'offline' ? 'Offline' :
               camera.status === 'alert' ? 'Alerta' : 'Atenção'}
           </span>
         </div>
@@ -178,7 +178,7 @@ export function CameraMap({ cameras, onCameraClick, className = '' }: CameraMapP
   return (
     <div className={`relative rounded-lg overflow-hidden ${className}`}>
       <div ref={mapContainer} className="w-full h-full min-h-[300px]" />
-      
+
       {/* Legend */}
       <div className="absolute bottom-4 left-4 bg-background/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
         <p className="text-xs font-medium mb-2 text-foreground">Legenda</p>
@@ -190,8 +190,8 @@ export function CameraMap({ cameras, onCameraClick, className = '' }: CameraMapP
             { status: 'offline', label: 'Offline' },
           ].map(({ status, label }) => (
             <div key={status} className="flex items-center gap-2">
-              <div 
-                className="w-3 h-3 rounded-full" 
+              <div
+                className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: getStatusColor(status as Camera['status']) }}
               />
               <span className="text-xs text-muted-foreground">{label}</span>
