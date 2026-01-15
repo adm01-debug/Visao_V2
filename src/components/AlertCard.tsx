@@ -1,8 +1,8 @@
 import { Badge } from '@/components/ui/badge';
-import { 
-  AlertTriangle, 
-  Shield, 
-  Clock, 
+import {
+  AlertTriangle,
+  Shield,
+  Clock,
   Camera,
   ShieldAlert,
   Cog,
@@ -78,9 +78,9 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
     e.stopPropagation();
     onCameraClick?.(alert.cameraId);
   };
-  
+
   return (
-    <div 
+    <div
       className={cn(
         "glass-card p-4 cursor-pointer transition-all duration-300 hover:border-primary/50",
         !alert.isRead && "border-l-4 border-l-destructive bg-destructive/5"
@@ -91,7 +91,7 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
         <div className={cn("p-2 rounded-lg bg-secondary", config.color)}>
           <Icon className="w-5 h-5" />
         </div>
-        
+
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-1">
             <Badge variant={severityConfig[alert.severity]}>
@@ -102,11 +102,11 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
               {formatDistanceToNow(alert.timestamp, { addSuffix: true, locale: ptBR })}
             </div>
           </div>
-          
+
           <p className="text-sm text-foreground mb-2 line-clamp-2">
             <HighlightText text={alert.message} highlight={searchQuery} />
           </p>
-          
+
           <button
             onClick={handleCameraClick}
             className="flex items-center gap-1 text-muted-foreground text-xs hover:text-primary transition-colors"
