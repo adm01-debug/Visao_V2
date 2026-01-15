@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router-dom';
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: Dashboard (Refatorado)
  */
-import { 
-  Camera, 
-  AlertTriangle, 
-  Users, 
+import {
+  Camera,
+  AlertTriangle,
+  Users,
   Shield,
   TrendingUp,
   Activity,
@@ -121,7 +121,7 @@ function StreamCameraCard({ camera, onClick, compact, showStream = true }: Strea
   };
 
   return (
-    <div 
+    <div
       className={cn(
         'group relative rounded-lg overflow-hidden bg-card border transition-all hover:ring-2 hover:ring-primary/50 cursor-pointer',
         compact ? 'h-24' : 'aspect-video'
@@ -140,8 +140,8 @@ function StreamCameraCard({ camera, onClick, compact, showStream = true }: Strea
       ) : (
         <div className="absolute inset-0 bg-muted flex items-center justify-center">
           {camera.thumbnail ? (
-            <img 
-              src={camera.thumbnail} 
+            <img
+              src={camera.thumbnail}
               alt={camera.name}
               className="w-full h-full object-cover"
             />
@@ -270,7 +270,7 @@ function DashboardComponent() {
   const handleRefresh = useCallback(async () => {
     await Promise.all([refetchCameras?.(), refetchAlerts?.()]);
   }, [refetchCameras, refetchAlerts]);
-  
+
   useEffect(() => {
     localStorage.setItem('camera-layout', cameraLayout);
   }, [cameraLayout]);
@@ -378,7 +378,7 @@ function DashboardComponent() {
   return (
     <TooltipProvider>
       <PullToRefresh onRefresh={handleRefresh} className="h-full">
-        <div 
+        <div
           className="p-6"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
@@ -424,13 +424,13 @@ function DashboardComponent() {
           {/* View Mode Toggle */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <SearchInput 
+              <SearchInput
                 value={searchQuery}
                 onChange={setSearchQuery}
                 placeholder="Buscar câmeras ou alertas..."
               />
               <div className="flex items-center gap-2">
-                <Switch 
+                <Switch
                   id="enable-streams"
                   checked={enableStreams}
                   onCheckedChange={setEnableStreams}
@@ -441,14 +441,14 @@ function DashboardComponent() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <CameraLayoutControls 
+              <CameraLayoutControls
                 layout={cameraLayout}
                 onLayoutChange={setCameraLayout}
               />
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button 
-                    variant={showMap ? 'default' : 'outline'} 
+                  <Button
+                    variant={showMap ? 'default' : 'outline'}
                     size="icon"
                     className="h-8 w-8"
                     onClick={() => setShowMap(!showMap)}
@@ -468,7 +468,7 @@ function DashboardComponent() {
               {/* Map Toggle */}
               {showMap && uiCameras.some(c => c.latitude && c.longitude) && (
                 <div className="h-64 rounded-lg overflow-hidden border">
-                  <CameraMap 
+                  <CameraMap
                     cameras={uiCameras.filter(c => c.latitude && c.longitude)}
                     onCameraClick={(id) => {
                       const cam = uiCameras.find(c => c.id === id);
@@ -503,9 +503,9 @@ function DashboardComponent() {
                   </div>
                   <div className={getCameraGridClass()}>
                     {priorityCameras.map(camera => (
-                      <StreamCameraCard 
-                        key={camera.id} 
-                        camera={camera} 
+                      <StreamCameraCard
+                        key={camera.id}
+                        camera={camera}
                         onClick={() => setSelectedCamera(camera)}
                         compact={cameraLayout === 'list'}
                         showStream={enableStreams}
@@ -526,8 +526,8 @@ function DashboardComponent() {
                 </div>
                 <div className={getCameraGridClass()}>
                   {normalCameras.slice(0, cameraLayout === '3x3' ? 9 : 6).map(camera => (
-                    <StreamCameraCard 
-                      key={camera.id} 
+                    <StreamCameraCard
+                      key={camera.id}
                       camera={camera}
                       onClick={() => setSelectedCamera(camera)}
                       compact={cameraLayout === 'list'}
@@ -570,9 +570,9 @@ function DashboardComponent() {
                     disabled={alerts.length === 0}
                   />
                   {unreadCount > 0 && (
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       className="h-7 px-2"
                       onClick={() => markAllAsRead()}
                     >
@@ -607,11 +607,11 @@ function DashboardComponent() {
                   Mostrando {filteredAlerts.length} de {uiAlerts.length} alertas
                 </p>
               )}
-              
+
               <div className="space-y-3">
                 {paginatedAlerts.map(alert => (
-                  <AlertCard 
-                    key={alert.id} 
+                  <AlertCard
+                    key={alert.id}
                     alert={{
                       ...alert,
                       timestamp: new Date(alert.timestamp),
@@ -657,7 +657,7 @@ function DashboardComponent() {
                     <span className="text-xs text-success">+3% vs ontem</span>
                   </div>
                   <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-primary rounded-full transition-all duration-1000"
                       style={{ width: '87%' }}
                     />
