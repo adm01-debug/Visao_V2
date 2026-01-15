@@ -34,27 +34,27 @@ export type Schema<T> = {
 const validators = {
   required: <T>(value: T): string | null =>
     value === undefined || value === null || value === '' ? 'Campo obrigatório' : null,
-  
+
   minLength: (min: number) => (value: string): string | null =>
     value.length < min ? `Mínimo ${min} caracteres` : null,
-  
+
   maxLength: (max: number) => (value: string): string | null =>
     value.length > max ? `Máximo ${max} caracteres` : null,
-  
+
   min: (min: number) => (value: number): string | null =>
     value < min ? `Valor mínimo: ${min}` : null,
-  
+
   max: (max: number) => (value: number): string | null =>
     value > max ? `Valor máximo: ${max}` : null,
-  
+
   email: (value: string): string | null =>
     !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? 'Email inválido' : null,
-  
+
   url: (value: string): string | null => {
     try { new URL(value); return null; }
     catch { return 'URL inválida'; }
   },
-  
+
   pattern: (regex: RegExp, message = 'Formato inválido') => (value: string): string | null =>
     !regex.test(value) ? message : null,
 };
