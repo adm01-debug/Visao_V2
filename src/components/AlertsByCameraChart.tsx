@@ -1,12 +1,12 @@
 import { getRelativeTime, formatDuration } from "@/lib/dateUtils";
 import { useMemo } from 'react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   Cell,
   PieChart,
@@ -152,8 +152,8 @@ export function AlertsByCameraChart({ alerts, className = '', onCameraClick }: A
         <div className="h-[250px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             {chartType === 'bar' ? (
-              <BarChart 
-                data={chartData} 
+              <BarChart
+                data={chartData}
                 layout="vertical"
                 margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
                 onClick={(data) => {
@@ -163,14 +163,14 @@ export function AlertsByCameraChart({ alerts, className = '', onCameraClick }: A
                 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.5} horizontal={false} />
-                <XAxis 
+                <XAxis
                   type="number"
                   tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
                   axisLine={{ stroke: 'hsl(var(--border))' }}
                   tickLine={false}
                   allowDecimals={false}
                 />
-                <YAxis 
+                <YAxis
                   type="category"
                   dataKey="name"
                   tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
@@ -179,8 +179,8 @@ export function AlertsByCameraChart({ alerts, className = '', onCameraClick }: A
                   width={100}
                 />
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted)/0.3)' }} />
-                <Bar 
-                  dataKey="count" 
+                <Bar
+                  dataKey="count"
                   radius={[0, 4, 4, 0]}
                   cursor="pointer"
                 >
@@ -212,7 +212,7 @@ export function AlertsByCameraChart({ alerts, className = '', onCameraClick }: A
                   ))}
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
-                <Legend 
+                <Legend
                   formatter={(value) => <span className="text-xs text-muted-foreground">{value}</span>}
                   wrapperStyle={{ fontSize: '11px' }}
                 />
