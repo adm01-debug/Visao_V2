@@ -3,7 +3,6 @@
  * CameraGrid - Grid básico de câmeras
  */
 
-import React from 'react';
 import { cn } from '@/lib/utils';
 import { CameraCard } from './CameraCard';
 import { Camera } from '@/types/surveillance';
