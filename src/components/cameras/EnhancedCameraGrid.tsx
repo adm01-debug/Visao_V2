@@ -5,9 +5,9 @@
 
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Maximize2, 
-  Volume2, 
+import {
+  Maximize2,
+  Volume2,
   VolumeX,
   Settings,
   Wifi,
@@ -128,8 +128,8 @@ export function EnhancedCameraCard({
 
         {/* Status Badge */}
         <div className="absolute top-2 left-2 flex items-center gap-2">
-          <Badge 
-            variant="secondary" 
+          <Badge
+            variant="secondary"
             className={cn(
               "text-xs font-bold px-2 py-0.5",
               status.color,
@@ -293,9 +293,9 @@ export function CameraGrid({
     <div className={cn("grid gap-4", gridClass, className)}>
       {cameras.map((camera, index) => {
         // Special layout handling
-        const isMain = (layout === '1+3' && index === 0) || 
+        const isMain = (layout === '1+3' && index === 0) ||
                        (layout === '2+4' && index < 2);
-        
+
         return (
           <motion.div
             key={camera.id}
