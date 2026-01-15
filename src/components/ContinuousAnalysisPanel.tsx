@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect, useState } from 'react';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: ContinuousAnalysisPanel
@@ -7,7 +7,6 @@ import { memo } from "react";
  * Permite configurar, iniciar, pausar e monitorar análises automáticas.
  */
 
-import { useState, useEffect } from 'react';
 import {
   Play,
   Pause,
