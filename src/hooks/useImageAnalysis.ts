@@ -65,7 +65,7 @@ export function useImageAnalysis() {
     analysisType: AnalysisType = 'security'
   ): Promise<AnalysisResult | null> => {
     setIsAnalyzing(true);
-    
+
     try {
       const { data, error } = await supabase.functions.invoke('analyze-image', {
         body: {
@@ -95,9 +95,9 @@ export function useImageAnalysis() {
 
     } catch (error) {
       // rm
-      
+
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
-      
+
       toast({
         title: 'Erro na análise',
         description: errorMessage,
