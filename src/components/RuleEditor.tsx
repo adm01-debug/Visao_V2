@@ -1,5 +1,4 @@
-import { memo } from "react";
-import { useState, useEffect } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import { UIRule, RuleCondition, RuleCategory, RuleSeverity, RuleActionType, RuleConditionType } from '@/types/rules';
 import { conditionTypeLabels } from '@/data/mockRules';
