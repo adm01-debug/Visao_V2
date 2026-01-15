@@ -189,7 +189,7 @@ class FFmpegService {
       await this.ffmpeg.writeFile(inputName, await fetchFile(videoFile));
 
       const args: string[] = ['-i', inputName];
-      
+
       // Seek to specific time
       if (options.time !== undefined) {
         args.push('-ss', options.time.toString());
@@ -271,7 +271,7 @@ class FFmpegService {
    */
   async clip(videoFile: File | Blob, options: ClipOptions): Promise<Blob | null> {
     const duration = options.endTime - options.startTime;
-    
+
     return this.transcode(videoFile, {
       outputFormat: options.outputFormat || 'mp4',
       startTime: options.startTime,
@@ -338,17 +338,17 @@ class FFmpegService {
     try {
       const { fetchFile } = await import('@ffmpeg/util');
       const inputName = 'input.mp4';
-      
+
       await this.ffmpeg.writeFile(inputName, await fetchFile(videoFile));
 
       const metadata: Record<string, string> = {};
-      
+
       this.ffmpeg.on('log', ({ message }) => {
         const durationMatch = message.match(/Duration: (\d{2}:\d{2}:\d{2}\.\d{2})/);
         if (durationMatch) {
           metadata.duration = durationMatch[1];
         }
-        
+
         const streamMatch = message.match(/Stream.*Video: (\w+).*, (\d+x\d+)/);
         if (streamMatch) {
           metadata.codec = streamMatch[1];
@@ -392,7 +392,7 @@ class FFmpegService {
       if (options.startTime) paletteArgs.push('-ss', options.startTime.toString());
       if (options.duration) paletteArgs.push('-t', options.duration.toString());
       paletteArgs.push('-vf', `${filters},palettegen`, '-y', paletteName);
-      
+
       await this.ffmpeg.exec(paletteArgs);
 
       // Generate GIF with palette
