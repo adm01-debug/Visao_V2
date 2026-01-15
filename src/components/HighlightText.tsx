@@ -8,9 +8,9 @@ interface HighlightTextProps {
   highlightClassName?: string;
 }
 
-export function HighlightText({ 
-  text, 
-  highlight, 
+export function HighlightText({
+  text,
+  highlight,
   className,
   highlightClassName = "bg-yellow-500/30 text-foreground rounded px-0.5"
 }: HighlightTextProps) {
@@ -23,7 +23,7 @@ export function HighlightText({
 
   return (
     <span className={className}>
-      {parts.map((part, index) => 
+      {parts.map((part, index) =>
         regex.test(part) ? (
           <mark key={index} className={cn("bg-transparent", highlightClassName)}>
             {part}
