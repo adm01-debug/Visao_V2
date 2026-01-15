@@ -4,11 +4,11 @@
  */
 
 import { memo, useState } from 'react';
-import { 
-  Eye, 
-  Settings, 
-  Plus, 
-  Trash2, 
+import {
+  Eye,
+  Settings,
+  Plus,
+  Trash2,
   Save,
   Package,
   User,
@@ -25,13 +25,13 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 
-export type DetectableObject = 
-  | 'person' 
-  | 'vehicle' 
-  | 'animal' 
-  | 'bag' 
-  | 'weapon' 
-  | 'fire' 
+export type DetectableObject =
+  | 'person'
+  | 'vehicle'
+  | 'animal'
+  | 'bag'
+  | 'weapon'
+  | 'fire'
   | 'smoke';
 
 export interface ObjectDetectionConfigData {
@@ -132,8 +132,8 @@ function ObjectDetectionConfigComponent({
                   onClick={() => toggleObject(option.value)}
                   className={cn(
                     "flex items-center gap-2 p-3 rounded-lg border transition-colors text-left",
-                    isSelected 
-                      ? "bg-primary/10 border-primary text-primary" 
+                    isSelected
+                      ? "bg-primary/10 border-primary text-primary"
                       : "border-border hover:bg-accent"
                   )}
                 >
