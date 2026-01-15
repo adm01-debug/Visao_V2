@@ -2,7 +2,7 @@ import { retry, withRetry } from "@/lib/retry";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useMediaMTX
- * 
+ *
  * Gerencia conexão com servidor MediaMTX para streaming:
  * - Listagem de streams disponíveis
  * - Status das câmeras
@@ -267,7 +267,7 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
   const getPathInfo = useCallback(async (name: string): Promise<MediaMTXPath | null> => {
     try {
       const response = await fetch(`${config.apiAddress}/v3/paths/get/${name}`);
-      
+
       if (!response.ok) {
         return null;
       }
