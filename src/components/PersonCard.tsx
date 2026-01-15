@@ -3,7 +3,7 @@ import { memo } from "react";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: PersonCard
- * 
+ *
  * Card para exibição de pessoa cadastrada no sistema de reconhecimento facial.
  */
 
@@ -63,23 +63,23 @@ import { ptBR } from 'date-fns/locale';
 interface PersonCardProps {
   /** Pessoa */
   person: Person;
-  
+
   /** Callbacks */
   onEdit?: (person: Person) => void;
   onDelete?: (personId: string) => void;
   onAddPhoto?: (personId: string) => void;
   onToggleStatus?: (personId: string, status: Person['status']) => void;
   onViewDetails?: (person: Person) => void;
-  
+
   /** Modo compacto */
   compact?: boolean;
-  
+
   /** Selecionado */
   selected?: boolean;
-  
+
   /** Callback de seleção */
   onSelect?: (personId: string) => void;
-  
+
   /** Classe CSS */
   className?: string;
 }
@@ -315,8 +315,8 @@ export function PersonCard({
               <TooltipTrigger asChild>
                 <div className="cursor-help">
                   <div className="text-lg font-bold">
-                    {person.encodingQuality 
-                      ? `${Math.round(person.encodingQuality * 100)}%` 
+                    {person.encodingQuality
+                      ? `${Math.round(person.encodingQuality * 100)}%`
                       : '-'}
                   </div>
                   <div className="text-xs text-muted-foreground">Qualidade</div>
