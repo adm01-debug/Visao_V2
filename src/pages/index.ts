@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Pages barrel export - Exportação centralizada de todas as páginas
- * 
+ *
  * @module pages
  * @description Este arquivo facilita a importação lazy de páginas
  */
