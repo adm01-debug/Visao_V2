@@ -1,7 +1,7 @@
 /**
  * VIS-O - Sistema de Vigilância Inteligente
  * TimeRangePicker - Date/time range picker component
- * 
+ *
  * @module components/timerangepicker
  */
 
