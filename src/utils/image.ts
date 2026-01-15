@@ -18,7 +18,7 @@ export function resizeImage(file: File, maxWidth: number, maxHeight: number, qua
       let { width, height } = img;
       if (width > maxWidth) { height = (height * maxWidth) / width; width = maxWidth; }
       if (height > maxHeight) { width = (width * maxHeight) / height; height = maxHeight; }
-      
+
       const canvas = document.createElement('canvas');
       canvas.width = width;
       canvas.height = height;
