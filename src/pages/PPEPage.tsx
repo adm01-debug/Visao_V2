@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: PPEPage (Equipamentos de Proteção Individual)
- * 
+ *
  * Gerenciamento de zonas PPE e monitoramento de conformidade
  */
 
@@ -21,7 +21,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { useCameras } from '@/hooks/useCameras';
 import { usePPEDetection, PPE_LABELS, PPEType, PPEZoneConfig } from '@/hooks/usePPEDetection';
-import { 
+import {
   HardHat,
   Shield,
   Eye,
@@ -61,15 +61,15 @@ function PPEIcon({ type, className }: { type: PPEType; className?: string }) {
   return <span className={className}>{icons[type]}</span>;
 }
 
-function ComplianceCard({ 
-  title, 
-  value, 
-  icon: Icon, 
+function ComplianceCard({
+  title,
+  value,
+  icon: Icon,
   trend,
   color = 'default'
-}: { 
-  title: string; 
-  value: string | number; 
+}: {
+  title: string;
+  value: string | number;
   icon: unknown;
   trend?: 'up' | 'down' | 'stable';
   color?: 'default' | 'success' | 'warning' | 'danger';
@@ -494,8 +494,8 @@ export default function PPEPage() {
                   <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p>Nenhuma pessoa detectada no momento</p>
                   <p className="text-sm">
-                    {ppeDetection.isRunning 
-                      ? 'Aguardando detecções...' 
+                    {ppeDetection.isRunning
+                      ? 'Aguardando detecções...'
                       : 'Clique em "Iniciar" para começar o monitoramento'}
                   </p>
                 </div>
