@@ -135,7 +135,7 @@ export function ModalProvider({ children }: { children: ReactNode }) {
   return (
     <ModalContext.Provider value={{ showModal, hideModal, showConfirm, showAlert }}>
       {children}
-      
+
       <AnimatePresence>
         {modal && (
           <>
