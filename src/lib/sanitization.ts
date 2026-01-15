@@ -117,10 +117,10 @@ export function sanitizePhone(phone: string): string {
  */
 export function sanitizeObject<T extends Record<string, unknown>>(obj: T): T {
   const result: Record<string, unknown> = {};
-  
+
   for (const [key, value] of Object.entries(obj)) {
     const sanitizedKey = key.replace(/[^a-zA-Z0-9_]/g, '_');
-    
+
     if (typeof value === 'string') {
       result[sanitizedKey] = sanitizeHtml(value);
     } else if (typeof value === 'object' && value !== null) {
@@ -129,7 +129,7 @@ export function sanitizeObject<T extends Record<string, unknown>>(obj: T): T {
       result[sanitizedKey] = value;
     }
   }
-  
+
   return result as T;
 }
 
