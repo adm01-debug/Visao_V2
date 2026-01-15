@@ -29,20 +29,20 @@ const requiredEnvVars = [
 // Validate environment
 export const validateEnv = (): boolean => {
   const missing: string[] = [];
-  
+
   for (const envVar of requiredEnvVars) {
     if (!import.meta.env[envVar]) {
       missing.push(envVar);
     }
   }
-  
+
   if (missing.length > 0) {
     if (import.meta.env.DEV) {
       console.warn(`Missing environment variables: ${missing.join(', ')}`);
     }
     return false;
   }
-  
+
   return true;
 };
 
