@@ -49,7 +49,7 @@ export class CodeSplitBoundary extends Component<Props, State> {
           <AlertTriangle className="h-12 w-12 text-amber-500" />
           <h3 className="text-lg font-semibold">Erro ao carregar</h3>
           <p className="text-muted-foreground text-center max-w-md">
-            {this.state.error?.message?.includes('chunk') 
+            {this.state.error?.message?.includes('chunk')
               ? 'Falha ao carregar recursos. Verifique sua conexão.'
               : 'Ocorreu um erro inesperado.'}
           </p>
