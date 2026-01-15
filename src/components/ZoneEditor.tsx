@@ -1,5 +1,5 @@
 import { useOnClickOutside } from "@/hooks";
-import { memo } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: ZoneEditor
@@ -11,7 +11,6 @@ import { memo } from "react";
  * - Edição de pontos existentes
  */
 
-import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import {
   Pencil,
   Square,
