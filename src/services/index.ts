@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Services barrel export - Exportação centralizada de todos os serviços
- * 
+ *
  * @module services
  */
 
