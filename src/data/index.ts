@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Data barrel export - Exportação centralizada de dados
- * 
+ *
  * @module data
  */
 
