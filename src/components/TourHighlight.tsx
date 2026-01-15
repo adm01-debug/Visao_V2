@@ -1,8 +1,8 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: TourHighlight
- * 
- * Wrapper que adiciona marcadores e highlights 
+ *
+ * Wrapper que adiciona marcadores e highlights
  * para elementos do tour de onboarding
  */
 
@@ -19,7 +19,7 @@ interface TourHighlightProps {
 
 /**
  * Wrapper que marca elementos para o tour de onboarding
- * 
+ *
  * Uso:
  * <TourHighlight tourId="cameras">
  *   <CameraGrid />
