@@ -13,7 +13,7 @@ class EventBus {
       this.events.set(event, new Set());
     }
     this.events.get(event)!.add(callback);
-    
+
     return () => this.off(event, callback);
   }
 
