@@ -2,7 +2,7 @@ import { useLocalStorage } from "@/hooks";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: OnboardingTour
- * 
+ *
  * Tour guiado para novos usuários com:
  * - Modal de boas-vindas
  * - Passos interativos
@@ -232,7 +232,7 @@ function TourStepCard({
             Anterior
           </Button>
         )}
-        
+
         {isFirst && (
           <Button
             variant="ghost"
@@ -317,7 +317,7 @@ export function OnboardingTour({ onComplete, autoStart = true }: OnboardingTourP
         <DialogHeader className="sr-only">
           <DialogTitle>Tour de Onboarding</DialogTitle>
         </DialogHeader>
-        
+
         {/* Botão de fechar */}
         <Button
           variant="ghost"
@@ -367,11 +367,11 @@ export function RestartTourButton({ className }: { className?: string }) {
         <Play className="w-4 h-4 mr-2" />
         Ver Tour
       </Button>
-      
+
       {showTour && (
-        <OnboardingTour 
+        <OnboardingTour
           autoStart={true}
-          onComplete={() => setShowTour(false)} 
+          onComplete={() => setShowTour(false)}
         />
       )}
     </>
