@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Notifications Service - Gerenciamento de configurações de notificação
- * 
+ *
  * @module services/notificationsService
  */
 
@@ -31,7 +31,7 @@ export const notificationsService = {
     const { data, error } = await supabase
       .from("notification_config")
       .select("*");
-    
+
     if (error) throw error;
     return data || [];
   },
@@ -45,7 +45,7 @@ export const notificationsService = {
       .upsert(config)
       .select()
       .single();
-    
+
     if (error) throw error;
     return data;
   },
@@ -57,7 +57,7 @@ export const notificationsService = {
     const { error } = await supabase.functions.invoke("send-alert-notification", {
       body: { test: true, type },
     });
-    
+
     if (error) throw error;
   },
 
@@ -68,7 +68,7 @@ export const notificationsService = {
     const { data, error } = await supabase
       .from("notification_secrets")
       .select("*");
-    
+
     if (error) throw error;
     return data || [];
   },
@@ -82,7 +82,7 @@ export const notificationsService = {
       .upsert(secrets)
       .select()
       .single();
-    
+
     if (error) throw error;
     return data;
   },
