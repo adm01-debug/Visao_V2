@@ -2,7 +2,7 @@ import { logger } from "@/lib/logger";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: LicensePlateRecognition
- * 
+ *
  * Reconhecimento de placas de veículos (ALPR/ANPR) usando IA com persistência
  */
 
@@ -18,11 +18,11 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePlateDetections } from '@/hooks/usePlateDetections';
-import { 
-  Car, 
-  Camera, 
-  Search, 
-  Clock, 
+import {
+  Car,
+  Camera,
+  Search,
+  Clock,
   AlertTriangle,
   CheckCircle2,
   XCircle,
@@ -116,7 +116,7 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
     } catch (error) {
       logger.error('Error analyzing image:', error);
       toast.error('Erro ao analisar imagem. Usando detecção simulada.');
-      
+
       // Simulação para demo
       const mockPlate = generateMockPlate();
       await addDetection({
@@ -249,9 +249,9 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
                       <div className="flex items-center gap-4">
                         {detection.image_url && (
                           <div className="w-24 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                            <img 
-                              src={detection.image_url} 
-                              alt="Veículo" 
+                            <img
+                              src={detection.image_url}
+                              alt="Veículo"
                               className="w-full h-full object-cover"
                             />
                           </div>
@@ -319,9 +319,9 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
               {selectedImage ? (
                 <div className="space-y-4">
                   <div className="relative aspect-video rounded-lg overflow-hidden bg-muted">
-                    <img 
-                      src={selectedImage} 
-                      alt="Imagem selecionada" 
+                    <img
+                      src={selectedImage}
+                      alt="Imagem selecionada"
                       className="w-full h-full object-contain"
                     />
                     {analyzing && (
@@ -331,14 +331,14 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
                     )}
                   </div>
                   <div className="flex gap-2">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       onClick={() => setSelectedImage(null)}
                       className="flex-1"
                     >
                       Limpar
                     </Button>
-                    <Button 
+                    <Button
                       onClick={() => analyzeImage(selectedImage)}
                       disabled={analyzing}
                       className="flex-1"
@@ -358,7 +358,7 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
                   </div>
                 </div>
               ) : (
-                <div 
+                <div
                   className="border-2 border-dashed rounded-lg p-12 text-center cursor-pointer hover:border-primary/50 transition-colors"
                   onClick={() => fileInputRef.current?.click()}
                 >
@@ -470,13 +470,13 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
                 ) : (
                   <div className="space-y-2">
                     {registeredPlates.map(plate => (
-                      <div 
-                        key={plate.id} 
+                      <div
+                        key={plate.id}
                         className="flex items-center justify-between p-3 bg-muted rounded-lg"
                       >
                         <div className="flex items-center gap-4">
                           <span className="font-mono font-bold">{plate.plate}</span>
-                          <Badge 
+                          <Badge
                             variant={plate.list_type === 'blacklist' ? 'destructive' : 'secondary'}
                           >
                             {plate.list_type === 'whitelist' && 'Autorizado'}
