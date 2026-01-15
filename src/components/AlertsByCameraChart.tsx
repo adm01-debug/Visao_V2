@@ -1,5 +1,5 @@
 import { getRelativeTime, formatDuration } from "@/lib/dateUtils";
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   BarChart,
   Bar,
@@ -15,7 +15,6 @@ import {
 } from 'recharts';
 import { Camera } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useState } from 'react';
 
 interface Alert {
   id: string;
