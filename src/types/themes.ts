@@ -1,6 +1,6 @@
 export type ThemeMode = 'light' | 'dark' | 'system';
 
-export type ThemeVariant = 
+export type ThemeVariant =
   | 'default'
   | 'soc'
   | 'midnight'
