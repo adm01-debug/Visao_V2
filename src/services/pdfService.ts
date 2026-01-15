@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * PDF Service - Geração e manipulação de PDFs
- * 
+ *
  * @module services/pdfService
  */
 
@@ -63,30 +63,30 @@ class PDFService {
   async generateFromHTML(html: string, options: PDFOptions = {}): Promise<Blob> {
     const { jsPDF } = await import('jspdf');
     const mergedOptions = { ...this.defaultOptions, ...options };
-    
+
     const doc = new jsPDF({
       orientation: mergedOptions.orientation,
       unit: 'mm',
       format: mergedOptions.format,
     });
-    
+
     // Configurar metadados
     if (mergedOptions.title) {
       doc.setProperties({ title: mergedOptions.title });
     }
-    
+
     // Converter HTML para texto
     const div = document.createElement('div');
     div.innerHTML = html;
     const text = div.textContent || '';
-    
+
     // Adicionar texto com margens
     const margin = mergedOptions.margin || this.defaultOptions.margin!;
     const maxWidth = doc.internal.pageSize.getWidth() - margin.left - margin.right;
     const lines = doc.splitTextToSize(text, maxWidth);
-    
+
     doc.text(lines, margin.left, margin.top);
-    
+
     return doc.output('blob');
   }
 
@@ -96,25 +96,25 @@ class PDFService {
   async generateReport(data: PDFReportData, options: PDFOptions = {}): Promise<Blob> {
     const { jsPDF } = await import('jspdf');
     const mergedOptions = { ...this.defaultOptions, ...options };
-    
+
     const doc = new jsPDF({
       orientation: mergedOptions.orientation,
       unit: 'mm',
       format: mergedOptions.format,
     });
-    
+
     const margin = mergedOptions.margin || this.defaultOptions.margin!;
     const pageWidth = doc.internal.pageSize.getWidth();
     const maxWidth = pageWidth - margin.left - margin.right;
-    
+
     let y = margin.top;
-    
+
     // Título
     doc.setFontSize(20);
     doc.setFont('helvetica', 'bold');
     doc.text(data.title, pageWidth / 2, y, { align: 'center' });
     y += 10;
-    
+
     // Subtítulo
     if (data.subtitle) {
       doc.setFontSize(12);
@@ -122,19 +122,19 @@ class PDFService {
       doc.text(data.subtitle, pageWidth / 2, y, { align: 'center' });
       y += 8;
     }
-    
+
     // Data
     if (data.date) {
       doc.setFontSize(10);
       doc.text(data.date.toLocaleDateString('pt-BR'), pageWidth / 2, y, { align: 'center' });
       y += 10;
     }
-    
+
     // Linha separadora
     doc.setLineWidth(0.5);
     doc.line(margin.left, y, pageWidth - margin.right, y);
     y += 10;
-    
+
     // Seções
     data.sections.forEach((section) => {
       // Verificar se precisa nova página
@@ -142,13 +142,13 @@ class PDFService {
         doc.addPage();
         y = margin.top;
       }
-      
+
       // Heading
       doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
       doc.text(section.heading, margin.left, y);
       y += 8;
-      
+
       // Content
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
@@ -156,7 +156,7 @@ class PDFService {
       doc.text(lines, margin.left, y);
       y += lines.length * 5 + 10;
     });
-    
+
     // Footer
     if (data.footer) {
       const pageCount = doc.getNumberOfPages();
@@ -171,7 +171,7 @@ class PDFService {
         );
       }
     }
-    
+
     return doc.output('blob');
   }
 
@@ -181,14 +181,14 @@ class PDFService {
   async mergePDFs(pdfs: Blob[]): Promise<Blob> {
     const { PDFDocument } = await import('pdf-lib');
     const merged = await PDFDocument.create();
-    
+
     for (const pdf of pdfs) {
       const bytes = await pdf.arrayBuffer();
       const doc = await PDFDocument.load(bytes);
       const pages = await merged.copyPages(doc, doc.getPageIndices());
       pages.forEach((page) => merged.addPage(page));
     }
-    
+
     const bytes = await merged.save();
     return new Blob([bytes], { type: 'application/pdf' });
   }
@@ -200,9 +200,9 @@ class PDFService {
     const pdfjsLib = await import('pdfjs-dist');
     const bytes = await pdf.arrayBuffer();
     const doc = await pdfjsLib.getDocument({ data: bytes }).promise;
-    
+
     const textParts: string[] = [];
-    
+
     for (let i = 1; i <= doc.numPages; i++) {
       const page = await doc.getPage(i);
       const content = await page.getTextContent();
@@ -211,7 +211,7 @@ class PDFService {
         .join(' ');
       textParts.push(pageText);
     }
-    
+
     return textParts.join('\n');
   }
 
@@ -232,15 +232,15 @@ class PDFService {
     const { PDFDocument } = await import('pdf-lib');
     const bytes = await pdf.arrayBuffer();
     const doc = await PDFDocument.load(bytes);
-    
+
     if (pageNumber < 1 || pageNumber > doc.getPageCount()) {
       throw new Error(`Invalid page number: ${pageNumber}`);
     }
-    
+
     const newDoc = await PDFDocument.create();
     const [page] = await newDoc.copyPages(doc, [pageNumber - 1]);
     newDoc.addPage(page);
-    
+
     const newBytes = await newDoc.save();
     return new Blob([newBytes], { type: 'application/pdf' });
   }
