@@ -29,13 +29,13 @@ const iconVariantStyles = {
   danger: 'bg-destructive/20 text-destructive',
 };
 
-export function StatsCard({ 
-  title, 
-  value, 
-  subtitle, 
-  icon: Icon, 
+export function StatsCard({
+  title,
+  value,
+  subtitle,
+  icon: Icon,
   trend,
-  variant = 'default' 
+  variant = 'default'
 }: StatsCardProps) {
   return (
     <div className="glass-card p-5 hover:border-primary/30 transition-all duration-300">
