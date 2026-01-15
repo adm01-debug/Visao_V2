@@ -62,11 +62,11 @@ export const useGeolocation = (options: UseGeolocationOptions = {}): Geolocation
 
   useEffect(() => {
     if (!navigator.geolocation) {
-      setState(prev => ({ 
-        ...prev, 
-        loading: false, 
-        error: { 
-          code: 0, 
+      setState(prev => ({
+        ...prev,
+        loading: false,
+        error: {
+          code: 0,
           message: 'Geolocation not supported',
           PERMISSION_DENIED: 1,
           POSITION_UNAVAILABLE: 2,
