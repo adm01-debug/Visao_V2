@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Deep Utils - Operações profundas em objetos
- * 
+ *
  * @module utils/deep
  */
 
@@ -40,26 +40,26 @@ export const deepClone = <T>(obj: T): T => {
   if (obj === null || typeof obj !== 'object') {
     return obj;
   }
-  
+
   if (obj instanceof Date) {
     return new Date(obj.getTime()) as T;
   }
-  
+
   if (obj instanceof RegExp) {
     return new RegExp(obj.source, obj.flags) as T;
   }
-  
+
   if (Array.isArray(obj)) {
     return obj.map((item) => deepClone(item)) as T;
   }
-  
+
   const cloned = {} as T;
   for (const key in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, key)) {
       cloned[key] = deepClone(obj[key]);
     }
   }
-  
+
   return cloned;
 };
 
@@ -74,17 +74,17 @@ export const deepMerge = <T extends Record<string, unknown>>(
   ...sources: DeepPartial<T>[]
 ): T => {
   if (!sources.length) return target;
-  
+
   const source = sources.shift();
   if (source === undefined) return target;
-  
+
   const result = deepClone(target);
-  
+
   for (const key in source) {
     if (Object.prototype.hasOwnProperty.call(source, key)) {
       const sourceValue = source[key as keyof typeof source];
       const targetValue = result[key as keyof T];
-      
+
       if (
         sourceValue !== null &&
         typeof sourceValue === 'object' &&
@@ -102,7 +102,7 @@ export const deepMerge = <T extends Record<string, unknown>>(
       }
     }
   }
-  
+
   return deepMerge(result, ...sources);
 };
 
@@ -114,25 +114,25 @@ export const deepMerge = <T extends Record<string, unknown>>(
  */
 export const deepEqual = <T>(a: T, b: T): boolean => {
   if (a === b) return true;
-  
+
   if (typeof a !== typeof b) return false;
-  
+
   if (a === null || b === null) return a === b;
-  
+
   if (typeof a !== 'object') return a === b;
-  
+
   if (Array.isArray(a) !== Array.isArray(b)) return false;
-  
+
   if (Array.isArray(a) && Array.isArray(b)) {
     if (a.length !== b.length) return false;
     return a.every((item, index) => deepEqual(item, b[index]));
   }
-  
+
   const keysA = Object.keys(a as object);
   const keysB = Object.keys(b as object);
-  
+
   if (keysA.length !== keysB.length) return false;
-  
+
   return keysA.every((key) =>
     deepEqual(
       (a as Record<string, unknown>)[key],
@@ -155,14 +155,14 @@ export const deepGet = <T, P extends string, D = undefined>(
 ): PathValue<T, P> | D => {
   const keys = path.split('.');
   let result: unknown = obj;
-  
+
   for (const key of keys) {
     if (result === null || result === undefined) {
       return defaultValue as D;
     }
     result = (result as Record<string, unknown>)[key];
   }
-  
+
   return (result === undefined ? defaultValue : result) as PathValue<T, P> | D;
 };
 
@@ -181,7 +181,7 @@ export const deepSet = <T extends Record<string, unknown>>(
   const clone = deepClone(obj);
   const keys = path.split('.');
   let current: Record<string, unknown> = clone;
-  
+
   for (let i = 0; i < keys.length - 1; i++) {
     const key = keys[i];
     if (!(key in current) || typeof current[key] !== 'object') {
@@ -189,7 +189,7 @@ export const deepSet = <T extends Record<string, unknown>>(
     }
     current = current[key] as Record<string, unknown>;
   }
-  
+
   current[keys[keys.length - 1]] = value;
   return clone;
 };
@@ -207,13 +207,13 @@ export const deepUnset = <T extends Record<string, unknown>>(
   const clone = deepClone(obj);
   const keys = path.split('.');
   let current: Record<string, unknown> = clone;
-  
+
   for (let i = 0; i < keys.length - 1; i++) {
     const key = keys[i];
     if (!(key in current)) return clone;
     current = current[key] as Record<string, unknown>;
   }
-  
+
   delete current[keys[keys.length - 1]];
   return clone;
 };
@@ -227,13 +227,13 @@ export const deepUnset = <T extends Record<string, unknown>>(
 export const deepHas = <T>(obj: T, path: string): boolean => {
   const keys = path.split('.');
   let current: unknown = obj;
-  
+
   for (const key of keys) {
     if (current === null || current === undefined) return false;
     if (!Object.prototype.hasOwnProperty.call(current, key)) return false;
     current = (current as Record<string, unknown>)[key];
   }
-  
+
   return true;
 };
 
@@ -248,12 +248,12 @@ export const deepFlatten = <T extends Record<string, unknown>>(
   prefix = ''
 ): Record<string, Primitive> => {
   const result: Record<string, Primitive> = {};
-  
+
   for (const key in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, key)) {
       const newKey = prefix ? `${prefix}.${key}` : key;
       const value = obj[key];
-      
+
       if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
         Object.assign(
           result,
@@ -264,7 +264,7 @@ export const deepFlatten = <T extends Record<string, unknown>>(
       }
     }
   }
-  
+
   return result;
 };
 
