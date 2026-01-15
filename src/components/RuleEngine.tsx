@@ -4,9 +4,9 @@
  */
 
 import { memo, useState, useMemo } from 'react';
-import { 
-  Settings, 
-  Plus, 
+import {
+  Settings,
+  Plus,
   Search,
   Filter,
   ToggleLeft,
@@ -78,7 +78,7 @@ function RuleEngineComponent({
       const matchesSearch = rule.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            rule.description?.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = categoryFilter === 'all' || rule.category === categoryFilter;
-      const matchesStatus = statusFilter === 'all' || 
+      const matchesStatus = statusFilter === 'all' ||
                            (statusFilter === 'active' && rule.isActive) ||
                            (statusFilter === 'inactive' && !rule.isActive);
       return matchesSearch && matchesCategory && matchesStatus;
@@ -117,7 +117,7 @@ function RuleEngineComponent({
               className="pl-10"
             />
           </div>
-          
+
           <Select value={categoryFilter} onValueChange={(v) => setCategoryFilter(v as RuleCategory | 'all')}>
             <SelectTrigger className="w-36">
               <SelectValue placeholder="Categoria" />
