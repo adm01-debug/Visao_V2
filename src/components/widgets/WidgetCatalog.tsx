@@ -48,7 +48,7 @@ export function WidgetCatalog({ onAddWidget, activeWidgetIds }: WidgetCatalogPro
             <AnimatePresence>
               {WIDGET_CATALOG.map((widget, index) => {
                 const count = activeWidgetIds.filter(id => id === widget.id).length;
-                
+
                 return (
                   <motion.div
                     key={widget.id}
