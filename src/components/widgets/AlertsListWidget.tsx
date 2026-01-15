@@ -55,16 +55,16 @@ export function AlertsListWidget() {
               )}>
                 <AlertTriangle className="h-3 w-3" />
               </div>
-              
+
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-medium truncate">{alert.message}</p>
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className="text-[10px] text-muted-foreground">{alert.camera_name}</span>
                   <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
                     <Clock className="h-2.5 w-2.5" />
-                    {formatDistanceToNow(new Date(alert.timestamp), { 
-                      addSuffix: true, 
-                      locale: ptBR 
+                    {formatDistanceToNow(new Date(alert.timestamp), {
+                      addSuffix: true,
+                      locale: ptBR
                     })}
                   </span>
                 </div>
