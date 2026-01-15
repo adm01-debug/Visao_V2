@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useHeatmap
- * 
+ *
  * Mapa de calor de movimento (usando dados locais, sem tabela heatmap_data)
  */
 
@@ -153,11 +153,11 @@ export function useHeatmap(options: UseHeatmapOptions): UseHeatmapReturn {
 
   const pointsToGrid = useCallback((pts: HeatmapPoint[]): number[][] => {
     const grid = createEmptyGrid();
-    
+
     pts.forEach(point => {
       const col = Math.floor(point.x / config.gridSize);
       const row = Math.floor(point.y / config.gridSize);
-      
+
       if (row >= 0 && row < gridRows && col >= 0 && col < gridCols) {
         grid[row][col] += point.value;
       }
@@ -198,7 +198,7 @@ export function useHeatmap(options: UseHeatmapOptions): UseHeatmapReturn {
     }
 
     const cells: { x: number; y: number; value: number }[] = [];
-    
+
     heatmapData.grid.forEach((row, rowIdx) => {
       row.forEach((value, colIdx) => {
         if (value > 0) {
@@ -220,7 +220,7 @@ export function useHeatmap(options: UseHeatmapOptions): UseHeatmapReturn {
 
     let peakActivity = 0;
     let peakTime: Date | undefined;
-    
+
     const timeGroups = new Map<number, number>();
     points.forEach(p => {
       if (p.timestamp) {
@@ -259,7 +259,7 @@ export function useHeatmap(options: UseHeatmapOptions): UseHeatmapReturn {
     if (onHotspotDetected && heatmapData) {
       const col = Math.floor(x / config.gridSize);
       const row = Math.floor(y / config.gridSize);
-      
+
       if (row >= 0 && row < gridRows && col >= 0 && col < gridCols) {
         const cellValue = heatmapData.grid[row]?.[col] || 0;
         if (cellValue > heatmapData.maxValue * 0.8) {
@@ -296,7 +296,7 @@ export function useHeatmap(options: UseHeatmapOptions): UseHeatmapReturn {
 
     decayIntervalRef.current = setInterval(() => {
       const now = Date.now();
-      
+
       setPoints(prev => {
         const filtered = prev.filter(p => {
           if (!p.timestamp) return true;
@@ -337,7 +337,7 @@ export function useHeatmap(options: UseHeatmapOptions): UseHeatmapReturn {
     // Simular dados históricos
     const simulatedPoints: HeatmapPoint[] = [];
     const now = Date.now();
-    
+
     for (let i = 0; i < 100; i++) {
       simulatedPoints.push({
         x: Math.random() * width,
@@ -346,7 +346,7 @@ export function useHeatmap(options: UseHeatmapOptions): UseHeatmapReturn {
         timestamp: new Date(now - Math.random() * 3600000),
       });
     }
-    
+
     setPoints(simulatedPoints);
   }, [width, height]);
 
@@ -387,7 +387,7 @@ export function useHeatmap(options: UseHeatmapOptions): UseHeatmapReturn {
         ctx.translate(x, y);
 
         const cellGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, radius);
-        
+
         colors.forEach((c, i) => {
           if (i === 0) {
             cellGradient.addColorStop(c.stop, c.color.replace(/[\d.]+\)$/, `${normalizedValue * config.opacity})`));
