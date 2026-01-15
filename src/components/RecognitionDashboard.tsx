@@ -4,10 +4,10 @@
  */
 
 import { memo, useState, useMemo } from 'react';
-import { 
-  Users, 
-  UserCheck, 
-  UserX, 
+import {
+  Users,
+  UserCheck,
+  UserX,
   AlertTriangle,
   Clock,
   TrendingUp,
@@ -62,7 +62,7 @@ function RecognitionDashboardComponent({
 
   const calculatedStats = useMemo(() => {
     if (stats) return stats;
-    
+
     const totalDetections = events.length;
     const recognizedCount = events.filter(e => e.recognized).length;
     const unknownCount = totalDetections - recognizedCount;
@@ -70,7 +70,7 @@ function RecognitionDashboardComponent({
     const avgConfidence = events.length > 0
       ? events.reduce((sum, e) => sum + e.confidence, 0) / events.length
       : 0;
-    
+
     return {
       totalDetections,
       recognizedCount,
@@ -82,15 +82,15 @@ function RecognitionDashboardComponent({
 
   const filteredEvents = useMemo(() => {
     return events.filter(event => {
-      const matchesSearch = 
+      const matchesSearch =
         (event.personName?.toLowerCase().includes(searchQuery.toLowerCase())) ||
         event.cameraName.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      const matchesFilter = 
+
+      const matchesFilter =
         filterStatus === 'all' ||
         (filterStatus === 'recognized' && event.recognized) ||
         (filterStatus === 'unknown' && !event.recognized);
-      
+
       return matchesSearch && matchesFilter;
     });
   }, [events, searchQuery, filterStatus]);
@@ -134,7 +134,7 @@ function RecognitionDashboardComponent({
               <Clock className="w-5 h-5" />
               Eventos Recentes
             </CardTitle>
-            
+
             <div className="flex gap-2">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -145,7 +145,7 @@ function RecognitionDashboardComponent({
                   className="pl-10 w-48"
                 />
               </div>
-              
+
               <Select value={filterStatus} onValueChange={(v) => setFilterStatus(v as typeof filterStatus)}>
                 <SelectTrigger className="w-36">
                   <Filter className="w-4 h-4 mr-2" />
@@ -160,7 +160,7 @@ function RecognitionDashboardComponent({
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent>
           {recentEvents.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
@@ -170,10 +170,10 @@ function RecognitionDashboardComponent({
           ) : (
             <div className="space-y-3">
               {recentEvents.map((event) => {
-                const timestamp = event.timestamp instanceof Date 
-                  ? event.timestamp 
+                const timestamp = event.timestamp instanceof Date
+                  ? event.timestamp
                   : new Date(event.timestamp);
-                
+
                 return (
                   <div
                     key={event.id}
@@ -191,7 +191,7 @@ function RecognitionDashboardComponent({
                         <Users className="w-6 h-6 text-muted-foreground" />
                       )}
                     </div>
-                    
+
                     {/* Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
@@ -210,7 +210,7 @@ function RecognitionDashboardComponent({
                         <span>{Math.round(event.confidence * 100)}% confiança</span>
                       </div>
                     </div>
-                    
+
                     {/* Timestamp */}
                     <div className="text-sm text-muted-foreground text-right flex-shrink-0">
                       <div>{format(timestamp, 'HH:mm', { locale: ptBR })}</div>
