@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
-import { 
-  ChevronUp, 
-  ChevronDown, 
+import {
+  ChevronUp,
+  ChevronDown,
   ChevronsUpDown,
   ChevronLeft,
   ChevronRight,
@@ -63,7 +63,7 @@ export function DataTable<T extends Record<string, any>>({
   // Filter data
   const filteredData = useMemo(() => {
     if (!search || searchKeys.length === 0) return data;
-    
+
     const lowerSearch = search.toLowerCase();
     return data.filter(item =>
       searchKeys.some(key => {
@@ -76,15 +76,15 @@ export function DataTable<T extends Record<string, any>>({
   // Sort data
   const sortedData = useMemo(() => {
     if (!sortKey || !sortDir) return filteredData;
-    
+
     return [...filteredData].sort((a, b) => {
       const aVal = a[sortKey];
       const bVal = b[sortKey];
-      
+
       if (aVal === bVal) return 0;
       if (aVal == null) return 1;
       if (bVal == null) return -1;
-      
+
       const comparison = aVal < bVal ? -1 : 1;
       return sortDir === 'asc' ? comparison : -comparison;
     });
