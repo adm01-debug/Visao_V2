@@ -79,31 +79,31 @@ interface StreamDetection {
 interface CameraWithContinuousAnalysisProps {
   /** Câmera a ser monitorada */
   camera: DbCamera;
-  
+
   /** Mostrar painel de análise */
   showAnalysisPanel?: boolean;
-  
+
   /** Layout */
   layout?: 'horizontal' | 'vertical' | 'overlay';
-  
+
   /** Auto-iniciar análise */
   autoStartAnalysis?: boolean;
-  
+
   /** Intervalo inicial (ms) */
   initialInterval?: number;
-  
+
   /** Mostrar detecções no vídeo */
   showDetections?: boolean;
-  
+
   /** Callback quando alerta é gerado */
   onAlertGenerated?: (data: { cameraId: string; alert: unknown; analysis: AnalysisResult }) => void;
-  
+
   /** Callback ao clicar na câmera */
   onClick?: () => void;
-  
+
   /** Altura do player */
   height?: number | string;
-  
+
   /** Classe CSS */
   className?: string;
 }
@@ -117,16 +117,16 @@ interface CameraWithContinuousAnalysisProps {
  */
 function convertDetectionsToOverlay(analysis: AnalysisResult): StreamDetection[] {
   const detections: StreamDetection[] = [];
-  
+
   if ('detections' in analysis) {
     const secAnalysis = analysis as SecurityAnalysis;
-    
+
     secAnalysis.detections?.forEach((det: Detection, index: number) => {
       // Gerar posição baseada no índice
       // Em produção, usar modelo que retorna bounding boxes reais
       const col = index % 4;
       const row = Math.floor(index / 4);
-      
+
       detections.push({
         id: `det-${index}`,
         type: det.type as StreamDetection['type'],
@@ -142,11 +142,11 @@ function convertDetectionsToOverlay(analysis: AnalysisResult): StreamDetection[]
       });
     });
   }
-  
+
   // Adicionar indicadores de pessoas
   const peopleCount = analysis.people_count || 0;
   const existingPeople = detections.filter(d => d.type === 'person').length;
-  
+
   for (let i = existingPeople; i < Math.min(peopleCount, 6); i++) {
     detections.push({
       id: `person-${i}`,
@@ -161,7 +161,7 @@ function convertDetectionsToOverlay(analysis: AnalysisResult): StreamDetection[]
       },
     });
   }
-  
+
   return detections;
 }
 
@@ -169,10 +169,10 @@ function convertDetectionsToOverlay(analysis: AnalysisResult): StreamDetection[]
 // DETECTION OVERLAY COMPONENT
 // ============================================
 
-function DetectionOverlay({ 
-  detections, 
-  visible 
-}: { 
+function DetectionOverlay({
+  detections,
+  visible
+}: {
   detections: StreamDetection[];
   visible: boolean;
 }) {
@@ -239,25 +239,25 @@ function AnalysisStatsOverlay({
         <Users className="w-3 h-3 text-primary" />
         <span>{analysis.people_count} pessoa(s)</span>
       </div>
-      
+
       {'working_count' in analysis && (
         <div className="flex items-center gap-2">
           <Activity className="w-3 h-3 text-green-400" />
           <span>{(analysis as ProductivityAnalysis).working_count} trabalhando</span>
         </div>
       )}
-      
+
       {'ppe_compliance' in analysis && (
         <div className="flex items-center gap-2">
           <AlertTriangle className="w-3 h-3 text-yellow-400" />
           <span>
             EPI: {(analysis as SafetyAnalysis).ppe_compliance.compliant}/
-            {(analysis as SafetyAnalysis).ppe_compliance.compliant + 
+            {(analysis as SafetyAnalysis).ppe_compliance.compliant +
              (analysis as SafetyAnalysis).ppe_compliance.non_compliant}
           </span>
         </div>
       )}
-      
+
       {'alerts' in analysis && (analysis as SecurityAnalysis).alerts?.length > 0 && (
         <div className="flex items-center gap-2 text-destructive">
           <AlertTriangle className="w-3 h-3" />
@@ -286,14 +286,14 @@ export function CameraWithContinuousAnalysis({
 }: CameraWithContinuousAnalysisProps) {
   // Refs
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  
+
   // Estado
   const [detections, setDetections] = useState<StreamDetection[]>([]);
   const [showDetections, setShowDetections] = useState(initialShowDetections);
   const [showStats, setShowStats] = useState(true);
   const [controlsVisible, setControlsVisible] = useState(true);
   const [mlDetections, setMlDetections] = useState<Detection[]>([]);
-  
+
   // Hooks externos
   const { rules } = useRules();
 
@@ -397,7 +397,7 @@ export function CameraWithContinuousAnalysis({
     onAnalysisComplete: (cameraId, result, duration) => {
       const newDetections = convertDetectionsToOverlay(result);
       setDetections(newDetections);
-      
+
       // Limpar detecções após intervalo
       setTimeout(() => {
         setDetections([]);
