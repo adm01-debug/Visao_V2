@@ -30,7 +30,7 @@ export const useLongPress = (
   const start = useCallback(() => {
     isLongPressRef.current = false;
     onStart?.();
-    
+
     timeoutRef.current = setTimeout(() => {
       isLongPressRef.current = true;
       setIsLongPressing(true);
@@ -43,13 +43,13 @@ export const useLongPress = (
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
-    
+
     if (isLongPressRef.current) {
       onFinish?.();
     } else {
       onCancel?.();
     }
-    
+
     setIsLongPressing(false);
   }, [onFinish, onCancel]);
 
