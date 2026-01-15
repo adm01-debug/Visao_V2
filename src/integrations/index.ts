@@ -1,7 +1,7 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Integrations barrel export - Exportação centralizada de todas as integrações
- * 
+ *
  * @module integrations
  */
 
