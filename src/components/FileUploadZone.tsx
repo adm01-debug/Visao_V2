@@ -64,7 +64,7 @@ export const FileUploadZone: React.FC<FileUploadZoneProps> = ({
 
     for (let i = 0; i < Math.min(fileList.length, maxFiles - files.length); i++) {
       const file = fileList[i];
-      
+
       const uploadedFile: UploadedFile = {
         id: `${Date.now()}-${i}`,
         file,
@@ -170,7 +170,7 @@ export const FileUploadZone: React.FC<FileUploadZoneProps> = ({
         />
 
         <Upload className={cn('h-12 w-12 mx-auto mb-4', isDragOver ? 'text-primary' : 'text-muted-foreground')} />
-        
+
         <p className="text-sm font-medium">
           {isDragOver ? 'Solte os arquivos aqui' : 'Arraste arquivos ou clique para selecionar'}
         </p>
