@@ -29,7 +29,7 @@ export function BottomSheet({
   const sheetRef = useRef<HTMLDivElement>(null);
   const [windowHeight, setWindowHeight] = useState(typeof window !== 'undefined' ? window.innerHeight : 800);
   const [currentSnap, setCurrentSnap] = useState(initialSnap);
-  
+
   const y = useMotionValue(0);
   const overlayOpacity = useTransform(
     y,
@@ -62,7 +62,7 @@ export function BottomSheet({
     (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
       const velocity = info.velocity.y;
       const offset = info.offset.y;
-      
+
       // Close if dragged down fast or past threshold
       if (velocity > 500 || offset > getSnapHeight(0) * 0.5) {
         onClose();
@@ -113,7 +113,7 @@ export function BottomSheet({
             )}
             style={{ y }}
             initial={{ y: '100%' }}
-            animate={{ 
+            animate={{
               y: 0,
               height: getSnapHeight(currentSnap)
             }}
