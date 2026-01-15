@@ -7,7 +7,7 @@
 export const isValidIPv4 = (ip: string): boolean => {
   const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/;
   if (!ipv4Regex.test(ip)) return false;
-  
+
   const parts = ip.split('.').map(Number);
   return parts.every(part => part >= 0 && part <= 255);
 };
@@ -27,21 +27,21 @@ export const isLocalhost = (ip: string): boolean => {
 // Verificar se é IP privado
 export const isPrivateIP = (ip: string): boolean => {
   if (!isValidIPv4(ip)) return false;
-  
+
   const parts = ip.split('.').map(Number);
-  
+
   // 10.0.0.0 - 10.255.255.255
   if (parts[0] === 10) return true;
-  
+
   // 172.16.0.0 - 172.31.255.255
   if (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) return true;
-  
+
   // 192.168.0.0 - 192.168.255.255
   if (parts[0] === 192 && parts[1] === 168) return true;
-  
+
   // 169.254.0.0 - 169.254.255.255 (Link-local)
   if (parts[0] === 169 && parts[1] === 254) return true;
-  
+
   return false;
 };
 
@@ -55,14 +55,14 @@ export const ipToNumber = (ip: string): number => {
 // Verificar se IP está em um range CIDR
 export const isIPInCIDR = (ip: string, cidr: string): boolean => {
   if (!isValidIPv4(ip)) return false;
-  
+
   const [rangeIP, bits] = cidr.split('/');
   if (!isValidIPv4(rangeIP)) return false;
-  
+
   const mask = ~(2 ** (32 - parseInt(bits)) - 1);
   const ipNum = ipToNumber(ip);
   const rangeNum = ipToNumber(rangeIP);
-  
+
   return (ipNum & mask) === (rangeNum & mask);
 };
 
@@ -82,7 +82,7 @@ export const getClientIP = (request?: Request): string => {
     // Fallback para navegador
     return 'unknown';
   }
-  
+
   // Headers comuns de proxy
   const headers = [
     'x-forwarded-for',
@@ -92,7 +92,7 @@ export const getClientIP = (request?: Request): string => {
     'true-client-ip',
     'x-cluster-client-ip',
   ];
-  
+
   for (const header of headers) {
     const value = request.headers.get(header);
     if (value) {
@@ -103,7 +103,7 @@ export const getClientIP = (request?: Request): string => {
       }
     }
   }
-  
+
   return 'unknown';
 };
 
