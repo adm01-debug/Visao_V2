@@ -1,13 +1,13 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useFaceRecognition
- * 
+ *
  * Motor de reconhecimento facial com:
  * - Detecção de faces via IA
  * - Matching com pessoas cadastradas
  * - Geração de alertas automáticos
  * - Logs de reconhecimento
- * 
+ *
  * @example
  * const {
  *   detectFaces,
@@ -48,22 +48,22 @@ import { toast } from 'sonner';
 interface UseFaceRecognitionOptions extends FaceRecognitionEvents {
   /** ID da câmera */
   cameraId: string;
-  
+
   /** Nome da câmera */
   cameraName?: string;
-  
+
   /** Configuração */
   config?: Partial<FaceRecognitionConfig>;
-  
+
   /** Pessoas cadastradas (pré-carregadas) */
   registeredPersons?: Person[];
-  
+
   /** Criar alertas no banco */
   createAlerts?: boolean;
-  
+
   /** Salvar logs no banco */
   saveLogs?: boolean;
-  
+
   /** Intervalo mínimo entre processamentos (ms) */
   throttleInterval?: number;
 }
@@ -71,43 +71,43 @@ interface UseFaceRecognitionOptions extends FaceRecognitionEvents {
 interface UseFaceRecognitionReturn {
   /** Está processando */
   isProcessing: boolean;
-  
+
   /** Último resultado */
   lastResult: RecognitionResult | null;
-  
+
   /** Faces detectadas no último frame */
   detectedFaces: DetectedFace[];
-  
+
   /** Estatísticas */
   stats: FaceRecognitionStats;
-  
+
   /** Logs recentes */
   recentLogs: RecognitionLog[];
-  
+
   /** Detectar faces em uma imagem */
   detectFaces: (imageBase64: string) => Promise<DetectedFace[]>;
-  
+
   /** Reconhecer pessoa(s) em uma imagem */
   recognizeFaces: (imageBase64: string) => Promise<RecognitionResult[]>;
-  
+
   /** Processar frame (detectar + reconhecer) */
   processFrame: (imageBase64: string) => Promise<RecognitionResult[]>;
-  
+
   /** Cadastrar nova pessoa */
   registerPerson: (person: Omit<Person, 'id' | 'createdAt' | 'updatedAt' | 'recognitionCount'>) => Promise<Person>;
-  
+
   /** Adicionar foto de treinamento */
   addTrainingPhoto: (personId: string, photoBase64: string) => Promise<void>;
-  
+
   /** Buscar pessoas cadastradas */
   fetchPersons: () => Promise<Person[]>;
-  
+
   /** Atualizar configuração */
   updateConfig: (updates: Partial<FaceRecognitionConfig>) => void;
-  
+
   /** Limpar estatísticas */
   resetStats: () => void;
-  
+
   /** Erro atual */
   error: string | null;
 }
@@ -311,7 +311,7 @@ export function useFaceRecognition(
     if (isKnown && bestMatch) {
       // Pessoa conhecida
       const person = personsRef.current.find(p => p.id === bestMatch.personId);
-      
+
       if (person) {
         action = determineAction(person.listType, config);
 
@@ -507,7 +507,7 @@ export function useFaceRecognition(
       setStats(prev => {
         const newStats = { ...prev };
         newStats.totalDetections += facesToProcess.length;
-        
+
         results.forEach(r => {
           if (r.isKnown && r.bestMatch) {
             newStats.recognizedCount++;
