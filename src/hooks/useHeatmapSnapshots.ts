@@ -66,7 +66,7 @@ export const useHeatmapSnapshots = (cameraId?: string) => {
   ) => {
     try {
       const fileName = `heatmaps/${cameraId}/${Date.now()}.png`;
-      
+
       const { error: uploadError } = await supabase.storage
         .from('heatmap-snapshots')
         .upload(fileName, imageBlob);
