@@ -4,9 +4,9 @@
  */
 
 import { memo, useState, useMemo } from 'react';
-import { 
-  AlertTriangle, 
-  Shield, 
+import {
+  AlertTriangle,
+  Shield,
   Clock,
   Filter,
   Download,
@@ -51,12 +51,12 @@ const severityColors: Record<AlertSeverity, string> = {
   critical: 'bg-destructive text-destructive-foreground animate-pulse',
 };
 
-function AlertHistoryComponent({ 
-  alerts, 
-  onAlertClick, 
+function AlertHistoryComponent({
+  alerts,
+  onAlertClick,
   onExport,
   itemsPerPage = 10,
-  className 
+  className
 }: AlertHistoryProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [severityFilter, setSeverityFilter] = useState<AlertSeverity | 'all'>('all');
@@ -95,7 +95,7 @@ function AlertHistoryComponent({
           )}
         </div>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         {/* Filters */}
         <div className="flex flex-wrap gap-3">
@@ -108,7 +108,7 @@ function AlertHistoryComponent({
               className="pl-10"
             />
           </div>
-          
+
           <Select value={severityFilter} onValueChange={(v) => setSeverityFilter(v as AlertSeverity | 'all')}>
             <SelectTrigger className="w-[140px]">
               <SelectValue placeholder="Severidade" />
@@ -121,7 +121,7 @@ function AlertHistoryComponent({
               <SelectItem value="critical">Crítica</SelectItem>
             </SelectContent>
           </Select>
-          
+
           <Select value={typeFilter} onValueChange={(v) => setTypeFilter(v as AlertType | 'all')}>
             <SelectTrigger className="w-[140px]">
               <SelectValue placeholder="Tipo" />
