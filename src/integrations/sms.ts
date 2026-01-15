@@ -54,17 +54,17 @@ class SmsService {
   private formatPhoneNumber(phone: string): string {
     // Remove all non-digit characters
     const digits = phone.replace(/\D/g, '');
-    
+
     // Brazilian number without country code
     if (digits.length === 11) {
       return `+55${digits}`;
     }
-    
+
     // Already has country code
     if (digits.length >= 12) {
       return `+${digits}`;
     }
-    
+
     return phone;
   }
 
@@ -98,12 +98,12 @@ class SmsService {
 
     try {
       const auth = btoa(`${this.config.twilioAccountSid}:${this.config.twilioAuthToken}`);
-      
+
       const formData = new URLSearchParams();
       formData.append('To', message.to);
       formData.append('From', this.config.twilioPhoneNumber || '');
       formData.append('Body', message.body);
-      
+
       if (message.mediaUrl) {
         formData.append('MediaUrl', message.mediaUrl);
       }
@@ -147,7 +147,7 @@ class SmsService {
     try {
       const region = this.config.awsRegion || 'us-east-1';
       const endpoint = `https://sns.${region}.amazonaws.com`;
-      
+
       const params = new URLSearchParams({
         Action: 'Publish',
         Version: '2010-03-31',
@@ -177,14 +177,14 @@ class SmsService {
       });
 
       const text = await response.text();
-      
+
       if (!response.ok) {
         return { success: false, error: text };
       }
 
       // Parse XML response for MessageId
       const messageIdMatch = text.match(/<MessageId>(.+?)<\/MessageId>/);
-      
+
       return {
         success: true,
         messageId: messageIdMatch?.[1],
@@ -209,7 +209,7 @@ class SmsService {
     for (const to of recipients) {
       const response = await this.send({ to, body, mediaUrl });
       results.push({ to, response });
-      
+
       if (response.success) {
         successful++;
       } else {
@@ -238,7 +238,7 @@ class SmsService {
     timestamp: Date
   ): Promise<SmsResponse | SmsBulkResult> {
     const formattedTime = timestamp.toLocaleString('pt-BR');
-    
+
     const body = `🚨 ALERTA VISÃO\nTipo: ${alertType}\nCâmera: ${cameraName}\nHora: ${formattedTime}`;
 
     if (Array.isArray(to)) {
@@ -287,7 +287,7 @@ class SmsService {
 
     try {
       const auth = btoa(`${this.config.twilioAccountSid}:${this.config.twilioAuthToken}`);
-      
+
       const response = await fetch(
         `https://api.twilio.com/2010-04-01/Accounts/${this.config.twilioAccountSid}/Messages/${messageId}.json`,
         {
