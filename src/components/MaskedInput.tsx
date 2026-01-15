@@ -28,7 +28,7 @@ const MASKS: Record<string, string> = {
 
 const applyMask = (value: string, mask: string): string => {
   if (!value) return '';
-  
+
   // Handle currency specially
   if (mask.includes('#')) {
     const numbers = value.replace(/\D/g, '');
@@ -70,7 +70,7 @@ export const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(({
   ...props
 }, ref) => {
   const [internalValue, setInternalValue] = useState('');
-  
+
   const maskPattern = useMemo(() => {
     return MASKS[mask] || mask;
   }, [mask]);
@@ -92,13 +92,13 @@ export const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(({
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     // Allow: backspace, delete, tab, escape, enter
     if ([8, 46, 9, 27, 13].includes(e.keyCode)) return;
-    
+
     // Allow: Ctrl/Cmd + A, C, V, X
     if ((e.ctrlKey || e.metaKey) && [65, 67, 86, 88].includes(e.keyCode)) return;
-    
+
     // Allow: home, end, left, right
     if ([35, 36, 37, 39].includes(e.keyCode)) return;
-    
+
     // Block if not a number
     if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
       e.preventDefault();
