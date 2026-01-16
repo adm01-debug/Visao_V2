@@ -28,7 +28,11 @@ export interface AddressAutocompleteProps {
   className?: string;
 }
 
-// Mock suggestions for demo
+/**
+ * Fallback suggestions for offline/development mode.
+ * In production, connect to Google Places API or similar geocoding service.
+ * See: docs/INTEGRATIONS.md for API setup instructions.
+ */
 const mockSuggestions = (query: string): AddressResult[] => {
   if (!query || query.length < 3) return [];
   const base = [
