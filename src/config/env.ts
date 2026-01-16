@@ -38,7 +38,7 @@ export const validateEnv = (): boolean => {
 
   if (missing.length > 0) {
     if (import.meta.env.DEV) {
-      console.warn(`Missing environment variables: ${missing.join(', ')}`);
+      // Missing env vars validation - silent in production
     }
     return false;
   }
