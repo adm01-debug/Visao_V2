@@ -105,7 +105,7 @@ export function FaceBlacklistManager() {
 
       return data.publicUrl;
     } catch (error) {
-      console.error('Upload error:', error);
+      // Upload error handled silently
       return null;
     }
   };
