@@ -31,6 +31,7 @@ interface CameraFocusProps {
   onNext?: () => void;
   hasPrevious?: boolean;
   hasNext?: boolean;
+  onSettingsClick?: () => void;
 }
 
 export function CameraFocusMode({
@@ -44,6 +45,7 @@ export function CameraFocusMode({
   onNext,
   hasPrevious = false,
   hasNext = false,
+  onSettingsClick,
 }: CameraFocusProps) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
@@ -177,8 +179,9 @@ export function CameraFocusMode({
             <div className="flex items-center gap-2">
               <ControlButton
                 icon={<Settings className="w-5 h-5" />}
-                onClick={() => {}}
+                onClick={onSettingsClick}
                 label="Configurações"
+                disabled={!onSettingsClick}
               />
               <ControlButton
                 icon={<Grid3X3 className="w-5 h-5" />}
