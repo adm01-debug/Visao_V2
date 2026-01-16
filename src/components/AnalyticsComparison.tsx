@@ -119,7 +119,7 @@ export function AnalyticsComparison({ cameraId }: AnalyticsComparisonProps) {
         }
       ]);
     } catch (error) {
-      console.error('Error fetching metrics:', error);
+      // Error handled silently - metrics fetch failed
     } finally {
       setIsLoading(false);
     }
