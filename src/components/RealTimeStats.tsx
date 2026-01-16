@@ -109,7 +109,7 @@ export function RealTimeStats() {
       
       setLastUpdate(new Date());
     } catch (error) {
-      console.error('Error fetching stats:', error);
+      // Stats fetch error handled silently
       setIsConnected(false);
     }
   }, []);
