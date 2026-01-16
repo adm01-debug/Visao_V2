@@ -59,7 +59,7 @@ export default function AuthCallback() {
           }
         }
       } catch (error) {
-        console.error('Auth callback error:', error);
+        // Auth callback error handled silently
         setStatus('error');
         setMessage('Erro na autenticação. Redirecionando...');
         
