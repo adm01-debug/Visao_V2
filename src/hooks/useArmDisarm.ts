@@ -26,7 +26,7 @@ export function useArmDisarm(cameraId?: string) {
   const { data: states = [], isLoading } = useQuery({
     queryKey: ['arm-disarm-states', cameraId],
     queryFn: async () => {
-      let query = supabase.from('arm_disarm_states' as any).select('*');
+      let query = supabase.from('arm_disarm_states').select('*');
       if (cameraId) query = query.eq('camera_id', cameraId);
       const { data, error } = await query.order('created_at', { ascending: false });
       if (error) throw error;
@@ -37,7 +37,7 @@ export function useArmDisarm(cameraId?: string) {
 
   const armCamera = useMutation({
     mutationFn: async ({ cameraId, scheduledDisarm }: { cameraId: string; scheduledDisarm?: string }) => {
-      const { error } = await supabase.from('arm_disarm_states' as any).upsert({
+      const { error } = await supabase.from('arm_disarm_states').upsert({
         user_id: user!.id,
         camera_id: cameraId,
         state: 'armed',
@@ -55,7 +55,7 @@ export function useArmDisarm(cameraId?: string) {
 
   const disarmCamera = useMutation({
     mutationFn: async (cameraId: string) => {
-      const { error } = await supabase.from('arm_disarm_states' as any)
+      const { error } = await supabase.from('arm_disarm_states')
         .update({ state: 'disarmed', updated_at: new Date().toISOString() } as any)
         .eq('camera_id', cameraId)
         .eq('user_id', user!.id);

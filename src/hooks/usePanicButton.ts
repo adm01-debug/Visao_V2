@@ -28,7 +28,7 @@ export function usePanicButton() {
     queryKey: ['panic-events'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('panic_events' as any)
+        .from('panic_events')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(50);
@@ -55,7 +55,7 @@ export function usePanicButton() {
         // Geolocation not available, proceed without it
       }
 
-      const { error } = await supabase.from('panic_events' as any).insert({
+      const { error } = await supabase.from('panic_events').insert({
         user_id: user!.id,
         user_name: (user as any)?.user_metadata?.full_name || user!.email,
         user_email: user!.email,
@@ -85,7 +85,7 @@ export function usePanicButton() {
   const resolvePanic = useMutation({
     mutationFn: async (eventId: string) => {
       const { error } = await supabase
-        .from('panic_events' as any)
+        .from('panic_events')
         .update({
           resolved: true,
           resolved_at: new Date().toISOString(),
