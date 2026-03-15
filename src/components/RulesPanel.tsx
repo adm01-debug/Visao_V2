@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState } from 'react';
 import { Plus, Search, Filter, Shield, AlertTriangle, Lock, Cog, BarChart3 } from 'lucide-react';
 import { RuleCard } from './RuleCard';

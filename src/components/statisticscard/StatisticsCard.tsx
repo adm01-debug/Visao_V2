@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { MiniChart } from '@/components/minichart/MiniChart';

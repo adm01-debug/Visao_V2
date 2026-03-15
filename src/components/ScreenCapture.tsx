@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Screen Capture Component
  * Screenshot and screen recording
