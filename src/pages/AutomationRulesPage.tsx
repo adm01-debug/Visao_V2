@@ -13,11 +13,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function AutomationRulesPage() {
   return (
     <PageContent>
-      <PageHeader
-        title="Regras de Automação"
-        subtitle="Configure ações automáticas baseadas em condições de alertas"
-        icon={<Zap className="h-5 w-5 text-primary" />}
-      />
+      <div className="flex items-center gap-3 mb-6">
+        <Zap className="h-5 w-5 text-primary" />
+        <div>
+          <h1 className="text-2xl font-bold">Regras de Automação</h1>
+          <p className="text-sm text-muted-foreground">Configure ações automáticas baseadas em condições de alertas</p>
+        </div>
+      </div>
 
       {/* Tabs for Rules and History */}
       <Tabs defaultValue="rules" className="mt-6 space-y-4">
