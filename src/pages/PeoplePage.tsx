@@ -624,6 +624,31 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
                 onCheckedChange={(checked) => setFormData(f => ({ ...f, is_active: checked }))}
               />
             </div>
+
+            <div>
+              <Label htmlFor="list_type">Classificação</Label>
+              <select
+                id="list_type"
+                value={formData.list_type || 'none'}
+                onChange={(e) => setFormData(f => ({ ...f, list_type: e.target.value }))}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+              >
+                <option value="none">Nenhuma</option>
+                <option value="whitelist">Whitelist (Autorizado)</option>
+                <option value="blacklist">Blacklist (Bloqueado)</option>
+                <option value="watchlist">Watchlist (Monitorado)</option>
+              </select>
+            </div>
+
+            <div>
+              <Label htmlFor="notes">Observações</Label>
+              <Input
+                id="notes"
+                value={formData.notes || ''}
+                onChange={(e) => setFormData(f => ({ ...f, notes: e.target.value }))}
+                placeholder="Notas ou motivo da classificação"
+              />
+            </div>
           </div>
         </div>
 
