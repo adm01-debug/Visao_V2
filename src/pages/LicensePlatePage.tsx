@@ -139,9 +139,18 @@ export default function LicensePlatePage() {
         if (error) throw error;
         toast({ title: 'Veículo atualizado com sucesso!' });
       } else {
+        const { data: { user } } = await supabase.auth.getUser();
         const { error } = await supabase
-          .from('vehicles')
-          .insert([formData]);
+          .from('registered_plates')
+          .insert([{
+            plate: formData.plate,
+            owner_name: formData.owner_name || null,
+            vehicle_type: formData.vehicle_type,
+            color: formData.color || null,
+            list_type: formData.list_type,
+            notes: formData.notes || null,
+            user_id: user?.id,
+          }]);
         
         if (error) throw error;
         toast({ title: 'Veículo cadastrado com sucesso!' });
