@@ -6,10 +6,13 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
-    "isolatedModules": true,
     "declaration": true,
-    "outDir": "./dist-vite",
-    "strict": false
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "rootDir": ".",
+    "outDir": ".",
+    "strict": false,
+    "tsBuildInfoFile": "./tsconfig.vite.tsbuildinfo"
   },
   "include": ["vite.config.ts"]
 }
