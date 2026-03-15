@@ -46,56 +46,29 @@ export function CameraMap({ cameras, onCameraClick, className = '' }: CameraMapP
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
+  const markerCleanupRef = useRef<Array<() => void>>([]);
   const { token, loading, error } = useMapboxToken();
   const [mapLoaded, setMapLoaded] = useState(false);
-
-  useEffect(() => {
-    if (!mapContainer.current || !token || map.current) return;
-
-    mapboxgl.accessToken = token;
-
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/dark-v11',
-      center: [-46.6333, -23.5505],
-      zoom: 15,
-      pitch: 45,
-    });
-
-    map.current.addControl(
-      new mapboxgl.NavigationControl({ visualizePitch: true }),
-      'top-right'
-    );
-
-    map.current.on('load', () => {
-      setMapLoaded(true);
-    });
-
-    return () => {
-      map.current?.remove();
-      map.current = null;
-    };
-  }, [token]);
-
+...
   // Update markers when cameras change
   useEffect(() => {
     if (!map.current || !mapLoaded) return;
 
-    // Remove existing markers
-    markersRef.current.forEach(marker => marker.remove());
+    // Remove existing marker listeners and markers
+    markerCleanupRef.current.forEach((cleanup) => cleanup());
+    markerCleanupRef.current = [];
+    markersRef.current.forEach((marker) => marker.remove());
     markersRef.current = [];
 
     // Add new markers
     cameras.forEach((camera, index) => {
-      // Use real coordinates from database if available, otherwise use simulated
       const coords: [number, number] = (camera.longitude != null && camera.latitude != null)
         ? [camera.longitude, camera.latitude]
         : locationCoordinates[camera.location] || [
             -46.6333 + (index * 0.001),
-            -23.5505 + (index * 0.0005)
+            -23.5505 + (index * 0.0005),
           ];
 
-      // Create custom marker element
       const el = document.createElement('div');
       el.className = 'camera-marker';
       el.innerHTML = `
@@ -119,12 +92,20 @@ export function CameraMap({ cameras, onCameraClick, className = '' }: CameraMapP
         </div>
       `;
 
-      el.addEventListener('mouseenter', () => {
-        el.querySelector('div')!.style.transform = 'scale(1.2)';
-      });
-      el.addEventListener('mouseleave', () => {
-        el.querySelector('div')!.style.transform = 'scale(1)';
-      });
+      const markerInner = el.querySelector('div');
+      const handleMouseEnter = () => {
+        if (markerInner instanceof HTMLDivElement) markerInner.style.transform = 'scale(1.2)';
+      };
+      const handleMouseLeave = () => {
+        if (markerInner instanceof HTMLDivElement) markerInner.style.transform = 'scale(1)';
+      };
+      const handleClick = () => {
+        onCameraClick?.(camera.id);
+      };
+
+      el.addEventListener('mouseenter', handleMouseEnter);
+      el.addEventListener('mouseleave', handleMouseLeave);
+      el.addEventListener('click', handleClick);
 
       const popup = new mapboxgl.Popup({ offset: 25, closeButton: false }).setHTML(`
         <div style="padding: 8px; min-width: 150px;">
@@ -151,12 +132,21 @@ export function CameraMap({ cameras, onCameraClick, className = '' }: CameraMapP
         .setPopup(popup)
         .addTo(map.current!);
 
-      el.addEventListener('click', () => {
-        onCameraClick?.(camera.id);
+      markerCleanupRef.current.push(() => {
+        el.removeEventListener('mouseenter', handleMouseEnter);
+        el.removeEventListener('mouseleave', handleMouseLeave);
+        el.removeEventListener('click', handleClick);
       });
 
       markersRef.current.push(marker);
     });
+
+    return () => {
+      markerCleanupRef.current.forEach((cleanup) => cleanup());
+      markerCleanupRef.current = [];
+      markersRef.current.forEach((marker) => marker.remove());
+      markersRef.current = [];
+    };
   }, [cameras, mapLoaded, onCameraClick]);
 
   if (loading) {

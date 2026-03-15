@@ -111,6 +111,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const selectionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [copied, setCopied] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeLine, setActiveLine] = useState(1);
@@ -118,42 +119,10 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
   useEffect(() => {
     return () => {
       if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+      if (selectionTimeoutRef.current) clearTimeout(selectionTimeoutRef.current);
     };
   }, []);
-
-  const lines = value.split('\n');
-  const lineCount = lines.length;
-
-  // Handle copy
-  const handleCopy = useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(value);
-      setCopied(true);
-      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
-      copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-}
-  }, [value]);
-
-  // Handle download
-  const handleDownload = useCallback(() => {
-    const extensions: Record<string, string> = {
-      javascript: 'js', typescript: 'ts', python: 'py', java: 'java',
-      cpp: 'cpp', csharp: 'cs', go: 'go', rust: 'rs', ruby: 'rb',
-      php: 'php', swift: 'swift', kotlin: 'kt', html: 'html',
-      css: 'css', scss: 'scss', json: 'json', xml: 'xml', yaml: 'yaml',
-      markdown: 'md', sql: 'sql', bash: 'sh', dockerfile: 'dockerfile',
-    };
-    const ext = extensions[language] || 'txt';
-    const blob = new Blob([value], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `code.${ext}`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }, [value, language]);
-
+...
   // Handle key events
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     const textarea = e.currentTarget;
@@ -166,7 +135,8 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
       const spaces = ' '.repeat(tabSize);
       const newValue = value.substring(0, start) + spaces + value.substring(end);
       onChange?.(newValue);
-      setTimeout(() => {
+      if (selectionTimeoutRef.current) clearTimeout(selectionTimeoutRef.current);
+      selectionTimeoutRef.current = setTimeout(() => {
         textarea.selectionStart = textarea.selectionEnd = start + tabSize;
       }, 0);
     }
