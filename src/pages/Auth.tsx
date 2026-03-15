@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Shield, Loader2, Eye, EyeOff } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { OAuthButtons } from '@/components/OAuthButtons';
+import { supabase } from '@/integrations/supabase/client';
 
 const emailSchema = z.string().email('Email inválido').max(255);
 const passwordSchema = z.string().min(6, 'Senha deve ter no mínimo 6 caracteres').max(72);
@@ -24,7 +25,7 @@ export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [resetEmailSent, setResetEmailSent] = useState(false>>({});
+  const [resetEmailSent, setResetEmailSent] = useState(false);
 
   const { signIn, signUp, user, loading } = useAuth();
   const navigate = useNavigate();
@@ -41,18 +42,18 @@ export default function Auth() {
 
     const emailResult = emailSchema.safeParse(email);
     if (!emailResult.success) {
-      newErrors.email = emailResult.error.errors[0].message;
+      newErrors.email = emailResult.error.errors[0]?.message ?? 'Email inválido';
     }
 
     const passwordResult = passwordSchema.safeParse(password);
     if (!passwordResult.success) {
-      newErrors.password = passwordResult.error.errors[0].message;
+      newErrors.password = passwordResult.error.errors[0]?.message ?? 'Senha inválida';
     }
 
     if (isSignUp && fullName) {
       const nameResult = nameSchema.safeParse(fullName);
       if (!nameResult.success) {
-        newErrors.fullName = nameResult.error.errors[0].message;
+        newErrors.fullName = nameResult.error.errors[0]?.message ?? 'Nome inválido';
       }
     }
 
@@ -105,9 +106,28 @@ export default function Auth() {
     }
   };
 
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setErrors({ email: 'Digite seu email' });
+      return;
+    }
+    setIsLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    setIsLoading(false);
+    if (error) {
+      toast({
+        title: 'Erro',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } else {
+      setResetEmailSent(true);
+    }
+  };
+
   if (loading) {
     return (
-      <div role="main" aria-label="Autenticação" className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
@@ -120,11 +140,10 @@ export default function Auth() {
         <meta name="description" content="Acesse sua conta VisionAI para monitoramento de segurança inteligente." />
       </Helmet>
 
-      <div role="main" aria-label="Autenticação" className="min-h-screen flex items-center justify-center bg-background p-4">
-        <div role="main" aria-label="Autenticação" className="w-full max-w-md">
-          {/* Logo */}
-          <div role="main" aria-label="Autenticação" className="flex items-center justify-center gap-3 mb-8">
-            <div role="main" aria-label="Autenticação" className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <div className="w-full max-w-md">
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
               <Shield className="w-7 h-7 text-primary-foreground" />
             </div>
             <div>
@@ -143,7 +162,6 @@ export default function Auth() {
               </CardHeader>
 
               <CardContent>
-                {/* Login Tab */}
                 <TabsContent value="login" className="mt-0">
                   <CardTitle className="text-lg mb-1">Bem-vindo de volta</CardTitle>
                   <CardDescription className="mb-6">
@@ -151,7 +169,7 @@ export default function Auth() {
                   </CardDescription>
 
                   <form onSubmit={handleSignIn} className="space-y-4">
-                    <div role="main" aria-label="Autenticação" className="space-y-2">
+                    <div className="space-y-2">
                       <Label htmlFor="login-email">Email</Label>
                       <Input
                         id="login-email"
@@ -167,9 +185,9 @@ export default function Auth() {
                       )}
                     </div>
 
-                    <div role="main" aria-label="Autenticação" className="space-y-2">
+                    <div className="space-y-2">
                       <Label htmlFor="login-password">Senha</Label>
-                      <div role="main" aria-label="Autenticação" className="relative">
+                      <div className="relative">
                         <Input
                           id="login-password"
                           type={showPassword ? 'text' : 'password'}
@@ -203,58 +221,25 @@ export default function Auth() {
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                           Entrando...
-                        
-      {/* Forgot Password Dialog */}
-      {showForgotPassword && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-background p-6 rounded-lg max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-2">Recuperar Senha</h3>
-            {resetEmailSent ? (
-              <div className="text-center py-4">
-                <p className="text-muted-foreground mb-4">
-                  Email de recuperação enviado! Verifique sua caixa de entrada.
-                </p>
-                <Button onClick={() => { setShowForgotPassword(false); setResetEmailSent(false); }}>
-                  Fechar
-                </Button>
-              </div>
-            ) : (
-              <>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Digite seu email para receber o link de recuperação de senha.
-                </p>
-                <Input
-                  type="email"
-                  placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="mb-4"
-                />
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => setShowForgotPassword(false)}>
-                    Cancelar
-                  </Button>
-                  <Button onClick={handleForgotPassword} disabled={isLoading}>
-                    {isLoading ? 'Enviando...' : 'Enviar'}
-                  </Button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
-
-    </>
+                        </>
                       ) : (
                         'Entrar'
                       )}
                     </Button>
-                  
-          <OAuthButtons disabled={isLoading} />
-        </form>
+
+                    <OAuthButtons disabled={isLoading} />
+
+                    <Button
+                      type="button"
+                      variant="link"
+                      className="w-full text-sm"
+                      onClick={() => setShowForgotPassword(true)}
+                    >
+                      Esqueceu a senha?
+                    </Button>
+                  </form>
                 </TabsContent>
 
-                {/* Register Tab */}
                 <TabsContent value="register" className="mt-0">
                   <CardTitle className="text-lg mb-1">Criar nova conta</CardTitle>
                   <CardDescription className="mb-6">
@@ -262,7 +247,7 @@ export default function Auth() {
                   </CardDescription>
 
                   <form onSubmit={handleSignUp} className="space-y-4">
-                    <div role="main" aria-label="Autenticação" className="space-y-2">
+                    <div className="space-y-2">
                       <Label htmlFor="register-name">Nome completo</Label>
                       <Input
                         id="register-name"
@@ -274,7 +259,7 @@ export default function Auth() {
                       />
                     </div>
 
-                    <div role="main" aria-label="Autenticação" className="space-y-2">
+                    <div className="space-y-2">
                       <Label htmlFor="register-email">Email</Label>
                       <Input
                         id="register-email"
@@ -290,9 +275,9 @@ export default function Auth() {
                       )}
                     </div>
 
-                    <div role="main" aria-label="Autenticação" className="space-y-2">
+                    <div className="space-y-2">
                       <Label htmlFor="register-password">Senha</Label>
-                      <div role="main" aria-label="Autenticação" className="relative">
+                      <div className="relative">
                         <Input
                           id="register-password"
                           type={showPassword ? 'text' : 'password'}
@@ -326,63 +311,21 @@ export default function Auth() {
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                           Criando conta...
-                        
-      {/* Forgot Password Dialog */}
-      {showForgotPassword && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-background p-6 rounded-lg max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-2">Recuperar Senha</h3>
-            {resetEmailSent ? (
-              <div className="text-center py-4">
-                <p className="text-muted-foreground mb-4">
-                  Email de recuperação enviado! Verifique sua caixa de entrada.
-                </p>
-                <Button onClick={() => { setShowForgotPassword(false); setResetEmailSent(false); }}>
-                  Fechar
-                </Button>
-              </div>
-            ) : (
-              <>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Digite seu email para receber o link de recuperação de senha.
-                </p>
-                <Input
-                  type="email"
-                  placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="mb-4"
-                />
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => setShowForgotPassword(false)}>
-                    Cancelar
-                  </Button>
-                  <Button onClick={handleForgotPassword} disabled={isLoading}>
-                    {isLoading ? 'Enviando...' : 'Enviar'}
-                  </Button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
-
-    </>
+                        </>
                       ) : (
                         'Criar conta'
                       )}
                     </Button>
-                  
-          <OAuthButtons disabled={isLoading} />
-        </form>
+
+                    <OAuthButtons disabled={isLoading} />
+                  </form>
                 </TabsContent>
               </CardContent>
             </Tabs>
           </Card>
         </div>
       </div>
-    
-      {/* Forgot Password Dialog */}
+
       {showForgotPassword && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-background p-6 rounded-lg max-w-md w-full mx-4">
@@ -421,7 +364,6 @@ export default function Auth() {
           </div>
         </div>
       )}
-
     </>
   );
 }
