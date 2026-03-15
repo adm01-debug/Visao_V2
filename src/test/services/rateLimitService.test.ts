@@ -44,7 +44,10 @@ describe("RateLimitService", () => {
     expect(reset).toBeLessThanOrEqual(1000);
   });
 
+  // BUG DETECTADO: configure() no beforeEach muda config para maxRequests:5 de teste anterior
+  // O singleton mantém estado entre testes — getRemainingRequests usa config.maxRequests
   it("reset clears specific key", () => {
+    rateLimitService.configure({ maxRequests: 100, windowMs: 60000 });
     rateLimitService.recordRequest("a");
     rateLimitService.recordRequest("b");
     rateLimitService.reset("a");
@@ -52,6 +55,7 @@ describe("RateLimitService", () => {
   });
 
   it("reset without key clears all", () => {
+    rateLimitService.configure({ maxRequests: 100, windowMs: 60000 });
     rateLimitService.recordRequest("a");
     rateLimitService.recordRequest("b");
     rateLimitService.reset();
