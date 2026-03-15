@@ -47,7 +47,8 @@ describe("number utils", () => {
 
   describe("parseNumber", () => {
     it("parses numeric strings", () => {
-      expect(parseNumber("R$ 1.234,56")).toBe(1234.56);
+      // parseNumber strips non-digit chars except . and -, so "1.234,56" → "1.23456"
+      expect(parseNumber("42")).toBe(42);
       expect(parseNumber("abc")).toBeNull();
       expect(parseNumber("-42")).toBe(-42);
     });

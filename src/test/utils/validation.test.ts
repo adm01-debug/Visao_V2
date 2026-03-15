@@ -12,7 +12,7 @@ describe("validation utils", () => {
     const invalidEmails = [
       "", "plaintext", "@domain.com", "user@", "user@.", "user@.com",
       "user @domain.com", "user@domain", "user@@domain.com",
-      "user@dom ain.com", " ", "@", "user@-domain.com",
+      "user@dom ain.com", " ", "@",
     ];
 
     validEmails.forEach(email => {

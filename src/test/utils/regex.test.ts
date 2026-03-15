@@ -95,7 +95,7 @@ describe("regex utils", () => {
       expect(isStrongPassword("Str0ng@Pass")).toBe(true);
       expect(isStrongPassword("weak")).toBe(false);
       expect(isStrongPassword("NoSpecial1")).toBe(false);
-      expect(isStrongPassword("noUppercase1!")).toBe(false);
+      expect(isStrongPassword("nouppercase1!")).toBe(false);
     });
   });
 
