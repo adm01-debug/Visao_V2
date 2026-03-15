@@ -111,6 +111,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const selectionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [copied, setCopied] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeLine, setActiveLine] = useState(1);
@@ -118,6 +119,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
   useEffect(() => {
     return () => {
       if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+      if (selectionTimeoutRef.current) clearTimeout(selectionTimeoutRef.current);
     };
   }, []);
 
@@ -131,8 +133,9 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
       setCopied(true);
       if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
       copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-}
+    } catch {
+      // no-op
+    }
   }, [value]);
 
   // Handle download
@@ -166,7 +169,8 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
       const spaces = ' '.repeat(tabSize);
       const newValue = value.substring(0, start) + spaces + value.substring(end);
       onChange?.(newValue);
-      setTimeout(() => {
+      if (selectionTimeoutRef.current) clearTimeout(selectionTimeoutRef.current);
+      selectionTimeoutRef.current = setTimeout(() => {
         textarea.selectionStart = textarea.selectionEnd = start + tabSize;
       }, 0);
     }
