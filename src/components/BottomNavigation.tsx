@@ -292,11 +292,11 @@ export function BottomNavigation() {
                       animate={{ scale: 1 }}
                       className={cn(
                         "absolute -top-1 -right-2 min-w-[18px] h-[18px] flex items-center justify-center",
-                        "text-[10px] font-bold rounded-full text-white",
-                        statusColor === "danger" && "bg-red-500",
-                        statusColor === "warning" && "bg-amber-500",
-                        statusColor === "success" && "bg-emerald-500",
-                        !statusColor && "bg-primary"
+                        "text-[10px] font-bold rounded-full",
+                        statusColor === "danger" && "bg-destructive text-destructive-foreground",
+                        statusColor === "warning" && "bg-accent text-accent-foreground",
+                        statusColor === "success" && "bg-primary text-primary-foreground",
+                        !statusColor && "bg-primary text-primary-foreground"
                       )}
                     >
                       {badge > 99 ? "99+" : badge}
@@ -310,9 +310,9 @@ export function BottomNavigation() {
                       animate={{ scale: 1 }}
                       className={cn(
                         "absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-card",
-                        statusColor === "danger" && "bg-red-500",
-                        statusColor === "warning" && "bg-amber-500",
-                        statusColor === "success" && "bg-emerald-500"
+                        statusColor === "danger" && "bg-destructive",
+                        statusColor === "warning" && "bg-accent",
+                        statusColor === "success" && "bg-primary"
                       )}
                     />
                   )}
