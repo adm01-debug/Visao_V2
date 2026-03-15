@@ -102,6 +102,7 @@ const App = () => (
                     <Route path="/automation-rules" element={<ProtectedLayoutRoute><AutomationRulesPage /></ProtectedLayoutRoute>} />
                     <Route path="/profile" element={<ProtectedLayoutRoute><ProfilePage /></ProtectedLayoutRoute>} />
                     <Route path="/help" element={<ProtectedLayoutRoute><HelpPage /></ProtectedLayoutRoute>} />
+                    <Route path="/panic-events" element={<ProtectedLayoutRoute><PanicEventsPage /></ProtectedLayoutRoute>} />
                     <Route path="/acesso-negado" element={<AcessoNegado />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
