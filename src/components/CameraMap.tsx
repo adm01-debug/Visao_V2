@@ -49,7 +49,35 @@ export function CameraMap({ cameras, onCameraClick, className = '' }: CameraMapP
   const markerCleanupRef = useRef<Array<() => void>>([]);
   const { token, loading, error } = useMapboxToken();
   const [mapLoaded, setMapLoaded] = useState(false);
-...
+
+  useEffect(() => {
+    if (!mapContainer.current || !token || map.current) return;
+
+    mapboxgl.accessToken = token;
+
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: 'mapbox://styles/mapbox/dark-v11',
+      center: [-46.6333, -23.5505],
+      zoom: 15,
+      pitch: 45,
+    });
+
+    map.current.addControl(
+      new mapboxgl.NavigationControl({ visualizePitch: true }),
+      'top-right'
+    );
+
+    map.current.on('load', () => {
+      setMapLoaded(true);
+    });
+
+    return () => {
+      map.current?.remove();
+      map.current = null;
+    };
+  }, [token]);
+
   // Update markers when cameras change
   useEffect(() => {
     if (!map.current || !mapLoaded) return;
