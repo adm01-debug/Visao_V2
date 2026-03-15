@@ -122,7 +122,41 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
       if (selectionTimeoutRef.current) clearTimeout(selectionTimeoutRef.current);
     };
   }, []);
-...
+
+  const lines = value.split('\n');
+  const lineCount = lines.length;
+
+  // Handle copy
+  const handleCopy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+      copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // no-op
+    }
+  }, [value]);
+
+  // Handle download
+  const handleDownload = useCallback(() => {
+    const extensions: Record<string, string> = {
+      javascript: 'js', typescript: 'ts', python: 'py', java: 'java',
+      cpp: 'cpp', csharp: 'cs', go: 'go', rust: 'rs', ruby: 'rb',
+      php: 'php', swift: 'swift', kotlin: 'kt', html: 'html',
+      css: 'css', scss: 'scss', json: 'json', xml: 'xml', yaml: 'yaml',
+      markdown: 'md', sql: 'sql', bash: 'sh', dockerfile: 'dockerfile',
+    };
+    const ext = extensions[language] || 'txt';
+    const blob = new Blob([value], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `code.${ext}`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [value, language]);
+
   // Handle key events
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     const textarea = e.currentTarget;
