@@ -3,7 +3,7 @@
  * AuthCallback Component
  */
 
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { LoadingSpinner } from './LoadingSpinner';
