@@ -103,6 +103,9 @@ const ACTIONS = [
   { value: 'record', label: 'Iniciar Gravação', description: 'Começa a gravar a câmera' },
   { value: 'lockdown', label: 'Modo Lockdown', description: 'Ativa modo de emergência' },
   { value: 'dispatch', label: 'Despachar Segurança', description: 'Notifica equipe de segurança' },
+  { value: 'arm', label: 'Armar Câmera', description: 'Ativa monitoramento da câmera' },
+  { value: 'disarm', label: 'Desarmar Câmera', description: 'Desativa monitoramento da câmera' },
+  { value: 'panic', label: 'Alerta de Pânico', description: 'Dispara alerta de pânico geral' },
 ];
 
 const DAYS_OF_WEEK = [
