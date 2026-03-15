@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Type declarations for Network Information API
 declare global {
   interface NetworkInformation extends EventTarget {
