@@ -5,8 +5,8 @@ describe("dom utils", () => {
   beforeEach(() => { document.body.innerHTML = '<div id="root" class="main"><span class="item">A</span><span class="item">B</span></div>'; });
 
   describe("$", () => {
-    it("selects element", () => { expect($(\"#root\")).not.toBeNull(); });
-    it("returns null for missing", () => { expect($(\"#nope\")).toBeNull(); });
+    it("selects element", () => { expect($("#root")).not.toBeNull(); });
+    it("returns null for missing", () => { expect($("#nope")).toBeNull(); });
     it("selects by class", () => { expect($(".item")).not.toBeNull(); });
   });
 

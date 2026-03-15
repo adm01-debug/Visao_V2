@@ -1,5 +1,15 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createQueueService, type QueueConfig } from "@/services/queueService";
+
+// Mock crypto.randomUUID
+beforeEach(() => {
+  let counter = 0;
+  vi.stubGlobal("crypto", {
+    ...crypto,
+    randomUUID: () => `test-uuid-${++counter}`,
+    getRandomValues: (arr: Uint8Array) => { for (let i = 0; i < arr.length; i++) arr[i] = Math.floor(Math.random() * 256); return arr; },
+  });
+});
 
 describe("QueueService", () => {
   const config: QueueConfig = { name: "test", concurrency: 2 };

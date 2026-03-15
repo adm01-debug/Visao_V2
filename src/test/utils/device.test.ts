@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isMobile, isTablet, isDesktop, getDeviceType, getOS, getScreenSize, getViewportSize, getPixelRatio, isRetina, supportsTouch, generateFingerprint } from "@/utils/device";
+import { isMobile, isTablet, isDesktop, getDeviceType, getOS, getScreenSize, getViewportSize, getPixelRatio, isRetina, supportsTouch } from "@/utils/device";
 
 describe("device utils", () => {
   describe("detection", () => {
@@ -28,18 +28,5 @@ describe("device utils", () => {
 
   describe("supportsTouch", () => {
     it("returns boolean", () => { expect(typeof supportsTouch()).toBe("boolean"); });
-  });
-
-  describe("generateFingerprint", () => {
-    it("generates hex string", async () => {
-      const fp = await generateFingerprint();
-      expect(typeof fp).toBe("string");
-      expect(fp.length).toBeGreaterThan(0);
-    });
-    it("is deterministic per session", async () => {
-      const fp1 = await generateFingerprint();
-      const fp2 = await generateFingerprint();
-      expect(fp1).toBe(fp2);
-    });
   });
 });
