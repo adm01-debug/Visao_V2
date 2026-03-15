@@ -400,8 +400,8 @@ export default function PanicEventsPage() {
                 )}
 
                 {selectedEvent.resolved && (
-                  <div className="bg-green-500/5 border border-green-500/20 rounded-lg p-3 space-y-1">
-                    <p className="text-sm font-medium text-green-700 dark:text-green-400">
+                  <div className="bg-muted/40 border border-border rounded-lg p-3 space-y-1">
+                    <p className="text-sm font-medium text-foreground">
                       ✅ Resolvido
                     </p>
                     {selectedEvent.resolved_by && (
