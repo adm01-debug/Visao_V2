@@ -81,9 +81,11 @@ const categories: NavCategory[] = [
     defaultPath: "/analytics",
     items: [
       { id: "analytics", label: "Analytics", icon: BarChart3, path: "/analytics" },
+      { id: "recognition-analytics", label: "Rec. IA", icon: PieChart, path: "/recognition-analytics" },
       { id: "face", label: "Facial", icon: ScanFace, path: "/face-recognition" },
       { id: "plates", label: "Placas", icon: Car, path: "/license-plate" },
       { id: "heatmap", label: "Calor", icon: Flame, path: "/heatmap" },
+      { id: "reports", label: "Relat.", icon: FileText, path: "/reports" },
     ],
   },
   {
