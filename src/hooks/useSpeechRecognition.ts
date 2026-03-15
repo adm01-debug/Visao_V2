@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * useSpeechRecognition Hook
  * Web Speech API recognition

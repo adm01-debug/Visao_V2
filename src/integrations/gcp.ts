@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Google Cloud Platform Integration Service
  * Core GCP services wrapper

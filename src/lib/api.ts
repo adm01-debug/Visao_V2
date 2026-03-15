@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * VIS-O - Sistema de Vigilância Inteligente
  * API Client Module

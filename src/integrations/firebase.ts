@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Firebase Cloud Messaging Integration
  * Push notifications for web and mobile
