@@ -218,6 +218,62 @@ export type Database = {
           },
         ]
       }
+      heatmap_snapshots: {
+        Row: {
+          avg_intensity: number
+          camera_id: string | null
+          created_at: string
+          data_points: number
+          id: string
+          image_url: string | null
+          max_intensity: number
+          metadata: Json | null
+          min_intensity: number
+          period_end: string | null
+          period_start: string | null
+          resolution: Json | null
+          user_id: string
+        }
+        Insert: {
+          avg_intensity?: number
+          camera_id?: string | null
+          created_at?: string
+          data_points?: number
+          id?: string
+          image_url?: string | null
+          max_intensity?: number
+          metadata?: Json | null
+          min_intensity?: number
+          period_end?: string | null
+          period_start?: string | null
+          resolution?: Json | null
+          user_id: string
+        }
+        Update: {
+          avg_intensity?: number
+          camera_id?: string | null
+          created_at?: string
+          data_points?: number
+          id?: string
+          image_url?: string | null
+          max_intensity?: number
+          metadata?: Json | null
+          min_intensity?: number
+          period_end?: string | null
+          period_start?: string | null
+          resolution?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "heatmap_snapshots_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notification_configs: {
         Row: {
           channels: string[]
@@ -402,6 +458,68 @@ export type Database = {
             columns: ["person_id"]
             isOneToOne: false
             referencedRelation: "registered_persons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recording_configs: {
+        Row: {
+          camera_id: string | null
+          created_at: string
+          enabled: boolean
+          format: string
+          id: string
+          max_duration_seconds: number
+          max_file_size_mb: number
+          post_buffer_seconds: number
+          pre_buffer_seconds: number
+          quality: string
+          record_on_alert: boolean
+          record_on_motion: boolean
+          retention_days: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          camera_id?: string | null
+          created_at?: string
+          enabled?: boolean
+          format?: string
+          id?: string
+          max_duration_seconds?: number
+          max_file_size_mb?: number
+          post_buffer_seconds?: number
+          pre_buffer_seconds?: number
+          quality?: string
+          record_on_alert?: boolean
+          record_on_motion?: boolean
+          retention_days?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string | null
+          created_at?: string
+          enabled?: boolean
+          format?: string
+          id?: string
+          max_duration_seconds?: number
+          max_file_size_mb?: number
+          post_buffer_seconds?: number
+          pre_buffer_seconds?: number
+          quality?: string
+          record_on_alert?: boolean
+          record_on_motion?: boolean
+          retention_days?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recording_configs_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
             referencedColumns: ["id"]
           },
         ]
@@ -592,6 +710,107 @@ export type Database = {
           severity?: Database["public"]["Enums"]["rule_severity"]
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      stream_recordings: {
+        Row: {
+          camera_id: string | null
+          created_at: string
+          duration_seconds: number | null
+          ended_at: string | null
+          error_message: string | null
+          file_path: string | null
+          file_size_bytes: number | null
+          format: string | null
+          id: string
+          quality: string | null
+          started_at: string
+          status: string
+          stream_url: string | null
+          thumbnail_url: string | null
+          user_id: string
+        }
+        Insert: {
+          camera_id?: string | null
+          created_at?: string
+          duration_seconds?: number | null
+          ended_at?: string | null
+          error_message?: string | null
+          file_path?: string | null
+          file_size_bytes?: number | null
+          format?: string | null
+          id?: string
+          quality?: string | null
+          started_at?: string
+          status?: string
+          stream_url?: string | null
+          thumbnail_url?: string | null
+          user_id: string
+        }
+        Update: {
+          camera_id?: string | null
+          created_at?: string
+          duration_seconds?: number | null
+          ended_at?: string | null
+          error_message?: string | null
+          file_path?: string | null
+          file_size_bytes?: number | null
+          format?: string | null
+          id?: string
+          quality?: string | null
+          started_at?: string
+          status?: string
+          stream_url?: string | null
+          thumbnail_url?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stream_recordings_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vehicles: {
+        Row: {
+          color: string | null
+          created_at: string
+          id: string
+          model: string | null
+          notes: string | null
+          owner: string | null
+          plate: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          model?: string | null
+          notes?: string | null
+          owner?: string | null
+          plate: string
+          type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          model?: string | null
+          notes?: string | null
+          owner?: string | null
+          plate?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
