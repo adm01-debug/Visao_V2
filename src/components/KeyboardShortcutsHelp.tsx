@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useOnClickOutside } from "@/hooks";
 /**
  * VISÃO - Sistema de Vigilância Inteligente

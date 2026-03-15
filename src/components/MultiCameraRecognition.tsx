@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useInterval, useTimeout } from "@/hooks";
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';

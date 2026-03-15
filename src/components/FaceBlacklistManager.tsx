@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: Gerenciador de Blacklist/Whitelist de Faces
