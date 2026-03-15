@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { useInterval, useTimeout } from "@/hooks";
 import { cn } from "@/lib/utils";

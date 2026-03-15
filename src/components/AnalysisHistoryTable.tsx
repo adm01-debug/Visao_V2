@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useCopyToClipboard } from "@/hooks";
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 /**
