@@ -30,8 +30,8 @@ export function PanicButton({ className }: { className?: string }) {
         size="lg"
         onClick={() => setOpen(true)}
         className={cn(
-          'fixed bottom-6 right-6 z-50 h-16 w-16 rounded-full shadow-2xl animate-pulse hover:animate-none',
-          'bg-red-600 hover:bg-red-700 border-2 border-red-400',
+          'fixed bottom-6 right-6 z-50 h-16 w-16 rounded-full shadow-lg animate-pulse hover:animate-none',
+          'border border-destructive/40',
           className
         )}
         title="Botão de Pânico"

@@ -83,20 +83,34 @@ export function usePanicButton() {
   });
 
   const resolvePanic = useMutation({
-    mutationFn: async (eventId: string) => {
+    mutationFn: async ({ eventId, notes }: { eventId: string; notes?: string }) => {
+      const updates: Record<string, string | boolean | null> = {
+        resolved: true,
+        resolved_at: new Date().toISOString(),
+        resolved_by: user!.email ?? null,
+      };
+
+      if (notes?.trim()) {
+        updates.notes = notes.trim();
+      }
+
       const { error } = await supabase
         .from('panic_events')
-        .update({
-          resolved: true,
-          resolved_at: new Date().toISOString(),
-          resolved_by: user!.email,
-        } as any)
+        .update(updates as any)
         .eq('id', eventId);
+
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['panic-events'] });
       toast({ title: 'Pânico Resolvido', description: 'Evento de pânico marcado como resolvido.' });
+    },
+    onError: () => {
+      toast({
+        title: 'Erro ao resolver',
+        description: 'Não foi possível resolver o evento de pânico.',
+        variant: 'destructive',
+      });
     },
   });
 
