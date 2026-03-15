@@ -11,7 +11,7 @@ describe("constants", () => {
   });
 
   it("ALERT_TYPES has expected values", () => {
-    expect(ALERT_TYPES).toEqual(["motion", "face", "zone", "plate", "ppe"]);
+    expect(ALERT_TYPES).toEqual(["motion", "face", "zone", "plate", "ppe", "absence", "agglomeration", "anomaly", "panic", "arm_disarm", "scene_change", "camera_offline", "recurrent_vehicle", "qr_code_event"]);
   });
 
   it("NOTIFICATION_CHANNELS has expected values", () => {
