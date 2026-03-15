@@ -45,9 +45,9 @@ export function PanicButton({ className }: { className?: string }) {
       </Button>
 
       <AlertDialog open={open} onOpenChange={setOpen}>
-        <AlertDialogContent className="border-red-500">
+        <AlertDialogContent className="border-destructive/50">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-red-600 flex items-center gap-2">
+            <AlertDialogTitle className="text-destructive flex items-center gap-2">
               <ShieldAlert className="h-6 w-6" />
               Confirmar Alerta de Pânico
             </AlertDialogTitle>
