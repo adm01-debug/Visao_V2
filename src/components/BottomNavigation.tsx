@@ -68,7 +68,9 @@ const categories: NavCategory[] = [
     defaultPath: "/alerts",
     items: [
       { id: "alerts", label: "Alertas", icon: Bell, path: "/alerts" },
+      { id: "panic", label: "Pânico", icon: ShieldAlert, path: "/panic-events" },
       { id: "rules", label: "Regras", icon: Shield, path: "/security" },
+      { id: "automation", label: "Autom.", icon: Zap, path: "/automation-rules" },
       { id: "ppe", label: "EPIs", icon: HardHat, path: "/ppe" },
     ],
   },
