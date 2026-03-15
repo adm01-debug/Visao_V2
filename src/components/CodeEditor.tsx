@@ -110,9 +110,16 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
   onSave,
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [copied, setCopied] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeLine, setActiveLine] = useState(1);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+    };
+  }, []);
 
   const lines = value.split('\n');
   const lineCount = lines.length;
