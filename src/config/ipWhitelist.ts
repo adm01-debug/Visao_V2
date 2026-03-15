@@ -19,7 +19,7 @@ export interface IPWhitelistConfig {
 // IPs e ranges confiáveis padrão
 export const IP_WHITELIST_CONFIG: IPWhitelistConfig = {
   // Ativar/desativar whitelist
-  enabled: true,
+  enabled: false,
 
   // Permitir localhost (desenvolvimento)
   allowLocalhost: import.meta.env.DEV,
