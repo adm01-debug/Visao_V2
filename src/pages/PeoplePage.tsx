@@ -230,6 +230,8 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
         department: person.department || '',
         role: person.role || '',
         is_active: person.is_active,
+        list_type: person.list_type || 'none',
+        notes: person.notes || '',
       });
       setPhotoPreview(person.photo_url || null);
       setPhotoFile(null);
