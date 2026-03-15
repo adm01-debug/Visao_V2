@@ -66,10 +66,10 @@ export default function LicensePlatePage() {
   // Form state
   const [formData, setFormData] = useState({
     plate: '',
-    owner: '',
-    model: '',
+    owner_name: '',
+    vehicle_type: 'car',
     color: '',
-    type: 'visitor' as 'whitelist' | 'blacklist' | 'visitor',
+    list_type: 'whitelist',
     notes: ''
   });
 
