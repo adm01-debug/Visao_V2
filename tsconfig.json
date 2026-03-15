@@ -26,5 +26,5 @@
     "src/**/*.spec.tsx",
     "src/**/*.spec.ts"
   ],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [{ "path": "./tsconfig.vite.json" }]
 }
