@@ -102,7 +102,7 @@ export default function PanicEventsPage() {
 
   const confirmResolve = () => {
     if (!eventToResolve) return;
-    resolvePanic.mutate(eventToResolve.id);
+    resolvePanic.mutate({ eventId: eventToResolve.id, notes: resolveNotes });
     setShowResolveDialog(false);
     setEventToResolve(null);
     setSelectedEvent(null);
