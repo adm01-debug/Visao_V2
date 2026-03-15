@@ -13,7 +13,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { HighlightText } from './HighlightText';
 
-export type AlertType = 'security' | 'safety' | 'operations' | 'access' | 'analytics';
+export type AlertType = 'security' | 'safety' | 'operations' | 'access' | 'analytics' | 'absence' | 'agglomeration' | 'anomaly' | 'panic' | 'arm_disarm' | 'scene_change' | 'camera_offline' | 'recurrent_vehicle' | 'qr_code_event';
 export type AlertSeverity = 'low' | 'medium' | 'high' | 'critical';
 
 export interface UIAlert {

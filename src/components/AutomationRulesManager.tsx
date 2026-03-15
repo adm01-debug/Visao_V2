@@ -88,6 +88,13 @@ const CONDITION_TYPES = [
   { value: 'motion_detection', label: 'Detecção de Movimento' },
   { value: 'object_left', label: 'Objeto Abandonado' },
   { value: 'perimeter_breach', label: 'Violação de Perímetro' },
+  { value: 'absence_detection', label: 'Detecção de Ausência' },
+  { value: 'agglomeration_detection', label: 'Detecção de Aglomeração' },
+  { value: 'anomaly_position', label: 'Anomalia: Posição Irregular' },
+  { value: 'anomaly_speed', label: 'Anomalia: Velocidade Irregular' },
+  { value: 'anomaly_displacement', label: 'Anomalia: Deslocamento Suspeito' },
+  { value: 'scene_change', label: 'Mudança de Cena' },
+  { value: 'recurrent_vehicle', label: 'Veículo Recorrente' },
 ];
 
 const ACTIONS = [
