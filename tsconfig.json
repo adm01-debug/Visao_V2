@@ -40,12 +40,8 @@
     "src/**/*.test.tsx",
     "src/**/*.test.ts",
     "src/**/__tests__/**",
-    "src/hooks/**",
-    "src/integrations/aws.ts",
-    "src/middleware/**",
-    "src/components/widgets/**",
-    "src/components/usermanagement/**",
-    "src/components/testimonialcard/**"
+    "src/services/**",
+    "src/middleware/**"
   ],
   "references": []
 }
