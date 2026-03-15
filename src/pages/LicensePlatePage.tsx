@@ -217,10 +217,10 @@ export default function LicensePlatePage() {
   const resetForm = () => {
     setFormData({
       plate: '',
-      owner: '',
-      model: '',
+      owner_name: '',
+      vehicle_type: 'car',
       color: '',
-      type: 'visitor',
+      list_type: 'whitelist',
       notes: ''
     });
   };
@@ -229,10 +229,10 @@ export default function LicensePlatePage() {
     setEditingVehicle(vehicle);
     setFormData({
       plate: vehicle.plate,
-      owner: vehicle.owner,
-      model: vehicle.model,
-      color: vehicle.color,
-      type: vehicle.type,
+      owner_name: vehicle.owner_name || '',
+      vehicle_type: vehicle.vehicle_type || 'car',
+      color: vehicle.color || '',
+      list_type: vehicle.list_type,
       notes: vehicle.notes || ''
     });
     setIsAddDialogOpen(true);
@@ -241,8 +241,8 @@ export default function LicensePlatePage() {
   // Filter vehicles
   const filteredVehicles = vehicles.filter(v => {
     const matchesSearch = v.plate.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         v.owner.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = filterType === 'all' || v.type === filterType;
+                         (v.owner_name || '').toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesType = filterType === 'all' || v.list_type === filterType;
     return matchesSearch && matchesType;
   });
 
