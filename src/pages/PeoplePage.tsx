@@ -249,6 +249,8 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
         department: '',
         role: '',
         is_active: true,
+        list_type: 'none',
+        notes: '',
       });
       setPhotoPreview(null);
       setPhotoFile(null);
