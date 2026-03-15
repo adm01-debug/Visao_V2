@@ -13,7 +13,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { HighlightText } from './HighlightText';
 
-export type AlertType = 'security' | 'safety' | 'operations' | 'access' | 'analytics';
+export type AlertType = 'security' | 'safety' | 'operations' | 'access' | 'analytics' | 'absence' | 'agglomeration' | 'anomaly' | 'panic' | 'arm_disarm' | 'scene_change' | 'camera_offline' | 'recurrent_vehicle' | 'qr_code_event';
 export type AlertSeverity = 'low' | 'medium' | 'high' | 'critical';
 
 export interface UIAlert {
@@ -36,31 +36,20 @@ interface AlertCardProps {
 }
 
 const alertTypeConfig: Record<AlertType, { icon: typeof Shield; label: string; color: string }> = {
-  security: {
-    icon: Shield,
-    label: 'Segurança',
-    color: 'text-destructive',
-  },
-  safety: {
-    icon: AlertTriangle,
-    label: 'Segurança do Trabalho',
-    color: 'text-warning',
-  },
-  operations: {
-    icon: Cog,
-    label: 'Operações',
-    color: 'text-emerald-400',
-  },
-  access: {
-    icon: ShieldAlert,
-    label: 'Acesso',
-    color: 'text-destructive',
-  },
-  analytics: {
-    icon: BarChart3,
-    label: 'Analytics',
-    color: 'text-purple-400',
-  },
+  security: { icon: Shield, label: 'Segurança', color: 'text-destructive' },
+  safety: { icon: AlertTriangle, label: 'Segurança do Trabalho', color: 'text-warning' },
+  operations: { icon: Cog, label: 'Operações', color: 'text-emerald-400' },
+  access: { icon: ShieldAlert, label: 'Acesso', color: 'text-destructive' },
+  analytics: { icon: BarChart3, label: 'Analytics', color: 'text-purple-400' },
+  absence: { icon: AlertTriangle, label: 'Ausência', color: 'text-yellow-500' },
+  agglomeration: { icon: AlertTriangle, label: 'Aglomeração', color: 'text-orange-500' },
+  anomaly: { icon: ShieldAlert, label: 'Anomalia', color: 'text-red-400' },
+  panic: { icon: ShieldAlert, label: 'Pânico', color: 'text-red-600' },
+  arm_disarm: { icon: Shield, label: 'Arme/Desarme', color: 'text-blue-500' },
+  scene_change: { icon: AlertTriangle, label: 'Mudança de Cena', color: 'text-amber-500' },
+  camera_offline: { icon: Cog, label: 'Câmera Offline', color: 'text-muted-foreground' },
+  recurrent_vehicle: { icon: ShieldAlert, label: 'Veículo Recorrente', color: 'text-orange-400' },
+  qr_code_event: { icon: BarChart3, label: 'QR Code', color: 'text-blue-400' },
 };
 
 const severityConfig = {

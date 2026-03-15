@@ -1,6 +1,6 @@
 export const SEVERITY_LEVELS = ['low', 'medium', 'high', 'critical'] as const;
 export const CAMERA_STATUSES = ['online', 'offline', 'error'] as const;
-export const ALERT_TYPES = ['motion', 'face', 'zone', 'plate', 'ppe'] as const;
+export const ALERT_TYPES = ['motion', 'face', 'zone', 'plate', 'ppe', 'absence', 'agglomeration', 'anomaly', 'panic', 'arm_disarm', 'scene_change', 'camera_offline', 'recurrent_vehicle', 'qr_code_event'] as const;
 export const NOTIFICATION_CHANNELS = ['telegram', 'email', 'webhook', 'push'] as const;
 
 export const DEFAULT_PAGE_SIZE = 20;

@@ -20,7 +20,7 @@ import { Separator } from '@/components/ui/separator';
 import { format, startOfDay, endOfDay, subDays, subHours, isWithinInterval } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-export type AlertType = 'security' | 'safety' | 'operations' | 'access' | 'analytics' | 'all';
+export type AlertType = 'security' | 'safety' | 'operations' | 'access' | 'analytics' | 'absence' | 'agglomeration' | 'anomaly' | 'panic' | 'arm_disarm' | 'scene_change' | 'camera_offline' | 'recurrent_vehicle' | 'qr_code_event' | 'all';
 export type AlertSeverity = 'low' | 'medium' | 'high' | 'critical' | 'all';
 export type DateRange = 'all' | '1h' | '24h' | '7d' | '30d' | 'custom';
 
@@ -51,6 +51,15 @@ const TYPE_LABELS: Record<AlertType, string> = {
   operations: 'Operações',
   access: 'Acesso',
   analytics: 'Analytics',
+  absence: 'Ausência',
+  agglomeration: 'Aglomeração',
+  anomaly: 'Anomalia',
+  panic: 'Pânico',
+  arm_disarm: 'Arme/Desarme',
+  scene_change: 'Mudança de Cena',
+  camera_offline: 'Câmera Offline',
+  recurrent_vehicle: 'Veículo Recorrente',
+  qr_code_event: 'QR Code',
 };
 
 const SEVERITY_LABELS: Record<AlertSeverity, string> = {

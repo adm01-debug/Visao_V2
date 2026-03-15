@@ -108,6 +108,59 @@ export type Database = {
           },
         ]
       }
+      arm_disarm_states: {
+        Row: {
+          armed_at: string | null
+          armed_by_email: string | null
+          camera_id: string | null
+          created_at: string
+          disarm_at: string | null
+          id: string
+          schedule_days: number[] | null
+          schedule_end_time: string | null
+          schedule_start_time: string | null
+          state: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          armed_at?: string | null
+          armed_by_email?: string | null
+          camera_id?: string | null
+          created_at?: string
+          disarm_at?: string | null
+          id?: string
+          schedule_days?: number[] | null
+          schedule_end_time?: string | null
+          schedule_start_time?: string | null
+          state?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          armed_at?: string | null
+          armed_by_email?: string | null
+          camera_id?: string | null
+          created_at?: string
+          disarm_at?: string | null
+          id?: string
+          schedule_days?: number[] | null
+          schedule_end_time?: string | null
+          schedule_start_time?: string | null
+          state?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "arm_disarm_states_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cameras: {
         Row: {
           alerts_count: number | null
@@ -328,6 +381,54 @@ export type Database = {
           updated_at?: string
           user_id?: string
           webhook_urls?: string[]
+        }
+        Relationships: []
+      }
+      panic_events: {
+        Row: {
+          created_at: string
+          id: string
+          latitude: number | null
+          location_address: string | null
+          longitude: number | null
+          notes: string | null
+          resolved: boolean
+          resolved_at: string | null
+          resolved_by: string | null
+          user_email: string | null
+          user_id: string
+          user_name: string | null
+          user_phone: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          location_address?: string | null
+          longitude?: number | null
+          notes?: string | null
+          resolved?: boolean
+          resolved_at?: string | null
+          resolved_by?: string | null
+          user_email?: string | null
+          user_id: string
+          user_name?: string | null
+          user_phone?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          location_address?: string | null
+          longitude?: number | null
+          notes?: string | null
+          resolved?: boolean
+          resolved_at?: string | null
+          resolved_by?: string | null
+          user_email?: string | null
+          user_id?: string
+          user_name?: string | null
+          user_phone?: string | null
         }
         Relationships: []
       }
@@ -954,7 +1055,21 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      alert_type: "security" | "safety" | "operations" | "access" | "analytics"
+      alert_type:
+        | "security"
+        | "safety"
+        | "operations"
+        | "access"
+        | "analytics"
+        | "absence"
+        | "agglomeration"
+        | "anomaly"
+        | "panic"
+        | "arm_disarm"
+        | "scene_change"
+        | "camera_offline"
+        | "recurrent_vehicle"
+        | "qr_code_event"
       camera_status: "online" | "offline" | "alert" | "warning"
       condition_operator:
         | "greater_than"
@@ -974,7 +1089,22 @@ export type Database = {
         | "motion_detection"
         | "object_left"
         | "perimeter_breach"
-      rule_action: "alert" | "notify" | "record" | "lockdown" | "dispatch"
+        | "absence_detection"
+        | "agglomeration_detection"
+        | "anomaly_position"
+        | "anomaly_speed"
+        | "anomaly_displacement"
+        | "scene_change"
+        | "recurrent_vehicle"
+      rule_action:
+        | "alert"
+        | "notify"
+        | "record"
+        | "lockdown"
+        | "dispatch"
+        | "arm"
+        | "disarm"
+        | "panic"
       rule_category:
         | "security"
         | "safety"
@@ -1109,7 +1239,22 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      alert_type: ["security", "safety", "operations", "access", "analytics"],
+      alert_type: [
+        "security",
+        "safety",
+        "operations",
+        "access",
+        "analytics",
+        "absence",
+        "agglomeration",
+        "anomaly",
+        "panic",
+        "arm_disarm",
+        "scene_change",
+        "camera_offline",
+        "recurrent_vehicle",
+        "qr_code_event",
+      ],
       camera_status: ["online", "offline", "alert", "warning"],
       condition_operator: [
         "greater_than",
@@ -1130,8 +1275,24 @@ export const Constants = {
         "motion_detection",
         "object_left",
         "perimeter_breach",
+        "absence_detection",
+        "agglomeration_detection",
+        "anomaly_position",
+        "anomaly_speed",
+        "anomaly_displacement",
+        "scene_change",
+        "recurrent_vehicle",
       ],
-      rule_action: ["alert", "notify", "record", "lockdown", "dispatch"],
+      rule_action: [
+        "alert",
+        "notify",
+        "record",
+        "lockdown",
+        "dispatch",
+        "arm",
+        "disarm",
+        "panic",
+      ],
       rule_category: [
         "security",
         "safety",
