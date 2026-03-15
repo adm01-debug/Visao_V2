@@ -55,7 +55,7 @@ export function usePanicButton() {
         // Geolocation not available, proceed without it
       }
 
-      const { error } = await supabase.from('panic_events' as any).insert({
+      const { error } = await supabase.from('panic_events').insert({
         user_id: user!.id,
         user_name: (user as any)?.user_metadata?.full_name || user!.email,
         user_email: user!.email,
