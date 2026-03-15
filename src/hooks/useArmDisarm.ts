@@ -26,7 +26,7 @@ export function useArmDisarm(cameraId?: string) {
   const { data: states = [], isLoading } = useQuery({
     queryKey: ['arm-disarm-states', cameraId],
     queryFn: async () => {
-      let query = supabase.from('arm_disarm_states' as any).select('*');
+      let query = supabase.from('arm_disarm_states').select('*');
       if (cameraId) query = query.eq('camera_id', cameraId);
       const { data, error } = await query.order('created_at', { ascending: false });
       if (error) throw error;
