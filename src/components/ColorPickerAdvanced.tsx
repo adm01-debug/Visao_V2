@@ -3,7 +3,7 @@
  * Full-featured color picker with gradients, palettes, and formats
  */
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Pipette, Copy, Check } from 'lucide-react';
 import type { EyeDropper } from '@/types/eye-dropper';
