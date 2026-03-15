@@ -160,8 +160,8 @@ export default function PanicEventsPage() {
         </Card>
         <Card>
           <CardContent className="p-4 flex items-center gap-4">
-            <div className="p-3 rounded-lg bg-green-500/10">
-              <CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400" />
+            <div className="p-3 rounded-lg bg-secondary">
+              <CheckCircle2 className="w-6 h-6 text-secondary-foreground" />
             </div>
             <div>
               <p className="text-2xl font-bold">{events.length - unresolvedCount}</p>
