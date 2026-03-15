@@ -37,7 +37,7 @@ export function useArmDisarm(cameraId?: string) {
 
   const armCamera = useMutation({
     mutationFn: async ({ cameraId, scheduledDisarm }: { cameraId: string; scheduledDisarm?: string }) => {
-      const { error } = await supabase.from('arm_disarm_states' as any).upsert({
+      const { error } = await supabase.from('arm_disarm_states').upsert({
         user_id: user!.id,
         camera_id: cameraId,
         state: 'armed',
