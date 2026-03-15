@@ -101,6 +101,13 @@ export const ColorPickerAdvanced: React.FC<ColorPickerAdvancedProps> = ({
   className,
 }) => {
   const [copied, setCopied] = useState(false);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+    };
+  }, []);
 
   const rgb = useMemo(() => hexToRgb(value), [value]);
   const hsl = useMemo(() => rgbToHsl(rgb.r, rgb.g, rgb.b), [rgb]);
