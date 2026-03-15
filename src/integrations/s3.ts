@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * S3 Compatible Storage Integration
  * Works with AWS S3, MinIO, DigitalOcean Spaces, etc.

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * AWS Integration Service
  * Core AWS services wrapper

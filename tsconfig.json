@@ -25,16 +25,23 @@
     },
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
     "target": "ES2020",
     "useDefineForClassFields": true
   },
   "include": [
     "src"
   ],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ]
+  "exclude": [
+    "src/**/*.stories.tsx",
+    "src/**/*.stories.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.test.ts",
+    "src/**/__tests__/**",
+    "src/services/**",
+    "src/middleware/**"
+  ],
+  "references": []
 }

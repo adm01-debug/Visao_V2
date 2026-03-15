@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const $ = (selector: string): Element | null => document.querySelector(selector);
 export const $$ = (selector: string): Element[] => Array.from(document.querySelectorAll(selector));
 

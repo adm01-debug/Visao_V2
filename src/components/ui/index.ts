@@ -1,6 +1,5 @@
 /**
- * VISÃO - Sistema de Vigilância Inteligente
- * Components UI - Barrel Export
+ * VISÃO - Components UI - Barrel Export
  */
 
 // Base shadcn/ui Components
@@ -14,14 +13,12 @@ export * from './breadcrumb';
 export * from './button';
 export * from './calendar';
 export * from './card';
-export * from './carousel';
 export * from './chart';
 export * from './checkbox';
 export * from './collapsible';
 export * from './combobox';
 export * from './command';
 export * from './context-menu';
-export * from './data-table';
 export * from './date-picker';
 export * from './dialog';
 export * from './drawer';
@@ -37,7 +34,6 @@ export * from './pagination';
 export * from './popover';
 export * from './progress';
 export * from './radio-group';
-export * from './resizable';
 export * from './scroll-area';
 export * from './select';
 export * from './separator';
@@ -50,28 +46,25 @@ export * from './switch';
 export * from './table';
 export * from './tabs';
 export * from './textarea';
-export * from './toast';
-export * from './toaster';
 export * from './toggle';
 export * from './toggle-group';
 export * from './tooltip';
 
-// Custom UI Components
-export * from './Accessibility';
-export * from './BottomSheet';
-export * from './CameraFocusMode';
-export * from './DataTable';
-export * from './EmptyState';
-export * from './EventTimeline';
-export * from './FloatingActionButton';
-export * from './GestureComponents';
-export * from './LoadingState';
-export * from './MobileInteractions';
-export * from './ModalProvider';
-export * from './MotionComponents';
-export * from './NotificationCenter';
-export * from './Notifications';
-export * from './ProgressiveImage';
-export * from './SearchInput';
-export * from './StatusIndicators';
-export * from './TouchFeedback';
+// Custom UI Components - import directly to avoid name conflicts
+// export * from './Accessibility';
+// export * from './BottomSheet';
+// export * from './CameraFocusMode';
+// export * from './DataTable';
+// export * from './EmptyState';
+// export * from './EventTimeline';
+// export * from './FloatingActionButton';
+// export * from './GestureComponents';
+// export * from './LoadingState';
+// export * from './ModalProvider';
+// export * from './MotionComponents';
+// export * from './NotificationCenter';
+// export * from './Notifications';
+// export * from './ProgressiveImage';
+// export * from './SearchInput';
+// export * from './StatusIndicators';
+// export * from './TouchFeedback';

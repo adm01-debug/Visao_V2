@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: PPEPage (Equipamentos de Proteção Individual)

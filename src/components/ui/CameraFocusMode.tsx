@@ -179,7 +179,7 @@ export function CameraFocusMode({
             <div className="flex items-center gap-2">
               <ControlButton
                 icon={<Settings className="w-5 h-5" />}
-                onClick={onSettingsClick}
+                onClick={onSettingsClick ?? (() => {})}
                 label="Configurações"
                 disabled={!onSettingsClick}
               />
