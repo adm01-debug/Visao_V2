@@ -18,14 +18,12 @@ import {
   Shield,
   ShieldAlert,
   ExternalLink,
-  MessageSquare,
-  RefreshCw,
 } from 'lucide-react';
 import { usePanicButton, PanicEvent } from '@/hooks/usePanicButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Select,
   SelectContent,
@@ -48,7 +46,7 @@ import { ptBR } from 'date-fns/locale';
 
 function StatusBadge({ resolved }: { resolved: boolean }) {
   return resolved ? (
-    <Badge variant="outline" className="gap-1 border-green-500/50 text-green-600 dark:text-green-400">
+    <Badge variant="secondary" className="gap-1">
       <CheckCircle2 className="w-3 h-3" />
       Resolvido
     </Badge>
@@ -104,7 +102,7 @@ export default function PanicEventsPage() {
 
   const confirmResolve = () => {
     if (!eventToResolve) return;
-    resolvePanic.mutate(eventToResolve.id);
+    resolvePanic.mutate({ eventId: eventToResolve.id, notes: resolveNotes });
     setShowResolveDialog(false);
     setEventToResolve(null);
     setSelectedEvent(null);
@@ -162,8 +160,8 @@ export default function PanicEventsPage() {
         </Card>
         <Card>
           <CardContent className="p-4 flex items-center gap-4">
-            <div className="p-3 rounded-lg bg-green-500/10">
-              <CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400" />
+            <div className="p-3 rounded-lg bg-secondary">
+              <CheckCircle2 className="w-6 h-6 text-secondary-foreground" />
             </div>
             <div>
               <p className="text-2xl font-bold">{events.length - unresolvedCount}</p>
@@ -237,12 +235,12 @@ export default function PanicEventsPage() {
                     <div
                       className={`p-2 rounded-full mt-0.5 ${
                         event.resolved
-                          ? 'bg-green-500/10'
+                          ? 'bg-secondary'
                           : 'bg-destructive/10'
                       }`}
                     >
                       {event.resolved ? (
-                        <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" />
+                        <CheckCircle2 className="w-5 h-5 text-secondary-foreground" />
                       ) : (
                         <AlertTriangle className="w-5 h-5 text-destructive" />
                       )}
@@ -402,8 +400,8 @@ export default function PanicEventsPage() {
                 )}
 
                 {selectedEvent.resolved && (
-                  <div className="bg-green-500/5 border border-green-500/20 rounded-lg p-3 space-y-1">
-                    <p className="text-sm font-medium text-green-700 dark:text-green-400">
+                  <div className="bg-muted/40 border border-border rounded-lg p-3 space-y-1">
+                    <p className="text-sm font-medium text-foreground">
                       ✅ Resolvido
                     </p>
                     {selectedEvent.resolved_by && (

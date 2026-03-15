@@ -25,6 +25,10 @@ import {
   MessageSquare,
   ChevronUp,
   X,
+  ShieldAlert,
+  Zap,
+  FileText,
+  PieChart,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -64,7 +68,9 @@ const categories: NavCategory[] = [
     defaultPath: "/alerts",
     items: [
       { id: "alerts", label: "Alertas", icon: Bell, path: "/alerts" },
+      { id: "panic", label: "Pânico", icon: ShieldAlert, path: "/panic-events" },
       { id: "rules", label: "Regras", icon: Shield, path: "/security" },
+      { id: "automation", label: "Autom.", icon: Zap, path: "/automation-rules" },
       { id: "ppe", label: "EPIs", icon: HardHat, path: "/ppe" },
     ],
   },
@@ -75,9 +81,11 @@ const categories: NavCategory[] = [
     defaultPath: "/analytics",
     items: [
       { id: "analytics", label: "Analytics", icon: BarChart3, path: "/analytics" },
+      { id: "recognition-analytics", label: "Rec. IA", icon: PieChart, path: "/recognition-analytics" },
       { id: "face", label: "Facial", icon: ScanFace, path: "/face-recognition" },
       { id: "plates", label: "Placas", icon: Car, path: "/license-plate" },
       { id: "heatmap", label: "Calor", icon: Flame, path: "/heatmap" },
+      { id: "reports", label: "Relat.", icon: FileText, path: "/reports" },
     ],
   },
   {
@@ -284,11 +292,11 @@ export function BottomNavigation() {
                       animate={{ scale: 1 }}
                       className={cn(
                         "absolute -top-1 -right-2 min-w-[18px] h-[18px] flex items-center justify-center",
-                        "text-[10px] font-bold rounded-full text-white",
-                        statusColor === "danger" && "bg-red-500",
-                        statusColor === "warning" && "bg-amber-500",
-                        statusColor === "success" && "bg-emerald-500",
-                        !statusColor && "bg-primary"
+                        "text-[10px] font-bold rounded-full",
+                        statusColor === "danger" && "bg-destructive text-destructive-foreground",
+                        statusColor === "warning" && "bg-accent text-accent-foreground",
+                        statusColor === "success" && "bg-primary text-primary-foreground",
+                        !statusColor && "bg-primary text-primary-foreground"
                       )}
                     >
                       {badge > 99 ? "99+" : badge}
@@ -302,9 +310,9 @@ export function BottomNavigation() {
                       animate={{ scale: 1 }}
                       className={cn(
                         "absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-card",
-                        statusColor === "danger" && "bg-red-500",
-                        statusColor === "warning" && "bg-amber-500",
-                        statusColor === "success" && "bg-emerald-500"
+                        statusColor === "danger" && "bg-destructive",
+                        statusColor === "warning" && "bg-accent",
+                        statusColor === "success" && "bg-primary"
                       )}
                     />
                   )}

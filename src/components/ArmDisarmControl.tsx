@@ -34,6 +34,7 @@ export function ArmDisarmControl({ cameraId, cameraName, compact = false, classN
 
   const icon = isArmed ? <Shield className="h-4 w-4" /> : isScheduled ? <Clock className="h-4 w-4" /> : <ShieldOff className="h-4 w-4" />;
   const label = isArmed ? 'Armada' : isScheduled ? 'Agendada' : 'Desarmada';
+  const buttonVariant = isArmed ? 'default' : isScheduled ? 'secondary' : 'outline';
 
   if (compact) {
     return (
@@ -41,13 +42,12 @@ export function ArmDisarmControl({ cameraId, cameraName, compact = false, classN
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              variant={isArmed ? 'default' : 'outline'}
+              variant={buttonVariant}
               size="icon"
               onClick={handleToggle}
               disabled={armCamera.isPending || disarmCamera.isPending}
               className={cn(
-                isArmed && 'bg-green-600 hover:bg-green-700 text-white',
-                isScheduled && 'bg-blue-600 hover:bg-blue-700 text-white',
+                isScheduled && 'bg-accent text-accent-foreground hover:bg-accent/90',
                 className
               )}
             >
@@ -65,13 +65,12 @@ export function ArmDisarmControl({ cameraId, cameraName, compact = false, classN
 
   return (
     <Button
-      variant={isArmed ? 'default' : 'outline'}
+      variant={buttonVariant}
       onClick={handleToggle}
       disabled={armCamera.isPending || disarmCamera.isPending}
       className={cn(
         'gap-2',
-        isArmed && 'bg-green-600 hover:bg-green-700 text-white',
-        isScheduled && 'bg-blue-600 hover:bg-blue-700 text-white',
+        isScheduled && 'bg-accent text-accent-foreground hover:bg-accent/90',
         className
       )}
     >

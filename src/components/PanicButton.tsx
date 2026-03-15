@@ -30,24 +30,24 @@ export function PanicButton({ className }: { className?: string }) {
         size="lg"
         onClick={() => setOpen(true)}
         className={cn(
-          'fixed bottom-6 right-6 z-50 h-16 w-16 rounded-full shadow-2xl animate-pulse hover:animate-none',
-          'bg-red-600 hover:bg-red-700 border-2 border-red-400',
+          'fixed bottom-6 right-6 z-50 h-16 w-16 rounded-full shadow-lg animate-pulse hover:animate-none',
+          'border border-destructive/40',
           className
         )}
         title="Botão de Pânico"
       >
         <ShieldAlert className="h-8 w-8" />
         {unresolvedCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-yellow-500 text-black text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+          <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
             {unresolvedCount}
           </span>
         )}
       </Button>
 
       <AlertDialog open={open} onOpenChange={setOpen}>
-        <AlertDialogContent className="border-red-500">
+        <AlertDialogContent className="border-destructive/50">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-red-600 flex items-center gap-2">
+            <AlertDialogTitle className="text-destructive flex items-center gap-2">
               <ShieldAlert className="h-6 w-6" />
               Confirmar Alerta de Pânico
             </AlertDialogTitle>
@@ -61,7 +61,7 @@ export function PanicButton({ className }: { className?: string }) {
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={handlePanic}
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               disabled={triggerPanic.isPending}
             >
               {triggerPanic.isPending ? 'Enviando...' : '🚨 ACIONAR PÂNICO'}
