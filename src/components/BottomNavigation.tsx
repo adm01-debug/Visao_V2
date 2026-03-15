@@ -25,6 +25,10 @@ import {
   MessageSquare,
   ChevronUp,
   X,
+  ShieldAlert,
+  Zap,
+  FileText,
+  PieChart,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
