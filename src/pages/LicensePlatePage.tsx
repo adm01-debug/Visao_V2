@@ -175,7 +175,7 @@ export default function LicensePlatePage() {
     
     try {
       const { error } = await supabase
-        .from('vehicles')
+        .from('registered_plates')
         .delete()
         .eq('id', id);
       

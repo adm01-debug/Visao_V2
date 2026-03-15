@@ -76,7 +76,8 @@ const App = () => (
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/auth" element={<Auth />} />
-            <Route path="/auth/callback" element={<AuthCallback />} />
+                    <Route path="/auth/callback" element={<AuthCallback />} />
+                    <Route path="/reset-password" element={<ResetPasswordPage />} />
                     <Route path="/dashboard" element={<ProtectedLayoutRoute><DashboardV2 /></ProtectedLayoutRoute>} />
                     <Route path="/cameras" element={<ProtectedLayoutRoute><CamerasPage /></ProtectedLayoutRoute>} />
                     <Route path="/alerts" element={<ProtectedLayoutRoute><AlertsPage /></ProtectedLayoutRoute>} />
