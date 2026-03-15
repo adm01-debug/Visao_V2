@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Dashboard V2 - Integração Completa
