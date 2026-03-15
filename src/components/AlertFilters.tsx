@@ -51,6 +51,15 @@ const TYPE_LABELS: Record<AlertType, string> = {
   operations: 'Operações',
   access: 'Acesso',
   analytics: 'Analytics',
+  absence: 'Ausência',
+  agglomeration: 'Aglomeração',
+  anomaly: 'Anomalia',
+  panic: 'Pânico',
+  arm_disarm: 'Arme/Desarme',
+  scene_change: 'Mudança de Cena',
+  camera_offline: 'Câmera Offline',
+  recurrent_vehicle: 'Veículo Recorrente',
+  qr_code_event: 'QR Code',
 };
 
 const SEVERITY_LABELS: Record<AlertSeverity, string> = {
