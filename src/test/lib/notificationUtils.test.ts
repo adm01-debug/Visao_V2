@@ -18,8 +18,12 @@ describe("notificationUtils", () => {
     });
 
     it("does not throw when vibrate is unavailable", () => {
-      Object.defineProperty(navigator, "vibrate", { value: undefined, writable: true, configurable: true });
+      // Delete the property entirely so 'vibrate' in navigator is false
+      const desc = Object.getOwnPropertyDescriptor(navigator, "vibrate");
+      delete (navigator as any).vibrate;
       expect(() => vibrate()).not.toThrow();
+      // Restore
+      if (desc) Object.defineProperty(navigator, "vibrate", desc);
     });
   });
 });
