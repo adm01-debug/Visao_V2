@@ -27,8 +27,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "ES2020",
-    "useDefineForClassFields": true,
-    "baseUrl": "."
+    "useDefineForClassFields": true
   },
   "include": [
     "src"
