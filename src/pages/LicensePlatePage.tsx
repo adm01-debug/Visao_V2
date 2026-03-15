@@ -497,9 +497,21 @@ export default function LicensePlatePage() {
                         <Search className="h-4 w-4 mr-2" />
                         Buscar
                       </Button>
-                      <Button variant="outline">
+                      <Button variant="outline" onClick={() => {
+                        if (!detections.length) return;
+                        const csv = ['Placa,Câmera,Confiança,Status,Data/Hora']
+                          .concat(detections.map(d =>
+                            `${d.plate},${d.camera_name},${(d.confidence * 100).toFixed(0)}%,${d.is_blacklisted ? 'Bloqueado' : 'Normal'},${format(new Date(d.timestamp), "dd/MM/yyyy HH:mm:ss", { locale: ptBR })}`
+                          )).join('\n');
+                        const blob = new Blob([csv], { type: 'text/csv' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url; a.download = `deteccoes_${format(new Date(), 'yyyy-MM-dd')}.csv`;
+                        a.click(); URL.revokeObjectURL(url);
+                        toast({ title: 'CSV exportado com sucesso!' });
+                      }}>
                         <Download className="h-4 w-4 mr-2" />
-                        Exportar
+                        Exportar CSV
                       </Button>
                     </div>
 
