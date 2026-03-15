@@ -102,10 +102,12 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
     icon: Brain,
     items: [
       { id: "analytics", label: "Analytics", icon: BarChart3, path: "/analytics" },
+      { id: "recognition-analytics", label: "Reconhec. Analytics", icon: PieChart, path: "/recognition-analytics" },
       { id: "face-recognition", label: "Reconhecimento", icon: ScanFace, path: "/face-recognition" },
       { id: "recognition-logs", label: "Logs Reconhec.", icon: Activity, path: "/recognition-logs" },
       { id: "license-plate", label: "Placas", icon: Car, path: "/license-plate" },
       { id: "heatmap", label: "Mapa de Calor", icon: Flame, path: "/heatmap" },
+      { id: "reports", label: "Relatórios", icon: FileText, path: "/reports" },
     ],
     getStatus: () => ({
       type: status.activeRules > 0 ? "info" : "neutral",
