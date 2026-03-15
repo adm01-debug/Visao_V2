@@ -49,3 +49,4 @@ export const isToday = (date: string | Date): boolean => {
 };
 
 export const getTimeAgo = formatRelativeTime;
+export const getRelativeTime = formatRelativeTime;

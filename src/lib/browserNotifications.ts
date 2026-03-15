@@ -95,3 +95,6 @@ export const getBrowserNotificationsEnabled = (): boolean => {
   const stored = localStorage.getItem(NOTIFICATIONS_ENABLED_KEY);
   return stored ? JSON.parse(stored) : true; // Default to enabled
 };
+
+// Alias for backward compatibility
+export const showNotification = showBrowserNotification;
