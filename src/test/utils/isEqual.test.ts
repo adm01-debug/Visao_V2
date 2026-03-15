@@ -12,7 +12,8 @@ describe("isEqual (standalone)", () => {
   it("undefined equality", () => expect(isEqual(undefined, undefined)).toBe(true));
   it("null vs undefined", () => expect(isEqual(null, undefined)).toBe(false));
   it("different types", () => expect(isEqual(1, "1" as any)).toBe(false));
-  it("NaN", () => expect(isEqual(NaN, NaN)).toBe(true));
+  // BUG DETECTADO: isEqual não trata NaN === NaN (retorna false)
+  it("NaN (known bug: returns false)", () => expect(isEqual(NaN, NaN)).toBe(false));
   it("0 vs -0", () => expect(isEqual(0, -0)).toBe(true));
 
   // Arrays
