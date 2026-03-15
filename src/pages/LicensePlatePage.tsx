@@ -304,8 +304,8 @@ export default function LicensePlatePage() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="type">Tipo *</Label>
-                          <Select value={formData.type} onValueChange={(v) => setFormData({...formData, type: v as Vehicle['type']})}>
+                          <Label htmlFor="list_type">Tipo *</Label>
+                          <Select value={formData.list_type} onValueChange={(v) => setFormData({...formData, list_type: v})}>
                             <SelectTrigger>
                               <SelectValue />
                             </SelectTrigger>
@@ -318,23 +318,28 @@ export default function LicensePlatePage() {
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="owner">Proprietário</Label>
+                        <Label htmlFor="owner_name">Proprietário</Label>
                         <Input
-                          id="owner"
+                          id="owner_name"
                           placeholder="Nome do proprietário"
-                          value={formData.owner}
-                          onChange={(e) => setFormData({...formData, owner: e.target.value})}
+                          value={formData.owner_name}
+                          onChange={(e) => setFormData({...formData, owner_name: e.target.value})}
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="model">Modelo</Label>
-                          <Input
-                            id="model"
-                            placeholder="Ex: Honda Civic"
-                            value={formData.model}
-                            onChange={(e) => setFormData({...formData, model: e.target.value})}
-                          />
+                          <Label htmlFor="vehicle_type">Tipo de Veículo</Label>
+                          <Select value={formData.vehicle_type} onValueChange={(v) => setFormData({...formData, vehicle_type: v})}>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="car">Carro</SelectItem>
+                              <SelectItem value="motorcycle">Moto</SelectItem>
+                              <SelectItem value="truck">Caminhão</SelectItem>
+                              <SelectItem value="bus">Ônibus</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="color">Cor</Label>
