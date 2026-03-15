@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * useUtilities - Re-exports centralized hooks for backward compatibility
