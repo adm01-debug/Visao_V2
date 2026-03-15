@@ -28,7 +28,7 @@ export function usePanicButton() {
     queryKey: ['panic-events'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('panic_events' as any)
+        .from('panic_events')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(50);
