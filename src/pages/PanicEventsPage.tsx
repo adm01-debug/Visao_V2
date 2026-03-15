@@ -235,12 +235,12 @@ export default function PanicEventsPage() {
                     <div
                       className={`p-2 rounded-full mt-0.5 ${
                         event.resolved
-                          ? 'bg-green-500/10'
+                          ? 'bg-secondary'
                           : 'bg-destructive/10'
                       }`}
                     >
                       {event.resolved ? (
-                        <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" />
+                        <CheckCircle2 className="w-5 h-5 text-secondary-foreground" />
                       ) : (
                         <AlertTriangle className="w-5 h-5 text-destructive" />
                       )}
