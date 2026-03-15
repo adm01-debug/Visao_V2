@@ -4,7 +4,7 @@
  * Página de Regras de Automação
  */
 
-import { PageContent, PageHeader } from "@/components/MainLayout";
+import { PageContent } from "@/components/layout/MainLayout";
 import { AutomationRulesManager } from "@/components/AutomationRulesManager";
 import { RuleExecutionHistory } from "@/components/RuleExecutionHistory";
 import { Zap } from "lucide-react";
