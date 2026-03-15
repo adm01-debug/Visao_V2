@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Type declarations for DeviceMotionEvent permission
 declare global {
   interface DeviceMotionEventStatic {

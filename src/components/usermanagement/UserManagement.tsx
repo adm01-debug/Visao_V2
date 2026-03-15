@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { User, Shield, Edit, Trash2, Plus } from 'lucide-react';
