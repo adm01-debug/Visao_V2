@@ -75,7 +75,7 @@ const CHANNEL_OPTIONS = [
 ];
 
 export default function NotificationSettingsPage() {
-  const { sendNotification, logs, config, updateConfig } = useNotificationFlow();
+  const { sendNotification, logs, config: flowConfig, updateConfig } = useNotificationFlow();
 
 
   const navigate = useNavigate();
