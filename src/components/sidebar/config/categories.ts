@@ -21,6 +21,10 @@ import {
   Sliders,
   MessageSquare,
   Activity,
+  ShieldAlert,
+  Zap,
+  FileText,
+  PieChart,
 } from "lucide-react";
 import type { NavCategory, CategoryStatus } from "../types";
 import type { SidebarStatus } from "@/hooks/useSidebarStatus";
