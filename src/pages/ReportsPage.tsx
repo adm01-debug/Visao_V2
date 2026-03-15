@@ -5,7 +5,7 @@
  */
 
 import { Helmet } from 'react-helmet-async';
-import { PageContent } from '@/components/MainLayout';
+import { PageContent } from '@/components/layout/MainLayout';
 import { ReportsPanel } from '@/components/ReportsPanel';
 
 export default function ReportsPage() {
