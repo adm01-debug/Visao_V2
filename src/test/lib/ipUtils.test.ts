@@ -54,6 +54,7 @@ describe("ipUtils", () => {
       expect(ipToNumber("0.0.1.0")).toBe(256);
       // BUG: ipToNumber uses << which is signed 32-bit, so high IPs overflow to negative
       expect(typeof ipToNumber("192.168.1.1")).toBe("number");
+    });
     it("invalid returns 0", () => expect(ipToNumber("invalid")).toBe(0));
   });
 
