@@ -69,11 +69,23 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         badgeVariant: "destructive" as const
       },
       {
+        id: "panic-events",
+        label: "Pânico",
+        icon: ShieldAlert,
+        path: "/panic-events",
+      },
+      {
         id: "security-rules",
         label: "Regras",
         icon: Shield,
         path: "/security",
         badge: status.activeRules > 0 ? status.activeRules : undefined
+      },
+      {
+        id: "automation-rules",
+        label: "Automação",
+        icon: Zap,
+        path: "/automation-rules",
       },
       { id: "ppe", label: "EPIs", icon: HardHat, path: "/ppe" },
     ],
