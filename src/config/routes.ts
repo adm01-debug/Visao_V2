@@ -7,4 +7,4 @@ export const ROUTE_CONFIG = {
   loginRedirect: ROUTES.LOGIN,
 };
 
-export const isPublicRoute = (path: string): boolean => ROUTE_CONFIG.publicRoutes.includes(path as string[]);
+export const isPublicRoute = (path: string): boolean => (ROUTE_CONFIG.publicRoutes as readonly string[]).includes(path);

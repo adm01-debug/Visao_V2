@@ -19,7 +19,7 @@ export { MainLayout, PageContent } from './layout';
 export { Sidebar } from './Sidebar';
 
 // ConfirmDialog
-export { ConfirmDialog } from './confirmdialog';
+export { ConfirmDialog } from './ConfirmDialog';
 
 // SeverityBadge
 export { SeverityBadge } from './SeverityBadge';

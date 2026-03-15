@@ -25,8 +25,9 @@ export const numberConfig = {
 export const formatCurrency = (value: number): string => {
   return new Intl.NumberFormat(LOCALE, {
     style: 'currency',
-    currency: 'BRL',
-    ...numberConfig,
+    currency: numberConfig.currency,
+    minimumFractionDigits: numberConfig.minimumFractionDigits,
+    maximumFractionDigits: numberConfig.maximumFractionDigits,
   }).format(value);
 };
 

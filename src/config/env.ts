@@ -56,6 +56,16 @@ export const env = {
   isDevelopment,
   isProduction,
   validateEnv,
+  // Aliases used by config files
+  API_URL: apiUrl,
+  SENTRY_DSN: sentryDsn,
+  SUPABASE_URL: supabaseUrl,
+  SUPABASE_PUBLISHABLE_KEY: supabaseAnonKey,
+  MODE: isProduction ? 'production' : 'development',
+  PROD: isProduction,
 };
+
+// Alias for backwards compatibility
+export const ENV = env;
 
 export default env;

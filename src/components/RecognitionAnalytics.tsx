@@ -109,7 +109,7 @@ export function RecognitionAnalytics({ className, dateRange = 7 }: RecognitionAn
     const recognized = logs.filter(l => l.recognized).length;
     const unknown = totalDetections - recognized;
     const blacklistDetections = logs.filter(l => {
-      const person = personMap.get(l.person_id);
+      const person = l.person_id ? personMap.get(l.person_id) : undefined;
       return person?.list_type === 'blacklist';
     }).length;
 
