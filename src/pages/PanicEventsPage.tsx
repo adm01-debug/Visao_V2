@@ -46,7 +46,7 @@ import { ptBR } from 'date-fns/locale';
 
 function StatusBadge({ resolved }: { resolved: boolean }) {
   return resolved ? (
-    <Badge variant="outline" className="gap-1 border-green-500/50 text-green-600 dark:text-green-400">
+    <Badge variant="secondary" className="gap-1">
       <CheckCircle2 className="w-3 h-3" />
       Resolvido
     </Badge>
