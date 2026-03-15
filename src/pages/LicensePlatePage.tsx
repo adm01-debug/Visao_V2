@@ -78,7 +78,7 @@ export default function LicensePlatePage() {
     setIsLoading(true);
     try {
       const { data, error } = await supabase
-        .from('vehicles')
+        .from('registered_plates')
         .select('*')
         .order('created_at', { ascending: false });
       
