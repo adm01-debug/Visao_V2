@@ -85,7 +85,7 @@ export function usePanicButton() {
   const resolvePanic = useMutation({
     mutationFn: async (eventId: string) => {
       const { error } = await supabase
-        .from('panic_events' as any)
+        .from('panic_events')
         .update({
           resolved: true,
           resolved_at: new Date().toISOString(),

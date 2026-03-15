@@ -55,7 +55,7 @@ export function useArmDisarm(cameraId?: string) {
 
   const disarmCamera = useMutation({
     mutationFn: async (cameraId: string) => {
-      const { error } = await supabase.from('arm_disarm_states' as any)
+      const { error } = await supabase.from('arm_disarm_states')
         .update({ state: 'disarmed', updated_at: new Date().toISOString() } as any)
         .eq('camera_id', cameraId)
         .eq('user_id', user!.id);
