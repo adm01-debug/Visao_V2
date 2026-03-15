@@ -125,8 +125,15 @@ export default function LicensePlatePage() {
     try {
       if (editingVehicle) {
         const { error } = await supabase
-          .from('vehicles')
-          .update(formData)
+          .from('registered_plates')
+          .update({
+            plate: formData.plate,
+            owner_name: formData.owner_name || null,
+            vehicle_type: formData.vehicle_type,
+            color: formData.color || null,
+            list_type: formData.list_type,
+            notes: formData.notes || null,
+          })
           .eq('id', editingVehicle.id);
         
         if (error) throw error;
