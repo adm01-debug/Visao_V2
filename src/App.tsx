@@ -10,6 +10,7 @@ import { NotificationProvider } from "@/contexts/NotificationContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { PanicButton } from "@/components/PanicButton";
 
 // Lazy loaded pages
 const Index = lazy(() => import("@/pages/Index"));
