@@ -34,6 +34,7 @@ export function ArmDisarmControl({ cameraId, cameraName, compact = false, classN
 
   const icon = isArmed ? <Shield className="h-4 w-4" /> : isScheduled ? <Clock className="h-4 w-4" /> : <ShieldOff className="h-4 w-4" />;
   const label = isArmed ? 'Armada' : isScheduled ? 'Agendada' : 'Desarmada';
+  const buttonVariant = isArmed ? 'default' : isScheduled ? 'secondary' : 'outline';
 
   if (compact) {
     return (

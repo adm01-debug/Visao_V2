@@ -38,7 +38,7 @@ export function PanicButton({ className }: { className?: string }) {
       >
         <ShieldAlert className="h-8 w-8" />
         {unresolvedCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-yellow-500 text-black text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+          <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
             {unresolvedCount}
           </span>
         )}
