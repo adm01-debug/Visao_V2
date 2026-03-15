@@ -426,6 +426,7 @@ function CameraDetailView({
                   )}
                 </div>
                 <div role="main" aria-label="Gerenciamento de câmeras" className="flex items-center gap-2">
+                  <ArmDisarmControl cameraId={camera.id} cameraName={camera.name} compact />
                   <Badge variant={camera.status !== 'offline' ? 'default' : 'secondary'}>
                     {camera.status !== 'offline' ? 'Online' : 'Offline'}
                   </Badge>
