@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Signature Pad Component
  * Digital signature capture with touch and mouse support

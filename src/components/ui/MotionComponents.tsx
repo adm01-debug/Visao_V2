@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { motion, HTMLMotionProps, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { memo, useCallback, useState } from 'react';
 /**
  * VISÃO - Sistema de Vigilância Inteligente

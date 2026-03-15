@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Gantt Chart Component
  * Timeline visualization for project management

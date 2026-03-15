@@ -63,3 +63,7 @@ export * from './useMounted';
 // Speech hooks
 export * from './useSpeechRecognition';
 export * from './useSpeechSynthesis';
+
+// Compatibility aliases
+export { useClickAway as useOnClickOutside } from './useClickAway';
+export { useClipboard as useCopyToClipboard } from './useClipboard';

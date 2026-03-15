@@ -72,3 +72,25 @@ export interface ClipEvent {
   progress?: number;
   error?: string;
 }
+
+// Compatibility aliases
+export type VideoClip = Clip;
+export type RecordingTrigger = 'manual' | 'alert' | 'motion' | 'schedule';
+export type ClipFilters = ClipFilter;
+
+export const formatDuration = (seconds: number): string => {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+  if (h > 0) return `${h}h ${m}m ${s}s`;
+  if (m > 0) return `${m}m ${s}s`;
+  return `${s}s`;
+};
+
+export const formatFileSize = (bytes: number, decimals = 2): string => {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + ' ' + sizes[i];
+};

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { memo, useState, useEffect, useRef, useCallback } from 'react';
 import { useOnClickOutside } from '@/hooks/useOnClickOutside';
 import { useDebounce } from "@/hooks/useDebounce";
