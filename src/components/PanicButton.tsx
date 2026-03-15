@@ -61,7 +61,7 @@ export function PanicButton({ className }: { className?: string }) {
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={handlePanic}
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               disabled={triggerPanic.isPending}
             >
               {triggerPanic.isPending ? 'Enviando...' : '🚨 ACIONAR PÂNICO'}
