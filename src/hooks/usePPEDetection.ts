@@ -118,8 +118,29 @@ export const PPE_TYPES: { id: PPEType; label: string; icon: string }[] = [
   { id: 'harness', label: 'Cinto de Segurança', icon: '🪢' },
 ];
 
-const DEFAULT_CONFIG: PPEConfig = {
-  useVisionAI: true,
+export const PPE_LABELS: Record<PPEType, { pt: string; en: string; icon: string }> = {
+  helmet: { pt: 'Capacete', en: 'Helmet', icon: '🪖' },
+  vest: { pt: 'Colete', en: 'Vest', icon: '🦺' },
+  gloves: { pt: 'Luvas', en: 'Gloves', icon: '🧤' },
+  boots: { pt: 'Botas', en: 'Boots', icon: '👢' },
+  goggles: { pt: 'Óculos', en: 'Goggles', icon: '🥽' },
+  mask: { pt: 'Máscara', en: 'Mask', icon: '😷' },
+  earmuffs: { pt: 'Protetor Auricular', en: 'Earmuffs', icon: '🎧' },
+  harness: { pt: 'Cinto de Segurança', en: 'Harness', icon: '🪢' },
+};
+
+export interface PPEZoneConfig {
+  id: string;
+  name: string;
+  cameraId: string;
+  requiredPPE: PPEType[];
+  alertEnabled: boolean;
+  gracePeriodSeconds: number;
+  isActive: boolean;
+}
+
+
+  const DEFAULT_CONFIG: PPEConfig = {
   confidenceThreshold: 0.6,
   detectionInterval: 2000,
   saveViolations: true,
