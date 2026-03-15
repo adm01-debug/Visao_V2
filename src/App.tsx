@@ -39,6 +39,7 @@ const HelpPage = lazy(() => import("@/pages/HelpPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const AcessoNegado = lazy(() => import("@/pages/AcessoNegado"));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
