@@ -30,12 +30,15 @@ import { ptBR } from 'date-fns/locale';
 interface Vehicle {
   id: string;
   plate: string;
-  owner: string;
-  model: string;
-  color: string;
-  type: 'whitelist' | 'blacklist' | 'visitor';
-  notes?: string;
+  owner_name: string | null;
+  vehicle_type: string | null;
+  color: string | null;
+  list_type: string;
+  notes: string | null;
+  is_active: boolean;
   created_at: string;
+  updated_at: string;
+  user_id: string;
 }
 
 interface PlateDetection {
