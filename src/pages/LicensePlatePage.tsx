@@ -30,12 +30,15 @@ import { ptBR } from 'date-fns/locale';
 interface Vehicle {
   id: string;
   plate: string;
-  owner: string;
-  model: string;
-  color: string;
-  type: 'whitelist' | 'blacklist' | 'visitor';
-  notes?: string;
+  owner_name: string | null;
+  vehicle_type: string | null;
+  color: string | null;
+  list_type: string;
+  notes: string | null;
+  is_active: boolean;
   created_at: string;
+  updated_at: string;
+  user_id: string;
 }
 
 interface PlateDetection {
@@ -63,10 +66,10 @@ export default function LicensePlatePage() {
   // Form state
   const [formData, setFormData] = useState({
     plate: '',
-    owner: '',
-    model: '',
+    owner_name: '',
+    vehicle_type: 'car',
     color: '',
-    type: 'visitor' as 'whitelist' | 'blacklist' | 'visitor',
+    list_type: 'whitelist',
     notes: ''
   });
 
@@ -75,7 +78,7 @@ export default function LicensePlatePage() {
     setIsLoading(true);
     try {
       const { data, error } = await supabase
-        .from('vehicles')
+        .from('registered_plates')
         .select('*')
         .order('created_at', { ascending: false });
       
@@ -122,16 +125,32 @@ export default function LicensePlatePage() {
     try {
       if (editingVehicle) {
         const { error } = await supabase
-          .from('vehicles')
-          .update(formData)
+          .from('registered_plates')
+          .update({
+            plate: formData.plate,
+            owner_name: formData.owner_name || null,
+            vehicle_type: formData.vehicle_type,
+            color: formData.color || null,
+            list_type: formData.list_type,
+            notes: formData.notes || null,
+          })
           .eq('id', editingVehicle.id);
         
         if (error) throw error;
         toast({ title: 'Veículo atualizado com sucesso!' });
       } else {
+        const { data: { user } } = await supabase.auth.getUser();
         const { error } = await supabase
-          .from('vehicles')
-          .insert([formData]);
+          .from('registered_plates')
+          .insert([{
+            plate: formData.plate,
+            owner_name: formData.owner_name || null,
+            vehicle_type: formData.vehicle_type,
+            color: formData.color || null,
+            list_type: formData.list_type,
+            notes: formData.notes || null,
+            user_id: user?.id,
+          }]);
         
         if (error) throw error;
         toast({ title: 'Veículo cadastrado com sucesso!' });
@@ -156,7 +175,7 @@ export default function LicensePlatePage() {
     
     try {
       const { error } = await supabase
-        .from('vehicles')
+        .from('registered_plates')
         .delete()
         .eq('id', id);
       
@@ -198,10 +217,10 @@ export default function LicensePlatePage() {
   const resetForm = () => {
     setFormData({
       plate: '',
-      owner: '',
-      model: '',
+      owner_name: '',
+      vehicle_type: 'car',
       color: '',
-      type: 'visitor',
+      list_type: 'whitelist',
       notes: ''
     });
   };
@@ -210,10 +229,10 @@ export default function LicensePlatePage() {
     setEditingVehicle(vehicle);
     setFormData({
       plate: vehicle.plate,
-      owner: vehicle.owner,
-      model: vehicle.model,
-      color: vehicle.color,
-      type: vehicle.type,
+      owner_name: vehicle.owner_name || '',
+      vehicle_type: vehicle.vehicle_type || 'car',
+      color: vehicle.color || '',
+      list_type: vehicle.list_type,
       notes: vehicle.notes || ''
     });
     setIsAddDialogOpen(true);
@@ -222,8 +241,8 @@ export default function LicensePlatePage() {
   // Filter vehicles
   const filteredVehicles = vehicles.filter(v => {
     const matchesSearch = v.plate.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         v.owner.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = filterType === 'all' || v.type === filterType;
+                         (v.owner_name || '').toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesType = filterType === 'all' || v.list_type === filterType;
     return matchesSearch && matchesType;
   });
 
@@ -285,8 +304,8 @@ export default function LicensePlatePage() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="type">Tipo *</Label>
-                          <Select value={formData.type} onValueChange={(v) => setFormData({...formData, type: v as Vehicle['type']})}>
+                          <Label htmlFor="list_type">Tipo *</Label>
+                          <Select value={formData.list_type} onValueChange={(v) => setFormData({...formData, list_type: v})}>
                             <SelectTrigger>
                               <SelectValue />
                             </SelectTrigger>
@@ -299,23 +318,28 @@ export default function LicensePlatePage() {
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="owner">Proprietário</Label>
+                        <Label htmlFor="owner_name">Proprietário</Label>
                         <Input
-                          id="owner"
+                          id="owner_name"
                           placeholder="Nome do proprietário"
-                          value={formData.owner}
-                          onChange={(e) => setFormData({...formData, owner: e.target.value})}
+                          value={formData.owner_name}
+                          onChange={(e) => setFormData({...formData, owner_name: e.target.value})}
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="model">Modelo</Label>
-                          <Input
-                            id="model"
-                            placeholder="Ex: Honda Civic"
-                            value={formData.model}
-                            onChange={(e) => setFormData({...formData, model: e.target.value})}
-                          />
+                          <Label htmlFor="vehicle_type">Tipo de Veículo</Label>
+                          <Select value={formData.vehicle_type} onValueChange={(v) => setFormData({...formData, vehicle_type: v})}>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="car">Carro</SelectItem>
+                              <SelectItem value="motorcycle">Moto</SelectItem>
+                              <SelectItem value="truck">Caminhão</SelectItem>
+                              <SelectItem value="bus">Ônibus</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="color">Cor</Label>
@@ -429,10 +453,10 @@ export default function LicensePlatePage() {
                           filteredVehicles.map((vehicle) => (
                             <TableRow key={vehicle.id}>
                               <TableCell className="font-mono font-bold">{vehicle.plate}</TableCell>
-                              <TableCell>{vehicle.owner || '-'}</TableCell>
-                              <TableCell>{vehicle.model || '-'}</TableCell>
+                              <TableCell>{vehicle.owner_name || '-'}</TableCell>
+                              <TableCell>{vehicle.vehicle_type || '-'}</TableCell>
                               <TableCell>{vehicle.color || '-'}</TableCell>
-                              <TableCell>{getTypeBadge(vehicle.type)}</TableCell>
+                              <TableCell>{getTypeBadge(vehicle.list_type)}</TableCell>
                               <TableCell>
                                 {format(new Date(vehicle.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
                               </TableCell>

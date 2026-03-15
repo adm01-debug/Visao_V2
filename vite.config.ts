@@ -14,6 +14,9 @@ export default defineConfig(({ mode }) => ({
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "icon.svg", "robots.txt"],
+      workbox: {
+        navigateFallbackDenylist: [/^\/~oauth/],
+      },
       manifest: {
         name: "VISÃO - Sistema de Vigilância",
         short_name: "VISÃO",

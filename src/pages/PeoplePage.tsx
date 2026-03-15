@@ -136,6 +136,14 @@ function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
               >
                 {person.is_active ? 'Ativo' : 'Inativo'}
               </Badge>
+              {person.list_type && person.list_type !== 'none' && (
+                <Badge
+                  variant={person.list_type === 'blacklist' ? 'destructive' : 'default'}
+                  className="text-xs"
+                >
+                  {person.list_type === 'blacklist' ? 'Blacklist' : person.list_type === 'whitelist' ? 'Whitelist' : 'Watchlist'}
+                </Badge>
+              )}
             </div>
 
             {person.role && (
@@ -230,6 +238,8 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
         department: person.department || '',
         role: person.role || '',
         is_active: person.is_active,
+        list_type: person.list_type || 'none',
+        notes: person.notes || '',
       });
       setPhotoPreview(person.photo_url || null);
       setPhotoFile(null);
@@ -247,6 +257,8 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
         department: '',
         role: '',
         is_active: true,
+        list_type: 'none',
+        notes: '',
       });
       setPhotoPreview(null);
       setPhotoFile(null);
@@ -610,6 +622,31 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
                 id="is_active"
                 checked={formData.is_active}
                 onCheckedChange={(checked) => setFormData(f => ({ ...f, is_active: checked }))}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="list_type">Classificação</Label>
+              <select
+                id="list_type"
+                value={formData.list_type || 'none'}
+                onChange={(e) => setFormData(f => ({ ...f, list_type: e.target.value }))}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+              >
+                <option value="none">Nenhuma</option>
+                <option value="whitelist">Whitelist (Autorizado)</option>
+                <option value="blacklist">Blacklist (Bloqueado)</option>
+                <option value="watchlist">Watchlist (Monitorado)</option>
+              </select>
+            </div>
+
+            <div>
+              <Label htmlFor="notes">Observações</Label>
+              <Input
+                id="notes"
+                value={formData.notes || ''}
+                onChange={(e) => setFormData(f => ({ ...f, notes: e.target.value }))}
+                placeholder="Notas ou motivo da classificação"
               />
             </div>
           </div>
