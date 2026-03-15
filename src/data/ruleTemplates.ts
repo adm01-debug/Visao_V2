@@ -205,6 +205,99 @@ export const ruleTemplates: RuleTemplate[] = [
     actions: ['record'],
     icon: 'BarChart',
     color: 'purple'
+  },
+
+  // Monuv-inspired: Absence Detection
+  {
+    id: 'absence-detection',
+    name: 'Detecção de Ausência',
+    description: 'Alerta quando posto de trabalho está vazio por tempo excessivo',
+    category: 'operations',
+    severity: 'medium',
+    conditions: [
+      { type: 'absence_detection', operator: 'greater_than', value: 600 }
+    ],
+    actions: ['alert', 'notify'],
+    icon: 'UserX',
+    color: 'yellow'
+  },
+  {
+    id: 'agglomeration-alert',
+    name: 'Detecção de Aglomeração',
+    description: 'Alerta quando aglomeração é detectada acima do limite seguro',
+    category: 'safety',
+    severity: 'high',
+    conditions: [
+      { type: 'agglomeration_detection', operator: 'greater_than', value: 10 }
+    ],
+    actions: ['alert', 'notify'],
+    icon: 'Users',
+    color: 'orange'
+  },
+  {
+    id: 'anomaly-position',
+    name: 'Anomalia de Posição',
+    description: 'Detecta posicionamento irregular ou suspeito de pessoa',
+    category: 'security',
+    severity: 'high',
+    conditions: [
+      { type: 'anomaly_position', operator: 'equals', value: 1 }
+    ],
+    actions: ['alert', 'notify', 'record'],
+    icon: 'AlertTriangle',
+    color: 'red'
+  },
+  {
+    id: 'anomaly-speed',
+    name: 'Anomalia de Velocidade',
+    description: 'Detecta velocidade irregular de movimentação (corrida, fuga)',
+    category: 'security',
+    severity: 'high',
+    conditions: [
+      { type: 'anomaly_speed', operator: 'greater_than', value: 1 }
+    ],
+    actions: ['alert', 'notify', 'record'],
+    icon: 'Zap',
+    color: 'red'
+  },
+  {
+    id: 'anomaly-displacement',
+    name: 'Anomalia de Deslocamento',
+    description: 'Detecta padrão de deslocamento suspeito ou irregular',
+    category: 'security',
+    severity: 'medium',
+    conditions: [
+      { type: 'anomaly_displacement', operator: 'equals', value: 1 }
+    ],
+    actions: ['alert', 'notify'],
+    icon: 'TrendingUp',
+    color: 'orange'
+  },
+  {
+    id: 'scene-change',
+    name: 'Mudança de Cena',
+    description: 'Detecta quando a câmera foi movida, obstruída ou adulterada',
+    category: 'security',
+    severity: 'critical',
+    conditions: [
+      { type: 'scene_change', operator: 'equals', value: 1 }
+    ],
+    actions: ['alert', 'notify', 'record'],
+    icon: 'Camera',
+    color: 'red'
+  },
+  {
+    id: 'recurrent-vehicle',
+    name: 'Veículo Recorrente',
+    description: 'Detecta veículo com frequência de passagem acima do padrão',
+    category: 'security',
+    severity: 'medium',
+    conditions: [
+      { type: 'recurrent_vehicle', operator: 'greater_than', value: 3 }
+    ],
+    actions: ['alert', 'notify'],
+    icon: 'Car',
+    color: 'orange'
   }
 ];
 
