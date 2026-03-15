@@ -453,10 +453,10 @@ export default function LicensePlatePage() {
                           filteredVehicles.map((vehicle) => (
                             <TableRow key={vehicle.id}>
                               <TableCell className="font-mono font-bold">{vehicle.plate}</TableCell>
-                              <TableCell>{vehicle.owner || '-'}</TableCell>
-                              <TableCell>{vehicle.model || '-'}</TableCell>
+                              <TableCell>{vehicle.owner_name || '-'}</TableCell>
+                              <TableCell>{vehicle.vehicle_type || '-'}</TableCell>
                               <TableCell>{vehicle.color || '-'}</TableCell>
-                              <TableCell>{getTypeBadge(vehicle.type)}</TableCell>
+                              <TableCell>{getTypeBadge(vehicle.list_type)}</TableCell>
                               <TableCell>
                                 {format(new Date(vehicle.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
                               </TableCell>
