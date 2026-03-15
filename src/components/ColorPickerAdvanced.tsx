@@ -3,7 +3,7 @@
  * Full-featured color picker with gradients, palettes, and formats
  */
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Pipette, Copy, Check } from 'lucide-react';
 import type { EyeDropper } from '@/types/eye-dropper';
@@ -101,6 +101,13 @@ export const ColorPickerAdvanced: React.FC<ColorPickerAdvancedProps> = ({
   className,
 }) => {
   const [copied, setCopied] = useState(false);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+    };
+  }, []);
 
   const rgb = useMemo(() => hexToRgb(value), [value]);
   const hsl = useMemo(() => rgbToHsl(rgb.r, rgb.g, rgb.b), [rgb]);
@@ -145,7 +152,8 @@ export const ColorPickerAdvanced: React.FC<ColorPickerAdvancedProps> = ({
   const handleCopy = useCallback(async () => {
     await navigator.clipboard.writeText(value);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+    copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000);
   }, [value]);
 
   const formatValue = useMemo(() => {

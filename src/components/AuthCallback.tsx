@@ -3,7 +3,7 @@
  * AuthCallback Component
  */
 
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { LoadingSpinner } from './LoadingSpinner';
@@ -28,6 +28,7 @@ function AuthCallbackComponent({
   const [errorMessage, setErrorMessage] = useState<string>('');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -42,21 +43,19 @@ function AuthCallbackComponent({
         const type = searchParams.get('type');
 
         if (type === 'recovery') {
-          // Password recovery flow
           navigate('/reset-password');
           return;
         }
 
         if (type === 'signup' || type === 'email_confirmation') {
           setStatus('email-confirmed');
-          setTimeout(() => {
+          timeoutRef.current = setTimeout(() => {
             navigate(redirectTo);
             onSuccess?.();
           }, 2000);
           return;
         }
 
-        // Handle OAuth callback
         const { data, error: authError } = await supabase.auth.getSession();
 
         if (authError) {
@@ -66,7 +65,7 @@ function AuthCallbackComponent({
         if (data.session) {
           setStatus('success');
           onSuccess?.();
-          setTimeout(() => navigate(redirectTo), 1500);
+          timeoutRef.current = setTimeout(() => navigate(redirectTo), 1500);
         } else {
           throw new Error('Sessão não encontrada');
         }
@@ -79,6 +78,10 @@ function AuthCallbackComponent({
     };
 
     handleCallback();
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, [navigate, redirectTo, searchParams, onSuccess, onError]);
 
   const handleRetry = () => {
