@@ -1,4 +1,12 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+
+let counter = 0;
+vi.stubGlobal("crypto", {
+  ...crypto,
+  randomUUID: () => `alert-uuid-${++counter}`,
+  getRandomValues: (arr: Uint8Array) => { for (let i = 0; i < arr.length; i++) arr[i] = Math.floor(Math.random() * 256); return arr; },
+});
+
 import { alertManager } from "@/lib/alertManager";
 
 describe("AlertManager", () => {
