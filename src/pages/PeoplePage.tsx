@@ -136,6 +136,14 @@ function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
               >
                 {person.is_active ? 'Ativo' : 'Inativo'}
               </Badge>
+              {person.list_type && person.list_type !== 'none' && (
+                <Badge
+                  variant={person.list_type === 'blacklist' ? 'destructive' : 'default'}
+                  className="text-xs"
+                >
+                  {person.list_type === 'blacklist' ? 'Blacklist' : person.list_type === 'whitelist' ? 'Whitelist' : 'Watchlist'}
+                </Badge>
+              )}
             </div>
 
             {person.role && (
