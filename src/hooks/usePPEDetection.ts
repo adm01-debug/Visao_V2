@@ -140,7 +140,7 @@ export interface PPEZoneConfig {
 }
 
 
-  useVisionAI: true,
+  const DEFAULT_CONFIG: PPEConfig = {
   confidenceThreshold: 0.6,
   detectionInterval: 2000,
   saveViolations: true,
