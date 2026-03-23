@@ -25,6 +25,7 @@ import {
   Zap,
   FileText,
   PieChart,
+  TrendingUp,
 } from "lucide-react";
 import type { NavCategory, CategoryStatus } from "../types";
 import type { SidebarStatus } from "@/hooks/useSidebarStatus";
@@ -103,6 +104,7 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
     items: [
       { id: "analytics", label: "Analytics", icon: BarChart3, path: "/analytics" },
       { id: "recognition-analytics", label: "Reconhec. Analytics", icon: PieChart, path: "/recognition-analytics" },
+      { id: "behavior-detection", label: "Comportamento", icon: Brain, path: "/behavior-detection" },
       { id: "face-recognition", label: "Reconhecimento", icon: ScanFace, path: "/face-recognition" },
       { id: "recognition-logs", label: "Logs Reconhec.", icon: Activity, path: "/recognition-logs" },
       { id: "license-plate", label: "Placas", icon: Car, path: "/license-plate" },
@@ -134,6 +136,12 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         icon: Target,
         path: "/zones",
         badge: status.activeZones > 0 ? status.activeZones : undefined
+      },
+      {
+        id: "productivity",
+        label: "Produtividade",
+        icon: TrendingUp,
+        path: "/productivity",
       },
     ],
     getStatus: () => ({
