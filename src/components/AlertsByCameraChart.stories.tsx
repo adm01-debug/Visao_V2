@@ -1,1 +1,0 @@
-import type{Meta,StoryObj}from"@storybook/react";import{AlertsByCameraChart}from"./AlertsByCameraChart";const meta:Meta<typeof AlertsByCameraChart>={title:"Charts/AlertsByCameraChart",component:AlertsByCameraChart,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof AlertsByCameraChart>;export const Default:Story={args:{data:[]}};
