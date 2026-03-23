@@ -157,6 +157,12 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         icon: Route,
         path: "/collaborator-flow",
       },
+      {
+        id: "goals-alerts",
+        label: "Metas & KPIs",
+        icon: Target,
+        path: "/goals-alerts",
+      },
     ],
     getStatus: () => ({
       type: status.registeredPersons > 0 || status.activeZones > 0 ? "success" : "neutral",

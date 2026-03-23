@@ -42,6 +42,7 @@ const ProductivityDashboardPage = lazy(() => import("@/pages/ProductivityDashboa
 const BehaviorDetectionPage = lazy(() => import("@/pages/BehaviorDetectionPage"));
 const JourneyReportsPage = lazy(() => import("@/pages/JourneyReportsPage"));
 const CollaboratorFlowMapPage = lazy(() => import("@/pages/CollaboratorFlowMapPage"));
+const GoalsAlertsPage = lazy(() => import("@/pages/GoalsAlertsPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const AcessoNegado = lazy(() => import("@/pages/AcessoNegado"));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
@@ -111,6 +112,7 @@ const App = () => (
                     <Route path="/behavior-detection" element={<ProtectedLayoutRoute><BehaviorDetectionPage /></ProtectedLayoutRoute>} />
                     <Route path="/journey-reports" element={<ProtectedLayoutRoute><JourneyReportsPage /></ProtectedLayoutRoute>} />
                     <Route path="/collaborator-flow" element={<ProtectedLayoutRoute><CollaboratorFlowMapPage /></ProtectedLayoutRoute>} />
+                    <Route path="/goals-alerts" element={<ProtectedLayoutRoute><GoalsAlertsPage /></ProtectedLayoutRoute>} />
                     <Route path="/acesso-negado" element={<AcessoNegado />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
