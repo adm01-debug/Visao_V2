@@ -144,6 +144,12 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         icon: TrendingUp,
         path: "/productivity",
       },
+      {
+        id: "journey-reports",
+        label: "Jornada",
+        icon: ClipboardList,
+        path: "/journey-reports",
+      },
     ],
     getStatus: () => ({
       type: status.registeredPersons > 0 || status.activeZones > 0 ? "success" : "neutral",

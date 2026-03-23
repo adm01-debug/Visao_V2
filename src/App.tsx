@@ -108,6 +108,7 @@ const App = () => (
                     <Route path="/panic-events" element={<ProtectedLayoutRoute><PanicEventsPage /></ProtectedLayoutRoute>} />
                     <Route path="/productivity" element={<ProtectedLayoutRoute><ProductivityDashboardPage /></ProtectedLayoutRoute>} />
                     <Route path="/behavior-detection" element={<ProtectedLayoutRoute><BehaviorDetectionPage /></ProtectedLayoutRoute>} />
+                    <Route path="/journey-reports" element={<ProtectedLayoutRoute><JourneyReportsPage /></ProtectedLayoutRoute>} />
                     <Route path="/acesso-negado" element={<AcessoNegado />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
