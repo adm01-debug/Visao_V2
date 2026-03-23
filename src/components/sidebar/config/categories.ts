@@ -27,6 +27,7 @@ import {
   PieChart,
   TrendingUp,
   ClipboardList,
+  Route,
 } from "lucide-react";
 import type { NavCategory, CategoryStatus } from "../types";
 import type { SidebarStatus } from "@/hooks/useSidebarStatus";
