@@ -25,6 +25,7 @@ import {
   Zap,
   FileText,
   PieChart,
+  TrendingUp,
 } from "lucide-react";
 import type { NavCategory, CategoryStatus } from "../types";
 import type { SidebarStatus } from "@/hooks/useSidebarStatus";
