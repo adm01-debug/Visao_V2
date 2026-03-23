@@ -1,1 +1,0 @@
-export { Spectrum } from './Spectrum';

@@ -1,1 +1,0 @@
-export { UptimeCard } from './UptimeCard';

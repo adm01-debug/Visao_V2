@@ -1,1 +1,0 @@
-import type{Meta,StoryObj}from"@storybook/react";import{WelcomeBanner}from"./WelcomeBanner";const meta:Meta<typeof WelcomeBanner>={title:"UI/WelcomeBanner",component:WelcomeBanner,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof WelcomeBanner>;export const Default:Story={args:{userName:"John"}};

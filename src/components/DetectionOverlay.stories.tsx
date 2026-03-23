@@ -1,1 +1,0 @@
-import type{Meta,StoryObj}from"@storybook/react";import{DetectionOverlay}from"./DetectionOverlay";const meta:Meta<typeof DetectionOverlay>={title:"Recognition/DetectionOverlay",component:DetectionOverlay,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof DetectionOverlay>;export const Default:Story={args:{}};

@@ -1,1 +1,0 @@
-export { TabletOnly } from './TabletOnly';

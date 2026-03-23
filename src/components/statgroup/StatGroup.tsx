@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface Stat { label: string; value: string | number; change?: number; }
-interface StatGroupProps { stats: Stat[]; columns?: 2 | 3 | 4; className?: string; }
-export function StatGroup({ stats, columns = 4, className }: StatGroupProps) { return (<div className={cn('grid gap-4', columns === 2 ? 'grid-cols-2' : columns === 3 ? 'grid-cols-3' : 'grid-cols-4', className)}>{stats.map((s, i) => (<div key={i} className="p-4 rounded-xl border bg-card"><p className="text-sm text-muted-foreground">{s.label}</p><p className="text-2xl font-bold mt-1">{s.value}</p>{s.change !== undefined && <p className={cn('text-sm mt-1', s.change >= 0 ? 'text-green-500' : 'text-red-500')}>{s.change >= 0 ? '+' : ''}{s.change}%</p>}</div>))}</div>); }
-export default StatGroup;

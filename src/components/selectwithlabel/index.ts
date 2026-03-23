@@ -1,1 +1,0 @@
-export { SelectWithLabel } from './SelectWithLabel';

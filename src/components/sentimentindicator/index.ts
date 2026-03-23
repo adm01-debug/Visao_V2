@@ -1,1 +1,0 @@
-export { SentimentIndicator } from './SentimentIndicator';

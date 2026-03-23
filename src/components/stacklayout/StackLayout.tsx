@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface StackLayoutProps { children: React.ReactNode; direction?: 'row' | 'column'; gap?: 'sm' | 'md' | 'lg'; align?: 'start' | 'center' | 'end' | 'stretch'; justify?: 'start' | 'center' | 'end' | 'between'; className?: string; }
-const gaps = { sm: 'gap-2', md: 'gap-4', lg: 'gap-6' };
-export function StackLayout({ children, direction = 'column', gap = 'md', align, justify, className }: StackLayoutProps) { return (<div className={cn('flex', direction === 'row' ? 'flex-row' : 'flex-col', gaps[gap], align && `items-${align}`, justify && `justify-${justify}`, className)}>{children}</div>); }
-export default StackLayout;

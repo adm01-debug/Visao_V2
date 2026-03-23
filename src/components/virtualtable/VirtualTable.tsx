@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface Column { key: string; header: string; width?: number; }
-interface VirtualTableProps<T> { columns: Column[]; data: T[]; rowHeight?: number; className?: string; }
-export function VirtualTable<T extends Record<string, unknown>>({ columns, data, rowHeight = 40, className }: VirtualTableProps<T>) { return (<div className={cn('border rounded-lg overflow-auto', className)}><table className="w-full"><thead className="bg-muted sticky top-0"><tr>{columns.map(col => (<th key={col.key} className="px-4 py-2 text-left font-medium text-sm" style={{ width: col.width }}>{col.header}</th>))}</tr></thead><tbody>{data.map((row, i) => (<tr key={i} className="border-t hover:bg-accent/50" style={{ height: rowHeight }}>{columns.map(col => (<td key={col.key} className="px-4 py-2 text-sm">{String(row[col.key] ?? '')}</td>))}</tr>))}</tbody></table></div>); }
-export default VirtualTable;

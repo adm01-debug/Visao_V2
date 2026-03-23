@@ -1,1 +1,0 @@
-export { SupportTicket } from './SupportTicket';

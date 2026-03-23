@@ -1,1 +1,0 @@
-export { TriggerSelector } from './TriggerSelector';

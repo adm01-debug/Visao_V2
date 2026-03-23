@@ -1,1 +1,0 @@
-export { SizeSelector } from './SizeSelector';

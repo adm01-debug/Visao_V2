@@ -1,1 +1,0 @@
-export { WindSpeed } from './WindSpeed';

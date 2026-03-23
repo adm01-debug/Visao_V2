@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface SkeletonListProps { count?: number; className?: string; }
-export function SkeletonList({ count = 5, className }: SkeletonListProps) { return (<div className={cn('space-y-4 animate-pulse', className)}>{Array.from({ length: count }, (_, i) => (<div key={i} className="flex items-center gap-4 p-4 border rounded-lg"><div className="w-10 h-10 rounded-full bg-muted shrink-0" /><div className="flex-1 space-y-2"><div className="h-4 bg-muted rounded w-3/4" /><div className="h-3 bg-muted rounded w-1/2" /></div></div>))}</div>); }
-export default SkeletonList;

@@ -1,1 +1,0 @@
-export { SteppedProgress } from './SteppedProgress';

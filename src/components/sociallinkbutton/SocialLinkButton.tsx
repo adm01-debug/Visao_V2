@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Link, Instagram, Twitter, Github, Linkedin, Youtube } from 'lucide-react';interface SocialLinkButtonProps { platform: 'instagram' | 'twitter' | 'github' | 'linkedin' | 'youtube' | 'website'; url: string; className?: string; }
-const icons = { instagram: Instagram, twitter: Twitter, github: Github, linkedin: Linkedin, youtube: Youtube, website: Link }; const colors = { instagram: 'hover:text-pink-500', twitter: 'hover:text-blue-400', github: 'hover:text-gray-900', linkedin: 'hover:text-blue-600', youtube: 'hover:text-red-500', website: 'hover:text-primary' };
-export function SocialLinkButton({ platform, url, className }: SocialLinkButtonProps) { const Icon = icons[platform]; return (<a href={url} target="_blank" rel="noopener noreferrer" className={cn('p-2 hover:bg-accent rounded-lg transition-colors', colors[platform], className)}><Icon className="h-5 w-5" /></a>); }
-export default SocialLinkButton;

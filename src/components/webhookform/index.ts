@@ -1,1 +1,0 @@
-export { WebhookForm } from './WebhookForm';

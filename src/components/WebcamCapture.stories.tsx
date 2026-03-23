@@ -1,1 +1,0 @@
-import type{Meta,StoryObj}from"@storybook/react";import{WebcamCapture}from"./WebcamCapture";const meta:Meta<typeof WebcamCapture>={title:"Media/WebcamCapture",component:WebcamCapture,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof WebcamCapture>;export const Default:Story={args:{}};

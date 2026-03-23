@@ -1,1 +1,0 @@
-import type{Meta,StoryObj}from"@storybook/react";import{StreamPlayer}from"./StreamPlayer";const meta:Meta<typeof StreamPlayer>={title:"Media/StreamPlayer",component:StreamPlayer,tags:["autodocs"]};export default meta;type Story=StoryObj<typeof StreamPlayer>;export const Default:Story={args:{}};

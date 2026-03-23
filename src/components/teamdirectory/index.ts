@@ -1,1 +1,0 @@
-export { TeamDirectory } from './TeamDirectory';

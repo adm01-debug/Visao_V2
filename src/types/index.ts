@@ -1,9 +1,6 @@
-// @ts-nocheck
+// @ts-nocheck — barrel re-exports have duplicate names across type modules; not imported directly
 /**
- * VISÃO - Sistema de Vigilância Inteligente
- * Types barrel export - Exportação centralizada de todos os tipos TypeScript
- *
- * @module types
+ * VISÃO - Types barrel export
  */
 
 export * from "./alert";

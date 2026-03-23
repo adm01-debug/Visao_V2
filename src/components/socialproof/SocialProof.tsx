@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Users, Star, Award, TrendingUp } from 'lucide-react';interface SocialProofProps { type: 'users' | 'rating' | 'award' | 'trending'; value: string; label: string; sublabel?: string; className?: string; }
-const icons = { users: Users, rating: Star, award: Award, trending: TrendingUp };
-export function SocialProof({ type, value, label, sublabel, className }: SocialProofProps) { const Icon = icons[type]; return (<div className={cn('flex items-center gap-3 p-3 bg-card rounded-lg border', className)}><div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center"><Icon className="h-5 w-5 text-primary" /></div><div><p className="font-bold">{value}</p><p className="text-sm text-muted-foreground">{label}</p>{sublabel && <p className="text-xs text-muted-foreground">{sublabel}</p>}</div></div>); }
-export default SocialProof;

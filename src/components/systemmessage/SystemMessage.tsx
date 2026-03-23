@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Info } from 'lucide-react';interface SystemMessageProps { message: string; type?: 'info' | 'warning' | 'success'; className?: string; }
-const types = { info: 'bg-blue-50 text-blue-700', warning: 'bg-yellow-50 text-yellow-700', success: 'bg-green-50 text-green-700' };
-export function SystemMessage({ message, type = 'info', className }: SystemMessageProps) { return (<div className={cn('flex items-center justify-center gap-2 py-2 px-4 text-sm rounded-lg', types[type], className)}><Info className="h-4 w-4 shrink-0" />{message}</div>); }
-export default SystemMessage;

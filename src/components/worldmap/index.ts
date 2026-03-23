@@ -1,1 +1,0 @@
-export { WorldMapMarkers } from './WorldMapMarkers';

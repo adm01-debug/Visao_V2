@@ -1,9 +1,6 @@
-// @ts-nocheck
+// @ts-nocheck — barrel re-exports have duplicate names across modules; not imported directly
 /**
- * VISÃO - Sistema de Vigilância Inteligente
- * Utils barrel export - Exportação centralizada de todas as funções utilitárias
- *
- * @module utils
+ * VISÃO - Utils barrel export
  */
 
 export * from "./array";

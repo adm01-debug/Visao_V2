@@ -1,9 +1,6 @@
-// @ts-nocheck
+// @ts-nocheck — barrel re-exports have duplicate names; not imported directly
 /**
- * VISÃO - Sistema de Vigilância Inteligente
- * Lib Index - Exportações centralizadas
- *
- * @module lib
+ * VISÃO - Lib barrel export
  */
 
 // Core utilities

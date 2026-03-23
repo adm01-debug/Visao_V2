@@ -1,4 +1,0 @@
-import React, { useState } from 'react';import { cn } from '@/lib/utils';interface Tab { id: string; label: string; content: React.ReactNode; icon?: React.ReactNode; }
-interface TabsPanelProps { tabs: Tab[]; defaultTab?: string; className?: string; }
-export function TabsPanel({ tabs, defaultTab, className }: TabsPanelProps) { const [active, setActive] = useState(defaultTab || tabs[0]?.id); const current = tabs.find(t => t.id === active); return (<div className={className}><div className="flex border-b">{tabs.map(t => (<button key={t.id} onClick={() => setActive(t.id)} className={cn('flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors', active === t.id ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground')}>{t.icon}{t.label}</button>))}</div><div className="pt-4">{current?.content}</div></div>); }
-export default TabsPanel;

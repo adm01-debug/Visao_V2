@@ -1,1 +1,0 @@
-export { SocialPost } from './SocialPost';

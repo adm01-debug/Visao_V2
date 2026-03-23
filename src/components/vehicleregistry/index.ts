@@ -1,1 +1,0 @@
-export { VehicleRegistry } from './VehicleRegistry';
