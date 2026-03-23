@@ -1,9 +1,6 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
- * Utils barrel export - Exportação centralizada de todas as funções utilitárias
- *
- * @module utils
+ * Utils barrel export
  */
 
 export * from "./array";

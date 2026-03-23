@@ -1,9 +1,6 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
- * Lib Index - Exportações centralizadas
- *
- * @module lib
+ * Lib Index
  */
 
 // Core utilities

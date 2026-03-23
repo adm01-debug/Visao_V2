@@ -1,9 +1,6 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
- * Types barrel export - Exportação centralizada de todos os tipos TypeScript
- *
- * @module types
+ * Types barrel export
  */
 
 export * from "./alert";
