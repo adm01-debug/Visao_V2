@@ -105,6 +105,8 @@ const App = () => (
                     <Route path="/profile" element={<ProtectedLayoutRoute><ProfilePage /></ProtectedLayoutRoute>} />
                     <Route path="/help" element={<ProtectedLayoutRoute><HelpPage /></ProtectedLayoutRoute>} />
                     <Route path="/panic-events" element={<ProtectedLayoutRoute><PanicEventsPage /></ProtectedLayoutRoute>} />
+                    <Route path="/productivity" element={<ProtectedLayoutRoute><ProductivityDashboardPage /></ProtectedLayoutRoute>} />
+                    <Route path="/behavior-detection" element={<ProtectedLayoutRoute><BehaviorDetectionPage /></ProtectedLayoutRoute>} />
                     <Route path="/acesso-negado" element={<AcessoNegado />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
