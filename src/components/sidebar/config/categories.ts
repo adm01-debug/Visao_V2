@@ -136,6 +136,12 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         path: "/zones",
         badge: status.activeZones > 0 ? status.activeZones : undefined
       },
+      {
+        id: "productivity",
+        label: "Produtividade",
+        icon: TrendingUp,
+        path: "/productivity",
+      },
     ],
     getStatus: () => ({
       type: status.registeredPersons > 0 || status.activeZones > 0 ? "success" : "neutral",
