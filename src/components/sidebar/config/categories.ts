@@ -151,6 +151,12 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         icon: ClipboardList,
         path: "/journey-reports",
       },
+      {
+        id: "collaborator-flow",
+        label: "Fluxo",
+        icon: Route,
+        path: "/collaborator-flow",
+      },
     ],
     getStatus: () => ({
       type: status.registeredPersons > 0 || status.activeZones > 0 ? "success" : "neutral",
