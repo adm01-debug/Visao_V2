@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface SettingsRowProps { label: string; description?: string; children: React.ReactNode; className?: string; }
-export function SettingsRow({ label, description, children, className }: SettingsRowProps) { return (<div className={cn('flex items-center justify-between py-3 border-b last:border-0', className)}><div><p className="font-medium">{label}</p>{description && <p className="text-sm text-muted-foreground">{description}</p>}</div><div>{children}</div></div>); }
-export default SettingsRow;

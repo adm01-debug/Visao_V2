@@ -1,1 +1,0 @@
-export { SensorsMonitor } from './SensorsMonitor';

@@ -1,4 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';
-interface Props { label: string; options: { value: string; label: string }[]; error?: string; className?: string; value?: string; onChange?: (v: string) => void; }
-export function SelectWithLabel({ label, options, error, className, value, onChange }: Props) { return (<div className={cn('space-y-1.5', className)}><label className="text-sm font-medium">{label}</label><select value={value} onChange={e => onChange?.(e.target.value)} className={cn('w-full px-3 py-2 border rounded-lg bg-background', error && 'border-red-500')}>{options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}</select>{error && <p className="text-sm text-red-500">{error}</p>}</div>); }
-export default SelectWithLabel;
