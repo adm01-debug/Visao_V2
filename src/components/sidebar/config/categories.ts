@@ -26,6 +26,7 @@ import {
   FileText,
   PieChart,
   TrendingUp,
+  ClipboardList,
 } from "lucide-react";
 import type { NavCategory, CategoryStatus } from "../types";
 import type { SidebarStatus } from "@/hooks/useSidebarStatus";
@@ -142,6 +143,12 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         label: "Produtividade",
         icon: TrendingUp,
         path: "/productivity",
+      },
+      {
+        id: "journey-reports",
+        label: "Jornada",
+        icon: ClipboardList,
+        path: "/journey-reports",
       },
     ],
     getStatus: () => ({
