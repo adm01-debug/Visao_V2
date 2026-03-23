@@ -41,6 +41,7 @@ const PanicEventsPage = lazy(() => import("@/pages/PanicEventsPage"));
 const ProductivityDashboardPage = lazy(() => import("@/pages/ProductivityDashboardPage"));
 const BehaviorDetectionPage = lazy(() => import("@/pages/BehaviorDetectionPage"));
 const JourneyReportsPage = lazy(() => import("@/pages/JourneyReportsPage"));
+const CollaboratorFlowMapPage = lazy(() => import("@/pages/CollaboratorFlowMapPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const AcessoNegado = lazy(() => import("@/pages/AcessoNegado"));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
