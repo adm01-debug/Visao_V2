@@ -1,1 +1,0 @@
-export { SystemDiagnostic } from './SystemDiagnostic';

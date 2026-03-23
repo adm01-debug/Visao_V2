@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';interface WatermarkProps { text: string; opacity?: number; angle?: number; fontSize?: number; color?: string; children: React.ReactNode; className?: string; }
-export function Watermark({ text, opacity = 0.1, angle = -45, fontSize = 48, color = '#000', children, className }: WatermarkProps) { return (<div className={cn('relative overflow-hidden', className)}><div className="absolute inset-0 pointer-events-none flex items-center justify-center" style={{ transform: `rotate(${angle}deg)` }}><span className="whitespace-nowrap select-none" style={{ fontSize, color, opacity }}>{text}</span></div><div className="relative z-10">{children}</div></div>); }
-export default Watermark;

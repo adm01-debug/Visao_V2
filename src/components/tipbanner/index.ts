@@ -1,1 +1,0 @@
-export { TipBanner } from './TipBanner';

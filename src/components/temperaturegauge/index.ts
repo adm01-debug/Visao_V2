@@ -1,1 +1,0 @@
-export { TemperatureGauge } from './TemperatureGauge';

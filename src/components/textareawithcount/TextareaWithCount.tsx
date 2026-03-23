@@ -1,4 +1,0 @@
-import React, { useState } from 'react';import { cn } from '@/lib/utils';
-interface Props { maxLength?: number; label?: string; className?: string; }
-export function TextareaWithCount({ maxLength = 500, label, className, ...props }: Props & React.TextareaHTMLAttributes<HTMLTextAreaElement>) { const [len, setLen] = useState(0); return (<div className={cn('space-y-1.5', className)}>{label && <label className="text-sm font-medium">{label}</label>}<textarea {...props} maxLength={maxLength} onChange={e => { setLen(e.target.value.length); props.onChange?.(e); }} className="w-full px-3 py-2 border rounded-lg min-h-[100px]" /><p className="text-xs text-muted-foreground text-right">{len}/{maxLength}</p></div>); }
-export default TextareaWithCount;

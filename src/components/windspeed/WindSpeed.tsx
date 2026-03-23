@@ -1,3 +1,0 @@
-import React from 'react';import { cn } from '@/lib/utils';import { Wind } from 'lucide-react';interface WindSpeedProps { speed: number; direction?: string; unit?: 'km/h' | 'm/s'; className?: string; }
-export function WindSpeed({ speed, direction, unit = 'km/h', className }: WindSpeedProps) { return (<div className={cn('flex items-center gap-3', className)}><Wind className="h-6 w-6 text-muted-foreground" /><div><span className="text-xl font-bold">{speed}</span><span className="text-sm text-muted-foreground ml-1">{unit}</span>{direction && <p className="text-xs text-muted-foreground">{direction}</p>}</div></div>); }
-export default WindSpeed;
