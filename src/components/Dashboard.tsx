@@ -26,7 +26,9 @@ import {
   StreamCameraCard,
   DashboardStats,
   DashboardAlerts,
-  DashboardSkeleton,
+  StatsSkeleton,
+  CameraGridSkeleton,
+  AlertsSidebarSkeleton,
   mapDbCameraToUI,
 } from './dashboard';
 
