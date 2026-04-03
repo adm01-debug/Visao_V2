@@ -294,6 +294,8 @@ export function BottomNavigation() {
                   {/* Badge */}
                   {badge !== null && badge > 0 && (
                     <motion.span
+                      aria-live="polite"
+                      aria-label={`${badge} notificações`}
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       className={cn(
