@@ -15,6 +15,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { useWindowSize } from '@/hooks/useWindowSize';
 import { ErrorState } from '@/components/ErrorState';
 import { StatusBadge } from '@/components/StatusBadge';
+import { EmptyState } from '@/components/EmptyState';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
