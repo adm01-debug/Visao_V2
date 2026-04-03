@@ -108,15 +108,15 @@ const log = (
 };
 
 export const logger = {
-  debug: (message: string, data?: Record<string, unknown>, context?: string) =>
+  debug: (message: string, data?: unknown, context?: string) =>
     log('debug', message, data, context),
-  info: (message: string, data?: Record<string, unknown>, context?: string) =>
+  info: (message: string, data?: unknown, context?: string) =>
     log('info', message, data, context),
-  warn: (message: string, data?: Record<string, unknown>, context?: string) =>
+  warn: (message: string, data?: unknown, context?: string) =>
     log('warn', message, data, context),
-  error: (message: string, data?: Record<string, unknown>, context?: string) =>
+  error: (message: string, data?: unknown, context?: string) =>
     log('error', message, data, context),
-  fatal: (message: string, data?: Record<string, unknown>, context?: string) =>
+  fatal: (message: string, data?: unknown, context?: string) =>
     log('fatal', message, data, context),
 
   /** Configure logger at runtime */
@@ -130,11 +130,11 @@ export const logger = {
 
   /** Create a child logger with fixed context */
   child: (context: string) => ({
-    debug: (msg: string, data?: Record<string, unknown>) => log('debug', msg, data, context),
-    info: (msg: string, data?: Record<string, unknown>) => log('info', msg, data, context),
-    warn: (msg: string, data?: Record<string, unknown>) => log('warn', msg, data, context),
-    error: (msg: string, data?: Record<string, unknown>) => log('error', msg, data, context),
-    fatal: (msg: string, data?: Record<string, unknown>) => log('fatal', msg, data, context),
+    debug: (msg: string, data?: unknown) => log('debug', msg, data, context),
+    info: (msg: string, data?: unknown) => log('info', msg, data, context),
+    warn: (msg: string, data?: unknown) => log('warn', msg, data, context),
+    error: (msg: string, data?: unknown) => log('error', msg, data, context),
+    fatal: (msg: string, data?: unknown) => log('fatal', msg, data, context),
   }),
 };
 
