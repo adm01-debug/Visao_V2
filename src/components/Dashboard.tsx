@@ -95,7 +95,7 @@ function DashboardComponent() {
         <div className="p-6" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
           <div className="space-y-6">
             {/* Stats Cards */}
-            {camerasLoading ? <StatsSkeleton /> : (
+            <AnimatedTransition loading={camerasLoading} skeleton={<StatsSkeleton />}>
               <DashboardStats
                 onlineCameras={onlineCameras}
                 totalCameras={cameras.length}
@@ -103,7 +103,7 @@ function DashboardComponent() {
                 activeAlerts={activeAlerts}
                 streamingCameras={streamingCameras}
               />
-            )}
+            </AnimatedTransition>
 
             {/* Controls Bar */}
             <div className="flex items-center justify-between">
