@@ -10,6 +10,7 @@ import {
 import { AlertCard, UIAlert } from '@/components/AlertCard';
 import { AlertFiltersComponent, filterAlerts, defaultFilters, AlertFilters, CameraOption } from '@/components/AlertFilters';
 import { ExportMenu } from '@/components/ExportMenu';
+import { EmptyState } from '@/components/EmptyState';
 import { PaginationControls, usePagination } from '@/components/PaginationControls';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
