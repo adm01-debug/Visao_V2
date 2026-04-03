@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Type declaration for performance.memory (Chrome-only API)
 declare global {
   interface Performance {

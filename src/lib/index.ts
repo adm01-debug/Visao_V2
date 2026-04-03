@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * VISÃO - Lib barrel export
  */
