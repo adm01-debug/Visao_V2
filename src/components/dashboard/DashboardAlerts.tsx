@@ -132,14 +132,20 @@ export function DashboardAlerts({
           />
         ))}
         {filteredAlerts.length === 0 && uiAlerts.length > 0 && (
-          <div className="text-center py-8 text-muted-foreground">
-            Nenhum alerta corresponde aos filtros
-          </div>
+          <EmptyState
+            icon={AlertTriangle}
+            title="Nenhum alerta encontrado"
+            description="Nenhum alerta corresponde aos filtros aplicados."
+            size="sm"
+          />
         )}
         {uiAlerts.length === 0 && (
-          <div className="text-center py-8 text-muted-foreground">
-            Nenhum alerta registrado
-          </div>
+          <EmptyState
+            icon={AlertTriangle}
+            title="Tudo tranquilo"
+            description="Nenhum alerta registrado no momento."
+            size="sm"
+          />
         )}
       </div>
 
