@@ -216,9 +216,9 @@ function StreamCameraCard({ camera, onClick, compact, showStream = true }: Strea
       <div className="absolute bottom-0 left-0 right-0 p-3">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-white font-medium text-sm truncate">{camera.name}</h3>
+            <h3 className="text-foreground font-medium text-sm truncate drop-shadow-md">{camera.name}</h3>
             {camera.location && (
-              <p className="text-white/70 text-xs truncate">{camera.location}</p>
+              <p className="text-muted-foreground text-xs truncate drop-shadow-md">{camera.location}</p>
             )}
           </div>
           <div className="flex items-center gap-2 text-white/80">
