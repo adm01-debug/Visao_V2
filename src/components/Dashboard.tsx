@@ -229,7 +229,7 @@ function StreamCameraCard({ camera, onClick, compact, showStream = true }: Strea
               </div>
             )}
             {camera.alerts > 0 && (
-              <div className="flex items-center gap-1 text-xs text-red-400">
+              <div className="flex items-center gap-1 text-xs text-destructive">
                 <AlertTriangle className="w-3 h-3" />
                 {camera.alerts}
               </div>
