@@ -31,6 +31,7 @@ import {
   AlertsSidebarSkeleton,
   mapDbCameraToUI,
 } from './dashboard';
+import { AnimatedTransition } from './ui/AnimatedTransition';
 
 function DashboardComponent() {
   const navigate = useNavigate();
