@@ -6,7 +6,7 @@ export interface UICameraData {
   id: string;
   name: string;
   location: string;
-  status: string;
+  status: CameraStatus;
   thumbnail?: string;
   streamUrl?: string;
   lastActivity?: string;
