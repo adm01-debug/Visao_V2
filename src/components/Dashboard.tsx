@@ -112,11 +112,11 @@ function StreamCameraCard({ camera, onClick, compact, showStream = true }: Strea
   const [isMuted, setIsMuted] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  const statusColors = {
-    online: 'bg-green-500',
-    offline: 'bg-red-500',
-    warning: 'bg-yellow-500',
-    alert: 'bg-red-500 animate-pulse',
+  const statusColors: Record<string, string> = {
+    online: 'bg-emerald-500',
+    offline: 'bg-destructive',
+    warning: 'bg-accent',
+    alert: 'bg-destructive animate-pulse',
   };
 
   return (
