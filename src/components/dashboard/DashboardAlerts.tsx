@@ -10,6 +10,7 @@ import {
 import { AlertCard, UIAlert } from '@/components/AlertCard';
 import { AlertFiltersComponent, filterAlerts, defaultFilters, AlertFilters, CameraOption } from '@/components/AlertFilters';
 import { ExportMenu } from '@/components/ExportMenu';
+import { EmptyState } from '@/components/EmptyState';
 import { PaginationControls, usePagination } from '@/components/PaginationControls';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -132,14 +133,20 @@ export function DashboardAlerts({
           />
         ))}
         {filteredAlerts.length === 0 && uiAlerts.length > 0 && (
-          <div className="text-center py-8 text-muted-foreground">
-            Nenhum alerta corresponde aos filtros
-          </div>
+          <EmptyState
+            icon={AlertTriangle}
+            title="Nenhum alerta encontrado"
+            description="Nenhum alerta corresponde aos filtros aplicados."
+            size="sm"
+          />
         )}
         {uiAlerts.length === 0 && (
-          <div className="text-center py-8 text-muted-foreground">
-            Nenhum alerta registrado
-          </div>
+          <EmptyState
+            icon={AlertTriangle}
+            title="Tudo tranquilo"
+            description="Nenhum alerta registrado no momento."
+            size="sm"
+          />
         )}
       </div>
 

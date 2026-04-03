@@ -1256,21 +1256,23 @@ export function ZonesPage() {
 
       {/* Zones Grid */}
       {filteredZones.length === 0 ? (
-        <div role="main" aria-label="Gerenciamento de zonas" className="text-center py-12">
-          <Target className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium mb-2">Nenhuma zona encontrada</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            {zones.length === 0
-              ? 'Crie sua primeira zona de interesse'
-              : 'Tente ajustar os filtros'}
-          </p>
-          {cameras.length > 0 && (
-            <Button onClick={() => openEditor(cameras[0])}>
-              <Plus className="w-4 h-4 mr-2" />
-              Criar Zona
-            </Button>
-          )}
-        </div>
+        <EmptyState
+          icon={Target}
+          title={zones.length === 0 ? 'Nenhuma zona configurada' : 'Nenhuma zona encontrada'}
+          description={
+            zones.length === 0
+              ? 'Crie zonas de interesse nas suas câmeras para monitorar áreas restritas, contagem de pessoas e muito mais.'
+              : 'Nenhuma zona corresponde aos filtros aplicados. Tente ajustar sua busca.'
+          }
+          actionLabel={zones.length === 0 && cameras.length > 0 ? '+ Criar Zona' : undefined}
+          onAction={zones.length === 0 && cameras.length > 0 ? () => openEditor(cameras[0]) : undefined}
+          secondaryActionLabel={zones.length > 0 ? 'Limpar filtros' : undefined}
+          onSecondaryAction={zones.length > 0 ? () => {
+            setSearchQuery('');
+            setSelectedCamera('all');
+            setSelectedType('all');
+          } : undefined}
+        />
       ) : (
         <div className={cn(
           viewMode === 'grid'

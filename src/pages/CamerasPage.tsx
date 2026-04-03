@@ -15,6 +15,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { useWindowSize } from '@/hooks/useWindowSize';
 import { ErrorState } from '@/components/ErrorState';
 import { StatusBadge } from '@/components/StatusBadge';
+import { EmptyState } from '@/components/EmptyState';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
@@ -839,19 +840,22 @@ export function CamerasPage() {
 
       {/* Camera Grid */}
       {filteredCameras.length === 0 ? (
-        <div className="text-center py-12">
-          <Camera className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium mb-2">Nenhuma câmera encontrada</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            {cameras.length === 0
-              ? 'Adicione sua primeira câmera'
-              : 'Tente ajustar os filtros'}
-          </p>
-          <Button>
-            <Plus className="w-4 h-4 mr-2" />
-            Adicionar Câmera
-          </Button>
-        </div>
+        <EmptyState
+          icon={Camera}
+          title={cameras.length === 0 ? 'Nenhuma câmera cadastrada' : 'Nenhuma câmera encontrada'}
+          description={
+            cameras.length === 0
+              ? 'Adicione sua primeira câmera para começar o monitoramento em tempo real.'
+              : 'Nenhuma câmera corresponde aos filtros aplicados. Tente ajustar sua busca.'
+          }
+          actionLabel={cameras.length === 0 ? '+ Adicionar Câmera' : undefined}
+          onAction={cameras.length === 0 ? () => {} : undefined}
+          secondaryActionLabel={cameras.length > 0 ? 'Limpar filtros' : undefined}
+          onSecondaryAction={cameras.length > 0 ? () => {
+            setSearchQuery('');
+            setStatusFilter('all');
+          } : undefined}
+        />
       ) : (
         <div className={cn('grid gap-4', gridClasses[viewMode])}>
           {filteredCameras.map(camera => (

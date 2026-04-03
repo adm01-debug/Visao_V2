@@ -817,15 +817,17 @@ export function AlertsPage() {
 
       {/* Empty state */}
       {filteredAlerts.length === 0 && (
-        <div role="main" aria-label="Central de alertas" className="text-center py-12">
-          <BellOff className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium mb-2">Nenhum alerta encontrado</h3>
-          <p className="text-sm text-muted-foreground">
-            {hasActiveFilters
-              ? 'Tente ajustar os filtros de busca'
-              : 'Quando houver alertas, eles aparecerão aqui'}
-          </p>
-        </div>
+        <EmptyState
+          icon={BellOff}
+          title={hasActiveFilters ? 'Nenhum alerta encontrado' : 'Nenhum alerta registrado'}
+          description={
+            hasActiveFilters
+              ? 'Nenhum alerta corresponde aos filtros aplicados. Tente ajustar os critérios de busca.'
+              : 'Seu sistema está tranquilo! Quando houver alertas de segurança, produtividade ou anomalias, eles aparecerão aqui.'
+          }
+          secondaryActionLabel={hasActiveFilters ? 'Limpar filtros' : undefined}
+          onSecondaryAction={hasActiveFilters ? () => setFilters(defaultFilters) : undefined}
+        />
       )}
 
       {/* Pagination */}
