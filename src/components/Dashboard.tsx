@@ -134,10 +134,8 @@ function DashboardComponent() {
             {/* Main Content Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Cameras Section */}
-              <div className="lg:col-span-2 space-y-6 animate-fade-in-delay-1">
-              <AnimatedTransition loading={camerasLoading} skeleton={<CameraGridSkeleton count={4} />}>
+              <AnimatedTransition loading={camerasLoading} skeleton={<CameraGridSkeleton count={4} />} className="lg:col-span-2 space-y-6">
                   <>
-                    {/* Map */}
                     {showMap && uiCameras.some(c => c.latitude && c.longitude) && (
                       <div className="h-64 rounded-lg overflow-hidden border">
                         <CameraMap
@@ -150,7 +148,6 @@ function DashboardComponent() {
                       </div>
                     )}
 
-                    {/* Camera Controls */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Eye className="w-5 h-5 text-primary" />
@@ -166,7 +163,6 @@ function DashboardComponent() {
                       />
                     </div>
 
-                    {/* Priority Cameras */}
                     {priorityCameras.length > 0 && (
                       <div>
                         <div className="flex items-center gap-2 mb-4">
@@ -187,7 +183,6 @@ function DashboardComponent() {
                       </div>
                     )}
 
-                    {/* All Cameras */}
                     <div>
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
@@ -211,10 +206,7 @@ function DashboardComponent() {
                   </>
               </AnimatedTransition>
 
-              {/* Alerts Sidebar */}
-              {alertsLoading ? (
-                <AlertsSidebarSkeleton />
-              ) : (
+              <AnimatedTransition loading={alertsLoading} skeleton={<AlertsSidebarSkeleton />}>
                 <DashboardAlerts
                   uiAlerts={uiAlerts}
                   uiCameras={uiCameras}
@@ -223,7 +215,7 @@ function DashboardComponent() {
                   unreadCount={unreadCount}
                   markAllAsRead={markAllAsRead}
                 />
-              )}
+              </AnimatedTransition>
             </div>
           </div>
 
