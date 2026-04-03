@@ -134,88 +134,98 @@ function DashboardComponent() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Cameras Section */}
               <div className="lg:col-span-2 space-y-6 animate-fade-in-delay-1">
-                {/* Map */}
-                {showMap && uiCameras.some(c => c.latitude && c.longitude) && (
-                  <div className="h-64 rounded-lg overflow-hidden border">
-                    <CameraMap
-                      cameras={uiCameras.filter(c => c.latitude && c.longitude)}
-                      onCameraClick={(id) => {
-                        const cam = uiCameras.find(c => c.id === id);
-                        if (cam) setSelectedCamera(cam);
-                      }}
-                    />
-                  </div>
-                )}
-
-                {/* Camera Controls */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Eye className="w-5 h-5 text-primary" />
-                    <h2 className="text-lg font-semibold text-foreground">Monitoramento</h2>
-                    <Badge variant="secondary" className="ml-2">
-                      {onlineCameras}/{cameras.length} online
-                    </Badge>
-                  </div>
-                  <ExportMenu
-                    onExportCSV={() => exportCameras(cameras, 'csv')}
-                    onExportPDF={() => exportCameras(cameras, 'pdf')}
-                    disabled={cameras.length === 0}
-                  />
-                </div>
-
-                {/* Priority Cameras */}
-                {priorityCameras.length > 0 && (
-                  <div>
-                    <div className="flex items-center gap-2 mb-4">
-                      <AlertTriangle className="w-5 h-5 text-destructive" />
-                      <h2 className="text-lg font-semibold text-foreground">Câmeras com Alertas</h2>
-                    </div>
-                    <div className={getCameraGridClass()}>
-                      {priorityCameras.map(camera => (
-                        <StreamCameraCard
-                          key={camera.id}
-                          camera={camera}
-                          onClick={() => setSelectedCamera(camera)}
-                          compact={cameraLayout === 'list'}
-                          showStream={enableStreams}
+                {camerasLoading ? (
+                  <CameraGridSkeleton count={4} />
+                ) : (
+                  <>
+                    {/* Map */}
+                    {showMap && uiCameras.some(c => c.latitude && c.longitude) && (
+                      <div className="h-64 rounded-lg overflow-hidden border">
+                        <CameraMap
+                          cameras={uiCameras.filter(c => c.latitude && c.longitude)}
+                          onCameraClick={(id) => {
+                            const cam = uiCameras.find(c => c.id === id);
+                            if (cam) setSelectedCamera(cam);
+                          }}
                         />
-                      ))}
-                    </div>
-                  </div>
-                )}
+                      </div>
+                    )}
 
-                {/* All Cameras */}
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <Activity className="w-5 h-5 text-primary" />
-                      <h2 className="text-lg font-semibold text-foreground">Todas as Câmeras</h2>
-                    </div>
-                    <button className="text-sm text-primary hover:underline">Ver todas</button>
-                  </div>
-                  <div className={getCameraGridClass()}>
-                    {normalCameras.slice(0, cameraLayout === '3x3' ? 9 : 6).map(camera => (
-                      <StreamCameraCard
-                        key={camera.id}
-                        camera={camera}
-                        onClick={() => setSelectedCamera(camera)}
-                        compact={cameraLayout === 'list'}
-                        showStream={enableStreams}
+                    {/* Camera Controls */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Eye className="w-5 h-5 text-primary" />
+                        <h2 className="text-lg font-semibold text-foreground">Monitoramento</h2>
+                        <Badge variant="secondary" className="ml-2">
+                          {onlineCameras}/{cameras.length} online
+                        </Badge>
+                      </div>
+                      <ExportMenu
+                        onExportCSV={() => exportCameras(cameras, 'csv')}
+                        onExportPDF={() => exportCameras(cameras, 'pdf')}
+                        disabled={cameras.length === 0}
                       />
-                    ))}
-                  </div>
-                </div>
+                    </div>
+
+                    {/* Priority Cameras */}
+                    {priorityCameras.length > 0 && (
+                      <div>
+                        <div className="flex items-center gap-2 mb-4">
+                          <AlertTriangle className="w-5 h-5 text-destructive" />
+                          <h2 className="text-lg font-semibold text-foreground">Câmeras com Alertas</h2>
+                        </div>
+                        <div className={getCameraGridClass()}>
+                          {priorityCameras.map(camera => (
+                            <StreamCameraCard
+                              key={camera.id}
+                              camera={camera}
+                              onClick={() => setSelectedCamera(camera)}
+                              compact={cameraLayout === 'list'}
+                              showStream={enableStreams}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* All Cameras */}
+                    <div>
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                          <Activity className="w-5 h-5 text-primary" />
+                          <h2 className="text-lg font-semibold text-foreground">Todas as Câmeras</h2>
+                        </div>
+                        <button className="text-sm text-primary hover:underline">Ver todas</button>
+                      </div>
+                      <div className={getCameraGridClass()}>
+                        {normalCameras.slice(0, cameraLayout === '3x3' ? 9 : 6).map(camera => (
+                          <StreamCameraCard
+                            key={camera.id}
+                            camera={camera}
+                            onClick={() => setSelectedCamera(camera)}
+                            compact={cameraLayout === 'list'}
+                            showStream={enableStreams}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Alerts Sidebar */}
-              <DashboardAlerts
-                uiAlerts={uiAlerts}
-                uiCameras={uiCameras}
-                searchQuery={searchQuery}
-                alerts={alerts}
-                unreadCount={unreadCount}
-                markAllAsRead={markAllAsRead}
-              />
+              {alertsLoading ? (
+                <AlertsSidebarSkeleton />
+              ) : (
+                <DashboardAlerts
+                  uiAlerts={uiAlerts}
+                  uiCameras={uiCameras}
+                  searchQuery={searchQuery}
+                  alerts={alerts}
+                  unreadCount={unreadCount}
+                  markAllAsRead={markAllAsRead}
+                />
+              )}
             </div>
           </div>
 
