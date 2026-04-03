@@ -18,7 +18,7 @@
     --secondary: 222 30% 14%;
     --secondary-foreground: 210 40% 90%;
     --muted: 222 30% 12%;
-    --muted-foreground: 215 20% 55%;
+    --muted-foreground: 215 20% 62%;
     --accent: 38 92% 50%;
     --accent-foreground: 222 47% 6%;
     --destructive: 0 72% 51%;
@@ -67,7 +67,7 @@
     --secondary: 210 40% 94%;
     --secondary-foreground: 222 47% 11%;
     --muted: 210 40% 96%;
-    --muted-foreground: 215 25% 40%;
+    --muted-foreground: 215 25% 35%;
     --accent: 38 92% 50%;
     --accent-foreground: 222 47% 6%;
     --destructive: 0 72% 51%;
@@ -250,6 +250,17 @@
 @layer base {
   * {
     @apply border-border;
+  }
+
+  /* Focus visible global - acessibilidade via teclado */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Remover outline padrão do mouse */
+  :focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
   }
 
   html {
@@ -498,4 +509,22 @@
 .animate-fade-in-delay-3 {
   animation: fadeIn 0.5s ease-out 0.3s forwards;
   opacity: 0;
+}
+
+/* Respeitar preferência de movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .scan-line,
+  .status-indicator,
+  .alert-glow {
+    animation: none !important;
+  }
 }

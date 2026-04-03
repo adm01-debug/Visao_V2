@@ -112,11 +112,11 @@ function StreamCameraCard({ camera, onClick, compact, showStream = true }: Strea
   const [isMuted, setIsMuted] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  const statusColors = {
-    online: 'bg-green-500',
-    offline: 'bg-red-500',
-    warning: 'bg-yellow-500',
-    alert: 'bg-red-500 animate-pulse',
+  const statusColors: Record<string, string> = {
+    online: 'bg-emerald-500',
+    offline: 'bg-destructive',
+    warning: 'bg-accent',
+    alert: 'bg-destructive animate-pulse',
   };
 
   return (
@@ -151,7 +151,7 @@ function StreamCameraCard({ camera, onClick, compact, showStream = true }: Strea
       )}
 
       {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
 
       {/* Status Indicator */}
       <div className="absolute top-2 left-2 flex items-center gap-2">
@@ -165,8 +165,8 @@ function StreamCameraCard({ camera, onClick, compact, showStream = true }: Strea
 
       {/* Live Badge */}
       {showStream && camera.streamUrl && !hasError && isPlaying && (
-        <Badge className="absolute top-2 right-2 bg-red-500 text-white text-[10px] h-5">
-          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse mr-1" />
+        <Badge variant="destructive" className="absolute top-2 right-2 text-[10px] h-5">
+          <span className="w-1.5 h-1.5 rounded-full bg-destructive-foreground animate-pulse mr-1" />
           LIVE
         </Badge>
       )}
@@ -216,12 +216,12 @@ function StreamCameraCard({ camera, onClick, compact, showStream = true }: Strea
       <div className="absolute bottom-0 left-0 right-0 p-3">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-white font-medium text-sm truncate">{camera.name}</h3>
+            <h3 className="text-foreground font-medium text-sm truncate drop-shadow-md">{camera.name}</h3>
             {camera.location && (
-              <p className="text-white/70 text-xs truncate">{camera.location}</p>
+              <p className="text-muted-foreground text-xs truncate drop-shadow-md">{camera.location}</p>
             )}
           </div>
-          <div className="flex items-center gap-2 text-white/80">
+          <div className="flex items-center gap-2 text-muted-foreground">
             {camera.detectedPeople > 0 && (
               <div className="flex items-center gap-1 text-xs">
                 <Users className="w-3 h-3" />
@@ -229,7 +229,7 @@ function StreamCameraCard({ camera, onClick, compact, showStream = true }: Strea
               </div>
             )}
             {camera.alerts > 0 && (
-              <div className="flex items-center gap-1 text-xs text-red-400">
+              <div className="flex items-center gap-1 text-xs text-destructive">
                 <AlertTriangle className="w-3 h-3" />
                 {camera.alerts}
               </div>

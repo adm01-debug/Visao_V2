@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -328,44 +329,44 @@ export default function Auth() {
         </div>
       </div>
 
-      {showForgotPassword && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-background p-6 rounded-lg max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-2">Recuperar Senha</h3>
-            {resetEmailSent ? (
-              <div className="text-center py-4">
-                <p className="text-muted-foreground mb-4">
-                  Email de recuperação enviado! Verifique sua caixa de entrada.
-                </p>
-                <Button onClick={() => { setShowForgotPassword(false); setResetEmailSent(false); }}>
-                  Fechar
+      <Dialog open={showForgotPassword} onOpenChange={(open) => { setShowForgotPassword(open); if (!open) setResetEmailSent(false); }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Recuperar Senha</DialogTitle>
+            <DialogDescription>
+              {resetEmailSent
+                ? 'Email de recuperação enviado! Verifique sua caixa de entrada.'
+                : 'Digite seu email para receber o link de recuperação de senha.'}
+            </DialogDescription>
+          </DialogHeader>
+
+          {resetEmailSent ? (
+            <DialogFooter>
+              <Button onClick={() => { setShowForgotPassword(false); setResetEmailSent(false); }}>
+                Fechar
+              </Button>
+            </DialogFooter>
+          ) : (
+            <>
+              <Input
+                type="email"
+                placeholder="seu@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                aria-label="Email para recuperação"
+              />
+              <DialogFooter className="gap-2 sm:gap-0">
+                <Button variant="outline" onClick={() => setShowForgotPassword(false)}>
+                  Cancelar
                 </Button>
-              </div>
-            ) : (
-              <>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Digite seu email para receber o link de recuperação de senha.
-                </p>
-                <Input
-                  type="email"
-                  placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="mb-4"
-                />
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => setShowForgotPassword(false)}>
-                    Cancelar
-                  </Button>
-                  <Button onClick={handleForgotPassword} disabled={isLoading}>
-                    {isLoading ? 'Enviando...' : 'Enviar'}
-                  </Button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+                <Button onClick={handleForgotPassword} disabled={isLoading}>
+                  {isLoading ? 'Enviando...' : 'Enviar'}
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

@@ -252,7 +252,11 @@ export function BottomNavigation() {
       </AnimatePresence>
 
       {/* Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-card border-t z-50 md:hidden safe-area-inset-bottom">
+      <nav
+        aria-label="Navegação principal mobile"
+        role="navigation"
+        className="fixed bottom-0 left-0 right-0 bg-card border-t z-50 md:hidden safe-area-inset-bottom"
+      >
         <div className="flex items-center justify-around h-16 px-1">
           {categories.map((category) => {
             const Icon = category.icon;
@@ -266,6 +270,8 @@ export function BottomNavigation() {
                 key={category.id}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => handleCategoryClick(category)}
+                aria-label={`${category.label}${badge ? ` (${badge})` : ''}`}
+                aria-current={isActive ? 'page' : undefined}
                 className={cn(
                   "relative flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl transition-colors min-w-[60px]",
                   isActive
@@ -288,6 +294,8 @@ export function BottomNavigation() {
                   {/* Badge */}
                   {badge !== null && badge > 0 && (
                     <motion.span
+                      aria-live="polite"
+                      aria-label={`${badge} notificações`}
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       className={cn(
