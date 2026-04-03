@@ -1,17 +1,4 @@
-// @ts-nocheck
 import { logger } from './logger';
-
-// Type declarations for requestIdleCallback
-declare global {
-  interface IdleDeadline {
-    didTimeout: boolean;
-    timeRemaining(): number;
-  }
-  interface Window {
-    requestIdleCallback?(callback: (deadline: IdleDeadline) => void, options?: { timeout?: number }): number;
-    cancelIdleCallback?(handle: number): void;
-  }
-}
 
 /**
  * Render Optimizer
@@ -23,8 +10,11 @@ export function batchUpdates<T>(updates: (() => T)[]): T[] {
 }
 
 export function deferRender(callback: () => void): void {
-  if ('requestIdleCallback' in window) window.requestIdleCallback(callback);
-  else setTimeout(callback, 1);
+  if ('requestIdleCallback' in window) {
+    (window as any).requestIdleCallback(callback);
+  } else {
+    setTimeout(callback, 1);
+  }
 }
 
 export function measureRender(name: string, callback: () => void): number {

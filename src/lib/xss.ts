@@ -1,4 +1,3 @@
-// @ts-nocheck
 import DOMPurify from 'dompurify';
 
 export interface XSSConfig {
@@ -14,9 +13,15 @@ const defaultConfig: XSSConfig = {
 };
 
 export const sanitize = (input: string, config: XSSConfig = defaultConfig): string => {
+  const attrs: string[] = [];
+  if (config.allowedAttributes) {
+    for (const values of Object.values(config.allowedAttributes)) {
+      attrs.push(...values);
+    }
+  }
   return DOMPurify.sanitize(input, {
     ALLOWED_TAGS: config.allowedTags,
-    ALLOWED_ATTR: Object.entries(config.allowedAttributes || {}).flat(),
+    ALLOWED_ATTR: attrs,
   });
 };
 

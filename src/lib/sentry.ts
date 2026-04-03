@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { logger } from "@/lib/logger";
 import * as Sentry from "@sentry/react";
 
@@ -22,7 +21,7 @@ export const initSentry = () => {
 };
 
 export const captureError = (error: Error, context?: Record<string, unknown>) => {
-  logger.error(error);
+  logger.error(error.message);
   if (import.meta.env.PROD) {
     Sentry.captureException(error, { extra: context });
   }
