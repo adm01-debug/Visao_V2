@@ -13,7 +13,7 @@ export interface LogEntry {
   message: string;
   timestamp: string;
   context?: string;
-  data?: Record<string, unknown>;
+  data?: unknown;
   requestId?: string;
 }
 
