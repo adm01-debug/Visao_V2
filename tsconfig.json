@@ -26,7 +26,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": false,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "noImplicitAny": false,
     "target": "ES2020",
     "useDefineForClassFields": true

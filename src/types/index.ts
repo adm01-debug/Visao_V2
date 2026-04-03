@@ -1,4 +1,4 @@
-// @ts-nocheck — barrel re-exports have duplicate names across type modules; not imported directly
+// @ts-nocheck
 /**
  * VISÃO - Types barrel export
  */

@@ -1,10 +1,9 @@
-// @ts-nocheck
 export const $ = (selector: string): Element | null => document.querySelector(selector);
 export const $$ = (selector: string): Element[] => Array.from(document.querySelectorAll(selector));
 
 export const addClass = (el: Element, ...classes: string[]): void => el.classList.add(...classes);
 export const removeClass = (el: Element, ...classes: string[]): void => el.classList.remove(...classes);
-export const toggleClass = (el: Element, className: string): void => el.classList.toggle(className);
+export const toggleClass = (el: Element, className: string): boolean => el.classList.toggle(className);
 export const hasClass = (el: Element, className: string): boolean => el.classList.contains(className);
 
 export const getOffset = (el: Element): { top: number; left: number } => {

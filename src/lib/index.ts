@@ -1,4 +1,4 @@
-// @ts-nocheck — barrel re-exports have duplicate names; not imported directly
+// @ts-nocheck
 /**
  * VISÃO - Lib barrel export
  */
