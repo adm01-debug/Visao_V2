@@ -62,7 +62,7 @@ const CONSOLE_STYLES: Record<LogLevel, string> = {
 const log = (
   level: LogLevel,
   message: string,
-  data?: Record<string, unknown>,
+  data?: unknown,
   context?: string
 ): void => {
   if (!shouldLog(level)) return;
