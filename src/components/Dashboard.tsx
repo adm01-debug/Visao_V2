@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { CameraModal } from './CameraModal';
 import { ExportMenu } from './ExportMenu';
-import { CameraMap } from './CameraMap';
+import { LazyCameraMap as CameraMap } from './LazyCameraMap';
 import { CameraLayoutControls, CameraLayout } from './CameraLayoutControls';
 import { SearchInput, filterCamerasBySearch } from './SearchInput';
 import { UIAlert } from './AlertCard';

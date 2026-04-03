@@ -51,7 +51,7 @@ import { StatsCard } from '@/components/StatsCard';
 import { AlertCard, UIAlert } from '@/components/AlertCard';
 import { CameraModal } from '@/components/CameraModal';
 import { ExportMenu } from '@/components/ExportMenu';
-import { CameraMap } from '@/components/CameraMap';
+import { LazyCameraMap as CameraMap } from '@/components/LazyCameraMap';
 import { AlertTrendsChart } from '@/components/AlertTrendsChart';
 import { AlertsByCameraChart } from '@/components/AlertsByCameraChart';
 import { AlertFiltersComponent, filterAlerts, defaultFilters, AlertFilters, CameraOption } from '@/components/AlertFilters';
