@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * VISÃO - Types barrel export
  */

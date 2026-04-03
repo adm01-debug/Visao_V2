@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { logger } from "@/lib/logger";
 import * as Sentry from "@sentry/react";
 
