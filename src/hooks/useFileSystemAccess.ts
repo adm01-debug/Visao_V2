@@ -1,4 +1,3 @@
-// @ts-nocheck
 /// <reference types="./types/file-system-access" />
 /**
  * useFileSystemAccess Hook

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import DOMPurify from 'dompurify';
 
 export interface XSSConfig {
