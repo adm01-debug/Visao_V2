@@ -1,5 +1,7 @@
 import type { DbCamera } from '@/hooks/useCameras';
 
+type CameraStatus = 'online' | 'offline' | 'alert' | 'warning';
+
 export interface UICameraData {
   id: string;
   name: string;
