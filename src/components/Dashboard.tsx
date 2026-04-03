@@ -165,8 +165,8 @@ function StreamCameraCard({ camera, onClick, compact, showStream = true }: Strea
 
       {/* Live Badge */}
       {showStream && camera.streamUrl && !hasError && isPlaying && (
-        <Badge className="absolute top-2 right-2 bg-red-500 text-white text-[10px] h-5">
-          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse mr-1" />
+        <Badge variant="destructive" className="absolute top-2 right-2 text-[10px] h-5">
+          <span className="w-1.5 h-1.5 rounded-full bg-destructive-foreground animate-pulse mr-1" />
           LIVE
         </Badge>
       )}
