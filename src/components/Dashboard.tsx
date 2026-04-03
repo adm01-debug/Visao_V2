@@ -57,10 +57,8 @@ function DashboardComponent() {
     localStorage.setItem('camera-layout', cameraLayout);
   }, [cameraLayout]);
 
-  const loading = camerasLoading || alertsLoading;
-
-  const uiCameras = cameras.map(mapDbCameraToUI);
-  const uiAlerts: UIAlert[] = alerts.map(a => ({
+  const uiCameras = camerasLoading ? [] : cameras.map(mapDbCameraToUI);
+  const uiAlerts: UIAlert[] = alertsLoading ? [] : alerts.map(a => ({
     id: a.id,
     cameraId: a.camera_id || '',
     cameraName: a.camera_name,
@@ -89,8 +87,6 @@ function DashboardComponent() {
       default: return 'grid grid-cols-1 sm:grid-cols-2 gap-4';
     }
   };
-
-  if (loading) return <DashboardSkeleton />;
 
   return (
     <TooltipProvider>
