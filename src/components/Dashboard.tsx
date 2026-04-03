@@ -221,7 +221,7 @@ function StreamCameraCard({ camera, onClick, compact, showStream = true }: Strea
               <p className="text-muted-foreground text-xs truncate drop-shadow-md">{camera.location}</p>
             )}
           </div>
-          <div className="flex items-center gap-2 text-white/80">
+          <div className="flex items-center gap-2 text-muted-foreground">
             {camera.detectedPeople > 0 && (
               <div className="flex items-center gap-1 text-xs">
                 <Users className="w-3 h-3" />
