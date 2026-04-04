@@ -479,7 +479,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
                 )}>
                   <AvatarImage src={photoPreview || undefined} />
                   <AvatarFallback className="text-2xl">
-                    {formData.name?.charAt(0) || 'P'}
+                    {(formData.name as string)?.charAt(0) || 'P'}
                   </AvatarFallback>
                 </Avatar>
                 {photoPreview && (
