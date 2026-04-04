@@ -664,14 +664,14 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
         </div>
 
         <DialogFooter className="flex-col sm:flex-row gap-2">
-          <Button variant="outline" onClick={onClose} disabled={isSubmitting || faceDetection.isDetecting}>
+          <Button variant="outline" onClick={onClose} disabled={isSubmitting || faceDetection.isProcessing}>
             Cancelar
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={isSubmitting || faceDetection.isDetecting || !canSave}
+            disabled={isSubmitting || faceDetection.isProcessing || !canSave}
             className={cn(
-              !canSave && !isSubmitting && !faceDetection.isDetecting && "opacity-50"
+              !canSave && !isSubmitting && !faceDetection.isProcessing && "opacity-50"
             )}
           >
             {isSubmitting ? (
@@ -679,7 +679,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
                 <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                 Salvando...
               </>
-            ) : faceDetection.isDetecting ? (
+            ) : faceDetection.isProcessing ? (
               <>
                 <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                 Analisando...

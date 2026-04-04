@@ -42,7 +42,7 @@ export default function HeatmapPage() {
   // Handler para exportar dados
   const handleExport = useCallback(async () => {
     try {
-      await exportData('csv');
+      exportData();
     } catch (err) {
     }
   }, [exportData]);

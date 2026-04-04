@@ -183,7 +183,7 @@ export function ZonesPage() {
       )}
 
       <ZoneEditorSheet isOpen={isEditorOpen} onClose={() => { setIsEditorOpen(false); setEditingZone(null); setEditorCamera(null); }} camera={editorCamera} zone={editingZone} onSave={handleSave} />
-      <ZoneViewDialog zone={viewingZone} camera={viewingZone ? getCameraById(viewingZone.camera_id) : null} stats={viewingZone ? zoneStats[viewingZone.id] : undefined} events={viewingZone ? zoneEvents[viewingZone.id] || [] : []} isOpen={!!viewingZone} onClose={() => setViewingZone(null)} />
+      <ZoneViewDialog zone={viewingZone} camera={viewingZone ? getCameraById(viewingZone.camera_id) ?? null : null} stats={viewingZone ? zoneStats[viewingZone.id] : undefined} events={viewingZone ? zoneEvents[viewingZone.id] || [] : []} isOpen={!!viewingZone} onClose={() => setViewingZone(null)} />
 
       <AlertDialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
         <AlertDialogContent>

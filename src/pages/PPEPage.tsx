@@ -498,8 +498,8 @@ export default function PPEPage() {
                     )}>
                       <CardContent className="pt-4">
                         <div role="main" className="flex items-center justify-between mb-2">
-                          <Badge variant={detection.compliant ? 'default' : 'destructive'}>
-                            {detection.compliant ? (
+                          <Badge variant={detection.isCompliant ? 'default' : 'destructive'}>
+                            {detection.isCompliant ? (
                               <>
                                 <CheckCircle2 className="w-3 h-3 mr-1" />
                                 Conforme
