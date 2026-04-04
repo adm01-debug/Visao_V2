@@ -85,7 +85,7 @@ export function AnalyticsPage() {
       const typeColors: Record<string, string> = { motion: '#3b82f6', person: '#22c55e', vehicle: '#f59e0b', face: '#8b5cf6', zone: '#ef4444', other: '#6b7280' };
       const typeCount: Record<string, number> = {};
       alertsData?.forEach(a => { typeCount[a.type || 'other'] = (typeCount[a.type || 'other'] || 0) + 1; });
-      const types!: AlertsByType[] = Object.entries(typeCount).map(([type, count]) => ({ type, count, percentage: totalAlerts > 0 ? (count / totalAlerts) * 100 : 0, color: typeColors[type]! || typeColors.other }));
+      const types: AlertsByType[] = Object.entries(typeCount).map(([type, count]) => ({ type, count, percentage: totalAlerts > 0 ? (count / totalAlerts) * 100 : 0, color: typeColors[type] ?? typeColors.other ?? '#6b7280' }));
       setAlertsByType(types.length > 0 ? types : [{ type: 'Sem dados', count: 0, percentage: 100, color: '#6b7280' }]);
 
       setCameraPerformance((camerasData || []).slice(0, 5).map(camera => ({

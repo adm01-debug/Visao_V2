@@ -162,10 +162,10 @@ export default function GoalsAlertsPage() {
       { range: "0-49", count: 0, fill: "hsl(var(--chart-4))" },
     ];
     collaboratorKPIs.forEach(c => {
-      if (c.overallScore >= 90) buckets[0]!.count++;
-      else if (c.overallScore >= 70) buckets[1]!.count++;
-      else if (c.overallScore >= 50) buckets[2]!.count++;
-      else buckets[3]!.count++;
+      if (c.overallScore >= 90) { if (buckets[0]) buckets[0].count++; }
+      else if (c.overallScore >= 70) { if (buckets[1]) buckets[1].count++; }
+      else if (c.overallScore >= 50) { if (buckets[2]) buckets[2].count++; }
+      else { if (buckets[3]) buckets[3].count++; }
     });
     return buckets;
   }, [collaboratorKPIs]);

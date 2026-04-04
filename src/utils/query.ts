@@ -15,7 +15,7 @@ export const parseQuery = (query: string): Record<string, string | string[]> => 
   params.forEach((value, key) => {
     if (key in result) {
       const existing = result[key];
-      result[key]!! = Array.isArray(existing) ? [...existing, value] : [existing, value];
+      result[key] = Array.isArray(existing) ? [...existing, value] : [existing!, value];
     } else {
       result[key] = value;
     }

@@ -159,7 +159,7 @@ export function useHeatmap(options: UseHeatmapOptions): UseHeatmapReturn {
       const row = Math.floor(point.y / config.gridSize);
 
       if (row >= 0 && row < gridRows && col >= 0 && col < gridCols) {
-        grid[row]![col] += point.value;
+        grid[row]![col]! += point.value;
       }
     });
 

@@ -109,8 +109,8 @@ export default function CollaboratorFlowMapPage() {
       pairs.forEach(([f, t]) => {
         if (f! < zoneIds.length && t! < zoneIds.length) {
           edges.push({
-            from: zoneMap.get(zoneIds[f!] ?? '')!.name,
-            to: zoneMap.get(zoneIds[t!] ?? '')!.name,
+          from: zoneMap.get(zoneIds[f!] ?? '')?.name ?? '',
+            to: zoneMap.get(zoneIds[t!] ?? '')?.name ?? '',
             count: Math.floor(Math.random() * 20) + 3,
             avgTransitTime: Math.floor(Math.random() * 120) + 15,
           });

@@ -430,7 +430,7 @@ export function calculateSimilarity(
 
   let sumSquares = 0;
   for (let i = 0; i < encoding1.length; i++) {
-    sumSquares += Math.pow(encoding1[i]! - encoding2[i]!, 2);
+    sumSquares += Math.pow((encoding1[i] ?? 0) - (encoding2[i] ?? 0), 2);
   }
 
   const distance = Math.sqrt(sumSquares);

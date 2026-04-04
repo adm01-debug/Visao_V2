@@ -13,8 +13,8 @@ export function formatDuration(seconds: number): string {
 
 export function parseTimecode(timecode: string): number {
   const parts = timecode.split(':').map(Number);
-  if (parts.length === 3) return parts[0] ?? 0 * 3600 + parts[1]! * 60 + parts[2]!;
-  if (parts.length === 2) return parts[0] ?? 0 * 60 + parts[1]!;
+  if (parts.length === 3) return (parts[0] ?? 0) * 3600 + (parts[1] ?? 0) * 60 + (parts[2] ?? 0);
+  if (parts.length === 2) return (parts[0] ?? 0) * 60 + (parts[1] ?? 0);
   return parts[0] || 0;
 }
 

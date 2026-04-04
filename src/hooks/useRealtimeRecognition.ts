@@ -122,7 +122,7 @@ export function useRealtimeRecognition(options: UseRealtimeRecognitionOptions = 
 
     // Converter para base64 (qualidade 80%)
     const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-    return! dataUrl.split(',')[1];
+    return dataUrl.split(',')[1] ?? '';
   }, []);
 
   /**

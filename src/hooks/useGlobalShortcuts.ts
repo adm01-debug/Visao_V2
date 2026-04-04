@@ -87,7 +87,7 @@ export function useGlobalShortcuts() {
       if (!grouped[shortcut.category]) {
         grouped[shortcut.category] = [];
       }
-      grouped[shortcut.category]!.push(shortcut);
+      grouped[shortcut.category]?.push(shortcut);
     }
     return grouped;
   }, [shortcuts]);

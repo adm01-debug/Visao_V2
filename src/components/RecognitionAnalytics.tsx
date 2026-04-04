@@ -123,11 +123,10 @@ export function RecognitionAnalytics({ className, dateRange = 7 }: RecognitionAn
 
     logs.forEach(log => {
       const hour = getHours(new Date(log.timestamp));
-      hourlyData[hour]!.total++;
-      if (log.recognized) {
-        hourlyData[hour]!.recognized++;
-      } else {
-        hourlyData[hour]!.unknown++;
+      const hEntry = hourlyData[hour];
+      if (hEntry) {
+        hEntry.total++;
+        if (log.recognized) { hEntry.recognized++; } else { hEntry.unknown++; }
       }
     });
 
@@ -142,11 +141,10 @@ export function RecognitionAnalytics({ className, dateRange = 7 }: RecognitionAn
 
     logs.forEach(log => {
       const dayIndex = getDay(new Date(log.timestamp));
-      dailyData[dayIndex]!.total++;
-      if (log.recognized) {
-        dailyData[dayIndex]!.recognized++;
-      } else {
-        dailyData[dayIndex]!.unknown++;
+      const dEntry = dailyData[dayIndex];
+      if (dEntry) {
+        dEntry.total++;
+        if (log.recognized) { dEntry.recognized++; } else { dEntry.unknown++; }
       }
     });
 
