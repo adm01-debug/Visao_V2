@@ -151,6 +151,9 @@ export function ZonesPage() {
         <Card><CardContent className="p-4"><div className="flex items-center justify-between"><div><p className="text-xs text-muted-foreground">Contagem</p><p className="text-2xl font-bold text-blue-500">{stats.counting}</p></div><Users className="w-8 h-8 text-blue-500" /></div></CardContent></Card>
       </div>
 
+      {/* Charts */}
+      <ZonesCharts zones={zones} />
+
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
