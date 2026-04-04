@@ -427,7 +427,7 @@ export default function PPEPage() {
                           {format(new Date(violation.timestamp), 'dd/MM HH:mm:ss', { locale: ptBR })}
                         </TableCell>
                         <TableCell>{violation.zoneName}</TableCell>
-                        <TableCell>{violation.cameraName}</TableCell>
+                        <TableCell>{violation.cameraId}</TableCell>
                         <TableCell>
                           <div role="main" className="flex gap-1">
                             {violation.missingItems.map(type => (
