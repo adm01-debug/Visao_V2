@@ -405,7 +405,7 @@ function AlertDetailsDialog({
 // ============================================
 
 export function AlertsPage() {
-  const { events: recognitionEvents, stats: recognitionStats } = useFaceRecognitionAlerts();
+  const { events: recognitionEvents, stats: recognitionStats } = useFaceRecognitionAlerts({ cameraId: '' });
 
   // Estado
   const [viewMode, setViewMode] = useState<ViewMode>('list');
