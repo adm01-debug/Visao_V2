@@ -16,7 +16,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { useScrollPosition } from '@/hooks/useScrollPosition';
 import { CardSkeleton } from '@/components/PageSkeletons';
 import { formatNumber } from '@/lib/formatters';
-import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+// import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { StatCard } from '@/components/StatCard';
 import { CountUp } from '@/components/CountUp';
 import { TimeAgo } from '@/components/TimeAgo';
