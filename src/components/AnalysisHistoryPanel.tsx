@@ -23,7 +23,11 @@ import {
   Brain,
   Filter,
   X,
+  Download,
+  FileText,
+  FileSpreadsheet,
 } from 'lucide-react';
+import { exportToCSV, exportToPDF } from '@/lib/exportUtils';
 import { cn } from '@/lib/utils';
 import { useRealtimeAnalysisHistory, type TimelineItem } from '@/hooks/useRealtimeAnalysisHistory';
 import { formatDistanceToNow } from 'date-fns';
