@@ -82,7 +82,7 @@ export const useRecordingSessions = (cameraId?: string) => {
         .update({
           status: 'stopped',
           ended_at: new Date().toISOString(),
-        })
+        } as never)
         .eq('id', id);
 
       if (error) throw error;
