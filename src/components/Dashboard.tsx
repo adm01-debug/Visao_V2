@@ -44,6 +44,21 @@ function DashboardComponent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showMap, setShowMap] = useState(true);
   const [enableStreams, setEnableStreams] = useState(true);
+  const [aiAnalysisCameras, setAiAnalysisCameras] = useState<Set<string>>(() => {
+    try {
+      const saved = localStorage.getItem('ai-analysis-cameras');
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    } catch { return new Set(); }
+  });
+
+  const handleToggleAiAnalysis = useCallback((cameraId: string, active: boolean) => {
+    setAiAnalysisCameras(prev => {
+      const next = new Set(prev);
+      if (active) next.add(cameraId); else next.delete(cameraId);
+      localStorage.setItem('ai-analysis-cameras', JSON.stringify([...next]));
+      return next;
+    });
+  }, []);
 
   const { handleTouchStart, handleTouchEnd } = useSwipe(
     () => navigate('/cameras'),
@@ -177,6 +192,8 @@ function DashboardComponent() {
                               onClick={() => setSelectedCamera(camera)}
                               compact={cameraLayout === 'list'}
                               showStream={enableStreams}
+                              aiAnalysisActive={aiAnalysisCameras.has(camera.id)}
+                              onToggleAiAnalysis={handleToggleAiAnalysis}
                             />
                           ))}
                         </div>
@@ -199,6 +216,8 @@ function DashboardComponent() {
                             onClick={() => setSelectedCamera(camera)}
                             compact={cameraLayout === 'list'}
                             showStream={enableStreams}
+                            aiAnalysisActive={aiAnalysisCameras.has(camera.id)}
+                            onToggleAiAnalysis={handleToggleAiAnalysis}
                           />
                         ))}
                       </div>

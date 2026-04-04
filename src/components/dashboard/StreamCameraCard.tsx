@@ -8,10 +8,12 @@ import {
   Maximize2,
   Volume2,
   VolumeX,
+  Brain,
 } from 'lucide-react';
 import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import type { UICameraData } from './types';
 
@@ -20,6 +22,8 @@ interface StreamCameraCardProps {
   onClick: () => void;
   compact?: boolean;
   showStream?: boolean;
+  aiAnalysisActive?: boolean;
+  onToggleAiAnalysis?: (cameraId: string, active: boolean) => void;
 }
 
 const statusColors: Record<string, string> = {
@@ -29,7 +33,7 @@ const statusColors: Record<string, string> = {
   alert: 'bg-destructive animate-pulse',
 };
 
-export function StreamCameraCard({ camera, onClick, compact, showStream = true }: StreamCameraCardProps) {
+export function StreamCameraCard({ camera, onClick, compact, showStream = true, aiAnalysisActive = false, onToggleAiAnalysis }: StreamCameraCardProps) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -74,6 +78,14 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true }
         )}
       </div>
 
+      {/* AI Analysis Badge */}
+      {aiAnalysisActive && (
+        <Badge className="absolute top-2 right-14 text-[10px] h-5 bg-primary/80 hover:bg-primary/90 gap-1">
+          <Brain className="w-3 h-3 animate-pulse" />
+          IA
+        </Badge>
+      )}
+
       {/* Live Badge */}
       {showStream && camera.streamUrl && !hasError && isPlaying && (
         <Badge variant="destructive" className="absolute top-2 right-2 text-[10px] h-5">
@@ -84,6 +96,22 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true }
 
       {/* Controls (appear on hover) */}
       <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        {onToggleAiAnalysis && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="secondary"
+                size="icon"
+                className={cn('h-6 w-6', aiAnalysisActive && 'bg-primary text-primary-foreground hover:bg-primary/90')}
+                aria-label={aiAnalysisActive ? 'Desativar análise IA' : 'Ativar análise IA'}
+                onClick={(e) => { e.stopPropagation(); onToggleAiAnalysis(camera.id, !aiAnalysisActive); }}
+              >
+                <Brain className="w-3 h-3" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{aiAnalysisActive ? 'Desativar análise IA' : 'Ativar análise IA'}</TooltipContent>
+          </Tooltip>
+        )}
         {showStream && camera.streamUrl && (
           <>
             <Button variant="secondary" size="icon" className="h-6 w-6"
