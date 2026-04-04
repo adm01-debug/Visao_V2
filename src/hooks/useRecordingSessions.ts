@@ -54,7 +54,7 @@ export const useRecordingSessions = (cameraId?: string) => {
     try {
       const { data, error } = await supabase
         .from('recording_sessions' as never)
-        .insert({
+        .insert([{
           camera_id: cameraId,
           config_id: configId,
           status: 'recording',
@@ -62,7 +62,7 @@ export const useRecordingSessions = (cameraId?: string) => {
           started_at: new Date().toISOString(),
           total_clips: 0,
           total_size_bytes: 0,
-        })
+        }] as never)
         .select()
         .single();
 
