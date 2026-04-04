@@ -146,7 +146,7 @@ function KPICard({ data, loading }: KPICardProps) {
 
   const isPositive = change > 0;
   const isNeutral = change === 0;
-  const Icon = data.icon;
+  const Icon = data.icon as React.ElementType;
 
   if (loading) {
     return (

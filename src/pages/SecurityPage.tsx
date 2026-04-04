@@ -198,7 +198,7 @@ const categoryConfig: Record<LogCategory, { icon: React.ElementType; label: stri
   user: { icon: User, label: 'Usuário' },
 };
 
-const listTypeConfig: Record<ListType, { icon: unknown; color: string; bgColor: string; label: string }> = {
+const listTypeConfig: Record<ListType, { icon: React.ElementType; color: string; bgColor: string; label: string }> = {
   whitelist: { icon: ShieldCheck, color: 'text-green-500', bgColor: 'bg-green-500/10', label: 'Liberado' },
   blacklist: { icon: ShieldOff, color: 'text-red-500', bgColor: 'bg-red-500/10', label: 'Bloqueado' },
   watchlist: { icon: Eye, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Monitorado' },

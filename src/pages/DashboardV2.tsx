@@ -226,7 +226,7 @@ function CameraStreamCard({
           <VideoStreamPlayer
             cameraId={camera.id}
             streamUrl={camera.streamUrl!}
-            protocol={camera.streamProtocol as unknown}
+            protocol={camera.streamProtocol as 'hls' | 'webrtc' | 'rtsp'}
             cameraName={camera.name}
           />
 

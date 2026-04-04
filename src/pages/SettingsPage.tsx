@@ -381,7 +381,7 @@ export function SettingsPage() {
       }
 
       // Save notification settings
-      const channels = [];
+      const channels: string[] = [];
       if (notificationSettings.emailEnabled) channels.push('email');
       if (notificationSettings.whatsappEnabled) channels.push('whatsapp');
       if (notificationSettings.webhookEnabled) channels.push('webhook');

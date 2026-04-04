@@ -49,12 +49,12 @@ export default function StreamSettingsPage() {
     }
   }, [searchParams, cameras]);
 
-  const handleSaveConfig = async (config: unknown) => {
+  const handleSaveConfig = async (configData: Record<string, unknown>) => {
     if (!selectedCamera) return;
 
     try {
       await updateCamera(selectedCamera.id, {
-        stream_url: config.url,
+        stream_url: configData.url as string,
       });
 
       toast.success('Configuração de stream salva');
