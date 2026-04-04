@@ -212,11 +212,11 @@ export function RecognitionAnalytics({ className, dateRange = 7 }: RecognitionAn
 
     // Peak hours
     const peakHour = hourlyData.reduce((max, curr) =>
-      curr.total > max.total ? curr : max, hourlyData[0]);
+      curr.total > max.total ? curr : max, hourlyData[0]!);
 
     // Peak day
     const peakDay = dailyData.reduce((max, curr) =>
-      curr.total > max.total ? curr : max, dailyData[0]);
+      curr.total > max.total ? curr : max, dailyData[0]!);
 
     return {
       stats: {

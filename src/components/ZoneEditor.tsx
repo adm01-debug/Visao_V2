@@ -436,7 +436,7 @@ export function ZoneEditor({
                   />
                   {/* Setas de direção */}
                   <polygon
-                    points={calculateArrowPoints(zone.geometry.points[0], zone.geometry.points[1])}
+                    points={calculateArrowPoints(zone.geometry.points[0]!, zone.geometry.points[1])}
                     fill={zone.color}
                   />
                 </>
