@@ -64,6 +64,7 @@ import {
 import { FaceRecognitionOverlay } from './FaceRecognitionOverlay';
 import { useStreamFaceDetection } from '@/hooks/useStreamFaceDetection';
 import { ClipRecorderControls } from './ClipRecorderControls';
+import { AnalysisResultsOverlay } from './AnalysisResultsOverlay';
 import { useContinuousAnalysis } from '@/hooks/useContinuousAnalysis';
 import { AnalysisType, AnalysisResult, AnalysisAlert } from '@/hooks/useImageAnalysis';
 import { DbRule } from '@/types/rules';
