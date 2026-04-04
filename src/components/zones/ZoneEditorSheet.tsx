@@ -99,7 +99,7 @@ export function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneE
               )}
               <div className="absolute inset-0">
                 <ZoneEditor
-                  existingZones={formData.pointsData ? [{ id: 'temp', name: formData.name || 'Nova Zona', type: formData.type, geometry: { shape: formData.pointsData.shape, points: formData.pointsData.coordinates }, color: formData.color, opacity, enabled: true } as Zone] : []}
+                  existingZones={formData.pointsData ? [{ id: 'temp', name: formData.name || 'Nova Zona', type: formData.type, geometry: { shape: formData.pointsData.shape, points: formData.pointsData.coordinates }, color: formData.color, opacity, enabled: true }] : []}
                   onZoneCreated={(z) => handleZoneDrawn(z.geometry?.points || [])}
                   selectedColor={formData.color}
                   drawingMode={drawingMode}
