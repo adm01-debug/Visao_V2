@@ -246,8 +246,8 @@ export function useContinuousAnalysis(
         }
 
         // Avaliar condição
-        const expectedValue = condition?.value || 0;
-        const operator = condition?.operator;
+        const expectedValue = (condition?.value as number) || 0;
+        const operator = condition?.operator as string | undefined;
         switch (operator) {
           case 'greater_than':
             satisfied = actualValue > expectedValue;
