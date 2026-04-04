@@ -146,9 +146,11 @@ class GcpService {
     }
 
     const contentType = options.contentType || 'application/octet-stream';
-    const content = options.content instanceof Blob
+    const content: BodyInit = options.content instanceof Blob
       ? await options.content.arrayBuffer()
-      : options.content;
+      : typeof options.content === 'string'
+        ? options.content
+        : new Uint8Array(options.content as ArrayBuffer);
 
     const response = await fetch(
       `https://storage.googleapis.com/upload/storage/v1/b/${bucket}/o?uploadType=media&name=${encodeURIComponent(options.filename)}`,

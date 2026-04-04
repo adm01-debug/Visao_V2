@@ -126,7 +126,7 @@ class AwsService {
     const response = await (client as { send: (cmd: unknown) => Promise<{ Body: { transformToByteArray: () => Promise<Uint8Array> } }> }).send(command);
     const bytes = await response.Body.transformToByteArray();
 
-    return new Blob([bytes]);
+    return new Blob([bytes as BlobPart]);
   }
 
   /**

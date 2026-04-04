@@ -409,7 +409,7 @@ class FFmpegService {
       await this.ffmpeg.exec(gifArgs);
 
       const data = await this.ffmpeg.readFile(outputName);
-      const blob = new Blob([data], { type: 'image/gif' });
+      const blob = new Blob([data as BlobPart], { type: 'image/gif' });
 
       await this.ffmpeg.deleteFile(inputName);
       await this.ffmpeg.deleteFile(paletteName);

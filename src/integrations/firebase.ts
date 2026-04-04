@@ -150,13 +150,14 @@ return null;
 
     const { onMessage } = await import('firebase/messaging');
 
-    return onMessage(this.messaging as never, (payload) => {
+    return onMessage(this.messaging as never, (payload: Record<string, unknown>) => {
+      const notif = payload.notification as Record<string, string> | undefined;
       const notification: PushNotification & { data?: Record<string, string> } = {
-        title: payload.notification?.title || '',
-        body: payload.notification?.body || '',
-        icon: payload.notification?.icon,
-        image: payload.notification?.image,
-        data: payload.data,
+        title: notif?.title || '',
+        body: notif?.body || '',
+        icon: notif?.icon,
+        image: notif?.image,
+        data: payload.data as Record<string, string> | undefined,
       };
 
       this.onMessageCallback?.(notification);
