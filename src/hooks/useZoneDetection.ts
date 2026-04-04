@@ -213,7 +213,7 @@ export function useZoneDetection(
             detected_objects: object ? [{ id: object.id, type: object.type, position: object.position }] : [],
             timestamp: new Date().toISOString(),
           };
-          await supabase.from('zone_events').insert(insertData);
+          await supabase.from('zone_events').insert([insertData]);
         }
       } catch (saveErr) {
       }
