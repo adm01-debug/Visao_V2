@@ -60,7 +60,7 @@ export function useVirtualList<T>({
     for (let i = visibleRange.start; i <= visibleRange.end; i++) {
       if (items[i] !== undefined) {
         result.push({
-          item: items[i],
+          item: items[i]!,
           index: i,
           style: {
             position: 'absolute',

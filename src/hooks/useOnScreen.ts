@@ -20,9 +20,9 @@ export const useOnScreen = <T extends Element>(
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsIntersecting(entry.isIntersecting);
+        setIsIntersecting(entry!.isIntersecting);
 
-        if (triggerOnce && entry.isIntersecting) {
+        if (triggerOnce && entry!.isIntersecting) {
           observer.unobserve(element);
         }
       },

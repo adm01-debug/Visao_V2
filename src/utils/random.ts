@@ -12,7 +12,7 @@ export const randomBoolean = (probability = 0.5): boolean =>
   Math.random() < probability;
 
 export const randomItem = <T>(array: T[]): T =>
-  array[Math.floor(Math.random() * array.length)];
+  array[Math.floor(Math.random() * array.length)] as NonNullable<T>;
 
 export const randomItems = <T>(array: T[], count: number): T[] => {
   const shuffled = shuffle([...array]);
@@ -23,7 +23,7 @@ export const shuffle = <T>(array: T[]): T[] => {
   const result = [...array];
   for (let i = result.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
+    [result[i] as NonNullable<T>!, result[j] as NonNullable<T>!] = [result[j], result[i]];
   }
   return result;
 };
@@ -65,7 +65,7 @@ export const weightedRandom = <T>(items: Array<{ value: T; weight: number }>): T
     random -= item.weight;
     if (random <= 0) return item.value;
   }
-  return items[items.length - 1].value;
+  return items[items.length - 1]!.value;
 };
 
 export const randomGaussian = (mean = 0, stdDev = 1): number => {

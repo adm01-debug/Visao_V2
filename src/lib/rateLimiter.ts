@@ -14,7 +14,7 @@ export class RateLimiter {
 
   getTimeUntilNext(): number {
     if (this.timestamps.length < this.maxRequests) return 0;
-    return this.timestamps[0] + this.windowMs - Date.now();
+    return this.timestamps[0] ?? 0 + this.windowMs - Date.now();
   }
 }
 

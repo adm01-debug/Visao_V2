@@ -91,7 +91,7 @@ export function VideoPlayer({
   }, [isLive, progress]);
 
   const handleProgressChange = (value: number[]) => {
-    setProgress(value[0]);
+    setProgress(value[0]!);
   };
 
   const getEventColor = (type: TimelineEvent['type']) => {

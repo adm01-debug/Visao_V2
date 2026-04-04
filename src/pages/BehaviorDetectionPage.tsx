@@ -213,7 +213,7 @@ export default function BehaviorDetectionPage() {
       critical: { cls: "bg-destructive/30 text-destructive border-destructive/50", label: "Crítico" },
     };
     const cfg = map[severity] || map.low;
-    return <Badge className={`${cfg.cls} text-[10px]`}>{cfg.label}</Badge>;
+    return <Badge className={`${cfg!.cls} text-[10px]`}>{cfg!.label}</Badge>;
   };
 
   return (
@@ -386,7 +386,7 @@ export default function BehaviorDetectionPage() {
               <Button className="mt-4" size="sm" onClick={() => {
                 if (cameras.length > 0) {
                   const cam = cameras[0];
-                  analyzeCamera(cam.id, cam.name, cam.thumbnail || undefined);
+                  analyzeCamera(cam!.id, cam!.name, cam!.thumbnail || undefined);
                 }
               }} disabled={isAnalyzing || cameras.length === 0}>
                 <Brain className="h-3.5 w-3.5 mr-1.5" />

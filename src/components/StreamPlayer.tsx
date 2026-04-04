@@ -152,8 +152,8 @@ function StreamPlayerComponent({
     if (!videoRef.current) return;
 
     const vol = value[0];
-    setVolume(vol);
-    videoRef.current.volume = vol / 100;
+    setVolume(vol!);
+    videoRef.current.volume = vol! / 100;
     setIsMuted(vol === 0);
   }, []);
 

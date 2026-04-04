@@ -31,7 +31,7 @@ function getColor(name: string): string {
     'bg-violet-500', 'bg-purple-500', 'bg-fuchsia-500', 'bg-pink-500',
   ];
   const index = name.charCodeAt(0) % colors.length;
-  return colors[index];
+  return colors[index]!;
 }
 
 export function Avatar({ src, name, size = 'md', className }: AvatarProps) {

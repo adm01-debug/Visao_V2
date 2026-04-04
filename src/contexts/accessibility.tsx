@@ -297,7 +297,7 @@ export function FocusTrap({ children, active = true, onEscape }: FocusTrapProps)
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
       );
       if (focusable.length > 0) {
-        focusable[0].focus();
+        focusable[0]!.focus();
       }
     }
 
@@ -333,10 +333,10 @@ export function FocusTrap({ children, active = true, onEscape }: FocusTrapProps)
 
     if (e.shiftKey && document.activeElement === first) {
       e.preventDefault();
-      last.focus();
+      last!.focus();
     } else if (!e.shiftKey && document.activeElement === last) {
       e.preventDefault();
-      first.focus();
+      first!.focus();
     }
   };
 

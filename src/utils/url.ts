@@ -95,7 +95,7 @@ export const setHash = (url: string, hash: string): string => {
 };
 
 export const removeHash = (url: string): string =>
-  url.split('#')[0];
+  url.split!('#')[0];
 
 export const parseUrl = (url: string): URL | null => {
   try {

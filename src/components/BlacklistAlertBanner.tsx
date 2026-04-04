@@ -122,29 +122,29 @@ export function BlacklistAlertBanner({ className }: BlacklistAlertBannerProps) {
         <div className="p-4">
           <div className="flex items-start gap-3">
             <Avatar className="h-12 w-12 border-2 border-destructive-foreground/30">
-              {latestAlert.imageUrl ? (
-                <AvatarImage src={latestAlert.imageUrl} />
+              {latestAlert!.imageUrl ? (
+                <AvatarImage src={latestAlert!.imageUrl} />
               ) : null}
               <AvatarFallback className="bg-destructive-foreground/20 text-destructive-foreground">
-                {latestAlert.personName.charAt(0)}
+                {latestAlert!.personName.charAt(0)}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="font-bold truncate">{latestAlert.personName}</span>
+                <span className="font-bold truncate">{latestAlert!.personName}</span>
                 <Badge variant="outline" className="border-destructive-foreground/50 text-destructive-foreground">
                   Blacklist
                 </Badge>
               </div>
               <p className="text-sm opacity-90 mt-1">
-                Detectado em <span className="font-medium">{latestAlert.cameraName}</span>
+                Detectado em <span className="font-medium">{latestAlert!.cameraName}</span>
               </p>
               <div className="flex items-center gap-4 mt-2 text-sm opacity-75">
                 <span>
-                  {format(latestAlert.timestamp, "HH:mm:ss", { locale: ptBR })}
+                  {format(latestAlert!.timestamp, "HH:mm:ss", { locale: ptBR })}
                 </span>
                 <span>
-                  Confiança: {(latestAlert.confidence * 100).toFixed(0)}%
+                  Confiança: {(latestAlert!.confidence * 100).toFixed(0)}%
                 </span>
               </div>
             </div>

@@ -127,7 +127,7 @@ export default function PPEPage() {
   // Selecionar primeira câmera por padrão
   useEffect(() => {
     if (cameras.length > 0 && !selectedCamera) {
-      setSelectedCamera(cameras[0].id);
+      setSelectedCamera(cameras[0]!.id);
     }
   }, [cameras]);
 

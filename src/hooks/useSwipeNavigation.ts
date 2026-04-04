@@ -57,7 +57,7 @@ export function useSwipeNavigation({
         if (newIndex < 0) newIndex = MAIN_ROUTES.length - 1;
       }
 
-      navigate(MAIN_ROUTES[newIndex].path);
+      navigate(MAIN_ROUTES[newIndex]!.path);
     },
     [getCurrentRouteIndex, navigate]
   );
@@ -72,8 +72,8 @@ export function useSwipeNavigation({
     const handleTouchStart = (e: TouchEvent) => {
       const touch = e.touches[0];
       touchStartRef.current = {
-        x: touch.clientX,
-        y: touch.clientY,
+        x: touch!.clientX,
+        y: touch!.clientY,
         time: Date.now(),
       };
     };
@@ -82,8 +82,8 @@ export function useSwipeNavigation({
       if (!touchStartRef.current) return;
 
       const touch = e.changedTouches[0];
-      const deltaX = touch.clientX - touchStartRef.current.x;
-      const deltaY = touch.clientY - touchStartRef.current.y;
+      const deltaX = touch!.clientX - touchStartRef.current.x;
+      const deltaY = touch!.clientY - touchStartRef.current.y;
       const deltaTime = Date.now() - touchStartRef.current.time;
 
       // Reset

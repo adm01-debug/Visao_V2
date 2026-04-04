@@ -79,7 +79,7 @@ export function FloorPlanMap() {
     const positions: Record<string, { x: number; y: number; rotation: number }> = {};
     uiCameras.forEach((camera, index) => {
       const pos = defaultPositions[index % defaultPositions.length];
-      positions[camera.id] = pos;
+      positions[camera.id]! = pos;
     });
     return positions;
   }, [uiCameras]);

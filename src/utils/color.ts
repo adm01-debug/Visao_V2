@@ -51,9 +51,9 @@ export const hexToRgb = (hex: string): RGB | null => {
   if (!result) return null;
 
   return {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16),
+    r: parseInt(result[1]!, 16),
+    g: parseInt(result[2]!, 16),
+    b: parseInt(result[3]!, 16),
   };
 };
 
@@ -243,7 +243,7 @@ export const luminance = (hex: string): number => {
       : Math.pow((sRGB + 0.055) / 1.055, 2.4);
   });
 
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return 0.2126 * r! + 0.7152 * g! + 0.0722 * b!;
 };
 
 /**

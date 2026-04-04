@@ -308,7 +308,7 @@ class FFmpegService {
       await this.ffmpeg.exec([
         '-i', inputName,
         '-vn',
-        '-c:a', codecMap[format],
+        '-c:a', codecMap[format]!,
         outputName,
       ]);
 
@@ -348,13 +348,13 @@ class FFmpegService {
         const message = (data as { message: string }).message;
         const durationMatch = message.match(/Duration: (\d{2}:\d{2}:\d{2}\.\d{2})/);
         if (durationMatch) {
-          metadata.duration = durationMatch[1];
+          metadata.duration = durationMatch[1]!;
         }
 
         const streamMatch = message.match(/Stream.*Video: (\w+).*, (\d+x\d+)/);
         if (streamMatch) {
-          metadata.codec = streamMatch[1];
-          metadata.resolution = streamMatch[2];
+          metadata.codec = streamMatch[1]!;
+          metadata.resolution = streamMatch[2]!;
         }
       });
 

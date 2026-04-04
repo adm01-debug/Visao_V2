@@ -107,10 +107,10 @@ export default function CollaboratorFlowMapPage() {
         [0, 1], [0, 3], [1, 3], [2, 3], [0, 6], [7, 0], [7, 2], [3, 5], [5, 0], [5, 1], [6, 0],
       ];
       pairs.forEach(([f, t]) => {
-        if (f < zoneIds.length && t < zoneIds.length) {
+        if (f! < zoneIds.length && t! < zoneIds.length) {
           edges.push({
-            from: zoneMap.get(zoneIds[f])!.name,
-            to: zoneMap.get(zoneIds[t])!.name,
+            from: zoneMap.get(zoneIds[f!] ?? '')!.name,
+            to: zoneMap.get(zoneIds[t!] ?? '')!.name,
             count: Math.floor(Math.random() * 20) + 3,
             avgTransitTime: Math.floor(Math.random() * 120) + 15,
           });

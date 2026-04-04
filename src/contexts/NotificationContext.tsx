@@ -93,7 +93,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         : toast.info;
 
     toastFn(alert.message, {
-      description: `${config.label} • ${alert.camera_name} • ${new Date(alert.timestamp).toLocaleTimeString("pt-BR")}`,
+      description: `${config!.label} • ${alert.camera_name} • ${new Date(alert.timestamp).toLocaleTimeString("pt-BR")}`,
       duration: alert.severity === "critical" ? 10000 : 5000,
       position: "top-right",
     });

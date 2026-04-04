@@ -71,7 +71,7 @@ export function useWidgetDashboard() {
 
       const newWidgets = [...prev.widgets];
       const [removed] = newWidgets.splice(oldIndex, 1);
-      newWidgets.splice(newIndex, 0, removed);
+      newWidgets.splice(newIndex, 0, removed!);
 
       return {
         ...prev,

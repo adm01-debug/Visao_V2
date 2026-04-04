@@ -27,7 +27,7 @@ Object.defineProperty(globalThis, "crypto", {
       digest: async (_algo: string, data: ArrayBuffer) => {
         const arr = new Uint8Array(32);
         const view = new Uint8Array(data);
-        for (let i = 0; i < 32; i++) arr[i] = view[i % view.length] ^ (i * 7);
+        for (let i = 0; i < 32; i++) arr[i] = view[i % view.length]! ^ (i * 7);
         return arr.buffer;
       },
     },

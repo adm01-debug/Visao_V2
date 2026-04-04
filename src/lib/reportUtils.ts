@@ -29,8 +29,8 @@ export function aggregateByDay<T extends { timestamp: Date }>(items: T[]): Map<s
   const map = new Map<string, T[]>();
   items.forEach(item => {
     const key = item.timestamp.toISOString().split('T')[0];
-    if (!map.has(key)) map.set(key, []);
-    map.get(key)!.push(item);
+    if (!map.has(key!)) map.set(key!, []);
+    map.get(key!)!.push(item);
   });
   return map;
 }

@@ -711,7 +711,7 @@ export function VideoStreamPlayer({
               <div className="w-20" onClick={(e) => e.stopPropagation()}>
                 <Slider
                   value={[state.volume * 100]}
-                  onValueChange={([v]) => setVolume(v / 100)}
+                  onValueChange={([v]) => setVolume(v! / 100)}
                   max={100}
                   step={1}
                   className="cursor-pointer"

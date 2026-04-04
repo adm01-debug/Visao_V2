@@ -316,7 +316,7 @@ export function ContinuousAnalysisPanel({
 
   const handleIntervalChange = (value: number[]) => {
     const newInterval = value[0];
-    setInterval(newInterval);
+    setInterval(newInterval!);
     if (session) {
       onConfigUpdate({ interval: newInterval });
     }
@@ -529,7 +529,7 @@ export function ContinuousAnalysisPanel({
                   </div>
                   <Slider
                     value={[minPPECompliance]}
-                    onValueChange={([v]) => setMinPPECompliance(v)}
+                    onValueChange={([v]) => setMinPPECompliance(v!)}
                     min={50}
                     max={100}
                     step={5}
@@ -541,7 +541,7 @@ export function ContinuousAnalysisPanel({
                   </div>
                   <Slider
                     value={[minConfidence * 100]}
-                    onValueChange={([v]) => setMinConfidence(v / 100)}
+                    onValueChange={([v]) => setMinConfidence(v! / 100)}
                     min={50}
                     max={100}
                     step={5}

@@ -373,7 +373,7 @@ function MultiCameraRecognitionComponent() {
                   <Label>Intervalo de Captura: {captureInterval / 1000}s</Label>
                   <Slider
                     value={[captureInterval]}
-                    onValueChange={([v]) => setCaptureInterval(v)}
+                    onValueChange={([v]) => setCaptureInterval(v!)}
                     min={1000}
                     max={10000}
                     step={500}
@@ -383,7 +383,7 @@ function MultiCameraRecognitionComponent() {
                   <Label>Limiar de Similaridade: {(matchThreshold * 100).toFixed(0)}%</Label>
                   <Slider
                     value={[matchThreshold * 100]}
-                    onValueChange={([v]) => setMatchThreshold(v / 100)}
+                    onValueChange={([v]) => setMatchThreshold(v! / 100)}
                     min={30}
                     max={95}
                     step={5}

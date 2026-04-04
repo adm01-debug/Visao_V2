@@ -21,7 +21,7 @@ export const LazyImage = React.memo(function LazyImage({
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && imgRef.current) {
+        if (entry!.isIntersecting && imgRef.current) {
           imgRef.current.src = src || "";
         }
       },

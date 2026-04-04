@@ -18,13 +18,13 @@ export function useSwipe(
   const startY = useRef(0);
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    startX.current = e.touches[0].clientX;
-    startY.current = e.touches[0].clientY;
+    startX.current = e.touches[0]!.clientX;
+    startY.current = e.touches[0]!.clientY;
   }, []);
 
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-    const endX = e.changedTouches[0].clientX;
-    const endY = e.changedTouches[0].clientY;
+    const endX = e.changedTouches[0]!.clientX;
+    const endY = e.changedTouches[0]!.clientY;
     const diffX = endX - startX.current;
     const diffY = Math.abs(endY - startY.current);
 
@@ -63,13 +63,13 @@ export function PullToRefresh({
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (disabled || isRefreshing) return;
     if (containerRef.current?.scrollTop === 0) {
-      startY.current = e.touches[0].clientY;
+      startY.current = e.touches[0]!.clientY;
     }
   }, [disabled, isRefreshing]);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if (disabled || isRefreshing || startY.current === 0) return;
-    const currentY = e.touches[0].clientY;
+    const currentY = e.touches[0]!.clientY;
     const diff = currentY - startY.current;
     if (diff > 0 && containerRef.current?.scrollTop === 0) {
       setPullDistance(Math.min(diff * 0.5, threshold * 1.5));
@@ -338,7 +338,7 @@ export function BottomSheet({
 
   if (!isOpen) return null;
 
-  const height = `${snapPoints[snapIndex] * 100}vh`;
+  const height = `${snapPoints[snapIndex]! * 100}vh`;
 
   return (
     <>

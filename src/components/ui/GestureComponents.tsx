@@ -107,7 +107,7 @@ export function PullToRefresh({
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (containerRef.current?.scrollTop === 0) {
-      startY.current = e.touches[0].clientY;
+      startY.current = e.touches[0]!.clientY;
       isPulling.current = true;
     }
   }, []);
@@ -115,7 +115,7 @@ export function PullToRefresh({
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if (!isPulling.current || isRefreshing) return;
 
-    const currentY = e.touches[0].clientY;
+    const currentY = e.touches[0]!.clientY;
     const diff = currentY - startY.current;
 
     if (diff > 0) {
@@ -200,8 +200,8 @@ export function PinchToZoom({
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (e.touches.length === 2) {
-      const dx = e.touches[0].clientX - e.touches[1].clientX;
-      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dx = e.touches[0]!.clientX - e!.touches[1].clientX;
+      const dy = e.touches[0]!.clientY - e!.touches[1].clientY;
       lastDistance.current = Math.sqrt(dx * dx + dy * dy);
       lastScale.current = scale;
     }
@@ -209,8 +209,8 @@ export function PinchToZoom({
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if (e.touches.length === 2) {
-      const dx = e.touches[0].clientX - e.touches[1].clientX;
-      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dx = e.touches[0]!.clientX - e!.touches[1].clientX;
+      const dy = e.touches[0]!.clientY - e!.touches[1].clientY;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
       const newScale = Math.min(

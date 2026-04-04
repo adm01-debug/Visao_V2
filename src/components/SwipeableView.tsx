@@ -52,10 +52,10 @@ export function SwipeableView({ children, className }: SwipeableViewProps) {
 
     if (info.offset.x > threshold || info.velocity.x > velocity) {
       // Swipe right - go to previous
-      navigate(prevRoute.path);
+      navigate(prevRoute!.path);
     } else if (info.offset.x < -threshold || info.velocity.x < -velocity) {
       // Swipe left - go to next
-      navigate(nextRoute.path);
+      navigate(nextRoute!.path);
     }
 
     setShowIndicator(null);
@@ -87,7 +87,7 @@ export function SwipeableView({ children, className }: SwipeableViewProps) {
             className="absolute left-2 top-1/2 -translate-y-1/2 z-10 flex items-center gap-2 bg-primary/90 text-primary-foreground rounded-full px-3 py-2 shadow-lg"
           >
             <ChevronLeft className="h-4 w-4" />
-            <span className="text-xs font-medium">{prevRoute.label}</span>
+            <span className="text-xs font-medium">{prevRoute!.label}</span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -101,7 +101,7 @@ export function SwipeableView({ children, className }: SwipeableViewProps) {
             exit={{ opacity: 0, x: 20 }}
             className="absolute right-2 top-1/2 -translate-y-1/2 z-10 flex items-center gap-2 bg-primary/90 text-primary-foreground rounded-full px-3 py-2 shadow-lg"
           >
-            <span className="text-xs font-medium">{nextRoute.label}</span>
+            <span className="text-xs font-medium">{nextRoute!.label}</span>
             <ChevronRight className="h-4 w-4" />
           </motion.div>
         )}

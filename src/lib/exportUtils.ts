@@ -30,7 +30,7 @@ export function exportToCSV<T extends Record<string, unknown>>(
 ) {
   if (data.length === 0) return;
 
-  const keys = headers ? headers.map(h => h.key) : (Object.keys(data[0]) as (keyof T)[]);
+  const keys = headers ? headers.map(h => h.key) : (Object.keys(data[0] ?? 0) as (keyof T)[]);
   const headerLabels = headers ? headers.map(h => h.label) : keys.map(String);
 
   const csvContent = [
@@ -59,7 +59,7 @@ export function exportToPDF<T extends Record<string, unknown>>(
 ) {
   if (data.length === 0) return;
 
-  const keys = headers ? headers.map(h => h.key) : (Object.keys(data[0]) as (keyof T)[]);
+  const keys = headers ? headers.map(h => h.key) : (Object.keys(data[0] ?? 0) as (keyof T)[]);
   const headerLabels = headers ? headers.map(h => h.label) : keys.map(String);
 
   const htmlContent = `

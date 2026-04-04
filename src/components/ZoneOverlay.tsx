@@ -227,14 +227,14 @@ function ZoneShape({ zone, animate, onClick }: ZoneShapeProps) {
     const center = geometry.points[0];
     const edge = geometry.points[1];
     const radius = Math.sqrt(
-      Math.pow(edge.x - center.x, 2) + Math.pow(edge.y - center.y, 2)
+      Math.pow(edge!.x - center!.x, 2) + Math.pow(edge!.y - center!.y, 2)
     );
 
     return (
       <g className="pointer-events-auto cursor-pointer" onClick={onClick}>
         <circle
-          cx={`${center.x}%`}
-          cy={`${center.y}%`}
+          cx={`${center!.x}%`}
+          cy={`${center!.y}%`}
           r={`${radius}%`}
           fill={color}
           fillOpacity={opacity}
@@ -244,8 +244,8 @@ function ZoneShape({ zone, animate, onClick }: ZoneShapeProps) {
         />
         {isAlerted && (
           <circle
-            cx={`${center.x}%`}
-            cy={`${center.y}%`}
+            cx={`${center!.x}%`}
+            cy={`${center!.y}%`}
             r={`${radius + 1}%`}
             fill="none"
             stroke={color}

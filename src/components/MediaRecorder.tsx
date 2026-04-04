@@ -58,8 +58,8 @@ export const MediaRecorderComponent: React.FC<MediaRecorderProps> = ({
       const audio = deviceList.filter(d => d.kind === 'audioinput');
       const video = deviceList.filter(d => d.kind === 'videoinput');
       setDevices({ audio, video });
-      if (audio.length) setSelectedDevices(prev => ({ ...prev, audio: audio[0].deviceId }));
-      if (video.length) setSelectedDevices(prev => ({ ...prev, video: video[0].deviceId }));
+      if (audio.length) setSelectedDevices(prev => ({ ...prev, audio: audio[0]!.deviceId }));
+      if (video.length) setSelectedDevices(prev => ({ ...prev, video: video[0]!.deviceId }));
     });
   }, []);
 

@@ -17,7 +17,7 @@ export function useScreenShare(options: UseScreenShareOptions = { video: true })
   const startSharing = useCallback(async () => {
     try {
       const mediaStream = await navigator.mediaDevices.getDisplayMedia(options as DisplayMediaStreamOptions);
-      mediaStream.getVideoTracks()[0].onended = () => { setStream(null); setIsSharing(false); };
+      mediaStream!.getVideoTracks()[0].onended = () => { setStream(null); setIsSharing(false); };
       setStream(mediaStream);
       setIsSharing(true);
       setError(null);

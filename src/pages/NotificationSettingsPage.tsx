@@ -597,7 +597,7 @@ export default function NotificationSettingsPage() {
                   <div role="main" className="flex items-center gap-4">
                     <Slider
                       value={[config.cooldown_minutes]}
-                      onValueChange={([value]) => setConfig({ ...config, cooldown_minutes: value })}
+                      onValueChange={([value]) => setConfig({ ...config, cooldown_minutes!: value })}
                       min={1}
                       max={60}
                       step={1}

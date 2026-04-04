@@ -308,8 +308,8 @@ export function useZoneDetection(
           const { crossed, direction } = didCrossLine(
             prevPosition,
             centerPoint,
-            zone.geometry.points[0],
-            zone.geometry.points[1]
+            zone.geometry.points[0]!,
+            zone.geometry.points[1]!
           );
 
           if (crossed) {

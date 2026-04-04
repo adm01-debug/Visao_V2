@@ -14,7 +14,7 @@ export function toObjects<T>(csv: string, delimiter = ","): T[] {
   const rows = parse(csv, delimiter);
   const headers = rows[0];
   return rows.slice(1).map(row => {
-    return headers.reduce((obj, header, i) => {
+    return headers!.reduce((obj, header, i) => {
       obj[header as keyof T] = row[i] as T[keyof T];
       return obj;
     }, {} as T);

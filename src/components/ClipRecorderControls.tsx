@@ -441,7 +441,7 @@ export function ClipRecorderControls({
                   <Label>Duração máxima: {formatDuration(clipDurationSetting)}</Label>
                   <Slider
                     value={[clipDurationSetting]}
-                    onValueChange={([v]) => setClipDurationSetting(v)}
+                    onValueChange={([v]) => setClipDurationSetting(v!)}
                     min={10}
                     max={maxDuration}
                     step={10}
