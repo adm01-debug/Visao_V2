@@ -128,6 +128,7 @@ const App = () => (
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
+    </HelmetProvider>
   </ErrorBoundary>
 );
 
