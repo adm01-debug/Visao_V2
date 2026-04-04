@@ -578,6 +578,37 @@ export function VideoStreamPlayer({
           </div>
         )}
 
+        {/* Continuous Analysis indicator */}
+        {continuousAnalysisActive && analysisSession && (
+          <div className="absolute top-12 right-3 flex flex-col items-end gap-1">
+            <div className="flex items-center gap-2 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-xs text-white">
+              <Brain className={cn('w-3 h-3', isAnalysisRunning ? 'animate-pulse text-primary' : 'text-green-400')} />
+              <span>{isAnalysisRunning ? 'Analisando...' : 'IA Ativa'}</span>
+              {analysisSession.stats.totalAnalyses > 0 && (
+                <span className="text-muted-foreground">({analysisSession.stats.totalAnalyses})</span>
+              )}
+            </div>
+            {lastAnalysis && (
+              <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-xs text-white">
+                <span className="text-muted-foreground">Pessoas:</span>
+                <span className="font-medium">{lastAnalysis.people_count}</span>
+                {lastAnalysis.risk_level && (
+                  <>
+                    <span className="text-muted-foreground ml-1">Risco:</span>
+                    <span className={cn(
+                      'font-medium',
+                      lastAnalysis.risk_level === 'critical' && 'text-red-400',
+                      lastAnalysis.risk_level === 'high' && 'text-orange-400',
+                      lastAnalysis.risk_level === 'medium' && 'text-yellow-400',
+                      lastAnalysis.risk_level === 'low' && 'text-green-400',
+                    )}>{lastAnalysis.risk_level}</span>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Stats overlay */}
         {showStatsOverlay && state.status === 'playing' && (
           <StatsOverlay
