@@ -8,6 +8,7 @@ import {
   Search, Plus, X,
 } from 'lucide-react';
 import { useCameras } from '@/hooks/useCameras';
+import { useRules } from '@/hooks/useRules';
 import { CameraCard, CameraDetailView, GRID_CLASSES } from '@/components/cameras';
 import type { CameraData, ViewMode } from '@/components/cameras';
 import { EmptyState } from '@/components/EmptyState';
