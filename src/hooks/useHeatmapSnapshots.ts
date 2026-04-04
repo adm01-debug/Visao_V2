@@ -64,9 +64,7 @@ export const useHeatmapSnapshots = (cameraId?: string) => {
         .from('heatmap-snapshots')
         .getPublicUrl(fileName);
 
-      const { data, error: insertError } = await supabase
-        .from('heatmap_snapshots')
-        .insert({
+      const insertData = {
           camera_id: cameraId,
           image_url: urlData.publicUrl,
           data_points: stats.dataPoints,
@@ -78,7 +76,11 @@ export const useHeatmapSnapshots = (cameraId?: string) => {
           resolution: stats.resolution,
           metadata,
           user_id: (await supabase.auth.getUser()).data.user?.id ?? '',
-        })
+        };
+
+      const { data, error: insertError } = await supabase
+        .from('heatmap_snapshots')
+        .insert(insertData)
         .select()
         .single();
 
