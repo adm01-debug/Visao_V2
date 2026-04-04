@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import {
@@ -116,7 +115,7 @@ export function DataTable<T extends Record<string, any>>({
   };
 
   if (loading) {
-    return <TableSkeleton rows={pageSize} columns={columns.length} />;
+    return <TableSkeleton rows={pageSize} cols={columns.length} />;
   }
 
   return (

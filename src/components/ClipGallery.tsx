@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { getRelativeTime, formatDuration } from "@/lib/dateUtils";
+import { getRelativeTime, formatDuration as formatDurationUtil } from "@/lib/dateUtils";
 import { memo, useMemo, useState } from 'react';
 /**
  * VISÃO - Sistema de Vigilância Inteligente
@@ -155,7 +154,7 @@ function ClipCard({
   onToggleFavorite?: (clipId: string) => void;
   onMarkViewed?: (clipId: string) => void;
 }) {
-  const TriggerIcon = triggerIcons[clip.trigger];
+  const TriggerIcon = clip.trigger ? triggerIcons[clip.trigger] : Hand;
 
   return (
     <Card className="group overflow-hidden hover:ring-2 hover:ring-primary/50 transition-all">
@@ -499,9 +498,9 @@ function VideoPlayerModal({
             </div>
           </div>
 
-          {clip.triggerDetails?.message && (
+          {clip.triggerDetails && (
             <p className="mt-2 text-sm text-muted-foreground">
-              {clip.triggerDetails.message}
+              {clip.triggerDetails}
             </p>
           )}
         </div>
@@ -641,7 +640,7 @@ export function ClipGallery({
           </div>
 
           {/* Filtro de trigger */}
-          <Select value={triggerFilter} onValueChange={(v: unknown) => setTriggerFilter(v)}>
+          <Select value={triggerFilter} onValueChange={(v: string) => setTriggerFilter(v as 'all' | RecordingTrigger)}>
             <SelectTrigger className="w-32">
               <Filter className="w-4 h-4 mr-2" />
               <SelectValue />
@@ -657,7 +656,7 @@ export function ClipGallery({
           </Select>
 
           {/* Ordenação */}
-          <Select value={sortBy} onValueChange={(v: unknown) => setSortBy(v)}>
+          <Select value={sortBy} onValueChange={(v: string) => setSortBy(v as 'date' | 'duration')}>
             <SelectTrigger className="w-32">
               <SelectValue />
             </SelectTrigger>

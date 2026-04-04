@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Automation Rules Manager Component
  * Allows creating, editing and managing automation rules
@@ -56,7 +55,8 @@ import {
 } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useRules, type Rule, type RuleCondition } from '@/hooks/useRules';
+import { useRules } from '@/hooks/useRules';
+import { DbRule, DbRuleInsert } from '@/types/rules';
 import { useCameras } from '@/hooks/useCameras';
 import { cn } from '@/lib/utils';
 import { RuleTemplateSelector } from './RuleTemplateSelector';
@@ -153,11 +153,11 @@ const defaultFormData: RuleFormData = {
 };
 
 export function AutomationRulesManager() {
-  const { rules, isLoading, createRule, updateRule, deleteRule, toggleActive } = useRules();
+  const { rules, loading: isLoading, createRule, updateRule, deleteRule, toggleRule } = useRules();
   const { cameras } = useCameras();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingRule, setEditingRule] = useState<Rule | null>(null);
+  const [editingRule, setEditingRule] = useState<DbRule | null>(null);
   const [formData, setFormData] = useState<RuleFormData>(defaultFormData);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
@@ -192,17 +192,21 @@ export function AutomationRulesManager() {
     setIsDialogOpen(true);
   };
 
-  const openEditDialog = (rule: Rule) => {
+  const openEditDialog = (rule: DbRule) => {
     setEditingRule(rule);
+    const conditions = Array.isArray(rule.conditions) 
+      ? (rule.conditions as unknown as Array<{ type: string; operator: string; value: string }>)
+      : [];
+    const schedule = rule.schedule as unknown as { enabled: boolean; days: number[]; start_time: string; end_time: string } | null;
     setFormData({
       name: rule.name,
       description: rule.description || '',
       category: rule.category,
       severity: rule.severity,
-      conditions: rule.conditions,
+      conditions,
       actions: rule.actions,
       cameras: rule.cameras,
-      schedule: rule.schedule || {
+      schedule: schedule || {
         enabled: false,
         days: [1, 2, 3, 4, 5],
         start_time: '08:00',
@@ -216,16 +220,15 @@ export function AutomationRulesManager() {
   const handleSave = async () => {
     try {
       if (editingRule) {
-        await updateRule({
-          id: editingRule.id,
+        await updateRule(editingRule.id, {
           name: formData.name,
           description: formData.description || null,
           category: formData.category as 'security' | 'safety' | 'operations' | 'access' | 'analytics',
           severity: formData.severity as 'low' | 'medium' | 'high' | 'critical',
-          conditions: formData.conditions as unknown as Record<string, unknown>,
-          actions: formData.actions as ('alert' | 'notify' | 'record' | 'lockdown' | 'dispatch')[],
+          conditions: formData.conditions as unknown as Json,
+          actions: formData.actions as ('alert' | 'notify' | 'record' | 'lockdown' | 'dispatch' | 'arm' | 'disarm' | 'panic')[],
           cameras: formData.cameras,
-          schedule: formData.schedule.enabled ? formData.schedule as unknown as Record<string, unknown> : null,
+          schedule: formData.schedule.enabled ? (formData.schedule as unknown as Json) : null,
           is_active: formData.is_active,
         });
       } else {
@@ -234,10 +237,10 @@ export function AutomationRulesManager() {
           description: formData.description || null,
           category: formData.category as 'security' | 'safety' | 'operations' | 'access' | 'analytics',
           severity: formData.severity as 'low' | 'medium' | 'high' | 'critical',
-          conditions: formData.conditions as unknown as Record<string, unknown>,
-          actions: formData.actions as ('alert' | 'notify' | 'record' | 'lockdown' | 'dispatch')[],
+          conditions: formData.conditions as unknown as Json,
+          actions: formData.actions as ('alert' | 'notify' | 'record' | 'lockdown' | 'dispatch' | 'arm' | 'disarm' | 'panic')[],
           cameras: formData.cameras,
-          schedule: formData.schedule.enabled ? formData.schedule as unknown as Record<string, unknown> : null,
+          schedule: formData.schedule.enabled ? (formData.schedule as unknown as Json) : null,
           is_active: formData.is_active,
         });
       }
@@ -407,7 +410,7 @@ export function AutomationRulesManager() {
                               </p>
                             )}
                             <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
-                              <span>{rule.conditions.length} condição(ões)</span>
+                              <span>{Array.isArray(rule.conditions) ? (rule.conditions as unknown[]).length : 0} condição(ões)</span>
                               <span>•</span>
                               <span>{rule.actions.length} ação(ões)</span>
                               {rule.cameras.length > 0 && (

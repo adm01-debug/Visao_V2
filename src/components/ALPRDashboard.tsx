@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: ALPRDashboard
@@ -128,16 +127,16 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
         acc[d.plate].firstSeen = d.timestamp;
       }
       return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, { plate: string; firstSeen: string; lastSeen: string; totalVisits: number; status: string; camera: string; vehicleType: string | null }>);
 
-    return Object.values(grouped).sort((a: unknown, b: unknown) =>
-      b.lastSeen.getTime() - a.lastSeen.getTime()
+    return Object.values(grouped).sort((a, b) =>
+      new Date(b.lastSeen).getTime() - new Date(a.lastSeen).getTime()
     );
   }, [detections]);
 
   // Filtrar histórico
   const filteredHistory = useMemo(() => {
-    return vehicleHistory.filter((v: unknown) => {
+    return vehicleHistory.filter((v) => {
       const matchesSearch = v.plate.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            v.vehicleType?.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesStatus = statusFilter === 'all' || v.status === statusFilter;
@@ -441,7 +440,7 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
         <CardContent>
           <ScrollArea className="h-[400px]">
             <div className="space-y-2">
-              {filteredHistory.map((vehicle: unknown) => (
+              {filteredHistory.map((vehicle) => (
                 <div
                   key={vehicle.plate}
                   className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"

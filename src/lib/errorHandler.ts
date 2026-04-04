@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { logger } from './logger';
 
 /**
@@ -31,7 +30,8 @@ export function isAppError(error: unknown): error is AppError {
 }
 
 export function logError(error: unknown): void {
-  logger.error('errorHandler', '[Error]:', error);
+  const msg = error instanceof Error ? error.message : String(error);
+  logger.error('errorHandler', '[Error]:', msg);
 }
 
 export default { AppError, handleError, isAppError, logError };

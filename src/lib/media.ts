@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Media utilities
  */
@@ -7,7 +6,7 @@ export async function getUserMedia(constraints?: MediaStreamConstraints): Promis
   return navigator.mediaDevices.getUserMedia(constraints);
 }
 
-export async function getDisplayMedia(constraints?: DisplayMediaStreamConstraints): Promise<MediaStream> {
+export async function getDisplayMedia(constraints?: MediaStreamConstraints): Promise<MediaStream> {
   return navigator.mediaDevices.getDisplayMedia(constraints);
 }
 

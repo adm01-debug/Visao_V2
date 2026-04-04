@@ -179,20 +179,23 @@ interface UseMLModelsOptions {
   onError?: (error: Error, model: ModelType) => void;
 }
 
-interface UseMLModelsReturn {
+export interface UseMLModelsReturn {
   modelsInfo: Map<ModelType, ModelInfo>;
   isLoading: boolean;
   isReady: boolean;
+  isModelLoaded: boolean;
   backend: string;
   loadModel: (model: ModelType) => Promise<boolean>;
   loadAllModels: () => Promise<void>;
   unloadAll: () => void;
   detectObjects: (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => Promise<DetectedObject[]>;
+  detectedObjects: DetectedObject[];
   detectPoses: (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => Promise<DetectedPose[]>;
   detectPersons: (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => Promise<DetectedObject[]>;
   detectVehicles: (input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) => Promise<DetectedObject[]>;
   config: MLModelsConfig;
   updateConfig: (updates: Partial<MLModelsConfig>) => void;
+  error: string | null;
 }
 
 export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn {

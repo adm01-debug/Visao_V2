@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VIS-O - Sistema de Vigilância Inteligente
  * API Client Module
@@ -83,7 +82,7 @@ class APIClient {
           status: response.status,
           code: responseData?.code,
         };
-        logger.error('api', `Request failed: ${method} ${endpoint}`, error);
+        logger.error('api', `Request failed: ${method} ${endpoint}`, error.message);
         throw error;
       }
 

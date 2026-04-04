@@ -1,16 +1,16 @@
-// @ts-nocheck
 // Type declaration for performance.memory (Chrome-only API)
-declare global {
-  interface Performance {
-    memory?: {
-      usedJSHeapSize: number;
-      totalJSHeapSize: number;
-      jsHeapSizeLimit: number;
-    };
-  }
-  interface Window {
-    gc?: () => void;
-  }
+interface PerformanceMemory {
+  usedJSHeapSize: number;
+  totalJSHeapSize: number;
+  jsHeapSizeLimit: number;
+}
+
+interface PerformanceWithMemory extends Performance {
+  memory?: PerformanceMemory;
+}
+
+interface WindowWithGC extends Window {
+  gc?: () => void;
 }
 
 /**

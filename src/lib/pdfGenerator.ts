@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Utilitário: Gerador de Relatórios em PDF
@@ -18,7 +17,7 @@ export interface ReportData {
 export interface ReportSection {
   title: string;
   type: 'table' | 'chart' | 'summary' | 'text';
-  data: Record<string, unknown>;
+  data: unknown;
 }
 
 export interface TableRow {

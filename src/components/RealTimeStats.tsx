@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: RealTimeStats - Estatísticas em tempo real
@@ -83,7 +82,7 @@ export function RealTimeStats() {
 
       // Faces today
       const { count: facesCount } = await supabase
-        .from('face_detections')
+        .from('recognition_logs')
         .select('*', { count: 'exact', head: true })
         .gte('timestamp', today.toISOString());
 
