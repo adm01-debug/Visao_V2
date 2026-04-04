@@ -120,7 +120,7 @@ export default function JourneyReportsPage() {
         const zone = event.zone_id ? zoneMap.get(event.zone_id) : null;
         if (!zone) continue;
 
-        const objects = (event.detected_objects as any[]) || [];
+        const objects = (event.detected_objects as Array<{ person_id?: string }>) || [];
         for (const obj of objects) {
           const personId = obj?.person_id;
           if (!personId) continue;
