@@ -6,7 +6,9 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSidebarStatus, type SidebarStatus } from "@/hooks/useSidebarStatus";
+import { useUserRole } from "@/hooks/useUserRole";
 import { createSidebarCategories } from "../config/categories";
+import type { NavCategory } from "../types";
 
 const STORAGE_KEY = "sidebar-collapsed";
 
@@ -14,6 +16,7 @@ export function useSidebarState() {
   const location = useLocation();
   const navigate = useNavigate();
   const sidebarStatus = useSidebarStatus();
+  const { hasMinRole } = useUserRole();
 
   // Collapsed state with localStorage persistence
   const [collapsed, setCollapsed] = useState(() => {
@@ -26,11 +29,17 @@ export function useSidebarState() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
-  // Generate categories with real data
-  const categories = useMemo(
-    () => createSidebarCategories(sidebarStatus),
-    [sidebarStatus]
-  );
+  // Generate categories with real data, filtered by user role
+  const categories = useMemo(() => {
+    const allCategories = createSidebarCategories(sidebarStatus);
+    return allCategories
+      .filter((cat) => !cat.minRole || hasMinRole(cat.minRole))
+      .map((cat): NavCategory => ({
+        ...cat,
+        items: cat.items.filter((item) => !item.minRole || hasMinRole(item.minRole)),
+      }))
+      .filter((cat) => cat.items.length > 0);
+  }, [sidebarStatus, hasMinRole]);
 
   // Track which categories are expanded
   const [expandedCategories, setExpandedCategories] = useState<string[]>(() => {
