@@ -459,9 +459,9 @@ export function SecurityPage() {
         setSecurityPersons(persons.map(p => ({
           id: p.id,
           name: p.name,
-          photo: p.photo_url,
+          photo: p.photo_url ?? undefined,
           listType: p.list_type as ListType,
-          reason: p.notes,
+          reason: p.notes ?? undefined,
           addedAt: p.created_at,
         })));
       }

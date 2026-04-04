@@ -121,15 +121,7 @@ export default function PPEPage() {
 
   // Usar hook PPE para câmera selecionada
   const ppeDetection = usePPEDetection({
-    cameraName: cameras.find(c => c.id === selectedCamera)?.name || '',
-    config: {
-      enabled: true,
-      minConfidence: 0.6,
-      detectionInterval: 2000,
-      alertOnViolation: true,
-      saveViolations: true,
-      gracePeriodSeconds: 5,
-    },
+    onViolation: (v) => toast.error(`Violação PPE: ${v.zoneName}`),
   });
 
   // Selecionar primeira câmera por padrão
@@ -150,9 +142,8 @@ export default function PPEPage() {
       name: newZone.name,
       cameraId: selectedCamera,
       requiredPPE: newZone.requiredPPE,
-      alertOnViolation: newZone.alertOnViolation,
+      alertEnabled: newZone.alertOnViolation,
       gracePeriodSeconds: newZone.gracePeriodSeconds,
-      active: true,
     });
 
     if (success) {
@@ -436,7 +427,7 @@ export default function PPEPage() {
                           {format(new Date(violation.timestamp), 'dd/MM HH:mm:ss', { locale: ptBR })}
                         </TableCell>
                         <TableCell>{violation.zoneName}</TableCell>
-                        <TableCell>{violation.cameraName}</TableCell>
+                        <TableCell>{violation.cameraId}</TableCell>
                         <TableCell>
                           <div role="main" className="flex gap-1">
                             {violation.missingItems.map(type => (
@@ -503,12 +494,12 @@ export default function PPEPage() {
                   {ppeDetection.detections.map(detection => (
                     <Card key={detection.personId} className={cn(
                       "border-2",
-                      detection.compliant ? "border-green-500/50" : "border-red-500/50"
+                      detection.isCompliant ? "border-green-500/50" : "border-red-500/50"
                     )}>
                       <CardContent className="pt-4">
                         <div role="main" className="flex items-center justify-between mb-2">
-                          <Badge variant={detection.compliant ? 'default' : 'destructive'}>
-                            {detection.compliant ? (
+                          <Badge variant={detection.isCompliant ? 'default' : 'destructive'}>
+                            {detection.isCompliant ? (
                               <>
                                 <CheckCircle2 className="w-3 h-3 mr-1" />
                                 Conforme

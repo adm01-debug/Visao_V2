@@ -1,4 +1,5 @@
 import { useCopyToClipboard } from "@/hooks";
+import { Tables } from '@/integrations/supabase/types';
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
@@ -44,7 +45,7 @@ export default function RecognitionLogsPage() {
   const [dateFrom, setDateFrom] = useState<Date | undefined>();
   const [dateTo, setDateTo] = useState<Date | undefined>();
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedLog, setSelectedLog] = useState<RecognitionLog | null>(null);
+  const [selectedLog, setSelectedLog] = useState<Tables<'recognition_logs'> | null>(null);
 
   // Fetch recognition logs
   const { data: logs, isLoading: logsLoading } = useQuery({

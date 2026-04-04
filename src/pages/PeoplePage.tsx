@@ -206,7 +206,17 @@ function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
 
 import { useStorage, STORAGE_BUCKETS } from '@/hooks/useStorage';
 import { useFaceDetection } from '@/hooks/useFaceDetection';
-type FaceEncoding = number[];
+interface FaceEncoding {
+  primaryFace?: {
+    quality: number;
+    confidence: number;
+    attributes?: {
+      age?: number;
+      gender?: string;
+    };
+  };
+  encoding?: number[];
+}
 
 interface PersonFormDialogProps {
   person?: DbPerson | null;
@@ -218,11 +228,13 @@ interface PersonFormDialogProps {
 function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogProps) {
   const storage = useStorage();
   const faceDetection = useFaceDetection();
-  const [formData, setFormData] = useState<Record<string, unknown>>({
+  const [formData, setFormData] = useState({
     name: '',
     department: '',
     role: '',
-    is_active: true,
+    is_active: true as boolean,
+    list_type: 'none',
+    notes: '',
   });
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -284,10 +296,10 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
 
     if (validation.isValid && firstFace) {
       const encoding = await faceDetection.generateEncoding(imageData);
-      setFaceEncoding(encoding);
+      setFaceEncoding(encoding ? { encoding } : null);
       toast.success('Rosto detectado com sucesso!', { id: 'face-detection' });
     } else {
-      toast.error(validation.message, { id: 'face-detection' });
+      toast.error(validation.issues[0] || 'Rosto inválido', { id: 'face-detection' });
     }
   };
 
@@ -349,7 +361,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
   }, [photoFile, photoPreview, faceValidation, person]);
 
   const getSaveButtonMessage = () => {
-    if (faceDetection.isDetecting) {
+    if (faceDetection.isProcessing) {
       return 'Analisando rosto...';
     }
     if (photoFile && !faceValidation) {
@@ -469,7 +481,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
                 )}>
                   <AvatarImage src={photoPreview || undefined} />
                   <AvatarFallback className="text-2xl">
-                    {formData.name?.charAt(0) || 'P'}
+                    {(formData.name as string)?.charAt(0) || 'P'}
                   </AvatarFallback>
                 </Avatar>
                 {photoPreview && (
@@ -484,17 +496,17 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
                   </Button>
                 )}
                 {/* Indicador de detecção facial */}
-                {faceDetection.isDetecting && (
+                {faceDetection.isProcessing && (
                   <div role="main" aria-label="Cadastro de pessoas" className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground rounded-full p-1">
                     <RefreshCw className="w-4 h-4 animate-spin" />
                   </div>
                 )}
-                {!faceDetection.isDetecting && faceValidation?.valid && (
+                {!faceDetection.isProcessing && faceValidation?.valid && (
                   <div role="main" aria-label="Cadastro de pessoas" className="absolute -bottom-1 -right-1 bg-green-500 text-white rounded-full p-1">
                     <CheckCircle className="w-4 h-4" />
                   </div>
                 )}
-                {!faceDetection.isDetecting && faceValidation && !faceValidation.valid && (
+                {!faceDetection.isProcessing && faceValidation && !faceValidation.valid && (
                   <div role="main" aria-label="Cadastro de pessoas" className="absolute -bottom-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-1">
                     <XCircle className="w-4 h-4" />
                   </div>
@@ -654,14 +666,14 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
         </div>
 
         <DialogFooter className="flex-col sm:flex-row gap-2">
-          <Button variant="outline" onClick={onClose} disabled={isSubmitting || faceDetection.isDetecting}>
+          <Button variant="outline" onClick={onClose} disabled={isSubmitting || faceDetection.isProcessing}>
             Cancelar
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={isSubmitting || faceDetection.isDetecting || !canSave}
+            disabled={isSubmitting || faceDetection.isProcessing || !canSave}
             className={cn(
-              !canSave && !isSubmitting && !faceDetection.isDetecting && "opacity-50"
+              !canSave && !isSubmitting && !faceDetection.isProcessing && "opacity-50"
             )}
           >
             {isSubmitting ? (
@@ -669,7 +681,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
                 <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                 Salvando...
               </>
-            ) : faceDetection.isDetecting ? (
+            ) : faceDetection.isProcessing ? (
               <>
                 <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                 Analisando...
