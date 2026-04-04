@@ -3,7 +3,7 @@
  * Otimizada para operadores em campo com indicadores em tempo real
  */
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -33,12 +33,14 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSidebarStatus } from "@/hooks/useSidebarStatus";
+import { useUserRole, type AppRole } from "@/hooks/useUserRole";
 
 interface NavItem {
   id: string;
   label: string;
   icon: LucideIcon;
   path: string;
+  minRole?: AppRole;
 }
 
 interface NavCategory {
@@ -47,9 +49,10 @@ interface NavCategory {
   icon: LucideIcon;
   defaultPath: string;
   items: NavItem[];
+  minRole?: AppRole;
 }
 
-const categories: NavCategory[] = [
+const allCategories: NavCategory[] = [
   {
     id: "monitoring",
     label: "Monitor",
@@ -69,8 +72,8 @@ const categories: NavCategory[] = [
     items: [
       { id: "alerts", label: "Alertas", icon: Bell, path: "/alerts" },
       { id: "panic", label: "Pânico", icon: ShieldAlert, path: "/panic-events" },
-      { id: "rules", label: "Regras", icon: Shield, path: "/security" },
-      { id: "automation", label: "Autom.", icon: Zap, path: "/automation-rules" },
+      { id: "rules", label: "Regras", icon: Shield, path: "/security", minRole: "manager" },
+      { id: "automation", label: "Autom.", icon: Zap, path: "/automation-rules", minRole: "manager" },
       { id: "ppe", label: "EPIs", icon: HardHat, path: "/ppe" },
     ],
   },
@@ -92,9 +95,9 @@ const categories: NavCategory[] = [
     id: "management",
     label: "Gestão",
     icon: Users,
-    defaultPath: "/people",
+    defaultPath: "/zones",
     items: [
-      { id: "people", label: "Pessoas", icon: Users, path: "/people" },
+      { id: "people", label: "Pessoas", icon: Users, path: "/people", minRole: "operator" },
       { id: "zones", label: "Zonas", icon: Target, path: "/zones" },
     ],
   },
@@ -103,6 +106,7 @@ const categories: NavCategory[] = [
     label: "Config",
     icon: Settings,
     defaultPath: "/settings",
+    minRole: "manager",
     items: [
       { id: "general", label: "Geral", icon: Settings, path: "/settings" },
       { id: "notifications", label: "Notif.", icon: Bell, path: "/notification-settings" },
@@ -116,7 +120,19 @@ export function BottomNavigation() {
   const location = useLocation();
   const navigate = useNavigate();
   const status = useSidebarStatus();
+  const { hasMinRole } = useUserRole();
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+
+  const categories = useMemo(() =>
+    allCategories
+      .filter((cat) => !cat.minRole || hasMinRole(cat.minRole))
+      .map((cat) => ({
+        ...cat,
+        items: cat.items.filter((item) => !item.minRole || hasMinRole(item.minRole)),
+      }))
+      .filter((cat) => cat.items.length > 0),
+    [hasMinRole]
+  );
 
   const getActiveCategory = () => {
     for (const cat of categories) {
