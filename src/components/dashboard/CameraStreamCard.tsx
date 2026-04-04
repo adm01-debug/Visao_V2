@@ -13,7 +13,7 @@ export interface UICameraData {
   id: string;
   name: string;
   location: string;
-  status: string;
+  status: CameraStatus;
   thumbnail?: string;
   lastActivity?: string;
   detectedPeople: number;
