@@ -29,10 +29,18 @@ export default defineConfig(({ mode }) => ({
           { src: "icon-512.png", sizes: "512x512", type: "image/png" }
         ]
       }
-    }),react(), mode === "development" && componentTagger()].filter(Boolean),
+    }), react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+    },
+  },
+  optimizeDeps: {
+    exclude: ["@mediapipe/pose", "@tensorflow/tfjs-backend-webgpu"],
+  },
+  build: {
+    rollupOptions: {
+      external: ["@mediapipe/pose", "@tensorflow/tfjs-backend-webgpu"],
     },
   },
 }));
