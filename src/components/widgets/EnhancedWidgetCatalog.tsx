@@ -124,7 +124,7 @@ export function EnhancedWidgetCatalog({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {filteredWidgets.map(widget => {
                   const isActive = activeWidgets.includes(widget.type);
-                  const Icon = widget.icon;
+                  const widgetIcon = widget.icon;
 
                   return (
                     <motion.button
