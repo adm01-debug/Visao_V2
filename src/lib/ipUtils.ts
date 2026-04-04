@@ -49,7 +49,7 @@ export const isPrivateIP = (ip: string): boolean => {
 export const ipToNumber = (ip: string): number => {
   if (!isValidIPv4(ip)) return 0;
   const parts = ip.split('.').map(Number);
-  return (parts[0] ?? 0 << 24) + (parts[1]! << 16) + (parts[2]! << 8) + parts[3]!;
+  return ((parts[0] ?? 0) << 24) + ((parts[1] ?? 0) << 16) + ((parts[2] ?? 0) << 8) + (parts[3] ?? 0);
 };
 
 // Verificar se IP está em um range CIDR
