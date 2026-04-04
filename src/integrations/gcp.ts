@@ -128,10 +128,10 @@ class GcpService {
     });
 
     const data = await response.json();
-    this.accessToken = data.access_token;
-    this.tokenExpiry = Date.now() + (data.expires_in || 3600) * 1000;
+    this.accessToken = data.access_token as string;
+    this.tokenExpiry = Date.now() + ((data.expires_in as number) || 3600) * 1000;
 
-    return this.accessToken;
+    return this.accessToken!;
   }
 
   /**
