@@ -282,7 +282,7 @@ export function useContinuousAnalysis(
           violated: true,
           conditions: conditionEvaluations,
           actions: rule.actions || [],
-          severity: rule.severity as unknown,
+          severity: rule.severity as "high" | "low" | "medium" | "critical" as unknown,
           message: `Regra "${rule.name}" violada: ${rule.description || 'Condições atendidas'}`,
         });
       }
@@ -403,7 +403,7 @@ export function useContinuousAnalysis(
     if (!createAlerts) return;
 
     try {
-      await supabase.from('alerts').insert({
+      await supabase.from('alerts').insert([{
         camera_name: cameraName,
         type: alert.type,
         severity: alert.severity,
