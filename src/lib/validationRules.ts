@@ -23,13 +23,13 @@ export const cpf = (message = 'CPF inválido') => (value: string) => {
   if (clean.length !== 11) return message;
   if (/^(\d)\1+$/.test(clean)) return message;
   let sum = 0;
-  for (let i = 0; i < 9; i++) sum += parseInt(clean[i]) * (10 - i);
+  for (let i = 0; i < 9; i++) sum += parseInt(clean[i]!) * (10 - i);
   let d1 = (sum * 10) % 11; if (d1 === 10) d1 = 0;
-  if (d1 !== parseInt(clean[9])) return message;
+  if (d1 !== parseInt(clean[9]!)) return message;
   sum = 0;
-  for (let i = 0; i < 10; i++) sum += parseInt(clean[i]) * (11 - i);
+  for (let i = 0; i < 10; i++) sum += parseInt(clean[i]!) * (11 - i);
   let d2 = (sum * 10) % 11; if (d2 === 10) d2 = 0;
-  return d2 === parseInt(clean[10]) ? null : message;
+  return d2 === parseInt(clean[10]!) ? null : message;
 };
 
 export const cnpj = (message = 'CNPJ inválido') => (value: string) => {

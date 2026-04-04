@@ -246,7 +246,7 @@ export default function JourneyReportsPage() {
     doc.setFont(undefined!, "bold");
     const cols = ["Colaborador", "Dept.", "Entrada", "Saída", "Total", "Produtivo", "Ocioso", "Pausas", "Pontualidade"];
     const colX = [14, 50, 78, 96, 114, 132, 152, 170, 182];
-    cols.forEach((c, i) => doc.text(c, colX[i], y));
+    cols.forEach((c, i) => doc.text(c, colX[i]!, y));
     y += 2;
     doc.line(14, y, 200, y); y += 4;
 
@@ -264,7 +264,7 @@ export default function JourneyReportsPage() {
         String(j.breakCount),
         j.punctuality === "on_time" ? "Pontual" : j.punctuality === "late" ? "Atraso" : "Muito Atrasado",
       ];
-      row.forEach((val, i) => doc.text(val, colX[i], y));
+      row.forEach((val, i) => doc.text(val, colX[i]!, y));
       y += 5;
     }
 

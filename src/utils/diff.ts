@@ -181,7 +181,7 @@ export function diffText(a: string, b: string): TextDiffEntry[] {
     if (aLine === undefined) {
       result.push({
         type: 'add',
-        value: bLine,
+        (value ?? ''): bLine,
         lineNumber: i + 1,
       });
     } else if (bLine === undefined) {

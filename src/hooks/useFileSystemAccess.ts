@@ -31,8 +31,8 @@ export function useFileSystemAccess() {
     try {
       const picker = (window as unknown as { showOpenFilePicker(o?: FSAOpenOptions): Promise<FSAFileHandle[]> }).showOpenFilePicker;
       const [handle] = await picker(options);
-      const f = await handle.getFile();
-      setFileHandle(handle);
+      const f = await handle!.getFile();
+      setFileHandle(handle!);
       setFile(f);
       setError(null);
       return f;

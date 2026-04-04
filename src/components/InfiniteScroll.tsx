@@ -22,7 +22,7 @@ export function InfiniteScroll({
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && hasMore && !loading) {
+        if (entry!.isIntersecting && hasMore && !loading) {
           onLoadMore();
         }
       },

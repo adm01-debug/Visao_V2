@@ -309,7 +309,7 @@ export function useZoneDetection(
             prevPosition,
             centerPoint,
             zone.geometry.points[0]!,
-            zone.geometry.points[1]
+            zone.geometry.points[1]!
           );
 
           if (crossed) {

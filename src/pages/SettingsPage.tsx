@@ -929,7 +929,7 @@ export function SettingsPage() {
               <div role="main" aria-label="Configurações do sistema" className="w-40 flex items-center gap-2">
                 <Slider
                   value={[analysisSettings.minConfidence * 100]}
-                  onValueChange={([v]) => setAnalysisSettings(prev => ({ ...prev, minConfidence: v / 100 }))}
+                  onValueChange={([v]) => setAnalysisSettings(prev => ({ ...prev, minConfidence: v! / 100 }))}
                   min={30}
                   max={95}
                   step={5}
@@ -981,7 +981,7 @@ export function SettingsPage() {
               <div role="main" aria-label="Configurações do sistema" className="w-40 flex items-center gap-2">
                 <Slider
                   value={[faceSettings.matchThreshold * 100]}
-                  onValueChange={([v]) => setFaceSettings(prev => ({ ...prev, matchThreshold: v / 100 }))}
+                  onValueChange={([v]) => setFaceSettings(prev => ({ ...prev, matchThreshold: v! / 100 }))}
                   min={40}
                   max={90}
                   step={5}
@@ -999,7 +999,7 @@ export function SettingsPage() {
               <div role="main" aria-label="Configurações do sistema" className="w-40 flex items-center gap-2">
                 <Slider
                   value={[faceSettings.minFaceQuality * 100]}
-                  onValueChange={([v]) => setFaceSettings(prev => ({ ...prev, minFaceQuality: v / 100 }))}
+                  onValueChange={([v]) => setFaceSettings(prev => ({ ...prev, minFaceQuality: v! / 100 }))}
                   min={20}
                   max={80}
                   step={5}

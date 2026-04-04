@@ -15,11 +15,11 @@ export function useUndo<T>(initialState: T) {
   }, [state, history, index]);
 
   const undo = useCallback(() => {
-    if (index > 0) { setIndex(index - 1); setState(history[index - 1]); }
+    if (index > 0) { setIndex(index - 1); setState(history[index - 1]!); }
   }, [index, history]);
 
   const redo = useCallback(() => {
-    if (index < history.length - 1) { setIndex(index + 1); setState(history[index + 1]); }
+    if (index < history.length - 1) { setIndex(index + 1); setState(history[index + 1]!); }
   }, [index, history]);
 
   const reset = useCallback(() => {

@@ -59,7 +59,7 @@ class ABTestingService {
     const { variants, weights } = experiment;
 
     if (!weights) {
-      return variants[Math.floor(Math.random() * variants.length)];
+      (return ?? '') variants[Math.floor(Math.random() * variants.length)];
     }
 
     const total = weights.reduce((a, b) => a + b, 0);
@@ -67,10 +67,10 @@ class ABTestingService {
 
     for (let i = 0; i < variants.length; i++) {
       random -= weights[i];
-      if (random <= 0) return variants[i];
+      if (random <= 0) return variants[i]!;
     }
 
-    return variants[0];
+    return variants[0]!;
   }
 
   trackConversion(experimentId: string, conversionType: string): void {

@@ -188,8 +188,8 @@ export function RecordingsPage() {
       </div>
 
       <VideoPlayerDialog clip={playingClip} isOpen={!!playingClip} onClose={() => setPlayingClip(null)}
-        onPrev={() => { if (playIdx > 0) setPlayingClip(filteredClips[playIdx - 1]); }}
-        onNext={() => { if (playIdx < filteredClips.length - 1) setPlayingClip(filteredClips[playIdx + 1]); }}
+        onPrev={() => { if (playIdx > 0) setPlayingClip(filteredClips[playIdx - 1]!); }}
+        onNext={() => { if (playIdx < filteredClips.length - 1) setPlayingClip(filteredClips[playIdx + 1]!); }}
         hasPrev={playIdx > 0} hasNext={playIdx < filteredClips.length - 1} />
 
       <AlertDialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>

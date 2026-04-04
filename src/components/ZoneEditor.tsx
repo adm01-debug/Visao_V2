@@ -127,10 +127,10 @@ export function ZoneEditor({
 
         // Criar retângulo com 4 pontos
         const rectPoints: Point[] = [
-          { x: Math.min(startPoint.x, endPoint.x), y: Math.min(startPoint.y, endPoint.y) },
-          { x: Math.max(startPoint.x, endPoint.x), y: Math.min(startPoint.y, endPoint.y) },
-          { x: Math.max(startPoint.x, endPoint.x), y: Math.max(startPoint.y, endPoint.y) },
-          { x: Math.min(startPoint.x, endPoint.x), y: Math.max(startPoint.y, endPoint.y) },
+          { x: Math.min(startPoint!.x, endPoint.x), y: Math.min(startPoint!.y, endPoint.y) },
+          { x: Math.max(startPoint!.x, endPoint.x), y: Math.min(startPoint!.y, endPoint.y) },
+          { x: Math.max(startPoint!.x, endPoint.x), y: Math.max(startPoint!.y, endPoint.y) },
+          { x: Math.min(startPoint!.x, endPoint.x), y: Math.max(startPoint!.y, endPoint.y) },
         ];
 
         onZoneCreated?.({
@@ -157,7 +157,7 @@ export function ZoneEditor({
         // Verificar se clicou perto do primeiro ponto para fechar
         const firstPoint = currentPoints[0];
         const distance = Math.sqrt(
-          Math.pow(pos.x - firstPoint.x, 2) + Math.pow(pos.y - firstPoint.y, 2)
+          Math.pow(pos.x - firstPoint!.x, 2) + Math.pow(pos.y - firstPoint!.y, 2)
         );
 
         if (distance < 3 && currentPoints.length >= 3) {
@@ -289,10 +289,10 @@ export function ZoneEditor({
       const end = previewPoint;
       return (
         <rect
-          x={`${Math.min(start.x, end.x)}%`}
-          y={`${Math.min(start.y, end.y)}%`}
-          width={`${Math.abs(end.x - start.x)}%`}
-          height={`${Math.abs(end.y - start.y)}%`}
+          x={`${Math.min(start!.x, end.x)}%`}
+          y={`${Math.min(start!.y, end.y)}%`}
+          width={`${Math.abs(end.x - start!.x)}%`}
+          height={`${Math.abs(end.y - start!.y)}%`}
           fill={selectedColor}
           fillOpacity={0.2}
           stroke={selectedColor}
@@ -359,8 +359,8 @@ export function ZoneEditor({
       return (
         <>
           <line
-            x1={`${start.x}%`}
-            y1={`${start.y}%`}
+            x1={`${start!.x}%`}
+            y1={`${start!.y}%`}
             x2={`${previewPoint.x}%`}
             y2={`${previewPoint.y}%`}
             stroke={selectedColor}
@@ -368,8 +368,8 @@ export function ZoneEditor({
             strokeDasharray="8,4"
           />
           <circle
-            cx={`${start.x}%`}
-            cy={`${start.y}%`}
+            cx={`${start!.x}%`}
+            cy={`${start!.y}%`}
             r="6"
             fill="white"
             stroke={selectedColor}
@@ -436,7 +436,7 @@ export function ZoneEditor({
                   />
                   {/* Setas de direção */}
                   <polygon
-                    points={calculateArrowPoints(zone.geometry.points[0]!, zone.geometry.points[1])}
+                    points={calculateArrowPoints(zone.geometry.points[0]!, zone.geometry.points[1]!)}
                     fill={zone.color}
                   />
                 </>

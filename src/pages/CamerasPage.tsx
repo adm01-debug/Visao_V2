@@ -60,10 +60,10 @@ export function CamerasPage() {
     ? filteredCameras.findIndex(c => c.id === expandedCamera.id) : -1;
 
   const goToPrev = () => {
-    if (currentIndex > 0) setExpandedCamera(filteredCameras[currentIndex - 1]);
+    if (currentIndex > 0) setExpandedCamera(filteredCameras[currentIndex - 1]!);
   };
   const goToNext = () => {
-    if (currentIndex < filteredCameras.length - 1) setExpandedCamera(filteredCameras[currentIndex + 1]);
+    if (currentIndex < filteredCameras.length - 1) setExpandedCamera(filteredCameras[currentIndex + 1]!);
   };
 
   if (loading) {

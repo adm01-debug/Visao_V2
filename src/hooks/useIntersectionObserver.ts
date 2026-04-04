@@ -38,10 +38,10 @@ export function useIntersectionObserver({
   const updateEntry = useCallback(([newEntry]: IntersectionObserverEntry[]) => {
     if (frozen.current) return;
 
-    setEntry(newEntry);
-    setIsIntersecting(newEntry.isIntersecting);
+    setEntry(newEntry!);
+    setIsIntersecting(newEntry!.isIntersecting);
 
-    if (freezeOnceVisible && newEntry.isIntersecting) {
+    if (freezeOnceVisible && newEntry!.isIntersecting) {
       frozen.current = true;
     }
   }, [freezeOnceVisible]);

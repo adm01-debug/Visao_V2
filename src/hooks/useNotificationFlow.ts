@@ -188,8 +188,8 @@ export function useNotificationFlow(
       const currentTime = now.getHours() * 60 + now.getMinutes();
       const [startH, startM] = config.scheduleStart.split(':').map(Number);
       const [endH, endM] = config.scheduleEnd.split(':').map(Number);
-      const startMinutes = startH * 60 + startM;
-      const endMinutes = endH * 60 + endM;
+      const startMinutes = startH! * 60 + startM!;
+      const endMinutes = endH! * 60 + endM!;
 
       if (currentTime < startMinutes || currentTime > endMinutes) return false;
     }

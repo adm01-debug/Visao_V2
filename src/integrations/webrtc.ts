@@ -81,7 +81,7 @@ class WebRTCService {
       if (peer) {
         peer.remoteStream = remoteStream;
       }
-      this.onTrackCallback?.(peerId, remoteStream);
+      this.onTrackCallback?.(peerId, remoteStream!);
     };
 
     // Handle connection state changes

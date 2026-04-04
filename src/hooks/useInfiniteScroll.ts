@@ -5,7 +5,7 @@ export function useInfiniteScroll(callback: () => void, options: UseInfiniteScro
   const ref = useRef<HTMLDivElement>(null);
   const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
     const [entry] = entries;
-    if (entry.isIntersecting) callback();
+    if (entry!.isIntersecting) callback();
   }, [callback]);
   useEffect(() => {
     const element = ref.current;

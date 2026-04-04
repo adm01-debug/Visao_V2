@@ -18,5 +18,5 @@ export function loadDeferredCSS(href: string): void {
 export function extractCriticalCSS(html: string): string {
   // Simplified - would use actual critical CSS extraction in production
   const match = html.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
-  return match ? match[1] : '';
+  return match ? match[1]! : '';
 }

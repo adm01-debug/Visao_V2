@@ -57,11 +57,11 @@ export const isIPInCIDR = (ip: string, cidr: string): boolean => {
   if (!isValidIPv4(ip)) return false;
 
   const [rangeIP, bits] = cidr.split('/');
-  if (!isValidIPv4(rangeIP)) return false;
+  if (!isValidIPv4(rangeIP!)) return false;
 
-  const mask = ~(2 ** (32 - parseInt(bits)) - 1);
+  const mask = ~(2 ** (32 - parseInt(bits!)) - 1);
   const ipNum = ipToNumber(ip);
-  const rangeNum = ipToNumber(rangeIP);
+  const rangeNum = ipToNumber(rangeIP!);
 
   return (ipNum & mask) === (rangeNum & mask);
 };

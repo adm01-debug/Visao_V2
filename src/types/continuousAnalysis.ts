@@ -416,7 +416,7 @@ export function getNextScheduledTime(
   const [startHour, startMinute] = startTime.split(':').map(Number);
 
   let nextDate = new Date(now);
-  nextDate.setHours(startHour, startMinute, 0, 0);
+  nextDate.setHours(startHour!, startMinute, 0, 0);
 
   // Se já passou o horário de início hoje, ir para amanhã
   if (nextDate <= now) {

@@ -27,7 +27,7 @@ export function getNextScheduledTime(schedule: TimeSlot[]): Date | null {
       if (slot.days.includes(day)) {
         const [h, m] = slot.start.split(':').map(Number);
         const slotDate = new Date(checkDate);
-        slotDate.setHours(h, m, 0, 0);
+        slotDate.setHours(h!, m, 0, 0);
         if (slotDate > now) return slotDate;
       }
     }

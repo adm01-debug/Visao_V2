@@ -56,7 +56,7 @@ export function useWebRTCPeer(config: PeerConnectionConfig = {}): UseWebRTCPeerR
 
     pc.ontrack = (event) => {
       const stream = event.streams[0];
-      setRemoteStream(stream);
+      setRemoteStream(stream!);
       config.onTrack?.(event);
     };
 
