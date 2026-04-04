@@ -329,8 +329,8 @@ export function ZoneEditor({
             <line
               x1={`${previewPoint.x}%`}
               y1={`${previewPoint.y}%`}
-              x2={`${currentPoints[0].x}%`}
-              y2={`${currentPoints[0].y}%`}
+              x2={`${currentPoints[0]!.x}%`}
+              y2={`${currentPoints[0]!.y}%`}
               stroke={selectedColor}
               strokeWidth="1"
               strokeDasharray="3,3"

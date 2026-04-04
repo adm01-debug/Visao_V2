@@ -54,7 +54,7 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}) 
     recognition.continuous = options.continuous ?? false;
     recognition.interimResults = options.interimResults ?? true;
     recognition.onresult = (e: SpeechRecognitionEvent) => {
-      const text = Array.from(e.results).map(r => r[0].transcript).join('');
+      const text = Array.from(e.results).map(r => r[0]!.transcript).join('');
       setTranscript(text);
     };
     recognition.onerror = (e: SpeechRecognitionErrorEvent) => setError(new Error(e.error));

@@ -86,7 +86,7 @@ export function AlertsByCameraChart({ alerts, className = '', onCameraClick }: A
 
   const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { fullName?: string; count?: number; critical?: number; high?: number; medium?: number; low?: number } }> }) => {
     if (active && payload && payload.length) {
-      const data = payload[0].payload;
+      const data = payload[0]!.payload;
       return (
         <div className="bg-card border border-border rounded-lg p-3 shadow-lg text-sm">
           <p className="font-medium text-foreground mb-2">{data.fullName}</p>

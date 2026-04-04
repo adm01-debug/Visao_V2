@@ -27,7 +27,7 @@ interface ZoneEditorSheetProps {
 export function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneEditorSheetProps) {
   const { user } = useAuth();
   const [formData, setFormData] = useState<ZoneFormData>({
-    name: '', type: 'counting', color: defaultColors[0], is_active: true, pointsData: null,
+    name: '', type: 'counting', color: defaultColors[0] ?? 0, is_active: true, pointsData: null,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [drawingMode, setDrawingMode] = useState<'rectangle' | 'polygon' | 'line'>('rectangle');
@@ -36,7 +36,7 @@ export function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneE
   useEffect(() => {
     if (zone) {
       const pointsData = parsePointsData(zone.points);
-      setFormData({ name: zone.name, type: zone.type as ZoneType, color: zone.color || defaultColors[0], is_active: zone.is_active, pointsData });
+      setFormData({ name: zone.name, type: zone.type as ZoneType, color: zone.color || defaultColors[0] ?? 0, is_active: zone.is_active, pointsData });
       setOpacity(pointsData?.opacity || 0.3);
     } else {
       setFormData({ name: '', type: 'counting', color: defaultColors[Math.floor(Math.random() * defaultColors.length)], is_active: true, pointsData: null });

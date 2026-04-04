@@ -526,7 +526,7 @@ export function RecognitionAnalytics({ className, dateRange = 7 }: RecognitionAn
                     <div
                       className="h-full bg-primary rounded-full transition-all"
                       style={{
-                        width: `${(camera.count / analytics.cameraData[0].count) * 100}%`,
+                        width: `${(camera.count / analytics.cameraData[0]!.count) * 100}%`,
                       }}
                     />
                   </div>

@@ -297,7 +297,7 @@ export function FocusTrap({ children, active = true, onEscape }: FocusTrapProps)
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
       );
       if (focusable.length > 0) {
-        focusable[0].focus();
+        focusable[0]!.focus();
       }
     }
 
