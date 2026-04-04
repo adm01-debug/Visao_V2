@@ -37,7 +37,7 @@ export const set = <T extends Record<string, unknown>>(obj: T, path: string, val
     current = current[key] as Record<string, unknown>;
   }
   current[keys[keys.length - 1]] = value;
-  return result;
+  return result as T;
 };
 
 export const merge = <T extends object>(...objects: Partial<T>[]): T =>
