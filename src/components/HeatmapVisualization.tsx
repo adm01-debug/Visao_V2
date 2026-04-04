@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: HeatmapVisualization
@@ -104,6 +103,8 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
   // Usar hook de heatmap para câmera selecionada
   const heatmap = useHeatmap({
     cameraId: selectedCamera !== 'all' ? selectedCamera : cameras[0]?.id || '',
+    width: 640,
+    height: 480,
     config: {
       gridSize: 20,
       colorScheme: 'thermal',
@@ -115,10 +116,10 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
 
   // Renderizar heatmap no canvas quando dados mudarem
   useEffect(() => {
-    if (canvasRef.current && heatmap.data.grid.length > 0) {
+    if (canvasRef.current && heatmap.heatmapData && heatmap.heatmapData.grid.length > 0) {
       heatmap.renderToCanvas(canvasRef.current);
     }
-  }, [heatmap.data, canvasRef.current]);
+  }, [heatmap.heatmapData, canvasRef.current]);
 
   // Carregar histórico quando período mudar
   useEffect(() => {

@@ -1,11 +1,10 @@
-// @ts-nocheck
 /**
  * Push Manager
  */
 export async function subscribeToPush(vapidPublicKey: string): Promise<PushSubscription | null> {
   if (!('PushManager' in window)) return null;
   const reg = await navigator.serviceWorker.ready;
-  const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(vapidPublicKey) });
+  const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(vapidPublicKey) as BufferSource });
   return sub;
 }
 function urlBase64ToUint8Array(base64: string): Uint8Array {

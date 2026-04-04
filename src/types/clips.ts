@@ -4,15 +4,27 @@
 export interface Clip {
   id: string;
   cameraId: string;
+  cameraName?: string;
   startTime: Date;
+  startedAt?: Date;
   endTime: Date;
   duration: number;
   url: string;
+  localUrl?: string;
+  fileUrl?: string;
   thumbnailUrl?: string;
   size: number;
+  fileSize?: number;
   format: ClipFormat;
   status: ClipStatus;
   metadata?: ClipMetadata;
+  trigger?: RecordingTrigger;
+  triggerDetails?: string;
+  isFavorite?: boolean;
+  isViewed?: boolean;
+  frameCount?: number;
+  notes?: string;
+  tags?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -75,7 +87,7 @@ export interface ClipEvent {
 
 // Compatibility aliases
 export type VideoClip = Clip;
-export type RecordingTrigger = 'manual' | 'alert' | 'motion' | 'schedule';
+export type RecordingTrigger = 'manual' | 'alert' | 'motion' | 'schedule' | 'rule' | 'api';
 export type ClipFilters = ClipFilter;
 
 export const formatDuration = (seconds: number): string => {

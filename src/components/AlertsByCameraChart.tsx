@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { getRelativeTime, formatDuration } from "@/lib/dateUtils";
 import { useMemo, useState } from 'react';
 import {
@@ -85,7 +84,7 @@ export function AlertsByCameraChart({ alerts, className = '', onCameraClick }: A
 
   const totalAlerts = chartData.reduce((sum, d) => sum + d.count, 0);
 
-  const CustomTooltip = ({ active, payload }: unknown) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { fullName?: string; count?: number; critical?: number; high?: number; medium?: number; low?: number } }> }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (

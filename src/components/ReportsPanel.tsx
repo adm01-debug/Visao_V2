@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { logger } from "@/lib/logger";
 import { formatDate, formatNumber } from "@/lib/formatters";
 import { generatePDF } from '@/lib/pdfGenerator';
@@ -210,7 +209,7 @@ export function ReportsPanel() {
             headers: ['Data/Hora', 'Pessoa', 'Status', 'Confiança'],
             rows: logsList.slice(0, 50).map((l) => [
               format(new Date(l.timestamp), 'dd/MM/yy HH:mm', { locale: ptBR }),
-              (l.registered_persons .name || "Desconhecido")?.name || 'Desconhecido',
+              l.person_id || 'Desconhecido',
               l.recognized ? 'Reconhecido' : 'Não reconhecido',
               `${((l.confidence || 0) * 100).toFixed(1)}%`,
             ]),

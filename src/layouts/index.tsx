@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Layouts barrel export
@@ -6,8 +5,8 @@
  * @module layouts
  */
 
-export { default as AuthLayout } from "./AuthLayout";
-export { default as DashboardLayout } from "./DashboardLayout";
-export { default as ErrorLayout } from "./ErrorLayout";
-export { default as MainLayout } from "./MainLayout";
-export { default as MinimalLayout } from "./MinimalLayout";
+export { AuthLayout } from "./AuthLayout";
+export { DashboardLayout } from "./DashboardLayout";
+export { ErrorLayout } from "./ErrorLayout";
+export { MainLayout } from "./MainLayout";
+export { MinimalLayout } from "./MinimalLayout";

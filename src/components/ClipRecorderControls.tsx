@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { logger } from "@/lib/logger";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
@@ -127,9 +126,9 @@ export function ClipRecorderControls({
       if (streamRef?.current?.srcObject instanceof MediaStream) {
         stream = streamRef.current.srcObject;
       } else if (streamRef?.current && 'captureStream' in streamRef.current) {
-        stream = (streamRef.current as unknown).captureStream();
+        stream = (streamRef.current as HTMLVideoElement & { captureStream: () => MediaStream }).captureStream();
       } else if (streamRef?.current && 'mozCaptureStream' in streamRef.current) {
-        stream = (streamRef.current as unknown).mozCaptureStream();
+        stream = (streamRef.current as HTMLVideoElement & { mozCaptureStream: () => MediaStream }).mozCaptureStream();
       }
 
       if (!stream) {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Timeline Component
  * Vertical/horizontal timeline for events and history
@@ -35,7 +34,7 @@ export interface TimelineProps {
   itemClassName?: string;
   onItemClick?: (item: TimelineItem) => void;
   renderItem?: (item: TimelineItem, index: number) => React.ReactNode;
-  locale?: Locale;
+  locale?: globalThis.Intl.Locale | Record<string, unknown>;
 }
 
 const STATUS_ICONS: Record<TimelineItemStatus, React.ReactNode> = {

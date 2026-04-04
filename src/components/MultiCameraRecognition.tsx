@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useInterval, useTimeout } from "@/hooks";
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -577,7 +576,7 @@ function MultiCameraRecognitionComponent() {
 
 // Camera Feed Card Component
 interface CameraFeedCardProps {
-  camera: unknown;
+  camera: { id: string; name: string; stream_url?: string | null; thumbnail?: string | null };
   isAnalyzing: boolean;
   onVideoLoaded: (video: HTMLVideoElement) => void;
   onRemove: () => void;
@@ -685,5 +684,5 @@ function CameraFeedCard({
     </Card>
   );
 }
--e
+
 export const MultiCameraRecognition = memo(MultiCameraRecognitionComponent);

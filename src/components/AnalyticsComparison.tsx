@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: AnalyticsComparison - Comparação de métricas entre períodos
@@ -75,13 +74,13 @@ export function AnalyticsComparison({ cameraId }: AnalyticsComparisonProps) {
 
       // Fetch face detections
       const { count: currentFaces } = await supabase
-        .from('face_detections')
+        .from('recognition_logs')
         .select('*', { count: 'exact', head: true })
         .gte('timestamp', currentStart.toISOString())
         .lte('timestamp', now.toISOString());
 
       const { count: previousFaces } = await supabase
-        .from('face_detections')
+        .from('recognition_logs')
         .select('*', { count: 'exact', head: true })
         .gte('timestamp', previousStart.toISOString())
         .lte('timestamp', previousEnd.toISOString());

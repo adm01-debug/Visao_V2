@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Utility: encryption
@@ -63,7 +62,7 @@ export async function decryptWithKey(
   key: CryptoKey,
   iv: Uint8Array
 ): Promise<string> {
-  const decrypted = await crypto.subtle.decrypt({ name: ALGO, iv }, key, encrypted);
+  const decrypted = await crypto.subtle.decrypt({ name: ALGO, iv: iv as BufferSource }, key, encrypted);
   return new TextDecoder().decode(decrypted);
 }
 
