@@ -390,7 +390,7 @@ export function VideoStreamPlayer({
     saveToDatabase: saveAnalysisHistory,
     config: {
       analysisTypes: [analysisType],
-      intervalMs: analysisIntervalMs,
+      interval: analysisIntervalMs,
     },
     onAnalysisComplete: (_camId, result) => {
       onAnalysisResult?.(result);
