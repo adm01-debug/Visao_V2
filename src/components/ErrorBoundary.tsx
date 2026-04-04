@@ -1,4 +1,5 @@
 import { logger } from "@/lib/logger";
+import { errorReporter } from "@/lib/errorReporter";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: ErrorBoundary
