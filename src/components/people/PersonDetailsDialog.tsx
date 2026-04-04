@@ -29,14 +29,20 @@ export function PersonDetailsDialog({ person, isOpen, onClose, onEdit, onDelete 
   useEffect(() => {
     if (person && isOpen) {
       setLoadingLogs(true);
-      supabase
-        .from('recognition_logs')
-        .select('*')
-        .eq('person_id', person.id)
-        .order('created_at', { ascending: false })
-        .limit(50)
-        .then(({ data }) => setRecognitionLogs(data || []))
-        .finally(() => setLoadingLogs(false));
+      const load = async () => {
+        try {
+          const { data } = await supabase
+            .from('recognition_logs')
+            .select('*')
+            .eq('person_id', person.id)
+            .order('created_at', { ascending: false })
+            .limit(50);
+          setRecognitionLogs(data || []);
+        } finally {
+          setLoadingLogs(false);
+        }
+      };
+      void load();
     }
   }, [person, isOpen]);
 
