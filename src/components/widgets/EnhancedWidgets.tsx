@@ -37,7 +37,7 @@ export function EnhancedWidgetWrapper({
     transition,
   };
 
-  const Icon = config.icon;
+  const widgetIcon = config.icon;
   const isExpanded = widget.size.cols > 1 || widget.size.rows > 1;
 
   const handleToggleSize = () => {
