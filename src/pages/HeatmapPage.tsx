@@ -7,7 +7,7 @@
  */
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { hexToRgb } from '@/lib/colorUtils';
+// colorUtils not needed
 import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/components";
 
 import { useState, useEffect, useCallback } from 'react';
