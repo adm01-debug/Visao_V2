@@ -8,14 +8,14 @@ import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { PPEIcon } from './PPEIcon';
-import { PPE_LABELS, PPEType, type PPEZoneConfig } from '@/hooks/usePPEDetection';
+import { PPE_LABELS, PPEType, type PPEZone } from '@/hooks/usePPEDetection';
 import { HardHat, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface PPEZonesTabProps {
-  zones: PPEZoneConfig[];
+  zones: PPEZone[];
   selectedCamera: string;
-  createZone: (config: { name: string; cameraId: string; requiredPPE: PPEType[]; alertEnabled: boolean; gracePeriodSeconds: number }) => Promise<boolean>;
+  createZone: (config: Omit<PPEZone, 'id' | 'createdAt'>) => Promise<string>;
   deleteZone: (id: string) => void;
 }
 

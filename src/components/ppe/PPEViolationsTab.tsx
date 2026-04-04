@@ -8,17 +8,10 @@ import { CheckCircle2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-interface Violation {
-  id: string;
-  timestamp: number;
-  zoneName: string;
-  cameraId: string;
-  missingItems: PPEType[];
-  acknowledged: boolean;
-}
+import type { PPEViolation } from '@/hooks/usePPEDetection';
 
 interface PPEViolationsTabProps {
-  violations: Violation[];
+  violations: PPEViolation[];
   acknowledgeViolation: (id: string) => void;
 }
 

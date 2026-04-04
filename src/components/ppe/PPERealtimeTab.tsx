@@ -6,20 +6,10 @@ import { Activity, Eye, RefreshCw, CheckCircle2, AlertTriangle } from 'lucide-re
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 
-interface PPEDetectionItem {
-  type: PPEType;
-  status: 'detected' | 'missing' | 'unknown';
-}
-
-interface PPEDetection {
-  personId: string;
-  isCompliant: boolean;
-  timestamp: number;
-  items: PPEDetectionItem[];
-}
+import type { PersonPPEDetection } from '@/hooks/usePPEDetection';
 
 interface PPERealtimeTabProps {
-  detections: PPEDetection[];
+  detections: PersonPPEDetection[];
   isDetecting: boolean;
 }
 
