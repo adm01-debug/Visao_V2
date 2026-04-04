@@ -34,6 +34,7 @@ import {
   Signal,
   Scan,
   Circle,
+  Brain,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
