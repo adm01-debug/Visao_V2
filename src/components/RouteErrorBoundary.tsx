@@ -24,6 +24,7 @@ export class RouteErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     logger.error(`RouteErrorBoundary [${this.props.routeName || 'unknown'}]`, { error: error.message, stack: errorInfo.componentStack?.slice(0, 300) });
+    errorReporter.captureComponentError(error, errorInfo.componentStack ?? undefined, this.props.routeName);
   }
 
   handleRetry = () => this.setState({ hasError: false, error: null });
