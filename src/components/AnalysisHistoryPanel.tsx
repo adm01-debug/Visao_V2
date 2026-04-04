@@ -235,18 +235,42 @@ export function AnalysisHistoryPanel() {
           </SheetTitle>
 
           {/* Stats bar */}
-          <div className="flex gap-3 pt-1">
-            <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Eye className="h-3.5 w-3.5" />
-              {analysisCount} análise{analysisCount !== 1 ? 's' : ''}
-            </span>
-            <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <AlertTriangle className="h-3.5 w-3.5" />
-              {alertCount} alerta{alertCount !== 1 ? 's' : ''}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              Últimas 24h
-            </span>
+          <div className="flex items-center justify-between pt-1">
+            <div className="flex gap-3">
+              <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Eye className="h-3.5 w-3.5" />
+                {analysisCount} análise{analysisCount !== 1 ? 's' : ''}
+              </span>
+              <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <AlertTriangle className="h-3.5 w-3.5" />
+                {alertCount} alerta{alertCount !== 1 ? 's' : ''}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                Últimas 24h
+              </span>
+            </div>
+            <div className="flex gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7"
+                onClick={() => handleExport('csv')}
+                disabled={filteredItems.length === 0}
+                title="Exportar CSV"
+              >
+                <FileSpreadsheet className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7"
+                onClick={() => handleExport('pdf')}
+                disabled={filteredItems.length === 0}
+                title="Exportar PDF"
+              >
+                <FileText className="h-3.5 w-3.5" />
+              </Button>
+            </div>
           </div>
         </SheetHeader>
 
