@@ -1,3 +1,4 @@
+import type { LucideIcon } from 'lucide-react';
 import { Camera, Clock, Activity } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,6 +11,14 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';
 import { zoneTypeConfig, parsePointsData, type ZoneType, type DbZone, type ZoneStats, type ZoneEvent } from './zonesConfig';
+
+interface CameraData {
+  id: string;
+  name: string;
+  stream_url?: string | null;
+  stream_protocol?: string;
+  thumbnail?: string | null;
+}
 
 interface ZoneViewDialogProps {
   zone: DbZone | null;
