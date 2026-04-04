@@ -124,7 +124,7 @@ interface RuleFormData {
   description: string;
   category: string;
   severity: string;
-  conditions: RuleCondition[];
+  conditions: Array<{ type: string; operator: string; value: string }>;
   actions: string[];
   cameras: string[];
   schedule: {
