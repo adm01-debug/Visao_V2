@@ -377,13 +377,13 @@ export default function PPEPage() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge variant={zone.alertOnViolation ? 'default' : 'secondary'}>
-                            {zone.alertOnViolation ? 'Ativo' : 'Desativado'}
+                          <Badge variant={zone.alertEnabled ? 'default' : 'secondary'}>
+                            {zone.alertEnabled ? 'Ativo' : 'Desativado'}
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <Badge variant={zone.active ? 'default' : 'outline'}>
-                            {zone.active ? 'Ativo' : 'Inativo'}
+                          <Badge variant={'default'}>
+                            {'Ativo'}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
