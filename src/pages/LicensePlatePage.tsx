@@ -43,12 +43,13 @@ interface Vehicle {
 interface PlateDetection {
   id: string;
   plate: string;
-  camera_id: string;
+  camera_id: string | null;
   camera_name: string;
   confidence: number;
   timestamp: string;
-  image_url?: string;
-  is_blacklisted: boolean;
+  image_url?: string | null;
+  is_blacklisted?: boolean;
+  [key: string]: unknown;
 }
 
 export default function LicensePlatePage() {
