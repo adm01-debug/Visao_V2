@@ -37,7 +37,7 @@ describe("lib/errorTracking", () => {
 
   describe("captureMessage", () => {
     it("logs info messages", () => {
-      const spy = vi.spyOn(console, "info").mockImplementation(() => {});
+      const spy = vi.spyOn(console, "log").mockImplementation(() => {});
       captureMessage("test info");
       expect(spy).toHaveBeenCalledWith(
         expect.stringContaining("[INFO]"),
