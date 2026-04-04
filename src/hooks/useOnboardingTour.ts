@@ -54,12 +54,12 @@ export function useOnboardingTour({
     setHasCompleted(completed);
 
     if (autoStart && !completed) {
-      // Delay para garantir que a UI foi renderizada
       const timer = setTimeout(() => {
         setIsActive(true);
       }, 1500);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [storageKey, autoStart]);
 
   const start = useCallback(() => {

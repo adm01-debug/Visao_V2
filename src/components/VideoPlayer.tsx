@@ -72,7 +72,7 @@ export function VideoPlayer({
     };
   }, [isPlaying, isLive]);
 
-  useEffect(() => {
+   useEffect(() => {
     if (isLive) {
       const updateTime = () => {
         const now = new Date();
@@ -81,9 +81,9 @@ export function VideoPlayer({
       updateTime();
       const timer = setInterval(updateTime, 1000);
       return () => clearInterval(timer);
-    } else {
-      const totalSeconds = Math.floor((progress / 100) * 3600);
-      const hours = Math.floor(totalSeconds / 3600);
+    }
+    const totalSeconds = Math.floor((progress / 100) * 3600);
+    const hours = Math.floor(totalSeconds / 3600);
       const minutes = Math.floor((totalSeconds % 3600) / 60);
       const seconds = totalSeconds % 60;
       setCurrentTime(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);

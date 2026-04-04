@@ -47,6 +47,7 @@ export const useAmbientLight = (): AmbientLightState => {
       return () => sensor.stop();
     } catch (e) {
       setState(s => ({ ...s, error: e instanceof Error ? e.message : 'Init failed' }));
+      return undefined;
     }
   }, []);
 
