@@ -76,7 +76,7 @@ export const useCameraSnapshots = (cameraId?: string) => {
           trigger_type: triggerType,
           metadata,
           user_id: (await supabase.auth.getUser()).data.user?.id ?? "",
-        })
+        }] as never)
         .select()
         .single();
 
