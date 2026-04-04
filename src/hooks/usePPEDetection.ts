@@ -547,15 +547,9 @@ Respond in JSON format:
   }, []);
 
   const acknowledgeViolation = useCallback(async (id: string) => {
-    const { error } = await supabase
-      .from('ppe_violations' as never)
-      .update({ acknowledged: true })
-      .eq('id', id);
-
-    if (!error) {
-      setViolations(prev => prev.map(v =>
-        v.id === id ? { ...v, acknowledged: true } : v
-      ));
+    setViolations(prev => prev.map(v =>
+      v.id === id ? { ...v, acknowledged: true } : v
+    ));
     }
   }, []);
 

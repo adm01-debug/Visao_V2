@@ -435,7 +435,7 @@ export function useContinuousAnalysis(
         user_id: user.id,
         timestamp: entry.timestamp.toISOString(),
         analysis_type: entry.analysisType,
-        result: entry.result as Record<string, unknown>,
+        result: JSON.parse(JSON.stringify(entry.result)),
         confidence: 'confidence' in entry.result ? (entry.result as Record<string, number>).confidence : null,
         image_url: entry.snapshot || null,
       }]);

@@ -497,14 +497,14 @@ export function useZoneDetection(
 
   const updateZone = useCallback(async (zoneId: string, updates: Partial<Zone>) => {
     try {
-      const updateData: unknown = { updated_at: new Date().toISOString() };
+      const updateData: Record<string, unknown> = { updated_at: new Date().toISOString() };
       if (updates.name) updateData.name = updates.name;
       if (updates.type) updateData.type = updates.type;
       if (updates.geometry?.points) updateData.points = updates.geometry.points;
       if (updates.color) updateData.color = updates.color;
       if (updates.enabled !== undefined) updateData.is_active = updates.enabled;
 
-      await supabase.from('zones').update(updateData).eq('id', zoneId);
+      await supabase.from('zones').update(updateData as never).eq('id', zoneId);
     } catch (err) {
     }
 

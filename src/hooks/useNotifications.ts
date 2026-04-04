@@ -438,7 +438,7 @@ export function useNotifications(
           processNewNotification({
             id: n.id as string,
             type: (n.type as string) || 'alert',
-            severity: (n.severity as string) || 'medium',
+            severity: (n.severity as NotificationSeverity) || 'medium',
             title: (n.camera_name as string) || 'Notificação',
             message: (n.message as string) || '',
             data: { camera_id: n.camera_id as string, thumbnail: n.thumbnail as string },

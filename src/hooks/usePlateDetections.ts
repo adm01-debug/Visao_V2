@@ -332,6 +332,7 @@ ${ownerName ? `👤 <b>Proprietário:</b> ${ownerName}` : ''}
 
       const newPlate: RegisteredPlate = {
         ...data,
+        vehicle_type: data.vehicle_type || 'car',
         created_at: new Date(data.created_at),
         updated_at: new Date(data.updated_at),
         list_type: data.list_type as RegisteredPlate['list_type']
