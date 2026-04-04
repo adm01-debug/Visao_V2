@@ -20,7 +20,7 @@ import { zoneTypeConfig, defaultColors, parsePointsData, type ZoneType, type DbZ
 interface ZoneEditorSheetProps {
   isOpen: boolean;
   onClose: () => void;
-  camera: { id: string; name: string; stream_url?: string | null; stream_protocol?: string; thumbnail?: string | null } | null;
+  camera: { id: string; name: string; stream_url?: string | null; stream_protocol?: StreamProtocol; thumbnail?: string | null } | null;
   zone?: DbZone | null;
   onSave: (data: TablesInsert<'zones'> | TablesUpdate<'zones'>) => Promise<void>;
 }

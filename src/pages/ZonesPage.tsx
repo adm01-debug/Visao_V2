@@ -176,7 +176,7 @@ export function ZonesPage() {
       ) : (
         <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'flex flex-col gap-2')}>
           {filteredZones.map(zone => (
-            <ZoneCard key={zone.id} zone={zone} stats={zoneStats[zone.id]} cameraName={getCameraName(zone.camera_id)} onView={() => openView(zone)} onEdit={() => openEditor(getCameraById(zone.camera_id), zone)} onDelete={() => setDeleteConfirm(zone)} onToggle={() => handleToggle(zone)} />
+            <ZoneCard key={zone.id} zone={zone} stats={zoneStats[zone.id]} cameraName={getCameraName(zone.camera_id)} onView={() => openView(zone)} onEdit={() => openEditor(getCameraById(zone.camera_id) ?? undefined, zone)} onDelete={() => setDeleteConfirm(zone)} onToggle={() => handleToggle(zone)} />
           ))}
         </div>
       )}
