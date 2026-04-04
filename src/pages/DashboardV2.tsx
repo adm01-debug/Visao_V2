@@ -175,8 +175,8 @@ function mapDbCameraToUI(dbCamera: DbCamera) {
     alerts: dbCamera.alerts_count || 0,
     latitude: dbCamera.latitude,
     longitude: dbCamera.longitude,
-    streamUrl: (dbCamera as unknown).stream_url || undefined,
-    streamProtocol: (dbCamera as unknown).stream_protocol || 'hls',
+    streamUrl: (dbCamera as Record<string, unknown>).stream_url as string | undefined,
+    streamProtocol: ((dbCamera as Record<string, unknown>).stream_protocol as string) || 'hls',
   };
 }
 
