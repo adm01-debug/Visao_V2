@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useVehicles - Gerenciamento de veículos para ALPR

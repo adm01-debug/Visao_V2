@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { logger } from "@/lib";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
