@@ -29,6 +29,8 @@ export interface NavCategory {
   icon: LucideIcon;
   items: NavItem[];
   getStatus?: () => CategoryStatus;
+  /** Role mínima para ver esta categoria inteira */
+  minRole?: AppRole;
 }
 
 export interface SidebarContextValue {
