@@ -257,14 +257,7 @@ export interface FaceRecognitionConfig {
   maxFacesPerFrame: number;
 
   /** Ações por tipo de lista */
-  actions: {
-    whitelist: 'allow' | 'log';
-    blacklist: 'alert' | 'block';
-    vip: 'allow' | 'notify';
-    employee: 'allow' | 'log';
-    visitor: 'log' | 'alert';
-    unknown: 'log' | 'alert' | 'ignore';
-  };
+  actions: Record<ListType, 'allow' | 'alert' | 'block' | 'log' | 'notify' | 'ignore'>;
 
   /** Alertar para desconhecidos */
   alertOnUnknown: boolean;
