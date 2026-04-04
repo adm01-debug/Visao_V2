@@ -23,7 +23,11 @@ import {
   Brain,
   Filter,
   X,
+  Download,
+  FileText,
+  FileSpreadsheet,
 } from 'lucide-react';
+import { exportToCSV, exportToPDF } from '@/lib/exportUtils';
 import { cn } from '@/lib/utils';
 import { useRealtimeAnalysisHistory, type TimelineItem } from '@/hooks/useRealtimeAnalysisHistory';
 import { formatDistanceToNow } from 'date-fns';
@@ -145,6 +149,16 @@ function TimelineSkeleton() {
   );
 }
 
+const historyExportHeaders = [
+  { key: 'timestamp' as const, label: 'Data/Hora' },
+  { key: 'type' as const, label: 'Tipo' },
+  { key: 'title' as const, label: 'Título' },
+  { key: 'description' as const, label: 'Descrição' },
+  { key: 'severity' as const, label: 'Severidade' },
+  { key: 'cameraName' as const, label: 'Câmera' },
+  { key: 'confidence' as const, label: 'Confiança' },
+];
+
 export function AnalysisHistoryPanel() {
   const [open, setOpen] = useState(false);
   const { items, isLoading, clearNewFlags } = useRealtimeAnalysisHistory();
@@ -172,6 +186,20 @@ export function AnalysisHistoryPanel() {
   const clearFilters = () => {
     setTypeFilter('all');
     setSeverityFilter('all');
+  };
+
+  const handleExport = (format: 'csv' | 'pdf') => {
+    const data = filteredItems.map(item => ({
+      ...item,
+      type: item.type === 'alert' ? 'Alerta' : 'Análise',
+      confidence: item.confidence != null ? `${Math.round(item.confidence * 100)}%` : '-',
+    }));
+    const filename = `historico_analises_${new Date().toISOString().split('T')[0]}`;
+    if (format === 'csv') {
+      exportToCSV(data, filename, historyExportHeaders);
+    } else {
+      exportToPDF(data, filename, 'Histórico de Análises', historyExportHeaders);
+    }
   };
 
   const handleOpen = (isOpen: boolean) => {
@@ -207,18 +235,42 @@ export function AnalysisHistoryPanel() {
           </SheetTitle>
 
           {/* Stats bar */}
-          <div className="flex gap-3 pt-1">
-            <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Eye className="h-3.5 w-3.5" />
-              {analysisCount} análise{analysisCount !== 1 ? 's' : ''}
-            </span>
-            <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <AlertTriangle className="h-3.5 w-3.5" />
-              {alertCount} alerta{alertCount !== 1 ? 's' : ''}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              Últimas 24h
-            </span>
+          <div className="flex items-center justify-between pt-1">
+            <div className="flex gap-3">
+              <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Eye className="h-3.5 w-3.5" />
+                {analysisCount} análise{analysisCount !== 1 ? 's' : ''}
+              </span>
+              <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <AlertTriangle className="h-3.5 w-3.5" />
+                {alertCount} alerta{alertCount !== 1 ? 's' : ''}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                Últimas 24h
+              </span>
+            </div>
+            <div className="flex gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7"
+                onClick={() => handleExport('csv')}
+                disabled={filteredItems.length === 0}
+                title="Exportar CSV"
+              >
+                <FileSpreadsheet className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7"
+                onClick={() => handleExport('pdf')}
+                disabled={filteredItems.length === 0}
+                title="Exportar PDF"
+              >
+                <FileText className="h-3.5 w-3.5" />
+              </Button>
+            </div>
           </div>
         </SheetHeader>
 
