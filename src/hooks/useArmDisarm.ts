@@ -41,10 +41,10 @@ export function useArmDisarm(cameraId?: string) {
         user_id: user!.id,
         camera_id: cameraId,
         state: 'armed',
-        armed_by_email: user!.email,
+        armed_by_email: user!.email ?? null,
         armed_at: new Date().toISOString(),
         disarm_at: scheduledDisarm || null,
-      } as any, { onConflict: 'camera_id,user_id' } as any);
+      });
       if (error) throw error;
     },
     onSuccess: () => {
