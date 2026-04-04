@@ -55,6 +55,7 @@ export function DashboardV2() {
     return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
   });
 
+  const { widgets, visibleWidgets, toggleWidget, reorderWidgets, resetLayout } = useDashboardLayout();
   const { cameras, loading: camerasLoading, updateCamera, refetch: refetchCameras } = useCameras();
   const { alerts, loading: alertsLoading, unreadCount, markAllAsRead, refetch: refetchAlerts } = useAlerts();
   const { rules } = useRules();
