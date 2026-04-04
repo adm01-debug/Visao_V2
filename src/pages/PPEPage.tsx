@@ -412,7 +412,7 @@ export default function PPEPage() {
               <CardDescription>Histórico de detecções de não conformidade</CardDescription>
             </CardHeader>
             <CardContent>
-              {ppeDetection.recentViolations.length === 0 ? (
+              {ppeDetection.violations.length === 0 ? (
                 <div role="main" aria-label="Detecção de EPIs" className="text-center py-12 text-muted-foreground">
                   <CheckCircle2 className="w-12 h-12 mx-auto mb-4 text-green-500" />
                   <p>Nenhuma violação registrada</p>
