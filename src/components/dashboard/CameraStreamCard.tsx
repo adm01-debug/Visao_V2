@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Camera, Users, Brain } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { Database } from '@/integrations/supabase/types';
