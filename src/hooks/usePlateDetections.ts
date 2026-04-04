@@ -115,6 +115,7 @@ export function usePlateDetections() {
 
       setRegisteredPlates(data?.map(p => ({
         ...p,
+        vehicle_type: p.vehicle_type || 'car',
         created_at: new Date(p.created_at),
         updated_at: new Date(p.updated_at),
         list_type: p.list_type as RegisteredPlate['list_type']
