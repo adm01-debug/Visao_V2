@@ -146,7 +146,7 @@ export default function PPEPage() {
       return;
     }
 
-    const success = await ppeDetection.addZone({
+    const success = await ppeDetection.createZone({
       name: newZone.name,
       cameraId: selectedCamera,
       requiredPPE: newZone.requiredPPE,
