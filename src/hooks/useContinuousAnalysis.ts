@@ -259,7 +259,7 @@ export function useContinuousAnalysis(
             satisfied = actualValue === expectedValue;
             break;
           case 'between':
-            const value2 = condition?.value2 || 0;
+            const value2 = (condition?.value2 as number) || 0;
             satisfied = actualValue >= expectedValue && actualValue <= value2;
             break;
         }
