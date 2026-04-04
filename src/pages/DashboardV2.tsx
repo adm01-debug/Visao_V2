@@ -31,6 +31,8 @@ import type { UICameraData } from '@/components/dashboard/CameraStreamCard';
 import { SettingsSheet } from '@/components/dashboard/SettingsSheet';
 import { defaultSettings, sortAlerts } from '@/components/dashboard/DashboardTypes';
 import type { DashboardSettings, AlertSortOption, ViewMode, GridLayout } from '@/components/dashboard/DashboardTypes';
+import { useDashboardLayout } from '@/hooks/useDashboardLayout';
+import { WidgetLayoutConfig } from '@/components/dashboard/WidgetLayoutConfig';
 
 function mapDbCameraToUI(dbCamera: DbCamera): UICameraData {
   return {
