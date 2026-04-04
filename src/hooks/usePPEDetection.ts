@@ -517,26 +517,15 @@ Respond in JSON format:
   }, []);
 
   const createZone = useCallback(async (zone: Omit<PPEZone, 'id' | 'createdAt'>) => {
-    const { data, error } = await supabase
-      .from('ppe_zones' as never)
-      .insert({
-        name: zone.name,
-        camera_id: zone.cameraId,
-        required_ppe: zone.requiredPPE,
-        alert_enabled: zone.alertEnabled,
-        grace_period_seconds: zone.gracePeriodSeconds,
-        polygon: zone.polygon,
-      })
-      .select()
-      .single();
-
-    if (!error && data) {
-      await loadZones();
-      toast.success('Zona PPE criada');
-      return data.id;
-    }
-    return null;
-  }, [loadZones]);
+    const newZone: PPEZone = {
+      id: crypto.randomUUID(),
+      ...zone,
+      createdAt: new Date(),
+    };
+    setZones(prev => [newZone, ...prev]);
+    toast.success('Zona PPE criada');
+    return newZone.id;
+  }, []);
 
   const updateZone = useCallback(async (id: string, updates: Partial<PPEZone>) => {
     const { error } = await supabase
