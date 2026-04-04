@@ -200,8 +200,8 @@ export function PinchToZoom({
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (e.touches.length === 2) {
-      const dx = e.touches[0]!.clientX - e!.touches[1].clientX;
-      const dy = e.touches[0]!.clientY - e!.touches[1].clientY;
+      const dx = e.touches[0]!.clientX - e.touches[1]!.clientX;
+      const dy = e.touches[0]!.clientY - e.touches[1]!.clientY;
       lastDistance.current = Math.sqrt(dx * dx + dy * dy);
       lastScale.current = scale;
     }
