@@ -235,7 +235,7 @@ const UserManagementPage: React.FC = () => {
                       </TableCell>
                       <TableCell>
                         {u.id === user?.id ? (
-                          <Badge variant={ROLE_COLORS[u.role] as any}>
+                          <Badge variant={ROLE_COLORS[u.role] as "default" | "secondary" | "destructive" | "outline"}>
                             {ROLE_LABELS[u.role]} (você)
                           </Badge>
                         ) : (

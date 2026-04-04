@@ -25,7 +25,7 @@ interface DashboardAlertsProps {
   uiAlerts: UIAlert[];
   uiCameras: UICameraData[];
   searchQuery: string;
-  alerts: any[];
+  alerts: DbAlert[];
   unreadCount: number;
   markAllAsRead: () => void;
 }

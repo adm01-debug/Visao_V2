@@ -184,7 +184,7 @@ export default function CollaboratorFlowMapPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Select value={timeRange} onValueChange={(v) => setTimeRange(v as any)}>
+          <Select value={timeRange} onValueChange={(v) => setTimeRange(v as "1h" | "6h" | "24h")}>
             <SelectTrigger className="w-36">
               <SelectValue />
             </SelectTrigger>

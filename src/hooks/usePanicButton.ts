@@ -96,7 +96,7 @@ export function usePanicButton() {
 
       const { error } = await supabase
         .from('panic_events')
-        .update(updates as any)
+        .update(updates)
         .eq('id', eventId);
 
       if (error) throw error;
