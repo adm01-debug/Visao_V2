@@ -93,3 +93,5 @@ function CameraStreamCardBase({ camera, isSelected, onClick, settings, compact =
     </div>
   );
 }
+
+export const CameraStreamCard = memo(CameraStreamCardBase);

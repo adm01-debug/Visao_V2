@@ -55,3 +55,5 @@ export function DashboardStats({
     </div>
   );
 }
+
+export default memo(DashboardStats);
