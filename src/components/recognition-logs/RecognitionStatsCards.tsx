@@ -33,7 +33,7 @@ export function RecognitionStatsCards({ total, recognized, unknown, avgConfidenc
                 <div>
                   <p className="text-sm text-muted-foreground">{item.label}</p>
                   <p className={`text-2xl font-bold ${item.colorClass}`}>
-                    {item.format ? `${val.toFixed(1)}%` : val}
+                    {'isPercent' in item && item.isPercent ? `${val.toFixed(1)}%` : val}
                   </p>
                 </div>
               </div>
