@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * FFmpeg Integration Service
  * Wrapper for FFmpeg.wasm for client-side video processing
