@@ -206,7 +206,17 @@ function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
 
 import { useStorage, STORAGE_BUCKETS } from '@/hooks/useStorage';
 import { useFaceDetection } from '@/hooks/useFaceDetection';
-type FaceEncoding = number[];
+interface FaceEncoding {
+  primaryFace?: {
+    quality: number;
+    confidence: number;
+    attributes?: {
+      age?: number;
+      gender?: string;
+    };
+  };
+  encoding?: number[];
+}
 
 interface PersonFormDialogProps {
   person?: DbPerson | null;
