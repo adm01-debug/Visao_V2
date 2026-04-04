@@ -846,11 +846,11 @@ export function AlertsPage() {
         isOpen={!!detailsAlert}
         onClose={() => setDetailsAlert(null)}
         onMarkRead={() => {
-          markAsRead(detailsAlert.id);
+          if (detailsAlert) markAsRead(detailsAlert.id as string);
           setDetailsAlert(null);
         }}
         onDelete={() => {
-          deleteAlert(detailsAlert.id);
+          if (detailsAlert) deleteAlert(detailsAlert.id as string);
           setDetailsAlert(null);
         }}
       />

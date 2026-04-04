@@ -149,7 +149,7 @@ export default function LicensePlatePage() {
             color: formData.color || null,
             list_type: formData.list_type,
             notes: formData.notes || null,
-            user_id: user?.id,
+            user_id: user?.id || '',
           }]);
         
         if (error) throw error;

@@ -282,8 +282,8 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
     const validation = firstFace ? faceDetection.validateImageQuality(firstFace) : { isValid: false, issues: ['Nenhum rosto detectado'] };
     setFaceValidation({ valid: validation.isValid, message: validation.issues[0] || 'OK' });
 
-    if (validation.valid) {
-      const encoding = faceDetection.generateEncoding(result);
+    if (validation.isValid && firstFace) {
+      const encoding = await faceDetection.generateEncoding(imageData);
       setFaceEncoding(encoding);
       toast.success('Rosto detectado com sucesso!', { id: 'face-detection' });
     } else {
