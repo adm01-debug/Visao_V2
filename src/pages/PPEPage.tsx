@@ -204,10 +204,10 @@ export default function PPEPage() {
             </SelectContent>
           </Select>
           <Button
-            variant={ppeDetection.isRunning ? 'destructive' : 'default'}
-            onClick={ppeDetection.toggle}
+            variant={ppeDetection.isDetecting ? 'destructive' : 'default'}
+            onClick={() => ppeDetection.isDetecting ? ppeDetection.stopContinuousDetection() : null}
           >
-            {ppeDetection.isRunning ? (
+            {ppeDetection.isDetecting ? (
               <>
                 <XCircle className="w-4 h-4 mr-2" />
                 Parar
