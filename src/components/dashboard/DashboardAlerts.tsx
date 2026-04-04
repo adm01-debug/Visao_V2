@@ -107,6 +107,7 @@ export function DashboardAlerts({
           </span>
           <Button
             variant="ghost" size="sm" className="h-6 px-2 ml-auto text-xs"
+            aria-label="Limpar filtro de câmera"
             onClick={() => setAlertFilters({ ...alertFilters, cameraId: 'all' })}
           >
             <X className="w-3 h-3 mr-1" />
