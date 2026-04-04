@@ -149,6 +149,16 @@ function TimelineSkeleton() {
   );
 }
 
+const historyExportHeaders = [
+  { key: 'timestamp' as const, label: 'Data/Hora' },
+  { key: 'type' as const, label: 'Tipo' },
+  { key: 'title' as const, label: 'Título' },
+  { key: 'description' as const, label: 'Descrição' },
+  { key: 'severity' as const, label: 'Severidade' },
+  { key: 'cameraName' as const, label: 'Câmera' },
+  { key: 'confidence' as const, label: 'Confiança' },
+];
+
 export function AnalysisHistoryPanel() {
   const [open, setOpen] = useState(false);
   const { items, isLoading, clearNewFlags } = useRealtimeAnalysisHistory();
@@ -176,6 +186,20 @@ export function AnalysisHistoryPanel() {
   const clearFilters = () => {
     setTypeFilter('all');
     setSeverityFilter('all');
+  };
+
+  const handleExport = (format: 'csv' | 'pdf') => {
+    const data = filteredItems.map(item => ({
+      ...item,
+      type: item.type === 'alert' ? 'Alerta' : 'Análise',
+      confidence: item.confidence != null ? `${Math.round(item.confidence * 100)}%` : '-',
+    }));
+    const filename = `historico_analises_${new Date().toISOString().split('T')[0]}`;
+    if (format === 'csv') {
+      exportToCSV(data, filename, historyExportHeaders);
+    } else {
+      exportToPDF(data, filename, 'Histórico de Análises', historyExportHeaders);
+    }
   };
 
   const handleOpen = (isOpen: boolean) => {
