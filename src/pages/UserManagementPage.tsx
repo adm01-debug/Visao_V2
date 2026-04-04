@@ -111,7 +111,7 @@ const UserManagementPage: React.FC = () => {
         title: "Role atualizada",
         description: `Usuário promovido a ${ROLE_LABELS[newRole]}`,
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: "Erro ao atualizar role",
         description: err.message,
