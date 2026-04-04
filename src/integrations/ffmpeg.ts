@@ -74,7 +74,8 @@ class FFmpegService {
       }
 
       // Set up progress tracking
-      this.ffmpeg.on('progress', ({ progress }) => {
+      this.ffmpeg.on('progress', (data: Record<string, unknown>) => {
+        const progress = (data as { progress: number }).progress;
         this.progressCallback?.(Math.round(progress * 100));
       });
 
