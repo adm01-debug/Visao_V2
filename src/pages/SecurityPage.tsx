@@ -14,7 +14,7 @@ import { SecurityStatsCards } from '@/components/security/SecurityStatsCards';
 import { AuditLogTable } from '@/components/security/AuditLogTable';
 import { AccessEventsList } from '@/components/security/AccessEventsList';
 import { SecurityListsPanel } from '@/components/security/SecurityListsPanel';
-import { SecurityCharts } from '@/components/charts';
+
 import type { AuditLog, AccessEvent, SecurityPerson, SecurityStats, ListType } from '@/components/security/SecurityTypes';
 
 export function SecurityPage() {
