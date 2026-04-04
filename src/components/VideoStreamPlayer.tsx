@@ -12,7 +12,7 @@
  * - Overlay de detecção de IA
  */
 
-import { memo, useState, useRef, useEffect } from 'react';
+import { memo, useState, useRef, useEffect, useCallback } from 'react';
 import {
   Play,
   Pause,
