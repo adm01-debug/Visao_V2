@@ -282,7 +282,7 @@ export function useContinuousAnalysis(
           violated: true,
           conditions: conditionEvaluations,
           actions: rule.actions || [],
-          severity: rule.severity as "high" | "low" | "medium" | "critical" as unknown,
+          severity: rule.severity as "high" | "low" | "medium" | "critical",
           message: `Regra "${rule.name}" violada: ${rule.description || 'Condições atendidas'}`,
         });
       }
