@@ -3,6 +3,7 @@
  */
 
 import type { LucideIcon } from "lucide-react";
+import type { AppRole } from "@/hooks/useUserRole";
 
 export interface NavItem {
   id: string;
@@ -11,6 +12,8 @@ export interface NavItem {
   path: string;
   badge?: number | string;
   badgeVariant?: "default" | "secondary" | "destructive" | "outline";
+  /** Role mínima para ver este item */
+  minRole?: AppRole;
 }
 
 export interface CategoryStatus {
@@ -26,6 +29,8 @@ export interface NavCategory {
   icon: LucideIcon;
   items: NavItem[];
   getStatus?: () => CategoryStatus;
+  /** Role mínima para ver esta categoria inteira */
+  minRole?: AppRole;
 }
 
 export interface SidebarContextValue {
