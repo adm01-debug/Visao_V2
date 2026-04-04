@@ -75,7 +75,7 @@ const UserManagementPage: React.FC = () => {
 
       if (error) throw error;
       setUsers(data.users || []);
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: "Erro ao carregar usuários",
         description: err.message || "Tente novamente mais tarde",
