@@ -64,7 +64,7 @@ export * from "./tree";
 // ./url: isUuid collides with ./regex – skip
 // export * from "./url";
 
-export * from "./uuid";
-
+// ./uuid: isUuid collides with ./regex – skip
+// export * from "./uuid";
 // ./validation: isValidUrl collides with ./url (skipped) – safe to export now
 export * from "./validation";
