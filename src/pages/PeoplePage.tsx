@@ -494,7 +494,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
                   </Button>
                 )}
                 {/* Indicador de detecção facial */}
-                {faceDetection.isDetecting && (
+                {faceDetection.isProcessing && (
                   <div role="main" aria-label="Cadastro de pessoas" className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground rounded-full p-1">
                     <RefreshCw className="w-4 h-4 animate-spin" />
                   </div>
