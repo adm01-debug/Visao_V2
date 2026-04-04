@@ -242,6 +242,13 @@ export default function PPEPage() {
         />
       </div>
 
+      {/* Charts */}
+      <PPECharts zones={ppeDetection.zones.map(z => ({
+        id: z.id, name: z.name, camera_id: z.cameraId,
+        requiredPPE: z.requiredPPE, enabled: z.enabled,
+        complianceRate: z.complianceRate, violations: z.violations,
+      }))} />
+
       {/* Tabs */}
       <Tabs defaultValue="zones" className="space-y-4">
         <TabsList>

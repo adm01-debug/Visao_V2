@@ -427,6 +427,9 @@ export default function JourneyReportsPage() {
         </Card>
       </div>
 
+      {/* Charts */}
+      <JourneyCharts entries={journeyData} />
+
       {/* Table */}
       <Card>
         <CardHeader className="pb-3">

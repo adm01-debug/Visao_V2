@@ -607,6 +607,15 @@ export function RecordingsPage() {
         </div>
       </div>
 
+      {/* Charts */}
+      <div className="container py-4">
+        <RecordingsCharts recordings={clips.map(c => ({
+          id: c.id, status: c.status, started_at: c.start_time,
+          duration_seconds: c.duration, file_size_bytes: c.file_size_bytes,
+          camera_id: c.camera_id, quality: null,
+        }))} />
+      </div>
+
       {/* Content */}
       <div role="main" aria-label="Gravações" className="container py-6">
         {/* Filters */}

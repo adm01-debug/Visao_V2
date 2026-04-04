@@ -277,6 +277,9 @@ export default function RecognitionLogsPage() {
           </Card>
         </div>
 
+        {/* Charts */}
+        <RecognitionCharts logs={filteredLogs} />
+
         {/* Filters */}
         <Card>
           <CardHeader className="pb-3">
