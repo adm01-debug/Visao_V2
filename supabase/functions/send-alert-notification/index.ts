@@ -4,13 +4,13 @@
  *
  * Envia notificações de alertas via múltiplos canais:
  * - Email (via Resend)
+ * - Telegram (via Bot API)
  * - WhatsApp (via Evolution API / Z-API)
  * - Webhook
  * - Push Notification
  */
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -25,11 +25,15 @@ interface AlertNotification {
   cameraName: string;
   timestamp: string;
   snapshotUrl?: string;
-  channels: ('email' | 'whatsapp' | 'webhook' | 'push')[];
+  channels: ('email' | 'telegram' | 'whatsapp' | 'webhook' | 'push')[];
   recipients?: {
     emails?: string[];
     phones?: string[];
     webhookUrls?: string[];
+  };
+  telegram?: {
+    botToken: string;
+    chatId: string;
   };
 }
 
@@ -119,6 +123,96 @@ serve(async (req) => {
         }
       } else {
         results.email = { success: false, error: 'No API key or recipients' };
+      }
+    }
+
+    // ==========================================
+    // TELEGRAM via Bot API
+    // ==========================================
+    if (notification.channels.includes('telegram')) {
+      const telegramConfig = notification.telegram;
+
+      if (telegramConfig?.botToken && telegramConfig?.chatId) {
+        try {
+          const severityEmoji: Record<string, string> = {
+            low: 'ℹ️',
+            medium: '⚠️',
+            high: '🔶',
+            critical: '🚨',
+          };
+
+          const telegramMessage = `${severityEmoji[notification.severity]} <b>ALERTA VISÃO</b>
+
+<b>Severidade:</b> ${notification.severity.toUpperCase()}
+<b>Câmera:</b> ${notification.cameraName}
+<b>Tipo:</b> ${notification.type}
+
+<b>Mensagem:</b>
+${notification.message}
+
+<b>Data/Hora:</b> ${new Date(notification.timestamp).toLocaleString('pt-BR')}`;
+
+          let telegramResponse;
+
+          if (notification.snapshotUrl && notification.snapshotUrl.startsWith('http')) {
+            const formData = new FormData();
+            formData.append('chat_id', telegramConfig.chatId);
+            formData.append('caption', telegramMessage);
+            formData.append('parse_mode', 'HTML');
+            formData.append('photo', notification.snapshotUrl);
+
+            telegramResponse = await fetch(
+              `https://api.telegram.org/bot${telegramConfig.botToken}/sendPhoto`,
+              { method: 'POST', body: formData }
+            );
+          } else if (notification.snapshotUrl && notification.snapshotUrl.startsWith('data:image')) {
+            const base64Data = notification.snapshotUrl.split(',')[1];
+            const binaryString = atob(base64Data);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+              bytes[i] = binaryString.charCodeAt(i);
+            }
+            const blob = new Blob([bytes], { type: 'image/jpeg' });
+
+            const formData = new FormData();
+            formData.append('chat_id', telegramConfig.chatId);
+            formData.append('caption', telegramMessage);
+            formData.append('parse_mode', 'HTML');
+            formData.append('photo', blob, 'snapshot.jpg');
+
+            telegramResponse = await fetch(
+              `https://api.telegram.org/bot${telegramConfig.botToken}/sendPhoto`,
+              { method: 'POST', body: formData }
+            );
+          } else {
+            telegramResponse = await fetch(
+              `https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`,
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  chat_id: telegramConfig.chatId,
+                  text: telegramMessage,
+                  parse_mode: 'HTML',
+                }),
+              }
+            );
+          }
+
+          const telegramResult = await telegramResponse.json();
+
+          if (telegramResult.ok) {
+            results.telegram = { success: true };
+            console.log(`[send-alert-notification] Telegram sent to chat ${telegramConfig.chatId}`);
+          } else {
+            results.telegram = { success: false, error: telegramResult.description || 'Telegram API error' };
+            console.error('[send-alert-notification] Telegram error:', telegramResult);
+          }
+        } catch (err) {
+          results.telegram = { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
+        }
+      } else {
+        results.telegram = { success: false, error: 'No Telegram bot token or chat ID configured' };
       }
     }
 

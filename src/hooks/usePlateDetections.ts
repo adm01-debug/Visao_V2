@@ -178,32 +178,30 @@ export function usePlateDetections() {
         return;
       }
 
-      const timestamp = new Date().toLocaleString('pt-BR');
-      const message = `🚨 <b>ALERTA: VEÍCULO NA BLACKLIST</b>
+      const alertMessage = ownerName
+        ? `Veículo na blacklist detectado: ${plate} (Proprietário: ${ownerName})`
+        : `Veículo na blacklist detectado: ${plate}`;
 
-🚗 <b>Placa:</b> <code>${plate}</code>
-${ownerName ? `👤 <b>Proprietário:</b> ${ownerName}` : ''}
-📍 <b>Câmera:</b> ${cameraName}
-🕐 <b>Data/Hora:</b> ${timestamp}
-
-⚠️ Veículo cadastrado na lista de bloqueio foi detectado.`;
-
-      const { data, error } = await supabase.functions.invoke('send-telegram', {
+      const { error } = await supabase.functions.invoke('send-alert-notification', {
         body: {
-          botToken: config.botToken,
-          chatId: config.chatId,
-          message,
-          parseMode: 'HTML',
-          photo: imageUrl?.startsWith('data:') ? imageUrl : undefined,
+          alertId: `alpr-${plate}-${Date.now()}`,
+          type: 'security',
+          severity: 'critical' as const,
+          message: alertMessage,
+          cameraName,
+          timestamp: new Date().toISOString(),
+          snapshotUrl: imageUrl || undefined,
+          channels: ['telegram'],
+          telegram: {
+            botToken: config.botToken,
+            chatId: config.chatId,
+          },
         },
       });
 
       if (error) throw error;
-
-      if (data?.success) {
-      }
-    } catch (error) {
-      // error removed
+    } catch {
+      // Silently fail — alert was already persisted in DB
     }
   }, []);
 
