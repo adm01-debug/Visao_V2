@@ -1,26 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { Tables } from '@/integrations/supabase/types';
 
-export interface HeatmapSnapshot {
-  id: string;
-  camera_id: string;
-  image_url: string;
-  data_points: number;
-  max_intensity: number;
-  min_intensity: number;
-  avg_intensity: number;
-  period_start: string;
-  period_end: string;
-  resolution: {
-    width: number;
-    height: number;
-  };
-  metadata?: Record<string, any>;
-  created_at: string;
-}
+type DbHeatmapSnapshot = Tables<'heatmap_snapshots'>;
+
+export type { DbHeatmapSnapshot as HeatmapSnapshot };
 
 export const useHeatmapSnapshots = (cameraId?: string) => {
-  const [snapshots, setSnapshots] = useState<HeatmapSnapshot[]>([]);
+  const [snapshots, setSnapshots] = useState<DbHeatmapSnapshot[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,8 +23,8 @@ export const useHeatmapSnapshots = (cameraId?: string) => {
         query = query.eq('camera_id', cameraId);
       }
 
-      const { data, error } = await query;
-      if (error) throw error;
+      const { data, error: fetchError } = await query;
+      if (fetchError) throw fetchError;
       setSnapshots(data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch snapshots');
@@ -62,7 +49,7 @@ export const useHeatmapSnapshots = (cameraId?: string) => {
       periodEnd: string;
       resolution: { width: number; height: number };
     },
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ) => {
     try {
       const fileName = `heatmaps/${cameraId}/${Date.now()}.png`;
@@ -77,7 +64,7 @@ export const useHeatmapSnapshots = (cameraId?: string) => {
         .from('heatmap-snapshots')
         .getPublicUrl(fileName);
 
-      const { data, error } = await supabase
+      const { data, error: insertError } = await supabase
         .from('heatmap_snapshots')
         .insert({
           camera_id: cameraId,
@@ -90,11 +77,12 @@ export const useHeatmapSnapshots = (cameraId?: string) => {
           period_end: stats.periodEnd,
           resolution: stats.resolution,
           metadata,
+          user_id: (await supabase.auth.getUser()).data.user?.id ?? '',
         })
         .select()
         .single();
 
-      if (error) throw error;
+      if (insertError) throw insertError;
       await fetchSnapshots();
       return data;
     } catch (err) {
@@ -111,12 +99,12 @@ export const useHeatmapSnapshots = (cameraId?: string) => {
         await supabase.storage.from('heatmap-snapshots').remove([path]);
       }
 
-      const { error } = await supabase
+      const { error: deleteError } = await supabase
         .from('heatmap_snapshots')
         .delete()
         .eq('id', id);
 
-      if (error) throw error;
+      if (deleteError) throw deleteError;
       await fetchSnapshots();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete snapshot');
