@@ -91,6 +91,7 @@ export function usePlateDetections() {
 
       setDetections(data?.map(d => ({
         ...d,
+        vehicle_type: d.vehicle_type || 'unknown',
         timestamp: new Date(d.timestamp),
         created_at: new Date(d.created_at),
         status: d.status as PlateDetection['status']
