@@ -64,6 +64,7 @@ import {
 import { FaceRecognitionOverlay } from './FaceRecognitionOverlay';
 import { useStreamFaceDetection } from '@/hooks/useStreamFaceDetection';
 import { ClipRecorderControls } from './ClipRecorderControls';
+import { AnalysisResultsOverlay } from './AnalysisResultsOverlay';
 import { useContinuousAnalysis } from '@/hooks/useContinuousAnalysis';
 import { AnalysisType, AnalysisResult, AnalysisAlert } from '@/hooks/useImageAnalysis';
 import { DbRule } from '@/types/rules';
@@ -578,35 +579,13 @@ export function VideoStreamPlayer({
           </div>
         )}
 
-        {/* Continuous Analysis indicator */}
+        {/* Continuous Analysis Results Overlay */}
         {continuousAnalysisActive && analysisSession && (
-          <div className="absolute top-12 right-3 flex flex-col items-end gap-1">
-            <div className="flex items-center gap-2 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-xs text-white">
-              <Brain className={cn('w-3 h-3', isAnalysisRunning ? 'animate-pulse text-primary' : 'text-green-400')} />
-              <span>{isAnalysisRunning ? 'Analisando...' : 'IA Ativa'}</span>
-              {analysisSession.stats.totalAnalyses > 0 && (
-                <span className="text-muted-foreground">({analysisSession.stats.totalAnalyses})</span>
-              )}
-            </div>
-            {lastAnalysis && (
-              <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-xs text-white">
-                <span className="text-muted-foreground">Pessoas:</span>
-                <span className="font-medium">{lastAnalysis.people_count}</span>
-                {'risk_level' in lastAnalysis && (lastAnalysis as Record<string, unknown>).risk_level ? (
-                  <>
-                    <span className="text-muted-foreground ml-1">Risco:</span>
-                    <span className={cn(
-                      'font-medium',
-                      (lastAnalysis as Record<string, unknown>).risk_level === 'critical' && 'text-red-400',
-                      (lastAnalysis as Record<string, unknown>).risk_level === 'high' && 'text-orange-400',
-                      (lastAnalysis as Record<string, unknown>).risk_level === 'medium' && 'text-yellow-400',
-                      (lastAnalysis as Record<string, unknown>).risk_level === 'low' && 'text-green-400',
-                    )}>{String((lastAnalysis as Record<string, unknown>).risk_level)}</span>
-                  </>
-                ) : null}
-              </div>
-            )}
-          </div>
+          <AnalysisResultsOverlay
+            lastAnalysis={lastAnalysis}
+            session={analysisSession}
+            isAnalyzing={isAnalysisRunning}
+          />
         )}
 
         {/* Stats overlay */}
