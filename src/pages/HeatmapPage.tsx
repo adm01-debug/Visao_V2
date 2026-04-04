@@ -146,9 +146,9 @@ export default function HeatmapPage() {
                   <div role="main" className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground">Zonas Ativas</p>
-                      <p className="text-2xl font-bold">{stats.activeZones || 0}</p>
+                      <p className="text-2xl font-bold">{stats.hotspots?.length || 0}</p>
                     </div>
-                    <Badge variant="secondary">{stats.coverage || '0%'}</Badge>
+                    <Badge variant="secondary">{stats.totalPoints || 0}</Badge>
                   </div>
                 </CardContent>
               </Card>
