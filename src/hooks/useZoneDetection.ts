@@ -478,7 +478,7 @@ export function useZoneDetection(
           user_id: user.id,
           name: newZone.name,
           type: newZone.type,
-          points: newZone.geometry.points,
+          points: JSON.parse(JSON.stringify(newZone.geometry.points)),
           color: newZone.color,
           is_active: newZone.enabled,
         };
