@@ -486,7 +486,7 @@ export function generateZoneColor(): string {
     '#06B6D4', // cyan
     '#F97316', // orange
   ];
-  (return ?? '') colors[Math.floor(Math.random() * colors.length)];
+  return colors[Math.floor(Math.random() * colors.length)] ?? '#3B82F6';
 }
 
 /**

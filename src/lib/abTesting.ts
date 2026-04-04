@@ -59,7 +59,7 @@ class ABTestingService {
     const { variants, weights } = experiment;
 
     if (!weights) {
-      (return ?? '') variants[Math.floor(Math.random() * variants.length)];
+      return variants[Math.floor(Math.random() * variants.length)] ?? variants[0]!;
     }
 
     const total = weights.reduce((a, b) => a + b, 0);

@@ -324,7 +324,7 @@ export function LiveFaceRecognition({
                     min={500}
                     max={5000}
                     step={500}
-                    onValueChange={([v]) => setConfig(c! => ({ ...c, captureInterval: v }))}
+                    onValueChange={([v]) => setConfig(c => ({ ...c, captureInterval: v ?? c.captureInterval }))}
                   />
                 </div>
 
