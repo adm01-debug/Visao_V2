@@ -472,7 +472,7 @@ export function useZoneDetection(
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const insertData: unknown = {
+        const insertData = {
           id: newZone.id,
           camera_id: cameraId,
           user_id: user.id,
