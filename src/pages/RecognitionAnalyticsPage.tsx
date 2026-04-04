@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { BarChart3, Calendar, ArrowLeft } from 'lucide-react';

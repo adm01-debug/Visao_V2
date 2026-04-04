@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -16,6 +15,9 @@ export interface NotificationHistoryEntry {
   created_at: string;
 }
 
+// Note: This hook references a 'notification_history' table that may not exist yet.
+// Using type assertions to allow compilation until the table is created.
+
 export const useNotificationHistory = (configId?: string) => {
   const [history, setHistory] = useState<NotificationHistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +26,8 @@ export const useNotificationHistory = (configId?: string) => {
   const fetchHistory = useCallback(async () => {
     setLoading(true);
     try {
-      let query = supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let query = (supabase as any)
         .from('notification_history')
         .select('*')
         .order('created_at', { ascending: false });
@@ -36,7 +39,7 @@ export const useNotificationHistory = (configId?: string) => {
       const { data, error } = await query;
 
       if (error) throw error;
-      setHistory(data || []);
+      setHistory((data as NotificationHistoryEntry[]) || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch history');
     } finally {
@@ -50,7 +53,8 @@ export const useNotificationHistory = (configId?: string) => {
 
   const clearHistory = useCallback(async (olderThanDays?: number) => {
     try {
-      let query = supabase.from('notification_history').delete();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let query = (supabase as any).from('notification_history').delete();
 
       if (olderThanDays) {
         const cutoffDate = new Date();

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Object Utilities
  */
@@ -28,9 +27,9 @@ export const get = (obj: unknown, path: string, defaultValue?: unknown): unknown
   return result;
 };
 
-export const set = <T extends object>(obj: T, path: string, value: unknown): T => {
+export const set = <T extends Record<string, unknown>>(obj: T, path: string, value: unknown): T => {
   const keys = path.replace(/\[(\d+)\]/g, '.$1').split('.');
-  const result = { ...obj };
+  const result = { ...obj } as Record<string, unknown>;
   let current: Record<string, unknown> = result;
   for (let i = 0; i < keys.length - 1; i++) {
     const key = keys[i];
@@ -38,7 +37,7 @@ export const set = <T extends object>(obj: T, path: string, value: unknown): T =
     current = current[key] as Record<string, unknown>;
   }
   current[keys[keys.length - 1]] = value;
-  return result;
+  return result as T;
 };
 
 export const merge = <T extends object>(...objects: Partial<T>[]): T =>

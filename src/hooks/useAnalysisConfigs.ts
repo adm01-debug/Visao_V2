@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -19,6 +18,9 @@ export interface AnalysisConfig {
 export type AnalysisConfigInsert = Omit<AnalysisConfig, 'id' | 'created_at' | 'updated_at'>;
 export type AnalysisConfigUpdate = Partial<AnalysisConfigInsert>;
 
+// Note: This hook references a 'continuous_analysis_configs' table that may not exist yet.
+// Using type assertions to allow compilation until the table is created.
+
 export const useAnalysisConfigs = (cameraId?: string) => {
   const [configs, setConfigs] = useState<AnalysisConfig[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,7 +29,8 @@ export const useAnalysisConfigs = (cameraId?: string) => {
   const fetchConfigs = useCallback(async () => {
     setLoading(true);
     try {
-      let query = supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let query = (supabase as any)
         .from('continuous_analysis_configs')
         .select('*')
         .order('created_at', { ascending: false });
@@ -38,7 +41,7 @@ export const useAnalysisConfigs = (cameraId?: string) => {
 
       const { data, error } = await query;
       if (error) throw error;
-      setConfigs(data || []);
+      setConfigs((data as AnalysisConfig[]) || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch configs');
     } finally {
@@ -52,7 +55,8 @@ export const useAnalysisConfigs = (cameraId?: string) => {
 
   const createConfig = useCallback(async (config: AnalysisConfigInsert) => {
     try {
-      const { data, error } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await (supabase as any)
         .from('continuous_analysis_configs')
         .insert(config)
         .select()
@@ -69,7 +73,8 @@ export const useAnalysisConfigs = (cameraId?: string) => {
 
   const updateConfig = useCallback(async (id: string, updates: AnalysisConfigUpdate) => {
     try {
-      const { error } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase as any)
         .from('continuous_analysis_configs')
         .update(updates)
         .eq('id', id);
@@ -84,7 +89,8 @@ export const useAnalysisConfigs = (cameraId?: string) => {
 
   const deleteConfig = useCallback(async (id: string) => {
     try {
-      const { error } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase as any)
         .from('continuous_analysis_configs')
         .delete()
         .eq('id', id);

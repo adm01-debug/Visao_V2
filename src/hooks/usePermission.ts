@@ -1,7 +1,6 @@
-// @ts-nocheck
 import { useState, useEffect } from 'react';
 
-type PermissionName = 'geolocation' | 'notifications' | 'camera' | 'microphone' | 'clipboard-read' | 'clipboard-write';
+type BrowserPermissionName = 'geolocation' | 'notifications' | 'camera' | 'microphone' | 'clipboard-read' | 'clipboard-write';
 
 interface UsePermissionState {
   state: PermissionState | 'unsupported';
@@ -10,7 +9,7 @@ interface UsePermissionState {
   isPrompt: boolean;
 }
 
-export const usePermission = (permissionName: PermissionName): UsePermissionState => {
+export const usePermission = (permissionName: BrowserPermissionName): UsePermissionState => {
   const [state, setState] = useState<PermissionState | 'unsupported'>('prompt');
 
   useEffect(() => {

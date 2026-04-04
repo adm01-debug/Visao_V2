@@ -1,5 +1,3 @@
-// @ts-nocheck
-import { logger } from '@/lib/logger';
 import { useReducer, useRef, useCallback, Dispatch } from 'react';
 
 type Middleware<S, A> = (
@@ -37,13 +35,13 @@ export function useReducerWithMiddleware<S, A>(
 // Logger Middleware
 export const loggerMiddleware: Middleware<unknown, { type?: string }> = (store) => (next) => (action) => {
   if (import.meta.env.DEV) {
-    logger.group(action.type || 'Action');
-    logger.debug('state', 'Previous:', store.getState());
+    console.group(action.type || 'Action');
+    console.log('Previous:', store.getState());
   }
   next(action);
   if (import.meta.env.DEV) {
-    logger.debug('state', 'Next:', store.getState());
-    logger.groupEnd();
+    console.log('Next:', store.getState());
+    console.groupEnd();
   }
 };
 

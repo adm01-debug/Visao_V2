@@ -1,22 +1,22 @@
-// @ts-nocheck
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface StreamRecording {
   id: string;
-  camera_id: string;
-  stream_url: string;
-  file_path: string;
-  file_size_bytes: number;
-  duration_seconds: number;
-  format: string;
-  quality: string;
+  camera_id: string | null;
+  stream_url: string | null;
+  file_path: string | null;
+  file_size_bytes: number | null;
+  duration_seconds: number | null;
+  format: string | null;
+  quality: string | null;
   started_at: string;
-  ended_at: string;
-  status: 'recording' | 'completed' | 'failed' | 'processing';
-  error_message?: string;
-  thumbnail_url?: string;
+  ended_at: string | null;
+  status: string;
+  error_message: string | null;
+  thumbnail_url: string | null;
   created_at: string;
+  user_id: string;
 }
 
 export const useStreamRecordings = (cameraId?: string) => {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * LazyComponent - Lazy loading wrapper with suspense
  */
@@ -24,6 +23,7 @@ const DefaultErrorFallback = () => (
   </div>
 );
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function createLazyComponent<T extends ComponentType<any>>(
   importFn: () => Promise<{ default: T }>,
   options: LazyComponentProps = {}
@@ -80,9 +80,9 @@ class ErrorBoundary extends React.Component<
 }
 
 // Pre-built lazy components
-export const LazyDashboard = createLazyComponent(() => import('@/pages/Dashboard'));
-export const LazyAlerts = createLazyComponent(() => import('@/pages/Alerts'));
-export const LazyAnalytics = createLazyComponent(() => import('@/pages/Analytics'));
-export const LazySettings = createLazyComponent(() => import('@/pages/Settings'));
+export const LazyDashboard = createLazyComponent(() => import('@/pages/DashboardV2'));
+export const LazyAlerts = createLazyComponent(() => import('@/pages/AlertsPage'));
+export const LazyAnalytics = createLazyComponent(() => import('@/pages/AnalyticsPage'));
+export const LazySettings = createLazyComponent(() => import('@/pages/SettingsPage'));
 
 export default createLazyComponent;

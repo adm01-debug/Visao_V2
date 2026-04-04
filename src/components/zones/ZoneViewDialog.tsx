@@ -1,4 +1,4 @@
-// @ts-nocheck
+import type { LucideIcon } from 'lucide-react';
 import { Camera, Clock, Activity } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,9 +12,17 @@ import { ptBR } from 'date-fns/locale';
 import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';
 import { zoneTypeConfig, parsePointsData, type ZoneType, type DbZone, type ZoneStats, type ZoneEvent } from './zonesConfig';
 
+interface CameraData {
+  id: string;
+  name: string;
+  stream_url?: string | null;
+  stream_protocol?: string;
+  thumbnail?: string | null;
+}
+
 interface ZoneViewDialogProps {
   zone: DbZone | null;
-  camera: any;
+  camera: CameraData | null;
   stats?: ZoneStats;
   events: ZoneEvent[];
   isOpen: boolean;
@@ -24,7 +32,7 @@ interface ZoneViewDialogProps {
 export function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneViewDialogProps) {
   if (!zone) return null;
   const typeConfig = zoneTypeConfig[zone.type as ZoneType] || zoneTypeConfig.custom;
-  const TypeIcon = typeConfig.icon;
+  const TypeIcon = typeConfig.icon as LucideIcon;
   const pointsData = parsePointsData(zone.points);
 
   return (
@@ -48,7 +56,7 @@ export function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }:
             <TabsContent value="preview" className="m-0">
               <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
                 {camera?.stream_url ? (
-                  <VideoStreamPlayer cameraId={camera.id} streamUrl={camera.stream_url} protocol={camera.stream_protocol || 'hls'} cameraName={camera.name} />
+                  <VideoStreamPlayer cameraId={camera.id} streamUrl={camera.stream_url} protocol={(camera.stream_protocol || 'hls') as 'hls' | 'webrtc' | 'mjpeg' | 'rtsp'} cameraName={camera.name} />
                 ) : camera?.thumbnail ? (
                   <img src={camera.thumbnail} alt={camera.name} className="w-full h-full object-cover" />
                 ) : (

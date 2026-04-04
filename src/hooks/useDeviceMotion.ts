@@ -1,4 +1,3 @@
-// @ts-nocheck
 // Type declarations for DeviceMotionEvent permission
 declare global {
   interface DeviceMotionEventStatic {
@@ -39,8 +38,9 @@ export function useDeviceMotion() {
       });
     };
     // Request permission on iOS 13+
-    if (typeof (DeviceMotionEvent as DeviceMotionEventStatic).requestPermission === 'function') {
-      (DeviceMotionEvent as DeviceMotionEventStatic).requestPermission()
+    const dme = DeviceMotionEvent as unknown as DeviceMotionEventStatic;
+    if (typeof dme.requestPermission === 'function') {
+      dme.requestPermission!()
         .then((response: string) => {
           if (response === 'granted') window.addEventListener('devicemotion', handler);
           else setError(new Error('Permission denied'));
