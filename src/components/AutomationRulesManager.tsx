@@ -56,7 +56,8 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useRules } from '@/hooks/useRules';
-import { DbRule, DbRuleInsert } from '@/types/rules';
+import { DbRule, DbRuleInsert, RuleCondition } from '@/types/rules';
+import type { Json } from '@/integrations/supabase/types';
 import { useCameras } from '@/hooks/useCameras';
 import { cn } from '@/lib/utils';
 import { RuleTemplateSelector } from './RuleTemplateSelector';
