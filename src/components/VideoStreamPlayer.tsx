@@ -2,320 +2,45 @@
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: VideoStreamPlayer
  *
- * Player de vídeo profissional com suporte a:
- * - Streaming HLS em tempo real
- * - Controles de reprodução
- * - Seleção de qualidade
- * - Snapshot
- * - Fullscreen
- * - Exibição de estatísticas
- * - Overlay de detecção de IA
+ * Player de vídeo profissional com suporte a HLS, detecção de IA,
+ * reconhecimento facial, análise contínua e gravação de clips.
  */
 
 import { memo, useState, useRef, useEffect, useCallback } from 'react';
 import {
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  Maximize,
-  Minimize,
-  Camera as CameraIcon,
-  Settings,
-  RefreshCw,
-  AlertTriangle,
-  Wifi,
-  WifiOff,
-  Loader2,
-  Download,
-  Activity,
-  Zap,
-  Signal,
-  Scan,
-  Circle,
-  Brain,
+  Play, Pause, Volume2, VolumeX, Maximize, Minimize,
+  Camera as CameraIcon, RefreshCw, AlertTriangle, Loader2,
+  Download, Activity, Scan, Brain,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useVideoStream } from '@/hooks/useVideoStream';
 import { useMLModels } from '@/hooks/useMLModels';
-import {
-  StreamConfig,
-  StreamQuality,
-  StreamStatus,
-  testStreamUrls,
-} from '@/types/streaming';
+import { testStreamUrls } from '@/types/streaming';
 import { FaceRecognitionOverlay } from './FaceRecognitionOverlay';
 import { useStreamFaceDetection } from '@/hooks/useStreamFaceDetection';
 import { ClipRecorderControls } from './ClipRecorderControls';
 import { AnalysisResultsOverlay } from './AnalysisResultsOverlay';
 import { useContinuousAnalysis } from '@/hooks/useContinuousAnalysis';
-import { AnalysisType, AnalysisResult, AnalysisAlert } from '@/hooks/useImageAnalysis';
-import { DbRule } from '@/types/rules';
-
-// ============================================
-// TIPOS
-// ============================================
-
-interface Detection {
-  id: string;
-  type: 'person' | 'vehicle' | 'object' | 'zone';
-  label: string;
-  confidence: number;
-  boundingBox: {
-    x: number; // percentual 0-100
-    y: number;
-    width: number;
-    height: number;
-  };
-  severity?: 'low' | 'medium' | 'high' | 'critical';
-}
-
-interface VideoStreamPlayerProps {
-  cameraId: string;
-  cameraName: string;
-  location?: string;
-  streamUrl?: string;
-  protocol?: StreamConfig['protocol'];
-  isLive?: boolean;
-  detections?: Detection[];
-  showStats?: boolean;
-  enableFaceDetection?: boolean;
-  faceDetectionInterval?: number;
-  height?: number | string;
-  onSnapshot?: (imageData: string) => void;
-  onError?: (error: string) => void;
-  onClick?: () => void;
-  className?: string;
-
-  /** Habilitar análise contínua com IA */
-  enableContinuousAnalysis?: boolean;
-  /** Tipo de análise contínua */
-  analysisType?: AnalysisType;
-  /** Intervalo entre análises em ms (padrão: 15000) */
-  analysisIntervalMs?: number;
-  /** Regras de automação a avaliar */
-  analysisRules?: DbRule[];
-  /** Salvar análises no banco */
-  saveAnalysisHistory?: boolean;
-  /** Callback quando alerta é gerado pela análise */
-  onAnalysisAlert?: (alert: AnalysisAlert, result: AnalysisResult) => void;
-  /** Callback com resultado da análise */
-  onAnalysisResult?: (result: AnalysisResult) => void;
-}
-
-// ============================================
-// STATUS BADGE
-// ============================================
-
-function StatusBadge({ status }: { status: StreamStatus }) {
-  const config: Record<StreamStatus, { color: string; label: string; icon: typeof WifiOff; animate?: boolean }> = {
-    disconnected: { color: 'bg-gray-500', label: 'Desconectado', icon: WifiOff },
-    connecting: { color: 'bg-yellow-500', label: 'Conectando...', icon: Loader2, animate: true },
-    connected: { color: 'bg-blue-500', label: 'Conectado', icon: Wifi },
-    playing: { color: 'bg-green-500', label: 'Ao Vivo', icon: Activity },
-    buffering: { color: 'bg-yellow-500', label: 'Carregando...', icon: Loader2, animate: true },
-    paused: { color: 'bg-gray-500', label: 'Pausado', icon: Pause },
-    error: { color: 'bg-red-500', label: 'Erro', icon: AlertTriangle },
-    reconnecting: { color: 'bg-orange-500', label: 'Reconectando...', icon: RefreshCw, animate: true },
-  };
-
-  const statusConfig = config[status];
-  const Icon = statusConfig.icon;
-  const animate = statusConfig.animate;
-
-  return (
-    <Badge className={cn('gap-1.5 text-white border-0', statusConfig.color)}>
-      <Icon className={cn('w-3 h-3', animate && 'animate-spin')} />
-      {statusConfig.label}
-    </Badge>
-  );
-}
-
-// ============================================
-// QUALITY SELECTOR
-// ============================================
-
-function QualitySelector({
-  current,
-  available,
-  onChange,
-}: {
-  current: StreamQuality;
-  available: StreamQuality[];
-  onChange: (q: StreamQuality) => void;
-}) {
-  const labels: Record<StreamQuality, string> = {
-    auto: 'Auto',
-    '1080p': '1080p HD',
-    '720p': '720p HD',
-    '480p': '480p',
-    '360p': '360p',
-  };
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-8 px-2 text-white hover:bg-white/20">
-          <Settings className="w-4 h-4 mr-1" />
-          {labels[current]}
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-40">
-        <DropdownMenuLabel>Qualidade</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        {available.map(q => (
-          <DropdownMenuItem
-            key={q}
-            onClick={() => onChange(q)}
-            className={cn(q === current && 'bg-primary/10')}
-          >
-            {labels[q]}
-            {q === current && <span className="ml-auto">✓</span>}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
-
-// ============================================
-// STATS OVERLAY
-// ============================================
-
-function StatsOverlay({
-  bitrate,
-  fps,
-  latency,
-  resolution,
-  droppedFrames,
-}: {
-  bitrate: number;
-  fps: number;
-  latency: number;
-  resolution: { width: number; height: number };
-  droppedFrames: number;
-}) {
-  return (
-    <div className="absolute top-12 left-3 bg-black/70 backdrop-blur-sm rounded-lg p-2 text-xs font-mono text-white space-y-1">
-      <div className="flex items-center gap-2">
-        <Signal className="w-3 h-3 text-green-400" />
-        <span>{bitrate} kbps</span>
-      </div>
-      <div className="flex items-center gap-2">
-        <Zap className="w-3 h-3 text-yellow-400" />
-        <span>{fps} FPS</span>
-      </div>
-      <div className="flex items-center gap-2">
-        <Activity className="w-3 h-3 text-blue-400" />
-        <span>{latency}ms</span>
-      </div>
-      <div className="text-muted-foreground">
-        {resolution.width}x{resolution.height}
-      </div>
-      {droppedFrames > 0 && (
-        <div className="text-red-400">
-          Perdidos: {droppedFrames}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ============================================
-// DETECTION OVERLAY
-// ============================================
-
-function DetectionOverlay({ detections }: { detections: Detection[] }) {
-  const severityColors = {
-    low: 'border-blue-400 bg-blue-400/10',
-    medium: 'border-yellow-400 bg-yellow-400/10',
-    high: 'border-orange-400 bg-orange-400/10',
-    critical: 'border-red-400 bg-red-400/10 animate-pulse',
-  };
-
-  const typeColors = {
-    person: 'border-primary',
-    vehicle: 'border-cyan-400',
-    object: 'border-purple-400',
-    zone: 'border-dashed border-destructive',
-  };
-
-  return (
-    <div className="absolute inset-0 pointer-events-none">
-      {detections.map(det => (
-        <div
-          key={det.id}
-          className={cn(
-            'absolute border-2 rounded-sm transition-all duration-200',
-            det.severity ? severityColors[det.severity] : typeColors[det.type]
-          )}
-          style={{
-            left: `${det.boundingBox.x}%`,
-            top: `${det.boundingBox.y}%`,
-            width: `${det.boundingBox.width}%`,
-            height: `${det.boundingBox.height}%`,
-          }}
-        >
-          <div className="absolute -top-6 left-0 bg-background/90 backdrop-blur-sm text-foreground text-xs px-2 py-0.5 rounded whitespace-nowrap">
-            {det.label}
-            {det.confidence < 1 && (
-              <span className="ml-1 text-muted-foreground">
-                {Math.round(det.confidence * 100)}%
-              </span>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ============================================
-// COMPONENTE PRINCIPAL
-// ============================================
+import {
+  VideoStatusBadge,
+  VideoQualitySelector,
+  VideoStatsOverlay,
+  VideoDetectionOverlay,
+} from './video-player';
+import type { VideoStreamPlayerProps } from './video-player';
 
 export function VideoStreamPlayer({
-  cameraId,
-  cameraName,
-  location,
-  streamUrl,
-  protocol = 'hls',
-  isLive = true,
-  detections = [],
-  showStats = false,
-  enableFaceDetection = false,
-  faceDetectionInterval = 3000,
-  height,
-  onSnapshot,
-  onError,
-  onClick,
-  className,
-  enableContinuousAnalysis = false,
-  analysisType = 'security',
-  analysisIntervalMs = 15000,
-  analysisRules = [],
-  saveAnalysisHistory = false,
-  onAnalysisAlert,
-  onAnalysisResult,
+  cameraId, cameraName, location, streamUrl, protocol = 'hls',
+  isLive = true, detections = [], showStats = false,
+  enableFaceDetection = false, faceDetectionInterval = 3000,
+  height, onSnapshot, onError, onClick, className,
+  enableContinuousAnalysis = false, analysisType = 'security',
+  analysisIntervalMs = 15000, analysisRules = [],
+  saveAnalysisHistory = false, onAnalysisAlert, onAnalysisResult,
 }: VideoStreamPlayerProps) {
-  // Estados locais
   const [showStatsOverlay, setShowStatsOverlay] = useState(showStats);
   const [controlsVisible, setControlsVisible] = useState(true);
   const [faceDetectionActive, setFaceDetectionActive] = useState(enableFaceDetection);
@@ -324,84 +49,45 @@ export function VideoStreamPlayer({
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // URL do stream (usar teste se não fornecido)
   const url = streamUrl || testStreamUrls.hls.bigBuckBunny;
 
-  // Hook de streaming
   const {
-    videoRef,
-    state,
-    play,
-    pause,
-    togglePlay,
-    toggleMute,
-    setVolume,
-    setQuality,
-    takeSnapshot,
-    toggleFullscreen,
-    reconnect,
+    videoRef, state, togglePlay, toggleMute, setVolume,
+    setQuality, takeSnapshot, toggleFullscreen, reconnect,
   } = useVideoStream({
-    url,
-    protocol,
-    autoPlay: true,
-    enableAudio: false,
-    onError: (error) => {
-      onError?.(error.message);
-    },
-    onSnapshot: (data) => {
-      onSnapshot?.(data);
-    },
+    url, protocol, autoPlay: true, enableAudio: false,
+    onError: (error) => onError?.(error.message),
+    onSnapshot: (data) => onSnapshot?.(data),
   });
 
-  // Função para capturar frame como base64 para análise contínua
+  // Frame capture for continuous analysis
   const getFrameForAnalysis = useCallback((): string | null => {
     const video = videoRef.current;
     if (!video || video.readyState < 2) return null;
-
-    if (!canvasRef.current) {
-      canvasRef.current = document.createElement('canvas');
-    }
+    if (!canvasRef.current) canvasRef.current = document.createElement('canvas');
     const canvas = canvasRef.current;
     canvas.width = Math.min(video.videoWidth, 640);
     canvas.height = Math.min(video.videoHeight, 480);
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
-
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     return canvas.toDataURL('image/jpeg', 0.7);
   }, [videoRef]);
 
-  // Hook de análise contínua
+  // Continuous analysis hook
   const {
-    session: analysisSession,
-    lastAnalysis,
+    session: analysisSession, lastAnalysis,
     isAnalyzing: isAnalysisRunning,
-    startAnalysis,
-    stopAnalysis,
-    pauseAnalysis,
-    resumeAnalysis,
-    history: analysisHistory,
+    startAnalysis, stopAnalysis,
   } = useContinuousAnalysis({
-    cameraId,
-    cameraName,
-    getFrame: getFrameForAnalysis,
-    rules: analysisRules,
-    autoStart: false,
-    createAlerts: true,
+    cameraId, cameraName, getFrame: getFrameForAnalysis,
+    rules: analysisRules, autoStart: false, createAlerts: true,
     saveToDatabase: saveAnalysisHistory,
-    config: {
-      analysisTypes: [analysisType],
-      interval: analysisIntervalMs,
-    },
-    onAnalysisComplete: (_camId, result) => {
-      onAnalysisResult?.(result);
-    },
-    onAlertGenerated: (_camId, alert, result) => {
-      onAnalysisAlert?.(alert, result);
-    },
+    config: { analysisTypes: [analysisType], interval: analysisIntervalMs },
+    onAnalysisComplete: (_camId, result) => onAnalysisResult?.(result),
+    onAlertGenerated: (_camId, alert, result) => onAnalysisAlert?.(alert, result),
   });
 
-  // Iniciar/parar análise contínua baseado no estado do player
   useEffect(() => {
     if (continuousAnalysisActive && state.status === 'playing') {
       startAnalysis({ analysisTypes: [analysisType], interval: analysisIntervalMs });
@@ -411,85 +97,53 @@ export function VideoStreamPlayer({
     return () => { stopAnalysis(); };
   }, [continuousAnalysisActive, state.status]);
 
-  // Hook de detecção facial
+  // Face detection hook
   const {
-    faces: detectedFaces,
-    isProcessing: isFaceProcessing,
-    isActive: isFaceDetectionActive,
-    start: startFaceDetection,
-    stop: stopFaceDetection,
-    stats: faceStats,
+    faces: detectedFaces, isProcessing: isFaceProcessing,
+    start: startFaceDetection, stop: stopFaceDetection,
   } = useStreamFaceDetection({
-    cameraId,
-    detectionIntervalMs: faceDetectionInterval,
+    cameraId, detectionIntervalMs: faceDetectionInterval,
     autoStart: faceDetectionActive && state.status === 'playing',
     enableAlertSound: true,
   });
 
-  // Sincronizar estado de detecção facial
   useEffect(() => {
-    if (faceDetectionActive && state.status === 'playing') {
-      startFaceDetection();
-    } else {
-      stopFaceDetection();
-    }
+    if (faceDetectionActive && state.status === 'playing') startFaceDetection();
+    else stopFaceDetection();
   }, [faceDetectionActive, state.status, startFaceDetection, stopFaceDetection]);
 
-  // Hora atual
+  // Clock
   const [currentTime, setCurrentTime] = useState('');
-
-  // Hook de detecção ML para objetos em tempo real
-  const {
-    loadModel,
-    detectObjects,
-    isLoading: isMLLoading,
-    isModelLoaded,
-    detectedObjects,
-  } = useMLModels();
-
-  // Estado para habilitar/desabilitar detecção ML no player
-  const [enableMLOverlay, setEnableMLOverlay] = useState(false);
-
-  // Carregar modelo ML quando overlay for habilitado
   useEffect(() => {
-    if (enableMLOverlay && !isModelLoaded && !isMLLoading) {
-    }
-  }, [enableMLOverlay, isModelLoaded, isMLLoading, loadModel]);
-  useEffect(() => {
-    const updateTime = () => {
-      setCurrentTime(new Date().toLocaleTimeString('pt-BR'));
-    };
+    const updateTime = () => setCurrentTime(new Date().toLocaleTimeString('pt-BR'));
     updateTime();
     const timer = setInterval(updateTime, 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // Auto-hide controles
+  // ML models (unused but kept for future)
+  const { loadModel, isLoading: isMLLoading, isModelLoaded } = useMLModels();
+  const [enableMLOverlay, setEnableMLOverlay] = useState(false);
+  useEffect(() => {
+    if (enableMLOverlay && !isModelLoaded && !isMLLoading) { /* loadModel() */ }
+  }, [enableMLOverlay, isModelLoaded, isMLLoading, loadModel]);
+
+  // Auto-hide controls
   const showControls = () => {
     setControlsVisible(true);
-    if (controlsTimeoutRef.current) {
-      clearTimeout(controlsTimeoutRef.current);
-    }
+    if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
     controlsTimeoutRef.current = setTimeout(() => {
-      if (state.isPlaying) {
-        setControlsVisible(false);
-      }
+      if (state.isPlaying) setControlsVisible(false);
     }, 3000);
   };
 
   useEffect(() => {
-    return () => {
-      if (controlsTimeoutRef.current) {
-        clearTimeout(controlsTimeoutRef.current);
-      }
-    };
+    return () => { if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current); };
   }, []);
 
-  // Snapshot handler
   const handleSnapshot = () => {
     const data = takeSnapshot();
     if (data) {
-      // Download automático
       const link = document.createElement('a');
       link.href = data;
       link.download = `snapshot_${cameraId}_${Date.now()}.jpg`;
@@ -497,34 +151,20 @@ export function VideoStreamPlayer({
     }
   };
 
-  // Toggle face detection
-  const toggleFaceDetection = () => {
-    setFaceDetectionActive(prev => !prev);
-  };
-
   return (
     <TooltipProvider>
       <div
         ref={containerRef}
-        className={cn(
-          'relative bg-black rounded-xl overflow-hidden group',
-          height ? '' : 'aspect-video',
-          className
-        )}
+        className={cn('relative bg-black rounded-xl overflow-hidden group', height ? '' : 'aspect-video', className)}
         style={height ? { height } : undefined}
         onMouseMove={showControls}
         onMouseLeave={() => state.isPlaying && setControlsVisible(false)}
         onClick={onClick}
       >
-        {/* Vídeo */}
-        <video
-          ref={videoRef}
-          className="w-full h-full object-cover"
-          playsInline
-          muted={state.isMuted}
-        />
+        {/* Video element */}
+        <video ref={videoRef} className="w-full h-full object-cover" playsInline muted={state.isMuted} />
 
-        {/* Placeholder quando desconectado */}
+        {/* Disconnected placeholder */}
         {state.status === 'disconnected' && (
           <div className="absolute inset-0 flex items-center justify-center bg-secondary">
             <div className="text-center">
@@ -541,7 +181,7 @@ export function VideoStreamPlayer({
           </div>
         )}
 
-        {/* Erro */}
+        {/* Error */}
         {state.status === 'error' && state.error && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/80">
             <div className="text-center p-4">
@@ -550,288 +190,115 @@ export function VideoStreamPlayer({
               <p className="text-sm text-muted-foreground mb-4">{state.error.message}</p>
               {state.error.recoverable && (
                 <Button variant="outline" size="sm" onClick={reconnect}>
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  Reconectar
+                  <RefreshCw className="w-4 h-4 mr-2" />Reconectar
                 </Button>
               )}
             </div>
           </div>
         )}
 
-        {/* Overlay de detecções de objetos */}
-        {detections.length > 0 && <DetectionOverlay detections={detections} />}
-
-        {/* Face Recognition Overlay */}
+        {/* Overlays */}
+        {detections.length > 0 && <VideoDetectionOverlay detections={detections} />}
         {faceDetectionActive && detectedFaces.length > 0 && (
-          <FaceRecognitionOverlay
-            faces={detectedFaces}
-            showLabels={true}
-            showSimilarity={true}
-            animateBoxes={true}
-          />
+          <FaceRecognitionOverlay faces={detectedFaces} showLabels showSimilarity animateBoxes />
         )}
-
-        {/* Face detection processing indicator */}
         {faceDetectionActive && isFaceProcessing && (
           <div className="absolute top-12 left-3 flex items-center gap-2 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-xs text-white">
-            <Scan className="w-3 h-3 animate-pulse text-primary" />
-            <span>Detectando...</span>
+            <Scan className="w-3 h-3 animate-pulse text-primary" /><span>Detectando...</span>
           </div>
         )}
-
-        {/* Continuous Analysis Results Overlay */}
         {continuousAnalysisActive && analysisSession && (
-          <AnalysisResultsOverlay
-            lastAnalysis={lastAnalysis}
-            session={analysisSession}
-            isAnalyzing={isAnalysisRunning}
-          />
+          <AnalysisResultsOverlay lastAnalysis={lastAnalysis} session={analysisSession} isAnalyzing={isAnalysisRunning} />
         )}
-
-        {/* Stats overlay */}
         {showStatsOverlay && state.status === 'playing' && (
-          <StatsOverlay
-            bitrate={state.stats.bitrate}
-            fps={state.stats.fps}
-            latency={state.stats.latency}
-            resolution={state.stats.resolution}
+          <VideoStatsOverlay
+            bitrate={state.stats.bitrate} fps={state.stats.fps}
+            latency={state.stats.latency} resolution={state.stats.resolution}
             droppedFrames={state.stats.droppedFrames}
           />
         )}
 
         {/* Scanline effect */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
-          <div className="scan-line" />
-        </div>
+        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-20"><div className="scan-line" /></div>
 
-        {/* Header overlay */}
-        <div
-          className={cn(
-            'absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/80 to-transparent transition-opacity duration-300',
-            controlsVisible ? 'opacity-100' : 'opacity-0'
-          )}
-        >
+        {/* Header */}
+        <div className={cn('absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/80 to-transparent transition-opacity duration-300', controlsVisible ? 'opacity-100' : 'opacity-0')}>
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-semibold text-white">{cameraName}</h3>
-              {location && (
-                <p className="text-xs text-white/70">{location}</p>
-              )}
+              {location && <p className="text-xs text-white/70">{location}</p>}
             </div>
             <div className="flex items-center gap-2">
-              <StatusBadge status={state.status} />
+              <VideoStatusBadge status={state.status} />
               {isLive && state.status === 'playing' && (
-                <span className="font-mono text-xs text-white bg-black/50 px-2 py-1 rounded">
-                  {currentTime}
-                </span>
+                <span className="font-mono text-xs text-white bg-black/50 px-2 py-1 rounded">{currentTime}</span>
               )}
             </div>
           </div>
         </div>
 
-        {/* Controls overlay */}
-        <div
-          className={cn(
-            'absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent transition-opacity duration-300',
-            controlsVisible ? 'opacity-100' : 'opacity-0'
-          )}
-        >
+        {/* Controls */}
+        <div className={cn('absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent transition-opacity duration-300', controlsVisible ? 'opacity-100' : 'opacity-0')}>
           <div className="flex items-center gap-2">
-            {/* Play/Pause */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-9 w-9 p-0 text-white hover:bg-white/20"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    togglePlay();
-                  }}
-                >
-                  {state.isPlaying ? (
-                    <Pause className="w-5 h-5" />
-                  ) : (
-                    <Play className="w-5 h-5" />
-                  )}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {state.isPlaying ? 'Pausar' : 'Reproduzir'}
-              </TooltipContent>
-            </Tooltip>
-
-            {/* Volume */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-9 w-9 p-0 text-white hover:bg-white/20"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleMute();
-                  }}
-                >
-                  {state.isMuted ? (
-                    <VolumeX className="w-5 h-5" />
-                  ) : (
-                    <Volume2 className="w-5 h-5" />
-                  )}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {state.isMuted ? 'Ativar som' : 'Silenciar'}
-              </TooltipContent>
-            </Tooltip>
-
-            {/* Volume slider (se não mutado) */}
+            <ControlButton tooltip={state.isPlaying ? 'Pausar' : 'Reproduzir'} onClick={togglePlay}>
+              {state.isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+            </ControlButton>
+            <ControlButton tooltip={state.isMuted ? 'Ativar som' : 'Silenciar'} onClick={toggleMute}>
+              {state.isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+            </ControlButton>
             {!state.isMuted && (
               <div className="w-20" onClick={(e) => e.stopPropagation()}>
-                <Slider
-                  value={[state.volume * 100]}
-                  onValueChange={([v]) => setVolume(v! / 100)}
-                  max={100}
-                  step={1}
-                  className="cursor-pointer"
-                />
+                <Slider value={[state.volume * 100]} onValueChange={([v]) => setVolume(v! / 100)} max={100} step={1} className="cursor-pointer" />
               </div>
             )}
 
             <div className="flex-1" />
 
-            {/* Face detection toggle */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={cn(
-                    'h-9 w-9 p-0 text-white hover:bg-white/20',
-                    faceDetectionActive && 'bg-primary/40'
-                  )}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleFaceDetection();
-                  }}
-                >
-                  <Scan className={cn('w-4 h-4', isFaceProcessing && 'animate-pulse')} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {faceDetectionActive ? 'Desativar detecção facial' : 'Ativar detecção facial'}
-              </TooltipContent>
-            </Tooltip>
-
-            {/* Continuous Analysis toggle */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={cn(
-                    'h-9 w-9 p-0 text-white hover:bg-white/20',
-                    continuousAnalysisActive && 'bg-primary/40'
-                  )}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setContinuousAnalysisActive(prev => !prev);
-                  }}
-                >
-                  <Brain className={cn('w-4 h-4', isAnalysisRunning && 'animate-pulse')} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {continuousAnalysisActive ? 'Desativar análise contínua IA' : 'Ativar análise contínua IA'}
-              </TooltipContent>
-            </Tooltip>
-
-            {/* Stats toggle */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={cn(
-                    'h-9 w-9 p-0 text-white hover:bg-white/20',
-                    showStatsOverlay && 'bg-white/20'
-                  )}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowStatsOverlay(!showStatsOverlay);
-                  }}
-                >
-                  <Activity className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Estatísticas</TooltipContent>
-            </Tooltip>
-
-            {/* Clip Recorder Controls */}
+            <ControlButton tooltip={faceDetectionActive ? 'Desativar detecção facial' : 'Ativar detecção facial'} onClick={() => setFaceDetectionActive(p => !p)} active={faceDetectionActive}>
+              <Scan className={cn('w-4 h-4', isFaceProcessing && 'animate-pulse')} />
+            </ControlButton>
+            <ControlButton tooltip={continuousAnalysisActive ? 'Desativar análise contínua IA' : 'Ativar análise contínua IA'} onClick={() => setContinuousAnalysisActive(p => !p)} active={continuousAnalysisActive}>
+              <Brain className={cn('w-4 h-4', isAnalysisRunning && 'animate-pulse')} />
+            </ControlButton>
+            <ControlButton tooltip="Estatísticas" onClick={() => setShowStatsOverlay(p => !p)} active={showStatsOverlay}>
+              <Activity className="w-4 h-4" />
+            </ControlButton>
             <div onClick={(e) => e.stopPropagation()}>
-              <ClipRecorderControls
-                cameraId={cameraId}
-                cameraName={cameraName}
-                streamRef={videoRef}
-                compact={true}
-                maxDuration={300}
-              />
+              <ClipRecorderControls cameraId={cameraId} cameraName={cameraName} streamRef={videoRef} compact maxDuration={300} />
             </div>
-
-            {/* Snapshot */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-9 w-9 p-0 text-white hover:bg-white/20"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSnapshot();
-                  }}
-                >
-                  <Download className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Capturar imagem</TooltipContent>
-            </Tooltip>
-
-            {/* Quality selector */}
+            <ControlButton tooltip="Capturar imagem" onClick={handleSnapshot}>
+              <Download className="w-4 h-4" />
+            </ControlButton>
             <div onClick={(e) => e.stopPropagation()}>
-              <QualitySelector
-                current={state.currentQuality}
-                available={state.availableQualities}
-                onChange={setQuality}
-              />
+              <VideoQualitySelector current={state.currentQuality} available={state.availableQualities} onChange={setQuality} />
             </div>
-
-            {/* Fullscreen */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-9 w-9 p-0 text-white hover:bg-white/20"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleFullscreen();
-                  }}
-                >
-                  {state.isFullscreen ? (
-                    <Minimize className="w-4 h-4" />
-                  ) : (
-                    <Maximize className="w-4 h-4" />
-                  )}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {state.isFullscreen ? 'Sair de tela cheia' : 'Tela cheia'}
-              </TooltipContent>
-            </Tooltip>
+            <ControlButton tooltip={state.isFullscreen ? 'Sair de tela cheia' : 'Tela cheia'} onClick={toggleFullscreen}>
+              {state.isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
+            </ControlButton>
           </div>
         </div>
       </div>
     </TooltipProvider>
+  );
+}
+
+/** Reusable control button with tooltip */
+function ControlButton({ tooltip, onClick, active, children }: {
+  tooltip: string; onClick: () => void; active?: boolean; children: React.ReactNode;
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant="ghost" size="sm"
+          className={cn('h-9 w-9 p-0 text-white hover:bg-white/20', active && 'bg-primary/40')}
+          onClick={(e) => { e.stopPropagation(); onClick(); }}
+        >
+          {children}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>{tooltip}</TooltipContent>
+    </Tooltip>
   );
 }
 
