@@ -13,6 +13,7 @@ import { formatDate, formatNumber } from "@/lib/formatters";
 import { FilterDropdown } from '@/components/FilterDropdown';
 import { DateRangePicker } from '@/components/DateRangePicker';
 import { ErrorBoundary, EmptyState, ErrorState, LoadingSpinner, TimeAgo } from "@/components";
+import { RecordingsCharts } from '@/components/charts/RecordingsCharts';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
