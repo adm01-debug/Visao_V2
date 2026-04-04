@@ -34,7 +34,8 @@ export function CamerasPage() {
   const [settingsCamera, setSettingsCamera] = useState<CameraData | null>(null);
 
   const { cameras, loading, refetch } = useCameras();
-
+  const { rules } = useRules();
+  const activeRules = useMemo(() => rules.filter(r => r.is_active), [rules]);
   const filteredCameras = useMemo(() => {
     return cameras.filter(camera => {
       if (searchQuery) {
