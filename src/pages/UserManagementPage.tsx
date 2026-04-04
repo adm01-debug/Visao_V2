@@ -114,7 +114,7 @@ const UserManagementPage: React.FC = () => {
     } catch (err: unknown) {
       toast({
         title: "Erro ao atualizar role",
-        description: err.message,
+        description: err instanceof Error ? err.message : "Erro desconhecido",
         variant: "destructive",
       });
     } finally {
