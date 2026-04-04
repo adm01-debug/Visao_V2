@@ -33,7 +33,7 @@ export function BottomSheet({
   const y = useMotionValue(0);
   const overlayOpacity = useTransform(
     y,
-    [0, windowHeight * (1 - snapPoints[0]! ?? 0)],
+    [0, windowHeight * (1 - (snapPoints[0] ?? 0))],
     [0.5, 0]
   );
 
