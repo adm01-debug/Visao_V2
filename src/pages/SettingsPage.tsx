@@ -165,7 +165,7 @@ interface SystemStats {
 interface SettingsSectionProps {
   title: string;
   description?: string;
-  icon: unknown;
+  icon: React.ElementType;
   children: React.ReactNode;
 }
 
