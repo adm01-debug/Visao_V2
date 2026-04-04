@@ -38,7 +38,7 @@ export const useRecordingSessions = (cameraId?: string) => {
       if (error) throw error;
 
       setSessions(data || []);
-      setActiveSession(data?.find(s => s.status === 'recording') || null);
+      setActiveSession((data as RecordingSession[])?.find((s: RecordingSession) => s.status === 'recording') || null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch sessions');
     } finally {
