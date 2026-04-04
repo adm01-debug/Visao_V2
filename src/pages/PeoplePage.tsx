@@ -205,7 +205,8 @@ function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
 // ============================================
 
 import { useStorage, STORAGE_BUCKETS } from '@/hooks/useStorage';
-import { useFaceDetection, FaceEncoding } from '@/hooks/useFaceDetection';
+import { useFaceDetection } from '@/hooks/useFaceDetection';
+type FaceEncoding = number[];
 
 interface PersonFormDialogProps {
   person?: DbPerson | null;
