@@ -122,7 +122,7 @@ export default function HeatmapPage() {
                   <div role="main" className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground">Intensidade Máx.</p>
-                      <p className="text-2xl font-bold">{stats.maxIntensity?.toFixed(1) || 0}</p>
+                      <p className="text-2xl font-bold">{stats.peakActivity?.toFixed(1) || 0}</p>
                     </div>
                     <MapPin className="h-8 w-8 text-red-500" />
                   </div>
