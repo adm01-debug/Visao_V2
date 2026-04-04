@@ -43,10 +43,11 @@ export * from './apiError';
 export * from './metrics';
 
 // Sentry – setUser collides with ./analytics
-// Re-export everything except setUser
+// Re-export with aliases
 export {
   initSentry,
-  captureException,
-  captureMessage,
+  captureError as captureSentryError,
+  captureMessage as captureSentryMessage,
   setUser as setSentryUser,
+  clearUser as clearSentryUser,
 } from './sentry';

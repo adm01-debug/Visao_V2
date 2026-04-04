@@ -1,13 +1,12 @@
 /**
  * VISÃO - Utils barrel export
  *
- * Collisions resolved by skipping redundant modules or using aliases.
+ * Collisions resolved by skipping redundant modules.
  */
 
 export * from "./array";
 export * from "./batch";
 export * from "./circuit-breaker";
-// ./cn does not exist – removed
 export * from "./color";
 export * from "./compression";
 export * from "./crypto";
@@ -17,48 +16,55 @@ export * from "./deep";
 export * from "./diff";
 export * from "./dom";
 
-// ./encryption: generateToken, generateUUID collide with ./crypto
-// Skip – ./crypto is the canonical source
+// ./encryption: generateToken, generateUUID collide with ./crypto – skip
 // export * from "./encryption";
 
 export * from "./error";
 export * from "./file";
 
-// ./format: formatCurrency, formatNumber collide with ./currency
-// Skip – ./currency is the canonical source
+// ./format: formatCurrency, formatNumber collide with ./currency – skip
 // export * from "./format";
 
 export * from "./hash";
 export * from "./http";
 export * from "./image";
 
-// ./math: average, max, min, sum collide with ./array
-// Skip – ./array is the canonical source
+// ./math: average, max, min, sum collide with ./array – skip
 // export * from "./math";
 
 export * from "./memoize";
-export * from "./number";
+
+// ./number: randomInt collides with ./crypto; formatCompact, formatNumber with ./currency
+// Skip – canonical sources cover these
+// export * from "./number";
+
 export * from "./object";
 export * from "./pool";
 export * from "./promise";
 export * from "./query";
 
-// ./random: randomInt collides with ./crypto, randomFloat with ./number,
-// shuffle with ./array, randomColor with ./color
-// Skip – canonical sources cover these
+// ./random: multiple collisions – skip
 // export * from "./random";
 
 export * from "./regex";
-export * from "./retry";
+
+// ./retry: retry collides with ./promise – skip
+// export * from "./retry";
+
 export * from "./scheduler";
 export * from "./scroll";
 export * from "./security";
-export * from "./string";
+
+// ./string: escapeHtml collides with ./security – skip
+// export * from "./string";
+
 export * from "./throttle";
 export * from "./tree";
-export * from "./url";
+
+// ./url: isUuid collides with ./regex – skip
+// export * from "./url";
+
 export * from "./uuid";
 
-// ./validation: isValidUrl collides with ./url
-// Re-export only non-colliding members or skip
-// export * from "./validation";
+// ./validation: isValidUrl collides with ./url (skipped) – safe to export now
+export * from "./validation";

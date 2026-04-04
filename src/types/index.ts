@@ -2,7 +2,7 @@
  * VISÃO - Types barrel export
  *
  * Collisions resolved: later modules that re-declare names from earlier ones
- * are imported selectively (or skipped) to avoid TS2308.
+ * are imported selectively or skipped.
  */
 
 export * from "./alert";
@@ -11,16 +11,18 @@ export * from "./api";
 export * from "./auth";
 export * from "./camera";
 export * from "./clips";
-export * from "./common";
+
+// ./common: PaginatedResponse collides with ./api
+// Skip entirely – ./api is canonical
+// export * from "./common";
+
 export * from "./continuousAnalysis";
 export * from "./database";
 export * from "./dto";
 
-// ./enums: AlertSeverity, CameraStatus collide with ./alert, ./camera
+// ./enums: AlertSeverity, CameraStatus, UserRole collide with earlier modules
 // Re-export only non-colliding members
-export {
-  UserRole as EnumUserRole,
-} from "./enums";
+export type { AlertStatus, Language, RecordingStatus, Theme, UserStatus } from "./enums";
 
 export * from "./events";
 export * from "./extended";
@@ -28,25 +30,21 @@ export * from "./faceRecognition";
 export * from "./forms";
 export * from "./guards";
 
-// ./http: ApiResponse, HttpMethod, PaginatedResponse collide with ./api
-// Skip – ./api is the canonical source
+// ./http: collides with ./api – skip
 // export * from "./http";
 
 export * from "./navigation";
 export * from "./notification";
 
-// ./notifications: Notification, NotificationType collide with ./notification
-// Skip – ./notification is the canonical source
+// ./notifications: collides with ./notification – skip
 // export * from "./notifications";
 
 export * from "./permissions";
 
 // ./person: Person collides with ./faceRecognition
-// Skip – ./faceRecognition is the canonical source; ./person re-exported as alias
-export { Person as BasePerson, PersonType } from "./person";
+export type { Person as BasePerson, PersonType } from "./person";
 
-// ./props: FormFieldProps collides with ./forms
-// Skip – ./forms is the canonical source
+// ./props: FormFieldProps collides with ./forms – skip
 // export * from "./props";
 
 export * from "./recording";
@@ -60,25 +58,20 @@ export * from "./state";
 export * from "./store";
 export * from "./streaming";
 
-// ./supabase: Tables collides with ./database
-// Skip – ./database is the canonical source
+// ./supabase: Tables collides with ./database – skip
 // export * from "./supabase";
 
-// ./surveillance: Alert, AlertSeverity, AlertType, Camera, CameraStatus,
-// Rule, RuleCondition, RuleConditionType collide with ./alert, ./camera, ./rules
-// Skip – domain-specific files are canonical
+// ./surveillance: many collisions with ./alert, ./camera, ./rules – skip
 // export * from "./surveillance";
 
 export * from "./themes";
 
-// ./user: User, UserRole collide with ./auth
-// Skip – ./auth is the canonical source
+// ./user: User, UserRole collide with ./auth – skip
 // export * from "./user";
 
 export * from "./validation";
 export * from "./vehicle";
 export * from "./widgets";
 
-// ./zones: ZoneEvent collides with ./events
-// Re-export only non-colliding members
-export type { ZoneType as ZoneTypeAlias } from "./zones";
+// ./zones: ZoneEvent collides with ./events – skip
+// export * from "./zones";
