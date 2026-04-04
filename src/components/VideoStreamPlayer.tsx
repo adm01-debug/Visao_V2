@@ -592,7 +592,7 @@ export function VideoStreamPlayer({
               <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-xs text-white">
                 <span className="text-muted-foreground">Pessoas:</span>
                 <span className="font-medium">{lastAnalysis.people_count}</span>
-                {'risk_level' in lastAnalysis && (lastAnalysis as Record<string, unknown>).risk_level && (
+                {'risk_level' in lastAnalysis && (lastAnalysis as Record<string, unknown>).risk_level ? (
                   <>
                     <span className="text-muted-foreground ml-1">Risco:</span>
                     <span className={cn(

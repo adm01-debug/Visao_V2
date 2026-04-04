@@ -90,7 +90,7 @@ export function EnhancedWidgetWrapper({
             'p-1.5 rounded-lg',
             'bg-primary/10'
           )}>
-            <Icon className="w-4 h-4 text-primary" />
+            <span className="text-base">{widgetIcon}</span>
           </div>
           <h3 className="font-semibold text-sm truncate">
             {config.title}

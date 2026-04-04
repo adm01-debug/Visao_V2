@@ -146,10 +146,10 @@ export function EnhancedWidgetCatalog({
                         'p-2 rounded-lg',
                         isActive ? 'bg-primary/20' : 'bg-muted'
                       )}>
-                        <Icon className={cn(
-                          'w-5 h-5',
-                          isActive ? 'text-primary' : 'text-muted-foreground'
-                        )} />
+                        <span className={cn(
+                          'text-lg',
+                          isActive ? 'opacity-100' : 'opacity-70'
+                        )}>{widgetIcon}</span>
                       </div>
 
                       <div className="flex-1 min-w-0">
