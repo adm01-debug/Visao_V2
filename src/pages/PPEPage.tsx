@@ -121,7 +121,6 @@ export default function PPEPage() {
 
   // Usar hook PPE para câmera selecionada
   const ppeDetection = usePPEDetection({
-    cameraId: selectedCamera,
     cameraName: cameras.find(c => c.id === selectedCamera)?.name || '',
     config: {
       enabled: true,
