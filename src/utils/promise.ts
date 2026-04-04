@@ -101,7 +101,7 @@ export const parallel = <T>(fns: (() => Promise<T>)[], limit = Infinity): Promis
         const i = index++;
         running++;
         try {
-          results[i] = await fns[i]();
+          results[i] = await fns![i]();
         } catch (error) {
           return reject(error);
         }

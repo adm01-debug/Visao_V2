@@ -66,7 +66,7 @@ class ABTestingService {
     let random = Math.random() * total;
 
     for (let i = 0; i < variants.length; i++) {
-      random -= weights[i];
+      random -= weights[i]!;
       if (random <= 0) return variants[i]!;
     }
 

@@ -34,7 +34,7 @@ export const isPrivateIP = (ip: string): boolean => {
   if (parts[0] === 10) return true;
 
   // 172.16.0.0 - 172.31.255.255
-  if (parts[0] ?? 0 === 172 && parts[1] >= 16 && parts[1] <= 31) return true;
+  if (parts[0] ?? 0 === 172 && parts[1]! >= 16 && parts[1]! <= 31) return true;
 
   // 192.168.0.0 - 192.168.255.255
   if (parts[0] === 192 && parts[1] === 168) return true;
@@ -49,7 +49,7 @@ export const isPrivateIP = (ip: string): boolean => {
 export const ipToNumber = (ip: string): number => {
   if (!isValidIPv4(ip)) return 0;
   const parts = ip.split('.').map(Number);
-  return (parts[0] ?? 0 << 24) + (parts[1] << 16) + (parts[2] << 8) + parts[3];
+  return (parts[0] ?? 0 << 24) + (parts[1]! << 16) + (parts[2]! << 8) + parts[3]!;
 };
 
 // Verificar se IP está em um range CIDR
@@ -97,7 +97,7 @@ export const getClientIP = (request?: Request): string => {
     const value = request.headers.get(header);
     if (value) {
       // x-forwarded-for pode ter múltiplos IPs
-      const ip = value.split(',')[0].trim();
+      const ip = value!.split(',')[0].trim();
       if (isValidIPv4(ip) || isValidIPv6(ip)) {
         return ip;
       }

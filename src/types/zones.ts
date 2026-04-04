@@ -377,8 +377,8 @@ export function isPointInPolygon(point: Point, polygon: Point[]): boolean {
   const n = polygon.length;
 
   for (let i = 0, j = n - 1; i < n; j = i++) {
-    const xi = polygon[i].x, yi = polygon[i].y;
-    const xj = polygon[j].x, yj = polygon[j].y;
+    const xi = polygon[i]!.x, yi = polygon[i]!.y;
+    const xj = polygon[j]!.x, yj = polygon[j]!.y;
 
     if (((yi > point.y) !== (yj > point.y)) &&
         (point.x < (xj - xi) * (point.y - yi) / (yj - yi) + xi)) {
@@ -427,8 +427,8 @@ export function calculatePolygonArea(points: Point[]): number {
 
   for (let i = 0; i < n; i++) {
     const j = (i + 1) % n;
-    area += points[i].x * points[j].y;
-    area -= points[j].x * points[i].y;
+    area += points[i]!.x * points[j]!.y;
+    area -= points[j]!.x * points[i]!.y;
   }
 
   return Math.abs(area / 2);

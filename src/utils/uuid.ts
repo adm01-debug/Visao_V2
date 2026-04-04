@@ -22,7 +22,7 @@ export const shortId = (length = 8): string => {
   const array = new Uint8Array(length);
   crypto.getRandomValues(array);
   for (let i = 0; i < length; i++) {
-    result += chars[array[i] % chars.length];
+    result += chars[array[i]! % chars.length];
   }
   return result;
 };
@@ -32,7 +32,7 @@ export const nanoid = (size = 21): string => {
   let id = '';
   const bytes = crypto.getRandomValues(new Uint8Array(size));
   for (let i = 0; i < size; i++) {
-    id += urlAlphabet[bytes[i] & 63];
+    id += urlAlphabet[bytes[i]! & 63];
   }
   return id;
 };

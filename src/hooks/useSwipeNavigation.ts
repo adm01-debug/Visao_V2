@@ -57,7 +57,7 @@ export function useSwipeNavigation({
         if (newIndex < 0) newIndex = MAIN_ROUTES.length - 1;
       }
 
-      navigate(MAIN_ROUTES[newIndex].path);
+      navigate(MAIN_ROUTES[newIndex]!.path);
     },
     [getCurrentRouteIndex, navigate]
   );

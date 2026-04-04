@@ -120,12 +120,12 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
           vehicleType: d.vehicle_type
         };
       }
-      acc[d.plate].totalVisits++;
-      if (ts > acc[d.plate].lastSeen) {
-        acc[d.plate].lastSeen = ts;
+      acc[d.plate]!.totalVisits++;
+      if (ts > acc[d.plate]!.lastSeen) {
+        acc[d.plate]!.lastSeen = ts;
       }
-      if (ts < acc[d.plate].firstSeen) {
-        acc[d.plate].firstSeen = ts;
+      if (ts < acc[d.plate]!.firstSeen) {
+        acc[d.plate]!.firstSeen = ts;
       }
       return acc;
     }, {} as Record<string, { plate: string; firstSeen: string; lastSeen: string; totalVisits: number; status: string; camera: string; vehicleType: string | null }>);
