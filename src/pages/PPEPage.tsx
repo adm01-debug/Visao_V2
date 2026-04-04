@@ -42,6 +42,7 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
+import { PPECharts } from '@/components/charts/PPECharts';
 
 // ============================================
 // COMPONENTES AUXILIARES
@@ -240,6 +241,13 @@ export default function PPEPage() {
           trend={ppeDetection.stats.complianceRate >= 80 ? 'up' : 'down'}
         />
       </div>
+
+      {/* Charts */}
+      <PPECharts zones={ppeDetection.zones.map((z: any) => ({
+        id: z.id, name: z.name, camera_id: z.cameraId,
+        requiredPPE: z.requiredPPE || [], enabled: z.enabled ?? true,
+        complianceRate: z.complianceRate ?? undefined, violations: z.violations ?? 0,
+      }))} />
 
       {/* Tabs */}
       <Tabs defaultValue="zones" className="space-y-4">

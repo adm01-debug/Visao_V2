@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import jsPDF from "jspdf";
 import { format, startOfDay, endOfDay, subDays, differenceInMinutes } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { JourneyCharts } from "@/components/charts/JourneyCharts";
 
 interface JourneyEntry {
   personId: string;
@@ -425,6 +426,9 @@ export default function JourneyReportsPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Charts */}
+      <JourneyCharts entries={journeyData} />
 
       {/* Table */}
       <Card>

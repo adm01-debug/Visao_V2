@@ -13,6 +13,7 @@ import { formatDate, formatNumber } from "@/lib/formatters";
 import { FilterDropdown } from '@/components/FilterDropdown';
 import { DateRangePicker } from '@/components/DateRangePicker';
 import { ErrorBoundary, EmptyState, ErrorState, LoadingSpinner, TimeAgo } from "@/components";
+import { RecordingsCharts } from '@/components/charts/RecordingsCharts';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
@@ -605,6 +606,15 @@ export function RecordingsPage() {
             </Card>
           </div>
         </div>
+      </div>
+
+      {/* Charts */}
+      <div className="container py-4">
+        <RecordingsCharts recordings={clips.map(c => ({
+          id: c.id, status: c.status, started_at: c.start_time,
+          duration_seconds: c.duration, file_size_bytes: null,
+          camera_id: c.camera_id, quality: null,
+        }))} />
       </div>
 
       {/* Content */}
