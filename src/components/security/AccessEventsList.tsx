@@ -24,7 +24,7 @@ function AccessEventCard({ event }: { event: AccessEvent }) {
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
           {event.personPhoto ? (
-            <img src={event.personPhoto} alt={event.personName} className="w-full h-full object-cover" />
+            <img src={event.personPhoto} alt={event.personName} loading="lazy" className="w-full h-full object-cover" />
           ) : (
             <User className="w-5 h-5 text-muted-foreground" />
           )}

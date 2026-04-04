@@ -60,7 +60,7 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true, 
       ) : (
         <div className="absolute inset-0 bg-muted flex items-center justify-center">
           {camera.thumbnail ? (
-            <img src={camera.thumbnail} alt={camera.name} className="w-full h-full object-cover" />
+            <img src={camera.thumbnail} alt={camera.name} loading="lazy" className="w-full h-full object-cover" />
           ) : (
             <Camera className="w-12 h-12 text-muted-foreground/50" />
           )}

@@ -94,7 +94,7 @@ export function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneE
               {camera?.stream_url ? (
                 <VideoStreamPlayer cameraId={camera.id} streamUrl={camera.stream_url} protocol={(camera.stream_protocol as StreamProtocol) || 'hls'} cameraName={camera.name} />
               ) : camera?.thumbnail ? (
-                <img src={camera.thumbnail} alt={camera.name} className="w-full h-full object-cover" />
+                <img src={camera.thumbnail} alt={camera.name} loading="lazy" className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-muted"><Camera className="w-12 h-12 text-muted-foreground" /></div>
               )}
