@@ -482,7 +482,7 @@ export function useZoneDetection(
           color: newZone.color,
           is_active: newZone.enabled,
         };
-        await supabase.from('zones').insert(insertData);
+        await supabase.from('zones').insert([insertData]);
       }
     } catch (err) {
     }
