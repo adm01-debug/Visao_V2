@@ -229,7 +229,7 @@ export function useContinuousAnalysis(
         let satisfied = false;
 
         // Extrair valor atual baseado no tipo de condição
-        const conditionType = condition?.type;
+        const conditionType = condition?.type as string | undefined;
         switch (conditionType) {
           case 'people_count':
             actualValue = analysis.people_count || 0;
