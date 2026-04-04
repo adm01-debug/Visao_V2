@@ -55,6 +55,10 @@ export function DashboardV2() {
 
   const { cameras, loading: camerasLoading, updateCamera, refetch: refetchCameras } = useCameras();
   const { alerts, loading: alertsLoading, unreadCount, markAllAsRead, refetch: refetchAlerts } = useAlerts();
+  const { rules } = useRules();
+
+  // Filter active rules for analysis
+  const activeRules = useMemo(() => rules.filter(r => r.is_active), [rules]);
 
   useEffect(() => { localStorage.setItem('dashboard-settings', JSON.stringify(settings)); }, [settings]);
   useEffect(() => {
