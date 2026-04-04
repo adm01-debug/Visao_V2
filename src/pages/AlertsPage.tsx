@@ -300,7 +300,7 @@ function AlertItem({
 // ============================================
 
 interface AlertDetailsDialogProps {
-  alert: Record<string, unknown> | null;
+  alert: { id: string; severity: string; type: string; timestamp: string; is_read: boolean; message: string; camera_name: string; thumbnail?: string | null; [key: string]: unknown } | null;
   isOpen: boolean;
   onClose: () => void;
   onMarkRead: () => void;
