@@ -74,6 +74,7 @@ const ProtectedLayoutRoute = ({ children }: { children: React.ReactNode }) => {
 // VISÃO App Component
 const App = () => (
   <ErrorBoundary>
+    <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <TooltipProvider>
