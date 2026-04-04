@@ -603,7 +603,7 @@ export function VideoStreamPlayer({
                       (lastAnalysis as Record<string, unknown>).risk_level === 'low' && 'text-green-400',
                     )}>{String((lastAnalysis as Record<string, unknown>).risk_level)}</span>
                   </>
-                )}
+                ) : null}
               </div>
             )}
           </div>
