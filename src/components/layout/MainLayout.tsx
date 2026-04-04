@@ -17,6 +17,8 @@ interface MainLayoutProps {
 }
 
 export function MainLayout({ children }: MainLayoutProps) {
+  useGlobalShortcuts();
+
   return (
     <div className="flex h-screen bg-background">
       <a
@@ -25,14 +27,24 @@ export function MainLayout({ children }: MainLayoutProps) {
       >
         Pular para conteúdo principal
       </a>
-      <Sidebar />
+      <SectionErrorBoundary section="Sidebar">
+        <Sidebar />
+      </SectionErrorBoundary>
       <div className="flex flex-1 flex-col overflow-hidden">
-        <Header />
+        <SectionErrorBoundary section="Header">
+          <Header />
+        </SectionErrorBoundary>
         <SwipeableView className="flex-1 overflow-auto">
-          <main id="main-content" className="p-4 md:p-6 pb-20 md:pb-6 min-h-full" role="main" aria-label="Conteúdo principal">{children}</main>
+          <main id="main-content" className="p-4 md:p-6 pb-20 md:pb-6 min-h-full" role="main" aria-label="Conteúdo principal">
+            <SectionErrorBoundary section="Conteúdo Principal">
+              {children}
+            </SectionErrorBoundary>
+          </main>
         </SwipeableView>
       </div>
-      <BottomNavigation />
+      <SectionErrorBoundary section="Navegação">
+        <BottomNavigation />
+      </SectionErrorBoundary>
     </div>
   );
 }
