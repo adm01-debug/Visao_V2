@@ -49,7 +49,7 @@ export const useHeatmapSnapshots = (cameraId?: string) => {
       periodEnd: string;
       resolution: { width: number; height: number };
     },
-    metadata?: Record<string, unknown>
+    metadata?: Record<string, string | number | boolean | null>
   ) => {
     try {
       const fileName = `heatmaps/${cameraId}/${Date.now()}.png`;
