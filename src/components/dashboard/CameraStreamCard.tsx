@@ -54,7 +54,15 @@ export function CameraStreamCard({ camera, isSelected, onClick, settings, compac
     >
       {hasStream && isOnline ? (
         <div className="absolute inset-0">
-          <VideoStreamPlayer cameraId={camera.id} streamUrl={camera.streamUrl!} protocol={camera.streamProtocol as 'hls' | 'webrtc' | 'rtsp'} cameraName={camera.name} />
+          <VideoStreamPlayer
+            cameraId={camera.id}
+            streamUrl={camera.streamUrl!}
+            protocol={camera.streamProtocol as 'hls' | 'webrtc' | 'rtsp'}
+            cameraName={camera.name}
+            enableContinuousAnalysis={settings.enableAnalysis}
+            analysisRules={analysisRules}
+            saveAnalysisHistory
+          />
           {settings.enableZones && zones.length > 0 && <ZoneOverlay zones={zones} showStats={false} showLabels />}
         </div>
       ) : (
