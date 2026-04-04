@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import type { DbAlert } from '@/hooks/useAlerts';
 import {
   AlertTriangle,
   Camera,
