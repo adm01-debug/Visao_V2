@@ -100,7 +100,7 @@ export default function JourneyReportsPage() {
       }>();
 
       for (const log of (logs || [])) {
-        const person = log.registered_persons as any;
+        const person = log.registered_persons as { id: string; name: string; department: string | null } | null;
         if (!person) continue;
         if (selectedPerson !== "all" && person.id !== selectedPerson) continue;
 
