@@ -33,7 +33,7 @@ const statusColors: Record<string, string> = {
   alert: 'bg-destructive animate-pulse',
 };
 
-export function StreamCameraCard({ camera, onClick, compact, showStream = true }: StreamCameraCardProps) {
+export function StreamCameraCard({ camera, onClick, compact, showStream = true, aiAnalysisActive = false, onToggleAiAnalysis }: StreamCameraCardProps) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [hasError, setHasError] = useState(false);
