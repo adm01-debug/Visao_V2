@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -27,7 +26,7 @@ export const useNotificationTemplates = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('notification_templates')
+        .from('notification_templates' as never)
         .select('*')
         .order('name');
 
@@ -47,8 +46,8 @@ export const useNotificationTemplates = () => {
   const createTemplate = useCallback(async (template: NotificationTemplateInsert) => {
     try {
       const { data, error } = await supabase
-        .from('notification_templates')
-        .insert(template)
+        .from('notification_templates' as never)
+        .insert(template as never)
         .select()
         .single();
 
@@ -64,8 +63,8 @@ export const useNotificationTemplates = () => {
   const updateTemplate = useCallback(async (id: string, updates: NotificationTemplateUpdate) => {
     try {
       const { error } = await supabase
-        .from('notification_templates')
-        .update(updates)
+        .from('notification_templates' as never)
+        .update(updates as never)
         .eq('id', id);
 
       if (error) throw error;
@@ -79,7 +78,7 @@ export const useNotificationTemplates = () => {
   const deleteTemplate = useCallback(async (id: string) => {
     try {
       const { error } = await supabase
-        .from('notification_templates')
+        .from('notification_templates' as never)
         .delete()
         .eq('id', id);
 

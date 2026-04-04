@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useFaceRecognition - Gerenciamento de reconhecimento facial
@@ -63,7 +62,7 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
     setError(null);
     try {
       const { data, error: fetchError } = await supabase
-        .from('known_faces')
+        .from('known_faces' as never)
         .select('*')
         .order('created_at', { ascending: false });
       
@@ -86,7 +85,7 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
     setIsLoading(true);
     try {
       const { data, error: fetchError } = await supabase
-        .from('face_detections')
+        .from('face_detections' as never)
         .select('*')
         .order('timestamp', { ascending: false })
         .limit(limit);
@@ -108,12 +107,12 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
       const filePath = `faces/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('faces')
+        .from('faces' as never)
         .upload(filePath, file);
 
       if (uploadError) throw uploadError;
 
-      const { data } = supabase.storage.from('faces').getPublicUrl(filePath);
+      const { data } = supabase.storage.from('faces' as never).getPublicUrl(filePath);
       return data.publicUrl;
     } catch (err) {
       toast({
@@ -129,8 +128,8 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
     setIsLoading(true);
     try {
       const { error: insertError } = await supabase
-        .from('known_faces')
-        .insert([{ ...person, detection_count: 0 }]);
+        .from('known_faces' as never)
+        .insert([{ ...person, detection_count: 0 }] as never);
       
       if (insertError) throw insertError;
       
@@ -153,8 +152,8 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
     setIsLoading(true);
     try {
       const { error: updateError } = await supabase
-        .from('known_faces')
-        .update(person)
+        .from('known_faces' as never)
+        .update(person as never)
         .eq('id', id);
       
       if (updateError) throw updateError;
@@ -178,7 +177,7 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
     setIsLoading(true);
     try {
       const { error: deleteError } = await supabase
-        .from('known_faces')
+        .from('known_faces' as never)
         .delete()
         .eq('id', id);
       

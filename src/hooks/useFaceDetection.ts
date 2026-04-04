@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useFaceDetection (CONSOLIDADO)
@@ -146,7 +145,7 @@ export function useFaceDetection(options: UseFaceDetectionOptions = {}) {
       const base64 = canvas.toDataURL('image/jpeg', 0.8);
       return await detectFacesRemote(base64.split(',')[1]);
     } catch (err: unknown) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : 'Unknown error');
       return [];
     } finally {
       setIsProcessing(false);
@@ -169,7 +168,7 @@ export function useFaceDetection(options: UseFaceDetectionOptions = {}) {
       if (fnError) throw fnError;
       return data?.encoding || null;
     } catch (err: unknown) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : 'Unknown error');
       return null;
     } finally {
       setIsProcessing(false);

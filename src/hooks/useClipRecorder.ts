@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useClipRecorder
@@ -183,7 +182,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
           resolve(blob);
         }, 'image/jpeg', 0.8);
       });
-    } catch (error) {
+    } catch (error: unknown) {
 
       return null;
     }
@@ -271,7 +270,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       onRecordingStart?.();
       return true;
 
-    } catch (error) {
+    } catch (error: unknown) {
 
       onError?.(error as Error);
       return false;
@@ -347,7 +346,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
 
           resolve(clip);
 
-        } catch (error) {
+        } catch (error: unknown) {
 
           onError?.(error as Error);
           setState('idle');
@@ -477,7 +476,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
 
       return clipRecord.id;
 
-    } catch (error) {
+    } catch (error: unknown) {
 
       onError?.(error as Error);
       toast.error('Erro ao salvar gravação');
@@ -511,7 +510,7 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       toast.success('Gravação excluída');
       return true;
 
-    } catch (error) {
+    } catch (error: unknown) {
 
       toast.error('Erro ao excluir gravação');
       return false;

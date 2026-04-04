@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -25,7 +24,7 @@ export const useCameraSnapshots = (cameraId?: string) => {
     setLoading(true);
     try {
       let query = supabase
-        .from('camera_snapshots')
+        .from('camera_snapshots' as never)
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -67,8 +66,8 @@ export const useCameraSnapshots = (cameraId?: string) => {
         .getPublicUrl(fileName);
 
       const { data, error } = await supabase
-        .from('camera_snapshots')
-        .insert({
+        .from('camera_snapshots' as never)
+        .insert([{
           camera_id: cameraId,
           image_url: urlData.publicUrl,
           file_size_bytes: imageBlob.size,
@@ -76,7 +75,8 @@ export const useCameraSnapshots = (cameraId?: string) => {
           height: 0,
           trigger_type: triggerType,
           metadata,
-        })
+          user_id: (await supabase.auth.getUser()).data.user?.id ?? "",
+        }] as never)
         .select()
         .single();
 
@@ -98,7 +98,7 @@ export const useCameraSnapshots = (cameraId?: string) => {
       }
 
       const { error } = await supabase
-        .from('camera_snapshots')
+        .from('camera_snapshots' as never)
         .delete()
         .eq('id', id);
 
@@ -116,7 +116,7 @@ export const useCameraSnapshots = (cameraId?: string) => {
 
     try {
       const { error } = await supabase
-        .from('camera_snapshots')
+        .from('camera_snapshots' as never)
         .delete()
         .lt('created_at', cutoffDate.toISOString());
 

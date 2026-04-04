@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -27,7 +26,7 @@ export const useRecordingSessions = (cameraId?: string) => {
     setLoading(true);
     try {
       let query = supabase
-        .from('recording_sessions')
+        .from('recording_sessions' as never)
         .select('*')
         .order('started_at', { ascending: false });
 
@@ -54,7 +53,7 @@ export const useRecordingSessions = (cameraId?: string) => {
   const startSession = useCallback(async (cameraId: string, configId: string, triggerType: RecordingSession['trigger_type']) => {
     try {
       const { data, error } = await supabase
-        .from('recording_sessions')
+        .from('recording_sessions' as never)
         .insert({
           camera_id: cameraId,
           config_id: configId,
@@ -79,7 +78,7 @@ export const useRecordingSessions = (cameraId?: string) => {
   const stopSession = useCallback(async (id: string) => {
     try {
       const { error } = await supabase
-        .from('recording_sessions')
+        .from('recording_sessions' as never)
         .update({
           status: 'stopped',
           ended_at: new Date().toISOString(),
@@ -97,7 +96,7 @@ export const useRecordingSessions = (cameraId?: string) => {
   const pauseSession = useCallback(async (id: string) => {
     try {
       const { error } = await supabase
-        .from('recording_sessions')
+        .from('recording_sessions' as never)
         .update({ status: 'paused' })
         .eq('id', id);
 
@@ -112,7 +111,7 @@ export const useRecordingSessions = (cameraId?: string) => {
   const resumeSession = useCallback(async (id: string) => {
     try {
       const { error } = await supabase
-        .from('recording_sessions')
+        .from('recording_sessions' as never)
         .update({ status: 'recording' })
         .eq('id', id);
 

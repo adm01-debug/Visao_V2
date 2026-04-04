@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useVehicles - Gerenciamento de veículos para ALPR
@@ -6,49 +5,33 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { Tables } from '@/integrations/supabase/types';
 import { useToast } from '@/hooks/use-toast';
 
-export interface Vehicle {
-  id: string;
-  plate: string;
-  owner: string;
-  model: string;
-  color: string;
-  type: 'whitelist' | 'blacklist' | 'visitor';
-  notes?: string;
-  created_at: string;
-  updated_at?: string;
-}
+type DbVehicle = Tables<'vehicles'>;
+type DbPlateDetection = Tables<'plate_detections'>;
 
-export interface PlateDetection {
-  id: string;
-  plate: string;
-  camera_id: string;
-  camera_name: string;
-  confidence: number;
-  timestamp: string;
-  image_url?: string;
-  is_blacklisted: boolean;
-}
+export type Vehicle = DbVehicle;
+export type PlateDetection = DbPlateDetection;
 
 export interface UseVehiclesReturn {
-  vehicles: Vehicle[];
-  detections: PlateDetection[];
+  vehicles: DbVehicle[];
+  detections: DbPlateDetection[];
   isLoading: boolean;
   error: string | null;
   fetchVehicles: () => Promise<void>;
   fetchDetections: (limit?: number) => Promise<void>;
-  addVehicle: (vehicle: Omit<Vehicle, 'id' | 'created_at'>) => Promise<boolean>;
-  updateVehicle: (id: string, vehicle: Partial<Vehicle>) => Promise<boolean>;
+  addVehicle: (vehicle: Omit<DbVehicle, 'id' | 'created_at' | 'updated_at'>) => Promise<boolean>;
+  updateVehicle: (id: string, vehicle: Partial<DbVehicle>) => Promise<boolean>;
   deleteVehicle: (id: string) => Promise<boolean>;
-  searchPlate: (query: string) => Promise<PlateDetection[]>;
-  checkPlate: (plate: string) => Vehicle | null;
+  searchPlate: (query: string) => Promise<DbPlateDetection[]>;
+  checkPlate: (plate: string) => DbVehicle | null;
 }
 
 export function useVehicles(): UseVehiclesReturn {
   const { toast } = useToast();
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [detections, setDetections] = useState<PlateDetection[]>([]);
+  const [vehicles, setVehicles] = useState<DbVehicle[]>([]);
+  const [detections, setDetections] = useState<DbPlateDetection[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,11 +49,7 @@ export function useVehicles(): UseVehiclesReturn {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro ao carregar veículos';
       setError(message);
-      toast({
-        title: 'Erro',
-        description: message,
-        variant: 'destructive'
-      });
+      toast({ title: 'Erro', description: message, variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }
@@ -95,7 +74,7 @@ export function useVehicles(): UseVehiclesReturn {
     }
   }, []);
 
-  const addVehicle = useCallback(async (vehicle: Omit<Vehicle, 'id' | 'created_at'>) => {
+  const addVehicle = useCallback(async (vehicle: Omit<DbVehicle, 'id' | 'created_at' | 'updated_at'>) => {
     setIsLoading(true);
     try {
       const { error: insertError } = await supabase
@@ -103,24 +82,19 @@ export function useVehicles(): UseVehiclesReturn {
         .insert([vehicle]);
       
       if (insertError) throw insertError;
-      
       toast({ title: 'Veículo cadastrado com sucesso!' });
       await fetchVehicles();
       return true;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro ao cadastrar veículo';
-      toast({
-        title: 'Erro',
-        description: message,
-        variant: 'destructive'
-      });
+      toast({ title: 'Erro', description: message, variant: 'destructive' });
       return false;
     } finally {
       setIsLoading(false);
     }
   }, [fetchVehicles, toast]);
 
-  const updateVehicle = useCallback(async (id: string, vehicle: Partial<Vehicle>) => {
+  const updateVehicle = useCallback(async (id: string, vehicle: Partial<DbVehicle>) => {
     setIsLoading(true);
     try {
       const { error: updateError } = await supabase
@@ -129,17 +103,12 @@ export function useVehicles(): UseVehiclesReturn {
         .eq('id', id);
       
       if (updateError) throw updateError;
-      
       toast({ title: 'Veículo atualizado com sucesso!' });
       await fetchVehicles();
       return true;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro ao atualizar veículo';
-      toast({
-        title: 'Erro',
-        description: message,
-        variant: 'destructive'
-      });
+      toast({ title: 'Erro', description: message, variant: 'destructive' });
       return false;
     } finally {
       setIsLoading(false);
@@ -155,24 +124,19 @@ export function useVehicles(): UseVehiclesReturn {
         .eq('id', id);
       
       if (deleteError) throw deleteError;
-      
       toast({ title: 'Veículo excluído com sucesso!' });
       await fetchVehicles();
       return true;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro ao excluir veículo';
-      toast({
-        title: 'Erro',
-        description: message,
-        variant: 'destructive'
-      });
+      toast({ title: 'Erro', description: message, variant: 'destructive' });
       return false;
     } finally {
       setIsLoading(false);
     }
   }, [fetchVehicles, toast]);
 
-  const searchPlate = useCallback(async (query: string): Promise<PlateDetection[]> => {
+  const searchPlate = useCallback(async (query: string): Promise<DbPlateDetection[]> => {
     try {
       const { data, error: searchError } = await supabase
         .from('plate_detections')
@@ -183,23 +147,19 @@ export function useVehicles(): UseVehiclesReturn {
       
       if (searchError) throw searchError;
       return data || [];
-    } catch (err) {
-      toast({
-        title: 'Erro na busca',
-        variant: 'destructive'
-      });
+    } catch {
+      toast({ title: 'Erro na busca', variant: 'destructive' });
       return [];
     }
   }, [toast]);
 
-  const checkPlate = useCallback((plate: string): Vehicle | null => {
+  const checkPlate = useCallback((plate: string): DbVehicle | null => {
     const normalizedPlate = plate.toUpperCase().replace(/[^A-Z0-9]/g, '');
     return vehicles.find(v => 
       v.plate.toUpperCase().replace(/[^A-Z0-9]/g, '') === normalizedPlate
     ) || null;
   }, [vehicles]);
 
-  // Subscribe to realtime updates
   useEffect(() => {
     const channel = supabase
       .channel('vehicles-changes')
@@ -207,10 +167,9 @@ export function useVehicles(): UseVehiclesReturn {
         fetchVehicles();
       })
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'plate_detections' }, (payload) => {
-        const newDetection = payload.new as PlateDetection;
+        const newDetection = payload.new as DbPlateDetection;
         setDetections(prev => [newDetection, ...prev.slice(0, 99)]);
         
-        // Check if blacklisted
         const vehicle = checkPlate(newDetection.plate);
         if (vehicle?.type === 'blacklist') {
           toast({

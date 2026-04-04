@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: usePPEDetection (VERSÃO MELHORADA)
@@ -145,6 +144,7 @@ export interface PPEZoneConfig {
   detectionInterval: 2000,
   saveViolations: true,
   alertOnViolation: true,
+    useVisionAI: true,
   gracePeriodMs: 5000,
 };
 
@@ -462,7 +462,7 @@ Respond in JSON format:
 
   const saveViolation = async (violation: PPEViolation) => {
     try {
-      await supabase.from('ppe_violations').insert({
+      await supabase.from('ppe_violations' as never).insert({
         person_id: violation.personId,
         zone_id: violation.zoneId,
         zone_name: violation.zoneName,
@@ -523,7 +523,7 @@ Respond in JSON format:
 
   const loadZones = useCallback(async () => {
     const { data, error } = await supabase
-      .from('ppe_zones')
+      .from('ppe_zones' as never)
       .select('*')
       .order('created_at', { ascending: false });
 
@@ -543,7 +543,7 @@ Respond in JSON format:
 
   const createZone = useCallback(async (zone: Omit<PPEZone, 'id' | 'createdAt'>) => {
     const { data, error } = await supabase
-      .from('ppe_zones')
+      .from('ppe_zones' as never)
       .insert({
         name: zone.name,
         camera_id: zone.cameraId,
@@ -565,7 +565,7 @@ Respond in JSON format:
 
   const updateZone = useCallback(async (id: string, updates: Partial<PPEZone>) => {
     const { error } = await supabase
-      .from('ppe_zones')
+      .from('ppe_zones' as never)
       .update({
         name: updates.name,
         required_ppe: updates.requiredPPE,
@@ -583,7 +583,7 @@ Respond in JSON format:
 
   const deleteZone = useCallback(async (id: string) => {
     const { error } = await supabase
-      .from('ppe_zones')
+      .from('ppe_zones' as never)
       .delete()
       .eq('id', id);
 
@@ -599,7 +599,7 @@ Respond in JSON format:
 
   const loadViolations = useCallback(async (limit = 50) => {
     const { data, error } = await supabase
-      .from('ppe_violations')
+      .from('ppe_violations' as never)
       .select('*')
       .order('created_at', { ascending: false })
       .limit(limit);
@@ -621,7 +621,7 @@ Respond in JSON format:
 
   const acknowledgeViolation = useCallback(async (id: string) => {
     const { error } = await supabase
-      .from('ppe_violations')
+      .from('ppe_violations' as never)
       .update({ acknowledged: true })
       .eq('id', id);
 
