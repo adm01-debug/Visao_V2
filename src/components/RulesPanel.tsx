@@ -20,7 +20,7 @@ const categoryTabs: { value: string; label: string; icon: typeof Shield }[] = [
 ];
 
 export function RulesPanel() {
-  const { executeAction, validateRule, testRule } = useRuleActions();
+  const { executeAction } = useRuleActions();
 
   const { rules, loading, createRule, updateRule, deleteRule, toggleRule } = useRules();
   const [searchQuery, setSearchQuery] = useState('');

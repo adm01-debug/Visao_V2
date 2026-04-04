@@ -58,9 +58,9 @@ export function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneE
     try {
       const pointsWithOpacity = { ...formData.pointsData, opacity };
       if (zone) {
-        await onSave({ name: formData.name, type: formData.type, color: formData.color, is_active: formData.is_active, points: pointsWithOpacity as unknown });
+        await onSave({ name: formData.name, type: formData.type, color: formData.color, is_active: formData.is_active, points: pointsWithOpacity as Json });
       } else {
-        await onSave({ name: formData.name, type: formData.type, color: formData.color, is_active: formData.is_active, points: pointsWithOpacity as unknown, camera_id: camera?.id, user_id: user.id });
+        await onSave({ name: formData.name, type: formData.type, color: formData.color, is_active: formData.is_active, points: pointsWithOpacity as Json, camera_id: camera?.id, user_id: user.id });
       }
       onClose();
       toast.success(zone ? 'Zona atualizada' : 'Zona criada');
