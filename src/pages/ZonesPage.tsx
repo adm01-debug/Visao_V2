@@ -108,7 +108,7 @@ export function ZonesPage() {
     catch { toast.error('Erro ao alternar'); }
   };
 
-  const openEditor = (camera: { id: string; name: string; stream_url?: string | null }, zone?: DbZoneLocal) => { setEditorCamera(camera); setEditingZone(zone || null); setIsEditorOpen(true); };
+  const openEditor = (camera: { id: string; name: string; stream_url?: string | null; stream_protocol?: string; thumbnail?: string | null } | undefined, zone?: DbZoneLocal) => { if (!camera) return; setEditorCamera(camera); setEditingZone(zone || null); setIsEditorOpen(true); };
   const openView = (zone: DbZoneLocal) => { setViewingZone(zone); loadZoneEvents(zone.id); };
   const getCameraName = (cameraId: string | null) => (!cameraId ? 'Câmera desconhecida' : cameras.find(c => c.id === cameraId)?.name || 'Câmera desconhecida');
   const getCameraById = (cameraId: string | null) => (!cameraId ? null : cameras.find(c => c.id === cameraId));
