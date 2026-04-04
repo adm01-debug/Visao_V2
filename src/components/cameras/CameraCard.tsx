@@ -41,6 +41,7 @@ interface CameraCardProps {
 
 export function CameraCard({
   camera, stats, isSelected, viewMode, onSelect, onExpand, onSettings,
+  enableContinuousAnalysis, analysisRules,
 }: CameraCardProps) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
