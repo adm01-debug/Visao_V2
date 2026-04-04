@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/sheet';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
+import { CamerasCharts } from '@/components/charts/CamerasCharts';
 
 export function CamerasPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('grid-2x2');
