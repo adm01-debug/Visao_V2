@@ -1,4 +1,5 @@
 import { logger } from "@/lib/logger";
+import { errorReporter } from "@/lib/errorReporter";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: ErrorBoundary
@@ -39,6 +40,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     logger.error('ErrorBoundary caught an error', { error, errorInfo });
+    errorReporter.captureComponentError(error, errorInfo.componentStack ?? undefined);
     this.setState({ errorInfo });
     this.props.onError?.(error, errorInfo);
   }

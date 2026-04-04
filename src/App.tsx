@@ -14,6 +14,10 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PanicButton } from "@/components/PanicButton";
 import { withRouteErrorBoundary } from "@/components/RouteErrorBoundary";
+import { errorReporter } from "@/lib/errorReporter";
+
+// Install global error monitoring
+errorReporter.installGlobalHandlers();
 
 // Lazy loaded pages
 const Index = lazy(() => import("@/pages/Index"));
