@@ -93,20 +93,20 @@ const App = () => (
                     <Route path="/zones" element={<ProtectedLayoutRoute><ZonesPage /></ProtectedLayoutRoute>} />
                     <Route path="/recordings" element={<ProtectedLayoutRoute><RecordingsPage /></ProtectedLayoutRoute>} />
                     <Route path="/analytics" element={<ProtectedLayoutRoute><AnalyticsPage /></ProtectedLayoutRoute>} />
-                    <Route path="/settings" element={<ProtectedLayoutRoute><SettingsPage /></ProtectedLayoutRoute>} />
-                    <Route path="/security" element={<ProtectedLayoutRoute><SecurityPage /></ProtectedLayoutRoute>} />
+                    <Route path="/settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager"><SettingsPage /></ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/security" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager"><SecurityPage /></ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/face-recognition" element={<ProtectedLayoutRoute><FaceRecognitionPage /></ProtectedLayoutRoute>} />
                     <Route path="/license-plate" element={<ProtectedLayoutRoute><LicensePlatePage /></ProtectedLayoutRoute>} />
                     <Route path="/heatmap" element={<ProtectedLayoutRoute><HeatmapPage /></ProtectedLayoutRoute>} />
                     <Route path="/reports" element={<ProtectedLayoutRoute><ReportsPage /></ProtectedLayoutRoute>} />
                     <Route path="/ppe" element={<ProtectedLayoutRoute><PPEPage /></ProtectedLayoutRoute>} />
-                    <Route path="/people" element={<ProtectedLayoutRoute><PeoplePage /></ProtectedLayoutRoute>} />
+                    <Route path="/people" element={<ProtectedLayoutRoute><ProtectedRoute minRole="operator"><PeoplePage /></ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/recognition-logs" element={<ProtectedLayoutRoute><RecognitionLogsPage /></ProtectedLayoutRoute>} />
                     <Route path="/recognition-analytics" element={<ProtectedLayoutRoute><RecognitionAnalyticsPage /></ProtectedLayoutRoute>} />
-                    <Route path="/stream-settings" element={<ProtectedLayoutRoute><StreamSettingsPage /></ProtectedLayoutRoute>} />
-                    <Route path="/telegram-settings" element={<ProtectedLayoutRoute><TelegramSettingsPage /></ProtectedLayoutRoute>} />
-                    <Route path="/notification-settings" element={<ProtectedLayoutRoute><NotificationSettingsPage /></ProtectedLayoutRoute>} />
-                    <Route path="/automation-rules" element={<ProtectedLayoutRoute><AutomationRulesPage /></ProtectedLayoutRoute>} />
+                    <Route path="/stream-settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager"><StreamSettingsPage /></ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/telegram-settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager"><TelegramSettingsPage /></ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/notification-settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager"><NotificationSettingsPage /></ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/automation-rules" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager"><AutomationRulesPage /></ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/profile" element={<ProtectedLayoutRoute><ProfilePage /></ProtectedLayoutRoute>} />
                     <Route path="/help" element={<ProtectedLayoutRoute><HelpPage /></ProtectedLayoutRoute>} />
                     <Route path="/panic-events" element={<ProtectedLayoutRoute><PanicEventsPage /></ProtectedLayoutRoute>} />
@@ -115,7 +115,7 @@ const App = () => (
                     <Route path="/journey-reports" element={<ProtectedLayoutRoute><JourneyReportsPage /></ProtectedLayoutRoute>} />
                     <Route path="/collaborator-flow" element={<ProtectedLayoutRoute><CollaboratorFlowMapPage /></ProtectedLayoutRoute>} />
                     <Route path="/goals-alerts" element={<ProtectedLayoutRoute><GoalsAlertsPage /></ProtectedLayoutRoute>} />
-                    <Route path="/users" element={<ProtectedLayoutRoute><UserManagementPage /></ProtectedLayoutRoute>} />
+                    <Route path="/users" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin"><UserManagementPage /></ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/acesso-negado" element={<AcessoNegado />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
