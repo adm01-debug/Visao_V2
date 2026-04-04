@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Lib barrel export
  */
@@ -43,5 +42,12 @@ export * from './apiError';
 // Metrics
 export * from './metrics';
 
-// Sentry
-export * from './sentry';
+// Sentry – setUser collides with ./analytics
+// Re-export with aliases
+export {
+  initSentry,
+  captureError as captureSentryError,
+  captureMessage as captureSentryMessage,
+  setUser as setSentryUser,
+  clearUser as clearSentryUser,
+} from './sentry';

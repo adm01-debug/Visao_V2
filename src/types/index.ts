@@ -1,6 +1,8 @@
-// @ts-nocheck
 /**
  * VISÃO - Types barrel export
+ *
+ * Collisions resolved: later modules that re-declare names from earlier ones
+ * are imported selectively or skipped.
  */
 
 export * from "./alert";
@@ -9,23 +11,42 @@ export * from "./api";
 export * from "./auth";
 export * from "./camera";
 export * from "./clips";
-export * from "./common";
+
+// ./common: PaginatedResponse collides with ./api
+// Skip entirely – ./api is canonical
+// export * from "./common";
+
 export * from "./continuousAnalysis";
 export * from "./database";
 export * from "./dto";
-export * from "./enums";
+
+// ./enums: AlertSeverity, CameraStatus, UserRole collide with earlier modules
+// Re-export only non-colliding members
+export type { AlertStatus, Language, RecordingStatus, Theme, UserStatus } from "./enums";
+
 export * from "./events";
 export * from "./extended";
 export * from "./faceRecognition";
 export * from "./forms";
 export * from "./guards";
-export * from "./http";
+
+// ./http: collides with ./api – skip
+// export * from "./http";
+
 export * from "./navigation";
 export * from "./notification";
-export * from "./notifications";
+
+// ./notifications: collides with ./notification – skip
+// export * from "./notifications";
+
 export * from "./permissions";
-export * from "./person";
-export * from "./props";
+
+// ./person: Person collides with ./faceRecognition
+export type { Person as BasePerson, PersonType } from "./person";
+
+// ./props: FormFieldProps collides with ./forms – skip
+// export * from "./props";
+
 export * from "./recording";
 export * from "./responses";
 export * from "./routes";
@@ -36,11 +57,21 @@ export * from "./socket";
 export * from "./state";
 export * from "./store";
 export * from "./streaming";
-export * from "./supabase";
-export * from "./surveillance";
+
+// ./supabase: Tables collides with ./database – skip
+// export * from "./supabase";
+
+// ./surveillance: many collisions with ./alert, ./camera, ./rules – skip
+// export * from "./surveillance";
+
 export * from "./themes";
-export * from "./user";
+
+// ./user: User, UserRole collide with ./auth – skip
+// export * from "./user";
+
 export * from "./validation";
 export * from "./vehicle";
 export * from "./widgets";
-export * from "./zones";
+
+// ./zones: ZoneEvent collides with ./events – skip
+// export * from "./zones";
