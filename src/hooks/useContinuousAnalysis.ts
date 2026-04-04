@@ -224,7 +224,7 @@ export function useContinuousAnalysis(
 
       for (const conditionRaw of conditions) {
         // Cast para any para acessar propriedades JSON
-        const condition = conditionRaw as unknown;
+        const condition = conditionRaw as Record<string, unknown>;
         let actualValue = 0;
         let satisfied = false;
 
