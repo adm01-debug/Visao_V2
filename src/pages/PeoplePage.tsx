@@ -504,7 +504,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
                     <CheckCircle className="w-4 h-4" />
                   </div>
                 )}
-                {!faceDetection.isDetecting && faceValidation && !faceValidation.valid && (
+                {!faceDetection.isProcessing && faceValidation && !faceValidation.valid && (
                   <div role="main" aria-label="Cadastro de pessoas" className="absolute -bottom-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-1">
                     <XCircle className="w-4 h-4" />
                   </div>
