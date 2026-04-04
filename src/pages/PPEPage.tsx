@@ -479,7 +479,7 @@ export default function PPEPage() {
               <CardTitle className="flex items-center gap-2">
                 <Activity className="w-5 h-5" />
                 Monitoramento em Tempo Real
-                {ppeDetection.isRunning && (
+                {ppeDetection.isDetecting && (
                   <Badge variant="default" className="animate-pulse">
                     <RefreshCw className="w-3 h-3 mr-1 animate-spin" />
                     Analisando
