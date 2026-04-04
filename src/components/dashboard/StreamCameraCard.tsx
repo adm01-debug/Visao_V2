@@ -78,6 +78,14 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true, 
         )}
       </div>
 
+      {/* AI Analysis Badge */}
+      {aiAnalysisActive && (
+        <Badge className="absolute top-2 right-14 text-[10px] h-5 bg-primary/80 hover:bg-primary/90 gap-1">
+          <Brain className="w-3 h-3 animate-pulse" />
+          IA
+        </Badge>
+      )}
+
       {/* Live Badge */}
       {showStream && camera.streamUrl && !hasError && isPlaying && (
         <Badge variant="destructive" className="absolute top-2 right-2 text-[10px] h-5">
