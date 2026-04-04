@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Gravações / Clips
@@ -78,13 +77,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { ErrorBoundary, Slider } from '@/components/ui/slider';
-import { ErrorBoundary, cn } from '@/lib/utils';
-import { ErrorBoundary, format, formatDistanceToNow, startOfDay, subDays } from 'date-fns';
-import { ErrorBoundary, ptBR } from 'date-fns/locale';
-import { ErrorBoundary, toast } from 'sonner';
-import { ErrorBoundary, Tables } from '@/integrations/supabase/types';
-import { ErrorBoundary, ClipGallery } from '@/components/ClipGallery';
+import { Slider } from '@/components/ui/slider';
+import { cn } from '@/lib/utils';
+import { format, formatDistanceToNow, startOfDay, subDays } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { toast } from 'sonner';
+import { Tables } from '@/integrations/supabase/types';
+import { ClipGallery } from '@/components/ClipGallery';
 
 // ============================================
 // TIPOS - Alinhados com schema do banco

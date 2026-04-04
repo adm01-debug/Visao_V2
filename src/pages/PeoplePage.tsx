@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Colaboradores / Pessoas
@@ -206,7 +205,8 @@ function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
 // ============================================
 
 import { useStorage, STORAGE_BUCKETS } from '@/hooks/useStorage';
-import { useFaceDetection, FaceEncoding } from '@/hooks/useFaceDetection';
+import { useFaceDetection } from '@/hooks/useFaceDetection';
+type FaceEncoding = number[];
 
 interface PersonFormDialogProps {
   person?: DbPerson | null;
@@ -218,7 +218,7 @@ interface PersonFormDialogProps {
 function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogProps) {
   const storage = useStorage();
   const faceDetection = useFaceDetection();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Record<string, unknown>>({
     name: '',
     department: '',
     role: '',
@@ -266,8 +266,8 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
       setFaceValidation(null);
     }
     setShowWebcam(false);
-    storage.clearError();
-    faceDetection.clearError();
+    storage.clearError?.();
+    // faceDetection doesn't have clearError
   }, [person, isOpen]);
 
   // Detectar faces automaticamente quando uma foto é selecionada
@@ -277,12 +277,13 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
 
     toast.loading('Analisando rosto...', { id: 'face-detection' });
 
-    const result = await faceDetection.detectFromBase64(imageData);
-    const validation = faceDetection.validateFaceQuality(result);
-    setFaceValidation(validation);
+    const result = await faceDetection.detectFaces(imageData);
+    const firstFace = result[0];
+    const validation = firstFace ? faceDetection.validateImageQuality(firstFace) : { isValid: false, issues: ['Nenhum rosto detectado'] };
+    setFaceValidation({ valid: validation.isValid, message: validation.issues[0] || 'OK' });
 
-    if (validation.valid) {
-      const encoding = faceDetection.generateEncoding(result);
+    if (validation.isValid && firstFace) {
+      const encoding = await faceDetection.generateEncoding(imageData);
       setFaceEncoding(encoding);
       toast.success('Rosto detectado com sucesso!', { id: 'face-detection' });
     } else {

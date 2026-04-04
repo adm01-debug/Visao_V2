@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Dashboard V2 - Integração Completa
@@ -13,11 +12,11 @@
  */
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { unique } from '@/lib/arrayUtils';
+// import { unique } from '@/lib/arrayUtils';
 import { useScrollPosition } from '@/hooks/useScrollPosition';
 import { CardSkeleton } from '@/components/PageSkeletons';
 import { formatNumber } from '@/lib/formatters';
-import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+// import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { StatCard } from '@/components/StatCard';
 import { CountUp } from '@/components/CountUp';
 import { TimeAgo } from '@/components/TimeAgo';
@@ -176,8 +175,8 @@ function mapDbCameraToUI(dbCamera: DbCamera) {
     alerts: dbCamera.alerts_count || 0,
     latitude: dbCamera.latitude,
     longitude: dbCamera.longitude,
-    streamUrl: (dbCamera as unknown).stream_url || undefined,
-    streamProtocol: (dbCamera as unknown).stream_protocol || 'hls',
+    streamUrl: (dbCamera as Record<string, unknown>).stream_url as string | undefined,
+    streamProtocol: ((dbCamera as Record<string, unknown>).stream_protocol as string) || 'hls',
   };
 }
 
@@ -227,7 +226,7 @@ function CameraStreamCard({
           <VideoStreamPlayer
             cameraId={camera.id}
             streamUrl={camera.streamUrl!}
-            protocol={camera.streamProtocol as unknown}
+            protocol={camera.streamProtocol as 'hls' | 'webrtc' | 'rtsp'}
             cameraName={camera.name}
           />
 

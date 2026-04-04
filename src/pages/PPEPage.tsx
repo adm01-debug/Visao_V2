@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: PPEPage (Equipamentos de Proteção Individual)
@@ -71,7 +70,7 @@ function ComplianceCard({
 }: {
   title: string;
   value: string | number;
-  icon: unknown;
+  icon: React.ElementType;
   trend?: 'up' | 'down' | 'stable';
   color?: 'default' | 'success' | 'warning' | 'danger';
 }) {
@@ -122,7 +121,6 @@ export default function PPEPage() {
 
   // Usar hook PPE para câmera selecionada
   const ppeDetection = usePPEDetection({
-    cameraId: selectedCamera,
     cameraName: cameras.find(c => c.id === selectedCamera)?.name || '',
     config: {
       enabled: true,
@@ -148,7 +146,7 @@ export default function PPEPage() {
       return;
     }
 
-    const success = await ppeDetection.addZone({
+    const success = await ppeDetection.createZone({
       name: newZone.name,
       cameraId: selectedCamera,
       requiredPPE: newZone.requiredPPE,
@@ -206,10 +204,10 @@ export default function PPEPage() {
             </SelectContent>
           </Select>
           <Button
-            variant={ppeDetection.isRunning ? 'destructive' : 'default'}
-            onClick={ppeDetection.toggle}
+            variant={ppeDetection.isDetecting ? 'destructive' : 'default'}
+            onClick={() => ppeDetection.isDetecting ? ppeDetection.stopContinuousDetection() : null}
           >
-            {ppeDetection.isRunning ? (
+            {ppeDetection.isDetecting ? (
               <>
                 <XCircle className="w-4 h-4 mr-2" />
                 Parar
@@ -379,13 +377,13 @@ export default function PPEPage() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge variant={zone.alertOnViolation ? 'default' : 'secondary'}>
-                            {zone.alertOnViolation ? 'Ativo' : 'Desativado'}
+                          <Badge variant={zone.alertEnabled ? 'default' : 'secondary'}>
+                            {zone.alertEnabled ? 'Ativo' : 'Desativado'}
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <Badge variant={zone.active ? 'default' : 'outline'}>
-                            {zone.active ? 'Ativo' : 'Inativo'}
+                          <Badge variant={'default'}>
+                            {'Ativo'}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
@@ -414,7 +412,7 @@ export default function PPEPage() {
               <CardDescription>Histórico de detecções de não conformidade</CardDescription>
             </CardHeader>
             <CardContent>
-              {ppeDetection.recentViolations.length === 0 ? (
+              {ppeDetection.violations.length === 0 ? (
                 <div role="main" aria-label="Detecção de EPIs" className="text-center py-12 text-muted-foreground">
                   <CheckCircle2 className="w-12 h-12 mx-auto mb-4 text-green-500" />
                   <p>Nenhuma violação registrada</p>
@@ -432,7 +430,7 @@ export default function PPEPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {ppeDetection.recentViolations.map(violation => (
+                    {ppeDetection.violations.map(violation => (
                       <TableRow key={violation.id}>
                         <TableCell>
                           {format(new Date(violation.timestamp), 'dd/MM HH:mm:ss', { locale: ptBR })}
@@ -481,7 +479,7 @@ export default function PPEPage() {
               <CardTitle className="flex items-center gap-2">
                 <Activity className="w-5 h-5" />
                 Monitoramento em Tempo Real
-                {ppeDetection.isRunning && (
+                {ppeDetection.isDetecting && (
                   <Badge variant="default" className="animate-pulse">
                     <RefreshCw className="w-3 h-3 mr-1 animate-spin" />
                     Analisando
@@ -490,19 +488,19 @@ export default function PPEPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {ppeDetection.currentDetections.length === 0 ? (
+              {ppeDetection.detections.length === 0 ? (
                 <div role="main" aria-label="Detecção de EPIs" className="text-center py-12 text-muted-foreground">
                   <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p>Nenhuma pessoa detectada no momento</p>
                   <p className="text-sm">
-                    {ppeDetection.isRunning
+                    {ppeDetection.isDetecting
                       ? 'Aguardando detecções...'
                       : 'Clique em "Iniciar" para começar o monitoramento'}
                   </p>
                 </div>
               ) : (
                 <div role="main" aria-label="Detecção de EPIs" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {ppeDetection.currentDetections.map(detection => (
+                  {ppeDetection.detections.map(detection => (
                     <Card key={detection.personId} className={cn(
                       "border-2",
                       detection.compliant ? "border-green-500/50" : "border-red-500/50"

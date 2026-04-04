@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Reconhecimento de Placas (ALPR) - Expandida
@@ -44,12 +43,13 @@ interface Vehicle {
 interface PlateDetection {
   id: string;
   plate: string;
-  camera_id: string;
+  camera_id: string | null;
   camera_name: string;
   confidence: number;
   timestamp: string;
-  image_url?: string;
-  is_blacklisted: boolean;
+  image_url?: string | null;
+  is_blacklisted?: boolean;
+  [key: string]: unknown;
 }
 
 export default function LicensePlatePage() {
@@ -149,7 +149,7 @@ export default function LicensePlatePage() {
             color: formData.color || null,
             list_type: formData.list_type,
             notes: formData.notes || null,
-            user_id: user?.id,
+            user_id: user?.id || '',
           }]);
         
         if (error) throw error;

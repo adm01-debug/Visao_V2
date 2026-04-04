@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Segurança
@@ -182,14 +181,14 @@ interface SecurityStats {
 // CONFIGURAÇÃO
 // ============================================
 
-const logLevelConfig: Record<LogLevel, { icon: unknown; color: string; bgColor: string; label: string }> = {
+const logLevelConfig: Record<LogLevel, { icon: React.ElementType; color: string; bgColor: string; label: string }> = {
   info: { icon: Info, color: 'text-blue-500', bgColor: 'bg-blue-500/10', label: 'Info' },
   warning: { icon: AlertTriangle, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Aviso' },
   error: { icon: XCircle, color: 'text-red-500', bgColor: 'bg-red-500/10', label: 'Erro' },
   critical: { icon: ShieldAlert, color: 'text-red-600', bgColor: 'bg-red-600/10', label: 'Crítico' },
 };
 
-const categoryConfig: Record<LogCategory, { icon: unknown; label: string }> = {
+const categoryConfig: Record<LogCategory, { icon: React.ElementType; label: string }> = {
   auth: { icon: Key, label: 'Autenticação' },
   access: { icon: Lock, label: 'Acesso' },
   system: { icon: Settings, label: 'Sistema' },
@@ -199,7 +198,7 @@ const categoryConfig: Record<LogCategory, { icon: unknown; label: string }> = {
   user: { icon: User, label: 'Usuário' },
 };
 
-const listTypeConfig: Record<ListType, { icon: unknown; color: string; bgColor: string; label: string }> = {
+const listTypeConfig: Record<ListType, { icon: React.ElementType; color: string; bgColor: string; label: string }> = {
   whitelist: { icon: ShieldCheck, color: 'text-green-500', bgColor: 'bg-green-500/10', label: 'Liberado' },
   blacklist: { icon: ShieldOff, color: 'text-red-500', bgColor: 'bg-red-500/10', label: 'Bloqueado' },
   watchlist: { icon: Eye, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Monitorado' },

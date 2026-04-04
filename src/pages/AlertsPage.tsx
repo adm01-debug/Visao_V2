@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Alertas
@@ -143,7 +142,7 @@ const typeConfig = {
 // ============================================
 
 interface AlertItemProps {
-  alert: unknown;
+  alert: { id: string; severity: string; type: string; timestamp: string; is_read: boolean; message: string; camera_name: string; thumbnail?: string | null; [key: string]: unknown };
   isSelected: boolean;
   onSelect: (selected: boolean) => void;
   onView: () => void;
@@ -301,7 +300,7 @@ function AlertItem({
 // ============================================
 
 interface AlertDetailsDialogProps {
-  alert: unknown;
+  alert: { id: string; severity: string; type: string; timestamp: string; is_read: boolean; message: string; camera_name: string; thumbnail?: string | null; [key: string]: unknown } | null;
   isOpen: boolean;
   onClose: () => void;
   onMarkRead: () => void;
@@ -406,14 +405,14 @@ function AlertDetailsDialog({
 // ============================================
 
 export function AlertsPage() {
-  const { events: recognitionEvents, stats: recognitionStats } = useFaceRecognitionAlerts();
+  const { events: recognitionEvents, stats: recognitionStats } = useFaceRecognitionAlerts({ cameraId: '', cameraName: '' });
 
   // Estado
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [sortBy, setSortBy] = useState<SortOption>('date-desc');
   const [filters, setFilters] = useState<AlertFilters>(defaultFilters);
   const [selectedAlerts, setSelectedAlerts] = useState<Set<string>>(new Set());
-  const [detailsAlert, setDetailsAlert] = useState<Alert | null>(null);
+  const [detailsAlert, setDetailsAlert] = useState<AlertItemProps['alert'] | null>(null);
   const [showFilters, setShowFilters] = useState(false);
 
   // Hooks
@@ -847,11 +846,11 @@ export function AlertsPage() {
         isOpen={!!detailsAlert}
         onClose={() => setDetailsAlert(null)}
         onMarkRead={() => {
-          markAsRead(detailsAlert.id);
+          if (detailsAlert) markAsRead(detailsAlert.id as string);
           setDetailsAlert(null);
         }}
         onDelete={() => {
-          deleteAlert(detailsAlert.id);
+          if (detailsAlert) deleteAlert(detailsAlert.id as string);
           setDetailsAlert(null);
         }}
       />

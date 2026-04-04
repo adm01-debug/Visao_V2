@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { EmptyState, ErrorState, LoadingSpinner, TimeAgo } from "@/components";
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -29,7 +28,7 @@ import { cn } from '@/lib/utils';
 import { useMediaMTX } from '@/hooks/useMediaMTX';
 
 export default function StreamSettingsPage() {
-  const { paths, stats, config, isConnected, refreshPaths } = useMediaMTX();
+  const { paths, stats, config, connected: isConnected, refresh: refreshPaths } = useMediaMTX();
 
 
   const navigate = useNavigate();
@@ -50,12 +49,12 @@ export default function StreamSettingsPage() {
     }
   }, [searchParams, cameras]);
 
-  const handleSaveConfig = async (config: unknown) => {
+  const handleSaveConfig = async (configData: Record<string, unknown>) => {
     if (!selectedCamera) return;
 
     try {
       await updateCamera(selectedCamera.id, {
-        stream_url: config.url,
+        stream_url: configData.url as string,
       });
 
       toast.success('Configuração de stream salva');

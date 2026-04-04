@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: Configurações (Completa)
@@ -166,7 +165,7 @@ interface SystemStats {
 interface SettingsSectionProps {
   title: string;
   description?: string;
-  icon: unknown;
+  icon: React.ElementType;
   children: React.ReactNode;
 }
 
@@ -208,7 +207,7 @@ function SettingRow({ label, description, children }: SettingRowProps) {
 // ============================================
 
 export function SettingsPage() {
-  const { settings, updateSettings, resetSettings, loading: settingsLoading } = useSettings();
+  const { settings, save: updateSettings, reset: resetSettings, loading: settingsLoading } = useSettings();
   const { mode, variant, setMode, setVariant } = useTheme();
 
   const [loading, setLoading] = useState(true);
@@ -382,7 +381,7 @@ export function SettingsPage() {
       }
 
       // Save notification settings
-      const channels = [];
+      const channels: string[] = [];
       if (notificationSettings.emailEnabled) channels.push('email');
       if (notificationSettings.whatsappEnabled) channels.push('whatsapp');
       if (notificationSettings.webhookEnabled) channels.push('webhook');
