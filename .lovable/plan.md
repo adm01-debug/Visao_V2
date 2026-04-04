@@ -1,42 +1,75 @@
 
-## Fase 1: Corrigir Erros de Build (5 arquivos)
-1. **src/lib/renderOptimizer.ts** - Remover declarações globais conflitantes de `IdleDeadline`/`Window`
-2. **src/lib/sentry.ts** - Corrigir `logger.error(error)` → `logger.error(error.message)`
-3. **src/lib/xss.ts** - Corrigir `.flat()` em ALLOWED_ATTR para flatten correto
-4. **src/types/supabase.ts** - Remover referência a `recordings` (tabela inexistente)
-5. **src/utils/compression.ts** - Corrigir tipo `Uint8Array` com cast para `BufferSource`
-6. **src/types/index.ts** - Resolver colisões de barrel exports eliminando re-exports duplicados
+# 🚀 Plano de Melhorias Avançadas — Beyond 10/10
 
-## Fase 2: Refatorar God Components (10 páginas/hooks)
+## Estado Atual
+- **883 arquivos fonte** / ~102K linhas de código
+- **1.569 testes** (100% passando)
+- **0 erros TypeScript** (strict mode)
+- **35/43 rotas** com lazy loading
+- **19 tabelas** com RLS completo
 
-### Páginas (extrair subcomponentes para diretórios dedicados):
+---
 
-1. **ZonesPage** (1345 → ~200 linhas) → `src/components/zones/`
-   - `ZoneCard.tsx`, `ZoneEditorSheet.tsx`, `ZoneViewDialog.tsx`, `useZonesData.ts`, `zonesConfig.ts`
+## Sprint 1: Refatorar God Pages (6 páginas > 400 linhas)
 
-2. **PeoplePage** (1315 → ~200 linhas) → `src/components/people/`
-   - `PersonCard.tsx`, `PersonFormDialog.tsx`, `PersonDetailsDialog.tsx`, `usePeopleData.ts`
+As páginas abaixo ultrapassam 400 linhas e devem ser decompostas em subcomponentes:
 
-3. **SettingsPage** (1225 → ~200 linhas) → `src/components/settings/`
-   - `GeneralSettings.tsx`, `NotificationSettings.tsx`, `AnalysisSettings.tsx`, `FaceSettings.tsx`, `SystemSettings.tsx`, `SettingsSection.tsx`
+| Página | Linhas | Alvo |
+|--------|--------|------|
+| NotificationSettingsPage | 661 | ~200 |
+| RecognitionLogsPage | 598 | ~200 |
+| LicensePlatePage | 572 | ~200 |
+| PPEPage | 542 | ~200 |
+| JourneyReportsPage | 526 | ~200 |
+| BehaviorDetectionPage | 476 | ~200 |
 
-4. **SecurityPage** (986 → ~200 linhas) → `src/components/security/`
-   - `AuditLogTable.tsx`, `AccessEventCard.tsx`, `SecurityPersonsList.tsx`, `useSecurityData.ts`
+**Padrão:** Extrair formulários, tabelas, filtros e cards para `src/components/<domínio>/`.
 
-5. **RecordingsPage** (880 → ~200 linhas) → `src/components/recordings/`
-   - `ClipCard.tsx`, `VideoPlayerDialog.tsx`, `useRecordingsData.ts`
+---
 
-6. **DashboardV2** (872 → ~200 linhas) → `src/components/dashboard-v2/`
-   - Extrair seções em subcomponentes
+## Sprint 2: Performance & Bundle
 
-7. **AlertsPage** (862 → ~200 linhas) → `src/components/alerts/`
-   - Extrair filtros, tabela, e timeline
+1. **Lazy load das 8 rotas restantes** que não usam `React.lazy`
+2. **Virtualização de listas longas** — aplicar `react-virtuoso` em tabelas com 100+ itens (alertas, logs, detecções de placas)
+3. **Prefetch inteligente** — usar `<link rel="prefetch">` para rotas adjacentes no menu
+4. **Image optimization** — lazy loading de thumbnails com `loading="lazy"` e placeholders blur
+5. **Bundle analysis** — remover dependências pesadas não utilizadas (tensorflow, face-api.js se não estiver em uso real)
 
-8. **AnalyticsPage** (823 → ~200 linhas) → `src/components/analytics/`
-   - Extrair KPIs, gráficos, e filtros
+---
 
-9. **useContinuousAnalysis** (892 → ~300 linhas) → `src/hooks/analysis/`
-   - Separar lógica de sessão, regras, e alertas
+## Sprint 3: UX & Acessibilidade Avançada
 
-10. **ClipGallery** (789 → ~200 linhas) → `src/components/clips/`
-    - Extrair subcomponentes de galeria
+1. **Skeleton loading** — substituir spinners por skeletons em todas as páginas de dados
+2. **Atalhos de teclado globais** — `Ctrl+K` busca, `Ctrl+/` ajuda, `Escape` fechar modais
+3. **Dark/Light mode toggle** — já mencionado como prioridade do usuário
+4. **Onboarding tour guiado** — primeira visita com tour interativo nas funcionalidades principais
+5. **Notificações toast com ações** — toasts com botões de ação rápida (marcar como lido, ir para câmera)
+
+---
+
+## Sprint 4: Observabilidade & Resiliência
+
+1. **Error boundaries granulares** — um por seção do layout (sidebar, main, header)
+2. **Retry automático com backoff** — nas queries do React Query com feedback visual
+3. **Offline indicator** — banner quando a conexão cair com queue de ações pendentes
+4. **Métricas de Web Vitals** — reportar LCP, FID, CLS para monitoring
+5. **Health check endpoint** — edge function que verifica status do banco e storage
+
+---
+
+## Sprint 5: Funcionalidades Avançadas
+
+1. **Dashboard customizável** — widgets drag-and-drop com persistência no banco
+2. **Exportação avançada** — relatórios PDF/Excel com gráficos embutidos
+3. **Webhook notifications** — edge function para disparar webhooks em alertas críticos
+4. **API de integração** — edge functions documentadas para integração com sistemas externos
+5. **Audit log completo** — registrar todas as ações do usuário com IP e user-agent
+
+---
+
+## Critérios de Conclusão por Sprint
+- ✅ 0 erros TypeScript
+- ✅ Todos os testes passando
+- ✅ Nenhuma página > 400 linhas
+- ✅ Build < 30s
+- ✅ Lighthouse Performance > 90
