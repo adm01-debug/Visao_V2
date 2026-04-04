@@ -429,16 +429,16 @@ export function useContinuousAnalysis(
         return;
       }
 
-      await supabase.from('analysis_history').insert({
+      await supabase.from('analysis_history').insert([{
         id: entry.id,
         camera_id: cameraId,
         user_id: user.id,
         timestamp: entry.timestamp.toISOString(),
         analysis_type: entry.analysisType,
-        result: entry.result as unknown,
-        confidence: 'confidence' in entry.result ? (entry.result as unknown).confidence : null,
+        result: entry.result as Record<string, unknown>,
+        confidence: 'confidence' in entry.result ? (entry.result as Record<string, number>).confidence : null,
         image_url: entry.snapshot || null,
-      });
+      }]);
 
 
     } catch (err) {
