@@ -488,7 +488,7 @@ export default function PPEPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {ppeDetection.currentDetections.length === 0 ? (
+              {ppeDetection.detections.length === 0 ? (
                 <div role="main" aria-label="Detecção de EPIs" className="text-center py-12 text-muted-foreground">
                   <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p>Nenhuma pessoa detectada no momento</p>
