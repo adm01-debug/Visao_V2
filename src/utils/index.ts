@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 /**
  * VISÃO - Utils barrel export
  */
