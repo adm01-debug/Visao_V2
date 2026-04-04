@@ -188,7 +188,7 @@ const logLevelConfig: Record<LogLevel, { icon: React.ElementType; color: string;
   critical: { icon: ShieldAlert, color: 'text-red-600', bgColor: 'bg-red-600/10', label: 'Crítico' },
 };
 
-const categoryConfig: Record<LogCategory, { icon: unknown; label: string }> = {
+const categoryConfig: Record<LogCategory, { icon: React.ElementType; label: string }> = {
   auth: { icon: Key, label: 'Autenticação' },
   access: { icon: Lock, label: 'Acesso' },
   system: { icon: Settings, label: 'Sistema' },
