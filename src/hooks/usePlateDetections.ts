@@ -237,6 +237,7 @@ ${ownerName ? `👤 <b>Proprietário:</b> ${ownerName}` : ''}
 
       const newDetection: PlateDetection = {
         ...data,
+        vehicle_type: data.vehicle_type || 'unknown',
         timestamp: new Date(data.timestamp),
         created_at: new Date(data.created_at),
         status: data.status as PlateDetection['status']
