@@ -499,7 +499,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
                     <RefreshCw className="w-4 h-4 animate-spin" />
                   </div>
                 )}
-                {!faceDetection.isDetecting && faceValidation?.valid && (
+                {!faceDetection.isProcessing && faceValidation?.valid && (
                   <div role="main" aria-label="Cadastro de pessoas" className="absolute -bottom-1 -right-1 bg-green-500 text-white rounded-full p-1">
                     <CheckCircle className="w-4 h-4" />
                   </div>
