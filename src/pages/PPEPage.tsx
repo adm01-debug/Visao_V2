@@ -243,10 +243,10 @@ export default function PPEPage() {
       </div>
 
       {/* Charts */}
-      <PPECharts zones={ppeDetection.zones.map(z => ({
+      <PPECharts zones={ppeDetection.zones.map((z: any) => ({
         id: z.id, name: z.name, camera_id: z.cameraId,
-        requiredPPE: z.requiredPPE, enabled: z.enabled,
-        complianceRate: z.complianceRate, violations: z.violations,
+        requiredPPE: z.requiredPPE || [], enabled: z.enabled ?? true,
+        complianceRate: z.complianceRate ?? undefined, violations: z.violations ?? 0,
       }))} />
 
       {/* Tabs */}

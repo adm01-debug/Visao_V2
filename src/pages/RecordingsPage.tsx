@@ -611,7 +611,7 @@ export function RecordingsPage() {
       <div className="container py-4">
         <RecordingsCharts recordings={clips.map(c => ({
           id: c.id, status: c.status, started_at: c.start_time,
-          duration_seconds: c.duration, file_size_bytes: c.file_size_bytes,
+          duration_seconds: c.duration, file_size_bytes: null,
           camera_id: c.camera_id, quality: null,
         }))} />
       </div>
