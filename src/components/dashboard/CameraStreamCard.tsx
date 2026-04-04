@@ -1,6 +1,8 @@
-import { Camera, Users, Brain, Maximize2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Camera, Users, Brain } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import type { Database } from '@/integrations/supabase/types';
+
+type CameraStatus = Database['public']['Enums']['camera_status'];
 import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';
 import { ZoneOverlay } from '@/components/ZoneOverlay';
 import { useZoneDetection } from '@/hooks/useZoneDetection';
