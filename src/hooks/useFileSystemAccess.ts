@@ -2,7 +2,7 @@
  * useFileSystemAccess Hook
  * File System Access API
  */
-/// <reference types="../types/file-system-access" />
+/// <reference path="../types/file-system-access.d.ts" />
 import { useState, useCallback } from 'react';
 
 export function useFileSystemAccess() {
