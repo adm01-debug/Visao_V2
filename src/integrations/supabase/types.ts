@@ -26,7 +26,7 @@ export type Database = {
           thumbnail: string | null
           timestamp: string
           type: Database["public"]["Enums"]["alert_type"]
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           camera_id?: string | null
@@ -39,7 +39,7 @@ export type Database = {
           thumbnail?: string | null
           timestamp?: string
           type?: Database["public"]["Enums"]["alert_type"]
-          user_id?: string | null
+          user_id?: string
         }
         Update: {
           camera_id?: string | null
@@ -52,7 +52,7 @@ export type Database = {
           thumbnail?: string | null
           timestamp?: string
           type?: Database["public"]["Enums"]["alert_type"]
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -176,7 +176,7 @@ export type Database = {
           stream_url: string | null
           thumbnail: string | null
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           alerts_count?: number | null
@@ -192,7 +192,7 @@ export type Database = {
           stream_url?: string | null
           thumbnail?: string | null
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Update: {
           alerts_count?: number | null
@@ -208,7 +208,7 @@ export type Database = {
           stream_url?: string | null
           thumbnail?: string | null
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -828,7 +828,7 @@ export type Database = {
           schedule: Json | null
           severity: Database["public"]["Enums"]["rule_severity"]
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           actions?: Database["public"]["Enums"]["rule_action"][]
@@ -843,7 +843,7 @@ export type Database = {
           schedule?: Json | null
           severity?: Database["public"]["Enums"]["rule_severity"]
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Update: {
           actions?: Database["public"]["Enums"]["rule_action"][]
@@ -858,7 +858,7 @@ export type Database = {
           schedule?: Json | null
           severity?: Database["public"]["Enums"]["rule_severity"]
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
