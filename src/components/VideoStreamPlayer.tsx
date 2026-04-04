@@ -87,50 +87,36 @@ interface Detection {
 }
 
 interface VideoStreamPlayerProps {
-  /** ID da câmera */
   cameraId: string;
-
-  /** Nome da câmera */
   cameraName: string;
-
-  /** Localização */
   location?: string;
-
-  /** URL do stream (ou usa teste) */
   streamUrl?: string;
-
-  /** Protocolo de streaming */
   protocol?: StreamConfig['protocol'];
-
-  /** É ao vivo? */
   isLive?: boolean;
-
-  /** Detecções de IA para overlay */
   detections?: Detection[];
-
-  /** Mostrar estatísticas */
   showStats?: boolean;
-
-  /** Habilitar detecção facial */
   enableFaceDetection?: boolean;
-
-  /** Intervalo de detecção facial em ms */
   faceDetectionInterval?: number;
-
-  /** Altura fixa (default: aspect-video) */
   height?: number | string;
-
-  /** Callback ao tirar snapshot */
   onSnapshot?: (imageData: string) => void;
-
-  /** Callback de erro */
   onError?: (error: string) => void;
-
-  /** Callback ao clicar na câmera */
   onClick?: () => void;
-
-  /** Classe CSS adicional */
   className?: string;
+
+  /** Habilitar análise contínua com IA */
+  enableContinuousAnalysis?: boolean;
+  /** Tipo de análise contínua */
+  analysisType?: AnalysisType;
+  /** Intervalo entre análises em ms (padrão: 15000) */
+  analysisIntervalMs?: number;
+  /** Regras de automação a avaliar */
+  analysisRules?: DbRule[];
+  /** Salvar análises no banco */
+  saveAnalysisHistory?: boolean;
+  /** Callback quando alerta é gerado pela análise */
+  onAnalysisAlert?: (alert: AnalysisAlert, result: AnalysisResult) => void;
+  /** Callback com resultado da análise */
+  onAnalysisResult?: (result: AnalysisResult) => void;
 }
 
 // ============================================
