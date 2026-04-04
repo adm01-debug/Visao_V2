@@ -101,7 +101,7 @@ export function SecurityPage() {
       </div>
 
       {stats && <SecurityStatsCards stats={stats} />}
-      <SecurityCharts logs={logs} accessEvents={accessEvents} />
+      
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
