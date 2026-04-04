@@ -115,13 +115,13 @@ export async function generatePDFReport(data: ReportData): Promise<jsPDF> {
 
     switch (section.type) {
       case 'summary':
-        yPosition = renderSummary(doc, section.data, margin, yPosition, pageWidth);
+        yPosition = renderSummary(doc, section.data as { label: string; value: string | number; color?: string }[], margin, yPosition, pageWidth);
         break;
       case 'table':
-        yPosition = renderTable(doc, section.data, margin, yPosition, pageWidth, pageHeight);
+        yPosition = renderTable(doc, section.data as { headers: string[]; rows: (string | number)[][] }, margin, yPosition, pageWidth, pageHeight);
         break;
       case 'text':
-        yPosition = renderText(doc, section.data, margin, yPosition, pageWidth);
+        yPosition = renderText(doc, section.data as string, margin, yPosition, pageWidth);
         break;
     }
 

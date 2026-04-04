@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
+import { format, type Locale } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Check, Circle, Clock, AlertCircle, XCircle } from 'lucide-react';
 
@@ -35,7 +35,7 @@ export interface TimelineProps {
   itemClassName?: string;
   onItemClick?: (item: TimelineItem) => void;
   renderItem?: (item: TimelineItem, index: number) => React.ReactNode;
-  locale?: globalThis.Intl.Locale | Record<string, unknown>;
+  locale?: Locale;
 }
 
 const STATUS_ICONS: Record<TimelineItemStatus, React.ReactNode> = {
@@ -65,7 +65,7 @@ const TimelineItemComponent: React.FC<{
   animated: boolean;
   onItemClick?: (item: TimelineItem) => void;
   itemClassName?: string;
-  locale: Locale;
+  locale?: Locale;
 }> = ({
   item,
   index,

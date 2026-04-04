@@ -57,7 +57,8 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useRules } from '@/hooks/useRules';
-import { DbRule, DbRuleInsert } from '@/types/rules';
+import { DbRule, DbRuleInsert, RuleCondition } from '@/types/rules';
+import type { Json } from '@/integrations/supabase/types';
 import { useCameras } from '@/hooks/useCameras';
 import { cn } from '@/lib/utils';
 import { RuleTemplateSelector } from './RuleTemplateSelector';
@@ -124,7 +125,7 @@ interface RuleFormData {
   description: string;
   category: string;
   severity: string;
-  conditions: RuleCondition[];
+  conditions: Array<{ type: string; operator: string; value: string }>;
   actions: string[];
   cameras: string[];
   schedule: {
@@ -269,7 +270,7 @@ export function AutomationRulesManager() {
     }));
   };
 
-  const updateCondition = (index: number, field: keyof RuleCondition, value: string | number) => {
+  const updateCondition = (index: number, field: string, value: string | number) => {
     setFormData(prev => ({
       ...prev,
       conditions: prev.conditions.map((c, i) =>
@@ -434,7 +435,7 @@ export function AutomationRulesManager() {
                         <div className="flex items-center gap-2">
                           <Switch
                             checked={rule.is_active}
-                            onCheckedChange={(checked) => toggleActive(rule.id, checked)}
+                            onCheckedChange={(checked) => toggleRule(rule.id, checked)}
                           />
                           <Button
                             variant="ghost"

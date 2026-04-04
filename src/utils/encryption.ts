@@ -93,7 +93,7 @@ export async function deriveKey(
   const key = await crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
-      salt: usedSalt,
+      salt: usedSalt as BufferSource,
       iterations,
       hash: 'SHA-256',
     },
@@ -124,9 +124,9 @@ export async function encrypt(
   );
 
   return {
-    ciphertext: arrayBufferToBase64(ciphertext),
-    iv: arrayBufferToBase64(iv),
-    salt: arrayBufferToBase64(salt),
+    ciphertext: arrayBufferToBase64(ciphertext as ArrayBuffer),
+    iv: arrayBufferToBase64(iv.buffer as ArrayBuffer),
+    salt: arrayBufferToBase64(salt.buffer as ArrayBuffer),
     algorithm: 'AES-GCM',
   };
 }
