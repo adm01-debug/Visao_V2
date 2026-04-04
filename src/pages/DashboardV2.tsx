@@ -31,6 +31,8 @@ import type { UICameraData } from '@/components/dashboard/CameraStreamCard';
 import { SettingsSheet } from '@/components/dashboard/SettingsSheet';
 import { defaultSettings, sortAlerts } from '@/components/dashboard/DashboardTypes';
 import type { DashboardSettings, AlertSortOption, ViewMode, GridLayout } from '@/components/dashboard/DashboardTypes';
+import { useDashboardLayout } from '@/hooks/useDashboardLayout';
+import { WidgetLayoutConfig } from '@/components/dashboard/WidgetLayoutConfig';
 
 function mapDbCameraToUI(dbCamera: DbCamera): UICameraData {
   return {
@@ -53,6 +55,7 @@ export function DashboardV2() {
     return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
   });
 
+  const { widgets, visibleWidgets, toggleWidget, reorderWidgets, resetLayout } = useDashboardLayout();
   const { cameras, loading: camerasLoading, updateCamera, refetch: refetchCameras } = useCameras();
   const { alerts, loading: alertsLoading, unreadCount, markAllAsRead, refetch: refetchAlerts } = useAlerts();
   const { rules } = useRules();
@@ -110,6 +113,7 @@ export function DashboardV2() {
           <Select value={settings.gridLayout} onValueChange={(v) => setSettings(s => ({ ...s, gridLayout: v as GridLayout }))}><SelectTrigger className="w-20 sm:w-24 h-9"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="1x1">1x1</SelectItem><SelectItem value="2x2">2x2</SelectItem><SelectItem value="3x3">3x3</SelectItem><SelectItem value="4x4">4x4</SelectItem><SelectItem value="list">Lista</SelectItem></SelectContent></Select>
           <Button variant="outline" size="icon" onClick={handleRefresh} className="shrink-0"><RefreshCw className="w-4 h-4" /></Button>
           <Button variant="outline" size="icon" onClick={() => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()} className="hidden sm:inline-flex shrink-0"><Maximize2 className="w-4 h-4" /></Button>
+          <WidgetLayoutConfig widgets={widgets} toggleWidget={toggleWidget} reorderWidgets={reorderWidgets} resetLayout={resetLayout} />
           <SettingsSheet settings={settings} onSettingsChange={setSettings} />
         </div>
       </div>
