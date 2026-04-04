@@ -142,7 +142,7 @@ const typeConfig = {
 // ============================================
 
 interface AlertItemProps {
-  alert: Record<string, unknown>;
+  alert: { id: string; severity: string; type: string; timestamp: string; is_read: boolean; message: string; camera_name: string; thumbnail?: string | null; [key: string]: unknown };
   isSelected: boolean;
   onSelect: (selected: boolean) => void;
   onView: () => void;
