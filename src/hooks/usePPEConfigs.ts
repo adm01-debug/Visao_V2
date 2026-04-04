@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -35,7 +34,7 @@ export const usePPEConfigs = (cameraId?: string) => {
     setLoading(true);
     try {
       let query = supabase
-        .from('ppe_configs')
+        .from('ppe_configs' as never)
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -60,7 +59,7 @@ export const usePPEConfigs = (cameraId?: string) => {
   const createConfig = useCallback(async (config: PPEConfigInsert) => {
     try {
       const { data, error } = await supabase
-        .from('ppe_configs')
+        .from('ppe_configs' as never)
         .insert(config)
         .select()
         .single();
@@ -77,7 +76,7 @@ export const usePPEConfigs = (cameraId?: string) => {
   const updateConfig = useCallback(async (id: string, updates: PPEConfigUpdate) => {
     try {
       const { error } = await supabase
-        .from('ppe_configs')
+        .from('ppe_configs' as never)
         .update(updates)
         .eq('id', id);
 
@@ -92,7 +91,7 @@ export const usePPEConfigs = (cameraId?: string) => {
   const deleteConfig = useCallback(async (id: string) => {
     try {
       const { error } = await supabase
-        .from('ppe_configs')
+        .from('ppe_configs' as never)
         .delete()
         .eq('id', id);
 
