@@ -22,7 +22,7 @@ interface CameraData {
 
 interface ZoneViewDialogProps {
   zone: DbZone | null;
-  camera: any;
+  camera: CameraData | null;
   stats?: ZoneStats;
   events: ZoneEvent[];
   isOpen: boolean;
