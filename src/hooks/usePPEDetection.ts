@@ -512,23 +512,8 @@ Respond in JSON format:
   // ============================================
 
   const loadZones = useCallback(async () => {
-    const { data, error } = await supabase
-      .from('ppe_zones' as never)
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setZones(data.map(z => ({
-        id: z.id,
-        name: z.name,
-        cameraId: z.camera_id,
-        requiredPPE: z.required_ppe as PPEType[],
-        alertEnabled: z.alert_enabled,
-        gracePeriodSeconds: z.grace_period_seconds,
-        polygon: z.polygon,
-        createdAt: new Date(z.created_at),
-      })));
-    }
+    // ppe_zones table not in current schema - use local state only
+    setZones([]);
   }, []);
 
   const createZone = useCallback(async (zone: Omit<PPEZone, 'id' | 'createdAt'>) => {
