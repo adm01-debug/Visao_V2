@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useCopyToClipboard } from "@/hooks";
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';

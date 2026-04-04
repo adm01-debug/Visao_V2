@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { EmptyState, ErrorState, LoadingSpinner, TimeAgo } from "@/components";
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';

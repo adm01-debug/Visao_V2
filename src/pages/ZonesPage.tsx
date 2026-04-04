@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Página: Zonas de Interesse
  * Refatorada: componentes extraídos para src/components/zones/
