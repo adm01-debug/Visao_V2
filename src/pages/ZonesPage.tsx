@@ -169,7 +169,7 @@ export function ZonesPage() {
       <div className="text-sm text-muted-foreground">{filteredZones.length} zonas encontradas</div>
 
       {filteredZones.length === 0 ? (
-        <EmptyState icon={Target as React.ElementType} title={zones.length === 0 ? 'Nenhuma zona configurada' : 'Nenhuma zona encontrada'}
+        <EmptyState icon={Target} title={zones.length === 0 ? 'Nenhuma zona configurada' : 'Nenhuma zona encontrada'}
           description={zones.length === 0 ? 'Crie zonas de interesse nas suas câmeras.' : 'Nenhuma zona corresponde aos filtros.'}
           actionLabel={zones.length === 0 && cameras.length > 0 ? '+ Criar Zona' : undefined}
           onAction={zones.length === 0 && cameras.length > 0 ? () => openEditor(cameras[0]) : undefined}
