@@ -36,7 +36,6 @@ export default defineConfig(({ mode }) => ({
     },
   },
   optimizeDeps: {
-    force: true,
     exclude: ["@mediapipe/pose", "@tensorflow/tfjs-backend-webgpu"],
   },
   build: {
