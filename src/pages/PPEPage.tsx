@@ -121,15 +121,7 @@ export default function PPEPage() {
 
   // Usar hook PPE para câmera selecionada
   const ppeDetection = usePPEDetection({
-    cameraName: cameras.find(c => c.id === selectedCamera)?.name || '',
-    config: {
-      enabled: true,
-      minConfidence: 0.6,
-      detectionInterval: 2000,
-      alertOnViolation: true,
-      saveViolations: true,
-      gracePeriodSeconds: 5,
-    },
+    onViolation: (v) => toast.error(`Violação PPE: ${v.zoneName}`),
   });
 
   // Selecionar primeira câmera por padrão
