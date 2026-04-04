@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Lazy Loading Configuration
  * Optimizes bundle size by code-splitting routes
