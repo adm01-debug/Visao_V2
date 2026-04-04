@@ -56,7 +56,7 @@ export function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }:
             <TabsContent value="preview" className="m-0">
               <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
                 {camera?.stream_url ? (
-                  <VideoStreamPlayer cameraId={camera.id} streamUrl={camera.stream_url} protocol={camera.stream_protocol || 'hls'} cameraName={camera.name} />
+                  <VideoStreamPlayer cameraId={camera.id} streamUrl={camera.stream_url} protocol={(camera.stream_protocol || 'hls') as 'hls' | 'webrtc' | 'mjpeg' | 'rtsp'} cameraName={camera.name} />
                 ) : camera?.thumbnail ? (
                   <img src={camera.thumbnail} alt={camera.name} className="w-full h-full object-cover" />
                 ) : (

@@ -2,7 +2,7 @@
  * Lazy Loading Configuration
  * Optimizes bundle size by code-splitting routes
  */
-import { lazy, Suspense, ComponentType } from 'react';
+import React, { lazy, Suspense, ComponentType } from 'react';
 import { Loader2 } from 'lucide-react';
 
 /**
@@ -29,7 +29,8 @@ export const PageLoadingFallback = () => (
 /**
  * Wrapper for lazy-loaded components with Suspense
  */
-export function withLazyLoad<T extends ComponentType<Record<string, unknown>>>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function withLazyLoad<T extends ComponentType<any>>(
   importFn: () => Promise<{ default: T }>,
   fallback: React.ReactNode = <LoadingFallback />
 ) {
@@ -48,14 +49,12 @@ export function withLazyLoad<T extends ComponentType<Record<string, unknown>>>(
  * Lazy-loaded page components
  */
 export const LazyPages = {
-  Dashboard: lazy(() => import('@/pages/Dashboard')),
+  Dashboard: lazy(() => import('@/pages/DashboardV2')),
   Cameras: lazy(() => import('@/pages/CamerasPage')),
   Alerts: lazy(() => import('@/pages/AlertsPage')),
   Zones: lazy(() => import('@/pages/ZonesPage')),
   Analytics: lazy(() => import('@/pages/AnalyticsPage')),
   Settings: lazy(() => import('@/pages/SettingsPage')),
-  Recognition: lazy(() => import('@/pages/RecognitionPage')),
-  Blacklist: lazy(() => import('@/pages/BlacklistPage')),
 };
 
 export default LazyPages;

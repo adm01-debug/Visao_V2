@@ -1,7 +1,7 @@
 // Database Types - Projeto VISÃO
 // Tipagem forte para operações de banco de dados
 
-import type { Database as SupabaseDB } from "./supabase";
+import type { Database as SupabaseDB } from "@/integrations/supabase/types";
 
 export type Database = SupabaseDB;
 export type Tables = Database["public"]["Tables"];

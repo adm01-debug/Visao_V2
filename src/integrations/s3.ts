@@ -30,7 +30,7 @@ class S3Service {
     return `https://s3.${this.config?.region}.amazonaws.com`;
   }
 
-  async upload(key: string, body: Blob | Buffer, contentType?: string): Promise<UploadResult> {
+  async upload(key: string, body: Blob | ArrayBuffer, contentType?: string): Promise<UploadResult> {
     if (!this.config) throw new Error('S3 not initialized');
 
     const endpoint = this.config.forcePathStyle
