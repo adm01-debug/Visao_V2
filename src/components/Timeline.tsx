@@ -34,7 +34,7 @@ export interface TimelineProps {
   itemClassName?: string;
   onItemClick?: (item: TimelineItem) => void;
   renderItem?: (item: TimelineItem, index: number) => React.ReactNode;
-  locale?: globalThis.Intl.Locale | Record<string, unknown>;
+  locale?: Locale;
 }
 
 const STATUS_ICONS: Record<TimelineItemStatus, React.ReactNode> = {
