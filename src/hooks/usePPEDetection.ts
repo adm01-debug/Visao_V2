@@ -460,18 +460,8 @@ Respond in JSON format:
   // FUNÇÕES AUXILIARES
   // ============================================
 
-  const saveViolation = async (violation: PPEViolation) => {
-    try {
-      await supabase.from('ppe_violations' as never).insert({
-        person_id: violation.personId,
-        zone_id: violation.zoneId,
-        zone_name: violation.zoneName,
-        camera_id: violation.cameraId,
-        missing_items: violation.missingItems,
-        image_url: violation.imageUrl,
-      });
-    } catch (err) {
-    }
+  const saveViolation = async (_violation: PPEViolation) => {
+    // ppe_violations table not in current schema - skip persistence
   };
 
   const updateStats = (results: PersonPPEDetection[]) => {
