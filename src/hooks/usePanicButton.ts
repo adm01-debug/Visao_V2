@@ -57,7 +57,7 @@ export function usePanicButton() {
 
       const { error } = await supabase.from('panic_events').insert({
         user_id: user!.id,
-        user_name: (user!.user_metadata as Record<string, string> | undefined)?.full_name || user!.email || null,
+        user_name: user!.email || null,
         user_email: user!.email || null,
         latitude,
         longitude,
