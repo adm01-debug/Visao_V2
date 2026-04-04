@@ -28,6 +28,7 @@ import {
   TrendingUp,
   ClipboardList,
   Route,
+  UserCog,
 } from "lucide-react";
 import type { NavCategory, CategoryStatus } from "../types";
 import type { SidebarStatus } from "@/hooks/useSidebarStatus";
@@ -82,13 +83,15 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         label: "Regras",
         icon: Shield,
         path: "/security",
-        badge: status.activeRules > 0 ? status.activeRules : undefined
+        badge: status.activeRules > 0 ? status.activeRules : undefined,
+        minRole: "manager",
       },
       {
         id: "automation-rules",
         label: "Automação",
         icon: Zap,
         path: "/automation-rules",
+        minRole: "manager",
       },
       { id: "ppe", label: "EPIs", icon: HardHat, path: "/ppe" },
     ],
@@ -130,7 +133,8 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         label: "Colaboradores",
         icon: Users,
         path: "/people",
-        badge: status.registeredPersons > 0 ? status.registeredPersons : undefined
+        badge: status.registeredPersons > 0 ? status.registeredPersons : undefined,
+        minRole: "operator",
       },
       {
         id: "zones",
@@ -163,6 +167,13 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         icon: Target,
         path: "/goals-alerts",
       },
+      {
+        id: "users",
+        label: "Usuários",
+        icon: UserCog,
+        path: "/users",
+        minRole: "admin",
+      },
     ],
     getStatus: () => ({
       type: status.registeredPersons > 0 || status.activeZones > 0 ? "success" : "neutral",
@@ -174,6 +185,7 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
     id: "settings",
     label: "Configurações",
     icon: Settings,
+    minRole: "manager",
     items: [
       { id: "settings-general", label: "Geral", icon: Settings, path: "/settings" },
       { id: "notifications", label: "Notificações", icon: Bell, path: "/notification-settings" },
