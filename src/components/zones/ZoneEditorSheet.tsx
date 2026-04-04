@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import type { Json } from '@/integrations/supabase/types';
 import { Camera, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
