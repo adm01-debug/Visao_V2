@@ -2,12 +2,15 @@
  * VISÃO - Painel lateral de histórico de análises em tempo real
  */
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  ToggleGroup, ToggleGroupItem,
+} from '@/components/ui/toggle-group';
 import {
   Activity,
   AlertTriangle,
@@ -18,6 +21,8 @@ import {
   HardHat,
   BarChart3,
   Brain,
+  Filter,
+  X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRealtimeAnalysisHistory, type TimelineItem } from '@/hooks/useRealtimeAnalysisHistory';
@@ -38,6 +43,9 @@ const ANALYSIS_ICONS: Record<string, typeof Shield> = {
   behavior: Brain,
 };
 
+type TypeFilter = 'all' | 'analysis' | 'alert';
+type SeverityFilter = 'all' | 'low' | 'medium' | 'high' | 'critical';
+
 function TimelineEntry({ item }: { item: TimelineItem }) {
   const isAlert = item.type === 'alert';
   const Icon = isAlert
@@ -57,7 +65,6 @@ function TimelineEntry({ item }: { item: TimelineItem }) {
         !item.isNew && 'border-border bg-card'
       )}
     >
-      {/* Icon */}
       <div
         className={cn(
           'flex h-9 w-9 shrink-0 items-center justify-center rounded-full',
@@ -72,7 +79,6 @@ function TimelineEntry({ item }: { item: TimelineItem }) {
         />
       </div>
 
-      {/* Content */}
       <div className="min-w-0 flex-1 space-y-1">
         <div className="flex items-start justify-between gap-2">
           <p className="text-sm font-medium leading-tight truncate">
@@ -143,14 +149,34 @@ export function AnalysisHistoryPanel() {
   const [open, setOpen] = useState(false);
   const { items, isLoading, clearNewFlags } = useRealtimeAnalysisHistory();
 
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
+  const [severityFilter, setSeverityFilter] = useState<SeverityFilter>('all');
+
+  const hasActiveFilters = typeFilter !== 'all' || severityFilter !== 'all';
+
+  const filteredItems = useMemo(() => {
+    let result = items;
+    if (typeFilter !== 'all') {
+      result = result.filter(i => i.type === typeFilter);
+    }
+    if (severityFilter !== 'all') {
+      result = result.filter(i => i.severity === severityFilter);
+    }
+    return result;
+  }, [items, typeFilter, severityFilter]);
+
   const newCount = items.filter((i) => i.isNew).length;
   const alertCount = items.filter((i) => i.type === 'alert').length;
   const analysisCount = items.filter((i) => i.type === 'analysis').length;
 
+  const clearFilters = () => {
+    setTypeFilter('all');
+    setSeverityFilter('all');
+  };
+
   const handleOpen = (isOpen: boolean) => {
     setOpen(isOpen);
     if (isOpen) {
-      // Clear "new" flags after a brief delay so user sees them
       setTimeout(clearNewFlags, 2000);
     }
   };
@@ -196,20 +222,105 @@ export function AnalysisHistoryPanel() {
           </div>
         </SheetHeader>
 
+        {/* Filters section */}
+        <div className="px-4 py-3 border-b space-y-2.5 shrink-0">
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+              <Filter className="h-3.5 w-3.5" />
+              Filtros
+            </span>
+            {hasActiveFilters && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
+                onClick={clearFilters}
+              >
+                <X className="h-3 w-3 mr-1" />
+                Limpar
+              </Button>
+            )}
+          </div>
+
+          {/* Type filter */}
+          <div className="space-y-1">
+            <span className="text-[11px] text-muted-foreground">Tipo</span>
+            <ToggleGroup
+              type="single"
+              value={typeFilter}
+              onValueChange={(v) => v && setTypeFilter(v as TypeFilter)}
+              className="justify-start gap-1"
+            >
+              <ToggleGroupItem value="all" size="sm" className="h-7 px-2.5 text-xs rounded-full">
+                Todos
+              </ToggleGroupItem>
+              <ToggleGroupItem value="analysis" size="sm" className="h-7 px-2.5 text-xs rounded-full">
+                <Eye className="h-3 w-3 mr-1" />
+                Análises
+              </ToggleGroupItem>
+              <ToggleGroupItem value="alert" size="sm" className="h-7 px-2.5 text-xs rounded-full">
+                <AlertTriangle className="h-3 w-3 mr-1" />
+                Alertas
+              </ToggleGroupItem>
+            </ToggleGroup>
+          </div>
+
+          {/* Severity filter */}
+          <div className="space-y-1">
+            <span className="text-[11px] text-muted-foreground">Severidade</span>
+            <ToggleGroup
+              type="single"
+              value={severityFilter}
+              onValueChange={(v) => v && setSeverityFilter(v as SeverityFilter)}
+              className="justify-start gap-1"
+            >
+              <ToggleGroupItem value="all" size="sm" className="h-7 px-2.5 text-xs rounded-full">
+                Todas
+              </ToggleGroupItem>
+              <ToggleGroupItem value="low" size="sm" className="h-7 px-2.5 text-xs rounded-full">
+                Low
+              </ToggleGroupItem>
+              <ToggleGroupItem value="medium" size="sm" className="h-7 px-2.5 text-xs rounded-full">
+                Medium
+              </ToggleGroupItem>
+              <ToggleGroupItem value="high" size="sm" className="h-7 px-2.5 text-xs rounded-full">
+                High
+              </ToggleGroupItem>
+              <ToggleGroupItem value="critical" size="sm" className="h-7 px-2.5 text-xs rounded-full">
+                Critical
+              </ToggleGroupItem>
+            </ToggleGroup>
+          </div>
+        </div>
+
         <ScrollArea className="flex-1 px-4 py-3">
           {isLoading ? (
             <TimelineSkeleton />
-          ) : items.length === 0 ? (
+          ) : filteredItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
               <Activity className="h-10 w-10 mb-3 opacity-40" />
-              <p className="text-sm font-medium">Nenhuma atividade</p>
-              <p className="text-xs mt-1">
-                As análises e alertas aparecerão aqui em tempo real.
+              <p className="text-sm font-medium">
+                {hasActiveFilters ? 'Nenhum resultado' : 'Nenhuma atividade'}
               </p>
+              <p className="text-xs mt-1">
+                {hasActiveFilters
+                  ? 'Tente ajustar os filtros para ver mais resultados.'
+                  : 'As análises e alertas aparecerão aqui em tempo real.'}
+              </p>
+              {hasActiveFilters && (
+                <Button variant="outline" size="sm" className="mt-3" onClick={clearFilters}>
+                  Limpar filtros
+                </Button>
+              )}
             </div>
           ) : (
             <div className="space-y-2">
-              {items.map((item) => (
+              {hasActiveFilters && (
+                <p className="text-xs text-muted-foreground mb-2">
+                  {filteredItems.length} de {items.length} itens
+                </p>
+              )}
+              {filteredItems.map((item) => (
                 <TimelineEntry key={item.id} item={item} />
               ))}
             </div>
