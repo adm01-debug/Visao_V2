@@ -36,7 +36,7 @@ interface CameraStreamCardProps {
   analysisRules?: DbRule[];
 }
 
-export function CameraStreamCard({ camera, isSelected, onClick, settings, compact = false, analysisRules }: CameraStreamCardProps) {
+function CameraStreamCardBase({ camera, isSelected, onClick, settings, compact = false, analysisRules }: CameraStreamCardProps) {
   const hasStream = camera.streamUrl && settings.enableStreaming;
   const hasAlerts = camera.alerts > 0;
   const isOnline = camera.status === 'online' || camera.status === 'alert';
