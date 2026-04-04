@@ -430,7 +430,7 @@ export default function PPEPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {ppeDetection.recentViolations.map(violation => (
+                    {ppeDetection.violations.map(violation => (
                       <TableRow key={violation.id}>
                         <TableCell>
                           {format(new Date(violation.timestamp), 'dd/MM HH:mm:ss', { locale: ptBR })}
