@@ -1,4 +1,4 @@
-// @ts-nocheck
+import type { LucideIcon } from 'lucide-react';
 import { MoreHorizontal, Eye, Edit, ToggleLeft, Trash2, Camera, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
