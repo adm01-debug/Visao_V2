@@ -41,6 +41,8 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true }
         compact ? 'h-24' : 'aspect-video'
       )}
       onClick={onClick}
+      role="button"
+      aria-label={`Visualizar câmera ${camera.name}`}
     >
       {/* Video Stream or Thumbnail */}
       {showStream && camera.streamUrl && !hasError ? (
@@ -85,16 +87,19 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true }
         {showStream && camera.streamUrl && (
           <>
             <Button variant="secondary" size="icon" className="h-6 w-6"
+              aria-label={isPlaying ? 'Pausar stream' : 'Reproduzir stream'}
               onClick={(e) => { e.stopPropagation(); setIsPlaying(!isPlaying); }}>
               {isPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
             </Button>
             <Button variant="secondary" size="icon" className="h-6 w-6"
+              aria-label={isMuted ? 'Ativar som' : 'Silenciar'}
               onClick={(e) => { e.stopPropagation(); setIsMuted(!isMuted); }}>
               {isMuted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
             </Button>
           </>
         )}
         <Button variant="secondary" size="icon" className="h-6 w-6"
+          aria-label="Expandir câmera"
           onClick={(e) => { e.stopPropagation(); onClick(); }}>
           <Maximize2 className="w-3 h-3" />
         </Button>

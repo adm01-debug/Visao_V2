@@ -34,7 +34,7 @@ export function PanicButton({ className }: { className?: string }) {
           'border border-destructive/40',
           className
         )}
-        title="Botão de Pânico"
+        aria-label="Botão de Pânico - Acionar emergência"
       >
         <ShieldAlert className="h-8 w-8" />
         {unresolvedCount > 0 && (

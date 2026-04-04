@@ -81,6 +81,7 @@ export const useGeolocation = (options: UseGeolocationOptions = {}): Geolocation
       return () => navigator.geolocation.clearWatch(watchId);
     } else {
       navigator.geolocation.getCurrentPosition(onSuccess, onError, { enableHighAccuracy, timeout, maximumAge });
+      return undefined;
     }
   }, [watch, enableHighAccuracy, timeout, maximumAge, onSuccess, onError]);
 

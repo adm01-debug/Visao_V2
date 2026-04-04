@@ -64,6 +64,7 @@ function AlertNotificationComponent({
       }, autoHideDuration);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [autoHideDuration, onDismiss]);
 
   useEffect(() => {

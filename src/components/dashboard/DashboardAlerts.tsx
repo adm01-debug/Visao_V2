@@ -91,7 +91,7 @@ export function DashboardAlerts({
             disabled={alerts.length === 0}
           />
           {unreadCount > 0 && (
-            <Button variant="ghost" size="sm" className="h-7 px-2" onClick={() => markAllAsRead()}>
+            <Button variant="ghost" size="sm" className="h-7 px-2" aria-label="Marcar todos alertas como lidos" onClick={() => markAllAsRead()}>
               <CheckCheck className="w-4 h-4" />
             </Button>
           )}
@@ -107,6 +107,7 @@ export function DashboardAlerts({
           </span>
           <Button
             variant="ghost" size="sm" className="h-6 px-2 ml-auto text-xs"
+            aria-label="Limpar filtro de câmera"
             onClick={() => setAlertFilters({ ...alertFilters, cameraId: 'all' })}
           >
             <X className="w-3 h-3 mr-1" />
