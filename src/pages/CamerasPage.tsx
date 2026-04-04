@@ -168,6 +168,8 @@ export function CamerasPage() {
               onSelect={() => setSelectedCamera(camera.id)}
               onExpand={() => setExpandedCamera(camera)}
               onSettings={() => setSettingsCamera(camera)}
+              enableContinuousAnalysis
+              analysisRules={activeRules}
             />
           ))}
         </div>
