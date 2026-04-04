@@ -57,12 +57,12 @@ export function usePanicButton() {
 
       const { error } = await supabase.from('panic_events').insert({
         user_id: user!.id,
-        user_name: (user as any)?.user_metadata?.full_name || user!.email,
-        user_email: user!.email,
+        user_name: user!.user_metadata?.full_name as string || user!.email || null,
+        user_email: user!.email || null,
         latitude,
         longitude,
         location_address: locationAddress,
-      } as any);
+      });
       if (error) throw error;
     },
     onSuccess: () => {
