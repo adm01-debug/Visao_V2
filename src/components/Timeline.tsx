@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Timeline Component
  * Vertical/horizontal timeline for events and history
