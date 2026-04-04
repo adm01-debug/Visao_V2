@@ -266,8 +266,8 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
       setFaceValidation(null);
     }
     setShowWebcam(false);
-    storage.clearError();
-    faceDetection.clearError();
+    storage.clearError?.();
+    // faceDetection doesn't have clearError
   }, [person, isOpen]);
 
   // Detectar faces automaticamente quando uma foto é selecionada
