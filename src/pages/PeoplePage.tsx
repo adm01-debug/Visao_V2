@@ -228,11 +228,13 @@ interface PersonFormDialogProps {
 function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogProps) {
   const storage = useStorage();
   const faceDetection = useFaceDetection();
-  const [formData, setFormData] = useState<Record<string, string | boolean>>({
+  const [formData, setFormData] = useState({
     name: '',
     department: '',
     role: '',
-    is_active: true,
+    is_active: true as boolean,
+    list_type: 'none',
+    notes: '',
   });
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
