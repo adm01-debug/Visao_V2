@@ -42,6 +42,7 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { PanicCharts } from '@/components/charts/PanicCharts';
 
 function StatusBadge({ resolved }: { resolved: boolean }) {
   return resolved ? (

@@ -103,6 +103,12 @@ export function CamerasPage() {
         </div>
       </div>
 
+      {/* Charts */}
+      <CamerasCharts cameras={cameras.map(c => ({
+        id: c.id, name: c.name, status: c.status, location: c.location || '',
+        alerts_count: c.alerts_count, detected_people: c.detected_people,
+      }))} />
+
       {/* Filters */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="relative flex-1 max-w-md">

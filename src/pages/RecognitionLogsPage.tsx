@@ -33,6 +33,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ExportMenu } from '@/components/ExportMenu';
 import { PaginationControls } from '@/components/PaginationControls';
 import { exportToCSV, exportToPDF } from '@/lib/exportUtils';
+import { RecognitionCharts } from '@/components/charts/RecognitionCharts';
 
 const ITEMS_PER_PAGE = 20;
 

@@ -671,6 +671,9 @@ export function AlertsPage() {
         </Card>
       </div>
 
+      {/* Charts */}
+      <AlertsCharts alerts={alerts || []} />
+
       {/* Filters & Controls */}
       <div role="main" aria-label="Central de alertas" className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         {/* Search */}
