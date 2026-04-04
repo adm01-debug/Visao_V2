@@ -1,5 +1,6 @@
 import { UserAvatar } from "@/components/UserAvatar";
 import { NotificationBell } from "@/components/NotificationBell";
+import { AnalysisHistoryPanel } from "@/components/AnalysisHistoryPanel";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { cn } from "@/lib/utils";
