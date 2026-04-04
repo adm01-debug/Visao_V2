@@ -41,6 +41,8 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true }
         compact ? 'h-24' : 'aspect-video'
       )}
       onClick={onClick}
+      role="button"
+      aria-label={`Visualizar câmera ${camera.name}`}
     >
       {/* Video Stream or Thumbnail */}
       {showStream && camera.streamUrl && !hasError ? (
