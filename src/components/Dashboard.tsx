@@ -216,6 +216,8 @@ function DashboardComponent() {
                             onClick={() => setSelectedCamera(camera)}
                             compact={cameraLayout === 'list'}
                             showStream={enableStreams}
+                            aiAnalysisActive={aiAnalysisCameras.has(camera.id)}
+                            onToggleAiAnalysis={handleToggleAiAnalysis}
                           />
                         ))}
                       </div>
