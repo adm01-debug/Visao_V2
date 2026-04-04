@@ -9,6 +9,8 @@ import { Sidebar } from '@/components/Sidebar';
 import { Header } from '@/components/Header';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { SwipeableView } from '@/components/SwipeableView';
+import { SectionErrorBoundary } from '@/components/layout/SectionErrorBoundary';
+import { useGlobalShortcuts } from '@/hooks/useGlobalShortcuts';
 
 interface MainLayoutProps {
   children: ReactNode;
