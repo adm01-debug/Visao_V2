@@ -306,13 +306,22 @@ export function VideoStreamPlayer({
   onError,
   onClick,
   className,
+  enableContinuousAnalysis = false,
+  analysisType = 'security',
+  analysisIntervalMs = 15000,
+  analysisRules = [],
+  saveAnalysisHistory = false,
+  onAnalysisAlert,
+  onAnalysisResult,
 }: VideoStreamPlayerProps) {
   // Estados locais
   const [showStatsOverlay, setShowStatsOverlay] = useState(showStats);
   const [controlsVisible, setControlsVisible] = useState(true);
   const [faceDetectionActive, setFaceDetectionActive] = useState(enableFaceDetection);
+  const [continuousAnalysisActive, setContinuousAnalysisActive] = useState(enableContinuousAnalysis);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // URL do stream (usar teste se não fornecido)
   const url = streamUrl || testStreamUrls.hls.bigBuckBunny;
@@ -342,6 +351,64 @@ export function VideoStreamPlayer({
       onSnapshot?.(data);
     },
   });
+
+  // Função para capturar frame como base64 para análise contínua
+  const getFrameForAnalysis = useCallback((): string | null => {
+    const video = videoRef.current;
+    if (!video || video.readyState < 2) return null;
+
+    if (!canvasRef.current) {
+      canvasRef.current = document.createElement('canvas');
+    }
+    const canvas = canvasRef.current;
+    canvas.width = Math.min(video.videoWidth, 640);
+    canvas.height = Math.min(video.videoHeight, 480);
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    return canvas.toDataURL('image/jpeg', 0.7);
+  }, [videoRef]);
+
+  // Hook de análise contínua
+  const {
+    session: analysisSession,
+    lastAnalysis,
+    isAnalyzing: isAnalysisRunning,
+    startAnalysis,
+    stopAnalysis,
+    pauseAnalysis,
+    resumeAnalysis,
+    history: analysisHistory,
+  } = useContinuousAnalysis({
+    cameraId,
+    cameraName,
+    getFrame: getFrameForAnalysis,
+    rules: analysisRules,
+    autoStart: false,
+    createAlerts: true,
+    saveToDatabase: saveAnalysisHistory,
+    config: {
+      analysisTypes: [analysisType],
+      intervalMs: analysisIntervalMs,
+    },
+    onAnalysisComplete: (_camId, result) => {
+      onAnalysisResult?.(result);
+    },
+    onAlertGenerated: (_camId, alert, result) => {
+      onAnalysisAlert?.(alert, result);
+    },
+  });
+
+  // Iniciar/parar análise contínua baseado no estado do player
+  useEffect(() => {
+    if (continuousAnalysisActive && state.status === 'playing') {
+      startAnalysis({ analysisTypes: [analysisType], intervalMs: analysisIntervalMs });
+    } else {
+      stopAnalysis();
+    }
+    return () => { stopAnalysis(); };
+  }, [continuousAnalysisActive, state.status]);
 
   // Hook de detecção facial
   const {
