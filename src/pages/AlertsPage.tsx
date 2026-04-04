@@ -142,7 +142,7 @@ const typeConfig = {
 // ============================================
 
 interface AlertItemProps {
-  alert: unknown;
+  alert: Record<string, unknown>;
   isSelected: boolean;
   onSelect: (selected: boolean) => void;
   onView: () => void;
