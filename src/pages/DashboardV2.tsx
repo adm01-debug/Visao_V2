@@ -17,6 +17,7 @@ import { OnboardingTour } from '@/components/OnboardingTour';
 import { PageMeta } from '@/components/PageMeta';
 import { useCameras, DbCamera } from '@/hooks/useCameras';
 import { useAlerts } from '@/hooks/useAlerts';
+import { useRules } from '@/hooks/useRules';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -54,6 +55,10 @@ export function DashboardV2() {
 
   const { cameras, loading: camerasLoading, updateCamera, refetch: refetchCameras } = useCameras();
   const { alerts, loading: alertsLoading, unreadCount, markAllAsRead, refetch: refetchAlerts } = useAlerts();
+  const { rules } = useRules();
+
+  // Filter active rules for analysis
+  const activeRules = useMemo(() => rules.filter(r => r.is_active), [rules]);
 
   useEffect(() => { localStorage.setItem('dashboard-settings', JSON.stringify(settings)); }, [settings]);
   useEffect(() => {
@@ -126,8 +131,8 @@ export function DashboardV2() {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-3 space-y-4">
-          {priorityCameras.length > 0 && <div><div className="flex items-center gap-2 mb-3"><AlertTriangle className="w-5 h-5 text-destructive" /><h2 className="font-semibold">Câmeras com Alertas</h2><Badge variant="destructive">{priorityCameras.length}</Badge></div><div className={getGridClass()}>{priorityCameras.map(cam => <CameraStreamCard key={cam.id} camera={cam} isSelected={selectedCamera?.id === cam.id} onClick={() => setSelectedCamera(cam)} settings={settings} compact={settings.gridLayout === 'list'} />)}</div></div>}
-          <div><div className="flex items-center justify-between mb-3"><div className="flex items-center gap-2"><Activity className="w-5 h-5 text-primary" /><h2 className="font-semibold">Todas as Câmeras</h2><Badge variant="secondary">{normalCameras.length}</Badge></div><ExportMenu onExportCSV={() => exportCameras(cameras, 'csv')} onExportPDF={() => exportCameras(cameras, 'pdf')} disabled={cameras.length === 0} /></div><div className={getGridClass()}>{normalCameras.map(cam => <CameraStreamCard key={cam.id} camera={cam} isSelected={selectedCamera?.id === cam.id} onClick={() => setSelectedCamera(cam)} settings={settings} compact={settings.gridLayout === 'list'} />)}</div></div>
+          {priorityCameras.length > 0 && <div><div className="flex items-center gap-2 mb-3"><AlertTriangle className="w-5 h-5 text-destructive" /><h2 className="font-semibold">Câmeras com Alertas</h2><Badge variant="destructive">{priorityCameras.length}</Badge></div><div className={getGridClass()}>{priorityCameras.map(cam => <CameraStreamCard key={cam.id} camera={cam} isSelected={selectedCamera?.id === cam.id} onClick={() => setSelectedCamera(cam)} settings={settings} compact={settings.gridLayout === 'list'} analysisRules={activeRules} />)}</div></div>}
+          <div><div className="flex items-center justify-between mb-3"><div className="flex items-center gap-2"><Activity className="w-5 h-5 text-primary" /><h2 className="font-semibold">Todas as Câmeras</h2><Badge variant="secondary">{normalCameras.length}</Badge></div><ExportMenu onExportCSV={() => exportCameras(cameras, 'csv')} onExportPDF={() => exportCameras(cameras, 'pdf')} disabled={cameras.length === 0} /></div><div className={getGridClass()}>{normalCameras.map(cam => <CameraStreamCard key={cam.id} camera={cam} isSelected={selectedCamera?.id === cam.id} onClick={() => setSelectedCamera(cam)} settings={settings} compact={settings.gridLayout === 'list'} analysisRules={activeRules} />)}</div></div>
           {settings.showMap && settings.viewMode === 'map' && <div><div className="flex items-center gap-2 mb-3"><Map className="w-5 h-5 text-primary" /><h2 className="font-semibold">Mapa das Câmeras</h2></div><CameraMap cameras={uiCameras} onCameraClick={(id) => { const c = uiCameras.find(x => x.id === id); if (c) setSelectedCamera(c); }} className="h-[400px] rounded-xl" /></div>}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4"><AlertTrendsChart alerts={uiAlerts} /><AlertsByCameraChart alerts={uiAlerts} onCameraClick={(cameraId) => setAlertFilters(prev => ({ ...prev, cameraId }))} /></div>
         </div>

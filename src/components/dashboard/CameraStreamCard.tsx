@@ -8,6 +8,7 @@ import { ZoneOverlay } from '@/components/ZoneOverlay';
 import { useZoneDetection } from '@/hooks/useZoneDetection';
 import { cn } from '@/lib/utils';
 import type { DashboardSettings } from './DashboardTypes';
+import type { DbRule } from '@/types/rules';
 
 export interface UICameraData {
   id: string;
@@ -30,9 +31,11 @@ interface CameraStreamCardProps {
   onClick: () => void;
   settings: DashboardSettings;
   compact?: boolean;
+  /** Rules to pass to continuous analysis engine */
+  analysisRules?: DbRule[];
 }
 
-export function CameraStreamCard({ camera, isSelected, onClick, settings, compact = false }: CameraStreamCardProps) {
+export function CameraStreamCard({ camera, isSelected, onClick, settings, compact = false, analysisRules }: CameraStreamCardProps) {
   const hasStream = camera.streamUrl && settings.enableStreaming;
   const hasAlerts = camera.alerts > 0;
   const isOnline = camera.status === 'online' || camera.status === 'alert';
@@ -51,7 +54,15 @@ export function CameraStreamCard({ camera, isSelected, onClick, settings, compac
     >
       {hasStream && isOnline ? (
         <div className="absolute inset-0">
-          <VideoStreamPlayer cameraId={camera.id} streamUrl={camera.streamUrl!} protocol={camera.streamProtocol as 'hls' | 'webrtc' | 'rtsp'} cameraName={camera.name} />
+          <VideoStreamPlayer
+            cameraId={camera.id}
+            streamUrl={camera.streamUrl!}
+            protocol={camera.streamProtocol as 'hls' | 'webrtc' | 'rtsp'}
+            cameraName={camera.name}
+            enableContinuousAnalysis={settings.enableAnalysis}
+            analysisRules={analysisRules}
+            saveAnalysisHistory
+          />
           {settings.enableZones && zones.length > 0 && <ZoneOverlay zones={zones} showStats={false} showLabels />}
         </div>
       ) : (

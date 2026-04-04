@@ -23,6 +23,7 @@ import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import type { CameraData, CameraStats, ViewMode } from './types';
+import type { DbRule } from '@/types/rules';
 
 interface CameraCardProps {
   camera: CameraData;
@@ -32,10 +33,15 @@ interface CameraCardProps {
   onSelect: () => void;
   onExpand: () => void;
   onSettings: () => void;
+  /** Enable continuous AI analysis */
+  enableContinuousAnalysis?: boolean;
+  /** Rules for analysis engine */
+  analysisRules?: DbRule[];
 }
 
 export function CameraCard({
   camera, stats, isSelected, viewMode, onSelect, onExpand, onSettings,
+  enableContinuousAnalysis, analysisRules,
 }: CameraCardProps) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
@@ -65,6 +71,9 @@ export function CameraCard({
               streamUrl={camera.stream_url}
               protocol="hls"
               cameraName={camera.name}
+              enableContinuousAnalysis={enableContinuousAnalysis}
+              analysisRules={analysisRules}
+              saveAnalysisHistory
             />
             {showOverlays && (
               <>

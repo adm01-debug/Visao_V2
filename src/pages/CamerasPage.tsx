@@ -8,6 +8,7 @@ import {
   Search, Plus, X,
 } from 'lucide-react';
 import { useCameras } from '@/hooks/useCameras';
+import { useRules } from '@/hooks/useRules';
 import { CameraCard, CameraDetailView, GRID_CLASSES } from '@/components/cameras';
 import type { CameraData, ViewMode } from '@/components/cameras';
 import { EmptyState } from '@/components/EmptyState';
@@ -33,7 +34,8 @@ export function CamerasPage() {
   const [settingsCamera, setSettingsCamera] = useState<CameraData | null>(null);
 
   const { cameras, loading, refetch } = useCameras();
-
+  const { rules } = useRules();
+  const activeRules = useMemo(() => rules.filter(r => r.is_active), [rules]);
   const filteredCameras = useMemo(() => {
     return cameras.filter(camera => {
       if (searchQuery) {
@@ -166,6 +168,8 @@ export function CamerasPage() {
               onSelect={() => setSelectedCamera(camera.id)}
               onExpand={() => setExpandedCamera(camera)}
               onSettings={() => setSettingsCamera(camera)}
+              enableContinuousAnalysis
+              analysisRules={activeRules}
             />
           ))}
         </div>
