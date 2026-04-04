@@ -171,8 +171,7 @@ export function ZonesPage() {
       {filteredZones.length === 0 ? (
         <EmptyState icon={<Target />} title={zones.length === 0 ? 'Nenhuma zona configurada' : 'Nenhuma zona encontrada'}
           description={zones.length === 0 ? 'Crie zonas de interesse nas suas câmeras.' : 'Nenhuma zona corresponde aos filtros.'}
-          actionLabel={zones.length === 0 && cameras.length > 0 ? '+ Criar Zona' : undefined}
-          onAction={zones.length === 0 && cameras.length > 0 ? () => openEditor(cameras[0]) : undefined}
+          action={zones.length === 0 && cameras.length > 0 ? { label: '+ Criar Zona', onClick: () => openEditor(cameras[0]) } : undefined}
         />
       ) : (
         <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'flex flex-col gap-2')}>
