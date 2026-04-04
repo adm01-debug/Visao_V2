@@ -207,7 +207,7 @@ function SettingRow({ label, description, children }: SettingRowProps) {
 // ============================================
 
 export function SettingsPage() {
-  const { settings, updateSettings, resetSettings, loading: settingsLoading } = useSettings();
+  const { settings, save: updateSettings, reset: resetSettings, loading: settingsLoading } = useSettings();
   const { mode, variant, setMode, setVariant } = useTheme();
 
   const [loading, setLoading] = useState(true);
