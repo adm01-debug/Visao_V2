@@ -403,7 +403,7 @@ export function VideoStreamPlayer({
   // Iniciar/parar análise contínua baseado no estado do player
   useEffect(() => {
     if (continuousAnalysisActive && state.status === 'playing') {
-      startAnalysis({ analysisTypes: [analysisType], intervalMs: analysisIntervalMs });
+      startAnalysis({ analysisTypes: [analysisType], interval: analysisIntervalMs });
     } else {
       stopAnalysis();
     }
