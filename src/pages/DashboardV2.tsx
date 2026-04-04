@@ -17,6 +17,7 @@ import { OnboardingTour } from '@/components/OnboardingTour';
 import { PageMeta } from '@/components/PageMeta';
 import { useCameras, DbCamera } from '@/hooks/useCameras';
 import { useAlerts } from '@/hooks/useAlerts';
+import { useRules } from '@/hooks/useRules';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
