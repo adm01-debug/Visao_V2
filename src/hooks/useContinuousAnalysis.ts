@@ -409,7 +409,7 @@ export function useContinuousAnalysis(
         severity: alert.severity,
         message: alert.message,
         is_read: false,
-      });
+      }]);
     } catch (error) {
 
     }
