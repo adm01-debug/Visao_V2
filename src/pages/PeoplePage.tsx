@@ -359,7 +359,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
   }, [photoFile, photoPreview, faceValidation, person]);
 
   const getSaveButtonMessage = () => {
-    if (faceDetection.isDetecting) {
+    if (faceDetection.isProcessing) {
       return 'Analisando rosto...';
     }
     if (photoFile && !faceValidation) {
