@@ -8,6 +8,7 @@ import { ZoneOverlay } from '@/components/ZoneOverlay';
 import { useZoneDetection } from '@/hooks/useZoneDetection';
 import { cn } from '@/lib/utils';
 import type { DashboardSettings } from './DashboardTypes';
+import type { DbRule } from '@/types/rules';
 
 export interface UICameraData {
   id: string;
