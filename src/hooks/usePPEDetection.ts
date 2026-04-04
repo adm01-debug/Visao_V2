@@ -533,16 +533,9 @@ Respond in JSON format:
   }, []);
 
   const deleteZone = useCallback(async (id: string) => {
-    const { error } = await supabase
-      .from('ppe_zones' as never)
-      .delete()
-      .eq('id', id);
-
-    if (!error) {
-      await loadZones();
-      toast.success('Zona removida');
-    }
-  }, [loadZones]);
+    setZones(prev => prev.filter(z => z.id !== id));
+    toast.success('Zona removida');
+  }, []);
 
   // ============================================
   // VIOLAÇÕES

@@ -207,9 +207,9 @@ export function useClipRecorder(options: UseClipRecorderOptions): UseClipRecorde
       let stream: MediaStream;
 
       if ('captureStream' in videoElement) {
-        stream = (videoElement as unknown).captureStream();
+        stream = (videoElement as HTMLVideoElement & { captureStream(): MediaStream }).captureStream();
       } else if ('mozCaptureStream' in videoElement) {
-        stream = (videoElement as unknown).mozCaptureStream();
+        stream = (videoElement as HTMLVideoElement & { mozCaptureStream(): MediaStream }).mozCaptureStream();
       } else {
         throw new Error('Navegador não suporta captureStream');
       }

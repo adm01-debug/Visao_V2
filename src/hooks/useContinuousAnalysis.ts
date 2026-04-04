@@ -580,7 +580,7 @@ export function useContinuousAnalysis(
         sessionId: currentSession.id,
         cameraId,
         analysisType,
-        result: { people_count: 0, summary: 'Erro na análise' } as unknown,
+        result: { people_count: 0, summary: 'Erro na análise' } as AnalysisResult,
         duration,
         alertsGenerated: 0,
         violatedRules: [],
