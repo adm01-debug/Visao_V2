@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-type PermissionName = 'geolocation' | 'notifications' | 'camera' | 'microphone' | 'clipboard-read' | 'clipboard-write';
+type BrowserPermissionName = 'geolocation' | 'notifications' | 'camera' | 'microphone' | 'clipboard-read' | 'clipboard-write';
 
 interface UsePermissionState {
   state: PermissionState | 'unsupported';
