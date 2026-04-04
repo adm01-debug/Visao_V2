@@ -80,7 +80,7 @@ export default function ProfilePage() {
 
       toast.success("Perfil atualizado com sucesso!");
     } catch (error) {
-      logger.error('profile', 'Error saving profile:', error);
+      logger.error('profile', 'Error saving profile:', error instanceof Error ? error.message : String(error));
       toast.error("Erro ao salvar perfil");
     } finally {
       setIsLoading(false);
