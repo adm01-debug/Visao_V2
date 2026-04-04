@@ -269,7 +269,7 @@ export function AutomationRulesManager() {
     }));
   };
 
-  const updateCondition = (index: number, field: keyof RuleCondition, value: string | number) => {
+  const updateCondition = (index: number, field: string, value: string | number) => {
     setFormData(prev => ({
       ...prev,
       conditions: prev.conditions.map((c, i) =>
