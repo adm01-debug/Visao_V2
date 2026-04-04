@@ -528,22 +528,9 @@ Respond in JSON format:
   }, []);
 
   const updateZone = useCallback(async (id: string, updates: Partial<PPEZone>) => {
-    const { error } = await supabase
-      .from('ppe_zones' as never)
-      .update({
-        name: updates.name,
-        required_ppe: updates.requiredPPE,
-        alert_enabled: updates.alertEnabled,
-        grace_period_seconds: updates.gracePeriodSeconds,
-        polygon: updates.polygon,
-      })
-      .eq('id', id);
-
-    if (!error) {
-      await loadZones();
-      toast.success('Zona atualizada');
-    }
-  }, [loadZones]);
+    setZones(prev => prev.map(z => z.id === id ? { ...z, ...updates } : z));
+    toast.success('Zona atualizada');
+  }, []);
 
   const deleteZone = useCallback(async (id: string) => {
     const { error } = await supabase
