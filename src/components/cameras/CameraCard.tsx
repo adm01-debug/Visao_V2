@@ -71,6 +71,9 @@ export function CameraCard({
               streamUrl={camera.stream_url}
               protocol="hls"
               cameraName={camera.name}
+              enableContinuousAnalysis={enableContinuousAnalysis}
+              analysisRules={analysisRules}
+              saveAnalysisHistory
             />
             {showOverlays && (
               <>
