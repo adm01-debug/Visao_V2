@@ -1,4 +1,3 @@
-
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Integrations barrel export - Exportação centralizada de todas as integrações
@@ -21,12 +20,12 @@ export * from "./ffmpeg";
 export * from "./firebase";
 export * from "./gcp";
 export * from "./google-calendar";
-export * from "./gstreamer";
+// ./gstreamer does not exist – removed
 export * from "./mercadopago";
 export * from "./microsoft-graph";
 export * from "./openai";
 export * from "./s3";
-export * from "./slack";
+// ./slack does not exist – removed
 export * from "./sms";
 export * from "./stripe";
 export * from "./twitch";

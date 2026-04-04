@@ -1,4 +1,3 @@
-
 /**
  * VISÃO - Lib barrel export
  */
@@ -43,5 +42,11 @@ export * from './apiError';
 // Metrics
 export * from './metrics';
 
-// Sentry
-export * from './sentry';
+// Sentry – setUser collides with ./analytics
+// Re-export everything except setUser
+export {
+  initSentry,
+  captureException,
+  captureMessage,
+  setUser as setSentryUser,
+} from './sentry';
