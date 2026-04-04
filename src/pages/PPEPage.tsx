@@ -142,9 +142,8 @@ export default function PPEPage() {
       name: newZone.name,
       cameraId: selectedCamera,
       requiredPPE: newZone.requiredPPE,
-      alertOnViolation: newZone.alertOnViolation,
+      alertEnabled: newZone.alertOnViolation,
       gracePeriodSeconds: newZone.gracePeriodSeconds,
-      active: true,
     });
 
     if (success) {
