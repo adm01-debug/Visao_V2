@@ -541,26 +541,9 @@ Respond in JSON format:
   // VIOLAÇÕES
   // ============================================
 
-  const loadViolations = useCallback(async (limit = 50) => {
-    const { data, error } = await supabase
-      .from('ppe_violations' as never)
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(limit);
-
-    if (!error && data) {
-      setViolations(data.map(v => ({
-        id: v.id,
-        personId: v.person_id,
-        zoneId: v.zone_id,
-        zoneName: v.zone_name,
-        cameraId: v.camera_id,
-        missingItems: v.missing_items as PPEType[],
-        timestamp: new Date(v.created_at),
-        acknowledged: v.acknowledged,
-        imageUrl: v.image_url,
-      })));
-    }
+  const loadViolations = useCallback(async (_limit = 50) => {
+    // ppe_violations table not in current schema - use local state only
+    setViolations([]);
   }, []);
 
   const acknowledgeViolation = useCallback(async (id: string) => {
