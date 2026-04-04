@@ -2,33 +2,8 @@
  * useFileSystemAccess Hook
  * File System Access API
  */
+/// <reference types="../types/file-system-access" />
 import { useState, useCallback } from 'react';
-
-// Ambient type declarations for File System Access API
-declare global {
-  interface Window {
-    showOpenFilePicker?: (options?: OpenFilePickerOptions) => Promise<FileSystemFileHandle[]>;
-    showSaveFilePicker?: (options?: SaveFilePickerOptions) => Promise<FileSystemFileHandle>;
-  }
-  interface OpenFilePickerOptions {
-    multiple?: boolean;
-    excludeAcceptAllOption?: boolean;
-    types?: { description?: string; accept: Record<string, string[]> }[];
-  }
-  interface SaveFilePickerOptions {
-    excludeAcceptAllOption?: boolean;
-    suggestedName?: string;
-    types?: { description?: string; accept: Record<string, string[]> }[];
-  }
-  interface FileSystemFileHandle {
-    getFile(): Promise<File>;
-    createWritable(): Promise<FileSystemWritableFileStream>;
-  }
-  interface FileSystemWritableFileStream extends WritableStream {
-    write(data: string | Blob | ArrayBuffer | ArrayBufferView): Promise<void>;
-    close(): Promise<void>;
-  }
-}
 
 export function useFileSystemAccess() {
   const [file, setFile] = useState<File | null>(null);
@@ -39,7 +14,7 @@ export function useFileSystemAccess() {
   const openFile = useCallback(async (options?: OpenFilePickerOptions) => {
     if (!isSupported) { setError(new Error('Not supported')); return null; }
     try {
-      const [handle] = await window.showOpenFilePicker!(options);
+      const [handle] = await window.showOpenFilePicker(options);
       const f = await handle.getFile();
       setFileHandle(handle);
       setFile(f);
@@ -51,7 +26,7 @@ export function useFileSystemAccess() {
   const saveFile = useCallback(async (content: string | Blob, options?: SaveFilePickerOptions) => {
     if (!isSupported) { setError(new Error('Not supported')); return false; }
     try {
-      const handle = fileHandle || await window.showSaveFilePicker!(options);
+      const handle = fileHandle || await window.showSaveFilePicker(options);
       const writable = await handle.createWritable();
       await writable.write(content);
       await writable.close();
