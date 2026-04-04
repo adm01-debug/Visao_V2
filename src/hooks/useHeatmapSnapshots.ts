@@ -80,7 +80,7 @@ export const useHeatmapSnapshots = (cameraId?: string) => {
 
       const { data, error: insertError } = await supabase
         .from('heatmap_snapshots')
-        .insert(insertData)
+        .insert([insertData])
         .select()
         .single();
 
