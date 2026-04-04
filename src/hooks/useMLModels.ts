@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useMLModels (IMPLEMENTAÇÃO REAL)
