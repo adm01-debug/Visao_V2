@@ -9,7 +9,7 @@ interface UsePermissionState {
   isPrompt: boolean;
 }
 
-export const usePermission = (permissionName: PermissionName): UsePermissionState => {
+export const usePermission = (permissionName: BrowserPermissionName): UsePermissionState => {
   const [state, setState] = useState<PermissionState | 'unsupported'>('prompt');
 
   useEffect(() => {
