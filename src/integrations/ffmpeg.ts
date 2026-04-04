@@ -217,7 +217,7 @@ class FFmpegService {
       await this.ffmpeg.exec(args);
 
       const data = await this.ffmpeg.readFile(outputName);
-      const blob = new Blob([data], { type: 'image/jpeg' });
+      const blob = new Blob([data as BlobPart], { type: 'image/jpeg' });
 
       await this.ffmpeg.deleteFile(inputName);
       await this.ffmpeg.deleteFile(outputName);
