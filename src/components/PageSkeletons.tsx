@@ -4,7 +4,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
-// Individual page skeletons
 export { DashboardSkeleton } from './skeletons/DashboardSkeleton';
 export { CamerasSkeleton } from './skeletons/CamerasSkeleton';
 export { AlertsSkeleton } from './skeletons/AlertsSkeleton';
@@ -15,7 +14,16 @@ export { AnalyticsSkeleton } from './skeletons/AnalyticsSkeleton';
 export { SecuritySkeleton } from './skeletons/SecuritySkeleton';
 export { SettingsSkeleton } from './skeletons/SettingsSkeleton';
 
-// Generic skeletons
+import { DashboardSkeleton } from './skeletons/DashboardSkeleton';
+import { CamerasSkeleton } from './skeletons/CamerasSkeleton';
+import { AlertsSkeleton } from './skeletons/AlertsSkeleton';
+import { PeopleSkeleton } from './skeletons/PeopleSkeleton';
+import { ZonesSkeleton } from './skeletons/ZonesSkeleton';
+import { RecordingsSkeleton } from './skeletons/RecordingsSkeleton';
+import { AnalyticsSkeleton } from './skeletons/AnalyticsSkeleton';
+import { SecuritySkeleton } from './skeletons/SecuritySkeleton';
+import { SettingsSkeleton } from './skeletons/SettingsSkeleton';
+
 export function CardSkeleton({ className }: { className?: string }) {
   return (
     <div className={cn('p-4 rounded-lg border', className)}>
@@ -43,44 +51,26 @@ export function TableSkeleton({ rows = 5 }: { rows?: number }) {
   );
 }
 
-// Page router
 interface PageSkeletonProps {
   type?: 'dashboard' | 'cameras' | 'alerts' | 'people' | 'zones' | 'recordings' | 'analytics' | 'security' | 'settings';
 }
 
-export function PageSkeleton({ type = 'dashboard' }: PageSkeletonProps) {
-  // Dynamic import would be overkill for skeletons; use lazy map
-  const { DashboardSkeleton } = require('./skeletons/DashboardSkeleton');
-  const { CamerasSkeleton } = require('./skeletons/CamerasSkeleton');
-  const { AlertsSkeleton } = require('./skeletons/AlertsSkeleton');
-  const { PeopleSkeleton } = require('./skeletons/PeopleSkeleton');
-  const { ZonesSkeleton } = require('./skeletons/ZonesSkeleton');
-  const { RecordingsSkeleton } = require('./skeletons/RecordingsSkeleton');
-  const { AnalyticsSkeleton } = require('./skeletons/AnalyticsSkeleton');
-  const { SecuritySkeleton } = require('./skeletons/SecuritySkeleton');
-  const { SettingsSkeleton } = require('./skeletons/SettingsSkeleton');
+const SKELETON_MAP: Record<string, React.FC> = {
+  dashboard: DashboardSkeleton, cameras: CamerasSkeleton, alerts: AlertsSkeleton,
+  people: PeopleSkeleton, zones: ZonesSkeleton, recordings: RecordingsSkeleton,
+  analytics: AnalyticsSkeleton, security: SecuritySkeleton, settings: SettingsSkeleton,
+};
 
-  const map: Record<string, React.FC> = {
-    dashboard: DashboardSkeleton, cameras: CamerasSkeleton, alerts: AlertsSkeleton,
-    people: PeopleSkeleton, zones: ZonesSkeleton, recordings: RecordingsSkeleton,
-    analytics: AnalyticsSkeleton, security: SecuritySkeleton, settings: SettingsSkeleton,
-  };
-  const Component = map[type] || DashboardSkeleton;
+export function PageSkeleton({ type = 'dashboard' }: PageSkeletonProps) {
+  const Component = SKELETON_MAP[type] || DashboardSkeleton;
   return <Component />;
 }
 
 export const PageSkeletons = {
-  Dashboard: () => { const { DashboardSkeleton } = require('./skeletons/DashboardSkeleton'); return <DashboardSkeleton />; },
-  Cameras: () => { const { CamerasSkeleton } = require('./skeletons/CamerasSkeleton'); return <CamerasSkeleton />; },
-  Alerts: () => { const { AlertsSkeleton } = require('./skeletons/AlertsSkeleton'); return <AlertsSkeleton />; },
-  People: () => { const { PeopleSkeleton } = require('./skeletons/PeopleSkeleton'); return <PeopleSkeleton />; },
-  Zones: () => { const { ZonesSkeleton } = require('./skeletons/ZonesSkeleton'); return <ZonesSkeleton />; },
-  Recordings: () => { const { RecordingsSkeleton } = require('./skeletons/RecordingsSkeleton'); return <RecordingsSkeleton />; },
-  Analytics: () => { const { AnalyticsSkeleton } = require('./skeletons/AnalyticsSkeleton'); return <AnalyticsSkeleton />; },
-  Security: () => { const { SecuritySkeleton } = require('./skeletons/SecuritySkeleton'); return <SecuritySkeleton />; },
-  Settings: () => { const { SettingsSkeleton } = require('./skeletons/SettingsSkeleton'); return <SettingsSkeleton />; },
-  Card: CardSkeleton,
-  Table: TableSkeleton,
+  Dashboard: DashboardSkeleton, Cameras: CamerasSkeleton, Alerts: AlertsSkeleton,
+  People: PeopleSkeleton, Zones: ZonesSkeleton, Recordings: RecordingsSkeleton,
+  Analytics: AnalyticsSkeleton, Security: SecuritySkeleton, Settings: SettingsSkeleton,
+  Card: CardSkeleton, Table: TableSkeleton,
 };
 
 export default PageSkeleton;
