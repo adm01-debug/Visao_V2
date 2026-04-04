@@ -83,7 +83,7 @@ export function CameraCard({
             )}
           </>
         ) : camera.thumbnail ? (
-          <img src={camera.thumbnail} alt={camera.name} className="w-full h-full object-cover" />
+          <img src={camera.thumbnail} alt={camera.name} loading="lazy" className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-muted">
             <Camera className="w-12 h-12 text-muted-foreground" />

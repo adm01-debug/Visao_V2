@@ -634,7 +634,7 @@ function CameraFeedCard({
               crossOrigin="anonymous"
             />
           ) : camera.thumbnail ? (
-            <img src={camera.thumbnail} alt={camera.name} className="w-full h-full object-cover" />
+            <img src={camera.thumbnail} alt={camera.name} loading="lazy" className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <Camera className="h-8 w-8 text-muted-foreground/50" />

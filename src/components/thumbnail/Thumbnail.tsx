@@ -17,7 +17,7 @@ export function Thumbnail({ src, alt = '', type = 'image', aspectRatio = '16:9',
   return (
     <div onClick={onClick} className={cn('relative bg-muted rounded-lg overflow-hidden', ratioClasses[aspectRatio], onClick && 'cursor-pointer group', className)}>
       {src ? (
-        <img src={src} alt={alt} className="w-full h-full object-cover" />
+        <img src={src} alt={alt} loading="lazy" className="w-full h-full object-cover" />
       ) : (
         <div className="w-full h-full flex items-center justify-center"><Image className="h-8 w-8 text-muted-foreground" /></div>
       )}

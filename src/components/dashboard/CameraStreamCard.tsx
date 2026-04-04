@@ -68,7 +68,7 @@ function CameraStreamCardBase({ camera, isSelected, onClick, settings, compact =
         </div>
       ) : (
         <div className="absolute inset-0">
-          {camera.thumbnail ? <img src={camera.thumbnail} alt={camera.name} className="w-full h-full object-cover" /> : (
+          {camera.thumbnail ? <img src={camera.thumbnail} alt={camera.name} loading="lazy" className="w-full h-full object-cover" /> : (
             <div className="w-full h-full bg-muted flex items-center justify-center"><Camera className="w-8 h-8 text-muted-foreground" /></div>
           )}
         </div>
