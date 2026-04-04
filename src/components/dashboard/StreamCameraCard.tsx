@@ -22,6 +22,8 @@ interface StreamCameraCardProps {
   onClick: () => void;
   compact?: boolean;
   showStream?: boolean;
+  aiAnalysisActive?: boolean;
+  onToggleAiAnalysis?: (cameraId: string, active: boolean) => void;
 }
 
 const statusColors: Record<string, string> = {
