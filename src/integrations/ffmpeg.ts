@@ -318,7 +318,7 @@ class FFmpegService {
         wav: 'audio/wav',
         aac: 'audio/aac',
       };
-      const blob = new Blob([data], { type: mimeTypes[format] });
+      const blob = new Blob([data as BlobPart], { type: mimeTypes[format] });
 
       await this.ffmpeg.deleteFile(inputName);
       await this.ffmpeg.deleteFile(outputName);
