@@ -259,9 +259,9 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
     } catch (err: unknown) {
       updateModelInfo('coco-ssd', {
         loading: false,
-        error: err.message,
+        error: (err as Error).message,
       });
-      onError?.(err, 'coco-ssd');
+      onError?.(err as Error, 'coco-ssd');
       return false;
     }
   }, [updateModelInfo, onModelLoaded, onError]);
@@ -287,9 +287,9 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
     } catch (err: unknown) {
       updateModelInfo('movenet', {
         loading: false,
-        error: err.message,
+        error: (err as Error).message,
       });
-      onError?.(err, 'movenet');
+      onError?.(err as Error, 'movenet');
       return false;
     }
   }, [updateModelInfo, onModelLoaded, onError]);
@@ -346,7 +346,7 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
           score: p.score,
           bbox: p.bbox as [number, number, number, number],
         }));
-    } catch (err) {
+    } catch (err: unknown) {
       return [];
     }
   }, [config.maxDetections, config.minScore, updateModelInfo]);
@@ -373,7 +373,7 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
         })),
         score: pose.score || 0,
       }));
-    } catch (err) {
+    } catch (err: unknown) {
       return [];
     }
   }, [updateModelInfo]);

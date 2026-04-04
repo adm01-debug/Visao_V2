@@ -60,7 +60,7 @@ export const usePPEConfigs = (cameraId?: string) => {
     try {
       const { data, error } = await supabase
         .from('ppe_configs' as never)
-        .insert(config)
+        .insert(config as never)
         .select()
         .single();
 
@@ -77,7 +77,7 @@ export const usePPEConfigs = (cameraId?: string) => {
     try {
       const { error } = await supabase
         .from('ppe_configs' as never)
-        .update(updates)
+        .update(updates as never)
         .eq('id', id);
 
       if (error) throw error;

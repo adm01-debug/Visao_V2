@@ -153,7 +153,7 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
       const data = await response.json();
       return data.items || [];
     } catch (err: unknown) {
-      if (err.name === 'AbortError') {
+      if ((err as Error).name === 'AbortError') {
         return paths; // Retorna estado atual se abortado
       }
       throw err;
@@ -170,7 +170,7 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
       setPaths(fetchedPaths);
       setConnected(true);
     } catch (err: unknown) {
-      const message = err.message || 'Erro ao conectar ao MediaMTX';
+      const message = (err as Error).message || 'Erro ao conectar ao MediaMTX';
       setError(message);
       setConnected(false);
       onError?.(err);
@@ -238,7 +238,7 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
       await refresh();
       return true;
     } catch (err: unknown) {
-      toast.error(`Erro ao adicionar stream: ${err.message}`);
+      toast.error(`Erro ao adicionar stream: ${(err as Error).message}`);
       return false;
     }
   }, [config.apiAddress, refresh]);
@@ -258,7 +258,7 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
       await refresh();
       return true;
     } catch (err: unknown) {
-      toast.error(`Erro ao remover stream: ${err.message}`);
+      toast.error(`Erro ao remover stream: ${(err as Error).message}`);
       return false;
     }
   }, [config.apiAddress, refresh]);

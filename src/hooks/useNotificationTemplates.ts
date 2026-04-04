@@ -47,7 +47,7 @@ export const useNotificationTemplates = () => {
     try {
       const { data, error } = await supabase
         .from('notification_templates' as never)
-        .insert(template)
+        .insert(template as never)
         .select()
         .single();
 
@@ -64,7 +64,7 @@ export const useNotificationTemplates = () => {
     try {
       const { error } = await supabase
         .from('notification_templates' as never)
-        .update(updates)
+        .update(updates as never)
         .eq('id', id);
 
       if (error) throw error;

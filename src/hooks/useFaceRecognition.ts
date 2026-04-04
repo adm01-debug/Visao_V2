@@ -129,7 +129,7 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
     try {
       const { error: insertError } = await supabase
         .from('known_faces' as never)
-        .insert([{ ...person, detection_count: 0 }]);
+        .insert([{ ...person, detection_count: 0 }] as never);
       
       if (insertError) throw insertError;
       
@@ -153,7 +153,7 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
     try {
       const { error: updateError } = await supabase
         .from('known_faces' as never)
-        .update(person)
+        .update(person as never)
         .eq('id', id);
       
       if (updateError) throw updateError;
