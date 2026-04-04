@@ -1,12 +1,20 @@
 /**
  * Error tracking utility
  */
+import { logger } from '@/lib/logger';
+
 export function captureException(error: Error | unknown, context?: Record<string, unknown>): void {
-  console.error('[ErrorTracking]', error, context);
+  logger.error('[ErrorTracking]', { error: error instanceof Error ? error.message : String(error), ...context });
 }
 
 export function captureMessage(message: string, level: 'info' | 'warning' | 'error' = 'info'): void {
-  console[level === 'error' ? 'error' : level === 'warning' ? 'warn' : 'info']('[ErrorTracking]', message);
+  if (level === 'error') {
+    logger.error('[ErrorTracking]', message);
+  } else if (level === 'warning') {
+    logger.warn('[ErrorTracking]', message);
+  } else {
+    logger.info('[ErrorTracking]', message);
+  }
 }
 
 export default { captureException, captureMessage };
