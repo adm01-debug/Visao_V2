@@ -181,7 +181,7 @@ interface SecurityStats {
 // CONFIGURAÇÃO
 // ============================================
 
-const logLevelConfig: Record<LogLevel, { icon: unknown; color: string; bgColor: string; label: string }> = {
+const logLevelConfig: Record<LogLevel, { icon: React.ElementType; color: string; bgColor: string; label: string }> = {
   info: { icon: Info, color: 'text-blue-500', bgColor: 'bg-blue-500/10', label: 'Info' },
   warning: { icon: AlertTriangle, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Aviso' },
   error: { icon: XCircle, color: 'text-red-500', bgColor: 'bg-red-500/10', label: 'Erro' },
