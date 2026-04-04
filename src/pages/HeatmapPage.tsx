@@ -134,7 +134,7 @@ export default function HeatmapPage() {
                   <div role="main" className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground">Intensidade Média</p>
-                      <p className="text-2xl font-bold">{stats.avgIntensity?.toFixed(1) || 0}</p>
+                      <p className="text-2xl font-bold">{stats.averageActivity?.toFixed(1) || 0}</p>
                     </div>
                     <MapPin className="h-8 w-8 text-yellow-500" />
                   </div>
