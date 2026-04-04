@@ -434,18 +434,18 @@ export function useNotifications(
           table: 'alerts',
         },
         (payload) => {
-          const n = payload.new as unknown;
+          const n = payload.new as Record<string, unknown>;
           processNewNotification({
-            id: n.id,
-            type: n.type || 'alert',
-            severity: n.severity || 'medium',
-            title: n.camera_name || 'Notificação',
-            message: n.message || '',
-            data: { camera_id: n.camera_id, thumbnail: n.thumbnail },
+            id: n.id as string,
+            type: (n.type as string) || 'alert',
+            severity: (n.severity as NotificationSeverity) || 'medium',
+            title: (n.camera_name as string) || 'Notificação',
+            message: (n.message as string) || '',
+            data: { camera_id: n.camera_id as string, thumbnail: n.thumbnail as string },
             channels: ['in_app'],
             status: 'pending',
-            sentAt: n.timestamp,
-            createdAt: n.created_at,
+            sentAt: n.timestamp as string,
+            createdAt: n.created_at as string,
           });
         }
       )

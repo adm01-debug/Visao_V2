@@ -91,6 +91,7 @@ export function usePlateDetections() {
 
       setDetections(data?.map(d => ({
         ...d,
+        vehicle_type: d.vehicle_type || 'unknown',
         timestamp: new Date(d.timestamp),
         created_at: new Date(d.created_at),
         status: d.status as PlateDetection['status']
@@ -114,6 +115,7 @@ export function usePlateDetections() {
 
       setRegisteredPlates(data?.map(p => ({
         ...p,
+        vehicle_type: p.vehicle_type || 'car',
         created_at: new Date(p.created_at),
         updated_at: new Date(p.updated_at),
         list_type: p.list_type as RegisteredPlate['list_type']
@@ -235,6 +237,7 @@ ${ownerName ? `👤 <b>Proprietário:</b> ${ownerName}` : ''}
 
       const newDetection: PlateDetection = {
         ...data,
+        vehicle_type: data.vehicle_type || 'unknown',
         timestamp: new Date(data.timestamp),
         created_at: new Date(data.created_at),
         status: data.status as PlateDetection['status']
@@ -329,6 +332,7 @@ ${ownerName ? `👤 <b>Proprietário:</b> ${ownerName}` : ''}
 
       const newPlate: RegisteredPlate = {
         ...data,
+        vehicle_type: data.vehicle_type || 'car',
         created_at: new Date(data.created_at),
         updated_at: new Date(data.updated_at),
         list_type: data.list_type as RegisteredPlate['list_type']

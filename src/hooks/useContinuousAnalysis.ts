@@ -224,12 +224,12 @@ export function useContinuousAnalysis(
 
       for (const conditionRaw of conditions) {
         // Cast para any para acessar propriedades JSON
-        const condition = conditionRaw as unknown;
+        const condition = conditionRaw as Record<string, unknown>;
         let actualValue = 0;
         let satisfied = false;
 
         // Extrair valor atual baseado no tipo de condição
-        const conditionType = condition?.type;
+        const conditionType = condition?.type as string | undefined;
         switch (conditionType) {
           case 'people_count':
             actualValue = analysis.people_count || 0;
@@ -246,8 +246,8 @@ export function useContinuousAnalysis(
         }
 
         // Avaliar condição
-        const expectedValue = condition?.value || 0;
-        const operator = condition?.operator;
+        const expectedValue = (condition?.value as number) || 0;
+        const operator = condition?.operator as string | undefined;
         switch (operator) {
           case 'greater_than':
             satisfied = actualValue > expectedValue;
@@ -259,7 +259,7 @@ export function useContinuousAnalysis(
             satisfied = actualValue === expectedValue;
             break;
           case 'between':
-            const value2 = condition?.value2 || 0;
+            const value2 = (condition?.value2 as number) || 0;
             satisfied = actualValue >= expectedValue && actualValue <= value2;
             break;
         }
@@ -282,7 +282,7 @@ export function useContinuousAnalysis(
           violated: true,
           conditions: conditionEvaluations,
           actions: rule.actions || [],
-          severity: rule.severity as "high" | "low" | "medium" | "critical" as unknown,
+          severity: rule.severity as "high" | "low" | "medium" | "critical",
           message: `Regra "${rule.name}" violada: ${rule.description || 'Condições atendidas'}`,
         });
       }
@@ -409,7 +409,7 @@ export function useContinuousAnalysis(
         severity: alert.severity,
         message: alert.message,
         is_read: false,
-      });
+      }]);
     } catch (error) {
 
     }
@@ -429,16 +429,16 @@ export function useContinuousAnalysis(
         return;
       }
 
-      await supabase.from('analysis_history').insert({
+      await supabase.from('analysis_history').insert([{
         id: entry.id,
         camera_id: cameraId,
         user_id: user.id,
         timestamp: entry.timestamp.toISOString(),
         analysis_type: entry.analysisType,
-        result: entry.result as unknown,
-        confidence: 'confidence' in entry.result ? (entry.result as unknown).confidence : null,
+        result: JSON.parse(JSON.stringify(entry.result)),
+        confidence: 'confidence' in entry.result ? (entry.result as Record<string, number>).confidence : null,
         image_url: entry.snapshot || null,
-      });
+      }]);
 
 
     } catch (err) {
@@ -580,7 +580,7 @@ export function useContinuousAnalysis(
         sessionId: currentSession.id,
         cameraId,
         analysisType,
-        result: { people_count: 0, summary: 'Erro na análise' } as unknown,
+        result: { people_count: 0, summary: 'Erro na análise' } as AnalysisResult,
         duration,
         alertsGenerated: 0,
         violatedRules: [],

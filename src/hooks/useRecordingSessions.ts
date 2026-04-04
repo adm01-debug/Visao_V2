@@ -38,7 +38,7 @@ export const useRecordingSessions = (cameraId?: string) => {
       if (error) throw error;
 
       setSessions(data || []);
-      setActiveSession(data?.find(s => s.status === 'recording') || null);
+      setActiveSession((data as RecordingSession[])?.find((s: RecordingSession) => s.status === 'recording') || null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch sessions');
     } finally {
@@ -54,7 +54,7 @@ export const useRecordingSessions = (cameraId?: string) => {
     try {
       const { data, error } = await supabase
         .from('recording_sessions' as never)
-        .insert({
+        .insert([{
           camera_id: cameraId,
           config_id: configId,
           status: 'recording',
@@ -62,7 +62,7 @@ export const useRecordingSessions = (cameraId?: string) => {
           started_at: new Date().toISOString(),
           total_clips: 0,
           total_size_bytes: 0,
-        })
+        }] as never)
         .select()
         .single();
 
@@ -82,7 +82,7 @@ export const useRecordingSessions = (cameraId?: string) => {
         .update({
           status: 'stopped',
           ended_at: new Date().toISOString(),
-        })
+        } as never)
         .eq('id', id);
 
       if (error) throw error;
@@ -97,7 +97,7 @@ export const useRecordingSessions = (cameraId?: string) => {
     try {
       const { error } = await supabase
         .from('recording_sessions' as never)
-        .update({ status: 'paused' })
+        .update({ status: 'paused' } as never)
         .eq('id', id);
 
       if (error) throw error;
@@ -112,7 +112,7 @@ export const useRecordingSessions = (cameraId?: string) => {
     try {
       const { error } = await supabase
         .from('recording_sessions' as never)
-        .update({ status: 'recording' })
+        .update({ status: 'recording' } as never)
         .eq('id', id);
 
       if (error) throw error;

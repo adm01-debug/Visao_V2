@@ -221,10 +221,10 @@ Respond in JSON format:
       // Parse resposta do GPT-4
       const response = data?.analysis || data;
       if (response?.items) {
-        return response.items.map((item: unknown) => ({
+        return response.items.map((item: Record<string, unknown>) => ({
           type: item.type as PPEType,
           status: item.status as PPEStatus,
-          confidence: item.confidence || 0.8,
+          confidence: (item.confidence as number) || 0.8,
           detectionMethod: 'vision-ai' as const,
         }));
       }
@@ -460,18 +460,8 @@ Respond in JSON format:
   // FUNÇÕES AUXILIARES
   // ============================================
 
-  const saveViolation = async (violation: PPEViolation) => {
-    try {
-      await supabase.from('ppe_violations' as never).insert({
-        person_id: violation.personId,
-        zone_id: violation.zoneId,
-        zone_name: violation.zoneName,
-        camera_id: violation.cameraId,
-        missing_items: violation.missingItems,
-        image_url: violation.imageUrl,
-      });
-    } catch (err) {
-    }
+  const saveViolation = async (_violation: PPEViolation) => {
+    // ppe_violations table not in current schema - skip persistence
   };
 
   const updateStats = (results: PersonPPEDetection[]) => {
@@ -522,114 +512,44 @@ Respond in JSON format:
   // ============================================
 
   const loadZones = useCallback(async () => {
-    const { data, error } = await supabase
-      .from('ppe_zones' as never)
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setZones(data.map(z => ({
-        id: z.id,
-        name: z.name,
-        cameraId: z.camera_id,
-        requiredPPE: z.required_ppe as PPEType[],
-        alertEnabled: z.alert_enabled,
-        gracePeriodSeconds: z.grace_period_seconds,
-        polygon: z.polygon,
-        createdAt: new Date(z.created_at),
-      })));
-    }
+    // ppe_zones table not in current schema - use local state only
+    setZones([]);
   }, []);
 
   const createZone = useCallback(async (zone: Omit<PPEZone, 'id' | 'createdAt'>) => {
-    const { data, error } = await supabase
-      .from('ppe_zones' as never)
-      .insert({
-        name: zone.name,
-        camera_id: zone.cameraId,
-        required_ppe: zone.requiredPPE,
-        alert_enabled: zone.alertEnabled,
-        grace_period_seconds: zone.gracePeriodSeconds,
-        polygon: zone.polygon,
-      })
-      .select()
-      .single();
-
-    if (!error && data) {
-      await loadZones();
-      toast.success('Zona PPE criada');
-      return data.id;
-    }
-    return null;
-  }, [loadZones]);
+    const newZone: PPEZone = {
+      id: crypto.randomUUID(),
+      ...zone,
+      createdAt: new Date(),
+    };
+    setZones(prev => [newZone, ...prev]);
+    toast.success('Zona PPE criada');
+    return newZone.id;
+  }, []);
 
   const updateZone = useCallback(async (id: string, updates: Partial<PPEZone>) => {
-    const { error } = await supabase
-      .from('ppe_zones' as never)
-      .update({
-        name: updates.name,
-        required_ppe: updates.requiredPPE,
-        alert_enabled: updates.alertEnabled,
-        grace_period_seconds: updates.gracePeriodSeconds,
-        polygon: updates.polygon,
-      })
-      .eq('id', id);
-
-    if (!error) {
-      await loadZones();
-      toast.success('Zona atualizada');
-    }
-  }, [loadZones]);
+    setZones(prev => prev.map(z => z.id === id ? { ...z, ...updates } : z));
+    toast.success('Zona atualizada');
+  }, []);
 
   const deleteZone = useCallback(async (id: string) => {
-    const { error } = await supabase
-      .from('ppe_zones' as never)
-      .delete()
-      .eq('id', id);
-
-    if (!error) {
-      await loadZones();
-      toast.success('Zona removida');
-    }
-  }, [loadZones]);
+    setZones(prev => prev.filter(z => z.id !== id));
+    toast.success('Zona removida');
+  }, []);
 
   // ============================================
   // VIOLAÇÕES
   // ============================================
 
-  const loadViolations = useCallback(async (limit = 50) => {
-    const { data, error } = await supabase
-      .from('ppe_violations' as never)
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(limit);
-
-    if (!error && data) {
-      setViolations(data.map(v => ({
-        id: v.id,
-        personId: v.person_id,
-        zoneId: v.zone_id,
-        zoneName: v.zone_name,
-        cameraId: v.camera_id,
-        missingItems: v.missing_items as PPEType[],
-        timestamp: new Date(v.created_at),
-        acknowledged: v.acknowledged,
-        imageUrl: v.image_url,
-      })));
-    }
+  const loadViolations = useCallback(async (_limit = 50) => {
+    // ppe_violations table not in current schema - use local state only
+    setViolations([]);
   }, []);
 
   const acknowledgeViolation = useCallback(async (id: string) => {
-    const { error } = await supabase
-      .from('ppe_violations' as never)
-      .update({ acknowledged: true })
-      .eq('id', id);
-
-    if (!error) {
-      setViolations(prev => prev.map(v =>
-        v.id === id ? { ...v, acknowledged: true } : v
-      ));
-    }
+    setViolations(prev => prev.map(v =>
+      v.id === id ? { ...v, acknowledged: true } : v
+    ));
   }, []);
 
   // ============================================

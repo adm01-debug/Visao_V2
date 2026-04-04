@@ -228,7 +228,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
 
     // Frames perdidos (API experimental)
     if ('getVideoPlaybackQuality' in video) {
-      const quality = (video as unknown).getVideoPlaybackQuality();
+      const quality = (video as HTMLVideoElement & { getVideoPlaybackQuality(): { droppedVideoFrames?: number; totalVideoFrames?: number } }).getVideoPlaybackQuality();
       stats.droppedFrames = quality?.droppedVideoFrames || 0;
       if (quality?.totalVideoFrames && connectionStartRef.current) {
         const elapsed = (Date.now() - connectionStartRef.current) / 1000;

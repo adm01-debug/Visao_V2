@@ -173,7 +173,7 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
       const message = (err as Error).message || 'Erro ao conectar ao MediaMTX';
       setError(message);
       setConnected(false);
-      onError?.(err);
+      onError?.(err instanceof Error ? err : new Error(String(err)));
     } finally {
       setLoading(false);
     }
