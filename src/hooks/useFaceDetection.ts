@@ -168,7 +168,7 @@ export function useFaceDetection(options: UseFaceDetectionOptions = {}) {
       if (fnError) throw fnError;
       return data?.encoding || null;
     } catch (err: unknown) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : 'Unknown error');
       return null;
     } finally {
       setIsProcessing(false);
