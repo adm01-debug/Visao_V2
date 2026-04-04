@@ -4,9 +4,9 @@
 export interface Clip {
   id: string;
   cameraId: string;
-  cameraName?: string;
+  cameraName: string;
   startTime: Date;
-  startedAt?: Date;
+  startedAt: Date;
   endTime: Date;
   duration: number;
   url: string;
@@ -18,7 +18,7 @@ export interface Clip {
   format: ClipFormat;
   status: ClipStatus;
   metadata?: ClipMetadata;
-  trigger?: RecordingTrigger;
+  trigger: RecordingTrigger;
   triggerDetails?: string;
   isFavorite?: boolean;
   isViewed?: boolean;

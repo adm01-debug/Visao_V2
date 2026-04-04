@@ -64,7 +64,7 @@ const TimelineItemComponent: React.FC<{
   animated: boolean;
   onItemClick?: (item: TimelineItem) => void;
   itemClassName?: string;
-  locale?: Parameters<typeof format>[2]['locale'];
+  locale?: Locale;
 }> = ({
   item,
   index,
