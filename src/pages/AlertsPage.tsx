@@ -300,7 +300,7 @@ function AlertItem({
 // ============================================
 
 interface AlertDetailsDialogProps {
-  alert: unknown;
+  alert: Record<string, unknown> | null;
   isOpen: boolean;
   onClose: () => void;
   onMarkRead: () => void;
