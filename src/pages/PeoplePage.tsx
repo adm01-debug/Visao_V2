@@ -287,7 +287,7 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
       setFaceEncoding(encoding);
       toast.success('Rosto detectado com sucesso!', { id: 'face-detection' });
     } else {
-      toast.error(validation.message, { id: 'face-detection' });
+      toast.error(validation.issues[0] || 'Rosto inválido', { id: 'face-detection' });
     }
   };
 
