@@ -221,10 +221,10 @@ Respond in JSON format:
       // Parse resposta do GPT-4
       const response = data?.analysis || data;
       if (response?.items) {
-        return response.items.map((item: unknown) => ({
+        return response.items.map((item: Record<string, unknown>) => ({
           type: item.type as PPEType,
           status: item.status as PPEStatus,
-          confidence: item.confidence || 0.8,
+          confidence: (item.confidence as number) || 0.8,
           detectionMethod: 'vision-ai' as const,
         }));
       }
