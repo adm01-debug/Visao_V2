@@ -173,6 +173,13 @@ export const sidebarCategories: SidebarCategory[] = [
         icon: Settings,
       },
       {
+        id: "user-management",
+        label: "Usuários",
+        href: "/users",
+        icon: Users,
+        permission: "users:manage",
+      },
+      {
         id: "notifications",
         label: "Notificações",
         href: "/notifications",
