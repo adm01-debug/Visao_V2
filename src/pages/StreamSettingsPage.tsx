@@ -28,7 +28,7 @@ import { cn } from '@/lib/utils';
 import { useMediaMTX } from '@/hooks/useMediaMTX';
 
 export default function StreamSettingsPage() {
-  const { paths, stats, config, isConnected, refreshPaths } = useMediaMTX();
+  const { paths, stats, config, connected: isConnected, refresh: refreshPaths } = useMediaMTX();
 
 
   const navigate = useNavigate();
