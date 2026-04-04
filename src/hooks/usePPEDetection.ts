@@ -144,6 +144,7 @@ export interface PPEZoneConfig {
   detectionInterval: 2000,
   saveViolations: true,
   alertOnViolation: true,
+    useVisionAI: true,
   gracePeriodMs: 5000,
 };
 

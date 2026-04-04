@@ -67,7 +67,7 @@ export const useCameraSnapshots = (cameraId?: string) => {
 
       const { data, error } = await supabase
         .from('camera_snapshots' as never)
-        .insert({
+        .insert([{
           camera_id: cameraId,
           image_url: urlData.publicUrl,
           file_size_bytes: imageBlob.size,
@@ -75,6 +75,7 @@ export const useCameraSnapshots = (cameraId?: string) => {
           height: 0,
           trigger_type: triggerType,
           metadata,
+          user_id: (await supabase.auth.getUser()).data.user?.id ?? "",
         })
         .select()
         .single();
