@@ -272,8 +272,6 @@ function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonFormDialogP
         list_type: 'none',
         notes: '',
       });
-        notes: '',
-      });
       setPhotoPreview(null);
       setPhotoFile(null);
       setFaceEncoding(null);
