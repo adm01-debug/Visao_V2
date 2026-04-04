@@ -1,4 +1,4 @@
-// @ts-nocheck
+import type { LucideIcon } from 'lucide-react';
 import {
   AlertTriangle,
   Users,
