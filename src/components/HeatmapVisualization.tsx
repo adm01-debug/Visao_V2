@@ -302,7 +302,7 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
           </Select>
 
           {/* Filtro de período */}
-          <Select value={period} onValueChange={(v) => setPeriod(v as unknown)}>
+          <Select value={period} onValueChange={(v: string) => setPeriod(v as '1h' | '6h' | '24h' | '7d')}>
             <SelectTrigger className="w-32">
               <SelectValue />
             </SelectTrigger>

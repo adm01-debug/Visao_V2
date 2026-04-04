@@ -434,7 +434,7 @@ export function AutomationRulesManager() {
                         <div className="flex items-center gap-2">
                           <Switch
                             checked={rule.is_active}
-                            onCheckedChange={(checked) => toggleActive(rule.id, checked)}
+                            onCheckedChange={(checked) => toggleRule(rule.id, checked)}
                           />
                           <Button
                             variant="ghost"

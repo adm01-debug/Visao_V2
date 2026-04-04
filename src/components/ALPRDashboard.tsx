@@ -108,11 +108,12 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
   // Agrupar detecções por placa para histórico de veículos
   const vehicleHistory = useMemo(() => {
     const grouped = detections.reduce((acc, d) => {
+      const ts = typeof d.timestamp === 'string' ? d.timestamp : (d.timestamp as Date).toISOString();
       if (!acc[d.plate]) {
         acc[d.plate] = {
           plate: d.plate,
-          firstSeen: d.timestamp,
-          lastSeen: d.timestamp,
+          firstSeen: ts,
+          lastSeen: ts,
           totalVisits: 0,
           status: d.status,
           camera: d.camera_name,
@@ -120,11 +121,11 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
         };
       }
       acc[d.plate].totalVisits++;
-      if (d.timestamp > acc[d.plate].lastSeen) {
-        acc[d.plate].lastSeen = d.timestamp;
+      if (ts > acc[d.plate].lastSeen) {
+        acc[d.plate].lastSeen = ts;
       }
-      if (d.timestamp < acc[d.plate].firstSeen) {
-        acc[d.plate].firstSeen = d.timestamp;
+      if (ts < acc[d.plate].firstSeen) {
+        acc[d.plate].firstSeen = ts;
       }
       return acc;
     }, {} as Record<string, { plate: string; firstSeen: string; lastSeen: string; totalVisits: number; status: string; camera: string; vehicleType: string | null }>);

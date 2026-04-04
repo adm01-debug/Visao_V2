@@ -410,16 +410,19 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
     modelsInfo,
     isLoading,
     isReady,
+    isModelLoaded: isReady,
     backend,
     loadModel,
     loadAllModels,
     unloadAll,
     detectObjects,
+    detectedObjects: [] as DetectedObject[],
     detectPoses,
     detectPersons,
     detectVehicles,
     config,
     updateConfig,
+    error: null as string | null,
   };
 }
 

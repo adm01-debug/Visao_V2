@@ -95,25 +95,25 @@ export function AlertsByCameraChart({ alerts, className = '', onCameraClick }: A
               <span className="text-muted-foreground">Total:</span>
               <span className="font-medium">{data.count}</span>
             </div>
-            {data.critical > 0 && (
+            {(data.critical ?? 0) > 0 && (
               <div className="flex justify-between gap-4">
                 <span className="text-destructive">Crítico:</span>
                 <span>{data.critical}</span>
               </div>
             )}
-            {data.high > 0 && (
+            {(data.high ?? 0) > 0 && (
               <div className="flex justify-between gap-4">
                 <span className="text-orange-500">Alto:</span>
                 <span>{data.high}</span>
               </div>
             )}
-            {data.medium > 0 && (
+            {(data.medium ?? 0) > 0 && (
               <div className="flex justify-between gap-4">
                 <span className="text-yellow-500">Médio:</span>
                 <span>{data.medium}</span>
               </div>
             )}
-            {data.low > 0 && (
+            {(data.low ?? 0) > 0 && (
               <div className="flex justify-between gap-4">
                 <span className="text-green-500">Baixo:</span>
                 <span>{data.low}</span>
