@@ -160,7 +160,7 @@ class FFmpegService {
 
       // Read output file
       const data = await this.ffmpeg.readFile(outputName);
-      const blob = new Blob([data], { type: `video/${options.outputFormat}` });
+      const blob = new Blob([data as BlobPart], { type: `video/${options.outputFormat}` });
 
       // Cleanup
       await this.ffmpeg.deleteFile(inputName);
