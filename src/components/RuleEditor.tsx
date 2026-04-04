@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { memo, useEffect, useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import { UIRule, RuleCondition, RuleCategory, RuleSeverity, RuleActionType, RuleConditionType } from '@/types/rules';
@@ -48,9 +47,9 @@ const severities: { value: RuleSeverity; label: string }[] = [
 
 const actions: { value: RuleActionType; label: string }[] = [
   { value: 'alert', label: 'Gerar Alerta' },
-  { value: 'notification', label: 'Enviar Notificação' },
+  { value: 'notify', label: 'Enviar Notificação' },
   { value: 'record', label: 'Gravar Vídeo' },
-  { value: 'alarm', label: 'Disparar Alarme' },
+  { value: 'arm', label: 'Disparar Alarme' },
 ];
 
 const conditionTypes = Object.entries(conditionTypeLabels).map(([value, info]) => ({

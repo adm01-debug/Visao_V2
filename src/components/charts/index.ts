@@ -1,9 +1,0 @@
-export { AlertsCharts } from './AlertsCharts';
-export { CamerasCharts } from './CamerasCharts';
-export { ZonesCharts } from './ZonesCharts';
-export { RecordingsCharts } from './RecordingsCharts';
-export { PanicCharts } from './PanicCharts';
-export { PPECharts } from './PPECharts';
-export { RecognitionCharts } from './RecognitionCharts';
-export { SecurityCharts } from './SecurityCharts';
-export { JourneyCharts } from './JourneyCharts';

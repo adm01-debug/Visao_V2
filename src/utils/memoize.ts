@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Memoize Utility - Cache de resultados de funções
@@ -132,20 +131,20 @@ export function memoize<T extends AnyFunction>(
  * @param fn Função que recebe objeto como primeiro argumento
  * @returns Função memoizada
  */
-export function memoizeWeak<T extends (obj: object, ...args: never[]) => unknown>(
-  fn: T
-): T {
-  const cache = new WeakMap<object, ReturnType<T>>();
+export function memoizeWeak<R>(
+  fn: (obj: object, ...args: unknown[]) => R
+): (obj: object, ...args: unknown[]) => R {
+  const cache = new WeakMap<object, R>();
 
-  return ((obj: object, ...args: Parameters<T> extends [object, ...infer R] ? R : never[]) => {
+  return (obj: object, ...args: unknown[]) => {
     if (cache.has(obj)) {
-      return cache.get(obj);
+      return cache.get(obj)!;
     }
 
-    const result = fn(obj, ...args) as ReturnType<T>;
+    const result = fn(obj, ...args);
     cache.set(obj, result);
     return result;
-  }) as T;
+  };
 }
 
 /**

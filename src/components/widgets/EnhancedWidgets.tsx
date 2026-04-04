@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useSortable } from '@dnd-kit/sortable';
@@ -38,7 +37,7 @@ export function EnhancedWidgetWrapper({
     transition,
   };
 
-  const Icon = config.icon;
+  const widgetIcon = config.icon;
   const isExpanded = widget.size.cols > 1 || widget.size.rows > 1;
 
   const handleToggleSize = () => {
@@ -91,7 +90,7 @@ export function EnhancedWidgetWrapper({
             'p-1.5 rounded-lg',
             'bg-primary/10'
           )}>
-            <Icon className="w-4 h-4 text-primary" />
+            <span className="text-base">{widgetIcon}</span>
           </div>
           <h3 className="font-semibold text-sm truncate">
             {config.title}

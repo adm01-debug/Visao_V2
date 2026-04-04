@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Promise Utilities
  */
@@ -78,7 +77,7 @@ export const allSettled = <T>(promises: Promise<T>[]): Promise<PromiseSettledRes
   Promise.allSettled(promises);
 
 export const any = <T>(promises: Promise<T>[]): Promise<T> =>
-  Promise.any(promises);
+  (Promise as unknown as { any: <U>(promises: Promise<U>[]) => Promise<U> }).any(promises);
 
 export const sequential = async <T>(fns: (() => Promise<T>)[]): Promise<T[]> => {
   const results: T[] = [];

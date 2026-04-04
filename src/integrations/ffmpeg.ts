@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * FFmpeg Integration Service
  * Wrapper for FFmpeg.wasm for client-side video processing
@@ -75,7 +74,8 @@ class FFmpegService {
       }
 
       // Set up progress tracking
-      this.ffmpeg.on('progress', ({ progress }) => {
+      this.ffmpeg.on('progress', (data: Record<string, unknown>) => {
+        const progress = (data as { progress: number }).progress;
         this.progressCallback?.(Math.round(progress * 100));
       });
 
@@ -160,7 +160,7 @@ class FFmpegService {
 
       // Read output file
       const data = await this.ffmpeg.readFile(outputName);
-      const blob = new Blob([data], { type: `video/${options.outputFormat}` });
+      const blob = new Blob([data as BlobPart], { type: `video/${options.outputFormat}` });
 
       // Cleanup
       await this.ffmpeg.deleteFile(inputName);
@@ -217,7 +217,7 @@ class FFmpegService {
       await this.ffmpeg.exec(args);
 
       const data = await this.ffmpeg.readFile(outputName);
-      const blob = new Blob([data], { type: 'image/jpeg' });
+      const blob = new Blob([data as BlobPart], { type: 'image/jpeg' });
 
       await this.ffmpeg.deleteFile(inputName);
       await this.ffmpeg.deleteFile(outputName);
@@ -256,7 +256,7 @@ class FFmpegService {
       ]);
 
       const data = await this.ffmpeg.readFile(outputName);
-      const blob = new Blob([data], { type: 'image/jpeg' });
+      const blob = new Blob([data as BlobPart], { type: 'image/jpeg' });
 
       await this.ffmpeg.deleteFile(inputName);
       await this.ffmpeg.deleteFile(outputName);
@@ -318,7 +318,7 @@ class FFmpegService {
         wav: 'audio/wav',
         aac: 'audio/aac',
       };
-      const blob = new Blob([data], { type: mimeTypes[format] });
+      const blob = new Blob([data as BlobPart], { type: mimeTypes[format] });
 
       await this.ffmpeg.deleteFile(inputName);
       await this.ffmpeg.deleteFile(outputName);
@@ -344,7 +344,8 @@ class FFmpegService {
 
       const metadata: Record<string, string> = {};
 
-      this.ffmpeg.on('log', ({ message }) => {
+      this.ffmpeg.on('log', (data: Record<string, unknown>) => {
+        const message = (data as { message: string }).message;
         const durationMatch = message.match(/Duration: (\d{2}:\d{2}:\d{2}\.\d{2})/);
         if (durationMatch) {
           metadata.duration = durationMatch[1];
@@ -408,7 +409,7 @@ class FFmpegService {
       await this.ffmpeg.exec(gifArgs);
 
       const data = await this.ffmpeg.readFile(outputName);
-      const blob = new Blob([data], { type: 'image/gif' });
+      const blob = new Blob([data as BlobPart], { type: 'image/gif' });
 
       await this.ffmpeg.deleteFile(inputName);
       await this.ffmpeg.deleteFile(paletteName);

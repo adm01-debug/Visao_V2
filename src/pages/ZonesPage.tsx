@@ -19,7 +19,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { ZonesCharts } from '@/components/charts/ZonesCharts';
 import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 
 import { ZoneCard, ZoneEditorSheet, ZoneViewDialog, zoneTypeConfig, type DbZone, type ZoneStats, type ZoneEvent } from '@/components/zones';
@@ -150,9 +149,6 @@ export function ZonesPage() {
         <Card><CardContent className="p-4"><div className="flex items-center justify-between"><div><p className="text-xs text-muted-foreground">Restritas</p><p className="text-2xl font-bold text-red-500">{stats.restricted}</p></div><AlertTriangle className="w-8 h-8 text-red-500" /></div></CardContent></Card>
         <Card><CardContent className="p-4"><div className="flex items-center justify-between"><div><p className="text-xs text-muted-foreground">Contagem</p><p className="text-2xl font-bold text-blue-500">{stats.counting}</p></div><Users className="w-8 h-8 text-blue-500" /></div></CardContent></Card>
       </div>
-
-      {/* Charts */}
-      <ZonesCharts zones={zones} />
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="relative flex-1 max-w-md">

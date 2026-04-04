@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * CameraCard - Card individual de câmera com streaming, overlays e controles
  */

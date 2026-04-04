@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Google Cloud Platform Integration Service
  * Core GCP services wrapper
@@ -129,10 +128,10 @@ class GcpService {
     });
 
     const data = await response.json();
-    this.accessToken = data.access_token;
-    this.tokenExpiry = Date.now() + (data.expires_in || 3600) * 1000;
+    this.accessToken = data.access_token as string;
+    this.tokenExpiry = Date.now() + ((data.expires_in as number) || 3600) * 1000;
 
-    return this.accessToken;
+    return this.accessToken!;
   }
 
   /**
@@ -147,9 +146,14 @@ class GcpService {
     }
 
     const contentType = options.contentType || 'application/octet-stream';
-    const content = options.content instanceof Blob
-      ? await options.content.arrayBuffer()
-      : options.content;
+    let content: BodyInit;
+    if (options.content instanceof Blob) {
+      content = await options.content.arrayBuffer();
+    } else if (typeof options.content === 'string') {
+      content = options.content;
+    } else {
+      content = new Uint8Array(options.content as unknown as ArrayBuffer);
+    }
 
     const response = await fetch(
       `https://storage.googleapis.com/upload/storage/v1/b/${bucket}/o?uploadType=media&name=${encodeURIComponent(options.filename)}`,

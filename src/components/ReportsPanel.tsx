@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { logger } from "@/lib/logger";
 import { formatDate, formatNumber } from "@/lib/formatters";
 import { generatePDFReport as generatePDF } from '@/lib/pdfGenerator';

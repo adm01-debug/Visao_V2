@@ -1,5 +1,5 @@
-// @ts-nocheck
 import { useState, useEffect, useCallback } from 'react';
+import type { Json } from '@/integrations/supabase/types';
 import { Camera, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -59,9 +59,9 @@ export function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneE
     try {
       const pointsWithOpacity = { ...formData.pointsData, opacity };
       if (zone) {
-        await onSave({ name: formData.name, type: formData.type, color: formData.color, is_active: formData.is_active, points: pointsWithOpacity as unknown });
+        await onSave({ name: formData.name, type: formData.type, color: formData.color, is_active: formData.is_active, points: pointsWithOpacity as Json });
       } else {
-        await onSave({ name: formData.name, type: formData.type, color: formData.color, is_active: formData.is_active, points: pointsWithOpacity as unknown, camera_id: camera?.id, user_id: user.id });
+        await onSave({ name: formData.name, type: formData.type, color: formData.color, is_active: formData.is_active, points: pointsWithOpacity as Json, camera_id: camera?.id, user_id: user.id });
       }
       onClose();
       toast.success(zone ? 'Zona atualizada' : 'Zona criada');
@@ -99,7 +99,7 @@ export function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneE
               )}
               <div className="absolute inset-0">
                 <ZoneEditor
-                  existingZones={formData.pointsData ? [{ id: 'temp', name: formData.name || 'Nova Zona', type: formData.type, geometry: { shape: formData.pointsData.shape, points: formData.pointsData.coordinates }, color: formData.color, opacity, enabled: true } as unknown] : []}
+                  existingZones={formData.pointsData ? [{ id: 'temp', name: formData.name || 'Nova Zona', geometry: { shape: formData.pointsData.shape, points: formData.pointsData.coordinates }, color: formData.color, opacity }] : []}
                   onZoneCreated={(z) => handleZoneDrawn(z.geometry?.points || [])}
                   selectedColor={formData.color}
                   drawingMode={drawingMode}

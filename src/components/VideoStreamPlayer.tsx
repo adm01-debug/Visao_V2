@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Componente: VideoStreamPlayer
@@ -13,7 +12,7 @@
  * - Overlay de detecção de IA
  */
 
-import { memo, useState, useRef, useEffect } from 'react';
+import { memo, useState, useRef, useEffect, useCallback } from 'react';
 import {
   Play,
   Pause,
@@ -391,7 +390,7 @@ export function VideoStreamPlayer({
     saveToDatabase: saveAnalysisHistory,
     config: {
       analysisTypes: [analysisType],
-      intervalMs: analysisIntervalMs,
+      interval: analysisIntervalMs,
     },
     onAnalysisComplete: (_camId, result) => {
       onAnalysisResult?.(result);
@@ -404,7 +403,7 @@ export function VideoStreamPlayer({
   // Iniciar/parar análise contínua baseado no estado do player
   useEffect(() => {
     if (continuousAnalysisActive && state.status === 'playing') {
-      startAnalysis({ analysisTypes: [analysisType], intervalMs: analysisIntervalMs });
+      startAnalysis({ analysisTypes: [analysisType], interval: analysisIntervalMs });
     } else {
       stopAnalysis();
     }
@@ -593,18 +592,18 @@ export function VideoStreamPlayer({
               <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-xs text-white">
                 <span className="text-muted-foreground">Pessoas:</span>
                 <span className="font-medium">{lastAnalysis.people_count}</span>
-                {lastAnalysis.risk_level && (
+                {'risk_level' in lastAnalysis && (lastAnalysis as Record<string, unknown>).risk_level ? (
                   <>
                     <span className="text-muted-foreground ml-1">Risco:</span>
                     <span className={cn(
                       'font-medium',
-                      lastAnalysis.risk_level === 'critical' && 'text-red-400',
-                      lastAnalysis.risk_level === 'high' && 'text-orange-400',
-                      lastAnalysis.risk_level === 'medium' && 'text-yellow-400',
-                      lastAnalysis.risk_level === 'low' && 'text-green-400',
-                    )}>{lastAnalysis.risk_level}</span>
+                      (lastAnalysis as Record<string, unknown>).risk_level === 'critical' && 'text-red-400',
+                      (lastAnalysis as Record<string, unknown>).risk_level === 'high' && 'text-orange-400',
+                      (lastAnalysis as Record<string, unknown>).risk_level === 'medium' && 'text-yellow-400',
+                      (lastAnalysis as Record<string, unknown>).risk_level === 'low' && 'text-green-400',
+                    )}>{String((lastAnalysis as Record<string, unknown>).risk_level)}</span>
                   </>
-                )}
+                ) : null}
               </div>
             )}
           </div>

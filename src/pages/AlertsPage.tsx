@@ -90,7 +90,6 @@ import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
-import { AlertsCharts } from "@/components/charts/AlertsCharts";
 
 
 // ============================================
@@ -670,9 +669,6 @@ export function AlertsPage() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Charts */}
-      <AlertsCharts alerts={alerts || []} />
 
       {/* Filters & Controls */}
       <div role="main" aria-label="Central de alertas" className="flex flex-col sm:flex-row items-start sm:items-center gap-4">

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { getRelativeTime, formatDuration } from "@/lib/dateUtils";
 import { useMemo, useState } from 'react';
 import {

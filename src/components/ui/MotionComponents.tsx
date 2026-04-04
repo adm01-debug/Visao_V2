@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { motion, HTMLMotionProps, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -323,7 +322,7 @@ export function RippleButton({
           transition={{ duration: 0.6, ease: 'easeOut' }}
         />
       ))}
-      <span className="relative z-10">{children}</span>
+      <span className="relative z-10">{children as React.ReactNode}</span>
     </motion.button>
   );
 }

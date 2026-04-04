@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from 'react';
 import { Plus, Search, Filter, Shield, AlertTriangle, Lock, Cog, BarChart3 } from 'lucide-react';
 import { RuleCard } from './RuleCard';
@@ -21,7 +20,7 @@ const categoryTabs: { value: string; label: string; icon: typeof Shield }[] = [
 ];
 
 export function RulesPanel() {
-  const { executeAction, validateRule, testRule } = useRuleActions();
+  const { executeAction } = useRuleActions();
 
   const { rules, loading, createRule, updateRule, deleteRule, toggleRule } = useRules();
   const [searchQuery, setSearchQuery] = useState('');

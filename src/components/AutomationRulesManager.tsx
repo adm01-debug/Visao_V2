@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Automation Rules Manager Component
  * Allows creating, editing and managing automation rules
