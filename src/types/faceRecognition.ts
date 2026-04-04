@@ -290,6 +290,7 @@ export const defaultFaceRecognitionConfig: FaceRecognitionConfig = {
     vip: 'notify',
     employee: 'log',
     visitor: 'log',
+    contractor: 'log',
     unknown: 'log',
   },
   alertOnUnknown: false,
