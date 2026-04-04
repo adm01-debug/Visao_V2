@@ -97,7 +97,7 @@ export const getClientIP = (request?: Request): string => {
     const value = request.headers.get(header);
     if (value) {
       // x-forwarded-for pode ter múltiplos IPs
-      const ip = value!.split(',')[0].trim();
+      const ip = (value.split(',')[0] ?? '').trim();
       if (isValidIPv4(ip) || isValidIPv6(ip)) {
         return ip;
       }

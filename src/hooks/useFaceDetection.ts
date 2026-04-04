@@ -143,7 +143,7 @@ export function useFaceDetection(options: UseFaceDetectionOptions = {}) {
       }
 
       const base64 = canvas.toDataURL('image/jpeg', 0.8);
-      return await detectFacesRemote(base64.split ?? ''(',')[1]);
+      return await detectFacesRemote(base64.split(',')[1] ?? '');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Unknown error');
       return [];

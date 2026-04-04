@@ -338,7 +338,7 @@ export function BottomSheet({
 
   if (!isOpen) return null;
 
-  const height = `${snapPoints[snapIndex]! * 100}vh`;
+  const height = `${(snapPoints[snapIndex] ?? 0) * 100}vh`;
 
   return (
     <>

@@ -55,7 +55,7 @@ export function BottomSheet({
   }, [isOpen]);
 
   const getSnapHeight = (snapIndex: number) => {
-    return windowHeight * snapPoints[snapIndex]!;
+    return windowHeight * (snapPoints[snapIndex] ?? 0);
   };
 
   const handleDragEnd = useCallback(

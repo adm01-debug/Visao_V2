@@ -74,13 +74,13 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const numbers = '0123456789';
     return (
-      letters[Math.floor(Math.random() * 26)]! +
-      letters[Math.floor(Math.random() * 26)]! +
-      letters[Math.floor(Math.random() * 26)] +
-      numbers[Math.floor(Math.random() * 10)] +
-      letters[Math.floor(Math.random() * 26)] +
-      numbers[Math.floor(Math.random() * 10)] +
-      numbers[Math.floor(Math.random() * 10)]
+      (letters[Math.floor(Math.random() * 26)] ?? 'A') +
+      (letters[Math.floor(Math.random() * 26)] ?? 'B') +
+      (letters[Math.floor(Math.random() * 26)] ?? 'C') +
+      (numbers[Math.floor(Math.random() * 10)] ?? '0') +
+      (letters[Math.floor(Math.random() * 26)] ?? 'D') +
+      (numbers[Math.floor(Math.random() * 10)] ?? '1') +
+      (numbers[Math.floor(Math.random() * 10)] ?? '2')
     );
   };
 

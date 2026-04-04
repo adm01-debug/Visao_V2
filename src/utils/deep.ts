@@ -214,7 +214,7 @@ export const deepUnset = <T extends Record<string, unknown>>(
     current = current[key!] as Record<string, unknown>;
   }
 
-  delete current[keys!![keys.length - 1]];
+  delete current[keys[keys.length - 1]!];
   return clone;
 };
 

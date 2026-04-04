@@ -57,7 +57,7 @@ export const QuickSearchDialog = memo(function QuickSearchDialog({
     const groups: Record<string, typeof filteredItems> = {};
     filteredItems.forEach((item) => {
       if (!groups[item.category]) groups[item.category] = [];
-      groups[item.category]!.push(item);
+      groups[item.category]?.push(item);
     });
     return groups;
   }, [filteredItems]);

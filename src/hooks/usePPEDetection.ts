@@ -390,7 +390,7 @@ Respond in JSON format:
           if (ctx) {
             ctx.drawImage(video, x, y, width, height, 0, 0, width, height);
             const imageData = canvas.toDataURL('image/jpeg', 0.8);
-            items = await detectWithVisionAI(imageData.split ?? ''(',')[1], requiredPPE);
+            items = await detectWithVisionAI(imageData.split(',')[1] ?? '', requiredPPE);
           }
         }
 

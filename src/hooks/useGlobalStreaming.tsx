@@ -161,7 +161,7 @@ export function GlobalStreamingProvider({
         });
 
       if (sortedConnections.length > 0) {
-        disconnect(sortedConnections[0]![0]);
+        disconnect(sortedConnections[0]![0]!);
       }
     }
 

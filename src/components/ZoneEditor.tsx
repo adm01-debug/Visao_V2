@@ -316,8 +316,8 @@ export function ZoneEditor({
           />
           {/* Linha do último ponto ao preview */}
           <line
-            x1={`${currentPoints[currentPoints.length - 1]!.x}%`}
-            y1={`${currentPoints[currentPoints.length - 1]!.y}%`}
+            x1={`${currentPoints[currentPoints.length - 1]?.x ?? 0}%`}
+            y1={`${currentPoints[currentPoints.length - 1]?.y ?? 0}%`}
             x2={`${previewPoint.x}%`}
             y2={`${previewPoint.y}%`}
             stroke={selectedColor}

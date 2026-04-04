@@ -193,7 +193,7 @@ export const Gauge: React.FC<GaugeProps> = ({
         <path
           d={createArc(startAngle, needleAngle, radius)}
           fill="none"
-          stroke={segments.find(s => clampedValue <= s.value)?.color || segments[segments.length - 1]!.color}
+          stroke={segments.find(s => clampedValue <= s.value)?.color || segments[segments.length - 1]?.color || '#888'}
           strokeWidth={thickness}
           strokeLinecap="round"
           className={cn(
