@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import type { StreamProtocol } from '@/types/streaming';
 import type { Json } from '@/integrations/supabase/types';
 import { Camera, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,7 +20,7 @@ import { zoneTypeConfig, defaultColors, parsePointsData, type ZoneType, type DbZ
 interface ZoneEditorSheetProps {
   isOpen: boolean;
   onClose: () => void;
-  camera: any;
+  camera: { id: string; name: string; stream_url?: string | null; stream_protocol?: string; thumbnail?: string | null } | null;
   zone?: DbZone | null;
   onSave: (data: TablesInsert<'zones'> | TablesUpdate<'zones'>) => Promise<void>;
 }
@@ -91,7 +92,7 @@ export function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneE
             </div>
             <div className="aspect-video bg-black rounded-lg overflow-hidden relative border-2 border-dashed border-muted">
               {camera?.stream_url ? (
-                <VideoStreamPlayer cameraId={camera.id} streamUrl={camera.stream_url} protocol={camera.stream_protocol || 'hls'} cameraName={camera.name} />
+                <VideoStreamPlayer cameraId={camera.id} streamUrl={camera.stream_url} protocol={(camera.stream_protocol as StreamProtocol) || 'hls'} cameraName={camera.name} />
               ) : camera?.thumbnail ? (
                 <img src={camera.thumbnail} alt={camera.name} className="w-full h-full object-cover" />
               ) : (

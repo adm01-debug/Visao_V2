@@ -156,9 +156,7 @@ export default function HeatmapPage() {
           )}
 
           {/* Visualização do Heatmap */}
-          <HeatmapVisualization
-            {...{ data: heatmapData, isLoading, error } as any}
-          />
+          <HeatmapVisualization />
         </main>
       </div>
     </>

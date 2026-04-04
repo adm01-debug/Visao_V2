@@ -75,10 +75,10 @@ const UserManagementPage: React.FC = () => {
 
       if (error) throw error;
       setUsers(data.users || []);
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: "Erro ao carregar usuários",
-        description: err.message || "Tente novamente mais tarde",
+        description: err instanceof Error ? err.message : "Tente novamente mais tarde",
         variant: "destructive",
       });
     } finally {
@@ -111,10 +111,10 @@ const UserManagementPage: React.FC = () => {
         title: "Role atualizada",
         description: `Usuário promovido a ${ROLE_LABELS[newRole]}`,
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: "Erro ao atualizar role",
-        description: err.message,
+        description: err instanceof Error ? err.message : "Erro desconhecido",
         variant: "destructive",
       });
     } finally {
@@ -235,7 +235,7 @@ const UserManagementPage: React.FC = () => {
                       </TableCell>
                       <TableCell>
                         {u.id === user?.id ? (
-                          <Badge variant={ROLE_COLORS[u.role] as any}>
+                          <Badge variant={ROLE_COLORS[u.role] as "default" | "secondary" | "destructive" | "outline"}>
                             {ROLE_LABELS[u.role]} (você)
                           </Badge>
                         ) : (

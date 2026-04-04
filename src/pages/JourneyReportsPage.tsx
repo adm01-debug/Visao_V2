@@ -100,7 +100,7 @@ export default function JourneyReportsPage() {
       }>();
 
       for (const log of (logs || [])) {
-        const person = log.registered_persons as any;
+        const person = log.registered_persons as { id: string; name: string; department: string | null } | null;
         if (!person) continue;
         if (selectedPerson !== "all" && person.id !== selectedPerson) continue;
 
@@ -120,7 +120,7 @@ export default function JourneyReportsPage() {
         const zone = event.zone_id ? zoneMap.get(event.zone_id) : null;
         if (!zone) continue;
 
-        const objects = (event.detected_objects as any[]) || [];
+        const objects = (event.detected_objects as Array<{ person_id?: string; duration_minutes?: number }>) || [];
         for (const obj of objects) {
           const personId = obj?.person_id;
           if (!personId) continue;

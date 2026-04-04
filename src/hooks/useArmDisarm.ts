@@ -41,10 +41,10 @@ export function useArmDisarm(cameraId?: string) {
         user_id: user!.id,
         camera_id: cameraId,
         state: 'armed',
-        armed_by_email: user!.email,
+        armed_by_email: user!.email ?? null,
         armed_at: new Date().toISOString(),
         disarm_at: scheduledDisarm || null,
-      } as any, { onConflict: 'camera_id,user_id' } as any);
+      });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -56,7 +56,7 @@ export function useArmDisarm(cameraId?: string) {
   const disarmCamera = useMutation({
     mutationFn: async (cameraId: string) => {
       const { error } = await supabase.from('arm_disarm_states')
-        .update({ state: 'disarmed', updated_at: new Date().toISOString() } as any)
+        .update({ state: 'disarmed', updated_at: new Date().toISOString() })
         .eq('camera_id', cameraId)
         .eq('user_id', user!.id);
       if (error) throw error;

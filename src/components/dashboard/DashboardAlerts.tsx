@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import type { DbAlert } from '@/hooks/useAlerts';
 import {
   AlertTriangle,
   Camera,
@@ -24,7 +25,7 @@ interface DashboardAlertsProps {
   uiAlerts: UIAlert[];
   uiCameras: UICameraData[];
   searchQuery: string;
-  alerts: any[];
+  alerts: DbAlert[];
   unreadCount: number;
   markAllAsRead: () => void;
 }

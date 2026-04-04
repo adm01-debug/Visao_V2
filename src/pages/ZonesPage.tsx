@@ -36,7 +36,7 @@ export function ZonesPage() {
   const [selectedTypeFilter, setSelectedTypeFilter] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const [editorCamera, setEditorCamera] = useState<any>(null);
+  const [editorCamera, setEditorCamera] = useState<{ id: string; name: string; stream_url?: string | null; stream_protocol?: string; thumbnail?: string | null } | null>(null);
   const [editingZone, setEditingZone] = useState<DbZoneLocal | null>(null);
   const [viewingZone, setViewingZone] = useState<DbZoneLocal | null>(null);
   const [zoneStats, setZoneStats] = useState<Record<string, ZoneStats>>({});
@@ -108,7 +108,7 @@ export function ZonesPage() {
     catch { toast.error('Erro ao alternar'); }
   };
 
-  const openEditor = (camera: any, zone?: DbZoneLocal) => { setEditorCamera(camera); setEditingZone(zone || null); setIsEditorOpen(true); };
+  const openEditor = (camera: { id: string; name: string; stream_url?: string | null; stream_protocol?: string; thumbnail?: string | null } | undefined, zone?: DbZoneLocal) => { if (!camera) return; setEditorCamera(camera); setEditingZone(zone || null); setIsEditorOpen(true); };
   const openView = (zone: DbZoneLocal) => { setViewingZone(zone); loadZoneEvents(zone.id); };
   const getCameraName = (cameraId: string | null) => (!cameraId ? 'Câmera desconhecida' : cameras.find(c => c.id === cameraId)?.name || 'Câmera desconhecida');
   const getCameraById = (cameraId: string | null) => (!cameraId ? null : cameras.find(c => c.id === cameraId));
@@ -176,7 +176,7 @@ export function ZonesPage() {
       ) : (
         <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'flex flex-col gap-2')}>
           {filteredZones.map(zone => (
-            <ZoneCard key={zone.id} zone={zone} stats={zoneStats[zone.id]} cameraName={getCameraName(zone.camera_id)} onView={() => openView(zone)} onEdit={() => openEditor(getCameraById(zone.camera_id), zone)} onDelete={() => setDeleteConfirm(zone)} onToggle={() => handleToggle(zone)} />
+            <ZoneCard key={zone.id} zone={zone} stats={zoneStats[zone.id]} cameraName={getCameraName(zone.camera_id)} onView={() => openView(zone)} onEdit={() => openEditor(getCameraById(zone.camera_id) ?? undefined, zone)} onDelete={() => setDeleteConfirm(zone)} onToggle={() => handleToggle(zone)} />
           ))}
         </div>
       )}
