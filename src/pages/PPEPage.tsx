@@ -494,7 +494,7 @@ export default function PPEPage() {
                   {ppeDetection.detections.map(detection => (
                     <Card key={detection.personId} className={cn(
                       "border-2",
-                      detection.compliant ? "border-green-500/50" : "border-red-500/50"
+                      detection.isCompliant ? "border-green-500/50" : "border-red-500/50"
                     )}>
                       <CardContent className="pt-4">
                         <div role="main" className="flex items-center justify-between mb-2">
