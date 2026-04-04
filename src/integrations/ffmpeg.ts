@@ -344,7 +344,8 @@ class FFmpegService {
 
       const metadata: Record<string, string> = {};
 
-      this.ffmpeg.on('log', ({ message }) => {
+      this.ffmpeg.on('log', (data: Record<string, unknown>) => {
+        const message = (data as { message: string }).message;
         const durationMatch = message.match(/Duration: (\d{2}:\d{2}:\d{2}\.\d{2})/);
         if (durationMatch) {
           metadata.duration = durationMatch[1];
