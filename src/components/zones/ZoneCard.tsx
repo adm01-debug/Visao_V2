@@ -21,7 +21,7 @@ interface ZoneCardProps {
 
 export function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, onView }: ZoneCardProps) {
   const typeConfig = zoneTypeConfig[zone.type as ZoneType] || zoneTypeConfig.custom;
-  const TypeIcon = typeConfig.icon;
+  const TypeIcon = typeConfig.icon as LucideIcon;
 
   return (
     <Card className={cn('transition-all hover:shadow-md cursor-pointer group', !zone.is_active && 'opacity-60')} onClick={onView}>

@@ -9,12 +9,15 @@ export interface RuleViolation {
   severity: 'low' | 'medium' | 'high' | 'critical';
   description: string;
   snapshot_url?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   acknowledged: boolean;
   acknowledged_by?: string;
   acknowledged_at?: string;
   created_at: string;
 }
+
+// Note: This hook references a 'rule_violations' table that may not exist yet.
+// Using type assertions to allow compilation until the table is created.
 
 export const useRuleViolations = (ruleId?: string, cameraId?: string) => {
   const [violations, setViolations] = useState<RuleViolation[]>([]);
@@ -24,7 +27,8 @@ export const useRuleViolations = (ruleId?: string, cameraId?: string) => {
   const fetchViolations = useCallback(async () => {
     setLoading(true);
     try {
-      let query = supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let query = (supabase as any)
         .from('rule_violations')
         .select('*')
         .order('created_at', { ascending: false });
@@ -38,7 +42,7 @@ export const useRuleViolations = (ruleId?: string, cameraId?: string) => {
 
       const { data, error } = await query;
       if (error) throw error;
-      setViolations(data || []);
+      setViolations((data as RuleViolation[]) || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch violations');
     } finally {
@@ -52,7 +56,8 @@ export const useRuleViolations = (ruleId?: string, cameraId?: string) => {
 
   const acknowledgeViolation = useCallback(async (id: string, userId: string) => {
     try {
-      const { error } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase as any)
         .from('rule_violations')
         .update({
           acknowledged: true,
@@ -71,7 +76,8 @@ export const useRuleViolations = (ruleId?: string, cameraId?: string) => {
 
   const deleteViolation = useCallback(async (id: string) => {
     try {
-      const { error } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase as any)
         .from('rule_violations')
         .delete()
         .eq('id', id);

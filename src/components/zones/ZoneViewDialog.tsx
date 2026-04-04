@@ -32,7 +32,7 @@ interface ZoneViewDialogProps {
 export function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }: ZoneViewDialogProps) {
   if (!zone) return null;
   const typeConfig = zoneTypeConfig[zone.type as ZoneType] || zoneTypeConfig.custom;
-  const TypeIcon = typeConfig.icon;
+  const TypeIcon = typeConfig.icon as LucideIcon;
   const pointsData = parsePointsData(zone.points);
 
   return (

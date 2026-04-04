@@ -43,7 +43,7 @@ export interface ZoneFormData {
 
 export const zoneTypeConfig: Record<ZoneType, {
   label: string;
-  icon: unknown;
+  icon: LucideIcon;
   color: string;
   bgColor: string;
   description: string;

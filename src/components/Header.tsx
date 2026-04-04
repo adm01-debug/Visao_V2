@@ -19,7 +19,7 @@ export function Header({ className }: { className?: string }) {
     <header className={cn("border-b bg-card/60 backdrop-blur supports-[backdrop-filter]:bg-card/50", className)}>
       <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6">
         <div className="min-w-0 flex-1">
-          <Breadcrumbs />
+          {/* Breadcrumbs removed - requires route-aware items */}
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">

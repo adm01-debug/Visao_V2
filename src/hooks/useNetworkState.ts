@@ -25,7 +25,7 @@ export const useNetworkState = (): NetworkState => {
   });
 
   useEffect(() => {
-    const connection = navigator.connection;
+    const connection = (navigator as unknown as { connection?: NetworkInformationAPI }).connection;
 
     const updateNetworkState = () => {
       setState({
