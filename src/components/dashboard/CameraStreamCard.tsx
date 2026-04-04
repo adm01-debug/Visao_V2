@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Camera, Users, Brain } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { Database } from '@/integrations/supabase/types';
@@ -35,7 +36,7 @@ interface CameraStreamCardProps {
   analysisRules?: DbRule[];
 }
 
-export function CameraStreamCard({ camera, isSelected, onClick, settings, compact = false, analysisRules }: CameraStreamCardProps) {
+function CameraStreamCardBase({ camera, isSelected, onClick, settings, compact = false, analysisRules }: CameraStreamCardProps) {
   const hasStream = camera.streamUrl && settings.enableStreaming;
   const hasAlerts = camera.alerts > 0;
   const isOnline = camera.status === 'online' || camera.status === 'alert';
@@ -92,3 +93,5 @@ export function CameraStreamCard({ camera, isSelected, onClick, settings, compac
     </div>
   );
 }
+
+export const CameraStreamCard = memo(CameraStreamCardBase);

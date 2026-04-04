@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Camera, Users, AlertTriangle, Shield, Zap } from 'lucide-react';
 import { StatsCard } from '@/components/StatsCard';
 
@@ -54,3 +55,5 @@ export function DashboardStats({
     </div>
   );
 }
+
+export default memo(DashboardStats);
