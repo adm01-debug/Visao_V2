@@ -86,40 +86,40 @@ const App = () => (
               <NotificationProvider>
                 <Suspense fallback={<PageLoader />}>
                   <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/auth/callback" element={<AuthCallback />} />
-                    <Route path="/reset-password" element={<ResetPasswordPage />} />
-                    <Route path="/dashboard" element={<ProtectedLayoutRoute><DashboardV2 /></ProtectedLayoutRoute>} />
-                    <Route path="/cameras" element={<ProtectedLayoutRoute><CamerasPage /></ProtectedLayoutRoute>} />
-                    <Route path="/alerts" element={<ProtectedLayoutRoute><AlertsPage /></ProtectedLayoutRoute>} />
-                    <Route path="/zones" element={<ProtectedLayoutRoute><ZonesPage /></ProtectedLayoutRoute>} />
-                    <Route path="/recordings" element={<ProtectedLayoutRoute><RecordingsPage /></ProtectedLayoutRoute>} />
-                    <Route path="/analytics" element={<ProtectedLayoutRoute><AnalyticsPage /></ProtectedLayoutRoute>} />
-                    <Route path="/settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager"><SettingsPage /></ProtectedRoute></ProtectedLayoutRoute>} />
-                    <Route path="/security" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager"><SecurityPage /></ProtectedRoute></ProtectedLayoutRoute>} />
-                    <Route path="/face-recognition" element={<ProtectedLayoutRoute><FaceRecognitionPage /></ProtectedLayoutRoute>} />
-                    <Route path="/license-plate" element={<ProtectedLayoutRoute><LicensePlatePage /></ProtectedLayoutRoute>} />
-                    <Route path="/heatmap" element={<ProtectedLayoutRoute><HeatmapPage /></ProtectedLayoutRoute>} />
-                    <Route path="/reports" element={<ProtectedLayoutRoute><ReportsPage /></ProtectedLayoutRoute>} />
-                    <Route path="/ppe" element={<ProtectedLayoutRoute><PPEPage /></ProtectedLayoutRoute>} />
-                    <Route path="/people" element={<ProtectedLayoutRoute><ProtectedRoute minRole="operator"><PeoplePage /></ProtectedRoute></ProtectedLayoutRoute>} />
-                    <Route path="/recognition-logs" element={<ProtectedLayoutRoute><RecognitionLogsPage /></ProtectedLayoutRoute>} />
-                    <Route path="/recognition-analytics" element={<ProtectedLayoutRoute><RecognitionAnalyticsPage /></ProtectedLayoutRoute>} />
-                    <Route path="/stream-settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager"><StreamSettingsPage /></ProtectedRoute></ProtectedLayoutRoute>} />
-                    <Route path="/telegram-settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager"><TelegramSettingsPage /></ProtectedRoute></ProtectedLayoutRoute>} />
-                    <Route path="/notification-settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager"><NotificationSettingsPage /></ProtectedRoute></ProtectedLayoutRoute>} />
-                    <Route path="/automation-rules" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager"><AutomationRulesPage /></ProtectedRoute></ProtectedLayoutRoute>} />
-                    <Route path="/profile" element={<ProtectedLayoutRoute><ProfilePage /></ProtectedLayoutRoute>} />
-                    <Route path="/help" element={<ProtectedLayoutRoute><HelpPage /></ProtectedLayoutRoute>} />
-                    <Route path="/panic-events" element={<ProtectedLayoutRoute><PanicEventsPage /></ProtectedLayoutRoute>} />
-                    <Route path="/productivity" element={<ProtectedLayoutRoute><ProductivityDashboardPage /></ProtectedLayoutRoute>} />
-                    <Route path="/behavior-detection" element={<ProtectedLayoutRoute><BehaviorDetectionPage /></ProtectedLayoutRoute>} />
-                    <Route path="/journey-reports" element={<ProtectedLayoutRoute><JourneyReportsPage /></ProtectedLayoutRoute>} />
-                    <Route path="/collaborator-flow" element={<ProtectedLayoutRoute><CollaboratorFlowMapPage /></ProtectedLayoutRoute>} />
-                    <Route path="/goals-alerts" element={<ProtectedLayoutRoute><GoalsAlertsPage /></ProtectedLayoutRoute>} />
-                    <Route path="/users" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin"><UserManagementPage /></ProtectedRoute></ProtectedLayoutRoute>} />
-                    <Route path="/acesso-negado" element={<AcessoNegado />} />
+                    <Route path="/" element={withRouteErrorBoundary(<Index />, "Início")} />
+                    <Route path="/auth" element={withRouteErrorBoundary(<Auth />, "Autenticação")} />
+                    <Route path="/auth/callback" element={withRouteErrorBoundary(<AuthCallback />, "Auth Callback")} />
+                    <Route path="/reset-password" element={withRouteErrorBoundary(<ResetPasswordPage />, "Redefinir Senha")} />
+                    <Route path="/dashboard" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<DashboardV2 />, "Dashboard")}</ProtectedLayoutRoute>} />
+                    <Route path="/cameras" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<CamerasPage />, "Câmeras")}</ProtectedLayoutRoute>} />
+                    <Route path="/alerts" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<AlertsPage />, "Alertas")}</ProtectedLayoutRoute>} />
+                    <Route path="/zones" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<ZonesPage />, "Zonas")}</ProtectedLayoutRoute>} />
+                    <Route path="/recordings" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<RecordingsPage />, "Gravações")}</ProtectedLayoutRoute>} />
+                    <Route path="/analytics" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<AnalyticsPage />, "Analytics")}</ProtectedLayoutRoute>} />
+                    <Route path="/settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<SettingsPage />, "Configurações")}</ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/security" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<SecurityPage />, "Segurança")}</ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/face-recognition" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<FaceRecognitionPage />, "Reconhecimento Facial")}</ProtectedLayoutRoute>} />
+                    <Route path="/license-plate" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<LicensePlatePage />, "Placas")}</ProtectedLayoutRoute>} />
+                    <Route path="/heatmap" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<HeatmapPage />, "Mapa de Calor")}</ProtectedLayoutRoute>} />
+                    <Route path="/reports" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<ReportsPage />, "Relatórios")}</ProtectedLayoutRoute>} />
+                    <Route path="/ppe" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<PPEPage />, "EPI")}</ProtectedLayoutRoute>} />
+                    <Route path="/people" element={<ProtectedLayoutRoute><ProtectedRoute minRole="operator">{withRouteErrorBoundary(<PeoplePage />, "Pessoas")}</ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/recognition-logs" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<RecognitionLogsPage />, "Logs de Reconhecimento")}</ProtectedLayoutRoute>} />
+                    <Route path="/recognition-analytics" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<RecognitionAnalyticsPage />, "Analytics de Reconhecimento")}</ProtectedLayoutRoute>} />
+                    <Route path="/stream-settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<StreamSettingsPage />, "Config. de Stream")}</ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/telegram-settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<TelegramSettingsPage />, "Config. Telegram")}</ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/notification-settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<NotificationSettingsPage />, "Config. Notificações")}</ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/automation-rules" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<AutomationRulesPage />, "Regras de Automação")}</ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/profile" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<ProfilePage />, "Perfil")}</ProtectedLayoutRoute>} />
+                    <Route path="/help" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<HelpPage />, "Ajuda")}</ProtectedLayoutRoute>} />
+                    <Route path="/panic-events" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<PanicEventsPage />, "Eventos de Pânico")}</ProtectedLayoutRoute>} />
+                    <Route path="/productivity" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<ProductivityDashboardPage />, "Produtividade")}</ProtectedLayoutRoute>} />
+                    <Route path="/behavior-detection" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<BehaviorDetectionPage />, "Detecção de Comportamento")}</ProtectedLayoutRoute>} />
+                    <Route path="/journey-reports" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<JourneyReportsPage />, "Relatórios de Jornada")}</ProtectedLayoutRoute>} />
+                    <Route path="/collaborator-flow" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<CollaboratorFlowMapPage />, "Fluxo de Colaboradores")}</ProtectedLayoutRoute>} />
+                    <Route path="/goals-alerts" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<GoalsAlertsPage />, "Metas e Alertas")}</ProtectedLayoutRoute>} />
+                    <Route path="/users" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<UserManagementPage />, "Gestão de Usuários")}</ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/acesso-negado" element={withRouteErrorBoundary(<AcessoNegado />, "Acesso Negado")} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>
