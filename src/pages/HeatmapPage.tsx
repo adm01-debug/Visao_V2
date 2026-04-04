@@ -70,7 +70,7 @@ export default function HeatmapPage() {
 
             <div role="main" className="flex items-center gap-4">
               {/* Seletor de período */}
-              <Select value={timeRange} onValueChange={(value: unknown) => setTimeRange(value)}>
+              <Select value={timeRange} onValueChange={(value) => setTimeRange(value as typeof timeRange)}>
                 <SelectTrigger className="w-[140px]">
                   <Calendar className="h-4 w-4 mr-2" />
                   <SelectValue />
