@@ -745,6 +745,29 @@ export function VideoStreamPlayer({
               </TooltipContent>
             </Tooltip>
 
+            {/* Continuous Analysis toggle */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={cn(
+                    'h-9 w-9 p-0 text-white hover:bg-white/20',
+                    continuousAnalysisActive && 'bg-primary/40'
+                  )}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setContinuousAnalysisActive(prev => !prev);
+                  }}
+                >
+                  <Brain className={cn('w-4 h-4', isAnalysisRunning && 'animate-pulse')} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {continuousAnalysisActive ? 'Desativar análise contínua IA' : 'Ativar análise contínua IA'}
+              </TooltipContent>
+            </Tooltip>
+
             {/* Stats toggle */}
             <Tooltip>
               <TooltipTrigger asChild>
