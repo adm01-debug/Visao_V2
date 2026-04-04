@@ -550,7 +550,6 @@ Respond in JSON format:
     setViolations(prev => prev.map(v =>
       v.id === id ? { ...v, acknowledged: true } : v
     ));
-    }
   }, []);
 
   // ============================================
