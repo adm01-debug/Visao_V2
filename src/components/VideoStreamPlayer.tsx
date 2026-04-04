@@ -34,6 +34,7 @@ import {
   Signal,
   Scan,
   Circle,
+  Brain,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -64,6 +65,9 @@ import {
 import { FaceRecognitionOverlay } from './FaceRecognitionOverlay';
 import { useStreamFaceDetection } from '@/hooks/useStreamFaceDetection';
 import { ClipRecorderControls } from './ClipRecorderControls';
+import { useContinuousAnalysis } from '@/hooks/useContinuousAnalysis';
+import { AnalysisType, AnalysisResult, AnalysisAlert } from '@/hooks/useImageAnalysis';
+import { DbRule } from '@/types/rules';
 
 // ============================================
 // TIPOS
@@ -84,50 +88,36 @@ interface Detection {
 }
 
 interface VideoStreamPlayerProps {
-  /** ID da câmera */
   cameraId: string;
-
-  /** Nome da câmera */
   cameraName: string;
-
-  /** Localização */
   location?: string;
-
-  /** URL do stream (ou usa teste) */
   streamUrl?: string;
-
-  /** Protocolo de streaming */
   protocol?: StreamConfig['protocol'];
-
-  /** É ao vivo? */
   isLive?: boolean;
-
-  /** Detecções de IA para overlay */
   detections?: Detection[];
-
-  /** Mostrar estatísticas */
   showStats?: boolean;
-
-  /** Habilitar detecção facial */
   enableFaceDetection?: boolean;
-
-  /** Intervalo de detecção facial em ms */
   faceDetectionInterval?: number;
-
-  /** Altura fixa (default: aspect-video) */
   height?: number | string;
-
-  /** Callback ao tirar snapshot */
   onSnapshot?: (imageData: string) => void;
-
-  /** Callback de erro */
   onError?: (error: string) => void;
-
-  /** Callback ao clicar na câmera */
   onClick?: () => void;
-
-  /** Classe CSS adicional */
   className?: string;
+
+  /** Habilitar análise contínua com IA */
+  enableContinuousAnalysis?: boolean;
+  /** Tipo de análise contínua */
+  analysisType?: AnalysisType;
+  /** Intervalo entre análises em ms (padrão: 15000) */
+  analysisIntervalMs?: number;
+  /** Regras de automação a avaliar */
+  analysisRules?: DbRule[];
+  /** Salvar análises no banco */
+  saveAnalysisHistory?: boolean;
+  /** Callback quando alerta é gerado pela análise */
+  onAnalysisAlert?: (alert: AnalysisAlert, result: AnalysisResult) => void;
+  /** Callback com resultado da análise */
+  onAnalysisResult?: (result: AnalysisResult) => void;
 }
 
 // ============================================
@@ -317,13 +307,22 @@ export function VideoStreamPlayer({
   onError,
   onClick,
   className,
+  enableContinuousAnalysis = false,
+  analysisType = 'security',
+  analysisIntervalMs = 15000,
+  analysisRules = [],
+  saveAnalysisHistory = false,
+  onAnalysisAlert,
+  onAnalysisResult,
 }: VideoStreamPlayerProps) {
   // Estados locais
   const [showStatsOverlay, setShowStatsOverlay] = useState(showStats);
   const [controlsVisible, setControlsVisible] = useState(true);
   const [faceDetectionActive, setFaceDetectionActive] = useState(enableFaceDetection);
+  const [continuousAnalysisActive, setContinuousAnalysisActive] = useState(enableContinuousAnalysis);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // URL do stream (usar teste se não fornecido)
   const url = streamUrl || testStreamUrls.hls.bigBuckBunny;
@@ -353,6 +352,64 @@ export function VideoStreamPlayer({
       onSnapshot?.(data);
     },
   });
+
+  // Função para capturar frame como base64 para análise contínua
+  const getFrameForAnalysis = useCallback((): string | null => {
+    const video = videoRef.current;
+    if (!video || video.readyState < 2) return null;
+
+    if (!canvasRef.current) {
+      canvasRef.current = document.createElement('canvas');
+    }
+    const canvas = canvasRef.current;
+    canvas.width = Math.min(video.videoWidth, 640);
+    canvas.height = Math.min(video.videoHeight, 480);
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    return canvas.toDataURL('image/jpeg', 0.7);
+  }, [videoRef]);
+
+  // Hook de análise contínua
+  const {
+    session: analysisSession,
+    lastAnalysis,
+    isAnalyzing: isAnalysisRunning,
+    startAnalysis,
+    stopAnalysis,
+    pauseAnalysis,
+    resumeAnalysis,
+    history: analysisHistory,
+  } = useContinuousAnalysis({
+    cameraId,
+    cameraName,
+    getFrame: getFrameForAnalysis,
+    rules: analysisRules,
+    autoStart: false,
+    createAlerts: true,
+    saveToDatabase: saveAnalysisHistory,
+    config: {
+      analysisTypes: [analysisType],
+      intervalMs: analysisIntervalMs,
+    },
+    onAnalysisComplete: (_camId, result) => {
+      onAnalysisResult?.(result);
+    },
+    onAlertGenerated: (_camId, alert, result) => {
+      onAnalysisAlert?.(alert, result);
+    },
+  });
+
+  // Iniciar/parar análise contínua baseado no estado do player
+  useEffect(() => {
+    if (continuousAnalysisActive && state.status === 'playing') {
+      startAnalysis({ analysisTypes: [analysisType], intervalMs: analysisIntervalMs });
+    } else {
+      stopAnalysis();
+    }
+    return () => { stopAnalysis(); };
+  }, [continuousAnalysisActive, state.status]);
 
   // Hook de detecção facial
   const {
@@ -522,6 +579,37 @@ export function VideoStreamPlayer({
           </div>
         )}
 
+        {/* Continuous Analysis indicator */}
+        {continuousAnalysisActive && analysisSession && (
+          <div className="absolute top-12 right-3 flex flex-col items-end gap-1">
+            <div className="flex items-center gap-2 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-xs text-white">
+              <Brain className={cn('w-3 h-3', isAnalysisRunning ? 'animate-pulse text-primary' : 'text-green-400')} />
+              <span>{isAnalysisRunning ? 'Analisando...' : 'IA Ativa'}</span>
+              {analysisSession.stats.totalAnalyses > 0 && (
+                <span className="text-muted-foreground">({analysisSession.stats.totalAnalyses})</span>
+              )}
+            </div>
+            {lastAnalysis && (
+              <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-xs text-white">
+                <span className="text-muted-foreground">Pessoas:</span>
+                <span className="font-medium">{lastAnalysis.people_count}</span>
+                {lastAnalysis.risk_level && (
+                  <>
+                    <span className="text-muted-foreground ml-1">Risco:</span>
+                    <span className={cn(
+                      'font-medium',
+                      lastAnalysis.risk_level === 'critical' && 'text-red-400',
+                      lastAnalysis.risk_level === 'high' && 'text-orange-400',
+                      lastAnalysis.risk_level === 'medium' && 'text-yellow-400',
+                      lastAnalysis.risk_level === 'low' && 'text-green-400',
+                    )}>{lastAnalysis.risk_level}</span>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Stats overlay */}
         {showStatsOverlay && state.status === 'playing' && (
           <StatsOverlay
@@ -654,6 +742,29 @@ export function VideoStreamPlayer({
               </TooltipTrigger>
               <TooltipContent>
                 {faceDetectionActive ? 'Desativar detecção facial' : 'Ativar detecção facial'}
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Continuous Analysis toggle */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={cn(
+                    'h-9 w-9 p-0 text-white hover:bg-white/20',
+                    continuousAnalysisActive && 'bg-primary/40'
+                  )}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setContinuousAnalysisActive(prev => !prev);
+                  }}
+                >
+                  <Brain className={cn('w-4 h-4', isAnalysisRunning && 'animate-pulse')} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {continuousAnalysisActive ? 'Desativar análise contínua IA' : 'Ativar análise contínua IA'}
               </TooltipContent>
             </Tooltip>
 
