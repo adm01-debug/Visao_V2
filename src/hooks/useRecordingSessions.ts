@@ -97,7 +97,7 @@ export const useRecordingSessions = (cameraId?: string) => {
     try {
       const { error } = await supabase
         .from('recording_sessions' as never)
-        .update({ status: 'paused' })
+        .update({ status: 'paused' } as never)
         .eq('id', id);
 
       if (error) throw error;
