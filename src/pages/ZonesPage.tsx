@@ -36,7 +36,7 @@ export function ZonesPage() {
   const [selectedTypeFilter, setSelectedTypeFilter] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const [editorCamera, setEditorCamera] = useState<any>(null);
+  const [editorCamera, setEditorCamera] = useState<{ id: string; name: string; stream_url?: string | null; stream_protocol?: string; thumbnail?: string | null } | null>(null);
   const [editingZone, setEditingZone] = useState<DbZoneLocal | null>(null);
   const [viewingZone, setViewingZone] = useState<DbZoneLocal | null>(null);
   const [zoneStats, setZoneStats] = useState<Record<string, ZoneStats>>({});
