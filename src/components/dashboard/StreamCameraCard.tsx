@@ -96,6 +96,22 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true, 
 
       {/* Controls (appear on hover) */}
       <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        {onToggleAiAnalysis && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="secondary"
+                size="icon"
+                className={cn('h-6 w-6', aiAnalysisActive && 'bg-primary text-primary-foreground hover:bg-primary/90')}
+                aria-label={aiAnalysisActive ? 'Desativar análise IA' : 'Ativar análise IA'}
+                onClick={(e) => { e.stopPropagation(); onToggleAiAnalysis(camera.id, !aiAnalysisActive); }}
+              >
+                <Brain className="w-3 h-3" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{aiAnalysisActive ? 'Desativar análise IA' : 'Ativar análise IA'}</TooltipContent>
+          </Tooltip>
+        )}
         {showStream && camera.streamUrl && (
           <>
             <Button variant="secondary" size="icon" className="h-6 w-6"
