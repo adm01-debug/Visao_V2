@@ -62,6 +62,7 @@ export function Header({ className }: { className?: string }) {
             </TooltipContent>
           </Tooltip>
 
+          <AnalysisHistoryPanel />
           <NotificationBell />
           <UserAvatar />
         </div>
