@@ -12,7 +12,7 @@ const STAT_ITEMS = [
   { key: 'total', label: 'Total', icon: Clock, colorClass: 'text-primary', bgClass: 'bg-primary/10' },
   { key: 'recognized', label: 'Reconhecidos', icon: CheckCircle, colorClass: 'text-green-500', bgClass: 'bg-green-500/10' },
   { key: 'unknown', label: 'Desconhecidos', icon: AlertTriangle, colorClass: 'text-amber-500', bgClass: 'bg-amber-500/10' },
-  { key: 'avgConfidence', label: 'Confiança Média', icon: Percent, colorClass: 'text-blue-500', bgClass: 'bg-blue-500/10', format: true },
+  { key: 'avgConfidence', label: 'Confiança Média', icon: Percent, colorClass: 'text-blue-500', bgClass: 'bg-blue-500/10', isPercent: true },
 ] as const;
 
 export function RecognitionStatsCards({ total, recognized, unknown, avgConfidence }: StatsCardsProps) {
