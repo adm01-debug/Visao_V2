@@ -210,7 +210,7 @@ export function useZoneDetection(
             zone_id: zone.id,
             user_id: user.id,
             event_type: eventType,
-            detected_objects: object ? [{ id: object.id, type: object.type, position: object.position }] : [],
+            detected_objects: object ? JSON.parse(JSON.stringify([{ id: object.id, type: object.type, position: object.position }])) : [],
             timestamp: new Date().toISOString(),
           };
           await supabase.from('zone_events').insert([insertData]);
