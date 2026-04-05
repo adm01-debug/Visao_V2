@@ -21,7 +21,7 @@ function ZoneLabel({ zone, position, showStats }: { zone: Zone; position: Point;
   return (
     <g>
       <foreignObject x={`${position.x - 5}%`} y={`${position.y - 3}%`} width="10%" height="6%" className="overflow-visible">
-        <div className={cn('flex flex-col items-center justify-center px-2 py-1 rounded text-white text-[10px] font-medium whitespace-nowrap bg-black/70 backdrop-blur-sm', isAlerted && 'animate-pulse bg-destructive/90')}>
+        <div className={cn('flex flex-col items-center justify-center px-2 py-1 rounded text-background text-[10px] font-medium whitespace-nowrap bg-foreground/70 backdrop-blur-sm', isAlerted && 'animate-pulse bg-destructive/90')}>
           <div className="flex items-center gap-1"><Icon className="w-3 h-3" /><span className="truncate max-w-[60px]">{zone.name}</span></div>
           {showStats && zone.stats && (
             <div className="flex items-center gap-2 mt-0.5 text-[9px] opacity-90">
@@ -85,7 +85,7 @@ function OccupancyIndicator({ zone, position }: { zone: Zone; position: Point })
   return (
     <foreignObject x={`${position.x - 4}%`} y={`${position.y + 4}%`} width="8%" height="3%" className="overflow-visible">
       <div className="flex flex-col items-center">
-        <div className="w-full h-1.5 bg-black/50 rounded-full overflow-hidden">
+        <div className="w-full h-1.5 bg-foreground/50 rounded-full overflow-hidden">
           <div className={cn('h-full transition-all duration-300', isOver ? 'bg-destructive' : isNear ? 'bg-warning' : 'bg-success')} style={{ width: `${Math.min(100, percent)}%` }} />
         </div>
         <span className={cn('text-[9px] font-medium mt-0.5', isOver ? 'text-destructive' : isNear ? 'text-warning' : 'text-success')}>{currentOccupancy}/{maxOccupancy}</span>
@@ -114,7 +114,7 @@ export function ZoneOverlay({ zones, showLabels = true, showStats = true, showAl
         {showStats && sortedZones.filter(z => z.type === 'occupancy' && z.stats?.maxOccupancy).map(zone => { const c = zoneCenters[zone.id]; return c ? <OccupancyIndicator key={`occ-${zone.id}`} zone={zone} position={c} /> : null; })}
       </svg>
       {showAlerts && sortedZones.some(z => z.stats?.isAlerted) && (
-        <div className="absolute top-2 left-2 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-destructive/90 text-white text-xs font-medium animate-pulse"><AlertTriangle className="w-4 h-4" /><span>Alerta de Zona Ativo</span></div>
+        <div className="absolute top-2 left-2 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-destructive/90 text-foreground text-xs font-medium animate-pulse"><AlertTriangle className="w-4 h-4" /><span>Alerta de Zona Ativo</span></div>
       )}
       <style>{`@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }`}</style>
     </div>

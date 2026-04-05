@@ -4,6 +4,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { useMapboxToken } from '@/hooks/useMapboxToken';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AlertTriangle, MapPin } from 'lucide-react';
+import { CHART_COLORS } from '@/constants/chartColors';
 
 interface Camera {
   id: string;
@@ -34,11 +35,11 @@ const locationCoordinates: Record<string, [number, number]> = {
 
 const getStatusColor = (status: Camera['status']) => {
   switch (status) {
-    case 'online': return '#22c55e';
-    case 'offline': return '#6b7280';
-    case 'alert': return '#ef4444';
-    case 'warning': return '#f59e0b';
-    default: return '#6b7280';
+    case 'online': return CHART_COLORS.cameraOnline;
+    case 'offline': return CHART_COLORS.cameraOffline;
+    case 'alert': return CHART_COLORS.cameraAlert;
+    case 'warning': return CHART_COLORS.cameraWarning;
+    default: return CHART_COLORS.cameraOffline;
   }
 };
 

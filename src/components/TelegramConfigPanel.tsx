@@ -348,7 +348,7 @@ export function TelegramConfigPanel({ className, onConfigChange }: TelegramConfi
           <CardTitle className="text-sm">Exemplo de Alerta</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="bg-[#0f0f0f] rounded-lg p-4 text-white text-sm font-sans">
+          <div className="bg-foreground/95 rounded-lg p-4 text-foreground text-sm font-sans">
             <p className="mb-2">🚨 <strong>ALERTA - VISÃO</strong></p>
             <p className="text-muted-foreground">Tipo: <strong>Pessoa na Blacklist</strong></p>
             <p className="text-muted-foreground">Câmera: Entrada Principal</p>

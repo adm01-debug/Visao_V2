@@ -25,6 +25,7 @@ import { DonutChart } from "@/components/analytics/DonutChart";
 import type { AlertsByType } from "@/components/analytics/DonutChart";
 import { HourlyHeatmap } from "@/components/analytics/HourlyHeatmap";
 import type { HourlyDistribution } from "@/components/analytics/HourlyHeatmap";
+import { ALERT_TYPE_COLORS, CHART_COLORS } from '@/constants/chartColors';
 
 type DateRange = '24h' | '7d' | '30d' | '90d';
 
@@ -82,11 +83,11 @@ export function AnalyticsPage() {
         return { date: dayStr, label: format(day, 'dd/MM', { locale: ptBR }), alerts: alertsData?.filter(a => a.created_at.startsWith(dayStr)).length || 0, analyses: Math.floor(Math.random() * 50), detections: Math.floor(Math.random() * 30), recordings: Math.floor(Math.random() * 10) };
       }));
 
-      const typeColors: Record<string, string> = { motion: '#3b82f6', person: '#22c55e', vehicle: '#f59e0b', face: '#8b5cf6', zone: '#ef4444', other: '#6b7280' };
+      const typeColors: Record<string, string> = ALERT_TYPE_COLORS;
       const typeCount: Record<string, number> = {};
       alertsData?.forEach(a => { typeCount[a.type || 'other'] = (typeCount[a.type || 'other'] || 0) + 1; });
-      const types: AlertsByType[] = Object.entries(typeCount).map(([type, count]) => ({ type, count, percentage: totalAlerts > 0 ? (count / totalAlerts) * 100 : 0, color: typeColors[type] ?? typeColors.other ?? '#6b7280' }));
-      setAlertsByType(types.length > 0 ? types : [{ type: 'Sem dados', count: 0, percentage: 100, color: '#6b7280' }]);
+      const types: AlertsByType[] = Object.entries(typeCount).map(([type, count]) => ({ type, count, percentage: totalAlerts > 0 ? (count / totalAlerts) * 100 : 0, color: typeColors[type] ?? ALERT_TYPE_COLORS.other ?? CHART_COLORS.gray }));
+      setAlertsByType(types.length > 0 ? types : [{ type: 'Sem dados', count: 0, percentage: 100, color: CHART_COLORS.gray }]);
 
       setCameraPerformance((camerasData || []).slice(0, 5).map(camera => ({
         id: camera.id, name: camera.name, alerts: alertsData?.filter(a => a.camera_id === camera.id).length || 0,

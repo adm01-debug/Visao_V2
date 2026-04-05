@@ -172,7 +172,7 @@ function StreamPlayerComponent({
   }, [initializePlayer]);
 
   return (
-    <div className={cn("relative bg-black rounded-lg overflow-hidden group", className)}>
+    <div className={cn("relative bg-foreground rounded-lg overflow-hidden group", className)}>
       <video
         ref={videoRef}
         className="w-full h-full object-contain"
@@ -182,14 +182,14 @@ function StreamPlayerComponent({
 
       {/* Loading overlay */}
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-          <RefreshCw className="w-8 h-8 text-white animate-spin" />
+        <div className="absolute inset-0 flex items-center justify-center bg-foreground/50">
+          <RefreshCw className="w-8 h-8 text-foreground animate-spin" />
         </div>
       )}
 
       {/* Error overlay */}
       {error && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-white gap-4">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-foreground/80 text-background gap-4">
           <AlertTriangle className="w-12 h-12 text-destructive" />
           <p>{error}</p>
           <Button variant="secondary" onClick={handleRetry} className="gap-2">
@@ -206,7 +206,7 @@ function StreamPlayerComponent({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-white hover:bg-white/20"
+              className="h-8 w-8 text-foreground hover:bg-background/20"
               onClick={togglePlay}
             >
               {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
@@ -215,7 +215,7 @@ function StreamPlayerComponent({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-white hover:bg-white/20"
+              className="h-8 w-8 text-foreground hover:bg-background/20"
               onClick={toggleMute}
             >
               {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
@@ -234,7 +234,7 @@ function StreamPlayerComponent({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-white hover:bg-white/20"
+              className="h-8 w-8 text-foreground hover:bg-background/20"
               onClick={handleFullscreen}
             >
               <Maximize className="w-4 h-4" />

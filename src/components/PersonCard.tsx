@@ -67,7 +67,7 @@ export function PersonCard({ person, onEdit, onDelete, onAddPhoto, onToggleStatu
             </DropdownMenu>
           </div>
           <div className="absolute top-2 left-2 flex gap-1">
-            <Badge className={cn('text-white border-0', getListTypeColor(person.listType))}><ListTypeIcon className="w-3 h-3 mr-1" />{getListTypeLabel(person.listType)}</Badge>
+            <Badge className={cn('text-foreground border-0', getListTypeColor(person.listType))}><ListTypeIcon className="w-3 h-3 mr-1" />{getListTypeLabel(person.listType)}</Badge>
             {person.status === 'blocked' && <Badge variant="destructive">Bloqueado</Badge>}
           </div>
         </div>

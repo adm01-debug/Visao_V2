@@ -31,7 +31,7 @@ export function PersonCardCompact({ person, selected, onSelect, className }: Per
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="font-medium truncate">{person.name}</span>
-          <Badge className={cn('text-white border-0 text-xs', getListTypeColor(person.listType))}>
+          <Badge className={cn('text-foreground border-0 text-xs', getListTypeColor(person.listType))}>
             {getListTypeLabel(person.listType)}
           </Badge>
         </div>

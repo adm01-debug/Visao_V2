@@ -22,8 +22,8 @@ export function Thumbnail({ src, alt = '', type = 'image', aspectRatio = '16:9',
         <div className="w-full h-full flex items-center justify-center"><Image className="h-8 w-8 text-muted-foreground" /></div>
       )}
       {type === 'video' && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-colors">
-          <Play className="h-10 w-10 text-white fill-white" />
+        <div className="absolute inset-0 flex items-center justify-center bg-foreground/30 group-hover:bg-foreground/50 transition-colors">
+          <Play className="h-10 w-10 text-foreground fill-white" />
         </div>
       )}
     </div>

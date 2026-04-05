@@ -62,7 +62,7 @@ export function BottomSheet({
     <AnimatePresence>
       {isOpen && (
         <>
-          <motion.div className="fixed inset-0 bg-black z-40" style={{ opacity: overlayOpacity }} initial={{ opacity: 0 }} animate={{ opacity: 0.5 }} exit={{ opacity: 0 }} onClick={closeOnOverlayClick ? onClose : undefined} />
+          <motion.div className="fixed inset-0 bg-foreground z-40" style={{ opacity: overlayOpacity }} initial={{ opacity: 0 }} animate={{ opacity: 0.5 }} exit={{ opacity: 0 }} onClick={closeOnOverlayClick ? onClose : undefined} />
           <motion.div ref={sheetRef} className={cn('fixed bottom-0 left-0 right-0 z-50 bg-background rounded-t-2xl shadow-2xl flex flex-col max-h-[95vh]', className)} style={{ y }} initial={{ y: '100%' }} animate={{ y: 0, height: getSnapHeight(currentSnap) }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 30, stiffness: 300 }} drag="y" dragConstraints={{ top: 0 }} dragElastic={{ top: 0, bottom: 0.5 }} onDragEnd={handleDragEnd}>
             {showHandle && <div className="flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing"><div className="w-10 h-1 rounded-full bg-muted-foreground/30" /></div>}
             {title && (

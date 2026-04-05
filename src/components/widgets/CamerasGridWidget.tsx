@@ -69,8 +69,8 @@ export function CamerasGridWidget() {
 
             {/* Camera name */}
             <div className="absolute bottom-0 left-0 right-0 p-1.5">
-              <p className="text-[10px] text-white font-medium truncate">{camera.name}</p>
-              <p className="text-[8px] text-white/70 truncate">{camera.location}</p>
+              <p className="text-[10px] text-foreground font-medium truncate">{camera.name}</p>
+              <p className="text-[8px] text-foreground/70 truncate">{camera.location}</p>
             </div>
           </div>
         );

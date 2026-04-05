@@ -27,7 +27,7 @@ export function VideoStatusBadge({ status }: { status: StreamStatus }) {
   const Icon = config.icon;
 
   return (
-    <Badge className={cn('gap-1.5 text-white border-0', config.color)}>
+    <Badge className={cn('gap-1.5 text-foreground border-0', config.color)}>
       <Icon className={cn('w-3 h-3', config.animate && 'animate-spin')} />
       {config.label}
     </Badge>

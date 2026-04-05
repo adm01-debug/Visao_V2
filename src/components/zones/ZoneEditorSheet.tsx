@@ -90,7 +90,7 @@ export function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneE
                 ))}
               </div>
             </div>
-            <div className="aspect-video bg-black rounded-lg overflow-hidden relative border-2 border-dashed border-muted">
+            <div className="aspect-video bg-foreground rounded-lg overflow-hidden relative border-2 border-dashed border-muted">
               {camera?.stream_url ? (
                 <VideoStreamPlayer cameraId={camera.id} streamUrl={camera.stream_url} protocol={(camera.stream_protocol as StreamProtocol) || 'hls'} cameraName={camera.name} />
               ) : camera?.thumbnail ? (

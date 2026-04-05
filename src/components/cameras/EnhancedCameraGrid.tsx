@@ -133,10 +133,10 @@ export function EnhancedCameraCard({
             className={cn(
               "text-xs font-bold px-2 py-0.5",
               status.color,
-              "text-white"
+              "text-foreground"
             )}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-white mr-1.5 animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-background mr-1.5 animate-pulse" />
             {status.label}
           </Badge>
           {camera.alertsCount && camera.alertsCount > 0 && (
@@ -170,7 +170,7 @@ export function EnhancedCameraCard({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-8 h-8 bg-black/40 hover:bg-black/60 text-white"
+                    className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-background"
                     onClick={() => setIsMuted(!isMuted)}
                   >
                     {isMuted ? (
@@ -182,7 +182,7 @@ export function EnhancedCameraCard({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-8 h-8 bg-black/40 hover:bg-black/60 text-white"
+                    className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-background"
                     onClick={handleRefresh}
                   >
                     <RefreshCw className={cn("w-4 h-4", isLoading && "animate-spin")} />
@@ -192,7 +192,7 @@ export function EnhancedCameraCard({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-8 h-8 bg-black/40 hover:bg-black/60 text-white"
+                    className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-background"
                     onClick={onFullscreen}
                   >
                     <Maximize2 className="w-4 h-4" />
@@ -202,7 +202,7 @@ export function EnhancedCameraCard({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="w-8 h-8 bg-black/40 hover:bg-black/60 text-white"
+                        className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-background"
                       >
                         <MoreVertical className="w-4 h-4" />
                       </Button>

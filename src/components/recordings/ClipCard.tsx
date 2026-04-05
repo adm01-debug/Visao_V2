@@ -32,18 +32,18 @@ interface ClipCardProps {
 export function ClipCard({ clip, isSelected, onSelect, onPlay, onDownload, onDelete }: ClipCardProps) {
   return (
     <Card className={cn('overflow-hidden transition-all hover:shadow-md group', isSelected && 'ring-2 ring-primary')}>
-      <div className="relative aspect-video bg-black cursor-pointer" onClick={onPlay}>
+      <div className="relative aspect-video bg-foreground cursor-pointer" onClick={onPlay}>
         {clip.thumbnail_url ? (
           <img src={clip.thumbnail_url} alt={`Clip ${clip.id}`} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-muted"><Video className="w-12 h-12 text-muted-foreground" /></div>
         )}
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center"><Play className="w-6 h-6 text-black ml-1" /></div>
+        <div className="absolute inset-0 flex items-center justify-center bg-foreground/30 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="w-12 h-12 rounded-full bg-background/90 flex items-center justify-center"><Play className="w-6 h-6 text-foreground ml-1" /></div>
         </div>
-        <Badge className="absolute bottom-2 right-2 bg-black/70 text-white">{formatClipDuration(clip.duration)}</Badge>
+        <Badge className="absolute bottom-2 right-2 bg-foreground/70 text-background">{formatClipDuration(clip.duration)}</Badge>
         <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-          <Checkbox checked={isSelected} onCheckedChange={onSelect} className="bg-white/80" />
+          <Checkbox checked={isSelected} onCheckedChange={onSelect} className="bg-background/80" />
         </div>
         <Badge variant="secondary" className="absolute top-2 right-2 text-xs">{clip.status}</Badge>
       </div>

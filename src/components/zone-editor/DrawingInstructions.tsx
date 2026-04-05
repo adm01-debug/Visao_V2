@@ -17,7 +17,7 @@ export const DrawingInstructions = memo(function DrawingInstructions({
 
   return (
     <div className="absolute bottom-2 left-2 right-2 flex items-center justify-center">
-      <div className="bg-black/80 text-white text-xs px-3 py-2 rounded-lg flex items-center gap-3">
+      <div className="bg-foreground/80 text-background text-xs px-3 py-2 rounded-lg flex items-center gap-3">
         {mode === 'rectangle' && <span>Clique para definir o segundo canto do retângulo</span>}
         {mode === 'polygon' && (
           <>
@@ -33,7 +33,7 @@ export const DrawingInstructions = memo(function DrawingInstructions({
         {mode === 'line' && <span>Clique para definir o ponto final da linha</span>}
         <Button
           variant="ghost" size="sm"
-          className="h-6 px-2 text-white hover:bg-white/20"
+          className="h-6 px-2 text-foreground hover:bg-background/20"
           onClick={(e) => { e.stopPropagation(); onCancel(); }}
         >
           <X className="w-3 h-3 mr-1" />

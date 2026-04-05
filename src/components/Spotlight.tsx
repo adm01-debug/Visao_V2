@@ -10,8 +10,8 @@ export const Spotlight: React.FC<SpotlightProps> = ({ target, title, description
   const rect = el.getBoundingClientRect();
   return (
     <div className="fixed inset-0 z-50">
-      <div className="absolute inset-0 bg-black/70" style={{ clipPath: `polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 0, ${rect.left}px ${rect.top}px, ${rect.left}px ${rect.bottom}px, ${rect.right}px ${rect.bottom}px, ${rect.right}px ${rect.top}px, ${rect.left}px ${rect.top}px)` }} />
-      <div className="absolute bg-white rounded-lg p-4 shadow-xl max-w-sm" style={{ top: rect.bottom + 16, left: rect.left }}>
+      <div className="absolute inset-0 bg-foreground/70" style={{ clipPath: `polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 0, ${rect.left}px ${rect.top}px, ${rect.left}px ${rect.bottom}px, ${rect.right}px ${rect.bottom}px, ${rect.right}px ${rect.top}px, ${rect.left}px ${rect.top}px)` }} />
+      <div className="absolute bg-background rounded-lg p-4 shadow-xl max-w-sm" style={{ top: rect.bottom + 16, left: rect.left }}>
         <h3 className="font-semibold text-lg">{title}</h3>
         <p className="text-muted-foreground mt-1">{description}</p>
         <div className="flex items-center justify-between mt-4">
