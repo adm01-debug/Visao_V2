@@ -3,6 +3,7 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 import { analyzeLicensePlateSchema, validateInput } from "../_shared/validation.ts";
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { createLogger } from "../_shared/logger.ts";
+import { fetchWithRetry } from "../_shared/retry.ts";
 
 const log = createLogger("analyze-license-plate");
 
@@ -36,7 +37,7 @@ serve(async (req) => {
 
     log.info("Analyzing license plate");
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetchWithRetry('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${LOVABLE_API_KEY}`,
