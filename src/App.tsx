@@ -80,7 +80,7 @@ const ProtectedLayoutRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 // VISÃO App Component
-const App = () => (
+const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
   <ErrorBoundary>
     <HelmetProvider>
     <QueryClientProvider client={queryClient}>
