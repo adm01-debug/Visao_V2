@@ -85,6 +85,7 @@ export function RegisterForm({ email, password, fullName, showPassword, isLoadin
           </div>
           {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
           <PasswordStrength password={password} />
+        </div>
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Criando conta...</> : 'Criar conta'}
         </Button>
