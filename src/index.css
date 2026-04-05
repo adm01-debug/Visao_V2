@@ -560,9 +560,9 @@
     animation: pulse-subtle 3s ease-in-out infinite;
   }
 
-  /* Critical alert pulse - more intense with glow */
+  /* Critical alert pulse - more intense with glow + expanding ring */
   .alert-critical-pulse {
-    animation: critical-pulse 2s ease-in-out infinite;
+    animation: critical-pulse 2s ease-in-out infinite, critical-ring 2s ease-out infinite;
   }
 
   /* Staggered fade-in for lists */
