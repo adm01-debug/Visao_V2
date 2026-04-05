@@ -233,7 +233,7 @@ function AnalysisResultsOverlayComponent({
       <div className="bg-black/75 backdrop-blur-sm rounded-lg px-2.5 py-1.5 text-white">
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-1.5">
-            <Brain className={cn('w-3.5 h-3.5', isAnalyzing ? 'animate-pulse text-primary' : 'text-green-400')} />
+            <Brain className={cn('w-3.5 h-3.5', isAnalyzing ? 'animate-pulse text-primary' : 'text-success')} />
             <span className="text-xs font-medium">{isAnalyzing ? 'Analisando...' : 'IA Ativa'}</span>
           </div>
           {riskLevel && (
