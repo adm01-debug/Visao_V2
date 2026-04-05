@@ -12,7 +12,10 @@ interface StatCardProps {
 }
 
 export const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, trend, className }) => (
-  <Card className={className}>
+  <Card className={cn(
+    "group transition-all duration-300 ease-out hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-primary/20",
+    className
+  )}>
     <CardContent className="p-6">
       <div className="flex items-center justify-between">
         <div>
@@ -25,7 +28,7 @@ export const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, tr
             </div>
           )}
         </div>
-        <div className="p-3 bg-primary/10 rounded-lg">
+        <div className="p-3 bg-primary/10 rounded-lg transition-all duration-300 group-hover:bg-primary/15 group-hover:scale-110">
           <Icon className="w-6 h-6 text-primary" />
         </div>
       </div>
