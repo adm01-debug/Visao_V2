@@ -166,17 +166,19 @@ export function DashboardAlerts({
       )}
 
       {/* Productivity Score */}
-      <div className="glass-card p-5 mt-6">
+      <div className="rounded-xl border border-border/50 bg-card p-5 mt-6" style={{ boxShadow: 'var(--shadow-card)' }}>
         <div className="flex items-center gap-2 mb-4">
-          <TrendingUp className="w-5 h-5 text-primary" />
+          <div className="p-1.5 rounded-lg bg-primary/10">
+            <TrendingUp className="w-4 h-4 text-primary" />
+          </div>
           <h3 className="font-semibold text-foreground">Produtividade</h3>
         </div>
         <div className="relative pt-1">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-3xl font-bold text-primary">87%</span>
-            <span className="text-xs text-success">+3% vs ontem</span>
+            <span className="text-3xl font-bold text-primary font-mono tabular-nums">87%</span>
+            <span className="text-xs text-success bg-success/10 px-2 py-0.5 rounded-full">+3% vs ontem</span>
           </div>
-          <div className="h-2 bg-secondary rounded-full overflow-hidden">
+          <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
             <div className="h-full bg-primary rounded-full transition-all duration-1000" style={{ width: '87%' }} />
           </div>
         </div>

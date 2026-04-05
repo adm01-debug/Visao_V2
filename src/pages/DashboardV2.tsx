@@ -186,18 +186,20 @@ export function DashboardV2() {
             const prevScore = Math.max(0, clampedProd - Math.floor(Math.random() * 6 + 1));
             const diff = clampedProd - prevScore;
             return (
-              <div className="glass-card p-4 mt-4">
+              <div className="rounded-xl border border-border/50 bg-card p-4 mt-4" style={{ boxShadow: 'var(--shadow-card)' }}>
                 <div className="flex items-center gap-2 mb-3">
-                  <TrendingUp className="w-5 h-5 text-primary" />
+                  <div className="p-1.5 rounded-lg bg-primary/10">
+                    <TrendingUp className="w-4 h-4 text-primary" />
+                  </div>
                   <h3 className="font-semibold text-sm">Produtividade</h3>
                 </div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-2xl font-bold font-mono tabular-nums text-primary">{clampedProd}%</span>
-                  <Badge variant="outline" className={diff >= 0 ? "text-success border-success/50" : "text-destructive border-destructive/50"}>
+                  <Badge variant="outline" className={cn("text-xs", diff >= 0 ? "text-success border-success/30" : "text-destructive border-destructive/30")}>
                     {diff >= 0 ? '+' : ''}{diff}%
                   </Badge>
                 </div>
-                <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
                   <div className="h-full bg-primary rounded-full transition-all duration-700" style={{ width: `${clampedProd}%` }} />
                 </div>
               </div>
