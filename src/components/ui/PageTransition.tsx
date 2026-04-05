@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 
 interface PageTransitionProps {
@@ -7,10 +7,27 @@ interface PageTransitionProps {
   className?: string;
 }
 
-const pageVariants = {
-  initial: { opacity: 0, y: 6 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -4 },
+/**
+ * Premium crossfade page transition
+ * - Full crossfade with subtle scale for depth
+ * - Respects prefers-reduced-motion
+ */
+const crossfadeVariants = {
+  initial: {
+    opacity: 0,
+    scale: 0.995,
+    filter: 'blur(4px)',
+  },
+  animate: {
+    opacity: 1,
+    scale: 1,
+    filter: 'blur(0px)',
+  },
+  exit: {
+    opacity: 0,
+    scale: 1.005,
+    filter: 'blur(2px)',
+  },
 };
 
 const reducedVariants = {
@@ -19,9 +36,9 @@ const reducedVariants = {
   exit: { opacity: 0 },
 };
 
-const pageTransition = {
-  duration: 0.25,
-  ease: [0.25, 0.1, 0.25, 1],
+const crossfadeTransition = {
+  duration: 0.3,
+  ease: [0.22, 1, 0.36, 1], // easeOutQuint for premium feel
 };
 
 const reducedTransition = {
@@ -33,17 +50,23 @@ export function PageTransition({ children, className }: PageTransitionProps) {
   const location = useLocation();
   const prefersReducedMotion = useReducedMotion();
 
+  const variants = prefersReducedMotion ? reducedVariants : crossfadeVariants;
+  const transition = prefersReducedMotion ? reducedTransition : crossfadeTransition;
+
   return (
-    <motion.div
-      key={location.pathname}
-      variants={prefersReducedMotion ? reducedVariants : pageVariants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      transition={prefersReducedMotion ? reducedTransition : pageTransition}
-      className={className}
-    >
-      {children}
-    </motion.div>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        variants={variants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        transition={transition}
+        className={className}
+        style={{ willChange: 'opacity, transform, filter' }}
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
   );
 }

@@ -597,10 +597,13 @@
   0%, 100% {
     opacity: 1;
     box-shadow: 0 0 0 0 hsl(var(--destructive) / 0.4);
+    border-color: hsl(var(--destructive) / 0.5);
   }
   50% {
-    opacity: 0.92;
-    box-shadow: 0 0 20px 4px hsl(var(--destructive) / 0.15);
+    opacity: 0.9;
+    box-shadow: 0 0 24px 6px hsl(var(--destructive) / 0.2), inset 0 0 12px hsl(var(--destructive) / 0.05);
+    border-color: hsl(var(--destructive) / 0.7);
+  }
   }
 }
 
