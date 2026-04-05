@@ -66,7 +66,7 @@ function TimelineSkeleton() {
   );
 }
 
-export function AnalysisHistoryPanel() {
+export const AnalysisHistoryPanel = React.forwardRef<HTMLDivElement>(function AnalysisHistoryPanel(_props, _ref) {
   const [open, setOpen] = useState(false);
   const { items, isLoading, clearNewFlags } = useRealtimeAnalysisHistory();
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
