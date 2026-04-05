@@ -136,6 +136,6 @@ export const AnalysisHistoryPanel = React.forwardRef<HTMLDivElement>(function An
       </SheetContent>
     </Sheet>
   );
-}
+});
 
 export default AnalysisHistoryPanel;
