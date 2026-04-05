@@ -12,6 +12,7 @@ import { SectionErrorBoundary } from '@/components/layout/SectionErrorBoundary';
 import { useGlobalShortcuts } from '@/hooks/useGlobalShortcuts';
 import { ShortcutsHelpDialog } from '@/components/ShortcutsHelpDialog';
 import { PageTransition } from '@/components/ui/PageTransition';
+import { RouteAnnouncer } from '@/components/ui/RouteAnnouncer';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -54,6 +55,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         shortcutsByCategory={getShortcutsByCategory()}
         formatShortcut={formatShortcut}
       />
+      <RouteAnnouncer />
     </div>
   );
 }

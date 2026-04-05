@@ -588,7 +588,10 @@
 
   .scan-line,
   .status-indicator,
-  .alert-glow {
+  .alert-glow,
+  .alert-critical-pulse,
+  .animate-pulse-subtle,
+  .animate-pulse {
     animation: none !important;
   }
 
@@ -598,9 +601,19 @@
     transform: none !important;
   }
 
+  /* Disable elevation on hover */
+  [class*="hover:-translate-y"] {
+    transform: none !important;
+  }
+
   /* Disable framer-motion transforms */
   [style*="transform"] {
     transition: none !important;
+  }
+
+  /* Keep visual feedback but without motion */
+  .glass-card:hover {
+    border-color: hsl(var(--primary) / 0.5) !important;
   }
 }
 

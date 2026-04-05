@@ -59,6 +59,20 @@ const severityConfig = {
   critical: 'alert',
 } as const;
 
+const severityLabels: Record<AlertSeverity, string> = {
+  low: 'Baixa',
+  medium: 'Média',
+  high: 'Alta',
+  critical: 'Crítica',
+};
+
+const severityShapes: Record<AlertSeverity, string> = {
+  low: '○',      // empty circle
+  medium: '◆',   // filled diamond
+  high: '▲',     // triangle
+  critical: '⬟', // pentagon
+};
+
 const severityBorderColors = {
   low: 'border-l-muted-foreground',
   medium: 'border-l-warning',
@@ -75,8 +89,11 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
     onCameraClick?.(alert.cameraId);
   };
 
+  const severityLabel = severityLabels[alert.severity];
+  const severityShape = severityShapes[alert.severity];
+
   return (
-    <div
+    <article
       className={cn(
         "glass-card p-4 cursor-pointer transition-all duration-300",
         "hover:border-primary/50 hover:shadow-md hover:-translate-y-0.5",
@@ -85,20 +102,28 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
         alert.severity === 'high' && !alert.isRead && 'animate-pulse-subtle'
       )}
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick?.(); } }}
+      aria-label={`Alerta ${severityLabel}: ${alert.message}. Câmera: ${alert.cameraName}. ${formatDistanceToNow(alert.timestamp, { addSuffix: true, locale: ptBR })}`}
     >
       <div className="flex items-start gap-3">
-        <div className={cn("p-2 rounded-lg bg-secondary", config.color)}>
+        <div className={cn("p-2 rounded-lg bg-secondary", config.color)} aria-hidden="true">
           <Icon className="w-5 h-5" />
         </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-1">
             <Badge variant={severityConfig[alert.severity]}>
+              <span className="mr-1" aria-hidden="true">{severityShape}</span>
               {config.label}
+              <span className="sr-only"> — Severidade {severityLabel}</span>
             </Badge>
             <div className="flex items-center gap-1 text-muted-foreground text-xs">
-              <Clock className="w-3 h-3" />
-              {formatDistanceToNow(alert.timestamp, { addSuffix: true, locale: ptBR })}
+              <Clock className="w-3 h-3" aria-hidden="true" />
+              <time dateTime={alert.timestamp.toISOString()}>
+                {formatDistanceToNow(alert.timestamp, { addSuffix: true, locale: ptBR })}
+              </time>
             </div>
           </div>
 
@@ -109,13 +134,14 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
           <button
             onClick={handleCameraClick}
             className="flex items-center gap-1 text-muted-foreground text-xs hover:text-primary transition-colors"
-            title="Filtrar por esta câmera"
+            aria-label={`Filtrar alertas da câmera ${alert.cameraName}`}
           >
-            <Camera className="w-3 h-3" />
+            <Camera className="w-3 h-3" aria-hidden="true" />
             <HighlightText text={alert.cameraName} highlight={searchQuery} />
           </button>
         </div>
       </div>
-    </div>
+      {!alert.isRead && <span className="sr-only">Não lido</span>}
+    </article>
   );
 }
