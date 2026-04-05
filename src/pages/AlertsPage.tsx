@@ -34,6 +34,7 @@ export function AlertsPage() {
   const [filters, setFilters] = useState<AlertFilters>(defaultFilters);
   const [selectedAlerts, setSelectedAlerts] = useState<Set<string>>(new Set());
   const [detailsAlert, setDetailsAlert] = useState<AlertRecord | null>(null);
+  const [removingAlerts, setRemovingAlerts] = useState<Set<string>>(new Set());
 
   const { alerts, loading, unreadCount, markAsRead, markAllAsRead, deleteAlert, refetch } = useAlerts();
   const { cameras } = useCameras();
