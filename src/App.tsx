@@ -95,6 +95,7 @@ const App = () => (
           <BrowserRouter>
             <AuthProvider>
               <NotificationProvider>
+                <NavigationProgress />
                 <Suspense fallback={<PageLoader />}>
                   <Routes>
                     <Route path="/" element={withRouteErrorBoundary(<Index />, "Início")} />
