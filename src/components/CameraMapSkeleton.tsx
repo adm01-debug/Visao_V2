@@ -1,5 +1,5 @@
 import { MapPin } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton, BrandedSkeleton } from '@/components/ui/skeleton';
 
 export function CameraMapSkeleton({ className = '' }: { className?: string }) {
   return (
