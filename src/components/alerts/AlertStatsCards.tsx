@@ -1,5 +1,4 @@
 import { Bell, EyeOff, AlertTriangle, Clock } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 interface AlertStats {
@@ -18,36 +17,71 @@ interface AlertStatsCardsProps {
 }
 
 const items = [
-  { key: 'total' as const, label: 'Total', Icon: Bell, color: '', activeRing: 'ring-foreground/30' },
-  { key: 'unread' as const, label: 'Não Lidos', Icon: EyeOff, color: 'text-primary', activeRing: 'ring-primary' },
-  { key: 'critical' as const, label: 'Críticos', Icon: AlertTriangle, color: 'text-destructive', activeRing: 'ring-destructive' },
-  { key: 'today' as const, label: 'Hoje', Icon: Clock, color: '', activeRing: 'ring-foreground/30' },
+  {
+    key: 'total' as const,
+    label: 'Total',
+    Icon: Bell,
+    iconBg: 'bg-secondary',
+    iconColor: 'text-muted-foreground',
+    valueColor: '',
+    activeRing: 'ring-foreground/20',
+  },
+  {
+    key: 'unread' as const,
+    label: 'Não Lidos',
+    Icon: EyeOff,
+    iconBg: 'bg-primary/12',
+    iconColor: 'text-primary',
+    valueColor: 'text-primary',
+    activeRing: 'ring-primary',
+  },
+  {
+    key: 'critical' as const,
+    label: 'Críticos',
+    Icon: AlertTriangle,
+    iconBg: 'bg-destructive/12',
+    iconColor: 'text-destructive',
+    valueColor: 'text-destructive',
+    activeRing: 'ring-destructive',
+  },
+  {
+    key: 'today' as const,
+    label: 'Hoje',
+    Icon: Clock,
+    iconBg: 'bg-secondary',
+    iconColor: 'text-muted-foreground',
+    valueColor: '',
+    activeRing: 'ring-foreground/20',
+  },
 ];
 
 export function AlertStatsCards({ stats, activeFilter, onFilterClick }: AlertStatsCardsProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-      {items.map(({ key, label, Icon, color, activeRing }) => {
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {items.map(({ key, label, Icon, iconBg, iconColor, valueColor, activeRing }) => {
         const isActive = activeFilter === key;
         return (
-          <Card
+          <button
             key={key}
-            className={cn(
-              'transition-all duration-200 cursor-pointer hover:shadow-md hover:scale-[1.01]',
-              isActive && `ring-2 ring-offset-2 ring-offset-background ${activeRing} scale-[1.02]`
-            )}
+            type="button"
             onClick={() => onFilterClick?.(key)}
+            className={cn(
+              'relative flex items-center gap-3 p-4 rounded-lg border bg-card text-left w-full',
+              'transition-all duration-200 hover:bg-accent/5 hover:border-border/80',
+              isActive && `ring-2 ring-offset-1 ring-offset-background ${activeRing}`,
+              !isActive && 'hover:shadow-sm'
+            )}
           >
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">{label}</p>
-                  <p className={`text-2xl font-bold ${color}`}>{stats[key]}</p>
-                </div>
-                <Icon className={`w-8 h-8 ${color || 'text-muted-foreground'}`} />
-              </div>
-            </CardContent>
-          </Card>
+            <div className={cn('flex items-center justify-center w-10 h-10 rounded-lg shrink-0', iconBg)}>
+              <Icon className={cn('w-5 h-5', iconColor)} />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs text-muted-foreground font-medium">{label}</p>
+              <p className={cn('text-2xl font-bold tabular-nums leading-tight', valueColor)}>
+                {stats[key]}
+              </p>
+            </div>
+          </button>
         );
       })}
     </div>
