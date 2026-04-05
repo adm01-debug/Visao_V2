@@ -70,11 +70,12 @@ const severityLabels: Record<AlertSeverity, string> = {
   critical: 'Crítica',
 };
 
-const severityShapes: Record<AlertSeverity, string> = {
-  low: '○',      // empty circle
-  medium: '◆',   // filled diamond
-  high: '▲',     // triangle
-  critical: '⬟', // pentagon
+/** Color-blind safe: unique icon per severity level */
+const severityIcons: Record<AlertSeverity, typeof Info> = {
+  low: Info,           // ℹ circle
+  medium: AlertCircle, // ⚠ circle with !
+  high: AlertTriangle, // △ triangle
+  critical: Flame,     // 🔥 flame
 };
 
 const severityBorderColors = {
