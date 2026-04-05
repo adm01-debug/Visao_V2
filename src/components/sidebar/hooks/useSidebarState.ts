@@ -65,6 +65,16 @@ export function useSidebarState() {
     localStorage.setItem(STORAGE_KEY, String(collapsed));
   }, [collapsed]);
 
+  // Auto-expand category containing active route on navigation
+  useEffect(() => {
+    const activeCategory = categories.find((cat) =>
+      cat.items.some((item) => location.pathname === item.path || (item.path !== "/dashboard" && location.pathname.startsWith(item.path)))
+    );
+    if (activeCategory && !expandedCategories.includes(activeCategory.id)) {
+      setExpandedCategories((prev) => [...prev, activeCategory.id]);
+    }
+  }, [location.pathname, categories]);
+
   // Global Cmd+K shortcut
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
