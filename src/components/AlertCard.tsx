@@ -6,7 +6,11 @@ import {
   Camera,
   ShieldAlert,
   Cog,
-  BarChart3
+  BarChart3,
+  Info,
+  AlertCircle,
+  OctagonAlert,
+  Flame,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
