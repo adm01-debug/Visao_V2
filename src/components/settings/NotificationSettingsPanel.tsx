@@ -102,9 +102,9 @@ export function NotificationSettingsPanel() {
           </div>
 
           {!isSupported && (
-            <div className="flex items-center gap-2 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-              <AlertTriangle className="h-4 w-4 text-yellow-500" />
-              <span className="text-sm text-yellow-500">
+            <div className="flex items-center gap-2 p-3 bg-warning/10 border border-warning/20 rounded-lg">
+              <AlertTriangle className="h-4 w-4 text-warning" />
+              <span className="text-sm text-warning">
                 Seu navegador não suporta notificações push
               </span>
             </div>
