@@ -1,7 +1,6 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * MainLayout - Layout principal da aplicação
- * Re-exporta do layouts para manter compatibilidade
  */
 
 import { ReactNode } from 'react';
@@ -12,6 +11,7 @@ import { SwipeableView } from '@/components/SwipeableView';
 import { SectionErrorBoundary } from '@/components/layout/SectionErrorBoundary';
 import { useGlobalShortcuts } from '@/hooks/useGlobalShortcuts';
 import { ShortcutsHelpDialog } from '@/components/ShortcutsHelpDialog';
+import { PageTransition } from '@/components/ui/PageTransition';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -38,7 +38,9 @@ export function MainLayout({ children }: MainLayoutProps) {
         <SwipeableView className="flex-1 overflow-auto">
           <main id="main-content" className="p-4 md:p-6 pb-20 md:pb-6 min-h-full" role="main" aria-label="Conteúdo principal">
             <SectionErrorBoundary section="Conteúdo Principal">
-              {children}
+              <PageTransition>
+                {children}
+              </PageTransition>
             </SectionErrorBoundary>
           </main>
         </SwipeableView>

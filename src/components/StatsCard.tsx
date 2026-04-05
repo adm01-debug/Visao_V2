@@ -84,7 +84,7 @@ export function StatsCard({
   const data = sparklineData || fakeData;
 
   return (
-    <div className="glass-card p-5 hover:border-primary/30 transition-all duration-300 group">
+    <div className="glass-card p-5 transition-all duration-300 group hover:border-primary/30 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5">
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
           <p className="text-sm text-muted-foreground mb-1">{title}</p>
