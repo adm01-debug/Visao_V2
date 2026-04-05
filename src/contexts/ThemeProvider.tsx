@@ -193,7 +193,7 @@ export const ThemeProvider = React.forwardRef<HTMLDivElement, ThemeProviderProps
       {children}
     </ThemeContext.Provider>
   );
-}
+});
 
 // ============================================
 // HOOK
