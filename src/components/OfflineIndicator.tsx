@@ -159,7 +159,7 @@ export function OfflineIndicator({
             {isSyncing ? (
               <RefreshCw className="h-4 w-4 animate-spin" />
             ) : isOnline ? (
-              <Cloud className="h-4 w-4 text-green-500" />
+              <Cloud className="h-4 w-4 text-success" />
             ) : (
               <CloudOff className="h-4 w-4" />
             )}
