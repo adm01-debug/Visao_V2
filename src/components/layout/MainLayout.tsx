@@ -46,6 +46,12 @@ export function MainLayout({ children }: MainLayoutProps) {
       <SectionErrorBoundary section="Navegação">
         <BottomNavigation />
       </SectionErrorBoundary>
+      <ShortcutsHelpDialog
+        open={showHelp}
+        onOpenChange={setShowHelp}
+        shortcutsByCategory={getShortcutsByCategory()}
+        formatShortcut={formatShortcut}
+      />
     </div>
   );
 }
