@@ -59,6 +59,13 @@ const severityConfig = {
   critical: 'alert',
 } as const;
 
+const severityBorderColors = {
+  low: 'border-l-muted-foreground',
+  medium: 'border-l-warning',
+  high: 'border-l-destructive',
+  critical: 'border-l-destructive',
+} as const;
+
 export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: AlertCardProps) {
   const config = alertTypeConfig[alert.type] || alertTypeConfig.security;
   const Icon = config.icon;
