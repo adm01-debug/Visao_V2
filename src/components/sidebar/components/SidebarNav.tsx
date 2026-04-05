@@ -331,10 +331,10 @@ const NavItemCollapsed = memo(function NavItemCollapsed({
           data-testid={`nav-${item.id}`}
           onClick={onClick}
           className={cn(
-            "relative flex items-center justify-center px-2 py-2 rounded-lg transition-all duration-200 text-sm",
-            "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent",
+            "relative flex items-center justify-center px-2 py-2 rounded-lg transition-all duration-300 ease-out text-sm",
+            "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent hover:scale-110",
             isActive &&
-              "bg-sidebar-primary/12 text-sidebar-primary hover:bg-sidebar-primary/16 hover:text-sidebar-primary"
+              "bg-sidebar-primary/12 text-sidebar-primary hover:bg-sidebar-primary/16 hover:text-sidebar-primary shadow-sm"
           )}
         >
           {isActive && (

@@ -48,7 +48,8 @@ export const SidebarHeader = memo(function SidebarHeader({
           variant="ghost"
           size="icon"
           className={cn(
-            "h-7 w-7 rounded-md text-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent",
+            "h-7 w-7 rounded-md text-muted-foreground transition-all duration-300",
+            "hover:text-sidebar-foreground hover:bg-sidebar-accent hover:rotate-180",
             collapsed && "hidden md:flex"
           )}
           onClick={onToggle}
