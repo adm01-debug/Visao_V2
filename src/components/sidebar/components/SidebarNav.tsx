@@ -116,10 +116,10 @@ const CategoryItem = memo(function CategoryItem({
           whileHover={{ x: 2 }}
           whileTap={{ scale: 0.98 }}
           className={cn(
-            "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-            "text-muted-foreground hover:bg-muted/80 hover:text-foreground",
-            isActive && "bg-muted/50 text-primary",
-            isExpanded && "bg-muted/30"
+            "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
+            "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+            isActive && "bg-sidebar-accent text-sidebar-primary",
+            isExpanded && "bg-sidebar-accent/50"
           )}
         >
           <div className="flex items-center gap-2.5">
@@ -278,21 +278,21 @@ const NavItemLink = memo(function NavItemLink({
       data-testid={`nav-${item.id}`}
       onClick={onClick}
       className={cn(
-        "relative flex items-center gap-3 px-3 py-2 rounded-lg transition-all text-sm group",
-        "text-muted-foreground hover:text-foreground hover:bg-muted",
+        "relative flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 text-sm group",
+        "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent",
         isActive &&
-          "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground shadow-sm shadow-primary/20"
+          "bg-sidebar-primary/12 text-sidebar-primary hover:bg-sidebar-primary/16 hover:text-sidebar-primary font-medium"
       )}
     >
       {/* Active route accent bar */}
       {isActive && (
         <motion.div
           layoutId="sidebar-active-indicator"
-          className="absolute -left-3 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-primary-foreground"
+          className="absolute -left-3 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-sidebar-primary"
           transition={{ type: "spring", stiffness: 350, damping: 30 }}
         />
       )}
-      <Icon className={cn("w-4 h-4 flex-shrink-0", isActive && "text-primary-foreground")} />
+      <Icon className={cn("w-4 h-4 flex-shrink-0", isActive && "text-sidebar-primary")} />
       <span className="flex-1 truncate">{item.label}</span>
       {item.badge !== undefined && Number(item.badge) > 0 && (
         <Badge
@@ -331,20 +331,20 @@ const NavItemCollapsed = memo(function NavItemCollapsed({
           data-testid={`nav-${item.id}`}
           onClick={onClick}
           className={cn(
-            "relative flex items-center justify-center px-2 py-2 rounded-lg transition-all text-sm",
-            "text-muted-foreground hover:text-foreground hover:bg-muted",
+            "relative flex items-center justify-center px-2 py-2 rounded-lg transition-all duration-200 text-sm",
+            "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent",
             isActive &&
-              "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground shadow-sm shadow-primary/20"
+              "bg-sidebar-primary/12 text-sidebar-primary hover:bg-sidebar-primary/16 hover:text-sidebar-primary"
           )}
         >
           {isActive && (
             <motion.div
               layoutId="sidebar-active-indicator"
-              className="absolute -left-1 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-primary-foreground"
+              className="absolute -left-1 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-sidebar-primary"
               transition={{ type: "spring", stiffness: 350, damping: 30 }}
             />
           )}
-          <Icon className={cn("w-4 h-4", isActive && "text-primary-foreground")} />
+          <Icon className={cn("w-4 h-4", isActive && "text-sidebar-primary")} />
         </NavLink>
       </TooltipTrigger>
       <TooltipContent side="right" className="flex items-center gap-2">

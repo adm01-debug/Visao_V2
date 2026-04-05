@@ -34,8 +34,8 @@ export const SidebarContent = memo(function SidebarContent({
   return (
     <div
       className={cn(
-        "flex flex-col h-full bg-card",
-        !isMobile && "border-r",
+        "flex flex-col h-full bg-sidebar",
+        !isMobile && "border-r border-sidebar-border/60",
         !isMobile && (collapsed ? "w-16" : "w-64"),
         "transition-all duration-300"
       )}
