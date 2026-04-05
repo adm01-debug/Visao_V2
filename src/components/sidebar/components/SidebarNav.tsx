@@ -281,7 +281,7 @@ const NavItemLink = memo(function NavItemLink({
         "flex items-center gap-3 px-3 py-2 rounded-lg transition-all text-sm",
         "text-muted-foreground hover:text-foreground hover:bg-muted",
         isActive &&
-          "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
+          "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground shadow-sm shadow-primary/20"
       )}
     >
       <Icon className={cn("w-4 h-4 flex-shrink-0", isActive && "text-primary-foreground")} />
