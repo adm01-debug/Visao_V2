@@ -17,6 +17,8 @@ import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { LoginForm, RegisterForm } from './auth/AuthForms';
 
+import { getPasswordStrength } from '@/components/ui/PasswordStrength';
+
 const emailSchema = z.string().email('Email inválido').max(255);
 const passwordSchema = z.string().min(6, 'Senha deve ter no mínimo 6 caracteres').max(72);
 const nameSchema = z.string().max(100).optional();
@@ -41,6 +43,13 @@ export default function Auth() {
     const er = emailSchema.safeParse(email); if (!er.success) e.email = er.error.errors[0]?.message ?? 'Email inválido';
     const pr = passwordSchema.safeParse(password); if (!pr.success) e.password = pr.error.errors[0]?.message ?? 'Senha inválida';
     if (isSignUp && fullName) { const nr = nameSchema.safeParse(fullName); if (!nr.success) e.fullName = nr.error.errors[0]?.message ?? 'Nome inválido'; }
+    // Block weak/leaked passwords on signup
+    if (isSignUp && !e.password) {
+      const strength = getPasswordStrength(password);
+      if (strength.isBlocked) {
+        e.password = strength.blockReason || 'Senha muito fraca';
+      }
+    }
     setErrors(e); return Object.keys(e).length === 0;
   };
 
