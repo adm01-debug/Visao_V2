@@ -111,11 +111,11 @@ export function AnalyticsPage() {
   };
 
   return (
-    <div role="main" aria-label="Analytics" className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
+    <div role="main" aria-label="Analytics" className="page-container space-y-6 h-[calc(100vh-4rem)] overflow-auto">
       <PageMeta title="Analytics" description="Estatísticas e relatórios do sistema de vigilância" />
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div><h1 className="text-2xl font-bold flex items-center gap-2"><BarChart3 className="w-6 h-6" />Analytics</h1><p className="text-sm text-muted-foreground">Estatísticas e relatórios</p></div>
+        <div><h1 className="text-page-title flex items-center gap-2"><BarChart3 className="w-6 h-6 text-primary" />Analytics</h1><p className="text-sm text-muted-foreground">Estatísticas e relatórios do período</p></div>
         <div className="flex items-center gap-2">
           <Select value={dateRange} onValueChange={(v) => setDateRange(v as DateRange)}><SelectTrigger className="w-36"><Calendar className="w-4 h-4 mr-2" /><SelectValue /></SelectTrigger><SelectContent><SelectItem value="24h">Últimas 24h</SelectItem><SelectItem value="7d">Últimos 7 dias</SelectItem><SelectItem value="30d">Últimos 30 dias</SelectItem><SelectItem value="90d">Últimos 90 dias</SelectItem></SelectContent></Select>
           <Button variant="outline" size="icon" onClick={() => { setRefreshing(true); loadData(); }}><RefreshCw className={cn('w-4 h-4', refreshing && 'animate-spin')} /></Button>
