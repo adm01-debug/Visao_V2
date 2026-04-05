@@ -27,7 +27,7 @@ function CameraFeedCardComponent({ camera, isAnalyzing, onVideoLoaded, onRemove,
     <Card className="overflow-hidden flex flex-col">
       <CardHeader className="p-3 flex-row items-center justify-between space-y-0">
         <div className="flex items-center gap-2">
-          <div className={cn('w-2 h-2 rounded-full', isAnalyzing ? 'bg-green-500 animate-pulse' : 'bg-muted-foreground')} />
+          <div className={cn('w-2 h-2 rounded-full', isAnalyzing ? 'bg-success animate-pulse' : 'bg-muted-foreground')} />
           <CardTitle className="text-sm font-medium truncate">{camera.name}</CardTitle>
         </div>
         <div className="flex items-center gap-1">
