@@ -100,7 +100,7 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
         !alert.isRead && `border-l-4 ${severityBorderColors[alert.severity]} bg-destructive/5`,
         alert.severity === 'critical' && !alert.isRead && 'alert-critical-pulse border-destructive/50',
         alert.severity === 'high' && !alert.isRead && 'animate-pulse-subtle',
-        alert.severity === 'panic' && !alert.isRead && 'alert-critical-pulse'
+        alert.type === 'panic' && !alert.isRead && 'alert-critical-pulse'
       )}
       onClick={onClick}
       role="button"
