@@ -20,23 +20,23 @@ export const quickActions = [
 ];
 
 export function getCameraIcon(status: string) {
-  if (status === "online") return <Wifi className="h-4 w-4 text-emerald-400" />;
+  if (status === "online") return <Wifi className="h-4 w-4 text-success" />;
   if (status === "offline") return <WifiOff className="h-4 w-4 text-muted-foreground" />;
-  if (status === "alert") return <AlertTriangle className="h-4 w-4 text-red-400" />;
+  if (status === "alert") return <AlertTriangle className="h-4 w-4 text-destructive" />;
   return <Camera className="h-4 w-4" />;
 }
 
 export function getSeverityColor(severity: string) {
   switch (severity) {
-    case "critical": return "bg-red-500/20 text-red-400 border-red-500/30";
-    case "high": return "bg-orange-500/20 text-orange-400 border-orange-500/30";
-    case "medium": return "bg-amber-500/20 text-amber-400 border-amber-500/30";
-    default: return "bg-blue-500/20 text-blue-400 border-blue-500/30";
+    case "critical": return "bg-destructive/15 text-destructive border-destructive/30";
+    case "high": return "bg-warning/15 text-warning border-warning/30";
+    case "medium": return "bg-warning/10 text-warning border-warning/25";
+    default: return "bg-primary/15 text-primary border-primary/30";
   }
 }
 
 export function getListTypeBadge(listType: string | null) {
-  if (listType === "whitelist") return <Badge variant="outline" className="text-xs bg-emerald-500/20 text-emerald-400 border-emerald-500/30">Whitelist</Badge>;
-  if (listType === "blacklist") return <Badge variant="outline" className="text-xs bg-red-500/20 text-red-400 border-red-500/30">Blacklist</Badge>;
+  if (listType === "whitelist") return <Badge variant="outline" className="text-xs bg-success/15 text-success border-success/30">Whitelist</Badge>;
+  if (listType === "blacklist") return <Badge variant="outline" className="text-xs bg-destructive/15 text-destructive border-destructive/30">Blacklist</Badge>;
   return null;
 }

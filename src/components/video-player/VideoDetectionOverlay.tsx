@@ -2,10 +2,10 @@ import { cn } from '@/lib/utils';
 import type { Detection } from './types';
 
 const severityColors = {
-  low: 'border-blue-400 bg-blue-400/10',
-  medium: 'border-yellow-400 bg-yellow-400/10',
-  high: 'border-orange-400 bg-orange-400/10',
-  critical: 'border-red-400 bg-red-400/10 animate-pulse',
+  low: 'border-primary bg-primary/10',
+  medium: 'border-warning bg-warning/10',
+  high: 'border-warning bg-warning/15',
+  critical: 'border-destructive bg-destructive/10 animate-pulse',
 };
 
 const typeColors = {

@@ -4,10 +4,10 @@ import { cn } from '@/lib/utils';
 type Severity = 'low' | 'medium' | 'high' | 'critical';
 
 const styles: Record<Severity, string> = {
-  low: 'bg-blue-500/20 text-blue-500',
-  medium: 'bg-yellow-500/20 text-yellow-500',
-  high: 'bg-orange-500/20 text-orange-500',
-  critical: 'bg-red-500/20 text-red-500',
+  low: 'bg-primary/15 text-primary',
+  medium: 'bg-warning/15 text-warning',
+  high: 'bg-warning/20 text-warning',
+  critical: 'bg-destructive/15 text-destructive',
 };
 
 interface SeverityBadgeProps {

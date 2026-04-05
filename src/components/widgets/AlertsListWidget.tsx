@@ -11,8 +11,8 @@ import { ptBR } from 'date-fns/locale';
 
 const severityColors: Record<string, string> = {
   critical: 'bg-destructive text-destructive-foreground',
-  high: 'bg-orange-500 text-white',
-  medium: 'bg-warning text-warning-foreground',
+  high: 'bg-warning text-warning-foreground',
+  medium: 'bg-warning/80 text-warning-foreground',
   low: 'bg-muted text-muted-foreground',
 };
 
