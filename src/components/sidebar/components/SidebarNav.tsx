@@ -208,14 +208,14 @@ const CollapsedCategory = memo(function CollapsedCategory({
               <motion.span
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className={cn(
+                 className={cn(
                   "absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] flex items-center justify-center",
                   "text-[9px] font-bold rounded-full",
-                  status.type === "danger" && "bg-red-500 text-white",
-                  status.type === "warning" && "bg-amber-500 text-white",
-                  status.type === "success" && "bg-green-500 text-white",
-                  status.type === "info" && "bg-blue-500 text-white",
-                  status.type === "neutral" && "bg-muted-foreground text-white"
+                  status.type === "danger" && "bg-destructive text-destructive-foreground",
+                  status.type === "warning" && "bg-warning text-warning-foreground",
+                  status.type === "success" && "bg-success text-success-foreground",
+                  status.type === "info" && "bg-primary text-primary-foreground",
+                  status.type === "neutral" && "bg-muted-foreground text-background"
                 )}
               >
                 {status.count > 99 ? "+" : status.count}
