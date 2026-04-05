@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { CardTitle, CardDescription } from '@/components/ui/card';
 import { OAuthButtons } from '@/components/OAuthButtons';
-import { PasswordStrength } from '@/components/ui/PasswordStrength';
+import { PasswordStrength, getPasswordStrength } from '@/components/ui/PasswordStrength';
 import { Loader2, Eye, EyeOff } from 'lucide-react';
 
 interface AuthFormProps {
