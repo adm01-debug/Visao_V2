@@ -25,6 +25,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { exportAlerts, exportCameras } from '@/lib/exportUtils';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
 import { CameraStreamCard } from '@/components/dashboard/CameraStreamCard';
 import type { UICameraData } from '@/components/dashboard/CameraStreamCard';
@@ -110,9 +111,11 @@ export function DashboardV2() {
           <Tabs value={settings.viewMode} onValueChange={(v) => setSettings(s => ({ ...s, viewMode: v as ViewMode }))} className="hidden sm:block">
             <TabsList className="h-9"><TabsTrigger value="grid" className="h-7 px-3"><LayoutGrid className="w-4 h-4" /></TabsTrigger><TabsTrigger value="stream" className="h-7 px-3"><Video className="w-4 h-4" /></TabsTrigger><TabsTrigger value="map" className="h-7 px-3"><Map className="w-4 h-4" /></TabsTrigger></TabsList>
           </Tabs>
+          <div className="h-5 w-px bg-border/40 hidden sm:block" />
           <Select value={settings.gridLayout} onValueChange={(v) => setSettings(s => ({ ...s, gridLayout: v as GridLayout }))}><SelectTrigger className="w-20 sm:w-24 h-9"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="1x1">1x1</SelectItem><SelectItem value="2x2">2x2</SelectItem><SelectItem value="3x3">3x3</SelectItem><SelectItem value="4x4">4x4</SelectItem><SelectItem value="list">Lista</SelectItem></SelectContent></Select>
-          <Button variant="outline" size="icon" onClick={handleRefresh} className="shrink-0"><RefreshCw className="w-4 h-4" /></Button>
-          <Button variant="outline" size="icon" onClick={() => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()} className="hidden sm:inline-flex shrink-0"><Maximize2 className="w-4 h-4" /></Button>
+          <div className="h-5 w-px bg-border/40 hidden sm:block" />
+          <Button variant="outline" size="icon" onClick={handleRefresh} className="shrink-0 h-9 w-9"><RefreshCw className="w-4 h-4" /></Button>
+          <Button variant="outline" size="icon" onClick={() => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()} className="hidden sm:inline-flex shrink-0 h-9 w-9"><Maximize2 className="w-4 h-4" /></Button>
           <WidgetLayoutConfig widgets={widgets} toggleWidget={toggleWidget} reorderWidgets={reorderWidgets} resetLayout={resetLayout} />
           <SettingsSheet settings={settings} onSettingsChange={setSettings} />
         </div>
@@ -124,14 +127,15 @@ export function DashboardV2() {
           : 0;
         const clampedScore = Math.max(0, Math.min(100, securityScore));
         const securityVariant = clampedScore >= 80 ? 'success' as const : clampedScore >= 50 ? 'warning' as const : 'danger' as const;
+        const alertVariant = activeAlerts > 10 ? 'danger' as const : activeAlerts > 0 ? 'warning' as const : 'success' as const;
 
         return (
           <div className="stats-grid animate-fade-in">
             <StatsCard title="Câmeras" value={`${onlineCameras}/${uiCameras.length}`} subtitle="online" icon={Camera} variant="primary" />
-            <StatsCard title="Alertas" value={activeAlerts} subtitle={`${uiAlerts.length} total`} icon={AlertTriangle} variant="danger" />
-            <StatsCard title="Pessoas" value={totalPeople} subtitle="detectadas" icon={Users} variant="default" />
+            <StatsCard title="Alertas" value={activeAlerts} subtitle={activeAlerts === 0 ? 'tudo limpo' : `${uiAlerts.length} total`} icon={AlertTriangle} variant={alertVariant} />
+            <StatsCard title="Pessoas" value={totalPeople} subtitle="detectadas" icon={Users} variant="primary" />
             <StatsCard title="Segurança" value={`${clampedScore}%`} subtitle="score dinâmico" icon={Shield} variant={securityVariant} />
-            <StatsCard title="IA" value={settings.enableAnalysis ? 'Ativa' : 'Não'} subtitle={settings.enableFaceRecognition ? 'Face+' : 'Básica'} icon={Brain} variant={settings.enableAnalysis ? 'success' : 'default'} />
+            <StatsCard title="IA" value={settings.enableAnalysis ? 'Ativa' : 'Inativa'} subtitle={settings.enableAnalysis ? (settings.enableFaceRecognition ? 'Face + Análise' : `${streamingCameras} streams`) : 'sem streams'} icon={Brain} variant={settings.enableAnalysis ? 'success' : 'default'} />
           </div>
         );
       })()}
@@ -183,18 +187,20 @@ export function DashboardV2() {
             const prevScore = Math.max(0, clampedProd - Math.floor(Math.random() * 6 + 1));
             const diff = clampedProd - prevScore;
             return (
-              <div className="glass-card p-4 mt-4">
+              <div className="rounded-xl border border-border/50 bg-card p-4 mt-4" style={{ boxShadow: 'var(--shadow-card)' }}>
                 <div className="flex items-center gap-2 mb-3">
-                  <TrendingUp className="w-5 h-5 text-primary" />
+                  <div className="p-1.5 rounded-lg bg-primary/10">
+                    <TrendingUp className="w-4 h-4 text-primary" />
+                  </div>
                   <h3 className="font-semibold text-sm">Produtividade</h3>
                 </div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-2xl font-bold font-mono tabular-nums text-primary">{clampedProd}%</span>
-                  <Badge variant="outline" className={diff >= 0 ? "text-success border-success/50" : "text-destructive border-destructive/50"}>
+                  <Badge variant="outline" className={cn("text-xs", diff >= 0 ? "text-success border-success/30" : "text-destructive border-destructive/30")}>
                     {diff >= 0 ? '+' : ''}{diff}%
                   </Badge>
                 </div>
-                <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
                   <div className="h-full bg-primary rounded-full transition-all duration-700" style={{ width: `${clampedProd}%` }} />
                 </div>
               </div>
