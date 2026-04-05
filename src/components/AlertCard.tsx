@@ -59,6 +59,20 @@ const severityConfig = {
   critical: 'alert',
 } as const;
 
+const severityLabels: Record<AlertSeverity, string> = {
+  low: 'Baixa',
+  medium: 'Média',
+  high: 'Alta',
+  critical: 'Crítica',
+};
+
+const severityShapes: Record<AlertSeverity, string> = {
+  low: '○',      // empty circle
+  medium: '◆',   // filled diamond
+  high: '▲',     // triangle
+  critical: '⬟', // pentagon
+};
+
 const severityBorderColors = {
   low: 'border-l-muted-foreground',
   medium: 'border-l-warning',
