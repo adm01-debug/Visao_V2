@@ -52,19 +52,32 @@ const severityItems = [
   },
 ] as const;
 
-export function AlertSeveritySummary({ counts, total }: { counts: SeverityCounts; total: number }) {
+interface AlertSeveritySummaryProps {
+  counts: SeverityCounts;
+  total: number;
+  activeSeverity?: string;
+  onSeverityClick?: (severity: string) => void;
+}
+
+export function AlertSeveritySummary({ counts, total, activeSeverity, onSeverityClick }: AlertSeveritySummaryProps) {
   return (
     <div className="flex flex-col gap-3">
       {/* Severity cards row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {severityItems.map(({ key, label, icon: Icon, tooltip, bg, text }) => (
+        {severityItems.map(({ key, label, icon: Icon, tooltip, bg, text }) => {
+          const isActive = activeSeverity === key;
+          return (
           <Tooltip key={key}>
             <TooltipTrigger asChild>
-              <div
+              <button
+                type="button"
+                onClick={() => onSeverityClick?.(isActive ? 'all' : key)}
                 className={cn(
-                  'flex items-center gap-3 rounded-lg border p-3 transition-colors cursor-default',
+                  'flex items-center gap-3 rounded-lg border p-3 transition-all cursor-pointer text-left w-full',
                   bg,
-                  counts[key] > 0 && 'shadow-sm'
+                  counts[key] > 0 && 'shadow-sm',
+                  isActive && 'ring-2 ring-offset-2 ring-offset-background ring-primary scale-[1.02]',
+                  !isActive && 'hover:scale-[1.01] hover:shadow-md'
                 )}
                 role="status"
                 aria-label={`${counts[key]} alertas de severidade ${label}`}
