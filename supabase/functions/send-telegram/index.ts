@@ -71,7 +71,7 @@ serve(async (req) => {
       );
     }
 
-    console.log('Message sent successfully');
+    log.info("Message sent successfully", { messageId: result.result.message_id });
 
     return new Response(
       JSON.stringify({ success: true, messageId: result.result.message_id }),
