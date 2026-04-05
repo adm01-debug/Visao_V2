@@ -39,7 +39,7 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true, 
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [hasError, setHasError] = useState(false);
-  const status = statusConfig[camera.status] || statusConfig.offline;
+  const status = statusConfig[camera.status] ?? statusConfig.offline!;
   const isOnline = camera.status !== 'offline';
 
   return (
