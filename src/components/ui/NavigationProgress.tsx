@@ -31,4 +31,4 @@ export const NavigationProgress = React.forwardRef<HTMLDivElement>(function Navi
       />
     </div>
   );
-}
+});
