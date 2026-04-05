@@ -154,7 +154,7 @@ const CategoryItem = memo(function CategoryItem({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="mt-1 ml-4 space-y-0.5 border-l-2 border-border/50 pl-3"
+          className="mt-1 ml-4 space-y-0.5 border-l-2 border-border/30 pl-3"
         >
           {category.items.map((item, index) => (
             <motion.div
