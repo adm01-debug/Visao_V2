@@ -121,21 +121,22 @@ export function SwipeableView({ children, className }: SwipeableViewProps) {
       </motion.div>
 
       {/* Page dots indicator */}
-      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+      <nav className="absolute bottom-20 left-1/2 -translate-x-1/2 flex gap-1.5 z-10" aria-label="Navegação por páginas" role="navigation">
         {ROUTES.map((route, index) => (
           <button
             key={route.path}
             onClick={() => navigate(route.path)}
             className={cn(
-              "w-2 h-2 rounded-full transition-all",
+              "w-2 h-2 rounded-full transition-all touch-target",
               index === currentIndex
                 ? "bg-primary w-4"
                 : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
             )}
             aria-label={`Ir para ${route.label}`}
+            aria-current={index === currentIndex ? 'page' : undefined}
           />
         ))}
-      </div>
+      </nav>
     </div>
   );
 }
