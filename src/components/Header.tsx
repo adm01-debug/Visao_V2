@@ -26,15 +26,15 @@ export function Header({ className }: { className?: string }) {
         <div className="flex items-center gap-2 sm:gap-3">
           <span
             className={cn(
-              "hidden sm:inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs",
-              isOnline ? "text-foreground" : "text-muted-foreground"
+              "hidden sm:inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs transition-colors",
+              isOnline ? "text-foreground border-success/30 bg-success/5" : "text-muted-foreground border-border"
             )}
             aria-live="polite"
           >
             <span
               className={cn(
-                "h-2 w-2 rounded-full",
-                isOnline ? "bg-emerald-500" : "bg-muted-foreground"
+                "h-2 w-2 rounded-full transition-colors",
+                isOnline ? "bg-success animate-pulse" : "bg-muted-foreground"
               )}
               aria-hidden="true"
             />
