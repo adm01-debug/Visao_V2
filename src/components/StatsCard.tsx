@@ -84,7 +84,11 @@ export function StatsCard({
   const data = sparklineData || fakeData;
 
   return (
-    <div className="glass-card p-5 transition-all duration-300 group hover:border-primary/30 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5">
+    <div
+      className="glass-card p-5 transition-all duration-300 group hover:border-primary/30 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5 focus-within:border-primary/30 focus-within:shadow-lg"
+      role="region"
+      aria-label={`${title}: ${value}${subtitle ? `, ${subtitle}` : ''}${trend ? `, ${trend.isPositive ? 'subiu' : 'caiu'} ${Math.abs(trend.value)}%` : ''}`}
+    >
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
           <p className="text-sm text-muted-foreground mb-1">{title}</p>
@@ -99,14 +103,14 @@ export function StatsCard({
               "flex items-center gap-1 mt-2 text-xs font-medium",
               trend.isPositive ? "text-success" : "text-destructive"
             )}>
-              <span>{trend.isPositive ? '↑' : '↓'}</span>
+              <span aria-hidden="true">{trend.isPositive ? '↑' : '↓'}</span>
               <span>{Math.abs(trend.value)}%</span>
               <span className="text-muted-foreground">vs ontem</span>
             </div>
           )}
         </div>
         <div className="flex flex-col items-end gap-2">
-          <div className={cn("p-3 rounded-xl transition-transform duration-300 group-hover:scale-110", iconVariantStyles[variant])}>
+          <div className={cn("p-3 rounded-xl transition-transform duration-300 group-hover:scale-110", iconVariantStyles[variant])} aria-hidden="true">
             <Icon className="w-6 h-6" />
           </div>
           <MiniSparkline data={data} color={sparklineColors[variant]} />
