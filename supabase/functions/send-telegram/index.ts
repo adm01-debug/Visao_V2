@@ -13,13 +13,16 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const rl = checkRateLimit(req, RATE_LIMITS.sensitive, "send-telegram", corsHeaders);
+  if (!rl.allowed) return rl.response;
+
   try {
     const rawBody = await req.json();
     const validation = validateInput(sendTelegramSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
     const { botToken, chatId, message, parseMode, photo } = validation.data;
 
-    console.log(`Sending Telegram message to chat ${chatId}`);
+    log.info("Sending Telegram message", { chatId });
 
     let response;
 
