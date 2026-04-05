@@ -80,7 +80,7 @@ const ProtectedLayoutRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   if (loading) return <PageLoader />;
   if (!user) return <Navigate to="/auth" replace />;
-  return <MainLayout><AnimatedPage>{children}</AnimatedPage><PanicButton /></MainLayout>;
+  return <MainLayout>{children}<PanicButton /></MainLayout>;
 };
 
 // VISÃO App Component
