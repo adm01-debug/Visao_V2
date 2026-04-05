@@ -113,11 +113,11 @@ const CategoryItem = memo(function CategoryItem({
     <Collapsible open={isExpanded} onOpenChange={onToggle} className="mb-0.5">
       <CollapsibleTrigger asChild>
         <motion.button
-          whileHover={{ x: 2 }}
-          whileTap={{ scale: 0.98 }}
+          whileHover={{ x: 3, backgroundColor: 'hsl(var(--sidebar-accent) / 0.6)' }}
+          whileTap={{ scale: 0.97 }}
           className={cn(
-            "flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
-            "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
+            "flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 ease-out",
+            "text-sidebar-foreground/70 hover:text-sidebar-foreground",
             isActive && "bg-sidebar-accent text-sidebar-primary",
             isExpanded && "bg-sidebar-accent/40"
           )}
