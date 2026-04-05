@@ -1,33 +1,23 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { getCorsHeaders } from "../_shared/cors.ts";
+import { compareFacesSchema, validateInput } from "../_shared/validation.ts";
 
-export interface CompareFacesRequest {
-  sourceImage: string;
-  targetImage: string;
-  threshold?: number;
-}
-
-export interface CompareResult {
+interface CompareResult {
   matched: boolean;
   similarity: number;
   confidence: number;
 }
 
-export interface CompareFacesResponse {
+interface CompareFacesResponse {
   success: boolean;
   result?: CompareResult;
   processingTime: number;
   error?: string;
 }
 
-import { getCorsHeaders } from "../_shared/cors.ts";
-
-const compareFaces = async (req: CompareFacesRequest): Promise<CompareFacesResponse> => {
+const compareFaces = async (sourceImage: string, targetImage: string, threshold: number): Promise<CompareFacesResponse> => {
   const start = Date.now();
   try {
-    const { sourceImage, targetImage, threshold = 0.6 } = req;
-    if (!sourceImage || !targetImage) {
-      return { success: false, processingTime: Date.now() - start, error: 'Images required' };
-    }
     const similarity = Math.random();
     return {
       success: true,
@@ -43,9 +33,14 @@ serve(async (req: Request) => {
   const corsHeaders = getCorsHeaders(req);
 
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
+
   try {
-    const body: CompareFacesRequest = await req.json();
-    const result = await compareFaces(body);
+    const rawBody = await req.json();
+    const validation = validateInput(compareFacesSchema, rawBody, corsHeaders);
+    if (!validation.success) return validation.response;
+    const { sourceImage, targetImage, threshold } = validation.data;
+
+    const result = await compareFaces(sourceImage, targetImage, threshold);
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: result.success ? 200 : 400,

@@ -1,15 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
+import { sendTelegramSchema, validateInput } from "../_shared/validation.ts";
 
-interface TelegramMessage {
-  botToken: string;
-  chatId: string;
-  message: string;
-  parseMode?: 'HTML' | 'Markdown';
-  photo?: string; // URL or base64
-}
-
-const handler = async (req: Request): Promise<Response> => {
+serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
 
   if (req.method === 'OPTIONS') {
@@ -17,21 +10,16 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { botToken, chatId, message, parseMode = 'HTML', photo }: TelegramMessage = await req.json();
-
-    if (!botToken || !chatId) {
-      return new Response(
-        JSON.stringify({ error: 'botToken and chatId are required' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    const rawBody = await req.json();
+    const validation = validateInput(sendTelegramSchema, rawBody, corsHeaders);
+    if (!validation.success) return validation.response;
+    const { botToken, chatId, message, parseMode, photo } = validation.data;
 
     console.log(`Sending Telegram message to chat ${chatId}`);
 
     let response;
 
     if (photo) {
-      // Send photo with caption
       const formData = new FormData();
       formData.append('chat_id', chatId);
       formData.append('caption', message);
@@ -40,7 +28,6 @@ const handler = async (req: Request): Promise<Response> => {
       if (photo.startsWith('http')) {
         formData.append('photo', photo);
       } else if (photo.startsWith('data:image')) {
-        // Convert base64 to blob
         const base64Data = photo.split(',')[1];
         const binaryString = atob(base64Data);
         const bytes = new Uint8Array(binaryString.length);
@@ -56,7 +43,6 @@ const handler = async (req: Request): Promise<Response> => {
         body: formData,
       });
     } else {
-      // Send text message
       response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -91,8 +77,4 @@ const handler = async (req: Request): Promise<Response> => {
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
-};
-
-serve(handler);
-
-export default handler;
+});

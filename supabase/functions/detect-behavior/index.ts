@@ -1,28 +1,20 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
+import { detectBehaviorSchema, validateInput } from "../_shared/validation.ts";
 
 const BEHAVIOR_PROMPT = `You are an advanced AI behavioral analyst for workplace surveillance systems. 
 Analyze the provided image(s) and detect behavioral patterns that impact productivity and compliance.
 
 Detect the following behavioral patterns:
 
-1. **Excessive Conversations**: Groups of 2+ people standing and talking for what appears to be non-work related interaction. Look for body language indicating casual conversation vs work discussion.
-
-2. **Cell Phone Usage**: People looking at or holding mobile phones/devices during work hours. Distinguish between work-related device use and personal use.
-
-3. **Prolonged Absences**: Empty workstations that should be occupied, people in break areas, or people in non-designated zones.
-
+1. **Excessive Conversations**: Groups of 2+ people standing and talking for what appears to be non-work related interaction.
+2. **Cell Phone Usage**: People looking at or holding mobile phones/devices during work hours.
+3. **Prolonged Absences**: Empty workstations that should be occupied.
 4. **Additional Patterns**:
-   - Distracted behavior (looking away from work area)
+   - Distracted behavior
    - Sleeping/drowsiness
    - Unauthorized break times
    - Crowding in non-work areas
-
-For each detection, assess:
-- Confidence level (0-1)
-- Severity impact on productivity
-- Duration estimate if possible
-- Location/zone in the image
 
 Respond ONLY with valid JSON:
 {
@@ -65,15 +57,16 @@ serve(async (req) => {
   }
 
   try {
-    const { imageUrl, imageBase64, cameraId, cameraName } = await req.json();
+    const rawBody = await req.json();
+    const validation = validateInput(detectBehaviorSchema, rawBody, corsHeaders);
+    if (!validation.success) return validation.response;
+    const { imageUrl, imageBase64, cameraId, cameraName } = validation.data;
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
-    }
-
-    if (!imageUrl && !imageBase64) {
-      throw new Error("Either imageUrl or imageBase64 is required");
+      return new Response(JSON.stringify({ error: "LOVABLE_API_KEY is not configured" }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const imageContent = imageBase64
@@ -110,14 +103,12 @@ serve(async (req) => {
 
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again later." }), {
-          status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       if (response.status === 402) {
         return new Response(JSON.stringify({ error: "AI credits exhausted. Please add credits." }), {
-          status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
 

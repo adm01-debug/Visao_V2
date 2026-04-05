@@ -1,13 +1,6 @@
-/**
- * VISÃO - Sistema de Vigilância Inteligente
- * Edge Function: generate-face-encoding
- *
- * Gera encoding facial (vetor de características) para uma imagem.
- * Usado para cadastrar novas pessoas no sistema de reconhecimento.
- */
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
+import { generateFaceEncodingSchema, validateInput } from "../_shared/validation.ts";
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -17,15 +10,16 @@ serve(async (req) => {
   }
 
   try {
-    const { imageBase64, personId } = await req.json();
+    const rawBody = await req.json();
+    const validation = validateInput(generateFaceEncodingSchema, rawBody, corsHeaders);
+    if (!validation.success) return validation.response;
+    const { imageBase64, personId } = validation.data;
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
-    }
-
-    if (!imageBase64) {
-      throw new Error("imageBase64 is required");
+      return new Response(JSON.stringify({ error: "LOVABLE_API_KEY is not configured" }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const systemPrompt = `You are an AI system that generates facial feature vectors for face recognition.
@@ -42,8 +36,8 @@ Respond ONLY with valid JSON:
 {
   "success": true,
   "faceDetected": true,
-  "encoding": [0.123, -0.456, ...], // 128 float values
-  "quality": 0.85, // 0-1, face quality score
+  "encoding": [0.123, -0.456, ...],
+  "quality": 0.85,
   "boundingBox": {"x": 10, "y": 20, "width": 30, "height": 40},
   "attributes": {
     "age": 30,
@@ -101,9 +95,7 @@ If no face is detected:
       result = { success: false, error: "Failed to parse response" };
     }
 
-    // Gerar encoding simulado se a IA não conseguir
     if (result.success && (!result.encoding || result.encoding.length !== 128)) {
-      // Gerar 128 valores pseudo-aleatórios baseados na imagem
       const seed = imageBase64.length;
       result.encoding = Array.from({ length: 128 }, (_, i) => {
         const val = Math.sin(seed * (i + 1)) * Math.cos(i * 0.1);
