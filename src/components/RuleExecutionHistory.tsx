@@ -103,13 +103,13 @@ function ExecutionItem({ execution }: { execution: RuleExecution }) {
                       className={cn(
                         "text-xs",
                         execution.rule.severity === "critical" &&
-                          "border-red-500 text-red-500",
+                          "border-destructive text-destructive",
                         execution.rule.severity === "high" &&
-                          "border-orange-500 text-orange-500",
+                          "border-warning text-warning",
                         execution.rule.severity === "medium" &&
-                          "border-yellow-500 text-yellow-500",
+                          "border-warning/70 text-warning",
                         execution.rule.severity === "low" &&
-                          "border-blue-500 text-blue-500"
+                          "border-primary text-primary"
                       )}
                     >
                       {execution.rule.severity}
