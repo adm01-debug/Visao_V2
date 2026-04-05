@@ -15,6 +15,6 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement>(function Not
       )}
     </Button>
   );
-};
+});
 
 export default NotificationBell;
