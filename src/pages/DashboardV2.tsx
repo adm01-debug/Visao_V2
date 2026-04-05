@@ -118,15 +118,23 @@ export function DashboardV2() {
         </div>
       </div>
 
-      {settings.showStats && (
-        <div className="stats-grid animate-fade-in">
-          <StatsCard title="Câmeras" value={`${onlineCameras}/${uiCameras.length}`} subtitle="online" icon={Camera} variant="primary" />
-          <StatsCard title="Alertas" value={activeAlerts} subtitle={`${uiAlerts.length} total`} icon={AlertTriangle} variant="danger" />
-          <StatsCard title="Pessoas" value={totalPeople} subtitle="detectadas" icon={Users} variant="default" />
-          <StatsCard title="Segurança" value="94%" subtitle="score" icon={Shield} variant="success" />
-          <StatsCard title="IA" value={settings.enableAnalysis ? 'Ativa' : 'Não'} subtitle={settings.enableFaceRecognition ? 'Face+' : 'Básica'} icon={Brain} variant={settings.enableAnalysis ? 'success' : 'default'} />
-        </div>
-      )}
+      {settings.showStats && (() => {
+        const securityScore = uiCameras.length > 0
+          ? Math.round((onlineCameras / uiCameras.length) * 100 - (activeAlerts > 0 ? Math.min(activeAlerts * 2, 30) : 0))
+          : 0;
+        const clampedScore = Math.max(0, Math.min(100, securityScore));
+        const securityVariant = clampedScore >= 80 ? 'success' as const : clampedScore >= 50 ? 'warning' as const : 'danger' as const;
+
+        return (
+          <div className="stats-grid animate-fade-in">
+            <StatsCard title="Câmeras" value={`${onlineCameras}/${uiCameras.length}`} subtitle="online" icon={Camera} variant="primary" />
+            <StatsCard title="Alertas" value={activeAlerts} subtitle={`${uiAlerts.length} total`} icon={AlertTriangle} variant="danger" />
+            <StatsCard title="Pessoas" value={totalPeople} subtitle="detectadas" icon={Users} variant="default" />
+            <StatsCard title="Segurança" value={`${clampedScore}%`} subtitle="score dinâmico" icon={Shield} variant={securityVariant} />
+            <StatsCard title="IA" value={settings.enableAnalysis ? 'Ativa' : 'Não'} subtitle={settings.enableFaceRecognition ? 'Face+' : 'Básica'} icon={Brain} variant={settings.enableAnalysis ? 'success' : 'default'} />
+          </div>
+        );
+      })()}
 
       <div className="flex items-center gap-4">
         <SearchInput value={searchQuery} onChange={setSearchQuery} placeholder="Buscar câmeras e alertas..." className="flex-1 max-w-md" />
