@@ -113,7 +113,7 @@ function MultiCameraRecognitionComponent() {
         <Dialog open={!!fullscreenCamera} onOpenChange={() => setFullscreenCamera(null)}>
           <DialogContent className="max-w-6xl h-[90vh]">
             <DialogHeader><DialogTitle>{cameras?.find(c => c.id === fullscreenCamera)?.name}</DialogTitle></DialogHeader>
-            <div className="flex-1 bg-black rounded-lg overflow-hidden">
+            <div className="flex-1 bg-foreground rounded-lg overflow-hidden">
               {cameras?.find(c => c.id === fullscreenCamera)?.stream_url ? (
                 <video src={cameras.find(c => c.id === fullscreenCamera)?.stream_url || ''} autoPlay muted playsInline className="w-full h-full object-contain" />
               ) : (

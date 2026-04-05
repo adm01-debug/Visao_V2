@@ -34,7 +34,7 @@ export function Switch({ checked, onChange, disabled = false, size = 'md', class
       )}
     >
       <span className={cn(
-        'inline-block rounded-full bg-white shadow transform transition-transform',
+        'inline-block rounded-full bg-background shadow transform transition-transform',
         config.thumb,
         checked ? config.translate : 'translate-x-0.5'
       )} />

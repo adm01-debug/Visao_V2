@@ -153,12 +153,12 @@ export default function ProfilePage() {
               <button
                 onClick={triggerFileInput}
                 disabled={uploading}
-                className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer disabled:cursor-not-allowed"
+                className="absolute inset-0 flex items-center justify-center bg-foreground/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer disabled:cursor-not-allowed"
               >
                 {uploading ? (
-                  <Loader2 className="h-6 w-6 text-white animate-spin" />
+                  <Loader2 className="h-6 w-6 text-foreground animate-spin" />
                 ) : (
-                  <ImagePlus className="h-6 w-6 text-white" />
+                  <ImagePlus className="h-6 w-6 text-foreground" />
                 )}
               </button>
             </div>

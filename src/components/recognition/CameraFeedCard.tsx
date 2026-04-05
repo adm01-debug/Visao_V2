@@ -36,7 +36,7 @@ function CameraFeedCardComponent({ camera, isAnalyzing, onVideoLoaded, onRemove,
         </div>
       </CardHeader>
       <CardContent className="p-0 flex-1 relative">
-        <div className="aspect-video bg-black">
+        <div className="aspect-video bg-foreground">
           {camera.stream_url ? (
             <video ref={videoRef} src={camera.stream_url} autoPlay muted playsInline className="w-full h-full object-cover" crossOrigin="anonymous" />
           ) : camera.thumbnail ? (

@@ -48,7 +48,7 @@ export function Avatar({ src, name, size = 'md', className }: AvatarProps) {
   return (
     <div
       className={cn(
-        'rounded-full flex items-center justify-center text-white font-medium',
+        'rounded-full flex items-center justify-center text-foreground font-medium',
         sizeClasses[size],
         getColor(name),
         className

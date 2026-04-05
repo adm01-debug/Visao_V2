@@ -155,7 +155,7 @@ export function VideoStreamPlayer({
     <TooltipProvider>
       <div
         ref={containerRef}
-        className={cn('relative bg-black rounded-xl overflow-hidden group', height ? '' : 'aspect-video', className)}
+        className={cn('relative bg-foreground rounded-xl overflow-hidden group', height ? '' : 'aspect-video', className)}
         style={height ? { height } : undefined}
         onMouseMove={showControls}
         onMouseLeave={() => state.isPlaying && setControlsVisible(false)}
@@ -176,17 +176,17 @@ export function VideoStreamPlayer({
 
         {/* Loading */}
         {(state.status === 'connecting' || state.status === 'buffering') && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+          <div className="absolute inset-0 flex items-center justify-center bg-foreground/50">
             <Loader2 className="w-12 h-12 text-primary animate-spin" />
           </div>
         )}
 
         {/* Error */}
         {state.status === 'error' && state.error && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/80">
+          <div className="absolute inset-0 flex items-center justify-center bg-foreground/80">
             <div className="text-center p-4">
               <AlertTriangle className="w-12 h-12 mx-auto mb-4 text-destructive" />
-              <p className="text-white font-medium mb-2">Erro de conexão</p>
+              <p className="text-foreground font-medium mb-2">Erro de conexão</p>
               <p className="text-sm text-muted-foreground mb-4">{state.error.message}</p>
               {state.error.recoverable && (
                 <Button variant="outline" size="sm" onClick={reconnect}>
@@ -203,7 +203,7 @@ export function VideoStreamPlayer({
           <FaceRecognitionOverlay faces={detectedFaces} showLabels showSimilarity animateBoxes />
         )}
         {faceDetectionActive && isFaceProcessing && (
-          <div className="absolute top-12 left-3 flex items-center gap-2 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-xs text-white">
+          <div className="absolute top-12 left-3 flex items-center gap-2 bg-foreground/70 backdrop-blur-sm rounded-lg px-2 py-1 text-xs text-foreground">
             <Scan className="w-3 h-3 animate-pulse text-primary" /><span>Detectando...</span>
           </div>
         )}
@@ -225,13 +225,13 @@ export function VideoStreamPlayer({
         <div className={cn('absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/80 to-transparent transition-opacity duration-300', controlsVisible ? 'opacity-100' : 'opacity-0')}>
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-white">{cameraName}</h3>
-              {location && <p className="text-xs text-white/70">{location}</p>}
+              <h3 className="font-semibold text-foreground">{cameraName}</h3>
+              {location && <p className="text-xs text-foreground/70">{location}</p>}
             </div>
             <div className="flex items-center gap-2">
               <VideoStatusBadge status={state.status} />
               {isLive && state.status === 'playing' && (
-                <span className="font-mono text-xs text-white bg-black/50 px-2 py-1 rounded">{currentTime}</span>
+                <span className="font-mono text-xs text-foreground bg-foreground/50 px-2 py-1 rounded">{currentTime}</span>
               )}
             </div>
           </div>
@@ -291,7 +291,7 @@ function ControlButton({ tooltip, onClick, active, children }: {
       <TooltipTrigger asChild>
         <Button
           variant="ghost" size="sm"
-          className={cn('h-9 w-9 p-0 text-white hover:bg-white/20', active && 'bg-primary/40')}
+          className={cn('h-9 w-9 p-0 text-foreground hover:bg-background/20', active && 'bg-primary/40')}
           onClick={(e) => { e.stopPropagation(); onClick(); }}
         >
           {children}

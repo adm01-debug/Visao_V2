@@ -30,7 +30,7 @@ export function FiltersTab({ config, onToggleSeverity }: FiltersTabProps) {
                   isActive ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50'
                 }`}>
                 <div className={`p-2 rounded-full ${severity.color}`}>
-                  <Icon className="h-5 w-5 text-white" />
+                  <Icon className="h-5 w-5 text-foreground" />
                 </div>
                 <span className={`text-sm font-medium ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
                   {severity.label}

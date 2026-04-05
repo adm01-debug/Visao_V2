@@ -30,7 +30,7 @@ export function AlertDetailsDialog({ alert, isOpen, onClose, onMarkRead, onDelet
         </DialogHeader>
         <div className="space-y-4">
           <div className="flex items-center gap-2">
-            <Badge className={cn('text-white', severity.color)}>{severity.label}</Badge>
+            <Badge className={cn('text-foreground', severity.color)}>{severity.label}</Badge>
             <Badge variant="outline" className={type.color}>{type.label}</Badge>
             {!alert.is_read && <Badge variant="secondary">Não lido</Badge>}
           </div>

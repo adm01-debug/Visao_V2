@@ -86,8 +86,8 @@ function CameraStreamCardBase({ camera, isSelected, onClick, settings, compact =
 
       <div className="absolute bottom-0 left-0 right-0 p-3">
         <div className="flex items-center justify-between">
-          <div><h3 className="font-medium text-white text-sm truncate">{camera.name}</h3><p className="text-[10px] text-white/70 truncate">{camera.location}</p></div>
-          <div className="flex items-center gap-1 text-white/80"><Users className="w-3 h-3" /><span className="text-xs">{camera.detectedPeople}</span></div>
+          <div><h3 className="font-medium text-foreground text-sm truncate">{camera.name}</h3><p className="text-[10px] text-foreground/70 truncate">{camera.location}</p></div>
+          <div className="flex items-center gap-1 text-foreground/80"><Users className="w-3 h-3" /><span className="text-xs">{camera.detectedPeople}</span></div>
         </div>
       </div>
     </div>

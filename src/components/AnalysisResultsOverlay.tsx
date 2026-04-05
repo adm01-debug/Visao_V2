@@ -86,7 +86,7 @@ function DetectionItem({ detection }: { detection: Detection }) {
         <div className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', SEVERITY_COLORS[detection.severity]?.replace('text-', 'bg-'))} />
         <span className="truncate">{detection.label}</span>
       </div>
-      <span className="text-white/60 flex-shrink-0">{Math.round(detection.confidence * 100)}%</span>
+      <span className="text-foreground/60 flex-shrink-0">{Math.round(detection.confidence * 100)}%</span>
     </div>
   );
 }
@@ -112,7 +112,7 @@ function SecurityOverlay({ analysis }: { analysis: SecurityAnalysis }) {
       {analysis.detections.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-1">
-            <span className="text-[10px] text-white/60 uppercase tracking-wider flex items-center gap-1">
+            <span className="text-[10px] text-foreground/60 uppercase tracking-wider flex items-center gap-1">
               <Eye className="w-3 h-3" /> Detecções ({analysis.detections.length})
             </span>
             {analysis.detections.length > 3 && (
@@ -147,27 +147,27 @@ function ProductivityOverlay({ analysis }: { analysis: ProductivityAnalysis }) {
       <div className="grid grid-cols-2 gap-1">
         <div className="bg-success/15 rounded px-1.5 py-1 text-center">
           <div className="text-success text-sm font-bold">{analysis.working_count}</div>
-          <div className="text-[9px] text-white/50">Trabalhando</div>
+          <div className="text-[9px] text-foreground/50">Trabalhando</div>
         </div>
         <div className="bg-warning/15 rounded px-1.5 py-1 text-center">
           <div className="text-warning text-sm font-bold">{analysis.idle_count}</div>
-          <div className="text-[9px] text-white/50">Ociosos</div>
+          <div className="text-[9px] text-foreground/50">Ociosos</div>
         </div>
       </div>
       <div className="flex items-center gap-1.5 text-[10px]">
         <TrendingUp className="w-3 h-3 text-primary" />
-        <span className="text-white/70">Produtividade:</span>
+        <span className="text-foreground/70">Produtividade:</span>
         <span className={cn('font-medium', productivityRate >= 70 ? 'text-success' : productivityRate >= 40 ? 'text-warning' : 'text-destructive')}>
           {productivityRate}%
         </span>
       </div>
       <div className="flex items-center gap-1.5 text-[10px]">
         <Users className="w-3 h-3 text-primary" />
-        <span className="text-white/70">Ocupação:</span>
-        <span className="font-medium text-white">{Math.round(analysis.occupancy_rate)}%</span>
+        <span className="text-foreground/70">Ocupação:</span>
+        <span className="font-medium text-foreground">{Math.round(analysis.occupancy_rate)}%</span>
       </div>
       {analysis.observations.length > 0 && (
-        <div className="text-[10px] text-white/50 italic truncate">
+        <div className="text-[10px] text-foreground/50 italic truncate">
           {analysis.observations[0]}
         </div>
       )}
@@ -184,7 +184,7 @@ function SafetyOverlay({ analysis }: { analysis: SafetyAnalysis }) {
     <div className="space-y-1.5">
       <div className="flex items-center gap-1.5 text-[10px]">
         <HardHat className="w-3 h-3 text-primary" />
-        <span className="text-white/70">EPI Conformidade:</span>
+        <span className="text-foreground/70">EPI Conformidade:</span>
         <span className={cn('font-bold', complianceRate >= 90 ? 'text-success' : complianceRate >= 70 ? 'text-warning' : 'text-destructive')}>
           {complianceRate}%
         </span>
@@ -193,17 +193,17 @@ function SafetyOverlay({ analysis }: { analysis: SafetyAnalysis }) {
       {analysis.ppe_compliance.missing_items.length > 0 && (
         <div className="text-[10px]">
           <span className="text-destructive">Faltando: </span>
-          <span className="text-white/70">{analysis.ppe_compliance.missing_items.join(', ')}</span>
+          <span className="text-foreground/70">{analysis.ppe_compliance.missing_items.join(', ')}</span>
         </div>
       )}
 
       {analysis.hazards.length > 0 && (
         <div className="space-y-0.5">
-          <span className="text-[10px] text-white/60 uppercase tracking-wider">Riscos ({analysis.hazards.length})</span>
+          <span className="text-[10px] text-foreground/60 uppercase tracking-wider">Riscos ({analysis.hazards.length})</span>
           {analysis.hazards.slice(0, 2).map((h, i) => (
             <div key={i} className={cn('rounded px-1.5 py-0.5 border text-[10px]', SEVERITY_BG[h.severity])}>
               <span className={SEVERITY_COLORS[h.severity]}>{h.type}</span>
-              <span className="text-white/50 ml-1">— {h.description}</span>
+              <span className="text-foreground/50 ml-1">— {h.description}</span>
             </div>
           ))}
         </div>
@@ -230,7 +230,7 @@ function AnalysisResultsOverlayComponent({
       className
     )}>
       {/* Header */}
-      <div className="bg-black/75 backdrop-blur-sm rounded-lg px-2.5 py-1.5 text-white">
+      <div className="bg-foreground/75 backdrop-blur-sm rounded-lg px-2.5 py-1.5 text-foreground">
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-1.5">
             <Brain className={cn('w-3.5 h-3.5', isAnalyzing ? 'animate-pulse text-primary' : 'text-success')} />
@@ -251,10 +251,10 @@ function AnalysisResultsOverlayComponent({
         <div className="flex items-center justify-between text-[10px]">
           <div className="flex items-center gap-1">
             <Users className="w-3 h-3 text-primary" />
-            <span className="text-white/70">Pessoas:</span>
-            <span className="font-bold text-white">{lastAnalysis.people_count}</span>
+            <span className="text-foreground/70">Pessoas:</span>
+            <span className="font-bold text-foreground">{lastAnalysis.people_count}</span>
           </div>
-          <div className="flex items-center gap-2 text-white/40">
+          <div className="flex items-center gap-2 text-foreground/40">
             {analysisCount > 0 && (
               <span className="flex items-center gap-0.5">
                 <ShieldCheck className="w-2.5 h-2.5" />{analysisCount}
@@ -270,14 +270,14 @@ function AnalysisResultsOverlayComponent({
       </div>
 
       {/* Type-specific results */}
-      <div className="bg-black/75 backdrop-blur-sm rounded-lg px-2.5 py-1.5 text-white max-h-48 overflow-y-auto scrollbar-thin">
+      <div className="bg-foreground/75 backdrop-blur-sm rounded-lg px-2.5 py-1.5 text-foreground max-h-48 overflow-y-auto scrollbar-thin">
         {isSecurityAnalysis(lastAnalysis) && <SecurityOverlay analysis={lastAnalysis} />}
         {isProductivityAnalysis(lastAnalysis) && <ProductivityOverlay analysis={lastAnalysis} />}
         {isSafetyAnalysis(lastAnalysis) && <SafetyOverlay analysis={lastAnalysis} />}
 
         {/* Summary */}
         {lastAnalysis.summary && (
-          <p className="text-[10px] text-white/50 mt-1.5 leading-tight border-t border-white/10 pt-1.5">
+          <p className="text-[10px] text-foreground/50 mt-1.5 leading-tight border-t border-white/10 pt-1.5">
             {lastAnalysis.summary}
           </p>
         )}

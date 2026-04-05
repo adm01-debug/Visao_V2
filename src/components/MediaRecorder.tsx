@@ -181,15 +181,15 @@ export const MediaRecorderComponent: React.FC<MediaRecorderProps> = ({
     <div className={cn('media-recorder', className)}>
       {/* Preview */}
       {showPreview && type !== 'audio' && (
-        <div className="relative aspect-video bg-black rounded-lg overflow-hidden mb-4">
+        <div className="relative aspect-video bg-foreground rounded-lg overflow-hidden mb-4">
           <video
             ref={previewRef}
             className="w-full h-full object-cover"
             playsInline
           />
           {status === 'recording' && (
-            <div className="absolute top-3 left-3 flex items-center gap-2 px-2 py-1 bg-destructive text-white rounded text-sm">
-              <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
+            <div className="absolute top-3 left-3 flex items-center gap-2 px-2 py-1 bg-destructive text-foreground rounded text-sm">
+              <span className="w-2 h-2 bg-background rounded-full animate-pulse" />
               REC
             </div>
           )}
@@ -251,7 +251,7 @@ export const MediaRecorderComponent: React.FC<MediaRecorderProps> = ({
             )}
             <button
               onClick={startRecording}
-              className="p-4 rounded-full bg-destructive text-white hover:bg-destructive transition-colors"
+              className="p-4 rounded-full bg-destructive text-foreground hover:bg-destructive transition-colors"
             >
               {type === 'audio' ? <Mic className="h-6 w-6" /> : <Video className="h-6 w-6" />}
             </button>
@@ -263,7 +263,7 @@ export const MediaRecorderComponent: React.FC<MediaRecorderProps> = ({
             <button onClick={pauseRecording} className="p-3 rounded-full border hover:bg-accent">
               <Pause className="h-5 w-5" />
             </button>
-            <button onClick={stopRecording} className="p-4 rounded-full bg-destructive text-white hover:bg-destructive">
+            <button onClick={stopRecording} className="p-4 rounded-full bg-destructive text-foreground hover:bg-destructive">
               <Square className="h-6 w-6" />
             </button>
           </>
@@ -274,7 +274,7 @@ export const MediaRecorderComponent: React.FC<MediaRecorderProps> = ({
             <button onClick={resumeRecording} className="p-3 rounded-full border hover:bg-accent">
               <Play className="h-5 w-5" />
             </button>
-            <button onClick={stopRecording} className="p-4 rounded-full bg-destructive text-white hover:bg-destructive">
+            <button onClick={stopRecording} className="p-4 rounded-full bg-destructive text-foreground hover:bg-destructive">
               <Square className="h-6 w-6" />
             </button>
           </>
@@ -285,7 +285,7 @@ export const MediaRecorderComponent: React.FC<MediaRecorderProps> = ({
             <button onClick={discardRecording} className="p-3 rounded-full border hover:bg-accent text-destructive">
               <Trash2 className="h-5 w-5" />
             </button>
-            <button onClick={startRecording} className="p-4 rounded-full bg-destructive text-white hover:bg-destructive">
+            <button onClick={startRecording} className="p-4 rounded-full bg-destructive text-foreground hover:bg-destructive">
               {type === 'audio' ? <Mic className="h-6 w-6" /> : <Video className="h-6 w-6" />}
             </button>
             <button onClick={downloadRecording} className="p-3 rounded-full border hover:bg-accent">

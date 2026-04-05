@@ -87,7 +87,7 @@ export function AlertBanner({
       {dismissible && onDismiss && (
         <button
           onClick={onDismiss}
-          className="p-1 hover:bg-black/5 rounded transition-colors flex-shrink-0"
+          className="p-1 hover:bg-foreground/5 rounded transition-colors flex-shrink-0"
         >
           <X className="w-4 h-4 text-muted-foreground" />
         </button>
@@ -167,7 +167,7 @@ export function ConnectionStatus({ isOnline, className }: ConnectionStatusProps)
           )}
         >
           <div className="flex items-center justify-center gap-2">
-            <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
+            <span className="w-2 h-2 bg-background rounded-full animate-pulse" />
             Sem conexão com a internet
           </div>
         </motion.div>

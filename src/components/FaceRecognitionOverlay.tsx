@@ -32,14 +32,14 @@ function FaceBox({ face, showLabel, showSimilarity, showDetails, animate, onClic
         <div className={cn('absolute -bottom-0.5 -right-0.5 w-3 h-3 border-b-2 border-r-2 rounded-br', style.borderColor)} />
       </div>
       {showLabel && (
-        <div className={cn('absolute left-0 right-0 flex items-center justify-center gap-1 px-2 py-1 rounded text-white text-xs font-medium whitespace-nowrap transform -translate-y-full -top-1', style.bgColor)}>
+        <div className={cn('absolute left-0 right-0 flex items-center justify-center gap-1 px-2 py-1 rounded text-foreground text-xs font-medium whitespace-nowrap transform -translate-y-full -top-1', style.bgColor)}>
           <Icon className="w-3 h-3" />
           <span className="truncate max-w-[120px]">{face.isKnown ? face.personName : style.label}</span>
           {showSimilarity && face.similarity && <span className="opacity-75">{Math.round(face.similarity * 100)}%</span>}
         </div>
       )}
       {showDetails && (
-        <div className="absolute left-0 right-0 top-full mt-1 px-2 py-1.5 rounded bg-black/80 text-white text-[10px] space-y-0.5">
+        <div className="absolute left-0 right-0 top-full mt-1 px-2 py-1.5 rounded bg-foreground/80 text-foreground text-[10px] space-y-0.5">
           {face.emotions && <div className="flex justify-between"><span className="opacity-70">Emoção:</span><span>{face.emotions.dominant}</span></div>}
           {face.age && <div className="flex justify-between"><span className="opacity-70">Idade:</span><span>{face.age.min}-{face.age.max}</span></div>}
           {face.gender && <div className="flex justify-between"><span className="opacity-70">Gênero:</span><span>{face.gender.value}</span></div>}
@@ -59,10 +59,10 @@ function StatsPanel({ faces }: { faces: DetectedFace[] }) {
   if (stats.total === 0) return null;
   return (
     <div className="absolute top-2 right-2 flex flex-col gap-1 text-[10px]">
-      <div className="flex items-center gap-1 px-2 py-1 rounded bg-black/70 text-white"><User className="w-3 h-3" /><span>{stats.total} detectado{stats.total !== 1 ? 's' : ''}</span></div>
-      {stats.known > 0 && <div className="flex items-center gap-1 px-2 py-1 rounded bg-success/80 text-white"><UserCheck className="w-3 h-3" /><span>{stats.known} conhecido{stats.known !== 1 ? 's' : ''}</span></div>}
-      {stats.blacklisted > 0 && <div className="flex items-center gap-1 px-2 py-1 rounded bg-destructive/80 text-white animate-pulse"><Ban className="w-3 h-3" /><span>{stats.blacklisted} bloqueado{stats.blacklisted !== 1 ? 's' : ''}</span></div>}
-      {stats.vip > 0 && <div className="flex items-center gap-1 px-2 py-1 rounded bg-warning/80 text-white"><Star className="w-3 h-3" /><span>{stats.vip} VIP</span></div>}
+      <div className="flex items-center gap-1 px-2 py-1 rounded bg-foreground/70 text-foreground"><User className="w-3 h-3" /><span>{stats.total} detectado{stats.total !== 1 ? 's' : ''}</span></div>
+      {stats.known > 0 && <div className="flex items-center gap-1 px-2 py-1 rounded bg-success/80 text-foreground"><UserCheck className="w-3 h-3" /><span>{stats.known} conhecido{stats.known !== 1 ? 's' : ''}</span></div>}
+      {stats.blacklisted > 0 && <div className="flex items-center gap-1 px-2 py-1 rounded bg-destructive/80 text-foreground animate-pulse"><Ban className="w-3 h-3" /><span>{stats.blacklisted} bloqueado{stats.blacklisted !== 1 ? 's' : ''}</span></div>}
+      {stats.vip > 0 && <div className="flex items-center gap-1 px-2 py-1 rounded bg-warning/80 text-foreground"><Star className="w-3 h-3" /><span>{stats.vip} VIP</span></div>}
     </div>
   );
 }
@@ -82,7 +82,7 @@ export function FaceRecognitionOverlay({ faces, showLabels = true, showSimilarit
       {sortedFaces.some(f => f.listType === 'blacklist') && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
           <div className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive/70 opacity-75" />
-          <div className="relative inline-flex items-center gap-2 px-4 py-2 rounded-full bg-destructive text-white font-medium">
+          <div className="relative inline-flex items-center gap-2 px-4 py-2 rounded-full bg-destructive text-foreground font-medium">
             <AlertTriangle className="w-5 h-5" />PESSOA BLOQUEADA DETECTADA
           </div>
         </div>

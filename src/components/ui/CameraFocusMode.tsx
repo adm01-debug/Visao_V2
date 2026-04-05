@@ -46,14 +46,14 @@ export function CameraFocusMode({ cameraId, cameraName, streamUrl, thumbnail, is
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div className="fixed inset-0 z-50 bg-black" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onMouseMove={() => setShowControls(true)} onClick={() => setShowControls(true)}>
-          {hasPrevious && <motion.button className={cn('absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors', !showControls && 'opacity-0')} onClick={onPrevious} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}><ChevronLeft className="w-8 h-8" /></motion.button>}
-          {hasNext && <motion.button className={cn('absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors', !showControls && 'opacity-0')} onClick={onNext} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}><ChevronRight className="w-8 h-8" /></motion.button>}
+        <motion.div className="fixed inset-0 z-50 bg-foreground" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onMouseMove={() => setShowControls(true)} onClick={() => setShowControls(true)}>
+          {hasPrevious && <motion.button className={cn('absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-foreground/50 text-foreground hover:bg-foreground/70 transition-colors', !showControls && 'opacity-0')} onClick={onPrevious} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}><ChevronLeft className="w-8 h-8" /></motion.button>}
+          {hasNext && <motion.button className={cn('absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-foreground/50 text-foreground hover:bg-foreground/70 transition-colors', !showControls && 'opacity-0')} onClick={onNext} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}><ChevronRight className="w-8 h-8" /></motion.button>}
 
           <motion.div className={cn('absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-4 bg-gradient-to-b from-black/80 to-transparent', !showControls && 'opacity-0')} initial={{ y: -50 }} animate={{ y: showControls ? 0 : -50 }} transition={{ duration: 0.2 }}>
             <div className="flex items-center gap-3">
               <PulseIndicator color="success" size="sm" />
-              <div><h2 className="text-white font-semibold">{cameraName}</h2><p className="text-white/60 text-sm">Transmissão ao vivo</p></div>
+              <div><h2 className="text-foreground font-semibold">{cameraName}</h2><p className="text-foreground/60 text-sm">Transmissão ao vivo</p></div>
             </div>
             <div className="flex items-center gap-2">
               <ControlButton icon={<Settings className="w-5 h-5" />} onClick={onSettingsClick ?? (() => {})} label="Configurações" disabled={!onSettingsClick} />
@@ -90,7 +90,7 @@ export function CameraGridLayout({ cameras, layout = '2x2', onCameraClick, class
           onClick={() => onCameraClick(camera.id)} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * 0.05 }}>
           {camera.thumbnail ? <img src={camera.thumbnail} alt={camera.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><Camera className="w-8 h-8 text-muted-foreground/30" /></div>}
           <div className="absolute top-2 left-2"><PulseIndicator color={camera.status === 'online' ? 'success' : 'destructive'} size="sm" /></div>
-          <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/70 to-transparent"><p className="text-white text-sm font-medium truncate">{camera.name}</p></div>
+          <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/70 to-transparent"><p className="text-foreground text-sm font-medium truncate">{camera.name}</p></div>
         </motion.div>
       ))}
     </div>

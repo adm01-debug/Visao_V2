@@ -89,7 +89,7 @@ export function LicensePlateRecognition({ className }: LicensePlateRecognitionPr
                 <div className="space-y-4">
                   <div className="relative aspect-video rounded-lg overflow-hidden bg-muted">
                     <img src={selectedImage} alt="Imagem selecionada" className="w-full h-full object-contain" />
-                    {analyzing && <div className="absolute inset-0 bg-black/50 flex items-center justify-center"><RefreshCw className="h-8 w-8 text-white animate-spin" /></div>}
+                    {analyzing && <div className="absolute inset-0 bg-foreground/50 flex items-center justify-center"><RefreshCw className="h-8 w-8 text-foreground animate-spin" /></div>}
                   </div>
                   <div className="flex gap-2">
                     <Button variant="outline" onClick={() => setSelectedImage(null)} className="flex-1">Limpar</Button>

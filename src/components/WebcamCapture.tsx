@@ -204,7 +204,7 @@ export function WebcamCapture({
   return (
     <div className={cn('flex flex-col gap-4', className)}>
       {/* Preview */}
-      <div className="relative aspect-[4/3] bg-black rounded-lg overflow-hidden">
+      <div className="relative aspect-[4/3] bg-foreground rounded-lg overflow-hidden">
         {/* Vídeo */}
         <video
           ref={videoRef}
@@ -232,8 +232,8 @@ export function WebcamCapture({
 
         {/* Loading */}
         {status === 'loading' && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/80">
-            <div className="text-center text-white">
+          <div className="absolute inset-0 flex items-center justify-center bg-foreground/80">
+            <div className="text-center text-foreground">
               <Loader2 className="w-8 h-8 animate-spin mx-auto mb-2" />
               <p className="text-sm">Iniciando câmera...</p>
             </div>
@@ -242,8 +242,8 @@ export function WebcamCapture({
 
         {/* Erro */}
         {status === 'error' && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/90 p-4">
-            <div className="text-center text-white">
+          <div className="absolute inset-0 flex items-center justify-center bg-foreground/90 p-4">
+            <div className="text-center text-foreground">
               <CameraOff className="w-12 h-12 mx-auto mb-3 text-destructive" />
               <p className="text-sm mb-4">{error}</p>
               <Button variant="secondary" size="sm" onClick={startCamera}>
@@ -265,7 +265,7 @@ export function WebcamCapture({
         {status === 'ready' && (
           <div className="absolute top-3 left-3">
             <div className="flex items-center gap-1.5 px-2 py-1 bg-success/90 text-success-foreground text-xs rounded-full">
-              <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+              <div className="w-2 h-2 bg-background rounded-full animate-pulse" />
               Câmera ativa
             </div>
           </div>
@@ -277,20 +277,20 @@ export function WebcamCapture({
             <Button
               variant="secondary"
               size="icon"
-              className="h-8 w-8 bg-black/50 hover:bg-black/70"
+              className="h-8 w-8 bg-foreground/50 hover:bg-foreground/70"
               onClick={() => setIsMirrored(!isMirrored)}
               title={isMirrored ? 'Desativar espelhamento' : 'Ativar espelhamento'}
             >
-              <FlipHorizontal className="w-4 h-4 text-white" />
+              <FlipHorizontal className="w-4 h-4 text-foreground" />
             </Button>
             <Button
               variant="secondary"
               size="icon"
-              className="h-8 w-8 bg-black/50 hover:bg-black/70"
+              className="h-8 w-8 bg-foreground/50 hover:bg-foreground/70"
               onClick={switchCamera}
               title="Trocar câmera"
             >
-              <RefreshCw className="w-4 h-4 text-white" />
+              <RefreshCw className="w-4 h-4 text-foreground" />
             </Button>
           </div>
         )}

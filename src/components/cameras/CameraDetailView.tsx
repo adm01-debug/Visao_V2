@@ -59,14 +59,14 @@ export function CameraDetailView({
       <DialogContent className="max-w-6xl max-h-[95vh] p-0 overflow-hidden">
         <div className="flex h-[90vh]">
           {/* Main Video Area */}
-          <div className="flex-1 flex flex-col bg-black relative">
+          <div className="flex-1 flex flex-col bg-foreground relative">
             {/* Header */}
             <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-gradient-to-b from-black/80 to-transparent">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-white font-bold text-lg">{camera.name}</h2>
+                  <h2 className="text-foreground font-bold text-lg">{camera.name}</h2>
                   {camera.location && (
-                    <p className="text-white/70 text-sm flex items-center gap-1">
+                    <p className="text-foreground/70 text-sm flex items-center gap-1">
                       <MapPin className="w-3 h-3" />{camera.location}
                     </p>
                   )}
@@ -76,7 +76,7 @@ export function CameraDetailView({
                   <Badge variant={camera.status !== 'offline' ? 'default' : 'secondary'}>
                     {camera.status !== 'offline' ? 'Online' : 'Offline'}
                   </Badge>
-                  <Button aria-label="Fechar" variant="ghost" size="icon" className="text-white" onClick={onClose}>
+                  <Button aria-label="Fechar" variant="ghost" size="icon" className="text-foreground" onClick={onClose}>
                     <X className="w-5 h-5" />
                   </Button>
                 </div>
@@ -96,7 +96,7 @@ export function CameraDetailView({
                 </>
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <div className="text-center text-white/70">
+                  <div className="text-center text-foreground/70">
                     <Camera className="w-16 h-16 mx-auto mb-4 opacity-50" />
                     <p>Stream não disponível</p>
                   </div>
@@ -105,14 +105,14 @@ export function CameraDetailView({
 
               {hasPrev && (
                 <Button variant="ghost" size="icon"
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white bg-black/50 hover:bg-black/70"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground bg-foreground/50 hover:bg-foreground/70"
                   onClick={onPrev}>
                   <ChevronLeft className="w-6 h-6" />
                 </Button>
               )}
               {hasNext && (
                 <Button variant="ghost" size="icon"
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white bg-black/50 hover:bg-black/70"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-foreground bg-foreground/50 hover:bg-foreground/70"
                   onClick={onNext}>
                   <ChevronRight className="w-6 h-6" />
                 </Button>
@@ -123,21 +123,21 @@ export function CameraDetailView({
             <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm" className="text-white" onClick={() => setIsMuted(!isMuted)}>
+                  <Button variant="ghost" size="sm" className="text-foreground" onClick={() => setIsMuted(!isMuted)}>
                     {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                   </Button>
                   <ClipRecorderControls cameraId={camera.id} cameraName={camera.name} compact />
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button variant={showZones ? 'secondary' : 'ghost'} size="sm" className="text-white"
+                  <Button variant={showZones ? 'secondary' : 'ghost'} size="sm" className="text-foreground"
                     onClick={() => setShowZones(!showZones)}>
                     <Target className="w-4 h-4 mr-1" />Zonas
                   </Button>
-                  <Button variant={showFaces ? 'secondary' : 'ghost'} size="sm" className="text-white"
+                  <Button variant={showFaces ? 'secondary' : 'ghost'} size="sm" className="text-foreground"
                     onClick={() => setShowFaces(!showFaces)}>
                     <ScanFace className="w-4 h-4 mr-1" />Faces
                   </Button>
-                  <Button variant={showAnalysis ? 'secondary' : 'ghost'} size="sm" className="text-white"
+                  <Button variant={showAnalysis ? 'secondary' : 'ghost'} size="sm" className="text-foreground"
                     onClick={() => setShowAnalysis(!showAnalysis)}>
                     <Brain className="w-4 h-4 mr-1" />IA
                   </Button>

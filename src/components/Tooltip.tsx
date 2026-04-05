@@ -26,7 +26,7 @@ export function Tooltip({ children, content, position = "top", delay = 200 }: To
     <div className="relative inline-block" onMouseEnter={show} onMouseLeave={hide}>
       {children}
       {visible && (
-        <div className={cn("absolute z-50 px-2 py-1 text-xs text-white bg-popover rounded whitespace-nowrap", positions[position])}>
+        <div className={cn("absolute z-50 px-2 py-1 text-xs text-foreground bg-popover rounded whitespace-nowrap", positions[position])}>
           {content}
         </div>
       )}

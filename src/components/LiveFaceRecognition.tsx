@@ -68,7 +68,7 @@ export function LiveFaceRecognition({ cameraId = 'webcam', cameraName = 'Webcam'
   }, [autoStart]);
 
   return (
-    <div className={cn('relative bg-black rounded-lg overflow-hidden', isFullscreen && 'fixed inset-0 z-50', className)}>
+    <div className={cn('relative bg-foreground rounded-lg overflow-hidden', isFullscreen && 'fixed inset-0 z-50', className)}>
       <video ref={videoRef} className="w-full h-full object-cover" autoPlay playsInline muted />
       <canvas ref={canvasRef} className="hidden" />
       <FaceRecognitionOverlay faces={overlayFaces} showLabels showSimilarity animateBoxes />
