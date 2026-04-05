@@ -59,7 +59,7 @@ export function NotificationSettingsPanel() {
   const getPermissionBadge = () => {
     switch (pushPermission) {
       case "granted":
-        return <Badge variant="default" className="bg-green-500/20 text-green-400 border-green-500/30">Permitido</Badge>;
+        return <Badge variant="default" className="bg-success/20 text-success border-success/30">Permitido</Badge>;
       case "denied":
         return <Badge variant="destructive">Bloqueado</Badge>;
       default:
