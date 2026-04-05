@@ -1,6 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { generateFaceEncodingSchema, validateInput } from "../_shared/validation.ts";
+import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
+import { createLogger } from "../_shared/logger.ts";
+
+const log = createLogger("generate-face-encoding");
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -8,6 +12,11 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
+
+  const rl = checkRateLimit(req, RATE_LIMITS.ai, "face-encoding", corsHeaders);
+  if (!rl.allowed) return rl.response;
+
+  const done = log.time("face-encoding");
 
   try {
     const rawBody = await req.json();
@@ -17,6 +26,7 @@ serve(async (req) => {
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
+      log.error("LOVABLE_API_KEY not configured");
       return new Response(JSON.stringify({ error: "LOVABLE_API_KEY is not configured" }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -54,7 +64,7 @@ If no face is detected:
   "error": "No face detected in image"
 }`;
 
-    console.log(`[generate-face-encoding] Processing image for person: ${personId || 'new'}`);
+    log.info("Processing face encoding", { personId: personId || "new" });
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -80,7 +90,7 @@ If no face is detected:
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("[generate-face-encoding] AI error:", response.status, errorText);
+      log.error("AI gateway error", { status: response.status, error: errorText });
       throw new Error(`AI gateway error: ${response.status}`);
     }
 
@@ -91,7 +101,7 @@ If no face is detected:
     try {
       result = JSON.parse(content);
     } catch {
-      console.log("[generate-face-encoding] Raw response:", content);
+      log.warn("Failed to parse AI response", { raw: content?.substring(0, 200) });
       result = { success: false, error: "Failed to parse response" };
     }
 
@@ -103,14 +113,15 @@ If no face is detected:
       });
     }
 
-    console.log(`[generate-face-encoding] Result: faceDetected=${result.faceDetected}, quality=${result.quality}`);
+    done();
+    log.info("Encoding complete", { faceDetected: result.faceDetected, quality: result.quality });
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
 
   } catch (error) {
-    console.error("[generate-face-encoding] Error:", error);
+    log.error("Unhandled error", { error: error instanceof Error ? error.message : "Unknown" });
     return new Response(JSON.stringify({
       success: false,
       error: error instanceof Error ? error.message : "Unknown error"

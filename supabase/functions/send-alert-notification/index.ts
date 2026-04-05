@@ -1,6 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { sendAlertNotificationSchema, validateInput } from "../_shared/validation.ts";
+import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
+import { createLogger } from "../_shared/logger.ts";
+
+const log = createLogger("send-alert-notification");
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -8,6 +12,9 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
+
+  const rl = checkRateLimit(req, RATE_LIMITS.sensitive, "send-alert", corsHeaders);
+  if (!rl.allowed) return rl.response;
 
   try {
     const rawBody = await req.json();
@@ -17,8 +24,11 @@ serve(async (req) => {
 
     const results: Record<string, { success: boolean; error?: string }> = {};
 
-    console.log(`[send-alert-notification] Processing alert: ${notification.alertId}`);
-    console.log(`[send-alert-notification] Channels: ${notification.channels.join(', ')}`);
+    log.info("Processing alert notification", {
+      alertId: notification.alertId,
+      channels: notification.channels,
+      severity: notification.severity,
+    });
 
     // EMAIL via Resend
     if (notification.channels.includes('email')) {
@@ -170,6 +180,7 @@ serve(async (req) => {
     }
 
     const allSuccessful = Object.values(results).every(r => r.success);
+    log.info("Notification dispatch complete", { alertId: notification.alertId, results });
 
     return new Response(JSON.stringify({
       success: allSuccessful,
@@ -181,7 +192,7 @@ serve(async (req) => {
     });
 
   } catch (error) {
-    console.error("[send-alert-notification] Error:", error);
+    log.error("Unhandled error", { error: error instanceof Error ? error.message : "Unknown" });
     return new Response(JSON.stringify({
       success: false,
       error: error instanceof Error ? error.message : "Unknown error"
