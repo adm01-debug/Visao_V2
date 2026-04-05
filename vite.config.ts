@@ -40,8 +40,27 @@ export default defineConfig(({ mode }) => ({
     exclude: ["@mediapipe/pose", "@tensorflow/tfjs-backend-webgpu"],
   },
   build: {
+    target: "es2020",
+    cssMinify: true,
     rollupOptions: {
       external: ["@mediapipe/pose", "@tensorflow/tfjs-backend-webgpu"],
+      output: {
+        manualChunks: {
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          "vendor-ui": [
+            "@radix-ui/react-dialog",
+            "@radix-ui/react-dropdown-menu",
+            "@radix-ui/react-tabs",
+            "@radix-ui/react-tooltip",
+            "@radix-ui/react-popover",
+            "@radix-ui/react-select",
+          ],
+          "vendor-charts": ["recharts"],
+          "vendor-motion": ["framer-motion"],
+          "vendor-query": ["@tanstack/react-query"],
+          "vendor-supabase": ["@supabase/supabase-js"],
+        },
+      },
     },
   },
 }));

@@ -1,6 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { analyzeLicensePlateSchema, validateInput } from "../_shared/validation.ts";
+import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
+import { createLogger } from "../_shared/logger.ts";
+
+const log = createLogger("analyze-license-plate");
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -8,6 +12,11 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
+
+  const rl = checkRateLimit(req, RATE_LIMITS.ai, "license-plate", corsHeaders);
+  if (!rl.allowed) return rl.response;
+
+  const done = log.time("plate-analysis");
 
   try {
     const rawBody = await req.json();
@@ -18,14 +27,14 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
     if (!LOVABLE_API_KEY) {
-      console.error('LOVABLE_API_KEY not configured');
+      log.error("LOVABLE_API_KEY not configured");
       return new Response(
         JSON.stringify({ error: 'API key not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log('Analyzing image for license plate...');
+    log.info("Analyzing license plate");
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -59,14 +68,8 @@ Formato de resposta:
           {
             role: 'user',
             content: [
-              {
-                type: 'text',
-                text: 'Analise esta imagem e extraia a placa do veículo. Retorne apenas o JSON.'
-              },
-              {
-                type: 'image_url',
-                image_url: { url: image }
-              }
+              { type: 'text', text: 'Analise esta imagem e extraia a placa do veículo. Retorne apenas o JSON.' },
+              { type: 'image_url', image_url: { url: image } }
             ]
           }
         ],
@@ -90,14 +93,12 @@ Formato de resposta:
       }
 
       const errorText = await response.text();
-      console.error('AI API error:', response.status, errorText);
+      log.error("AI API error", { status: response.status, error: errorText });
       throw new Error(`AI API error: ${response.status}`);
     }
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content;
-
-    console.log('AI response:', content);
 
     if (!content) {
       return new Response(
@@ -109,17 +110,18 @@ Formato de resposta:
     try {
       const jsonStr = content.replace(/```json\n?|\n?```/g, '').trim();
       const result = JSON.parse(jsonStr);
-      console.log('Parsed result:', result);
+      done();
+      log.info("Plate detected", { plate: result.plate, confidence: result.confidence });
       return new Response(
         JSON.stringify(result),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
-    } catch (parseError) {
-      console.error('Error parsing AI response:', parseError);
+    } catch {
       const plateMatch = content.match(/[A-Z]{3}[0-9][A-Z0-9][0-9]{2}/i) ||
                          content.match(/[A-Z]{3}-?[0-9]{4}/i);
 
       if (plateMatch) {
+        done();
         return new Response(
           JSON.stringify({
             plate: plateMatch[0].toUpperCase().replace('-', ''),
@@ -136,7 +138,7 @@ Formato de resposta:
       );
     }
   } catch (error) {
-    console.error('Error in analyze-license-plate:', error);
+    log.error("Unhandled error", { error: error instanceof Error ? error.message : "Unknown" });
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

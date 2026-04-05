@@ -1,6 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { analyzeImageSchema, validateInput } from "../_shared/validation.ts";
+import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
+import { createLogger } from "../_shared/logger.ts";
+
+const log = createLogger("analyze-image");
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -8,6 +12,12 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
+
+  // Rate limit
+  const rl = checkRateLimit(req, RATE_LIMITS.ai, "analyze-image", corsHeaders);
+  if (!rl.allowed) return rl.response;
+
+  const done = log.time("analysis");
 
   try {
     const rawBody = await req.json();
@@ -17,6 +27,7 @@ serve(async (req) => {
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
+      log.error("LOVABLE_API_KEY not configured");
       return new Response(JSON.stringify({ error: "LOVABLE_API_KEY is not configured" }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -102,7 +113,7 @@ Respond in JSON format:
 
     const systemPrompt = systemPrompts[analysisType] || systemPrompts.security;
 
-    console.log(`Analyzing image with type: ${analysisType}`);
+    log.info("Starting analysis", { analysisType });
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -128,7 +139,7 @@ Respond in JSON format:
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
+      log.error("AI gateway error", { status: response.status, error: errorText });
 
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again later." }), {
@@ -151,11 +162,12 @@ Respond in JSON format:
     try {
       analysis = JSON.parse(content);
     } catch {
-      console.log("Raw AI response:", content);
+      log.warn("Failed to parse AI response as JSON", { raw: content?.substring(0, 200) });
       analysis = { summary: content, raw: true };
     }
 
-    console.log("Analysis completed:", JSON.stringify(analysis).substring(0, 200));
+    done();
+    log.info("Analysis completed", { analysisType, peopleCount: analysis.people_count });
 
     return new Response(JSON.stringify({
       success: true,
@@ -167,7 +179,7 @@ Respond in JSON format:
     });
 
   } catch (error) {
-    console.error("Error in analyze-image function:", error);
+    log.error("Unhandled error", { error: error instanceof Error ? error.message : "Unknown" });
     return new Response(JSON.stringify({
       success: false,
       error: error instanceof Error ? error.message : "Unknown error"

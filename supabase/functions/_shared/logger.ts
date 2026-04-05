@@ -2,16 +2,20 @@ type LogLevel = "debug" | "info" | "warn" | "error";
 
 interface LogEntry {
   level: LogLevel;
+  fn: string;
   message: string;
   timestamp: string;
+  duration_ms?: number;
   data?: Record<string, unknown>;
 }
 
 class Logger {
   private level: LogLevel;
+  private fnName: string;
 
-  constructor(level: LogLevel = "info") {
+  constructor(level: LogLevel = "info", fnName = "unknown") {
     this.level = level;
+    this.fnName = fnName;
   }
 
   private shouldLog(level: LogLevel): boolean {
@@ -24,6 +28,7 @@ class Logger {
 
     const entry: LogEntry = {
       level,
+      fn: this.fnName,
       message,
       timestamp: new Date().toISOString(),
       ...(data && { data }),
@@ -42,6 +47,19 @@ class Logger {
   info(message: string, data?: Record<string, unknown>): void { this.log("info", message, data); }
   warn(message: string, data?: Record<string, unknown>): void { this.log("warn", message, data); }
   error(message: string, data?: Record<string, unknown>): void { this.log("error", message, data); }
+
+  /** Create a timer to measure operation duration */
+  time(label: string): () => void {
+    const start = Date.now();
+    return () => {
+      this.info(`${label} completed`, { duration_ms: Date.now() - start });
+    };
+  }
+}
+
+/** Create a scoped logger for a specific edge function */
+export function createLogger(fnName: string): Logger {
+  return new Logger(Deno.env.get("LOG_LEVEL") as LogLevel || "info", fnName);
 }
 
 export const logger = new Logger(Deno.env.get("LOG_LEVEL") as LogLevel || "info");

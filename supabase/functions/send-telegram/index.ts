@@ -1,6 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { sendTelegramSchema, validateInput } from "../_shared/validation.ts";
+import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
+import { createLogger } from "../_shared/logger.ts";
+
+const log = createLogger("send-telegram");
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -9,13 +13,16 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const rl = checkRateLimit(req, RATE_LIMITS.sensitive, "send-telegram", corsHeaders);
+  if (!rl.allowed) return rl.response;
+
   try {
     const rawBody = await req.json();
     const validation = validateInput(sendTelegramSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
     const { botToken, chatId, message, parseMode, photo } = validation.data;
 
-    console.log(`Sending Telegram message to chat ${chatId}`);
+    log.info("Sending Telegram message", { chatId });
 
     let response;
 
@@ -57,21 +64,21 @@ serve(async (req) => {
     const result = await response.json();
 
     if (!result.ok) {
-      console.error('Telegram API error:', result);
+      log.error("Telegram API error", { description: result.description });
       return new Response(
         JSON.stringify({ error: result.description || 'Failed to send message' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log('Message sent successfully');
+    log.info("Message sent successfully", { messageId: result.result.message_id });
 
     return new Response(
       JSON.stringify({ success: true, messageId: result.result.message_id }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('Error in send-telegram:', error);
+    log.error("Unhandled error", { error: error instanceof Error ? error.message : "Unknown" });
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
