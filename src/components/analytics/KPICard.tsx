@@ -48,7 +48,7 @@ export function KPICard({ data, loading }: { data: KPIData; loading?: boolean })
 
   return (
     <div
-      className="rounded-xl border border-border/50 bg-card p-5 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 hover:border-border group"
+      className="rounded-xl border border-border/50 bg-card p-5 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-primary/20 group"
       style={{ boxShadow: 'var(--shadow-card)' }}
     >
       <div className="flex items-center justify-between mb-3">
