@@ -11,13 +11,14 @@ import { BottomNavigation } from '@/components/BottomNavigation';
 import { SwipeableView } from '@/components/SwipeableView';
 import { SectionErrorBoundary } from '@/components/layout/SectionErrorBoundary';
 import { useGlobalShortcuts } from '@/hooks/useGlobalShortcuts';
+import { ShortcutsHelpDialog } from '@/components/ShortcutsHelpDialog';
 
 interface MainLayoutProps {
   children: ReactNode;
 }
 
 export function MainLayout({ children }: MainLayoutProps) {
-  useGlobalShortcuts();
+  const { showHelp, setShowHelp, getShortcutsByCategory, formatShortcut } = useGlobalShortcuts();
 
   return (
     <div className="flex h-screen bg-background">
@@ -45,6 +46,12 @@ export function MainLayout({ children }: MainLayoutProps) {
       <SectionErrorBoundary section="Navegação">
         <BottomNavigation />
       </SectionErrorBoundary>
+      <ShortcutsHelpDialog
+        open={showHelp}
+        onOpenChange={setShowHelp}
+        shortcutsByCategory={getShortcutsByCategory()}
+        formatShortcut={formatShortcut}
+      />
     </div>
   );
 }
