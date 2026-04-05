@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { PageLoadingSkeleton } from '@/components/ui/LoadingState';
+import { SplashScreen } from '@/components/LoadingSpinner';
+import { PageMeta } from '@/components/PageMeta';
 
 /**
  * Index page - redirects to /dashboard (authenticated) or /auth (unauthenticated)
@@ -16,7 +17,7 @@ const Index = () => {
     }
   }, [user, loading, navigate]);
 
-  return <PageLoadingSkeleton />;
+  return <><PageMeta title="Início" description="Sistema de vigilância inteligente com IA" /><SplashScreen /></>;
 };
 
 export default Index;

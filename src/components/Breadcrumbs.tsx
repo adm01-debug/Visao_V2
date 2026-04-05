@@ -151,24 +151,52 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, className }) =>
   );
 };
 
+const ROUTE_DESCRIPTIONS: Record<string, string> = {
+  '/cameras': 'Gerencie e monitore todas as câmeras do sistema',
+  '/alerts': 'Visualize e gerencie alertas de segurança em tempo real',
+  '/zones': 'Configure zonas de monitoramento e detecção',
+  '/recordings': 'Acesse clips e gravações das câmeras',
+  '/analytics': 'Análises e métricas do sistema de vigilância',
+  '/settings': 'Configure preferências e parâmetros do sistema',
+  '/security': 'Regras de segurança e políticas de acesso',
+  '/face-recognition': 'Reconhecimento facial e identificação de pessoas',
+  '/license-plate': 'Detecção e gestão de placas veiculares',
+  '/heatmap': 'Mapa de calor de movimentação e presença',
+  '/reports': 'Gere relatórios detalhados do sistema',
+  '/ppe': 'Monitoramento de Equipamentos de Proteção Individual',
+  '/people': 'Cadastro e gestão de pessoas registradas',
+  '/profile': 'Gerencie suas informações pessoais',
+  '/users': 'Administre usuários e permissões',
+  '/panic-events': 'Monitore eventos de pânico em tempo real',
+  '/automation-rules': 'Configure regras de automação',
+  '/notification-settings': 'Gerencie canais e regras de notificação',
+};
+
 export function PageTitle({ className }: { className?: string }) {
   const location = useLocation();
   const label = ROUTE_LABELS[location.pathname];
 
   if (!label || location.pathname === '/dashboard') return null;
 
+  const description = ROUTE_DESCRIPTIONS[location.pathname];
+
   return (
     <AnimatePresence mode="wait">
-      <motion.h1
+      <motion.div
         key={location.pathname}
-        className={cn('text-lg font-semibold text-foreground hidden lg:block', className)}
+        className={cn('hidden lg:block', className)}
         initial={{ opacity: 0, y: -4 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 4 }}
         transition={{ duration: 0.15 }}
       >
-        {label}
-      </motion.h1>
+        <h1 className="text-lg font-semibold text-foreground leading-tight">
+          {label}
+        </h1>
+        {description && (
+          <p className="text-xs text-muted-foreground mt-0.5">{description}</p>
+        )}
+      </motion.div>
     </AnimatePresence>
   );
 }

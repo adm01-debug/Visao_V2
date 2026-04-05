@@ -9,11 +9,11 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { LoadingSpinner, SplashScreen } from "@/components/LoadingSpinner";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PanicButton } from "@/components/PanicButton";
-import { AnimatedPage } from "@/components/ui/AnimatedPage";
+
 import { withRouteErrorBoundary } from "@/components/RouteErrorBoundary";
 import { NavigationProgress } from "@/components/ui/NavigationProgress";
 import { errorReporter } from "@/lib/errorReporter";
@@ -69,18 +69,14 @@ const queryClient = new QueryClient({
   },
 });
 
-const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-screen bg-background">
-    <LoadingSpinner size="lg" />
-  </div>
-);
+const PageLoader = () => <SplashScreen />;
 
 // Layout wrapper para rotas protegidas com MainLayout
 const ProtectedLayoutRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   if (loading) return <PageLoader />;
   if (!user) return <Navigate to="/auth" replace />;
-  return <MainLayout><AnimatedPage>{children}</AnimatedPage><PanicButton /></MainLayout>;
+  return <MainLayout>{children}<PanicButton /></MainLayout>;
 };
 
 // VISÃO App Component
@@ -100,6 +96,8 @@ const App = () => (
                   <Routes>
                     <Route path="/" element={withRouteErrorBoundary(<Index />, "Início")} />
                     <Route path="/auth" element={withRouteErrorBoundary(<Auth />, "Autenticação")} />
+                    <Route path="/login" element={<Navigate to="/auth" replace />} />
+                    <Route path="/register" element={<Navigate to="/auth" replace />} />
                     <Route path="/auth/callback" element={withRouteErrorBoundary(<AuthCallback />, "Auth Callback")} />
                     <Route path="/reset-password" element={withRouteErrorBoundary(<ResetPasswordPage />, "Redefinir Senha")} />
                     <Route path="/dashboard" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<DashboardV2 />, "Dashboard")}</ProtectedLayoutRoute>} />
