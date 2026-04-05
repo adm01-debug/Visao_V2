@@ -39,7 +39,7 @@ export function AlertItem({ alert, isSelected, onSelect, onView, onMarkRead, onD
   const type = typeConfig[alert.type as keyof typeof typeConfig] || typeConfig.security;
   const TypeIcon = type.icon;
   const timeAgo = formatDistanceToNow(new Date(alert.timestamp), { addSuffix: true, locale: ptBR });
-  const borderClass = severityBorderMap[alert.severity] || severityBorderMap.low;
+  const borderClass = severityBorderMap[alert.severity] ?? 'border-l-primary/40';
   const badgeBg = severityBadgeBg[alert.severity] || severityBadgeBg.low;
 
   if (viewMode === 'list') {
