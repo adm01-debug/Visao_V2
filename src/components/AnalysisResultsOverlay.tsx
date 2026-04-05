@@ -185,7 +185,7 @@ function SafetyOverlay({ analysis }: { analysis: SafetyAnalysis }) {
       <div className="flex items-center gap-1.5 text-[10px]">
         <HardHat className="w-3 h-3 text-primary" />
         <span className="text-white/70">EPI Conformidade:</span>
-        <span className={cn('font-bold', complianceRate >= 90 ? 'text-green-400' : complianceRate >= 70 ? 'text-yellow-400' : 'text-red-400')}>
+        <span className={cn('font-bold', complianceRate >= 90 ? 'text-success' : complianceRate >= 70 ? 'text-warning' : 'text-destructive')}>
           {complianceRate}%
         </span>
       </div>
