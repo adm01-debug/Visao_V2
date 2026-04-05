@@ -1,6 +1,10 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { compareFacesSchema, validateInput } from "../_shared/validation.ts";
+import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
+import { createLogger } from "../_shared/logger.ts";
+
+const log = createLogger("compare-faces");
 
 interface CompareResult {
   matched: boolean;
@@ -34,18 +38,25 @@ serve(async (req: Request) => {
 
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
+  const rl = checkRateLimit(req, RATE_LIMITS.ai, "compare-faces", corsHeaders);
+  if (!rl.allowed) return rl.response;
+
   try {
     const rawBody = await req.json();
     const validation = validateInput(compareFacesSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
     const { sourceImage, targetImage, threshold } = validation.data;
 
+    log.info("Comparing faces", { threshold });
     const result = await compareFaces(sourceImage, targetImage, threshold);
+    log.info("Comparison complete", { matched: result.result?.matched, similarity: result.result?.similarity });
+
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: result.success ? 200 : 400,
     });
   } catch (e) {
+    log.error("Unhandled error", { error: e instanceof Error ? e.message : "Unknown" });
     return new Response(JSON.stringify({ success: false, error: 'Internal error' }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500,
     });
