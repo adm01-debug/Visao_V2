@@ -87,13 +87,14 @@ export function AlertSeveritySummary({ counts, total, activeSeverity, onSeverity
                   <p className={cn('text-lg font-bold leading-none', text)}>{counts[key]}</p>
                   <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
                 </div>
-              </div>
+              </button>
             </TooltipTrigger>
             <TooltipContent side="bottom" className="max-w-[200px] text-center">
-              <p className="text-xs">{tooltip}</p>
+              <p className="text-xs">{tooltip}{isActive ? ' (clique para remover filtro)' : ' (clique para filtrar)'}</p>
             </TooltipContent>
           </Tooltip>
-        ))}
+          );
+        })}
       </div>
 
       {/* Distribution bar */}
