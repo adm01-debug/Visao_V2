@@ -340,7 +340,7 @@ const NavItemCollapsed = memo(function NavItemCollapsed({
           {isActive && (
             <motion.div
               layoutId="sidebar-active-indicator"
-              className="absolute -left-1 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-primary-foreground"
+              className="absolute -left-1 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-sidebar-primary"
               transition={{ type: "spring", stiffness: 350, damping: 30 }}
             />
           )}
