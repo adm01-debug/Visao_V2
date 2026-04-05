@@ -95,11 +95,12 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
   return (
     <article
       className={cn(
-        "glass-card p-4 cursor-pointer transition-all duration-300",
-        "hover:border-primary/50 hover:shadow-md hover:-translate-y-0.5",
+        "glass-card p-4 cursor-pointer group",
+        "hover:border-primary/50 hover:shadow-lg hover:-translate-y-1",
         !alert.isRead && `border-l-4 ${severityBorderColors[alert.severity]} bg-destructive/5`,
-        alert.severity === 'critical' && !alert.isRead && 'alert-critical-pulse',
-        alert.severity === 'high' && !alert.isRead && 'animate-pulse-subtle'
+        alert.severity === 'critical' && !alert.isRead && 'alert-critical-pulse border-destructive/50',
+        alert.severity === 'high' && !alert.isRead && 'animate-pulse-subtle',
+        alert.type === 'panic' && !alert.isRead && 'alert-critical-pulse'
       )}
       onClick={onClick}
       role="button"
