@@ -2,15 +2,14 @@
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useContinuousAnalysis (Refatorado)
  *
- * Motor principal para análise contínua de vídeo com IA.
  * Lógica modularizada em hooks especializados:
  * - useRuleEvaluation: avaliação de regras
  * - useThresholdChecker: verificação de limiares
  * - useAnalysisPersistence: persistência no banco
+ * - useAnalysisExecution: execução de análise individual
  */
 
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import {
   ContinuousAnalysisConfig,
   AnalysisSession,
@@ -25,16 +24,12 @@ import {
 import {
   AnalysisType,
   AnalysisResult,
-  AnalysisAlert,
 } from '@/hooks/useImageAnalysis';
 import { DbRule } from '@/types/rules';
 import { useRuleEvaluation } from '@/hooks/analysis/useRuleEvaluation';
 import { useThresholdChecker } from '@/hooks/analysis/useThresholdChecker';
 import { useAnalysisPersistence } from '@/hooks/analysis/useAnalysisPersistence';
-
-// ============================================
-// TIPOS
-// ============================================
+import { useAnalysisExecution } from '@/hooks/analysis/useAnalysisExecution';
 
 interface UseContinuousAnalysisOptions extends ContinuousAnalysisEvents {
   cameraId: string;
@@ -68,10 +63,6 @@ const initialStats: SessionStats = {
   avgAnalysisTime: 0, totalRuntime: 0, successRate: 100,
 };
 
-// ============================================
-// HOOK PRINCIPAL
-// ============================================
-
 export function useContinuousAnalysis(
   options: UseContinuousAnalysisOptions
 ): UseContinuousAnalysisReturn {
@@ -93,142 +84,18 @@ export function useContinuousAnalysis(
   const configRef = useRef<ContinuousAnalysisConfig | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const sessionRef = useRef<AnalysisSession | null>(null);
-  const analysisTimesRef = useRef<number[]>([]);
 
-  // Extracted hooks
   const { evaluateRules } = useRuleEvaluation(cameraId, rules);
   const { checkThresholds } = useThresholdChecker();
   const { createAlertInDatabase, saveHistoryToDatabase } = useAnalysisPersistence(
     cameraId, cameraName, createAlerts, saveToDatabase
   );
 
-  // ============================================
-  // ANÁLISE DE IMAGEM
-  // ============================================
-
-  const analyzeImage = useCallback(async (
-    base64: string, analysisType: AnalysisType
-  ): Promise<AnalysisResult | null> => {
-    const { data, error } = await supabase.functions.invoke('analyze-image', {
-      body: { imageBase64: base64, analysisType },
-    });
-    if (error) throw error;
-    if (!data.success) throw new Error(data.error);
-    return data.analysis as AnalysisResult;
-  }, []);
-
-  // ============================================
-  // EXECUTAR UMA ANÁLISE
-  // ============================================
-
-  const executeAnalysis = useCallback(async (
-    analysisType: AnalysisType
-  ): Promise<AnalysisHistoryEntry | null> => {
-    const config = configRef.current;
-    const currentSession = sessionRef.current;
-    if (!config || !currentSession) return null;
-
-    const startTime = Date.now();
-    setIsAnalyzing(true);
-    onAnalysisStart?.(cameraId, analysisType);
-
-    try {
-      const frame = getFrame();
-      if (!frame) throw new Error('Não foi possível obter frame da câmera');
-
-      const result = await analyzeImage(frame, analysisType);
-      if (!result) throw new Error('Análise retornou resultado vazio');
-
-      const duration = Date.now() - startTime;
-      analysisTimesRef.current.push(duration);
-
-      const ruleEvaluations = evaluateRules(result, analysisType);
-      const violatedRules = ruleEvaluations.filter(e => e.violated).map(e => e.ruleId);
-      const alerts = checkThresholds(result, config.alertThresholds);
-
-      for (const evaluation of ruleEvaluations.filter(e => e.violated)) {
-        onRuleViolation?.(cameraId, evaluation, result);
-        const ruleAlert: AnalysisAlert = {
-          type: 'security', severity: evaluation.severity,
-          message: evaluation.message,
-          recommendation: `Ações: ${evaluation.actions.join(', ')}`,
-        };
-        alerts.push(ruleAlert);
-      }
-
-      for (const alert of alerts) {
-        await createAlertInDatabase(alert, result);
-        onAlertGenerated?.(cameraId, alert, result);
-      }
-
-      const historyEntry: AnalysisHistoryEntry = {
-        id: crypto.randomUUID(), sessionId: currentSession.id,
-        cameraId, analysisType, result, duration,
-        alertsGenerated: alerts.length, violatedRules,
-        timestamp: new Date(), success: true,
-      };
-
-      setHistory(prev => [historyEntry, ...prev].slice(0, config.maxHistorySize));
-      await saveHistoryToDatabase(historyEntry);
-      setLastAnalysis(result);
-
-      setSession(prev => {
-        if (!prev) return null;
-        const newStats: SessionStats = {
-          ...prev.stats,
-          totalAnalyses: prev.stats.totalAnalyses + 1,
-          successfulAnalyses: prev.stats.successfulAnalyses + 1,
-          alertsGenerated: prev.stats.alertsGenerated + alerts.length,
-          totalPeopleDetected: prev.stats.totalPeopleDetected + (result.people_count || 0),
-          avgPeoplePerAnalysis: (prev.stats.totalPeopleDetected + (result.people_count || 0)) / (prev.stats.totalAnalyses + 1),
-          avgAnalysisTime: analysisTimesRef.current.reduce((a, b) => a + b, 0) / analysisTimesRef.current.length,
-          totalRuntime: Date.now() - prev.startedAt.getTime(),
-          successRate: ((prev.stats.successfulAnalyses + 1) / (prev.stats.totalAnalyses + 1)) * 100,
-        };
-        const newSession = { ...prev, stats: newStats, lastAnalysis: result, lastError: null, nextAnalysisAt: new Date(Date.now() + config.interval) };
-        sessionRef.current = newSession;
-        onStatsUpdate?.(newSession);
-        return newSession;
-      });
-
-      onAnalysisComplete?.(cameraId, result, duration);
-      return historyEntry;
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
-      const duration = Date.now() - startTime;
-
-      const historyEntry: AnalysisHistoryEntry = {
-        id: crypto.randomUUID(), sessionId: currentSession.id,
-        cameraId, analysisType,
-        result: { people_count: 0, summary: 'Erro na análise' } as AnalysisResult,
-        duration, alertsGenerated: 0, violatedRules: [],
-        timestamp: new Date(), success: false, error: errorMessage,
-      };
-
-      setHistory(prev => [historyEntry, ...prev].slice(0, config.maxHistorySize));
-      setSession(prev => {
-        if (!prev) return null;
-        const newStats: SessionStats = {
-          ...prev.stats,
-          totalAnalyses: prev.stats.totalAnalyses + 1,
-          failedAnalyses: prev.stats.failedAnalyses + 1,
-          successRate: (prev.stats.successfulAnalyses / (prev.stats.totalAnalyses + 1)) * 100,
-        };
-        const newSession = { ...prev, stats: newStats, lastError: errorMessage };
-        sessionRef.current = newSession;
-        return newSession;
-      });
-
-      onAnalysisError?.(cameraId, error instanceof Error ? error : new Error(errorMessage));
-      return historyEntry;
-    } finally {
-      setIsAnalyzing(false);
-    }
-  }, [cameraId, getFrame, analyzeImage, evaluateRules, checkThresholds, createAlertInDatabase, saveHistoryToDatabase, onAnalysisStart, onAnalysisComplete, onAnalysisError, onAlertGenerated, onRuleViolation, onStatsUpdate]);
-
-  // ============================================
-  // LOOP DE ANÁLISE
-  // ============================================
+  const { executeAnalysis } = useAnalysisExecution(
+    { cameraId, getFrame, evaluateRules, checkThresholds, createAlertInDatabase, saveHistoryToDatabase },
+    { onAnalysisStart, onAnalysisComplete, onAnalysisError, onAlertGenerated, onRuleViolation, onStatsUpdate },
+    configRef, sessionRef, setSession, setHistory, setLastAnalysis, setIsAnalyzing,
+  );
 
   const runAnalysisLoop = useCallback(() => {
     const config = configRef.current;
@@ -252,10 +119,6 @@ export function useContinuousAnalysis(
     intervalRef.current = setTimeout(() => runAnalysisLoop(), config.interval);
   }, [executeAnalysis]);
 
-  // ============================================
-  // API PÚBLICA
-  // ============================================
-
   const startAnalysis = useCallback((configOverrides?: Partial<ContinuousAnalysisConfig>) => {
     if (intervalRef.current) clearTimeout(intervalRef.current);
 
@@ -268,7 +131,6 @@ export function useContinuousAnalysis(
     } as ContinuousAnalysisConfig;
 
     configRef.current = config;
-    analysisTimesRef.current = [];
 
     const newSession: AnalysisSession = {
       id: crypto.randomUUID(), cameraId, status: 'running', config,
