@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
+import { analyzeLicensePlateSchema, validateInput } from "../_shared/validation.ts";
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -9,14 +10,10 @@ serve(async (req) => {
   }
 
   try {
-    const { image } = await req.json();
-
-    if (!image) {
-      return new Response(
-        JSON.stringify({ error: 'Image is required' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    const rawBody = await req.json();
+    const validation = validateInput(analyzeLicensePlateSchema, rawBody, corsHeaders);
+    if (!validation.success) return validation.response;
+    const { image } = validation.data;
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
@@ -109,22 +106,16 @@ Formato de resposta:
       );
     }
 
-    // Parse JSON response
     try {
-      // Remove markdown code blocks if present
       const jsonStr = content.replace(/```json\n?|\n?```/g, '').trim();
       const result = JSON.parse(jsonStr);
-
       console.log('Parsed result:', result);
-
       return new Response(
         JSON.stringify(result),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     } catch (parseError) {
       console.error('Error parsing AI response:', parseError);
-
-      // Try to extract plate using regex
       const plateMatch = content.match(/[A-Z]{3}[0-9][A-Z0-9][0-9]{2}/i) ||
                          content.match(/[A-Z]{3}-?[0-9]{4}/i);
 

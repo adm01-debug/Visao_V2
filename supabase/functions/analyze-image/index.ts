@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
+import { analyzeImageSchema, validateInput } from "../_shared/validation.ts";
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -9,15 +10,16 @@ serve(async (req) => {
   }
 
   try {
-    const { imageUrl, imageBase64, analysisType = 'security' } = await req.json();
+    const rawBody = await req.json();
+    const validation = validateInput(analyzeImageSchema, rawBody, corsHeaders);
+    if (!validation.success) return validation.response;
+    const { imageUrl, imageBase64, analysisType } = validation.data;
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
-    }
-
-    if (!imageUrl && !imageBase64) {
-      throw new Error("Either imageUrl or imageBase64 is required");
+      return new Response(JSON.stringify({ error: "LOVABLE_API_KEY is not configured" }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const imageContent = imageBase64
@@ -130,14 +132,12 @@ Respond in JSON format:
 
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again later." }), {
-          status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       if (response.status === 402) {
         return new Response(JSON.stringify({ error: "AI credits exhausted. Please add credits to continue." }), {
-          status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
 

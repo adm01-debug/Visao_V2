@@ -1,37 +1,6 @@
-/**
- * VISÃO - Sistema de Vigilância Inteligente
- * Edge Function: send-alert-notification
- *
- * Envia notificações de alertas via múltiplos canais:
- * - Email (via Resend)
- * - Telegram (via Bot API)
- * - WhatsApp (via Evolution API / Z-API)
- * - Webhook
- * - Push Notification
- */
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
-
-interface AlertNotification {
-  alertId: string;
-  type: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  message: string;
-  cameraName: string;
-  timestamp: string;
-  snapshotUrl?: string;
-  channels: ('email' | 'telegram' | 'whatsapp' | 'webhook' | 'push')[];
-  recipients?: {
-    emails?: string[];
-    phones?: string[];
-    webhookUrls?: string[];
-  };
-  telegram?: {
-    botToken: string;
-    chatId: string;
-  };
-}
+import { sendAlertNotificationSchema, validateInput } from "../_shared/validation.ts";
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -41,15 +10,17 @@ serve(async (req) => {
   }
 
   try {
-    const notification: AlertNotification = await req.json();
+    const rawBody = await req.json();
+    const validation = validateInput(sendAlertNotificationSchema, rawBody, corsHeaders);
+    if (!validation.success) return validation.response;
+    const notification = validation.data;
+
     const results: Record<string, { success: boolean; error?: string }> = {};
 
     console.log(`[send-alert-notification] Processing alert: ${notification.alertId}`);
     console.log(`[send-alert-notification] Channels: ${notification.channels.join(', ')}`);
 
-    // ==========================================
     // EMAIL via Resend
-    // ==========================================
     if (notification.channels.includes('email')) {
       const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
       const emails = notification.recipients?.emails || [];
@@ -57,10 +28,7 @@ serve(async (req) => {
       if (RESEND_API_KEY && emails.length > 0) {
         try {
           const severityColors: Record<string, string> = {
-            low: '#3B82F6',
-            medium: '#F59E0B',
-            high: '#F97316',
-            critical: '#EF4444',
+            low: '#3B82F6', medium: '#F59E0B', high: '#F97316', critical: '#EF4444',
           };
 
           const emailHtml = `
@@ -70,30 +38,13 @@ serve(async (req) => {
                 <p style="margin: 10px 0 0 0; opacity: 0.9;">Severidade: ${notification.severity.toUpperCase()}</p>
               </div>
               <div style="padding: 20px; background: #f9fafb;">
-                <p style="font-size: 18px; color: #111827; margin-bottom: 10px;">
-                  <strong>Câmera:</strong> ${notification.cameraName}
-                </p>
-                <p style="font-size: 16px; color: #374151;">
-                  <strong>Tipo:</strong> ${notification.type}
-                </p>
-                <p style="font-size: 16px; color: #374151;">
-                  <strong>Mensagem:</strong> ${notification.message}
-                </p>
-                <p style="font-size: 14px; color: #6b7280;">
-                  <strong>Data/Hora:</strong> ${new Date(notification.timestamp).toLocaleString('pt-BR')}
-                </p>
-                ${notification.snapshotUrl ? `
-                  <div style="margin-top: 20px;">
-                    <p style="font-size: 14px; color: #6b7280; margin-bottom: 10px;">Snapshot:</p>
-                    <img src="${notification.snapshotUrl}" alt="Snapshot" style="max-width: 100%; border-radius: 8px;" />
-                  </div>
-                ` : ''}
+                <p><strong>Câmera:</strong> ${notification.cameraName}</p>
+                <p><strong>Tipo:</strong> ${notification.type}</p>
+                <p><strong>Mensagem:</strong> ${notification.message}</p>
+                <p><strong>Data/Hora:</strong> ${new Date(notification.timestamp).toLocaleString('pt-BR')}</p>
+                ${notification.snapshotUrl ? `<img src="${notification.snapshotUrl}" alt="Snapshot" style="max-width: 100%; border-radius: 8px;" />` : ''}
               </div>
-              <div style="padding: 15px; background: #e5e7eb; text-align: center; font-size: 12px; color: #6b7280;">
-                VISÃO - Sistema de Vigilância Inteligente
-              </div>
-            </div>
-          `;
+            </div>`;
 
           const emailResponse = await fetch('https://api.resend.com/emails', {
             method: 'POST',
@@ -109,13 +60,9 @@ serve(async (req) => {
             }),
           });
 
-          if (emailResponse.ok) {
-            results.email = { success: true };
-            console.log(`[send-alert-notification] Email sent to ${emails.length} recipients`);
-          } else {
-            const errorText = await emailResponse.text();
-            results.email = { success: false, error: errorText };
-          }
+          results.email = emailResponse.ok
+            ? { success: true }
+            : { success: false, error: await emailResponse.text() };
         } catch (err) {
           results.email = { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
         }
@@ -124,31 +71,17 @@ serve(async (req) => {
       }
     }
 
-    // ==========================================
-    // TELEGRAM via Bot API
-    // ==========================================
+    // TELEGRAM
     if (notification.channels.includes('telegram')) {
       const telegramConfig = notification.telegram;
 
       if (telegramConfig?.botToken && telegramConfig?.chatId) {
         try {
           const severityEmoji: Record<string, string> = {
-            low: 'ℹ️',
-            medium: '⚠️',
-            high: '🔶',
-            critical: '🚨',
+            low: 'ℹ️', medium: '⚠️', high: '🔶', critical: '🚨',
           };
 
-          const telegramMessage = `${severityEmoji[notification.severity]} <b>ALERTA VISÃO</b>
-
-<b>Severidade:</b> ${notification.severity.toUpperCase()}
-<b>Câmera:</b> ${notification.cameraName}
-<b>Tipo:</b> ${notification.type}
-
-<b>Mensagem:</b>
-${notification.message}
-
-<b>Data/Hora:</b> ${new Date(notification.timestamp).toLocaleString('pt-BR')}`;
+          const telegramMessage = `${severityEmoji[notification.severity]} <b>ALERTA VISÃO</b>\n\n<b>Severidade:</b> ${notification.severity.toUpperCase()}\n<b>Câmera:</b> ${notification.cameraName}\n<b>Tipo:</b> ${notification.type}\n\n<b>Mensagem:</b>\n${notification.message}\n\n<b>Data/Hora:</b> ${new Date(notification.timestamp).toLocaleString('pt-BR')}`;
 
           let telegramResponse;
 
@@ -158,54 +91,19 @@ ${notification.message}
             formData.append('caption', telegramMessage);
             formData.append('parse_mode', 'HTML');
             formData.append('photo', notification.snapshotUrl);
-
-            telegramResponse = await fetch(
-              `https://api.telegram.org/bot${telegramConfig.botToken}/sendPhoto`,
-              { method: 'POST', body: formData }
-            );
-          } else if (notification.snapshotUrl && notification.snapshotUrl.startsWith('data:image')) {
-            const base64Data = notification.snapshotUrl.split(',')[1];
-            const binaryString = atob(base64Data);
-            const bytes = new Uint8Array(binaryString.length);
-            for (let i = 0; i < binaryString.length; i++) {
-              bytes[i] = binaryString.charCodeAt(i);
-            }
-            const blob = new Blob([bytes], { type: 'image/jpeg' });
-
-            const formData = new FormData();
-            formData.append('chat_id', telegramConfig.chatId);
-            formData.append('caption', telegramMessage);
-            formData.append('parse_mode', 'HTML');
-            formData.append('photo', blob, 'snapshot.jpg');
-
-            telegramResponse = await fetch(
-              `https://api.telegram.org/bot${telegramConfig.botToken}/sendPhoto`,
-              { method: 'POST', body: formData }
-            );
+            telegramResponse = await fetch(`https://api.telegram.org/bot${telegramConfig.botToken}/sendPhoto`, { method: 'POST', body: formData });
           } else {
-            telegramResponse = await fetch(
-              `https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`,
-              {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  chat_id: telegramConfig.chatId,
-                  text: telegramMessage,
-                  parse_mode: 'HTML',
-                }),
-              }
-            );
+            telegramResponse = await fetch(`https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ chat_id: telegramConfig.chatId, text: telegramMessage, parse_mode: 'HTML' }),
+            });
           }
 
           const telegramResult = await telegramResponse.json();
-
-          if (telegramResult.ok) {
-            results.telegram = { success: true };
-            console.log(`[send-alert-notification] Telegram sent to chat ${telegramConfig.chatId}`);
-          } else {
-            results.telegram = { success: false, error: telegramResult.description || 'Telegram API error' };
-            console.error('[send-alert-notification] Telegram error:', telegramResult);
-          }
+          results.telegram = telegramResult.ok
+            ? { success: true }
+            : { success: false, error: telegramResult.description || 'Telegram API error' };
         } catch (err) {
           results.telegram = { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
         }
@@ -214,9 +112,7 @@ ${notification.message}
       }
     }
 
-    // ==========================================
-    // WHATSAPP via Evolution API / Z-API
-    // ==========================================
+    // WHATSAPP
     if (notification.channels.includes('whatsapp')) {
       const WHATSAPP_API_URL = Deno.env.get("WHATSAPP_API_URL");
       const WHATSAPP_API_KEY = Deno.env.get("WHATSAPP_API_KEY");
@@ -225,46 +121,17 @@ ${notification.message}
 
       if (WHATSAPP_API_URL && WHATSAPP_API_KEY && phones.length > 0) {
         try {
-          const severityEmoji: Record<string, string> = {
-            low: 'ℹ️',
-            medium: '⚠️',
-            high: '🔶',
-            critical: '🚨',
-          };
-
-          const whatsappMessage = `${severityEmoji[notification.severity]} *ALERTA VISÃO*
-
-*Severidade:* ${notification.severity.toUpperCase()}
-*Câmera:* ${notification.cameraName}
-*Tipo:* ${notification.type}
-
-*Mensagem:*
-${notification.message}
-
-*Data/Hora:* ${new Date(notification.timestamp).toLocaleString('pt-BR')}`;
+          const whatsappMessage = `⚠️ *ALERTA VISÃO*\n*Severidade:* ${notification.severity.toUpperCase()}\n*Câmera:* ${notification.cameraName}\n*Mensagem:* ${notification.message}`;
 
           for (const phone of phones) {
             const cleanPhone = phone.replace(/\D/g, '');
-
-            const whatsappResponse = await fetch(`${WHATSAPP_API_URL}/message/sendText/${WHATSAPP_INSTANCE}`, {
+            await fetch(`${WHATSAPP_API_URL}/message/sendText/${WHATSAPP_INSTANCE}`, {
               method: 'POST',
-              headers: {
-                'apikey': WHATSAPP_API_KEY,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                number: cleanPhone,
-                text: whatsappMessage,
-              }),
+              headers: { 'apikey': WHATSAPP_API_KEY, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ number: cleanPhone, text: whatsappMessage }),
             });
-
-            if (!whatsappResponse.ok) {
-              console.error(`[send-alert-notification] WhatsApp failed for ${phone}`);
-            }
           }
-
           results.whatsapp = { success: true };
-          console.log(`[send-alert-notification] WhatsApp sent to ${phones.length} recipients`);
         } catch (err) {
           results.whatsapp = { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
         }
@@ -273,35 +140,27 @@ ${notification.message}
       }
     }
 
-    // ==========================================
     // WEBHOOK
-    // ==========================================
     if (notification.channels.includes('webhook')) {
       const webhookUrls = notification.recipients?.webhookUrls || [];
-
       if (webhookUrls.length > 0) {
         try {
-          const webhookPayload = {
-            event: 'alert.created',
-            alertId: notification.alertId,
-            type: notification.type,
-            severity: notification.severity,
-            message: notification.message,
-            cameraName: notification.cameraName,
-            timestamp: notification.timestamp,
-            snapshotUrl: notification.snapshotUrl,
-          };
-
           for (const url of webhookUrls) {
             await fetch(url, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(webhookPayload),
+              body: JSON.stringify({
+                event: 'alert.created',
+                alertId: notification.alertId,
+                type: notification.type,
+                severity: notification.severity,
+                message: notification.message,
+                cameraName: notification.cameraName,
+                timestamp: notification.timestamp,
+              }),
             });
           }
-
           results.webhook = { success: true };
-          console.log(`[send-alert-notification] Webhook sent to ${webhookUrls.length} endpoints`);
         } catch (err) {
           results.webhook = { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
         }
@@ -310,9 +169,6 @@ ${notification.message}
       }
     }
 
-    // ==========================================
-    // RESPOSTA
-    // ==========================================
     const allSuccessful = Object.values(results).every(r => r.success);
 
     return new Response(JSON.stringify({

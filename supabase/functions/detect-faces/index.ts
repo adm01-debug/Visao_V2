@@ -1,23 +1,15 @@
-// Detect Faces Edge Function - Projeto VISÃO
-// Detecção de faces com tipagem forte
-
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { getCorsHeaders } from "../_shared/cors.ts";
+import { detectFacesSchema, validateInput } from "../_shared/validation.ts";
 
-export interface DetectFacesRequest {
-  imageBase64: string;
-  minConfidence?: number;
-  maxFaces?: number;
-  returnLandmarks?: boolean;
-}
-
-export interface BoundingBox {
+interface BoundingBox {
   x: number;
   y: number;
   width: number;
   height: number;
 }
 
-export interface FaceLandmarks {
+interface FaceLandmarks {
   leftEye: { x: number; y: number };
   rightEye: { x: number; y: number };
   nose: { x: number; y: number };
@@ -25,7 +17,7 @@ export interface FaceLandmarks {
   rightMouth: { x: number; y: number };
 }
 
-export interface DetectedFace {
+interface DetectedFace {
   boundingBox: BoundingBox;
   confidence: number;
   landmarks?: FaceLandmarks;
@@ -34,7 +26,7 @@ export interface DetectedFace {
   emotion?: string;
 }
 
-export interface DetectFacesResponse {
+interface DetectFacesResponse {
   success: boolean;
   faces: DetectedFace[];
   count: number;
@@ -42,24 +34,10 @@ export interface DetectFacesResponse {
   error?: string;
 }
 
-import { getCorsHeaders } from "../_shared/cors.ts";
-
-const detectFaces = async (request: DetectFacesRequest): Promise<DetectFacesResponse> => {
+const detectFaces = async (imageBase64: string, minConfidence: number, maxFaces: number): Promise<DetectFacesResponse> => {
   const startTime = Date.now();
 
   try {
-    const { imageBase64, minConfidence = 0.5, maxFaces = 10 } = request;
-
-    if (!imageBase64) {
-      return {
-        success: false,
-        faces: [],
-        count: 0,
-        processingTime: Date.now() - startTime,
-        error: 'imageBase64 is required',
-      };
-    }
-
     const faces: DetectedFace[] = [];
 
     return {
@@ -87,8 +65,12 @@ serve(async (req: Request) => {
   }
 
   try {
-    const body: DetectFacesRequest = await req.json();
-    const result = await detectFaces(body);
+    const rawBody = await req.json();
+    const validation = validateInput(detectFacesSchema, rawBody, corsHeaders);
+    if (!validation.success) return validation.response;
+    const { imageBase64, minConfidence, maxFaces } = validation.data;
+
+    const result = await detectFaces(imageBase64, minConfidence, maxFaces);
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
