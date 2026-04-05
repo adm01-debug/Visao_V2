@@ -25,27 +25,26 @@ function DashboardControlsBarComponent({
   showMap, onShowMapChange,
 }: DashboardControlsBarProps) {
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-4">
-        <SearchInput value={searchQuery} onChange={onSearchChange} placeholder="Buscar câmeras ou alertas..." />
-        <div className="flex items-center gap-2">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-2">
+      <SearchInput value={searchQuery} onChange={onSearchChange} placeholder="Buscar câmeras e alertas..." />
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 text-sm">
           <Switch id="enable-streams" checked={enableStreams} onCheckedChange={onEnableStreamsChange} />
-          <Label htmlFor="enable-streams" className="text-sm cursor-pointer">Streams ao vivo</Label>
+          <Label htmlFor="enable-streams" className="text-xs text-muted-foreground cursor-pointer whitespace-nowrap">Streams</Label>
         </div>
-      </div>
-      <div className="flex items-center gap-2">
+        <div className="h-4 w-px bg-border/50" />
         <CameraLayoutControls layout={cameraLayout} onLayoutChange={onLayoutChange} />
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              variant={showMap ? 'default' : 'outline'}
-              size="icon" className="h-8 w-8"
+              variant={showMap ? 'default' : 'ghost'}
+              size="icon" className="h-8 w-8 rounded-lg"
               onClick={() => onShowMapChange(!showMap)}
             >
               <Map className="h-4 w-4" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Mostrar Mapa</TooltipContent>
+          <TooltipContent>Mapa</TooltipContent>
         </Tooltip>
       </div>
     </div>
