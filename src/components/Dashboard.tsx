@@ -1,29 +1,15 @@
 import { memo, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  AlertTriangle,
-  Activity,
-  Map,
-  Eye,
-} from 'lucide-react';
 import { CameraModal } from './CameraModal';
-import { ExportMenu } from './ExportMenu';
-import { LazyCameraMap as CameraMap } from './LazyCameraMap';
-import { CameraLayoutControls, CameraLayout } from './CameraLayoutControls';
-import { SearchInput, filterCamerasBySearch } from './SearchInput';
+import { CameraLayout } from './CameraLayoutControls';
+import { filterCamerasBySearch } from './SearchInput';
 import { UIAlert } from './AlertCard';
 import { useCameras } from '@/hooks/useCameras';
 import { useAlerts } from '@/hooks/useAlerts';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { PullToRefresh, useSwipe } from '@/components/ui/MobileInteractions';
-import { exportCameras } from '@/lib/exportUtils';
 
 import {
-  StreamCameraCard,
   DashboardStats,
   DashboardAlerts,
   StatsSkeleton,
@@ -31,6 +17,8 @@ import {
   AlertsSidebarSkeleton,
   mapDbCameraToUI,
 } from './dashboard';
+import { DashboardControlsBar } from './dashboard/DashboardControlsBar';
+import { DashboardCameraGrid } from './dashboard/DashboardCameraGrid';
 import { AnimatedTransition } from './ui/AnimatedTransition';
 
 function DashboardComponent() {
@@ -75,14 +63,9 @@ function DashboardComponent() {
 
   const uiCameras = camerasLoading ? [] : cameras.map(mapDbCameraToUI);
   const uiAlerts: UIAlert[] = alertsLoading ? [] : alerts.map(a => ({
-    id: a.id,
-    cameraId: a.camera_id || '',
-    cameraName: a.camera_name,
-    type: a.type,
-    severity: a.severity,
-    message: a.message,
-    timestamp: new Date(a.timestamp),
-    isRead: a.is_read,
+    id: a.id, cameraId: a.camera_id || '', cameraName: a.camera_name,
+    type: a.type, severity: a.severity, message: a.message,
+    timestamp: new Date(a.timestamp), isRead: a.is_read,
     thumbnail: a.thumbnail || undefined,
   }));
 
@@ -95,154 +78,49 @@ function DashboardComponent() {
   const activeAlerts = uiAlerts.filter(a => !a.isRead).length;
   const streamingCameras = uiCameras.filter(c => c.streamUrl).length;
 
-  const getCameraGridClass = () => {
-    switch (cameraLayout) {
-      case '2x2': return 'grid grid-cols-1 sm:grid-cols-2 gap-4';
-      case '3x3': return 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3';
-      case 'list': return 'flex flex-col gap-2';
-      default: return 'grid grid-cols-1 sm:grid-cols-2 gap-4';
-    }
-  };
-
   return (
     <TooltipProvider>
       <PullToRefresh onRefresh={handleRefresh} className="h-full">
         <div className="p-6" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
           <div className="space-y-6">
-            {/* Stats Cards */}
             <AnimatedTransition loading={camerasLoading} skeleton={<StatsSkeleton />}>
               <DashboardStats
-                onlineCameras={onlineCameras}
-                totalCameras={cameras.length}
-                totalPeople={totalPeople}
-                activeAlerts={activeAlerts}
+                onlineCameras={onlineCameras} totalCameras={cameras.length}
+                totalPeople={totalPeople} activeAlerts={activeAlerts}
                 streamingCameras={streamingCameras}
               />
             </AnimatedTransition>
 
-            {/* Controls Bar */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <SearchInput value={searchQuery} onChange={setSearchQuery} placeholder="Buscar câmeras ou alertas..." />
-                <div className="flex items-center gap-2">
-                  <Switch id="enable-streams" checked={enableStreams} onCheckedChange={setEnableStreams} />
-                  <Label htmlFor="enable-streams" className="text-sm cursor-pointer">Streams ao vivo</Label>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <CameraLayoutControls layout={cameraLayout} onLayoutChange={setCameraLayout} />
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant={showMap ? 'default' : 'outline'}
-                      size="icon" className="h-8 w-8"
-                      onClick={() => setShowMap(!showMap)}
-                    >
-                      <Map className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Mostrar Mapa</TooltipContent>
-                </Tooltip>
-              </div>
-            </div>
+            <DashboardControlsBar
+              searchQuery={searchQuery} onSearchChange={setSearchQuery}
+              enableStreams={enableStreams} onEnableStreamsChange={setEnableStreams}
+              cameraLayout={cameraLayout} onLayoutChange={setCameraLayout}
+              showMap={showMap} onShowMapChange={setShowMap}
+            />
 
-            {/* Main Content Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Cameras Section */}
               <AnimatedTransition loading={camerasLoading} skeleton={<CameraGridSkeleton count={4} />} className="lg:col-span-2 space-y-6">
-                  <>
-                    {showMap && uiCameras.some(c => c.latitude && c.longitude) && (
-                      <div className="h-64 rounded-lg overflow-hidden border">
-                        <CameraMap
-                          cameras={uiCameras.filter(c => c.latitude && c.longitude)}
-                          onCameraClick={(id) => {
-                            const cam = uiCameras.find(c => c.id === id);
-                            if (cam) setSelectedCamera(cam);
-                          }}
-                        />
-                      </div>
-                    )}
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Eye className="w-5 h-5 text-primary" />
-                        <h2 className="text-lg font-semibold text-foreground">Monitoramento</h2>
-                        <Badge variant="secondary" className="ml-2">
-                          {onlineCameras}/{cameras.length} online
-                        </Badge>
-                      </div>
-                      <ExportMenu
-                        onExportCSV={() => exportCameras(cameras, 'csv')}
-                        onExportPDF={() => exportCameras(cameras, 'pdf')}
-                        disabled={cameras.length === 0}
-                      />
-                    </div>
-
-                    {priorityCameras.length > 0 && (
-                      <div>
-                        <div className="flex items-center gap-2 mb-4">
-                          <AlertTriangle className="w-5 h-5 text-destructive" />
-                          <h2 className="text-lg font-semibold text-foreground">Câmeras com Alertas</h2>
-                        </div>
-                        <div className={getCameraGridClass()}>
-                          {priorityCameras.map(camera => (
-                            <StreamCameraCard
-                              key={camera.id}
-                              camera={camera}
-                              onClick={() => setSelectedCamera(camera)}
-                              compact={cameraLayout === 'list'}
-                              showStream={enableStreams}
-                              aiAnalysisActive={aiAnalysisCameras.has(camera.id)}
-                              onToggleAiAnalysis={handleToggleAiAnalysis}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2">
-                          <Activity className="w-5 h-5 text-primary" />
-                          <h2 className="text-lg font-semibold text-foreground">Todas as Câmeras</h2>
-                        </div>
-                        <button className="text-sm text-primary hover:underline">Ver todas</button>
-                      </div>
-                      <div className={getCameraGridClass()}>
-                        {normalCameras.slice(0, cameraLayout === '3x3' ? 9 : 6).map(camera => (
-                          <StreamCameraCard
-                            key={camera.id}
-                            camera={camera}
-                            onClick={() => setSelectedCamera(camera)}
-                            compact={cameraLayout === 'list'}
-                            showStream={enableStreams}
-                            aiAnalysisActive={aiAnalysisCameras.has(camera.id)}
-                            onToggleAiAnalysis={handleToggleAiAnalysis}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </>
+                <DashboardCameraGrid
+                  uiCameras={uiCameras} priorityCameras={priorityCameras} normalCameras={normalCameras}
+                  onlineCameras={onlineCameras} totalCameras={cameras.length} cameras={cameras}
+                  cameraLayout={cameraLayout} enableStreams={enableStreams} showMap={showMap}
+                  aiAnalysisCameras={aiAnalysisCameras}
+                  onSelectCamera={setSelectedCamera} onToggleAiAnalysis={handleToggleAiAnalysis}
+                />
               </AnimatedTransition>
 
               <AnimatedTransition loading={alertsLoading} skeleton={<AlertsSidebarSkeleton />}>
                 <DashboardAlerts
-                  uiAlerts={uiAlerts}
-                  uiCameras={uiCameras}
-                  searchQuery={searchQuery}
-                  alerts={alerts}
-                  unreadCount={unreadCount}
-                  markAllAsRead={markAllAsRead}
+                  uiAlerts={uiAlerts} uiCameras={uiCameras} searchQuery={searchQuery}
+                  alerts={alerts} unreadCount={unreadCount} markAllAsRead={markAllAsRead}
                 />
               </AnimatedTransition>
             </div>
           </div>
 
-          {/* Camera Modal */}
           {selectedCamera && (
             <CameraModal
-              camera={selectedCamera}
-              isOpen={!!selectedCamera}
+              camera={selectedCamera} isOpen={!!selectedCamera}
               onClose={() => setSelectedCamera(null)}
               onUpdateCoordinates={async (id, latitude, longitude) => {
                 await updateCamera(id, { latitude, longitude });
@@ -251,7 +129,6 @@ function DashboardComponent() {
             />
           )}
 
-          {/* Swipe hint for mobile */}
           <p className="text-center text-xs text-muted-foreground md:hidden pb-4">
             ← Deslize para navegar →
           </p>
