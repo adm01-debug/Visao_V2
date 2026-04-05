@@ -17,6 +17,6 @@ export const UserAvatar = React.forwardRef<HTMLDivElement, UserAvatarProps>(func
       <AvatarFallback>{initials}</AvatarFallback>
     </Avatar>
   );
-};
+});
 
 export default UserAvatar;
