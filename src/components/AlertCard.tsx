@@ -120,8 +120,8 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-1">
-            <Badge variant={severityConfig[alert.severity]}>
-              <span className="mr-1" aria-hidden="true">{severityShape}</span>
+            <Badge variant={severityConfig[alert.severity]} className="gap-1">
+              <SeverityIcon className="w-3 h-3" aria-hidden="true" />
               {config.label}
               <span className="sr-only"> — Severidade {severityLabel}</span>
             </Badge>

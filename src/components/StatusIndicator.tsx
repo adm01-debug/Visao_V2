@@ -23,7 +23,7 @@ const statusConfig = {
     label: 'Offline',
     icon: XCircle,
     iconColor: 'text-muted-foreground',
-    pattern: 'rounded-sm', // square = inactive (distinguishable shape)
+    pattern: 'rounded-sm', // square = inactive
   },
   alert: {
     color: 'bg-destructive',
@@ -44,15 +44,35 @@ const statusConfig = {
 };
 
 const sizeConfig = {
-  sm: { dot: 'w-2 h-2', icon: 'w-3 h-3', text: 'text-xs' },
-  md: { dot: 'w-3 h-3', icon: 'w-4 h-4', text: 'text-sm' },
-  lg: { dot: 'w-4 h-4', icon: 'w-5 h-5', text: 'text-sm' },
+  sm: { dot: 'w-2 h-2', icon: 'w-3 h-3', text: 'text-xs', badge: 'text-[9px] px-1.5 py-0.5 gap-1' },
+  md: { dot: 'w-3 h-3', icon: 'w-4 h-4', text: 'text-sm', badge: 'text-[10px] px-2 py-0.5 gap-1.5' },
+  lg: { dot: 'w-4 h-4', icon: 'w-5 h-5', text: 'text-sm', badge: 'text-xs px-2.5 py-1 gap-1.5' },
 };
 
 export function StatusIndicator({ status, size = 'md', showLabel = false }: StatusIndicatorProps) {
   const config = statusConfig[status];
   const sizes = sizeConfig[size];
   const Icon = config.icon;
+
+  if (showLabel) {
+    return (
+      <div
+        className={cn(
+          'inline-flex items-center rounded-full font-medium',
+          sizes.badge,
+          status === 'online' && 'bg-success/15 text-success border border-success/30',
+          status === 'offline' && 'bg-muted text-muted-foreground border border-border',
+          status === 'alert' && 'bg-destructive/15 text-destructive border border-destructive/30',
+          status === 'warning' && 'bg-warning/15 text-warning border border-warning/30',
+        )}
+        role="status"
+        aria-label={`Status: ${config.label}`}
+      >
+        <Icon className={sizes.icon} aria-hidden="true" />
+        <span>{config.label}</span>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center gap-2" role="status" aria-label={`Status: ${config.label}`}>
@@ -80,14 +100,7 @@ export function StatusIndicator({ status, size = 'md', showLabel = false }: Stat
           />
         )}
       </span>
-      {showLabel && (
-        <span className={cn('flex items-center gap-1', sizes.text)}>
-          <Icon className={cn(sizes.icon, config.iconColor)} aria-hidden="true" />
-          <span className="text-muted-foreground">{config.label}</span>
-        </span>
-      )}
-      {/* Screen reader only full description */}
-      {!showLabel && <span className="sr-only">{config.label}</span>}
+      <span className="sr-only">{config.label}</span>
     </div>
   );
 }
