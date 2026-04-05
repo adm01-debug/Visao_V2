@@ -1,6 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { sendTelegramSchema, validateInput } from "../_shared/validation.ts";
+import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
+import { createLogger } from "../_shared/logger.ts";
+
+const log = createLogger("send-telegram");
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
