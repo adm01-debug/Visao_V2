@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { CardTitle, CardDescription } from '@/components/ui/card';
 import { OAuthButtons } from '@/components/OAuthButtons';
+import { PasswordStrength } from '@/components/ui/PasswordStrength';
 import { Loader2, Eye, EyeOff } from 'lucide-react';
 
 interface AuthFormProps {
