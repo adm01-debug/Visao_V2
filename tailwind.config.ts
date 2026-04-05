@@ -65,6 +65,12 @@ export default {
           medium: "hsl(var(--severity-medium))",
           low: "hsl(var(--severity-low))",
         },
+        surface: {
+          sunken: "hsl(var(--surface-sunken))",
+          DEFAULT: "hsl(var(--surface-default))",
+          raised: "hsl(var(--surface-raised))",
+          overlay: "hsl(var(--surface-overlay))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

@@ -30,7 +30,7 @@ const items = [
     key: 'unread' as const,
     label: 'Não Lidos',
     Icon: EyeOff,
-    iconBg: 'bg-primary/12',
+    iconBg: 'bg-primary/10',
     iconColor: 'text-primary',
     valueColor: 'text-primary',
     activeRing: 'ring-primary',
@@ -39,7 +39,7 @@ const items = [
     key: 'critical' as const,
     label: 'Críticos',
     Icon: AlertTriangle,
-    iconBg: 'bg-destructive/12',
+    iconBg: 'bg-destructive/10',
     iconColor: 'text-destructive',
     valueColor: 'text-destructive',
     activeRing: 'ring-destructive',
@@ -66,18 +66,18 @@ export function AlertStatsCards({ stats, activeFilter, onFilterClick }: AlertSta
             type="button"
             onClick={() => onFilterClick?.(key)}
             className={cn(
-              'relative flex items-center gap-3 p-4 rounded-lg border bg-card text-left w-full',
-              'transition-all duration-200 hover:bg-accent/5 hover:border-border/80',
+              'relative flex items-center gap-3 p-4 rounded-xl border border-border/50 bg-card text-left w-full',
+              'transition-all duration-200 hover:bg-accent/5 hover:shadow-sm hover:-translate-y-0.5',
               isActive && `ring-2 ring-offset-1 ring-offset-background ${activeRing}`,
-              !isActive && 'hover:shadow-sm'
             )}
+            style={{ boxShadow: 'var(--shadow-card)' }}
           >
-            <div className={cn('flex items-center justify-center w-10 h-10 rounded-lg shrink-0', iconBg)}>
+            <div className={cn('flex items-center justify-center w-10 h-10 rounded-xl shrink-0', iconBg)}>
               <Icon className={cn('w-5 h-5', iconColor)} />
             </div>
             <div className="min-w-0">
-              <p className="text-xs text-muted-foreground font-medium">{label}</p>
-              <p className={cn('text-2xl font-bold tabular-nums leading-tight', valueColor)}>
+              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{label}</p>
+              <p className={cn('text-2xl font-bold tabular-nums leading-tight font-mono', valueColor)}>
                 {stats[key]}
               </p>
             </div>
