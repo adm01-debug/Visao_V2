@@ -1,11 +1,8 @@
-import { loadSync } from "https://deno.land/std@0.224.0/dotenv/mod.ts";
 import { assertEquals, assertExists } from "https://deno.land/std@0.224.0/assert/mod.ts";
 
-// Load .env without strict validation
-try { loadSync({ export: true, allowEmptyValues: true }); } catch { /* ignore */ }
-
-const SUPABASE_URL = Deno.env.get("VITE_SUPABASE_URL")!;
-const SUPABASE_ANON_KEY = Deno.env.get("VITE_SUPABASE_PUBLISHABLE_KEY")!;
+// Use env vars directly — they're injected by the test runner
+const SUPABASE_URL = Deno.env.get("VITE_SUPABASE_URL") ?? Deno.env.get("SUPABASE_URL") ?? "https://qnjozykmaeifjqpicaue.supabase.co";
+const SUPABASE_ANON_KEY = Deno.env.get("VITE_SUPABASE_PUBLISHABLE_KEY") ?? Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 
 function functionUrl(name: string): string {
   return `${SUPABASE_URL}/functions/v1/${name}`;
