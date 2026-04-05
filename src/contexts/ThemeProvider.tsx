@@ -3,7 +3,7 @@
  * ThemeProvider - Sistema completo de temas
  */
 
-import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 
 // ============================================
 // TIPOS
