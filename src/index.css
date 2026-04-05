@@ -306,8 +306,19 @@
 
 @layer components {
   .glass-card {
-    @apply bg-card/80 backdrop-blur-xl border border-border/50 rounded-xl;
+    @apply bg-card/80 backdrop-blur-xl border border-border/50 rounded-xl transition-all duration-300;
     box-shadow: var(--shadow-card);
+  }
+
+  .glass-card:hover {
+    @apply border-border/80;
+    box-shadow: var(--shadow-card), 0 0 0 1px hsl(var(--primary) / 0.05);
+    transform: translateY(-1px);
+  }
+
+  .glass-card-elevated {
+    @apply bg-card/90 backdrop-blur-xl border border-border/50 rounded-xl transition-all duration-300;
+    box-shadow: var(--shadow-card), 0 8px 32px hsl(var(--primary) / 0.08);
   }
 
   .glow-effect {
