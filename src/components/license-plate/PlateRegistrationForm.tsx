@@ -20,7 +20,7 @@ interface RegisteredPlate {
 
 interface PlateRegistrationFormProps {
   registeredPlates: RegisteredPlate[];
-  onAdd: (plate: { plate: string; owner_name: string; vehicle_type: string; color: string; notes: string; list_type: string }) => void;
+  onAdd: (plate: { plate: string; owner_name: string; vehicle_type: string; color: string; notes: string; list_type: 'whitelist' | 'blacklist' | 'visitor' }) => void;
   onDelete: (id: string) => void;
 }
 

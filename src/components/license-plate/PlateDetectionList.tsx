@@ -13,7 +13,7 @@ interface Detection {
   plate: string;
   confidence: number;
   camera_name: string;
-  timestamp: string;
+  timestamp: Date;
   image_url: string | null;
   status: string;
 }
