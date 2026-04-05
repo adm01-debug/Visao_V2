@@ -596,14 +596,25 @@
 @keyframes critical-pulse {
   0%, 100% {
     opacity: 1;
-    box-shadow: 0 0 0 0 hsl(var(--destructive) / 0.4);
+    box-shadow: 0 0 0 0 hsl(var(--destructive) / 0.4), 0 0 0 0 hsl(var(--destructive) / 0.15);
     border-color: hsl(var(--destructive) / 0.5);
   }
   50% {
-    opacity: 0.9;
-    box-shadow: 0 0 24px 6px hsl(var(--destructive) / 0.2), inset 0 0 12px hsl(var(--destructive) / 0.05);
-    border-color: hsl(var(--destructive) / 0.7);
+    opacity: 0.92;
+    box-shadow: 0 0 28px 8px hsl(var(--destructive) / 0.25), 0 0 0 4px hsl(var(--destructive) / 0.08), inset 0 0 16px hsl(var(--destructive) / 0.06);
+    border-color: hsl(var(--destructive) / 0.8);
   }
+}
+
+@keyframes critical-ring {
+  0% { box-shadow: 0 0 0 0 hsl(var(--destructive) / 0.5); }
+  70% { box-shadow: 0 0 0 8px hsl(var(--destructive) / 0); }
+  100% { box-shadow: 0 0 0 0 hsl(var(--destructive) / 0); }
+}
+
+@keyframes skeleton-brand-pulse {
+  0%, 100% { opacity: 0.06; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.12; transform: translate(-50%, -50%) scale(1.05); }
 }
 
 @keyframes theme-flash {
