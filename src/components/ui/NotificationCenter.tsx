@@ -52,10 +52,10 @@ const typeIcons = {
 };
 
 const typeColors = {
-  info: 'text-blue-500 bg-blue-500/10',
-  warning: 'text-yellow-500 bg-yellow-500/10',
+  info: 'text-primary bg-primary/10',
+  warning: 'text-warning bg-warning/10',
   error: 'text-destructive bg-destructive/10',
-  success: 'text-green-500 bg-green-500/10'
+  success: 'text-success bg-success/10'
 };
 
 export function NotificationCenter({

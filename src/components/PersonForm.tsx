@@ -45,7 +45,7 @@ interface PersonFormProps {
 }
 
 const listTypeOptions: { value: PersonListType; label: string; color: string }[] = [
-  { value: 'authorized', label: 'Autorizado', color: 'text-green-500' },
+  { value: 'authorized', label: 'Autorizado', color: 'text-success' },
   { value: 'vip', label: 'VIP', color: 'text-primary' },
   { value: 'blocked', label: 'Bloqueado', color: 'text-destructive' },
   { value: 'unknown', label: 'Desconhecido', color: 'text-muted-foreground' },

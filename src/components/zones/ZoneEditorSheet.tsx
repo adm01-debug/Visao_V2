@@ -108,7 +108,7 @@ export function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneE
               </div>
             </div>
             {formData.pointsData && (
-              <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 dark:bg-green-950 p-2 rounded">
+              <div className="flex items-center gap-2 text-sm text-success bg-success/10 p-2 rounded">
                 <Check className="w-4 h-4" />
                 Zona desenhada: {formData.pointsData.shape} com {formData.pointsData.coordinates.length} pontos
                 <Button variant="ghost" size="sm" className="ml-auto h-6 text-xs" onClick={() => setFormData(f => ({ ...f, pointsData: null }))}>Limpar</Button>

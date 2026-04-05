@@ -19,8 +19,8 @@ export function RecognitionStatsCards({ total, recognized, unknown, blacklist }:
         <div><p className="text-sm text-muted-foreground">Total</p><p className="text-2xl font-bold">{total}</p></div>
       </div></CardContent></Card>
       <Card><CardContent className="p-4"><div className="flex items-center gap-3">
-        <div className="p-2 rounded-lg bg-green-500/10"><UserCheck className="h-5 w-5 text-green-500" /></div>
-        <div><p className="text-sm text-muted-foreground">Reconhecidos</p><p className="text-2xl font-bold text-green-500">{recognized}</p></div>
+        <div className="p-2 rounded-lg bg-success/10"><UserCheck className="h-5 w-5 text-success" /></div>
+        <div><p className="text-sm text-muted-foreground">Reconhecidos</p><p className="text-2xl font-bold text-success">{recognized}</p></div>
       </div></CardContent></Card>
       <Card><CardContent className="p-4"><div className="flex items-center gap-3">
         <div className="p-2 rounded-lg bg-muted"><UserX className="h-5 w-5 text-muted-foreground" /></div>

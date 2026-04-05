@@ -10,8 +10,8 @@ const severityColors = {
 
 const typeColors = {
   person: 'border-primary',
-  vehicle: 'border-cyan-400',
-  object: 'border-purple-400',
+  vehicle: 'border-accent',
+  object: 'border-primary/70',
   zone: 'border-dashed border-destructive',
 };
 

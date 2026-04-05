@@ -121,7 +121,7 @@ export default function HeatmapPage() {
                       <p className="text-sm text-muted-foreground">Intensidade Máx.</p>
                       <p className="text-2xl font-bold">{stats.peakActivity?.toFixed(1) || 0}</p>
                     </div>
-                    <MapPin className="h-8 w-8 text-red-500" />
+                    <MapPin className="h-8 w-8 text-destructive" />
                   </div>
                 </CardContent>
               </Card>
@@ -133,7 +133,7 @@ export default function HeatmapPage() {
                       <p className="text-sm text-muted-foreground">Intensidade Média</p>
                       <p className="text-2xl font-bold">{stats.averageActivity?.toFixed(1) || 0}</p>
                     </div>
-                    <MapPin className="h-8 w-8 text-yellow-500" />
+                    <MapPin className="h-8 w-8 text-warning" />
                   </div>
                 </CardContent>
               </Card>

@@ -27,7 +27,7 @@ function CameraFeedCardComponent({ camera, isAnalyzing, onVideoLoaded, onRemove,
     <Card className="overflow-hidden flex flex-col">
       <CardHeader className="p-3 flex-row items-center justify-between space-y-0">
         <div className="flex items-center gap-2">
-          <div className={cn('w-2 h-2 rounded-full', isAnalyzing ? 'bg-green-500 animate-pulse' : 'bg-muted-foreground')} />
+          <div className={cn('w-2 h-2 rounded-full', isAnalyzing ? 'bg-success animate-pulse' : 'bg-muted-foreground')} />
           <CardTitle className="text-sm font-medium truncate">{camera.name}</CardTitle>
         </div>
         <div className="flex items-center gap-1">
@@ -48,7 +48,7 @@ function CameraFeedCardComponent({ camera, isAnalyzing, onVideoLoaded, onRemove,
         {latest && (
           <div className={cn('absolute bottom-0 left-0 right-0 p-2', latest.isBlacklist ? 'bg-destructive/90' : 'bg-background/90')}>
             <div className="flex items-center gap-2">
-              {latest.isBlacklist ? <AlertTriangle className="h-4 w-4 text-destructive-foreground" /> : <CheckCircle className="h-4 w-4 text-green-500" />}
+              {latest.isBlacklist ? <AlertTriangle className="h-4 w-4 text-destructive-foreground" /> : <CheckCircle className="h-4 w-4 text-success" />}
               <span className={cn('text-sm font-medium truncate', latest.isBlacklist && 'text-destructive-foreground')}>{latest.personName}</span>
               {latest.confidence > 0 && <Badge variant="secondary" className="text-xs ml-auto">{(latest.confidence * 100).toFixed(0)}%</Badge>}
             </div>

@@ -36,10 +36,10 @@ export function SystemSettingsTab({ stats, onClearData, generalSettings, notific
     <div className="space-y-6 mt-6">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { icon: Camera, color: 'text-blue-500', label: 'Câmeras', value: `${stats.onlineCameras}/${stats.totalCameras}` },
-          { icon: AlertTriangle, color: 'text-yellow-500', label: 'Alertas', value: stats.totalAlerts },
-          { icon: Users, color: 'text-green-500', label: 'Pessoas', value: stats.totalPersons },
-          { icon: Activity, color: 'text-purple-500', label: 'Zonas', value: stats.totalZones },
+          { icon: Camera, color: 'text-primary', label: 'Câmeras', value: `${stats.onlineCameras}/${stats.totalCameras}` },
+          { icon: AlertTriangle, color: 'text-warning', label: 'Alertas', value: stats.totalAlerts },
+          { icon: Users, color: 'text-success', label: 'Pessoas', value: stats.totalPersons },
+          { icon: Activity, color: 'text-primary', label: 'Zonas', value: stats.totalZones },
         ].map(({ icon: Icon, color, label, value }) => (
           <Card key={label}>
             <CardContent className="p-4">

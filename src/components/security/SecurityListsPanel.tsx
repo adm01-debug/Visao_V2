@@ -58,9 +58,9 @@ export function SecurityListsPanel({ persons, onPersonsChange }: SecurityListsPa
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <Button onClick={() => setAddPersonDialog('whitelist')} variant="outline"><ShieldCheck className="w-4 h-4 mr-2 text-green-500" />Adicionar à Whitelist</Button>
-        <Button onClick={() => setAddPersonDialog('blacklist')} variant="outline"><ShieldOff className="w-4 h-4 mr-2 text-red-500" />Adicionar à Blacklist</Button>
-        <Button onClick={() => setAddPersonDialog('watchlist')} variant="outline"><Eye className="w-4 h-4 mr-2 text-yellow-500" />Adicionar à Watchlist</Button>
+        <Button onClick={() => setAddPersonDialog('whitelist')} variant="outline"><ShieldCheck className="w-4 h-4 mr-2 text-success" />Adicionar à Whitelist</Button>
+        <Button onClick={() => setAddPersonDialog('blacklist')} variant="outline"><ShieldOff className="w-4 h-4 mr-2 text-destructive" />Adicionar à Blacklist</Button>
+        <Button onClick={() => setAddPersonDialog('watchlist')} variant="outline"><Eye className="w-4 h-4 mr-2 text-warning" />Adicionar à Watchlist</Button>
       </div>
 
       <div className="grid gap-4">

@@ -103,19 +103,19 @@ export function AlertsByCameraChart({ alerts, className = '', onCameraClick }: A
             )}
             {(data.high ?? 0) > 0 && (
               <div className="flex justify-between gap-4">
-                <span className="text-orange-500">Alto:</span>
+                <span className="text-warning">Alto:</span>
                 <span>{data.high}</span>
               </div>
             )}
             {(data.medium ?? 0) > 0 && (
               <div className="flex justify-between gap-4">
-                <span className="text-yellow-500">Médio:</span>
+                <span className="text-warning">Médio:</span>
                 <span>{data.medium}</span>
               </div>
             )}
             {(data.low ?? 0) > 0 && (
               <div className="flex justify-between gap-4">
-                <span className="text-green-500">Baixo:</span>
+                <span className="text-success">Baixo:</span>
                 <span>{data.low}</span>
               </div>
             )}

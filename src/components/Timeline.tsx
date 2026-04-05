@@ -46,11 +46,11 @@ const STATUS_ICONS: Record<TimelineItemStatus, React.ReactNode> = {
 };
 
 const STATUS_COLORS: Record<TimelineItemStatus, string> = {
-  completed: 'bg-green-500 text-white',
-  current: 'bg-blue-500 text-white',
-  pending: 'bg-gray-300 text-gray-600 dark:bg-gray-600 dark:text-gray-300',
-  error: 'bg-red-500 text-white',
-  warning: 'bg-yellow-500 text-white',
+  completed: 'bg-success text-white',
+  current: 'bg-primary text-white',
+  pending: 'bg-muted text-muted-foreground dark:bg-muted-foreground dark:text-muted-foreground',
+  error: 'bg-destructive text-white',
+  warning: 'bg-warning text-white',
 };
 
 const TimelineItemComponent: React.FC<{

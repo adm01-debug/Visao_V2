@@ -64,8 +64,8 @@ export default function ResetPasswordPage() {
         <div className="min-h-screen flex items-center justify-center bg-background p-4">
           <Card className="w-full max-w-md">
             <CardHeader className="text-center">
-              <div className="mx-auto w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4">
-                <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
+              <div className="mx-auto w-12 h-12 bg-success/10 dark:bg-success/15 rounded-full flex items-center justify-center mb-4">
+                <CheckCircle className="h-6 w-6 text-success dark:text-success" />
               </div>
               <CardTitle>Senha Atualizada!</CardTitle>
               <CardDescription>Redirecionando para o login...</CardDescription>

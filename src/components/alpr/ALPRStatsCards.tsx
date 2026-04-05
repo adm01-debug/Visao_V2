@@ -17,11 +17,11 @@ interface ALPRStatsCardsProps {
 export function ALPRStatsCards({ stats }: ALPRStatsCardsProps) {
   const cards = [
     { icon: Car, value: stats.totalDetections, label: 'Total Detectado', color: 'bg-primary/10 text-primary' },
-    { icon: TrendingUp, value: stats.todayDetections, label: 'Hoje', color: 'bg-green-500/10 text-green-500' },
-    { icon: Activity, value: stats.uniquePlates, label: 'Veículos Únicos', color: 'bg-blue-500/10 text-blue-500' },
+    { icon: TrendingUp, value: stats.todayDetections, label: 'Hoje', color: 'bg-success/10 text-success' },
+    { icon: Activity, value: stats.uniquePlates, label: 'Veículos Únicos', color: 'bg-primary/10 text-primary' },
     { icon: AlertTriangle, value: stats.blacklistAlerts, label: 'Alertas Blacklist', color: 'bg-destructive/10 text-destructive' },
-    { icon: CheckCircle2, value: `${stats.authorizedRate.toFixed(0)}%`, label: 'Taxa Autorização', color: 'bg-green-500/10 text-green-500' },
-    { icon: BarChart3, value: `${stats.avgConfidence.toFixed(0)}%`, label: 'Confiança Média', color: 'bg-purple-500/10 text-purple-500' },
+    { icon: CheckCircle2, value: `${stats.authorizedRate.toFixed(0)}%`, label: 'Taxa Autorização', color: 'bg-success/10 text-success' },
+    { icon: BarChart3, value: `${stats.avgConfidence.toFixed(0)}%`, label: 'Confiança Média', color: 'bg-accent/50 text-accent-foreground' },
   ];
 
   return (

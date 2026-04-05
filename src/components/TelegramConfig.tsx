@@ -153,7 +153,7 @@ function TelegramConfigComponent({
 
         {/* Verified Badge */}
         {config.verified && (
-          <div className="flex items-center gap-2 text-sm text-green-500">
+          <div className="flex items-center gap-2 text-sm text-success">
             <Check className="w-4 h-4" />
             Configuração verificada
           </div>

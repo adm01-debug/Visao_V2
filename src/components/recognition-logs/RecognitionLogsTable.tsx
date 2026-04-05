@@ -59,11 +59,11 @@ export function RecognitionLogsTable({ logs, selectedLog, onSelectLog, getPerson
               </TableCell>
               <TableCell>
                 {log.recognized ? (
-                  <Badge className="bg-green-500/10 text-green-500 hover:bg-green-500/20">
+                  <Badge className="bg-success/10 text-success hover:bg-success/20">
                     <CheckCircle className="h-3 w-3 mr-1" />Reconhecido
                   </Badge>
                 ) : (
-                  <Badge variant="secondary" className="bg-amber-500/10 text-amber-500">
+                  <Badge variant="secondary" className="bg-warning/10 text-warning">
                     <XCircle className="h-3 w-3 mr-1" />Desconhecido
                   </Badge>
                 )}

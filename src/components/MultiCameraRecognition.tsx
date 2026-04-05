@@ -70,7 +70,7 @@ function MultiCameraRecognitionComponent() {
                   {cameras?.map(camera => (
                     <div key={camera.id} className={cn('flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors', activeFeeds.has(camera.id) ? 'bg-primary/10 border-primary' : 'hover:bg-muted')} onClick={() => toggleCamera(camera.id)}>
                       <div className="flex items-center gap-3">
-                        <div className={cn('w-2 h-2 rounded-full', camera.status === 'online' ? 'bg-green-500' : 'bg-red-500')} />
+                        <div className={cn('w-2 h-2 rounded-full', camera.status === 'online' ? 'bg-success' : 'bg-destructive')} />
                         <div><p className="font-medium">{camera.name}</p><p className="text-xs text-muted-foreground">{camera.location}</p></div>
                       </div>
                       <Switch checked={activeFeeds.has(camera.id)} />

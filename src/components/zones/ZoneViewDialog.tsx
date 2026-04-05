@@ -74,16 +74,16 @@ export function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }:
               </div>
               <div className="grid grid-cols-2 gap-4 mt-4">
                 <div><Label className="text-xs text-muted-foreground">Tipo</Label><p className="font-medium">{typeConfig.label}</p></div>
-                <div><Label className="text-xs text-muted-foreground">Status</Label><p className={cn('font-medium', zone.is_active ? 'text-green-500' : 'text-gray-500')}>{zone.is_active ? 'Ativa' : 'Desativada'}</p></div>
+                <div><Label className="text-xs text-muted-foreground">Status</Label><p className={cn('font-medium', zone.is_active ? 'text-success' : 'text-muted-foreground')}>{zone.is_active ? 'Ativa' : 'Desativada'}</p></div>
               </div>
             </TabsContent>
             <TabsContent value="stats" className="m-0">
               {stats ? (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <Card><CardContent className="p-4 text-center"><p className="text-3xl font-bold text-green-500">{stats.countIn}</p><p className="text-sm text-muted-foreground">Entradas</p></CardContent></Card>
-                  <Card><CardContent className="p-4 text-center"><p className="text-3xl font-bold text-red-500">{stats.countOut}</p><p className="text-sm text-muted-foreground">Saídas</p></CardContent></Card>
+                  <Card><CardContent className="p-4 text-center"><p className="text-3xl font-bold text-success">{stats.countIn}</p><p className="text-sm text-muted-foreground">Entradas</p></CardContent></Card>
+                  <Card><CardContent className="p-4 text-center"><p className="text-3xl font-bold text-destructive">{stats.countOut}</p><p className="text-sm text-muted-foreground">Saídas</p></CardContent></Card>
                   <Card><CardContent className="p-4 text-center"><p className="text-3xl font-bold">{stats.currentOccupancy}</p><p className="text-sm text-muted-foreground">Ocupação Atual</p></CardContent></Card>
-                  <Card><CardContent className="p-4 text-center"><p className="text-3xl font-bold text-yellow-500">{stats.alertsToday}</p><p className="text-sm text-muted-foreground">Alertas Hoje</p></CardContent></Card>
+                  <Card><CardContent className="p-4 text-center"><p className="text-3xl font-bold text-warning">{stats.alertsToday}</p><p className="text-sm text-muted-foreground">Alertas Hoje</p></CardContent></Card>
                 </div>
               ) : (
                 <div className="text-center py-8 text-muted-foreground"><Activity className="w-12 h-12 mx-auto mb-2 opacity-50" /><p>Sem estatísticas disponíveis</p></div>
@@ -96,7 +96,7 @@ export function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }:
                 <div className="space-y-2">
                   {events.map(event => (
                     <div key={event.id} className="flex items-center gap-3 p-3 rounded-lg border bg-card">
-                      <div className={cn('w-2 h-2 rounded-full', event.event_type.includes('enter') ? 'bg-green-500' : event.event_type.includes('exit') ? 'bg-red-500' : event.event_type.includes('dwell') ? 'bg-orange-500' : 'bg-blue-500')} />
+                      <div className={cn('w-2 h-2 rounded-full', event.event_type.includes('enter') ? 'bg-success' : event.event_type.includes('exit') ? 'bg-destructive' : event.event_type.includes('dwell') ? 'bg-warning' : 'bg-primary')} />
                       <div className="flex-1">
                         <p className="text-sm font-medium">{event.event_type}</p>
                         <p className="text-xs text-muted-foreground">{format(new Date(event.timestamp), "dd/MM/yyyy 'às' HH:mm:ss", { locale: ptBR })}</p>

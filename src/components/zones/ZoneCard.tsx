@@ -64,19 +64,19 @@ export function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, 
           <div className="grid grid-cols-3 gap-2 text-center">
             {(zone.type === 'counting' || zone.type === 'tripwire' || zone.type === 'occupancy') && (
               <>
-                <div className="p-2 bg-muted rounded"><p className="text-lg font-bold text-green-500">{stats.countIn}</p><p className="text-[10px] text-muted-foreground">Entrada</p></div>
-                <div className="p-2 bg-muted rounded"><p className="text-lg font-bold text-red-500">{stats.countOut}</p><p className="text-[10px] text-muted-foreground">Saída</p></div>
+                <div className="p-2 bg-muted rounded"><p className="text-lg font-bold text-success">{stats.countIn}</p><p className="text-[10px] text-muted-foreground">Entrada</p></div>
+                <div className="p-2 bg-muted rounded"><p className="text-lg font-bold text-destructive">{stats.countOut}</p><p className="text-[10px] text-muted-foreground">Saída</p></div>
                 <div className="p-2 bg-muted rounded"><p className="text-lg font-bold">{stats.currentOccupancy}</p><p className="text-[10px] text-muted-foreground">Atual</p></div>
               </>
             )}
             {zone.type === 'dwell' && (
               <>
                 <div className="p-2 bg-muted rounded col-span-2"><p className="text-lg font-bold">{Math.round(stats.avgDwellTime)}s</p><p className="text-[10px] text-muted-foreground">Tempo médio</p></div>
-                <div className="p-2 bg-muted rounded"><p className="text-lg font-bold text-yellow-500">{stats.alertsToday}</p><p className="text-[10px] text-muted-foreground">Alertas</p></div>
+                <div className="p-2 bg-muted rounded"><p className="text-lg font-bold text-warning">{stats.alertsToday}</p><p className="text-[10px] text-muted-foreground">Alertas</p></div>
               </>
             )}
             {(zone.type === 'restricted' || zone.type === 'safety') && (
-              <div className="p-2 bg-muted rounded col-span-3"><p className="text-lg font-bold text-red-500">{stats.alertsToday}</p><p className="text-[10px] text-muted-foreground">Alertas hoje</p></div>
+              <div className="p-2 bg-muted rounded col-span-3"><p className="text-lg font-bold text-destructive">{stats.alertsToday}</p><p className="text-[10px] text-muted-foreground">Alertas hoje</p></div>
             )}
           </div>
         )}

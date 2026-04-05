@@ -42,17 +42,17 @@ interface AnalysisResultsOverlayProps {
 }
 
 const SEVERITY_COLORS: Record<string, string> = {
-  low: 'text-green-400',
-  medium: 'text-yellow-400',
-  high: 'text-orange-400',
-  critical: 'text-red-400',
+  low: 'text-success',
+  medium: 'text-warning',
+  high: 'text-warning',
+  critical: 'text-destructive',
 };
 
 const SEVERITY_BG: Record<string, string> = {
-  low: 'bg-green-500/20 border-green-500/40',
-  medium: 'bg-yellow-500/20 border-yellow-500/40',
-  high: 'bg-orange-500/20 border-orange-500/40',
-  critical: 'bg-red-500/20 border-red-500/40',
+  low: 'bg-success/20 border-success/40',
+  medium: 'bg-warning/20 border-warning/40',
+  high: 'bg-warning/25 border-warning/40',
+  critical: 'bg-destructive/20 border-destructive/40',
 };
 
 function isSecurityAnalysis(r: AnalysisResult): r is SecurityAnalysis {
@@ -145,19 +145,19 @@ function ProductivityOverlay({ analysis }: { analysis: ProductivityAnalysis }) {
   return (
     <div className="space-y-1.5">
       <div className="grid grid-cols-2 gap-1">
-        <div className="bg-green-500/15 rounded px-1.5 py-1 text-center">
-          <div className="text-green-400 text-sm font-bold">{analysis.working_count}</div>
+        <div className="bg-success/15 rounded px-1.5 py-1 text-center">
+          <div className="text-success text-sm font-bold">{analysis.working_count}</div>
           <div className="text-[9px] text-white/50">Trabalhando</div>
         </div>
-        <div className="bg-orange-500/15 rounded px-1.5 py-1 text-center">
-          <div className="text-orange-400 text-sm font-bold">{analysis.idle_count}</div>
+        <div className="bg-warning/15 rounded px-1.5 py-1 text-center">
+          <div className="text-warning text-sm font-bold">{analysis.idle_count}</div>
           <div className="text-[9px] text-white/50">Ociosos</div>
         </div>
       </div>
       <div className="flex items-center gap-1.5 text-[10px]">
         <TrendingUp className="w-3 h-3 text-primary" />
         <span className="text-white/70">Produtividade:</span>
-        <span className={cn('font-medium', productivityRate >= 70 ? 'text-green-400' : productivityRate >= 40 ? 'text-yellow-400' : 'text-red-400')}>
+        <span className={cn('font-medium', productivityRate >= 70 ? 'text-success' : productivityRate >= 40 ? 'text-warning' : 'text-destructive')}>
           {productivityRate}%
         </span>
       </div>
@@ -185,14 +185,14 @@ function SafetyOverlay({ analysis }: { analysis: SafetyAnalysis }) {
       <div className="flex items-center gap-1.5 text-[10px]">
         <HardHat className="w-3 h-3 text-primary" />
         <span className="text-white/70">EPI Conformidade:</span>
-        <span className={cn('font-bold', complianceRate >= 90 ? 'text-green-400' : complianceRate >= 70 ? 'text-yellow-400' : 'text-red-400')}>
+        <span className={cn('font-bold', complianceRate >= 90 ? 'text-success' : complianceRate >= 70 ? 'text-warning' : 'text-destructive')}>
           {complianceRate}%
         </span>
       </div>
 
       {analysis.ppe_compliance.missing_items.length > 0 && (
         <div className="text-[10px]">
-          <span className="text-red-400">Faltando: </span>
+          <span className="text-destructive">Faltando: </span>
           <span className="text-white/70">{analysis.ppe_compliance.missing_items.join(', ')}</span>
         </div>
       )}
@@ -233,7 +233,7 @@ function AnalysisResultsOverlayComponent({
       <div className="bg-black/75 backdrop-blur-sm rounded-lg px-2.5 py-1.5 text-white">
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-1.5">
-            <Brain className={cn('w-3.5 h-3.5', isAnalyzing ? 'animate-pulse text-primary' : 'text-green-400')} />
+            <Brain className={cn('w-3.5 h-3.5', isAnalyzing ? 'animate-pulse text-primary' : 'text-success')} />
             <span className="text-xs font-medium">{isAnalyzing ? 'Analisando...' : 'IA Ativa'}</span>
           </div>
           {riskLevel && (

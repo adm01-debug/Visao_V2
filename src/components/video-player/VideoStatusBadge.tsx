@@ -12,14 +12,14 @@ import { cn } from '@/lib/utils';
 import type { StreamStatus } from '@/types/streaming';
 
 const statusConfig: Record<StreamStatus, { color: string; label: string; icon: typeof WifiOff; animate?: boolean }> = {
-  disconnected: { color: 'bg-gray-500', label: 'Desconectado', icon: WifiOff },
-  connecting: { color: 'bg-yellow-500', label: 'Conectando...', icon: Loader2, animate: true },
-  connected: { color: 'bg-blue-500', label: 'Conectado', icon: Wifi },
-  playing: { color: 'bg-green-500', label: 'Ao Vivo', icon: Activity },
-  buffering: { color: 'bg-yellow-500', label: 'Carregando...', icon: Loader2, animate: true },
-  paused: { color: 'bg-gray-500', label: 'Pausado', icon: Pause },
-  error: { color: 'bg-red-500', label: 'Erro', icon: AlertTriangle },
-  reconnecting: { color: 'bg-orange-500', label: 'Reconectando...', icon: RefreshCw, animate: true },
+  disconnected: { color: 'bg-muted-foreground', label: 'Desconectado', icon: WifiOff },
+  connecting: { color: 'bg-warning', label: 'Conectando...', icon: Loader2, animate: true },
+  connected: { color: 'bg-primary', label: 'Conectado', icon: Wifi },
+  playing: { color: 'bg-success', label: 'Ao Vivo', icon: Activity },
+  buffering: { color: 'bg-warning', label: 'Carregando...', icon: Loader2, animate: true },
+  paused: { color: 'bg-muted-foreground', label: 'Pausado', icon: Pause },
+  error: { color: 'bg-destructive', label: 'Erro', icon: AlertTriangle },
+  reconnecting: { color: 'bg-warning', label: 'Reconectando...', icon: RefreshCw, animate: true },
 };
 
 export function VideoStatusBadge({ status }: { status: StreamStatus }) {

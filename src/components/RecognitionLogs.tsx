@@ -76,9 +76,9 @@ function RecognitionLogsComponent({
   );
 
   const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 0.9) return 'text-green-500';
-    if (confidence >= 0.7) return 'text-yellow-500';
-    return 'text-red-500';
+    if (confidence >= 0.9) return 'text-success';
+    if (confidence >= 0.7) return 'text-warning';
+    return 'text-destructive';
   };
 
   return (

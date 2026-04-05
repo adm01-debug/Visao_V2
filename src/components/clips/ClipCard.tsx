@@ -56,7 +56,7 @@ function ClipCardBase({
         </div>
         {clip.isFavorite && (
           <div className="absolute top-2 right-2">
-            <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+            <Star className="w-5 h-5 fill-warning text-warning" />
           </div>
         )}
         {!clip.isViewed && (

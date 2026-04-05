@@ -133,7 +133,7 @@ export default function FaceRecognitionPage() {
                         <CardTitle className="text-lg">Webcam</CardTitle>
                       </div>
                       <Badge variant="outline" className="gap-1">
-                        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                        <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
                         Ao vivo
                       </Badge>
                     </div>
@@ -166,10 +166,10 @@ export default function FaceRecognitionPage() {
                           <p className="text-[10px] text-muted-foreground">Total</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2 p-2 rounded-lg bg-green-500/10">
-                        <UserCheck className="w-4 h-4 text-green-600" />
+                      <div className="flex items-center gap-2 p-2 rounded-lg bg-success/10">
+                        <UserCheck className="w-4 h-4 text-success" />
                         <div>
-                          <p className="text-lg font-semibold text-green-600">{stats.knownToday}</p>
+                          <p className="text-lg font-semibold text-success">{stats.knownToday}</p>
                           <p className="text-[10px] text-muted-foreground">Conhecidos</p>
                         </div>
                       </div>
@@ -221,7 +221,7 @@ export default function FaceRecognitionPage() {
                                   <AvatarImage src={event.face.bestMatch.photoUrl} />
                                 ) : null}
                                 <AvatarFallback className={cn(
-                                  event.face.isKnown ? 'bg-green-500/20 text-green-700' : 'bg-muted'
+                                  event.face.isKnown ? 'bg-success/20 text-success' : 'bg-muted'
                                 )}>
                                   {event.face.isKnown ? (
                                     <UserCheck className="w-4 h-4" />
