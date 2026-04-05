@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, forwardRef } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -80,7 +80,7 @@ const ProtectedLayoutRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 // VISÃO App Component
-const App = () => (
+const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
   <ErrorBoundary>
     <HelmetProvider>
     <QueryClientProvider client={queryClient}>
@@ -143,7 +143,7 @@ const App = () => (
     </QueryClientProvider>
     </HelmetProvider>
   </ErrorBoundary>
-);
+); });
 
 export default App;
 

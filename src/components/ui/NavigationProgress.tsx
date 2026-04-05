@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
-export function NavigationProgress() {
+export const NavigationProgress = React.forwardRef<HTMLDivElement>(function NavigationProgress(_props, _ref) {
   const location = useLocation();
   const [isNavigating, setIsNavigating] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -31,4 +31,4 @@ export function NavigationProgress() {
       />
     </div>
   );
-}
+});

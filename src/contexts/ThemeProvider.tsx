@@ -3,7 +3,7 @@
  * ThemeProvider - Sistema completo de temas
  */
 
-import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 
 // ============================================
 // TIPOS
@@ -80,12 +80,12 @@ function getSystemDarkPreference(): boolean {
 // PROVIDER
 // ============================================
 
-export function ThemeProvider({
+export const ThemeProvider = React.forwardRef<HTMLDivElement, ThemeProviderProps>(function ThemeProvider({
   children,
   defaultTheme = 'dark',
   defaultVariant = 'default',
   storageKey = STORAGE_KEY,
-}: ThemeProviderProps) {
+}, _ref) {
   const [state, setState] = useState<ThemeState>(() => {
     const stored = getStoredTheme();
     return {
@@ -193,7 +193,7 @@ export function ThemeProvider({
       {children}
     </ThemeContext.Provider>
   );
-}
+});
 
 // ============================================
 // HOOK

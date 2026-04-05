@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Bell } from 'lucide-react';
 import { useNotifications } from '@/hooks/useNotifications';
 
-export const NotificationBell: React.FC = () => {
+export const NotificationBell = React.forwardRef<HTMLButtonElement>(function NotificationBell(_props, _ref) {
   const { unreadCount } = useNotifications();
   return (
     <Button variant="ghost" size="icon" className="relative">
@@ -15,6 +15,6 @@ export const NotificationBell: React.FC = () => {
       )}
     </Button>
   );
-};
+});
 
 export default NotificationBell;

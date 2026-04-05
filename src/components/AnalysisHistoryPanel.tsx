@@ -2,7 +2,7 @@
  * VISÃO - AnalysisHistoryPanel (Refactored)
  * Filters extracted to ./analysis-history/AnalysisHistoryFilters.tsx
  */
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -66,7 +66,7 @@ function TimelineSkeleton() {
   );
 }
 
-export function AnalysisHistoryPanel() {
+export const AnalysisHistoryPanel = React.forwardRef<HTMLDivElement>(function AnalysisHistoryPanel(_props, _ref) {
   const [open, setOpen] = useState(false);
   const { items, isLoading, clearNewFlags } = useRealtimeAnalysisHistory();
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
@@ -136,6 +136,6 @@ export function AnalysisHistoryPanel() {
       </SheetContent>
     </Sheet>
   );
-}
+});
 
 export default AnalysisHistoryPanel;
