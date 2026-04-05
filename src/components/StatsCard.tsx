@@ -53,7 +53,9 @@ function MiniSparkline({ data, color }: { data: number[]; color: string }) {
       y: h - ((v - min) / range) * (h - 4) - 2,
     }));
     const line = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`).join(' ');
-    const area = `${line} L${points[points.length - 1].x},${h} L${points[0].x},${h} Z`;
+    const lastPt = points[points.length - 1];
+    const firstPt = points[0];
+    const area = lastPt && firstPt ? `${line} L${lastPt.x},${h} L${firstPt.x},${h} Z` : '';
     return { path: line, areaPath: area };
   }, [data]);
 
