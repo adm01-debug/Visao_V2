@@ -73,13 +73,23 @@ export default function Auth() {
   return (
     <>
       <Helmet><title>Login - VisionAI</title><meta name="description" content="Acesse sua conta VisionAI para monitoramento de segurança inteligente." /></Helmet>
-      <div className="min-h-screen flex items-center justify-center bg-background p-4">
-        <div className="w-full max-w-md">
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center"><Shield className="w-7 h-7 text-primary-foreground" /></div>
-            <div><h1 className="font-bold text-2xl text-foreground">VisionAI</h1><p className="text-xs text-muted-foreground">Vigilância Inteligente</p></div>
+      <div className="min-h-screen flex items-center justify-center bg-background p-4 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, hsl(var(--foreground)) 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+        {/* Ambient Glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-20 blur-[120px] pointer-events-none" style={{ background: 'radial-gradient(circle, hsl(var(--primary) / 0.4), transparent 70%)' }} />
+
+        <div className="w-full max-w-md relative z-10">
+          <div className="flex items-center justify-center gap-3 mb-8 animate-fade-in">
+            <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shadow-lg" style={{ boxShadow: '0 0 30px hsl(var(--primary) / 0.35)' }}>
+              <Shield className="w-7 h-7 text-primary-foreground" />
+            </div>
+            <div>
+              <h1 className="font-bold text-2xl text-foreground tracking-tight">VisionAI</h1>
+              <p className="text-xs text-muted-foreground tracking-widest uppercase">Vigilância Inteligente</p>
+            </div>
           </div>
-          <Card className="border-border/50 bg-card/80 backdrop-blur">
+          <Card className="border-border/50 bg-card/80 backdrop-blur-xl shadow-2xl animate-fade-in-delay-1" style={{ boxShadow: 'var(--shadow-card), 0 0 60px hsl(var(--primary) / 0.05)' }}>
             <Tabs defaultValue="login" className="w-full">
               <CardHeader className="pb-4"><TabsList className="grid w-full grid-cols-2"><TabsTrigger value="login">Entrar</TabsTrigger><TabsTrigger value="register">Criar Conta</TabsTrigger></TabsList></CardHeader>
               <CardContent>
@@ -88,6 +98,7 @@ export default function Auth() {
               </CardContent>
             </Tabs>
           </Card>
+          <p className="text-center text-xs text-muted-foreground mt-6 animate-fade-in-delay-2">Protegido com criptografia de ponta a ponta</p>
         </div>
       </div>
       <Dialog open={showForgotPassword} onOpenChange={(open) => { setShowForgotPassword(open); if (!open) setResetEmailSent(false); }}>

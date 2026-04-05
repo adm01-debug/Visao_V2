@@ -13,6 +13,7 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PanicButton } from "@/components/PanicButton";
+import { AnimatedPage } from "@/components/ui/AnimatedPage";
 import { withRouteErrorBoundary } from "@/components/RouteErrorBoundary";
 import { errorReporter } from "@/lib/errorReporter";
 
@@ -78,7 +79,7 @@ const ProtectedLayoutRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   if (loading) return <PageLoader />;
   if (!user) return <Navigate to="/auth" replace />;
-  return <MainLayout>{children}<PanicButton /></MainLayout>;
+  return <MainLayout><AnimatedPage>{children}</AnimatedPage><PanicButton /></MainLayout>;
 };
 
 // VISÃO App Component
