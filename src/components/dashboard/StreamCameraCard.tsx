@@ -27,9 +27,9 @@ interface StreamCameraCardProps {
 }
 
 const statusColors: Record<string, string> = {
-  online: 'bg-emerald-500',
+  online: 'bg-success',
   offline: 'bg-destructive',
-  warning: 'bg-accent',
+  warning: 'bg-warning',
   alert: 'bg-destructive animate-pulse',
 };
 
