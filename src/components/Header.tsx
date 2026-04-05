@@ -18,6 +18,7 @@ import {
 export function Header({ className }: { className?: string }) {
   const isOnline = useOnlineStatus();
   const { isAlertSoundEnabled, toggleAlertSound } = useNotifications();
+  const { resolvedTheme, toggleTheme } = useTheme();
 
   return (
     <header className={cn("border-b bg-card/60 backdrop-blur-xl supports-[backdrop-filter]:bg-card/50 sticky top-0 z-30", className)} role="banner" aria-label="Barra de ferramentas principal">
