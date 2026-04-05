@@ -124,7 +124,7 @@ export function GlobalSearch() {
                 </div>
                 <div className="flex flex-col"><span className="font-medium">{z.name}</span><span className="text-xs text-muted-foreground capitalize">{z.type}</span></div>
               </div>
-              <Badge variant="outline" className={cn("text-xs", z.is_active ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-muted text-muted-foreground")}>{z.is_active ? "Ativa" : "Inativa"}</Badge>
+              <Badge variant="outline" className={cn("text-xs", z.is_active ? "bg-success/15 text-success border-success/30" : "bg-muted text-muted-foreground")}>{z.is_active ? "Ativa" : "Inativa"}</Badge>
             </CommandItem>
           ))}
         </CommandGroup></>)}

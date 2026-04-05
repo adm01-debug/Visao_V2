@@ -210,8 +210,8 @@ export function OfflineIndicator({
 
             {/* Pending Actions */}
             {pendingActionsCount > 0 && (
-              <div className="p-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-                <div className="flex items-center gap-2 text-yellow-500">
+              <div className="p-2 bg-warning/10 border border-warning/20 rounded-lg">
+                <div className="flex items-center gap-2 text-warning">
                   <AlertCircle className="h-4 w-4" />
                   <span className="text-sm">
                     {pendingActionsCount} ação(ões) pendente(s)
