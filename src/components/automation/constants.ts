@@ -12,10 +12,10 @@ export const CATEGORIES = [
 ];
 
 export const SEVERITIES = [
-  { value: 'low', label: 'Baixa', color: 'bg-blue-500' },
-  { value: 'medium', label: 'Média', color: 'bg-yellow-500' },
-  { value: 'high', label: 'Alta', color: 'bg-orange-500' },
-  { value: 'critical', label: 'Crítica', color: 'bg-red-500' },
+  { value: 'low', label: 'Baixa', color: 'bg-primary' },
+  { value: 'medium', label: 'Média', color: 'bg-warning' },
+  { value: 'high', label: 'Alta', color: 'bg-warning' },
+  { value: 'critical', label: 'Crítica', color: 'bg-destructive' },
 ];
 
 export const CONDITION_TYPES = [

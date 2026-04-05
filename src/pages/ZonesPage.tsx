@@ -126,7 +126,7 @@ export function ZonesPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
+    <div className="page-container space-y-6 h-[calc(100vh-4rem)] overflow-auto mb-mobile-nav">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2"><Target className="w-6 h-6" />Zonas de Interesse</h1>

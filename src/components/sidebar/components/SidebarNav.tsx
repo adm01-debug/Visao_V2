@@ -113,11 +113,11 @@ const CategoryItem = memo(function CategoryItem({
     <Collapsible open={isExpanded} onOpenChange={onToggle} className="mb-0.5">
       <CollapsibleTrigger asChild>
         <motion.button
-          whileHover={{ x: 2 }}
-          whileTap={{ scale: 0.98 }}
+          whileHover={{ x: 3, backgroundColor: 'hsl(var(--sidebar-accent) / 0.6)' }}
+          whileTap={{ scale: 0.97 }}
           className={cn(
-            "flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
-            "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
+            "flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 ease-out",
+            "text-sidebar-foreground/70 hover:text-sidebar-foreground",
             isActive && "bg-sidebar-accent text-sidebar-primary",
             isExpanded && "bg-sidebar-accent/40"
           )}
@@ -278,10 +278,10 @@ const NavItemLink = memo(function NavItemLink({
       data-testid={`nav-${item.id}`}
       onClick={onClick}
       className={cn(
-        "relative flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 text-sm group",
-        "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/60",
+        "relative flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-300 ease-out text-sm group",
+        "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/60 hover:translate-x-0.5",
         isActive &&
-          "bg-sidebar-primary/10 text-sidebar-primary hover:bg-sidebar-primary/14 hover:text-sidebar-primary font-medium"
+          "bg-sidebar-primary/10 text-sidebar-primary hover:bg-sidebar-primary/14 hover:text-sidebar-primary font-medium shadow-sm"
       )}
     >
       {/* Active route accent bar */}
@@ -331,10 +331,10 @@ const NavItemCollapsed = memo(function NavItemCollapsed({
           data-testid={`nav-${item.id}`}
           onClick={onClick}
           className={cn(
-            "relative flex items-center justify-center px-2 py-2 rounded-lg transition-all duration-200 text-sm",
-            "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent",
+            "relative flex items-center justify-center px-2 py-2 rounded-lg transition-all duration-300 ease-out text-sm",
+            "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent hover:scale-110",
             isActive &&
-              "bg-sidebar-primary/12 text-sidebar-primary hover:bg-sidebar-primary/16 hover:text-sidebar-primary"
+              "bg-sidebar-primary/12 text-sidebar-primary hover:bg-sidebar-primary/16 hover:text-sidebar-primary shadow-sm"
           )}
         >
           {isActive && (

@@ -59,10 +59,10 @@ export interface SecurityStats {
 }
 
 export const logLevelConfig: Record<LogLevel, { icon: React.ElementType; color: string; bgColor: string; label: string }> = {
-  info: { icon: Info, color: 'text-blue-500', bgColor: 'bg-blue-500/10', label: 'Info' },
-  warning: { icon: AlertTriangle, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Aviso' },
-  error: { icon: XCircle, color: 'text-red-500', bgColor: 'bg-red-500/10', label: 'Erro' },
-  critical: { icon: ShieldAlert, color: 'text-red-600', bgColor: 'bg-red-600/10', label: 'Crítico' },
+  info: { icon: Info, color: 'text-primary', bgColor: 'bg-primary/10', label: 'Info' },
+  warning: { icon: AlertTriangle, color: 'text-warning', bgColor: 'bg-warning/10', label: 'Aviso' },
+  error: { icon: XCircle, color: 'text-destructive', bgColor: 'bg-destructive/10', label: 'Erro' },
+  critical: { icon: ShieldAlert, color: 'text-destructive', bgColor: 'bg-destructive/10', label: 'Crítico' },
 };
 
 export const categoryConfig: Record<LogCategory, { icon: React.ElementType; label: string }> = {
@@ -76,7 +76,7 @@ export const categoryConfig: Record<LogCategory, { icon: React.ElementType; labe
 };
 
 export const listTypeConfig: Record<ListType, { icon: React.ElementType; color: string; bgColor: string; label: string }> = {
-  whitelist: { icon: ShieldCheck, color: 'text-green-500', bgColor: 'bg-green-500/10', label: 'Liberado' },
-  blacklist: { icon: ShieldOff, color: 'text-red-500', bgColor: 'bg-red-500/10', label: 'Bloqueado' },
-  watchlist: { icon: Eye, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Monitorado' },
+  whitelist: { icon: ShieldCheck, color: 'text-success', bgColor: 'bg-success/10', label: 'Liberado' },
+  blacklist: { icon: ShieldOff, color: 'text-destructive', bgColor: 'bg-destructive/10', label: 'Bloqueado' },
+  watchlist: { icon: Eye, color: 'text-warning', bgColor: 'bg-warning/10', label: 'Monitorado' },
 };

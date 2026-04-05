@@ -27,7 +27,7 @@ export const SidebarHeader = memo(function SidebarHeader({
     >
       {(!collapsed || isMobile) && (
         <div className="flex items-center gap-2.5">
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground shadow-sm">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground shadow-md shadow-primary/25 transition-transform duration-300 hover:scale-110">
             <Shield className="w-4 h-4" />
           </div>
           <div className="flex flex-col">
@@ -38,7 +38,7 @@ export const SidebarHeader = memo(function SidebarHeader({
       )}
 
       {collapsed && !isMobile && (
-        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground shadow-sm">
+        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground shadow-md shadow-primary/25 transition-transform duration-300 hover:scale-110">
           <Shield className="w-4 h-4" />
         </div>
       )}
@@ -48,7 +48,8 @@ export const SidebarHeader = memo(function SidebarHeader({
           variant="ghost"
           size="icon"
           className={cn(
-            "h-7 w-7 rounded-md text-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent",
+            "h-7 w-7 rounded-md text-muted-foreground transition-all duration-300",
+            "hover:text-sidebar-foreground hover:bg-sidebar-accent hover:rotate-180",
             collapsed && "hidden md:flex"
           )}
           onClick={onToggle}

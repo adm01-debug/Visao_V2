@@ -111,7 +111,7 @@ export function AnalyticsPage() {
   };
 
   return (
-    <div role="main" aria-label="Analytics" className="page-container space-y-6 h-[calc(100vh-4rem)] overflow-auto">
+    <div role="main" aria-label="Analytics" className="page-container space-y-6 h-[calc(100vh-4rem)] overflow-auto mb-mobile-nav">
       <PageMeta title="Analytics" description="Estatísticas e relatórios do sistema de vigilância" />
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

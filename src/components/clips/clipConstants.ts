@@ -20,10 +20,10 @@ export const triggerLabels: Record<RecordingTrigger, string> = {
 };
 
 export const triggerColors: Record<RecordingTrigger, string> = {
-  manual: 'bg-blue-500',
-  alert: 'bg-yellow-500',
-  motion: 'bg-purple-500',
-  schedule: 'bg-green-500',
-  rule: 'bg-orange-500',
-  api: 'bg-cyan-500',
+  manual: 'bg-primary',
+  alert: 'bg-warning',
+  motion: 'bg-primary/70',
+  schedule: 'bg-success',
+  rule: 'bg-warning',
+  api: 'bg-accent',
 };

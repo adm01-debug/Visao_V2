@@ -518,13 +518,13 @@ export function isWithinAccessSchedule(person: Person): boolean {
  */
 export function getListTypeColor(listType: ListType): string {
   const colors: Record<ListType, string> = {
-    whitelist: 'bg-green-500',
-    blacklist: 'bg-red-500',
-    vip: 'bg-yellow-500',
-    employee: 'bg-blue-500',
-    visitor: 'bg-purple-500',
-    contractor: 'bg-orange-500',
-    unknown: 'bg-gray-500',
+    whitelist: 'bg-success',
+    blacklist: 'bg-destructive',
+    vip: 'bg-warning',
+    employee: 'bg-primary',
+    visitor: 'bg-primary/70',
+    contractor: 'bg-warning',
+    unknown: 'bg-muted-foreground',
   };
   return colors[listType];
 }

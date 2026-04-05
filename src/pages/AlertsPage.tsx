@@ -121,7 +121,7 @@ export function AlertsPage() {
   }
 
   return (
-    <div role="main" aria-label="Central de alertas" className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
+    <div role="main" aria-label="Central de alertas" className="page-container space-y-6 h-[calc(100vh-4rem)] overflow-auto mb-mobile-nav">
       <PageMeta title="Alertas" description="Central de alertas e notificações do sistema de vigilância" />
 
       <div className="flex items-center justify-between">

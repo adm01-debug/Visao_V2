@@ -48,15 +48,15 @@ export const zoneTypeConfig: Record<ZoneType, {
   bgColor: string;
   description: string;
 }> = {
-  restricted: { label: 'Área Restrita', icon: AlertTriangle, color: 'text-red-500', bgColor: 'bg-red-500', description: 'Alerta quando alguém entra na área' },
-  counting: { label: 'Contagem', icon: Users, color: 'text-blue-500', bgColor: 'bg-blue-500', description: 'Conta pessoas entrando e saindo' },
-  tripwire: { label: 'Linha de Contagem', icon: ArrowLeftRight, color: 'text-purple-500', bgColor: 'bg-purple-500', description: 'Conta pessoas cruzando uma linha' },
-  dwell: { label: 'Tempo de Permanência', icon: Timer, color: 'text-orange-500', bgColor: 'bg-orange-500', description: 'Monitora tempo na área' },
-  occupancy: { label: 'Ocupação', icon: Users, color: 'text-green-500', bgColor: 'bg-green-500', description: 'Controla capacidade máxima' },
-  parking: { label: 'Estacionamento', icon: MapPin, color: 'text-cyan-500', bgColor: 'bg-cyan-500', description: 'Monitora vagas de estacionamento' },
-  queue: { label: 'Fila', icon: Users, color: 'text-yellow-500', bgColor: 'bg-yellow-500', description: 'Monitora filas e tempo de espera' },
-  safety: { label: 'Segurança', icon: AlertTriangle, color: 'text-amber-500', bgColor: 'bg-amber-500', description: 'Área de segurança do trabalho' },
-  custom: { label: 'Personalizada', icon: Target, color: 'text-gray-500', bgColor: 'bg-gray-500', description: 'Configuração personalizada' },
+  restricted: { label: 'Área Restrita', icon: AlertTriangle, color: 'text-destructive', bgColor: 'bg-destructive', description: 'Alerta quando alguém entra na área' },
+  counting: { label: 'Contagem', icon: Users, color: 'text-primary', bgColor: 'bg-primary', description: 'Conta pessoas entrando e saindo' },
+  tripwire: { label: 'Linha de Contagem', icon: ArrowLeftRight, color: 'text-primary', bgColor: 'bg-primary', description: 'Conta pessoas cruzando uma linha' },
+  dwell: { label: 'Tempo de Permanência', icon: Timer, color: 'text-warning', bgColor: 'bg-warning', description: 'Monitora tempo na área' },
+  occupancy: { label: 'Ocupação', icon: Users, color: 'text-success', bgColor: 'bg-success', description: 'Controla capacidade máxima' },
+  parking: { label: 'Estacionamento', icon: MapPin, color: 'text-primary', bgColor: 'bg-primary', description: 'Monitora vagas de estacionamento' },
+  queue: { label: 'Fila', icon: Users, color: 'text-warning', bgColor: 'bg-warning', description: 'Monitora filas e tempo de espera' },
+  safety: { label: 'Segurança', icon: AlertTriangle, color: 'text-warning', bgColor: 'bg-warning', description: 'Área de segurança do trabalho' },
+  custom: { label: 'Personalizada', icon: Target, color: 'text-muted-foreground', bgColor: 'bg-muted-foreground', description: 'Configuração personalizada' },
 };
 
 export const defaultColors = [
