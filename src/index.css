@@ -571,4 +571,44 @@
   .alert-glow {
     animation: none !important;
   }
+
+  /* Disable hover transforms */
+  .glass-card:hover,
+  .hover-scale:hover {
+    transform: none !important;
+  }
+
+  /* Disable framer-motion transforms */
+  [style*="transform"] {
+    transition: none !important;
+  }
+}
+
+/* High contrast mode enhancements */
+@media (forced-colors: active) {
+  .glass-card {
+    border: 2px solid ButtonText;
+  }
+
+  .status-indicator {
+    forced-color-adjust: none;
+  }
+
+  :focus-visible {
+    outline: 3px solid Highlight !important;
+    outline-offset: 2px;
+  }
+}
+
+/* Enhanced focus styles for interactive elements */
+@layer base {
+  button:focus-visible,
+  a:focus-visible,
+  [role="button"]:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+    z-index: 1;
+  }
 }
