@@ -179,9 +179,9 @@ export function OfflineIndicator({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 {isOnline ? (
-                  <CheckCircle2 className="h-5 w-5 text-green-500" />
+                  <CheckCircle2 className="h-5 w-5 text-success" />
                 ) : (
-                  <AlertCircle className="h-5 w-5 text-yellow-500" />
+                  <AlertCircle className="h-5 w-5 text-warning" />
                 )}
                 <div>
                   <p className="font-medium text-sm">
