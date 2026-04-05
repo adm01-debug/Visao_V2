@@ -5,9 +5,10 @@
 import React from 'react';
 import { motion, HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { fadeInUp, fadeIn, scaleIn, slideInRight, slideInLeft, slideInBottom, staggerContainer, staggerItem } from './motion/motionVariants';
 
 // Re-export all variants
-export { fadeInUp, fadeIn, scaleIn, slideInRight, slideInLeft, slideInBottom, staggerContainer, staggerItem } from './motion/motionVariants';
+export { fadeInUp, fadeIn, scaleIn, slideInRight, slideInLeft, slideInBottom, staggerContainer, staggerItem };
 
 // MotionCard
 interface MotionCardProps extends HTMLMotionProps<'div'> { hover?: boolean; tap?: boolean; }
@@ -27,7 +28,6 @@ export function MotionButton({ children, className, variant = 'primary', ...prop
 }
 
 // MotionList & Item
-import { staggerContainer, staggerItem } from './motion/motionVariants';
 export function MotionList({ children, className }: { children: React.ReactNode; className?: string }) {
   return <motion.div className={className} variants={staggerContainer} initial="hidden" animate="visible">{children}</motion.div>;
 }
