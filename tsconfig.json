@@ -39,8 +39,6 @@
     "src/**/*.stories.ts",
     "src/**/*.test.tsx",
     "src/**/*.test.ts",
-    "src/**/__tests__/**",
-    "src/services/**",
-    "src/middleware/**"
+    "src/**/__tests__/**"
   ]
 }

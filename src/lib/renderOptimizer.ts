@@ -11,7 +11,7 @@ export function batchUpdates<T>(updates: (() => T)[]): T[] {
 
 export function deferRender(callback: () => void): void {
   if ('requestIdleCallback' in window) {
-    (window as any).requestIdleCallback(callback);
+    (window as unknown as { requestIdleCallback: (cb: () => void) => void }).requestIdleCallback(callback);
   } else {
     setTimeout(callback, 1);
   }

@@ -50,8 +50,8 @@ export function ClipRecorderControls({ cameraId, cameraName, streamRef, maxDurat
     try {
       let stream: MediaStream | null = null;
       if (streamRef?.current?.srcObject instanceof MediaStream) stream = streamRef.current.srcObject;
-      else if (streamRef?.current && 'captureStream' in streamRef.current) stream = (streamRef.current as any).captureStream();
-      else if (streamRef?.current && 'mozCaptureStream' in streamRef.current) stream = (streamRef.current as any).mozCaptureStream();
+      else if (streamRef?.current && 'captureStream' in streamRef.current) stream = (streamRef.current as unknown as { captureStream: () => MediaStream }).captureStream();
+      else if (streamRef?.current && 'mozCaptureStream' in streamRef.current) stream = (streamRef.current as unknown as { mozCaptureStream: () => MediaStream }).mozCaptureStream();
       if (!stream) { toast.error('Stream não disponível para gravação'); return; }
 
       const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm';
