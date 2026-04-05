@@ -46,8 +46,8 @@ interface AlertCardProps {
 
 const alertTypeConfig: Record<AlertType, { icon: typeof Shield; label: string; color: string }> = {
   security: { icon: Shield, label: 'Segurança', color: 'text-destructive' },
-  safety: { icon: AlertTriangle, label: 'Segurança do Trabalho', color: 'text-warning' },
-  operations: { icon: Cog, label: 'Operações', color: 'text-success' },
+  safety: { icon: AlertTriangle, label: 'Seg. Trabalho', color: 'text-warning' },
+  operations: { icon: Cog, label: 'Operações', color: 'text-primary' },
   access: { icon: ShieldAlert, label: 'Acesso', color: 'text-destructive' },
   analytics: { icon: BarChart3, label: 'Analytics', color: 'text-primary' },
   absence: { icon: AlertTriangle, label: 'Ausência', color: 'text-warning' },
@@ -55,18 +55,11 @@ const alertTypeConfig: Record<AlertType, { icon: typeof Shield; label: string; c
   anomaly: { icon: ShieldAlert, label: 'Anomalia', color: 'text-destructive' },
   panic: { icon: ShieldAlert, label: 'Pânico', color: 'text-destructive' },
   arm_disarm: { icon: Shield, label: 'Arme/Desarme', color: 'text-primary' },
-  scene_change: { icon: AlertTriangle, label: 'Mudança de Cena', color: 'text-warning' },
-  camera_offline: { icon: Cog, label: 'Câmera Offline', color: 'text-muted-foreground' },
-  recurrent_vehicle: { icon: ShieldAlert, label: 'Veículo Recorrente', color: 'text-warning' },
+  scene_change: { icon: AlertTriangle, label: 'Mudança Cena', color: 'text-warning' },
+  camera_offline: { icon: Cog, label: 'Cam. Offline', color: 'text-muted-foreground' },
+  recurrent_vehicle: { icon: ShieldAlert, label: 'Veíc. Recorrente', color: 'text-warning' },
   qr_code_event: { icon: BarChart3, label: 'QR Code', color: 'text-primary' },
 };
-
-const severityConfig = {
-  low: 'secondary',
-  medium: 'warning',
-  high: 'destructive',
-  critical: 'alert',
-} as const;
 
 const severityLabels: Record<AlertSeverity, string> = {
   low: 'Baixa',
@@ -75,12 +68,11 @@ const severityLabels: Record<AlertSeverity, string> = {
   critical: 'Crítica',
 };
 
-/** Color-blind safe: unique icon per severity level */
 const severityIcons: Record<AlertSeverity, typeof Info> = {
-  low: Info,           // ℹ circle
-  medium: AlertCircle, // ⚠ circle with !
-  high: AlertTriangle, // △ triangle
-  critical: Flame,     // 🔥 flame
+  low: Info,
+  medium: AlertCircle,
+  high: AlertTriangle,
+  critical: Flame,
 };
 
 const severityTooltips: Record<AlertSeverity, string> = {
@@ -90,51 +82,65 @@ const severityTooltips: Record<AlertSeverity, string> = {
   critical: 'Severidade Crítica — Requer atenção imediata!',
 };
 
-const severityBorderColors = {
-  low: 'border-l-muted-foreground',
-  medium: 'border-l-warning',
-  high: 'border-l-destructive',
+const severityBorderColors: Record<AlertSeverity, string> = {
+  low: 'border-l-muted-foreground/40',
+  medium: 'border-l-warning/60',
+  high: 'border-l-destructive/70',
   critical: 'border-l-destructive',
-} as const;
+};
+
+const severityBadgeStyles: Record<AlertSeverity, string> = {
+  low: 'bg-muted/60 text-muted-foreground border-border/40',
+  medium: 'bg-warning/10 text-warning border-warning/20',
+  high: 'bg-destructive/10 text-destructive border-destructive/20',
+  critical: 'bg-destructive/15 text-destructive border-destructive/30 font-bold',
+};
+
+const typeIconBg: Record<string, string> = {
+  'text-destructive': 'bg-destructive/8',
+  'text-warning': 'bg-warning/8',
+  'text-primary': 'bg-primary/8',
+  'text-muted-foreground': 'bg-muted/60',
+};
 
 export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: AlertCardProps) {
   const config = alertTypeConfig[alert.type] || alertTypeConfig.security;
   const Icon = config.icon;
+  const SeverityIcon = severityIcons[alert.severity];
+  const severityLabel = severityLabels[alert.severity];
 
   const handleCameraClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onCameraClick?.(alert.cameraId);
   };
 
-  const severityLabel = severityLabels[alert.severity];
-  const SeverityIcon = severityIcons[alert.severity];
-
   return (
     <article
       className={cn(
-        "glass-card p-4 cursor-pointer group",
-        "hover:border-primary/50 hover:shadow-lg hover:-translate-y-1",
-        !alert.isRead && `border-l-4 ${severityBorderColors[alert.severity]} bg-destructive/5`,
-        alert.severity === 'critical' && !alert.isRead && 'alert-critical-pulse border-destructive/50',
-        alert.severity === 'high' && !alert.isRead && 'animate-pulse-subtle',
+        "rounded-xl border border-border/40 bg-card p-4 cursor-pointer group transition-all duration-200",
+        "hover:border-border hover:shadow-sm hover:-translate-y-0.5",
+        !alert.isRead && `border-l-[3px] ${severityBorderColors[alert.severity]}`,
+        alert.isRead && 'opacity-65 hover:opacity-90',
+        alert.severity === 'critical' && !alert.isRead && 'alert-critical-pulse border-destructive/30',
         alert.type === 'panic' && !alert.isRead && 'alert-critical-pulse'
       )}
       onClick={onClick}
+      style={{ boxShadow: 'var(--shadow-card)' }}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick?.(); } }}
       aria-label={`Alerta ${severityLabel}: ${alert.message}. Câmera: ${alert.cameraName}. ${formatDistanceToNow(alert.timestamp, { addSuffix: true, locale: ptBR })}`}
     >
       <div className="flex items-start gap-3">
-        <div className={cn("p-2 rounded-lg bg-secondary", config.color)} aria-hidden="true">
-          <Icon className="w-5 h-5" />
+        <div className={cn("p-2 rounded-xl shrink-0", typeIconBg[config.color] || 'bg-muted/40', config.color)} aria-hidden="true">
+          <Icon className="w-4 h-4" />
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-2 mb-1">
+          <div className="flex items-center justify-between gap-2 mb-1.5">
             <Tooltip>
               <TooltipTrigger asChild>
-                <Badge variant={severityConfig[alert.severity]} className="gap-1 cursor-default">
+                <Badge variant="outline" className={cn("gap-1 cursor-default text-[10px] px-2 py-0.5", severityBadgeStyles[alert.severity])}>
                   <SeverityIcon className="w-3 h-3" aria-hidden="true" />
                   {config.label}
                   <span className="sr-only"> — Severidade {severityLabel}</span>
@@ -144,7 +150,7 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
                 <p className="text-xs font-medium">{severityTooltips[alert.severity]}</p>
               </TooltipContent>
             </Tooltip>
-            <div className="flex items-center gap-1 text-muted-foreground text-xs">
+            <div className="flex items-center gap-1 text-muted-foreground text-[11px] shrink-0">
               <Clock className="w-3 h-3" aria-hidden="true" />
               <time dateTime={alert.timestamp.toISOString()}>
                 {formatDistanceToNow(alert.timestamp, { addSuffix: true, locale: ptBR })}
@@ -152,7 +158,7 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
             </div>
           </div>
 
-          <p className="text-sm text-foreground mb-2 line-clamp-2">
+          <p className={cn("text-sm mb-2 line-clamp-2", !alert.isRead ? 'text-foreground font-medium' : 'text-muted-foreground')}>
             <HighlightText text={alert.message} highlight={searchQuery} />
           </p>
 

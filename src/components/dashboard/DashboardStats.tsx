@@ -17,44 +17,47 @@ export function DashboardStats({
   activeAlerts,
   streamingCameras,
 }: DashboardStatsProps) {
+  const uptimePercent = totalCameras > 0 ? Math.round((onlineCameras / totalCameras) * 100) : 0;
+
   return (
     <div className="stats-grid stagger-in">
       <StatsCard
-        title="Câmeras Online"
-        value={onlineCameras}
-        subtitle={`de ${totalCameras} total`}
+        title="Câmeras"
+        value={`${onlineCameras}/${totalCameras}`}
+        subtitle="online"
         icon={Camera}
         variant="primary"
-        trend={{ value: totalCameras > 0 ? Math.round((onlineCameras / totalCameras) * 100) : 0, isPositive: true }}
+        trend={{ value: uptimePercent, isPositive: uptimePercent >= 80 }}
       />
       <StatsCard
-        title="Pessoas Detectadas"
-        value={totalPeople}
-        icon={Users}
-        variant="success"
-        trend={{ value: 12, isPositive: true }}
-      />
-      <StatsCard
-        title="Alertas Ativos"
+        title="Alertas"
         value={activeAlerts}
+        subtitle={activeAlerts === 0 ? 'tudo limpo' : `${activeAlerts > 10 ? 'atenção' : 'ativos'}`}
         icon={AlertTriangle}
-        variant={activeAlerts > 5 ? 'danger' : 'warning'}
+        variant={activeAlerts > 10 ? 'danger' : activeAlerts > 0 ? 'warning' : 'success'}
         trend={{ value: 5, isPositive: false }}
       />
       <StatsCard
-        title="Segurança"
-        value="98%"
-        icon={Shield}
-        variant="success"
-        trend={{ value: 2, isPositive: true }}
+        title="Pessoas"
+        value={totalPeople}
+        subtitle="detectadas"
+        icon={Users}
+        variant="primary"
+        trend={{ value: 12, isPositive: true }}
       />
       <StatsCard
-        title="Streams Ativos"
-        value={streamingCameras}
-        subtitle={`de ${totalCameras} total`}
+        title="Segurança"
+        value={`${uptimePercent}%`}
+        subtitle="score dinâmico"
+        icon={Shield}
+        variant={uptimePercent >= 90 ? 'success' : uptimePercent >= 70 ? 'warning' : 'danger'}
+      />
+      <StatsCard
+        title="IA"
+        value={streamingCameras > 0 ? 'Ativa' : 'Inativa'}
+        subtitle={streamingCameras > 0 ? `${streamingCameras} streams` : 'sem streams'}
         icon={Zap}
-        variant="primary"
-        trend={{ value: streamingCameras, isPositive: true }}
+        variant={streamingCameras > 0 ? 'primary' : 'default'}
       />
     </div>
   );

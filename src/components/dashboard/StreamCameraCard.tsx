@@ -9,6 +9,8 @@ import {
   Volume2,
   VolumeX,
   Brain,
+  Wifi,
+  WifiOff,
 } from 'lucide-react';
 import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';
 import { Button } from '@/components/ui/button';
@@ -26,29 +28,33 @@ interface StreamCameraCardProps {
   onToggleAiAnalysis?: (cameraId: string, active: boolean) => void;
 }
 
-const statusColors: Record<string, string> = {
-  online: 'bg-success',
-  offline: 'bg-destructive',
-  warning: 'bg-warning',
-  alert: 'bg-destructive animate-pulse',
+const statusConfig: Record<string, { dot: string; label: string; badge?: string }> = {
+  online: { dot: 'bg-success', label: 'AO VIVO', badge: 'bg-success/15 text-success border-success/25' },
+  offline: { dot: 'bg-muted-foreground', label: 'OFFLINE', badge: 'bg-muted text-muted-foreground border-border' },
+  warning: { dot: 'bg-warning', label: 'ATENÇÃO', badge: 'bg-warning/12 text-warning border-warning/20' },
+  alert: { dot: 'bg-destructive animate-pulse', label: 'ALERTA', badge: 'bg-destructive/15 text-destructive border-destructive/25' },
 };
 
 export function StreamCameraCard({ camera, onClick, compact, showStream = true, aiAnalysisActive = false, onToggleAiAnalysis }: StreamCameraCardProps) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const status = statusConfig[camera.status] ?? statusConfig.offline!;
+  const isOnline = camera.status !== 'offline';
 
   return (
     <div
       className={cn(
-        'group relative rounded-lg overflow-hidden bg-card border transition-all duration-300 hover:ring-2 hover:ring-primary/50 hover:shadow-lg cursor-pointer',
+        'group relative rounded-xl overflow-hidden border border-border/40 bg-card transition-all duration-200',
+        'hover:border-border hover:shadow-md hover:-translate-y-0.5 cursor-pointer',
         compact ? 'h-24' : 'aspect-video'
       )}
       onClick={onClick}
+      style={{ boxShadow: 'var(--shadow-card)' }}
       role="button"
       aria-label={`Visualizar câmera ${camera.name}`}
     >
-      {/* Video Stream or Thumbnail */}
+      {/* Video/Thumbnail */}
       {showStream && camera.streamUrl && !hasError ? (
         <VideoStreamPlayer
           cameraId={camera.id}
@@ -58,104 +64,91 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true, 
           onError={() => setHasError(true)}
         />
       ) : (
-        <div className="absolute inset-0 bg-muted flex items-center justify-center">
+        <div className="absolute inset-0 bg-gradient-to-br from-muted/40 to-muted/20 flex items-center justify-center">
           {camera.thumbnail ? (
             <img src={camera.thumbnail} alt={camera.name} loading="lazy" className="w-full h-full object-cover" />
           ) : (
-            <Camera className="w-12 h-12 text-muted-foreground/50" />
+            <div className="flex flex-col items-center gap-2 text-muted-foreground/30">
+              <Camera className="w-10 h-10" />
+              {!isOnline && <WifiOff className="w-4 h-4" />}
+            </div>
           )}
         </div>
       )}
 
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/5 to-transparent" />
 
-      {/* Status Indicator */}
-      <div className="absolute top-2 left-2 flex items-center gap-2">
-        <div className={cn('w-2 h-2 rounded-full', statusColors[camera.status])} />
-        {camera.status === 'alert' && (
-          <Badge variant="destructive" className="text-[10px] h-5">ALERTA</Badge>
-        )}
+      {/* Status Badge */}
+      <div className="absolute top-2.5 left-2.5">
+        <Badge variant="outline" className={cn('text-[10px] font-medium gap-1 px-2 py-0.5 backdrop-blur-sm', status.badge)}>
+          <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', status.dot)} />
+          {status.label}
+        </Badge>
       </div>
+
+      {/* Alert count */}
+      {camera.alerts > 0 && (
+        <Badge variant="outline" className="absolute top-2.5 right-2.5 text-[10px] bg-destructive/15 text-destructive border-destructive/25 gap-1 backdrop-blur-sm">
+          <AlertTriangle className="w-3 h-3" />
+          {camera.alerts} alertas
+        </Badge>
+      )}
 
       {/* AI Analysis Badge */}
       {aiAnalysisActive && (
-        <Badge className="absolute top-2 right-14 text-[10px] h-5 bg-primary/80 hover:bg-primary/90 gap-1">
+        <Badge className="absolute top-2.5 right-2.5 text-[10px] h-5 bg-primary/80 hover:bg-primary/90 gap-1">
           <Brain className="w-3 h-3 animate-pulse" />
           IA
         </Badge>
       )}
 
-      {/* Live Badge */}
-      {showStream && camera.streamUrl && !hasError && isPlaying && (
-        <Badge variant="destructive" className="absolute top-2 right-2 text-[10px] h-5">
-          <span className="w-1.5 h-1.5 rounded-full bg-destructive-foreground animate-pulse mr-1" />
-          LIVE
-        </Badge>
-      )}
-
-      {/* Controls (appear on hover) */}
+      {/* Controls on hover */}
       <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         {onToggleAiAnalysis && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="secondary"
-                size="icon"
-                className={cn('h-6 w-6', aiAnalysisActive && 'bg-primary text-primary-foreground hover:bg-primary/90')}
-                aria-label={aiAnalysisActive ? 'Desativar análise IA' : 'Ativar análise IA'}
-                onClick={(e) => { e.stopPropagation(); onToggleAiAnalysis(camera.id, !aiAnalysisActive); }}
-              >
-                <Brain className="w-3 h-3" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>{aiAnalysisActive ? 'Desativar análise IA' : 'Ativar análise IA'}</TooltipContent>
-          </Tooltip>
+          <Button
+            variant="secondary"
+            size="icon"
+            className={cn('h-7 w-7 rounded-lg backdrop-blur-sm', aiAnalysisActive && 'bg-primary text-primary-foreground hover:bg-primary/90')}
+            aria-label={aiAnalysisActive ? 'Desativar análise IA' : 'Ativar análise IA'}
+            onClick={(e) => { e.stopPropagation(); onToggleAiAnalysis(camera.id, !aiAnalysisActive); }}
+          >
+            <Brain className="w-3.5 h-3.5" />
+          </Button>
         )}
         {showStream && camera.streamUrl && (
           <>
-            <Button variant="secondary" size="icon" className="h-6 w-6"
-              aria-label={isPlaying ? 'Pausar stream' : 'Reproduzir stream'}
+            <Button variant="secondary" size="icon" className="h-7 w-7 rounded-lg backdrop-blur-sm"
               onClick={(e) => { e.stopPropagation(); setIsPlaying(!isPlaying); }}>
-              {isPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+              {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
             </Button>
-            <Button variant="secondary" size="icon" className="h-6 w-6"
-              aria-label={isMuted ? 'Ativar som' : 'Silenciar'}
+            <Button variant="secondary" size="icon" className="h-7 w-7 rounded-lg backdrop-blur-sm"
               onClick={(e) => { e.stopPropagation(); setIsMuted(!isMuted); }}>
-              {isMuted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
+              {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
             </Button>
           </>
         )}
-        <Button variant="secondary" size="icon" className="h-6 w-6"
-          aria-label="Expandir câmera"
+        <Button variant="secondary" size="icon" className="h-7 w-7 rounded-lg backdrop-blur-sm"
           onClick={(e) => { e.stopPropagation(); onClick(); }}>
-          <Maximize2 className="w-3 h-3" />
+          <Maximize2 className="w-3.5 h-3.5" />
         </Button>
       </div>
 
       {/* Camera Info */}
       <div className="absolute bottom-0 left-0 right-0 p-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-foreground font-medium text-sm truncate drop-shadow-md">{camera.name}</h3>
+        <div className="flex items-end justify-between">
+          <div className="min-w-0">
+            <h3 className="text-foreground font-semibold text-sm truncate">{camera.name}</h3>
             {camera.location && (
-              <p className="text-muted-foreground text-xs truncate drop-shadow-md">{camera.location}</p>
+              <p className="text-muted-foreground/80 text-xs truncate">{camera.location}</p>
             )}
           </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            {camera.detectedPeople > 0 && (
-              <div className="flex items-center gap-1 text-xs">
-                <Users className="w-3 h-3" />
-                {camera.detectedPeople}
-              </div>
-            )}
-            {camera.alerts > 0 && (
-              <div className="flex items-center gap-1 text-xs text-destructive">
-                <AlertTriangle className="w-3 h-3" />
-                {camera.alerts}
-              </div>
-            )}
-          </div>
+          {camera.detectedPeople > 0 && (
+            <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
+              <Users className="w-3.5 h-3.5" />
+              <span className="font-mono tabular-nums">{camera.detectedPeople}</span>
+            </div>
+          )}
         </div>
       </div>
     </div>
