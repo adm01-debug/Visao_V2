@@ -42,7 +42,7 @@ export const AccessDenied = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-red-900/20 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background via-destructive/5 to-background flex items-center justify-center p-4">
       <Card className="w-full max-w-lg border-destructive/50 shadow-2xl">
         <CardHeader className="text-center space-y-4">
           <div className="mx-auto w-20 h-20 bg-destructive/20 rounded-full flex items-center justify-center">

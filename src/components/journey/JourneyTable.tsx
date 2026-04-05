@@ -58,8 +58,8 @@ export function JourneyTable({ data, isLoading, formatMinutes }: JourneyTablePro
                     <td className="p-3 text-center font-mono text-xs">{j.firstSeen}</td>
                     <td className="p-3 text-center font-mono text-xs">{j.lastSeen}</td>
                     <td className="p-3 text-right font-mono font-bold tabular-nums">{formatMinutes(j.totalMinutes)}</td>
-                    <td className="p-3 text-right font-mono text-xs text-emerald-600 tabular-nums">{formatMinutes(j.productiveMinutes)}</td>
-                    <td className="p-3 text-right font-mono text-xs text-yellow-600 tabular-nums">{formatMinutes(j.idleMinutes)}</td>
+                    <td className="p-3 text-right font-mono text-xs text-success tabular-nums">{formatMinutes(j.productiveMinutes)}</td>
+                    <td className="p-3 text-right font-mono text-xs text-warning tabular-nums">{formatMinutes(j.idleMinutes)}</td>
                     <td className="p-3 text-center font-mono text-xs">{j.breakCount}</td>
                     <td className="p-3 text-center"><PunctualityBadge p={j.punctuality} /></td>
                   </tr>
