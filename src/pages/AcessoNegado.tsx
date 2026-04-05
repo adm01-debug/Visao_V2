@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useUserRole, type AppRole } from '@/hooks/useUserRole';
 import { useAuth } from '@/contexts/AuthContext';
+import { PageMeta } from '@/components/PageMeta';
 
 const ROLE_LABELS: Record<AppRole, string> = {
   admin: 'Administrador',
@@ -26,6 +27,7 @@ const AcessoNegadoPage = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <PageMeta title="Acesso Negado" description="Você não tem permissão para acessar esta página" />
       <Card className="w-full max-w-md border-border shadow-lg">
         <CardContent className="pt-8 pb-6 px-6 space-y-6 text-center">
           {/* Icon */}

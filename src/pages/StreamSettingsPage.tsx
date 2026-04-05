@@ -1,46 +1,29 @@
-import { EmptyState, ErrorState, LoadingSpinner, TimeAgo } from "@/components";
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
 import { useCameras, DbCamera } from '@/hooks/useCameras';
 import { StreamConfigPanel } from '@/components/StreamConfigPanel';
 import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';
 import {
-  ArrowLeft,
-  Video,
-  Camera,
-  Wifi,
-  WifiOff,
-  Settings,
-  Play,
-  RefreshCw,
-  Plus,
-  CheckCircle2,
-  AlertCircle
+  ArrowLeft, Video, Camera, Wifi, WifiOff, Settings,
+  Play, RefreshCw, Plus, CheckCircle2, AlertCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useMediaMTX } from '@/hooks/useMediaMTX';
+import { PageMeta } from '@/components/PageMeta';
 
 export default function StreamSettingsPage() {
-  const { paths, stats, config, connected: isConnected, refresh: refreshPaths } = useMediaMTX();
-
-
+  const { refresh: refreshPaths } = useMediaMTX();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user } = useAuth();
   const { cameras, loading: camerasLoading, updateCamera } = useCameras();
-
   const [selectedCamera, setSelectedCamera] = useState<DbCamera | null>(null);
   const [testingStream, setTestingStream] = useState(false);
   const [streamStatus, setStreamStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
 
-  // Selecionar câmera via query param
   useEffect(() => {
     const cameraId = searchParams.get('camera');
     if (cameraId && cameras.length > 0) {
@@ -51,14 +34,10 @@ export default function StreamSettingsPage() {
 
   const handleSaveConfig = async (configData: Record<string, unknown>) => {
     if (!selectedCamera) return;
-
     try {
-      await updateCamera(selectedCamera.id, {
-        stream_url: configData.url as string,
-      });
-
+      await updateCamera(selectedCamera.id, { stream_url: configData.url as string });
       toast.success('Configuração de stream salva');
-    } catch (error) {
+    } catch {
       toast.error('Erro ao salvar configuração');
     }
   };
@@ -66,24 +45,17 @@ export default function StreamSettingsPage() {
   const handleTestStream = async (url: string): Promise<boolean> => {
     setTestingStream(true);
     setStreamStatus('testing');
-
     try {
-      // Teste básico - verificar se a URL é acessível
-      // Para HLS, podemos tentar buscar o manifesto
       if (url.includes('.m3u8')) {
-        const response = await fetch(url, { method: 'HEAD', mode: 'no-cors' });
+        await fetch(url, { method: 'HEAD', mode: 'no-cors' });
         setStreamStatus('success');
         return true;
       }
-
-      // Para RTSP, não podemos testar diretamente do browser
-      // Apenas validamos o formato da URL
       if (url.startsWith('rtsp://')) {
         setStreamStatus('success');
         toast.info('URL RTSP válida. Teste completo requer servidor de mídia.');
         return true;
       }
-
       setStreamStatus('error');
       return false;
     } catch {
@@ -95,16 +67,17 @@ export default function StreamSettingsPage() {
   };
 
   return (
-    <div role="main" aria-label="Configurações de streaming" className="min-h-screen bg-background">
-      {/* Header */}
+    <div className="min-h-screen bg-background">
+      <PageMeta title="Configuração de Streams" description="Configure streams RTSP, HLS e câmeras IP profissionais" />
+
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div role="main" aria-label="Configurações de streaming" className="container mx-auto px-4 py-4">
-          <div role="main" className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" onClick={() => navigate(-1)} aria-label="Voltar">
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <div role="main" className="flex items-center gap-3">
-              <Video className="h-6 w-6 text-primary" />
+            <div className="flex items-center gap-3">
+              <Video className="h-6 w-6 text-primary" aria-hidden="true" />
               <div>
                 <h1 className="text-xl font-bold">Configuração de Streams</h1>
                 <p className="text-sm text-muted-foreground">RTSP, HLS e câmeras IP profissionais</p>
@@ -114,28 +87,26 @@ export default function StreamSettingsPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6">
-        <div role="main" aria-label="Configurações de streaming" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <main className="container mx-auto px-4 py-6" aria-label="Configuração de streams">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Lista de Câmeras */}
-          <div role="main" aria-label="Configurações de streaming" className="space-y-4">
+          <nav aria-label="Lista de câmeras" className="space-y-4">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Camera className="h-5 w-5" />
+                  <Camera className="h-5 w-5" aria-hidden="true" />
                   Câmeras
                 </CardTitle>
-                <CardDescription>
-                  Selecione uma câmera para configurar
-                </CardDescription>
+                <CardDescription>Selecione uma câmera para configurar</CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
                 {camerasLoading ? (
-                  <div role="main" className="flex items-center justify-center py-8">
+                  <div className="flex items-center justify-center py-8" aria-busy="true" aria-label="Carregando câmeras">
                     <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
                   </div>
                 ) : cameras.length === 0 ? (
-                  <div role="main" aria-label="Configurações de streaming" className="text-center py-8">
-                    <Camera className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
+                  <div className="text-center py-8">
+                    <Camera className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" aria-hidden="true" />
                     <p className="text-muted-foreground">Nenhuma câmera cadastrada</p>
                     <Button variant="outline" className="mt-4" onClick={() => navigate('/cameras')}>
                       <Plus className="h-4 w-4 mr-2" />
@@ -152,33 +123,35 @@ export default function StreamSettingsPage() {
                       <button
                         key={camera.id}
                         onClick={() => setSelectedCamera(camera)}
+                        aria-pressed={isSelected}
+                        aria-label={`${camera.name} - ${camera.location}${hasStream ? ' (com stream)' : ' (sem stream)'}`}
                         className={cn(
                           'w-full p-3 rounded-lg border text-left transition-all',
                           'hover:border-primary/50 hover:bg-accent/50',
                           isSelected && 'border-primary bg-primary/5'
                         )}
                       >
-                        <div role="main" className="flex items-center justify-between">
-                          <div role="main" className="flex items-center gap-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
                             {isOnline ? (
-                              <Wifi className="h-4 w-4 text-green-500" />
+                              <Wifi className="h-4 w-4 text-green-500" aria-label="Online" />
                             ) : (
-                              <WifiOff className="h-4 w-4 text-muted-foreground" />
+                              <WifiOff className="h-4 w-4 text-muted-foreground" aria-label="Offline" />
                             )}
                             <div>
                               <p className="font-medium">{camera.name}</p>
                               <p className="text-xs text-muted-foreground">{camera.location}</p>
                             </div>
                           </div>
-                          <div role="main" className="flex items-center gap-2">
+                          <div className="flex items-center gap-2">
                             {hasStream ? (
                               <Badge variant="secondary" className="gap-1">
-                                <CheckCircle2 className="h-3 w-3" />
+                                <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
                                 Stream
                               </Badge>
                             ) : (
                               <Badge variant="outline" className="gap-1">
-                                <AlertCircle className="h-3 w-3" />
+                                <AlertCircle className="h-3 w-3" aria-hidden="true" />
                                 Sem stream
                               </Badge>
                             )}
@@ -190,18 +163,17 @@ export default function StreamSettingsPage() {
                 )}
               </CardContent>
             </Card>
-          </div>
+          </nav>
 
           {/* Configuração do Stream */}
-          <div role="main" aria-label="Configurações de streaming" className="lg:col-span-2 space-y-6">
+          <section aria-label="Painel de configuração" className="lg:col-span-2 space-y-6">
             {selectedCamera ? (
               <>
-                {/* Preview do Stream */}
                 {selectedCamera.stream_url && (
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <Play className="h-5 w-5" />
+                        <Play className="h-5 w-5" aria-hidden="true" />
                         Preview do Stream
                       </CardTitle>
                     </CardHeader>
@@ -216,8 +188,6 @@ export default function StreamSettingsPage() {
                     </CardContent>
                   </Card>
                 )}
-
-                {/* Painel de Configuração */}
                 <StreamConfigPanel
                   cameraId={selectedCamera.id}
                   cameraName={selectedCamera.name}
@@ -228,15 +198,13 @@ export default function StreamSettingsPage() {
               </>
             ) : (
               <Card className="h-96 flex items-center justify-center">
-                <div role="main" aria-label="Configurações de streaming" className="text-center">
-                  <Settings className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
-                  <p className="text-muted-foreground">
-                    Selecione uma câmera para configurar o stream
-                  </p>
+                <div className="text-center">
+                  <Settings className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" aria-hidden="true" />
+                  <p className="text-muted-foreground">Selecione uma câmera para configurar o stream</p>
                 </div>
               </Card>
             )}
-          </div>
+          </section>
         </div>
       </main>
     </div>

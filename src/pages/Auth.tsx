@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { Shield, Loader2 } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
+import { PageMeta } from '@/components/PageMeta';
 import { supabase } from '@/integrations/supabase/client';
 import { LoginForm, RegisterForm } from './auth/AuthForms';
 
@@ -81,7 +81,7 @@ export default function Auth() {
 
   return (
     <>
-      <Helmet><title>Login - VisionAI</title><meta name="description" content="Acesse sua conta VisionAI para monitoramento de segurança inteligente." /></Helmet>
+      <PageMeta title="Login" description="Acesse o sistema de vigilância inteligente VISÃO" />
       <div className="min-h-screen flex items-center justify-center bg-background p-4 relative overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, hsl(var(--foreground)) 1px, transparent 0)', backgroundSize: '32px 32px' }} />

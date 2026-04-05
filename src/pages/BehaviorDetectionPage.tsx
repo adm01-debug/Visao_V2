@@ -5,21 +5,18 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
-import { Helmet } from 'react-helmet-async';
 import { Brain, MessageCircle, Smartphone, UserX, AlertTriangle, Upload, TrendingDown, Loader2 } from 'lucide-react';
 import { useBehaviorAnalysis } from '@/components/behavior/useBehaviorAnalysis';
 import { BehaviorCharts } from '@/components/behavior/BehaviorCharts';
 import { BehaviorResultCard } from '@/components/behavior/BehaviorResultCard';
+import { PageMeta } from '@/components/PageMeta';
 
 export default function BehaviorDetectionPage() {
   const { selectedCamera, setSelectedCamera, isAnalyzing, analysisResults, cameras, camerasLoading, analyzeCamera, analyzeFromFile, stats, patternDistribution, severityDistribution } = useBehaviorAnalysis();
 
   return (
     <MainLayout>
-      <Helmet>
-        <title>Detecção Comportamental | VisionAI</title>
-        <meta name="description" content="Detecção de padrões comportamentais com IA para identificar conversas excessivas, uso de celular e ausências." />
-      </Helmet>
+      <PageMeta title="Detecção de Comportamento" description="Análise comportamental com IA" />
 
       <div className="space-y-6 max-w-7xl mx-auto">
         {/* Header */}

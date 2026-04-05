@@ -9,6 +9,7 @@ import { useNotificationConfig } from '@/components/notification-settings/useNot
 import { ChannelsTab } from '@/components/notification-settings/ChannelsTab';
 import { ScheduleTab } from '@/components/notification-settings/ScheduleTab';
 import { FiltersTab } from '@/components/notification-settings/FiltersTab';
+import { PageMeta } from '@/components/PageMeta';
 
 export default function NotificationSettingsPage() {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ export default function NotificationSettingsPage() {
   if (loading) {
     return (
       <div role="main" className="flex items-center justify-center min-h-screen">
+      <PageMeta title="Configurações de Notificações" description="Gerencie canais e regras de notificação" />
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     );

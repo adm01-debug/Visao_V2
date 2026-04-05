@@ -3,17 +3,14 @@
  * Página: Relatórios
  */
 
-import { Helmet } from 'react-helmet-async';
+import { PageMeta } from '@/components/PageMeta';
 import { PageContent } from '@/components/layout/MainLayout';
 import { ReportsPanel } from '@/components/ReportsPanel';
 
 export default function ReportsPage() {
   return (
     <>
-      <Helmet>
-        <title>Relatórios | VISÃO</title>
-        <meta name="description" content="Gere relatórios em PDF de alertas, reconhecimento e analytics" />
-      </Helmet>
+      <PageMeta title="Relatórios" description="Gere e exporte relatórios detalhados do sistema" />
 
       <PageContent>
         <ReportsPanel />

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+import { PageMeta } from '@/components/PageMeta';
 import { BarChart3, Calendar, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,10 +17,7 @@ export default function RecognitionAnalyticsPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Analytics de Reconhecimento | VISÃO</title>
-        <meta name="description" content="Analytics e estatísticas de reconhecimento facial" />
-      </Helmet>
+      <PageMeta title="Analytics de Reconhecimento" description="Estatísticas de reconhecimento facial" />
 
       <div className="min-h-screen bg-background">
         <div className="p-6 space-y-6">

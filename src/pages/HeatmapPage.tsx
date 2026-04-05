@@ -11,7 +11,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { EmptyState, ErrorState, LoadingSpinner, StatusBadge, TimeAgo } from "@/components";
 
 import { useState, useEffect, useCallback } from 'react';
-import { Helmet } from 'react-helmet-async';
+import { PageMeta } from '@/components/PageMeta';
 import { Sidebar } from '@/components/Sidebar';
 import { HeatmapVisualization } from '@/components/HeatmapVisualization';
 import { useHeatmap } from '@/hooks/useHeatmap';
@@ -49,10 +49,7 @@ export default function HeatmapPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Mapa de Calor | VISÃO</title>
-        <meta name="description" content="Visualize mapas de calor de movimento por zona e câmera" />
-      </Helmet>
+      <PageMeta title="Mapa de Calor" description="Visualize mapas de calor de movimentação" />
 
       <div role="main" className="flex min-h-screen w-full bg-background">
         <Sidebar />

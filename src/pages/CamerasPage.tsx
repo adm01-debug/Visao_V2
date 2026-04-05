@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/sheet';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
+import { PageMeta } from '@/components/PageMeta';
 
 export function CamerasPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('grid-2x2');
@@ -71,6 +72,7 @@ export function CamerasPage() {
   if (loading) {
     return (
       <div className="p-6 space-y-6">
+      <PageMeta title="Câmeras" description="Gerencie e monitore suas câmeras de vigilância em tempo real" />
         <Skeleton className="h-8 w-48" />
         <div className="grid grid-cols-2 gap-4">
           {[...Array(4)].map((_, i) => <Skeleton key={i} className="aspect-video" />)}

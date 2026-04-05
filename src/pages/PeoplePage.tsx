@@ -21,6 +21,7 @@ import { PersonFormDialog } from '@/components/people/PersonFormDialog';
 import { PersonDetailsDialog } from '@/components/people/PersonDetailsDialog';
 import { PeopleStatsBar } from '@/components/people/PeopleStatsBar';
 import { PeopleListView } from '@/components/people/PeopleListView';
+import { PageMeta } from '@/components/PageMeta';
 
 export default function PeoplePage() {
   const {
@@ -33,6 +34,7 @@ export default function PeoplePage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <PageMeta title="Colaboradores" description="Cadastro e gestão de pessoas reconhecidas" />
       {/* Header */}
       <div className="border-b bg-card">
         <div className="container py-6">

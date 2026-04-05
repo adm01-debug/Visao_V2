@@ -33,6 +33,7 @@ import { Shield, Users, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { PageMeta } from '@/components/PageMeta';
 
 interface ManagedUser {
   id: string;
@@ -125,6 +126,7 @@ const UserManagementPage: React.FC = () => {
   if (roleLoading) {
     return (
       <div className="p-6 space-y-4">
+      <PageMeta title="Gestão de Usuários" description="Gerencie usuários e permissões do sistema" />
         <Skeleton className="h-8 w-64" />
         <Skeleton className="h-[400px] w-full" />
       </div>

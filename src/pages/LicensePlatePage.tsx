@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+import { PageMeta } from '@/components/PageMeta';
 import { Sidebar } from '@/components/Sidebar';
 import { LicensePlateRecognition } from '@/components/LicensePlateRecognition';
 import { ALPRDashboard } from '@/components/ALPRDashboard';
@@ -27,10 +27,7 @@ export default function LicensePlatePage() {
 
   return (
     <>
-      <Helmet>
-        <title>Reconhecimento de Placas | VISÃO</title>
-        <meta name="description" content="Sistema de reconhecimento automático de placas veiculares" />
-      </Helmet>
+      <PageMeta title="Placas Veiculares" description="Detecção e gestão de placas veiculares ALPR" />
 
       <div role="main" aria-label="Reconhecimento de placas" className="flex h-screen bg-background">
         <Sidebar />

@@ -18,6 +18,7 @@ import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
 } from "recharts";
 import { Helmet } from "react-helmet-async";
+import { PageMeta } from '@/components/PageMeta';
 
 function generateProductivityData(persons: Array<{ id: string; name: string; department: string | null }>) {
   const rand = (min: number, max: number) => Math.round(Math.random() * (max - min) + min);
@@ -100,9 +101,7 @@ export default function ProductivityDashboardPage() {
 
   return (
     <MainLayout>
-      <Helmet>
-        <title>Produtividade por Colaborador | VisionAI</title>
-      </Helmet>
+      <PageMeta title="Produtividade" description="Dashboard de produtividade e desempenho" />
       <div className="space-y-6 max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">

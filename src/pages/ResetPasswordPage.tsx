@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Eye, EyeOff, CheckCircle, Shield } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
+import { PageMeta } from '@/components/PageMeta';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
@@ -60,7 +60,7 @@ export default function ResetPasswordPage() {
   if (isSuccess) {
     return (
       <>
-        <Helmet><title>Senha Atualizada - VisionAI</title></Helmet>
+      <PageMeta title="Redefinir Senha" description="Redefina sua senha de acesso ao sistema" />
         <div className="min-h-screen flex items-center justify-center bg-background p-4">
           <Card className="w-full max-w-md">
             <CardHeader className="text-center">
@@ -78,7 +78,7 @@ export default function ResetPasswordPage() {
 
   return (
     <>
-      <Helmet><title>Redefinir Senha - VisionAI</title></Helmet>
+      <PageMeta title="Redefinir Senha" description="Redefina sua senha de acesso ao sistema" />
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <div className="w-full max-w-md">
           <div className="flex items-center justify-center gap-3 mb-8">
