@@ -8,14 +8,25 @@ export interface KPIData {
   previousValue: number;
   unit?: string;
   icon: React.ElementType;
-  color: string;
+  variant?: 'destructive' | 'primary' | 'success' | 'warning';
+  /** @deprecated Use variant instead */
+  color?: string;
 }
 
-const colorMap: Record<string, string> = {
-  'bg-red-500': 'bg-destructive/10 text-destructive',
-  'bg-purple-500': 'bg-primary/10 text-primary',
-  'bg-blue-500': 'bg-primary/10 text-primary',
-  'bg-green-500': 'bg-success/10 text-success',
+const variantClasses: Record<string, string> = {
+  destructive: 'bg-destructive/10 text-destructive',
+  primary: 'bg-primary/10 text-primary',
+  success: 'bg-success/10 text-success',
+  warning: 'bg-warning/10 text-warning',
+};
+
+// Legacy color map for backwards compat
+const colorToVariant: Record<string, string> = {
+  'bg-red-500': 'destructive',
+  'bg-purple-500': 'primary',
+  'bg-blue-500': 'primary',
+  'bg-green-500': 'success',
+  'bg-yellow-500': 'warning',
 };
 
 export function KPICard({ data, loading }: { data: KPIData; loading?: boolean }) {
@@ -33,7 +44,8 @@ export function KPICard({ data, loading }: { data: KPIData; loading?: boolean })
   const isPositive = change > 0;
   const isNeutral = change === 0;
   const Icon = data.icon;
-  const iconClasses = colorMap[data.color] || 'bg-primary/10 text-primary';
+  const resolvedVariant = data.variant || colorToVariant[data.color || ''] || 'primary';
+  const iconClasses = variantClasses[resolvedVariant] || variantClasses.primary;
 
   return (
     <div
