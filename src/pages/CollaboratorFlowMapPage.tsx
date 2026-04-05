@@ -81,8 +81,8 @@ export default function CollaboratorFlowMapPage() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-primary/10"><Users className="h-5 w-5 text-primary" /></div><div><p className="text-2xl font-bold">{totalPeople}</p><p className="text-[11px] text-muted-foreground">Pessoas Rastreadas</p></div></CardContent></Card>
-        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-blue-500/10"><MapPin className="h-5 w-5 text-blue-600" /></div><div><p className="text-2xl font-bold">{zoneMetrics.length}</p><p className="text-[11px] text-muted-foreground">Zonas Ativas</p></div></CardContent></Card>
-        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-emerald-500/10"><TrendingUp className="h-5 w-5 text-emerald-600" /></div><div><p className="text-2xl font-bold">{totalFlows}</p><p className="text-[11px] text-muted-foreground">Movimentações</p></div></CardContent></Card>
+        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-primary/10"><MapPin className="h-5 w-5 text-primary" /></div><div><p className="text-2xl font-bold">{zoneMetrics.length}</p><p className="text-[11px] text-muted-foreground">Zonas Ativas</p></div></CardContent></Card>
+        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-success/10"><TrendingUp className="h-5 w-5 text-success" /></div><div><p className="text-2xl font-bold">{totalFlows}</p><p className="text-[11px] text-muted-foreground">Movimentações</p></div></CardContent></Card>
         <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-destructive/10"><AlertTriangle className="h-5 w-5 text-destructive" /></div><div><p className="text-2xl font-bold">{bottlenecks.length}</p><p className="text-[11px] text-muted-foreground">Gargalos</p></div></CardContent></Card>
       </div>
 
