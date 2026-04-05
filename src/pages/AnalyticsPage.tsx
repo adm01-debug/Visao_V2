@@ -70,10 +70,10 @@ export function AnalyticsPage() {
 
       const totalAlerts = alertsData?.length || 0;
       setKpis([
-        { label: 'Total de Alertas', value: totalAlerts, previousValue: prevAlertsData?.length || 0, icon: AlertTriangle, color: 'bg-red-500' },
-        { label: 'Análises de IA', value: analysisCount, previousValue: prevAnalysisCount, icon: Brain, color: 'bg-purple-500' },
-        { label: 'Câmeras Online', value: camerasData?.filter(c => c.status !== 'offline').length || 0, previousValue: camerasData?.filter(c => c.status !== 'offline').length || 0, unit: `/ ${camerasData?.length || 0}`, icon: Camera, color: 'bg-blue-500' },
-        { label: 'Pessoas Cadastradas', value: personsData?.length || 0, previousValue: personsData?.length || 0, icon: Users, color: 'bg-green-500' },
+        { label: 'Total de Alertas', value: totalAlerts, previousValue: prevAlertsData?.length || 0, icon: AlertTriangle, variant: 'destructive' },
+        { label: 'Análises de IA', value: analysisCount, previousValue: prevAnalysisCount, icon: Brain, variant: 'primary' },
+        { label: 'Câmeras Online', value: camerasData?.filter(c => c.status !== 'offline').length || 0, previousValue: camerasData?.filter(c => c.status !== 'offline').length || 0, unit: `/ ${camerasData?.length || 0}`, icon: Camera, variant: 'primary' },
+        { label: 'Pessoas Cadastradas', value: personsData?.length || 0, previousValue: personsData?.length || 0, icon: Users, variant: 'success' },
       ]);
 
       const days = eachDayOfInterval({ start, end });
