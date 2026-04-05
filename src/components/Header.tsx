@@ -1,6 +1,8 @@
 import { UserAvatar } from "@/components/UserAvatar";
 import { NotificationBell } from "@/components/NotificationBell";
 import { AnalysisHistoryPanel } from "@/components/AnalysisHistoryPanel";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { PageTitle } from "@/components/Breadcrumbs";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { cn } from "@/lib/utils";
@@ -18,9 +20,10 @@ export function Header({ className }: { className?: string }) {
 
   return (
     <header className={cn("border-b bg-card/60 backdrop-blur-xl supports-[backdrop-filter]:bg-card/50 sticky top-0 z-30", className)}>
-      <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6">
-        <div className="min-w-0 flex-1">
-          {/* Breadcrumbs removed - requires route-aware items */}
+      <div className="mx-auto flex h-14 max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6">
+        <div className="min-w-0 flex-1 flex items-center gap-4">
+          <Breadcrumbs />
+          <PageTitle />
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
@@ -41,7 +44,6 @@ export function Header({ className }: { className?: string }) {
             {isOnline ? "Online" : "Offline"}
           </span>
 
-          {/* Sound Toggle */}
           <Tooltip>
             <TooltipTrigger asChild>
               <Button

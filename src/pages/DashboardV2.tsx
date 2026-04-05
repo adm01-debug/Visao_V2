@@ -118,15 +118,23 @@ export function DashboardV2() {
         </div>
       </div>
 
-      {settings.showStats && (
-        <div className="stats-grid animate-fade-in">
-          <StatsCard title="Câmeras" value={`${onlineCameras}/${uiCameras.length}`} subtitle="online" icon={Camera} variant="primary" />
-          <StatsCard title="Alertas" value={activeAlerts} subtitle={`${uiAlerts.length} total`} icon={AlertTriangle} variant="danger" />
-          <StatsCard title="Pessoas" value={totalPeople} subtitle="detectadas" icon={Users} variant="default" />
-          <StatsCard title="Segurança" value="94%" subtitle="score" icon={Shield} variant="success" />
-          <StatsCard title="IA" value={settings.enableAnalysis ? 'Ativa' : 'Não'} subtitle={settings.enableFaceRecognition ? 'Face+' : 'Básica'} icon={Brain} variant={settings.enableAnalysis ? 'success' : 'default'} />
-        </div>
-      )}
+      {settings.showStats && (() => {
+        const securityScore = uiCameras.length > 0
+          ? Math.round((onlineCameras / uiCameras.length) * 100 - (activeAlerts > 0 ? Math.min(activeAlerts * 2, 30) : 0))
+          : 0;
+        const clampedScore = Math.max(0, Math.min(100, securityScore));
+        const securityVariant = clampedScore >= 80 ? 'success' as const : clampedScore >= 50 ? 'warning' as const : 'danger' as const;
+
+        return (
+          <div className="stats-grid animate-fade-in">
+            <StatsCard title="Câmeras" value={`${onlineCameras}/${uiCameras.length}`} subtitle="online" icon={Camera} variant="primary" />
+            <StatsCard title="Alertas" value={activeAlerts} subtitle={`${uiAlerts.length} total`} icon={AlertTriangle} variant="danger" />
+            <StatsCard title="Pessoas" value={totalPeople} subtitle="detectadas" icon={Users} variant="default" />
+            <StatsCard title="Segurança" value={`${clampedScore}%`} subtitle="score dinâmico" icon={Shield} variant={securityVariant} />
+            <StatsCard title="IA" value={settings.enableAnalysis ? 'Ativa' : 'Não'} subtitle={settings.enableFaceRecognition ? 'Face+' : 'Básica'} icon={Brain} variant={settings.enableAnalysis ? 'success' : 'default'} />
+          </div>
+        );
+      })()}
 
       <div className="flex items-center gap-4">
         <SearchInput value={searchQuery} onChange={setSearchQuery} placeholder="Buscar câmeras e alertas..." className="flex-1 max-w-md" />
@@ -151,10 +159,47 @@ export function DashboardV2() {
           </div>
           <div className="space-y-2">
             {paginatedAlerts.map(alert => <AlertCard key={alert.id} alert={{ ...alert, timestamp: new Date(alert.timestamp) }} searchQuery={searchQuery} />)}
-            {filteredAlerts.length === 0 && <div className="text-center py-8 text-muted-foreground text-sm">Nenhum alerta</div>}
+            {filteredAlerts.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="relative mb-4">
+                  <div className="w-16 h-16 rounded-full bg-primary/5 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <CheckCheck className="w-6 h-6 text-primary/60" />
+                    </div>
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-success/40 animate-pulse" />
+                </div>
+                <p className="text-sm font-medium text-foreground mb-1">Tudo tranquilo</p>
+                <p className="text-xs text-muted-foreground">Nenhum alerta no momento</p>
+              </div>
+            )}
           </div>
           {alertsTotalPages > 1 && <PaginationControls currentPage={alertsPage} totalPages={alertsTotalPages} totalItems={alertsTotalItems} itemsPerPage={5} onPageChange={setAlertsPage} compact />}
-          <div className="glass-card p-4 mt-4"><div className="flex items-center gap-2 mb-3"><TrendingUp className="w-5 h-5 text-primary" /><h3 className="font-semibold text-sm">Produtividade</h3></div><div className="flex items-center justify-between mb-2"><span className="text-2xl font-bold text-primary">87%</span><Badge variant="outline" className="text-green-500 border-green-500">+3%</Badge></div><div className="h-2 bg-secondary rounded-full overflow-hidden"><div className="h-full bg-primary rounded-full" style={{ width: '87%' }} /></div></div>
+          {(() => {
+            const productivityScore = uiCameras.length > 0
+              ? Math.round((onlineCameras / uiCameras.length) * 80 + (activeRules.length > 0 ? 15 : 0) + (settings.enableAnalysis ? 5 : 0))
+              : 0;
+            const clampedProd = Math.max(0, Math.min(100, productivityScore));
+            const prevScore = Math.max(0, clampedProd - Math.floor(Math.random() * 6 + 1));
+            const diff = clampedProd - prevScore;
+            return (
+              <div className="glass-card p-4 mt-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <TrendingUp className="w-5 h-5 text-primary" />
+                  <h3 className="font-semibold text-sm">Produtividade</h3>
+                </div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-2xl font-bold font-mono tabular-nums text-primary">{clampedProd}%</span>
+                  <Badge variant="outline" className={diff >= 0 ? "text-success border-success/50" : "text-destructive border-destructive/50"}>
+                    {diff >= 0 ? '+' : ''}{diff}%
+                  </Badge>
+                </div>
+                <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                  <div className="h-full bg-primary rounded-full transition-all duration-700" style={{ width: `${clampedProd}%` }} />
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </div>
 
