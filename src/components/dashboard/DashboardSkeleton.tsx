@@ -1,5 +1,6 @@
 import { Shimmer } from '@/components/ui/LoadingState';
 import { Shield } from 'lucide-react';
+import { BrandedSkeleton } from '@/components/ui/skeleton';
 
 export function StatsSkeleton() {
   return (
