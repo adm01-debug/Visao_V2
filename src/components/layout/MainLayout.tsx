@@ -55,6 +55,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         shortcutsByCategory={getShortcutsByCategory()}
         formatShortcut={formatShortcut}
       />
+      <RouteAnnouncer />
     </div>
   );
 }
