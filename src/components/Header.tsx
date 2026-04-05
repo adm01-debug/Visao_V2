@@ -5,9 +5,10 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PageTitle } from "@/components/Breadcrumbs";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useNotifications } from "@/contexts/NotificationContext";
+import { useTheme } from "@/contexts/ThemeProvider";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Volume2, VolumeX } from "lucide-react";
+import { Volume2, VolumeX, Moon, Sun } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -17,6 +18,7 @@ import {
 export function Header({ className }: { className?: string }) {
   const isOnline = useOnlineStatus();
   const { isAlertSoundEnabled, toggleAlertSound } = useNotifications();
+  const { resolvedTheme, toggleTheme } = useTheme();
 
   return (
     <header className={cn("border-b bg-card/60 backdrop-blur-xl supports-[backdrop-filter]:bg-card/50 sticky top-0 z-30", className)} role="banner" aria-label="Barra de ferramentas principal">
@@ -43,6 +45,27 @@ export function Header({ className }: { className?: string }) {
             />
             {isOnline ? "Online" : "Offline"}
           </span>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 transition-transform duration-200 active:scale-95"
+                onClick={toggleTheme}
+                aria-label={resolvedTheme === "dark" ? "Mudar para modo claro" : "Mudar para modo escuro"}
+              >
+                {resolvedTheme === "dark" ? (
+                  <Sun className="h-4 w-4 transition-transform duration-300 rotate-0 scale-100" />
+                ) : (
+                  <Moon className="h-4 w-4 transition-transform duration-300 rotate-0 scale-100" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {resolvedTheme === "dark" ? "Modo Claro" : "Modo Escuro"}
+            </TooltipContent>
+          </Tooltip>
 
           <Tooltip>
             <TooltipTrigger asChild>
