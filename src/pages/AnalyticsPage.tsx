@@ -111,11 +111,11 @@ export function AnalyticsPage() {
   };
 
   return (
-    <div role="main" aria-label="Analytics" className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
+    <div role="main" aria-label="Analytics" className="page-container space-y-6 h-[calc(100vh-4rem)] overflow-auto">
       <PageMeta title="Analytics" description="Estatísticas e relatórios do sistema de vigilância" />
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div><h1 className="text-2xl font-bold flex items-center gap-2"><BarChart3 className="w-6 h-6" />Analytics</h1><p className="text-sm text-muted-foreground">Estatísticas e relatórios</p></div>
+        <div><h1 className="text-page-title flex items-center gap-2"><BarChart3 className="w-6 h-6 text-primary" />Analytics</h1><p className="text-sm text-muted-foreground">Estatísticas e relatórios do período</p></div>
         <div className="flex items-center gap-2">
           <Select value={dateRange} onValueChange={(v) => setDateRange(v as DateRange)}><SelectTrigger className="w-36"><Calendar className="w-4 h-4 mr-2" /><SelectValue /></SelectTrigger><SelectContent><SelectItem value="24h">Últimas 24h</SelectItem><SelectItem value="7d">Últimos 7 dias</SelectItem><SelectItem value="30d">Últimos 30 dias</SelectItem><SelectItem value="90d">Últimos 90 dias</SelectItem></SelectContent></Select>
           <Button variant="outline" size="icon" onClick={() => { setRefreshing(true); loadData(); }}><RefreshCw className={cn('w-4 h-4', refreshing && 'animate-spin')} /></Button>
@@ -128,28 +128,28 @@ export function AnalyticsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 stagger-in">
         {loading ? Array.from({ length: 4 }).map((_, i) => <KPICard key={i} data={{} as KPIData} loading />) : kpis.map((kpi, i) => <KPICard key={i} data={kpi} />)}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2"><CardHeader><CardTitle className="text-base">Tendência de Alertas</CardTitle><CardDescription>Alertas por dia</CardDescription></CardHeader><CardContent>{loading ? <Skeleton className="h-[200px] w-full" /> : <SimpleBarChart data={chartData} dataKey="alerts" color="bg-red-500" height={200} />}</CardContent></Card>
-        <Card><CardHeader><CardTitle className="text-base">Alertas por Tipo</CardTitle><CardDescription>Distribuição por categoria</CardDescription></CardHeader><CardContent className="flex flex-col items-center">{loading ? <Skeleton className="h-40 w-40 rounded-full" /> : <><DonutChart data={alertsByType} /><div className="grid grid-cols-2 gap-2 mt-4 w-full">{alertsByType.slice(0, 6).map((item, i) => <div key={i} className="flex items-center gap-2 text-xs"><div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} /><span className="truncate">{item.type}</span><span className="text-muted-foreground ml-auto">{item.count}</span></div>)}</div></>}</CardContent></Card>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <Card className="lg:col-span-2 border-border/50" style={{ boxShadow: 'var(--shadow-card)' }}><CardHeader><CardTitle className="text-section-title">Tendência de Alertas</CardTitle><CardDescription>Alertas por dia no período</CardDescription></CardHeader><CardContent>{loading ? <Skeleton className="h-[200px] w-full" /> : <SimpleBarChart data={chartData} dataKey="alerts" color="bg-red-500" height={200} />}</CardContent></Card>
+        <Card className="border-border/50" style={{ boxShadow: 'var(--shadow-card)' }}><CardHeader><CardTitle className="text-section-title">Alertas por Tipo</CardTitle><CardDescription>Distribuição por categoria</CardDescription></CardHeader><CardContent className="flex flex-col items-center">{loading ? <Skeleton className="h-40 w-40 rounded-full" /> : <><DonutChart data={alertsByType} /><div className="grid grid-cols-2 gap-2 mt-4 w-full">{alertsByType.slice(0, 6).map((item, i) => <div key={i} className="flex items-center gap-2 text-xs"><div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} /><span className="truncate">{item.type}</span><span className="text-muted-foreground ml-auto tabular-nums">{item.count}</span></div>)}</div></>}</CardContent></Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card><CardHeader><CardTitle className="text-base">Performance por Câmera</CardTitle><CardDescription>Top 5</CardDescription></CardHeader><CardContent>{loading ? <div className="space-y-3">{Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}</div> : cameraPerformance.length === 0 ? <div className="text-center py-8 text-muted-foreground"><Camera className="w-10 h-10 mx-auto mb-2 opacity-50" /><p className="text-sm">Nenhuma câmera</p></div> : <div className="space-y-3">{cameraPerformance.map((cam, i) => <div key={cam.id} className="flex items-center gap-3"><span className="text-sm font-medium w-6 text-muted-foreground">#{i + 1}</span><div className="flex-1 min-w-0"><div className="flex items-center justify-between mb-1"><span className="text-sm font-medium truncate">{cam.name}</span><Badge variant="secondary" className="text-xs">{cam.alerts} alertas</Badge></div><div className="flex items-center gap-2"><Progress value={cam.uptime} className="h-1.5 flex-1" /><span className="text-xs text-muted-foreground w-12">{cam.uptime.toFixed(1)}%</span></div></div></div>)}</div>}</CardContent></Card>
         <Card><CardHeader><CardTitle className="text-base">Distribuição por Hora</CardTitle><CardDescription>Concentração de alertas</CardDescription></CardHeader><CardContent>{loading ? <Skeleton className="h-32 w-full" /> : <><HourlyHeatmap data={hourlyData} /><div className="flex items-center justify-between mt-4 text-xs text-muted-foreground"><span>Menor atividade</span><div className="flex items-center gap-1">{[0.1, 0.3, 0.5, 0.7, 0.9].map((v, i) => <div key={i} className="w-4 h-4 rounded" style={{ backgroundColor: `rgba(239, 68, 68, ${v * 0.8})` }} />)}</div><span>Maior atividade</span></div></>}</CardContent></Card>
       </div>
 
-      <Card><CardHeader><CardTitle className="text-base">Resumo do Período</CardTitle></CardHeader><CardContent><div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">{[
-        { label: 'Média Alertas/Dia', value: chartData.length > 0 ? Math.round(chartData.reduce((s, d) => s + d.alerts, 0) / chartData.length) : 0, icon: AlertTriangle, color: 'text-red-500' },
-        { label: 'Pico de Alertas', value: Math.max(...chartData.map(d => d.alerts), 0), icon: TrendingUp, color: 'text-orange-500' },
-        { label: 'Hora Mais Ativa', value: `${hourlyData.reduce((max, d) => d.alerts > (hourlyData[max]?.alerts || 0) ? hourlyData.indexOf(d) : max, 0)}h`, icon: Clock, color: 'text-blue-500' },
-        { label: 'Taxa Detecção', value: '94.2%', icon: Target, color: 'text-green-500' },
-        { label: 'Uptime Médio', value: '99.1%', icon: Activity, color: 'text-purple-500' },
-        { label: 'Faces Reconhecidas', value: Math.floor(Math.random() * 100), icon: ScanFace, color: 'text-cyan-500' },
-      ].map((stat, i) => <div key={i} className="text-center p-3 rounded-lg bg-muted/50"><stat.icon className={cn('w-5 h-5 mx-auto mb-1', stat.color)} /><p className="text-lg font-bold">{stat.value}</p><p className="text-[10px] text-muted-foreground">{stat.label}</p></div>)}</div></CardContent></Card>
+      <Card className="border-border/50" style={{ boxShadow: 'var(--shadow-card)' }}><CardHeader><CardTitle className="text-section-title">Resumo do Período</CardTitle></CardHeader><CardContent><div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">{[
+        { label: 'Média Alertas/Dia', value: chartData.length > 0 ? Math.round(chartData.reduce((s, d) => s + d.alerts, 0) / chartData.length) : 0, icon: AlertTriangle, color: 'text-destructive' },
+        { label: 'Pico de Alertas', value: Math.max(...chartData.map(d => d.alerts), 0), icon: TrendingUp, color: 'text-severity-high' },
+        { label: 'Hora Mais Ativa', value: `${hourlyData.reduce((max, d) => d.alerts > (hourlyData[max]?.alerts || 0) ? hourlyData.indexOf(d) : max, 0)}h`, icon: Clock, color: 'text-primary' },
+        { label: 'Taxa Detecção', value: '94.2%', icon: Target, color: 'text-success' },
+        { label: 'Uptime Médio', value: '99.1%', icon: Activity, color: 'text-primary' },
+        { label: 'Faces Reconhecidas', value: Math.floor(Math.random() * 100), icon: ScanFace, color: 'text-primary' },
+      ].map((stat, i) => <div key={i} className="text-center p-3.5 rounded-xl bg-muted/30 border border-border/30 transition-all hover:bg-muted/50"><stat.icon className={cn('w-5 h-5 mx-auto mb-1.5', stat.color)} /><p className="text-lg font-bold font-mono tabular-nums">{stat.value}</p><p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mt-0.5">{stat.label}</p></div>)}</div></CardContent></Card>
     </div>
   );
 }

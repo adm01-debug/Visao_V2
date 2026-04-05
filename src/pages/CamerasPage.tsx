@@ -86,8 +86,8 @@ export function CamerasPage() {
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
-            <Camera className="w-5 h-5 sm:w-6 sm:h-6" />Câmeras
+          <h1 className="text-page-title flex items-center gap-2">
+            <Camera className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />Câmeras
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground">
             {stats.online} de {stats.total} online

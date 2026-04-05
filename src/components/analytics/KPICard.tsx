@@ -1,5 +1,4 @@
 import { ArrowDownRight, ArrowUpRight, Minus } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
@@ -12,39 +11,61 @@ export interface KPIData {
   color: string;
 }
 
+const colorMap: Record<string, string> = {
+  'bg-red-500': 'bg-destructive/10 text-destructive',
+  'bg-purple-500': 'bg-primary/10 text-primary',
+  'bg-blue-500': 'bg-primary/10 text-primary',
+  'bg-green-500': 'bg-success/10 text-success',
+};
+
 export function KPICard({ data, loading }: { data: KPIData; loading?: boolean }) {
   if (loading) {
-    return <Card><CardContent className="p-6"><Skeleton className="h-4 w-24 mb-2" /><Skeleton className="h-8 w-16 mb-2" /><Skeleton className="h-3 w-20" /></CardContent></Card>;
+    return (
+      <div className="rounded-xl border border-border/50 bg-card p-5" style={{ boxShadow: 'var(--shadow-card)' }}>
+        <Skeleton className="h-3 w-24 mb-3" />
+        <Skeleton className="h-8 w-16 mb-3" />
+        <Skeleton className="h-3 w-20" />
+      </div>
+    );
   }
 
   const change = data.previousValue > 0 ? ((data.value - data.previousValue) / data.previousValue) * 100 : 0;
   const isPositive = change > 0;
   const isNeutral = change === 0;
   const Icon = data.icon;
+  const iconClasses = colorMap[data.color] || 'bg-primary/10 text-primary';
 
   return (
-    <Card>
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-muted-foreground">{data.label}</span>
-          <div className={cn('p-2 rounded-lg', data.color)}><Icon className="w-4 h-4 text-white" /></div>
+    <div
+      className="rounded-xl border border-border/50 bg-card p-5 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 hover:border-border group"
+      style={{ boxShadow: 'var(--shadow-card)' }}
+    >
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{data.label}</span>
+        <div className={cn('p-2 rounded-xl transition-transform group-hover:scale-105', iconClasses)}>
+          <Icon className="w-4 h-4" />
         </div>
-        <div className="flex items-baseline gap-2">
-          <span className="text-3xl font-bold">{data.value.toLocaleString('pt-BR')}</span>
-          {data.unit && <span className="text-sm text-muted-foreground">{data.unit}</span>}
-        </div>
-        <div className="flex items-center gap-1 mt-2">
-          {isNeutral ? (
-            <><Minus className="w-3 h-3 text-muted-foreground" /><span className="text-xs text-muted-foreground">Sem alteração</span></>
-          ) : (
-            <>
-              {isPositive ? <ArrowUpRight className="w-3 h-3 text-green-500" /> : <ArrowDownRight className="w-3 h-3 text-red-500" />}
-              <span className={cn('text-xs font-medium', isPositive ? 'text-green-500' : 'text-red-500')}>{isPositive ? '+' : ''}{change.toFixed(1)}%</span>
-              <span className="text-xs text-muted-foreground">vs período anterior</span>
-            </>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+      </div>
+      <div className="flex items-baseline gap-2">
+        <span className="text-3xl font-bold font-mono tabular-nums text-foreground">{data.value.toLocaleString('pt-BR')}</span>
+        {data.unit && <span className="text-sm text-muted-foreground">{data.unit}</span>}
+      </div>
+      <div className="flex items-center gap-1.5 mt-3">
+        {isNeutral ? (
+          <><Minus className="w-3 h-3 text-muted-foreground" /><span className="text-xs text-muted-foreground">Sem alteração</span></>
+        ) : (
+          <>
+            <span className={cn(
+              'inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-xs font-medium',
+              isPositive ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'
+            )}>
+              {isPositive ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+              {isPositive ? '+' : ''}{change.toFixed(1)}%
+            </span>
+            <span className="text-[11px] text-muted-foreground">vs anterior</span>
+          </>
+        )}
+      </div>
+    </div>
   );
 }

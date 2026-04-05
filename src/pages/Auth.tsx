@@ -94,7 +94,7 @@ export default function Auth() {
               <Shield className="w-7 h-7 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-bold text-2xl text-foreground tracking-tight">VisionAI</h1>
+              <h1 className="font-bold text-2xl text-foreground tracking-tight">VISÃO</h1>
               <p className="text-xs text-muted-foreground tracking-widest uppercase">Vigilância Inteligente</p>
             </div>
           </div>

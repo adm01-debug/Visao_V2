@@ -110,16 +110,16 @@ const CategoryItem = memo(function CategoryItem({
   }
 
   return (
-    <Collapsible open={isExpanded} onOpenChange={onToggle} className="mb-1">
+    <Collapsible open={isExpanded} onOpenChange={onToggle} className="mb-0.5">
       <CollapsibleTrigger asChild>
         <motion.button
           whileHover={{ x: 2 }}
           whileTap={{ scale: 0.98 }}
           className={cn(
-            "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
-            "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+            "flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
+            "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
             isActive && "bg-sidebar-accent text-sidebar-primary",
-            isExpanded && "bg-sidebar-accent/50"
+            isExpanded && "bg-sidebar-accent/40"
           )}
         >
           <div className="flex items-center gap-2.5">
@@ -154,7 +154,7 @@ const CategoryItem = memo(function CategoryItem({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="mt-1 ml-4 space-y-0.5 border-l-2 border-border/50 pl-3"
+          className="mt-1 ml-4 space-y-0.5 border-l-2 border-border/30 pl-3"
         >
           {category.items.map((item, index) => (
             <motion.div
@@ -278,10 +278,10 @@ const NavItemLink = memo(function NavItemLink({
       data-testid={`nav-${item.id}`}
       onClick={onClick}
       className={cn(
-        "relative flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 text-sm group",
-        "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent",
+        "relative flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 text-sm group",
+        "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/60",
         isActive &&
-          "bg-sidebar-primary/12 text-sidebar-primary hover:bg-sidebar-primary/16 hover:text-sidebar-primary font-medium"
+          "bg-sidebar-primary/10 text-sidebar-primary hover:bg-sidebar-primary/14 hover:text-sidebar-primary font-medium"
       )}
     >
       {/* Active route accent bar */}
