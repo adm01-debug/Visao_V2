@@ -97,20 +97,33 @@ export function CameraCard({
 
         {/* Status Badge */}
         <div className="absolute top-2 left-2 flex items-center gap-2">
-          <Badge
-            variant={isOnline ? 'default' : 'secondary'}
-            className={cn('text-xs', camera.status === 'alert' && 'bg-red-500 animate-pulse')}
-          >
-            {isOnline ? (
-              camera.status === 'alert' ? (
-                <><Circle className="w-2 h-2 mr-1 fill-current" /> ALERTA</>
-              ) : (
-                <><Wifi className="w-3 h-3 mr-1" />Online</>
-              )
-            ) : (
-              <><WifiOff className="w-3 h-3 mr-1" />Offline</>
-            )}
-          </Badge>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Badge
+                variant={isOnline ? 'default' : 'secondary'}
+                className={cn('text-xs cursor-default', camera.status === 'alert' && 'bg-destructive animate-pulse')}
+              >
+                {isOnline ? (
+                  camera.status === 'alert' ? (
+                    <><Circle className="w-2 h-2 mr-1 fill-current" /> ALERTA</>
+                  ) : (
+                    <><Wifi className="w-3 h-3 mr-1" />Online</>
+                  )
+                ) : (
+                  <><WifiOff className="w-3 h-3 mr-1" />Offline</>
+                )}
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="max-w-[220px] text-center">
+              <p className="text-xs">
+                {camera.status === 'alert'
+                  ? 'Câmera detectou uma situação de alerta que requer atenção imediata'
+                  : isOnline
+                    ? 'Câmera operando normalmente e transmitindo em tempo real'
+                    : 'Câmera desconectada ou sem comunicação com o servidor'}
+              </p>
+            </TooltipContent>
+          </Tooltip>
         </div>
 
         {/* Controls Overlay */}
