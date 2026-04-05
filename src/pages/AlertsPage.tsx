@@ -70,8 +70,24 @@ export function AlertsPage() {
   const handleSelectAlert = useCallback((id: string, selected: boolean) => { setSelectedAlerts(prev => { const s = new Set(prev); selected ? s.add(id) : s.delete(id); return s; }); }, []);
   const handleMarkSelectedRead = useCallback(async () => { for (const id of selectedAlerts) await markAsRead(id); setSelectedAlerts(new Set()); toast.success(`${selectedAlerts.size} alertas marcados como lidos`); }, [selectedAlerts, markAsRead]);
   const handleDeleteSelected = useCallback(async () => { for (const id of selectedAlerts) await deleteAlert(id); setSelectedAlerts(new Set()); toast.success(`${selectedAlerts.size} alertas excluídos`); }, [selectedAlerts, deleteAlert]);
-  const clearFilters = () => setFilters(defaultFilters);
+  const clearFilters = () => { setFilters(defaultFilters); setActiveStatsFilter(null); };
   const hasActiveFilters = Object.entries(filters).some(([key, value]) => key === 'search' ? value !== '' : value !== 'all');
+  const [activeStatsFilter, setActiveStatsFilter] = useState<'total' | 'unread' | 'critical' | 'today' | null>(null);
+
+  const handleStatsFilterClick = (key: 'total' | 'unread' | 'critical' | 'today') => {
+    if (activeStatsFilter === key) {
+      setActiveStatsFilter(null);
+      setFilters(defaultFilters);
+      return;
+    }
+    setActiveStatsFilter(key);
+    switch (key) {
+      case 'total': setFilters(defaultFilters); break;
+      case 'unread': setFilters({ ...defaultFilters, readStatus: 'unread' }); break;
+      case 'critical': setFilters({ ...defaultFilters, severity: 'critical' }); break;
+      case 'today': setFilters({ ...defaultFilters, dateRange: '24h' }); break;
+    }
+  };
 
   const severityCounts = useMemo(() => ({
     low: alerts.filter(a => a.severity === 'low').length,
