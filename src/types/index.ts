@@ -7,7 +7,18 @@ export * from "./continuousAnalysis";
 export * from "./faceRecognition";
 export * from "./rules";
 export * from "./streaming";
-export * from "./surveillance";
+
+// ./surveillance: Rule, RuleCondition, RuleConditionType collide with ./rules
+export type {
+  Camera,
+  CameraStatus,
+  Alert,
+  AlertSeverity,
+  Zone,
+  Person,
+  UserRole,
+} from "./surveillance";
+
 export * from "./themes";
 export * from "./widgets";
 export * from "./zones";
