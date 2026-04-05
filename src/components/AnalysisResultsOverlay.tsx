@@ -157,7 +157,7 @@ function ProductivityOverlay({ analysis }: { analysis: ProductivityAnalysis }) {
       <div className="flex items-center gap-1.5 text-[10px]">
         <TrendingUp className="w-3 h-3 text-primary" />
         <span className="text-white/70">Produtividade:</span>
-        <span className={cn('font-medium', productivityRate >= 70 ? 'text-green-400' : productivityRate >= 40 ? 'text-yellow-400' : 'text-red-400')}>
+        <span className={cn('font-medium', productivityRate >= 70 ? 'text-success' : productivityRate >= 40 ? 'text-warning' : 'text-destructive')}>
           {productivityRate}%
         </span>
       </div>
