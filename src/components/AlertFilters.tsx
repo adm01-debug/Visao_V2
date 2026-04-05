@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Filter, X, Calendar, AlertTriangle, Gauge, Camera } from 'lucide-react';
+import { Filter, X, Calendar, AlertTriangle, Gauge, Camera, Info, AlertCircle, Flame } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -15,6 +15,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { format, startOfDay, endOfDay, subDays, subHours, isWithinInterval } from 'date-fns';
@@ -78,6 +84,20 @@ const DATE_RANGE_LABELS: Record<DateRange, string> = {
   '30d': 'Últimos 30 dias',
   custom: 'Personalizado',
 };
+
+const SEVERITY_BUTTON_OPTIONS: {
+  value: AlertSeverity;
+  label: string;
+  icon: typeof Info;
+  activeClass: string;
+  tooltip: string;
+}[] = [
+  { value: 'all', label: 'Todas', icon: Gauge, activeClass: 'border-primary bg-primary/15 text-primary', tooltip: 'Exibir alertas de todas as severidades' },
+  { value: 'low', label: 'Baixa', icon: Info, activeClass: 'border-muted-foreground bg-muted-foreground/15 text-muted-foreground', tooltip: 'Evento informativo, sem risco imediato' },
+  { value: 'medium', label: 'Média', icon: AlertCircle, activeClass: 'border-warning bg-warning/15 text-warning', tooltip: 'Situação que requer monitoramento' },
+  { value: 'high', label: 'Alta', icon: AlertTriangle, activeClass: 'border-destructive bg-destructive/15 text-destructive', tooltip: 'Ação necessária em breve' },
+  { value: 'critical', label: 'Crítica', icon: Flame, activeClass: 'border-destructive bg-destructive/20 text-destructive font-bold', tooltip: 'Requer atenção imediata!' },
+];
 
 export function AlertFiltersComponent({ filters, onFiltersChange, cameras = [] }: AlertFiltersProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -152,27 +172,39 @@ export function AlertFiltersComponent({ filters, onFiltersChange, cameras = [] }
             </Select>
           </div>
 
-          {/* Severity Filter */}
+          {/* Severity Filter — Visual Icon Buttons */}
           <div className="space-y-2">
             <Label className="text-xs text-muted-foreground flex items-center gap-1">
               <Gauge className="w-3 h-3" />
               Severidade
             </Label>
-            <Select
-              value={filters.severity}
-              onValueChange={(value: AlertSeverity) => onFiltersChange({ ...filters, severity: value })}
-            >
-              <SelectTrigger className="h-9">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(SEVERITY_LABELS).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex gap-1.5 flex-wrap">
+              {SEVERITY_BUTTON_OPTIONS.map(({ value, label, icon: SevIcon, activeClass, tooltip }) => {
+                const isActive = filters.severity === value;
+                return (
+                  <Tooltip key={value}>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        onClick={() => onFiltersChange({ ...filters, severity: value })}
+                        className={cn(
+                          'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all border',
+                          isActive
+                            ? activeClass
+                            : 'border-border bg-muted/50 text-muted-foreground hover:bg-muted'
+                        )}
+                      >
+                        <SevIcon className="w-3.5 h-3.5" />
+                        {label}
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-[200px] text-center">
+                      <p className="text-xs">{tooltip}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              })}
+            </div>
           </div>
 
           {/* Camera Filter */}
