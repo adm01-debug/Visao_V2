@@ -82,7 +82,7 @@ export function GlobalSearch() {
                 <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted">{getCameraIcon(c.status)}</div>
                 <div className="flex flex-col"><span className="font-medium">{c.name}</span><span className="text-xs text-muted-foreground">{c.location}</span></div>
               </div>
-              <Badge variant="outline" className={cn("text-xs capitalize", c.status === "online" && "bg-emerald-500/20 text-emerald-400 border-emerald-500/30", c.status === "offline" && "bg-muted text-muted-foreground", c.status === "alert" && "bg-red-500/20 text-red-400 border-red-500/30")}>{c.status}</Badge>
+              <Badge variant="outline" className={cn("text-xs capitalize", c.status === "online" && "bg-success/15 text-success border-success/30", c.status === "offline" && "bg-muted text-muted-foreground", c.status === "alert" && "bg-destructive/15 text-destructive border-destructive/30")}>{c.status}</Badge>
             </CommandItem>
           ))}
         </CommandGroup></>)}
