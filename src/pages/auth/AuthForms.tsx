@@ -61,6 +61,9 @@ interface RegisterFormProps extends AuthFormProps {
 }
 
 export function RegisterForm({ email, password, fullName, showPassword, isLoading, errors, onEmailChange, onPasswordChange, onFullNameChange, onTogglePassword, onSubmit }: RegisterFormProps) {
+  const passwordStrength = useMemo(() => getPasswordStrength(password), [password]);
+  const isPasswordBlocked = password.length > 0 && passwordStrength.isBlocked;
+
   return (
     <>
       <CardTitle className="text-lg mb-1">Criar nova conta</CardTitle>
@@ -78,7 +81,7 @@ export function RegisterForm({ email, password, fullName, showPassword, isLoadin
         <div className="space-y-2">
           <Label htmlFor="register-password">Senha</Label>
           <div className="relative">
-            <Input id="register-password" type={showPassword ? 'text' : 'password'} placeholder="Mínimo 6 caracteres" value={password} onChange={(e) => onPasswordChange(e.target.value)} disabled={isLoading} className={errors.password ? 'border-destructive pr-10' : 'pr-10'} />
+            <Input id="register-password" type={showPassword ? 'text' : 'password'} placeholder="Mínimo 8 caracteres" value={password} onChange={(e) => onPasswordChange(e.target.value)} disabled={isLoading} className={errors.password || isPasswordBlocked ? 'border-destructive pr-10' : 'pr-10'} />
             <Button type="button" variant="ghost" size="icon" className="absolute right-0 top-0 h-full px-3 hover:bg-transparent" onClick={onTogglePassword}>
               {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
             </Button>
@@ -86,8 +89,8 @@ export function RegisterForm({ email, password, fullName, showPassword, isLoadin
           {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
           <PasswordStrength password={password} />
         </div>
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Criando conta...</> : 'Criar conta'}
+        <Button type="submit" className="w-full" disabled={isLoading || isPasswordBlocked}>
+          {isLoading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Criando conta...</> : isPasswordBlocked ? 'Senha muito fraca' : 'Criar conta'}
         </Button>
         <OAuthButtons disabled={isLoading} />
       </form>
