@@ -90,6 +90,7 @@ const severityTooltips: Record<AlertSeverity, string> = {
   critical: 'Severidade Crítica — Requer atenção imediata!',
 };
 
+const severityBorderColors = {
   low: 'border-l-muted-foreground',
   medium: 'border-l-warning',
   high: 'border-l-destructive',
