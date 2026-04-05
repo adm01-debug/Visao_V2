@@ -17,9 +17,9 @@ function AccessEventCard({ event }: { event: AccessEvent }) {
   return (
     <div className={cn(
       'p-3 rounded-lg border-l-4 transition-colors',
-      isGranted && 'border-l-green-500 bg-green-500/5',
-      isDenied && 'border-l-red-500 bg-red-500/5',
-      !isGranted && !isDenied && 'border-l-yellow-500 bg-yellow-500/5'
+      isGranted && 'border-l-success bg-success/5',
+      isDenied && 'border-l-destructive bg-destructive/5',
+      !isGranted && !isDenied && 'border-l-warning bg-warning/5'
     )}>
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">

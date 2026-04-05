@@ -16,18 +16,18 @@ interface AnimatedCategoryIconProps {
 }
 
 const statusColors = {
-  success: "text-green-500",
-  warning: "text-amber-500",
-  danger: "text-red-500",
-  info: "text-blue-500",
+  success: "text-success",
+  warning: "text-warning",
+  danger: "text-destructive",
+  info: "text-primary",
   neutral: "text-muted-foreground",
 };
 
 const pulseColors = {
-  success: "bg-green-500",
-  warning: "bg-amber-500",
-  danger: "bg-red-500",
-  info: "bg-blue-500",
+  success: "bg-success",
+  warning: "bg-warning",
+  danger: "bg-destructive",
+  info: "bg-primary",
   neutral: "bg-muted-foreground",
 };
 
