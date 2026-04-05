@@ -1,72 +1,19 @@
 /**
- * VISÃO - Sistema de Vigilância Inteligente
- * Hook: usePlateDetections
- *
- * Hook para gerenciar detecções de placas com persistência no Supabase
- * Integração com alertas Telegram para blacklist
+ * VISÃO - usePlateDetections (Refactored)
+ * Types extracted to ./plate-detections/plateDetectionTypes.ts
  */
-
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { playCriticalAlertSound } from '@/lib/alertSounds';
+import {
+  PlateDetection, RegisteredPlate, PlateDetectionInsert, RegisteredPlateInsert,
+  TelegramConfig, TELEGRAM_CONFIG_KEY, ALERT_COOLDOWN_MS,
+} from './plate-detections/plateDetectionTypes';
 
-export interface PlateDetection {
-  id: string;
-  plate: string;
-  confidence: number;
-  camera_id: string | null;
-  camera_name: string;
-  image_url: string | null;
-  vehicle_type: string;
-  status: 'authorized' | 'unauthorized' | 'unknown' | 'blacklist';
-  direction: string | null;
-  timestamp: Date;
-  created_at: Date;
-}
-
-export interface RegisteredPlate {
-  id: string;
-  plate: string;
-  owner_name: string | null;
-  vehicle_type: string;
-  color: string | null;
-  notes: string | null;
-  list_type: 'whitelist' | 'blacklist' | 'visitor';
-  is_active: boolean;
-  created_at: Date;
-  updated_at: Date;
-}
-
-export interface PlateDetectionInsert {
-  plate: string;
-  confidence: number;
-  camera_id?: string | null;
-  camera_name: string;
-  image_url?: string | null;
-  vehicle_type?: string;
-  status: string;
-  direction?: string | null;
-}
-
-export interface RegisteredPlateInsert {
-  plate: string;
-  owner_name?: string;
-  vehicle_type?: string;
-  color?: string;
-  notes?: string;
-  list_type: 'whitelist' | 'blacklist' | 'visitor';
-}
-
-// Telegram config storage key
-const TELEGRAM_CONFIG_KEY = 'visao-telegram-config';
-
-interface TelegramConfig {
-  botToken: string;
-  chatId: string;
-  enabled: boolean;
-}
+// Re-export types
+export type { PlateDetection, RegisteredPlate, PlateDetectionInsert, RegisteredPlateInsert };
 
 export function usePlateDetections() {
   const { user } = useAuth();
@@ -74,343 +21,108 @@ export function usePlateDetections() {
   const [registeredPlates, setRegisteredPlates] = useState<RegisteredPlate[]>([]);
   const [loading, setLoading] = useState(true);
   const lastAlertTime = useRef<Map<string, number>>(new Map());
-  const ALERT_COOLDOWN_MS = 30000; // 30 seconds cooldown
 
-  // Carregar detecções
   const fetchDetections = useCallback(async () => {
     if (!user) return;
-
     try {
-      const { data, error } = await supabase
-        .from('plate_detections')
-        .select('*')
-        .order('timestamp', { ascending: false })
-        .limit(500);
-
+      const { data, error } = await supabase.from('plate_detections').select('*').order('timestamp', { ascending: false }).limit(500);
       if (error) throw error;
-
-      setDetections(data?.map(d => ({
-        ...d,
-        vehicle_type: d.vehicle_type || 'unknown',
-        timestamp: new Date(d.timestamp),
-        created_at: new Date(d.created_at),
-        status: d.status as PlateDetection['status']
-      })) || []);
-    } catch (error) {
-      // error removed
-    }
+      setDetections(data?.map(d => ({ ...d, vehicle_type: d.vehicle_type || 'unknown', timestamp: new Date(d.timestamp), created_at: new Date(d.created_at), status: d.status as PlateDetection['status'] })) || []);
+    } catch { /* handled */ }
   }, [user]);
 
-  // Carregar placas registradas
   const fetchRegisteredPlates = useCallback(async () => {
     if (!user) return;
-
     try {
-      const { data, error } = await supabase
-        .from('registered_plates')
-        .select('*')
-        .order('created_at', { ascending: false });
-
+      const { data, error } = await supabase.from('registered_plates').select('*').order('created_at', { ascending: false });
       if (error) throw error;
-
-      setRegisteredPlates(data?.map(p => ({
-        ...p,
-        vehicle_type: p.vehicle_type || 'car',
-        created_at: new Date(p.created_at),
-        updated_at: new Date(p.updated_at),
-        list_type: p.list_type as RegisteredPlate['list_type']
-      })) || []);
-    } catch (error) {
-      // error removed
-    }
+      setRegisteredPlates(data?.map(p => ({ ...p, vehicle_type: p.vehicle_type || 'car', created_at: new Date(p.created_at), updated_at: new Date(p.updated_at), list_type: p.list_type as RegisteredPlate['list_type'] })) || []);
+    } catch { /* handled */ }
   }, [user]);
 
-  // Carregar dados iniciais
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      await Promise.all([fetchDetections(), fetchRegisteredPlates()]);
-      setLoading(false);
-    };
-
-    if (user) {
-      loadData();
-    }
+    if (user) { setLoading(true); Promise.all([fetchDetections(), fetchRegisteredPlates()]).then(() => setLoading(false)); }
   }, [user, fetchDetections, fetchRegisteredPlates]);
 
-  // Verificar status da placa
   const checkPlateStatus = useCallback((plate: string): PlateDetection['status'] => {
-    const normalizedPlate = plate.toUpperCase().replace(/[^A-Z0-9]/g, '');
-    const registered = registeredPlates.find(
-      p => p.plate.toUpperCase().replace(/[^A-Z0-9]/g, '') === normalizedPlate && p.is_active
-    );
-
-    if (!registered) return 'unknown';
-    if (registered.list_type === 'blacklist') return 'blacklist';
-    if (registered.list_type === 'whitelist') return 'authorized';
+    const norm = plate.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    const reg = registeredPlates.find(p => p.plate.toUpperCase().replace(/[^A-Z0-9]/g, '') === norm && p.is_active);
+    if (!reg) return 'unknown';
+    if (reg.list_type === 'blacklist') return 'blacklist';
+    if (reg.list_type === 'whitelist') return 'authorized';
     return 'unknown';
   }, [registeredPlates]);
 
-  // Send Telegram alert for blacklist
-  const sendBlacklistTelegramAlert = useCallback(async (
-    plate: string,
-    cameraName: string,
-    ownerName?: string,
-    imageUrl?: string
-  ) => {
-    // Check cooldown
+  const sendBlacklistTelegramAlert = useCallback(async (plate: string, cameraName: string, ownerName?: string, imageUrl?: string) => {
     const now = Date.now();
-    const lastAlert = lastAlertTime.current.get(plate);
-    if (lastAlert && (now - lastAlert) < ALERT_COOLDOWN_MS) {
-      return;
-    }
+    const last = lastAlertTime.current.get(plate);
+    if (last && (now - last) < ALERT_COOLDOWN_MS) return;
     lastAlertTime.current.set(plate, now);
-
-    // Get Telegram config from localStorage
     const configStr = localStorage.getItem(TELEGRAM_CONFIG_KEY);
-    if (!configStr) {
-      return;
-    }
-
+    if (!configStr) return;
     try {
       const config: TelegramConfig = JSON.parse(configStr);
-      if (!config.enabled || !config.botToken || !config.chatId) {
-        return;
-      }
-
-      const alertMessage = ownerName
-        ? `Veículo na blacklist detectado: ${plate} (Proprietário: ${ownerName})`
-        : `Veículo na blacklist detectado: ${plate}`;
-
-      const { error } = await supabase.functions.invoke('send-alert-notification', {
-        body: {
-          alertId: `alpr-${plate}-${Date.now()}`,
-          type: 'security',
-          severity: 'critical' as const,
-          message: alertMessage,
-          cameraName,
-          timestamp: new Date().toISOString(),
-          snapshotUrl: imageUrl || undefined,
-          channels: ['telegram'],
-          telegram: {
-            botToken: config.botToken,
-            chatId: config.chatId,
-          },
-        },
+      if (!config.enabled || !config.botToken || !config.chatId) return;
+      const msg = ownerName ? `Veículo na blacklist detectado: ${plate} (Proprietário: ${ownerName})` : `Veículo na blacklist detectado: ${plate}`;
+      await supabase.functions.invoke('send-alert-notification', {
+        body: { alertId: `alpr-${plate}-${Date.now()}`, type: 'security', severity: 'critical' as const, message: msg, cameraName, timestamp: new Date().toISOString(), snapshotUrl: imageUrl, channels: ['telegram'], telegram: { botToken: config.botToken, chatId: config.chatId } },
       });
-
-      if (error) throw error;
-    } catch {
-      // Silently fail — alert was already persisted in DB
-    }
+    } catch { /* silently fail */ }
   }, []);
 
-  // Adicionar detecção
   const addDetection = useCallback(async (detection: PlateDetectionInsert): Promise<PlateDetection | null> => {
-    if (!user) {
-      toast.error('Usuário não autenticado');
-      return null;
-    }
-
+    if (!user) { toast.error('Usuário não autenticado'); return null; }
     try {
       const status = checkPlateStatus(detection.plate);
-
-      const { data, error } = await supabase
-        .from('plate_detections')
-        .insert({
-          user_id: user.id,
-          plate: detection.plate.toUpperCase(),
-          confidence: detection.confidence,
-          camera_id: detection.camera_id,
-          camera_name: detection.camera_name,
-          image_url: detection.image_url,
-          vehicle_type: detection.vehicle_type || 'unknown',
-          status,
-          direction: detection.direction
-        })
-        .select()
-        .single();
-
+      const { data, error } = await supabase.from('plate_detections').insert({
+        user_id: user.id, plate: detection.plate.toUpperCase(), confidence: detection.confidence,
+        camera_id: detection.camera_id, camera_name: detection.camera_name, image_url: detection.image_url,
+        vehicle_type: detection.vehicle_type || 'unknown', status, direction: detection.direction,
+      }).select().single();
       if (error) throw error;
-
-      const newDetection: PlateDetection = {
-        ...data,
-        vehicle_type: data.vehicle_type || 'unknown',
-        timestamp: new Date(data.timestamp),
-        created_at: new Date(data.created_at),
-        status: data.status as PlateDetection['status']
-      };
-
-      setDetections(prev => [newDetection, ...prev].slice(0, 500));
-
-      // Alertar se for blacklist
+      const newDet: PlateDetection = { ...data, vehicle_type: data.vehicle_type || 'unknown', timestamp: new Date(data.timestamp), created_at: new Date(data.created_at), status: data.status as PlateDetection['status'] };
+      setDetections(prev => [newDet, ...prev].slice(0, 500));
       if (status === 'blacklist') {
-        // Play critical sound
         playCriticalAlertSound();
-
-        // Show toast
-        toast.error(`🚨 ALERTA: Veículo na blacklist detectado! Placa: ${detection.plate}`, {
-          duration: 15000,
-        });
-
-        // Get owner name for Telegram
-        const registered = registeredPlates.find(
-          p => p.plate.toUpperCase().replace(/[^A-Z0-9]/g, '') === detection.plate.toUpperCase().replace(/[^A-Z0-9]/g, '')
-        );
-
-        // Send Telegram alert
-        sendBlacklistTelegramAlert(
-          detection.plate,
-          detection.camera_name,
-          registered?.owner_name || undefined,
-          detection.image_url || undefined
-        );
-
-        // Create alert in database
-        await supabase.from('alerts').insert({
-          type: 'security',
-          severity: 'critical',
-          camera_name: detection.camera_name,
-          camera_id: detection.camera_id,
-          message: `Veículo na blacklist detectado: ${detection.plate}`,
-          thumbnail: detection.image_url,
-          user_id: user.id,
-        });
+        toast.error(`🚨 ALERTA: Veículo na blacklist detectado! Placa: ${detection.plate}`, { duration: 15000 });
+        const reg = registeredPlates.find(p => p.plate.toUpperCase().replace(/[^A-Z0-9]/g, '') === detection.plate.toUpperCase().replace(/[^A-Z0-9]/g, ''));
+        sendBlacklistTelegramAlert(detection.plate, detection.camera_name, reg?.owner_name || undefined, detection.image_url || undefined);
+        await supabase.from('alerts').insert({ type: 'security', severity: 'critical', camera_name: detection.camera_name, camera_id: detection.camera_id, message: `Veículo na blacklist detectado: ${detection.plate}`, thumbnail: detection.image_url, user_id: user.id });
       }
-
-      return newDetection;
-    } catch (error) {
-      // error removed
-      toast.error('Erro ao salvar detecção');
-      return null;
-    }
+      return newDet;
+    } catch { toast.error('Erro ao salvar detecção'); return null; }
   }, [user, checkPlateStatus, registeredPlates, sendBlacklistTelegramAlert]);
 
-  // Deletar detecção
   const deleteDetection = useCallback(async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('plate_detections')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      setDetections(prev => prev.filter(d => d.id !== id));
-      toast.success('Detecção removida');
-    } catch (error) {
-      // error removed
-      toast.error('Erro ao remover detecção');
-    }
+    try { const { error } = await supabase.from('plate_detections').delete().eq('id', id); if (error) throw error; setDetections(prev => prev.filter(d => d.id !== id)); toast.success('Detecção removida'); } catch { toast.error('Erro ao remover detecção'); }
   }, []);
 
-  // Adicionar placa registrada
   const addRegisteredPlate = useCallback(async (plate: RegisteredPlateInsert): Promise<RegisteredPlate | null> => {
-    if (!user) {
-      toast.error('Usuário não autenticado');
-      return null;
-    }
-
+    if (!user) { toast.error('Usuário não autenticado'); return null; }
     try {
-      const { data, error } = await supabase
-        .from('registered_plates')
-        .insert({
-          user_id: user.id,
-          plate: plate.plate.toUpperCase(),
-          owner_name: plate.owner_name,
-          vehicle_type: plate.vehicle_type || 'car',
-          color: plate.color,
-          notes: plate.notes,
-          list_type: plate.list_type
-        })
-        .select()
-        .single();
-
+      const { data, error } = await supabase.from('registered_plates').insert({ user_id: user.id, plate: plate.plate.toUpperCase(), owner_name: plate.owner_name, vehicle_type: plate.vehicle_type || 'car', color: plate.color, notes: plate.notes, list_type: plate.list_type }).select().single();
       if (error) throw error;
-
-      const newPlate: RegisteredPlate = {
-        ...data,
-        vehicle_type: data.vehicle_type || 'car',
-        created_at: new Date(data.created_at),
-        updated_at: new Date(data.updated_at),
-        list_type: data.list_type as RegisteredPlate['list_type']
-      };
-
-      setRegisteredPlates(prev => [newPlate, ...prev]);
-      toast.success('Placa registrada com sucesso');
-
-      return newPlate;
-    } catch (error) {
-      // error removed
-      toast.error('Erro ao registrar placa');
-      return null;
-    }
+      const np: RegisteredPlate = { ...data, vehicle_type: data.vehicle_type || 'car', created_at: new Date(data.created_at), updated_at: new Date(data.updated_at), list_type: data.list_type as RegisteredPlate['list_type'] };
+      setRegisteredPlates(prev => [np, ...prev]); toast.success('Placa registrada com sucesso'); return np;
+    } catch { toast.error('Erro ao registrar placa'); return null; }
   }, [user]);
 
-  // Atualizar placa registrada
   const updateRegisteredPlate = useCallback(async (id: string, updates: Partial<RegisteredPlateInsert>) => {
-    try {
-      const { error } = await supabase
-        .from('registered_plates')
-        .update(updates)
-        .eq('id', id);
-
-      if (error) throw error;
-
-      await fetchRegisteredPlates();
-      toast.success('Placa atualizada');
-    } catch (error) {
-      // error removed
-      toast.error('Erro ao atualizar placa');
-    }
+    try { const { error } = await supabase.from('registered_plates').update(updates).eq('id', id); if (error) throw error; await fetchRegisteredPlates(); toast.success('Placa atualizada'); } catch { toast.error('Erro ao atualizar placa'); }
   }, [fetchRegisteredPlates]);
 
-  // Deletar placa registrada
   const deleteRegisteredPlate = useCallback(async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('registered_plates')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      setRegisteredPlates(prev => prev.filter(p => p.id !== id));
-      toast.success('Placa removida');
-    } catch (error) {
-      // error removed
-      toast.error('Erro ao remover placa');
-    }
+    try { const { error } = await supabase.from('registered_plates').delete().eq('id', id); if (error) throw error; setRegisteredPlates(prev => prev.filter(p => p.id !== id)); toast.success('Placa removida'); } catch { toast.error('Erro ao remover placa'); }
   }, []);
 
-  // Estatísticas
   const stats = {
     totalDetections: detections.length,
-    todayDetections: detections.filter(d => {
-      const today = new Date();
-      return d.timestamp.toDateString() === today.toDateString();
-    }).length,
+    todayDetections: detections.filter(d => d.timestamp.toDateString() === new Date().toDateString()).length,
     uniquePlates: new Set(detections.map(d => d.plate)).size,
     blacklistAlerts: detections.filter(d => d.status === 'blacklist').length,
-    authorizedRate: detections.length > 0
-      ? (detections.filter(d => d.status === 'authorized').length / detections.length) * 100
-      : 0,
-    avgConfidence: detections.length > 0
-      ? detections.reduce((sum, d) => sum + d.confidence, 0) / detections.length * 100
-      : 0
+    authorizedRate: detections.length > 0 ? (detections.filter(d => d.status === 'authorized').length / detections.length) * 100 : 0,
+    avgConfidence: detections.length > 0 ? detections.reduce((s, d) => s + d.confidence, 0) / detections.length * 100 : 0,
   };
 
-  return {
-    detections,
-    registeredPlates,
-    loading,
-    stats,
-    addDetection,
-    deleteDetection,
-    addRegisteredPlate,
-    updateRegisteredPlate,
-    deleteRegisteredPlate,
-    checkPlateStatus,
-    refresh: () => Promise.all([fetchDetections(), fetchRegisteredPlates()])
-  };
+  return { detections, registeredPlates, loading, stats, addDetection, deleteDetection, addRegisteredPlate, updateRegisteredPlate, deleteRegisteredPlate, checkPlateStatus, refresh: () => Promise.all([fetchDetections(), fetchRegisteredPlates()]) };
 }
