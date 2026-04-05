@@ -29,11 +29,11 @@ const iconMap: Record<string, React.ElementType> = {
 
 const colorMap: Record<string, string> = {
   red: 'bg-destructive/10 text-destructive border-destructive/20',
-  orange: 'bg-orange-500/10 text-orange-600 border-orange-500/20',
-  yellow: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20',
-  green: 'bg-green-500/10 text-green-600 border-green-500/20',
-  blue: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
-  purple: 'bg-purple-500/10 text-purple-600 border-purple-500/20'
+  orange: 'bg-warning/10 text-warning border-warning/20',
+  yellow: 'bg-warning/8 text-warning border-warning/15',
+  green: 'bg-success/10 text-success border-success/20',
+  blue: 'bg-primary/10 text-primary border-primary/20',
+  purple: 'bg-primary/15 text-primary border-primary/25'
 };
 
 const severityColorMap: Record<string, string> = {

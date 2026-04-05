@@ -37,7 +37,7 @@ export function PPERealtimeTab({ detections, isDetecting }: PPERealtimeTabProps)
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {detections.map(detection => (
-              <Card key={detection.personId} className={cn("border-2", detection.isCompliant ? "border-green-500/50" : "border-red-500/50")}>
+              <Card key={detection.personId} className={cn("border-2", detection.isCompliant ? "border-success/50" : "border-destructive/50")}>
                 <CardContent className="pt-4">
                   <div className="flex items-center justify-between mb-2">
                     <Badge variant={detection.isCompliant ? 'default' : 'destructive'}>

@@ -109,7 +109,7 @@ function AuthCallbackComponent({
 
           {status === 'success' && (
             <>
-              <CheckCircle className="w-16 h-16 text-green-500" />
+              <CheckCircle className="w-16 h-16 text-success" />
               <p className="text-muted-foreground">Redirecionando...</p>
             </>
           )}

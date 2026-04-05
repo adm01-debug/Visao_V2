@@ -34,7 +34,7 @@ export const ReportHistory = memo(function ReportHistory({ reports }: ReportHist
           <div className="space-y-3">
             {reports.map((report) => (
               <div key={report.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-success flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{report.type}</p>
                   <p className="text-xs text-muted-foreground">

@@ -60,7 +60,7 @@ export const AccessDenied = ({
           {/* Informações do acesso */}
           <div className="bg-muted/50 rounded-lg p-4 space-y-2">
             <div className="flex items-center gap-2 text-sm">
-              <AlertTriangle className="w-4 h-4 text-yellow-500" />
+              <AlertTriangle className="w-4 h-4 text-warning" />
               <span className="font-medium">Seu IP:</span>
               <code className="bg-background px-2 py-0.5 rounded text-xs">
                 {clientIP}

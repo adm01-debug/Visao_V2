@@ -12,8 +12,8 @@ interface JourneyTableProps {
 
 function PunctualityBadge({ p }: { p: JourneyEntry['punctuality'] }) {
   switch (p) {
-    case 'on_time': return <Badge className="bg-emerald-500/20 text-emerald-600 border-emerald-500/30 text-[10px]">✅ Pontual</Badge>;
-    case 'late': return <Badge className="bg-yellow-500/20 text-yellow-600 border-yellow-500/30 text-[10px]">⚠️ Atraso</Badge>;
+    case 'on_time': return <Badge className="bg-success/15 text-success border-success/30 text-[10px]">✅ Pontual</Badge>;
+    case 'late': return <Badge className="bg-warning/15 text-warning border-warning/30 text-[10px]">⚠️ Atraso</Badge>;
     case 'very_late': return <Badge className="bg-destructive/20 text-destructive border-destructive/30 text-[10px]">🔴 Muito Atrasado</Badge>;
     case 'absent': return <Badge className="bg-muted text-muted-foreground text-[10px]">❌ Ausente</Badge>;
   }

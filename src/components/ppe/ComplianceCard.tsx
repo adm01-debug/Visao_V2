@@ -32,7 +32,7 @@ export function ComplianceCard({ title, value, icon: Icon, trend, color = 'defau
         </div>
         {trend && (
           <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
-            <TrendingUp className={cn("w-3 h-3", trend === 'up' ? 'text-green-500' : 'text-red-500 rotate-180')} />
+            <TrendingUp className={cn("w-3 h-3", trend === 'up' ? 'text-success' : 'text-destructive rotate-180')} />
             <span>{trend === 'up' ? 'Melhoria' : 'Queda'} vs. ontem</span>
           </div>
         )}

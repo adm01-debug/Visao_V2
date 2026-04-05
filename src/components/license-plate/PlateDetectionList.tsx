@@ -27,7 +27,7 @@ interface PlateDetectionListProps {
 
 function getStatusBadge(status: string) {
   switch (status) {
-    case 'authorized': return <Badge className="bg-green-500 gap-1"><CheckCircle2 className="h-3 w-3" />Autorizado</Badge>;
+    case 'authorized': return <Badge className="bg-success/15 text-success gap-1"><CheckCircle2 className="h-3 w-3" />Autorizado</Badge>;
     case 'blacklist': return <Badge variant="destructive" className="gap-1"><AlertTriangle className="h-3 w-3" />Blacklist</Badge>;
     case 'unauthorized': return <Badge variant="secondary" className="gap-1"><XCircle className="h-3 w-3" />Não Autorizado</Badge>;
     default: return <Badge variant="outline" className="gap-1"><Eye className="h-3 w-3" />Desconhecido</Badge>;

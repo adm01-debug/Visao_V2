@@ -22,7 +22,7 @@ export function StatCard({ icon: Icon, label, value, trend, className }: StatCar
       <div className="flex items-center gap-2">
         <span className="text-xl font-bold">{value}</span>
         {trend && (
-          <TrendingUp className={cn('w-4 h-4', trend === 'up' && 'text-green-500', trend === 'down' && 'text-red-500 rotate-180', trend === 'neutral' && 'text-muted-foreground')} />
+          <TrendingUp className={cn('w-4 h-4', trend === 'up' && 'text-success', trend === 'down' && 'text-destructive rotate-180', trend === 'neutral' && 'text-muted-foreground')} />
         )}
       </div>
     </div>
