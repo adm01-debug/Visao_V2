@@ -70,7 +70,13 @@ export function AlertsPage() {
   const handleSelectAll = useCallback((checked: boolean) => { setSelectedAlerts(checked ? new Set(paginatedItems.map(a => a.id)) : new Set()); }, [paginatedItems]);
   const handleSelectAlert = useCallback((id: string, selected: boolean) => { setSelectedAlerts(prev => { const s = new Set(prev); selected ? s.add(id) : s.delete(id); return s; }); }, []);
   const handleMarkSelectedRead = useCallback(async () => { for (const id of selectedAlerts) await markAsRead(id); setSelectedAlerts(new Set()); toast.success(`${selectedAlerts.size} alertas marcados como lidos`); }, [selectedAlerts, markAsRead]);
-  const handleDeleteSelected = useCallback(async () => { for (const id of selectedAlerts) await deleteAlert(id); setSelectedAlerts(new Set()); toast.success(`${selectedAlerts.size} alertas excluídos`); }, [selectedAlerts, deleteAlert]);
+  const animateAndDelete = useCallback(async (ids: string[]) => {
+    setRemovingAlerts(new Set(ids));
+    await new Promise(r => setTimeout(r, 300));
+    for (const id of ids) await deleteAlert(id);
+    setRemovingAlerts(new Set());
+  }, [deleteAlert]);
+  const handleDeleteSelected = useCallback(async () => { const ids = [...selectedAlerts]; await animateAndDelete(ids); setSelectedAlerts(new Set()); toast.success(`${ids.length} alertas excluídos`); }, [selectedAlerts, animateAndDelete]);
   const clearFilters = () => { setFilters(defaultFilters); setActiveStatsFilter(null); };
   const hasActiveFilters = Object.entries(filters).some(([key, value]) => key === 'search' ? value !== '' : value !== 'all');
   const [activeStatsFilter, setActiveStatsFilter] = useState<'total' | 'unread' | 'critical' | 'today' | null>(null);
