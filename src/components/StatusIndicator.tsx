@@ -1,6 +1,11 @@
 import { cn } from '@/lib/utils';
 import { CameraStatus } from '@/types/surveillance';
 import { CheckCircle2, XCircle, AlertTriangle, AlertOctagon } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface StatusIndicatorProps {
   status: CameraStatus;
@@ -15,7 +20,8 @@ const statusConfig = {
     label: 'Online',
     icon: CheckCircle2,
     iconColor: 'text-success',
-    pattern: 'rounded-full', // solid circle = OK
+    pattern: 'rounded-full',
+    tooltip: 'Câmera operando normalmente e transmitindo imagens em tempo real',
   },
   offline: {
     color: 'bg-muted-foreground',
@@ -23,7 +29,8 @@ const statusConfig = {
     label: 'Offline',
     icon: XCircle,
     iconColor: 'text-muted-foreground',
-    pattern: 'rounded-sm', // square = inactive
+    pattern: 'rounded-sm',
+    tooltip: 'Câmera desconectada ou sem comunicação com o servidor',
   },
   alert: {
     color: 'bg-destructive',
@@ -31,7 +38,8 @@ const statusConfig = {
     label: 'Alerta',
     icon: AlertOctagon,
     iconColor: 'text-destructive',
-    pattern: 'rotate-45 rounded-none', // diamond = danger
+    pattern: 'rotate-45 rounded-none',
+    tooltip: 'Câmera detectou uma situação de alerta que requer atenção imediata',
   },
   warning: {
     color: 'bg-warning',
@@ -39,7 +47,8 @@ const statusConfig = {
     label: 'Atenção',
     icon: AlertTriangle,
     iconColor: 'text-warning',
-    pattern: 'rounded-full border-2 border-current bg-transparent', // ring = warning
+    pattern: 'rounded-full border-2 border-current bg-transparent',
+    tooltip: 'Câmera com aviso — verifique possíveis problemas de conexão ou configuração',
   },
 };
 
@@ -56,51 +65,63 @@ export function StatusIndicator({ status, size = 'md', showLabel = false }: Stat
 
   if (showLabel) {
     return (
-      <div
-        className={cn(
-          'inline-flex items-center rounded-full font-medium',
-          sizes.badge,
-          status === 'online' && 'bg-success/15 text-success border border-success/30',
-          status === 'offline' && 'bg-muted text-muted-foreground border border-border',
-          status === 'alert' && 'bg-destructive/15 text-destructive border border-destructive/30',
-          status === 'warning' && 'bg-warning/15 text-warning border border-warning/30',
-        )}
-        role="status"
-        aria-label={`Status: ${config.label}`}
-      >
-        <Icon className={sizes.icon} aria-hidden="true" />
-        <span>{config.label}</span>
-      </div>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div
+            className={cn(
+              'inline-flex items-center rounded-full font-medium cursor-default',
+              sizes.badge,
+              status === 'online' && 'bg-success/15 text-success border border-success/30',
+              status === 'offline' && 'bg-muted text-muted-foreground border border-border',
+              status === 'alert' && 'bg-destructive/15 text-destructive border border-destructive/30',
+              status === 'warning' && 'bg-warning/15 text-warning border border-warning/30',
+            )}
+            role="status"
+            aria-label={`Status: ${config.label}`}
+          >
+            <Icon className={sizes.icon} aria-hidden="true" />
+            <span>{config.label}</span>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="bottom" className="max-w-[220px] text-center">
+          <p className="text-xs">{config.tooltip}</p>
+        </TooltipContent>
+      </Tooltip>
     );
   }
 
   return (
-    <div className="flex items-center gap-2" role="status" aria-label={`Status: ${config.label}`}>
-      {/* Color-blind safe: unique shape per status */}
-      <span className="relative flex items-center justify-center">
-        <span
-          className={cn(
-            config.color,
-            sizes.dot,
-            config.pattern,
-            status === 'online' && 'animate-pulse',
-            status === 'alert' && 'animate-pulse',
-          )}
-          aria-hidden="true"
-        />
-        {/* Outer ring for extra distinction */}
-        {(status === 'alert' || status === 'warning') && (
-          <span
-            className={cn(
-              'absolute inset-0 rounded-full ring-2',
-              config.ringColor,
-              status === 'alert' && 'animate-ping opacity-75',
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="flex items-center gap-2 cursor-default" role="status" aria-label={`Status: ${config.label}`}>
+          <span className="relative flex items-center justify-center">
+            <span
+              className={cn(
+                config.color,
+                sizes.dot,
+                config.pattern,
+                status === 'online' && 'animate-pulse',
+                status === 'alert' && 'animate-pulse',
+              )}
+              aria-hidden="true"
+            />
+            {(status === 'alert' || status === 'warning') && (
+              <span
+                className={cn(
+                  'absolute inset-0 rounded-full ring-2',
+                  config.ringColor,
+                  status === 'alert' && 'animate-ping opacity-75',
+                )}
+                aria-hidden="true"
+              />
             )}
-            aria-hidden="true"
-          />
-        )}
-      </span>
-      <span className="sr-only">{config.label}</span>
-    </div>
+          </span>
+          <span className="sr-only">{config.label}</span>
+        </div>
+      </TooltipTrigger>
+      <TooltipContent side="bottom" className="max-w-[220px] text-center">
+        <p className="text-xs">{config.tooltip}</p>
+      </TooltipContent>
+    </Tooltip>
   );
 }
