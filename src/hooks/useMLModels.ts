@@ -5,7 +5,15 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import * as tf from '@tensorflow/tfjs';
 import * as cocoSsd from '@tensorflow-models/coco-ssd';
-import * as poseDetection from '@tensorflow-models/pose-detection';
+// pose-detection loaded lazily to avoid @mediapipe/pose ESM crash
+type PoseDetectionModule = typeof import('@tensorflow-models/pose-detection');
+let _poseDetection: PoseDetectionModule | null = null;
+async function getPoseDetectionModule(): Promise<PoseDetectionModule> {
+  if (!_poseDetection) {
+    _poseDetection = await import('@tensorflow-models/pose-detection');
+  }
+  return _poseDetection;
+}
 import {
   type ModelType, type ModelInfo, type DetectedObject, type DetectedPose, type MLModelsConfig,
   DEFAULT_CONFIG, PERSON_CLASSES, VEHICLE_CLASSES,
