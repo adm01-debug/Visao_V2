@@ -4,7 +4,7 @@ import { Skeleton, BrandedSkeleton } from '@/components/ui/skeleton';
 export function CameraMapSkeleton({ className = '' }: { className?: string }) {
   return (
     <div className={`relative rounded-lg overflow-hidden bg-muted/30 ${className}`}>
-      <Skeleton className="w-full h-full min-h-[300px]" />
+      <BrandedSkeleton className="w-full h-full min-h-[300px]" />
 
       {/* Simulated legend skeleton */}
       <div className="absolute bottom-4 left-4 bg-background/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
