@@ -12,6 +12,7 @@ import { Activity, AlertTriangle, ArrowRight, MapPin, RefreshCw, Users, Zap, Tre
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence } from "framer-motion";
 import { DEMO_ZONES, getOccupancyColor, getOccupancyBg, type ZoneData, type FlowEdge, type Bottleneck } from "./collaborator-flow/flowTypes";
+import { PageMeta } from '@/components/PageMeta';
 
 export default function CollaboratorFlowMapPage() {
   const [timeRange, setTimeRange] = useState<"1h" | "6h" | "24h">("1h");
@@ -66,6 +67,7 @@ export default function CollaboratorFlowMapPage() {
 
   return (
     <div className="space-y-6 p-6 max-w-7xl mx-auto">
+      <PageMeta title="Fluxo de Colaboradores" description="Mapa de fluxo e movimentação de colaboradores" />
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Activity className="h-7 w-7 text-primary" />

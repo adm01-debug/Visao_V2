@@ -22,6 +22,7 @@ import { toast } from 'sonner';
 import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 
 import { ZoneCard, ZoneEditorSheet, ZoneViewDialog, zoneTypeConfig, type DbZone, type ZoneStats, type ZoneEvent } from '@/components/zones';
+import { PageMeta } from '@/components/PageMeta';
 
 type DbZoneLocal = Tables<'zones'>;
 
@@ -116,6 +117,7 @@ export function ZonesPage() {
   if (loading) {
     return (
       <div className="p-6 space-y-6">
+      <PageMeta title="Zonas" description="Configure zonas de detecção e monitoramento" />
         <div className="flex items-center justify-between"><Skeleton className="h-8 w-48" /><Skeleton className="h-10 w-32" /></div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">{[...Array(4)].map((_, i) => <Skeleton key={i} className="h-24" />)}</div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">{[...Array(6)].map((_, i) => <Skeleton key={i} className="h-40" />)}</div>

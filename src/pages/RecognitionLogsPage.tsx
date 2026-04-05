@@ -16,6 +16,7 @@ import { PaginationControls } from '@/components/PaginationControls';
 import { useRecognitionData, useFilteredLogs, useRecognitionExport } from '@/components/recognition-logs/useRecognitionData';
 import { RecognitionStatsCards } from '@/components/recognition-logs/RecognitionStatsCards';
 import { RecognitionLogsTable } from '@/components/recognition-logs/RecognitionLogsTable';
+import { PageMeta } from '@/components/PageMeta';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -47,6 +48,7 @@ export default function RecognitionLogsPage() {
 
   return (
     <div role="main" aria-label="Logs de reconhecimento" className="min-h-screen bg-background">
+      <PageMeta title="Logs de Reconhecimento" description="Histórico de reconhecimentos faciais" />
       <div className="p-6 space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>

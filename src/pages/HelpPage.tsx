@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { faqCategories, quickLinks, tutorials } from "./help/helpData";
+import { PageMeta } from '@/components/PageMeta';
 
 export default function HelpPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,6 +23,7 @@ export default function HelpPage() {
 
   return (
     <div className="p-6 space-y-6 max-w-6xl mx-auto animate-fade-in">
+      <PageMeta title="Ajuda" description="Central de ajuda e documentação do sistema" />
       <div className="text-center space-y-4">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4"><HelpCircle className="w-8 h-8 text-primary" /></div>
         <h1 className="text-3xl font-bold text-foreground">Central de Ajuda</h1>

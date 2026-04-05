@@ -5,12 +5,14 @@ import { useJourneyData, type PeriodFilter } from '@/components/journey/useJourn
 import { JourneyTable } from '@/components/journey/JourneyTable';
 import { ZoneBreakdown } from '@/components/journey/ZoneBreakdown';
 import { FileText, RefreshCw, Download, MessageSquare, Users, TrendingUp, Clock, MapPin } from 'lucide-react';
+import { PageMeta } from '@/components/PageMeta';
 
 export default function JourneyReportsPage() {
   const { period, setPeriod, selectedPerson, setSelectedPerson, persons, journeyData, isLoading, refetch, stats, formatMinutes, exportPDF, sendViaTelegram, sending } = useJourneyData();
 
   return (
     <div className="space-y-6 p-6 max-w-7xl mx-auto">
+      <PageMeta title="Relatórios de Jornada" description="Relatórios automatizados de jornada de colaboradores" />
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">

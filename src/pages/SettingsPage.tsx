@@ -19,6 +19,7 @@ import { NotificationSettingsTab } from '@/components/settings/NotificationSetti
 import { AnalysisSettingsTab } from '@/components/settings/AnalysisSettingsTab';
 import { FaceSettingsTab } from '@/components/settings/FaceSettingsTab';
 import { SystemSettingsTab } from '@/components/settings/SystemSettingsTab';
+import { PageMeta } from '@/components/PageMeta';
 
 export function SettingsPage() {
   const [activeTab, setActiveTab] = useState('general');
@@ -27,6 +28,7 @@ export function SettingsPage() {
   if (s.loading) {
     return (
       <div className="p-6 space-y-6">
+      <PageMeta title="Configurações" description="Configure preferências e parâmetros do sistema" />
         <Skeleton className="h-8 w-48" />
         <div className="grid gap-6">
           {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-48" />)}
