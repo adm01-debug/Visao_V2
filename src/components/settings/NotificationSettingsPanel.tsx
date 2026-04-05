@@ -111,9 +111,9 @@ export function NotificationSettingsPanel() {
           )}
 
           {pushPermission === "denied" && isSupported && (
-            <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-              <BellOff className="h-4 w-4 text-red-500" />
-              <span className="text-sm text-red-500">
+            <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+              <BellOff className="h-4 w-4 text-destructive" />
+              <span className="text-sm text-destructive">
                 Notificações bloqueadas. Altere nas configurações do navegador.
               </span>
             </div>
