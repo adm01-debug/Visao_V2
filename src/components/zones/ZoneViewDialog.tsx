@@ -74,7 +74,7 @@ export function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }:
               </div>
               <div className="grid grid-cols-2 gap-4 mt-4">
                 <div><Label className="text-xs text-muted-foreground">Tipo</Label><p className="font-medium">{typeConfig.label}</p></div>
-                <div><Label className="text-xs text-muted-foreground">Status</Label><p className={cn('font-medium', zone.is_active ? 'text-green-500' : 'text-gray-500')}>{zone.is_active ? 'Ativa' : 'Desativada'}</p></div>
+                <div><Label className="text-xs text-muted-foreground">Status</Label><p className={cn('font-medium', zone.is_active ? 'text-success' : 'text-muted-foreground')}>{zone.is_active ? 'Ativa' : 'Desativada'}</p></div>
               </div>
             </TabsContent>
             <TabsContent value="stats" className="m-0">
