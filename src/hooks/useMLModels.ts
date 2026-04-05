@@ -31,7 +31,7 @@ const debugLog = (message: string, ..._args: unknown[]) => {
 class ModelCache {
   private static instance: ModelCache;
   private cocoModel: cocoSsd.ObjectDetection | null = null;
-  private poseDetector: poseDetection.PoseDetector | null = null;
+  private poseDetector: Awaited<ReturnType<PoseDetectionModule['createDetector']>> | null = null;
   private backendReady = false;
 
   static getInstance(): ModelCache {
