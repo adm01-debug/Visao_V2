@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { Shield } from "lucide-react";
 
 function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
@@ -12,6 +13,26 @@ function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>)
       )}
       {...props}
     />
+  );
+}
+
+/** Branded skeleton with VISÃO watermark for larger areas */
+function BrandedSkeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn(
+        "rounded-md bg-muted relative overflow-hidden",
+        "after:absolute after:inset-0 after:translate-x-[-100%]",
+        "after:bg-gradient-to-r after:from-transparent after:via-primary/5 after:to-transparent",
+        "after:animate-[shimmer_2s_infinite]",
+        className
+      )}
+      {...props}
+    >
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ animation: 'skeleton-brand-pulse 3s ease-in-out infinite' }}>
+        <Shield className="w-8 h-8 text-primary" />
+      </div>
+    </div>
   );
 }
 
@@ -54,7 +75,7 @@ function AlertSkeleton({ className }: { className?: string }) {
 function CameraSkeleton({ className }: { className?: string }) {
   return (
     <div className={cn("glass-card overflow-hidden", className)}>
-      <Skeleton className="aspect-video w-full" />
+      <BrandedSkeleton className="aspect-video w-full" />
       <div className="p-3 space-y-2">
         <div className="flex items-center justify-between">
           <Skeleton className="h-4 w-32" />
@@ -66,4 +87,4 @@ function CameraSkeleton({ className }: { className?: string }) {
   );
 }
 
-export { Skeleton, StatSkeleton, AlertSkeleton, CameraSkeleton };
+export { Skeleton, BrandedSkeleton, StatSkeleton, AlertSkeleton, CameraSkeleton };
