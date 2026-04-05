@@ -95,7 +95,7 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
   };
 
   const severityLabel = severityLabels[alert.severity];
-  const severityShape = severityShapes[alert.severity];
+  const SeverityIcon = severityIcons[alert.severity];
 
   return (
     <article
