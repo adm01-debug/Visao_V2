@@ -36,8 +36,7 @@ export const SidebarFooter = memo(function SidebarFooter({
   };
 
   return (
-    <div className="p-3 border-t space-y-1">
-      <Separator className="my-2" />
+    <div className="p-3 border-t border-sidebar-border/60 space-y-1">
 
       {/* Theme Toggle */}
       <Button

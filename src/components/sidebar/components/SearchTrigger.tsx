@@ -30,8 +30,9 @@ export const SearchTrigger = memo(function SearchTrigger({
             variant="outline"
             onClick={onClick}
             className={cn(
-              "w-full justify-start gap-2 text-muted-foreground hover:text-foreground",
-              "border-dashed hover:border-solid hover:bg-accent/50",
+              "w-full justify-start gap-2 text-sidebar-foreground/50 hover:text-sidebar-foreground",
+              "border-sidebar-border/60 hover:border-sidebar-border hover:bg-sidebar-accent/60",
+              "transition-all duration-200",
               collapsed && "justify-center px-2"
             )}
           >
@@ -39,7 +40,7 @@ export const SearchTrigger = memo(function SearchTrigger({
             {!collapsed && (
               <>
                 <span className="flex-1 text-left text-sm">Buscar...</span>
-                <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded border bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+                <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded-md border border-sidebar-border/80 bg-sidebar-accent/50 px-1.5 py-0.5 font-mono text-[10px] text-sidebar-foreground/40">
                   <Command className="h-3 w-3" />K
                 </kbd>
               </>

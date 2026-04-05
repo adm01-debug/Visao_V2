@@ -344,7 +344,7 @@ const NavItemCollapsed = memo(function NavItemCollapsed({
               transition={{ type: "spring", stiffness: 350, damping: 30 }}
             />
           )}
-          <Icon className={cn("w-4 h-4", isActive && "text-primary-foreground")} />
+          <Icon className={cn("w-4 h-4", isActive && "text-sidebar-primary")} />
         </NavLink>
       </TooltipTrigger>
       <TooltipContent side="right" className="flex items-center gap-2">
