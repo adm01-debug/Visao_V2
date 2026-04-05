@@ -77,7 +77,7 @@ function CameraStreamCardBase({ camera, isSelected, onClick, settings, compact =
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
       <div className="absolute top-2 left-2 flex items-center gap-2">
-        <Badge variant={isOnline ? 'default' : 'destructive'} className={cn('text-[10px] px-1.5 py-0.5', isOnline && 'bg-green-500')}>{isOnline ? 'AO VIVO' : 'OFFLINE'}</Badge>
+        <Badge variant={isOnline ? 'default' : 'destructive'} className={cn('text-[10px] px-1.5 py-0.5 gap-1', isOnline && 'bg-success')}>{isOnline ? <><span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" aria-hidden="true" />AO VIVO</> : <><Camera className="w-2.5 h-2.5" aria-hidden="true" />OFFLINE</>}</Badge>
         {hasStream && isOnline && <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5 gap-1"><div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />REC</Badge>}
         {settings.enableAnalysis && <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 bg-background/50"><Brain className="w-2.5 h-2.5 mr-0.5" />IA</Badge>}
       </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Camera, Circle } from 'lucide-react';
+import { Camera, Circle, CheckCircle2, XCircle } from 'lucide-react';
 import { useCameras } from '@/hooks/useCameras';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -58,11 +58,11 @@ export function CamerasGridWidget() {
               <Badge
                 variant={isOnline ? 'default' : 'destructive'}
                 className={cn(
-                  'text-[9px] px-1 py-0 gap-1',
+                  'text-[9px] px-1 py-0 gap-0.5',
                   isOnline && 'bg-success hover:bg-success',
                 )}
               >
-                <Circle className={cn('h-1.5 w-1.5', isOnline && 'animate-pulse')} fill="currentColor" />
+                {isOnline ? <CheckCircle2 className="h-2 w-2" aria-hidden="true" /> : <XCircle className="h-2 w-2" aria-hidden="true" />}
                 {isOnline ? 'LIVE' : 'OFF'}
               </Badge>
             </div>

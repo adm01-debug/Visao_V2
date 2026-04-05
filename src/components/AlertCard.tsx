@@ -6,7 +6,11 @@ import {
   Camera,
   ShieldAlert,
   Cog,
-  BarChart3
+  BarChart3,
+  Info,
+  AlertCircle,
+  OctagonAlert,
+  Flame,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
@@ -66,11 +70,12 @@ const severityLabels: Record<AlertSeverity, string> = {
   critical: 'Crítica',
 };
 
-const severityShapes: Record<AlertSeverity, string> = {
-  low: '○',      // empty circle
-  medium: '◆',   // filled diamond
-  high: '▲',     // triangle
-  critical: '⬟', // pentagon
+/** Color-blind safe: unique icon per severity level */
+const severityIcons: Record<AlertSeverity, typeof Info> = {
+  low: Info,           // ℹ circle
+  medium: AlertCircle, // ⚠ circle with !
+  high: AlertTriangle, // △ triangle
+  critical: Flame,     // 🔥 flame
 };
 
 const severityBorderColors = {
@@ -90,7 +95,7 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
   };
 
   const severityLabel = severityLabels[alert.severity];
-  const severityShape = severityShapes[alert.severity];
+  const SeverityIcon = severityIcons[alert.severity];
 
   return (
     <article
@@ -115,8 +120,8 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-1">
-            <Badge variant={severityConfig[alert.severity]}>
-              <span className="mr-1" aria-hidden="true">{severityShape}</span>
+            <Badge variant={severityConfig[alert.severity]} className="gap-1">
+              <SeverityIcon className="w-3 h-3" aria-hidden="true" />
               {config.label}
               <span className="sr-only"> — Severidade {severityLabel}</span>
             </Badge>
