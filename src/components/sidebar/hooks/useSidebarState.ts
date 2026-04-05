@@ -82,6 +82,10 @@ export function useSidebarState() {
         e.preventDefault();
         setSearchOpen((open) => !open);
       }
+      if ((e.metaKey || e.ctrlKey) && e.key === "b") {
+        e.preventDefault();
+        setCollapsed((prev) => !prev);
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
