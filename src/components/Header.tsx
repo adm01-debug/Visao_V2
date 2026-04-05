@@ -17,7 +17,7 @@ export function Header({ className }: { className?: string }) {
   const { isAlertSoundEnabled, toggleAlertSound } = useNotifications();
 
   return (
-    <header className={cn("border-b bg-card/60 backdrop-blur supports-[backdrop-filter]:bg-card/50", className)}>
+    <header className={cn("border-b bg-card/60 backdrop-blur-xl supports-[backdrop-filter]:bg-card/50 sticky top-0 z-30", className)}>
       <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6">
         <div className="min-w-0 flex-1">
           {/* Breadcrumbs removed - requires route-aware items */}
@@ -26,15 +26,15 @@ export function Header({ className }: { className?: string }) {
         <div className="flex items-center gap-2 sm:gap-3">
           <span
             className={cn(
-              "hidden sm:inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs",
-              isOnline ? "text-foreground" : "text-muted-foreground"
+              "hidden sm:inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs transition-colors",
+              isOnline ? "text-foreground border-success/30 bg-success/5" : "text-muted-foreground border-border"
             )}
             aria-live="polite"
           >
             <span
               className={cn(
-                "h-2 w-2 rounded-full",
-                isOnline ? "bg-emerald-500" : "bg-muted-foreground"
+                "h-2 w-2 rounded-full transition-colors",
+                isOnline ? "bg-success animate-pulse" : "bg-muted-foreground"
               )}
               aria-hidden="true"
             />

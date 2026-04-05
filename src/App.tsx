@@ -15,6 +15,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PanicButton } from "@/components/PanicButton";
 import { AnimatedPage } from "@/components/ui/AnimatedPage";
 import { withRouteErrorBoundary } from "@/components/RouteErrorBoundary";
+import { NavigationProgress } from "@/components/ui/NavigationProgress";
 import { errorReporter } from "@/lib/errorReporter";
 
 // Install global error monitoring
@@ -94,6 +95,7 @@ const App = () => (
           <BrowserRouter>
             <AuthProvider>
               <NotificationProvider>
+                <NavigationProgress />
                 <Suspense fallback={<PageLoader />}>
                   <Routes>
                     <Route path="/" element={withRouteErrorBoundary(<Index />, "Início")} />

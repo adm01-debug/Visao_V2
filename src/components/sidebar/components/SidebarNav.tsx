@@ -208,14 +208,14 @@ const CollapsedCategory = memo(function CollapsedCategory({
               <motion.span
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className={cn(
+                 className={cn(
                   "absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] flex items-center justify-center",
                   "text-[9px] font-bold rounded-full",
-                  status.type === "danger" && "bg-red-500 text-white",
-                  status.type === "warning" && "bg-amber-500 text-white",
-                  status.type === "success" && "bg-green-500 text-white",
-                  status.type === "info" && "bg-blue-500 text-white",
-                  status.type === "neutral" && "bg-muted-foreground text-white"
+                  status.type === "danger" && "bg-destructive text-destructive-foreground",
+                  status.type === "warning" && "bg-warning text-warning-foreground",
+                  status.type === "success" && "bg-success text-success-foreground",
+                  status.type === "info" && "bg-primary text-primary-foreground",
+                  status.type === "neutral" && "bg-muted-foreground text-background"
                 )}
               >
                 {status.count > 99 ? "+" : status.count}
@@ -230,10 +230,10 @@ const CollapsedCategory = memo(function CollapsedCategory({
               variant="outline"
               className={cn(
                 "text-[10px] h-5",
-                status.type === "success" && "border-green-500/50 text-green-500",
-                status.type === "warning" && "border-amber-500/50 text-amber-500",
-                status.type === "danger" && "border-red-500/50 text-red-500",
-                status.type === "info" && "border-blue-500/50 text-blue-500"
+                status.type === "success" && "border-success/50 text-success",
+                status.type === "warning" && "border-warning/50 text-warning",
+                status.type === "danger" && "border-destructive/50 text-destructive",
+                status.type === "info" && "border-primary/50 text-primary"
               )}
             >
               {status.count !== undefined && `${status.count} `}
@@ -281,7 +281,7 @@ const NavItemLink = memo(function NavItemLink({
         "flex items-center gap-3 px-3 py-2 rounded-lg transition-all text-sm",
         "text-muted-foreground hover:text-foreground hover:bg-muted",
         isActive &&
-          "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
+          "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground shadow-sm shadow-primary/20"
       )}
     >
       <Icon className={cn("w-4 h-4 flex-shrink-0", isActive && "text-primary-foreground")} />
@@ -326,7 +326,7 @@ const NavItemCollapsed = memo(function NavItemCollapsed({
             "flex items-center justify-center px-2 py-2 rounded-lg transition-all text-sm",
             "text-muted-foreground hover:text-foreground hover:bg-muted",
             isActive &&
-              "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
+              "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground shadow-sm shadow-primary/20"
           )}
         >
           <Icon className={cn("w-4 h-4", isActive && "text-primary-foreground")} />
