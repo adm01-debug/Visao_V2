@@ -2,6 +2,10 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { processAutomationRulesSchema, validateInput } from "../_shared/validation.ts";
+import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
+import { createLogger } from "../_shared/logger.ts";
+
+const log = createLogger("process-automation-rules");
 
 interface Alert {
   id: string;
@@ -101,13 +105,13 @@ async function executeActions(supabase: SupabaseClient, rule: Rule, alert: Alert
     try {
       switch (action) {
         case "alert":
-          console.log(`[ACTION] Alert triggered for rule "${rule.name}" on alert ${alert.id}`);
+          log.info("Alert action triggered", { ruleName: rule.name, alertId: alert.id });
           results.push({ action: "alert", success: true, message: `Alert notification created for rule "${rule.name}"` });
           break;
         case "notify": {
           const { data: notifConfig } = await supabase.from("notification_configs").select("*").eq("user_id", alert.user_id).eq("enabled", true).single();
           if (notifConfig) {
-            results.push({ action: "notify", success: true, message: `Notification queued via ${(notifConfig.channels || []).length} channels` });
+            results.push({ action: "notify", success: true, message: `Notification queued via ${((notifConfig as Record<string, unknown>).channels as string[] || []).length} channels` });
           } else {
             results.push({ action: "notify", success: false, message: "No notification config found" });
           }
@@ -151,15 +155,20 @@ async function logRuleExecution(supabase: SupabaseClient, rule: Rule, alert: Ale
       status, error_message: errorMessage, execution_time_ms: Date.now() - startTime,
     });
 
-    if (error) console.error("[ERROR] Failed to log rule execution:", error);
+    if (error) log.error("Failed to log rule execution", { error: error.message });
   } catch (error) {
-    console.error("[ERROR] Failed to log rule execution:", error);
+    log.error("Failed to log rule execution", { error: error instanceof Error ? error.message : "Unknown" });
   }
 }
 
 const handler = async (req: Request): Promise<Response> => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
+  const rl = checkRateLimit(req, RATE_LIMITS.standard, "process-rules", corsHeaders);
+  if (!rl.allowed) return rl.response;
+
+  const done = log.time("process-rules");
 
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -171,11 +180,12 @@ const handler = async (req: Request): Promise<Response> => {
     if (!validation.success) return validation.response;
     const { alert } = validation.data;
 
-    console.log(`[INFO] Processing automation rules for alert: ${alert.id}`);
+    log.info("Processing automation rules", { alertId: alert.id, userId: alert.user_id });
 
     const { data: rules, error: rulesError } = await supabase.from("rules").select("*").eq("user_id", alert.user_id).eq("is_active", true);
 
     if (rulesError) {
+      log.error("Failed to fetch rules", { error: rulesError.message });
       return new Response(JSON.stringify({ error: rulesError.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
@@ -190,11 +200,15 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
+    done();
+    log.info("Rules processed", { evaluated: rules?.length || 0, matched: matchedRules.length });
+
     return new Response(JSON.stringify({
       success: true, alert_id: alert.id, rules_evaluated: rules?.length || 0, rules_matched: matchedRules.length,
       executions: matchedRules.map(({ rule, results }) => ({ rule_id: rule.id, rule_name: rule.name, actions: results })),
     }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
+    log.error("Unhandled error", { error: error instanceof Error ? error.message : "Unknown" });
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
