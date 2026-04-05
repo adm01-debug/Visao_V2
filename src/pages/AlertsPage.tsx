@@ -34,6 +34,7 @@ export function AlertsPage() {
   const [filters, setFilters] = useState<AlertFilters>(defaultFilters);
   const [selectedAlerts, setSelectedAlerts] = useState<Set<string>>(new Set());
   const [detailsAlert, setDetailsAlert] = useState<AlertRecord | null>(null);
+  const [removingAlerts, setRemovingAlerts] = useState<Set<string>>(new Set());
 
   const { alerts, loading, unreadCount, markAsRead, markAllAsRead, deleteAlert, refetch } = useAlerts();
   const { cameras } = useCameras();
@@ -69,7 +70,13 @@ export function AlertsPage() {
   const handleSelectAll = useCallback((checked: boolean) => { setSelectedAlerts(checked ? new Set(paginatedItems.map(a => a.id)) : new Set()); }, [paginatedItems]);
   const handleSelectAlert = useCallback((id: string, selected: boolean) => { setSelectedAlerts(prev => { const s = new Set(prev); selected ? s.add(id) : s.delete(id); return s; }); }, []);
   const handleMarkSelectedRead = useCallback(async () => { for (const id of selectedAlerts) await markAsRead(id); setSelectedAlerts(new Set()); toast.success(`${selectedAlerts.size} alertas marcados como lidos`); }, [selectedAlerts, markAsRead]);
-  const handleDeleteSelected = useCallback(async () => { for (const id of selectedAlerts) await deleteAlert(id); setSelectedAlerts(new Set()); toast.success(`${selectedAlerts.size} alertas excluídos`); }, [selectedAlerts, deleteAlert]);
+  const animateAndDelete = useCallback(async (ids: string[]) => {
+    setRemovingAlerts(new Set(ids));
+    await new Promise(r => setTimeout(r, 300));
+    for (const id of ids) await deleteAlert(id);
+    setRemovingAlerts(new Set());
+  }, [deleteAlert]);
+  const handleDeleteSelected = useCallback(async () => { const ids = [...selectedAlerts]; await animateAndDelete(ids); setSelectedAlerts(new Set()); toast.success(`${ids.length} alertas excluídos`); }, [selectedAlerts, animateAndDelete]);
   const clearFilters = () => { setFilters(defaultFilters); setActiveStatsFilter(null); };
   const hasActiveFilters = Object.entries(filters).some(([key, value]) => key === 'search' ? value !== '' : value !== 'all');
   const [activeStatsFilter, setActiveStatsFilter] = useState<'total' | 'unread' | 'critical' | 'today' | null>(null);
@@ -180,10 +187,13 @@ export function AlertsPage() {
         {paginatedItems.map((alert, index) => (
           <div
             key={alert.id}
-            className="animate-fade-in"
+            className={cn(
+              'animate-fade-in transition-all duration-300 ease-out',
+              removingAlerts.has(alert.id) && 'opacity-0 scale-95 -translate-x-4'
+            )}
             style={{ animationDelay: `${index * 30}ms`, animationFillMode: 'backwards' }}
           >
-            <AlertItem alert={alert} isSelected={selectedAlerts.has(alert.id)} onSelect={(selected) => handleSelectAlert(alert.id, selected)} onView={() => setDetailsAlert(alert)} onMarkRead={() => markAsRead(alert.id)} onDelete={() => deleteAlert(alert.id)} viewMode={viewMode} />
+            <AlertItem alert={alert} isSelected={selectedAlerts.has(alert.id)} onSelect={(selected) => handleSelectAlert(alert.id, selected)} onView={() => setDetailsAlert(alert)} onMarkRead={() => markAsRead(alert.id)} onDelete={() => animateAndDelete([alert.id])} viewMode={viewMode} />
           </div>
         ))}
       </div>
@@ -199,7 +209,7 @@ export function AlertsPage() {
 
       <AlertDetailsDialog alert={detailsAlert} isOpen={!!detailsAlert} onClose={() => setDetailsAlert(null)}
         onMarkRead={() => { if (detailsAlert) markAsRead(detailsAlert.id); setDetailsAlert(null); }}
-        onDelete={() => { if (detailsAlert) deleteAlert(detailsAlert.id); setDetailsAlert(null); }} />
+        onDelete={() => { if (detailsAlert) { animateAndDelete([detailsAlert.id]); } setDetailsAlert(null); }} />
     </div>
   );
 }
