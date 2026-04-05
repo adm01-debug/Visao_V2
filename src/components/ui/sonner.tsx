@@ -1,9 +1,10 @@
+import React from "react";
 import { Toaster as Sonner, toast } from "sonner";
 import { useTheme } from "@/contexts/ThemeProvider";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
-const Toaster = ({ ...props }: ToasterProps) => {
+const Toaster = React.forwardRef<HTMLDivElement, ToasterProps>(function ToasterSonner(props, _ref) {
   const { theme } = useTheme();
 
   return (
@@ -30,6 +31,6 @@ const Toaster = ({ ...props }: ToasterProps) => {
       {...props}
     />
   );
-};
+});
 
 export { Toaster, toast };

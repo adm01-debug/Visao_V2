@@ -141,7 +141,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
     </QueryClientProvider>
     </HelmetProvider>
   </ErrorBoundary>
-);
+); });
 
 export default App;
 
