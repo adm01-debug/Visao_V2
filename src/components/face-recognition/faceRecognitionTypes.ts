@@ -34,13 +34,13 @@ export const listTypeStyles: Record<ListType, {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
 }> = {
-  whitelist: { borderColor: 'border-green-500', bgColor: 'bg-green-500/90', textColor: 'text-green-500', icon: UserCheck, label: 'Autorizado' },
-  blacklist: { borderColor: 'border-red-500', bgColor: 'bg-red-500/90', textColor: 'text-red-500', icon: Ban, label: 'Bloqueado' },
-  vip: { borderColor: 'border-yellow-500', bgColor: 'bg-yellow-500/90', textColor: 'text-yellow-500', icon: Star, label: 'VIP' },
-  employee: { borderColor: 'border-blue-500', bgColor: 'bg-blue-500/90', textColor: 'text-blue-500', icon: User, label: 'Funcionário' },
-  visitor: { borderColor: 'border-purple-500', bgColor: 'bg-purple-500/90', textColor: 'text-purple-500', icon: User, label: 'Visitante' },
-  contractor: { borderColor: 'border-orange-500', bgColor: 'bg-orange-500/90', textColor: 'text-orange-500', icon: Shield, label: 'Terceiro' },
-  unknown: { borderColor: 'border-gray-400', bgColor: 'bg-gray-600/90', textColor: 'text-gray-400', icon: AlertTriangle, label: 'Desconhecido' },
+  whitelist: { borderColor: 'border-success', bgColor: 'bg-success/90', textColor: 'text-success', icon: UserCheck, label: 'Autorizado' },
+  blacklist: { borderColor: 'border-destructive', bgColor: 'bg-destructive/90', textColor: 'text-destructive', icon: Ban, label: 'Bloqueado' },
+  vip: { borderColor: 'border-warning', bgColor: 'bg-warning/90', textColor: 'text-warning', icon: Star, label: 'VIP' },
+  employee: { borderColor: 'border-primary', bgColor: 'bg-primary/90', textColor: 'text-primary', icon: User, label: 'Funcionário' },
+  visitor: { borderColor: 'border-primary/70', bgColor: 'bg-primary/70', textColor: 'text-primary', icon: User, label: 'Visitante' },
+  contractor: { borderColor: 'border-warning', bgColor: 'bg-warning/90', textColor: 'text-warning', icon: Shield, label: 'Terceiro' },
+  unknown: { borderColor: 'border-muted-foreground', bgColor: 'bg-muted-foreground/90', textColor: 'text-muted-foreground', icon: AlertTriangle, label: 'Desconhecido' },
 };
 
 export const FACE_PRIORITY: Record<ListType, number> = {

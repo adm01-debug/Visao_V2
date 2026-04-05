@@ -40,13 +40,13 @@ export const DEMO_ZONES: ZoneData[] = [
 export function getOccupancyColor(current: number, capacity: number) {
   const rate = current / capacity;
   if (rate > 1) return "text-destructive";
-  if (rate > 0.8) return "text-yellow-600";
-  return "text-emerald-600";
+  if (rate > 0.8) return "text-warning";
+  return "text-success";
 }
 
 export function getOccupancyBg(current: number, capacity: number) {
   const rate = current / capacity;
   if (rate > 1) return "bg-destructive/20 border-destructive/30";
-  if (rate > 0.8) return "bg-yellow-500/20 border-yellow-500/30";
-  return "bg-emerald-500/10 border-emerald-500/20";
+  if (rate > 0.8) return "bg-warning/20 border-warning/30";
+  return "bg-success/10 border-success/20";
 }

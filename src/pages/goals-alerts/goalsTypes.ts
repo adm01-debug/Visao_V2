@@ -63,13 +63,13 @@ export function generateKPIs(id: string, name: string, dept: string | null, goal
 }
 
 export function getScoreColor(score: number) {
-  if (score >= 80) return "text-emerald-600";
-  if (score >= 60) return "text-yellow-600";
+  if (score >= 80) return "text-success";
+  if (score >= 60) return "text-warning";
   return "text-destructive";
 }
 
 export function getScoreBg(score: number) {
-  if (score >= 80) return "bg-emerald-500";
-  if (score >= 60) return "bg-yellow-500";
+  if (score >= 80) return "bg-success";
+  if (score >= 60) return "bg-warning";
   return "bg-destructive";
 }
