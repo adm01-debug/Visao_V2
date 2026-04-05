@@ -80,12 +80,12 @@ function getSystemDarkPreference(): boolean {
 // PROVIDER
 // ============================================
 
-export function ThemeProvider({
+export const ThemeProvider = React.forwardRef<HTMLDivElement, ThemeProviderProps>(function ThemeProvider({
   children,
   defaultTheme = 'dark',
   defaultVariant = 'default',
   storageKey = STORAGE_KEY,
-}: ThemeProviderProps) {
+}, _ref) {
   const [state, setState] = useState<ThemeState>(() => {
     const stored = getStoredTheme();
     return {
