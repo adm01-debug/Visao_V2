@@ -2,7 +2,7 @@
  * VISÃO - Stream Playback Controls
  */
 import { useCallback, useRef } from 'react';
-import Hls from 'hls.js';
+import type Hls from 'hls.js';
 import { StreamQuality, StreamEvents } from '@/types/streaming';
 
 interface UseStreamControlsOptions {

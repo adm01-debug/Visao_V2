@@ -2,7 +2,7 @@
  * VISÃO - Stream Statistics
  */
 import { useCallback, useRef, useEffect } from 'react';
-import Hls from 'hls.js';
+import type Hls from 'hls.js';
 import { StreamStats } from '@/types/streaming';
 
 interface UseStreamStatsOptions {

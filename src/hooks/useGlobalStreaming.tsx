@@ -1,9 +1,11 @@
 /**
  * VISÃO - useGlobalStreaming (Refactored)
  * Types extracted to ./global-streaming/streamingTypes.ts
+ * HLS.js loaded lazily via getHls()
  */
 import { useState, useEffect, useCallback, useRef, createContext, useContext } from 'react';
-import Hls from 'hls.js';
+import type HlsType from 'hls.js';
+import { getHls } from '@/lib/lazyHls';
 import {
   StreamQuality, StreamStatus, StreamConnection, GlobalStreamingStats,
   GlobalStreamingConfig, DEFAULT_STREAMING_CONFIG, CameraStreamConfig,
@@ -72,13 +74,17 @@ export function GlobalStreamingProvider({ children, config: initialConfig }: Glo
     setConnections(prev => { const n = new Map(prev); n.delete(cameraId); return n; });
   }, [connections]);
 
-  const connect = useCallback((cameraId: string, hlsUrl: string, videoElement: HTMLVideoElement) => {
+  const connect = useCallback(async (cameraId: string, hlsUrl: string, videoElement: HTMLVideoElement) => {
     const active = Array.from(connections.values()).filter(c => ['connected', 'playing', 'connecting'].includes(c.status)).length;
     if (active >= config.maxConcurrentStreams) {
       const sorted = Array.from(connections.entries()).filter(([id]) => !visibleCameras.current.has(id)).sort((a, b) => (a[1].connectedAt?.getTime() || 0) - (b[1].connectedAt?.getTime() || 0));
       if (sorted.length > 0) disconnect(sorted[0]![0]!);
     }
     const connection: StreamConnection = { cameraId, hlsInstance: null, videoElement, status: 'connecting', quality: 'auto', bitrate: 0, latency: 0, buffered: 0, lastFrame: null, errorCount: 0, lastError: null, connectedAt: null };
+
+    // Lazy-load HLS.js
+    const Hls = await getHls();
+
     if (Hls.isSupported()) {
       const hls = new Hls({ enableWorker: true, lowLatencyMode: config.lowLatencyMode, backBufferLength: config.bufferLength, maxBufferLength: config.bufferLength, liveSyncDurationCount: 3, liveMaxLatencyDurationCount: 6 });
       hls.loadSource(hlsUrl); hls.attachMedia(videoElement);
