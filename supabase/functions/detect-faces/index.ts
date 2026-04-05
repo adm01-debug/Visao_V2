@@ -42,10 +42,7 @@ export interface DetectFacesResponse {
   error?: string;
 }
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { getCorsHeaders } from "../_shared/cors.ts";
 
 const detectFaces = async (request: DetectFacesRequest): Promise<DetectFacesResponse> => {
   const startTime = Date.now();
@@ -83,6 +80,8 @@ const detectFaces = async (request: DetectFacesRequest): Promise<DetectFacesResp
 };
 
 serve(async (req: Request) => {
+  const corsHeaders = getCorsHeaders(req);
+
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

@@ -19,10 +19,7 @@ export interface CompareFacesResponse {
   error?: string;
 }
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { getCorsHeaders } from "../_shared/cors.ts";
 
 const compareFaces = async (req: CompareFacesRequest): Promise<CompareFacesResponse> => {
   const start = Date.now();
@@ -43,6 +40,8 @@ const compareFaces = async (req: CompareFacesRequest): Promise<CompareFacesRespo
 };
 
 serve(async (req: Request) => {
+  const corsHeaders = getCorsHeaders(req);
+
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
   try {
     const body: CompareFacesRequest = await req.json();

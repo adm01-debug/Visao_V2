@@ -4,6 +4,7 @@
  */
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { getCorsHeaders } from "../_shared/cors.ts";
 
 // Configuração de IPs permitidos
 const WHITELIST_ENABLED = true;
@@ -84,12 +85,7 @@ const checkIPAccess = (ip: string): { allowed: boolean; reason: string; isAdmin:
 };
 
 serve(async (req: Request) => {
-  // CORS headers
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  };
+  const corsHeaders = getCorsHeaders(req);
 
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
