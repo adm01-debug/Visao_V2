@@ -1,16 +1,19 @@
 import { Shimmer } from '@/components/ui/LoadingState';
+import { Shield } from 'lucide-react';
 
 export function StatsSkeleton() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 animate-fade-in">
       {[...Array(5)].map((_, i) => (
-        <div key={i} className="p-4 rounded-lg border border-border bg-card">
-          <div className="flex items-center justify-between mb-3">
-            <Shimmer className="h-4 w-24" />
-            <Shimmer className="h-8 w-8 rounded-full" />
+        <div key={i} className="glass-card p-5" style={{ animationDelay: `${i * 60}ms` }}>
+          <div className="flex items-start justify-between">
+            <div className="flex-1 space-y-3">
+              <Shimmer className="h-4 w-24" />
+              <Shimmer className="h-8 w-16" />
+              <Shimmer className="h-3 w-20" />
+            </div>
+            <Shimmer className="h-12 w-12 rounded-xl" />
           </div>
-          <Shimmer className="h-7 w-16 mb-2" />
-          <Shimmer className="h-3 w-20" />
         </div>
       ))}
     </div>
@@ -21,8 +24,15 @@ export function CameraGridSkeleton({ count = 4 }: { count?: number }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {[...Array(count)].map((_, i) => (
-        <div key={i} className="rounded-lg border border-border bg-card overflow-hidden">
-          <Shimmer className="aspect-video w-full" />
+        <div key={i} className="rounded-lg border border-border bg-card overflow-hidden" style={{ animationDelay: `${i * 80}ms` }}>
+          <div className="aspect-video w-full relative">
+            <Shimmer className="absolute inset-0" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Shield className="w-5 h-5 text-primary/30 animate-pulse" />
+              </div>
+            </div>
+          </div>
           <div className="p-3 space-y-2">
             <Shimmer className="h-4 w-3/4" />
             <Shimmer className="h-3 w-1/2" />
@@ -42,7 +52,7 @@ export function AlertsSidebarSkeleton() {
       </div>
       <Shimmer className="h-9 w-full rounded-md" />
       {[...Array(5)].map((_, i) => (
-        <div key={i} className="flex items-start gap-3 p-3 rounded-lg border border-border bg-card">
+        <div key={i} className="flex items-start gap-3 p-3 rounded-lg border border-border bg-card" style={{ animationDelay: `${i * 60}ms` }}>
           <Shimmer className="h-8 w-8 rounded-full flex-shrink-0" />
           <div className="flex-1 space-y-2">
             <Shimmer className="h-4 w-3/4" />
@@ -55,7 +65,6 @@ export function AlertsSidebarSkeleton() {
   );
 }
 
-// Full page skeleton (kept for backwards compat)
 export function DashboardSkeleton() {
   return (
     <div className="p-6 space-y-6">
