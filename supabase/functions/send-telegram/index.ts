@@ -64,7 +64,7 @@ serve(async (req) => {
     const result = await response.json();
 
     if (!result.ok) {
-      console.error('Telegram API error:', result);
+      log.error("Telegram API error", { description: result.description });
       return new Response(
         JSON.stringify({ error: result.description || 'Failed to send message' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
