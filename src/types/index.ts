@@ -14,9 +14,8 @@ export type {
   CameraStatus,
   Alert,
   AlertSeverity,
-  Zone,
-  Person,
-  UserRole,
+  AlertType,
+  AnalyticsData,
 } from "./surveillance";
 
 export * from "./themes";
