@@ -2,7 +2,7 @@
  * VISÃO - AnalysisHistoryPanel (Refactored)
  * Filters extracted to ./analysis-history/AnalysisHistoryFilters.tsx
  */
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
