@@ -129,7 +129,7 @@ export function AlertsPage() {
         </div>
       </div>
 
-      <AlertStatsCards stats={stats} />
+      <AlertStatsCards stats={stats} activeFilter={activeStatsFilter} onFilterClick={handleStatsFilterClick} />
       <AlertSeveritySummary
         counts={severityCounts}
         total={stats.total}
