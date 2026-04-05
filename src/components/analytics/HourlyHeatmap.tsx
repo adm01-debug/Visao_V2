@@ -16,7 +16,7 @@ export function HourlyHeatmap({ data }: { data: HourlyDistribution[] }) {
             key={index}
             className="aspect-square rounded flex items-center justify-center text-[10px] font-medium transition-all hover:scale-110 cursor-default"
             style={{
-              backgroundColor: `rgba(239, 68, 68, ${Math.max(intensity * 0.8, 0.1)})`,
+              backgroundColor: `hsl(var(--destructive) / ${Math.max(intensity * 0.8, 0.1)})`,
               color: intensity > 0.5 ? 'white' : 'inherit',
             }}
             title={`${item.hour}h: ${item.alerts} alertas`}
