@@ -158,20 +158,20 @@ export function NotificationSettingsPanel() {
         <div className="space-y-3">
           <Label className="text-base">Níveis de Severidade</Label>
           <div className="grid grid-cols-2 gap-2 text-sm">
-            <div className="flex items-center gap-2 p-2 bg-red-500/10 rounded-lg">
-              <span className="text-red-500">🚨</span>
+            <div className="flex items-center gap-2 p-2 bg-destructive/10 rounded-lg">
+              <span className="text-destructive">🚨</span>
               <span className="text-muted-foreground">Crítico - Push + Som forte</span>
             </div>
-            <div className="flex items-center gap-2 p-2 bg-orange-500/10 rounded-lg">
-              <span className="text-orange-500">⚠️</span>
+            <div className="flex items-center gap-2 p-2 bg-warning/10 rounded-lg">
+              <span className="text-warning">⚠️</span>
               <span className="text-muted-foreground">Alto - Push + Som</span>
             </div>
-            <div className="flex items-center gap-2 p-2 bg-yellow-500/10 rounded-lg">
-              <span className="text-yellow-500">📢</span>
+            <div className="flex items-center gap-2 p-2 bg-warning/8 rounded-lg">
+              <span className="text-warning/80">📢</span>
               <span className="text-muted-foreground">Médio - Apenas toast</span>
             </div>
-            <div className="flex items-center gap-2 p-2 bg-blue-500/10 rounded-lg">
-              <span className="text-blue-500">ℹ️</span>
+            <div className="flex items-center gap-2 p-2 bg-primary/10 rounded-lg">
+              <span className="text-primary">ℹ️</span>
               <span className="text-muted-foreground">Baixo - Apenas toast</span>
             </div>
           </div>
