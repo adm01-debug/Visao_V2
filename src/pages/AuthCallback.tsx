@@ -90,8 +90,8 @@ export default function AuthCallback() {
         
         {status === 'success' && (
           <>
-            <CheckCircle className="h-12 w-12 mx-auto text-green-500" />
-            <p className="text-lg text-green-600">{message}</p>
+            <CheckCircle className="h-12 w-12 mx-auto text-success" />
+            <p className="text-lg text-success">{message}</p>
           </>
         )}
         
