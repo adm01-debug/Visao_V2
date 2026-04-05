@@ -58,12 +58,12 @@ export function RouteAnnouncer() {
     }
 
     if (title) {
-      // Use a small delay so the DOM has time to update
       const timer = setTimeout(() => {
         setAnnouncement(`Navegou para ${title}`);
       }, 100);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [location.pathname]);
 
   return (
