@@ -83,7 +83,13 @@ const severityIcons: Record<AlertSeverity, typeof Info> = {
   critical: Flame,     // 🔥 flame
 };
 
-const severityBorderColors = {
+const severityTooltips: Record<AlertSeverity, string> = {
+  low: 'Severidade Baixa — Evento informativo, sem risco imediato',
+  medium: 'Severidade Média — Situação que requer monitoramento',
+  high: 'Severidade Alta — Ação necessária em breve',
+  critical: 'Severidade Crítica — Requer atenção imediata!',
+};
+
   low: 'border-l-muted-foreground',
   medium: 'border-l-warning',
   high: 'border-l-destructive',
