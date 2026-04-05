@@ -1,4 +1,4 @@
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton, BrandedSkeleton } from '@/components/ui/skeleton';
 export function ZonesSkeleton() {
   return (
     <div className="p-6 space-y-6">
