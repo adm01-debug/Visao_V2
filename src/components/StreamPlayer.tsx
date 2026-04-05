@@ -189,7 +189,7 @@ function StreamPlayerComponent({
 
       {/* Error overlay */}
       {error && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-foreground/80 text-foreground gap-4">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-foreground/80 text-background gap-4">
           <AlertTriangle className="w-12 h-12 text-destructive" />
           <p>{error}</p>
           <Button variant="secondary" onClick={handleRetry} className="gap-2">

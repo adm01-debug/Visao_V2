@@ -203,7 +203,7 @@ export function VideoStreamPlayer({
           <FaceRecognitionOverlay faces={detectedFaces} showLabels showSimilarity animateBoxes />
         )}
         {faceDetectionActive && isFaceProcessing && (
-          <div className="absolute top-12 left-3 flex items-center gap-2 bg-foreground/70 backdrop-blur-sm rounded-lg px-2 py-1 text-xs text-foreground">
+          <div className="absolute top-12 left-3 flex items-center gap-2 bg-foreground/70 backdrop-blur-sm rounded-lg px-2 py-1 text-xs text-background">
             <Scan className="w-3 h-3 animate-pulse text-primary" /><span>Detectando...</span>
           </div>
         )}
@@ -231,7 +231,7 @@ export function VideoStreamPlayer({
             <div className="flex items-center gap-2">
               <VideoStatusBadge status={state.status} />
               {isLive && state.status === 'playing' && (
-                <span className="font-mono text-xs text-foreground bg-foreground/50 px-2 py-1 rounded">{currentTime}</span>
+                <span className="font-mono text-xs text-background bg-foreground/50 px-2 py-1 rounded">{currentTime}</span>
               )}
             </div>
           </div>

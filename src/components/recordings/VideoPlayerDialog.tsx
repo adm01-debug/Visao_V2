@@ -36,8 +36,8 @@ export function VideoPlayerDialog({ clip, isOpen, onClose, onPrev, onNext, hasPr
           <div className="relative aspect-video bg-foreground mt-4">
             <video src={clip.file_url || undefined} className="w-full h-full" autoPlay={isPlaying} muted={isMuted} controls={false}
               onTimeUpdate={(e) => { const v = e.target as HTMLVideoElement; setProgress((v.currentTime / v.duration) * 100); }} />
-            {hasPrev && <Button variant="ghost" size="icon" className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground bg-foreground/50 hover:bg-foreground/70" onClick={onPrev}><ChevronLeft className="w-6 h-6" /></Button>}
-            {hasNext && <Button variant="ghost" size="icon" className="absolute right-4 top-1/2 -translate-y-1/2 text-foreground bg-foreground/50 hover:bg-foreground/70" onClick={onNext}><ChevronRight className="w-6 h-6" /></Button>}
+            {hasPrev && <Button variant="ghost" size="icon" className="absolute left-4 top-1/2 -translate-y-1/2 text-background bg-foreground/50 hover:bg-foreground/70" onClick={onPrev}><ChevronLeft className="w-6 h-6" /></Button>}
+            {hasNext && <Button variant="ghost" size="icon" className="absolute right-4 top-1/2 -translate-y-1/2 text-background bg-foreground/50 hover:bg-foreground/70" onClick={onNext}><ChevronRight className="w-6 h-6" /></Button>}
           </div>
           <div className="p-4 space-y-2">
             <Slider value={[progress]} max={100} step={0.1} className="cursor-pointer" />

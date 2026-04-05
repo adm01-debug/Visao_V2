@@ -47,8 +47,8 @@ export function CameraFocusMode({ cameraId, cameraName, streamUrl, thumbnail, is
     <AnimatePresence>
       {isOpen && (
         <motion.div className="fixed inset-0 z-50 bg-foreground" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onMouseMove={() => setShowControls(true)} onClick={() => setShowControls(true)}>
-          {hasPrevious && <motion.button className={cn('absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-foreground/50 text-foreground hover:bg-foreground/70 transition-colors', !showControls && 'opacity-0')} onClick={onPrevious} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}><ChevronLeft className="w-8 h-8" /></motion.button>}
-          {hasNext && <motion.button className={cn('absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-foreground/50 text-foreground hover:bg-foreground/70 transition-colors', !showControls && 'opacity-0')} onClick={onNext} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}><ChevronRight className="w-8 h-8" /></motion.button>}
+          {hasPrevious && <motion.button className={cn('absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-foreground/50 text-background hover:bg-foreground/70 transition-colors', !showControls && 'opacity-0')} onClick={onPrevious} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}><ChevronLeft className="w-8 h-8" /></motion.button>}
+          {hasNext && <motion.button className={cn('absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-foreground/50 text-background hover:bg-foreground/70 transition-colors', !showControls && 'opacity-0')} onClick={onNext} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}><ChevronRight className="w-8 h-8" /></motion.button>}
 
           <motion.div className={cn('absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-4 bg-gradient-to-b from-black/80 to-transparent', !showControls && 'opacity-0')} initial={{ y: -50 }} animate={{ y: showControls ? 0 : -50 }} transition={{ duration: 0.2 }}>
             <div className="flex items-center gap-3">

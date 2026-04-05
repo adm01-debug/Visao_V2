@@ -17,7 +17,7 @@ export const DrawingInstructions = memo(function DrawingInstructions({
 
   return (
     <div className="absolute bottom-2 left-2 right-2 flex items-center justify-center">
-      <div className="bg-foreground/80 text-foreground text-xs px-3 py-2 rounded-lg flex items-center gap-3">
+      <div className="bg-foreground/80 text-background text-xs px-3 py-2 rounded-lg flex items-center gap-3">
         {mode === 'rectangle' && <span>Clique para definir o segundo canto do retângulo</span>}
         {mode === 'polygon' && (
           <>

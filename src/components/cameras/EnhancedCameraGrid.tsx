@@ -170,7 +170,7 @@ export function EnhancedCameraCard({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-foreground"
+                    className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-background"
                     onClick={() => setIsMuted(!isMuted)}
                   >
                     {isMuted ? (
@@ -182,7 +182,7 @@ export function EnhancedCameraCard({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-foreground"
+                    className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-background"
                     onClick={handleRefresh}
                   >
                     <RefreshCw className={cn("w-4 h-4", isLoading && "animate-spin")} />
@@ -192,7 +192,7 @@ export function EnhancedCameraCard({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-foreground"
+                    className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-background"
                     onClick={onFullscreen}
                   >
                     <Maximize2 className="w-4 h-4" />
@@ -202,7 +202,7 @@ export function EnhancedCameraCard({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-foreground"
+                        className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-background"
                       >
                         <MoreVertical className="w-4 h-4" />
                       </Button>

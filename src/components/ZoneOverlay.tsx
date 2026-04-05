@@ -21,7 +21,7 @@ function ZoneLabel({ zone, position, showStats }: { zone: Zone; position: Point;
   return (
     <g>
       <foreignObject x={`${position.x - 5}%`} y={`${position.y - 3}%`} width="10%" height="6%" className="overflow-visible">
-        <div className={cn('flex flex-col items-center justify-center px-2 py-1 rounded text-foreground text-[10px] font-medium whitespace-nowrap bg-foreground/70 backdrop-blur-sm', isAlerted && 'animate-pulse bg-destructive/90')}>
+        <div className={cn('flex flex-col items-center justify-center px-2 py-1 rounded text-background text-[10px] font-medium whitespace-nowrap bg-foreground/70 backdrop-blur-sm', isAlerted && 'animate-pulse bg-destructive/90')}>
           <div className="flex items-center gap-1"><Icon className="w-3 h-3" /><span className="truncate max-w-[60px]">{zone.name}</span></div>
           {showStats && zone.stats && (
             <div className="flex items-center gap-2 mt-0.5 text-[9px] opacity-90">

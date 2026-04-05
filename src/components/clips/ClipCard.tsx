@@ -51,7 +51,7 @@ function ClipCardBase({
             {triggerLabels[clip.trigger]}
           </Badge>
         </div>
-        <div className="absolute bottom-2 right-2 bg-foreground/70 text-foreground text-xs px-2 py-0.5 rounded">
+        <div className="absolute bottom-2 right-2 bg-foreground/70 text-background text-xs px-2 py-0.5 rounded">
           {formatDuration(clip.duration)}
         </div>
         {clip.isFavorite && (

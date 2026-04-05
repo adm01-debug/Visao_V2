@@ -230,7 +230,7 @@ function AnalysisResultsOverlayComponent({
       className
     )}>
       {/* Header */}
-      <div className="bg-foreground/75 backdrop-blur-sm rounded-lg px-2.5 py-1.5 text-foreground">
+      <div className="bg-foreground/75 backdrop-blur-sm rounded-lg px-2.5 py-1.5 text-background">
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-1.5">
             <Brain className={cn('w-3.5 h-3.5', isAnalyzing ? 'animate-pulse text-primary' : 'text-success')} />
@@ -270,7 +270,7 @@ function AnalysisResultsOverlayComponent({
       </div>
 
       {/* Type-specific results */}
-      <div className="bg-foreground/75 backdrop-blur-sm rounded-lg px-2.5 py-1.5 text-foreground max-h-48 overflow-y-auto scrollbar-thin">
+      <div className="bg-foreground/75 backdrop-blur-sm rounded-lg px-2.5 py-1.5 text-background max-h-48 overflow-y-auto scrollbar-thin">
         {isSecurityAnalysis(lastAnalysis) && <SecurityOverlay analysis={lastAnalysis} />}
         {isProductivityAnalysis(lastAnalysis) && <ProductivityOverlay analysis={lastAnalysis} />}
         {isSafetyAnalysis(lastAnalysis) && <SafetyOverlay analysis={lastAnalysis} />}
