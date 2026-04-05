@@ -132,11 +132,18 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-1">
-            <Badge variant={severityConfig[alert.severity]} className="gap-1">
-              <SeverityIcon className="w-3 h-3" aria-hidden="true" />
-              {config.label}
-              <span className="sr-only"> — Severidade {severityLabel}</span>
-            </Badge>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Badge variant={severityConfig[alert.severity]} className="gap-1 cursor-default">
+                  <SeverityIcon className="w-3 h-3" aria-hidden="true" />
+                  {config.label}
+                  <span className="sr-only"> — Severidade {severityLabel}</span>
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[240px] text-center">
+                <p className="text-xs font-medium">{severityTooltips[alert.severity]}</p>
+              </TooltipContent>
+            </Tooltip>
             <div className="flex items-center gap-1 text-muted-foreground text-xs">
               <Clock className="w-3 h-3" aria-hidden="true" />
               <time dateTime={alert.timestamp.toISOString()}>
