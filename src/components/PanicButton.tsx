@@ -14,7 +14,7 @@ import {
 import { usePanicButton } from '@/hooks/usePanicButton';
 import { cn } from '@/lib/utils';
 
-export function PanicButton({ className }: { className?: string }) {
+export const PanicButton = React.forwardRef<HTMLDivElement, { className?: string }>(function PanicButton({ className }, _ref) {
   const [open, setOpen] = useState(false);
   const { triggerPanic, unresolvedCount } = usePanicButton();
 
