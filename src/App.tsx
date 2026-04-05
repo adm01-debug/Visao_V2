@@ -100,6 +100,8 @@ const App = () => (
                   <Routes>
                     <Route path="/" element={withRouteErrorBoundary(<Index />, "Início")} />
                     <Route path="/auth" element={withRouteErrorBoundary(<Auth />, "Autenticação")} />
+                    <Route path="/login" element={<Navigate to="/auth" replace />} />
+                    <Route path="/register" element={<Navigate to="/auth" replace />} />
                     <Route path="/auth/callback" element={withRouteErrorBoundary(<AuthCallback />, "Auth Callback")} />
                     <Route path="/reset-password" element={withRouteErrorBoundary(<ResetPasswordPage />, "Redefinir Senha")} />
                     <Route path="/dashboard" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<DashboardV2 />, "Dashboard")}</ProtectedLayoutRoute>} />
