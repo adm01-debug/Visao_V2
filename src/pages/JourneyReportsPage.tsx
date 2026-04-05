@@ -53,9 +53,9 @@ export default function JourneyReportsPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-primary/10"><Users className="h-5 w-5 text-primary" /></div><div><p className="text-2xl font-bold">{journeyData.length}</p><p className="text-[11px] text-muted-foreground">Colaboradores</p></div></CardContent></Card>
-        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-emerald-500/10"><TrendingUp className="h-5 w-5 text-emerald-600" /></div><div><p className="text-2xl font-bold">{formatMinutes(stats.avgProd)}</p><p className="text-[11px] text-muted-foreground">Média Produtiva</p></div></CardContent></Card>
-        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-yellow-500/10"><Clock className="h-5 w-5 text-yellow-600" /></div><div><p className="text-2xl font-bold">{stats.onTimeRate}%</p><p className="text-[11px] text-muted-foreground">Pontualidade</p></div></CardContent></Card>
-        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-blue-500/10"><MapPin className="h-5 w-5 text-blue-600" /></div><div><p className="text-2xl font-bold">{formatMinutes(stats.totalIdle)}</p><p className="text-[11px] text-muted-foreground">Total Ocioso</p></div></CardContent></Card>
+        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-success/10"><TrendingUp className="h-5 w-5 text-success" /></div><div><p className="text-2xl font-bold">{formatMinutes(stats.avgProd)}</p><p className="text-[11px] text-muted-foreground">Média Produtiva</p></div></CardContent></Card>
+        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-warning/10"><Clock className="h-5 w-5 text-warning" /></div><div><p className="text-2xl font-bold">{stats.onTimeRate}%</p><p className="text-[11px] text-muted-foreground">Pontualidade</p></div></CardContent></Card>
+        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-primary/10"><MapPin className="h-5 w-5 text-primary" /></div><div><p className="text-2xl font-bold">{formatMinutes(stats.totalIdle)}</p><p className="text-[11px] text-muted-foreground">Total Ocioso</p></div></CardContent></Card>
       </div>
 
       <JourneyTable data={journeyData} isLoading={isLoading} formatMinutes={formatMinutes} />
