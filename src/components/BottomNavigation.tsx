@@ -1,120 +1,15 @@
 /**
- * Bottom Navigation Mobile - 5 Categorias Principais
- * Otimizada para operadores em campo com indicadores em tempo real
+ * Bottom Navigation Mobile - Refactored
+ * Nav data extracted to ./navigation/bottomNavData.ts
  */
-
 import { useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Camera,
-  Shield,
-  Brain,
-  Users,
-  Settings,
-  LayoutDashboard,
-  Bell,
-  Video,
-  HardHat,
-  BarChart3,
-  ScanFace,
-  Car,
-  Flame,
-  Target,
-  Sliders,
-  MessageSquare,
-  ChevronUp,
-  X,
-  ShieldAlert,
-  Zap,
-  FileText,
-  PieChart,
-  type LucideIcon,
-} from "lucide-react";
+import { ChevronUp, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSidebarStatus } from "@/hooks/useSidebarStatus";
-import { useUserRole, type AppRole } from "@/hooks/useUserRole";
-
-interface NavItem {
-  id: string;
-  label: string;
-  icon: LucideIcon;
-  path: string;
-  minRole?: AppRole;
-}
-
-interface NavCategory {
-  id: string;
-  label: string;
-  icon: LucideIcon;
-  defaultPath: string;
-  items: NavItem[];
-  minRole?: AppRole;
-}
-
-const allCategories: NavCategory[] = [
-  {
-    id: "monitoring",
-    label: "Monitor",
-    icon: Camera,
-    defaultPath: "/dashboard",
-    items: [
-      { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-      { id: "cameras", label: "Câmeras", icon: Camera, path: "/cameras" },
-      { id: "recordings", label: "Gravações", icon: Video, path: "/recordings" },
-    ],
-  },
-  {
-    id: "security",
-    label: "Segurança",
-    icon: Shield,
-    defaultPath: "/alerts",
-    items: [
-      { id: "alerts", label: "Alertas", icon: Bell, path: "/alerts" },
-      { id: "panic", label: "Pânico", icon: ShieldAlert, path: "/panic-events" },
-      { id: "rules", label: "Regras", icon: Shield, path: "/security", minRole: "manager" },
-      { id: "automation", label: "Autom.", icon: Zap, path: "/automation-rules", minRole: "manager" },
-      { id: "ppe", label: "EPIs", icon: HardHat, path: "/ppe" },
-    ],
-  },
-  {
-    id: "intelligence",
-    label: "Intel",
-    icon: Brain,
-    defaultPath: "/analytics",
-    items: [
-      { id: "analytics", label: "Analytics", icon: BarChart3, path: "/analytics" },
-      { id: "recognition-analytics", label: "Rec. IA", icon: PieChart, path: "/recognition-analytics" },
-      { id: "face", label: "Facial", icon: ScanFace, path: "/face-recognition" },
-      { id: "plates", label: "Placas", icon: Car, path: "/license-plate" },
-      { id: "heatmap", label: "Calor", icon: Flame, path: "/heatmap" },
-      { id: "reports", label: "Relat.", icon: FileText, path: "/reports" },
-    ],
-  },
-  {
-    id: "management",
-    label: "Gestão",
-    icon: Users,
-    defaultPath: "/zones",
-    items: [
-      { id: "people", label: "Pessoas", icon: Users, path: "/people", minRole: "operator" },
-      { id: "zones", label: "Zonas", icon: Target, path: "/zones" },
-    ],
-  },
-  {
-    id: "settings",
-    label: "Config",
-    icon: Settings,
-    defaultPath: "/settings",
-    minRole: "manager",
-    items: [
-      { id: "general", label: "Geral", icon: Settings, path: "/settings" },
-      { id: "notifications", label: "Notif.", icon: Bell, path: "/notification-settings" },
-      { id: "streams", label: "Streams", icon: Sliders, path: "/stream-settings" },
-      { id: "telegram", label: "Telegram", icon: MessageSquare, path: "/telegram-settings" },
-    ],
-  },
-];
+import { useUserRole } from "@/hooks/useUserRole";
+import { allCategories, type NavCategory } from "./navigation/bottomNavData";
 
 export function BottomNavigation() {
   const location = useLocation();
@@ -125,262 +20,117 @@ export function BottomNavigation() {
 
   const categories = useMemo(() =>
     allCategories
-      .filter((cat) => !cat.minRole || hasMinRole(cat.minRole))
-      .map((cat) => ({
-        ...cat,
-        items: cat.items.filter((item) => !item.minRole || hasMinRole(item.minRole)),
-      }))
-      .filter((cat) => cat.items.length > 0),
+      .filter(c => !c.minRole || hasMinRole(c.minRole))
+      .map(c => ({ ...c, items: c.items.filter(i => !i.minRole || hasMinRole(i.minRole)) }))
+      .filter(c => c.items.length > 0),
     [hasMinRole]
   );
 
-  const getActiveCategory = () => {
+  const activeCategory = useMemo(() => {
     for (const cat of categories) {
-      if (cat.items.some((item) => location.pathname === item.path)) {
-        return cat.id;
-      }
+      if (cat.items.some(i => location.pathname === i.path)) return cat.id;
     }
     return "monitoring";
+  }, [categories, location.pathname]);
+
+  const getBadge = (id: string): number | null => {
+    if (id === "security" && status.unreadAlerts > 0) return status.unreadAlerts;
+    if (id === "monitoring" && status.totalCameras > 0) return status.onlineCameras;
+    if (id === "management" && status.registeredPersons > 0) return status.registeredPersons;
+    return null;
   };
 
-  const activeCategory = getActiveCategory();
-
-  const getCategoryBadge = (categoryId: string): number | null => {
-    switch (categoryId) {
-      case "security":
-        return status.unreadAlerts > 0 ? status.unreadAlerts : null;
-      case "monitoring":
-        return status.totalCameras > 0 ? status.onlineCameras : null;
-      case "management":
-        return status.registeredPersons > 0 ? status.registeredPersons : null;
-      default:
-        return null;
+  const getStatus = (id: string): "success" | "warning" | "danger" | null => {
+    if (id === "security") return status.unreadAlerts > 5 ? "danger" : status.unreadAlerts > 0 ? "warning" : "success";
+    if (id === "monitoring") {
+      const r = status.totalCameras > 0 ? status.onlineCameras / status.totalCameras : 0;
+      return r >= 0.8 ? "success" : r >= 0.5 ? "warning" : status.totalCameras > 0 ? "danger" : null;
     }
+    return null;
   };
 
-  const getCategoryStatus = (categoryId: string): "success" | "warning" | "danger" | null => {
-    switch (categoryId) {
-      case "security":
-        if (status.unreadAlerts > 5) return "danger";
-        if (status.unreadAlerts > 0) return "warning";
-        return "success";
-      case "monitoring":
-        const ratio = status.totalCameras > 0 ? status.onlineCameras / status.totalCameras : 0;
-        if (ratio >= 0.8) return "success";
-        if (ratio >= 0.5) return "warning";
-        return status.totalCameras > 0 ? "danger" : null;
-      default:
-        return null;
-    }
-  };
-
-  const handleCategoryClick = (category: NavCategory) => {
-    if (expandedCategory === category.id) {
-      // Already expanded, close it
-      setExpandedCategory(null);
-    } else if (activeCategory === category.id) {
-      // Active category, expand submenu
-      setExpandedCategory(category.id);
-    } else {
-      // Navigate to default path
-      navigate(category.defaultPath);
-      setExpandedCategory(null);
-    }
-  };
-
-  const handleItemClick = (path: string) => {
-    navigate(path);
-    setExpandedCategory(null);
+  const handleCategoryClick = (cat: NavCategory) => {
+    if (expandedCategory === cat.id) setExpandedCategory(null);
+    else if (activeCategory === cat.id) setExpandedCategory(cat.id);
+    else { navigate(cat.defaultPath); setExpandedCategory(null); }
   };
 
   return (
     <>
-      {/* Expanded submenu overlay */}
       <AnimatePresence>
         {expandedCategory && (
           <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 md:hidden"
-              onClick={() => setExpandedCategory(null)}
-            />
-
-            {/* Submenu */}
-            <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 md:hidden" onClick={() => setExpandedCategory(null)} />
+            <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed bottom-16 left-0 right-0 bg-card border-t rounded-t-2xl shadow-2xl z-50 md:hidden"
-            >
+              className="fixed bottom-16 left-0 right-0 bg-card border-t rounded-t-2xl shadow-2xl z-50 md:hidden">
               <div className="p-4">
-                {/* Header */}
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-lg">
-                    {categories.find((c) => c.id === expandedCategory)?.label}
-                  </h3>
-                  <button
-                    onClick={() => setExpandedCategory(null)}
-                    className="p-2 rounded-full hover:bg-muted transition-colors"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
+                  <h3 className="font-semibold text-lg">{categories.find(c => c.id === expandedCategory)?.label}</h3>
+                  <button onClick={() => setExpandedCategory(null)} className="p-2 rounded-full hover:bg-muted transition-colors"><X className="h-5 w-5" /></button>
                 </div>
-
-                {/* Items grid */}
                 <div className="grid grid-cols-3 gap-3">
-                  {categories
-                    .find((c) => c.id === expandedCategory)
-                    ?.items.map((item) => {
-                      const Icon = item.icon;
-                      const isActive = location.pathname === item.path;
-
-                      return (
-                        <motion.button
-                          key={item.id}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => handleItemClick(item.path)}
-                          className={cn(
-                            "flex flex-col items-center gap-2 p-4 rounded-xl transition-colors",
-                            isActive
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-muted/50 hover:bg-muted"
-                          )}
-                        >
-                          <Icon className="h-6 w-6" />
-                          <span className="text-xs font-medium text-center">
-                            {item.label}
-                          </span>
-                        </motion.button>
-                      );
-                    })}
+                  {categories.find(c => c.id === expandedCategory)?.items.map(item => {
+                    const Icon = item.icon;
+                    const isActive = location.pathname === item.path;
+                    return (
+                      <motion.button key={item.id} whileTap={{ scale: 0.95 }}
+                        onClick={() => { navigate(item.path); setExpandedCategory(null); }}
+                        className={cn("flex flex-col items-center gap-2 p-4 rounded-xl transition-colors", isActive ? "bg-primary text-primary-foreground" : "bg-muted/50 hover:bg-muted")}>
+                        <Icon className="h-6 w-6" /><span className="text-xs font-medium text-center">{item.label}</span>
+                      </motion.button>
+                    );
+                  })}
                 </div>
               </div>
-
-              {/* Handle indicator */}
               <div className="absolute top-2 left-1/2 -translate-x-1/2 w-10 h-1 rounded-full bg-muted-foreground/30" />
             </motion.div>
           </>
         )}
       </AnimatePresence>
 
-      {/* Bottom Navigation Bar */}
-      <nav
-        aria-label="Navegação principal mobile"
-        role="navigation"
-        className="fixed bottom-0 left-0 right-0 bg-card border-t z-50 md:hidden safe-area-inset-bottom"
-      >
+      <nav aria-label="Navegação principal mobile" role="navigation" className="fixed bottom-0 left-0 right-0 bg-card border-t z-50 md:hidden safe-area-inset-bottom">
         <div className="flex items-center justify-around h-16 px-1">
-          {categories.map((category) => {
-            const Icon = category.icon;
-            const isActive = activeCategory === category.id;
-            const isExpanded = expandedCategory === category.id;
-            const badge = getCategoryBadge(category.id);
-            const statusColor = getCategoryStatus(category.id);
-
+          {categories.map(cat => {
+            const Icon = cat.icon;
+            const isActive = activeCategory === cat.id;
+            const isExpanded = expandedCategory === cat.id;
+            const badge = getBadge(cat.id);
+            const statusColor = getStatus(cat.id);
             return (
-              <motion.button
-                key={category.id}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => handleCategoryClick(category)}
-                aria-label={`${category.label}${badge ? ` (${badge})` : ''}`}
-                aria-current={isActive ? 'page' : undefined}
-                className={cn(
-                  "relative flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl transition-colors min-w-[60px]",
-                  isActive
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {/* Icon container with badge */}
+              <motion.button key={cat.id} whileTap={{ scale: 0.9 }} onClick={() => handleCategoryClick(cat)}
+                aria-label={`${cat.label}${badge ? ` (${badge})` : ''}`} aria-current={isActive ? 'page' : undefined}
+                className={cn("relative flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl transition-colors min-w-[60px]", isActive ? "text-primary" : "text-muted-foreground hover:text-foreground")}>
                 <div className="relative">
-                  <motion.div
-                    animate={{
-                      scale: isActive ? 1.1 : 1,
-                      y: isActive ? -2 : 0,
-                    }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                  >
+                  <motion.div animate={{ scale: isActive ? 1.1 : 1, y: isActive ? -2 : 0 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
                     <Icon className={cn("h-6 w-6", isActive && "stroke-[2.5px]")} />
                   </motion.div>
-
-                  {/* Badge */}
                   {badge !== null && badge > 0 && (
-                    <motion.span
-                      aria-live="polite"
-                      aria-label={`${badge} notificações`}
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className={cn(
-                        "absolute -top-1 -right-2 min-w-[18px] h-[18px] flex items-center justify-center",
-                        "text-[10px] font-bold rounded-full",
+                    <motion.span aria-live="polite" initial={{ scale: 0 }} animate={{ scale: 1 }}
+                      className={cn("absolute -top-1 -right-2 min-w-[18px] h-[18px] flex items-center justify-center text-[10px] font-bold rounded-full",
                         statusColor === "danger" && "bg-destructive text-destructive-foreground",
                         statusColor === "warning" && "bg-accent text-accent-foreground",
-                        statusColor === "success" && "bg-primary text-primary-foreground",
-                        !statusColor && "bg-primary text-primary-foreground"
-                      )}
-                    >
+                        (statusColor === "success" || !statusColor) && "bg-primary text-primary-foreground")}>
                       {badge > 99 ? "99+" : badge}
                     </motion.span>
                   )}
-
-                  {/* Status dot */}
                   {statusColor && !badge && (
-                    <motion.span
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className={cn(
-                        "absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-card",
-                        statusColor === "danger" && "bg-destructive",
-                        statusColor === "warning" && "bg-accent",
-                        statusColor === "success" && "bg-primary"
-                      )}
-                    />
+                    <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }}
+                      className={cn("absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-card",
+                        statusColor === "danger" && "bg-destructive", statusColor === "warning" && "bg-accent", statusColor === "success" && "bg-primary")} />
                   )}
                 </div>
-
-                {/* Label */}
-                <span
-                  className={cn(
-                    "text-[10px] font-medium truncate max-w-full",
-                    isActive && "font-semibold"
-                  )}
-                >
-                  {category.label}
-                </span>
-
-                {/* Active indicator */}
-                {isActive && (
-                  <motion.div
-                    layoutId="activeIndicator"
-                    className="absolute -bottom-0.5 w-8 h-1 bg-primary rounded-full"
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  />
-                )}
-
-                {/* Expand indicator */}
-                <AnimatePresence>
-                  {isActive && !isExpanded && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 5 }}
-                      className="absolute -top-1"
-                    >
-                      <ChevronUp className="h-3 w-3 text-muted-foreground" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <span className={cn("text-[10px] font-medium truncate max-w-full", isActive && "font-semibold")}>{cat.label}</span>
+                {isActive && <motion.div layoutId="activeIndicator" className="absolute -bottom-0.5 w-8 h-1 bg-primary rounded-full" transition={{ type: "spring", stiffness: 400, damping: 30 }} />}
+                <AnimatePresence>{isActive && !isExpanded && (
+                  <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }} className="absolute -top-1"><ChevronUp className="h-3 w-3 text-muted-foreground" /></motion.div>
+                )}</AnimatePresence>
               </motion.button>
             );
           })}
         </div>
       </nav>
-
-      {/* Spacer to prevent content from being hidden behind bottom nav */}
       <div className="h-16 md:hidden" />
     </>
   );
