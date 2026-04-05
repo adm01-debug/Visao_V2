@@ -17,7 +17,7 @@ const Index = () => {
     }
   }, [user, loading, navigate]);
 
-  return <PageLoadingSkeleton />;
+  return <><PageMeta title="Início" description="Sistema de vigilância inteligente com IA" /><SplashScreen /></>;
 };
 
 export default Index;
