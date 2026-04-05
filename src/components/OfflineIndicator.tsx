@@ -152,7 +152,7 @@ export function OfflineIndicator({
             size="sm"
             className={cn(
               'gap-2',
-              !isOnline && 'text-yellow-500',
+              !isOnline && 'text-warning',
               className
             )}
           >
