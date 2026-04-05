@@ -109,8 +109,8 @@ export function useClipRecorder(options: UseClipRecorderOptions) {
 
     try {
       let stream: MediaStream;
-      if ('captureStream' in videoElement) stream = (videoElement as any).captureStream();
-      else if ('mozCaptureStream' in videoElement) stream = (videoElement as any).mozCaptureStream();
+      if ('captureStream' in videoElement) stream = (videoElement as unknown as { captureStream: () => MediaStream }).captureStream();
+      else if ('mozCaptureStream' in videoElement) stream = (videoElement as unknown as { mozCaptureStream: () => MediaStream }).mozCaptureStream();
       else throw new Error('Navegador não suporta captureStream');
 
       streamRef.current = stream;
