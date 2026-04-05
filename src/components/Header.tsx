@@ -21,24 +21,30 @@ export function Header({ className }: { className?: string }) {
   const { resolvedTheme, toggleTheme } = useTheme();
 
   return (
-    <header className={cn("border-b border-border/60 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 sticky top-0 z-30", className)} role="banner" aria-label="Barra de ferramentas principal">
-      <div className="mx-auto flex h-14 max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6">
-        <div className="min-w-0 flex-1 flex items-center gap-4">
+    <header className={cn(
+      "border-b border-border/40 bg-background/90 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70",
+      "sticky top-0 z-30",
+      className
+    )} role="banner" aria-label="Barra de ferramentas principal">
+      <div className="mx-auto flex h-14 max-w-[1600px] items-center justify-between gap-4 px-4 sm:px-6">
+        <div className="min-w-0 flex-1 flex items-center gap-3">
           <Breadcrumbs />
           <PageTitle />
         </div>
 
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex items-center gap-1">
           <span
             className={cn(
-              "hidden sm:inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-xs transition-colors",
-              isOnline ? "text-foreground/80 border-success/20 bg-success/[0.08]" : "text-muted-foreground border-border/60 bg-muted/30"
+              "hidden sm:inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors",
+              isOnline
+                ? "text-success bg-success/8"
+                : "text-muted-foreground bg-muted/50"
             )}
             aria-live="polite"
           >
             <span
               className={cn(
-                "h-1.5 w-1.5 rounded-full transition-colors",
+                "h-1.5 w-1.5 rounded-full",
                 isOnline ? "bg-success animate-pulse" : "bg-muted-foreground"
               )}
               aria-hidden="true"
@@ -51,15 +57,11 @@ export function Header({ className }: { className?: string }) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground transition-all duration-200 active:scale-95"
+                className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground"
                 onClick={toggleTheme}
                 aria-label={resolvedTheme === "dark" ? "Mudar para modo claro" : "Mudar para modo escuro"}
               >
-                {resolvedTheme === "dark" ? (
-                  <Sun className="h-4 w-4" />
-                ) : (
-                  <Moon className="h-4 w-4" />
-                )}
+                {resolvedTheme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -72,18 +74,14 @@ export function Header({ className }: { className?: string }) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground transition-all duration-200"
+                className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground"
                 onClick={() => toggleAlertSound(!isAlertSoundEnabled)}
               >
-                {isAlertSoundEnabled ? (
-                  <Volume2 className="h-4 w-4" />
-                ) : (
-                  <VolumeX className="h-4 w-4" />
-                )}
+                {isAlertSoundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              {isAlertSoundEnabled ? "Som de alertas ativo" : "Som de alertas desativado"}
+              {isAlertSoundEnabled ? "Som ativo" : "Som desativado"}
             </TooltipContent>
           </Tooltip>
 
