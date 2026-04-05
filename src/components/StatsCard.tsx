@@ -88,7 +88,7 @@ export function StatsCard({
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
           <p className="text-sm text-muted-foreground mb-1">{title}</p>
-          <p className={cn("text-3xl font-bold", variantStyles[variant])}>
+          <p className={cn("text-3xl font-bold font-mono tabular-nums", variantStyles[variant])}>
             {value}
           </p>
           {subtitle && (
