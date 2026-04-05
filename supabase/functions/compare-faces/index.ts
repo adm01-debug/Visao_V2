@@ -40,6 +40,8 @@ const compareFaces = async (req: CompareFacesRequest): Promise<CompareFacesRespo
 };
 
 serve(async (req: Request) => {
+  const corsHeaders = getCorsHeaders(req);
+
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
   try {
     const body: CompareFacesRequest = await req.json();
