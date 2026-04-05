@@ -119,15 +119,15 @@ export function OfflineIndicator({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="bg-yellow-500/10 border-b border-yellow-500/20 overflow-hidden"
+            className="bg-warning/10 border-b border-warning/20 overflow-hidden"
           >
             <div className="container flex items-center justify-between py-2 px-4">
-              <div className="flex items-center gap-2 text-yellow-500">
+              <div className="flex items-center gap-2 text-warning">
                 <CloudOff className="h-4 w-4" />
                 <span className="text-sm font-medium">
                   Você está offline
                 </span>
-                <span className="text-xs text-yellow-500/70">
+                <span className="text-xs text-warning/70">
                   — Alterações serão sincronizadas quando a conexão voltar
                 </span>
               </div>
@@ -135,7 +135,7 @@ export function OfflineIndicator({
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowBanner(false)}
-                className="text-yellow-500 hover:text-yellow-400 h-6 px-2"
+                className="text-warning hover:text-warning/80 h-6 px-2"
               >
                 Fechar
               </Button>
