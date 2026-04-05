@@ -115,6 +115,8 @@ const CategoryItem = memo(function CategoryItem({
         <motion.button
           whileHover={{ x: 3, backgroundColor: 'hsl(var(--sidebar-accent) / 0.6)' }}
           whileTap={{ scale: 0.97 }}
+          layout
+          transition={{ layout: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] } }}
           className={cn(
             "flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 ease-out",
             "text-sidebar-foreground/70 hover:text-sidebar-foreground",
@@ -129,7 +131,12 @@ const CategoryItem = memo(function CategoryItem({
               isExpanded={isExpanded}
               isActive={isActive}
             />
-            <span>{category.label}</span>
+            <motion.span
+              animate={{ color: isExpanded ? 'hsl(var(--sidebar-foreground))' : undefined }}
+              transition={{ duration: 0.3 }}
+            >
+              {category.label}
+            </motion.span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -141,7 +148,7 @@ const CategoryItem = memo(function CategoryItem({
 
             <motion.div
               animate={{ rotate: isExpanded ? 180 : 0 }}
-              transition={{ duration: 0.2 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20, duration: 0.35 }}
             >
               <ChevronDown className="h-4 w-4 text-muted-foreground" />
             </motion.div>
@@ -149,24 +156,34 @@ const CategoryItem = memo(function CategoryItem({
         </motion.button>
       </CollapsibleTrigger>
 
-      <CollapsibleContent>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="mt-1 ml-4 space-y-0.5 border-l-2 border-border/30 pl-3"
-        >
-          {category.items.map((item, index) => (
+      <CollapsibleContent className="overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up">
+        <AnimatePresence>
+          {isExpanded && (
             <motion.div
-              key={item.path}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.05 }}
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+              className="mt-1 ml-4 space-y-0.5 border-l-2 border-border/30 pl-3"
             >
-              <NavItemLink item={item} isActive={isItemActive(item.path)} onClick={onNavigate} />
+              {category.items.map((item, index) => (
+                <motion.div
+                  key={item.path}
+                  initial={{ opacity: 0, x: -12, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, x: -8 }}
+                  transition={{
+                    delay: index * 0.04,
+                    duration: 0.3,
+                    ease: [0.25, 0.1, 0.25, 1],
+                  }}
+                >
+                  <NavItemLink item={item} isActive={isItemActive(item.path)} onClick={onNavigate} />
+                </motion.div>
+              ))}
             </motion.div>
-          ))}
-        </motion.div>
+          )}
+        </AnimatePresence>
       </CollapsibleContent>
     </Collapsible>
   );
