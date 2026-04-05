@@ -288,11 +288,11 @@ const NavItemLink = memo(function NavItemLink({
       {isActive && (
         <motion.div
           layoutId="sidebar-active-indicator"
-          className="absolute -left-3 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-primary-foreground"
+          className="absolute -left-3 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-sidebar-primary"
           transition={{ type: "spring", stiffness: 350, damping: 30 }}
         />
       )}
-      <Icon className={cn("w-4 h-4 flex-shrink-0", isActive && "text-primary-foreground")} />
+      <Icon className={cn("w-4 h-4 flex-shrink-0", isActive && "text-sidebar-primary")} />
       <span className="flex-1 truncate">{item.label}</span>
       {item.badge !== undefined && Number(item.badge) > 0 && (
         <Badge
