@@ -8,10 +8,12 @@ import { AutomationRulesManager } from "@/components/AutomationRulesManager";
 import { RuleExecutionHistory } from "@/components/RuleExecutionHistory";
 import { Zap } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PageMeta } from '@/components/PageMeta';
 
 export default function AutomationRulesPage() {
   return (
     <PageContent>
+      <PageMeta title="Regras de Automação" description="Crie e gerencie regras de automação inteligentes" />
       <div className="flex items-center gap-3 mb-6">
         <Zap className="h-5 w-5 text-primary" />
         <div>
