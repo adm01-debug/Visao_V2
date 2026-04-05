@@ -82,7 +82,7 @@ export function OfflineIndicator({
             {isSyncing ? (
               <RefreshCw className="h-4 w-4 animate-spin" />
             ) : isOnline ? (
-              <Wifi className="h-4 w-4 text-green-500" />
+              <Wifi className="h-4 w-4 text-success" />
             ) : (
               <WifiOff className="h-4 w-4" />
             )}
