@@ -1,18 +1,21 @@
+/**
+ * Auth Page (Refactored)
+ * Forms extracted to ./auth/AuthForms.tsx
+ */
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import { Shield, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Shield, Loader2 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
-import { OAuthButtons } from '@/components/OAuthButtons';
 import { supabase } from '@/integrations/supabase/client';
+import { LoginForm, RegisterForm } from './auth/AuthForms';
 
 const emailSchema = z.string().email('Email inválido').max(255);
 const passwordSchema = z.string().min(6, 'Senha deve ter no mínimo 6 caracteres').max(72);
@@ -27,343 +30,72 @@ export default function Auth() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
-
   const { signIn, signUp, user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (!loading && user) {
-      navigate('/', { replace: true });
-    }
-  }, [user, loading, navigate]);
+  useEffect(() => { if (!loading && user) navigate('/', { replace: true }); }, [user, loading, navigate]);
 
   const validateForm = (isSignUp: boolean) => {
-    const newErrors: Record<string, string> = {};
-
-    const emailResult = emailSchema.safeParse(email);
-    if (!emailResult.success) {
-      newErrors.email = emailResult.error.errors[0]?.message ?? 'Email inválido';
-    }
-
-    const passwordResult = passwordSchema.safeParse(password);
-    if (!passwordResult.success) {
-      newErrors.password = passwordResult.error.errors[0]?.message ?? 'Senha inválida';
-    }
-
-    if (isSignUp && fullName) {
-      const nameResult = nameSchema.safeParse(fullName);
-      if (!nameResult.success) {
-        newErrors.fullName = nameResult.error.errors[0]?.message ?? 'Nome inválido';
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const e: Record<string, string> = {};
+    const er = emailSchema.safeParse(email); if (!er.success) e.email = er.error.errors[0]?.message ?? 'Email inválido';
+    const pr = passwordSchema.safeParse(password); if (!pr.success) e.password = pr.error.errors[0]?.message ?? 'Senha inválida';
+    if (isSignUp && fullName) { const nr = nameSchema.safeParse(fullName); if (!nr.success) e.fullName = nr.error.errors[0]?.message ?? 'Nome inválido'; }
+    setErrors(e); return Object.keys(e).length === 0;
   };
 
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm(false)) return;
-
-    setIsLoading(true);
-    const { error } = await signIn(email, password);
-    setIsLoading(false);
-
-    if (error) {
-      toast({
-        title: 'Erro ao entrar',
-        description: error.message === 'Invalid login credentials'
-          ? 'Email ou senha incorretos'
-          : error.message,
-        variant: 'destructive',
-      });
-    }
+  const handleSignIn = async (ev: React.FormEvent) => {
+    ev.preventDefault(); if (!validateForm(false)) return;
+    setIsLoading(true); const { error } = await signIn(email, password); setIsLoading(false);
+    if (error) toast({ title: 'Erro ao entrar', description: error.message === 'Invalid login credentials' ? 'Email ou senha incorretos' : error.message, variant: 'destructive' });
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm(true)) return;
-
-    setIsLoading(true);
-    const { error } = await signUp(email, password, fullName);
-    setIsLoading(false);
-
-    if (error) {
-      let message = error.message;
-      if (error.message.includes('already registered')) {
-        message = 'Este email já está cadastrado';
-      }
-      toast({
-        title: 'Erro ao criar conta',
-        description: message,
-        variant: 'destructive',
-      });
-    } else {
-      toast({
-        title: 'Conta criada com sucesso!',
-        description: 'Você já pode acessar o sistema.',
-      });
-    }
+  const handleSignUp = async (ev: React.FormEvent) => {
+    ev.preventDefault(); if (!validateForm(true)) return;
+    setIsLoading(true); const { error } = await signUp(email, password, fullName); setIsLoading(false);
+    if (error) { let msg = error.message; if (msg.includes('already registered')) msg = 'Este email já está cadastrado'; toast({ title: 'Erro ao criar conta', description: msg, variant: 'destructive' }); }
+    else toast({ title: 'Conta criada com sucesso!', description: 'Você já pode acessar o sistema.' });
   };
 
   const handleForgotPassword = async () => {
-    if (!email) {
-      setErrors({ email: 'Digite seu email' });
-      return;
-    }
+    if (!email) { setErrors({ email: 'Digite seu email' }); return; }
     setIsLoading(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/reset-password` });
     setIsLoading(false);
-    if (error) {
-      toast({
-        title: 'Erro',
-        description: error.message,
-        variant: 'destructive',
-      });
-    } else {
-      setResetEmailSent(true);
-    }
+    if (error) toast({ title: 'Erro', description: error.message, variant: 'destructive' });
+    else setResetEmailSent(true);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
+
+  const formProps = { email, password, showPassword, isLoading, errors, onEmailChange: setEmail, onPasswordChange: setPassword, onTogglePassword: () => setShowPassword(!showPassword) };
 
   return (
     <>
-      <Helmet>
-        <title>Login - VisionAI</title>
-        <meta name="description" content="Acesse sua conta VisionAI para monitoramento de segurança inteligente." />
-      </Helmet>
-
+      <Helmet><title>Login - VisionAI</title><meta name="description" content="Acesse sua conta VisionAI para monitoramento de segurança inteligente." /></Helmet>
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <div className="w-full max-w-md">
           <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
-              <Shield className="w-7 h-7 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="font-bold text-2xl text-foreground">VisionAI</h1>
-              <p className="text-xs text-muted-foreground">Vigilância Inteligente</p>
-            </div>
+            <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center"><Shield className="w-7 h-7 text-primary-foreground" /></div>
+            <div><h1 className="font-bold text-2xl text-foreground">VisionAI</h1><p className="text-xs text-muted-foreground">Vigilância Inteligente</p></div>
           </div>
-
           <Card className="border-border/50 bg-card/80 backdrop-blur">
             <Tabs defaultValue="login" className="w-full">
-              <CardHeader className="pb-4">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="login">Entrar</TabsTrigger>
-                  <TabsTrigger value="register">Criar Conta</TabsTrigger>
-                </TabsList>
-              </CardHeader>
-
+              <CardHeader className="pb-4"><TabsList className="grid w-full grid-cols-2"><TabsTrigger value="login">Entrar</TabsTrigger><TabsTrigger value="register">Criar Conta</TabsTrigger></TabsList></CardHeader>
               <CardContent>
-                <TabsContent value="login" className="mt-0">
-                  <CardTitle className="text-lg mb-1">Bem-vindo de volta</CardTitle>
-                  <CardDescription className="mb-6">
-                    Entre com suas credenciais para acessar o sistema
-                  </CardDescription>
-
-                  <form onSubmit={handleSignIn} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="login-email">Email</Label>
-                      <Input
-                        id="login-email"
-                        type="email"
-                        placeholder="seu@email.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        disabled={isLoading}
-                        className={errors.email ? 'border-destructive' : ''}
-                      />
-                      {errors.email && (
-                        <p className="text-xs text-destructive">{errors.email}</p>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="login-password">Senha</Label>
-                      <div className="relative">
-                        <Input
-                          id="login-password"
-                          type={showPassword ? 'text' : 'password'}
-                          placeholder="••••••••"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          disabled={isLoading}
-                          className={errors.password ? 'border-destructive pr-10' : 'pr-10'}
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          {showPassword ? (
-                            <EyeOff className="h-4 w-4 text-muted-foreground" />
-                          ) : (
-                            <Eye className="h-4 w-4 text-muted-foreground" />
-                          )}
-                        </Button>
-                      </div>
-                      {errors.password && (
-                        <p className="text-xs text-destructive">{errors.password}</p>
-                      )}
-                    </div>
-
-                    <Button type="submit" className="w-full" disabled={isLoading}>
-                      {isLoading ? (
-                        <>
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Entrando...
-                        </>
-                      ) : (
-                        'Entrar'
-                      )}
-                    </Button>
-
-                    <OAuthButtons disabled={isLoading} />
-
-                    <Button
-                      type="button"
-                      variant="link"
-                      className="w-full text-sm"
-                      onClick={() => setShowForgotPassword(true)}
-                    >
-                      Esqueceu a senha?
-                    </Button>
-                  </form>
-                </TabsContent>
-
-                <TabsContent value="register" className="mt-0">
-                  <CardTitle className="text-lg mb-1">Criar nova conta</CardTitle>
-                  <CardDescription className="mb-6">
-                    Preencha os dados para começar a usar o VisionAI
-                  </CardDescription>
-
-                  <form onSubmit={handleSignUp} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="register-name">Nome completo</Label>
-                      <Input
-                        id="register-name"
-                        type="text"
-                        placeholder="Seu nome"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        disabled={isLoading}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="register-email">Email</Label>
-                      <Input
-                        id="register-email"
-                        type="email"
-                        placeholder="seu@email.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        disabled={isLoading}
-                        className={errors.email ? 'border-destructive' : ''}
-                      />
-                      {errors.email && (
-                        <p className="text-xs text-destructive">{errors.email}</p>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="register-password">Senha</Label>
-                      <div className="relative">
-                        <Input
-                          id="register-password"
-                          type={showPassword ? 'text' : 'password'}
-                          placeholder="Mínimo 6 caracteres"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          disabled={isLoading}
-                          className={errors.password ? 'border-destructive pr-10' : 'pr-10'}
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          {showPassword ? (
-                            <EyeOff className="h-4 w-4 text-muted-foreground" />
-                          ) : (
-                            <Eye className="h-4 w-4 text-muted-foreground" />
-                          )}
-                        </Button>
-                      </div>
-                      {errors.password && (
-                        <p className="text-xs text-destructive">{errors.password}</p>
-                      )}
-                    </div>
-
-                    <Button type="submit" className="w-full" disabled={isLoading}>
-                      {isLoading ? (
-                        <>
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Criando conta...
-                        </>
-                      ) : (
-                        'Criar conta'
-                      )}
-                    </Button>
-
-                    <OAuthButtons disabled={isLoading} />
-                  </form>
-                </TabsContent>
+                <TabsContent value="login" className="mt-0"><LoginForm {...formProps} onSubmit={handleSignIn} onForgotPassword={() => setShowForgotPassword(true)} /></TabsContent>
+                <TabsContent value="register" className="mt-0"><RegisterForm {...formProps} fullName={fullName} onFullNameChange={setFullName} onSubmit={handleSignUp} /></TabsContent>
               </CardContent>
             </Tabs>
           </Card>
         </div>
       </div>
-
       <Dialog open={showForgotPassword} onOpenChange={(open) => { setShowForgotPassword(open); if (!open) setResetEmailSent(false); }}>
         <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Recuperar Senha</DialogTitle>
-            <DialogDescription>
-              {resetEmailSent
-                ? 'Email de recuperação enviado! Verifique sua caixa de entrada.'
-                : 'Digite seu email para receber o link de recuperação de senha.'}
-            </DialogDescription>
-          </DialogHeader>
-
-          {resetEmailSent ? (
-            <DialogFooter>
-              <Button onClick={() => { setShowForgotPassword(false); setResetEmailSent(false); }}>
-                Fechar
-              </Button>
-            </DialogFooter>
-          ) : (
-            <>
-              <Input
-                type="email"
-                placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                aria-label="Email para recuperação"
-              />
-              <DialogFooter className="gap-2 sm:gap-0">
-                <Button variant="outline" onClick={() => setShowForgotPassword(false)}>
-                  Cancelar
-                </Button>
-                <Button onClick={handleForgotPassword} disabled={isLoading}>
-                  {isLoading ? 'Enviando...' : 'Enviar'}
-                </Button>
-              </DialogFooter>
-            </>
+          <DialogHeader><DialogTitle>Recuperar Senha</DialogTitle><DialogDescription>{resetEmailSent ? 'Email de recuperação enviado! Verifique sua caixa de entrada.' : 'Digite seu email para receber o link de recuperação de senha.'}</DialogDescription></DialogHeader>
+          {resetEmailSent ? <DialogFooter><Button onClick={() => { setShowForgotPassword(false); setResetEmailSent(false); }}>Fechar</Button></DialogFooter> : (
+            <><Input type="email" placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} aria-label="Email para recuperação" />
+            <DialogFooter className="gap-2 sm:gap-0"><Button variant="outline" onClick={() => setShowForgotPassword(false)}>Cancelar</Button><Button onClick={handleForgotPassword} disabled={isLoading}>{isLoading ? 'Enviando...' : 'Enviar'}</Button></DialogFooter></>
           )}
         </DialogContent>
       </Dialog>
