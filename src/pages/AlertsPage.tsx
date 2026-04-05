@@ -133,8 +133,11 @@ export function AlertsPage() {
       <AlertSeveritySummary
         counts={severityCounts}
         total={stats.total}
-        activeSeverity={filters.severity}
-        onSeverityClick={(severity) => setFilters(f => ({ ...f, severity }))}
+        activeSeverity={filters.severity !== 'all' ? filters.severity : undefined}
+        onSeverityClick={(severity) => {
+          setActiveStatsFilter(null);
+          setFilters(f => ({ ...defaultFilters, severity }));
+        }}
       />
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
