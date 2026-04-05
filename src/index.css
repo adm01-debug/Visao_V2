@@ -561,6 +561,29 @@
   .alert-critical-pulse {
     animation: critical-pulse 2s ease-in-out infinite;
   }
+
+  /* Staggered fade-in for lists */
+  .stagger-in > * {
+    opacity: 0;
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+  .stagger-in > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger-in > *:nth-child(2) { animation-delay: 50ms; }
+  .stagger-in > *:nth-child(3) { animation-delay: 100ms; }
+  .stagger-in > *:nth-child(4) { animation-delay: 150ms; }
+  .stagger-in > *:nth-child(5) { animation-delay: 200ms; }
+  .stagger-in > *:nth-child(6) { animation-delay: 250ms; }
+  .stagger-in > *:nth-child(n+7) { animation-delay: 300ms; }
+
+  /* Backdrop blur utility with fallback */
+  .backdrop-blur-safe {
+    @apply backdrop-blur-xl;
+  }
+  @supports not (backdrop-filter: blur(1px)) {
+    .backdrop-blur-safe {
+      background: hsl(var(--background) / 0.95);
+    }
+  }
 }
 
 @keyframes shimmer {
