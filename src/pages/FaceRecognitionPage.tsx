@@ -166,10 +166,10 @@ export default function FaceRecognitionPage() {
                           <p className="text-[10px] text-muted-foreground">Total</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2 p-2 rounded-lg bg-green-500/10">
-                        <UserCheck className="w-4 h-4 text-green-600" />
+                      <div className="flex items-center gap-2 p-2 rounded-lg bg-success/10">
+                        <UserCheck className="w-4 h-4 text-success" />
                         <div>
-                          <p className="text-lg font-semibold text-green-600">{stats.knownToday}</p>
+                          <p className="text-lg font-semibold text-success">{stats.knownToday}</p>
                           <p className="text-[10px] text-muted-foreground">Conhecidos</p>
                         </div>
                       </div>
