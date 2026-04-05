@@ -158,27 +158,39 @@ export function AlertFiltersComponent({ filters, onFiltersChange, cameras = [] }
             </Select>
           </div>
 
-          {/* Severity Filter */}
+          {/* Severity Filter — Visual Icon Buttons */}
           <div className="space-y-2">
             <Label className="text-xs text-muted-foreground flex items-center gap-1">
               <Gauge className="w-3 h-3" />
               Severidade
             </Label>
-            <Select
-              value={filters.severity}
-              onValueChange={(value: AlertSeverity) => onFiltersChange({ ...filters, severity: value })}
-            >
-              <SelectTrigger className="h-9">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(SEVERITY_LABELS).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex gap-1.5 flex-wrap">
+              {SEVERITY_BUTTON_OPTIONS.map(({ value, label, icon: SevIcon, activeClass, tooltip }) => {
+                const isActive = filters.severity === value;
+                return (
+                  <Tooltip key={value}>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        onClick={() => onFiltersChange({ ...filters, severity: value })}
+                        className={cn(
+                          'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all border',
+                          isActive
+                            ? activeClass
+                            : 'border-border bg-muted/50 text-muted-foreground hover:bg-muted'
+                        )}
+                      >
+                        <SevIcon className="w-3.5 h-3.5" />
+                        {label}
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-[200px] text-center">
+                      <p className="text-xs">{tooltip}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              })}
+            </div>
           </div>
 
           {/* Camera Filter */}
