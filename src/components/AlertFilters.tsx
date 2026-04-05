@@ -85,7 +85,21 @@ const DATE_RANGE_LABELS: Record<DateRange, string> = {
   custom: 'Personalizado',
 };
 
-export function AlertFiltersComponent({ filters, onFiltersChange, cameras = [] }: AlertFiltersProps) {
+const SEVERITY_BUTTON_OPTIONS: {
+  value: AlertSeverity;
+  label: string;
+  icon: typeof Info;
+  activeClass: string;
+  tooltip: string;
+}[] = [
+  { value: 'all', label: 'Todas', icon: Gauge, activeClass: 'border-primary bg-primary/15 text-primary', tooltip: 'Exibir alertas de todas as severidades' },
+  { value: 'low', label: 'Baixa', icon: Info, activeClass: 'border-muted-foreground bg-muted-foreground/15 text-muted-foreground', tooltip: 'Evento informativo, sem risco imediato' },
+  { value: 'medium', label: 'Média', icon: AlertCircle, activeClass: 'border-warning bg-warning/15 text-warning', tooltip: 'Situação que requer monitoramento' },
+  { value: 'high', label: 'Alta', icon: AlertTriangle, activeClass: 'border-destructive bg-destructive/15 text-destructive', tooltip: 'Ação necessária em breve' },
+  { value: 'critical', label: 'Crítica', icon: Flame, activeClass: 'border-destructive bg-destructive/20 text-destructive font-bold', tooltip: 'Requer atenção imediata!' },
+];
+
+
   const [isOpen, setIsOpen] = useState(false);
   const [showStartCalendar, setShowStartCalendar] = useState(false);
   const [showEndCalendar, setShowEndCalendar] = useState(false);
