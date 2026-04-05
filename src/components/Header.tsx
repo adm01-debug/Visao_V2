@@ -1,7 +1,8 @@
 import { UserAvatar } from "@/components/UserAvatar";
 import { NotificationBell } from "@/components/NotificationBell";
 import { AnalysisHistoryPanel } from "@/components/AnalysisHistoryPanel";
-import { Breadcrumbs, PageTitle } from "@/components/Breadcrumbs";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { PageTitle } from "@/components/Breadcrumbs";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { cn } from "@/lib/utils";
