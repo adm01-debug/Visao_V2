@@ -29,10 +29,10 @@ interface DetectionOverlayProps {
 }
 
 const defaultColors: Record<DetectionBox['type'], string> = {
-  face: DETECTION_COLORS.face,
-  person: DETECTION_COLORS.person,
-  vehicle: DETECTION_COLORS.vehicle,
-  object: DETECTION_COLORS.object,
+  face: DETECTION_COLORS.face!,
+  person: DETECTION_COLORS.person!,
+  vehicle: DETECTION_COLORS.vehicle!,
+  object: DETECTION_COLORS.object!,
 };
 
 function DetectionOverlayComponent({

@@ -42,10 +42,10 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
     });
 
     const statusData = [
-      { name: 'Autorizados', value: detections.filter(d => d.status === 'authorized').length, color: ALPR_STATUS_COLORS.authorized },
-      { name: 'Desconhecidos', value: detections.filter(d => d.status === 'unknown').length, color: ALPR_STATUS_COLORS.unknown },
-      { name: 'Não Autorizados', value: detections.filter(d => d.status === 'unauthorized').length, color: ALPR_STATUS_COLORS.unauthorized },
-      { name: 'Blacklist', value: detections.filter(d => d.status === 'blacklist').length, color: ALPR_STATUS_COLORS.blacklist },
+      { name: 'Autorizados', value: detections.filter(d => d.status === 'authorized').length, color: ALPR_STATUS_COLORS.authorized! },
+      { name: 'Desconhecidos', value: detections.filter(d => d.status === 'unknown').length, color: ALPR_STATUS_COLORS.unknown! },
+      { name: 'Não Autorizados', value: detections.filter(d => d.status === 'unauthorized').length, color: ALPR_STATUS_COLORS.unauthorized! },
+      { name: 'Blacklist', value: detections.filter(d => d.status === 'blacklist').length, color: ALPR_STATUS_COLORS.blacklist! },
     ].filter(s => s.value > 0);
 
     const cameraData = Object.entries(
