@@ -123,7 +123,7 @@ export default function CollaboratorFlowMapPage() {
                     <div className="flex items-center justify-between mb-2"><div className="w-3 h-3 rounded-full" style={{ backgroundColor: z.color }} /><Badge variant="outline" className="text-[9px]">{z.type === "productive" ? "Produtiva" : z.type === "idle" ? "Ociosa" : "Trânsito"}</Badge></div>
                     <p className="font-medium text-sm truncate" title={z.name}>{z.name}</p>
                     <div className="mt-2 flex items-end justify-between"><div><span className={`text-2xl font-bold tabular-nums ${getOccupancyColor(z.currentPeople, z.capacity)}`}>{z.currentPeople}</span><span className="text-xs text-muted-foreground">/{z.capacity}</span></div><span className="text-[10px] text-muted-foreground">{rate}%</span></div>
-                    <div className="mt-2 h-1.5 rounded-full bg-muted overflow-hidden"><motion.div className={`h-full rounded-full ${rate > 100 ? "bg-destructive" : rate > 80 ? "bg-yellow-500" : "bg-emerald-500"}`} initial={{ width: 0 }} animate={{ width: `${Math.min(rate, 100)}%` }} transition={{ duration: 0.8 }} /></div>
+                    <div className="mt-2 h-1.5 rounded-full bg-muted overflow-hidden"><motion.div className={`h-full rounded-full ${rate > 100 ? "bg-destructive" : rate > 80 ? "bg-warning" : "bg-success"}`} initial={{ width: 0 }} animate={{ width: `${Math.min(rate, 100)}%` }} transition={{ duration: 0.8 }} /></div>
                     <p className="text-[10px] text-muted-foreground mt-1.5">Permanência: {z.avgDwell}min</p>
                   </motion.div>
                 );
