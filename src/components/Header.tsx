@@ -51,6 +51,27 @@ export function Header({ className }: { className?: string }) {
               <Button
                 variant="ghost"
                 size="icon"
+                className="h-9 w-9 transition-transform duration-200 active:scale-95"
+                onClick={toggleTheme}
+                aria-label={resolvedTheme === "dark" ? "Mudar para modo claro" : "Mudar para modo escuro"}
+              >
+                {resolvedTheme === "dark" ? (
+                  <Sun className="h-4 w-4 transition-transform duration-300 rotate-0 scale-100" />
+                ) : (
+                  <Moon className="h-4 w-4 transition-transform duration-300 rotate-0 scale-100" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {resolvedTheme === "dark" ? "Modo Claro" : "Modo Escuro"}
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
                 className="h-9 w-9"
                 onClick={() => toggleAlertSound(!isAlertSoundEnabled)}
               >
