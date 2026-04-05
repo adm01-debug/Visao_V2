@@ -13,6 +13,7 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PanicButton } from "@/components/PanicButton";
+import { AnimatedPage } from "@/components/ui/AnimatedPage";
 import { withRouteErrorBoundary } from "@/components/RouteErrorBoundary";
 import { errorReporter } from "@/lib/errorReporter";
 
