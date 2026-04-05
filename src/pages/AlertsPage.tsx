@@ -187,10 +187,13 @@ export function AlertsPage() {
         {paginatedItems.map((alert, index) => (
           <div
             key={alert.id}
-            className="animate-fade-in"
+            className={cn(
+              'animate-fade-in transition-all duration-300 ease-out',
+              removingAlerts.has(alert.id) && 'opacity-0 scale-95 -translate-x-4'
+            )}
             style={{ animationDelay: `${index * 30}ms`, animationFillMode: 'backwards' }}
           >
-            <AlertItem alert={alert} isSelected={selectedAlerts.has(alert.id)} onSelect={(selected) => handleSelectAlert(alert.id, selected)} onView={() => setDetailsAlert(alert)} onMarkRead={() => markAsRead(alert.id)} onDelete={() => deleteAlert(alert.id)} viewMode={viewMode} />
+            <AlertItem alert={alert} isSelected={selectedAlerts.has(alert.id)} onSelect={(selected) => handleSelectAlert(alert.id, selected)} onView={() => setDetailsAlert(alert)} onMarkRead={() => markAsRead(alert.id)} onDelete={() => animateAndDelete([alert.id])} viewMode={viewMode} />
           </div>
         ))}
       </div>
