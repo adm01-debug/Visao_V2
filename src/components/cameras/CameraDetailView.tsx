@@ -41,8 +41,6 @@ export function CameraDetailView({
   const [showFaces, setShowFaces] = useState(true);
   const [showAnalysis, setShowAnalysis] = useState(true);
 
-  if (!camera) return null;
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
