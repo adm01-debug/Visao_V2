@@ -114,7 +114,12 @@ export function AlertsPage() {
       </div>
 
       <AlertStatsCards stats={stats} />
-      <AlertSeveritySummary counts={severityCounts} total={stats.total} />
+      <AlertSeveritySummary
+        counts={severityCounts}
+        total={stats.total}
+        activeSeverity={filters.severity}
+        onSeverityClick={(severity) => setFilters(f => ({ ...f, severity }))}
+      />
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="relative flex-1 max-w-md">
