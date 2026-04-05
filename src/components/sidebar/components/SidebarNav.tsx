@@ -278,12 +278,20 @@ const NavItemLink = memo(function NavItemLink({
       data-testid={`nav-${item.id}`}
       onClick={onClick}
       className={cn(
-        "flex items-center gap-3 px-3 py-2 rounded-lg transition-all text-sm",
+        "relative flex items-center gap-3 px-3 py-2 rounded-lg transition-all text-sm group",
         "text-muted-foreground hover:text-foreground hover:bg-muted",
         isActive &&
           "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground shadow-sm shadow-primary/20"
       )}
     >
+      {/* Active route accent bar */}
+      {isActive && (
+        <motion.div
+          layoutId="sidebar-active-indicator"
+          className="absolute -left-3 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-primary-foreground"
+          transition={{ type: "spring", stiffness: 350, damping: 30 }}
+        />
+      )}
       <Icon className={cn("w-4 h-4 flex-shrink-0", isActive && "text-primary-foreground")} />
       <span className="flex-1 truncate">{item.label}</span>
       {item.badge !== undefined && Number(item.badge) > 0 && (

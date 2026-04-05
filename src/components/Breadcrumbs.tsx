@@ -1,11 +1,12 @@
 /**
  * VISÃO - Dynamic Breadcrumbs
- * Auto-generates breadcrumb trail from current route
+ * Auto-generates breadcrumb trail from current route with animations
  */
 
 import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { ChevronRight, Home } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 const ROUTE_LABELS: Record<string, string> = {
@@ -118,25 +119,35 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, className }) =>
   if (!currentLabel) return null;
 
   return (
-    <nav aria-label="Breadcrumb" className={cn('flex items-center gap-1.5 text-sm', className)}>
-      <Link
-        to="/dashboard"
-        className="text-muted-foreground hover:text-foreground transition-colors p-0.5 rounded-md hover:bg-muted/50"
-        aria-label="Ir para Dashboard"
+    <AnimatePresence mode="wait">
+      <motion.nav
+        key={currentPath}
+        aria-label="Breadcrumb"
+        className={cn('flex items-center gap-1.5 text-sm', className)}
+        initial={{ opacity: 0, x: -8 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 8 }}
+        transition={{ duration: 0.2 }}
       >
-        <Home className="h-3.5 w-3.5" />
-      </Link>
-      {category && (
-        <>
-          <ChevronRight className="h-3 w-3 text-muted-foreground/50" aria-hidden="true" />
-          <span className="text-muted-foreground text-xs uppercase tracking-wider">{category}</span>
-        </>
-      )}
-      <ChevronRight className="h-3 w-3 text-muted-foreground/50" aria-hidden="true" />
-      <span className="text-foreground font-medium truncate max-w-[200px]" aria-current="page">
-        {currentLabel}
-      </span>
-    </nav>
+        <Link
+          to="/dashboard"
+          className="text-muted-foreground hover:text-foreground transition-colors p-0.5 rounded-md hover:bg-muted/50"
+          aria-label="Ir para Dashboard"
+        >
+          <Home className="h-3.5 w-3.5" />
+        </Link>
+        {category && (
+          <>
+            <ChevronRight className="h-3 w-3 text-muted-foreground/50" aria-hidden="true" />
+            <span className="text-muted-foreground text-xs uppercase tracking-wider font-medium">{category}</span>
+          </>
+        )}
+        <ChevronRight className="h-3 w-3 text-muted-foreground/50" aria-hidden="true" />
+        <span className="text-foreground font-medium truncate max-w-[200px]" aria-current="page">
+          {currentLabel}
+        </span>
+      </motion.nav>
+    </AnimatePresence>
   );
 };
 
@@ -147,9 +158,18 @@ export function PageTitle({ className }: { className?: string }) {
   if (!label || location.pathname === '/dashboard') return null;
 
   return (
-    <h1 className={cn('text-lg font-semibold text-foreground hidden lg:block', className)}>
-      {label}
-    </h1>
+    <AnimatePresence mode="wait">
+      <motion.h1
+        key={location.pathname}
+        className={cn('text-lg font-semibold text-foreground hidden lg:block', className)}
+        initial={{ opacity: 0, y: -4 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 4 }}
+        transition={{ duration: 0.15 }}
+      >
+        {label}
+      </motion.h1>
+    </AnimatePresence>
   );
 }
 
