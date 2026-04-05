@@ -23,6 +23,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
+import { DETECTION_COLORS } from '@/constants/chartColors';
 
 export interface DetectionResult {
   type: 'face' | 'person' | 'vehicle' | 'object' | 'plate';
@@ -193,13 +194,13 @@ function ImageAnalysisComponent({
                           width={detection.boundingBox.width}
                           height={detection.boundingBox.height}
                           fill="none"
-                          stroke={detection.type === 'face' ? '#22c55e' : '#3b82f6'}
+                          stroke={detection.type === 'face' ? DETECTION_COLORS.face : DETECTION_COLORS.person}
                           strokeWidth={2}
                         />
                         <text
                           x={detection.boundingBox.x}
                           y={detection.boundingBox.y - 5}
-                          fill={detection.type === 'face' ? '#22c55e' : '#3b82f6'}
+                          fill={detection.type === 'face' ? DETECTION_COLORS.face : DETECTION_COLORS.person}
                           fontSize={12}
                           fontWeight="bold"
                         >

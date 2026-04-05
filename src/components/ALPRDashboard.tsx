@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { ALPRStatsCards } from './alpr/ALPRStatsCards';
 import { ALPRCharts } from './alpr/ALPRCharts';
 import { ALPRVehicleHistory } from './alpr/ALPRVehicleHistory';
+import { ALPR_STATUS_COLORS } from '@/constants/chartColors';
 
 interface ALPRDashboardProps {
   className?: string;
@@ -41,10 +42,10 @@ export function ALPRDashboard({ className }: ALPRDashboardProps) {
     });
 
     const statusData = [
-      { name: 'Autorizados', value: detections.filter(d => d.status === 'authorized').length, color: '#22c55e' },
-      { name: 'Desconhecidos', value: detections.filter(d => d.status === 'unknown').length, color: '#64748b' },
-      { name: 'Não Autorizados', value: detections.filter(d => d.status === 'unauthorized').length, color: '#eab308' },
-      { name: 'Blacklist', value: detections.filter(d => d.status === 'blacklist').length, color: '#ef4444' },
+      { name: 'Autorizados', value: detections.filter(d => d.status === 'authorized').length, color: ALPR_STATUS_COLORS.authorized },
+      { name: 'Desconhecidos', value: detections.filter(d => d.status === 'unknown').length, color: ALPR_STATUS_COLORS.unknown },
+      { name: 'Não Autorizados', value: detections.filter(d => d.status === 'unauthorized').length, color: ALPR_STATUS_COLORS.unauthorized },
+      { name: 'Blacklist', value: detections.filter(d => d.status === 'blacklist').length, color: ALPR_STATUS_COLORS.blacklist },
     ].filter(s => s.value > 0);
 
     const cameraData = Object.entries(

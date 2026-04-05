@@ -5,6 +5,7 @@
 
 import { memo } from 'react';
 import { cn } from '@/lib/utils';
+import { DETECTION_COLORS } from '@/constants/chartColors';
 
 export interface DetectionBox {
   id: string;
@@ -28,10 +29,10 @@ interface DetectionOverlayProps {
 }
 
 const defaultColors: Record<DetectionBox['type'], string> = {
-  face: '#22c55e',
-  person: '#3b82f6',
-  vehicle: '#f59e0b',
-  object: '#8b5cf6',
+  face: DETECTION_COLORS.face,
+  person: DETECTION_COLORS.person,
+  vehicle: DETECTION_COLORS.vehicle,
+  object: DETECTION_COLORS.object,
 };
 
 function DetectionOverlayComponent({

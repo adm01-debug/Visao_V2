@@ -5,6 +5,7 @@
 
 import React, { useMemo } from 'react';
 import { cn } from '@/lib/utils';
+import { CHART_COLORS } from '@/constants/chartColors';
 
 export interface GaugeSegment {
   value: number;
@@ -36,9 +37,9 @@ export interface GaugeProps {
 }
 
 const DEFAULT_SEGMENTS: GaugeSegment[] = [
-  { value: 33, color: '#22c55e' },  // Green
-  { value: 66, color: '#eab308' },  // Yellow
-  { value: 100, color: '#ef4444' }, // Red
+  { value: 33, color: CHART_COLORS.success },  // Green
+  { value: 66, color: CHART_COLORS.warning },  // Yellow
+  { value: 100, color: CHART_COLORS.destructive }, // Red
 ];
 
 export const Gauge: React.FC<GaugeProps> = ({
