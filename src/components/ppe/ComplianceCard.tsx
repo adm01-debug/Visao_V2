@@ -12,9 +12,9 @@ interface ComplianceCardProps {
 
 const colorClasses = {
   default: 'text-primary',
-  success: 'text-green-500',
-  warning: 'text-yellow-500',
-  danger: 'text-red-500',
+  success: 'text-success',
+  warning: 'text-warning',
+  danger: 'text-destructive',
 };
 
 export function ComplianceCard({ title, value, icon: Icon, trend, color = 'default' }: ComplianceCardProps) {
