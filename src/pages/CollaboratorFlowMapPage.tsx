@@ -81,8 +81,8 @@ export default function CollaboratorFlowMapPage() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-primary/10"><Users className="h-5 w-5 text-primary" /></div><div><p className="text-2xl font-bold">{totalPeople}</p><p className="text-[11px] text-muted-foreground">Pessoas Rastreadas</p></div></CardContent></Card>
-        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-blue-500/10"><MapPin className="h-5 w-5 text-blue-600" /></div><div><p className="text-2xl font-bold">{zoneMetrics.length}</p><p className="text-[11px] text-muted-foreground">Zonas Ativas</p></div></CardContent></Card>
-        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-emerald-500/10"><TrendingUp className="h-5 w-5 text-emerald-600" /></div><div><p className="text-2xl font-bold">{totalFlows}</p><p className="text-[11px] text-muted-foreground">Movimentações</p></div></CardContent></Card>
+        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-primary/10"><MapPin className="h-5 w-5 text-primary" /></div><div><p className="text-2xl font-bold">{zoneMetrics.length}</p><p className="text-[11px] text-muted-foreground">Zonas Ativas</p></div></CardContent></Card>
+        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-success/10"><TrendingUp className="h-5 w-5 text-success" /></div><div><p className="text-2xl font-bold">{totalFlows}</p><p className="text-[11px] text-muted-foreground">Movimentações</p></div></CardContent></Card>
         <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-destructive/10"><AlertTriangle className="h-5 w-5 text-destructive" /></div><div><p className="text-2xl font-bold">{bottlenecks.length}</p><p className="text-[11px] text-muted-foreground">Gargalos</p></div></CardContent></Card>
       </div>
 
@@ -95,11 +95,11 @@ export default function CollaboratorFlowMapPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {bottlenecks.map((b, i) => (
                     <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-background border border-border/50">
-                      <div className={`p-1.5 rounded-md ${b.severity === "critical" ? "bg-destructive/20" : "bg-yellow-500/20"}`}>
-                        {b.severity === "critical" ? <Zap className="h-3.5 w-3.5 text-destructive" /> : <AlertTriangle className="h-3.5 w-3.5 text-yellow-600" />}
+                      <div className={`p-1.5 rounded-md ${b.severity === "critical" ? "bg-destructive/20" : "bg-warning/20"}`}>
+                        {b.severity === "critical" ? <Zap className="h-3.5 w-3.5 text-destructive" /> : <AlertTriangle className="h-3.5 w-3.5 text-warning" />}
                       </div>
                       <div><p className="text-sm font-medium">{b.zoneName}</p><p className="text-xs text-muted-foreground">{b.reason}: {b.metric}</p></div>
-                      <Badge className={`ml-auto text-[10px] ${b.severity === "critical" ? "bg-destructive/20 text-destructive border-destructive/30" : "bg-yellow-500/20 text-yellow-600 border-yellow-500/30"}`}>{b.severity === "critical" ? "Crítico" : "Atenção"}</Badge>
+                      <Badge className={`ml-auto text-[10px] ${b.severity === "critical" ? "bg-destructive/20 text-destructive border-destructive/30" : "bg-warning/15 text-warning border-warning/30"}`}>{b.severity === "critical" ? "Crítico" : "Atenção"}</Badge>
                     </div>
                   ))}
                 </div>
@@ -123,7 +123,7 @@ export default function CollaboratorFlowMapPage() {
                     <div className="flex items-center justify-between mb-2"><div className="w-3 h-3 rounded-full" style={{ backgroundColor: z.color }} /><Badge variant="outline" className="text-[9px]">{z.type === "productive" ? "Produtiva" : z.type === "idle" ? "Ociosa" : "Trânsito"}</Badge></div>
                     <p className="font-medium text-sm truncate" title={z.name}>{z.name}</p>
                     <div className="mt-2 flex items-end justify-between"><div><span className={`text-2xl font-bold tabular-nums ${getOccupancyColor(z.currentPeople, z.capacity)}`}>{z.currentPeople}</span><span className="text-xs text-muted-foreground">/{z.capacity}</span></div><span className="text-[10px] text-muted-foreground">{rate}%</span></div>
-                    <div className="mt-2 h-1.5 rounded-full bg-muted overflow-hidden"><motion.div className={`h-full rounded-full ${rate > 100 ? "bg-destructive" : rate > 80 ? "bg-yellow-500" : "bg-emerald-500"}`} initial={{ width: 0 }} animate={{ width: `${Math.min(rate, 100)}%` }} transition={{ duration: 0.8 }} /></div>
+                    <div className="mt-2 h-1.5 rounded-full bg-muted overflow-hidden"><motion.div className={`h-full rounded-full ${rate > 100 ? "bg-destructive" : rate > 80 ? "bg-warning" : "bg-success"}`} initial={{ width: 0 }} animate={{ width: `${Math.min(rate, 100)}%` }} transition={{ duration: 0.8 }} /></div>
                     <p className="text-[10px] text-muted-foreground mt-1.5">Permanência: {z.avgDwell}min</p>
                   </motion.div>
                 );
@@ -153,7 +153,7 @@ export default function CollaboratorFlowMapPage() {
                         <td className="p-3 font-medium text-xs">{edge.to}</td>
                         <td className="p-3 text-right font-mono font-bold tabular-nums">{edge.count}</td>
                         <td className="p-3 text-right font-mono text-xs tabular-nums text-muted-foreground">{edge.avgTransitTime}s</td>
-                        <td className="p-3"><div className="flex items-center gap-2"><div className="w-20 h-1.5 rounded-full bg-muted overflow-hidden"><div className={`h-full rounded-full ${intensity > 80 ? "bg-destructive" : intensity > 50 ? "bg-yellow-500" : "bg-emerald-500"}`} style={{ width: `${intensity}%` }} /></div><span className="text-[10px] text-muted-foreground tabular-nums">{intensity}%</span></div></td>
+                        <td className="p-3"><div className="flex items-center gap-2"><div className="w-20 h-1.5 rounded-full bg-muted overflow-hidden"><div className={`h-full rounded-full ${intensity > 80 ? "bg-destructive" : intensity > 50 ? "bg-warning" : "bg-success"}`} style={{ width: `${intensity}%` }} /></div><span className="text-[10px] text-muted-foreground tabular-nums">{intensity}%</span></div></td>
                       </motion.tr>
                     );
                   })}

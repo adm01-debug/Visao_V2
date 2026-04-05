@@ -107,8 +107,8 @@ export default function GoalsAlertsPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-primary/10"><BarChart3 className="h-5 w-5 text-primary" /></div><div><p className={`text-2xl font-bold ${getScoreColor(avgScore)}`}>{avgScore}%</p><p className="text-[11px] text-muted-foreground">Score Médio</p></div></CardContent></Card>
-        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-emerald-500/10"><CheckCircle className="h-5 w-5 text-emerald-600" /></div><div><p className="text-2xl font-bold">{onTrackCount}/{collaboratorKPIs.length}</p><p className="text-[11px] text-muted-foreground">Dentro da Meta</p></div></CardContent></Card>
-        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-yellow-500/10"><AlertTriangle className="h-5 w-5 text-yellow-600" /></div><div><p className="text-2xl font-bold">{totalWarnings}</p><p className="text-[11px] text-muted-foreground">Avisos</p></div></CardContent></Card>
+        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-success/10"><CheckCircle className="h-5 w-5 text-success" /></div><div><p className="text-2xl font-bold">{onTrackCount}/{collaboratorKPIs.length}</p><p className="text-[11px] text-muted-foreground">Dentro da Meta</p></div></CardContent></Card>
+        <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-warning/10"><AlertTriangle className="h-5 w-5 text-warning" /></div><div><p className="text-2xl font-bold">{totalWarnings}</p><p className="text-[11px] text-muted-foreground">Avisos</p></div></CardContent></Card>
         <Card><CardContent className="p-4 flex items-center gap-3"><div className="p-2 rounded-lg bg-destructive/10"><Zap className="h-5 w-5 text-destructive" /></div><div><p className="text-2xl font-bold">{totalAlerts}</p><p className="text-[11px] text-muted-foreground">Alertas Críticos</p></div></CardContent></Card>
       </div>
 

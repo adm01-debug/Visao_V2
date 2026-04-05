@@ -264,7 +264,7 @@ export function WebcamCapture({
         {/* Badge de status */}
         {status === 'ready' && (
           <div className="absolute top-3 left-3">
-            <div className="flex items-center gap-1.5 px-2 py-1 bg-green-500/90 text-white text-xs rounded-full">
+            <div className="flex items-center gap-1.5 px-2 py-1 bg-success/90 text-success-foreground text-xs rounded-full">
               <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
               Câmera ativa
             </div>

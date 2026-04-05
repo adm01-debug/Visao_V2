@@ -82,7 +82,7 @@ export function GlobalSearch() {
                 <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted">{getCameraIcon(c.status)}</div>
                 <div className="flex flex-col"><span className="font-medium">{c.name}</span><span className="text-xs text-muted-foreground">{c.location}</span></div>
               </div>
-              <Badge variant="outline" className={cn("text-xs capitalize", c.status === "online" && "bg-emerald-500/20 text-emerald-400 border-emerald-500/30", c.status === "offline" && "bg-muted text-muted-foreground", c.status === "alert" && "bg-red-500/20 text-red-400 border-red-500/30")}>{c.status}</Badge>
+              <Badge variant="outline" className={cn("text-xs capitalize", c.status === "online" && "bg-success/15 text-success border-success/30", c.status === "offline" && "bg-muted text-muted-foreground", c.status === "alert" && "bg-destructive/15 text-destructive border-destructive/30")}>{c.status}</Badge>
             </CommandItem>
           ))}
         </CommandGroup></>)}
@@ -119,12 +119,12 @@ export function GlobalSearch() {
           {fz.slice(0, 5).map(z => (
             <CommandItem key={z.id} value={`zone-${z.name}`} onSelect={() => handleSelect(`/zones/${z.id}`)} className="flex items-center justify-between px-3 py-2">
               <div className="flex items-center gap-3">
-                <div className={cn("flex h-8 w-8 items-center justify-center rounded-md", z.is_active ? "bg-amber-500/10" : "bg-muted")}>
-                  <MapPin className={cn("h-4 w-4", z.is_active ? "text-amber-400" : "text-muted-foreground")} />
+                <div className={cn("flex h-8 w-8 items-center justify-center rounded-md", z.is_active ? "bg-warning/10" : "bg-muted")}>
+                  <MapPin className={cn("h-4 w-4", z.is_active ? "text-warning" : "text-muted-foreground")} />
                 </div>
                 <div className="flex flex-col"><span className="font-medium">{z.name}</span><span className="text-xs text-muted-foreground capitalize">{z.type}</span></div>
               </div>
-              <Badge variant="outline" className={cn("text-xs", z.is_active ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-muted text-muted-foreground")}>{z.is_active ? "Ativa" : "Inativa"}</Badge>
+              <Badge variant="outline" className={cn("text-xs", z.is_active ? "bg-success/15 text-success border-success/30" : "bg-muted text-muted-foreground")}>{z.is_active ? "Ativa" : "Inativa"}</Badge>
             </CommandItem>
           ))}
         </CommandGroup></>)}

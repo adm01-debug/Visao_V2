@@ -40,7 +40,7 @@ export function DetectionSidebar({ results, personsCache }: DetectionSidebarProp
                     {result.confidence > 0 && <span>• {(result.confidence * 100).toFixed(0)}%</span>}
                   </div>
                 </div>
-                {result.isBlacklist ? <AlertTriangle className="h-4 w-4 text-destructive flex-shrink-0" /> : result.personId ? <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" /> : null}
+                {result.isBlacklist ? <AlertTriangle className="h-4 w-4 text-destructive flex-shrink-0" /> : result.personId ? <CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> : null}
               </div>
             </div>
           ))}

@@ -35,7 +35,7 @@ export function CompactClipControls({ state, duration, savedClip, onStart, onSto
         {state === 'idle' && (
           <Tooltip><TooltipTrigger asChild>
             <Button variant="ghost" size="icon" className="h-8 w-8 text-white hover:bg-white/20" onClick={onStart}>
-              <Circle className="w-4 h-4 fill-red-500 text-red-500" />
+              <Circle className="w-4 h-4 fill-destructive text-destructive" />
             </Button>
           </TooltipTrigger><TooltipContent>Iniciar gravação</TooltipContent></Tooltip>
         )}

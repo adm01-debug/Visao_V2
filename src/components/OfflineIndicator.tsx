@@ -73,7 +73,7 @@ export function OfflineIndicator({
             size="icon"
             className={cn(
               'relative',
-              !isOnline && 'text-yellow-500',
+              !isOnline && 'text-warning',
               className
             )}
             onClick={() => isOnline && syncNow()}
@@ -82,7 +82,7 @@ export function OfflineIndicator({
             {isSyncing ? (
               <RefreshCw className="h-4 w-4 animate-spin" />
             ) : isOnline ? (
-              <Wifi className="h-4 w-4 text-green-500" />
+              <Wifi className="h-4 w-4 text-success" />
             ) : (
               <WifiOff className="h-4 w-4" />
             )}
@@ -119,15 +119,15 @@ export function OfflineIndicator({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="bg-yellow-500/10 border-b border-yellow-500/20 overflow-hidden"
+            className="bg-warning/10 border-b border-warning/20 overflow-hidden"
           >
             <div className="container flex items-center justify-between py-2 px-4">
-              <div className="flex items-center gap-2 text-yellow-500">
+              <div className="flex items-center gap-2 text-warning">
                 <CloudOff className="h-4 w-4" />
                 <span className="text-sm font-medium">
                   Você está offline
                 </span>
-                <span className="text-xs text-yellow-500/70">
+                <span className="text-xs text-warning/70">
                   — Alterações serão sincronizadas quando a conexão voltar
                 </span>
               </div>
@@ -135,7 +135,7 @@ export function OfflineIndicator({
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowBanner(false)}
-                className="text-yellow-500 hover:text-yellow-400 h-6 px-2"
+                className="text-warning hover:text-warning/80 h-6 px-2"
               >
                 Fechar
               </Button>
@@ -152,14 +152,14 @@ export function OfflineIndicator({
             size="sm"
             className={cn(
               'gap-2',
-              !isOnline && 'text-yellow-500',
+              !isOnline && 'text-warning',
               className
             )}
           >
             {isSyncing ? (
               <RefreshCw className="h-4 w-4 animate-spin" />
             ) : isOnline ? (
-              <Cloud className="h-4 w-4 text-green-500" />
+              <Cloud className="h-4 w-4 text-success" />
             ) : (
               <CloudOff className="h-4 w-4" />
             )}
@@ -179,9 +179,9 @@ export function OfflineIndicator({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 {isOnline ? (
-                  <CheckCircle2 className="h-5 w-5 text-green-500" />
+                  <CheckCircle2 className="h-5 w-5 text-success" />
                 ) : (
-                  <AlertCircle className="h-5 w-5 text-yellow-500" />
+                  <AlertCircle className="h-5 w-5 text-warning" />
                 )}
                 <div>
                   <p className="font-medium text-sm">
@@ -210,8 +210,8 @@ export function OfflineIndicator({
 
             {/* Pending Actions */}
             {pendingActionsCount > 0 && (
-              <div className="p-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-                <div className="flex items-center gap-2 text-yellow-500">
+              <div className="p-2 bg-warning/10 border border-warning/20 rounded-lg">
+                <div className="flex items-center gap-2 text-warning">
                   <AlertCircle className="h-4 w-4" />
                   <span className="text-sm">
                     {pendingActionsCount} ação(ões) pendente(s)

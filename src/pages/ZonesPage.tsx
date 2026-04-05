@@ -147,9 +147,9 @@ export function ZonesPage() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card><CardContent className="p-4"><div className="flex items-center justify-between"><div><p className="text-xs text-muted-foreground">Total</p><p className="text-2xl font-bold">{stats.total}</p></div><Target className="w-8 h-8 text-muted-foreground" /></div></CardContent></Card>
-        <Card><CardContent className="p-4"><div className="flex items-center justify-between"><div><p className="text-xs text-muted-foreground">Ativas</p><p className="text-2xl font-bold text-green-500">{stats.active}</p></div><Activity className="w-8 h-8 text-green-500" /></div></CardContent></Card>
-        <Card><CardContent className="p-4"><div className="flex items-center justify-between"><div><p className="text-xs text-muted-foreground">Restritas</p><p className="text-2xl font-bold text-red-500">{stats.restricted}</p></div><AlertTriangle className="w-8 h-8 text-red-500" /></div></CardContent></Card>
-        <Card><CardContent className="p-4"><div className="flex items-center justify-between"><div><p className="text-xs text-muted-foreground">Contagem</p><p className="text-2xl font-bold text-blue-500">{stats.counting}</p></div><Users className="w-8 h-8 text-blue-500" /></div></CardContent></Card>
+        <Card><CardContent className="p-4"><div className="flex items-center justify-between"><div><p className="text-xs text-muted-foreground">Ativas</p><p className="text-2xl font-bold text-success">{stats.active}</p></div><Activity className="w-8 h-8 text-success" /></div></CardContent></Card>
+        <Card><CardContent className="p-4"><div className="flex items-center justify-between"><div><p className="text-xs text-muted-foreground">Restritas</p><p className="text-2xl font-bold text-destructive">{stats.restricted}</p></div><AlertTriangle className="w-8 h-8 text-destructive" /></div></CardContent></Card>
+        <Card><CardContent className="p-4"><div className="flex items-center justify-between"><div><p className="text-xs text-muted-foreground">Contagem</p><p className="text-2xl font-bold text-primary">{stats.counting}</p></div><Users className="w-8 h-8 text-primary" /></div></CardContent></Card>
       </div>
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">

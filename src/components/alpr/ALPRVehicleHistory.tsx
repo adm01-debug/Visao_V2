@@ -25,11 +25,11 @@ interface ALPRVehicleHistoryProps {
 function getStatusBadge(status: string) {
   switch (status) {
     case 'authorized':
-      return <Badge className="bg-green-500/20 text-green-600 border-green-500/30"><CheckCircle2 className="h-3 w-3 mr-1" />Autorizado</Badge>;
+      return <Badge className="bg-success/15 text-success border-success/30"><CheckCircle2 className="h-3 w-3 mr-1" />Autorizado</Badge>;
     case 'blacklist':
       return <Badge variant="destructive"><AlertTriangle className="h-3 w-3 mr-1" />Blacklist</Badge>;
     case 'unauthorized':
-      return <Badge className="bg-yellow-500/20 text-yellow-600 border-yellow-500/30"><Shield className="h-3 w-3 mr-1" />Não Autorizado</Badge>;
+      return <Badge className="bg-warning/15 text-warning border-warning/30"><Shield className="h-3 w-3 mr-1" />Não Autorizado</Badge>;
     default:
       return <Badge variant="outline"><Eye className="h-3 w-3 mr-1" />Desconhecido</Badge>;
   }

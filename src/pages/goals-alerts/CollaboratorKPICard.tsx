@@ -44,23 +44,23 @@ export function CollaboratorKPICard({ collaborator: c, index }: CollaboratorKPIC
           <div key={k.goalId} className="flex items-center justify-between text-[11px]">
             <div className="flex items-center gap-1.5 min-w-0">
               {k.status === "on_track" ? (
-                <CheckCircle className="h-3 w-3 text-emerald-500 flex-shrink-0" />
+                <CheckCircle className="h-3 w-3 text-success flex-shrink-0" />
               ) : k.status === "warning" ? (
-                <AlertTriangle className="h-3 w-3 text-yellow-500 flex-shrink-0" />
+                <AlertTriangle className="h-3 w-3 text-warning flex-shrink-0" />
               ) : (
                 <AlertTriangle className="h-3 w-3 text-destructive flex-shrink-0" />
               )}
               <span className="truncate text-muted-foreground">{k.goalName}</span>
             </div>
             <div className="flex items-center gap-1 flex-shrink-0">
-              <span className={`font-mono font-bold ${k.status === "on_track" ? "text-emerald-600" : k.status === "warning" ? "text-yellow-600" : "text-destructive"}`}>
+              <span className={`font-mono font-bold ${k.status === "on_track" ? "text-success" : k.status === "warning" ? "text-warning" : "text-destructive"}`}>
                 {k.current}
               </span>
               <span className="text-muted-foreground">/ {k.target}{k.unit}</span>
               {k.direction === "higher" ? (
-                <TrendingUp className={`h-3 w-3 ${k.deviation <= 0 ? "text-emerald-500" : "text-destructive"}`} />
+                <TrendingUp className={`h-3 w-3 ${k.deviation <= 0 ? "text-success" : "text-destructive"}`} />
               ) : (
-                <TrendingDown className={`h-3 w-3 ${k.deviation <= 0 ? "text-emerald-500" : "text-destructive"}`} />
+                <TrendingDown className={`h-3 w-3 ${k.deviation <= 0 ? "text-success" : "text-destructive"}`} />
               )}
             </div>
           </div>
