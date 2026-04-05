@@ -1,4 +1,4 @@
-import { logger } from "@/lib";
+import { logger } from "@/lib/logger";
 /**
  * VISÃO - useSettings (Refactored)
  * Types extracted to settings/types.ts
