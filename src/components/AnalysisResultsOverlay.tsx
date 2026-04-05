@@ -42,17 +42,17 @@ interface AnalysisResultsOverlayProps {
 }
 
 const SEVERITY_COLORS: Record<string, string> = {
-  low: 'text-green-400',
-  medium: 'text-yellow-400',
-  high: 'text-orange-400',
-  critical: 'text-red-400',
+  low: 'text-success',
+  medium: 'text-warning',
+  high: 'text-warning',
+  critical: 'text-destructive',
 };
 
 const SEVERITY_BG: Record<string, string> = {
-  low: 'bg-green-500/20 border-green-500/40',
-  medium: 'bg-yellow-500/20 border-yellow-500/40',
-  high: 'bg-orange-500/20 border-orange-500/40',
-  critical: 'bg-red-500/20 border-red-500/40',
+  low: 'bg-success/20 border-success/40',
+  medium: 'bg-warning/20 border-warning/40',
+  high: 'bg-warning/25 border-warning/40',
+  critical: 'bg-destructive/20 border-destructive/40',
 };
 
 function isSecurityAnalysis(r: AnalysisResult): r is SecurityAnalysis {
