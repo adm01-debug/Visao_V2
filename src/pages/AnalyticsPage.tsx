@@ -128,7 +128,7 @@ export function AnalyticsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 stagger-in">
         {loading ? Array.from({ length: 4 }).map((_, i) => <KPICard key={i} data={{} as KPIData} loading />) : kpis.map((kpi, i) => <KPICard key={i} data={kpi} />)}
       </div>
 
