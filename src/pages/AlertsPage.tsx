@@ -154,9 +154,18 @@ export function AlertsPage() {
         </div>
       </div>
 
-      <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'flex flex-col gap-2')}>
-        {paginatedItems.map(alert => (
-          <AlertItem key={alert.id} alert={alert} isSelected={selectedAlerts.has(alert.id)} onSelect={(selected) => handleSelectAlert(alert.id, selected)} onView={() => setDetailsAlert(alert)} onMarkRead={() => markAsRead(alert.id)} onDelete={() => deleteAlert(alert.id)} viewMode={viewMode} />
+      <div className={cn(
+        viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'flex flex-col gap-2',
+        'transition-all duration-300 ease-out'
+      )}>
+        {paginatedItems.map((alert, index) => (
+          <div
+            key={alert.id}
+            className="animate-fade-in"
+            style={{ animationDelay: `${index * 30}ms`, animationFillMode: 'backwards' }}
+          >
+            <AlertItem alert={alert} isSelected={selectedAlerts.has(alert.id)} onSelect={(selected) => handleSelectAlert(alert.id, selected)} onView={() => setDetailsAlert(alert)} onMarkRead={() => markAsRead(alert.id)} onDelete={() => deleteAlert(alert.id)} viewMode={viewMode} />
+          </div>
         ))}
       </div>
 
