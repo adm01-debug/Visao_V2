@@ -89,7 +89,7 @@ export function SecurityPage() {
   }
 
   return (
-    <div role="main" aria-label="Segurança" className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
+    <div role="main" aria-label="Segurança" className="page-container space-y-6 h-[calc(100vh-4rem)] overflow-auto mb-mobile-nav">
       <PageMeta title="Segurança" description="Logs de auditoria, controle de acesso e listas de segurança" />
       <div className="flex items-center justify-between">
         <div>
