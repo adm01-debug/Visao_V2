@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+import { PageMeta } from '@/components/PageMeta';
 import {
   ScanFace,
   Camera,
@@ -76,10 +76,7 @@ export default function FaceRecognitionPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Reconhecimento Facial | VISÃO</title>
-        <meta name="description" content="Sistema de reconhecimento facial em tempo real para vigilância inteligente" />
-      </Helmet>
+      <PageMeta title="Reconhecimento Facial" description="Sistema de reconhecimento facial com IA" />
 
       <div className="flex flex-col h-full">
         <header className="flex items-center justify-between px-6 py-4 border-b bg-card">
