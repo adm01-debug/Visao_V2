@@ -190,7 +190,7 @@ const badgeVariants = {
   success: 'bg-success/10 text-success',
   warning: 'bg-warning/10 text-warning',
   error: 'bg-destructive/10 text-destructive',
-  info: 'bg-blue-500/10 text-blue-600',
+  info: 'bg-primary/10 text-primary',
   outline: 'border border-border text-muted-foreground'
 };
 
@@ -221,7 +221,7 @@ export function Badge({
           variant === 'success' && 'bg-success',
           variant === 'warning' && 'bg-warning',
           variant === 'error' && 'bg-destructive',
-          variant === 'info' && 'bg-blue-500'
+          variant === 'info' && 'bg-primary'
         )} />
       )}
       {children}

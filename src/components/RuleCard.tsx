@@ -33,11 +33,11 @@ interface RuleCardProps {
 }
 
 const categoryConfig: Record<string, { icon: typeof Shield; label: string; color: string }> = {
-  security: { icon: Shield, label: 'Segurança', color: 'text-blue-400' },
-  safety: { icon: AlertTriangle, label: 'Segurança do Trabalho', color: 'text-amber-400' },
-  operations: { icon: Cog, label: 'Operações', color: 'text-emerald-400' },
-  access: { icon: Lock, label: 'Acesso', color: 'text-red-400' },
-  analytics: { icon: BarChart3, label: 'Analytics', color: 'text-purple-400' },
+  security: { icon: Shield, label: 'Segurança', color: 'text-primary' },
+  safety: { icon: AlertTriangle, label: 'Segurança do Trabalho', color: 'text-warning' },
+  operations: { icon: Cog, label: 'Operações', color: 'text-success' },
+  access: { icon: Lock, label: 'Acesso', color: 'text-destructive' },
+  analytics: { icon: BarChart3, label: 'Analytics', color: 'text-primary' },
 };
 
 const severityConfig: Record<string, { label: string; variant: 'default' | 'success' | 'warning' | 'alert' }> = {

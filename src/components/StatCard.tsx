@@ -19,7 +19,7 @@ export const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, tr
           <p className="text-sm text-muted-foreground">{title}</p>
           <p className="text-2xl font-bold mt-1">{value}</p>
           {trend && (
-            <div className={cn('flex items-center gap-1 text-xs mt-2', trend.value >= 0 ? 'text-green-500' : 'text-red-500')}>
+            <div className={cn('flex items-center gap-1 text-xs mt-2', trend.value >= 0 ? 'text-success' : 'text-destructive')}>
               {trend.value >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
               <span>{Math.abs(trend.value)}% {trend.label}</span>
             </div>

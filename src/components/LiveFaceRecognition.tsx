@@ -87,7 +87,7 @@ export function LiveFaceRecognition({ cameraId = 'webcam', cameraName = 'Webcam'
       {showStats && isRunning && (
         <div className="absolute top-4 right-4 flex flex-col gap-1">
           <Badge variant="secondary" className="justify-between gap-2"><Users className="w-3 h-3" />{stats.totalDetections} detectados</Badge>
-          <Badge variant="default" className="justify-between gap-2 bg-green-600"><UserCheck className="w-3 h-3" />{stats.knownFaces} conhecidos</Badge>
+          <Badge variant="default" className="justify-between gap-2 bg-success"><UserCheck className="w-3 h-3" />{stats.knownFaces} conhecidos</Badge>
           <Badge variant="outline" className="justify-between gap-2"><UserX className="w-3 h-3" />{stats.unknownFaces} desconhecidos</Badge>
           {stats.lastProcessingTime > 0 && <Badge variant="outline" className="justify-between gap-2 text-[10px]">{stats.lastProcessingTime}ms</Badge>}
         </div>

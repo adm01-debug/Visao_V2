@@ -55,9 +55,9 @@ interface AlertDetailProps {
 const alertTypeConfig: Record<AlertType, { icon: typeof Shield; label: string; color: string }> = {
   security: { icon: Shield, label: 'Segurança', color: 'text-destructive' },
   safety: { icon: AlertTriangle, label: 'Segurança do Trabalho', color: 'text-warning' },
-  operations: { icon: Cog, label: 'Operações', color: 'text-emerald-400' },
+  operations: { icon: Cog, label: 'Operações', color: 'text-success' },
   access: { icon: ShieldAlert, label: 'Acesso', color: 'text-destructive' },
-  analytics: { icon: BarChart3, label: 'Analytics', color: 'text-purple-400' },
+  analytics: { icon: BarChart3, label: 'Analytics', color: 'text-primary' },
 };
 
 const severityConfig: Record<AlertSeverity, { label: string; variant: 'secondary' | 'warning' | 'destructive' | 'default' }> = {
@@ -154,7 +154,7 @@ function AlertDetailComponent({
         )}
 
         {alert.isRead && (
-          <div className="flex items-center gap-2 text-green-500 justify-center">
+          <div className="flex items-center gap-2 text-success justify-center">
             <CheckCircle className="w-4 h-4" />
             <span className="text-sm">Alerta reconhecido</span>
           </div>

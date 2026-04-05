@@ -38,8 +38,8 @@ const colorMap: Record<string, string> = {
 
 const severityColorMap: Record<string, string> = {
   low: 'bg-muted text-muted-foreground',
-  medium: 'bg-blue-500/10 text-blue-600',
-  high: 'bg-orange-500/10 text-orange-600',
+  medium: 'bg-primary/10 text-primary',
+  high: 'bg-warning/10 text-warning',
   critical: 'bg-destructive/10 text-destructive'
 };
 

@@ -15,12 +15,12 @@ interface ZoneActivity {
 }
 
 const getHeatClass = (intensity: number): string => {
-  if (intensity >= 0.9) return 'bg-red-500/80';
-  if (intensity >= 0.7) return 'bg-orange-500/70';
-  if (intensity >= 0.5) return 'bg-yellow-500/60';
-  if (intensity >= 0.3) return 'bg-green-500/50';
-  if (intensity >= 0.1) return 'bg-cyan-500/40';
-  return 'bg-blue-500/30';
+  if (intensity >= 0.9) return 'bg-destructive/80';
+  if (intensity >= 0.7) return 'bg-warning/70';
+  if (intensity >= 0.5) return 'bg-warning/60';
+  if (intensity >= 0.3) return 'bg-success/50';
+  if (intensity >= 0.1) return 'bg-primary/40';
+  return 'bg-primary/30';
 };
 
 interface HeatmapMatrixTabProps {
@@ -60,7 +60,7 @@ export function HeatmapMatrixTab({ zoneActivities, loading }: HeatmapMatrixTabPr
             <div className="flex items-center justify-center gap-4 mt-6">
               <span className="text-sm text-muted-foreground">Menor</span>
               <div className="flex gap-1">
-                {['bg-blue-500/30', 'bg-cyan-500/40', 'bg-green-500/50', 'bg-yellow-500/60', 'bg-orange-500/70', 'bg-red-500/80'].map(c => (
+                {['bg-primary/30', 'bg-primary/40', 'bg-success/50', 'bg-warning/60', 'bg-warning/70', 'bg-destructive/80'].map(c => (
                   <div key={c} className={`w-6 h-4 rounded ${c}`} />
                 ))}
               </div>

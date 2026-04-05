@@ -233,12 +233,12 @@ export function TelegramConfigPanel({ className, onConfigChange }: TelegramConfi
                 </>
               ) : testResult === 'success' ? (
                 <>
-                  <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
+                  <CheckCircle2 className="h-4 w-4 mr-2 text-success" />
                   Sucesso
                 </>
               ) : testResult === 'error' ? (
                 <>
-                  <AlertCircle className="h-4 w-4 mr-2 text-red-500" />
+                  <AlertCircle className="h-4 w-4 mr-2 text-destructive" />
                   Erro
                 </>
               ) : (
@@ -350,10 +350,10 @@ export function TelegramConfigPanel({ className, onConfigChange }: TelegramConfi
         <CardContent>
           <div className="bg-[#0f0f0f] rounded-lg p-4 text-white text-sm font-sans">
             <p className="mb-2">🚨 <strong>ALERTA - VISÃO</strong></p>
-            <p className="text-gray-300">Tipo: <strong>Pessoa na Blacklist</strong></p>
-            <p className="text-gray-300">Câmera: Entrada Principal</p>
-            <p className="text-gray-300">Pessoa: João Silva</p>
-            <p className="text-gray-300 text-xs mt-2">📅 20/12/2025 14:32:45</p>
+            <p className="text-muted-foreground">Tipo: <strong>Pessoa na Blacklist</strong></p>
+            <p className="text-muted-foreground">Câmera: Entrada Principal</p>
+            <p className="text-muted-foreground">Pessoa: João Silva</p>
+            <p className="text-muted-foreground text-xs mt-2">📅 20/12/2025 14:32:45</p>
           </div>
         </CardContent>
       </Card>

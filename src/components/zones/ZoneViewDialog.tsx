@@ -96,7 +96,7 @@ export function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }:
                 <div className="space-y-2">
                   {events.map(event => (
                     <div key={event.id} className="flex items-center gap-3 p-3 rounded-lg border bg-card">
-                      <div className={cn('w-2 h-2 rounded-full', event.event_type.includes('enter') ? 'bg-green-500' : event.event_type.includes('exit') ? 'bg-red-500' : event.event_type.includes('dwell') ? 'bg-orange-500' : 'bg-blue-500')} />
+                      <div className={cn('w-2 h-2 rounded-full', event.event_type.includes('enter') ? 'bg-success' : event.event_type.includes('exit') ? 'bg-destructive' : event.event_type.includes('dwell') ? 'bg-warning' : 'bg-primary')} />
                       <div className="flex-1">
                         <p className="text-sm font-medium">{event.event_type}</p>
                         <p className="text-xs text-muted-foreground">{format(new Date(event.timestamp), "dd/MM/yyyy 'às' HH:mm:ss", { locale: ptBR })}</p>

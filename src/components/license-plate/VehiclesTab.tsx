@@ -18,7 +18,7 @@ interface Props {
 
 function getTypeBadge(type: string) {
   switch (type) {
-    case 'whitelist': return <Badge className="bg-green-500">Autorizado</Badge>;
+    case 'whitelist': return <Badge className="bg-success">Autorizado</Badge>;
     case 'blacklist': return <Badge variant="destructive">Bloqueado</Badge>;
     default: return <Badge variant="secondary">Visitante</Badge>;
   }

@@ -133,7 +133,7 @@ export default function FaceRecognitionPage() {
                         <CardTitle className="text-lg">Webcam</CardTitle>
                       </div>
                       <Badge variant="outline" className="gap-1">
-                        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                        <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
                         Ao vivo
                       </Badge>
                     </div>

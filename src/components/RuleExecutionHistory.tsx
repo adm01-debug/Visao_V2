@@ -64,17 +64,17 @@ const statusConfig = {
   success: {
     icon: CheckCircle2,
     label: "Sucesso",
-    className: "text-green-500 bg-green-500/10",
+    className: "text-success bg-success/10",
   },
   error: {
     icon: XCircle,
     label: "Erro",
-    className: "text-red-500 bg-red-500/10",
+    className: "text-destructive bg-destructive/10",
   },
   partial: {
     icon: AlertCircle,
     label: "Parcial",
-    className: "text-yellow-500 bg-yellow-500/10",
+    className: "text-warning bg-warning/10",
   },
 };
 
@@ -253,16 +253,16 @@ export function RuleExecutionHistory() {
             <p className="text-lg font-bold">{stats.total}</p>
             <p className="text-xs text-muted-foreground">Total</p>
           </div>
-          <div className="p-2 rounded-lg bg-green-500/10 text-center">
-            <p className="text-lg font-bold text-green-500">{stats.success}</p>
+          <div className="p-2 rounded-lg bg-success/10 text-center">
+            <p className="text-lg font-bold text-success">{stats.success}</p>
             <p className="text-xs text-muted-foreground">Sucesso</p>
           </div>
-          <div className="p-2 rounded-lg bg-red-500/10 text-center">
-            <p className="text-lg font-bold text-red-500">{stats.errors}</p>
+          <div className="p-2 rounded-lg bg-destructive/10 text-center">
+            <p className="text-lg font-bold text-destructive">{stats.errors}</p>
             <p className="text-xs text-muted-foreground">Erros</p>
           </div>
-          <div className="p-2 rounded-lg bg-blue-500/10 text-center">
-            <p className="text-lg font-bold text-blue-500">{stats.avgTime}ms</p>
+          <div className="p-2 rounded-lg bg-primary/10 text-center">
+            <p className="text-lg font-bold text-primary">{stats.avgTime}ms</p>
             <p className="text-xs text-muted-foreground">Média</p>
           </div>
         </div>

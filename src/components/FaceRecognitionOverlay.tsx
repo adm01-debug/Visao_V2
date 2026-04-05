@@ -60,9 +60,9 @@ function StatsPanel({ faces }: { faces: DetectedFace[] }) {
   return (
     <div className="absolute top-2 right-2 flex flex-col gap-1 text-[10px]">
       <div className="flex items-center gap-1 px-2 py-1 rounded bg-black/70 text-white"><User className="w-3 h-3" /><span>{stats.total} detectado{stats.total !== 1 ? 's' : ''}</span></div>
-      {stats.known > 0 && <div className="flex items-center gap-1 px-2 py-1 rounded bg-green-500/80 text-white"><UserCheck className="w-3 h-3" /><span>{stats.known} conhecido{stats.known !== 1 ? 's' : ''}</span></div>}
-      {stats.blacklisted > 0 && <div className="flex items-center gap-1 px-2 py-1 rounded bg-red-500/80 text-white animate-pulse"><Ban className="w-3 h-3" /><span>{stats.blacklisted} bloqueado{stats.blacklisted !== 1 ? 's' : ''}</span></div>}
-      {stats.vip > 0 && <div className="flex items-center gap-1 px-2 py-1 rounded bg-yellow-500/80 text-white"><Star className="w-3 h-3" /><span>{stats.vip} VIP</span></div>}
+      {stats.known > 0 && <div className="flex items-center gap-1 px-2 py-1 rounded bg-success/80 text-white"><UserCheck className="w-3 h-3" /><span>{stats.known} conhecido{stats.known !== 1 ? 's' : ''}</span></div>}
+      {stats.blacklisted > 0 && <div className="flex items-center gap-1 px-2 py-1 rounded bg-destructive/80 text-white animate-pulse"><Ban className="w-3 h-3" /><span>{stats.blacklisted} bloqueado{stats.blacklisted !== 1 ? 's' : ''}</span></div>}
+      {stats.vip > 0 && <div className="flex items-center gap-1 px-2 py-1 rounded bg-warning/80 text-white"><Star className="w-3 h-3" /><span>{stats.vip} VIP</span></div>}
     </div>
   );
 }
@@ -81,8 +81,8 @@ export function FaceRecognitionOverlay({ faces, showLabels = true, showSimilarit
       <StatsPanel faces={sortedFaces} />
       {sortedFaces.some(f => f.listType === 'blacklist') && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-          <div className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-          <div className="relative inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-600 text-white font-medium">
+          <div className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive/70 opacity-75" />
+          <div className="relative inline-flex items-center gap-2 px-4 py-2 rounded-full bg-destructive text-white font-medium">
             <AlertTriangle className="w-5 h-5" />PESSOA BLOQUEADA DETECTADA
           </div>
         </div>

@@ -23,7 +23,7 @@ export function Tooltip({ content, children, position = 'top', className }: Tool
       {children}
       {isVisible && (
         <div className={cn(
-          'absolute z-50 px-2 py-1 text-xs text-white bg-gray-900 rounded whitespace-nowrap',
+          'absolute z-50 px-2 py-1 text-xs text-white bg-popover rounded whitespace-nowrap',
           positionClasses[position],
           className
         )}>

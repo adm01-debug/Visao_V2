@@ -14,7 +14,7 @@ export const Dock: React.FC<{ items: DockItem[] }> = ({ items }) => {
         return (
           <button key={item.id} onClick={item.onClick} onMouseEnter={() => setHoveredId(item.id)} onMouseLeave={() => setHoveredId(null)} className={cn('relative flex flex-col items-center transition-all duration-200', isHovered ? 'scale-150 -translate-y-4' : isNear ? 'scale-125 -translate-y-2' : '')}>
             <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-accent">{item.icon}</div>
-            {item.badge && <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">{item.badge}</span>}
+            {item.badge && <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive text-white text-xs rounded-full flex items-center justify-center">{item.badge}</span>}
             {isHovered && <span className="absolute -top-8 px-2 py-1 bg-foreground text-background text-xs rounded whitespace-nowrap">{item.label}</span>}
           </button>
         );

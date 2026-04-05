@@ -22,7 +22,7 @@ export function DataCard({ title, value, subtitle, icon, trend, className }: Dat
         <div className="text-2xl font-bold">{value}</div>
         {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
         {trend && (
-          <p className={cn('text-xs mt-1', trend.isPositive ? 'text-green-600' : 'text-red-600')}>
+          <p className={cn('text-xs mt-1', trend.isPositive ? 'text-success' : 'text-destructive')}>
             {trend.isPositive ? '+' : ''}{trend.value}%
           </p>
         )}

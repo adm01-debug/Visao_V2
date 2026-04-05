@@ -22,11 +22,11 @@ const variantClasses: Record<string, string> = {
 
 // Legacy color map for backwards compat
 const colorToVariant: Record<string, string> = {
-  'bg-red-500': 'destructive',
-  'bg-purple-500': 'primary',
-  'bg-blue-500': 'primary',
-  'bg-green-500': 'success',
-  'bg-yellow-500': 'warning',
+  'bg-destructive': 'destructive',
+  'bg-primary': 'primary',
+  'bg-primary': 'primary',
+  'bg-success': 'success',
+  'bg-warning': 'warning',
 };
 
 export function KPICard({ data, loading }: { data: KPIData; loading?: boolean }) {
