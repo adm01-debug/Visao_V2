@@ -69,11 +69,7 @@ const queryClient = new QueryClient({
   },
 });
 
-const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-screen bg-background">
-    <LoadingSpinner size="lg" />
-  </div>
-);
+const PageLoader = () => <SplashScreen />;
 
 // Layout wrapper para rotas protegidas com MainLayout
 const ProtectedLayoutRoute = ({ children }: { children: React.ReactNode }) => {
