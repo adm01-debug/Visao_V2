@@ -28,7 +28,7 @@ export const PlateRegistrationForm = memo(function PlateRegistrationForm({
   registeredPlates, onAdd, onDelete,
 }: PlateRegistrationFormProps) {
   const [newPlate, setNewPlate] = useState({
-    plate: '', owner_name: '', vehicle_type: 'car', color: '', notes: '', list_type: 'whitelist' as string,
+    plate: '', owner_name: '', vehicle_type: 'car', color: '', notes: '', list_type: 'whitelist' as 'whitelist' | 'blacklist' | 'visitor',
   });
 
   const handleSubmit = () => {
