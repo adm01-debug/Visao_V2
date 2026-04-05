@@ -1,81 +1,169 @@
-// Validation helper for Edge Functions
-export interface ValidationResult {
-  valid: boolean;
-  errors: string[];
-}
+/**
+ * Shared Zod validation schemas for Edge Functions
+ * Centralized input validation for security hardening
+ */
 
-export function validateRequest<T>(
-  body: unknown,
-  requiredFields: (keyof T)[]
-): ValidationResult {
-  const errors: string[] = [];
+import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 
-  if (!body || typeof body !== 'object') {
-    return { valid: false, errors: ['Request body must be a valid object'] };
+// Re-export z for convenience
+export { z };
+
+// ==========================================
+// Common schemas
+// ==========================================
+
+export const uuidSchema = z.string().uuid();
+
+// ==========================================
+// analyze-image
+// ==========================================
+
+export const analyzeImageSchema = z.object({
+  imageUrl: z.string().url().optional(),
+  imageBase64: z.string().min(100).max(10_000_000).optional(),
+  analysisType: z.enum(["security", "productivity", "safety"]).default("security"),
+}).refine(
+  (data) => data.imageUrl || data.imageBase64,
+  { message: "Either imageUrl or imageBase64 is required" }
+);
+
+// ==========================================
+// analyze-license-plate
+// ==========================================
+
+export const analyzeLicensePlateSchema = z.object({
+  image: z.string().min(10, "Image data is required"),
+});
+
+// ==========================================
+// detect-faces
+// ==========================================
+
+export const detectFacesSchema = z.object({
+  imageBase64: z.string().min(100, "imageBase64 is required"),
+  minConfidence: z.number().min(0).max(1).default(0.5),
+  maxFaces: z.number().int().min(1).max(50).default(10),
+  returnLandmarks: z.boolean().default(false),
+});
+
+// ==========================================
+// compare-faces
+// ==========================================
+
+export const compareFacesSchema = z.object({
+  sourceImage: z.string().min(10, "sourceImage is required"),
+  targetImage: z.string().min(10, "targetImage is required"),
+  threshold: z.number().min(0).max(1).default(0.6),
+});
+
+// ==========================================
+// detect-behavior
+// ==========================================
+
+export const detectBehaviorSchema = z.object({
+  imageUrl: z.string().url().optional(),
+  imageBase64: z.string().min(100).max(10_000_000).optional(),
+  cameraId: z.string().uuid().optional(),
+  cameraName: z.string().max(255).optional(),
+}).refine(
+  (data) => data.imageUrl || data.imageBase64,
+  { message: "Either imageUrl or imageBase64 is required" }
+);
+
+// ==========================================
+// generate-face-encoding
+// ==========================================
+
+export const generateFaceEncodingSchema = z.object({
+  imageBase64: z.string().min(100, "imageBase64 is required"),
+  personId: z.string().uuid().optional(),
+});
+
+// ==========================================
+// send-telegram
+// ==========================================
+
+export const sendTelegramSchema = z.object({
+  botToken: z.string().min(10, "botToken is required"),
+  chatId: z.string().min(1, "chatId is required"),
+  message: z.string().min(1).max(4096, "Message too long"),
+  parseMode: z.enum(["HTML", "Markdown"]).default("HTML"),
+  photo: z.string().optional(),
+});
+
+// ==========================================
+// send-alert-notification
+// ==========================================
+
+export const sendAlertNotificationSchema = z.object({
+  alertId: z.string().min(1, "alertId is required"),
+  type: z.string().min(1),
+  severity: z.enum(["low", "medium", "high", "critical"]),
+  message: z.string().min(1).max(2000),
+  cameraName: z.string().min(1).max(255),
+  timestamp: z.string(),
+  snapshotUrl: z.string().url().optional(),
+  channels: z.array(z.enum(["email", "telegram", "whatsapp", "webhook", "push"])).min(1),
+  recipients: z.object({
+    emails: z.array(z.string().email()).optional(),
+    phones: z.array(z.string()).optional(),
+    webhookUrls: z.array(z.string().url()).optional(),
+  }).optional(),
+  telegram: z.object({
+    botToken: z.string().min(10),
+    chatId: z.string().min(1),
+  }).optional(),
+});
+
+// ==========================================
+// process-automation-rules
+// ==========================================
+
+export const processAutomationRulesSchema = z.object({
+  alert: z.object({
+    id: z.string().min(1),
+    type: z.string(),
+    severity: z.string(),
+    message: z.string(),
+    camera_id: z.string().nullable(),
+    camera_name: z.string(),
+    timestamp: z.string(),
+    user_id: z.string().uuid(),
+  }),
+});
+
+// ==========================================
+// admin-users (POST body)
+// ==========================================
+
+export const adminUsersUpdateRoleSchema = z.object({
+  user_id: z.string().uuid("user_id must be a valid UUID"),
+  new_role: z.enum(["admin", "manager", "operator", "viewer"]),
+});
+
+// ==========================================
+// Validation helper
+// ==========================================
+
+export function validateInput<T>(
+  schema: z.ZodSchema<T>,
+  data: unknown,
+  corsHeaders: Record<string, string>
+): { success: true; data: T } | { success: false; response: Response } {
+  const result = schema.safeParse(data);
+  if (result.success) {
+    return { success: true, data: result.data };
   }
-
-  const obj = body as Record<string, unknown>;
-
-  for (const field of requiredFields) {
-    if (!(field as string in obj) || obj[field as string] === undefined || obj[field as string] === null) {
-      errors.push(`Missing required field: ${String(field)}`);
-    }
-  }
-
-  return { valid: errors.length === 0, errors };
-}
-
-export function validateImageBase64(base64: unknown): ValidationResult {
-  if (typeof base64 !== 'string') {
-    return { valid: false, errors: ['Image must be a base64 string'] };
-  }
-
-  if (base64.length < 100) {
-    return { valid: false, errors: ['Image data too short'] };
-  }
-
-  // Check for valid base64 pattern
-  const base64Pattern = /^(?:data:image\/[a-z]+;base64,)?[A-Za-z0-9+/]+=*$/;
-  if (!base64Pattern.test(base64.substring(0, 100))) {
-    return { valid: false, errors: ['Invalid base64 image format'] };
-  }
-
-  return { valid: true, errors: [] };
-}
-
-export function rateLimitCheck(
-  clientIp: string,
-  limits: Map<string, { count: number; resetAt: number }>,
-  maxRequests: number = 100,
-  windowMs: number = 60000
-): boolean {
-  const now = Date.now();
-  const clientLimit = limits.get(clientIp);
-
-  if (!clientLimit || now > clientLimit.resetAt) {
-    limits.set(clientIp, { count: 1, resetAt: now + windowMs });
-    return true;
-  }
-
-  if (clientLimit.count >= maxRequests) {
-    return false;
-  }
-
-  clientLimit.count++;
-  return true;
-}
-
-export function corsHeaders(): Record<string, string> {
+  const errors = result.error.flatten();
+  const messages = [
+    ...Object.entries(errors.fieldErrors).map(([k, v]) => `${k}: ${(v as string[]).join(", ")}`),
+    ...errors.formErrors,
+  ];
   return {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    success: false,
+    response: new Response(
+      JSON.stringify({ error: "Validation failed", details: messages }),
+      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    ),
   };
-}
-
-export function errorResponse(message: string, status: number = 400): Response {
-  return new Response(
-    JSON.stringify({ error: message }),
-    { status, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } }
-  );
 }
