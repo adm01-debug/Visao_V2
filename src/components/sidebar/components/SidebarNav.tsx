@@ -230,10 +230,10 @@ const CollapsedCategory = memo(function CollapsedCategory({
               variant="outline"
               className={cn(
                 "text-[10px] h-5",
-                status.type === "success" && "border-green-500/50 text-green-500",
-                status.type === "warning" && "border-amber-500/50 text-amber-500",
-                status.type === "danger" && "border-red-500/50 text-red-500",
-                status.type === "info" && "border-blue-500/50 text-blue-500"
+                status.type === "success" && "border-success/50 text-success",
+                status.type === "warning" && "border-warning/50 text-warning",
+                status.type === "danger" && "border-destructive/50 text-destructive",
+                status.type === "info" && "border-primary/50 text-primary"
               )}
             >
               {status.count !== undefined && `${status.count} `}
