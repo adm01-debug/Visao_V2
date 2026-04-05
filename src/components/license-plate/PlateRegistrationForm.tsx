@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
+import { plateRegistrationSchema } from '@/lib/schemas';
 
 interface RegisteredPlate {
   id: string;
@@ -30,10 +32,19 @@ export const PlateRegistrationForm = memo(function PlateRegistrationForm({
   const [newPlate, setNewPlate] = useState({
     plate: '', owner_name: '', vehicle_type: 'car', color: '', notes: '', list_type: 'whitelist' as 'whitelist' | 'blacklist' | 'visitor',
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = () => {
-    if (!newPlate.plate) return;
-    onAdd(newPlate);
+    const result = plateRegistrationSchema.safeParse(newPlate);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach(e => { fieldErrors[e.path[0] as string] = e.message; });
+      setErrors(fieldErrors);
+      toast.error(result.error.errors[0]?.message || 'Dados inválidos');
+      return;
+    }
+    setErrors({});
+    onAdd(result.data);
     setNewPlate({ plate: '', owner_name: '', vehicle_type: 'car', color: '', notes: '', list_type: 'whitelist' });
   };
 
