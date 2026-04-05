@@ -80,10 +80,10 @@ export function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }:
             <TabsContent value="stats" className="m-0">
               {stats ? (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <Card><CardContent className="p-4 text-center"><p className="text-3xl font-bold text-green-500">{stats.countIn}</p><p className="text-sm text-muted-foreground">Entradas</p></CardContent></Card>
-                  <Card><CardContent className="p-4 text-center"><p className="text-3xl font-bold text-red-500">{stats.countOut}</p><p className="text-sm text-muted-foreground">Saídas</p></CardContent></Card>
+                  <Card><CardContent className="p-4 text-center"><p className="text-3xl font-bold text-success">{stats.countIn}</p><p className="text-sm text-muted-foreground">Entradas</p></CardContent></Card>
+                  <Card><CardContent className="p-4 text-center"><p className="text-3xl font-bold text-destructive">{stats.countOut}</p><p className="text-sm text-muted-foreground">Saídas</p></CardContent></Card>
                   <Card><CardContent className="p-4 text-center"><p className="text-3xl font-bold">{stats.currentOccupancy}</p><p className="text-sm text-muted-foreground">Ocupação Atual</p></CardContent></Card>
-                  <Card><CardContent className="p-4 text-center"><p className="text-3xl font-bold text-yellow-500">{stats.alertsToday}</p><p className="text-sm text-muted-foreground">Alertas Hoje</p></CardContent></Card>
+                  <Card><CardContent className="p-4 text-center"><p className="text-3xl font-bold text-warning">{stats.alertsToday}</p><p className="text-sm text-muted-foreground">Alertas Hoje</p></CardContent></Card>
                 </div>
               ) : (
                 <div className="text-center py-8 text-muted-foreground"><Activity className="w-12 h-12 mx-auto mb-2 opacity-50" /><p>Sem estatísticas disponíveis</p></div>

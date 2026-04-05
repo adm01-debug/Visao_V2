@@ -145,11 +145,11 @@ export function TelegramConfigPanel({ className, onConfigChange }: TelegramConfi
             <div className="flex items-center gap-3">
               <div className={cn(
                 'p-2 rounded-full',
-                config.enabled ? 'bg-green-500/10' : 'bg-muted'
+                config.enabled ? 'bg-success/10' : 'bg-muted'
               )}>
                 <Bell className={cn(
                   'h-5 w-5',
-                  config.enabled ? 'text-green-500' : 'text-muted-foreground'
+                  config.enabled ? 'text-success' : 'text-muted-foreground'
                 )} />
               </div>
               <div>

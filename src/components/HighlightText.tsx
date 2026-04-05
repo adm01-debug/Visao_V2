@@ -11,7 +11,7 @@ export function HighlightText({
   text,
   highlight,
   className,
-  highlightClassName = "bg-yellow-500/30 text-foreground rounded px-0.5"
+  highlightClassName = "bg-warning/30 text-foreground rounded px-0.5"
 }: HighlightTextProps) {
   if (!highlight.trim()) {
     return <span className={className}>{text}</span>;

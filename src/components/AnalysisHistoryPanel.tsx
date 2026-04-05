@@ -17,8 +17,8 @@ import { ptBR } from 'date-fns/locale';
 import { AnalysisHistoryFilters, type TypeFilter, type SeverityFilter } from './analysis-history/AnalysisHistoryFilters';
 
 const SEVERITY_STYLES: Record<string, string> = {
-  low: 'bg-muted text-muted-foreground', medium: 'bg-yellow-500/15 text-yellow-600 dark:text-yellow-400',
-  high: 'bg-orange-500/15 text-orange-600 dark:text-orange-400', critical: 'bg-destructive/15 text-destructive',
+  low: 'bg-muted text-muted-foreground', medium: 'bg-warning/15 text-warning',
+  high: 'bg-warning/20 text-warning', critical: 'bg-destructive/15 text-destructive',
 };
 const ANALYSIS_ICONS: Record<string, typeof Shield> = { security: Shield, safety: HardHat, productivity: BarChart3, behavior: Brain };
 

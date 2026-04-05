@@ -28,7 +28,7 @@ export function Switch({ checked, onChange, disabled = false, size = 'md', class
       className={cn(
         'relative inline-flex items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
         config.track,
-        checked ? 'bg-primary' : 'bg-gray-200',
+        checked ? 'bg-primary' : 'bg-muted',
         disabled && 'opacity-50 cursor-not-allowed',
         className
       )}

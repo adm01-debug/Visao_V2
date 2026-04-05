@@ -25,7 +25,7 @@ export function PPEViolationsTab({ violations, acknowledgeViolation }: PPEViolat
       <CardContent>
         {violations.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
-            <CheckCircle2 className="w-12 h-12 mx-auto mb-4 text-green-500" />
+            <CheckCircle2 className="w-12 h-12 mx-auto mb-4 text-success" />
             <p>Nenhuma violação registrada</p>
           </div>
         ) : (

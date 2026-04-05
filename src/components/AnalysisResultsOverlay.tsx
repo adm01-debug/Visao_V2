@@ -192,7 +192,7 @@ function SafetyOverlay({ analysis }: { analysis: SafetyAnalysis }) {
 
       {analysis.ppe_compliance.missing_items.length > 0 && (
         <div className="text-[10px]">
-          <span className="text-red-400">Faltando: </span>
+          <span className="text-destructive">Faltando: </span>
           <span className="text-white/70">{analysis.ppe_compliance.missing_items.join(', ')}</span>
         </div>
       )}

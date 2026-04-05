@@ -230,7 +230,7 @@ export function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonForm
               {photoPreview && faceValidation && (
                 <div className={cn(
                   "flex items-center gap-2 px-3 py-2 rounded-md text-sm",
-                  faceValidation.valid ? "bg-green-500/10 text-green-700 dark:text-green-400" : "bg-destructive/10 text-destructive"
+                  faceValidation.valid ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"
                 )}>
                   {faceValidation.valid ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
                   <span>{faceValidation.message}</span>

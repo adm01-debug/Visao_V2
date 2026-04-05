@@ -199,8 +199,8 @@ function ExecutionItem({ execution }: { execution: RuleExecution }) {
 
             {/* Erro se houver */}
             {execution.error_message && (
-              <div className="p-2 rounded bg-red-500/10 border border-red-500/20">
-                <p className="text-xs text-red-500">{execution.error_message}</p>
+              <div className="p-2 rounded bg-destructive/10 border border-destructive/20">
+                <p className="text-xs text-destructive">{execution.error_message}</p>
               </div>
             )}
 

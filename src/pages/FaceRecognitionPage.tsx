@@ -221,7 +221,7 @@ export default function FaceRecognitionPage() {
                                   <AvatarImage src={event.face.bestMatch.photoUrl} />
                                 ) : null}
                                 <AvatarFallback className={cn(
-                                  event.face.isKnown ? 'bg-green-500/20 text-green-700' : 'bg-muted'
+                                  event.face.isKnown ? 'bg-success/20 text-success' : 'bg-muted'
                                 )}>
                                   {event.face.isKnown ? (
                                     <UserCheck className="w-4 h-4" />
