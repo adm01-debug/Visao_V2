@@ -23,9 +23,9 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ size = 'md', cla
 );
 
 /** Full-screen branded splash for initial app load */
-export function SplashScreen() {
+export const SplashScreen = React.forwardRef<HTMLDivElement>(function SplashScreen(_props, ref) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background gap-6">
+    <div ref={ref} className="flex flex-col items-center justify-center min-h-screen bg-background gap-6">
       <div className="relative">
         {/* Outer glow rings */}
         <div className="absolute inset-0 -m-8 rounded-full bg-primary/5 animate-ping" style={{ animationDuration: '2s' }} />
@@ -60,6 +60,6 @@ export function SplashScreen() {
       <span className="sr-only">Carregando sistema VISÃO...</span>
     </div>
   );
-}
+});
 
 export default LoadingSpinner;
