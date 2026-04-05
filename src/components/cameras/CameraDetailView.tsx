@@ -52,6 +52,8 @@ export function CameraDetailView({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, hasPrev, hasNext, onClose, onPrev, onNext]);
 
+  if (!camera) return null;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl max-h-[95vh] p-0 overflow-hidden">

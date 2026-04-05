@@ -604,7 +604,6 @@
     box-shadow: 0 0 24px 6px hsl(var(--destructive) / 0.2), inset 0 0 12px hsl(var(--destructive) / 0.05);
     border-color: hsl(var(--destructive) / 0.7);
   }
-  }
 }
 
 @keyframes theme-flash {

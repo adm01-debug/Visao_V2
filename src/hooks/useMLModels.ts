@@ -5,7 +5,15 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import * as tf from '@tensorflow/tfjs';
 import * as cocoSsd from '@tensorflow-models/coco-ssd';
-import * as poseDetection from '@tensorflow-models/pose-detection';
+// pose-detection loaded lazily to avoid @mediapipe/pose ESM crash
+type PoseDetectionModule = typeof import('@tensorflow-models/pose-detection');
+let _poseDetection: PoseDetectionModule | null = null;
+async function getPoseDetectionModule(): Promise<PoseDetectionModule> {
+  if (!_poseDetection) {
+    _poseDetection = await import('@tensorflow-models/pose-detection');
+  }
+  return _poseDetection;
+}
 import {
   type ModelType, type ModelInfo, type DetectedObject, type DetectedPose, type MLModelsConfig,
   DEFAULT_CONFIG, PERSON_CLASSES, VEHICLE_CLASSES,
@@ -23,7 +31,7 @@ const debugLog = (message: string, ..._args: unknown[]) => {
 class ModelCache {
   private static instance: ModelCache;
   private cocoModel: cocoSsd.ObjectDetection | null = null;
-  private poseDetector: poseDetection.PoseDetector | null = null;
+  private poseDetector: Awaited<ReturnType<PoseDetectionModule['createDetector']>> | null = null;
   private backendReady = false;
 
   static getInstance(): ModelCache {
@@ -45,11 +53,12 @@ class ModelCache {
     return this.cocoModel;
   }
 
-  async getPoseDetector(): Promise<poseDetection.PoseDetector> {
+  async getPoseDetector() {
     if (!this.poseDetector) {
       debugLog('[ML] Loading MoveNet...');
-      this.poseDetector = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, {
-        modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING, enableSmoothing: true,
+      const pd = await getPoseDetectionModule();
+      this.poseDetector = await pd.createDetector(pd.SupportedModels.MoveNet, {
+        modelType: pd.movenet.modelType.SINGLEPOSE_LIGHTNING, enableSmoothing: true,
       });
     }
     return this.poseDetector;
@@ -166,7 +175,7 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
       const startTime = performance.now();
       const poses = await detector.estimatePoses(input);
       updateModelInfo('movenet', { inferenceTime: performance.now() - startTime });
-      return poses.map(pose => ({ keypoints: pose.keypoints.map(kp => ({ x: kp.x, y: kp.y, score: kp.score || 0, name: kp.name || '' })), score: pose.score || 0 }));
+      return poses.map((pose: { keypoints: Array<{ x: number; y: number; score?: number; name?: string }>; score?: number }) => ({ keypoints: pose.keypoints.map((kp: { x: number; y: number; score?: number; name?: string }) => ({ x: kp.x, y: kp.y, score: kp.score || 0, name: kp.name || '' })), score: pose.score || 0 }));
     } catch { return []; }
   }, [updateModelInfo]);
 
