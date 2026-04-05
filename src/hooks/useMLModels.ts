@@ -175,7 +175,7 @@ export function useMLModels(options: UseMLModelsOptions = {}): UseMLModelsReturn
       const startTime = performance.now();
       const poses = await detector.estimatePoses(input);
       updateModelInfo('movenet', { inferenceTime: performance.now() - startTime });
-      return poses.map(pose => ({ keypoints: pose.keypoints.map(kp => ({ x: kp.x, y: kp.y, score: kp.score || 0, name: kp.name || '' })), score: pose.score || 0 }));
+      return poses.map((pose: { keypoints: Array<{ x: number; y: number; score?: number; name?: string }>; score?: number }) => ({ keypoints: pose.keypoints.map((kp: { x: number; y: number; score?: number; name?: string }) => ({ x: kp.x, y: kp.y, score: kp.score || 0, name: kp.name || '' })), score: pose.score || 0 }));
     } catch { return []; }
   }, [updateModelInfo]);
 
