@@ -145,12 +145,12 @@ function ProductivityOverlay({ analysis }: { analysis: ProductivityAnalysis }) {
   return (
     <div className="space-y-1.5">
       <div className="grid grid-cols-2 gap-1">
-        <div className="bg-green-500/15 rounded px-1.5 py-1 text-center">
-          <div className="text-green-400 text-sm font-bold">{analysis.working_count}</div>
+        <div className="bg-success/15 rounded px-1.5 py-1 text-center">
+          <div className="text-success text-sm font-bold">{analysis.working_count}</div>
           <div className="text-[9px] text-white/50">Trabalhando</div>
         </div>
-        <div className="bg-orange-500/15 rounded px-1.5 py-1 text-center">
-          <div className="text-orange-400 text-sm font-bold">{analysis.idle_count}</div>
+        <div className="bg-warning/15 rounded px-1.5 py-1 text-center">
+          <div className="text-warning text-sm font-bold">{analysis.idle_count}</div>
           <div className="text-[9px] text-white/50">Ociosos</div>
         </div>
       </div>
