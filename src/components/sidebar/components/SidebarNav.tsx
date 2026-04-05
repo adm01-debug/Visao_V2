@@ -278,10 +278,10 @@ const NavItemLink = memo(function NavItemLink({
       data-testid={`nav-${item.id}`}
       onClick={onClick}
       className={cn(
-        "relative flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 text-sm group",
-        "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/60",
+        "relative flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-300 ease-out text-sm group",
+        "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/60 hover:translate-x-0.5",
         isActive &&
-          "bg-sidebar-primary/10 text-sidebar-primary hover:bg-sidebar-primary/14 hover:text-sidebar-primary font-medium"
+          "bg-sidebar-primary/10 text-sidebar-primary hover:bg-sidebar-primary/14 hover:text-sidebar-primary font-medium shadow-sm"
       )}
     >
       {/* Active route accent bar */}
