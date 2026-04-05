@@ -58,7 +58,7 @@ function MiniSparkline({ data, color }: { data: number[]; color: string }) {
   if (data.length < 2) return null;
 
   return (
-    <svg width="80" height="24" viewBox="0 0 80 24" className="opacity-60">
+    <svg width="80" height="24" viewBox="0 0 80 24" className="opacity-60" aria-hidden="true" role="presentation">
       <path d={path} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
