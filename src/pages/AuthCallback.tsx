@@ -97,8 +97,8 @@ export default function AuthCallback() {
         
         {status === 'error' && (
           <>
-            <XCircle className="h-12 w-12 mx-auto text-red-500" />
-            <p className="text-lg text-red-600">{message}</p>
+            <XCircle className="h-12 w-12 mx-auto text-destructive" />
+            <p className="text-lg text-destructive">{message}</p>
           </>
         )}
       </div>

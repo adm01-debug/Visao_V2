@@ -134,7 +134,7 @@ export default function StreamSettingsPage() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             {isOnline ? (
-                              <Wifi className="h-4 w-4 text-green-500" aria-label="Online" />
+                              <Wifi className="h-4 w-4 text-success" aria-label="Online" />
                             ) : (
                               <WifiOff className="h-4 w-4 text-muted-foreground" aria-label="Offline" />
                             )}
