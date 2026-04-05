@@ -119,8 +119,8 @@ export function GlobalSearch() {
           {fz.slice(0, 5).map(z => (
             <CommandItem key={z.id} value={`zone-${z.name}`} onSelect={() => handleSelect(`/zones/${z.id}`)} className="flex items-center justify-between px-3 py-2">
               <div className="flex items-center gap-3">
-                <div className={cn("flex h-8 w-8 items-center justify-center rounded-md", z.is_active ? "bg-amber-500/10" : "bg-muted")}>
-                  <MapPin className={cn("h-4 w-4", z.is_active ? "text-amber-400" : "text-muted-foreground")} />
+                <div className={cn("flex h-8 w-8 items-center justify-center rounded-md", z.is_active ? "bg-warning/10" : "bg-muted")}>
+                  <MapPin className={cn("h-4 w-4", z.is_active ? "text-warning" : "text-muted-foreground")} />
                 </div>
                 <div className="flex flex-col"><span className="font-medium">{z.name}</span><span className="text-xs text-muted-foreground capitalize">{z.type}</span></div>
               </div>
