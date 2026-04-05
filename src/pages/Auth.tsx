@@ -43,6 +43,13 @@ export default function Auth() {
     const er = emailSchema.safeParse(email); if (!er.success) e.email = er.error.errors[0]?.message ?? 'Email inválido';
     const pr = passwordSchema.safeParse(password); if (!pr.success) e.password = pr.error.errors[0]?.message ?? 'Senha inválida';
     if (isSignUp && fullName) { const nr = nameSchema.safeParse(fullName); if (!nr.success) e.fullName = nr.error.errors[0]?.message ?? 'Nome inválido'; }
+    // Block weak/leaked passwords on signup
+    if (isSignUp && !e.password) {
+      const strength = getPasswordStrength(password);
+      if (strength.isBlocked) {
+        e.password = strength.blockReason || 'Senha muito fraca';
+      }
+    }
     setErrors(e); return Object.keys(e).length === 0;
   };
 
