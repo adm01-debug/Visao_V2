@@ -38,12 +38,12 @@ export function SettingsPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 h-[calc(100vh-4rem)] overflow-auto">
+    <div className="page-container space-y-6 h-[calc(100vh-4rem)] overflow-auto">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Settings className="w-6 h-6" />Configurações
+          <h1 className="text-page-title flex items-center gap-2">
+            <Settings className="w-6 h-6 text-primary" />Configurações
           </h1>
           <p className="text-sm text-muted-foreground">Gerencie as configurações do sistema</p>
         </div>

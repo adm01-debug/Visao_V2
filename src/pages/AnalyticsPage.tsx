@@ -142,14 +142,14 @@ export function AnalyticsPage() {
         <Card><CardHeader><CardTitle className="text-base">Distribuição por Hora</CardTitle><CardDescription>Concentração de alertas</CardDescription></CardHeader><CardContent>{loading ? <Skeleton className="h-32 w-full" /> : <><HourlyHeatmap data={hourlyData} /><div className="flex items-center justify-between mt-4 text-xs text-muted-foreground"><span>Menor atividade</span><div className="flex items-center gap-1">{[0.1, 0.3, 0.5, 0.7, 0.9].map((v, i) => <div key={i} className="w-4 h-4 rounded" style={{ backgroundColor: `rgba(239, 68, 68, ${v * 0.8})` }} />)}</div><span>Maior atividade</span></div></>}</CardContent></Card>
       </div>
 
-      <Card><CardHeader><CardTitle className="text-base">Resumo do Período</CardTitle></CardHeader><CardContent><div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">{[
-        { label: 'Média Alertas/Dia', value: chartData.length > 0 ? Math.round(chartData.reduce((s, d) => s + d.alerts, 0) / chartData.length) : 0, icon: AlertTriangle, color: 'text-red-500' },
-        { label: 'Pico de Alertas', value: Math.max(...chartData.map(d => d.alerts), 0), icon: TrendingUp, color: 'text-orange-500' },
-        { label: 'Hora Mais Ativa', value: `${hourlyData.reduce((max, d) => d.alerts > (hourlyData[max]?.alerts || 0) ? hourlyData.indexOf(d) : max, 0)}h`, icon: Clock, color: 'text-blue-500' },
-        { label: 'Taxa Detecção', value: '94.2%', icon: Target, color: 'text-green-500' },
-        { label: 'Uptime Médio', value: '99.1%', icon: Activity, color: 'text-purple-500' },
-        { label: 'Faces Reconhecidas', value: Math.floor(Math.random() * 100), icon: ScanFace, color: 'text-cyan-500' },
-      ].map((stat, i) => <div key={i} className="text-center p-3 rounded-lg bg-muted/50"><stat.icon className={cn('w-5 h-5 mx-auto mb-1', stat.color)} /><p className="text-lg font-bold">{stat.value}</p><p className="text-[10px] text-muted-foreground">{stat.label}</p></div>)}</div></CardContent></Card>
+      <Card className="border-border/50" style={{ boxShadow: 'var(--shadow-card)' }}><CardHeader><CardTitle className="text-section-title">Resumo do Período</CardTitle></CardHeader><CardContent><div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">{[
+        { label: 'Média Alertas/Dia', value: chartData.length > 0 ? Math.round(chartData.reduce((s, d) => s + d.alerts, 0) / chartData.length) : 0, icon: AlertTriangle, color: 'text-destructive' },
+        { label: 'Pico de Alertas', value: Math.max(...chartData.map(d => d.alerts), 0), icon: TrendingUp, color: 'text-severity-high' },
+        { label: 'Hora Mais Ativa', value: `${hourlyData.reduce((max, d) => d.alerts > (hourlyData[max]?.alerts || 0) ? hourlyData.indexOf(d) : max, 0)}h`, icon: Clock, color: 'text-primary' },
+        { label: 'Taxa Detecção', value: '94.2%', icon: Target, color: 'text-success' },
+        { label: 'Uptime Médio', value: '99.1%', icon: Activity, color: 'text-primary' },
+        { label: 'Faces Reconhecidas', value: Math.floor(Math.random() * 100), icon: ScanFace, color: 'text-primary' },
+      ].map((stat, i) => <div key={i} className="text-center p-3.5 rounded-xl bg-muted/30 border border-border/30 transition-all hover:bg-muted/50"><stat.icon className={cn('w-5 h-5 mx-auto mb-1.5', stat.color)} /><p className="text-lg font-bold font-mono tabular-nums">{stat.value}</p><p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mt-0.5">{stat.label}</p></div>)}</div></CardContent></Card>
     </div>
   );
 }
