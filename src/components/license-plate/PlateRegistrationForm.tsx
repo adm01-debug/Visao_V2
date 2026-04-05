@@ -59,7 +59,8 @@ export const PlateRegistrationForm = memo(function PlateRegistrationForm({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Placa</Label>
-              <Input placeholder="ABC1D23" value={newPlate.plate} onChange={(e) => setNewPlate({ ...newPlate, plate: e.target.value.toUpperCase() })} className="font-mono" />
+              <Input placeholder="ABC1D23" value={newPlate.plate} onChange={(e) => { setNewPlate({ ...newPlate, plate: e.target.value.toUpperCase() }); setErrors(prev => ({ ...prev, plate: '' })); }} className={cn("font-mono", errors.plate && "border-destructive")} />
+              {errors.plate && <p className="text-xs text-destructive">{errors.plate}</p>}
             </div>
             <div className="space-y-2">
               <Label>Proprietário</Label>
