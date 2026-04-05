@@ -25,10 +25,10 @@ const variantStyles = {
 
 const iconVariantStyles = {
   default: 'bg-secondary text-muted-foreground',
-  primary: 'bg-primary/20 text-primary',
-  success: 'bg-success/20 text-success',
-  warning: 'bg-warning/20 text-warning',
-  danger: 'bg-destructive/20 text-destructive',
+  primary: 'bg-primary/12 text-primary',
+  success: 'bg-success/12 text-success',
+  warning: 'bg-warning/12 text-warning',
+  danger: 'bg-destructive/12 text-destructive',
 };
 
 const sparklineColors = {
@@ -58,7 +58,7 @@ function MiniSparkline({ data, color }: { data: number[]; color: string }) {
   if (data.length < 2) return null;
 
   return (
-    <svg width="80" height="24" viewBox="0 0 80 24" className="opacity-60" aria-hidden="true" role="presentation">
+    <svg width="80" height="24" viewBox="0 0 80 24" className="opacity-40" aria-hidden="true" role="presentation">
       <path d={path} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
@@ -85,33 +85,38 @@ export function StatsCard({
 
   return (
     <div
-      className="glass-card p-5 transition-all duration-300 group hover:border-primary/30 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5 focus-within:border-primary/30 focus-within:shadow-lg"
+      className={cn(
+        'relative rounded-lg border bg-card p-5 transition-all duration-200',
+        'hover:border-border/80 hover:shadow-sm hover:-translate-y-0.5',
+        'group'
+      )}
+      style={{ boxShadow: 'var(--shadow-card)' }}
       role="region"
       aria-label={`${title}: ${value}${subtitle ? `, ${subtitle}` : ''}${trend ? `, ${trend.isPositive ? 'subiu' : 'caiu'} ${Math.abs(trend.value)}%` : ''}`}
     >
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
-          <p className="text-sm text-muted-foreground mb-1">{title}</p>
-          <p className={cn("text-3xl font-bold font-mono tabular-nums", variantStyles[variant])}>
+          <p className="text-xs font-medium text-muted-foreground mb-1.5">{title}</p>
+          <p className={cn("text-3xl font-bold font-mono tabular-nums leading-none", variantStyles[variant])}>
             {value}
           </p>
           {subtitle && (
-            <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
+            <p className="text-[11px] text-muted-foreground mt-1.5">{subtitle}</p>
           )}
           {trend && (
             <div className={cn(
-              "flex items-center gap-1 mt-2 text-xs font-medium",
+              "flex items-center gap-1 mt-2.5 text-xs font-medium",
               trend.isPositive ? "text-success" : "text-destructive"
             )}>
               <span aria-hidden="true">{trend.isPositive ? '↑' : '↓'}</span>
               <span>{Math.abs(trend.value)}%</span>
-              <span className="text-muted-foreground">vs ontem</span>
+              <span className="text-muted-foreground font-normal">vs ontem</span>
             </div>
           )}
         </div>
-        <div className="flex flex-col items-end gap-2">
-          <div className={cn("p-3 rounded-xl transition-transform duration-300 group-hover:scale-110", iconVariantStyles[variant])} aria-hidden="true">
-            <Icon className="w-6 h-6" />
+        <div className="flex flex-col items-end gap-2.5">
+          <div className={cn("p-2.5 rounded-lg transition-transform duration-200 group-hover:scale-105", iconVariantStyles[variant])} aria-hidden="true">
+            <Icon className="w-5 h-5" />
           </div>
           <MiniSparkline data={data} color={sparklineColors[variant]} />
         </div>

@@ -30,32 +30,42 @@ export function AlertItem({ alert, isSelected, onSelect, onView, onMarkRead, onD
     return (
       <div
         className={cn(
-          'flex items-center gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer',
-          !alert.is_read && 'border-l-4 border-l-primary',
-          isSelected && 'ring-2 ring-primary'
+          'group flex items-center gap-4 p-4 rounded-lg border bg-card transition-all duration-200 cursor-pointer',
+          'hover:bg-accent/5 hover:border-border/80 hover:shadow-sm',
+          'border-l-[3px]',
+          severity.borderColor,
+          !alert.is_read && 'bg-card/80',
+          alert.is_read && 'opacity-75 hover:opacity-100',
+          isSelected && 'ring-2 ring-primary ring-offset-1 ring-offset-background'
         )}
         onClick={onView}
       >
         <Checkbox checked={isSelected} onCheckedChange={onSelect} onClick={(e) => e.stopPropagation()} />
-        <div className={cn('w-2 h-2 rounded-full', severity.color)} />
+        {!alert.is_read && (
+          <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+        )}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <TypeIcon className={cn('w-4 h-4', type.color)} />
-            <span className="font-medium truncate">{alert.message}</span>
+            <TypeIcon className={cn('w-4 h-4 shrink-0', type.color)} />
+            <span className={cn('font-medium truncate text-sm', !alert.is_read && 'text-foreground', alert.is_read && 'text-muted-foreground')}>
+              {alert.message}
+            </span>
           </div>
-          <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
-            <Camera className="w-3 h-3" /><span>{alert.camera_name}</span>
-            <span>•</span>
-            <Clock className="w-3 h-3" /><span>{timeAgo}</span>
+          <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+            <Camera className="w-3 h-3 shrink-0" /><span className="truncate">{alert.camera_name}</span>
+            <span className="text-border">•</span>
+            <Clock className="w-3 h-3 shrink-0" /><span>{timeAgo}</span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="outline" className={type.color}>{type.label}</Badge>
-          <Badge className={cn('text-white', severity.color)}>{severity.label}</Badge>
+        <div className="flex items-center gap-2 shrink-0">
+          <Badge variant="outline" className={cn('text-[11px] font-medium', type.color)}>{type.label}</Badge>
+          <Badge className={cn('text-[11px] font-semibold text-white border-0', severity.color)}>{severity.label}</Badge>
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-            <Button aria-label="Ações do alerta" variant="ghost" size="icon" className="h-8 w-8"><MoreHorizontal className="w-4 h-4" /></Button>
+            <Button aria-label="Ações do alerta" variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
+              <MoreHorizontal className="w-4 h-4" />
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onView(); }}><Eye className="w-4 h-4 mr-2" />Ver detalhes</DropdownMenuItem>
@@ -71,15 +81,22 @@ export function AlertItem({ alert, isSelected, onSelect, onView, onMarkRead, onD
   }
 
   return (
-    <Card className={cn('cursor-pointer hover:shadow-md transition-shadow', !alert.is_read && 'ring-2 ring-primary/20', isSelected && 'ring-2 ring-primary')} onClick={onView}>
+    <Card className={cn(
+      'cursor-pointer transition-all duration-200 border-t-[3px]',
+      severity.borderColor,
+      'hover:shadow-md hover:border-border/80',
+      !alert.is_read && 'bg-card',
+      alert.is_read && 'opacity-75 hover:opacity-100',
+      isSelected && 'ring-2 ring-primary ring-offset-1 ring-offset-background'
+    )} onClick={onView}>
       <CardHeader className="p-4 pb-2">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
             <Checkbox checked={isSelected} onCheckedChange={onSelect} onClick={(e) => e.stopPropagation()} />
-            <div className={cn('w-3 h-3 rounded-full', severity.color)} />
-            <Badge variant="outline" className={cn('text-xs', type.color)}>{type.label}</Badge>
+            <TypeIcon className={cn('w-4 h-4', type.color)} />
+            <Badge variant="outline" className={cn('text-[11px]', type.color)}>{type.label}</Badge>
           </div>
-          <Badge className={cn('text-white text-xs', severity.color)}>{severity.label}</Badge>
+          <Badge className={cn('text-[11px] font-semibold text-white border-0', severity.color)}>{severity.label}</Badge>
         </div>
       </CardHeader>
       <CardContent className="p-4 pt-0">
