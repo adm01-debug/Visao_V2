@@ -13,10 +13,10 @@ interface CategoryStatusIndicatorProps {
 }
 
 const statusConfig = {
-  success: { bg: "bg-green-500/10", text: "text-green-500", border: "border-green-500/30" },
-  warning: { bg: "bg-amber-500/10", text: "text-amber-500", border: "border-amber-500/30" },
-  danger: { bg: "bg-red-500/10", text: "text-red-500", border: "border-red-500/30" },
-  info: { bg: "bg-blue-500/10", text: "text-blue-500", border: "border-blue-500/30" },
+  success: { bg: "bg-success/10", text: "text-success", border: "border-success/30" },
+  warning: { bg: "bg-warning/10", text: "text-warning", border: "border-warning/30" },
+  danger: { bg: "bg-destructive/10", text: "text-destructive", border: "border-destructive/30" },
+  info: { bg: "bg-primary/10", text: "text-primary", border: "border-primary/30" },
   neutral: { bg: "bg-muted", text: "text-muted-foreground", border: "border-border" },
 };
 
