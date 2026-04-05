@@ -144,7 +144,7 @@ export function AnalyticsPage() {
 
       <Card className="border-border/50" style={{ boxShadow: 'var(--shadow-card)' }}><CardHeader><CardTitle className="text-section-title">Resumo do Período</CardTitle></CardHeader><CardContent><div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">{[
         { label: 'Média Alertas/Dia', value: chartData.length > 0 ? Math.round(chartData.reduce((s, d) => s + d.alerts, 0) / chartData.length) : 0, icon: AlertTriangle, color: 'text-destructive' },
-        { label: 'Pico de Alertas', value: Math.max(...chartData.map(d => d.alerts), 0), icon: TrendingUp, color: 'text-severity-high' },
+        { label: 'Pico de Alertas', value: Math.max(...chartData.map(d => d.alerts), 0), icon: TrendingUp, color: 'text-warning' },
         { label: 'Hora Mais Ativa', value: `${hourlyData.reduce((max, d) => d.alerts > (hourlyData[max]?.alerts || 0) ? hourlyData.indexOf(d) : max, 0)}h`, icon: Clock, color: 'text-primary' },
         { label: 'Taxa Detecção', value: '94.2%', icon: Target, color: 'text-success' },
         { label: 'Uptime Médio', value: '99.1%', icon: Activity, color: 'text-primary' },
