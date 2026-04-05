@@ -18,31 +18,34 @@ export function DashboardStats({
   streamingCameras,
 }: DashboardStatsProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 animate-fade-in">
+    <div className="stats-grid stagger-in">
       <StatsCard
         title="Câmeras Online"
         value={onlineCameras}
         subtitle={`de ${totalCameras} total`}
         icon={Camera}
+        variant="primary"
         trend={{ value: totalCameras > 0 ? Math.round((onlineCameras / totalCameras) * 100) : 0, isPositive: true }}
       />
       <StatsCard
         title="Pessoas Detectadas"
         value={totalPeople}
         icon={Users}
+        variant="success"
         trend={{ value: 12, isPositive: true }}
       />
       <StatsCard
         title="Alertas Ativos"
         value={activeAlerts}
         icon={AlertTriangle}
+        variant={activeAlerts > 5 ? 'danger' : 'warning'}
         trend={{ value: 5, isPositive: false }}
-        variant={activeAlerts > 5 ? 'warning' : 'default'}
       />
       <StatsCard
         title="Segurança"
         value="98%"
         icon={Shield}
+        variant="success"
         trend={{ value: 2, isPositive: true }}
       />
       <StatsCard
@@ -50,6 +53,7 @@ export function DashboardStats({
         value={streamingCameras}
         subtitle={`de ${totalCameras} total`}
         icon={Zap}
+        variant="primary"
         trend={{ value: streamingCameras, isPositive: true }}
       />
     </div>
