@@ -1,4 +1,4 @@
-import Hls from 'hls.js';
+import type Hls from 'hls.js';
 
 export type StreamQuality = 'auto' | 'low' | 'medium' | 'high';
 export type StreamStatus = 'idle' | 'connecting' | 'connected' | 'playing' | 'paused' | 'error' | 'offline';

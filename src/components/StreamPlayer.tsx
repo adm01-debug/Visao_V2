@@ -1,6 +1,6 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
- * StreamPlayer Component
+ * StreamPlayer Component (lazy-loaded HLS.js)
  */
 
 import { memo, useRef, useEffect, useState, useCallback } from 'react';
@@ -16,7 +16,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib/utils';
-import Hls from 'hls.js';
+import type HlsType from 'hls.js';
+import { getHls } from '@/lib/lazyHls';
 
 interface StreamPlayerProps {
   streamUrl: string;
@@ -40,7 +41,7 @@ function StreamPlayerComponent({
   className
 }: StreamPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const hlsRef = useRef<Hls | null>(null);
+  const hlsRef = useRef<HlsType | null>(null);
 
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [isMuted, setIsMuted] = useState(muted);
@@ -48,7 +49,7 @@ function StreamPlayerComponent({
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const initializePlayer = useCallback(() => {
+  const initializePlayer = useCallback(async () => {
     if (!videoRef.current || !streamUrl) return;
 
     setError(null);
@@ -62,31 +63,39 @@ function StreamPlayerComponent({
 
     const video = videoRef.current;
 
-    if (streamUrl.includes('.m3u8') && Hls.isSupported()) {
-      const hls = new Hls({
-        enableWorker: true,
-        lowLatencyMode: true,
-      });
+    if (streamUrl.includes('.m3u8')) {
+      // Lazy-load HLS.js
+      const Hls = await getHls();
 
-      hls.loadSource(streamUrl);
-      hls.attachMedia(video);
+      if (Hls.isSupported()) {
+        const hls = new Hls({
+          enableWorker: true,
+          lowLatencyMode: true,
+        });
 
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        setIsLoading(false);
-        if (autoPlay) {
-          video.play().catch(() => {});
-        }
-      });
+        hls.loadSource(streamUrl);
+        hls.attachMedia(video);
 
-      hls.on(Hls.Events.ERROR, (_, data) => {
-        if (data.fatal) {
-          setError('Erro ao carregar stream');
-          onError?.(new Error(data.details));
-        }
-      });
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          setIsLoading(false);
+          if (autoPlay) {
+            video.play().catch(() => {});
+          }
+        });
 
-      hlsRef.current = hls;
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        hls.on(Hls.Events.ERROR, (_, data) => {
+          if (data.fatal) {
+            setError('Erro ao carregar stream');
+            onError?.(new Error(data.details));
+          }
+        });
+
+        hlsRef.current = hls;
+        return;
+      }
+    }
+
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
       // Native HLS support (Safari)
       video.src = streamUrl;
       video.addEventListener('loadedmetadata', () => {

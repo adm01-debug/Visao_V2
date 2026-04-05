@@ -1,9 +1,10 @@
 /**
- * VISÃO - HLS Connection Handler
+ * VISÃO - HLS Connection Handler (lazy-loaded hls.js)
  */
 import { useCallback, useRef } from 'react';
-import Hls from 'hls.js';
-import { StreamQuality, StreamConfig, StreamError } from '@/types/streaming';
+import type HlsType from 'hls.js';
+import { StreamQuality, StreamConfig } from '@/types/streaming';
+import { getHls } from '@/lib/lazyHls';
 
 interface UseHLSConnectionOptions {
   url: string;
@@ -29,7 +30,7 @@ export function useHLSConnection(options: UseHLSConnectionOptions) {
     onQualityChange, onReconnect, connectionStartRef,
   } = options;
 
-  const hlsRef = useRef<Hls | null>(null);
+  const hlsRef = useRef<HlsType | null>(null);
 
   const connectHLS = useCallback(async () => {
     const video = videoRef.current;
@@ -47,6 +48,9 @@ export function useHLSConnection(options: UseHLSConnectionOptions) {
       if (autoPlay) await play();
       return;
     }
+
+    // Dynamically load hls.js
+    const Hls = await getHls();
 
     if (!Hls.isSupported()) { setError('FORMAT_ERROR', 'Navegador não suporta HLS'); return; }
 

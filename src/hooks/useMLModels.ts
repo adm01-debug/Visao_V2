@@ -1,10 +1,9 @@
 /**
  * VISÃO - Hook: useMLModels (Refactored)
  * Gerenciamento de modelos TensorFlow.js
+ * TF and COCO-SSD are loaded lazily to reduce initial bundle.
  */
 import { useState, useEffect, useCallback, useRef } from 'react';
-import * as tf from '@tensorflow/tfjs';
-import * as cocoSsd from '@tensorflow-models/coco-ssd';
 // pose-detection loaded lazily to avoid @mediapipe/pose ESM crash
 type PoseDetectionModule = typeof import('@tensorflow-models/pose-detection');
 let _poseDetection: PoseDetectionModule | null = null;
@@ -14,6 +13,27 @@ async function getPoseDetectionModule(): Promise<PoseDetectionModule> {
   }
   return _poseDetection;
 }
+
+// Lazy TF loader
+type TfModule = typeof import('@tensorflow/tfjs');
+let _tf: TfModule | null = null;
+async function getTf(): Promise<TfModule> {
+  if (!_tf) {
+    _tf = await import('@tensorflow/tfjs');
+  }
+  return _tf;
+}
+
+// Lazy COCO-SSD loader
+type CocoSsdModule = typeof import('@tensorflow-models/coco-ssd');
+let _cocoSsd: CocoSsdModule | null = null;
+async function getCocoSsd(): Promise<CocoSsdModule> {
+  if (!_cocoSsd) {
+    _cocoSsd = await import('@tensorflow-models/coco-ssd');
+  }
+  return _cocoSsd;
+}
+
 import {
   type ModelType, type ModelInfo, type DetectedObject, type DetectedPose, type MLModelsConfig,
   DEFAULT_CONFIG, PERSON_CLASSES, VEHICLE_CLASSES,
@@ -30,7 +50,7 @@ const debugLog = (message: string, ..._args: unknown[]) => {
 // Singleton para cache de modelos
 class ModelCache {
   private static instance: ModelCache;
-  private cocoModel: cocoSsd.ObjectDetection | null = null;
+  private cocoModel: Awaited<ReturnType<CocoSsdModule['load']>> | null = null;
   private poseDetector: Awaited<ReturnType<PoseDetectionModule['createDetector']>> | null = null;
   private backendReady = false;
 
@@ -40,6 +60,7 @@ class ModelCache {
   }
 
   async initBackend(preferGPU: boolean): Promise<string> {
+    const tf = await getTf();
     if (this.backendReady) return tf.getBackend();
     try {
       if (preferGPU) { await tf.setBackend('webgl'); await tf.ready(); this.backendReady = true; debugLog('[ML] WebGL'); return 'webgl'; }
@@ -48,8 +69,12 @@ class ModelCache {
     await tf.setBackend('cpu'); await tf.ready(); this.backendReady = true; debugLog('[ML] CPU'); return 'cpu';
   }
 
-  async getCocoModel(): Promise<cocoSsd.ObjectDetection> {
-    if (!this.cocoModel) { debugLog('[ML] Loading COCO-SSD...'); this.cocoModel = await cocoSsd.load({ base: 'lite_mobilenet_v2' }); }
+  async getCocoModel() {
+    if (!this.cocoModel) {
+      debugLog('[ML] Loading COCO-SSD...');
+      const cocoSsd = await getCocoSsd();
+      this.cocoModel = await cocoSsd.load({ base: 'lite_mobilenet_v2' });
+    }
     return this.cocoModel;
   }
 
