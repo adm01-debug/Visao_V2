@@ -473,11 +473,17 @@
 
   /* Typography utilities for dashboard density */
   .text-stat {
-    @apply text-3xl font-bold tracking-tight;
+    @apply text-3xl font-bold tracking-tight font-mono;
+    font-variant-numeric: tabular-nums;
   }
 
   .text-stat-label {
     @apply text-sm font-medium text-muted-foreground;
+  }
+
+  /* Numeric data should use monospace for alignment */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
   }
 
   .text-section-title {
