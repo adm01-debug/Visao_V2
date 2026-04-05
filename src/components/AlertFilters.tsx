@@ -99,7 +99,7 @@ const SEVERITY_BUTTON_OPTIONS: {
   { value: 'critical', label: 'Crítica', icon: Flame, activeClass: 'border-destructive bg-destructive/20 text-destructive font-bold', tooltip: 'Requer atenção imediata!' },
 ];
 
-
+export function AlertFiltersComponent({ filters, onFiltersChange, cameras = [] }: AlertFiltersProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [showStartCalendar, setShowStartCalendar] = useState(false);
   const [showEndCalendar, setShowEndCalendar] = useState(false);
