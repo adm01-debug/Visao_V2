@@ -24,7 +24,6 @@ const variantClasses: Record<string, string> = {
 const colorToVariant: Record<string, string> = {
   'bg-destructive': 'destructive',
   'bg-primary': 'primary',
-  'bg-primary': 'primary',
   'bg-success': 'success',
   'bg-warning': 'warning',
 };

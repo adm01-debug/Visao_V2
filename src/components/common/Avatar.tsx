@@ -25,10 +25,10 @@ function getInitials(name: string): string {
 
 function getColor(name: string): string {
   const colors = [
-    'bg-destructive', 'bg-warning', 'bg-amber-500', 'bg-warning',
-    'bg-lime-500', 'bg-success', 'bg-emerald-500', 'bg-teal-500',
-    'bg-primary', 'bg-sky-500', 'bg-primary', 'bg-indigo-500',
-    'bg-violet-500', 'bg-primary', 'bg-fuchsia-500', 'bg-pink-500',
+    'bg-destructive', 'bg-warning', 'bg-accent', 'bg-warning/80',
+    'bg-success/80', 'bg-success', 'bg-success/70', 'bg-primary/80',
+    'bg-primary', 'bg-primary/70', 'bg-primary/90', 'bg-accent/80',
+    'bg-accent/70', 'bg-primary/60', 'bg-accent/60', 'bg-destructive/80',
   ];
   const index = name.charCodeAt(0) % colors.length;
   return colors[index]!;
