@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Filter, X, Calendar, AlertTriangle, Gauge, Camera } from 'lucide-react';
+import { Filter, X, Calendar, AlertTriangle, Gauge, Camera, Info, AlertCircle, Flame } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
