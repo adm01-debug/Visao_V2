@@ -17,6 +17,8 @@ import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { LoginForm, RegisterForm } from './auth/AuthForms';
 
+import { getPasswordStrength } from '@/components/ui/PasswordStrength';
+
 const emailSchema = z.string().email('Email inválido').max(255);
 const passwordSchema = z.string().min(6, 'Senha deve ter no mínimo 6 caracteres').max(72);
 const nameSchema = z.string().max(100).optional();
