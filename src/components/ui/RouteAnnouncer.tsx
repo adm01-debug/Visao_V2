@@ -1,9 +1,9 @@
 /**
  * Screen reader route announcer
- * Announces page changes to assistive technology
+ * Announces page changes to assistive technology via aria-live
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const ROUTE_TITLES: Record<string, string> = {
@@ -28,16 +28,41 @@ const ROUTE_TITLES: Record<string, string> = {
   '/notification-settings': 'Notificações',
   '/stream-settings': 'Configurações de Stream',
   '/telegram-settings': 'Configurações Telegram',
+  '/behavior-detection': 'Detecção de Comportamento',
+  '/recognition-analytics': 'Analytics de Reconhecimento',
+  '/recognition-logs': 'Logs de Reconhecimento',
+  '/journey-reports': 'Relatórios de Jornada',
+  '/goals-alerts': 'Metas e Alertas',
+  '/collaborator-flow': 'Fluxo de Colaboradores',
+  '/productivity': 'Produtividade',
+  '/help': 'Ajuda',
 };
 
 export function RouteAnnouncer() {
   const location = useLocation();
   const [announcement, setAnnouncement] = useState('');
+  const prevPathRef = useRef(location.pathname);
 
   useEffect(() => {
-    const title = ROUTE_TITLES[location.pathname];
+    // Skip the initial render
+    if (prevPathRef.current === location.pathname) return;
+    prevPathRef.current = location.pathname;
+
+    // Try exact match first, then prefix match
+    let title = ROUTE_TITLES[location.pathname];
+    if (!title) {
+      const match = Object.entries(ROUTE_TITLES).find(([path]) =>
+        location.pathname.startsWith(path) && path !== '/'
+      );
+      title = match?.[1];
+    }
+
     if (title) {
-      setAnnouncement(`Navegou para ${title}`);
+      // Use a small delay so the DOM has time to update
+      const timer = setTimeout(() => {
+        setAnnouncement(`Navegou para ${title}`);
+      }, 100);
+      return () => clearTimeout(timer);
     }
   }, [location.pathname]);
 
