@@ -95,11 +95,11 @@ export default function CollaboratorFlowMapPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {bottlenecks.map((b, i) => (
                     <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-background border border-border/50">
-                      <div className={`p-1.5 rounded-md ${b.severity === "critical" ? "bg-destructive/20" : "bg-yellow-500/20"}`}>
-                        {b.severity === "critical" ? <Zap className="h-3.5 w-3.5 text-destructive" /> : <AlertTriangle className="h-3.5 w-3.5 text-yellow-600" />}
+                      <div className={`p-1.5 rounded-md ${b.severity === "critical" ? "bg-destructive/20" : "bg-warning/20"}`}>
+                        {b.severity === "critical" ? <Zap className="h-3.5 w-3.5 text-destructive" /> : <AlertTriangle className="h-3.5 w-3.5 text-warning" />}
                       </div>
                       <div><p className="text-sm font-medium">{b.zoneName}</p><p className="text-xs text-muted-foreground">{b.reason}: {b.metric}</p></div>
-                      <Badge className={`ml-auto text-[10px] ${b.severity === "critical" ? "bg-destructive/20 text-destructive border-destructive/30" : "bg-yellow-500/20 text-yellow-600 border-yellow-500/30"}`}>{b.severity === "critical" ? "Crítico" : "Atenção"}</Badge>
+                      <Badge className={`ml-auto text-[10px] ${b.severity === "critical" ? "bg-destructive/20 text-destructive border-destructive/30" : "bg-warning/15 text-warning border-warning/30"}`}>{b.severity === "critical" ? "Crítico" : "Atenção"}</Badge>
                     </div>
                   ))}
                 </div>
