@@ -70,10 +70,10 @@ export function AnalyticsPage() {
 
       const totalAlerts = alertsData?.length || 0;
       setKpis([
-        { label: 'Total de Alertas', value: totalAlerts, previousValue: prevAlertsData?.length || 0, icon: AlertTriangle, color: 'bg-red-500' },
-        { label: 'Análises de IA', value: analysisCount, previousValue: prevAnalysisCount, icon: Brain, color: 'bg-purple-500' },
-        { label: 'Câmeras Online', value: camerasData?.filter(c => c.status !== 'offline').length || 0, previousValue: camerasData?.filter(c => c.status !== 'offline').length || 0, unit: `/ ${camerasData?.length || 0}`, icon: Camera, color: 'bg-blue-500' },
-        { label: 'Pessoas Cadastradas', value: personsData?.length || 0, previousValue: personsData?.length || 0, icon: Users, color: 'bg-green-500' },
+        { label: 'Total de Alertas', value: totalAlerts, previousValue: prevAlertsData?.length || 0, icon: AlertTriangle, variant: 'destructive' },
+        { label: 'Análises de IA', value: analysisCount, previousValue: prevAnalysisCount, icon: Brain, variant: 'primary' },
+        { label: 'Câmeras Online', value: camerasData?.filter(c => c.status !== 'offline').length || 0, previousValue: camerasData?.filter(c => c.status !== 'offline').length || 0, unit: `/ ${camerasData?.length || 0}`, icon: Camera, variant: 'primary' },
+        { label: 'Pessoas Cadastradas', value: personsData?.length || 0, previousValue: personsData?.length || 0, icon: Users, variant: 'success' },
       ]);
 
       const days = eachDayOfInterval({ start, end });
@@ -133,7 +133,7 @@ export function AnalyticsPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="lg:col-span-2 border-border/50" style={{ boxShadow: 'var(--shadow-card)' }}><CardHeader><CardTitle className="text-section-title">Tendência de Alertas</CardTitle><CardDescription>Alertas por dia no período</CardDescription></CardHeader><CardContent>{loading ? <Skeleton className="h-[200px] w-full" /> : <SimpleBarChart data={chartData} dataKey="alerts" color="bg-red-500" height={200} />}</CardContent></Card>
+        <Card className="lg:col-span-2 border-border/50" style={{ boxShadow: 'var(--shadow-card)' }}><CardHeader><CardTitle className="text-section-title">Tendência de Alertas</CardTitle><CardDescription>Alertas por dia no período</CardDescription></CardHeader><CardContent>{loading ? <Skeleton className="h-[200px] w-full" /> : <SimpleBarChart data={chartData} dataKey="alerts" color="bg-destructive" height={200} />}</CardContent></Card>
         <Card className="border-border/50" style={{ boxShadow: 'var(--shadow-card)' }}><CardHeader><CardTitle className="text-section-title">Alertas por Tipo</CardTitle><CardDescription>Distribuição por categoria</CardDescription></CardHeader><CardContent className="flex flex-col items-center">{loading ? <Skeleton className="h-40 w-40 rounded-full" /> : <><DonutChart data={alertsByType} /><div className="grid grid-cols-2 gap-2 mt-4 w-full">{alertsByType.slice(0, 6).map((item, i) => <div key={i} className="flex items-center gap-2 text-xs"><div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} /><span className="truncate">{item.type}</span><span className="text-muted-foreground ml-auto tabular-nums">{item.count}</span></div>)}</div></>}</CardContent></Card>
       </div>
 
@@ -144,7 +144,7 @@ export function AnalyticsPage() {
 
       <Card className="border-border/50" style={{ boxShadow: 'var(--shadow-card)' }}><CardHeader><CardTitle className="text-section-title">Resumo do Período</CardTitle></CardHeader><CardContent><div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">{[
         { label: 'Média Alertas/Dia', value: chartData.length > 0 ? Math.round(chartData.reduce((s, d) => s + d.alerts, 0) / chartData.length) : 0, icon: AlertTriangle, color: 'text-destructive' },
-        { label: 'Pico de Alertas', value: Math.max(...chartData.map(d => d.alerts), 0), icon: TrendingUp, color: 'text-severity-high' },
+        { label: 'Pico de Alertas', value: Math.max(...chartData.map(d => d.alerts), 0), icon: TrendingUp, color: 'text-warning' },
         { label: 'Hora Mais Ativa', value: `${hourlyData.reduce((max, d) => d.alerts > (hourlyData[max]?.alerts || 0) ? hourlyData.indexOf(d) : max, 0)}h`, icon: Clock, color: 'text-primary' },
         { label: 'Taxa Detecção', value: '94.2%', icon: Target, color: 'text-success' },
         { label: 'Uptime Médio', value: '99.1%', icon: Activity, color: 'text-primary' },

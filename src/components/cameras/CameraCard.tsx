@@ -54,12 +54,12 @@ export function CameraCard({
   const isCompact = viewMode === 'grid-4x4' || viewMode === 'list';
 
   const statusBadgeClass = cn(
-    'text-[10px] font-medium px-2 py-0.5',
+    'text-[10px] font-medium px-2 py-0.5 backdrop-blur-sm',
     camera.status === 'alert'
-      ? 'bg-destructive text-destructive-foreground animate-pulse'
+      ? 'bg-destructive/15 text-destructive border-destructive/25 animate-pulse'
       : isOnline
         ? 'bg-success/15 text-success border-success/20'
-        : 'bg-muted text-muted-foreground border-border'
+        : 'bg-muted/80 text-muted-foreground border-border'
   );
 
   return (

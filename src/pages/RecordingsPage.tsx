@@ -107,7 +107,7 @@ export function RecordingsPage() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card><CardContent className="p-4"><div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center"><Video className="w-5 h-5 text-primary" /></div><div><p className="text-2xl font-bold">{stats.total}</p><p className="text-xs text-muted-foreground">Clips</p></div></div></CardContent></Card>
-            <Card><CardContent className="p-4"><div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center"><Clock className="w-5 h-5 text-blue-500" /></div><div><p className="text-2xl font-bold">{formatClipDuration(stats.totalDuration)}</p><p className="text-xs text-muted-foreground">Duração total</p></div></div></CardContent></Card>
+            <Card><CardContent className="p-4"><div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center"><Clock className="w-5 h-5 text-primary" /></div><div><p className="text-2xl font-bold">{formatClipDuration(stats.totalDuration)}</p><p className="text-xs text-muted-foreground">Duração total</p></div></div></CardContent></Card>
           </div>
         </div>
       </div>

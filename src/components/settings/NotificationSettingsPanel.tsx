@@ -59,7 +59,7 @@ export function NotificationSettingsPanel() {
   const getPermissionBadge = () => {
     switch (pushPermission) {
       case "granted":
-        return <Badge variant="default" className="bg-green-500/20 text-green-400 border-green-500/30">Permitido</Badge>;
+        return <Badge variant="default" className="bg-success/20 text-success border-success/30">Permitido</Badge>;
       case "denied":
         return <Badge variant="destructive">Bloqueado</Badge>;
       default:
@@ -102,18 +102,18 @@ export function NotificationSettingsPanel() {
           </div>
 
           {!isSupported && (
-            <div className="flex items-center gap-2 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-              <AlertTriangle className="h-4 w-4 text-yellow-500" />
-              <span className="text-sm text-yellow-500">
+            <div className="flex items-center gap-2 p-3 bg-warning/10 border border-warning/20 rounded-lg">
+              <AlertTriangle className="h-4 w-4 text-warning" />
+              <span className="text-sm text-warning">
                 Seu navegador não suporta notificações push
               </span>
             </div>
           )}
 
           {pushPermission === "denied" && isSupported && (
-            <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-              <BellOff className="h-4 w-4 text-red-500" />
-              <span className="text-sm text-red-500">
+            <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+              <BellOff className="h-4 w-4 text-destructive" />
+              <span className="text-sm text-destructive">
                 Notificações bloqueadas. Altere nas configurações do navegador.
               </span>
             </div>
@@ -158,20 +158,20 @@ export function NotificationSettingsPanel() {
         <div className="space-y-3">
           <Label className="text-base">Níveis de Severidade</Label>
           <div className="grid grid-cols-2 gap-2 text-sm">
-            <div className="flex items-center gap-2 p-2 bg-red-500/10 rounded-lg">
-              <span className="text-red-500">🚨</span>
+            <div className="flex items-center gap-2 p-2 bg-destructive/10 rounded-lg">
+              <span className="text-destructive">🚨</span>
               <span className="text-muted-foreground">Crítico - Push + Som forte</span>
             </div>
-            <div className="flex items-center gap-2 p-2 bg-orange-500/10 rounded-lg">
-              <span className="text-orange-500">⚠️</span>
+            <div className="flex items-center gap-2 p-2 bg-warning/10 rounded-lg">
+              <span className="text-warning">⚠️</span>
               <span className="text-muted-foreground">Alto - Push + Som</span>
             </div>
-            <div className="flex items-center gap-2 p-2 bg-yellow-500/10 rounded-lg">
-              <span className="text-yellow-500">📢</span>
+            <div className="flex items-center gap-2 p-2 bg-warning/8 rounded-lg">
+              <span className="text-warning/80">📢</span>
               <span className="text-muted-foreground">Médio - Apenas toast</span>
             </div>
-            <div className="flex items-center gap-2 p-2 bg-blue-500/10 rounded-lg">
-              <span className="text-blue-500">ℹ️</span>
+            <div className="flex items-center gap-2 p-2 bg-primary/10 rounded-lg">
+              <span className="text-primary">ℹ️</span>
               <span className="text-muted-foreground">Baixo - Apenas toast</span>
             </div>
           </div>
