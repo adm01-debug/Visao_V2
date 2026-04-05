@@ -5,9 +5,10 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PageTitle } from "@/components/Breadcrumbs";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useNotifications } from "@/contexts/NotificationContext";
+import { useTheme } from "@/contexts/ThemeProvider";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Volume2, VolumeX } from "lucide-react";
+import { Volume2, VolumeX, Moon, Sun } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
