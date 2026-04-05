@@ -53,11 +53,12 @@ class ModelCache {
     return this.cocoModel;
   }
 
-  async getPoseDetector(): Promise<poseDetection.PoseDetector> {
+  async getPoseDetector() {
     if (!this.poseDetector) {
       debugLog('[ML] Loading MoveNet...');
-      this.poseDetector = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, {
-        modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING, enableSmoothing: true,
+      const pd = await getPoseDetectionModule();
+      this.poseDetector = await pd.createDetector(pd.SupportedModels.MoveNet, {
+        modelType: pd.movenet.modelType.SINGLEPOSE_LIGHTNING, enableSmoothing: true,
       });
     }
     return this.poseDetector;
