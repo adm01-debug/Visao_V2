@@ -71,6 +71,6 @@ export const PanicButton = React.forwardRef<HTMLDivElement, { className?: string
       </AlertDialog>
     </>
   );
-}
+});
 
 export default PanicButton;
