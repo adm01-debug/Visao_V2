@@ -73,7 +73,7 @@ export function OfflineIndicator({
             size="icon"
             className={cn(
               'relative',
-              !isOnline && 'text-yellow-500',
+              !isOnline && 'text-warning',
               className
             )}
             onClick={() => isOnline && syncNow()}
