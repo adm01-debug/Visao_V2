@@ -44,9 +44,9 @@ export function CollaboratorKPICard({ collaborator: c, index }: CollaboratorKPIC
           <div key={k.goalId} className="flex items-center justify-between text-[11px]">
             <div className="flex items-center gap-1.5 min-w-0">
               {k.status === "on_track" ? (
-                <CheckCircle className="h-3 w-3 text-emerald-500 flex-shrink-0" />
+                <CheckCircle className="h-3 w-3 text-success flex-shrink-0" />
               ) : k.status === "warning" ? (
-                <AlertTriangle className="h-3 w-3 text-yellow-500 flex-shrink-0" />
+                <AlertTriangle className="h-3 w-3 text-warning flex-shrink-0" />
               ) : (
                 <AlertTriangle className="h-3 w-3 text-destructive flex-shrink-0" />
               )}
