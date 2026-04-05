@@ -73,12 +73,19 @@ export function AlertsPage() {
   const clearFilters = () => setFilters(defaultFilters);
   const hasActiveFilters = Object.entries(filters).some(([key, value]) => key === 'search' ? value !== '' : value !== 'all');
 
+  const severityCounts = useMemo(() => ({
+    low: alerts.filter(a => a.severity === 'low').length,
+    medium: alerts.filter(a => a.severity === 'medium').length,
+    high: alerts.filter(a => a.severity === 'high').length,
+    critical: alerts.filter(a => a.severity === 'critical').length,
+  }), [alerts]);
+
   const stats = useMemo(() => ({
     total: alerts.length,
     unread: unreadCount,
-    critical: alerts.filter(a => a.severity === 'critical').length,
+    critical: severityCounts.critical,
     today: alerts.filter(a => new Date(a.timestamp).toDateString() === new Date().toDateString()).length,
-  }), [alerts, unreadCount]);
+  }), [alerts, unreadCount, severityCounts]);
 
   if (loading) {
     return (
