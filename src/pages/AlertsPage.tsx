@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { AlertItem } from "@/components/alerts/AlertItem";
 import { AlertDetailsDialog } from "@/components/alerts/AlertDetailsDialog";
 import { AlertStatsCards } from "@/components/alerts/AlertStatsCards";
+import { AlertSeveritySummary } from "@/components/alerts/AlertSeveritySummary";
 import type { AlertRecord, AlertFilters, ViewMode, SortOption } from "@/components/alerts/AlertTypes";
 import { defaultFilters, severityConfig } from "@/components/alerts/AlertTypes";
 
