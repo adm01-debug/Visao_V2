@@ -55,9 +55,9 @@ interface EnhancedCameraCardProps {
 }
 
 const statusConfig = {
-  online: { color: 'bg-green-500', label: 'LIVE', icon: Wifi },
+  online: { color: 'bg-success', label: 'LIVE', icon: Wifi },
   offline: { color: 'bg-muted', label: 'OFF', icon: WifiOff },
-  warning: { color: 'bg-yellow-500', label: 'AVISO', icon: AlertTriangle },
+  warning: { color: 'bg-warning', label: 'AVISO', icon: AlertTriangle },
   alert: { color: 'bg-destructive animate-pulse', label: 'ALERTA', icon: AlertTriangle }
 };
 

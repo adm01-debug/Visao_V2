@@ -196,7 +196,7 @@ export function SeverityBadge({ severity, className }: SeverityBadgeProps) {
   const config = {
     low: { label: 'Baixa', color: 'bg-success/10 text-success border-success/30' },
     medium: { label: 'Média', color: 'bg-warning/10 text-warning border-warning/30' },
-    high: { label: 'Alta', color: 'bg-orange-500/10 text-orange-500 border-orange-500/30' },
+    high: { label: 'Alta', color: 'bg-warning/10 text-warning border-warning/30' },
     critical: { label: 'Crítica', color: 'bg-destructive/10 text-destructive border-destructive/30' },
   };
 

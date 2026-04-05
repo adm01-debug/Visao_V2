@@ -106,11 +106,11 @@ export function PersonDetailsDialog({ person, isOpen, onClose, onEdit, onDelete 
                   {recognitionLogs.map(log => (
                     <div key={log.id} className={cn(
                       'p-3 rounded-lg border-l-4',
-                      log.recognized ? 'border-l-green-500 bg-green-500/5' : 'border-l-red-500 bg-red-500/5'
+                      log.recognized ? 'border-l-success bg-success/5' : 'border-l-destructive bg-destructive/5'
                     )}>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          {log.recognized ? <CheckCircle className="w-4 h-4 text-green-500" /> : <XCircle className="w-4 h-4 text-red-500" />}
+                          {log.recognized ? <CheckCircle className="w-4 h-4 text-success" /> : <XCircle className="w-4 h-4 text-destructive" />}
                           <span className="font-medium">{log.recognized ? 'Reconhecido' : 'Não reconhecido'}</span>
                         </div>
                         <span className="text-xs text-muted-foreground">

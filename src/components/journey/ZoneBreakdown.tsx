@@ -30,7 +30,7 @@ export function ZoneBreakdown({ data, formatMinutes }: ZoneBreakdownProps) {
                         <span className="font-mono">{formatMinutes(z.minutes)}</span>
                       </div>
                       <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-                        <div className={`h-full rounded-full transition-all ${z.type === 'productive' ? 'bg-emerald-500' : 'bg-yellow-500'}`} style={{ width: `${pct}%` }} />
+                        <div className={`h-full rounded-full transition-all ${z.type === 'productive' ? 'bg-success' : 'bg-warning'}`} style={{ width: `${pct}%` }} />
                       </div>
                     </div>
                   );
