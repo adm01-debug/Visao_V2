@@ -13,6 +13,7 @@ interface ShortcutConfig {
   shift?: boolean;
   alt?: boolean;
   meta?: boolean;
+  action: () => void;
   description: string;
   category: string;
 }
