@@ -1,5 +1,6 @@
 import { Shimmer } from '@/components/ui/LoadingState';
 import { Shield } from 'lucide-react';
+import { BrandedSkeleton } from '@/components/ui/skeleton';
 
 export function StatsSkeleton() {
   return (
@@ -26,12 +27,7 @@ export function CameraGridSkeleton({ count = 4 }: { count?: number }) {
       {[...Array(count)].map((_, i) => (
         <div key={i} className="rounded-lg border border-border bg-card overflow-hidden" style={{ animationDelay: `${i * 80}ms` }}>
           <div className="aspect-video w-full relative">
-            <Shimmer className="absolute inset-0" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Shield className="w-5 h-5 text-primary/30 animate-pulse" />
-              </div>
-            </div>
+            <BrandedSkeleton className="absolute inset-0" />
           </div>
           <div className="p-3 space-y-2">
             <Shimmer className="h-4 w-3/4" />

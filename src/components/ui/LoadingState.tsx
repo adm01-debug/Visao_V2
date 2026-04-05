@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SkeletonProps {
@@ -67,7 +68,12 @@ export function CameraGridSkeleton({ count = 4 }: { count?: number }) {
           transition={{ delay: i * 0.05, duration: 0.3 }}
           className="rounded-lg border border-border bg-card overflow-hidden"
         >
-          <Shimmer className="aspect-video w-full" />
+          <div className="relative">
+            <Shimmer className="aspect-video w-full" />
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ animation: 'skeleton-brand-pulse 3s ease-in-out infinite' }}>
+              <Shield className="w-8 h-8 text-primary" />
+            </div>
+          </div>
           <div className="p-3 space-y-2">
             <Shimmer className="h-4 w-3/4" />
             <Shimmer className="h-3 w-1/2" />
