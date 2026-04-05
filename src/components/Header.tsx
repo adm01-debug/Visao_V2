@@ -32,7 +32,7 @@ export function Header({ className }: { className?: string }) {
           <span
             className={cn(
               "hidden sm:inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-xs transition-colors",
-              isOnline ? "text-foreground/80 border-success/20 bg-success/8" : "text-muted-foreground border-border/60 bg-muted/30"
+              isOnline ? "text-foreground/80 border-success/20 bg-success/[0.08]" : "text-muted-foreground border-border/60 bg-muted/30"
             )}
             aria-live="polite"
           >
