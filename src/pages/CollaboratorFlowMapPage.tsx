@@ -153,7 +153,7 @@ export default function CollaboratorFlowMapPage() {
                         <td className="p-3 font-medium text-xs">{edge.to}</td>
                         <td className="p-3 text-right font-mono font-bold tabular-nums">{edge.count}</td>
                         <td className="p-3 text-right font-mono text-xs tabular-nums text-muted-foreground">{edge.avgTransitTime}s</td>
-                        <td className="p-3"><div className="flex items-center gap-2"><div className="w-20 h-1.5 rounded-full bg-muted overflow-hidden"><div className={`h-full rounded-full ${intensity > 80 ? "bg-destructive" : intensity > 50 ? "bg-yellow-500" : "bg-emerald-500"}`} style={{ width: `${intensity}%` }} /></div><span className="text-[10px] text-muted-foreground tabular-nums">{intensity}%</span></div></td>
+                        <td className="p-3"><div className="flex items-center gap-2"><div className="w-20 h-1.5 rounded-full bg-muted overflow-hidden"><div className={`h-full rounded-full ${intensity > 80 ? "bg-destructive" : intensity > 50 ? "bg-warning" : "bg-success"}`} style={{ width: `${intensity}%` }} /></div><span className="text-[10px] text-muted-foreground tabular-nums">{intensity}%</span></div></td>
                       </motion.tr>
                     );
                   })}
