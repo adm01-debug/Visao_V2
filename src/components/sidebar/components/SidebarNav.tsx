@@ -98,6 +98,7 @@ const CategoryItem = memo(React.forwardRef(function CategoryItem({
   onToggle,
   isItemActive,
   onNavigate,
+  isLoading,
 }: CategoryItemProps, _ref) {
   const CategoryIcon = category.icon;
   const status = category.getStatus?.() || { type: "neutral" as const, label: "" };
