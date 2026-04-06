@@ -1,3 +1,4 @@
+import React from "react";
 import { UserAvatar } from "@/components/UserAvatar";
 import { NotificationBell } from "@/components/NotificationBell";
 import { AnalysisHistoryPanel } from "@/components/AnalysisHistoryPanel";
