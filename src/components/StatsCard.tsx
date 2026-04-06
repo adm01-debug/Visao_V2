@@ -83,6 +83,45 @@ function MiniSparkline({ data, color }: { data: number[]; color: string }) {
   );
 }
 
+function useAnimatedNumber(value: string | number): string {
+  const numericValue = typeof value === 'number' ? value : parseInt(String(value).replace(/[^0-9]/g, ''));
+  const isNumeric = !isNaN(numericValue) && numericValue > 0;
+  const [displayValue, setDisplayValue] = useState(isNumeric ? 0 : numericValue);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    if (!isNumeric || hasAnimated.current) {
+      setDisplayValue(numericValue);
+      return;
+    }
+    hasAnimated.current = true;
+    const duration = 600;
+    const start = performance.now();
+    const from = 0;
+    const to = numericValue;
+
+    function tick(now: number) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // easeOutExpo
+      const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      setDisplayValue(Math.round(from + (to - from) * eased));
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }, [numericValue, isNumeric]);
+
+  if (!isNumeric) return String(value);
+  // Preserve the original format (e.g. "21/24")
+  const original = String(value);
+  if (original.includes('/')) {
+    const parts = original.split('/');
+    return `${displayValue}/${parts[1]}`;
+  }
+  if (original.includes('%')) return `${displayValue}%`;
+  return String(displayValue);
+}
+
 function useFakeSparkline(value: string | number): number[] {
   return useMemo(() => {
     const num = typeof value === 'number' ? value : parseInt(String(value)) || 50;
