@@ -66,8 +66,8 @@ export function CameraCard({
   return (
     <Card
       className={cn(
-        'relative overflow-hidden transition-all duration-200 cursor-pointer group border-border/50',
-        'hover:shadow-md hover:-translate-y-0.5',
+        'relative overflow-hidden transition-all duration-300 cursor-pointer group border-border/50',
+        'hover:shadow-lg hover:-translate-y-1 hover:border-primary/30 hover:shadow-primary/[0.04]',
         isSelected && 'ring-2 ring-primary/50',
         !isOnline && 'opacity-60'
       )}
