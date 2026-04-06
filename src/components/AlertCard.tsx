@@ -117,8 +117,10 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
   return (
     <article
       className={cn(
-        "rounded-xl border border-border/40 bg-card p-4 cursor-pointer group transition-all duration-200",
-        "hover:border-border hover:shadow-sm hover:-translate-y-0.5",
+        "relative rounded-xl border border-border/40 bg-card p-4 cursor-pointer group overflow-hidden",
+        "transition-all duration-300 ease-out",
+        "hover:border-border/80 hover:-translate-y-1 hover:shadow-[var(--shadow-card-glow)]",
+        "active:scale-[0.98] active:translate-y-0",
         !alert.isRead && `border-l-[3px] ${severityBorderColors[alert.severity]}`,
         alert.isRead && 'opacity-65 hover:opacity-90',
         alert.severity === 'critical' && !alert.isRead && 'alert-critical-pulse border-destructive/30',
