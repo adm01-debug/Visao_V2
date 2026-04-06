@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef, useEffect } from 'react';
 import type { DbAlert } from '@/hooks/useAlerts';
 import {
   AlertTriangle,
