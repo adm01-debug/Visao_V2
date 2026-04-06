@@ -13,7 +13,7 @@ const badgeVariants = cva(
         destructive: "border-transparent bg-destructive/15 text-destructive border-destructive/25 hover:bg-destructive/25",
         success: "border-transparent bg-success/15 text-success border-success/25 hover:bg-success/25",
         warning: "border-transparent bg-warning/12 text-warning border-warning/20 hover:bg-warning/20",
-        alert: "border-destructive/40 bg-destructive/15 text-destructive animate-pulse",
+        alert: "border-severity-critical/30 bg-severity-critical/12 text-severity-critical animate-pulse",
         outline: "text-foreground border-border/60 bg-transparent",
         info: "border-transparent bg-primary/12 text-primary border-primary/20",
         muted: "border-transparent bg-muted text-muted-foreground",

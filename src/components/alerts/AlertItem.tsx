@@ -28,10 +28,10 @@ const severityBorderMap: Record<string, string> = {
 };
 
 const severityBadgeBg: Record<string, string> = {
-  critical: 'bg-destructive/15 text-destructive border border-destructive/25',
-  high: 'bg-warning/12 text-warning border border-warning/20',
-  medium: 'bg-primary/10 text-primary border border-primary/20',
-  low: 'bg-muted text-muted-foreground border border-border/40',
+  critical: 'bg-severity-critical/12 text-severity-critical border border-severity-critical/20',
+  high: 'bg-severity-high/12 text-severity-high border border-severity-high/20',
+  medium: 'bg-severity-medium/12 text-severity-medium border border-severity-medium/20',
+  low: 'bg-severity-low/10 text-severity-low border border-severity-low/15',
 };
 
 export function AlertItem({ alert, isSelected, onSelect, onView, onMarkRead, onDelete, viewMode }: AlertItemProps) {

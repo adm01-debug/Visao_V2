@@ -19,36 +19,40 @@ const severityItems = [
     label: 'Crítico',
     icon: Flame,
     tooltip: 'Alertas que requerem atenção imediata',
-    bg: 'bg-severity-critical/8 border-severity-critical/20',
+    bg: 'bg-severity-critical/6 border-severity-critical/15 hover:bg-severity-critical/10',
     text: 'text-severity-critical',
     accent: 'bg-severity-critical',
+    iconBg: 'bg-severity-critical/10',
   },
   {
     key: 'high' as const,
     label: 'Alto',
     icon: AlertTriangle,
     tooltip: 'Alertas que necessitam de ação em breve',
-    bg: 'bg-severity-high/8 border-severity-high/20',
+    bg: 'bg-severity-high/6 border-severity-high/15 hover:bg-severity-high/10',
     text: 'text-severity-high',
     accent: 'bg-severity-high',
+    iconBg: 'bg-severity-high/10',
   },
   {
     key: 'medium' as const,
     label: 'Médio',
     icon: AlertCircle,
     tooltip: 'Alertas que requerem monitoramento',
-    bg: 'bg-severity-medium/8 border-severity-medium/20',
+    bg: 'bg-severity-medium/6 border-severity-medium/15 hover:bg-severity-medium/10',
     text: 'text-severity-medium',
     accent: 'bg-severity-medium',
+    iconBg: 'bg-severity-medium/10',
   },
   {
     key: 'low' as const,
     label: 'Baixo',
     icon: Info,
     tooltip: 'Eventos informativos, sem risco imediato',
-    bg: 'bg-muted/50 border-border',
-    text: 'text-muted-foreground',
-    accent: 'bg-muted-foreground',
+    bg: 'bg-severity-low/6 border-severity-low/15 hover:bg-severity-low/10',
+    text: 'text-severity-low',
+    accent: 'bg-severity-low',
+    iconBg: 'bg-severity-low/10',
   },
 ] as const;
 
@@ -63,7 +67,7 @@ export function AlertSeveritySummary({ counts, total, activeSeverity, onSeverity
   return (
     <div className="flex flex-col gap-2.5">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-        {severityItems.map(({ key, label, icon: Icon, tooltip, bg, text }) => {
+        {severityItems.map(({ key, label, icon: Icon, tooltip, bg, text, iconBg }) => {
           const isActive = activeSeverity === key;
           return (
             <Tooltip key={key}>
@@ -81,7 +85,7 @@ export function AlertSeveritySummary({ counts, total, activeSeverity, onSeverity
                   role="status"
                   aria-label={`${counts[key]} alertas de severidade ${label}`}
                 >
-                  <div className={cn('p-1.5 rounded-lg', text === 'text-muted-foreground' ? 'bg-muted' : `${text.replace('text-', 'bg-')}/10`)}>
+                  <div className={cn('p-1.5 rounded-lg', iconBg)}>
                     <Icon className={cn('w-4 h-4 flex-shrink-0', text)} aria-hidden="true" />
                   </div>
                   <div className="min-w-0">
