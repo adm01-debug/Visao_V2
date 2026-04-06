@@ -139,7 +139,7 @@ export function CameraMap({ cameras, onCameraClick, className = '' }: CameraMapP
       const popup = new mapboxgl.Popup({ offset: 25, closeButton: false }).setHTML(`
         <div style="padding: 8px; min-width: 150px;">
           <strong style="font-size: 14px;">${camera.name}</strong>
-          <p style="margin: 4px 0; font-size: 12px; color: #666;">${camera.location}</p>
+          <p style="margin: 4px 0; font-size: 12px; color: hsl(220, 9%, 46%);">${camera.location}</p>
           <span style="
             display: inline-block;
             padding: 2px 8px;

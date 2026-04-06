@@ -40,7 +40,7 @@ export function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneE
       setFormData({ name: zone.name, type: zone.type as ZoneType, color: zone.color || (defaultColors[0] ?? ''), is_active: zone.is_active, pointsData });
       setOpacity(pointsData?.opacity || 0.3);
     } else {
-      setFormData({ name: '', type: 'counting', color: defaultColors[Math.floor(Math.random() * defaultColors.length)] ?? '#3B82F6', is_active: true, pointsData: null });
+      setFormData({ name: '', type: 'counting', color: defaultColors[Math.floor(Math.random() * defaultColors.length)] ?? defaultColors[0], is_active: true, pointsData: null });
       setOpacity(0.3);
     }
   }, [zone, isOpen]);

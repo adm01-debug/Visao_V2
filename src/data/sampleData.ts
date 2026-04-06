@@ -75,7 +75,7 @@ export const sampleZones = [
     id: 'zone-003',
     name: 'Entrada Principal',
     type: 'access',
-    color: '#45B7D1',
+    color: 'hsl(217, 91%, 60%)',
     cameraIds: ['cam-001'],
     isActive: true,
   },

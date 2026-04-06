@@ -65,9 +65,9 @@ export function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }:
                 {pointsData && (
                   <svg className="absolute inset-0 w-full h-full pointer-events-none">
                     {pointsData.shape === 'line' ? (
-                      <line x1={`${pointsData.coordinates[0]?.x}%`} y1={`${pointsData.coordinates[0]?.y}%`} x2={`${pointsData.coordinates[1]?.x}%`} y2={`${pointsData.coordinates[1]?.y}%`} stroke={zone.color || '#3B82F6'} strokeWidth="3" strokeDasharray="5,5" />
+                      <line x1={`${pointsData.coordinates[0]?.x}%`} y1={`${pointsData.coordinates[0]?.y}%`} x2={`${pointsData.coordinates[1]?.x}%`} y2={`${pointsData.coordinates[1]?.y}%`} stroke={zone.color || 'hsl(217, 91%, 60%)'} strokeWidth="3" strokeDasharray="5,5" />
                     ) : (
-                      <polygon points={pointsData.coordinates.map(p => `${p.x}%,${p.y}%`).join(' ')} fill={zone.color || '#3B82F6'} fillOpacity={pointsData.opacity || 0.3} stroke={zone.color || '#3B82F6'} strokeWidth="2" />
+                      <polygon points={pointsData.coordinates.map(p => `${p.x}%,${p.y}%`).join(' ')} fill={zone.color || 'hsl(217, 91%, 60%)'} fillOpacity={pointsData.opacity || 0.3} stroke={zone.color || 'hsl(217, 91%, 60%)'} strokeWidth="2" />
                     )}
                   </svg>
                 )}

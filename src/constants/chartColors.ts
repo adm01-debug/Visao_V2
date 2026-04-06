@@ -28,6 +28,18 @@ export const CHART_COLORS = {
   cameraWarning: 'hsl(38, 92%, 50%)',
 } as const;
 
+/** Zone palette for canvas/SVG rendering (user-selectable zone colors) */
+export const ZONE_COLORS = [
+  CHART_COLORS.blue,
+  CHART_COLORS.red,
+  CHART_COLORS.green,
+  CHART_COLORS.amber,
+  CHART_COLORS.violet,
+  'hsl(330, 81%, 60%)',  // pink
+  CHART_COLORS.cyan,
+  CHART_COLORS.orange,
+] as const;
+
 /** Detection type color map for Canvas/SVG overlays */
 export const DETECTION_COLORS: Record<string, string> = {
   face: CHART_COLORS.green,
