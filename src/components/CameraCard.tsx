@@ -4,6 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Users, AlertTriangle, MapPin, Video, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { HighlightText } from './HighlightText';
+import { CameraPlaceholder } from './cameras/CameraPlaceholder';
+import { HighlightText } from './HighlightText';
 
 export interface CameraCardProps {
   camera: Camera;
