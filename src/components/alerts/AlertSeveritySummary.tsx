@@ -85,7 +85,7 @@ export function AlertSeveritySummary({ counts, total, activeSeverity, onSeverity
                   role="status"
                   aria-label={`${counts[key]} alertas de severidade ${label}`}
                 >
-                  <div className={cn('p-1.5 rounded-lg', item.iconBg)}>
+                  <div className={cn('p-1.5 rounded-lg', iconBg)}>
                     <Icon className={cn('w-4 h-4 flex-shrink-0', text)} aria-hidden="true" />
                   </div>
                   <div className="min-w-0">
