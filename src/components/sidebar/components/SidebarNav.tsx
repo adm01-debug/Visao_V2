@@ -384,11 +384,13 @@ const NavItemCollapsed = memo(function NavItemCollapsed({
             "relative flex items-center justify-center px-2 py-2 rounded-lg text-sm",
             "transition-all duration-200 ease-out",
             "text-sidebar-foreground/55",
-            "hover:text-sidebar-foreground hover:bg-sidebar-accent/50 hover:scale-105",
+            "hover:text-sidebar-foreground hover:bg-sidebar-accent/60 hover:scale-110",
+            "hover:shadow-[0_2px_8px_-2px_hsl(var(--primary)/0.1)]",
+            "transition-all duration-300",
             isActive && [
               "bg-primary/12 text-primary",
               "hover:bg-primary/16 hover:text-primary",
-              "shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.12)]",
+              "shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.12),0_2px_8px_-2px_hsl(var(--primary)/0.1)]",
             ]
           )}
         >
