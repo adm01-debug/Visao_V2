@@ -138,7 +138,7 @@ function DetectionOverlayComponent({
                 >
                   {label}
                   {showConfidence && (
-                    <tspan fill="rgba(255,255,255,0.8)" dx={4}>
+                    <tspan fill="currentColor" opacity="0.8" dx={4}>
                       {confidenceText}
                     </tspan>
                   )}

@@ -25,7 +25,7 @@ function FaceBox({ face, showLabel, showSimilarity, showDetails, animate, onClic
       style={{ left: `${face.boundingBox.x}%`, top: `${face.boundingBox.y}%`, width: `${face.boundingBox.width}%`, height: `${face.boundingBox.height}%` }}
       onClick={onClick}>
       <div className={cn('absolute inset-0 border-2 rounded transition-all', style.borderColor, isAlert && animate && 'animate-pulse shadow-lg', isAlert && 'border-3')}
-        style={{ boxShadow: isAlert ? `0 0 20px ${face.listType === 'blacklist' ? '#ef4444' : '#9ca3af'}` : undefined }}>
+        style={{ boxShadow: isAlert ? `0 0 20px ${face.listType === 'blacklist' ? 'hsl(var(--destructive))' : 'hsl(var(--muted-foreground))'}` : undefined }}>
         <div className={cn('absolute -top-0.5 -left-0.5 w-3 h-3 border-t-2 border-l-2 rounded-tl', style.borderColor)} />
         <div className={cn('absolute -top-0.5 -right-0.5 w-3 h-3 border-t-2 border-r-2 rounded-tr', style.borderColor)} />
         <div className={cn('absolute -bottom-0.5 -left-0.5 w-3 h-3 border-b-2 border-l-2 rounded-bl', style.borderColor)} />

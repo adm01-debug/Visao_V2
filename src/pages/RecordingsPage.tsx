@@ -246,7 +246,7 @@ export function RecordingsPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteClip} className="bg-[hsl(var(--severity-critical))] hover:bg-[hsl(var(--severity-critical))]/90 text-white">Excluir</AlertDialogAction>
+            <AlertDialogAction onClick={handleDeleteClip} className="bg-[hsl(var(--severity-critical))] hover:bg-[hsl(var(--severity-critical))]/90 text-destructive-foreground">Excluir</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
