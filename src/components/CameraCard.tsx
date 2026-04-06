@@ -26,10 +26,8 @@ export function CameraCard({ camera, onClick, compact = false, searchQuery = '' 
         )}
         onClick={onClick}
       >
-        <div className="relative w-20 h-14 bg-secondary rounded-lg overflow-hidden flex-shrink-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-secondary to-background flex items-center justify-center">
-            <Video className="w-6 h-6 text-muted-foreground/30" />
-          </div>
+        <div className="relative w-20 h-14 rounded-lg overflow-hidden flex-shrink-0">
+          <CameraPlaceholder isOnline={camera.status === 'online'} compact />
           <div className="absolute top-1 left-1">
             <StatusIndicator status={camera.status} size="sm" />
           </div>
