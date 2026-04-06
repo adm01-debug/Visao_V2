@@ -109,7 +109,7 @@ export function RecordingsPage() {
                 <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
               </Button>
               {selectedClips.size > 0 && (
-                <Button variant="destructive" size="sm" onClick={handleDeleteSelected} className="bg-[hsl(var(--severity-critical))] hover:bg-[hsl(var(--severity-critical))]/90 text-white">
+                <Button variant="destructive" size="sm" onClick={handleDeleteSelected} className="bg-[hsl(var(--severity-critical))] hover:bg-[hsl(var(--severity-critical))]/90 text-destructive-foreground">
                   <Trash2 className="w-4 h-4 mr-2" />Excluir ({selectedClips.size})
                 </Button>
               )}
