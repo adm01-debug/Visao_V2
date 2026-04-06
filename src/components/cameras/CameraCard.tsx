@@ -9,6 +9,7 @@ import {
   Trash2, MapPin, AlertTriangle, ScanFace, Clock,
 } from 'lucide-react';
 import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';
+import { CameraPlaceholder } from './CameraPlaceholder';
 import { ClipRecorderControls } from '@/components/ClipRecorderControls';
 import { FaceRecognitionOverlay } from '@/components/FaceRecognitionOverlay';
 import { ZoneOverlay } from '@/components/ZoneOverlay';
