@@ -117,8 +117,10 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
   return (
     <article
       className={cn(
-        "rounded-xl border border-border/40 bg-card p-4 cursor-pointer group transition-all duration-200",
-        "hover:border-border hover:shadow-sm hover:-translate-y-0.5",
+        "relative rounded-xl border border-border/40 bg-card p-4 cursor-pointer group overflow-hidden",
+        "transition-all duration-300 ease-out",
+        "hover:border-border/80 hover:-translate-y-1 hover:shadow-[var(--shadow-card-glow)]",
+        "active:scale-[0.98] active:translate-y-0",
         !alert.isRead && `border-l-[3px] ${severityBorderColors[alert.severity]}`,
         alert.isRead && 'opacity-65 hover:opacity-90',
         alert.severity === 'critical' && !alert.isRead && 'alert-critical-pulse border-destructive/30',
@@ -131,8 +133,16 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick?.(); } }}
       aria-label={`Alerta ${severityLabel}: ${alert.message}. Câmera: ${alert.cameraName}. ${formatDistanceToNow(alert.timestamp, { addSuffix: true, locale: ptBR })}`}
     >
-      <div className="flex items-start gap-3">
-        <div className={cn("p-2 rounded-xl shrink-0", typeIconBg[config.color] || 'bg-muted/40', config.color)} aria-hidden="true">
+      {/* Hover glow radial */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        style={{ background: `radial-gradient(ellipse at 0% 50%, hsl(var(--primary) / 0.06), transparent 70%)` }}
+      />
+
+      <div className="relative z-10 flex items-start gap-3">
+        <div className={cn(
+          "p-2 rounded-xl shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:shadow-md",
+          typeIconBg[config.color] || 'bg-muted/40', config.color
+        )} aria-hidden="true">
           <Icon className="w-4 h-4" />
         </div>
 
