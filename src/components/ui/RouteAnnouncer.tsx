@@ -76,4 +76,6 @@ export const RouteAnnouncer = React.forwardRef<HTMLDivElement, Record<string, ne
       {announcement}
     </div>
   );
-}
+});
+
+RouteAnnouncer.displayName = 'RouteAnnouncer';

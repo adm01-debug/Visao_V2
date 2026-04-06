@@ -53,4 +53,6 @@ export const PageMeta = React.forwardRef<HTMLDivElement, PageMetaProps>(function
       <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
     </Helmet>
   );
-}
+});
+
+PageMeta.displayName = 'PageMeta';
