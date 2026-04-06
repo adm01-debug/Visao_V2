@@ -120,10 +120,10 @@ const CategoryItem = memo(function CategoryItem({
           transition={{ layout: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] } }}
           className={cn(
             "flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium",
-            "transition-all duration-200 ease-out",
+            "transition-all duration-300 ease-out",
             "text-sidebar-foreground/65 hover:text-sidebar-foreground",
-            "hover:bg-sidebar-accent/50",
-            isActive && !isExpanded && "bg-sidebar-accent/60 text-sidebar-primary",
+            "hover:bg-sidebar-accent/60 hover:shadow-[inset_0_1px_0_0_hsl(var(--primary)/0.06)]",
+            isActive && !isExpanded && "bg-sidebar-accent/60 text-sidebar-primary shadow-[inset_0_1px_0_0_hsl(var(--primary)/0.08)]",
             isExpanded && "bg-sidebar-accent/40 text-sidebar-foreground"
           )}
         >
@@ -313,13 +313,14 @@ const NavItemLink = memo(function NavItemLink({
       onClick={onClick}
       className={cn(
         "relative flex items-center gap-3 px-3 py-2 rounded-xl text-sm group",
-        "transition-all duration-200 ease-out",
+        "transition-all duration-300 ease-out",
         "text-sidebar-foreground/55",
-        "hover:text-sidebar-foreground hover:bg-sidebar-accent/50 hover:translate-x-0.5",
+        "hover:text-sidebar-foreground hover:bg-sidebar-accent/60 hover:translate-x-0.5",
+        "hover:shadow-[0_2px_8px_-2px_hsl(var(--primary)/0.08)]",
         isActive && [
           "bg-primary/10 text-primary font-medium",
           "hover:bg-primary/14 hover:text-primary",
-          "shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.12)]",
+          "shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.12),0_2px_8px_-2px_hsl(var(--primary)/0.1)]",
         ]
       )}
     >
@@ -337,14 +338,19 @@ const NavItemLink = memo(function NavItemLink({
       )} />
       <span className="flex-1 truncate">{item.label}</span>
       {item.badge !== undefined && Number(item.badge) > 0 && (
-        <span
+        <motion.span
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          whileHover={{ scale: 1.15, y: -1 }}
+          transition={{ type: "spring", stiffness: 500, damping: 15 }}
           className={cn(
             "ml-auto text-[10px] font-semibold h-5 min-w-[20px] px-1.5 flex items-center justify-center rounded-full",
+            "transition-shadow duration-300",
             getBadgeClasses(item.badgeVariant)
           )}
         >
           {typeof item.badge === "number" && item.badge > 99 ? "99+" : item.badge}
-        </span>
+        </motion.span>
       )}
     </NavLink>
   );
@@ -378,11 +384,13 @@ const NavItemCollapsed = memo(function NavItemCollapsed({
             "relative flex items-center justify-center px-2 py-2 rounded-lg text-sm",
             "transition-all duration-200 ease-out",
             "text-sidebar-foreground/55",
-            "hover:text-sidebar-foreground hover:bg-sidebar-accent/50 hover:scale-105",
+            "hover:text-sidebar-foreground hover:bg-sidebar-accent/60 hover:scale-110",
+            "hover:shadow-[0_2px_8px_-2px_hsl(var(--primary)/0.1)]",
+            "transition-all duration-300",
             isActive && [
               "bg-primary/12 text-primary",
               "hover:bg-primary/16 hover:text-primary",
-              "shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.12)]",
+              "shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.12),0_2px_8px_-2px_hsl(var(--primary)/0.1)]",
             ]
           )}
         >

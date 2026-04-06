@@ -1,5 +1,6 @@
 /**
  * VISÃO - Animated Category Icon Component
+ * Premium micro-interactions with glow, scale and spring physics
  */
 
 import { memo } from "react";
@@ -31,6 +32,14 @@ const pulseColors = {
   neutral: "bg-muted-foreground",
 };
 
+const glowShadows = {
+  success: "0 0 8px hsl(var(--success) / 0.4)",
+  warning: "0 0 8px hsl(var(--warning) / 0.4)",
+  danger: "0 0 8px hsl(var(--destructive) / 0.4)",
+  info: "0 0 8px hsl(var(--primary) / 0.4)",
+  neutral: "none",
+};
+
 export const AnimatedCategoryIcon = memo(function AnimatedCategoryIcon({
   icon: Icon,
   status,
@@ -38,27 +47,36 @@ export const AnimatedCategoryIcon = memo(function AnimatedCategoryIcon({
   isActive,
 }: AnimatedCategoryIconProps) {
   return (
-    <div className="relative">
+    <motion.div
+      className="relative"
+      whileHover={{ scale: 1.15 }}
+      whileTap={{ scale: 0.92 }}
+      transition={{ type: "spring", stiffness: 500, damping: 15 }}
+    >
       <motion.div
         animate={{
-          scale: isExpanded ? 1.1 : 1,
-          rotate: isExpanded ? 5 : 0,
+          scale: isExpanded ? 1.12 : 1,
+          rotate: isExpanded ? 8 : 0,
         }}
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
+        style={{
+          filter: isActive ? `drop-shadow(${glowShadows[status.type === "neutral" ? "info" : status.type]})` : "none",
+        }}
       >
         <Icon
           className={cn(
-            "h-4 w-4 transition-colors duration-200",
+            "h-4 w-4 transition-colors duration-300",
             isActive ? "text-primary" : statusColors[status.type]
           )}
         />
       </motion.div>
 
-      {/* Status Pulse Indicator */}
+      {/* Status Pulse Indicator — enhanced with layered rings */}
       {status.pulse && (
         <motion.span
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 500, damping: 20 }}
           className={cn(
             "absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full",
             pulseColors[status.type]
@@ -70,8 +88,14 @@ export const AnimatedCategoryIcon = memo(function AnimatedCategoryIcon({
               pulseColors[status.type]
             )}
           />
+          <span
+            className={cn(
+              "absolute -inset-0.5 rounded-full animate-pulse opacity-30",
+              pulseColors[status.type]
+            )}
+          />
         </motion.span>
       )}
-    </div>
+    </motion.div>
   );
 });
