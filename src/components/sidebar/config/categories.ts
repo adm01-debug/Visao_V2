@@ -138,6 +138,13 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         minRole: "operator",
       },
       {
+        id: "persons",
+        label: "Pessoas",
+        icon: Users,
+        path: "/persons",
+        minRole: "operator",
+      },
+      {
         id: "zones",
         label: "Zonas",
         icon: Target,
