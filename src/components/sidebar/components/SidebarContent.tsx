@@ -3,7 +3,7 @@
  * Shared content for both desktop and mobile sidebars
  */
 
-import { memo } from "react";
+import React, { memo } from "react";
 import { cn } from "@/lib/utils";
 import { SidebarHeader } from "./SidebarHeader";
 import { SidebarNav } from "./SidebarNav";
@@ -16,10 +16,10 @@ interface SidebarContentProps {
   isMobile?: boolean;
 }
 
-export const SidebarContent = memo(function SidebarContent({
+export const SidebarContent = memo(React.forwardRef(function SidebarContent({
   state,
   isMobile = false,
-}: SidebarContentProps) {
+}: SidebarContentProps, _ref) {
   const {
     collapsed,
     categories,
@@ -70,4 +70,4 @@ export const SidebarContent = memo(function SidebarContent({
       <SidebarFooter collapsed={collapsed} isMobile={isMobile} />
     </div>
   );
-});
+}));

@@ -2,7 +2,7 @@
  * VISÃO - Sidebar Header Component - Premium
  */
 
-import { memo } from "react";
+import React, { memo } from "react";
 import { Shield, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -13,11 +13,11 @@ interface SidebarHeaderProps {
   onToggle: () => void;
 }
 
-export const SidebarHeader = memo(function SidebarHeader({
+export const SidebarHeader = memo(React.forwardRef(function SidebarHeader({
   collapsed,
   isMobile,
   onToggle,
-}: SidebarHeaderProps) {
+}: SidebarHeaderProps, _ref) {
   return (
     <div
       className={cn(
@@ -65,4 +65,4 @@ export const SidebarHeader = memo(function SidebarHeader({
       )}
     </div>
   );
-});
+}));

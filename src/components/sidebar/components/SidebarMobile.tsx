@@ -2,7 +2,7 @@
  * VISÃO - Mobile Sidebar Component (Sheet Drawer)
  */
 
-import { memo } from "react";
+import React, { memo } from "react";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -13,9 +13,9 @@ interface SidebarMobileProps {
   state: UseSidebarStateReturn;
 }
 
-export const SidebarMobile = memo(function SidebarMobile({
+export const SidebarMobile = memo(React.forwardRef(function SidebarMobile({
   state,
-}: SidebarMobileProps) {
+}: SidebarMobileProps, _ref) {
   return (
     <Sheet open={state.mobileOpen} onOpenChange={state.setMobileOpen}>
       <SheetTrigger asChild>
@@ -32,4 +32,4 @@ export const SidebarMobile = memo(function SidebarMobile({
       </SheetContent>
     </Sheet>
   );
-});
+}));

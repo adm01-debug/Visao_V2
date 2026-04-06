@@ -3,7 +3,7 @@
  * Premium badge micro-interactions with spring physics and shimmer
  */
 
-import { memo } from "react";
+import React, { memo } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import type { CategoryStatus } from "../types";
@@ -46,10 +46,10 @@ const statusConfig = {
   },
 };
 
-export const CategoryStatusIndicator = memo(function CategoryStatusIndicator({
+export const CategoryStatusIndicator = memo(React.forwardRef(function CategoryStatusIndicator({
   status,
   collapsed,
-}: CategoryStatusIndicatorProps) {
+}: CategoryStatusIndicatorProps, _ref) {
   const config = statusConfig[status.type];
 
   if (collapsed) {
@@ -102,4 +102,4 @@ export const CategoryStatusIndicator = memo(function CategoryStatusIndicator({
       <span className="truncate max-w-[60px]">{status.label}</span>
     </motion.div>
   );
-});
+}));

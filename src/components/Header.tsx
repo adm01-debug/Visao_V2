@@ -1,3 +1,4 @@
+import React from "react";
 import { UserAvatar } from "@/components/UserAvatar";
 import { NotificationBell } from "@/components/NotificationBell";
 import { AnalysisHistoryPanel } from "@/components/AnalysisHistoryPanel";
@@ -15,7 +16,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export function Header({ className }: { className?: string }) {
+export const Header = React.forwardRef<HTMLElement, { className?: string }>(function Header({ className }, _ref) {
   const isOnline = useOnlineStatus();
   const { isAlertSoundEnabled, toggleAlertSound } = useNotifications();
   const { resolvedTheme, toggleTheme } = useTheme();
@@ -92,6 +93,8 @@ export function Header({ className }: { className?: string }) {
       </div>
     </header>
   );
-}
+});
+
+Header.displayName = 'Header';
 
 export default Header;

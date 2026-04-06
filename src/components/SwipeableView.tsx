@@ -3,7 +3,7 @@
  * Adiciona indicadores visuais de navegação
  */
 
-import { ReactNode, useState, useEffect } from "react";
+import React, { ReactNode, useState, useEffect } from "react";
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -24,7 +24,7 @@ const ROUTES = [
   { path: "/settings", label: "Configurações" },
 ];
 
-export function SwipeableView({ children, className }: SwipeableViewProps) {
+export const SwipeableView = React.forwardRef<HTMLDivElement, SwipeableViewProps>(function SwipeableView({ children, className }, _ref) {
   const location = useLocation();
   const navigate = useNavigate();
   const [showIndicator, setShowIndicator] = useState<"left" | "right" | null>(null);
@@ -139,4 +139,6 @@ export function SwipeableView({ children, className }: SwipeableViewProps) {
       </nav>
     </div>
   );
-}
+});
+
+SwipeableView.displayName = 'SwipeableView';
