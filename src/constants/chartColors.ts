@@ -7,8 +7,8 @@
 export const CHART_COLORS = {
   // Status colors
   success: 'hsl(142, 76%, 36%)',
-  warning: 'hsl(38, 92%, 50%)',
-  destructive: 'hsl(0, 72%, 51%)',
+  warning: 'hsl(42, 80%, 52%)',
+  destructive: 'hsl(350, 65%, 52%)',
   muted: 'hsl(215, 20%, 55%)',
   
   // Category colors  
