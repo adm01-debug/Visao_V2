@@ -87,6 +87,7 @@ interface CategoryItemProps {
   onToggle: () => void;
   isItemActive: (path: string) => boolean;
   onNavigate?: () => void;
+  isLoading?: boolean;
 }
 
 const CategoryItem = memo(React.forwardRef(function CategoryItem({
