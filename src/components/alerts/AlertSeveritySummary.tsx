@@ -67,7 +67,7 @@ export function AlertSeveritySummary({ counts, total, activeSeverity, onSeverity
   return (
     <div className="flex flex-col gap-2.5">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-        {severityItems.map(({ key, label, icon: Icon, tooltip, bg, text }) => {
+        {severityItems.map(({ key, label, icon: Icon, tooltip, bg, text, iconBg }) => {
           const isActive = activeSeverity === key;
           return (
             <Tooltip key={key}>
