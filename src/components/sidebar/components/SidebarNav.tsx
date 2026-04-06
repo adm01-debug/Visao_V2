@@ -149,9 +149,20 @@ const CategoryItem = memo(React.forwardRef(function CategoryItem({
 
           <div className="flex items-center gap-2">
             <AnimatePresence mode="wait">
-              {!isExpanded && status.label && (
+              {!isExpanded && (isLoading ? (
+                <motion.div
+                  key="shimmer"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="h-5 w-16 rounded-full bg-muted/60 overflow-hidden"
+                >
+                  <div className="h-full w-full animate-pulse bg-gradient-to-r from-transparent via-foreground/5 to-transparent" 
+                    style={{ backgroundSize: '200% 100%', animation: 'shimmer 1.5s ease-in-out infinite' }} />
+                </motion.div>
+              ) : status.label ? (
                 <CategoryStatusIndicator status={status} collapsed={false} />
-              )}
+              ) : null)}
             </AnimatePresence>
 
             <motion.div
