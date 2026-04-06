@@ -3,7 +3,7 @@
  * Sidebar Principal - Refatorado em componentes modulares
  */
 
-import { memo } from "react";
+import React, { memo } from "react";
 import { cn } from "@/lib/utils";
 import { useSidebarState } from "./sidebar/hooks/useSidebarState";
 import { SidebarContent, SidebarMobile, QuickSearchDialog } from "./sidebar/components";
