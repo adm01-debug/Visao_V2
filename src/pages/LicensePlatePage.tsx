@@ -28,9 +28,7 @@ export default function LicensePlatePage() {
     <>
       <PageMeta title="Placas Veiculares" description="Detecção e gestão de placas veiculares ALPR" />
 
-      <div role="main" aria-label="Reconhecimento de placas" className="flex h-screen bg-background">
-        <Sidebar />
-        <main className="flex-1 p-6 overflow-auto">
+      <div className="space-y-6">
           <div className="max-w-7xl mx-auto space-y-6">
             <div className="flex items-center justify-between">
               <div>
