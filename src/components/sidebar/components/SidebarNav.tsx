@@ -332,14 +332,26 @@ const NavItemLink = memo(React.forwardRef(function NavItemLink({
   onClick,
 }: NavItemLinkProps, _ref) {
   const Icon = item.icon;
+  const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([]);
+  const rippleId = useRef(0);
+
+  const handleClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = rippleId.current++;
+    setRipples(prev => [...prev, { id, x, y }]);
+    setTimeout(() => setRipples(prev => prev.filter(r => r.id !== id)), 600);
+    onClick?.();
+  }, [onClick]);
 
   return (
     <NavLink
       to={item.path}
       data-testid={`nav-${item.id}`}
-      onClick={onClick}
+      onClick={handleClick}
       className={cn(
-        "relative flex items-center gap-3 px-3 py-2 rounded-xl text-sm group",
+        "relative flex items-center gap-3 px-3 py-2 rounded-xl text-sm group overflow-hidden",
         "transition-all duration-300 ease-out",
         "text-sidebar-foreground/55",
         "hover:text-sidebar-foreground hover:bg-sidebar-accent/60 hover:translate-x-0.5",
@@ -351,6 +363,23 @@ const NavItemLink = memo(React.forwardRef(function NavItemLink({
         ]
       )}
     >
+      {/* Ripple effects */}
+      {ripples.map(ripple => (
+        <span
+          key={ripple.id}
+          className="absolute rounded-full pointer-events-none animate-[sidebar-ripple_0.6s_ease-out_forwards]"
+          style={{
+            left: ripple.x,
+            top: ripple.y,
+            width: 0,
+            height: 0,
+            background: isActive
+              ? 'radial-gradient(circle, hsl(var(--primary) / 0.2) 0%, transparent 70%)'
+              : 'radial-gradient(circle, hsl(var(--foreground) / 0.08) 0%, transparent 70%)',
+            transform: 'translate(-50%, -50%)',
+          }}
+        />
+      ))}
       {/* Active route accent bar */}
       {isActive && (
         <motion.div
