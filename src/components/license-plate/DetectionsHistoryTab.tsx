@@ -34,7 +34,7 @@ export function DetectionsHistoryTab({ detections, onSearch }: Props) {
   };
 
   return (
-    <Card>
+    <Card className="border-border/40 bg-card/60">
       <CardHeader>
         <CardTitle>Histórico de Detecções</CardTitle>
         <CardDescription>Últimas 100 placas detectadas pelo sistema</CardDescription>
