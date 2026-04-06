@@ -70,7 +70,7 @@ export const SidebarNav = memo(React.forwardRef(function SidebarNav({
       </TooltipProvider>
     </ScrollArea>
   );
-});
+}));
 
 // ============================================
 // CATEGORY ITEM
@@ -190,7 +190,7 @@ const CategoryItem = memo(React.forwardRef(function CategoryItem({
       </CollapsibleContent>
     </Collapsible>
   );
-});
+}));
 
 // ============================================
 // COLLAPSED CATEGORY
@@ -274,7 +274,7 @@ const CollapsedCategory = memo(React.forwardRef(function CollapsedCategory({
       ))}
     </div>
   );
-});
+}));
 
 // ============================================
 // NAV ITEM LINK — Premium hover states
@@ -354,7 +354,7 @@ const NavItemLink = memo(React.forwardRef(function NavItemLink({
       )}
     </NavLink>
   );
-});
+}));
 
 // ============================================
 // NAV ITEM COLLAPSED
@@ -417,4 +417,4 @@ const NavItemCollapsed = memo(React.forwardRef(function NavItemCollapsed({
       </TooltipContent>
     </Tooltip>
   );
-});
+}));

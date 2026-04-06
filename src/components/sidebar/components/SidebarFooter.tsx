@@ -100,4 +100,4 @@ export const SidebarFooter = memo(React.forwardRef(function SidebarFooter({
       )}
     </div>
   );
-});
+}));

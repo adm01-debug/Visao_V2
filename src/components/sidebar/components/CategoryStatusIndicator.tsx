@@ -102,4 +102,4 @@ export const CategoryStatusIndicator = memo(React.forwardRef(function CategorySt
       <span className="truncate max-w-[60px]">{status.label}</span>
     </motion.div>
   );
-});
+}));

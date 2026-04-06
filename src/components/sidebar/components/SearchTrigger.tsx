@@ -55,4 +55,4 @@ export const SearchTrigger = memo(React.forwardRef(function SearchTrigger({
       </Tooltip>
     </TooltipProvider>
   );
-});
+}));

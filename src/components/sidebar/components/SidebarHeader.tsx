@@ -65,4 +65,4 @@ export const SidebarHeader = memo(React.forwardRef(function SidebarHeader({
       )}
     </div>
   );
-});
+}));

@@ -212,4 +212,4 @@ export const QuickSearchDialog = memo(React.forwardRef(function QuickSearchDialo
       </DialogContent>
     </Dialog>
   );
-});
+}));

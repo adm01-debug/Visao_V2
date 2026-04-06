@@ -98,4 +98,4 @@ export const AnimatedCategoryIcon = memo(React.forwardRef(function AnimatedCateg
       )}
     </motion.div>
   );
-});
+}));

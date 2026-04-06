@@ -70,4 +70,4 @@ export const SidebarContent = memo(React.forwardRef(function SidebarContent({
       <SidebarFooter collapsed={collapsed} isMobile={isMobile} />
     </div>
   );
-});
+}));

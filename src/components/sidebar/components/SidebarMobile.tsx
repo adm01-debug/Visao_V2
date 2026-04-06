@@ -32,4 +32,4 @@ export const SidebarMobile = memo(React.forwardRef(function SidebarMobile({
       </SheetContent>
     </Sheet>
   );
-});
+}));
