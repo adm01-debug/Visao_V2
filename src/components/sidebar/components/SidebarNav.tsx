@@ -111,6 +111,7 @@ const CategoryItem = memo(React.forwardRef(function CategoryItem({
         isActive={isActive}
         isItemActive={isItemActive}
         onNavigate={onNavigate}
+        isLoading={isLoading}
       />
     );
   }
