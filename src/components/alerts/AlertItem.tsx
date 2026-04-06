@@ -104,7 +104,8 @@ export function AlertItem({ alert, isSelected, onSelect, onView, onMarkRead, onD
     <Card className={cn(
       'cursor-pointer transition-all duration-200 border-t-[3px] overflow-hidden',
       borderClass.replace('border-l-', 'border-t-'),
-      'hover:shadow-md',
+      'hover:shadow-md hover:-translate-y-1',
+      'active:scale-[0.98] active:translate-y-0',
       !alert.is_read && 'bg-card',
       alert.is_read && 'opacity-70 hover:opacity-100',
       isSelected && 'ring-2 ring-primary/40 ring-offset-1 ring-offset-background'
