@@ -219,6 +219,7 @@ interface CollapsedCategoryProps {
   isActive: boolean;
   isItemActive: (path: string) => boolean;
   onNavigate?: () => void;
+  isLoading?: boolean;
 }
 
 const CollapsedCategory = memo(React.forwardRef(function CollapsedCategory({
@@ -227,6 +228,7 @@ const CollapsedCategory = memo(React.forwardRef(function CollapsedCategory({
   isActive,
   isItemActive,
   onNavigate,
+  isLoading,
 }: CollapsedCategoryProps, _ref) {
   const CategoryIcon = category.icon;
 
