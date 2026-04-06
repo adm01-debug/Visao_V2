@@ -140,6 +140,7 @@ export function StatsCard({
 }: StatsCardProps) {
   const fakeData = useFakeSparkline(value);
   const data = sparklineData || fakeData;
+  const animatedValue = useAnimatedNumber(value);
   const isTextValue = typeof value === 'string' && isNaN(Number(value.replace(/[^0-9]/g, '')));
 
   return (
@@ -147,7 +148,7 @@ export function StatsCard({
       className={cn(
         'relative overflow-hidden rounded-xl border border-border/50 bg-card p-4 sm:p-5',
         'transition-all duration-300 ease-out',
-        'hover:border-border hover:-translate-y-1',
+        'hover:border-border hover:-translate-y-1 active:scale-[0.98] active:translate-y-0',
         glowVariantStyles[variant],
         'group'
       )}
