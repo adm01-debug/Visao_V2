@@ -92,6 +92,8 @@ export const Header = React.forwardRef<HTMLElement, { className?: string }>(func
       </div>
     </header>
   );
-}
+});
+
+Header.displayName = 'Header';
 
 export default Header;
