@@ -243,7 +243,15 @@ const CollapsedCategory = memo(React.forwardRef(function CollapsedCategory({
               isExpanded={false}
               isActive={isActive}
             />
-            {status.count !== undefined && status.count > 0 && (
+            {isLoading ? (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute -top-0.5 -right-0.5 w-[14px] h-[14px] rounded-full bg-muted/40 overflow-hidden border border-border/20"
+              >
+                <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-foreground/[0.06] to-transparent" />
+              </motion.div>
+            ) : status.count !== undefined && status.count > 0 && (
               <motion.span
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
