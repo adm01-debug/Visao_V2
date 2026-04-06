@@ -66,6 +66,7 @@ export const SidebarNav = memo(React.forwardRef(function SidebarNav({
               onToggle={() => onToggleCategory(category.id)}
               isItemActive={isItemActive}
               onNavigate={onNavigate}
+              isLoading={isLoading}
             />
           ))}
         </nav>
