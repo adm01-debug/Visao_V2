@@ -40,7 +40,7 @@ export function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }:
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: zone.color || '#3B82F6' }} />
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: zone.color || 'hsl(217, 91%, 60%)' }} />
             {zone.name}
             <Badge variant="secondary" className={cn('text-xs ml-2', typeConfig.color)}><TypeIcon className="w-3 h-3 mr-1" />{typeConfig.label}</Badge>
           </DialogTitle>
