@@ -385,13 +385,13 @@
   }
 
   .glass-card-interactive:hover {
-    @apply border-primary/25;
-    box-shadow: var(--shadow-card-hover);
-    transform: translateY(-2px);
+    @apply border-primary/30;
+    box-shadow: var(--shadow-card-glow);
+    transform: translateY(-3px);
   }
 
   .glass-card-interactive:active {
-    transform: translateY(0) scale(0.99);
+    transform: translateY(-1px) scale(0.99);
     transition-duration: 80ms;
   }
 
