@@ -20,7 +20,7 @@ interface PersonCardProps {
 
 export function PersonCard({ person, onView, onEdit, onDelete }: PersonCardProps) {
   return (
-    <Card className="cursor-pointer hover:shadow-md transition-all group" onClick={onView}>
+    <Card className="cursor-pointer hover:shadow-md transition-all group border-border/40 bg-card/60" onClick={onView}>
       <CardContent className="p-4">
         <div className="flex items-start gap-4">
           <Avatar className="w-16 h-16">

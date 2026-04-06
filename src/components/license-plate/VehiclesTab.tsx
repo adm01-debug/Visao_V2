@@ -43,7 +43,7 @@ export function VehiclesTab({ vehicles, onEdit, onDelete }: Props) {
       <CardContent>
         <div className="flex gap-4 mb-6">
           <Input placeholder="Buscar por placa ou proprietário..." value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)} className="flex-1 max-w-sm" />
+            onChange={(e) => setSearchQuery(e.target.value)} className="flex-1 max-w-sm border-border/40 bg-card/60" />
           <Select value={filterType} onValueChange={setFilterType}>
             <SelectTrigger className="w-[180px]"><Filter className="h-4 w-4 mr-2" /><SelectValue placeholder="Filtrar" /></SelectTrigger>
             <SelectContent>

@@ -22,7 +22,7 @@ interface PeopleListViewProps {
 
 export function PeopleListView({ people, onView, onEdit, onDelete }: PeopleListViewProps) {
   return (
-    <Card>
+    <Card className="border-border/40 bg-card/60">
       <Table>
         <TableHeader>
           <TableRow>
