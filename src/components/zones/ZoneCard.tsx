@@ -24,7 +24,7 @@ export function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, 
   const TypeIcon = typeConfig.icon as LucideIcon;
 
   return (
-    <Card className={cn('transition-all hover:shadow-md cursor-pointer group', !zone.is_active && 'opacity-60')} onClick={onView}>
+    <Card className={cn('transition-all hover:shadow-md cursor-pointer group border-border/40 bg-card/60', !zone.is_active && 'opacity-60')} onClick={onView}>
       <div className="p-4 pb-2">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
