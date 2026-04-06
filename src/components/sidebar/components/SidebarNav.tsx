@@ -139,7 +139,7 @@ const CategoryItem = memo(React.forwardRef(function CategoryItem({
               isExpanded && "text-sidebar-foreground"
             )}>
               {category.label}
-            </motion.span>
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
