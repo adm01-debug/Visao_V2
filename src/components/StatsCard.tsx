@@ -87,25 +87,23 @@ function useAnimatedNumber(value: string | number): string {
   const original = String(value);
   
   // Parse the animatable number from the value
-  let targetNum: number;
-  let format: (n: number) => string;
-  
-  if (typeof value === 'number') {
-    targetNum = value;
-    format = (n) => String(n);
-  } else if (original.includes('/')) {
-    const parts = original.split('/');
-    targetNum = parseInt(parts[0]!) || 0;
-    format = (n) => `${n}/${parts[1]}`;
-  } else if (original.includes('%')) {
-    targetNum = parseInt(original) || 0;
-    format = (n) => `${n}%`;
-  } else {
+  const { targetNum, formatFn } = useMemo(() => {
+    if (typeof value === 'number') {
+      return { targetNum: value, formatFn: (n: number) => String(n) };
+    }
+    if (original.includes('/')) {
+      const parts = original.split('/');
+      return { targetNum: parseInt(parts[0]!) || 0, formatFn: (n: number) => `${n}/${parts[1]}` };
+    }
+    if (original.includes('%')) {
+      return { targetNum: parseInt(original) || 0, formatFn: (n: number) => `${n}%` };
+    }
     const parsed = parseInt(original);
-    if (isNaN(parsed) || parsed <= 0) return original;
-    targetNum = parsed;
-    format = (n) => String(n);
-  }
+    if (isNaN(parsed) || parsed <= 0) {
+      return { targetNum: 0, formatFn: () => original };
+    }
+    return { targetNum: parsed, formatFn: (n: number) => String(n) };
+  }, [value, original]);
 
   const [displayValue, setDisplayValue] = useState(0);
   const hasAnimated = useRef(false);
@@ -130,7 +128,7 @@ function useAnimatedNumber(value: string | number): string {
   }, [targetNum]);
 
   if (targetNum <= 0) return original;
-  return format(displayValue);
+  return formatFn(displayValue);
 }
 
 function useFakeSparkline(value: string | number): number[] {
