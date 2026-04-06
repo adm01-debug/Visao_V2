@@ -3,6 +3,7 @@ import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
+import visaoRules from './eslint-rules/index.js';
 
 export default tseslint.config(
   { ignores: ['dist', 'node_modules', 'coverage', '.storybook', 'storybook-static'] },
@@ -16,6 +17,7 @@ export default tseslint.config(
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      'visao': visaoRules,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -31,6 +33,8 @@ export default tseslint.config(
       '@typescript-eslint/no-floating-promises': 'off',
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
+      // VISÃO Design System — prevent hardcoded colors
+      'visao/no-hardcoded-colors': 'warn',
     },
   }
 );
