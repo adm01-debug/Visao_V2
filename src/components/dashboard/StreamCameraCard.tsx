@@ -78,6 +78,11 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true, 
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/5 to-transparent" />
 
+      {/* Hover scan line */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+        <div className="absolute left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" style={{ animation: 'scan 3s linear infinite' }} />
+      </div>
+
       {/* Status Badge */}
       <div className="absolute top-2.5 left-2.5">
         <Badge variant="outline" className={cn('text-[10px] font-medium gap-1 px-2 py-0.5 backdrop-blur-sm', status.badge)}>
