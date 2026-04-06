@@ -189,7 +189,7 @@ export function StatsCard({
           "font-bold font-mono tabular-nums leading-none text-foreground transition-transform duration-300 group-hover:translate-x-0.5",
           isTextValue ? "text-xl sm:text-2xl" : "text-2xl sm:text-3xl"
         )}>
-          {value}
+          {animatedValue}
         </p>
 
         <div className="flex items-center justify-between mt-2.5 gap-2">
