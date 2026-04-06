@@ -49,6 +49,7 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true, 
         'group relative rounded-xl overflow-hidden border border-border/40 bg-card cursor-pointer',
         'transition-all duration-300 ease-out',
         'hover:border-primary/40 hover:-translate-y-1.5 hover:shadow-[var(--shadow-card-glow)]',
+        'active:scale-[0.98] active:translate-y-0 active:shadow-[var(--shadow-card)]',
         compact ? 'h-24' : 'aspect-video'
       )}
       onClick={onClick}
