@@ -84,42 +84,53 @@ function MiniSparkline({ data, color }: { data: number[]; color: string }) {
 }
 
 function useAnimatedNumber(value: string | number): string {
-  const numericValue = typeof value === 'number' ? value : parseInt(String(value).replace(/[^0-9]/g, ''));
-  const isNumeric = !isNaN(numericValue) && numericValue > 0;
-  const [displayValue, setDisplayValue] = useState(isNumeric ? 0 : numericValue);
+  const original = String(value);
+  
+  // Parse the animatable number from the value
+  let targetNum: number;
+  let format: (n: number) => string;
+  
+  if (typeof value === 'number') {
+    targetNum = value;
+    format = (n) => String(n);
+  } else if (original.includes('/')) {
+    const parts = original.split('/');
+    targetNum = parseInt(parts[0]!) || 0;
+    format = (n) => `${n}/${parts[1]}`;
+  } else if (original.includes('%')) {
+    targetNum = parseInt(original) || 0;
+    format = (n) => `${n}%`;
+  } else {
+    const parsed = parseInt(original);
+    if (isNaN(parsed) || parsed <= 0) return original;
+    targetNum = parsed;
+    format = (n) => String(n);
+  }
+
+  const [displayValue, setDisplayValue] = useState(0);
   const hasAnimated = useRef(false);
 
   useEffect(() => {
-    if (!isNumeric || hasAnimated.current) {
-      setDisplayValue(numericValue);
+    if (targetNum <= 0 || hasAnimated.current) {
+      setDisplayValue(targetNum);
       return;
     }
     hasAnimated.current = true;
     const duration = 600;
     const start = performance.now();
-    const from = 0;
-    const to = numericValue;
 
     function tick(now: number) {
       const elapsed = now - start;
       const progress = Math.min(elapsed / duration, 1);
-      // easeOutExpo
       const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-      setDisplayValue(Math.round(from + (to - from) * eased));
+      setDisplayValue(Math.round(targetNum * eased));
       if (progress < 1) requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
-  }, [numericValue, isNumeric]);
+  }, [targetNum]);
 
-  if (!isNumeric) return String(value);
-  // Preserve the original format (e.g. "21/24")
-  const original = String(value);
-  if (original.includes('/')) {
-    const parts = original.split('/');
-    return `${displayValue}/${parts[1]}`;
-  }
-  if (original.includes('%')) return `${displayValue}%`;
-  return String(displayValue);
+  if (targetNum <= 0) return original;
+  return format(displayValue);
 }
 
 function useFakeSparkline(value: string | number): number[] {
