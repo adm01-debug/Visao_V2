@@ -1,5 +1,6 @@
 /**
  * VISÃO - Sidebar Navigation Component
+ * Premium hover states + semantic badge colors
  */
 
 import { memo } from "react";
@@ -113,15 +114,17 @@ const CategoryItem = memo(function CategoryItem({
     <Collapsible open={isExpanded} onOpenChange={onToggle} className="mb-0.5">
       <CollapsibleTrigger asChild>
         <motion.button
-          whileHover={{ x: 3, backgroundColor: 'hsl(var(--sidebar-accent) / 0.6)' }}
-          whileTap={{ scale: 0.97 }}
+          whileHover={{ x: 2 }}
+          whileTap={{ scale: 0.98 }}
           layout
           transition={{ layout: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] } }}
           className={cn(
-            "flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 ease-out",
-            "text-sidebar-foreground/70 hover:text-sidebar-foreground",
-            isActive && "bg-sidebar-accent text-sidebar-primary",
-            isExpanded && "bg-sidebar-accent/40"
+            "flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium",
+            "transition-all duration-200 ease-out",
+            "text-sidebar-foreground/65 hover:text-sidebar-foreground",
+            "hover:bg-sidebar-accent/50",
+            isActive && !isExpanded && "bg-sidebar-accent/60 text-sidebar-primary",
+            isExpanded && "bg-sidebar-accent/40 text-sidebar-foreground"
           )}
         >
           <div className="flex items-center gap-2.5">
@@ -150,7 +153,7 @@ const CategoryItem = memo(function CategoryItem({
               animate={{ rotate: isExpanded ? 180 : 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 20, duration: 0.35 }}
             >
-              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              <ChevronDown className="h-4 w-4 text-muted-foreground/60" />
             </motion.div>
           </div>
         </motion.button>
@@ -164,7 +167,7 @@ const CategoryItem = memo(function CategoryItem({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-              className="mt-1 ml-4 space-y-0.5 border-l-2 border-border/30 pl-3"
+              className="mt-1 ml-4 space-y-0.5 border-l-2 border-primary/15 pl-3"
             >
               {category.items.map((item, index) => (
                 <motion.div
@@ -225,14 +228,15 @@ const CollapsedCategory = memo(function CollapsedCategory({
               <motion.span
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                 className={cn(
+                transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                className={cn(
                   "absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] flex items-center justify-center",
-                  "text-[9px] font-bold rounded-full",
-                  status.type === "danger" && "bg-destructive text-destructive-foreground",
-                  status.type === "warning" && "bg-warning text-warning-foreground",
-                  status.type === "success" && "bg-success text-success-foreground",
-                  status.type === "info" && "bg-primary text-primary-foreground",
-                  status.type === "neutral" && "bg-muted-foreground text-background"
+                  "text-[9px] font-bold rounded-full border shadow-sm",
+                  status.type === "danger" && "bg-[hsl(var(--severity-critical))]/15 text-[hsl(var(--severity-critical))] border-[hsl(var(--severity-critical))]/25",
+                  status.type === "warning" && "bg-[hsl(var(--severity-medium))]/15 text-[hsl(var(--severity-medium))] border-[hsl(var(--severity-medium))]/25",
+                  status.type === "success" && "bg-success/15 text-success border-success/25",
+                  status.type === "info" && "bg-primary/15 text-primary border-primary/25",
+                  status.type === "neutral" && "bg-muted text-muted-foreground border-border/50"
                 )}
               >
                 {status.count > 99 ? "+" : status.count}
@@ -247,10 +251,10 @@ const CollapsedCategory = memo(function CollapsedCategory({
               variant="outline"
               className={cn(
                 "text-[10px] h-5",
-                status.type === "success" && "border-success/50 text-success",
-                status.type === "warning" && "border-warning/50 text-warning",
-                status.type === "danger" && "border-destructive/50 text-destructive",
-                status.type === "info" && "border-primary/50 text-primary"
+                status.type === "success" && "border-success/40 text-success bg-success/10",
+                status.type === "warning" && "border-[hsl(var(--severity-medium))]/40 text-[hsl(var(--severity-medium))] bg-[hsl(var(--severity-medium))]/10",
+                status.type === "danger" && "border-[hsl(var(--severity-critical))]/40 text-[hsl(var(--severity-critical))] bg-[hsl(var(--severity-critical))]/10",
+                status.type === "info" && "border-primary/40 text-primary bg-primary/10"
               )}
             >
               {status.count !== undefined && `${status.count} `}
@@ -273,7 +277,7 @@ const CollapsedCategory = memo(function CollapsedCategory({
 });
 
 // ============================================
-// NAV ITEM LINK
+// NAV ITEM LINK — Premium hover states
 // ============================================
 
 interface NavItemLinkProps {
@@ -281,6 +285,19 @@ interface NavItemLinkProps {
   isActive: boolean;
   onClick?: () => void;
 }
+
+const getBadgeClasses = (variant?: string) => {
+  switch (variant) {
+    case "destructive":
+      return "bg-[hsl(var(--severity-critical))]/12 text-[hsl(var(--severity-critical))] border border-[hsl(var(--severity-critical))]/20";
+    case "warning":
+      return "bg-[hsl(var(--severity-medium))]/12 text-[hsl(var(--severity-medium))] border border-[hsl(var(--severity-medium))]/20";
+    case "success":
+      return "bg-success/12 text-success border border-success/20";
+    default:
+      return "bg-primary/10 text-primary border border-primary/20";
+  }
+};
 
 const NavItemLink = memo(function NavItemLink({
   item,
@@ -295,29 +312,39 @@ const NavItemLink = memo(function NavItemLink({
       data-testid={`nav-${item.id}`}
       onClick={onClick}
       className={cn(
-        "relative flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-300 ease-out text-sm group",
-        "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/60 hover:translate-x-0.5",
-        isActive &&
-          "bg-sidebar-primary/10 text-sidebar-primary hover:bg-sidebar-primary/14 hover:text-sidebar-primary font-medium shadow-sm"
+        "relative flex items-center gap-3 px-3 py-2 rounded-xl text-sm group",
+        "transition-all duration-200 ease-out",
+        "text-sidebar-foreground/55",
+        "hover:text-sidebar-foreground hover:bg-sidebar-accent/50 hover:translate-x-0.5",
+        isActive && [
+          "bg-primary/10 text-primary font-medium",
+          "hover:bg-primary/14 hover:text-primary",
+          "shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.12)]",
+        ]
       )}
     >
       {/* Active route accent bar */}
       {isActive && (
         <motion.div
           layoutId="sidebar-active-indicator"
-          className="absolute -left-3 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-sidebar-primary"
+          className="absolute -left-3 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.4)]"
           transition={{ type: "spring", stiffness: 350, damping: 30 }}
         />
       )}
-      <Icon className={cn("w-4 h-4 flex-shrink-0", isActive && "text-sidebar-primary")} />
+      <Icon className={cn(
+        "w-4 h-4 flex-shrink-0 transition-colors duration-200",
+        isActive ? "text-primary" : "text-muted-foreground/60 group-hover:text-sidebar-foreground/80"
+      )} />
       <span className="flex-1 truncate">{item.label}</span>
       {item.badge !== undefined && Number(item.badge) > 0 && (
-        <Badge
-          variant={item.badgeVariant || "secondary"}
-          className="ml-auto text-xs h-5 min-w-[20px] justify-center"
+        <span
+          className={cn(
+            "ml-auto text-[10px] font-semibold h-5 min-w-[20px] px-1.5 flex items-center justify-center rounded-full",
+            getBadgeClasses(item.badgeVariant)
+          )}
         >
           {typeof item.badge === "number" && item.badge > 99 ? "99+" : item.badge}
-        </Badge>
+        </span>
       )}
     </NavLink>
   );
@@ -348,28 +375,36 @@ const NavItemCollapsed = memo(function NavItemCollapsed({
           data-testid={`nav-${item.id}`}
           onClick={onClick}
           className={cn(
-            "relative flex items-center justify-center px-2 py-2 rounded-lg transition-all duration-300 ease-out text-sm",
-            "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent hover:scale-110",
-            isActive &&
-              "bg-sidebar-primary/12 text-sidebar-primary hover:bg-sidebar-primary/16 hover:text-sidebar-primary shadow-sm"
+            "relative flex items-center justify-center px-2 py-2 rounded-lg text-sm",
+            "transition-all duration-200 ease-out",
+            "text-sidebar-foreground/55",
+            "hover:text-sidebar-foreground hover:bg-sidebar-accent/50 hover:scale-105",
+            isActive && [
+              "bg-primary/12 text-primary",
+              "hover:bg-primary/16 hover:text-primary",
+              "shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.12)]",
+            ]
           )}
         >
           {isActive && (
             <motion.div
               layoutId="sidebar-active-indicator"
-              className="absolute -left-1 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-sidebar-primary"
+              className="absolute -left-1 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.4)]"
               transition={{ type: "spring", stiffness: 350, damping: 30 }}
             />
           )}
-          <Icon className={cn("w-4 h-4", isActive && "text-sidebar-primary")} />
+          <Icon className={cn("w-4 h-4", isActive && "text-primary")} />
         </NavLink>
       </TooltipTrigger>
       <TooltipContent side="right" className="flex items-center gap-2">
         {item.label}
         {item.badge !== undefined && Number(item.badge) > 0 && (
-          <Badge variant={item.badgeVariant || "secondary"} className="text-xs">
+          <span className={cn(
+            "text-[10px] font-semibold px-1.5 py-0.5 rounded-full",
+            getBadgeClasses(item.badgeVariant)
+          )}>
             {item.badge}
-          </Badge>
+          </span>
         )}
       </TooltipContent>
     </Tooltip>

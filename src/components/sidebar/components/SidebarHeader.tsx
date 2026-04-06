@@ -1,5 +1,5 @@
 /**
- * VISÃO - Sidebar Header Component
+ * VISÃO - Sidebar Header Component - Premium
  */
 
 import { memo } from "react";
@@ -21,24 +21,24 @@ export const SidebarHeader = memo(function SidebarHeader({
   return (
     <div
       className={cn(
-        "flex items-center h-14 px-4 border-b border-sidebar-border/40",
+        "flex items-center h-14 px-4 border-b border-sidebar-border/30",
         collapsed && !isMobile ? "justify-center" : "justify-between"
       )}
     >
       {(!collapsed || isMobile) && (
         <div className="flex items-center gap-2.5">
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground shadow-md shadow-primary/25 transition-transform duration-300 hover:scale-110">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground shadow-md shadow-primary/25 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-primary/30">
             <Shield className="w-4 h-4" />
           </div>
           <div className="flex flex-col">
             <span className="font-bold text-sm tracking-wide text-sidebar-foreground">VISÃO</span>
-            <span className="text-[10px] text-muted-foreground leading-none">Vigilância Inteligente</span>
+            <span className="text-[10px] text-muted-foreground/70 leading-none">Vigilância Inteligente</span>
           </div>
         </div>
       )}
 
       {collapsed && !isMobile && (
-        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground shadow-md shadow-primary/25 transition-transform duration-300 hover:scale-110">
+        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground shadow-md shadow-primary/25 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-primary/30">
           <Shield className="w-4 h-4" />
         </div>
       )}
@@ -48,8 +48,9 @@ export const SidebarHeader = memo(function SidebarHeader({
           variant="ghost"
           size="icon"
           className={cn(
-            "h-7 w-7 rounded-md text-muted-foreground transition-all duration-300",
-            "hover:text-sidebar-foreground hover:bg-sidebar-accent hover:rotate-180",
+            "h-7 w-7 rounded-lg text-muted-foreground/60",
+            "transition-all duration-200",
+            "hover:text-sidebar-foreground hover:bg-sidebar-accent/50",
             collapsed && "hidden md:flex"
           )}
           onClick={onToggle}
