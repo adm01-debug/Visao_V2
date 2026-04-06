@@ -67,7 +67,7 @@ export const sampleZones = [
     id: 'zone-002',
     name: 'Estacionamento',
     type: 'monitored',
-    color: '#4ECDC4',
+    color: 'hsl(187, 96%, 42%)',
     cameraIds: ['cam-003'],
     isActive: true,
   },
