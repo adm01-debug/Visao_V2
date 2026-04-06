@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { CameraPlaceholder } from '@/components/cameras/CameraPlaceholder';
 import type { UICameraData } from './types';
 
 interface StreamCameraCardProps {
