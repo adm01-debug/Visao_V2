@@ -34,14 +34,14 @@ export function DetectionsHistoryTab({ detections, onSearch }: Props) {
   };
 
   return (
-    <Card>
+    <Card className="border-border/40 bg-card/60">
       <CardHeader>
         <CardTitle>Histórico de Detecções</CardTitle>
         <CardDescription>Últimas 100 placas detectadas pelo sistema</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex gap-4 mb-6">
-          <Input placeholder="Buscar placa..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="max-w-sm" />
+          <Input placeholder="Buscar placa..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="max-w-sm border-border/40 bg-card/60" />
           <Button onClick={() => onSearch(searchQuery)}><Search className="h-4 w-4 mr-2" />Buscar</Button>
           <Button variant="outline" onClick={exportCSV}><Download className="h-4 w-4 mr-2" />Exportar CSV</Button>
         </div>
