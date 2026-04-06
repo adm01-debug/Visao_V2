@@ -49,6 +49,7 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true, 
         'group relative rounded-xl overflow-hidden border border-border/40 bg-card cursor-pointer',
         'transition-all duration-300 ease-out',
         'hover:border-primary/40 hover:-translate-y-1.5 hover:shadow-[var(--shadow-card-glow)]',
+        'active:scale-[0.98] active:translate-y-0 active:shadow-[var(--shadow-card)]',
         compact ? 'h-24' : 'aspect-video'
       )}
       onClick={onClick}
@@ -77,6 +78,11 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true, 
 
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/5 to-transparent" />
+
+      {/* Hover scan line */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+        <div className="absolute left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" style={{ animation: 'scan 3s linear infinite' }} />
+      </div>
 
       {/* Status Badge */}
       <div className="absolute top-2.5 left-2.5">

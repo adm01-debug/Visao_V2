@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef, useEffect } from 'react';
 import type { DbAlert } from '@/hooks/useAlerts';
 import {
   AlertTriangle,
@@ -166,26 +166,52 @@ export function DashboardAlerts({
       )}
 
       {/* Productivity Score */}
-      <div className="rounded-xl border border-border/50 bg-card p-5 mt-6" style={{ boxShadow: 'var(--shadow-card)' }}>
-        <div className="flex items-center gap-2 mb-4">
-          <div className="p-1.5 rounded-lg bg-primary/10">
-            <TrendingUp className="w-4 h-4 text-primary" />
-          </div>
-          <h3 className="font-semibold text-foreground">Produtividade</h3>
+      <ProductivityCard />
+    </div>
+  );
+}
+
+function ProductivityCard() {
+  const barRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = barRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry?.isIntersecting) { setVisible(true); observer.disconnect(); } },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={barRef} className="rounded-xl border border-border/50 bg-card p-5 mt-6 group hover:border-border transition-all duration-300 hover:-translate-y-0.5" style={{ boxShadow: 'var(--shadow-card)' }}>
+      <div className="flex items-center gap-2 mb-4">
+        <div className="p-1.5 rounded-lg bg-primary/10 transition-transform duration-300 group-hover:scale-110">
+          <TrendingUp className="w-4 h-4 text-primary" />
         </div>
-        <div className="relative pt-1">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-3xl font-bold text-primary font-mono tabular-nums">87%</span>
-            <span className="text-xs text-success bg-success/10 px-2 py-0.5 rounded-full">+3% vs ontem</span>
-          </div>
-          <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
-            <div className="h-full bg-primary rounded-full transition-all duration-1000" style={{ width: '87%' }} />
-          </div>
-        </div>
-        <p className="text-xs text-muted-foreground mt-3">
-          Baseado em análise de movimentação e atividade
-        </p>
+        <h3 className="font-semibold text-foreground">Produtividade</h3>
       </div>
+      <div className="relative pt-1">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-3xl font-bold text-primary font-mono tabular-nums">87%</span>
+          <span className="text-xs text-success bg-success/10 px-2 py-0.5 rounded-full">+3% vs ontem</span>
+        </div>
+        <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
+          <div
+            className="h-full bg-primary rounded-full transition-all ease-out"
+            style={{
+              width: visible ? '87%' : '0%',
+              transitionDuration: visible ? '1.2s' : '0s',
+            }}
+          />
+        </div>
+      </div>
+      <p className="text-xs text-muted-foreground mt-3">
+        Baseado em análise de movimentação e atividade
+      </p>
     </div>
   );
 }

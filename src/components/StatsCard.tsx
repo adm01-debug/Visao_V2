@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { LucideIcon } from 'lucide-react';
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState, useRef } from 'react';
 
 interface StatsCardProps {
   title: string;
@@ -83,6 +83,54 @@ function MiniSparkline({ data, color }: { data: number[]; color: string }) {
   );
 }
 
+function useAnimatedNumber(value: string | number): string {
+  const original = String(value);
+  
+  // Parse the animatable number from the value
+  const { targetNum, formatFn } = useMemo(() => {
+    if (typeof value === 'number') {
+      return { targetNum: value, formatFn: (n: number) => String(n) };
+    }
+    if (original.includes('/')) {
+      const parts = original.split('/');
+      return { targetNum: parseInt(parts[0]!) || 0, formatFn: (n: number) => `${n}/${parts[1]}` };
+    }
+    if (original.includes('%')) {
+      return { targetNum: parseInt(original) || 0, formatFn: (n: number) => `${n}%` };
+    }
+    const parsed = parseInt(original);
+    if (isNaN(parsed) || parsed <= 0) {
+      return { targetNum: 0, formatFn: () => original };
+    }
+    return { targetNum: parsed, formatFn: (n: number) => String(n) };
+  }, [value, original]);
+
+  const [displayValue, setDisplayValue] = useState(0);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    if (targetNum <= 0 || hasAnimated.current) {
+      setDisplayValue(targetNum);
+      return;
+    }
+    hasAnimated.current = true;
+    const duration = 600;
+    const start = performance.now();
+
+    function tick(now: number) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      setDisplayValue(Math.round(targetNum * eased));
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }, [targetNum]);
+
+  if (targetNum <= 0) return original;
+  return formatFn(displayValue);
+}
+
 function useFakeSparkline(value: string | number): number[] {
   return useMemo(() => {
     const num = typeof value === 'number' ? value : parseInt(String(value)) || 50;
@@ -101,6 +149,7 @@ export function StatsCard({
 }: StatsCardProps) {
   const fakeData = useFakeSparkline(value);
   const data = sparklineData || fakeData;
+  const animatedValue = useAnimatedNumber(value);
   const isTextValue = typeof value === 'string' && isNaN(Number(value.replace(/[^0-9]/g, '')));
 
   return (
@@ -108,7 +157,7 @@ export function StatsCard({
       className={cn(
         'relative overflow-hidden rounded-xl border border-border/50 bg-card p-4 sm:p-5',
         'transition-all duration-300 ease-out',
-        'hover:border-border hover:-translate-y-1',
+        'hover:border-border hover:-translate-y-1 active:scale-[0.98] active:translate-y-0',
         glowVariantStyles[variant],
         'group'
       )}
@@ -149,7 +198,7 @@ export function StatsCard({
           "font-bold font-mono tabular-nums leading-none text-foreground transition-transform duration-300 group-hover:translate-x-0.5",
           isTextValue ? "text-xl sm:text-2xl" : "text-2xl sm:text-3xl"
         )}>
-          {value}
+          {animatedValue}
         </p>
 
         <div className="flex items-center justify-between mt-2.5 gap-2">
