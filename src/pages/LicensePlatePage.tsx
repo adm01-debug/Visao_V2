@@ -61,10 +61,8 @@ export default function LicensePlatePage() {
               <TabsContent value="history">
                 <DetectionsHistoryTab detections={detections} onSearch={handleSearchDetections} />
               </TabsContent>
-            </Tabs>
-          </div>
-        </main>
-      </div>
+          </Tabs>
+        </div>
 
       <VehicleFormDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}
         editingVehicle={editingVehicle} formData={formData} onFormChange={setFormData} onSave={handleSaveVehicle} />
