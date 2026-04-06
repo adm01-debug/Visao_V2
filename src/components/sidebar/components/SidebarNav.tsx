@@ -120,10 +120,10 @@ const CategoryItem = memo(function CategoryItem({
           transition={{ layout: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] } }}
           className={cn(
             "flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium",
-            "transition-all duration-200 ease-out",
+            "transition-all duration-300 ease-out",
             "text-sidebar-foreground/65 hover:text-sidebar-foreground",
-            "hover:bg-sidebar-accent/50",
-            isActive && !isExpanded && "bg-sidebar-accent/60 text-sidebar-primary",
+            "hover:bg-sidebar-accent/60 hover:shadow-[inset_0_1px_0_0_hsl(var(--primary)/0.06)]",
+            isActive && !isExpanded && "bg-sidebar-accent/60 text-sidebar-primary shadow-[inset_0_1px_0_0_hsl(var(--primary)/0.08)]",
             isExpanded && "bg-sidebar-accent/40 text-sidebar-foreground"
           )}
         >
