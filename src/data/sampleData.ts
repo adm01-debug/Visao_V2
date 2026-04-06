@@ -59,7 +59,7 @@ export const sampleZones = [
     id: 'zone-001',
     name: 'Área de Produção',
     type: 'restricted',
-    color: '#FF6B6B',
+    color: 'hsl(350, 65%, 52%)',
     cameraIds: ['cam-002', 'cam-004'],
     isActive: true,
   },
