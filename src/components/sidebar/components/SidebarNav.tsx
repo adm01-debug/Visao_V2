@@ -313,13 +313,14 @@ const NavItemLink = memo(function NavItemLink({
       onClick={onClick}
       className={cn(
         "relative flex items-center gap-3 px-3 py-2 rounded-xl text-sm group",
-        "transition-all duration-200 ease-out",
+        "transition-all duration-300 ease-out",
         "text-sidebar-foreground/55",
-        "hover:text-sidebar-foreground hover:bg-sidebar-accent/50 hover:translate-x-0.5",
+        "hover:text-sidebar-foreground hover:bg-sidebar-accent/60 hover:translate-x-0.5",
+        "hover:shadow-[0_2px_8px_-2px_hsl(var(--primary)/0.08)]",
         isActive && [
           "bg-primary/10 text-primary font-medium",
           "hover:bg-primary/14 hover:text-primary",
-          "shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.12)]",
+          "shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.12),0_2px_8px_-2px_hsl(var(--primary)/0.1)]",
         ]
       )}
     >
