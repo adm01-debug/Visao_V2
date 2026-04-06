@@ -33,6 +33,7 @@ interface SidebarNavProps {
   onToggleCategory: (categoryId: string) => void;
   isItemActive: (path: string) => boolean;
   onNavigate?: () => void;
+  isLoading?: boolean;
 }
 
 export const SidebarNav = memo(React.forwardRef(function SidebarNav({
@@ -43,6 +44,7 @@ export const SidebarNav = memo(React.forwardRef(function SidebarNav({
   onToggleCategory,
   isItemActive,
   onNavigate,
+  isLoading,
 }: SidebarNavProps, _ref) {
   const isCategoryExpanded = (categoryId: string) =>
     expandedCategories.includes(categoryId);
@@ -64,6 +66,7 @@ export const SidebarNav = memo(React.forwardRef(function SidebarNav({
               onToggle={() => onToggleCategory(category.id)}
               isItemActive={isItemActive}
               onNavigate={onNavigate}
+              isLoading={isLoading}
             />
           ))}
         </nav>
@@ -84,6 +87,7 @@ interface CategoryItemProps {
   onToggle: () => void;
   isItemActive: (path: string) => boolean;
   onNavigate?: () => void;
+  isLoading?: boolean;
 }
 
 const CategoryItem = memo(React.forwardRef(function CategoryItem({
@@ -94,6 +98,7 @@ const CategoryItem = memo(React.forwardRef(function CategoryItem({
   onToggle,
   isItemActive,
   onNavigate,
+  isLoading,
 }: CategoryItemProps, _ref) {
   const CategoryIcon = category.icon;
   const status = category.getStatus?.() || { type: "neutral" as const, label: "" };
@@ -106,6 +111,7 @@ const CategoryItem = memo(React.forwardRef(function CategoryItem({
         isActive={isActive}
         isItemActive={isItemActive}
         onNavigate={onNavigate}
+        isLoading={isLoading}
       />
     );
   }
@@ -144,9 +150,20 @@ const CategoryItem = memo(React.forwardRef(function CategoryItem({
 
           <div className="flex items-center gap-2">
             <AnimatePresence mode="wait">
-              {!isExpanded && status.label && (
+              {!isExpanded && (isLoading ? (
+                <motion.div
+                  key="shimmer"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                  className="relative h-5 w-16 rounded-full bg-muted/40 overflow-hidden border border-border/20"
+                >
+                  <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-foreground/[0.06] to-transparent" />
+                </motion.div>
+              ) : status.label ? (
                 <CategoryStatusIndicator status={status} collapsed={false} />
-              )}
+              ) : null)}
             </AnimatePresence>
 
             <motion.div
@@ -202,6 +219,7 @@ interface CollapsedCategoryProps {
   isActive: boolean;
   isItemActive: (path: string) => boolean;
   onNavigate?: () => void;
+  isLoading?: boolean;
 }
 
 const CollapsedCategory = memo(React.forwardRef(function CollapsedCategory({
@@ -210,6 +228,7 @@ const CollapsedCategory = memo(React.forwardRef(function CollapsedCategory({
   isActive,
   isItemActive,
   onNavigate,
+  isLoading,
 }: CollapsedCategoryProps, _ref) {
   const CategoryIcon = category.icon;
 
@@ -224,7 +243,15 @@ const CollapsedCategory = memo(React.forwardRef(function CollapsedCategory({
               isExpanded={false}
               isActive={isActive}
             />
-            {status.count !== undefined && status.count > 0 && (
+            {isLoading ? (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute -top-0.5 -right-0.5 w-[14px] h-[14px] rounded-full bg-muted/40 overflow-hidden border border-border/20"
+              >
+                <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-foreground/[0.06] to-transparent" />
+              </motion.div>
+            ) : status.count !== undefined && status.count > 0 && (
               <motion.span
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}

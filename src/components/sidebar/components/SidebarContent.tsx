@@ -64,6 +64,7 @@ export const SidebarContent = memo(React.forwardRef(function SidebarContent({
         onToggleCategory={toggleCategory}
         isItemActive={isItemActive}
         onNavigate={isMobile ? closeMobile : undefined}
+        isLoading={state.sidebarStatus.isLoading}
       />
 
       {/* Footer */}
