@@ -338,14 +338,19 @@ const NavItemLink = memo(function NavItemLink({
       )} />
       <span className="flex-1 truncate">{item.label}</span>
       {item.badge !== undefined && Number(item.badge) > 0 && (
-        <span
+        <motion.span
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          whileHover={{ scale: 1.15, y: -1 }}
+          transition={{ type: "spring", stiffness: 500, damping: 15 }}
           className={cn(
             "ml-auto text-[10px] font-semibold h-5 min-w-[20px] px-1.5 flex items-center justify-center rounded-full",
+            "transition-shadow duration-300",
             getBadgeClasses(item.badgeVariant)
           )}
         >
           {typeof item.badge === "number" && item.badge > 99 ? "99+" : item.badge}
-        </span>
+        </motion.span>
       )}
     </NavLink>
   );
