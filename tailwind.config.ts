@@ -108,6 +108,10 @@ export default {
           from: { height: "var(--radix-collapsible-content-height)", opacity: "1" },
           to: { height: "0", opacity: "0" },
         },
+        "scan-line": {
+          "0%": { top: "-2px" },
+          "100%": { top: "100%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -115,6 +119,7 @@ export default {
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
         "collapsible-down": "collapsible-down 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)",
         "collapsible-up": "collapsible-up 0.25s cubic-bezier(0.25, 0.1, 0.25, 1)",
+        "scan-line": "scan-line 4s linear infinite",
       },
     },
   },

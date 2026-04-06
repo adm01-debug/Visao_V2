@@ -62,24 +62,23 @@ export function CameraCard({ camera, onClick, compact = false, searchQuery = '' 
   return (
     <div
       className={cn(
-        "glass-card overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:border-primary/50 group",
+        "glass-card-interactive overflow-hidden group",
         hasAlerts && "border-destructive/50 alert-glow"
       )}
       onClick={onClick}
     >
       {/* Camera Preview */}
-      <div className="relative aspect-video bg-secondary overflow-hidden">
-        {/* Simulated camera feed */}
-        <div className="absolute inset-0 bg-gradient-to-br from-secondary to-background flex items-center justify-center">
-          <Video className="w-12 h-12 text-muted-foreground/30" />
-        </div>
-
-        {/* Scan line effect */}
-        <div className="scan-line opacity-30" />
+      <div className="relative aspect-video overflow-hidden">
+        <CameraPlaceholder isOnline={camera.status === 'online'} />
 
         {/* Play button overlay */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-background/30">
-          <div className="p-4 rounded-full bg-primary/90 text-primary-foreground transform group-hover:scale-110 transition-transform">
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+          <div className="absolute inset-0 bg-background/20 backdrop-blur-[2px]" />
+          <div className={cn(
+            "relative p-4 rounded-full bg-primary/90 text-primary-foreground",
+            "transform scale-90 group-hover:scale-100 transition-transform duration-300",
+            "shadow-lg shadow-primary/25"
+          )}>
             <Play className="w-6 h-6" />
           </div>
         </div>
