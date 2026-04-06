@@ -15,7 +15,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export function Header({ className }: { className?: string }) {
+export const Header = React.forwardRef<HTMLElement, { className?: string }>(function Header({ className }, _ref) {
   const isOnline = useOnlineStatus();
   const { isAlertSoundEnabled, toggleAlertSound } = useNotifications();
   const { resolvedTheme, toggleTheme } = useTheme();

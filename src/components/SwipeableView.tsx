@@ -139,4 +139,6 @@ export const SwipeableView = React.forwardRef<HTMLDivElement, SwipeableViewProps
       </nav>
     </div>
   );
-}
+});
+
+SwipeableView.displayName = 'SwipeableView';
