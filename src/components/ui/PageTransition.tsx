@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { motion, useReducedMotion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 
@@ -38,7 +38,7 @@ const reducedVariants = {
 
 const crossfadeTransition = {
   duration: 0.3,
-  ease: [0.22, 1, 0.36, 1], // easeOutQuint for premium feel
+  ease: [0.22, 1, 0.36, 1],
 };
 
 const reducedTransition = {
@@ -46,27 +46,31 @@ const reducedTransition = {
   ease: 'easeOut',
 };
 
-export function PageTransition({ children, className }: PageTransitionProps) {
-  const location = useLocation();
-  const prefersReducedMotion = useReducedMotion();
+export const PageTransition = React.forwardRef<HTMLDivElement, PageTransitionProps>(
+  function PageTransition({ children, className }, _ref) {
+    const location = useLocation();
+    const prefersReducedMotion = useReducedMotion();
 
-  const variants = prefersReducedMotion ? reducedVariants : crossfadeVariants;
-  const transition = prefersReducedMotion ? reducedTransition : crossfadeTransition;
+    const variants = prefersReducedMotion ? reducedVariants : crossfadeVariants;
+    const transition = prefersReducedMotion ? reducedTransition : crossfadeTransition;
 
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={location.pathname}
-        variants={variants}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        transition={transition}
-        className={className}
-        style={{ willChange: 'opacity, transform, filter' }}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
-  );
-}
+    return (
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={location.pathname}
+          variants={variants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          transition={transition}
+          className={className}
+          style={{ willChange: 'opacity, transform, filter' }}
+        >
+          {children}
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
+);
+
+PageTransition.displayName = 'PageTransition';
