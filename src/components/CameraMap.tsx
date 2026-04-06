@@ -106,15 +106,15 @@ export function CameraMap({ cameras, onCameraClick, className = '' }: CameraMapP
           height: 32px;
           background: ${getStatusColor(camera.status)};
           border-radius: 50%;
-          border: 3px solid white;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+          border: 3px solid hsl(var(--background));
+          box-shadow: 0 2px 8px hsl(var(--foreground) / 0.3);
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
           transition: transform 0.2s;
         ">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="hsl(var(--background))" stroke="hsl(var(--background))" stroke-width="2">
             <path d="M23 7l-7 5 7 5V7z"></path>
             <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
           </svg>

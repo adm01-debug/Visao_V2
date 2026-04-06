@@ -55,10 +55,10 @@ export const tourStyles = `
 
 @keyframes tourPulse {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 0 0 8px hsl(var(--primary) / 0.3);
   }
 }
 
@@ -74,14 +74,14 @@ export const tourStyles = `
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: hsl(var(--background) / 0.7);
 }
 
 /* Tour target highlight */
 [data-tour-active="true"] {
   position: relative;
   z-index: 50;
-  box-shadow: 0 0 0 4px var(--primary), 0 0 20px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 4px hsl(var(--primary)), 0 0 20px hsl(var(--primary) / 0.5);
   border-radius: 8px;
 }
 `;

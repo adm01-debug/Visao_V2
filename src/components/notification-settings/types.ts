@@ -15,10 +15,10 @@ export interface NotificationConfig {
 }
 
 export const SEVERITY_OPTIONS = [
-  { value: 'low', label: 'Baixa', icon: 'Info' as const, color: 'bg-blue-500' },
-  { value: 'medium', label: 'Média', icon: 'AlertCircle' as const, color: 'bg-yellow-500' },
-  { value: 'high', label: 'Alta', icon: 'AlertTriangle' as const, color: 'bg-orange-500' },
-  { value: 'critical', label: 'Crítica', icon: 'Shield' as const, color: 'bg-red-500' },
+  { value: 'low', label: 'Baixa', icon: 'Info' as const, color: 'bg-primary' },
+  { value: 'medium', label: 'Média', icon: 'AlertCircle' as const, color: 'bg-warning' },
+  { value: 'high', label: 'Alta', icon: 'AlertTriangle' as const, color: 'bg-[hsl(var(--severity-medium))]' },
+  { value: 'critical', label: 'Crítica', icon: 'Shield' as const, color: 'bg-destructive' },
 ] as const;
 
 export const DAYS_OF_WEEK = [

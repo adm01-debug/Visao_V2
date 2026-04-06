@@ -1,10 +1,22 @@
+/**
+ * VISÃO - Centralized Color Constants
+ * These map to CSS custom properties defined in index.css.
+ * Use semantic tokens (success, warning, destructive, primary) in components instead of raw values.
+ * This file exists only for contexts that require programmatic color strings (Canvas, Mapbox, etc.).
+ */
+
 export const COLORS = {
-  primary: { DEFAULT: '#6366f1', light: '#818cf8', dark: '#4f46e5' },
-  secondary: { DEFAULT: '#64748b', light: '#94a3b8', dark: '#475569' },
-  success: { DEFAULT: '#22c55e', light: '#4ade80', dark: '#16a34a' },
-  warning: { DEFAULT: '#f59e0b', light: '#fbbf24', dark: '#d97706' },
-  danger: { DEFAULT: '#ef4444', light: '#f87171', dark: '#dc2626' },
-  info: { DEFAULT: '#3b82f6', light: '#60a5fa', dark: '#2563eb' },
+  primary: { DEFAULT: 'hsl(var(--primary))', light: 'hsl(var(--primary) / 0.7)', dark: 'hsl(var(--primary))' },
+  secondary: { DEFAULT: 'hsl(var(--muted-foreground))', light: 'hsl(var(--muted-foreground) / 0.7)', dark: 'hsl(var(--muted-foreground))' },
+  success: { DEFAULT: 'hsl(var(--success))', light: 'hsl(var(--success) / 0.7)', dark: 'hsl(var(--success))' },
+  warning: { DEFAULT: 'hsl(var(--warning))', light: 'hsl(var(--warning) / 0.7)', dark: 'hsl(var(--warning))' },
+  danger: { DEFAULT: 'hsl(var(--destructive))', light: 'hsl(var(--destructive) / 0.7)', dark: 'hsl(var(--destructive))' },
+  info: { DEFAULT: 'hsl(var(--primary))', light: 'hsl(var(--primary) / 0.7)', dark: 'hsl(var(--primary))' },
 } as const;
 
-export const ALERT_COLORS = { critical: COLORS.danger.DEFAULT, high: COLORS.warning.DEFAULT, medium: COLORS.info.DEFAULT, low: COLORS.secondary.DEFAULT };
+export const ALERT_COLORS = {
+  critical: COLORS.danger.DEFAULT,
+  high: COLORS.warning.DEFAULT,
+  medium: COLORS.info.DEFAULT,
+  low: COLORS.secondary.DEFAULT,
+};

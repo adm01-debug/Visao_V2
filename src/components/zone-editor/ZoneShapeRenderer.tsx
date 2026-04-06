@@ -65,9 +65,9 @@ export const ZoneShapeRenderer = memo(function ZoneShapeRenderer({
         <text
           x={`${center.x}%`} y={`${center.y}%`}
           textAnchor="middle" dominantBaseline="middle"
-          fill="white" fontSize="11" fontWeight="600"
-          className="pointer-events-none"
-          style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}
+          fill="currentColor" fontSize="11" fontWeight="600"
+          className="pointer-events-none text-foreground"
+          style={{ textShadow: '0 1px 2px hsl(var(--background) / 0.8)' }}
         >
           {zone.name}
         </text>
