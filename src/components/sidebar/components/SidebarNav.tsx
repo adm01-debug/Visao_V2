@@ -44,6 +44,7 @@ export const SidebarNav = memo(React.forwardRef(function SidebarNav({
   onToggleCategory,
   isItemActive,
   onNavigate,
+  isLoading,
 }: SidebarNavProps, _ref) {
   const isCategoryExpanded = (categoryId: string) =>
     expandedCategories.includes(categoryId);
