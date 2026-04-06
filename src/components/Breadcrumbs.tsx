@@ -149,7 +149,9 @@ export const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(funct
       </motion.nav>
     </AnimatePresence>
   );
-};
+});
+
+Breadcrumbs.displayName = 'Breadcrumbs';
 
 const ROUTE_DESCRIPTIONS: Record<string, string> = {
   '/cameras': 'Gerencie e monitore todas as câmeras do sistema',
