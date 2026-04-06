@@ -1,6 +1,5 @@
 /**
- * VISÃO - Sistema de Vigilância Inteligente
- * Página: Colaboradores / Pessoas (Refatorada)
+ * VISÃO - Página: Colaboradores / Pessoas - Design Premium
  */
 
 import { Users, UserPlus, Search, LayoutGrid, List, X, RefreshCw } from 'lucide-react';
@@ -33,22 +32,26 @@ export default function PeoplePage() {
   } = usePeopleData();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div role="main" aria-label="Colaboradores" className="min-h-screen bg-background mb-mobile-nav">
       <PageMeta title="Colaboradores" description="Cadastro e gestão de pessoas reconhecidas" />
+
       {/* Header */}
-      <div className="border-b bg-card">
+      <div className="border-b border-border/40 bg-card/80 backdrop-blur-sm">
         <div className="container py-6">
           <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-2xl font-bold flex items-center gap-2">
-                <Users className="w-6 h-6" />Colaboradores
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                Gerencie as pessoas cadastradas no sistema de reconhecimento
-              </p>
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-accent/10 border border-accent/20">
+                <Users className="w-6 h-6 text-accent-foreground" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">Colaboradores</h1>
+                <p className="text-muted-foreground mt-0.5 text-sm">
+                  Gerencie as pessoas cadastradas no sistema de reconhecimento
+                </p>
+              </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" onClick={loadPeople} disabled={loading}>
+              <Button variant="outline" size="icon" onClick={loadPeople} disabled={loading} className="border-border/40">
                 <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
               </Button>
               <Button onClick={() => { setEditingPerson(null); setIsFormOpen(true); }}>
@@ -63,14 +66,14 @@ export default function PeoplePage() {
       {/* Content */}
       <div className="container py-6">
         {/* Filters */}
-        <div className="flex items-center gap-4 mb-6">
-          <div className="relative flex-1 max-w-md">
+        <div className="flex flex-wrap items-center gap-4 mb-6">
+          <div className="relative flex-1 min-w-[200px] max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Buscar por nome, departamento, cargo..."
               value={filters.search}
               onChange={(e) => setFilters(f => ({ ...f, search: e.target.value }))}
-              className="pl-9"
+              className="pl-9 border-border/40 bg-card/60"
             />
             {filters.search && (
               <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
@@ -84,7 +87,7 @@ export default function PeoplePage() {
               onCheckedChange={(checked) => setFilters(f => ({ ...f, activeOnly: checked }))} />
             <Label htmlFor="active-only" className="text-sm">Apenas ativos</Label>
           </div>
-          <div className="flex items-center border rounded-lg p-1">
+          <div className="flex items-center border border-border/40 rounded-lg p-1 ml-auto bg-card/60">
             <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('grid')}>
               <LayoutGrid className="w-4 h-4" />
             </Button>
@@ -97,15 +100,17 @@ export default function PeoplePage() {
         {/* Loading */}
         {loading && (
           <div className={cn('gap-4', viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'space-y-2')}>
-            {[...Array(6)].map((_, i) => <Skeleton key={i} className={viewMode === 'grid' ? 'h-32' : 'h-16'} />)}
+            {[...Array(6)].map((_, i) => <Skeleton key={i} className={viewMode === 'grid' ? 'h-32 rounded-xl' : 'h-16 rounded-xl'} />)}
           </div>
         )}
 
         {/* Empty */}
         {!loading && filteredPeople.length === 0 && (
           <div className="text-center py-16">
-            <Users className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
-            <h3 className="text-lg font-medium mb-1">
+            <div className="w-16 h-16 rounded-full bg-muted/50 border border-border/40 flex items-center justify-center mx-auto mb-4">
+              <Users className="w-8 h-8 text-muted-foreground/50" />
+            </div>
+            <h3 className="text-lg font-medium mb-1 text-foreground">
               {filters.search || filters.activeOnly ? 'Nenhuma pessoa encontrada' : 'Nenhuma pessoa cadastrada'}
             </h3>
             <p className="text-muted-foreground mb-4">
@@ -142,9 +147,9 @@ export default function PeoplePage() {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 mt-6">
-            <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Anterior</Button>
+            <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="border-border/40">Anterior</Button>
             <span className="text-sm text-muted-foreground">Página {currentPage} de {totalPages}</span>
-            <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>Próxima</Button>
+            <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="border-border/40">Próxima</Button>
           </div>
         )}
       </div>
@@ -169,7 +174,7 @@ export default function PeoplePage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeletePerson} className="bg-destructive hover:bg-destructive/90">Excluir</AlertDialogAction>
+            <AlertDialogAction onClick={handleDeletePerson} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

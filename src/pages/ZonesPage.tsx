@@ -1,6 +1,5 @@
 /**
- * VISÃO - Página: Zonas de Interesse
- * Refatorada: componentes extraídos para src/components/zones/
+ * VISÃO - Página: Zonas de Interesse - Design Premium
  */
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -116,72 +115,163 @@ export function ZonesPage() {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-6">
-      <PageMeta title="Zonas" description="Configure zonas de detecção e monitoramento" />
-        <div className="flex items-center justify-between"><Skeleton className="h-8 w-48" /><Skeleton className="h-10 w-32" /></div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">{[...Array(4)].map((_, i) => <Skeleton key={i} className="h-24" />)}</div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">{[...Array(6)].map((_, i) => <Skeleton key={i} className="h-40" />)}</div>
+      <div className="min-h-screen bg-background">
+        <PageMeta title="Zonas" description="Configure zonas de detecção e monitoramento" />
+        <div className="border-b border-border/40 bg-card/80 backdrop-blur-sm">
+          <div className="container py-6">
+            <Skeleton className="h-8 w-48 mb-2" />
+            <Skeleton className="h-4 w-32" />
+          </div>
+        </div>
+        <div className="container py-6 space-y-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">{[...Array(4)].map((_, i) => <Skeleton key={i} className="h-24 rounded-xl" />)}</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">{[...Array(6)].map((_, i) => <Skeleton key={i} className="h-40 rounded-xl" />)}</div>
+        </div>
       </div>
     );
   }
 
+  const hasActiveFilters = searchQuery || selectedCameraFilter !== 'all' || selectedTypeFilter !== 'all';
+
   return (
-    <div className="page-container space-y-6 h-[calc(100vh-4rem)] overflow-auto mb-mobile-nav">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2"><Target className="w-6 h-6" />Zonas de Interesse</h1>
-          <p className="text-sm text-muted-foreground">{stats.total} zonas • {stats.active} ativas</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={loadZones}><RefreshCw className="w-4 h-4 mr-2" />Atualizar</Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild><Button><Plus className="w-4 h-4 mr-2" />Nova Zona<ChevronDown className="w-4 h-4 ml-2" /></Button></DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              {cameras.length === 0 ? <div className="p-3 text-sm text-muted-foreground text-center">Nenhuma câmera disponível</div> : cameras.map(camera => (
-                <DropdownMenuItem key={camera.id} onClick={() => openEditor(camera)}><Camera className="w-4 h-4 mr-2" />{camera.name}</DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+    <div role="main" aria-label="Zonas de interesse" className="min-h-screen bg-background mb-mobile-nav">
+      <PageMeta title="Zonas" description="Configure zonas de detecção e monitoramento" />
+
+      {/* Header */}
+      <div className="border-b border-border/40 bg-card/80 backdrop-blur-sm">
+        <div className="container py-6">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-accent/10 border border-accent/20">
+                <Target className="w-6 h-6 text-accent-foreground" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">Zonas de Interesse</h1>
+                <p className="text-muted-foreground mt-0.5 text-sm">{stats.total} zonas • {stats.active} ativas</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="icon" onClick={loadZones} className="border-border/40">
+                <RefreshCw className="w-4 h-4" />
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button><Plus className="w-4 h-4 mr-2" />Nova Zona<ChevronDown className="w-4 h-4 ml-2" /></Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  {cameras.length === 0 ? (
+                    <div className="p-3 text-sm text-muted-foreground text-center">Nenhuma câmera disponível</div>
+                  ) : cameras.map(camera => (
+                    <DropdownMenuItem key={camera.id} onClick={() => openEditor(camera)}>
+                      <Camera className="w-4 h-4 mr-2" />{camera.name}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Card className="border-border/40 bg-card/60">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                    <Target className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-foreground">{stats.total}</p>
+                    <p className="text-xs text-muted-foreground">Total</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="border-border/40 bg-card/60">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-success/10 border border-success/20 flex items-center justify-center">
+                    <Activity className="w-5 h-5 text-success" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-success">{stats.active}</p>
+                    <p className="text-xs text-muted-foreground">Ativas</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="border-border/40 bg-card/60">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-destructive/10 border border-destructive/20 flex items-center justify-center">
+                    <AlertTriangle className="w-5 h-5 text-destructive" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-destructive">{stats.restricted}</p>
+                    <p className="text-xs text-muted-foreground">Restritas</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="border-border/40 bg-card/60">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                    <Users className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-primary">{stats.counting}</p>
+                    <p className="text-xs text-muted-foreground">Contagem</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card><CardContent className="p-4"><div className="flex items-center justify-between"><div><p className="text-xs text-muted-foreground">Total</p><p className="text-2xl font-bold">{stats.total}</p></div><Target className="w-8 h-8 text-muted-foreground" /></div></CardContent></Card>
-        <Card><CardContent className="p-4"><div className="flex items-center justify-between"><div><p className="text-xs text-muted-foreground">Ativas</p><p className="text-2xl font-bold text-success">{stats.active}</p></div><Activity className="w-8 h-8 text-success" /></div></CardContent></Card>
-        <Card><CardContent className="p-4"><div className="flex items-center justify-between"><div><p className="text-xs text-muted-foreground">Restritas</p><p className="text-2xl font-bold text-destructive">{stats.restricted}</p></div><AlertTriangle className="w-8 h-8 text-destructive" /></div></CardContent></Card>
-        <Card><CardContent className="p-4"><div className="flex items-center justify-between"><div><p className="text-xs text-muted-foreground">Contagem</p><p className="text-2xl font-bold text-primary">{stats.counting}</p></div><Users className="w-8 h-8 text-primary" /></div></CardContent></Card>
-      </div>
-
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Buscar zonas..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9" />
+      {/* Content */}
+      <div className="container py-6 space-y-6">
+        {/* Filters */}
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="relative flex-1 min-w-[200px] max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input placeholder="Buscar zonas..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 border-border/40 bg-card/60" />
+            {searchQuery && <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6" onClick={() => setSearchQuery('')}><X className="w-3 h-3" /></Button>}
+          </div>
+          <Select value={selectedCameraFilter} onValueChange={setSelectedCameraFilter}>
+            <SelectTrigger className="w-[180px] border-border/40 bg-card/60"><Camera className="w-4 h-4 mr-2" /><SelectValue placeholder="Câmera" /></SelectTrigger>
+            <SelectContent><SelectItem value="all">Todas câmeras</SelectItem>{cameras.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
+          </Select>
+          <Select value={selectedTypeFilter} onValueChange={setSelectedTypeFilter}>
+            <SelectTrigger className="w-[180px] border-border/40 bg-card/60"><SelectValue placeholder="Tipo" /></SelectTrigger>
+            <SelectContent><SelectItem value="all">Todos tipos</SelectItem>{Object.entries(zoneTypeConfig).map(([key, config]) => <SelectItem key={key} value={key}>{config.label}</SelectItem>)}</SelectContent>
+          </Select>
+          {hasActiveFilters && (
+            <Button variant="ghost" size="sm" onClick={() => { setSearchQuery(''); setSelectedCameraFilter('all'); setSelectedTypeFilter('all'); }}>
+              <X className="w-4 h-4 mr-1" />Limpar
+            </Button>
+          )}
+          <div className="flex items-center border border-border/40 rounded-lg p-1 ml-auto bg-card/60">
+            <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('grid')}><LayoutGrid className="w-4 h-4" /></Button>
+            <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('list')}><List className="w-4 h-4" /></Button>
+          </div>
         </div>
-        <Select value={selectedCameraFilter} onValueChange={setSelectedCameraFilter}><SelectTrigger className="w-40"><SelectValue placeholder="Câmera" /></SelectTrigger><SelectContent><SelectItem value="all">Todas câmeras</SelectItem>{cameras.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent></Select>
-        <Select value={selectedTypeFilter} onValueChange={setSelectedTypeFilter}><SelectTrigger className="w-40"><SelectValue placeholder="Tipo" /></SelectTrigger><SelectContent><SelectItem value="all">Todos tipos</SelectItem>{Object.entries(zoneTypeConfig).map(([key, config]) => <SelectItem key={key} value={key}>{config.label}</SelectItem>)}</SelectContent></Select>
-        {(searchQuery || selectedCameraFilter !== 'all' || selectedTypeFilter !== 'all') && (
-          <Button variant="ghost" size="sm" onClick={() => { setSearchQuery(''); setSelectedCameraFilter('all'); setSelectedTypeFilter('all'); }}><X className="w-4 h-4 mr-1" />Limpar</Button>
+
+        <div className="text-sm text-muted-foreground">{filteredZones.length} zonas encontradas</div>
+
+        {filteredZones.length === 0 ? (
+          <EmptyState icon={<Target />} title={zones.length === 0 ? 'Nenhuma zona configurada' : 'Nenhuma zona encontrada'}
+            description={zones.length === 0 ? 'Crie zonas de interesse nas suas câmeras.' : 'Nenhuma zona corresponde aos filtros.'}
+            action={zones.length === 0 && cameras.length > 0 ? { label: '+ Criar Zona', onClick: () => openEditor(cameras[0]) } : undefined}
+          />
+        ) : (
+          <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'flex flex-col gap-2')}>
+            {filteredZones.map(zone => (
+              <ZoneCard key={zone.id} zone={zone} stats={zoneStats[zone.id]} cameraName={getCameraName(zone.camera_id)} onView={() => openView(zone)} onEdit={() => openEditor(getCameraById(zone.camera_id) ?? undefined, zone)} onDelete={() => setDeleteConfirm(zone)} onToggle={() => handleToggle(zone)} />
+            ))}
+          </div>
         )}
-        <div className="flex items-center gap-1 border rounded-lg p-1 ml-auto">
-          <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('grid')}><LayoutGrid className="w-4 h-4" /></Button>
-          <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('list')}><List className="w-4 h-4" /></Button>
-        </div>
       </div>
-
-      <div className="text-sm text-muted-foreground">{filteredZones.length} zonas encontradas</div>
-
-      {filteredZones.length === 0 ? (
-        <EmptyState icon={<Target />} title={zones.length === 0 ? 'Nenhuma zona configurada' : 'Nenhuma zona encontrada'}
-          description={zones.length === 0 ? 'Crie zonas de interesse nas suas câmeras.' : 'Nenhuma zona corresponde aos filtros.'}
-          action={zones.length === 0 && cameras.length > 0 ? { label: '+ Criar Zona', onClick: () => openEditor(cameras[0]) } : undefined}
-        />
-      ) : (
-        <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'flex flex-col gap-2')}>
-          {filteredZones.map(zone => (
-            <ZoneCard key={zone.id} zone={zone} stats={zoneStats[zone.id]} cameraName={getCameraName(zone.camera_id)} onView={() => openView(zone)} onEdit={() => openEditor(getCameraById(zone.camera_id) ?? undefined, zone)} onDelete={() => setDeleteConfirm(zone)} onToggle={() => handleToggle(zone)} />
-          ))}
-        </div>
-      )}
 
       <ZoneEditorSheet isOpen={isEditorOpen} onClose={() => { setIsEditorOpen(false); setEditingZone(null); setEditorCamera(null); }} camera={editorCamera} zone={editingZone} onSave={handleSave} />
       <ZoneViewDialog zone={viewingZone} camera={viewingZone ? getCameraById(viewingZone.camera_id) ?? null : null} stats={viewingZone ? zoneStats[viewingZone.id] : undefined} events={viewingZone ? zoneEvents[viewingZone.id] || [] : []} isOpen={!!viewingZone} onClose={() => setViewingZone(null)} />
