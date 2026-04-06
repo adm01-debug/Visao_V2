@@ -144,6 +144,7 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
           typeIconBg[config.color] || 'bg-muted/40', config.color
         )} aria-hidden="true">
           <Icon className="w-4 h-4" />
+        </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-1.5">
