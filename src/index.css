@@ -56,6 +56,7 @@
     --shadow-glow: 0 0 40px hsl(217 91% 60% / 0.1);
     --shadow-card: 0 1px 3px hsl(228 25% 3% / 0.3), 0 4px 12px hsl(228 25% 3% / 0.15);
     --shadow-card-hover: 0 4px 16px hsl(228 25% 3% / 0.4), 0 8px 32px hsl(228 25% 3% / 0.2);
+    --shadow-card-glow: 0 8px 32px hsl(217 91% 60% / 0.12), 0 0 0 1px hsl(217 91% 60% / 0.08);
     --shadow-alert: 0 0 20px hsl(0 72% 51% / 0.15);
 
     /* Sidebar */
@@ -111,6 +112,7 @@
     --shadow-glow: 0 0 32px hsl(217 91% 52% / 0.06);
     --shadow-card: 0 1px 3px hsl(224 25% 10% / 0.04), 0 2px 8px hsl(224 25% 10% / 0.03);
     --shadow-card-hover: 0 4px 12px hsl(224 25% 10% / 0.08), 0 8px 24px hsl(224 25% 10% / 0.04);
+    --shadow-card-glow: 0 8px 24px hsl(217 91% 52% / 0.08), 0 0 0 1px hsl(217 91% 52% / 0.06);
     --shadow-alert: 0 0 20px hsl(0 72% 51% / 0.08);
 
     --sidebar-background: 0 0% 100%;
@@ -383,13 +385,13 @@
   }
 
   .glass-card-interactive:hover {
-    @apply border-primary/25;
-    box-shadow: var(--shadow-card-hover);
-    transform: translateY(-2px);
+    @apply border-primary/30;
+    box-shadow: var(--shadow-card-glow);
+    transform: translateY(-3px);
   }
 
   .glass-card-interactive:active {
-    transform: translateY(0) scale(0.99);
+    transform: translateY(-1px) scale(0.99);
     transition-duration: 80ms;
   }
 
