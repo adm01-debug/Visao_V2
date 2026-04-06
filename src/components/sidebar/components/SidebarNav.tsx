@@ -152,13 +152,13 @@ const CategoryItem = memo(React.forwardRef(function CategoryItem({
               {!isExpanded && (isLoading ? (
                 <motion.div
                   key="shimmer"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="h-5 w-16 rounded-full bg-muted/60 overflow-hidden"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                  className="relative h-5 w-16 rounded-full bg-muted/40 overflow-hidden border border-border/20"
                 >
-                  <div className="h-full w-full animate-pulse bg-gradient-to-r from-transparent via-foreground/5 to-transparent" 
-                    style={{ backgroundSize: '200% 100%', animation: 'shimmer 1.5s ease-in-out infinite' }} />
+                  <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-foreground/[0.06] to-transparent" />
                 </motion.div>
               ) : status.label ? (
                 <CategoryStatusIndicator status={status} collapsed={false} />
