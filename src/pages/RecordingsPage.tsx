@@ -1,8 +1,8 @@
 /**
- * VISÃO - Página de Gravações (Modularizada)
+ * VISÃO - Página de Gravações - Design Premium
  */
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Video, Search, Calendar, Camera, Clock, LayoutGrid, List, RefreshCw, X, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
+import { Video, Search, Calendar, Camera, Clock, LayoutGrid, List, RefreshCw, X, ChevronLeft, ChevronRight, Trash2, Play, Download, MoreHorizontal } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useCameras } from '@/hooks/useCameras';
 import { Button } from '@/components/ui/button';
@@ -23,7 +23,6 @@ import { toast } from 'sonner';
 import { ClipCard, formatClipDuration } from '@/components/recordings/ClipCard';
 import { VideoPlayerDialog } from '@/components/recordings/VideoPlayerDialog';
 import type { VideoClipWithCamera } from '@/components/recordings/ClipCard';
-import { Play, Download, MoreHorizontal } from 'lucide-react';
 
 type ViewMode = 'grid' | 'list';
 type DateFilter = 'today' | 'yesterday' | 'week' | 'month' | 'all';
@@ -93,21 +92,56 @@ export function RecordingsPage() {
     <div role="main" aria-label="Gravações" className="min-h-screen bg-background">
       <PageMeta title="Gravações" description="Visualize e gerencie clips de vídeo gravados" />
 
-      <div className="border-b bg-card">
+      <div className="border-b border-border/40 bg-card/80 backdrop-blur-sm">
         <div className="container py-6">
           <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-2xl font-bold flex items-center gap-2"><Video className="w-6 h-6" />Gravações</h1>
-              <p className="text-muted-foreground mt-1">Visualize e gerencie os clips gravados</p>
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-accent/10 border border-accent/20">
+                <Video className="w-6 h-6 text-accent-foreground" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">Gravações</h1>
+                <p className="text-muted-foreground mt-0.5 text-sm">Visualize e gerencie os clips gravados</p>
+              </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" onClick={loadClips} disabled={loading}><RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} /></Button>
-              {selectedClips.size > 0 && <Button variant="destructive" size="sm" onClick={handleDeleteSelected}><Trash2 className="w-4 h-4 mr-2" />Excluir ({selectedClips.size})</Button>}
+              <Button variant="outline" size="icon" onClick={loadClips} disabled={loading} className="border-border/40">
+                <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
+              </Button>
+              {selectedClips.size > 0 && (
+                <Button variant="destructive" size="sm" onClick={handleDeleteSelected} className="bg-[hsl(var(--severity-critical))] hover:bg-[hsl(var(--severity-critical))]/90 text-white">
+                  <Trash2 className="w-4 h-4 mr-2" />Excluir ({selectedClips.size})
+                </Button>
+              )}
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Card><CardContent className="p-4"><div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center"><Video className="w-5 h-5 text-primary" /></div><div><p className="text-2xl font-bold">{stats.total}</p><p className="text-xs text-muted-foreground">Clips</p></div></div></CardContent></Card>
-            <Card><CardContent className="p-4"><div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center"><Clock className="w-5 h-5 text-primary" /></div><div><p className="text-2xl font-bold">{formatClipDuration(stats.totalDuration)}</p><p className="text-xs text-muted-foreground">Duração total</p></div></div></CardContent></Card>
+            <Card className="border-border/40 bg-card/60">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                    <Video className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-foreground">{stats.total}</p>
+                    <p className="text-xs text-muted-foreground">Clips</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="border-border/40 bg-card/60">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-foreground">{formatClipDuration(stats.totalDuration)}</p>
+                    <p className="text-xs text-muted-foreground">Duração total</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
@@ -116,12 +150,18 @@ export function RecordingsPage() {
         <div className="flex flex-wrap items-center gap-4 mb-6">
           <div className="relative flex-1 min-w-[200px] max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Buscar por câmera..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9" />
+            <Input placeholder="Buscar por câmera..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 border-border/40 bg-card/60" />
             {searchQuery && <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6" onClick={() => setSearchQuery('')}><X className="w-3 h-3" /></Button>}
           </div>
-          <Select value={cameraFilter} onValueChange={setCameraFilter}><SelectTrigger className="w-[180px]"><Camera className="w-4 h-4 mr-2" /><SelectValue placeholder="Câmera" /></SelectTrigger><SelectContent><SelectItem value="all">Todas as câmeras</SelectItem>{cameras.map(cam => <SelectItem key={cam.id} value={cam.id}>{cam.name}</SelectItem>)}</SelectContent></Select>
-          <Select value={dateFilter} onValueChange={(v) => setDateFilter(v as DateFilter)}><SelectTrigger className="w-[150px]"><Calendar className="w-4 h-4 mr-2" /><SelectValue placeholder="Período" /></SelectTrigger><SelectContent><SelectItem value="today">Hoje</SelectItem><SelectItem value="yesterday">Ontem</SelectItem><SelectItem value="week">Última semana</SelectItem><SelectItem value="month">Último mês</SelectItem><SelectItem value="all">Todos</SelectItem></SelectContent></Select>
-          <div className="flex items-center border rounded-lg p-1 ml-auto">
+          <Select value={cameraFilter} onValueChange={setCameraFilter}>
+            <SelectTrigger className="w-[180px] border-border/40 bg-card/60"><Camera className="w-4 h-4 mr-2" /><SelectValue placeholder="Câmera" /></SelectTrigger>
+            <SelectContent><SelectItem value="all">Todas as câmeras</SelectItem>{cameras.map(cam => <SelectItem key={cam.id} value={cam.id}>{cam.name}</SelectItem>)}</SelectContent>
+          </Select>
+          <Select value={dateFilter} onValueChange={(v) => setDateFilter(v as DateFilter)}>
+            <SelectTrigger className="w-[150px] border-border/40 bg-card/60"><Calendar className="w-4 h-4 mr-2" /><SelectValue placeholder="Período" /></SelectTrigger>
+            <SelectContent><SelectItem value="today">Hoje</SelectItem><SelectItem value="yesterday">Ontem</SelectItem><SelectItem value="week">Última semana</SelectItem><SelectItem value="month">Último mês</SelectItem><SelectItem value="all">Todos</SelectItem></SelectContent>
+          </Select>
+          <div className="flex items-center border border-border/40 rounded-lg p-1 ml-auto bg-card/60">
             <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('grid')}><LayoutGrid className="w-4 h-4" /></Button>
             <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('list')}><List className="w-4 h-4" /></Button>
           </div>
@@ -134,10 +174,16 @@ export function RecordingsPage() {
           </div>
         )}
 
-        {loading && <div className={cn('gap-4', viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'space-y-2')}>{[...Array(8)].map((_, i) => <Skeleton key={i} className={viewMode === 'grid' ? 'aspect-video' : 'h-20'} />)}</div>}
+        {loading && <div className={cn('gap-4', viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'space-y-2')}>{[...Array(8)].map((_, i) => <Skeleton key={i} className={viewMode === 'grid' ? 'aspect-video rounded-xl' : 'h-20 rounded-xl'} />)}</div>}
 
         {!loading && filteredClips.length === 0 && (
-          <div className="text-center py-16"><Video className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" /><h3 className="text-lg font-medium mb-1">Nenhuma gravação encontrada</h3><p className="text-muted-foreground">Ajuste os filtros ou grave novos clips</p></div>
+          <div className="text-center py-16">
+            <div className="mx-auto w-16 h-16 rounded-2xl bg-muted/50 border border-border/40 flex items-center justify-center mb-4">
+              <Video className="w-8 h-8 text-muted-foreground/50" />
+            </div>
+            <h3 className="text-lg font-medium text-foreground mb-1">Nenhuma gravação encontrada</h3>
+            <p className="text-muted-foreground text-sm">Ajuste os filtros ou grave novos clips</p>
+          </div>
         )}
 
         {!loading && viewMode === 'grid' && paginatedClips.length > 0 && (
@@ -149,14 +195,14 @@ export function RecordingsPage() {
         {!loading && viewMode === 'list' && paginatedClips.length > 0 && (
           <div className="space-y-2">
             {paginatedClips.map(clip => (
-              <Card key={clip.id} className={cn('overflow-hidden transition-all hover:shadow-md cursor-pointer', selectedClips.has(clip.id) && 'ring-2 ring-primary')}>
+              <Card key={clip.id} className={cn('overflow-hidden transition-all hover:shadow-md cursor-pointer border-border/40', selectedClips.has(clip.id) && 'ring-2 ring-primary')}>
                 <CardContent className="p-4 flex items-center gap-4">
                   <Checkbox checked={selectedClips.has(clip.id)} onCheckedChange={(c) => handleSelectClip(clip.id, !!c)} onClick={(e) => e.stopPropagation()} />
-                  <div className="w-32 h-20 bg-muted rounded overflow-hidden flex-shrink-0 cursor-pointer" onClick={() => setPlayingClip(clip)}>
-                    {clip.thumbnail_url ? <img src={clip.thumbnail_url} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><Video className="w-8 h-8 text-muted-foreground" /></div>}
+                  <div className="w-32 h-20 bg-muted/50 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer border border-border/30" onClick={() => setPlayingClip(clip)}>
+                    {clip.thumbnail_url ? <img src={clip.thumbnail_url} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><Video className="w-8 h-8 text-muted-foreground/40" /></div>}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium flex items-center gap-2"><Camera className="w-4 h-4 text-muted-foreground" />{clip.camera_name}</p>
+                    <p className="font-medium text-foreground flex items-center gap-2"><Camera className="w-4 h-4 text-muted-foreground" />{clip.camera_name}</p>
                     <p className="text-sm text-muted-foreground mt-1">{format(new Date(clip.start_time), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</p>
                     <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
                       <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{formatClipDuration(clip.duration)}</span>
@@ -169,7 +215,7 @@ export function RecordingsPage() {
                       <DropdownMenuItem onClick={() => setPlayingClip(clip)}><Play className="w-4 h-4 mr-2" />Reproduzir</DropdownMenuItem>
                       <DropdownMenuItem onClick={() => handleDownloadClip(clip)}><Download className="w-4 h-4 mr-2" />Download</DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-destructive" onClick={() => setDeleteConfirm(clip)}><Trash2 className="w-4 h-4 mr-2" />Excluir</DropdownMenuItem>
+                      <DropdownMenuItem className="text-[hsl(var(--severity-critical))]" onClick={() => setDeleteConfirm(clip)}><Trash2 className="w-4 h-4 mr-2" />Excluir</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </CardContent>
@@ -180,9 +226,9 @@ export function RecordingsPage() {
 
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 mt-6">
-            <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}><ChevronLeft className="w-4 h-4 mr-1" />Anterior</Button>
+            <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="border-border/40"><ChevronLeft className="w-4 h-4 mr-1" />Anterior</Button>
             <span className="text-sm text-muted-foreground px-4">Página {currentPage} de {totalPages}</span>
-            <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>Próxima<ChevronRight className="w-4 h-4 ml-1" /></Button>
+            <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="border-border/40">Próxima<ChevronRight className="w-4 h-4 ml-1" /></Button>
           </div>
         )}
       </div>
@@ -193,8 +239,15 @@ export function RecordingsPage() {
         hasPrev={playIdx > 0} hasNext={playIdx < filteredClips.length - 1} />
 
       <AlertDialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
-        <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Confirmar exclusão</AlertDialogTitle><AlertDialogDescription>Tem certeza que deseja excluir esta gravação? Esta ação não pode ser desfeita.</AlertDialogDescription></AlertDialogHeader>
-          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDeleteClip} className="bg-destructive hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-foreground">Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription>Tem certeza que deseja excluir esta gravação? Esta ação não pode ser desfeita.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteClip} className="bg-[hsl(var(--severity-critical))] hover:bg-[hsl(var(--severity-critical))]/90 text-white">Excluir</AlertDialogAction>
+          </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </div>
