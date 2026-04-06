@@ -134,10 +134,10 @@ const CategoryItem = memo(React.forwardRef(function CategoryItem({
               isExpanded={isExpanded}
               isActive={isActive}
             />
-            <motion.span
-              animate={{ color: isExpanded ? 'hsl(var(--sidebar-foreground))' : undefined }}
-              transition={{ duration: 0.3 }}
-            >
+            <span className={cn(
+              "transition-colors duration-300",
+              isExpanded && "text-sidebar-foreground"
+            )}>
               {category.label}
             </motion.span>
           </div>
