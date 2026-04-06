@@ -33,6 +33,7 @@ interface SidebarNavProps {
   onToggleCategory: (categoryId: string) => void;
   isItemActive: (path: string) => boolean;
   onNavigate?: () => void;
+  isLoading?: boolean;
 }
 
 export const SidebarNav = memo(React.forwardRef(function SidebarNav({
