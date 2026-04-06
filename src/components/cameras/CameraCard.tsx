@@ -9,6 +9,7 @@ import {
   Trash2, MapPin, AlertTriangle, ScanFace, Clock,
 } from 'lucide-react';
 import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';
+import { CameraPlaceholder } from './CameraPlaceholder';
 import { ClipRecorderControls } from '@/components/ClipRecorderControls';
 import { FaceRecognitionOverlay } from '@/components/FaceRecognitionOverlay';
 import { ZoneOverlay } from '@/components/ZoneOverlay';
@@ -65,8 +66,8 @@ export function CameraCard({
   return (
     <Card
       className={cn(
-        'relative overflow-hidden transition-all duration-200 cursor-pointer group border-border/50',
-        'hover:shadow-md hover:-translate-y-0.5',
+        'relative overflow-hidden transition-all duration-300 cursor-pointer group border-border/50',
+        'hover:shadow-lg hover:-translate-y-1 hover:border-primary/30 hover:shadow-primary/[0.04]',
         isSelected && 'ring-2 ring-primary/50',
         !isOnline && 'opacity-60'
       )}
@@ -99,9 +100,7 @@ export function CameraCard({
         ) : camera.thumbnail ? (
           <img src={camera.thumbnail} alt={camera.name} loading="lazy" className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-muted/30">
-            <Camera className="w-10 h-10 text-muted-foreground/40" />
-          </div>
+          <CameraPlaceholder isOnline={isOnline} compact={isCompact} />
         )}
 
         {/* Status Badge */}

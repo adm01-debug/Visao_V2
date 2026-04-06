@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { CameraPlaceholder } from '@/components/cameras/CameraPlaceholder';
 import type { UICameraData } from './types';
 
 interface StreamCameraCardProps {
@@ -45,8 +46,9 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true, 
   return (
     <div
       className={cn(
-        'group relative rounded-xl overflow-hidden border border-border/40 bg-card transition-all duration-200',
-        'hover:border-border hover:shadow-md hover:-translate-y-0.5 cursor-pointer',
+        'group relative rounded-xl overflow-hidden border border-border/40 bg-card transition-all duration-300',
+        'hover:border-primary/30 hover:shadow-lg hover:-translate-y-1 cursor-pointer',
+        'hover:shadow-primary/[0.04]',
         compact ? 'h-24' : 'aspect-video'
       )}
       onClick={onClick}
@@ -64,14 +66,11 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true, 
           onError={() => setHasError(true)}
         />
       ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-muted/40 to-muted/20 flex items-center justify-center">
+        <div className="absolute inset-0">
           {camera.thumbnail ? (
             <img src={camera.thumbnail} alt={camera.name} loading="lazy" className="w-full h-full object-cover" />
           ) : (
-            <div className="flex flex-col items-center gap-2 text-muted-foreground/30">
-              <Camera className="w-10 h-10" />
-              {!isOnline && <WifiOff className="w-4 h-4" />}
-            </div>
+            <CameraPlaceholder isOnline={isOnline} compact={compact} />
           )}
         </div>
       )}
