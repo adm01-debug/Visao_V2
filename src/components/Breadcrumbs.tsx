@@ -81,7 +81,7 @@ interface BreadcrumbsProps {
   className?: string;
 }
 
-export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, className }) => {
+export const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(function Breadcrumbs({ items, className }, ref) {
   const location = useLocation();
   const currentPath = location.pathname;
 
