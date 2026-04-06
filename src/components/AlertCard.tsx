@@ -133,10 +133,17 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick?.(); } }}
       aria-label={`Alerta ${severityLabel}: ${alert.message}. Câmera: ${alert.cameraName}. ${formatDistanceToNow(alert.timestamp, { addSuffix: true, locale: ptBR })}`}
     >
-      <div className="flex items-start gap-3">
-        <div className={cn("p-2 rounded-xl shrink-0", typeIconBg[config.color] || 'bg-muted/40', config.color)} aria-hidden="true">
+      {/* Hover glow radial */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        style={{ background: `radial-gradient(ellipse at 0% 50%, hsl(var(--primary) / 0.06), transparent 70%)` }}
+      />
+
+      <div className="relative z-10 flex items-start gap-3">
+        <div className={cn(
+          "p-2 rounded-xl shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:shadow-md",
+          typeIconBg[config.color] || 'bg-muted/40', config.color
+        )} aria-hidden="true">
           <Icon className="w-4 h-4" />
-        </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-1.5">
