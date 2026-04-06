@@ -1,7 +1,8 @@
+import React from "react";
 import { cn } from "@/lib/utils";
 import { Shield } from "lucide-react";
 
-function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+const Skeleton = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(function Skeleton({ className, ...props }, ref) {
   return (
     <div
       className={cn(
@@ -14,7 +15,9 @@ function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>)
       {...props}
     />
   );
-}
+});
+
+Skeleton.displayName = 'Skeleton';
 
 /** Branded skeleton with VISÃO watermark for larger areas */
 function BrandedSkeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {

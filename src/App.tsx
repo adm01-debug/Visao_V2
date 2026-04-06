@@ -69,7 +69,10 @@ const queryClient = new QueryClient({
   },
 });
 
-const PageLoader = () => <SplashScreen />;
+const PageLoader = React.forwardRef<HTMLDivElement>(function PageLoader(_props, _ref) {
+  return <SplashScreen />;
+});
+PageLoader.displayName = 'PageLoader';
 
 // Layout wrapper para rotas protegidas com MainLayout
 const ProtectedLayoutRoute = ({ children }: { children: React.ReactNode }) => {
