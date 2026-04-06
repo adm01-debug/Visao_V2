@@ -15,7 +15,7 @@ const DEFAULT_DESCRIPTION = 'Sistema de vigilância inteligente com IA para moni
  * Reusable SEO component for all pages.
  * Adds title, meta description, canonical URL, Open Graph and JSON-LD structured data.
  */
-export function PageMeta({ title, description, noIndex }: PageMetaProps) {
+export const PageMeta = React.forwardRef<HTMLDivElement, PageMetaProps>(function PageMeta({ title, description, noIndex }, _ref) {
   const location = useLocation();
   const fullTitle = `${title} | ${APP_NAME}`;
   const desc = description || DEFAULT_DESCRIPTION;

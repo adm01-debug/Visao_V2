@@ -15,7 +15,9 @@ const Skeleton = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
       {...props}
     />
   );
-}
+});
+
+Skeleton.displayName = 'Skeleton';
 
 /** Branded skeleton with VISÃO watermark for larger areas */
 function BrandedSkeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {

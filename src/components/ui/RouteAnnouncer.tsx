@@ -38,7 +38,7 @@ const ROUTE_TITLES: Record<string, string> = {
   '/help': 'Ajuda',
 };
 
-export function RouteAnnouncer() {
+export const RouteAnnouncer = React.forwardRef<HTMLDivElement, Record<string, never>>(function RouteAnnouncer(_props, _ref) {
   const location = useLocation();
   const [announcement, setAnnouncement] = useState('');
   const prevPathRef = useRef(location.pathname);
