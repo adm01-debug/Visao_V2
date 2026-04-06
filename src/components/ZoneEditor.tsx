@@ -14,7 +14,7 @@ import { DrawingInstructions } from './zone-editor/DrawingInstructions';
 
 export function ZoneEditor({
   existingZones = [], onZoneCreated, onZoneUpdated, onZoneDeleted,
-  selectedColor = '#3B82F6', drawingMode: externalMode, className, readOnly = false,
+  selectedColor = 'hsl(217, 91%, 60%)', drawingMode: externalMode, className, readOnly = false,
 }: ZoneEditorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState<DrawingMode>(externalMode || 'rectangle');

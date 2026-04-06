@@ -40,7 +40,7 @@ export function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }:
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: zone.color || '#3B82F6' }} />
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: zone.color || 'hsl(217, 91%, 60%)' }} />
             {zone.name}
             <Badge variant="secondary" className={cn('text-xs ml-2', typeConfig.color)}><TypeIcon className="w-3 h-3 mr-1" />{typeConfig.label}</Badge>
           </DialogTitle>
@@ -65,9 +65,9 @@ export function ZoneViewDialog({ zone, camera, stats, events, isOpen, onClose }:
                 {pointsData && (
                   <svg className="absolute inset-0 w-full h-full pointer-events-none">
                     {pointsData.shape === 'line' ? (
-                      <line x1={`${pointsData.coordinates[0]?.x}%`} y1={`${pointsData.coordinates[0]?.y}%`} x2={`${pointsData.coordinates[1]?.x}%`} y2={`${pointsData.coordinates[1]?.y}%`} stroke={zone.color || '#3B82F6'} strokeWidth="3" strokeDasharray="5,5" />
+                      <line x1={`${pointsData.coordinates[0]?.x}%`} y1={`${pointsData.coordinates[0]?.y}%`} x2={`${pointsData.coordinates[1]?.x}%`} y2={`${pointsData.coordinates[1]?.y}%`} stroke={zone.color || 'hsl(217, 91%, 60%)'} strokeWidth="3" strokeDasharray="5,5" />
                     ) : (
-                      <polygon points={pointsData.coordinates.map(p => `${p.x}%,${p.y}%`).join(' ')} fill={zone.color || '#3B82F6'} fillOpacity={pointsData.opacity || 0.3} stroke={zone.color || '#3B82F6'} strokeWidth="2" />
+                      <polygon points={pointsData.coordinates.map(p => `${p.x}%,${p.y}%`).join(' ')} fill={zone.color || 'hsl(217, 91%, 60%)'} fillOpacity={pointsData.opacity || 0.3} stroke={zone.color || 'hsl(217, 91%, 60%)'} strokeWidth="2" />
                     )}
                   </svg>
                 )}
