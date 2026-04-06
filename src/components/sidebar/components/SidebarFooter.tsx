@@ -1,5 +1,5 @@
 /**
- * VISÃO - Sidebar Footer Component
+ * VISÃO - Sidebar Footer Component - Premium
  */
 
 import { memo } from "react";
@@ -34,13 +34,20 @@ export const SidebarFooter = memo(function SidebarFooter({
     window.location.reload();
   };
 
+  const footerButtonClasses = cn(
+    "w-full text-muted-foreground/70",
+    "transition-all duration-200",
+    "hover:text-sidebar-foreground hover:bg-sidebar-accent/40",
+    "rounded-xl"
+  );
+
   return (
-    <div className="p-3 border-t border-sidebar-border/40 space-y-0.5">
+    <div className="p-3 border-t border-sidebar-border/30 space-y-0.5">
       <Button
         variant="ghost"
         size={collapsed && !isMobile ? "icon" : "default"}
         className={cn(
-          "w-full text-muted-foreground hover:text-sidebar-foreground",
+          footerButtonClasses,
           showFullContent && "justify-start gap-3"
         )}
         onClick={toggleTheme}
@@ -61,14 +68,14 @@ export const SidebarFooter = memo(function SidebarFooter({
       )}
 
       {showFullContent ? (
-        <Button variant="ghost" className="w-full justify-start gap-3 text-muted-foreground hover:text-sidebar-foreground" onClick={handleShowTour}>
+        <Button variant="ghost" className={cn(footerButtonClasses, "justify-start gap-3")} onClick={handleShowTour}>
           <HelpCircle className="w-4 h-4" />
           <span className="text-sm">Ver Tour</span>
         </Button>
       ) : (
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className="w-full text-muted-foreground hover:text-sidebar-foreground" onClick={handleShowTour}>
+            <Button variant="ghost" size="icon" className={footerButtonClasses} onClick={handleShowTour}>
               <HelpCircle className="w-4 h-4" />
             </Button>
           </TooltipTrigger>
@@ -80,7 +87,9 @@ export const SidebarFooter = memo(function SidebarFooter({
         <Button
           variant="ghost"
           className={cn(
-            "w-full justify-start gap-3 text-muted-foreground hover:text-destructive",
+            "w-full justify-start gap-3 rounded-xl",
+            "text-muted-foreground/70 transition-all duration-200",
+            "hover:text-[hsl(var(--severity-critical))] hover:bg-[hsl(var(--severity-critical))]/8",
             collapsed && !isMobile && "justify-center px-2"
           )}
           onClick={() => signOut?.()}
