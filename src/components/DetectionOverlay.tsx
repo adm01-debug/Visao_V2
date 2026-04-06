@@ -131,7 +131,7 @@ function DetectionOverlayComponent({
                 <text
                   x={detection.x + 4}
                   y={detection.y - 8}
-                  fill="white"
+                  fill="currentColor"
                   fontSize={11}
                   fontWeight="500"
                   fontFamily="system-ui, sans-serif"
