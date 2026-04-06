@@ -174,7 +174,7 @@ const ROUTE_DESCRIPTIONS: Record<string, string> = {
   '/notification-settings': 'Gerencie canais e regras de notificação',
 };
 
-export function PageTitle({ className }: { className?: string }) {
+export const PageTitle = React.forwardRef<HTMLDivElement, { className?: string }>(function PageTitle({ className }, _ref) {
   const location = useLocation();
   const label = ROUTE_LABELS[location.pathname];
 
@@ -201,6 +201,8 @@ export function PageTitle({ className }: { className?: string }) {
       </motion.div>
     </AnimatePresence>
   );
-}
+});
+
+PageTitle.displayName = 'PageTitle';
 
 export default Breadcrumbs;
