@@ -35,7 +35,7 @@ export function VehiclesTab({ vehicles, onEdit, onDelete }: Props) {
   });
 
   return (
-    <Card>
+    <Card className="border-border/40 bg-card/60">
       <CardHeader>
         <CardTitle>Veículos Cadastrados</CardTitle>
         <CardDescription>Gerencie a lista de veículos autorizados, bloqueados e visitantes</CardDescription>
