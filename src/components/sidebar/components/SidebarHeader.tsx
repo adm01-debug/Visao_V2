@@ -27,8 +27,8 @@ export const SidebarHeader = memo(function SidebarHeader({
     >
       {(!collapsed || isMobile) && (
         <div className="flex items-center gap-2.5">
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground shadow-md shadow-primary/25 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-primary/30">
-            <Shield className="w-4 h-4" />
+          <div className="group/logo flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground shadow-md shadow-primary/25 transition-all duration-300 hover:scale-110 hover:shadow-[0_4px_16px_-2px_hsl(var(--primary)/0.4)] hover:rotate-3">
+            <Shield className="w-4 h-4 transition-transform duration-300 group-hover/logo:scale-110" />
           </div>
           <div className="flex flex-col">
             <span className="font-bold text-sm tracking-wide text-sidebar-foreground">VISÃO</span>
