@@ -100,9 +100,7 @@ export function CameraCard({
         ) : camera.thumbnail ? (
           <img src={camera.thumbnail} alt={camera.name} loading="lazy" className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-muted/30">
-            <Camera className="w-10 h-10 text-muted-foreground/40" />
-          </div>
+          <CameraPlaceholder isOnline={isOnline} compact={isCompact} />
         )}
 
         {/* Status Badge */}

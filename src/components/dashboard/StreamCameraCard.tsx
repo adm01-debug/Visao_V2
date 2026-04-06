@@ -65,14 +65,11 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true, 
           onError={() => setHasError(true)}
         />
       ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-muted/40 to-muted/20 flex items-center justify-center">
+        <div className="absolute inset-0">
           {camera.thumbnail ? (
             <img src={camera.thumbnail} alt={camera.name} loading="lazy" className="w-full h-full object-cover" />
           ) : (
-            <div className="flex flex-col items-center gap-2 text-muted-foreground/30">
-              <Camera className="w-10 h-10" />
-              {!isOnline && <WifiOff className="w-4 h-4" />}
-            </div>
+            <CameraPlaceholder isOnline={isOnline} compact={compact} />
           )}
         </div>
       )}
