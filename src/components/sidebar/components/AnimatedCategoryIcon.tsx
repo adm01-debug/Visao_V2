@@ -3,7 +3,7 @@
  * Premium micro-interactions with glow, scale and spring physics
  */
 
-import { memo } from "react";
+import React, { memo } from "react";
 import { motion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -40,12 +40,12 @@ const glowShadows = {
   neutral: "none",
 };
 
-export const AnimatedCategoryIcon = memo(function AnimatedCategoryIcon({
+export const AnimatedCategoryIcon = memo(React.forwardRef(function AnimatedCategoryIcon({
   icon: Icon,
   status,
   isExpanded,
   isActive,
-}: AnimatedCategoryIconProps) {
+}: AnimatedCategoryIconProps, _ref) {
   return (
     <motion.div
       className="relative"

@@ -2,7 +2,7 @@
  * VISÃO - Search Trigger Button Component
  */
 
-import { memo } from "react";
+import React, { memo } from "react";
 import { Search, Command } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,10 +18,10 @@ interface SearchTriggerProps {
   onClick: () => void;
 }
 
-export const SearchTrigger = memo(function SearchTrigger({
+export const SearchTrigger = memo(React.forwardRef(function SearchTrigger({
   collapsed,
   onClick,
-}: SearchTriggerProps) {
+}: SearchTriggerProps, _ref) {
   return (
     <TooltipProvider>
       <Tooltip>

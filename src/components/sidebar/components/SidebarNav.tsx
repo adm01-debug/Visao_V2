@@ -3,7 +3,7 @@
  * Premium hover states + semantic badge colors
  */
 
-import { memo } from "react";
+import React, { memo } from "react";
 import { NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
@@ -35,7 +35,7 @@ interface SidebarNavProps {
   onNavigate?: () => void;
 }
 
-export const SidebarNav = memo(function SidebarNav({
+export const SidebarNav = memo(React.forwardRef(function SidebarNav({
   categories,
   collapsed,
   isMobile,
@@ -43,7 +43,7 @@ export const SidebarNav = memo(function SidebarNav({
   onToggleCategory,
   isItemActive,
   onNavigate,
-}: SidebarNavProps) {
+}: SidebarNavProps, _ref) {
   const isCategoryExpanded = (categoryId: string) =>
     expandedCategories.includes(categoryId);
 
@@ -86,7 +86,7 @@ interface CategoryItemProps {
   onNavigate?: () => void;
 }
 
-const CategoryItem = memo(function CategoryItem({
+const CategoryItem = memo(React.forwardRef(function CategoryItem({
   category,
   collapsed,
   isExpanded,
@@ -94,7 +94,7 @@ const CategoryItem = memo(function CategoryItem({
   onToggle,
   isItemActive,
   onNavigate,
-}: CategoryItemProps) {
+}: CategoryItemProps, _ref) {
   const CategoryIcon = category.icon;
   const status = category.getStatus?.() || { type: "neutral" as const, label: "" };
 
@@ -204,13 +204,13 @@ interface CollapsedCategoryProps {
   onNavigate?: () => void;
 }
 
-const CollapsedCategory = memo(function CollapsedCategory({
+const CollapsedCategory = memo(React.forwardRef(function CollapsedCategory({
   category,
   status,
   isActive,
   isItemActive,
   onNavigate,
-}: CollapsedCategoryProps) {
+}: CollapsedCategoryProps, _ref) {
   const CategoryIcon = category.icon;
 
   return (
@@ -299,11 +299,11 @@ const getBadgeClasses = (variant?: string) => {
   }
 };
 
-const NavItemLink = memo(function NavItemLink({
+const NavItemLink = memo(React.forwardRef(function NavItemLink({
   item,
   isActive,
   onClick,
-}: NavItemLinkProps) {
+}: NavItemLinkProps, _ref) {
   const Icon = item.icon;
 
   return (
@@ -366,11 +366,11 @@ interface NavItemCollapsedProps {
   onClick?: () => void;
 }
 
-const NavItemCollapsed = memo(function NavItemCollapsed({
+const NavItemCollapsed = memo(React.forwardRef(function NavItemCollapsed({
   item,
   isActive,
   onClick,
-}: NavItemCollapsedProps) {
+}: NavItemCollapsedProps, _ref) {
   const Icon = item.icon;
 
   return (

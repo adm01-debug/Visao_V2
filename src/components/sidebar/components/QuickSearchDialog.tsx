@@ -23,12 +23,12 @@ interface QuickSearchDialogProps {
   onNavigate: (path: string) => void;
 }
 
-export const QuickSearchDialog = memo(function QuickSearchDialog({
+export const QuickSearchDialog = memo(React.forwardRef(function QuickSearchDialog({
   open,
   onOpenChange,
   categories,
   onNavigate,
-}: QuickSearchDialogProps) {
+}: QuickSearchDialogProps, _ref) {
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const location = useLocation();

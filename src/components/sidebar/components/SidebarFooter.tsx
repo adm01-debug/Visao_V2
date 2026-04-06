@@ -2,7 +2,7 @@
  * VISÃO - Sidebar Footer Component - Premium
  */
 
-import { memo } from "react";
+import React, { memo } from "react";
 import { Moon, Sun, HelpCircle, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,10 +20,10 @@ interface SidebarFooterProps {
   isMobile: boolean;
 }
 
-export const SidebarFooter = memo(function SidebarFooter({
+export const SidebarFooter = memo(React.forwardRef(function SidebarFooter({
   collapsed,
   isMobile,
-}: SidebarFooterProps) {
+}: SidebarFooterProps, _ref) {
   const { user, signOut } = useAuth();
   const { resolvedTheme, toggleTheme } = useTheme();
 
