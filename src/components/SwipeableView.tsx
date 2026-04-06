@@ -24,7 +24,7 @@ const ROUTES = [
   { path: "/settings", label: "Configurações" },
 ];
 
-export function SwipeableView({ children, className }: SwipeableViewProps) {
+export const SwipeableView = React.forwardRef<HTMLDivElement, SwipeableViewProps>(function SwipeableView({ children, className }, _ref) {
   const location = useLocation();
   const navigate = useNavigate();
   const [showIndicator, setShowIndicator] = useState<"left" | "right" | null>(null);
