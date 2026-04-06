@@ -81,7 +81,7 @@ interface BreadcrumbsProps {
   className?: string;
 }
 
-export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, className }) => {
+export const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(function Breadcrumbs({ items, className }, ref) {
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -149,7 +149,9 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, className }) =>
       </motion.nav>
     </AnimatePresence>
   );
-};
+});
+
+Breadcrumbs.displayName = 'Breadcrumbs';
 
 const ROUTE_DESCRIPTIONS: Record<string, string> = {
   '/cameras': 'Gerencie e monitore todas as câmeras do sistema',
@@ -172,7 +174,7 @@ const ROUTE_DESCRIPTIONS: Record<string, string> = {
   '/notification-settings': 'Gerencie canais e regras de notificação',
 };
 
-export function PageTitle({ className }: { className?: string }) {
+export const PageTitle = React.forwardRef<HTMLDivElement, { className?: string }>(function PageTitle({ className }, _ref) {
   const location = useLocation();
   const label = ROUTE_LABELS[location.pathname];
 
@@ -199,6 +201,8 @@ export function PageTitle({ className }: { className?: string }) {
       </motion.div>
     </AnimatePresence>
   );
-}
+});
+
+PageTitle.displayName = 'PageTitle';
 
 export default Breadcrumbs;
