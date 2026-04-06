@@ -47,7 +47,8 @@ export function AlertItem({ alert, isSelected, onSelect, onView, onMarkRead, onD
       <div
         className={cn(
           'group flex items-center gap-4 p-4 rounded-xl border bg-card transition-all duration-200 cursor-pointer',
-          'hover:bg-accent/5 hover:shadow-sm',
+          'hover:bg-accent/5 hover:shadow-sm hover:-translate-y-0.5',
+          'active:scale-[0.99] active:translate-y-0',
           'border-l-[3px]',
           borderClass,
           !alert.is_read && 'border-border/60',
