@@ -2,7 +2,7 @@
  * VISÃO - Quick Search Dialog Component (Cmd+K)
  */
 
-import { memo, useState, useEffect, useMemo } from "react";
+import React, { memo, useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { Search } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
