@@ -3,7 +3,7 @@
  * Premium hover states + semantic badge colors
  */
 
-import React, { memo } from "react";
+import React, { memo, useCallback, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
