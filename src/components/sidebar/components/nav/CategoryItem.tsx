@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import {
@@ -36,6 +36,17 @@ export const CategoryItem = memo(React.forwardRef(function CategoryItem({
 }: CategoryItemProps, _ref) {
   const CategoryIcon = category.icon;
   const status = category.getStatus?.() || { type: "neutral" as const, label: "" };
+  const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([]);
+  const rippleId = useRef(0);
+
+  const handleRipple = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = rippleId.current++;
+    setRipples(prev => [...prev, { id, x, y }]);
+    setTimeout(() => setRipples(prev => prev.filter(r => r.id !== id)), 600);
+  }, []);
 
   if (collapsed) {
     return (
@@ -58,8 +69,9 @@ export const CategoryItem = memo(React.forwardRef(function CategoryItem({
           whileTap={{ scale: 0.98 }}
           layout
           transition={{ layout: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] } }}
+          onClick={handleRipple}
           className={cn(
-            "flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium",
+            "relative overflow-hidden flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium",
             "transition-all duration-300 ease-out",
             "text-sidebar-foreground/65 hover:text-sidebar-foreground",
             "hover:bg-sidebar-accent/60 hover:shadow-[inset_0_1px_0_0_hsl(var(--primary)/0.06)]",
@@ -67,6 +79,20 @@ export const CategoryItem = memo(React.forwardRef(function CategoryItem({
             isExpanded && "bg-sidebar-accent/40 text-sidebar-foreground"
           )}
         >
+          {ripples.map(ripple => (
+            <span
+              key={ripple.id}
+              className="absolute rounded-full pointer-events-none animate-[sidebar-ripple_0.6s_ease-out_forwards]"
+              style={{
+                left: ripple.x,
+                top: ripple.y,
+                width: 0,
+                height: 0,
+                transform: "translate(-50%, -50%)",
+                background: "hsl(var(--primary) / 0.15)",
+              }}
+            />
+          ))}
           <div className="flex items-center gap-2.5">
             <AnimatedCategoryIcon
               icon={CategoryIcon}
