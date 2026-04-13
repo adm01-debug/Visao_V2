@@ -1,131 +1,24 @@
 /**
- * VISÃO - Sistema de Vigilância Inteligente
- * Componente: TelegramConfigPanel
- *
- * Configuração de alertas via Telegram
+ * VISÃO - Telegram Config Panel
+ * Configuração de alertas via Telegram (refatorado)
  */
-
-import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
-import {
-  MessageCircle,
-  Send,
-  CheckCircle2,
-  AlertCircle,
-  HelpCircle,
-  Copy,
-  ExternalLink,
-  Bell,
-  Settings,
-  TestTube
-} from 'lucide-react';
+import { MessageCircle, Send, CheckCircle2, AlertCircle, Bell, Settings, TestTube } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-// ============================================
-// TIPOS
-// ============================================
-
-interface TelegramConfig {
-  enabled: boolean;
-  botToken: string;
-  chatId: string;
-  sendPhotos: boolean;
-  alertTypes: string[];
-}
+import { useTelegramConfig } from './telegram/useTelegramConfig';
+import { TelegramInstructions } from './telegram/TelegramInstructions';
 
 interface TelegramConfigPanelProps {
   className?: string;
-  onConfigChange?: (config: TelegramConfig) => void;
+  onConfigChange?: (config: { enabled: boolean; botToken: string; chatId: string; sendPhotos: boolean; alertTypes: string[] }) => void;
 }
 
-// ============================================
-// COMPONENTE PRINCIPAL
-// ============================================
-
 export function TelegramConfigPanel({ className, onConfigChange }: TelegramConfigPanelProps) {
-  const [config, setConfig] = useState<TelegramConfig>({
-    enabled: false,
-    botToken: '',
-    chatId: '',
-    sendPhotos: true,
-    alertTypes: ['blacklist', 'critical', 'high']
-  });
-  const [testing, setTesting] = useState(false);
-  const [testResult, setTestResult] = useState<'success' | 'error' | null>(null);
-
-  // Carregar config do localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem('telegram-config');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setConfig(parsed);
-      } catch (e) {
-        // rm
-      }
-    }
-  }, []);
-
-  // Salvar config
-  const saveConfig = () => {
-    localStorage.setItem('telegram-config', JSON.stringify(config));
-    onConfigChange?.(config);
-    toast.success('Configuração do Telegram salva');
-  };
-
-  // Testar conexão
-  const testConnection = async () => {
-    if (!config.botToken || !config.chatId) {
-      toast.error('Preencha o Token do Bot e o Chat ID');
-      return;
-    }
-
-    setTesting(true);
-    setTestResult(null);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('send-telegram', {
-        body: {
-          botToken: config.botToken,
-          chatId: config.chatId,
-          message: `🔔 <b>Teste de Conexão - VISÃO</b>
-
-✅ Sua configuração do Telegram está funcionando corretamente!
-
-📅 Data: ${new Date().toLocaleString('pt-BR')}`
-        }
-      });
-
-      if (error) throw error;
-
-      if (data?.success) {
-        setTestResult('success');
-        toast.success('Mensagem de teste enviada com sucesso!');
-      } else {
-        throw new Error(data?.error || 'Failed to send message');
-      }
-    } catch (error) {
-      // rm
-      setTestResult('error');
-      toast.error('Erro ao enviar mensagem. Verifique suas credenciais.');
-    } finally {
-      setTesting(false);
-    }
-  };
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success('Copiado!');
-  };
+  const { config, setConfig, testing, testResult, saveConfig, testConnection } = useTelegramConfig(onConfigChange);
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -143,14 +36,8 @@ export function TelegramConfigPanel({ className, onConfigChange }: TelegramConfi
         <CardContent className="pt-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={cn(
-                'p-2 rounded-full',
-                config.enabled ? 'bg-success/10' : 'bg-muted'
-              )}>
-                <Bell className={cn(
-                  'h-5 w-5',
-                  config.enabled ? 'text-success' : 'text-muted-foreground'
-                )} />
+              <div className={cn('p-2 rounded-full', config.enabled ? 'bg-success/10' : 'bg-muted')}>
+                <Bell className={cn('h-5 w-5', config.enabled ? 'text-success' : 'text-muted-foreground')} />
               </div>
               <div>
                 <p className="font-medium">Notificações do Telegram</p>
@@ -159,10 +46,7 @@ export function TelegramConfigPanel({ className, onConfigChange }: TelegramConfi
                 </p>
               </div>
             </div>
-            <Switch
-              checked={config.enabled}
-              onCheckedChange={(enabled) => setConfig({ ...config, enabled })}
-            />
+            <Switch checked={config.enabled} onCheckedChange={(enabled) => setConfig({ ...config, enabled })} />
           </div>
         </CardContent>
       </Card>
@@ -174,78 +58,40 @@ export function TelegramConfigPanel({ className, onConfigChange }: TelegramConfi
             <Settings className="h-5 w-5" />
             Configuração do Bot
           </CardTitle>
-          <CardDescription>
-            Configure seu bot do Telegram para receber alertas
-          </CardDescription>
+          <CardDescription>Configure seu bot do Telegram para receber alertas</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label>Token do Bot</Label>
-            <Input
-              type="password"
-              placeholder="123456789:ABCDefGhIJKlmNOPQrstUVWxyz"
-              value={config.botToken}
-              onChange={(e) => setConfig({ ...config, botToken: e.target.value })}
-            />
-            <p className="text-xs text-muted-foreground">
-              Obtido através do @BotFather no Telegram
-            </p>
+            <Input type="password" placeholder="123456789:ABCDefGhIJKlmNOPQrstUVWxyz" value={config.botToken} onChange={(e) => setConfig({ ...config, botToken: e.target.value })} />
+            <p className="text-xs text-muted-foreground">Obtido através do @BotFather no Telegram</p>
           </div>
 
           <div className="space-y-2">
             <Label>Chat ID</Label>
-            <Input
-              placeholder="-1001234567890 ou 123456789"
-              value={config.chatId}
-              onChange={(e) => setConfig({ ...config, chatId: e.target.value })}
-            />
-            <p className="text-xs text-muted-foreground">
-              ID do chat, grupo ou canal onde receberá os alertas
-            </p>
+            <Input placeholder="-1001234567890 ou 123456789" value={config.chatId} onChange={(e) => setConfig({ ...config, chatId: e.target.value })} />
+            <p className="text-xs text-muted-foreground">ID do chat, grupo ou canal onde receberá os alertas</p>
           </div>
 
           <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
             <div>
               <p className="font-medium">Enviar fotos com alertas</p>
-              <p className="text-sm text-muted-foreground">
-                Incluir snapshot da câmera nas notificações
-              </p>
+              <p className="text-sm text-muted-foreground">Incluir snapshot da câmera nas notificações</p>
             </div>
-            <Switch
-              checked={config.sendPhotos}
-              onCheckedChange={(sendPhotos) => setConfig({ ...config, sendPhotos })}
-            />
+            <Switch checked={config.sendPhotos} onCheckedChange={(sendPhotos) => setConfig({ ...config, sendPhotos })} />
           </div>
 
           <div className="flex gap-3">
-            <Button onClick={saveConfig} className="flex-1">
-              Salvar Configuração
-            </Button>
-            <Button
-              variant="outline"
-              onClick={testConnection}
-              disabled={testing || !config.botToken || !config.chatId}
-            >
+            <Button onClick={saveConfig} className="flex-1">Salvar Configuração</Button>
+            <Button variant="outline" onClick={testConnection} disabled={testing || !config.botToken || !config.chatId}>
               {testing ? (
-                <>
-                  <Send className="h-4 w-4 mr-2 animate-pulse" />
-                  Enviando...
-                </>
+                <><Send className="h-4 w-4 mr-2 animate-pulse" />Enviando...</>
               ) : testResult === 'success' ? (
-                <>
-                  <CheckCircle2 className="h-4 w-4 mr-2 text-success" />
-                  Sucesso
-                </>
+                <><CheckCircle2 className="h-4 w-4 mr-2 text-success" />Sucesso</>
               ) : testResult === 'error' ? (
-                <>
-                  <AlertCircle className="h-4 w-4 mr-2 text-destructive" />
-                  Erro
-                </>
+                <><AlertCircle className="h-4 w-4 mr-2 text-destructive" />Erro</>
               ) : (
-                <>
-                  <TestTube className="h-4 w-4 mr-2" />
-                  Testar
-                </>
+                <><TestTube className="h-4 w-4 mr-2" />Testar</>
               )}
             </Button>
           </div>
@@ -253,94 +99,7 @@ export function TelegramConfigPanel({ className, onConfigChange }: TelegramConfi
       </Card>
 
       {/* Instruções */}
-      <Accordion type="single" collapsible className="w-full">
-        <AccordionItem value="create-bot">
-          <AccordionTrigger>
-            <div className="flex items-center gap-2">
-              <HelpCircle className="h-4 w-4" />
-              Como criar um bot no Telegram?
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="space-y-4">
-            <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-              <li>Abra o Telegram e procure por <code className="bg-muted px-1 rounded">@BotFather</code></li>
-              <li>Envie o comando <code className="bg-muted px-1 rounded">/newbot</code></li>
-              <li>Escolha um nome para seu bot (ex: "VISÃO Alertas")</li>
-              <li>Escolha um username único terminando em "bot" (ex: "visao_alertas_bot")</li>
-              <li>Copie o token fornecido e cole no campo acima</li>
-            </ol>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => window.open('https://t.me/BotFather', '_blank')}
-            >
-              <ExternalLink className="h-4 w-4 mr-2" />
-              Abrir BotFather
-            </Button>
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="get-chat-id">
-          <AccordionTrigger>
-            <div className="flex items-center gap-2">
-              <HelpCircle className="h-4 w-4" />
-              Como obter o Chat ID?
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="space-y-4">
-            <div className="space-y-3 text-sm text-muted-foreground">
-              <p><strong>Para chat pessoal:</strong></p>
-              <ol className="list-decimal list-inside space-y-1 ml-2">
-                <li>Abra o Telegram e procure por <code className="bg-muted px-1 rounded">@userinfobot</code></li>
-                <li>Envie qualquer mensagem para ele</li>
-                <li>Ele responderá com seu ID</li>
-              </ol>
-
-              <p><strong>Para grupos:</strong></p>
-              <ol className="list-decimal list-inside space-y-1 ml-2">
-                <li>Adicione seu bot ao grupo</li>
-                <li>Adicione também o <code className="bg-muted px-1 rounded">@userinfobot</code></li>
-                <li>Envie uma mensagem no grupo</li>
-                <li>O bot mostrará o ID do grupo (começa com -)</li>
-              </ol>
-
-              <p><strong>Para canais:</strong></p>
-              <ol className="list-decimal list-inside space-y-1 ml-2">
-                <li>Adicione seu bot como administrador do canal</li>
-                <li>Encaminhe uma mensagem do canal para <code className="bg-muted px-1 rounded">@userinfobot</code></li>
-                <li>Ele mostrará o ID do canal</li>
-              </ol>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => window.open('https://t.me/userinfobot', '_blank')}
-            >
-              <ExternalLink className="h-4 w-4 mr-2" />
-              Abrir UserInfoBot
-            </Button>
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="test-bot">
-          <AccordionTrigger>
-            <div className="flex items-center gap-2">
-              <HelpCircle className="h-4 w-4" />
-              O que fazer se o teste falhar?
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="space-y-3 text-sm text-muted-foreground">
-            <p>Verifique os seguintes pontos:</p>
-            <ul className="list-disc list-inside space-y-1 ml-2">
-              <li>O token do bot está correto (sem espaços extras)</li>
-              <li>Você enviou uma mensagem para o bot antes (isso ativa o chat)</li>
-              <li>O Chat ID está correto (grupos começam com -)</li>
-              <li>O bot está adicionado ao grupo/canal como administrador</li>
-              <li>O bot não está bloqueado ou removido</li>
-            </ul>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+      <TelegramInstructions />
 
       {/* Exemplo de mensagem */}
       <Card>

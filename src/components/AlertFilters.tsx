@@ -1,103 +1,34 @@
+/**
+ * VISÃO - Alert Filters Component
+ * Popover com filtros de tipo, severidade, câmera e período
+ */
 import { useState } from 'react';
-import { Filter, X, Calendar, AlertTriangle, Gauge, Camera, Info, AlertCircle, Flame } from 'lucide-react';
+import { Filter, X, Calendar, AlertTriangle, Gauge, Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { format, startOfDay, endOfDay, subDays, subHours, isWithinInterval } from 'date-fns';
+import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-export type AlertType = 'security' | 'safety' | 'operations' | 'access' | 'analytics' | 'absence' | 'agglomeration' | 'anomaly' | 'panic' | 'arm_disarm' | 'scene_change' | 'camera_offline' | 'recurrent_vehicle' | 'qr_code_event' | 'all';
-export type AlertSeverity = 'low' | 'medium' | 'high' | 'critical' | 'all';
-export type DateRange = 'all' | '1h' | '24h' | '7d' | '30d' | 'custom';
+// Re-export types for backward compatibility
+export type { AlertType, AlertSeverity, DateRange, CameraOption, AlertFilters } from './alerts/alertFilterTypes';
+export { defaultFilters } from './alerts/alertFilterTypes';
+export { filterAlerts } from './alerts/filterAlerts';
 
-export interface CameraOption {
-  id: string;
-  name: string;
-}
-
-export interface AlertFilters {
-  type: AlertType;
-  severity: AlertSeverity;
-  dateRange: DateRange;
-  customDateStart?: Date;
-  customDateEnd?: Date;
-  cameraId: string; // 'all' or specific camera id
-}
+import type { AlertType, DateRange, AlertFilters as AlertFiltersType, CameraOption } from './alerts/alertFilterTypes';
+import { TYPE_LABELS, DATE_RANGE_LABELS, SEVERITY_BUTTON_OPTIONS } from './alerts/alertFilterTypes';
 
 interface AlertFiltersProps {
-  filters: AlertFilters;
-  onFiltersChange: (filters: AlertFilters) => void;
+  filters: AlertFiltersType;
+  onFiltersChange: (filters: AlertFiltersType) => void;
   cameras?: CameraOption[];
 }
-
-const TYPE_LABELS: Record<AlertType, string> = {
-  all: 'Todos os tipos',
-  security: 'Segurança',
-  safety: 'EPI',
-  operations: 'Operações',
-  access: 'Acesso',
-  analytics: 'Analytics',
-  absence: 'Ausência',
-  agglomeration: 'Aglomeração',
-  anomaly: 'Anomalia',
-  panic: 'Pânico',
-  arm_disarm: 'Arme/Desarme',
-  scene_change: 'Mudança de Cena',
-  camera_offline: 'Câmera Offline',
-  recurrent_vehicle: 'Veículo Recorrente',
-  qr_code_event: 'QR Code',
-};
-
-const SEVERITY_LABELS: Record<AlertSeverity, string> = {
-  all: 'Todas',
-  low: 'Baixa',
-  medium: 'Média',
-  high: 'Alta',
-  critical: 'Crítica',
-};
-
-const DATE_RANGE_LABELS: Record<DateRange, string> = {
-  all: 'Todo o período',
-  '1h': 'Última hora',
-  '24h': 'Últimas 24h',
-  '7d': 'Últimos 7 dias',
-  '30d': 'Últimos 30 dias',
-  custom: 'Personalizado',
-};
-
-const SEVERITY_BUTTON_OPTIONS: {
-  value: AlertSeverity;
-  label: string;
-  icon: typeof Info;
-  activeClass: string;
-  tooltip: string;
-}[] = [
-  { value: 'all', label: 'Todas', icon: Gauge, activeClass: 'border-primary bg-primary/15 text-primary', tooltip: 'Exibir alertas de todas as severidades' },
-  { value: 'low', label: 'Baixa', icon: Info, activeClass: 'border-muted-foreground bg-muted-foreground/15 text-muted-foreground', tooltip: 'Evento informativo, sem risco imediato' },
-  { value: 'medium', label: 'Média', icon: AlertCircle, activeClass: 'border-warning bg-warning/15 text-warning', tooltip: 'Situação que requer monitoramento' },
-  { value: 'high', label: 'Alta', icon: AlertTriangle, activeClass: 'border-destructive bg-destructive/15 text-destructive', tooltip: 'Ação necessária em breve' },
-  { value: 'critical', label: 'Crítica', icon: Flame, activeClass: 'border-destructive bg-destructive/20 text-destructive font-bold', tooltip: 'Requer atenção imediata!' },
-];
 
 export function AlertFiltersComponent({ filters, onFiltersChange, cameras = [] }: AlertFiltersProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -172,7 +103,7 @@ export function AlertFiltersComponent({ filters, onFiltersChange, cameras = [] }
             </Select>
           </div>
 
-          {/* Severity Filter — Visual Icon Buttons */}
+          {/* Severity Filter */}
           <div className="space-y-2">
             <Label className="text-xs text-muted-foreground flex items-center gap-1">
               <Gauge className="w-3 h-3" />
@@ -315,66 +246,3 @@ export function AlertFiltersComponent({ filters, onFiltersChange, cameras = [] }
     </Popover>
   );
 }
-
-// Utility function to filter alerts
-export function filterAlerts<T extends { type: string; severity: string; timestamp: string | Date; cameraId?: string }>(
-  alerts: T[],
-  filters: AlertFilters
-): T[] {
-  return alerts.filter(alert => {
-    // Type filter
-    if (filters.type !== 'all' && alert.type !== filters.type) {
-      return false;
-    }
-
-    // Severity filter
-    if (filters.severity !== 'all' && alert.severity !== filters.severity) {
-      return false;
-    }
-
-    // Camera filter
-    if (filters.cameraId !== 'all' && alert.cameraId !== filters.cameraId) {
-      return false;
-    }
-
-    // Date filter
-    if (filters.dateRange !== 'all') {
-      const alertDate = new Date(alert.timestamp);
-      const now = new Date();
-
-      switch (filters.dateRange) {
-        case '1h':
-          if (alertDate < subHours(now, 1)) return false;
-          break;
-        case '24h':
-          if (alertDate < subHours(now, 24)) return false;
-          break;
-        case '7d':
-          if (alertDate < subDays(now, 7)) return false;
-          break;
-        case '30d':
-          if (alertDate < subDays(now, 30)) return false;
-          break;
-        case 'custom':
-          if (filters.customDateStart && filters.customDateEnd) {
-            if (!isWithinInterval(alertDate, {
-              start: startOfDay(filters.customDateStart),
-              end: endOfDay(filters.customDateEnd),
-            })) {
-              return false;
-            }
-          }
-          break;
-      }
-    }
-
-    return true;
-  });
-}
-
-export const defaultFilters: AlertFilters = {
-  type: 'all',
-  severity: 'all',
-  dateRange: 'all',
-  cameraId: 'all',
-};
