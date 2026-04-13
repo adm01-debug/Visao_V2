@@ -3,6 +3,8 @@
  * Utilitário: Gerador de Relatórios em PDF
  */
 
+import type jsPDF from 'jspdf';
+
 const loadJsPDF = () => import('jspdf').then(m => m.default);
 const loadHtml2Canvas = () => import('html2canvas').then(m => m.default);
 
