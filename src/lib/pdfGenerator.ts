@@ -3,8 +3,10 @@
  * Utilitário: Gerador de Relatórios em PDF
  */
 
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import type jsPDF from 'jspdf';
+
+const loadJsPDF = () => import('jspdf').then(m => m.default);
+const loadHtml2Canvas = () => import('html2canvas').then(m => m.default);
 
 export interface ReportData {
   title: string;
@@ -39,7 +41,8 @@ const COLORS = {
  * Gera um PDF a partir de dados estruturados
  */
 export async function generatePDFReport(data: ReportData): Promise<jsPDF> {
-  const doc = new jsPDF('p', 'mm', 'a4');
+  const JsPDF = await loadJsPDF();
+  const doc = new JsPDF('p', 'mm', 'a4');
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 15;
@@ -302,6 +305,7 @@ export async function captureElementToPDF(
   doc: jsPDF,
   yPosition: number
 ): Promise<number> {
+  const html2canvas = await loadHtml2Canvas();
   const canvas = await html2canvas(element, {
     scale: 2,
     useCORS: true,

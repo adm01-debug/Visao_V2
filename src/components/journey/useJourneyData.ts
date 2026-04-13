@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { format, startOfDay, endOfDay, subDays, differenceInMinutes } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
-import jsPDF from 'jspdf';
+const loadJsPDF = () => import('jspdf').then(m => m.default);
 
 export interface JourneyEntry {
   personId: string;
@@ -136,8 +136,9 @@ export function useJourneyData() {
     return { totalProd, totalIdle, avgProd, onTimeCount, onTimeRate };
   }, [journeyData]);
 
-  const exportPDF = useCallback(() => {
+  const exportPDF = useCallback(async () => {
     if (journeyData.length === 0) { toast.error('Sem dados para exportar'); return; }
+    const { default: jsPDF } = await import('jspdf');
     const doc = new jsPDF();
     const { start } = getDateRange();
     doc.setFontSize(18);
