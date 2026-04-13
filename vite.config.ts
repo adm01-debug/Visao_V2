@@ -60,6 +60,7 @@ export default defineConfig(({ mode }) => ({
           "vendor-motion": ["framer-motion"],
           "vendor-query": ["@tanstack/react-query"],
           "vendor-supabase": ["@supabase/supabase-js"],
+          "vendor-pdf": ["jspdf", "html2canvas"],
         },
       },
     },
