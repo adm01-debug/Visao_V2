@@ -79,6 +79,20 @@ export const CategoryItem = memo(React.forwardRef(function CategoryItem({
             isExpanded && "bg-sidebar-accent/40 text-sidebar-foreground"
           )}
         >
+          {ripples.map(ripple => (
+            <span
+              key={ripple.id}
+              className="absolute rounded-full pointer-events-none animate-[sidebar-ripple_0.6s_ease-out_forwards]"
+              style={{
+                left: ripple.x,
+                top: ripple.y,
+                width: 0,
+                height: 0,
+                transform: "translate(-50%, -50%)",
+                background: "hsl(var(--primary) / 0.15)",
+              }}
+            />
+          ))}
           <div className="flex items-center gap-2.5">
             <AnimatedCategoryIcon
               icon={CategoryIcon}
