@@ -36,6 +36,17 @@ export const CategoryItem = memo(React.forwardRef(function CategoryItem({
 }: CategoryItemProps, _ref) {
   const CategoryIcon = category.icon;
   const status = category.getStatus?.() || { type: "neutral" as const, label: "" };
+  const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([]);
+  const rippleId = useRef(0);
+
+  const handleRipple = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = rippleId.current++;
+    setRipples(prev => [...prev, { id, x, y }]);
+    setTimeout(() => setRipples(prev => prev.filter(r => r.id !== id)), 600);
+  }, []);
 
   if (collapsed) {
     return (
@@ -58,8 +69,9 @@ export const CategoryItem = memo(React.forwardRef(function CategoryItem({
           whileTap={{ scale: 0.98 }}
           layout
           transition={{ layout: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] } }}
+          onClick={handleRipple}
           className={cn(
-            "flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium",
+            "relative overflow-hidden flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium",
             "transition-all duration-300 ease-out",
             "text-sidebar-foreground/65 hover:text-sidebar-foreground",
             "hover:bg-sidebar-accent/60 hover:shadow-[inset_0_1px_0_0_hsl(var(--primary)/0.06)]",
