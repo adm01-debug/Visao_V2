@@ -41,7 +41,8 @@ const COLORS = {
  * Gera um PDF a partir de dados estruturados
  */
 export async function generatePDFReport(data: ReportData): Promise<jsPDF> {
-  const doc = new jsPDF('p', 'mm', 'a4');
+  const JsPDF = await loadJsPDF();
+  const doc = new JsPDF('p', 'mm', 'a4');
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 15;
@@ -304,6 +305,7 @@ export async function captureElementToPDF(
   doc: jsPDF,
   yPosition: number
 ): Promise<number> {
+  const html2canvas = await loadHtml2Canvas();
   const canvas = await html2canvas(element, {
     scale: 2,
     useCORS: true,
