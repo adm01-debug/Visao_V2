@@ -136,8 +136,9 @@ export function useJourneyData() {
     return { totalProd, totalIdle, avgProd, onTimeCount, onTimeRate };
   }, [journeyData]);
 
-  const exportPDF = useCallback(() => {
+  const exportPDF = useCallback(async () => {
     if (journeyData.length === 0) { toast.error('Sem dados para exportar'); return; }
+    const { default: jsPDF } = await import('jspdf');
     const doc = new jsPDF();
     const { start } = getDateRange();
     doc.setFontSize(18);
