@@ -5,7 +5,6 @@
  * @module contexts
  */
 
-export * from "./AlertContext";
 export * from "./AnalyticsContext";
 export * from "./AuthContext";
 export * from "./CameraContext";
