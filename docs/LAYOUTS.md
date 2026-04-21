@@ -166,7 +166,9 @@ npm run check:mobile-nav
 
 O script valida que:
 1. `MainLayout.tsx` contém `mb-mobile-nav` (rede de segurança contra remoção acidental).
-2. Nenhuma página em `src/pages/*.tsx` redeclara a classe (evita drift).
+2. Páginas padrão em `src/pages/*.tsx` NÃO redeclaram a classe (evita drift / dupla margem).
+3. Páginas com **wrapper customizado** (`CUSTOM_WRAPPER_ALLOWLIST`) CONTÊM `mb-mobile-nav` explicitamente.
+4. Nenhuma página usa `h-[calc(100vh-...)]` no container raiz (evita scroll duplo no iOS).
 
 Roda automaticamente no `prebuild` e no CI. Falha quebra o build.
 
@@ -183,6 +185,17 @@ Mesmo que uma página renderize seu próprio wrapper customizado e esqueça `mb-
 ```
 
 O atributo `data-app-scroll` está no `<SwipeableView>` do `MainLayout`. O seletor `:not(.mb-mobile-nav)` evita dupla margem quando a classe já está presente. Cobre wrappers customizados, conteúdo direto sem `<main>`, e shells alternativos.
+
+### Wrappers customizados (allowlist)
+
+Páginas que **substituem** o `<main>` do MainLayout por uma estrutura própria (ex.: `min-h-screen` próprio, Sidebar embutido) devem:
+
+1. Reaplicar `mb-mobile-nav` explicitamente no container raiz da página.
+2. Entrar na `CUSTOM_WRAPPER_ALLOWLIST` em `scripts/check-mobile-nav.mjs`.
+
+Atualmente nessa lista: `DashboardV2.tsx`, `HeatmapPage.tsx`, `AnalyticsPage.tsx`, `TelegramSettingsPage.tsx`.
+
+O fallback CSS já cobriria essas páginas, mas a classe explícita garante consistência declarativa e mantém o padrão visível ao ler o código da página.
 
 ### Exceções
 

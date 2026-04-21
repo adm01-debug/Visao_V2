@@ -27,6 +27,16 @@ const ALLOWLIST = new Set([
   'AcessoNegado.tsx',
 ]);
 
+// Páginas com wrapper customizado que SUBSTITUEM o <main> do MainLayout
+// (ex.: declaram seu próprio `min-h-screen` ou Sidebar). Devem reaplicar
+// `mb-mobile-nav` explicitamente no container raiz para garantir consistência.
+const CUSTOM_WRAPPER_ALLOWLIST = new Set([
+  'DashboardV2.tsx',
+  'HeatmapPage.tsx',
+  'AnalyticsPage.tsx',
+  'TelegramSettingsPage.tsx',
+]);
+
 function listPages(dir) {
   return readdirSync(dir)
     .filter((entry) => {
@@ -54,7 +64,9 @@ if (!wrapperContent.includes(REQUIRED_CLASS)) {
 const files = listPages(PAGES_DIR);
 const drift = [];
 const scrollDrift = [];
+const missingInCustom = [];
 let cleanCount = 0;
+let customWrapperCount = 0;
 let skipped = 0;
 
 const SCROLL_ANTIPATTERN = /h-\[calc\(100vh-/;
@@ -67,18 +79,34 @@ for (const file of files) {
   }
   const content = readFileSync(file, 'utf8');
   let pageOk = true;
-  if (content.includes(REQUIRED_CLASS)) {
-    drift.push(relative(process.cwd(), file));
-    pageOk = false;
+  const isCustomWrapper = CUSTOM_WRAPPER_ALLOWLIST.has(basename);
+
+  if (isCustomWrapper) {
+    // Wrapper customizado: a classe DEVE estar presente
+    if (!content.includes(REQUIRED_CLASS)) {
+      missingInCustom.push(relative(process.cwd(), file));
+      pageOk = false;
+    }
+  } else {
+    // Página padrão: a classe NÃO deve ser redeclarada (vem do MainLayout)
+    if (content.includes(REQUIRED_CLASS)) {
+      drift.push(relative(process.cwd(), file));
+      pageOk = false;
+    }
   }
+
   if (SCROLL_ANTIPATTERN.test(content)) {
     scrollDrift.push(relative(process.cwd(), file));
     pageOk = false;
   }
-  if (pageOk) cleanCount++;
+  if (pageOk) {
+    if (isCustomWrapper) customWrapperCount++;
+    else cleanCount++;
+  }
 }
 
-console.log(`✅ ${cleanCount} páginas limpas (sem duplicação nem scroll duplo)`);
+console.log(`✅ ${cleanCount} páginas limpas (delegam ao MainLayout)`);
+console.log(`✅ ${customWrapperCount} páginas com wrapper customizado (reaplicam \`${REQUIRED_CLASS}\`)`);
 console.log(`⊘  ${skipped} páginas isentas (allowlist)`);
 
 if (drift.length > 0) {
@@ -99,6 +127,17 @@ if (scrollDrift.length > 0) {
     `Containers de página com altura fixa + overflow criam scroll aninhado, ` +
     `quebrando o momentum no iOS e escondendo conteúdo atrás do BottomNavigation.\n` +
     `Remova \`h-[calc(100vh-4rem)] overflow-auto\` do container raiz da página.\n`
+  );
+  failed = true;
+}
+
+if (missingInCustom.length > 0) {
+  console.error(`\n❌ ${missingInCustom.length} página(s) com wrapper customizado SEM \`${REQUIRED_CLASS}\`:`);
+  for (const f of missingInCustom) console.error(`   - ${f}`);
+  console.error(
+    `\nEssas páginas substituem o <main> do MainLayout (wrapper próprio) ` +
+    `e estão na CUSTOM_WRAPPER_ALLOWLIST do script. ` +
+    `Reaplique \`${REQUIRED_CLASS}\` no container raiz para garantir o padding inferior.\n`
   );
   failed = true;
 }

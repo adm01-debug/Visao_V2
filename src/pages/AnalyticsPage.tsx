@@ -112,7 +112,7 @@ export function AnalyticsPage() {
   };
 
   return (
-    <div role="main" aria-label="Analytics" className="min-h-screen bg-background">
+    <div role="main" aria-label="Analytics" className="min-h-screen bg-background mb-mobile-nav">
       <PageMeta title="Analytics" description="Estatísticas e relatórios do sistema de vigilância" />
 
       {/* Premium Header */}
