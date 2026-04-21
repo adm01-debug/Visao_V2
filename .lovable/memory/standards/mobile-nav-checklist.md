@@ -21,6 +21,8 @@ type: feature
 
 5. **Runtime Playwright** `tests/e2e/mobile-nav-padding.spec.ts` — viewport iPhone 12, itera ~15 rotas autenticadas e mede `paddingBottom` real do último filho de `[data-app-scroll]`, exigindo ≥ 64px. Rodado no CI via `npm run test:mobile-nav-runtime`. Rotas que redirecionam para `/auth` (sem credenciais seedadas) são marcadas como `skipped` — a checagem estática + snapshot já garantem cobertura nesses casos.
 
+6. **Snapshot visual de sobreposição** `tests/e2e/mobile-nav-overlap.spec.ts` — para `/dashboard`, `/heatmap`, `/analytics` em viewport iPhone 12: scrolla até o fim, mede `getBoundingClientRect()` do último elemento dentro de `[data-app-scroll]` (deve ter `bottom <= viewportHeight - 60`) e captura screenshot da faixa inferior (170px) comparado contra baseline com `maxDiffPixelRatio: 0.05`. Rodado no CI via `npm run test:mobile-nav-overlap` (passo `continue-on-error: true` até baselines existirem). Atualizar baselines com `--update-snapshots`.
+
 **MainLayout usa `h-screen h-[100dvh]`** — `dvh` sobrescreve `vh` em browsers compatíveis, evitando overflow no iOS Safari.
 
 **SwipeableView** propaga `data-app-scroll` via `...rest` em ambos os branches (mobile com motion.div e desktop com div simples).
