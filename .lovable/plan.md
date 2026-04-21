@@ -1,123 +1,117 @@
 
 
-## Unificar wrapper de PageMeta em um Page shell consistente
+## Dashboard de cobertura de código por arquivo
 
-Criar um único componente `<Page>` que centraliza `PageMeta` + estrutura padrão de wrapper, e migrar todas as páginas (incluindo `Câmeras`, `Alertas`, `Zonas`) para usá-lo. Hoje cada página declara `PageMeta` em uma posição diferente — algumas dentro de `<MainLayout>`, outras em `<>` ou `<div className="page-container">` — o que gera divergências de layout e instabilidade durante loading.
+Gerar relatório de coverage do Vitest e expor um dashboard interno na aplicação que liste o percentual por arquivo, com filtros e destaque para trechos pouco testados — facilitando priorização de novos testes.
 
-### Estado atual (resumido)
+### Estado atual
 
-- 34 arquivos importam `PageMeta` diretamente.
-- Posições do `PageMeta` divergem:
-  - `CamerasPage`: dentro de `<div className="page-container space-y-4 sm:space-y-6">`.
-  - `AlertsPage`: provavelmente dentro de `<div>` próprio (a confirmar).
-  - `ZonesPage`: dentro de `<div>` com layout custom.
-  - `ReportsPage`: dentro de `<><PageContent></PageContent></>`.
-  - `BehaviorDetectionPage`, `ProductivityDashboardPage`: dentro de `<MainLayout>` (incorreto — `MainLayout` já é aplicado pelo roteador).
-  - `PPEPage`, `GoalsAlertsPage`, `JourneyReportsPage`, `HelpPage`, `SettingsPage`: dentro de `<div className="p-6 …">` próprio.
-- Resultado: `mb-mobile-nav` é redeclarado em algumas, ausente em outras; `PageMeta` às vezes fica antes do `<h1>`, às vezes depois; durante loading o shell oscila.
+- `vitest.config.ts` já tem `coverage` configurado com reporters `text`, `html`, `json-summary` e include em `src/utils/**`, `src/services/**`, `src/hooks/**`, `src/contexts/**`.
+- `.github/workflows/coverage.yml` roda `vitest run --coverage` em push para `main` mas só imprime "✅ Coverage Report completed" — não publica artefato nem dashboard.
+- Não existe visualização in-app de cobertura.
+- 118 testes passando atualmente (validado no relatório PDF anterior).
 
-### Solução: componente `<Page>` único
+### Solução em 3 camadas
 
-**1. Novo componente** `src/components/layout/Page.tsx` (~60 linhas)
+**1. Geração de coverage detalhado (build-time)**
 
-```tsx
-interface PageProps {
-  title: string;                    // obrigatório → vai para PageMeta
-  description?: string;             // opcional → PageMeta
-  noIndex?: boolean;                 // opcional → PageMeta
-  className?: string;                // classes extras no container
-  variant?: 'default' | 'wide' | 'narrow' | 'flush';
-  children: ReactNode;
-}
-```
+Atualizar `vitest.config.ts`:
+- Adicionar reporter `json` (gera `coverage/coverage-final.json` com cobertura por linha/branch por arquivo).
+- Manter `json-summary` (gera `coverage/coverage-summary.json` — totais por arquivo + global).
+- Expandir `include` para `src/**/*.{ts,tsx}` (hoje só cobre 4 pastas — perderíamos componentes/páginas).
+- Adicionar `exclude`: `**/*.test.*`, `**/*.spec.*`, `src/test/**`, `src/integrations/supabase/types.ts`, `src/main.tsx`, `**/*.d.ts`.
 
-- Renderiza:
-  ```tsx
-  <>
-    <PageMeta title={title} description={description} noIndex={noIndex} />
-    <div className={cn(variantClasses[variant], className)}>
-      {children}
-    </div>
-  </>
-  ```
-- Variants:
-  - `default`: `space-y-4 sm:space-y-6` (uso geral).
-  - `wide`: `max-w-7xl mx-auto space-y-6` (relatórios, produtividade).
-  - `narrow`: `max-w-4xl mx-auto space-y-6` (configurações, help).
-  - `flush`: sem padding/spacing (páginas com layout próprio tipo Dashboard V2).
-- **Não** redeclara `mb-mobile-nav` (já está no `<main>` do `MainLayout` — Camada 1 do checklist).
-- **Não** envolve em `<MainLayout>` (o roteador já faz via `ProtectedLayoutRoute`).
+**2. Pipeline que copia coverage para `public/`**
 
-**2. Re-exportar** em `src/components/layout/index.ts`: `export { Page } from './Page'`.
+Novo script `scripts/build-coverage-report.mjs`:
+- Roda após `vitest run --coverage` (script npm `coverage` já existe ou é criado: `"coverage": "vitest run --coverage && node scripts/build-coverage-report.mjs"`).
+- Lê `coverage/coverage-summary.json`.
+- Transforma em formato enxuto `{ generatedAt, totals: {...}, files: [{ path, statements, branches, functions, lines }] }`.
+- Escreve em `public/coverage-report.json` (servido estático em `/coverage-report.json`).
+- Gera também `public/coverage-report.txt` (versão human-readable para download).
 
-**3. Migrar páginas** para o novo wrapper. Substituir o padrão:
+**3. Dashboard in-app `/coverage`**
 
-```tsx
-// Antes
-<div className="page-container space-y-4 sm:space-y-6">
-  <PageMeta title="…" description="…" />
-  <Header/>
-  <Content/>
-</div>
+Novo componente `src/pages/CoveragePage.tsx` (variant `wide` do `<Page>`):
+- Fetch `/coverage-report.json` no mount via `useQuery`.
+- Header: 4 stat cards (Statements, Branches, Functions, Lines) com % global + barra de progresso colorida (verde ≥80%, amarelo 50-79%, vermelho <50%).
+- Banner com `generatedAt` ("Última execução: …") e botão "Baixar relatório completo" (link para `/coverage-report.txt`).
+- Tabela ordenável por arquivo:
+  - Colunas: Arquivo (truncado, com tooltip), Statements %, Branches %, Functions %, Lines %, Status (badge).
+  - Ordenação default: menor cobertura primeiro (ajuda priorização).
+  - Filtros: input de busca por path, toggle "Mostrar apenas <80%", select de pasta (`hooks/`, `services/`, `pages/`, `components/`, `utils/`, `contexts/`).
+  - Linha colorida sutilmente conforme cobertura (vermelho/amarelo/verde via tokens semânticos HSL).
+- Empty state: se `/coverage-report.json` 404, mostra instrução "Rode `npm run coverage` para gerar o relatório".
+- Lazy-loaded via `React.lazy` (segue padrão do projeto).
 
-// Depois
-<Page title="…" description="…">
-  <Header/>
-  <Content/>
-</Page>
-```
+Sub-componentes:
+- `src/components/coverage/CoverageStatsCards.tsx`
+- `src/components/coverage/CoverageTable.tsx`
+- `src/components/coverage/CoverageRow.tsx`
+- `src/components/coverage/CoverageFilters.tsx`
+- `src/types/coverage.ts` (tipos do JSON consumido)
 
-Páginas a migrar (lista priorizada):
+**4. Rota e navegação**
 
-- **Foco do pedido** (3 páginas): `CamerasPage`, `AlertsPage`, `ZonesPage`.
-- **Demais páginas autenticadas** que usam `PageMeta`: `ReportsPage`, `SettingsPage`, `PPEPage`, `BehaviorDetectionPage`, `JourneyReportsPage`, `GoalsAlertsPage`, `ProductivityDashboardPage`, `HelpPage` e as outras ~26 do `code--search_files` — migrar todas em uma só passada para garantir consistência total.
-- Páginas standalone (`Auth`, `AuthCallback`, `ResetPasswordPage`, `NotFound`, `Index`, `AcessoNegado`) **não** migram — continuam com `PageMeta` direto, pois têm layout próprio fora do `MainLayout`.
+- Adicionar rota `/coverage` em `App.tsx` dentro de `ProtectedLayoutRoute`, lazy-loaded.
+- Restringir via RBAC a `admin` (cobertura é dado interno de engenharia).
+- Adicionar item "Cobertura" no Sidebar sob seção Admin/Telemetria, com ícone `ShieldCheck` ou `TestTube`.
 
-**4. Remover `MainLayout` aninhado** em `BehaviorDetectionPage` e `ProductivityDashboardPage` — o roteador já aplica. Isso elimina dupla renderização de Sidebar/Header.
+**5. CI: publicar coverage como artefato**
 
-**5. Auditoria estática** — novo script `scripts/check-page-wrapper.mjs`:
+Atualizar `.github/workflows/coverage.yml`:
+- Após rodar `vitest run --coverage`, executa `node scripts/build-coverage-report.mjs`.
+- `actions/upload-artifact@v4` para `coverage/` (HTML report) e `public/coverage-report.json`.
+- Job adiciona summary no `$GITHUB_STEP_SUMMARY` com tabela markdown dos 10 arquivos com menor cobertura + totais globais.
+- Comenta no PR (via `actions/github-script`) com tabela resumo quando run for em PR.
 
-- Falha se um arquivo em `src/pages/**/*.tsx` (fora da allowlist standalone) importa `PageMeta` diretamente em vez de usar `<Page>`.
-- Falha se uma página dentro do `MainLayout` declara `mb-mobile-nav`, `<Sidebar>` ou `<MainLayout>` (já validado por `check:mobile-nav`, mas reforçamos a regra do wrapper único).
-- Allowlist explícita: `Auth`, `AuthCallback`, `ResetPasswordPage`, `NotFound`, `Index`, `AcessoNegado`, `DashboardV2` (variant=`flush` aceita estrutura própria).
-- Adicionar ao `prebuild` e CI.
+**6. Documentação**
 
-**6. Documentação** `docs/PAGE_WRAPPER.md` (novo, ~50 linhas):
-
-- Quando usar cada `variant`.
-- Por que `<Page>` é obrigatório (consistência de SEO + spacing + acessibilidade).
-- Como adicionar uma nova página (exemplo).
-- Lista de páginas standalone isentas.
+`docs/COVERAGE_DASHBOARD.md` (~60 linhas):
+- Como rodar local (`npm run coverage`).
+- Como acessar dashboard (`/coverage` autenticado como admin).
+- Como interpretar cores/thresholds.
+- Política: arquivos críticos (services, hooks de auth) devem ter ≥80%.
 
 ### Critérios de aceitação
 
-- Todas as páginas autenticadas usam `<Page title="…">` e nenhuma importa `PageMeta` diretamente.
-- `CamerasPage`, `AlertsPage`, `ZonesPage` têm exatamente o mesmo wrapper top-level → durante loading, o shell (espaçamento, paddings, posição do header) é idêntico estruturalmente entre as três.
-- Nenhuma página redeclara `<MainLayout>` ou `<Sidebar>`.
-- `npm run check:page-wrapper` passa; integrado ao `prebuild`.
-- `npm run check:mobile-nav` continua verde (sem regressão).
-- TypeScript strict + lint zero-warnings + build OK.
-- Sem regressão visual: `<Page variant="default">` produz exatamente o mesmo `space-y` / paddings que `page-container space-y-4 sm:space-y-6` tinha antes.
+- `npm run coverage` gera `public/coverage-report.json` com objeto `{ totals, files[] }`.
+- Acessar `/coverage` autenticado como admin renderiza dashboard com 4 stat cards + tabela de todos os arquivos do projeto sob `src/`.
+- Tabela ordenável e filtrável; ordenação padrão = menor cobertura primeiro.
+- Cores semânticas (verde/amarelo/vermelho) via tokens HSL — sem hex hardcoded.
+- Lazy-loaded; <300 linhas por componente; TS strict; lint zero-warnings.
+- CI publica artefato de coverage e summary com top 10 arquivos menos cobertos.
+- Página retorna empty state amigável se relatório ainda não foi gerado.
+- Não-admin é redirecionado para `/acesso-negado` ao acessar `/coverage`.
 
 ### Arquivos a criar/editar
 
-- ➕ `src/components/layout/Page.tsx` (novo wrapper unificado)
-- ➕ `scripts/check-page-wrapper.mjs` (auditoria estática)
-- ➕ `docs/PAGE_WRAPPER.md`
-- ✏️ `src/components/layout/index.ts` (export)
-- ✏️ `package.json` (script `check:page-wrapper` + adicionar ao `prebuild`)
-- ✏️ ~30 arquivos em `src/pages/**` — substituir `<div>+PageMeta` por `<Page>` (mudança mecânica, ~3 linhas por arquivo)
-- ✏️ `BehaviorDetectionPage.tsx`, `ProductivityDashboardPage.tsx` — remover `<MainLayout>` aninhado
-- ✏️ `docs/LAYOUTS.md` — adicionar seção "Page Wrapper" referenciando `PAGE_WRAPPER.md`
+**Criar:**
+- ➕ `src/pages/CoveragePage.tsx`
+- ➕ `src/components/coverage/CoverageStatsCards.tsx`
+- ➕ `src/components/coverage/CoverageTable.tsx`
+- ➕ `src/components/coverage/CoverageRow.tsx`
+- ➕ `src/components/coverage/CoverageFilters.tsx`
+- ➕ `src/types/coverage.ts`
+- ➕ `scripts/build-coverage-report.mjs`
+- ➕ `docs/COVERAGE_DASHBOARD.md`
+
+**Editar:**
+- ✏️ `vitest.config.ts` (reporters + include/exclude)
+- ✏️ `package.json` (script `coverage`)
+- ✏️ `src/App.tsx` (rota `/coverage` lazy + protegida por admin)
+- ✏️ Sidebar (item "Cobertura" sob Admin)
+- ✏️ `.github/workflows/coverage.yml` (artefato + summary + comentário em PR)
+- ✏️ `.gitignore` (garantir que `public/coverage-report.json` é ignorado em dev — gerado local — ou versionado se preferir snapshot; padrão: ignorado)
 
 ### Riscos
 
-- **Risco:** páginas com estrutura muito custom (ex.: `DashboardV2`, `HeatmapPage`) podem não caber em nenhum variant.
-  - **Mitigação:** variant `flush` permite que a página gerencie spacing internamente; `<Page>` apenas garante `PageMeta` consistente.
-- **Risco:** migração de 30+ arquivos pode introduzir typos.
-  - **Mitigação:** `check:page-wrapper` falha o build se sobrar `import { PageMeta }` direto fora da allowlist; TS strict garante props corretas.
-- **Risco:** remover `<MainLayout>` aninhado de `BehaviorDetectionPage`/`ProductivityDashboardPage` pode mudar visual se elas dependiam de algo do layout duplicado.
-  - **Mitigação:** validar visualmente no preview após a migração; o `MainLayout` do roteador entrega exatamente o mesmo shell (Sidebar + Header + main).
-- **Risco:** páginas que tinham `mb-mobile-nav` próprio (parte da `CUSTOM_WRAPPER_ALLOWLIST` do `check:mobile-nav`) podem precisar ficar fora do `<Page>` ou usar variant `flush`.
-  - **Mitigação:** mapear durante implementação — se `<Page>` cobre, remover entrada da allowlist; se não, manter standalone com nota explícita.
+- **Risco:** `coverage-report.json` em `public/` pode crescer (>500 KB) se houver muitos arquivos.
+  - **Mitigação:** script gera versão enxuta apenas com totais por arquivo (sem mapa linha-a-linha), tipicamente <50 KB para 500+ arquivos.
+- **Risco:** expor cobertura publicamente revela estrutura interna.
+  - **Mitigação:** rota é protegida por RBAC admin; arquivo JSON está em `public/` mas só é fetchado a partir da página autenticada — para reforçar, mover para edge function `get-coverage-report` que valida sessão+role e serve o JSON.
+- **Risco:** rodar coverage em todo `src/**` torna a suíte mais lenta.
+  - **Mitigação:** coverage roda só no script dedicado (`npm run coverage`), não no `npm run test` regular do dev loop.
+- **Risco:** baseline de cobertura assustadoramente baixa em primeira execução pode gerar ruído.
+  - **Mitigação:** documentar que a primeira foto serve apenas para priorizar; não há gate de CI que falhe build por % baixo (ainda).
 
