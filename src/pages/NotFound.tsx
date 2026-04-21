@@ -1,3 +1,10 @@
+/**
+ * Standalone page — renders OUTSIDE MainLayout (no BottomNavigation).
+ * Listed in scripts/check-mobile-nav.mjs ALLOWLIST.
+ * Reason: 404 genérico, pode ser exibido fora de contexto autenticado;
+ * layout centrado próprio (`min-h-screen flex items-center`).
+ * See docs/LAYOUTS.md §11 — Camada 0.
+ */
 import { useLocation, Link } from "react-router-dom";
 import { PageMeta } from '@/components/PageMeta';
 import { Shield, Home, ArrowLeft, Search } from 'lucide-react';

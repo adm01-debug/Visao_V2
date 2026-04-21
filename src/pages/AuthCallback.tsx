@@ -1,6 +1,12 @@
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Página: AuthCallback - Callback de autenticação OAuth
+ *
+ * Standalone page — renders OUTSIDE MainLayout (no BottomNavigation).
+ * Listed in scripts/check-mobile-nav.mjs ALLOWLIST.
+ * Reason: handler OAuth pós-redirect (Google); renderiza apenas spinner
+ * durante a troca de código por sessão, sem UI navegável.
+ * See docs/LAYOUTS.md §11 — Camada 0.
  */
 
 import { useEffect, useState, useRef } from 'react';
