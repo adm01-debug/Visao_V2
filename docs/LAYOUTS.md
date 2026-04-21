@@ -170,17 +170,25 @@ O script valida que:
 
 Roda automaticamente no `prebuild` e no CI. Falha quebra o build.
 
+### Fallback automático (defesa em profundidade)
+
+Mesmo que uma página renderize seu próprio wrapper customizado e esqueça `mb-mobile-nav`, o layout aplica padding inferior automaticamente via CSS global:
+
+```css
+[data-app-scroll] > main:last-child:not(.mb-mobile-nav),
+[data-app-scroll] > div:last-child:not(.mb-mobile-nav),
+[data-app-scroll] > section:last-child:not(.mb-mobile-nav) {
+  padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+}
+```
+
+O atributo `data-app-scroll` está no `<SwipeableView>` do `MainLayout`. O seletor `:not(.mb-mobile-nav)` evita dupla margem quando a classe já está presente. Cobre wrappers customizados, conteúdo direto sem `<main>`, e shells alternativos.
+
 ### Exceções
 
-Páginas standalone que não passam pelo `MainLayout` (auth, 404, redirects) ficam na `ALLOWLIST` em `scripts/check-mobile-nav.mjs`:
-
-```js
-const ALLOWLIST = new Set([
-  'AuthPage.tsx',
-  'NovaPaginaIsenta.tsx', // ← adicionar aqui
-]);
-```
+Páginas standalone que não passam pelo `MainLayout` (auth, 404, redirects) ficam na `ALLOWLIST` em `scripts/check-mobile-nav.mjs`.
 
 ---
 
 **Última atualização:** 21/04/2026
+

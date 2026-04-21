@@ -36,7 +36,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         <SectionErrorBoundary section="Header">
           <Header />
         </SectionErrorBoundary>
-        <SwipeableView className="flex-1 overflow-auto">
+        <SwipeableView className="flex-1 overflow-auto" data-app-scroll>
           <main id="main-content" className="p-4 md:p-6 mb-mobile-nav min-h-full" role="main" aria-label="Conteúdo principal">
             <SectionErrorBoundary section="Conteúdo Principal">
               <PageTransition>
