@@ -58,6 +58,11 @@ jobs:
         env:
           CI: true
       
+      - name: Smoke Tests (páginas principais)
+        run: npm run test:smoke -- --project=chromium --workers=4
+        env:
+          CI: true
+      
       - name: Test
         run: npm run test -- --run
         env:
