@@ -26,11 +26,18 @@ export function ALPRStatsCards({ stats }: ALPRStatsCardsProps) {
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-      {cards.map(({ icon: Icon, value, label, color }) => (
-        <Card key={label}>
-          <CardContent className="pt-4">
+      {cards.map(({ icon: Icon, value, label, color }, idx) => (
+        <Card
+          key={label}
+          className="group relative overflow-hidden animate-card-enter transition-all duration-300 ease-out hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-primary/20 active:scale-[0.98] motion-reduce:transform-none motion-reduce:animate-none motion-reduce:transition-none"
+          style={{ animationDelay: `${idx * 60}ms` }}
+        >
+          <span aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-300 motion-reduce:hidden">
+            <span className="absolute top-0 left-0 h-full w-1/3 bg-gradient-to-r from-transparent via-primary/10 to-transparent group-hover:animate-sheen" />
+          </span>
+          <CardContent className="relative z-10 pt-4">
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${color.split(' ')[0]}`}>
+              <div className={`p-2 rounded-lg ${color.split(' ')[0]} transition-transform duration-300 group-hover:scale-110 motion-reduce:transform-none`}>
                 <Icon className={`h-5 w-5 ${color.split(' ')[1]}`} />
               </div>
               <div>
