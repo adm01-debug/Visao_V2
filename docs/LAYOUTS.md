@@ -152,29 +152,19 @@ const breakpoints = {
 
 ---
 
-## 11. Mobile Layout Checklist (Wrapper Único)
+## 11. Mobile Layout Checklist (Defesa em Profundidade — 5 camadas)
 
-A classe `mb-mobile-nav` é aplicada **uma única vez**, no `<main>` de `src/components/layout/MainLayout.tsx`. Como todas as rotas autenticadas passam pelo `MainLayout`, isso cobre 100% das páginas roteadas automaticamente.
+A classe `mb-mobile-nav` é aplicada **uma única vez**, no `<main>` de `src/components/layout/MainLayout.tsx`. Como todas as rotas autenticadas passam pelo `MainLayout`, isso cobre 100% das páginas roteadas automaticamente. Combinada com fallback CSS, allowlist, snapshot e teste runtime, essa garantia é validada de 5 formas independentes.
 
-**Páginas NÃO devem redeclarar `mb-mobile-nav`** — fazê-lo causa dupla margem inferior.
+**Páginas NÃO devem redeclarar `mb-mobile-nav`** — fazê-lo causa dupla margem inferior. Exceções: páginas com wrapper raiz próprio cadastradas na `CUSTOM_WRAPPER_ALLOWLIST`.
 
-### Verificação
+### Camada 1 — Classe explícita no MainLayout
 
-```bash
-npm run check:mobile-nav
-```
+`mb-mobile-nav` no `<main>` aplica `padding-bottom: calc(4rem + safe-area-inset-bottom)` (definido em `src/index.css`).
 
-O script valida que:
-1. `MainLayout.tsx` contém `mb-mobile-nav` (rede de segurança contra remoção acidental).
-2. Páginas padrão em `src/pages/*.tsx` NÃO redeclaram a classe (evita drift / dupla margem).
-3. Páginas com **wrapper customizado** (`CUSTOM_WRAPPER_ALLOWLIST`) CONTÊM `mb-mobile-nav` explicitamente.
-4. Nenhuma página usa `h-[calc(100vh-...)]` no container raiz (evita scroll duplo no iOS).
+### Camada 2 — Fallback CSS global
 
-Roda automaticamente no `prebuild` e no CI. Falha quebra o build.
-
-### Fallback automático (defesa em profundidade)
-
-Mesmo que uma página renderize seu próprio wrapper customizado e esqueça `mb-mobile-nav`, o layout aplica padding inferior automaticamente via CSS global:
+Mesmo que uma página renderize seu próprio wrapper customizado e esqueça `mb-mobile-nav`, o layout aplica padding inferior automaticamente:
 
 ```css
 [data-app-scroll] > main:last-child:not(.mb-mobile-nav),
@@ -184,22 +174,50 @@ Mesmo que uma página renderize seu próprio wrapper customizado e esqueça `mb-
 }
 ```
 
-O atributo `data-app-scroll` está no `<SwipeableView>` do `MainLayout`. O seletor `:not(.mb-mobile-nav)` evita dupla margem quando a classe já está presente. Cobre wrappers customizados, conteúdo direto sem `<main>`, e shells alternativos.
+O atributo `data-app-scroll` está no `<SwipeableView>` do `MainLayout`. O seletor `:not(.mb-mobile-nav)` evita dupla margem quando a classe já está presente.
 
-### Wrappers customizados (allowlist)
+### Camada 3 — Allowlist de wrappers customizados
 
 Páginas que **substituem** o `<main>` do MainLayout por uma estrutura própria (ex.: `min-h-screen` próprio, Sidebar embutido) devem:
 
-1. Reaplicar `mb-mobile-nav` explicitamente no container raiz da página.
+1. Reaplicar `mb-mobile-nav` explicitamente no container raiz.
 2. Entrar na `CUSTOM_WRAPPER_ALLOWLIST` em `scripts/check-mobile-nav.mjs`.
 
-Atualmente nessa lista: `DashboardV2.tsx`, `HeatmapPage.tsx`, `AnalyticsPage.tsx`, `TelegramSettingsPage.tsx`.
+Atualmente: `DashboardV2`, `HeatmapPage`, `AnalyticsPage`, `TelegramSettingsPage`, `LicensePlatePage`, `NotificationSettingsPage`, `PPEPage`, `PeoplePage`, `RecognitionAnalyticsPage`, `RecognitionLogsPage`, `RecordingsPage`, `StreamSettingsPage`, `ZonesPage`.
 
-O fallback CSS já cobriria essas páginas, mas a classe explícita garante consistência declarativa e mantém o padrão visível ao ler o código da página.
+### Camada 4 — Auditoria estática (`scripts/check-mobile-nav.mjs`)
 
-### Exceções
+```bash
+npm run check:mobile-nav
+```
 
-Páginas standalone que não passam pelo `MainLayout` (auth, 404, redirects) ficam na `ALLOWLIST` em `scripts/check-mobile-nav.mjs`.
+Valida:
+1. `MainLayout.tsx` contém `mb-mobile-nav`.
+2. Páginas padrão NÃO redeclaram a classe.
+3. Páginas em `CUSTOM_WRAPPER_ALLOWLIST` CONTÊM a classe.
+4. Nenhuma página usa `h-[calc(100vh-...)]` (scroll duplo).
+5. **Heurística**: páginas com `min-h-screen` / `h-screen` / `h-dvh` / `<Sidebar` que não estão cadastradas falham com mensagem clara apontando arquivo + linha.
+6. **Snapshot** (`scripts/.mobile-nav-snapshot.json`): novos arquivos em `src/pages/` sem entry no snapshot quebram o build, forçando classificação explícita. Regenere com:
+
+```bash
+npm run check:mobile-nav -- --snapshot
+```
+
+Roda automaticamente em `prebuild` e CI.
+
+### Camada 5 — Verificação runtime (Playwright)
+
+`tests/e2e/mobile-nav-padding.spec.ts` itera ~15 rotas autenticadas em viewport iPhone 12 e mede o `paddingBottom` real do último filho de `[data-app-scroll]`, exigindo ≥ 64px.
+
+```bash
+npm run test:mobile-nav-runtime
+```
+
+Rotas que redirecionam para `/auth` (sem credenciais seedadas no CI) são marcadas como `skipped` — as camadas 1-4 já garantem cobertura nesses casos. Quando há sessão autenticada disponível, falhas reais de padding são detectadas.
+
+### Exceções (standalone)
+
+Páginas que não passam pelo `MainLayout` (auth, 404, callbacks) ficam na `ALLOWLIST` em `scripts/check-mobile-nav.mjs`: `AuthPage`, `Auth`, `AuthCallback`, `ResetPasswordPage`, `NotFound`, `Index`, `AcessoNegado`.
 
 ---
 
