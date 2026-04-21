@@ -16,5 +16,7 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "noPropertyAccessFromIndexSignature": true
-  }
+  },
+  "include": ["src", "tests"],
+  "exclude": ["node_modules", "dist", "storybook-static", "coverage"]
 }

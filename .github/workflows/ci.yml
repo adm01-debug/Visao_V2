@@ -19,58 +19,67 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      
+
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
           restore-keys: npm-${{ runner.os }}-
-      
+
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
-      
-      - name: Type Check
-        run: npx tsc --noEmit
-      
-      - name: Lint
-        run: npm run lint
-      
+
+      # ───────── Gates de qualidade (ordenados por custo crescente) ─────────
+
+      - name: TypeScript Strict Check (src + tests + stories)
+        run: npm run type-check:strict
+
+      - name: ESLint (zero warnings)
+        run: npm run lint:ci
+
       - name: Mobile Nav Checklist
         run: npm run check:mobile-nav
-      
+
+      - name: Build (production)
+        run: npm run build
+        env:
+          CI: true
+
+      - name: Bundle Size Budget
+        run: npm run check:bundle-size
+
+      # ───────── Suítes E2E e testes ─────────
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
-      
+
       - name: Mobile Nav Runtime Check
         run: npm run test:mobile-nav-runtime -- --project=mobile-safari --workers=4
         env:
           CI: true
-      
+
       - name: Mobile Nav Overlap (Visual Snapshot)
         run: npm run test:mobile-nav-overlap -- --project=mobile-safari --workers=2
         continue-on-error: true
         env:
           CI: true
-      
+
       - name: Smoke Tests (páginas principais)
         run: npm run test:smoke -- --project=chromium --workers=4
         env:
           CI: true
-      
+
       - name: Test
         run: npm run test -- --run
         env:
           CI: true
-      
-      - name: Build
-        run: npm run build
-      
+
       - name: CI Summary
         if: always()
         run: echo "CI Pipeline Completed" >> $GITHUB_STEP_SUMMARY
