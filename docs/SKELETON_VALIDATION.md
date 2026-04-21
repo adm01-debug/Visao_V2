@@ -34,6 +34,21 @@ npm run check:skeletons -- --skip-build   # iteração rápida (sem vite build)
 - **Falha em `check:mobile-nav`** → página redeclarando `mb-mobile-nav` ou wrapper customizado novo.
 - **Falha em `vite build`** → checar import circular entre `skeletons/index` e páginas.
 
+## Regra de uso dos skeletons
+
+> **Page-level skeletons (`CamerasSkeleton`, `AlertsSkeleton`, `ZonesSkeleton`) são
+> reservados para fallback de `React.lazy` / `Suspense` no `App.tsx`** — quando o bundle
+> da página inteira ainda não chegou e nem o shell pode ser montado.
+>
+> Estados `loading` **dentro da página** (após o bundle carregado) devem manter o shell
+> real (header + filtros + tabs + contadores) visível e trocar **apenas** a região de
+> conteúdo por skeletons granulares (`CameraSkeleton`, `AlertSkeleton`, `StatSkeleton`,
+> `TableSkeleton`, `ListSkeleton`). Inputs/selects ficam `disabled={loading}`.
+>
+> Isso elimina o CLS na faixa de filtros — substituir o shell inteiro por
+> `CamerasSkeleton`/`AlertsSkeleton`/`ZonesSkeleton` em early-return é uma **regressão
+> conhecida** e deve ser rejeitado em review.
+
 ## Observações
 
 - Pipeline **não substitui** os gates de CI (`type-check:strict`, `lint:ci`, `test:ci`,
