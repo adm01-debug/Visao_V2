@@ -9,7 +9,7 @@ import { useFaceRecognitionAlerts } from "@/hooks/useFaceRecognitionAlerts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { AlertsSkeleton } from "@/components/skeletons/AlertsSkeleton";
+import { ListSkeleton } from "@/components/ui/LoadingState";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PaginationControls, usePagination } from "@/components/PaginationControls";
 import { ExportMenu } from "@/components/ExportMenu";
@@ -110,14 +110,6 @@ export function AlertsPage() {
     today: alerts.filter(a => new Date(a.timestamp).toDateString() === new Date().toDateString()).length,
   }), [alerts, unreadCount, severityCounts]);
 
-  if (loading) {
-    return (
-      <>
-        <PageMeta title="Alertas" description="Central de alertas e notificações do sistema de vigilância" />
-        <AlertsSkeleton />
-      </>
-    );
-  }
 
   return (
     <div role="main" aria-label="Central de alertas" className="page-container space-y-6">
@@ -126,14 +118,30 @@ export function AlertsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2"><Bell className="w-6 h-6" />Alertas</h1>
-          <p className="text-sm text-muted-foreground">{stats.total} alertas • {stats.unread} não lidos</p>
+          <p className="text-sm text-muted-foreground">
+            {loading ? '— alertas • — não lidos' : `${stats.total} alertas • ${stats.unread} não lidos`}
+          </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => refetch()}><RefreshCw className="w-4 h-4 mr-2" />Atualizar</Button>
-          {unreadCount > 0 && <Button variant="outline" size="sm" onClick={() => markAllAsRead()}><CheckCheck className="w-4 h-4 mr-2" />Marcar todos como lidos</Button>}
+          <Button variant="outline" size="sm" onClick={() => refetch()} disabled={loading}>
+            <RefreshCw className={cn('w-4 h-4 mr-2', loading && 'animate-spin')} />Atualizar
+          </Button>
+          {!loading && unreadCount > 0 && <Button variant="outline" size="sm" onClick={() => markAllAsRead()}><CheckCheck className="w-4 h-4 mr-2" />Marcar todos como lidos</Button>}
           <ExportMenu onExportCSV={() => exportAlerts(filteredAlerts, 'csv')} onExportPDF={() => exportAlerts(filteredAlerts, 'pdf')} />
         </div>
       </div>
+
+      <AlertStatsCards stats={stats} activeFilter={activeStatsFilter} onFilterClick={handleStatsFilterClick} loading={loading} />
+      <AlertSeveritySummary
+        counts={severityCounts}
+        total={stats.total}
+        activeSeverity={filters.severity !== 'all' ? filters.severity : undefined}
+        onSeverityClick={(severity) => {
+          setActiveStatsFilter(null);
+          setFilters(f => ({ ...defaultFilters, severity }));
+        }}
+        loading={loading}
+      />
 
       <AlertStatsCards stats={stats} activeFilter={activeStatsFilter} onFilterClick={handleStatsFilterClick} />
       <AlertSeveritySummary
@@ -149,21 +157,21 @@ export function AlertsPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Buscar alertas..." value={filters.search} onChange={(e) => setFilters(f => ({ ...f, search: e.target.value }))} className="pl-9" />
+          <Input placeholder="Buscar alertas..." value={filters.search} disabled={loading} onChange={(e) => setFilters(f => ({ ...f, search: e.target.value }))} className="pl-9" />
         </div>
         <div className="flex items-center gap-2">
-          <Select value={filters.severity} onValueChange={(v) => setFilters(f => ({ ...f, severity: v }))}><SelectTrigger className="w-32"><SelectValue placeholder="Severidade" /></SelectTrigger><SelectContent><SelectItem value="all">Todas</SelectItem><SelectItem value="critical">Crítico</SelectItem><SelectItem value="high">Alto</SelectItem><SelectItem value="medium">Médio</SelectItem><SelectItem value="low">Baixo</SelectItem></SelectContent></Select>
-          <Select value={filters.dateRange} onValueChange={(v) => setFilters(f => ({ ...f, dateRange: v }))}><SelectTrigger className="w-32"><SelectValue placeholder="Período" /></SelectTrigger><SelectContent><SelectItem value="all">Todos</SelectItem><SelectItem value="1h">Última hora</SelectItem><SelectItem value="24h">Últimas 24h</SelectItem><SelectItem value="7d">Últimos 7 dias</SelectItem><SelectItem value="30d">Últimos 30 dias</SelectItem></SelectContent></Select>
-          <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}><SelectTrigger className="w-36"><SelectValue placeholder="Ordenar" /></SelectTrigger><SelectContent><SelectItem value="date-desc">Mais recentes</SelectItem><SelectItem value="date-asc">Mais antigos</SelectItem><SelectItem value="severity-desc">Maior severidade</SelectItem><SelectItem value="severity-asc">Menor severidade</SelectItem></SelectContent></Select>
-          {hasActiveFilters && <Button variant="ghost" size="sm" onClick={clearFilters}><X className="w-4 h-4 mr-1" />Limpar</Button>}
+          <Select value={filters.severity} onValueChange={(v) => setFilters(f => ({ ...f, severity: v }))} disabled={loading}><SelectTrigger className="w-32"><SelectValue placeholder="Severidade" /></SelectTrigger><SelectContent><SelectItem value="all">Todas</SelectItem><SelectItem value="critical">Crítico</SelectItem><SelectItem value="high">Alto</SelectItem><SelectItem value="medium">Médio</SelectItem><SelectItem value="low">Baixo</SelectItem></SelectContent></Select>
+          <Select value={filters.dateRange} onValueChange={(v) => setFilters(f => ({ ...f, dateRange: v }))} disabled={loading}><SelectTrigger className="w-32"><SelectValue placeholder="Período" /></SelectTrigger><SelectContent><SelectItem value="all">Todos</SelectItem><SelectItem value="1h">Última hora</SelectItem><SelectItem value="24h">Últimas 24h</SelectItem><SelectItem value="7d">Últimos 7 dias</SelectItem><SelectItem value="30d">Últimos 30 dias</SelectItem></SelectContent></Select>
+          <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)} disabled={loading}><SelectTrigger className="w-36"><SelectValue placeholder="Ordenar" /></SelectTrigger><SelectContent><SelectItem value="date-desc">Mais recentes</SelectItem><SelectItem value="date-asc">Mais antigos</SelectItem><SelectItem value="severity-desc">Maior severidade</SelectItem><SelectItem value="severity-asc">Menor severidade</SelectItem></SelectContent></Select>
+          {!loading && hasActiveFilters && <Button variant="ghost" size="sm" onClick={clearFilters}><X className="w-4 h-4 mr-1" />Limpar</Button>}
         </div>
         <div className="flex items-center gap-1 border rounded-lg p-1">
-          <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('list')}><List className="w-4 h-4" /></Button>
-          <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('grid')}><LayoutGrid className="w-4 h-4" /></Button>
+          <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('list')} disabled={loading}><List className="w-4 h-4" /></Button>
+          <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('grid')} disabled={loading}><LayoutGrid className="w-4 h-4" /></Button>
         </div>
       </div>
 
-      {selectedAlerts.size > 0 && (
+      {!loading && selectedAlerts.size > 0 && (
         <div className="flex items-center gap-4 p-3 bg-primary/10 rounded-lg">
           <span className="text-sm font-medium">{selectedAlerts.size} alertas selecionados</span>
           <Button size="sm" variant="outline" onClick={handleMarkSelectedRead}><Check className="w-4 h-4 mr-1" />Marcar como lidos</Button>
@@ -174,37 +182,41 @@ export function AlertsPage() {
 
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <div className="flex items-center gap-2">
-          <Checkbox checked={paginatedItems.length > 0 && paginatedItems.every(a => selectedAlerts.has(a.id))} onCheckedChange={handleSelectAll} />
-          <span>Mostrando {paginatedItems.length} de {totalItems} alertas</span>
+          <Checkbox checked={!loading && paginatedItems.length > 0 && paginatedItems.every(a => selectedAlerts.has(a.id))} disabled={loading} onCheckedChange={handleSelectAll} />
+          <span>{loading ? 'Carregando alertas...' : `Mostrando ${paginatedItems.length} de ${totalItems} alertas`}</span>
         </div>
       </div>
 
-      <div className={cn(
-        viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'flex flex-col gap-2',
-        'transition-all duration-300 ease-out'
-      )}>
-        {paginatedItems.map((alert, index) => (
-          <div
-            key={alert.id}
-            className={cn(
-              'animate-fade-in transition-all duration-300 ease-out',
-              removingAlerts.has(alert.id) && 'opacity-0 scale-95 -translate-x-4'
-            )}
-            style={{ animationDelay: `${index * 30}ms`, animationFillMode: 'backwards' }}
-          >
-            <AlertItem alert={alert} isSelected={selectedAlerts.has(alert.id)} onSelect={(selected) => handleSelectAlert(alert.id, selected)} onView={() => setDetailsAlert(alert)} onMarkRead={() => markAsRead(alert.id)} onDelete={() => animateAndDelete([alert.id])} viewMode={viewMode} />
-          </div>
-        ))}
-      </div>
+      {loading ? (
+        <ListSkeleton count={viewMode === 'grid' ? 8 : 6} />
+      ) : (
+        <div className={cn(
+          viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'flex flex-col gap-2',
+          'transition-all duration-300 ease-out'
+        )}>
+          {paginatedItems.map((alert, index) => (
+            <div
+              key={alert.id}
+              className={cn(
+                'animate-fade-in transition-all duration-300 ease-out',
+                removingAlerts.has(alert.id) && 'opacity-0 scale-95 -translate-x-4'
+              )}
+              style={{ animationDelay: `${index * 30}ms`, animationFillMode: 'backwards' }}
+            >
+              <AlertItem alert={alert} isSelected={selectedAlerts.has(alert.id)} onSelect={(selected) => handleSelectAlert(alert.id, selected)} onView={() => setDetailsAlert(alert)} onMarkRead={() => markAsRead(alert.id)} onDelete={() => animateAndDelete([alert.id])} viewMode={viewMode} />
+            </div>
+          ))}
+        </div>
+      )}
 
-      {filteredAlerts.length === 0 && (
+      {!loading && filteredAlerts.length === 0 && (
         <EmptyState icon={BellOff} title={hasActiveFilters ? 'Nenhum alerta encontrado' : 'Nenhum alerta registrado'}
           description={hasActiveFilters ? 'Nenhum alerta corresponde aos filtros aplicados.' : 'Seu sistema está tranquilo!'}
           secondaryActionLabel={hasActiveFilters ? 'Limpar filtros' : undefined}
           onSecondaryAction={hasActiveFilters ? clearFilters : undefined} />
       )}
 
-      {totalPages > 1 && <PaginationControls currentPage={currentPage} totalPages={totalPages} totalItems={totalItems} itemsPerPage={viewMode === 'grid' ? 12 : 10} onPageChange={setCurrentPage} />}
+      {!loading && totalPages > 1 && <PaginationControls currentPage={currentPage} totalPages={totalPages} totalItems={totalItems} itemsPerPage={viewMode === 'grid' ? 12 : 10} onPageChange={setCurrentPage} />}
 
       <AlertDetailsDialog alert={detailsAlert} isOpen={!!detailsAlert} onClose={() => setDetailsAlert(null)}
         onMarkRead={() => { if (detailsAlert) markAsRead(detailsAlert.id); setDetailsAlert(null); }}

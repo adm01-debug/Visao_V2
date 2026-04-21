@@ -14,6 +14,7 @@ interface AlertStatsCardsProps {
   stats: AlertStats;
   activeFilter?: StatsFilterKey | null;
   onFilterClick?: (key: StatsFilterKey) => void;
+  loading?: boolean;
 }
 
 const items = [
@@ -55,7 +56,7 @@ const items = [
   },
 ];
 
-export function AlertStatsCards({ stats, activeFilter, onFilterClick }: AlertStatsCardsProps) {
+export function AlertStatsCards({ stats, activeFilter, onFilterClick, loading = false }: AlertStatsCardsProps) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
       {items.map(({ key, label, Icon, iconBg, iconColor, valueColor, activeRing }) => {
@@ -65,10 +66,12 @@ export function AlertStatsCards({ stats, activeFilter, onFilterClick }: AlertSta
             key={key}
             type="button"
             onClick={() => onFilterClick?.(key)}
+            disabled={loading}
             className={cn(
               'relative flex items-center gap-3 p-4 rounded-xl border border-border/50 bg-card text-left w-full',
               'transition-all duration-200 hover:bg-accent/5 hover:shadow-sm hover:-translate-y-0.5',
               isActive && `ring-2 ring-offset-1 ring-offset-background ${activeRing}`,
+              loading && 'opacity-70 cursor-wait',
             )}
             style={{ boxShadow: 'var(--shadow-card)' }}
           >
@@ -78,7 +81,7 @@ export function AlertStatsCards({ stats, activeFilter, onFilterClick }: AlertSta
             <div className="min-w-0">
               <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{label}</p>
               <p className={cn('text-2xl font-bold tabular-nums leading-tight font-mono', valueColor)}>
-                {stats[key]}
+                {loading ? '—' : stats[key]}
               </p>
             </div>
           </button>
