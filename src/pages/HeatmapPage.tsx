@@ -46,9 +46,9 @@ export default function HeatmapPage() {
                 <p className="text-muted-foreground mt-0.5 text-sm">Visualize a intensidade de movimento por área</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
               <Select value={timeRange} onValueChange={(value) => setTimeRange(value as typeof timeRange)}>
-                <SelectTrigger className="w-36 border-border/40">
+                <SelectTrigger className="w-full sm:w-36 border-border/40">
                   <Calendar className="h-4 w-4 mr-2" /><SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -59,12 +59,14 @@ export default function HeatmapPage() {
                   <SelectItem value="30d">Últimos 30 dias</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="outline" size="icon" onClick={refreshData} disabled={refreshing} className="border-border/40">
-                <RefreshCw className={cn('h-4 w-4', refreshing && 'animate-spin')} />
-              </Button>
-              <Button variant="outline" className="border-border/40">
-                <Download className="h-4 w-4 mr-2" />Exportar
-              </Button>
+              <div className="flex items-center gap-2 ml-auto sm:ml-0">
+                <Button variant="outline" size="icon" onClick={refreshData} disabled={refreshing} className="border-border/40 shrink-0">
+                  <RefreshCw className={cn('h-4 w-4', refreshing && 'animate-spin')} />
+                </Button>
+                <Button variant="outline" className="border-border/40">
+                  <Download className="h-4 w-4 sm:mr-2" /><span className="hidden sm:inline">Exportar</span>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
