@@ -1,52 +1,100 @@
 
 
-## Lint + typecheck + testes em uma única passada
+## Auditoria de dependências e remoção de dead code
 
-Executar e reportar, em sequência, os 3 gates de qualidade do projeto após a refatoração recente (skeletons ARIA, `<Page>` wrapper, dashboard de cobertura), produzindo um relatório consolidado para evidenciar que não há regressões de estilo, tipo ou comportamento.
+Identificar pacotes npm não utilizados, exports/arquivos órfãos e código morto, gerando relatório acionável + remoção segura em fases.
 
-### O que será executado (ordem rápido → lento)
+### Estado atual relevante
 
-| # | Gate | Comando | O que cobre |
-|---|------|---------|-------------|
-| 1 | TypeScript estrito | `npx tsc --noEmit` (usa `tsconfig.json`) | Tipagem em `src/` (strict, noImplicitAny, noUncheckedIndexedAccess) |
-| 2 | ESLint zero-warnings | `npm run lint -- --max-warnings=0` | Estilo, regras React/TS, `visao/no-hardcoded-colors` |
-| 3 | Vitest | `npx vitest run --reporter=verbose` | 118 testes unitários atuais |
-| 4 | Build de validação | `npm run build` | Confirma que o erro do dashboard de cobertura sumiu (arquivos `CoverageTable.tsx`, `CoverageStatsCards.tsx`, etc. já existem no disco — o erro reportado deve ser cache stale) |
+- `.github/workflows/dependency-audit.yml` só roda `npm audit` (vulnerabilidades), não detecta pacotes não utilizados.
+- Inventários antigos em `docs/` apontam taxa de uso baixa de utilitários Claude (~7%) e múltiplos componentes/hooks órfãos.
+- Sem ferramenta configurada para detectar dead code (knip, depcheck, ts-prune).
 
-### Como o resultado será apresentado
+### Solução em 4 fases
 
-- Bloco de resumo no chat com:
-  - ✅/❌ por gate.
-  - Contagem `errors` / `warnings` do lint.
-  - Contagem `pass/fail/total` + tempo do Vitest.
-  - Primeiras 20 linhas de cada falha (se houver), agrupadas por arquivo.
-- Se algum gate falhar: lista de correções propostas, agrupadas por origem (refator de skeletons, `<Page>` wrapper, dashboard de cobertura, ou pré-existente).
-- Geração de um arquivo `/mnt/documents/quality-gates-report.txt` com o stdout/stderr completo dos 3 comandos, para arquivamento.
+**Fase 1 — Instalar ferramentas de auditoria**
 
-### Tratamento de erros conhecidos
+- `knip` (devDep): detecta arquivos, exports, deps e devDeps não utilizados em projetos TS/Vite. Substitui depcheck + ts-prune com melhor precisão.
+- Configurar `knip.json` na raiz:
+  - `entry`: `src/main.tsx`, `index.html`, `vite.config.ts`, `vitest.config.ts`, `supabase/functions/**/index.ts`, `scripts/**/*.{mjs,sh}`, `playwright.config.ts`.
+  - `project`: `src/**/*.{ts,tsx}`.
+  - `ignore`: `src/integrations/supabase/types.ts`, `src/components/ui/**` (shadcn — pode ter componentes "para uso futuro" intencionalmente), stories `*.stories.tsx`, testes `**/*.test.*`.
+  - `ignoreDependencies`: pacotes usados só em config (ex.: `@types/*`, `tailwindcss-animate`, plugins Vite/PostCSS).
 
-- **Pré-existentes não relacionados à refatoração** (ex.: type errors em `@dnd-kit/utilities` dentro de `src/components/widgets/` mencionados na rodada anterior) serão **listados separadamente** e marcados como "fora de escopo desta verificação", para não confundir o que veio das mudanças recentes.
-- **Erro de build do CoveragePage** (`Could not load … CoverageTable`): os arquivos já existem no FS (`CoverageTable.tsx`, `CoverageStatsCards.tsx`, `CoverageRow.tsx`, `CoverageFilters.tsx`). Esperado que o build passe nesta execução; se persistir, será corrigido em seguida ajustando os imports para incluir extensão explícita ou `index.ts` na pasta.
+**Fase 2 — Gerar relatório de auditoria**
+
+- Novo script `scripts/audit-dependencies.mjs`:
+  - Roda `knip --reporter json` e captura saída.
+  - Categoriza achados em 4 buckets: `unused-files`, `unused-exports`, `unused-dependencies`, `unused-devDependencies`.
+  - Gera `/mnt/documents/dependency-audit-report.md` com:
+    - Sumário executivo (contagem por categoria).
+    - Lista por categoria com path/pacote.
+    - Estimativa de economia em KB (via `du -sh node_modules/<pkg>` para deps).
+    - Coluna "Risco de remoção" (baixo/médio/alto) baseada em heurística (ex.: hooks usados via dynamic import = alto).
+  - Adiciona script npm: `"audit:deadcode": "node scripts/audit-dependencies.mjs"`.
+
+**Fase 3 — Remoção em fases (com revisão humana)**
+
+Após relatório, propor 3 PRs lógicos para revisão antes de aplicar:
+
+1. **Pacotes obviamente não utilizados** (após confirmar zero referências):
+   - Candidatos prováveis baseados no inventário antigo: scripts `install-all-deps.sh` lista `cypress`, `msw`, `@storybook/*`, `vite-plugin-pwa`, `workbox-window`, `chromatic` — verificar quais nunca foram efetivamente integrados.
+   - Comando: `npm uninstall <pkg1> <pkg2> ...`.
+
+2. **Arquivos órfãos** (sem nenhum import em todo o projeto):
+   - Componentes utilitários Claude listados como "❌ Não usados" no inventário (`EmptyState`, `ErrorState`, `LoadingSpinner`, `Breadcrumbs` antigos, `StatCard`, etc.) — confirmar com knip antes de deletar.
+   - Hooks órfãos (`useDebounce`, `useToggle`, `useInterval`, `useTimeout`, `useDocumentTitle`, etc.) listados no inventário.
+   - Libs órfãs (`formatters`, `validators`, `apiError`, `logger` duplicado, `rateLimiter`, etc.).
+
+3. **Exports não utilizados** (arquivo é usado mas tem exports mortos):
+   - Aplicar via PRs menores por pasta (services, utils, lib).
+
+**Cada deleção é precedida por:**
+- Busca dupla com `code--search_files` para confirmar zero referências (knip pode dar falso positivo em dynamic imports).
+- Lista de arquivos a deletar é apresentada antes de executar.
+
+**Fase 4 — CI gate contínuo**
+
+- Atualizar `.github/workflows/dependency-audit.yml`:
+  - Adicionar step `npx knip --reporter github` (formato adequado para PRs).
+  - Comentar PR com diff de deps se houver introdução de pacote não utilizado.
+  - **Não falha o build** inicialmente (warning-only) para evitar bloqueios; promover para erro após baseline limpa.
 
 ### Critérios de aceitação
 
-- Os 3 comandos rodam até o fim (mesmo se algum falhar — não interrompe na primeira falha).
-- Relatório no chat resume claramente o estado de cada gate.
-- Arquivo `quality-gates-report.txt` em `/mnt/documents/` com saída completa.
-- Falhas relacionadas às refatorações recentes têm proposta de correção objetiva.
-- Nenhuma alteração de código nesta rodada — apenas execução e relatório. Se o usuário aprovar correções, elas vêm em rodada subsequente.
-
-### Riscos
-
-- **Risco:** lint/typecheck podem demorar (>2 min cada em projetos grandes).
-  - **Mitigação:** rodar os 3 em sequência com timeout adequado; se passar de 5 min cada, abortar e usar `--max-warnings=10` temporário só para diagnosticar.
-- **Risco:** muitos warnings pré-existentes podem inundar o relatório.
-  - **Mitigação:** sumarizar por contagem e mostrar só as 20 primeiras linhas de cada categoria.
-- **Risco:** Vitest pode falhar por algum mock global novo introduzido na refator.
-  - **Mitigação:** se >5 falhas, isolar por arquivo e propor fix targetado.
+- `npm run audit:deadcode` gera relatório markdown em `/mnt/documents/dependency-audit-report.md`.
+- Relatório lista, separadamente: arquivos órfãos, exports órfãos, deps órfãs, devDeps órfãs.
+- Cada item tem path/pacote + estimativa de impacto + risco.
+- 3 PRs de remoção propostos no chat para aprovação antes de executar (não removo nada sem revisão).
+- Após remoção: `npm run build`, `npx tsc --noEmit` e `npx vitest run` continuam passando.
+- CI passa a rodar knip semanalmente (warning-only).
+- Documentação `docs/DEPENDENCY_AUDIT.md` explica como rodar local e interpretar.
 
 ### Arquivos a criar/editar
 
-- ➕ `/mnt/documents/quality-gates-report.txt` (saída consolidada)
-- Nenhum arquivo do projeto será editado nesta rodada.
+**Criar:**
+- ➕ `knip.json` (configuração)
+- ➕ `scripts/audit-dependencies.mjs` (gera relatório consolidado)
+- ➕ `docs/DEPENDENCY_AUDIT.md`
+
+**Editar:**
+- ✏️ `package.json` (devDep `knip` + script `audit:deadcode`)
+- ✏️ `.github/workflows/dependency-audit.yml` (adicionar step knip)
+
+**Deletar (em fases, após aprovação):**
+- 🗑️ Pacotes npm órfãos (lista exata vinda do relatório)
+- 🗑️ Arquivos `src/**` órfãos (lista exata vinda do relatório)
+
+### Riscos e mitigações
+
+- **Risco:** knip marca como morto algo carregado por dynamic import (`React.lazy`, `import()`).
+  - **Mitigação:** revisar manualmente cada arquivo antes de deletar; usar `code--search_files` com regex `lazy\\(.*<nome>` e `import\\(.*<nome>`.
+- **Risco:** componentes shadcn em `src/components/ui/` podem aparecer como não usados mas existem para uso futuro.
+  - **Mitigação:** já no `ignore` do knip.config.
+- **Risco:** remover dep em uso só em edge function Deno (não-Node).
+  - **Mitigação:** entry inclui `supabase/functions/**/index.ts`; revisão manual de `import_map`/imports Deno.
+- **Risco:** primeira execução pode listar centenas de itens, causando overwhelming.
+  - **Mitigação:** relatório agrupa por categoria + ordena por impacto; remoção em 3 PRs separados.
+- **Risco:** quebrar build ao remover algo aparentemente órfão (ex.: side-effect import).
+  - **Mitigação:** após cada PR de remoção, rodar gates (build + tsc + vitest) antes de prosseguir.
 
