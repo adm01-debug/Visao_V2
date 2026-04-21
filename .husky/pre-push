@@ -1,5 +1,12 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Espelha os gates estritos do CI para falhar cedo localmente.
+# Ordem: rápido → lento (type-check, lint, testes, build, bundle).
+set -e
+
+npm run type-check:strict
+npm run lint:ci
 npm run test:ci
-npm run lint
+npm run build
+npm run check:bundle-size

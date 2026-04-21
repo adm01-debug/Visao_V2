@@ -183,4 +183,34 @@ gh run view <id> --log
 
 ---
 
-**Última atualização:** 06/01/2026
+## 11. Build Gates Estritos
+
+O pipeline falha **explicitamente** em qualquer um dos 4 gates abaixo. Eles rodam ordenados por custo crescente para falhar rápido.
+
+| # | Gate | Comando | O que valida |
+|---|------|---------|--------------|
+| 1 | TypeScript estrito | `npm run type-check:strict` | Tipos em `src/` **e** `tests/` (stories/tests incluídos via `tsconfig.strict.json`) |
+| 2 | Lint zero-warnings | `npm run lint:ci` | ESLint com `--max-warnings=0` — qualquer warning vira erro |
+| 3 | Build de produção | `npm run build` | Vite build completo (inclui `check:mobile-nav` como prebuild) |
+| 4 | Bundle budget | `npm run check:bundle-size` | Chunks ≤ 600 KB raw / 200 KB gz; total ≤ 2 MB raw / 700 KB gz |
+
+### Reproduzir localmente
+
+```bash
+npm run type-check:strict && npm run lint:ci && npm run build && npm run check:bundle-size
+```
+
+O `.husky/pre-push` executa exatamente esses 4 gates antes de cada push, evitando que regressões cheguem ao CI.
+
+### Ajustando o orçamento de bundle
+
+Os limites em `scripts/check-bundle-size.mjs` (constante `LIMITS`) refletem o estado atual + ~15% de margem. Quando uma feature legítima exigir mais espaço:
+
+1. Confirme que o crescimento é justificado (não é regressão de dynamic import).
+2. Atualize `LIMITS` com o novo teto.
+3. Documente o motivo no commit.
+
+---
+
+**Última atualização:** 21/04/2026
+

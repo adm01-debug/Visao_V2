@@ -9,6 +9,7 @@
     "build-storybook": "storybook build",
     "build:dev": "vite build --mode development",
     "bundle-size": "size-limit",
+    "check:bundle-size": "node scripts/check-bundle-size.mjs",
     "check:mobile-nav": "node scripts/check-mobile-nav.mjs",
     "clean": "rm -rf dist node_modules/.cache",
     "coverage": "vitest run --coverage",
@@ -35,6 +36,7 @@
     "i18n:compile": "echo \"i18n compiled\"",
     "i18n:extract": "i18next-parser",
     "lint": "eslint .",
+    "lint:ci": "eslint . --max-warnings=0",
     "lint:css": "stylelint \"**/*.css\"",
     "lint:fix": "eslint . --fix",
     "lint:types": "tsc --noEmit",
@@ -56,6 +58,7 @@
     "test:unit": "vitest run --dir src/__tests__/unit",
     "test:watch": "vitest --watch",
     "type-check": "tsc --noEmit",
+    "type-check:strict": "tsc --noEmit -p tsconfig.strict.json",
     "typecheck": "tsc --noEmit",
     "validate": "npm run lint && npm run type-check && npm run test"
   },
