@@ -27,6 +27,16 @@ const ALLOWLIST = new Set([
   'AcessoNegado.tsx',
 ]);
 
+// Páginas com wrapper customizado que SUBSTITUEM o <main> do MainLayout
+// (ex.: declaram seu próprio `min-h-screen` ou Sidebar). Devem reaplicar
+// `mb-mobile-nav` explicitamente no container raiz para garantir consistência.
+const CUSTOM_WRAPPER_ALLOWLIST = new Set([
+  'DashboardV2.tsx',
+  'HeatmapPage.tsx',
+  'AnalyticsPage.tsx',
+  'TelegramSettingsPage.tsx',
+]);
+
 function listPages(dir) {
   return readdirSync(dir)
     .filter((entry) => {
