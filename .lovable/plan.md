@@ -1,53 +1,64 @@
 
 
-## Verificar CLS na transição loading → dados nos skeletons principais
+## Reservar espaço em filtros/tabs durante o loading
 
-Confirmar que skeletons de Dashboard, listas e tabelas reservam a mesma altura/largura que o conteúdo final, evitando Cumulative Layout Shift (CLS) durante a hidratação.
+Garantir que as áreas de filtros, tabs e contadores em Alertas, Câmeras e Zonas mantenham altura/largura estáveis enquanto os dados chegam, eliminando o "salto" da UI no primeiro render.
 
-### Investigação a realizar
+### Problema observado
 
-1. **Medir CLS real** via `browser--performance_profile` em `/dashboard`, `/cameras`, `/alerts`, `/people`. Meta: CLS < 0.1 (Web Vitals "good").
-2. **Comparar dimensões skeleton vs. real** — ler pares de arquivos:
-   - `DashboardStats` (4 cards) vs. `dashboard/StatsSkeleton` → confirmar `grid-cols-2 md:grid-cols-4` + altura fixa por card.
-   - `DashboardCameraGrid` vs. `CameraGridSkeleton` → confirmar `aspect-video` no skeleton (já presente em `LoadingState.tsx`).
-   - `DashboardAlerts` vs. `AlertsSidebarSkeleton` → conferir altura mínima da coluna lateral.
-   - `TableSkeleton` vs. tabelas reais (PeoplePage, RecognitionLogsPage) → conferir número de colunas e altura de linha.
-3. **Validar wrappers** — `AnimatedTransition` em `Dashboard.tsx` faz crossfade entre skeleton e conteúdo; confirmar que o pai tem altura estável (sem `h-auto` colapsando).
+Hoje, quando `loading === true`, várias páginas renderizam **somente o skeleton do conteúdo principal** e ocultam toda a faixa de filtros/tabs/contadores. Quando os dados chegam, essa faixa aparece de uma vez e empurra o conteúdo para baixo — gerando CLS visível mesmo após os fixes anteriores nos skeletons de cards/tabelas.
+
+Exemplo em `CamerasPage.tsx`: durante `loading` retorna apenas `<CamerasSkeleton />`, sem header, filtros nem o switcher de view mode. O mesmo padrão se repete em `AlertsPage` e `ZonesPage`.
+
+### Mudanças
+
+**1. Novo componente reutilizável** `src/components/skeletons/FiltersBarSkeleton.tsx`
+   - Altura fixa (`h-10`) replicando a barra real: search input + N selects + view switcher.
+   - Props: `searchWidth?`, `selectsCount?`, `showViewSwitcher?`, `showResetButton?`.
+   - Usa `Skeleton` existente — mesmas dimensões dos componentes finais (`Input` h-10, `Select` h-10, botões h-10).
+
+**2. Novo componente** `src/components/skeletons/TabsSkeleton.tsx`
+   - Reserva altura da `TabsList` (h-10) com N "pílulas" cinzas.
+   - Props: `tabsCount?` (default 3).
+
+**3. Refatorar páginas para renderizar header+filtros sempre, e skeleton apenas no conteúdo:**
+
+   - **`src/pages/CamerasPage.tsx`** — remover early `return <CamerasSkeleton />`. Em vez disso:
+     - Sempre renderizar header (com contador "—" enquanto carrega).
+     - Sempre renderizar barra de filtros (desabilitada durante loading via `disabled` prop).
+     - Substituir apenas o `<div className="grid">` por `<CameraGridSkeleton count={8} />` quando `loading`.
+
+   - **`src/pages/AlertsPage.tsx`** — mesmo padrão: manter `AlertSeveritySummary`+`AlertStatsCards`+filtros visíveis, trocar apenas a lista de alertas por `<ListSkeleton count={5} />`.
+     - `AlertSeveritySummary` e `AlertStatsCards` precisam aceitar `loading?: boolean` para mostrar valores `—` em vez de zeros enganosos.
+
+   - **`src/pages/ZonesPage.tsx`** — manter tabs e header; trocar apenas o conteúdo da tab ativa por `<TableSkeleton rows={6} />` ou equivalente.
+
+**4. Atualizar `CamerasSkeleton.tsx`** para usar os novos blocos compostos (`FiltersBarSkeleton` + `CameraGridSkeleton`), eliminando duplicação de markup.
 
 ### Critérios de aceitação
 
-- CLS reportado pelo profiler em cada rota: **< 0.1**.
-- Cada skeleton tem mesmas dimensões macro do conteúdo final (grid cols, aspect ratio, altura mínima).
-- Nenhum "salto" visível ao trocar de loading para dados (verificação por screenshot antes/depois).
+- Em `/cameras`, `/alerts`, `/zones`: ao recarregar, o header, faixa de filtros e (quando aplicável) tabs aparecem **imediatamente** com altura estável; só o conteúdo abaixo troca de skeleton para dados.
+- Nenhum botão/filtro fica clicável durante `loading` (atributo `disabled` aplicado).
+- CLS visual percebido em torno da faixa de filtros ≈ 0 nas três rotas.
+- `npm run check:mobile-nav` continua verde (não mexer em `mb-mobile-nav`).
+- Sem hardcoded hex; usar tokens semânticos existentes.
 
-### Correções esperadas (aplicar somente se a medição falhar)
+### Arquivos a editar/criar
 
-| Problema provável | Correção |
-|---|---|
-| Skeleton de stats sem altura mínima | Adicionar `min-h-[88px]` ao `CardSkeleton` em `LoadingState.tsx` |
-| Camera grid skeleton com aspect ratio diferente do `VideoStreamPlayer` real | Alinhar `aspect-video` em ambos |
-| `AlertsSidebarSkeleton` colapsando | Adicionar `min-h-[600px]` ou usar `lg:h-full` |
-| `TableSkeleton` com nº de colunas hardcoded ≠ real | Passar `cols` corretos via prop em cada página |
-| `AnimatedTransition` causando reflow | Garantir `position: relative` + `min-height` no wrapper |
-
-### Validação final
-
-1. `browser--performance_profile` em 4 rotas após qualquer fix.
-2. Screenshots comparativos (loading × loaded) para `/dashboard` em viewport 1366×768 e 390×844 (mobile).
-3. Confirmar que `mb-mobile-nav` continua intacto (não regredir o gate `npm run check:mobile-nav`).
-
-### Arquivos potencialmente editados
-
-- ✏️ `src/components/ui/LoadingState.tsx` — alturas mínimas em `CardSkeleton`, `CameraGridSkeleton`.
-- ✏️ `src/components/dashboard/StatsSkeleton.tsx` (se existir separado) — alinhar grid.
-- ✏️ `src/components/dashboard/AlertsSidebarSkeleton.tsx` — altura mínima.
-- ✏️ `src/components/TableSkeleton.tsx` — aceitar `rowHeight` prop opcional.
-- ✏️ `src/components/ui/AnimatedTransition.tsx` — wrapper com `min-height` herdado do filho.
+- ➕ `src/components/skeletons/FiltersBarSkeleton.tsx` (novo)
+- ➕ `src/components/skeletons/TabsSkeleton.tsx` (novo)
+- ✏️ `src/components/skeletons/CamerasSkeleton.tsx` (consumir novos blocos)
+- ✏️ `src/pages/CamerasPage.tsx` (remover early return; skeleton só no grid)
+- ✏️ `src/pages/AlertsPage.tsx` (manter shell; skeleton só na lista)
+- ✏️ `src/pages/ZonesPage.tsx` (manter shell+tabs; skeleton só no conteúdo)
+- ✏️ `src/components/alerts/AlertSeveritySummary.tsx` e `AlertStatsCards.tsx` (aceitar prop `loading`)
 
 ### Riscos
 
-- **Risco:** alturas fixas podem quebrar responsividade em conteúdo dinâmico (ex: alertas variáveis).
-  - **Mitigação:** usar `min-h-*` (não `h-*`) para permitir crescimento, apenas reservando espaço inicial.
-- **Risco:** profiler do browser indisponível neste ambiente.
-  - **Mitigação:** fallback para inspeção estática comparando classes Tailwind dos pares skeleton/real e reportar achados; rodar profiler quando o preview estiver acessível.
+- **Risco:** filtros interativos durante loading podem disparar refetch antes da primeira resposta.
+  - **Mitigação:** prop `disabled` em todos inputs/selects enquanto `loading === true`.
+- **Risco:** `CamerasSkeleton` é importado por outras rotas (lazy fallback).
+  - **Mitigação:** manter export default funcional; refatorar internamente sem quebrar API.
+- **Risco:** `AlertSeveritySummary`/`AlertStatsCards` podem ter outros consumidores.
+  - **Mitigação:** prop `loading` opcional com default `false` — comportamento preserva-se.
 
