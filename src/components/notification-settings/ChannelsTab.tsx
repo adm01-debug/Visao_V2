@@ -17,7 +17,7 @@ interface ChannelsTabProps {
   onTest: (channel: string) => void;
 }
 
-function RecipientList({ items, onRemove, onAdd, inputType, placeholder, testChannel, onTest }: {
+function RecipientList({ items, onRemove, onAdd, inputType, placeholder, testChannel: _testChannel, onTest: _onTest }: {
   items: string[];
   onRemove: (item: string) => void;
   onAdd: (value: string) => void;

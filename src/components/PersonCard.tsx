@@ -2,9 +2,8 @@
  * VISÃO - PersonCard (Refactored)
  * Compact mode extracted to ./person-card/PersonCardCompact.tsx
  */
-import { useCopyToClipboard } from "@/hooks";
 import { memo } from 'react';
-import { User, Mail, Phone, Building, Briefcase, MapPin, Calendar, Clock, Eye, Shield, Star, AlertTriangle, MoreVertical, Edit, Trash2, Camera, Ban, Check, Image } from 'lucide-react';
+import { User, Mail, Phone, Building, Briefcase, MapPin, Calendar, Clock, Eye, Star, MoreVertical, Edit, Trash2, Camera, Ban, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

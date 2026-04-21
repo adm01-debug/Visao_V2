@@ -45,7 +45,7 @@ export function useClipStorage(cameraId: string, cameraName: string) {
 
       toast.success('Gravação salva');
       return clipRecord.id;
-    } catch (error) {
+    } catch (_error) {
       toast.error('Erro ao salvar gravação');
       return null;
     }

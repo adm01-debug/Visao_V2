@@ -14,7 +14,6 @@ import { ExportMenu } from '@/components/ExportMenu';
 import { EmptyState } from '@/components/EmptyState';
 import { PaginationControls, usePagination } from '@/components/PaginationControls';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { filterAlertsBySearch } from '@/components/SearchInput';
 import { exportAlerts } from '@/lib/exportUtils';

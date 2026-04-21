@@ -5,7 +5,6 @@ import { logger } from "@/lib/logger";
  */
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { CompactClipControls } from './clip-recorder/CompactClipControls';
 import { FullClipControls } from './clip-recorder/FullClipControls';

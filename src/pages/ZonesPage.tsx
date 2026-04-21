@@ -2,7 +2,6 @@
  * VISÃO - Página: Zonas de Interesse - Design Premium
  */
 
-import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { EmptyState } from "@/components";
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Target, Plus, Search, Camera, RefreshCw, LayoutGrid, List, X, ChevronDown, Users, AlertTriangle, Activity } from 'lucide-react';
@@ -20,13 +19,13 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 
-import { ZoneCard, ZoneEditorSheet, ZoneViewDialog, zoneTypeConfig, type DbZone, type ZoneStats, type ZoneEvent } from '@/components/zones';
+import { ZoneCard, ZoneEditorSheet, ZoneViewDialog, zoneTypeConfig, type ZoneStats, type ZoneEvent } from '@/components/zones';
 import { PageMeta } from '@/components/PageMeta';
 
 type DbZoneLocal = Tables<'zones'>;
 
 export function ZonesPage() {
-  const { user } = useAuth();
+  const { user: _user } = useAuth();
   const { cameras } = useCameras();
 
   const [zones, setZones] = useState<DbZoneLocal[]>([]);

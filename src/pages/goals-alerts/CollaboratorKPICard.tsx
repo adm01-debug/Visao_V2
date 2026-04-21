@@ -1,7 +1,6 @@
 /**
  * VISÃO - KPI Collaborator Card
  */
-import { Badge } from "@/components/ui/badge";
 import { TrendingUp, TrendingDown, AlertTriangle, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { type CollaboratorKPI, getScoreColor, getScoreBg } from "./goalsTypes";

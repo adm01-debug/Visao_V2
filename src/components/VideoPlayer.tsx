@@ -1,4 +1,4 @@
-import { memo, useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   Play,
   Pause,

@@ -16,13 +16,13 @@ import { useMediaMTX } from '@/hooks/useMediaMTX';
 import { PageMeta } from '@/components/PageMeta';
 
 export default function StreamSettingsPage() {
-  const { refresh: refreshPaths } = useMediaMTX();
+  const { refresh: _refreshPaths } = useMediaMTX();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { cameras, loading: camerasLoading, updateCamera } = useCameras();
   const [selectedCamera, setSelectedCamera] = useState<DbCamera | null>(null);
-  const [testingStream, setTestingStream] = useState(false);
-  const [streamStatus, setStreamStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
+  const [_testingStream, setTestingStream] = useState(false);
+  const [_streamStatus, setStreamStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
 
   useEffect(() => {
     const cameraId = searchParams.get('camera');

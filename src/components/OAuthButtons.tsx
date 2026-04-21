@@ -34,7 +34,7 @@ export function OAuthButtons({ disabled, onSuccess }: OAuthButtonsProps) {
       });
       if (result.error) throw result.error;
       onSuccess?.();
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Erro no login com Google',
         description: 'Tente novamente ou use outro método.',

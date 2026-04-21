@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 import { toast } from 'sonner';
@@ -64,7 +64,7 @@ export function useCameras() {
       if (error) throw error;
       await fetchCameras();
       toast.success('Câmeras inicializadas com sucesso');
-    } catch (err) {
+    } catch (_err) {
       // rm
     }
   };

@@ -114,7 +114,7 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
 
       const { data } = supabase.storage.from('faces' as never).getPublicUrl(filePath);
       return data.publicUrl;
-    } catch (err) {
+    } catch (_err) {
       toast({
         title: 'Erro no upload',
         description: 'Não foi possível fazer upload da imagem',
@@ -136,7 +136,7 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
       toast({ title: 'Pessoa cadastrada com sucesso!' });
       await fetchKnownFaces();
       return true;
-    } catch (err) {
+    } catch (_err) {
       toast({
         title: 'Erro',
         description: 'Não foi possível cadastrar pessoa',
@@ -161,7 +161,7 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
       toast({ title: 'Pessoa atualizada com sucesso!' });
       await fetchKnownFaces();
       return true;
-    } catch (err) {
+    } catch (_err) {
       toast({
         title: 'Erro',
         description: 'Não foi possível atualizar pessoa',
@@ -186,7 +186,7 @@ export function useFaceRecognition(): UseFaceRecognitionReturn {
       toast({ title: 'Pessoa excluída com sucesso!' });
       await fetchKnownFaces();
       return true;
-    } catch (err) {
+    } catch (_err) {
       toast({
         title: 'Erro',
         description: 'Não foi possível excluir pessoa',

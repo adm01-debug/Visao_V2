@@ -13,7 +13,7 @@ import {
 } from 'recharts';
 import { format, subDays, startOfDay, eachDayOfInterval, eachHourOfInterval, subHours } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { TrendingUp, BarChart3, Calendar } from 'lucide-react';
+import { TrendingUp, BarChart3 } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 

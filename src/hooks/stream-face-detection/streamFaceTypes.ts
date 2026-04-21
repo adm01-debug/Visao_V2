@@ -1,4 +1,4 @@
-import { DetectedFace, ListType } from '@/components/FaceRecognitionOverlay';
+import { DetectedFace } from '@/components/FaceRecognitionOverlay';
 
 export interface FaceDetectionResult {
   faces: Array<{

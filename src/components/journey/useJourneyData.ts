@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { format, startOfDay, endOfDay, subDays, differenceInMinutes } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
-const loadJsPDF = () => import('jspdf').then(m => m.default);
+const _loadJsPDF = () => import('jspdf').then(m => m.default);
 
 export interface JourneyEntry {
   personId: string;

@@ -39,7 +39,7 @@ export function useAvatarUpload() {
 
       setAvatarUrl(url);
       toast.success('Avatar atualizado!');
-    } catch (error) {
+    } catch (_error) {
       toast.error('Erro ao enviar avatar');
     } finally {
       setUploading(false);
@@ -57,7 +57,7 @@ export function useAvatarUpload() {
 
       setAvatarUrl(null);
       toast.success('Avatar removido!');
-    } catch (error) {
+    } catch (_error) {
       toast.error('Erro ao remover avatar');
     } finally {
       setUploading(false);

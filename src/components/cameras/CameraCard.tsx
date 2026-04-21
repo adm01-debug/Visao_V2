@@ -3,9 +3,7 @@
  */
 
 import { useState } from 'react';
-import {
-  Camera, Maximize2, Pause, Play, Volume2, VolumeX,
-  Wifi, WifiOff, Circle, MoreHorizontal, Settings,
+import { Maximize2, Pause, Play, Volume2, VolumeX, WifiOff, Circle, MoreHorizontal, Settings,
   Trash2, MapPin, AlertTriangle, ScanFace, Clock,
 } from 'lucide-react';
 import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';
@@ -49,7 +47,7 @@ export function CameraCard({
 }: CameraCardProps) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
-  const [showOverlays, setShowOverlays] = useState(true);
+  const [showOverlays, _setShowOverlays] = useState(true);
 
   const isOnline = camera.status !== 'offline';
   const isCompact = viewMode === 'grid-4x4' || viewMode === 'list';

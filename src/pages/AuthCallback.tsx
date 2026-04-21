@@ -64,7 +64,7 @@ export default function AuthCallback() {
             throw new Error('Tokens não encontrados');
           }
         }
-      } catch (error) {
+      } catch (_error) {
         // Auth callback error handled silently
         setStatus('error');
         setMessage('Erro na autenticação. Redirecionando...');

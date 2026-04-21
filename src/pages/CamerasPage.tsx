@@ -22,7 +22,6 @@ import {
 import {
   Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle,
 } from '@/components/ui/sheet';
-import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import { PageMeta } from '@/components/PageMeta';
 

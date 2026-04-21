@@ -1,11 +1,10 @@
 import React from "react";
 import {
   Camera, Bell, Users, MapPin, Settings, LayoutDashboard,
-  Video, BarChart3, Shield, Search, AlertTriangle,
+  Video, BarChart3, Shield, AlertTriangle,
   Wifi, WifiOff,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 
 export const quickActions = [
   { id: "dashboard", title: "Dashboard", icon: <LayoutDashboard className="h-4 w-4" />, route: "/dashboard" },

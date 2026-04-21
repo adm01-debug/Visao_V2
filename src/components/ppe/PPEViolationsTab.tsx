@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { PPEIcon } from './PPEIcon';
-import { PPE_LABELS, PPEType } from '@/hooks/usePPEDetection';
+import { PPE_LABELS } from '@/hooks/usePPEDetection';
 import { CheckCircle2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';

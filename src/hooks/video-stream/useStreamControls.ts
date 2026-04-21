@@ -3,7 +3,7 @@
  */
 import { useCallback, useRef } from 'react';
 import type Hls from 'hls.js';
-import { StreamQuality, StreamEvents } from '@/types/streaming';
+import { StreamQuality } from '@/types/streaming';
 
 interface UseStreamControlsOptions {
   videoRef: React.RefObject<HTMLVideoElement>;

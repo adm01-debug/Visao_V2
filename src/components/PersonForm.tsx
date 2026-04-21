@@ -4,7 +4,7 @@
  */
 
 import { memo, useState } from 'react';
-import { User, Camera, Upload, Save, X, Loader2 } from 'lucide-react';
+import { User, Camera, Save, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';

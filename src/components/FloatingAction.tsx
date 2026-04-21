@@ -2,7 +2,7 @@
  * Floating Action Button
  */
 import React, { useState } from 'react';
-import { Plus, X } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 export interface FloatingActionItem { icon: React.ReactNode; label: string; onClick: () => void; }
 export const FloatingAction: React.FC<{ items: FloatingActionItem[] }> = ({ items }) => {

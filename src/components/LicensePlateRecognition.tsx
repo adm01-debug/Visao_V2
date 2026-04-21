@@ -1,7 +1,6 @@
 /**
  * VISÃO - LicensePlateRecognition (Refactored)
  */
-import { logger } from "@/lib/logger";
 import { useState, useRef, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

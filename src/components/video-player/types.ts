@@ -1,4 +1,4 @@
-import type { StreamConfig, StreamQuality, StreamStatus } from '@/types/streaming';
+import type { StreamConfig } from '@/types/streaming';
 import type { AnalysisType, AnalysisResult, AnalysisAlert } from '@/hooks/useImageAnalysis';
 import type { DbRule } from '@/types/rules';
 

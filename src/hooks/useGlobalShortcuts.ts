@@ -66,7 +66,7 @@ export function useGlobalShortcuts() {
       const metaMatch = !!shortcut.meta === (event.metaKey || event.ctrlKey);
       const shiftMatch = !!shortcut.shift === event.shiftKey;
       const altMatch = !!shortcut.alt === event.altKey;
-      const ctrlMatch = !shortcut.meta || (event.metaKey || event.ctrlKey);
+      const _ctrlMatch = !shortcut.meta || (event.metaKey || event.ctrlKey);
 
       if (keyMatch && metaMatch && shiftMatch && altMatch) {
         event.preventDefault();

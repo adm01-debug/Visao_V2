@@ -43,7 +43,7 @@ export function usePanicButton() {
       // Get geolocation
       let latitude: number | null = null;
       let longitude: number | null = null;
-      let locationAddress: string | null = null;
+      const locationAddress: string | null = null;
 
       try {
         const pos = await new Promise<GeolocationPosition>((resolve, reject) =>

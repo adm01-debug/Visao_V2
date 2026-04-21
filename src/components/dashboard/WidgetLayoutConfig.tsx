@@ -16,7 +16,7 @@ interface WidgetLayoutConfigProps {
   resetLayout: () => void;
 }
 
-export function WidgetLayoutConfig({ widgets, toggleWidget, reorderWidgets, resetLayout }: WidgetLayoutConfigProps) {
+export function WidgetLayoutConfig({ widgets, toggleWidget, reorderWidgets: _reorderWidgets, resetLayout }: WidgetLayoutConfigProps) {
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -30,7 +30,7 @@ export function WidgetLayoutConfig({ widgets, toggleWidget, reorderWidgets, rese
           <SheetDescription>Escolha quais widgets exibir e arraste para reordenar</SheetDescription>
         </SheetHeader>
         <div className="mt-6 space-y-3">
-          {widgets.map((widget, index) => (
+          {widgets.map((widget, _index) => (
             <div key={widget.id} className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-muted/20">
               <div className="flex items-center gap-3">
                 <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />

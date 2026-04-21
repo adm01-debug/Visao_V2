@@ -1,4 +1,3 @@
-import { getRelativeTime, formatDuration } from "@/lib/dateUtils";
 import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';

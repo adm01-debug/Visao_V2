@@ -53,7 +53,7 @@ export const useFullscreen = <T extends HTMLElement = HTMLElement>(): UseFullscr
       } else if (element.webkitRequestFullscreen) {
         await element.webkitRequestFullscreen();
       }
-    } catch (error) {
+    } catch (_error) {
 }
   }, []);
 
@@ -64,7 +64,7 @@ export const useFullscreen = <T extends HTMLElement = HTMLElement>(): UseFullscr
       } else if (document.webkitExitFullscreen) {
         await document.webkitExitFullscreen();
       }
-    } catch (error) {
+    } catch (_error) {
 }
   }, []);
 

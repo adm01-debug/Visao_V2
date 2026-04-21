@@ -83,7 +83,7 @@ interface BreadcrumbsProps {
   className?: string;
 }
 
-export const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(function Breadcrumbs({ items, className }, ref) {
+export const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(function Breadcrumbs({ items, className }, _ref) {
   const location = useLocation();
   const currentPath = location.pathname;
 

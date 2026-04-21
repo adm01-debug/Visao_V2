@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Camera } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { useCameras } from '@/hooks/useCameras';
 import { cn } from '@/lib/utils';
 
@@ -44,7 +44,7 @@ export function CameraMapWidget() {
 
         {/* Location markers */}
         <div className="absolute inset-4 flex flex-wrap gap-2 content-start">
-          {locations.map(([location, cams], index) => {
+          {locations.map(([location, cams], _index) => {
             const onlineCount = cams?.filter(c => c.status === 'online' || c.status === 'alert').length || 0;
             const totalCount = cams?.length || 0;
             const hasAlert = cams?.some(c => c.status === 'alert');

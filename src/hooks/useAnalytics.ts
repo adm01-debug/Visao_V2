@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { logger } from '@/lib/logger';
 import { trackEvent, trackPageView } from '@/lib/analytics';
 
 export const useAnalytics = () => {

@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  Users, Clock, Coffee, TrendingUp, TrendingDown,
+  Users, Clock, Coffee, TrendingUp,
   Timer, MapPin, BarChart3, CheckCircle2,
   ArrowUpRight, ArrowDownRight, Minus
 } from "lucide-react";
@@ -17,7 +17,6 @@ import {
   PieChart, Pie, Cell, LineChart, Line, CartesianGrid, Legend,
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
 } from "recharts";
-import { Helmet } from "react-helmet-async";
 import { PageMeta } from '@/components/PageMeta';
 
 function generateProductivityData(persons: Array<{ id: string; name: string; department: string | null }>) {

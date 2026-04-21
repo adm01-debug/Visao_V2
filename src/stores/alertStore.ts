@@ -15,7 +15,7 @@ interface AlertStore {
 
 export const useAlertStore = create<AlertStore>()(
   persist(
-    (set, get) => ({
+    (set, _get) => ({
       alerts: [],
       unreadCount: 0,
       addAlert: (alert) => set((state) => {

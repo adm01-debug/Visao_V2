@@ -26,7 +26,7 @@ interface LiveFaceRecognitionProps {
 export function LiveFaceRecognition({ cameraId = 'webcam', cameraName = 'Webcam', className, autoStart = false, showControls = true, showStats = true, onFaceRecognized, onUnknownFace }: LiveFaceRecognitionProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [hasCamera, setHasCamera] = useState(false);
+  const [_hasCamera, setHasCamera] = useState(false);
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);

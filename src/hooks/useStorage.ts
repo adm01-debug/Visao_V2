@@ -1,4 +1,3 @@
-import { logger } from "@/lib/logger";
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useStorage
@@ -207,7 +206,7 @@ export function useStorage(): UseStorageReturn {
       }
 
       return true;
-    } catch (err) {
+    } catch (_err) {
 
       return false;
     }
@@ -233,7 +232,7 @@ export function useStorage(): UseStorageReturn {
       }
 
       return true;
-    } catch (err) {
+    } catch (_err) {
 
       return false;
     }

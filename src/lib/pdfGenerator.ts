@@ -169,7 +169,7 @@ function renderSummary(
   let currentY = yPosition;
   let itemsInRow = 0;
 
-  data.forEach((item, index) => {
+  data.forEach((item, _index) => {
     if (itemsInRow >= 4) {
       xPosition = margin;
       currentY += cardHeight + 5;

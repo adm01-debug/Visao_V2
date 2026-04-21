@@ -75,7 +75,7 @@ export function useAlerts() {
 
       if (error) throw error;
       await fetchAlerts();
-    } catch (err) {
+    } catch (_err) {
       // rm
     }
   };

@@ -8,7 +8,7 @@ export const initAnalytics = (): void => {
   initialized = true;
 };
 
-export const trackEvent = (name: EventName, properties?: EventProperties): void => {
+export const trackEvent = (_name: EventName, _properties?: EventProperties): void => {
   if (!initialized) return;
   // Analytics event tracked silently
 };
@@ -21,7 +21,7 @@ export const trackError = (error: Error, context?: Record<string, unknown>): voi
   trackEvent('error', { message: error.message, stack: error.stack, ...context });
 };
 
-export const setUser = (userId: string, traits?: Record<string, unknown>): void => {
+export const setUser = (_userId: string, _traits?: Record<string, unknown>): void => {
   // User set silently
 };
 

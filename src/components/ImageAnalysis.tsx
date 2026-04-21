@@ -6,7 +6,6 @@
 import { memo, useState, useRef, useCallback } from 'react';
 import {
   Upload,
-  Camera,
   Scan,
   User,
   Car,
@@ -19,8 +18,6 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { DETECTION_COLORS } from '@/constants/chartColors';
@@ -58,7 +55,7 @@ function ImageAnalysisComponent({
   const [activeTab, setActiveTab] = useState('image');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const _canvasRef = useRef<HTMLCanvasElement>(null);
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -83,7 +80,7 @@ function ImageAnalysisComponent({
       const analysisResult = await onAnalyze(imageData);
       setResult(analysisResult);
       setActiveTab('results');
-    } catch (err) {
+    } catch (_err) {
       setError('Erro ao analisar imagem');
     } finally {
       setIsAnalyzing(false);
@@ -119,7 +116,7 @@ function ImageAnalysisComponent({
     return 'text-destructive';
   };
 
-  const detectionCounts = result?.detections.reduce((acc, d) => {
+  const _detectionCounts = result?.detections.reduce((acc, d) => {
     acc[d.type] = (acc[d.type] || 0) + 1;
     return acc;
   }, {} as Record<string, number>) || {};

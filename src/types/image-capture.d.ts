@@ -30,7 +30,7 @@ declare class ImageCapture {
   grabFrame(): Promise<ImageBitmap>;
 }
 
-interface Window {
+interface _Window {
   ImageCapture: typeof ImageCapture;
 }
 

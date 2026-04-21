@@ -11,7 +11,7 @@
 
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useFaceAPI, FaceDetection as FaceAPIDetection } from './useFaceAPI';
+import { useFaceAPI } from './useFaceAPI';
 
 // ============================================
 // TIPOS (Compatíveis com versão Lovable)

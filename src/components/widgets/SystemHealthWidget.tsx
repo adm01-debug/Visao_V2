@@ -1,5 +1,5 @@
 import React from 'react';
-import { Activity, Wifi, Database, Cpu, CheckCircle2, XCircle } from 'lucide-react';
+import { Activity, Wifi, Database, Cpu } from 'lucide-react';
 import { useCameras } from '@/hooks/useCameras';
 import { cn } from '@/lib/utils';
 

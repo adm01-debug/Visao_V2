@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {
-  Camera,
   AlertTriangle,
   Users,
   Play,
@@ -9,13 +8,10 @@ import {
   Volume2,
   VolumeX,
   Brain,
-  Wifi,
-  WifiOff,
 } from 'lucide-react';
 import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { CameraPlaceholder } from '@/components/cameras/CameraPlaceholder';
 import type { UICameraData } from './types';
