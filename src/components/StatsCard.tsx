@@ -13,6 +13,7 @@ interface StatsCardProps {
   };
   variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger';
   sparklineData?: number[];
+  index?: number;
 }
 
 const iconVariantStyles = {
