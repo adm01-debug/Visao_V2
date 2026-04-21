@@ -144,40 +144,47 @@ export function CamerasPage() {
       </div>
 
       {/* Camera Grid */}
-      {loading ? (
-        <div className={cn('grid gap-4', GRID_CLASSES[viewMode])}>
-          {Array.from({ length: 8 }).map((_, i) => (
-            <CameraSkeleton key={i} />
-          ))}
-        </div>
-      ) : filteredCameras.length === 0 ? (
-        <EmptyState
-          icon={Camera}
-          title={cameras.length === 0 ? 'Nenhuma câmera cadastrada' : 'Nenhuma câmera encontrada'}
-          description={cameras.length === 0
-            ? 'Adicione sua primeira câmera para começar o monitoramento em tempo real.'
-            : 'Nenhuma câmera corresponde aos filtros aplicados. Tente ajustar sua busca.'}
-          actionLabel={cameras.length === 0 ? '+ Adicionar Câmera' : undefined}
-          onAction={cameras.length === 0 ? () => {} : undefined}
-          secondaryActionLabel={cameras.length > 0 ? 'Limpar filtros' : undefined}
-          onSecondaryAction={cameras.length > 0 ? () => { setSearchQuery(''); setStatusFilter('all'); } : undefined}
-        />
-      ) : (
-        <div className={cn('grid gap-4', GRID_CLASSES[viewMode])}>
-          {filteredCameras.map(camera => (
-            <CameraCard
-              key={camera.id} camera={camera}
-              isSelected={selectedCamera === camera.id}
-              viewMode={viewMode}
-              onSelect={() => setSelectedCamera(camera.id)}
-              onExpand={() => setExpandedCamera(camera)}
-              onSettings={() => setSettingsCamera(camera)}
-              enableContinuousAnalysis
-              analysisRules={activeRules}
-            />
-          ))}
-        </div>
-      )}
+      <div aria-busy={loading} aria-live="polite">
+        {loading ? (
+          <div
+            role="status"
+            aria-label="Carregando câmeras…"
+            className={cn('grid gap-4', GRID_CLASSES[viewMode])}
+          >
+            {Array.from({ length: 8 }).map((_, i) => (
+              <CameraSkeleton key={i} />
+            ))}
+            <span className="sr-only">Carregando câmeras…</span>
+          </div>
+        ) : filteredCameras.length === 0 ? (
+          <EmptyState
+            icon={Camera}
+            title={cameras.length === 0 ? 'Nenhuma câmera cadastrada' : 'Nenhuma câmera encontrada'}
+            description={cameras.length === 0
+              ? 'Adicione sua primeira câmera para começar o monitoramento em tempo real.'
+              : 'Nenhuma câmera corresponde aos filtros aplicados. Tente ajustar sua busca.'}
+            actionLabel={cameras.length === 0 ? '+ Adicionar Câmera' : undefined}
+            onAction={cameras.length === 0 ? () => {} : undefined}
+            secondaryActionLabel={cameras.length > 0 ? 'Limpar filtros' : undefined}
+            onSecondaryAction={cameras.length > 0 ? () => { setSearchQuery(''); setStatusFilter('all'); } : undefined}
+          />
+        ) : (
+          <div className={cn('grid gap-4', GRID_CLASSES[viewMode])}>
+            {filteredCameras.map(camera => (
+              <CameraCard
+                key={camera.id} camera={camera}
+                isSelected={selectedCamera === camera.id}
+                viewMode={viewMode}
+                onSelect={() => setSelectedCamera(camera.id)}
+                onExpand={() => setExpandedCamera(camera)}
+                onSettings={() => setSettingsCamera(camera)}
+                enableContinuousAnalysis
+                analysisRules={activeRules}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Camera Detail Modal */}
       <CameraDetailView

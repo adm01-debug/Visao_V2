@@ -187,27 +187,29 @@ export function AlertsPage() {
         </div>
       </div>
 
-      {loading ? (
-        <ListSkeleton count={viewMode === 'grid' ? 8 : 6} />
-      ) : (
-        <div className={cn(
-          viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'flex flex-col gap-2',
-          'transition-all duration-300 ease-out'
-        )}>
-          {paginatedItems.map((alert, index) => (
-            <div
-              key={alert.id}
-              className={cn(
-                'animate-fade-in transition-all duration-300 ease-out',
-                removingAlerts.has(alert.id) && 'opacity-0 scale-95 -translate-x-4'
-              )}
-              style={{ animationDelay: `${index * 30}ms`, animationFillMode: 'backwards' }}
-            >
-              <AlertItem alert={alert} isSelected={selectedAlerts.has(alert.id)} onSelect={(selected) => handleSelectAlert(alert.id, selected)} onView={() => setDetailsAlert(alert)} onMarkRead={() => markAsRead(alert.id)} onDelete={() => animateAndDelete([alert.id])} viewMode={viewMode} />
-            </div>
-          ))}
-        </div>
-      )}
+      <div aria-busy={loading} aria-live="polite">
+        {loading ? (
+          <ListSkeleton count={viewMode === 'grid' ? 8 : 6} />
+        ) : (
+          <div className={cn(
+            viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'flex flex-col gap-2',
+            'transition-all duration-300 ease-out'
+          )}>
+            {paginatedItems.map((alert, index) => (
+              <div
+                key={alert.id}
+                className={cn(
+                  'animate-fade-in transition-all duration-300 ease-out',
+                  removingAlerts.has(alert.id) && 'opacity-0 scale-95 -translate-x-4'
+                )}
+                style={{ animationDelay: `${index * 30}ms`, animationFillMode: 'backwards' }}
+              >
+                <AlertItem alert={alert} isSelected={selectedAlerts.has(alert.id)} onSelect={(selected) => handleSelectAlert(alert.id, selected)} onView={() => setDetailsAlert(alert)} onMarkRead={() => markAsRead(alert.id)} onDelete={() => animateAndDelete([alert.id])} viewMode={viewMode} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {!loading && filteredAlerts.length === 0 && (
         <EmptyState icon={BellOff} title={hasActiveFilters ? 'Nenhum alerta encontrado' : 'Nenhum alerta registrado'}

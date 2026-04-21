@@ -246,30 +246,37 @@ export function ZonesPage() {
           {loading ? 'Carregando zonas...' : `${filteredZones.length} zonas encontradas`}
         </div>
 
-        {loading ? (
-          <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'flex flex-col gap-2')}>
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Card key={i} className="border-border/40 bg-card/60 min-h-[180px] overflow-hidden">
-                <CardContent className="p-4 space-y-3">
-                  <div className="h-5 w-1/2 rounded bg-muted animate-pulse" />
-                  <div className="h-3 w-1/3 rounded bg-muted animate-pulse" />
-                  <div className="h-24 w-full rounded bg-muted animate-pulse" />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : filteredZones.length === 0 ? (
-          <EmptyState icon={<Target />} title={zones.length === 0 ? 'Nenhuma zona configurada' : 'Nenhuma zona encontrada'}
-            description={zones.length === 0 ? 'Crie zonas de interesse nas suas câmeras.' : 'Nenhuma zona corresponde aos filtros.'}
-            action={zones.length === 0 && cameras.length > 0 ? { label: '+ Criar Zona', onClick: () => openEditor(cameras[0]) } : undefined}
-          />
-        ) : (
-          <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'flex flex-col gap-2')}>
-            {filteredZones.map(zone => (
-              <ZoneCard key={zone.id} zone={zone} stats={zoneStats[zone.id]} cameraName={getCameraName(zone.camera_id)} onView={() => openView(zone)} onEdit={() => openEditor(getCameraById(zone.camera_id) ?? undefined, zone)} onDelete={() => setDeleteConfirm(zone)} onToggle={() => handleToggle(zone)} />
-            ))}
-          </div>
-        )}
+        <div aria-busy={loading} aria-live="polite">
+          {loading ? (
+            <div
+              role="status"
+              aria-label="Carregando zonas…"
+              className={cn(viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'flex flex-col gap-2')}
+            >
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Card key={i} aria-hidden="true" className="border-border/40 bg-card/60 min-h-[180px] overflow-hidden">
+                  <CardContent className="p-4 space-y-3">
+                    <div className="h-5 w-1/2 rounded bg-muted animate-pulse" />
+                    <div className="h-3 w-1/3 rounded bg-muted animate-pulse" />
+                    <div className="h-24 w-full rounded bg-muted animate-pulse" />
+                  </CardContent>
+                </Card>
+              ))}
+              <span className="sr-only">Carregando zonas…</span>
+            </div>
+          ) : filteredZones.length === 0 ? (
+            <EmptyState icon={<Target />} title={zones.length === 0 ? 'Nenhuma zona configurada' : 'Nenhuma zona encontrada'}
+              description={zones.length === 0 ? 'Crie zonas de interesse nas suas câmeras.' : 'Nenhuma zona corresponde aos filtros.'}
+              action={zones.length === 0 && cameras.length > 0 ? { label: '+ Criar Zona', onClick: () => openEditor(cameras[0]) } : undefined}
+            />
+          ) : (
+            <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'flex flex-col gap-2')}>
+              {filteredZones.map(zone => (
+                <ZoneCard key={zone.id} zone={zone} stats={zoneStats[zone.id]} cameraName={getCameraName(zone.camera_id)} onView={() => openView(zone)} onEdit={() => openEditor(getCameraById(zone.camera_id) ?? undefined, zone)} onDelete={() => setDeleteConfirm(zone)} onToggle={() => handleToggle(zone)} />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <ZoneEditorSheet isOpen={isEditorOpen} onClose={() => { setIsEditorOpen(false); setEditingZone(null); setEditorCamera(null); }} camera={editorCamera} zone={editingZone} onSave={handleSave} />

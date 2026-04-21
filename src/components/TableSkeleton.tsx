@@ -7,7 +7,13 @@ interface TableSkeletonProps {
 }
 
 export const TableSkeleton: React.FC<TableSkeletonProps> = ({ rows = 5, columns = 4 }) => (
-  <div className="space-y-2">
+  <div
+    role="status"
+    aria-live="polite"
+    aria-busy="true"
+    aria-label="Carregando tabela…"
+    className="space-y-2"
+  >
     <div className="flex gap-4 p-3 bg-muted/50 rounded">
       {Array.from({ length: columns }).map((_, i) => (
         <Skeleton key={i} className="h-4 flex-1" />
@@ -20,6 +26,7 @@ export const TableSkeleton: React.FC<TableSkeletonProps> = ({ rows = 5, columns 
         ))}
       </div>
     ))}
+    <span className="sr-only">Carregando tabela…</span>
   </div>
 );
 

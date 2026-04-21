@@ -7,7 +7,7 @@ export function SkeletonLoader({ variant = 'rectangular', width, height, classNa
   const baseClass = 'animate-pulse bg-muted';
   const variants = { text: 'rounded h-4', circular: 'rounded-full', rectangular: 'rounded-lg' };
 
-  return <div className={cn(baseClass, variants[variant], className)} style={{ width, height }} />;
+  return <div aria-hidden="true" className={cn(baseClass, variants[variant], className)} style={{ width, height }} />;
 }
 
 export default SkeletonLoader;
