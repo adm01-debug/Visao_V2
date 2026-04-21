@@ -152,9 +152,9 @@ const breakpoints = {
 
 ---
 
-## 11. Mobile Layout Checklist (Defesa em Profundidade — 5 camadas)
+## 11. Mobile Layout Checklist (Defesa em Profundidade — 6 camadas)
 
-A classe `mb-mobile-nav` é aplicada **uma única vez**, no `<main>` de `src/components/layout/MainLayout.tsx`. Como todas as rotas autenticadas passam pelo `MainLayout`, isso cobre 100% das páginas roteadas automaticamente. Combinada com fallback CSS, allowlist, snapshot e teste runtime, essa garantia é validada de 5 formas independentes.
+A classe `mb-mobile-nav` é aplicada **uma única vez**, no `<main>` de `src/components/layout/MainLayout.tsx`. Como todas as rotas autenticadas passam pelo `MainLayout`, isso cobre 100% das páginas roteadas automaticamente. Combinada com fallback CSS, allowlist, snapshot, teste runtime e snapshot visual, essa garantia é validada de 6 formas independentes.
 
 **Páginas NÃO devem redeclarar `mb-mobile-nav`** — fazê-lo causa dupla margem inferior. Exceções: páginas com wrapper raiz próprio cadastradas na `CUSTOM_WRAPPER_ALLOWLIST`.
 
@@ -214,6 +214,20 @@ npm run test:mobile-nav-runtime
 ```
 
 Rotas que redirecionam para `/auth` (sem credenciais seedadas no CI) são marcadas como `skipped` — as camadas 1-4 já garantem cobertura nesses casos. Quando há sessão autenticada disponível, falhas reais de padding são detectadas.
+
+### Camada 6 — Snapshot visual de sobreposição (BottomNav vs conteúdo)
+
+`tests/e2e/mobile-nav-overlap.spec.ts` valida em `/dashboard`, `/heatmap` e `/analytics` (viewport iPhone 12) que o último elemento renderizado dentro de `[data-app-scroll]` **não** invade os 60px da BottomNavigation. Combina:
+
+1. **Asserção geométrica** — após `scrollTop = scrollHeight`, mede `getBoundingClientRect().bottom` do último filho visível e exige `bottom <= viewportHeight - 60`.
+2. **Screenshot baseline** — captura faixa inferior da viewport (170px) e compara com PNG commitado em `tests/e2e/mobile-nav-overlap.spec.ts-snapshots/`, tolerando até 5% de diff (`maxDiffPixelRatio: 0.05`, `animations: 'disabled'`).
+
+```bash
+npm run test:mobile-nav-overlap                       # rodar
+npm run test:mobile-nav-overlap -- --update-snapshots # gerar/atualizar baselines
+```
+
+No CI roda com `continue-on-error: true` até as baselines existirem (gere localmente em ambiente Linux equivalente ao runner Ubuntu e commite os PNGs). Rotas sem sessão autenticada são `skipped`.
 
 ### Exceções (standalone)
 

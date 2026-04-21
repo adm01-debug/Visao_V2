@@ -52,6 +52,12 @@ jobs:
         env:
           CI: true
       
+      - name: Mobile Nav Overlap (Visual Snapshot)
+        run: npm run test:mobile-nav-overlap -- --project=mobile-safari --workers=2
+        continue-on-error: true
+        env:
+          CI: true
+      
       - name: Test
         run: npm run test -- --run
         env:
