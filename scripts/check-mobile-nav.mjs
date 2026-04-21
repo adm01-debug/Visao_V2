@@ -159,7 +159,63 @@ if (missingInCustom.length > 0) {
   failed = true;
 }
 
+if (undeclaredCustomWrappers.length > 0) {
+  console.error(`\n❌ ${undeclaredCustomWrappers.length} página(s) parecem usar wrapper customizado SEM cadastro:`);
+  for (const w of undeclaredCustomWrappers) {
+    console.error(`   - ${w.file}:${w.line}`);
+    if (w.snippet) console.error(`       ↳ ${w.snippet}`);
+  }
+  console.error(
+    `\nDetectamos padrões de wrapper raiz próprio (\`min-h-screen\`, \`h-screen\`, \`h-dvh\`, \`<Sidebar\`).\n` +
+    `Escolha UMA correção:\n` +
+    `  1. Remover o wrapper customizado (delegar ao <main> do MainLayout) — preferível.\n` +
+    `  2. Adicionar \`${REQUIRED_CLASS}\` ao container raiz E adicionar o arquivo à\n` +
+    `     CUSTOM_WRAPPER_ALLOWLIST em scripts/check-mobile-nav.mjs.\n`
+  );
+  failed = true;
+}
+
+// Snapshot de regressão (Camada 4)
+if (SNAPSHOT_MODE) {
+  const { writeFileSync } = await import('node:fs');
+  const snapshot = {
+    generatedAt: new Date().toISOString(),
+    pages: files
+      .map((f) => f.split(/[\\/]/).pop())
+      .sort()
+      .map((basename) => ({
+        file: basename,
+        mode: ALLOWLIST.has(basename)
+          ? 'standalone'
+          : CUSTOM_WRAPPER_ALLOWLIST.has(basename)
+          ? 'customWrapper'
+          : 'standard',
+      })),
+  };
+  writeFileSync(SNAPSHOT_PATH, JSON.stringify(snapshot, null, 2) + '\n');
+  console.log(`\n📸 Snapshot salvo em ${SNAPSHOT_PATH} (${snapshot.pages.length} páginas)`);
+} else {
+  // Comparar com snapshot existente, se houver
+  try {
+    const existing = JSON.parse(readFileSync(SNAPSHOT_PATH, 'utf8'));
+    const existingNames = new Set(existing.pages.map((p) => p.file));
+    const currentNames = new Set(files.map((f) => f.split(/[\\/]/).pop()));
+    const newPages = [...currentNames].filter((n) => !existingNames.has(n));
+    if (newPages.length > 0) {
+      console.error(`\n❌ ${newPages.length} nova(s) página(s) sem classificação no snapshot:`);
+      for (const n of newPages) console.error(`   - src/pages/${n}`);
+      console.error(
+        `\nClassifique cada página (standard / customWrapper / standalone) ajustando as allowlists\n` +
+        `e regenere o snapshot com: \`npm run check:mobile-nav -- --snapshot\`.\n`
+      );
+      failed = true;
+    }
+  } catch {
+    // snapshot ainda não existe — ok, gere com --snapshot na primeira vez
+  }
+}
+
 if (failed) process.exit(1);
 
 console.log(`\n✨ Layout mobile centralizado e consistente!`);
-console.log(`   ↳ Defesa em profundidade ativa: classe explícita no <main> + fallback CSS [data-app-scroll].\n`);
+console.log(`   ↳ Defesa em profundidade ativa: classe explícita + fallback CSS + heurística + snapshot + runtime E2E.\n`);
