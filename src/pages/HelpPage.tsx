@@ -22,7 +22,7 @@ export default function HelpPage() {
   })).filter(category => category.questions.length > 0);
 
   return (
-    <div className="p-6 space-y-6 max-w-6xl mx-auto animate-fade-in">
+    <div className="p-6 space-y-6 max-w-6xl mx-auto animate-fade-in mb-mobile-nav">
       <PageMeta title="Ajuda" description="Central de ajuda e documentação do sistema" />
       <div className="text-center space-y-4">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4"><HelpCircle className="w-8 h-8 text-primary" /></div>

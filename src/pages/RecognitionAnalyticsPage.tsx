@@ -19,7 +19,7 @@ export default function RecognitionAnalyticsPage() {
     <>
       <PageMeta title="Analytics de Reconhecimento" description="Estatísticas de reconhecimento facial" />
 
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background mb-mobile-nav">
         <div className="p-6 space-y-6">
           {/* Header */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">

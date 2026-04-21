@@ -66,7 +66,7 @@ export default function CollaboratorFlowMapPage() {
   const totalFlows = flowEdges.reduce((s, e) => s + e.count, 0);
 
   return (
-    <div className="space-y-6 p-6 max-w-7xl mx-auto">
+    <div className="space-y-6 p-6 max-w-7xl mx-auto mb-mobile-nav">
       <PageMeta title="Fluxo de Colaboradores" description="Mapa de fluxo e movimentação de colaboradores" />
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
