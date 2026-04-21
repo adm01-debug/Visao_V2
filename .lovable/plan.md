@@ -1,41 +1,53 @@
 
 
-## Plano: Micro-animações nos Cards do Dashboard
+## Checklist automatizada: garantir `mb-mobile-nav` em todas as páginas
 
-### Status atual
-- `StatCard` e `DataCard` já têm `hover:-translate-y-0.5 + shadow-lg + scale icon` (lift básico ok).
-- Skeletons de listagem já têm shimmer.
-- **Faltam:** entrada escalonada (stagger) ao montar, brilho sutil ao hover (sheen), e tap feedback mobile.
+Script de verificação que falha o build quando uma página esquece a classe `mb-mobile-nav`, evitando regressões de layout mobile (overlap com a bottom navigation).
 
-### Ações
+### O que será criado
 
-**1. `tailwind.config.ts`** — Adicionar keyframes reutilizáveis:
-- `card-lift`: leve translate + shadow ramp (300ms)
-- `sheen`: gradiente diagonal passando 1x no hover (700ms)
-- `card-enter`: fade + slide-up 8px (400ms ease-out)
+**1. Script de auditoria** — `scripts/check-mobile-nav.mjs`
+- Varre `src/pages/**/*.tsx`
+- Para cada página, valida se contém a string `mb-mobile-nav` no JSX raiz
+- Aplica allowlist para páginas legitimamente isentas:
+  - `AuthPage.tsx`, `ResetPasswordPage.tsx` — fluxo de auth (sem bottom nav)
+  - `NotFound.tsx` — página 404 standalone
+  - `Index.tsx` — apenas redireciona
+- Saída amigável:
+  ```
+  ✅ 47 páginas OK
+  ❌ 2 páginas sem `mb-mobile-nav`:
+     - src/pages/FooPage.tsx
+     - src/pages/BarPage.tsx
+  ```
+- Exit code `1` em caso de falha (quebra CI)
 
-**2. `src/components/StatCard.tsx`** — Refinar:
-- Adicionar `animate-card-enter` com `style={{ animationDelay }}` opcional (prop `index?: number` → `${index * 60}ms`).
-- Adicionar wrapper `relative overflow-hidden` + `<span>` absoluto para efeito sheen no hover (`opacity-0 group-hover:opacity-100`, gradiente from-transparent via-primary/10 to-transparent + animação translateX).
-- Adicionar `active:scale-[0.98]` para feedback tap mobile.
+**2. Integração no `package.json`**
+- Novo script: `"check:mobile-nav": "node scripts/check-mobile-nav.mjs"`
+- Encadeado em `lint` ou `prebuild` para rodar a cada build/CI
 
-**3. `src/components/common/DataCard.tsx`** — Mesmo tratamento (sheen + active scale + card-enter com delay).
+**3. Integração no GitHub Actions**
+- Adicionar passo `npm run check:mobile-nav` no workflow de CI existente, antes de `build`/`test`
+- Falha do script bloqueia merge
 
-**4. `src/components/dashboard/DashboardStats.tsx`** — Passar `index` para cada card renderizado para criar efeito cascata na entrada.
+**4. Documentação curta** — append em `docs/LAYOUTS.md`
+- Seção "Mobile Layout Checklist" explicando a regra e como adicionar exceções à allowlist
 
-**5. `src/components/alpr/ALPRStatsCards.tsx`** — Passar `index` igualmente (consistência ALPR Dashboard).
+### Detalhes técnicos
 
-**6. Validação**
-- `npx tsc --noEmit` → zero erros.
-- Confirmar que `prefers-reduced-motion` é respeitado (Tailwind já o faz globalmente via `motion-reduce:` — adicionar `motion-reduce:transform-none motion-reduce:animate-none` nos novos efeitos).
+- Node ESM puro (`.mjs`), sem dependências novas (usa `fs`, `path`, `glob` via `fs.readdirSync` recursivo)
+- Heurística: regex `/mb-mobile-nav/` no conteúdo do arquivo (suficiente — classes são strings literais Tailwind)
+- Allowlist em constante no topo do script para fácil manutenção
+- Performance: <100ms para varrer ~50 páginas
 
-### Resultado esperado
-- Cards entram em cascata suave ao carregar (60ms stagger).
-- Hover combina lift atual + sheen diagonal sutil sobre o card.
-- Tap em mobile: micro-shrink (98%) com retorno spring.
-- Acessibilidade preservada (`motion-reduce` desativa tudo).
-- Zero regressões — apenas adições de classes/keyframes.
+### Arquivos editados/criados
 
-### Tempo estimado
-~8 minutos.
+- ➕ `scripts/check-mobile-nav.mjs`
+- ✏️ `package.json` (novo script + hook em `prebuild`)
+- ✏️ `.github/workflows/*.yml` (adicionar passo, se workflow existir)
+- ✏️ `docs/LAYOUTS.md` (seção de checklist)
+
+### Memória a salvar
+
+Nova entrada em `mem://standards/mobile-nav-checklist` referenciando o script — para que futuras refatorações saibam da regra automatizada. Index.md será atualizado.
 
