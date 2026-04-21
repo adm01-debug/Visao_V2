@@ -7,7 +7,7 @@ import { SwipeableView } from '@/components/SwipeableView';
 interface MainLayoutProps { children: ReactNode; }
 
 export const MainLayout = ({ children }: MainLayoutProps) => (
-  <div className="flex h-screen bg-background">
+  <div className="flex h-screen h-[100dvh] bg-background">
     <Sidebar />
     <div className="flex flex-1 flex-col overflow-hidden">
       <Header />

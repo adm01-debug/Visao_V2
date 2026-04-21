@@ -469,10 +469,10 @@
 
   .touch-target { @apply min-h-[44px] min-w-[44px]; }
 
-  .mb-mobile-nav { @apply mb-0 md:mb-0; }
+  .mb-mobile-nav { @apply pb-0 md:pb-0; }
   @media (max-width: 767px) {
     .mb-mobile-nav {
-      margin-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+      padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
     }
   }
 

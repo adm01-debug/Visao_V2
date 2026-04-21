@@ -50,11 +50,14 @@ if (!wrapperContent.includes(REQUIRED_CLASS)) {
   console.log(`✅ MainLayout aplica \`${REQUIRED_CLASS}\` globalmente`);
 }
 
-// 2. Nenhuma página deve redeclarar
+// 2. Nenhuma página deve redeclarar nem criar scroll duplo
 const files = listPages(PAGES_DIR);
 const drift = [];
+const scrollDrift = [];
 let cleanCount = 0;
 let skipped = 0;
+
+const SCROLL_ANTIPATTERN = /h-\[calc\(100vh-/;
 
 for (const file of files) {
   const basename = file.split(/[\\/]/).pop();
@@ -63,14 +66,19 @@ for (const file of files) {
     continue;
   }
   const content = readFileSync(file, 'utf8');
+  let pageOk = true;
   if (content.includes(REQUIRED_CLASS)) {
     drift.push(relative(process.cwd(), file));
-  } else {
-    cleanCount++;
+    pageOk = false;
   }
+  if (SCROLL_ANTIPATTERN.test(content)) {
+    scrollDrift.push(relative(process.cwd(), file));
+    pageOk = false;
+  }
+  if (pageOk) cleanCount++;
 }
 
-console.log(`✅ ${cleanCount} páginas limpas (sem duplicação)`);
+console.log(`✅ ${cleanCount} páginas limpas (sem duplicação nem scroll duplo)`);
 console.log(`⊘  ${skipped} páginas isentas (allowlist)`);
 
 if (drift.length > 0) {
@@ -79,6 +87,18 @@ if (drift.length > 0) {
   console.error(
     `\nA classe é aplicada globalmente em ${WRAPPER_FILE}. ` +
     `Remova \`${REQUIRED_CLASS}\` da página para evitar dupla margem.\n`
+  );
+  failed = true;
+}
+
+if (scrollDrift.length > 0) {
+  console.error(`\n❌ ${scrollDrift.length} página(s) usam \`h-[calc(100vh-...)]\` (scroll duplo):`);
+  for (const f of scrollDrift) console.error(`   - ${f}`);
+  console.error(
+    `\nO scroll já é provido pelo SwipeableView no MainLayout. ` +
+    `Containers de página com altura fixa + overflow criam scroll aninhado, ` +
+    `quebrando o momentum no iOS e escondendo conteúdo atrás do BottomNavigation.\n` +
+    `Remova \`h-[calc(100vh-4rem)] overflow-auto\` do container raiz da página.\n`
   );
   failed = true;
 }

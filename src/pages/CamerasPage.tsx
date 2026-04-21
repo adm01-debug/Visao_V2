@@ -79,7 +79,7 @@ export function CamerasPage() {
   }
 
   return (
-    <div className="page-container space-y-4 sm:space-y-6 h-[calc(100vh-4rem)] overflow-auto">
+    <div className="page-container space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
