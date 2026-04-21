@@ -142,5 +142,7 @@ if (missingInCustom.length > 0) {
   failed = true;
 }
 
+if (failed) process.exit(1);
+
 console.log(`\n✨ Layout mobile centralizado e consistente!`);
 console.log(`   ↳ Defesa em profundidade ativa: classe explícita no <main> + fallback CSS [data-app-scroll].\n`);
