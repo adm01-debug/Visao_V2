@@ -29,6 +29,7 @@ import {
   ClipboardList,
   Route,
   UserCog,
+  TestTube2,
 } from "lucide-react";
 import type { NavCategory, CategoryStatus } from "../types";
 import type { SidebarStatus } from "@/hooks/useSidebarStatus";
@@ -180,6 +181,13 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         label: "Usuários",
         icon: UserCog,
         path: "/users",
+        minRole: "admin",
+      },
+      {
+        id: "coverage",
+        label: "Cobertura",
+        icon: TestTube2,
+        path: "/coverage",
         minRole: "admin",
       },
     ],

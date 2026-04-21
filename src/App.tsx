@@ -58,6 +58,7 @@ const JourneyReportsPage = lazy(() => import("@/pages/JourneyReportsPage"));
 const CollaboratorFlowMapPage = lazy(() => import("@/pages/CollaboratorFlowMapPage"));
 const GoalsAlertsPage = lazy(() => import("@/pages/GoalsAlertsPage"));
 const UserManagementPage = lazy(() => import("@/pages/UserManagementPage"));
+const CoveragePage = lazy(() => import("@/pages/CoveragePage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const AcessoNegado = lazy(() => import("@/pages/AcessoNegado"));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
@@ -139,6 +140,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/collaborator-flow" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<CollaboratorFlowMapPage />, "Fluxo de Colaboradores")}</ProtectedLayoutRoute>} />
                     <Route path="/goals-alerts" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<GoalsAlertsPage />, "Metas e Alertas")}</ProtectedLayoutRoute>} />
                     <Route path="/users" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<UserManagementPage />, "Gestão de Usuários")}</ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/coverage" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<CoveragePage />, "Cobertura de Testes")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/acesso-negado" element={withRouteErrorBoundary(<AcessoNegado />, "Acesso Negado")} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
