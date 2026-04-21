@@ -1,42 +1,53 @@
 
 
-## Auditoria: imports não utilizados de `Skeleton`
+## Verificar CLS na transição loading → dados nos skeletons principais
 
-Após varredura nos 27 arquivos que importam de `@/components/ui/skeleton`, **não há imports não utilizados** de `Skeleton`, `BrandedSkeleton`, `StatSkeleton`, `AlertSkeleton` ou `CameraSkeleton`. Todos os símbolos importados são referenciados pelo menos uma vez no JSX correspondente.
+Confirmar que skeletons de Dashboard, listas e tabelas reservam a mesma altura/largura que o conteúdo final, evitando Cumulative Layout Shift (CLS) durante a hidratação.
 
-### Verificação realizada
+### Investigação a realizar
 
-Script comparou cada nome importado de `@/components/ui/skeleton` contra suas ocorrências no arquivo. Resultado: zero imports órfãos.
+1. **Medir CLS real** via `browser--performance_profile` em `/dashboard`, `/cameras`, `/alerts`, `/people`. Meta: CLS < 0.1 (Web Vitals "good").
+2. **Comparar dimensões skeleton vs. real** — ler pares de arquivos:
+   - `DashboardStats` (4 cards) vs. `dashboard/StatsSkeleton` → confirmar `grid-cols-2 md:grid-cols-4` + altura fixa por card.
+   - `DashboardCameraGrid` vs. `CameraGridSkeleton` → confirmar `aspect-video` no skeleton (já presente em `LoadingState.tsx`).
+   - `DashboardAlerts` vs. `AlertsSidebarSkeleton` → conferir altura mínima da coluna lateral.
+   - `TableSkeleton` vs. tabelas reais (PeoplePage, RecognitionLogsPage) → conferir número de colunas e altura de linha.
+3. **Validar wrappers** — `AnimatedTransition` em `Dashboard.tsx` faz crossfade entre skeleton e conteúdo; confirmar que o pai tem altura estável (sem `h-auto` colapsando).
 
-Páginas verificadas em detalhe (todas com uso real):
+### Critérios de aceitação
 
-| Arquivo | Importa | Usos `<Skeleton>` |
-|---|---|---|
-| `PeoplePage.tsx` | Skeleton | 1 |
-| `SettingsPage.tsx` | Skeleton | 2 |
-| `SecurityPage.tsx` | Skeleton | 3 |
-| `DashboardV2.tsx` | Skeleton | 1 |
-| `BehaviorDetectionPage.tsx` | Skeleton | 1 |
-| `PanicEventsPage.tsx` | Skeleton | 3 |
-| `RecognitionLogsPage.tsx` | Skeleton | 1 |
-| `AnalysisHistoryPanel.tsx` | Skeleton | 1 |
-| `RecognitionAnalytics.tsx` | Skeleton | 2 |
-| `PersonDetailsDialog.tsx` | Skeleton | 1 |
+- CLS reportado pelo profiler em cada rota: **< 0.1**.
+- Cada skeleton tem mesmas dimensões macro do conteúdo final (grid cols, aspect ratio, altura mínima).
+- Nenhum "salto" visível ao trocar de loading para dados (verificação por screenshot antes/depois).
 
-### Plano de ação
+### Correções esperadas (aplicar somente se a medição falhar)
 
-**Nenhuma alteração de código é necessária.** O ESLint `no-unused-vars` (parte do gate `lint:ci`) já garantiria a detecção e — caso surjam imports órfãos no futuro — o pipeline falharia automaticamente.
+| Problema provável | Correção |
+|---|---|
+| Skeleton de stats sem altura mínima | Adicionar `min-h-[88px]` ao `CardSkeleton` em `LoadingState.tsx` |
+| Camera grid skeleton com aspect ratio diferente do `VideoStreamPlayer` real | Alinhar `aspect-video` em ambos |
+| `AlertsSidebarSkeleton` colapsando | Adicionar `min-h-[600px]` ou usar `lg:h-full` |
+| `TableSkeleton` com nº de colunas hardcoded ≠ real | Passar `cols` corretos via prop em cada página |
+| `AnimatedTransition` causando reflow | Garantir `position: relative` + `min-height` no wrapper |
 
-### Validação opcional (recomendada para confirmar)
+### Validação final
 
-Rodar localmente:
-```bash
-npm run lint:ci 2>&1 | grep -E "skeleton|Skeleton.*no-unused"
-```
+1. `browser--performance_profile` em 4 rotas após qualquer fix.
+2. Screenshots comparativos (loading × loaded) para `/dashboard` em viewport 1366×768 e 390×844 (mobile).
+3. Confirmar que `mb-mobile-nav` continua intacto (não regredir o gate `npm run check:mobile-nav`).
 
-Se a saída for vazia (esperado), o estado atual está limpo e o item pode ser marcado como concluído sem edições.
+### Arquivos potencialmente editados
 
-### Próximo passo sugerido
+- ✏️ `src/components/ui/LoadingState.tsx` — alturas mínimas em `CardSkeleton`, `CameraGridSkeleton`.
+- ✏️ `src/components/dashboard/StatsSkeleton.tsx` (se existir separado) — alinhar grid.
+- ✏️ `src/components/dashboard/AlertsSidebarSkeleton.tsx` — altura mínima.
+- ✏️ `src/components/TableSkeleton.tsx` — aceitar `rowHeight` prop opcional.
+- ✏️ `src/components/ui/AnimatedTransition.tsx` — wrapper com `min-height` herdado do filho.
 
-Se você está vendo um warning específico em algum arquivo, **compartilhe a mensagem exata do lint/tsc** para que eu remova o import correto. Caso contrário, esta tarefa está concluída por inspeção — sem regressões e sem necessidade de PR.
+### Riscos
+
+- **Risco:** alturas fixas podem quebrar responsividade em conteúdo dinâmico (ex: alertas variáveis).
+  - **Mitigação:** usar `min-h-*` (não `h-*`) para permitir crescimento, apenas reservando espaço inicial.
+- **Risco:** profiler do browser indisponível neste ambiente.
+  - **Mitigação:** fallback para inspeção estática comparando classes Tailwind dos pares skeleton/real e reportar achados; rodar profiler quando o preview estiver acessível.
 
