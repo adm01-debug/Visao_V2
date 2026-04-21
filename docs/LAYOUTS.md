@@ -250,5 +250,23 @@ Páginas que não passam pelo `MainLayout` (auth, 404, callbacks) ficam na `ALLO
 
 ---
 
+## 12. Smoke tests de páginas principais
+
+`tests/e2e/smoke-pages.spec.ts` é o gate mínimo após qualquer mudança de responsividade ou layout. Valida em `/dashboard`, `/heatmap` e `/analytics` (desktop 1280×720 + mobile iPhone 12):
+
+1. Sem `console.error` (com allowlist de ruído conhecido — Vite HMR, badge de preview).
+2. Sem respostas 5xx em chamadas de rede.
+3. Layout autenticado montou (`[data-app-scroll]` visível).
+4. `<h1>` com título esperado renderizado.
+5. Nenhum `SectionErrorBoundary` disparou ("algo deu errado" / "erro ao carregar").
+
+```bash
+npm run test:smoke
+```
+
+6 testes (3 páginas × 2 viewports), execução paralela < 30s. Rodado no CI após `build`, antes das suítes E2E completas, para falhar rápido em regressões críticas. Rotas que redirecionam para `/auth` (sem credenciais seedadas no CI) são `skipped` explicitamente.
+
+---
+
 **Última atualização:** 21/04/2026
 
