@@ -65,11 +65,16 @@ const files = listPages(PAGES_DIR);
 const drift = [];
 const scrollDrift = [];
 const missingInCustom = [];
+const undeclaredCustomWrappers = [];
 let cleanCount = 0;
 let customWrapperCount = 0;
 let skipped = 0;
 
 const SCROLL_ANTIPATTERN = /h-\[calc\(100vh-/;
+// Heurística: detecta wrappers customizados (raiz com altura própria ou Sidebar embutido)
+const CUSTOM_WRAPPER_HEURISTIC = /(min-h-screen|h-screen|h-dvh|h-\[100dvh\]|<Sidebar\b)/;
+const SNAPSHOT_MODE = process.argv.includes('--snapshot');
+const SNAPSHOT_PATH = 'scripts/.mobile-nav-snapshot.json';
 
 for (const file of files) {
   const basename = file.split(/[\\/]/).pop();
