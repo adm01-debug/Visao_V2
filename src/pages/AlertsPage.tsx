@@ -9,7 +9,7 @@ import { useFaceRecognitionAlerts } from "@/hooks/useFaceRecognitionAlerts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { AlertsSkeleton } from "@/components/skeletons/AlertsSkeleton";
+import { ListSkeleton } from "@/components/ui/LoadingState";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PaginationControls, usePagination } from "@/components/PaginationControls";
 import { ExportMenu } from "@/components/ExportMenu";
@@ -110,14 +110,6 @@ export function AlertsPage() {
     today: alerts.filter(a => new Date(a.timestamp).toDateString() === new Date().toDateString()).length,
   }), [alerts, unreadCount, severityCounts]);
 
-  if (loading) {
-    return (
-      <>
-        <PageMeta title="Alertas" description="Central de alertas e notificações do sistema de vigilância" />
-        <AlertsSkeleton />
-      </>
-    );
-  }
 
   return (
     <div role="main" aria-label="Central de alertas" className="page-container space-y-6">
