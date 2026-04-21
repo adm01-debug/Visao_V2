@@ -1,6 +1,10 @@
 /**
- * Auth Page (Refactored)
- * Forms extracted to ./auth/AuthForms.tsx
+ * Auth Page (Refactored) — Forms extracted to ./auth/AuthForms.tsx
+ *
+ * Standalone page — renders OUTSIDE MainLayout (no BottomNavigation).
+ * Listed in scripts/check-mobile-nav.mjs ALLOWLIST.
+ * Reason: tela de login/signup pré-autenticação; layout próprio centralizado.
+ * See docs/LAYOUTS.md §11 — Camada 0.
  */
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';

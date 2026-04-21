@@ -32,4 +32,15 @@ type: feature
 2. Usar `h-[calc(100vh-4rem)] overflow-auto` no container raiz (scroll duplo, quebra momentum iOS)
 3. Criar wrapper raiz com `min-h-screen`/`h-screen`/`h-dvh` sem cadastrar na allowlist (heurística do script bloqueia)
 
-**Allowlist standalone (fora do MainLayout):** `AuthPage.tsx`, `Auth.tsx`, `AuthCallback.tsx`, `ResetPasswordPage.tsx`, `NotFound.tsx`, `Index.tsx`, `AcessoNegado.tsx`.
+**Allowlist standalone (fora do MainLayout — NÃO renderizam BottomNavigation, logo NÃO precisam de `mb-mobile-nav`):**
+
+| Página | Rota | Motivo |
+|---|---|---|
+| `AuthPage.tsx` / `Auth.tsx` | `/auth` | Login/signup pré-autenticação; layout centralizado próprio |
+| `AuthCallback.tsx` | `/auth/callback` | Handler OAuth (apenas spinner) |
+| `ResetPasswordPage.tsx` | `/reset-password` | Recuperação de senha via link de e-mail |
+| `NotFound.tsx` | `*` (404) | Erro genérico, pode aparecer fora de auth |
+| `Index.tsx` | `/` | Apenas redireciona; renderiza SplashScreen |
+| `AcessoNegado.tsx` | `/acesso-negado` | Bloqueio RBAC/IP whitelist |
+
+Documentação completa em `docs/LAYOUTS.md` §11 — Camada 0. Se uma dessas páginas migrar para `MainLayout`, remover a entry da `ALLOWLIST` (heurística da Camada 4 detectará o wrapper).

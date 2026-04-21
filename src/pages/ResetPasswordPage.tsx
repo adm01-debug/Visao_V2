@@ -1,3 +1,10 @@
+/**
+ * Standalone page — renders OUTSIDE MainLayout (no BottomNavigation).
+ * Listed in scripts/check-mobile-nav.mjs ALLOWLIST.
+ * Reason: fluxo de recuperação de senha acessado via link de e-mail (sem
+ * sessão completa); layout próprio standalone.
+ * See docs/LAYOUTS.md §11 — Camada 0.
+ */
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';

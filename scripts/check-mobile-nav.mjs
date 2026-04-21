@@ -16,7 +16,17 @@ const PAGES_DIR = 'src/pages';
 const WRAPPER_FILE = 'src/components/layout/MainLayout.tsx';
 const REQUIRED_CLASS = 'mb-mobile-nav';
 
-// Páginas isentas (standalone — não passam pelo MainLayout)
+// Páginas isentas (standalone — NÃO passam pelo MainLayout, logo NÃO renderizam
+// BottomNavigation. Adicionar `mb-mobile-nav` aqui geraria 64px de espaço morto).
+//
+//   AuthPage.tsx, Auth.tsx     → telas de login/signup pré-autenticação
+//   AuthCallback.tsx           → handler OAuth pós-redirect (apenas spinner)
+//   ResetPasswordPage.tsx      → fluxo de recuperação via link de e-mail
+//   NotFound.tsx               → 404 genérico (pode aparecer fora de auth)
+//   Index.tsx                  → apenas redireciona; renderiza SplashScreen
+//   AcessoNegado.tsx           → tela de bloqueio RBAC/IP whitelist
+//
+// Documentação completa: docs/LAYOUTS.md §11 (Camada 0 — Páginas standalone).
 const ALLOWLIST = new Set([
   'AuthPage.tsx',
   'Auth.tsx',

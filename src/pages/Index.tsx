@@ -1,12 +1,16 @@
+/**
+ * Standalone page — renders OUTSIDE MainLayout (no BottomNavigation).
+ * Listed in scripts/check-mobile-nav.mjs ALLOWLIST.
+ * Reason: apenas redireciona (`/dashboard` se autenticado, `/auth` caso
+ * contrário); renderiza `<SplashScreen />` em transição, sem conteúdo
+ * persistente nem BottomNav.
+ * See docs/LAYOUTS.md §11 — Camada 0.
+ */
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { SplashScreen } from '@/components/LoadingSpinner';
 import { PageMeta } from '@/components/PageMeta';
-
-/**
- * Index page - redirects to /dashboard (authenticated) or /auth (unauthenticated)
- */
 const Index = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();

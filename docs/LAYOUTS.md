@@ -158,6 +158,21 @@ A classe `mb-mobile-nav` é aplicada **uma única vez**, no `<main>` de `src/com
 
 **Páginas NÃO devem redeclarar `mb-mobile-nav`** — fazê-lo causa dupla margem inferior. Exceções: páginas com wrapper raiz próprio cadastradas na `CUSTOM_WRAPPER_ALLOWLIST`.
 
+### Camada 0 — Páginas standalone (isentas)
+
+Páginas que **não** passam pelo `MainLayout` também **não** renderizam `BottomNavigation`. Adicionar `mb-mobile-nav` nelas geraria 64px de espaço inferior morto sem motivo. A `ALLOWLIST` em `scripts/check-mobile-nav.mjs` garante que essas páginas não falhem o build pela ausência da classe.
+
+| Página | Rota | Motivo |
+|---|---|---|
+| `Auth.tsx` (e `AuthPage.tsx`) | `/auth` | Tela de login/signup pré-autenticação. Layout próprio centralizado (`min-h-screen flex items-center`); não passa por `MainLayout`/`Sidebar`/`BottomNavigation`. |
+| `AuthCallback.tsx` | `/auth/callback` | Handler OAuth pós-redirect (Google). Renderiza apenas spinner durante a troca de código por sessão; sem UI navegável. |
+| `ResetPasswordPage.tsx` | `/reset-password` | Fluxo de recuperação de senha acessado via link de e-mail (sem sessão completa). Layout próprio standalone. |
+| `NotFound.tsx` | `*` (404) | Página de erro genérica; pode ser exibida fora de contexto autenticado. Layout centrado próprio. |
+| `Index.tsx` | `/` | Apenas redireciona (`/dashboard` se autenticado, `/auth` caso contrário). Renderiza `<SplashScreen />` em transição — sem conteúdo persistente. |
+| `AcessoNegado.tsx` | `/acesso-negado` | Tela de bloqueio RBAC/IP whitelist. Layout standalone próprio para mensagem de erro de permissão. |
+
+> **Regra:** se uma destas páginas passar a usar `MainLayout` no futuro, remover a entry correspondente da `ALLOWLIST` — a heurística do script (Camada 4) detectará o wrapper customizado e exigirá classificação explícita.
+
 ### Camada 1 — Classe explícita no MainLayout
 
 `mb-mobile-nav` no `<main>` aplica `padding-bottom: calc(4rem + safe-area-inset-bottom)` (definido em `src/index.css`).

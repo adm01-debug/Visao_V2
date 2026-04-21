@@ -1,3 +1,10 @@
+/**
+ * Standalone page — renders OUTSIDE MainLayout (no BottomNavigation).
+ * Listed in scripts/check-mobile-nav.mjs ALLOWLIST.
+ * Reason: tela de bloqueio RBAC/IP whitelist; layout standalone próprio
+ * para mensagem de erro de permissão.
+ * See docs/LAYOUTS.md §11 — Camada 0.
+ */
 import { ShieldX, ArrowLeft, Home, UserCog } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
