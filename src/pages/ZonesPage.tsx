@@ -113,14 +113,6 @@ export function ZonesPage() {
   const getCameraName = (cameraId: string | null) => (!cameraId ? 'Câmera desconhecida' : cameras.find(c => c.id === cameraId)?.name || 'Câmera desconhecida');
   const getCameraById = (cameraId: string | null) => (!cameraId ? null : cameras.find(c => c.id === cameraId));
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background mb-mobile-nav">
-        <PageMeta title="Zonas" description="Configure zonas de detecção e monitoramento" />
-        <ZonesSkeleton />
-      </div>
-    );
-  }
 
   const hasActiveFilters = searchQuery || selectedCameraFilter !== 'all' || selectedTypeFilter !== 'all';
 
