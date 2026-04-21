@@ -80,16 +80,20 @@ export function CamerasPage() {
             <Camera className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />Câmeras
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground">
-            {stats.online} de {stats.total} online
-            {stats.alert > 0 && ` • ${stats.alert} em alerta`}
+            {loading ? '— de — online' : (
+              <>
+                {stats.online} de {stats.total} online
+                {stats.alert > 0 && ` • ${stats.alert} em alerta`}
+              </>
+            )}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => refetch()} className="text-xs sm:text-sm">
-            <RefreshCw className="w-4 h-4 sm:mr-2" />
+          <Button variant="outline" size="sm" onClick={() => refetch()} disabled={loading} className="text-xs sm:text-sm">
+            <RefreshCw className={cn('w-4 h-4 sm:mr-2', loading && 'animate-spin')} />
             <span className="hidden sm:inline">Atualizar</span>
           </Button>
-          <Button size="sm" className="text-xs sm:text-sm">
+          <Button size="sm" disabled={loading} className="text-xs sm:text-sm">
             <Plus className="w-4 h-4 sm:mr-2" />
             <span className="hidden sm:inline">Adicionar</span>
           </Button>
@@ -100,10 +104,10 @@ export function CamerasPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Buscar câmeras..." value={searchQuery}
+          <Input placeholder="Buscar câmeras..." value={searchQuery} disabled={loading}
             onChange={(e) => setSearchQuery(e.target.value)} className="pl-9" />
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <Select value={statusFilter} onValueChange={setStatusFilter} disabled={loading}>
           <SelectTrigger className="w-36"><SelectValue placeholder="Status" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos</SelectItem>
@@ -135,10 +139,18 @@ export function CamerasPage() {
       </div>
 
       {/* Results count */}
-      <div className="text-sm text-muted-foreground">{filteredCameras.length} câmeras</div>
+      <div className="text-sm text-muted-foreground">
+        {loading ? 'Carregando câmeras...' : `${filteredCameras.length} câmeras`}
+      </div>
 
       {/* Camera Grid */}
-      {filteredCameras.length === 0 ? (
+      {loading ? (
+        <div className={cn('grid gap-4', GRID_CLASSES[viewMode])}>
+          {Array.from({ length: 8 }).map((_, i) => (
+            <CameraSkeleton key={i} />
+          ))}
+        </div>
+      ) : filteredCameras.length === 0 ? (
         <EmptyState
           icon={Camera}
           title={cameras.length === 0 ? 'Nenhuma câmera cadastrada' : 'Nenhuma câmera encontrada'}
