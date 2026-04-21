@@ -18,7 +18,7 @@ const transition = { duration: 0.35, ease: [0.4, 0, 0.2, 1] };
 
 export function AnimatedTransition({ loading, skeleton, children, className }: AnimatedTransitionProps) {
   return (
-    <div className={className}>
+    <div className={className} style={{ position: 'relative' }}>
       <AnimatePresence mode="wait">
         {loading ? (
           <motion.div

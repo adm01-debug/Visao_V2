@@ -45,7 +45,7 @@ export function Shimmer({ className }: ShimmerProps) {
 // Card Skeleton for Dashboard Widgets
 export function CardSkeleton({ className }: { className?: string }) {
   return (
-    <div className={cn('p-4 rounded-lg border border-border bg-card', className)}>
+    <div className={cn('p-4 rounded-lg border border-border bg-card min-h-[120px]', className)}>
       <div className="flex items-center justify-between mb-4">
         <Shimmer className="h-5 w-24" />
         <Shimmer className="h-8 w-8 rounded-full" />

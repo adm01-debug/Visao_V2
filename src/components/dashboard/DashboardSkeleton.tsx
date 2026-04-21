@@ -3,9 +3,9 @@ import { BrandedSkeleton } from '@/components/ui/skeleton';
 
 export function StatsSkeleton() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 animate-fade-in">
+    <div className="stats-grid animate-fade-in">
       {[...Array(5)].map((_, i) => (
-        <div key={i} className="glass-card p-5" style={{ animationDelay: `${i * 60}ms` }}>
+        <div key={i} className="glass-card p-5 min-h-[120px]" style={{ animationDelay: `${i * 60}ms` }}>
           <div className="flex items-start justify-between">
             <div className="flex-1 space-y-3">
               <Shimmer className="h-4 w-24" />
@@ -40,7 +40,7 @@ export function CameraGridSkeleton({ count = 4 }: { count?: number }) {
 
 export function AlertsSidebarSkeleton() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 min-h-[600px]">
       <div className="flex items-center justify-between">
         <Shimmer className="h-6 w-32" />
         <Shimmer className="h-6 w-16 rounded-full" />
