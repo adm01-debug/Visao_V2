@@ -1,91 +1,70 @@
 
 
-## Endurecer ESLint + TypeScript para bloquear código não utilizado
+## Relatório de bundle com análise de tree-shaking
 
-Promover regras de "unused" de warning → error e ativar flags estritas no TypeScript, fazendo o build/CI quebrar quando código morto for introduzido. Resolver primeiro o erro de cache stale do `CoveragePage` que está bloqueando o build.
+Gerar um relatório acionável que identifica os maiores ofensores no bundle JS, oportunidades de tree-shaking perdidas e candidatos a code-splitting/lazy loading.
 
 ### Estado atual
 
-- `eslint.config.js`: `unused-imports/no-unused-imports: 'error'` ✅ já ativo, mas `unused-imports/no-unused-vars: 'warn'` (não bloqueia).
-- `tsconfig.json`: `noUnusedLocals: false`, `noUnusedParameters: false` → TS ignora vars/params órfãos.
-- `tsconfig.strict.json` já tem `noUnusedLocals: true` e `noUnusedParameters: true`, mas **não é usado pelo `npm run build`** (só por `type-check:strict`).
-- Build atual falhando com `ENOENT` em `src/components/coverage/CoverageStatsCards` — cache Vite stale (recorrente).
-- `npm run lint:ci` já roda com `--max-warnings=0` no CI, então promover warn→error tem efeito imediato.
+- `vite.config.ts` já tem `manualChunks` configurado (vendor-react, vendor-ui, vendor-charts, vendor-motion, vendor-query, vendor-supabase, vendor-pdf).
+- `scripts/check-bundle-size.mjs` reporta top 5 chunks raw/gzipped e enforça orçamento (600KB/chunk, 2MB total raw).
+- `scripts/analyze-bundle.sh` faz listagem básica via `du`.
+- Faltam: visualização gráfica (treemap), análise de imports duplicados, detecção de barrel imports não tree-shaken, breakdown por dependência dentro de cada chunk.
 
-### Solução em 4 passos
+### Solução em 3 entregas
 
-**Passo 0 — Destravar build (pré-requisito)**
+**Entrega 1 — Visualização interativa (rollup-plugin-visualizer)**
 
-- `rm -rf node_modules/.vite dist`
-- `touch src/components/coverage/*.tsx src/pages/CoveragePage.tsx`
-- Validar `npm run build` passa antes de qualquer mudança de regra.
+- Instalar `rollup-plugin-visualizer` (devDep).
+- Patch em `vite.config.ts`: ativar plugin condicionalmente via env (`ANALYZE=true npm run build`), gerando `dist/stats.html` (treemap interativo, sunburst e network) com `gzipSize: true` e `brotliSize: true`.
+- Não impacta builds normais (plugin só entra quando `ANALYZE=true`).
+- Adicionar script: `"build:analyze": "ANALYZE=true vite build"`.
 
-**Passo 1 — Promover regras ESLint para `error`**
+**Entrega 2 — Relatório consolidado (`scripts/bundle-report.mjs`)**
 
-Editar `eslint.config.js`:
+Script Node que roda após o build e gera `/mnt/documents/bundle-report.md` com:
 
-| Regra | Antes | Depois |
-|---|---|---|
-| `unused-imports/no-unused-imports` | `error` | `error` (mantém) |
-| `unused-imports/no-unused-vars` | `warn` | `error` (com `argsIgnorePattern: '^_'`, `varsIgnorePattern: '^_'`, `caughtErrorsIgnorePattern: '^_'`) |
-| `@typescript-eslint/no-unused-vars` | `off` | `off` (mantém — substituído pelo plugin) |
-| `no-console` | `warn` | `warn` (mantém — não é escopo desta rodada) |
+1. **Sumário executivo**: total raw/gzipped, número de chunks, comparação com o orçamento atual (`check-bundle-size.mjs`).
+2. **Top 15 chunks** (raw + gzipped) com % do total.
+3. **Top 20 dependências por peso** (parsing dos `stats.html` JSON gerado pelo visualizer ou via `source-map-explorer` como fallback).
+4. **Detecção de duplicados**: pacotes que aparecem em múltiplos chunks (ex.: `lodash`, `date-fns`) — sintoma de import path inconsistente.
+5. **Barrel imports suspeitos**: grep em `src/**/*.{ts,tsx}` por padrões `import { X } from '@/components/ui'` (ao invés de path direto), `import * as X from`, e imports completos de libs com tree-shaking ruim (`import _ from 'lodash'`, `import * as Icons from 'lucide-react'`).
+6. **Candidatos a lazy loading**: chunks > 100KB raw que NÃO estão em `lazyRoutes.ts`.
+7. **Heavy deps já presentes**: cross-check com `package.json` para listar peso de `@tensorflow/*`, `@mediapipe/*`, `face-api.js`, `recharts`, `framer-motion`, `jspdf`, `html2canvas`.
+8. **Recomendações priorizadas**: lista ordenada por impacto estimado (KB economizados).
 
-**Passo 2 — Ativar flags estritas no `tsconfig.json` (build principal)**
+**Entrega 3 — Documentação + script npm**
 
-Editar `tsconfig.json`:
-
-```json
-{
-  "compilerOptions": {
-    "noUnusedLocals": true,        // era false
-    "noUnusedParameters": true     // era false
-  }
-}
-```
-
-Convenção `_` prefix já é respeitada pelo TS quando combinada com ESLint `argsIgnorePattern`.
-
-**Passo 3 — Garantir gate no build**
-
-- `vite.config.ts`: confirmar que erros TS não passam silenciosamente (Vite usa esbuild que não checa tipos; o gate real é `npm run type-check` no pre-push e CI).
-- `.husky/pre-commit`: já roda `npm run lint` via lint-staged → agora bloqueará vars não usadas localmente.
-- `.husky/pre-push`: já roda `type-check:strict` + `lint:ci` → continuará bloqueando.
-- CI (`.github/workflows/ci.yml`): já roda `type-check:strict` + `lint:ci` → mudanças efetivas sem editar workflow.
-
-**Passo 4 — Documentar convenções**
-
-Criar `docs/CODE_QUALITY_RULES.md` explicando:
-- Como silenciar intencionalmente (prefixo `_` em params, `_` em destructuring).
-- Quando usar `// eslint-disable-next-line unused-imports/no-unused-vars` (raro, justificar em comentário).
-- Como rodar `npx eslint --fix` para auto-correção.
+- Criar `docs/BUNDLE_ANALYSIS.md` explicando como rodar (`npm run bundle:report`), interpretar `stats.html`, e processo de iteração.
+- Script npm: `"bundle:report": "npm run build:analyze && node scripts/bundle-report.mjs"`.
+- Não altera CI nem orçamentos atuais (escopo: relatório, não enforcement).
 
 ### Critérios de aceitação
 
-- ✅ `npm run build` passa
-- ✅ `npx tsc --noEmit` (usa `tsconfig.json`) passa com `noUnusedLocals/Parameters: true`
-- ✅ `npm run lint:ci` (com `--max-warnings=0`) passa
-- ✅ `npx vitest run` mantém testes passando
-- ✅ Tentar adicionar `const foo = 1;` sem uso → ESLint **erro** (não warning)
-- ✅ Tentar adicionar `import { X } from 'y'` sem uso → ESLint **erro** + auto-fix remove
-- ✅ `docs/CODE_QUALITY_RULES.md` criado
+- ✅ `npm run build:analyze` gera `dist/stats.html` (treemap interativo).
+- ✅ `npm run bundle:report` gera `/mnt/documents/bundle-report.md` com 8 seções acima.
+- ✅ Relatório lista pelo menos 3 recomendações concretas com KB estimados.
+- ✅ Build normal (`npm run build`) continua funcionando sem o plugin.
+- ✅ `docs/BUNDLE_ANALYSIS.md` criado.
+- ✅ Artifact `bundle-report.md` exposto via `<lov-artifact>` para download.
 
-### Arquivos a editar
+### Arquivos a criar/editar
 
 | Arquivo | Mudança |
 |---|---|
-| `eslint.config.js` | `unused-imports/no-unused-vars`: warn → error |
-| `tsconfig.json` | `noUnusedLocals: true`, `noUnusedParameters: true` |
-| `docs/CODE_QUALITY_RULES.md` | ➕ Criar |
+| `package.json` | ➕ devDep `rollup-plugin-visualizer` + scripts `build:analyze`, `bundle:report` |
+| `vite.config.ts` | ✏️ Plugin condicional via `process.env.ANALYZE` |
+| `scripts/bundle-report.mjs` | ➕ Criar (gera markdown consolidado) |
+| `docs/BUNDLE_ANALYSIS.md` | ➕ Criar (guia de uso) |
 
 ### Riscos e mitigações
 
-- **Risco:** ativar flags TS expõe N erros pré-existentes que travam o build.
-  - **Mitigação:** rodar `npx tsc --noEmit` ANTES de commitar a mudança no `tsconfig.json`. Se houver erros, aplicar auto-fix com `npx eslint --fix` (já cobre maioria dos casos) e corrigir manualmente os restantes (renomear params para `_param`, remover vars mortas) em um único lote antes de ativar a flag.
-- **Risco:** callbacks de libs (React event handlers, Supabase) com params não usados quebram.
-  - **Mitigação:** convenção `_` prefix + `argsIgnorePattern: '^_'` no ESLint. TS respeita o mesmo padrão (params iniciados com `_` são ignorados nativamente por `noUnusedParameters`).
-- **Risco:** cache Vite stale volta a quebrar build.
-  - **Mitigação:** Passo 0 executado primeiro. Se reincidir durante validação, repetir `rm -rf node_modules/.vite`.
-- **Risco:** lint-staged passa a falhar em commits com vars não usadas, irritando devs.
-  - **Mitigação:** comportamento desejado — é o ponto da tarefa. Documentar em `CODE_QUALITY_RULES.md` como contornar legitimamente.
+- **Risco:** plugin visualizer infla tempo de build.
+  - **Mitigação:** ativado só com `ANALYZE=true`, não roda em CI/dev.
+- **Risco:** parsing do `stats.html` é frágil (formato pode mudar entre versões).
+  - **Mitigação:** usar `template: 'raw-data'` do plugin, que emite JSON estável (`stats.json`); fallback para `source-map-explorer` se necessário.
+- **Risco:** detecção de barrel imports gera ruído (alguns barrels SÃO tree-shaken corretamente quando lib tem `sideEffects: false`).
+  - **Mitigação:** relatório marca como "suspeito", não como erro; explica no doc como verificar.
+- **Risco:** primeira execução lista muitas oportunidades, dificultando priorização.
+  - **Mitigação:** ordenar por KB economizados; limitar top 10 recomendações.
 
