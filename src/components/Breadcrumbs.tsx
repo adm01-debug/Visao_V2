@@ -39,6 +39,7 @@ const ROUTE_LABELS: Record<string, string> = {
   '/collaborator-flow': 'Fluxo de Colaboradores',
   '/goals-alerts': 'Metas e Alertas',
   '/users': 'Gestão de Usuários',
+  '/coverage': 'Cobertura de Testes',
 };
 
 const ROUTE_CATEGORIES: Record<string, string> = {
@@ -54,6 +55,7 @@ const ROUTE_CATEGORIES: Record<string, string> = {
   '/behavior-detection': 'Inteligência',
   '/people': 'Gestão',
   '/users': 'Administração',
+  '/coverage': 'Administração',
   '/settings': 'Sistema',
   '/security': 'Sistema',
   '/stream-settings': 'Sistema',
@@ -172,6 +174,7 @@ const ROUTE_DESCRIPTIONS: Record<string, string> = {
   '/panic-events': 'Monitore eventos de pânico em tempo real',
   '/automation-rules': 'Configure regras de automação',
   '/notification-settings': 'Gerencie canais e regras de notificação',
+  '/coverage': 'Percentual de cobertura de testes por arquivo',
 };
 
 export const PageTitle = React.forwardRef<HTMLDivElement, { className?: string }>(function PageTitle({ className }, _ref) {
