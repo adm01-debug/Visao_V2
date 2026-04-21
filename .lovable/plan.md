@@ -1,114 +1,70 @@
 
 
-## Snapshot visual: BottomNavigation não cobre conteúdo no mobile
+## Documentar páginas standalone sem `mb-mobile-nav` (allowlist)
 
-Adicionar teste E2E Playwright que captura screenshots do final do conteúdo em viewport mobile e valida que o último elemento renderizado fica acima da BottomNavigation (sem sobreposição).
+Hoje a `ALLOWLIST` em `scripts/check-mobile-nav.mjs` enumera 7 páginas isentas, mas a justificativa para cada uma vive apenas como comentário curto (`// standalone — não passam pelo MainLayout`). Vamos formalizar a documentação para que o motivo fique explícito tanto no código quanto na documentação consultável.
 
-### Estratégia
+### Páginas isentas e razão
 
-Em vez de comparação pixel-a-pixel (frágil com dados dinâmicos), o teste combina:
+| Página | Rota | Motivo |
+|---|---|---|
+| `AuthPage.tsx` | `/auth` | Tela de login/signup; não autenticada, não passa por `MainLayout`/`Sidebar`/`BottomNavigation`. Layout próprio centralizado (`min-h-screen flex items-center`). |
+| `Auth.tsx` | (legado, redirecionado) | Variante histórica da tela de auth, mantida por compatibilidade de rota. Mesmo motivo do `AuthPage`. |
+| `AuthCallback.tsx` | `/auth/callback` | Handler OAuth pós-redirect (Google). Renderiza só um spinner durante troca de código por sessão; sem UI navegável, sem BottomNav. |
+| `ResetPasswordPage.tsx` | `/reset-password` | Fluxo de recuperação de senha acessado via link de e-mail (sem sessão completa). Layout próprio centralizado, sem `MainLayout`. |
+| `NotFound.tsx` | `*` (404) | Página de erro genérica, pode ser exibida fora de contexto autenticado. Layout centrado próprio (`min-h-screen flex items-center`). |
+| `Index.tsx` | `/` | Apenas redireciona (`/dashboard` se autenticado, `/auth` se não). Renderiza `<SplashScreen />` em transição — sem conteúdo persistente nem BottomNav. |
+| `AcessoNegado.tsx` | `/acesso-negado` | Tela de bloqueio RBAC/IP whitelist. Layout standalone próprio para mensagem de erro de permissão. |
 
-1. **Asserção geométrica** — mede `getBoundingClientRect()` do último elemento "real" do conteúdo (último filho com altura > 0 dentro de `[data-app-scroll]`) após scroll até o fim. Valida que `bottom <= viewportHeight - 60` (altura da BottomNav).
-2. **Screenshot visual** — captura a região inferior da viewport (últimos ~200px) e salva como snapshot baseline. Comparação subsequente com tolerância (`maxDiffPixelRatio: 0.05`) detecta regressões visuais reais sem ruído.
+### Mudanças
 
-### Arquivo novo
+**1. Atualizar o cabeçalho de `scripts/check-mobile-nav.mjs`** para incluir uma tabela compacta explicando cada entrada da `ALLOWLIST`:
 
-**`tests/e2e/mobile-nav-overlap.spec.ts`**
-
-```ts
-import { test, expect, devices } from '@playwright/test';
-
-const PAGES = [
-  { path: '/dashboard', name: 'dashboard-v2' },
-  { path: '/heatmap', name: 'heatmap' },
-  { path: '/analytics', name: 'analytics' },
-];
-
-const NAV_HEIGHT = 60;
-
-test.use({ ...devices['iPhone 12'] });
-
-test.describe('BottomNav não cobre conteúdo (mobile)', () => {
-  for (const { path, name } of PAGES) {
-    test(`${name}: último conteúdo fica acima da BottomNav`, async ({ page }) => {
-      const resp = await page.goto(path, { waitUntil: 'networkidle' });
-      if (/\/(auth|login)/.test(page.url())) {
-        test.skip(true, 'Requer autenticação — coberto pela checagem estática');
-        return;
-      }
-
-      // Scroll até o fim do scroll container do app
-      await page.evaluate(() => {
-        const el = document.querySelector('[data-app-scroll]') as HTMLElement;
-        if (el) el.scrollTop = el.scrollHeight;
-      });
-      await page.waitForTimeout(300);
-
-      // Asserção geométrica: último filho visível não invade os 60px da BottomNav
-      const overlap = await page.evaluate((navH) => {
-        const scroll = document.querySelector('[data-app-scroll]');
-        if (!scroll) return { ok: false, reason: 'no-scroll' };
-        const children = Array.from(scroll.querySelectorAll('*')).filter((n) => {
-          const r = (n as HTMLElement).getBoundingClientRect();
-          return r.height > 0 && r.width > 0;
-        });
-        const last = children[children.length - 1] as HTMLElement | undefined;
-        if (!last) return { ok: false, reason: 'no-children' };
-        const rect = last.getBoundingClientRect();
-        const vh = window.innerHeight;
-        return { ok: rect.bottom <= vh - navH + 1, bottom: rect.bottom, vh };
-      }, NAV_HEIGHT);
-
-      expect(overlap.ok, `Último elemento em ${path} sobrepõe BottomNav (bottom=${overlap.bottom}, vh=${overlap.vh})`).toBe(true);
-
-      // Snapshot visual da faixa inferior (170px)
-      const vp = page.viewportSize()!;
-      await expect(page).toHaveScreenshot(`${name}-bottom.png`, {
-        clip: { x: 0, y: vp.height - 170, width: vp.width, height: 170 },
-        maxDiffPixelRatio: 0.05,
-        animations: 'disabled',
-      });
-    });
-  }
-});
+```js
+// Páginas isentas (standalone — não passam pelo MainLayout):
+//   AuthPage.tsx, Auth.tsx     → telas de login/signup pré-autenticação
+//   AuthCallback.tsx           → handler OAuth (apenas spinner)
+//   ResetPasswordPage.tsx      → fluxo de recuperação via link de e-mail
+//   NotFound.tsx               → 404 genérico (pode aparecer fora de auth)
+//   Index.tsx                  → apenas redireciona; renderiza SplashScreen
+//   AcessoNegado.tsx           → tela de bloqueio RBAC/IP whitelist
 ```
 
-### Suporte
+**2. Criar nova seção "Camada 0 — Páginas standalone (isentas)" em `docs/LAYOUTS.md` §11**, antes da Camada 1, com a tabela completa acima e a regra:
 
-- **`package.json`** — adicionar script:
-  ```json
-  "test:mobile-nav-overlap": "playwright test mobile-nav-overlap"
-  ```
-- **`playwright.config.ts`** — confirmar `snapshotPathTemplate` (cria `tests/e2e/mobile-nav-overlap.spec.ts-snapshots/`); ajustar se já houver convenção.
-- **`.github/workflows/ci.yml`** — adicionar passo após `Mobile Nav Runtime Check`:
-  ```yaml
-  - name: Mobile Nav Overlap (Visual)
-    run: npm run test:mobile-nav-overlap
-    continue-on-error: false
-  ```
-  Snapshots iniciais gerados localmente com `--update-snapshots` antes do primeiro run.
+> Páginas standalone NÃO renderizam `BottomNavigation`. Adicionar `mb-mobile-nav` nelas geraria espaço inferior morto (gap de 64px sem motivo). A `ALLOWLIST` do script garante que essas páginas não falhem o build por ausência da classe.
 
-### Comportamento sem credenciais no CI
+**3. Adicionar JSDoc curto no topo de cada uma das 7 páginas**, padronizando:
 
-Igual ao spec runtime existente: rotas que redirecionam para `/auth` retornam `test.skip` (cobertura garantida pelas camadas estáticas). Quando rodar localmente autenticado, valida geometria + snapshot.
+```tsx
+/**
+ * Standalone page — renders OUTSIDE MainLayout (no BottomNavigation).
+ * Listed in scripts/check-mobile-nav.mjs ALLOWLIST.
+ * Reason: <motivo específico>
+ */
+```
 
-### Documentação
+**4. Atualizar `mem://standards/mobile-nav-checklist`** para listar a justificativa de cada entrada da allowlist standalone (hoje só nomeia os arquivos sem explicar o porquê).
 
-- **`docs/LAYOUTS.md` §11** — adicionar Camada 6: "Snapshot visual de sobreposição (BottomNav vs conteúdo)".
-- **`mem://standards/mobile-nav-checklist`** — atualizar de 5 para 6 camadas.
+**5. Atualizar `mem://style/mobile-layout-compatibility`** se contiver referência genérica a "todas as páginas" sem ressalva sobre as standalone.
 
-### Arquivos editados/criados
+### Arquivos editados
 
-- ➕ `tests/e2e/mobile-nav-overlap.spec.ts`
-- ➕ `tests/e2e/mobile-nav-overlap.spec.ts-snapshots/*.png` (gerados na primeira execução com `--update-snapshots`)
-- ✏️ `package.json` (script `test:mobile-nav-overlap`)
-- ✏️ `.github/workflows/ci.yml` (novo passo)
-- ✏️ `docs/LAYOUTS.md` (§11 — Camada 6)
-- ✏️ `.lovable/memory/standards/mobile-nav-checklist.md` (5 → 6 camadas)
+- ✏️ `scripts/check-mobile-nav.mjs` — comentário expandido sobre a ALLOWLIST
+- ✏️ `docs/LAYOUTS.md` §11 — nova subseção "Camada 0 — Páginas standalone"
+- ✏️ `src/pages/AuthPage.tsx`, `Auth.tsx`, `AuthCallback.tsx`, `ResetPasswordPage.tsx`, `NotFound.tsx`, `Index.tsx`, `AcessoNegado.tsx` — JSDoc no topo
+- ✏️ `.lovable/memory/standards/mobile-nav-checklist.md` — tabela de razões por página
+- ✏️ `.lovable/memory/style/mobile-layout-compatibility.md` — ressalva sobre standalone (se aplicável)
+
+### Validação
+
+1. `npm run check:mobile-nav` — deve continuar passando sem mudanças funcionais (só documentação).
+2. Inspeção visual: abrir cada uma das 7 páginas e confirmar ausência de `BottomNavigation` (justifica a isenção).
 
 ### Riscos
 
-- **Snapshot baseline ausente em CI** — primeira execução falha pedindo `--update-snapshots`. Mitigação: gerar localmente os 3 PNGs e commitar antes de habilitar o passo no CI; alternativamente, o passo roda com `if: false` até baselines existirem.
-- **Variação de fontes/cores entre OS** — comparações cross-platform (macOS dev vs Linux CI) podem divergir. Mitigação: gerar baselines no mesmo SO do CI (Ubuntu via container Playwright) ou tolerar com `maxDiffPixelRatio: 0.05`.
-- **Conteúdo dinâmico (gráficos/Recharts)** — animações ou dados em tempo real causam flakiness. Mitigação: `animations: 'disabled'` + `waitUntil: 'networkidle'` + clip restrito à faixa inferior (geralmente padding/footer estável).
+- **Risco:** JSDoc nas páginas pode ser removido em refatorações futuras.
+  - **Mitigação:** documentação primária fica em `docs/LAYOUTS.md` e na memória; JSDoc é reforço local, não fonte da verdade.
+- **Risco:** alguma das 7 páginas pode estar erroneamente na allowlist (ex.: se um dia ganhar `BottomNavigation`).
+  - **Mitigação:** processo manual — sempre que rota mudar para usar `MainLayout`, remover entry da allowlist e a heurística do script captura novos wrappers customizados.
 
