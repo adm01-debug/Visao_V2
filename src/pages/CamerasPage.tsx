@@ -14,7 +14,7 @@ import type { CameraData, ViewMode } from '@/components/cameras';
 import { EmptyState } from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
+import { CamerasSkeleton } from '@/components/skeletons/CamerasSkeleton';
 import { Label } from '@/components/ui/label';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -71,13 +71,10 @@ export function CamerasPage() {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-6">
-      <PageMeta title="Câmeras" description="Gerencie e monitore suas câmeras de vigilância em tempo real" />
-        <Skeleton className="h-8 w-48" />
-        <div className="grid grid-cols-2 gap-4">
-          {[...Array(4)].map((_, i) => <Skeleton key={i} className="aspect-video" />)}
-        </div>
-      </div>
+      <>
+        <PageMeta title="Câmeras" description="Gerencie e monitore suas câmeras de vigilância em tempo real" />
+        <CamerasSkeleton />
+      </>
     );
   }
 
