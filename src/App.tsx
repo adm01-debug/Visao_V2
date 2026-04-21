@@ -21,6 +21,11 @@ import { errorReporter } from "@/lib/errorReporter";
 // Install global error monitoring
 errorReporter.installGlobalHandlers();
 
+// DEV-only CLS debug badge (tree-shaken in prod via the env guard below)
+const CLSBadge = import.meta.env.DEV
+  ? lazy(() => import("@/components/debug/CLSBadge").then((m) => ({ default: m.CLSBadge })))
+  : null;
+
 // Lazy loaded pages
 const Index = lazy(() => import("@/pages/Index"));
 const Auth = lazy(() => import("@/pages/Auth"));
@@ -141,6 +146,11 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
               </NotificationProvider>
             </AuthProvider>
           </BrowserRouter>
+          {CLSBadge && (
+            <Suspense fallback={null}>
+              <CLSBadge />
+            </Suspense>
+          )}
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
