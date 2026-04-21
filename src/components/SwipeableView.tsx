@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 interface SwipeableViewProps {
   children: ReactNode;
   className?: string;
+  "data-app-scroll"?: boolean | string;
 }
 
 const ROUTES = [
@@ -24,7 +25,7 @@ const ROUTES = [
   { path: "/settings", label: "Configurações" },
 ];
 
-export const SwipeableView = React.forwardRef<HTMLDivElement, SwipeableViewProps>(function SwipeableView({ children, className }, _ref) {
+export const SwipeableView = React.forwardRef<HTMLDivElement, SwipeableViewProps>(function SwipeableView({ children, className, ...rest }, _ref) {
   const location = useLocation();
   const navigate = useNavigate();
   const [showIndicator, setShowIndicator] = useState<"left" | "right" | null>(null);
@@ -72,11 +73,11 @@ export const SwipeableView = React.forwardRef<HTMLDivElement, SwipeableViewProps
   };
 
   if (!isMobile || currentIndex === -1) {
-    return <div className={className}>{children}</div>;
+    return <div className={className} {...rest}>{children}</div>;
   }
 
   return (
-    <div className={cn("relative overflow-hidden", className)}>
+    <div className={cn("relative overflow-hidden", className)} {...rest}>
       {/* Left indicator */}
       <AnimatePresence>
         {showIndicator === "right" && (
