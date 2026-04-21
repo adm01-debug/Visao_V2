@@ -37,7 +37,7 @@ function listPages(dir) {
     .map((entry) => join(dir, entry));
 }
 
-const files = walk(PAGES_DIR);
+const files = listPages(PAGES_DIR);
 const missing = [];
 let okCount = 0;
 let skipped = 0;
