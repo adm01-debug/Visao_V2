@@ -34,6 +34,10 @@ const requestNotificationPermission = async () => {
 // RENDER APP
 // ============================================
 
+import { startCLSMonitor } from '@/lib/clsMonitor';
+
+startCLSMonitor();
+
 createRoot(document.getElementById("root")!).render(<StrictMode>
     <App />
   </StrictMode>);

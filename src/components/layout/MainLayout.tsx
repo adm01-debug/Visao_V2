@@ -13,6 +13,7 @@ import { useGlobalShortcuts } from '@/hooks/useGlobalShortcuts';
 import { ShortcutsHelpDialog } from '@/components/ShortcutsHelpDialog';
 import { PageTransition } from '@/components/ui/PageTransition';
 import { RouteAnnouncer } from '@/components/ui/RouteAnnouncer';
+import { useRouteCLS } from '@/hooks/useRouteCLS';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -20,6 +21,7 @@ interface MainLayoutProps {
 
 export function MainLayout({ children }: MainLayoutProps) {
   const { showHelp, setShowHelp, getShortcutsByCategory, formatShortcut } = useGlobalShortcuts();
+  useRouteCLS();
 
   return (
     <div className="flex h-screen h-[100dvh] bg-background">
