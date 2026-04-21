@@ -1,176 +1,99 @@
 
 
-## Gate de build estrito no CI: TypeScript + Lint + Bundling
+## Teste manual + documentação: rotas autenticadas e menu mobile
 
-Hoje o `.github/workflows/ci.yml` já roda `tsc --noEmit`, `npm run lint` e `npm run build`, mas não há garantia de que esses passos **falhem o pipeline** em todos os cenários reais. Vamos endurecer o gate para que qualquer erro de tipos, lint ou bundling pare o build com erro claro e atribuição precisa.
+Validar manualmente (via browser automation) o comportamento real das rotas autenticadas e do menu mobile após as mudanças recentes (gates de CI, smoke tests, mb-mobile-nav, allowlist standalone), e consolidar os achados em um documento de QA versionado.
 
-### Diagnóstico do estado atual
+### Escopo do teste
 
-Analisando `.github/workflows/ci.yml`:
+**A. Rotas autenticadas (12 rotas-chave)**
 
-| Passo | Comportamento atual | Problema |
-|---|---|---|
-| `npx tsc --noEmit` | Falha CI ✅ | OK, mas usa `tsconfig.json` (que **exclui** stories e testes) |
-| `npm run lint` | Falha CI ✅ | OK, mas regras críticas estão como `warn` (não falham) |
-| `npm run build` | Falha CI ✅ | OK em erros fatais, mas Vite não falha em warnings de bundling (chunks gigantes, imports circulares) |
-| `Mobile Nav Overlap` | `continue-on-error: true` | Intencional (snapshots) — manter |
+| Rota | O que validar |
+|---|---|
+| `/dashboard` | Layout, BottomNav (mobile), heading H1, sem console errors |
+| `/cameras` | Grid, sidebar ativa na categoria Monitoring |
+| `/alerts` | Filtros visuais, AlertSeveritySummary |
+| `/heatmap` | Wrapper customizado renderiza com `mb-mobile-nav` |
+| `/analytics` | Recharts carregam sem layout shift |
+| `/recordings` | Lista renderiza, BottomNav não cobre último item |
+| `/people` | Página standalone com wrapper próprio |
+| `/license-plate` | ALPR dashboard, gráficos |
+| `/settings` | Tabs de configuração |
+| `/users` | Acesso restrito (RBAC admin) |
+| `/notification-settings` | Página com wrapper customizado |
+| `/zones` | Wrapper customizado, allowlist |
 
-**Lacunas identificadas:**
+**B. Menu mobile (viewport iPhone 12 — 390×844)**
 
-1. **Lint permissivo** — `eslint.config.js` tem `no-console: 'warn'`, `@typescript-eslint/no-explicit-any: 'warn'`, `react-hooks/exhaustive-deps: 'warn'`, `visao/no-hardcoded-colors: 'warn'`. Em CI, warnings não falham. Resultado: regressões de qualidade passam silenciosamente.
-2. **TSC não cobre tudo** — `tsconfig.json` exclui `*.stories.tsx`, `*.test.ts(x)` e `__tests__/**`. Erros de tipo nesses arquivos só aparecem em runtime.
-3. **Build sem detecção de regressão de bundle** — Vite reporta chunks > 500kB como warning, não como erro. Sem orçamento (`build.chunkSizeWarningLimit` + check pós-build), regressões de tamanho passam.
-4. **Sem fail-fast explícito** — atualmente os passos rodam em sequência; quando um falha, os subsequentes continuam (passos não dependentes). Falta `set -e` consistente e ordenação por custo (mais rápido primeiro).
+1. Hamburger menu visível no canto superior esquerdo
+2. Sidebar desktop **escondida** (md:hidden funcionando)
+3. Sheet drawer abre ao tocar no hamburger
+4. Categorias expandem/colapsam corretamente
+5. Navegação fecha o drawer automaticamente
+6. BottomNavigation visível e funcional em todas as rotas
+7. `mb-mobile-nav` aplica padding-bottom (último elemento não fica sob a barra)
+8. Atalho Cmd+K abre QuickSearch (mesmo no mobile)
 
-### Mudanças
+**C. Páginas standalone (sem MainLayout)**
 
-#### 1. `.github/workflows/ci.yml` — endurecer cada gate
+| Rota | Comportamento esperado |
+|---|---|
+| `/auth` | Sem BottomNav, sem Sidebar, layout centralizado |
+| `/acesso-negado` | Mensagem RBAC, sem chrome de app |
+| `/reset-password` | Form de recuperação, layout standalone |
+| `*` (404) | NotFound centralizado |
 
-Reordenar os passos do mais barato (lint) ao mais caro (build) para falhar rápido, e adicionar flags estritas:
+### Procedimento de execução
 
-```yaml
-- name: TypeScript Strict Check (incluindo stories/tests)
-  run: npx tsc --noEmit --project tsconfig.strict.json
+1. **Setup**: `navigate_to_sandbox` em `/dashboard` (desktop 1280×720). Se redirecionar para `/auth`, pedir login ao usuário antes de prosseguir.
+2. **Sweep desktop**: navegar pelas 12 rotas, capturar screenshot final, coletar `console.error` via `read_console_logs`.
+3. **Sweep mobile**: `set_viewport_size` 390×844, repetir as 12 rotas. Em cada uma:
+   - `observe` para localizar hamburger
+   - `act` para abrir o drawer em pelo menos 3 rotas (Dashboard, Heatmap, Analytics)
+   - `screenshot` da faixa inferior para confirmar BottomNav visível sem sobreposição
+4. **Standalone**: navegar para `/auth`, `/acesso-negado`, `/reset-password`, `/rota-inexistente` — confirmar ausência de BottomNav/Sidebar.
+5. **Console hygiene**: agregar todos os `console.error` capturados, filtrar ruído conhecido (Vite HMR, badge), reportar quaisquer erros legítimos.
 
-- name: ESLint (zero warnings)
-  run: npm run lint -- --max-warnings=0
+### Documentação gerada
 
-- name: Build (falha em chunks > 600kB)
-  run: npm run build
-  env:
-    CI: true
+**Novo arquivo: `docs/QA-MANUAL-RESPONSIVIDADE.md`**
 
-- name: Bundle Size Check
-  run: node scripts/check-bundle-size.mjs
-```
+Estrutura:
+1. **Resumo executivo** — data do teste, build/commit testado, viewport configs, veredito (PASS/FAIL por categoria).
+2. **Matriz de rotas autenticadas** — tabela com colunas: Rota | Desktop ✓ | Mobile ✓ | BottomNav OK | Console limpo | Notas.
+3. **Comportamento do menu mobile** — checklist com 8 itens da seção B, com screenshot ilustrativo de Dashboard + drawer aberto + faixa inferior.
+4. **Páginas standalone** — confirmação de que as 4 rotas isentas não renderizam BottomNav (referência cruzada para `docs/LAYOUTS.md` §11 Camada 0).
+5. **Issues encontradas** — qualquer console error, sobreposição de layout, ou comportamento inesperado, com reprodução passo-a-passo. Se zero issues, registrar explicitamente "Nenhuma regressão detectada".
+6. **Cobertura automatizada equivalente** — apontar quais testes E2E (`smoke-pages.spec.ts`, `mobile-nav-overlap.spec.ts`, `mobile-nav-padding.spec.ts`) cobrem cada categoria validada manualmente, para evitar duplicação de esforço futuro.
+7. **Procedimento para re-executar** — passos resumidos para QA reproduzir o teste.
 
-- `--max-warnings=0` transforma warnings em erro de pipeline (sem mudar a config local de DX).
-- `tsconfig.strict.json` (já existe!) cobre **todos** os arquivos, incluindo stories e testes — gate completo de tipos.
-- Novo passo `Bundle Size Check` valida orçamento pós-build.
+**Atualizar `docs/LAYOUTS.md`** — adicionar referência cruzada na seção 11 apontando para o novo doc de QA.
 
-#### 2. `tsconfig.strict.json` — reaproveitar para cobertura total
+**Atualizar memória `mem://testing/e2e-infrastructure`** — registrar que o doc de QA manual existe e qual escopo cobre, evitando que futuros loops re-testem manualmente o que já está coberto por E2E.
 
-O arquivo já existe com flags estritas, mas **herda** `tsconfig.json` que tem `exclude` de stories/tests. Vamos sobrescrever:
+### Critérios de aprovação
 
-```json
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": { /* já estrito */ },
-  "include": ["src", "tests"],
-  "exclude": ["node_modules", "dist"]
-}
-```
+- ✅ 12/12 rotas autenticadas carregam sem `console.error`
+- ✅ BottomNav presente em todas as rotas mobile autenticadas
+- ✅ Nenhum elemento do conteúdo é coberto pela BottomNav (validação visual)
+- ✅ Drawer mobile abre/fecha corretamente em 3 rotas testadas
+- ✅ 4/4 páginas standalone renderizam **sem** BottomNav
+- ✅ Documento `docs/QA-MANUAL-RESPONSIVIDADE.md` versionado
 
-Resultado: `tsc --noEmit -p tsconfig.strict.json` valida **tudo**, incluindo arquivos hoje invisíveis ao gate.
-
-#### 3. `package.json` — script auxiliar
-
-```json
-"type-check:strict": "tsc --noEmit -p tsconfig.strict.json",
-"lint:ci": "eslint . --max-warnings=0",
-"check:bundle-size": "node scripts/check-bundle-size.mjs"
-```
-
-Permite reproduzir localmente: `npm run type-check:strict && npm run lint:ci && npm run build && npm run check:bundle-size`.
-
-#### 4. `scripts/check-bundle-size.mjs` — orçamento de bundle
-
-Script novo que lê `dist/assets/*.js` e falha se:
-- Qualquer chunk individual > **600 kB** (gzipped > 200 kB).
-- Soma total dos chunks JS > **2 MB** (gzipped > 700 kB).
-
-```js
-import { readdirSync, statSync, readFileSync } from 'node:fs';
-import { gzipSync } from 'node:zlib';
-import { join } from 'node:path';
-
-const LIMITS = {
-  perChunk: 600 * 1024,      // 600 KB raw
-  perChunkGz: 200 * 1024,    // 200 KB gzipped
-  totalJs: 2 * 1024 * 1024,  // 2 MB raw
-  totalJsGz: 700 * 1024,     // 700 KB gzipped
-};
-
-const dir = 'dist/assets';
-const files = readdirSync(dir).filter((f) => f.endsWith('.js'));
-const errors = [];
-let totalRaw = 0, totalGz = 0;
-
-for (const f of files) {
-  const buf = readFileSync(join(dir, f));
-  const raw = buf.length;
-  const gz = gzipSync(buf).length;
-  totalRaw += raw; totalGz += gz;
-  if (raw > LIMITS.perChunk) errors.push(`Chunk ${f}: ${(raw/1024).toFixed(0)}KB > ${LIMITS.perChunk/1024}KB`);
-  if (gz > LIMITS.perChunkGz) errors.push(`Chunk ${f} gz: ${(gz/1024).toFixed(0)}KB > ${LIMITS.perChunkGz/1024}KB`);
-}
-if (totalRaw > LIMITS.totalJs) errors.push(`Total JS: ${(totalRaw/1024/1024).toFixed(2)}MB > ${LIMITS.totalJs/1024/1024}MB`);
-if (totalGz > LIMITS.totalJsGz) errors.push(`Total JS gz: ${(totalGz/1024).toFixed(0)}KB > ${LIMITS.totalJsGz/1024}KB`);
-
-if (errors.length) {
-  console.error('❌ Bundle size budget exceeded:\n' + errors.join('\n'));
-  process.exit(1);
-}
-console.log(`✅ Bundle OK — ${files.length} chunks, ${(totalRaw/1024/1024).toFixed(2)}MB raw / ${(totalGz/1024).toFixed(0)}KB gz`);
-```
-
-Os limites refletem o estado atual + margem; ajustáveis se a primeira execução falhar (calibrar para o tamanho real, não inflacionado).
-
-#### 5. `.husky/pre-push` — espelhar o gate de CI localmente
-
-Hoje `pre-push` roda `npm run test:ci && npm run lint`. Adicionar:
-```sh
-npm run type-check:strict
-npm run lint:ci
-npm run build
-npm run check:bundle-size
-```
-
-Garante que devs vejam falhas antes do push, não só no CI.
-
-#### 6. Documentação
-
-- **`docs/CI-CD.md`** — adicionar seção "Build Gates Estritos" listando os 4 gates (TS strict, lint zero-warnings, build, bundle budget) e como reproduzir localmente.
-- **`mem://architecture/ci-cd-and-e2e-integrity-standards`** — atualizar mencionando os novos gates e os scripts `type-check:strict`, `lint:ci`, `check:bundle-size`.
-
-### Validação pós-implementação
-
-1. `npm run type-check:strict` local — confirmar que passa (ou listar erros legítimos a corrigir antes de habilitar o gate).
-2. `npm run lint:ci` local — pode falhar inicialmente se houver warnings acumulados; resolver antes de mergear.
-3. `npm run build && npm run check:bundle-size` — valida orçamento atual; calibrar limites se necessário.
-4. Regressão proposital: introduzir `let x: any = 1` em um componente → `lint:ci` deve falhar com mensagem clara apontando o arquivo.
-5. Regressão proposital: importar `xlsx` (pacote pesado) sem dynamic import → `check-bundle-size` deve falhar com chunk acima de 600 kB.
-
-### Plano de rollout em 2 fases (mitigação de risco)
-
-**Fase A — habilitar gates em modo report-only** (este plano):
-- Adicionar todos os passos com `continue-on-error: true` apenas para `lint:ci` e `check:bundle-size` na primeira execução.
-- Coletar baseline de warnings/tamanhos reais.
-
-**Fase B — endurecer (segunda PR)**:
-- Remover `continue-on-error`, fixar limites calibrados.
-- Atualizar memória registrando os limites como contrato.
-
-Como o usuário pediu "falhar quando houver erros", **vamos direto à Fase B** (sem report-only). Se houver muitos warnings legados, ajustamos o plano para corrigir antes de habilitar. A validação local (passo 2 acima) é o ponto de decisão.
+Falha em qualquer critério vira issue documentada na seção 5 + correção proposta antes de fechar o loop.
 
 ### Arquivos editados/criados
 
-- ➕ `scripts/check-bundle-size.mjs` — novo script de orçamento
-- ✏️ `.github/workflows/ci.yml` — passos endurecidos + novo passo de bundle
-- ✏️ `tsconfig.strict.json` — incluir `tests/`, sobrescrever `exclude`
-- ✏️ `package.json` — scripts `type-check:strict`, `lint:ci`, `check:bundle-size`
-- ✏️ `.husky/pre-push` — espelhar gate local
-- ✏️ `docs/CI-CD.md` — seção "Build Gates Estritos"
-- ✏️ `.lovable/memory/architecture/ci-cd-and-e2e-integrity-standards.md` — registrar gates
+- ➕ `docs/QA-MANUAL-RESPONSIVIDADE.md` — relatório completo do teste
+- ✏️ `docs/LAYOUTS.md` — referência cruzada para o novo doc
+- ✏️ `mem://testing/e2e-infrastructure` — anotar cobertura do QA manual
 
 ### Riscos
 
-- **Risco:** `tsc -p tsconfig.strict.json` cobrindo stories/tests pode revelar erros de tipo legados.
-  - **Mitigação:** rodar localmente primeiro; se houver, corrigir como pré-requisito ou adicionar `// @ts-expect-error` pontual com comentário.
-- **Risco:** `lint --max-warnings=0` pode falhar em warnings legados (`no-console`, `no-explicit-any`, `exhaustive-deps`).
-  - **Mitigação:** rodar `npm run lint -- --max-warnings=0` local antes de habilitar; corrigir ou justificar com `eslint-disable-next-line` + motivo.
-- **Risco:** limites de bundle muito apertados quebram o build em features novas legítimas.
-  - **Mitigação:** calibrar com baseline real + 15% de margem; documentar como ajustar limites quando houver crescimento justificado.
-- **Risco:** `pre-push` com build completo fica lento (~30-60s).
-  - **Mitigação:** se incomodar, mover `build` + `check:bundle-size` apenas para CI e manter só `type-check:strict` + `lint:ci` no `pre-push`.
+- **Risco:** sessão do preview não autenticada → todas as rotas redirecionam para `/auth`.
+  - **Mitigação:** detectar redirect na primeira navegação e pedir ao usuário para fazer login no preview antes de continuar; **não** preencher form de login automaticamente.
+- **Risco:** browser automation rate-limited ou indisponível.
+  - **Mitigação:** se `navigate_to_sandbox` falhar, reportar ao usuário e continuar gerando o doc com base na análise estática de código (`SidebarMobile.tsx`, `MainLayout.tsx`, `BottomNavigation.tsx`) + cobertura E2E existente, marcando claramente "Validação manual pendente — rodar quando browser disponível".
+- **Risco:** QA manual desatualiza rapidamente conforme features novas chegam.
+  - **Mitigação:** o doc inclui seção "Cobertura automatizada equivalente" reforçando que os E2E são a fonte da verdade contínua; QA manual é snapshot pontual.
 
