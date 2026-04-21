@@ -47,7 +47,7 @@ export default function RecognitionLogsPage() {
   const hasActiveFilters = searchTerm || selectedPerson !== 'all' || selectedCamera !== 'all' || selectedStatus !== 'all' || dateFrom || dateTo;
 
   return (
-    <div role="main" aria-label="Logs de reconhecimento" className="min-h-screen bg-background mb-mobile-nav">
+    <div role="main" aria-label="Logs de reconhecimento" className="min-h-screen bg-background">
       <PageMeta title="Logs de Reconhecimento" description="Histórico de reconhecimentos faciais" />
       <div className="p-6 space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">

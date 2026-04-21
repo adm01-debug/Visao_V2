@@ -102,7 +102,7 @@ export default function ProductivityDashboardPage() {
   return (
     <MainLayout>
       <PageMeta title="Produtividade" description="Dashboard de produtividade e desempenho" />
-      <div className="space-y-6 max-w-7xl mx-auto mb-mobile-nav">
+      <div className="space-y-6 max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-primary/10"><BarChart3 className="h-6 w-6 text-primary" /></div>

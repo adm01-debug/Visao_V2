@@ -11,7 +11,7 @@ export default function JourneyReportsPage() {
   const { period, setPeriod, selectedPerson, setSelectedPerson, persons, journeyData, isLoading, refetch, stats, formatMinutes, exportPDF, sendViaTelegram, sending } = useJourneyData();
 
   return (
-    <div className="space-y-6 p-6 max-w-7xl mx-auto mb-mobile-nav">
+    <div className="space-y-6 p-6 max-w-7xl mx-auto">
       <PageMeta title="Relatórios de Jornada" description="Relatórios automatizados de jornada de colaboradores" />
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

@@ -67,7 +67,7 @@ export default function StreamSettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background mb-mobile-nav">
+    <div className="min-h-screen bg-background">
       <PageMeta title="Configuração de Streams" description="Configure streams RTSP, HLS e câmeras IP profissionais" />
 
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">

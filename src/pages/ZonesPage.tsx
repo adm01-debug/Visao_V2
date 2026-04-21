@@ -115,7 +115,7 @@ export function ZonesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background mb-mobile-nav">
+      <div className="min-h-screen bg-background">
         <PageMeta title="Zonas" description="Configure zonas de detecção e monitoramento" />
         <ZonesSkeleton />
       </div>
@@ -125,7 +125,7 @@ export function ZonesPage() {
   const hasActiveFilters = searchQuery || selectedCameraFilter !== 'all' || selectedTypeFilter !== 'all';
 
   return (
-    <div role="main" aria-label="Zonas de interesse" className="min-h-screen bg-background mb-mobile-nav">
+    <div role="main" aria-label="Zonas de interesse" className="min-h-screen bg-background">
       <PageMeta title="Zonas" description="Configure zonas de detecção e monitoramento" />
 
       {/* Header */}

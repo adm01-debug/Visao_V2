@@ -36,7 +36,7 @@ export default function NotificationSettingsPage() {
   }
 
   return (
-    <div role="main" aria-label="Configurações de notificações" className="min-h-screen bg-background p-6 mb-mobile-nav">
+    <div role="main" aria-label="Configurações de notificações" className="min-h-screen bg-background p-6">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
