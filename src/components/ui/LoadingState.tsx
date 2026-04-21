@@ -11,6 +11,7 @@ interface SkeletonProps {
 export function Skeleton({ className, animate = true }: SkeletonProps) {
   return (
     <div
+      aria-hidden="true"
       className={cn(
         'bg-muted rounded-md',
         animate && 'animate-pulse',
@@ -26,7 +27,7 @@ interface ShimmerProps {
 
 export function Shimmer({ className }: ShimmerProps) {
   return (
-    <div className={cn('relative overflow-hidden bg-muted rounded-md', className)}>
+    <div aria-hidden="true" className={cn('relative overflow-hidden bg-muted rounded-md', className)}>
       <motion.div
         className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
         animate={{
@@ -45,13 +46,20 @@ export function Shimmer({ className }: ShimmerProps) {
 // Card Skeleton for Dashboard Widgets
 export function CardSkeleton({ className }: { className?: string }) {
   return (
-    <div className={cn('p-4 rounded-lg border border-border bg-card min-h-[120px]', className)}>
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label="Carregando cartão…"
+      className={cn('p-4 rounded-lg border border-border bg-card min-h-[120px]', className)}
+    >
       <div className="flex items-center justify-between mb-4">
         <Shimmer className="h-5 w-24" />
         <Shimmer className="h-8 w-8 rounded-full" />
       </div>
       <Shimmer className="h-8 w-16 mb-2" />
       <Shimmer className="h-4 w-32" />
+      <span className="sr-only">Carregando cartão…</span>
     </div>
   );
 }
@@ -59,10 +67,17 @@ export function CardSkeleton({ className }: { className?: string }) {
 // Camera Grid Skeleton
 export function CameraGridSkeleton({ count = 4 }: { count?: number }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label="Carregando câmeras…"
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+    >
       {Array.from({ length: count }).map((_, i) => (
         <motion.div
           key={i}
+          aria-hidden="true"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.05, duration: 0.3 }}
@@ -80,6 +95,7 @@ export function CameraGridSkeleton({ count = 4 }: { count?: number }) {
           </div>
         </motion.div>
       ))}
+      <span className="sr-only">Carregando câmeras…</span>
     </div>
   );
 }
@@ -87,10 +103,17 @@ export function CameraGridSkeleton({ count = 4 }: { count?: number }) {
 // List Skeleton for Alerts, Activity Feed
 export function ListSkeleton({ count = 5 }: { count?: number }) {
   return (
-    <div className="space-y-3">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label="Carregando lista…"
+      className="space-y-3"
+    >
       {Array.from({ length: count }).map((_, i) => (
         <motion.div
           key={i}
+          aria-hidden="true"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: i * 0.05, duration: 0.3 }}
@@ -104,6 +127,7 @@ export function ListSkeleton({ count = 5 }: { count?: number }) {
           <Shimmer className="h-6 w-16 rounded-full" />
         </motion.div>
       ))}
+      <span className="sr-only">Carregando lista…</span>
     </div>
   );
 }
@@ -111,7 +135,13 @@ export function ListSkeleton({ count = 5 }: { count?: number }) {
 // Table Skeleton
 export function TableSkeleton({ rows = 5, cols = 4 }: { rows?: number; cols?: number }) {
   return (
-    <div className="rounded-lg border border-border overflow-hidden">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label="Carregando tabela…"
+      className="rounded-lg border border-border overflow-hidden"
+    >
       {/* Header */}
       <div className="flex bg-muted/50 p-3 gap-4">
         {Array.from({ length: cols }).map((_, i) => (
@@ -122,6 +152,7 @@ export function TableSkeleton({ rows = 5, cols = 4 }: { rows?: number; cols?: nu
       {Array.from({ length: rows }).map((_, rowIndex) => (
         <motion.div
           key={rowIndex}
+          aria-hidden="true"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: rowIndex * 0.05, duration: 0.3 }}
@@ -132,6 +163,7 @@ export function TableSkeleton({ rows = 5, cols = 4 }: { rows?: number; cols?: nu
           ))}
         </motion.div>
       ))}
+      <span className="sr-only">Carregando tabela…</span>
     </div>
   );
 }
@@ -139,10 +171,17 @@ export function TableSkeleton({ rows = 5, cols = 4 }: { rows?: number; cols?: nu
 // Stats Skeleton
 export function StatsSkeleton({ count = 4 }: { count?: number }) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label="Carregando estatísticas…"
+      className="grid grid-cols-2 md:grid-cols-4 gap-4"
+    >
       {Array.from({ length: count }).map((_, i) => (
         <CardSkeleton key={i} />
       ))}
+      <span className="sr-only">Carregando estatísticas…</span>
     </div>
   );
 }
@@ -150,7 +189,13 @@ export function StatsSkeleton({ count = 4 }: { count?: number }) {
 // Chart Skeleton
 export function ChartSkeleton({ className }: { className?: string }) {
   return (
-    <div className={cn('p-4 rounded-lg border border-border bg-card', className)}>
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label="Carregando gráfico…"
+      className={cn('p-4 rounded-lg border border-border bg-card', className)}
+    >
       <div className="flex items-center justify-between mb-4">
         <Shimmer className="h-5 w-32" />
         <div className="flex gap-2">
@@ -162,6 +207,7 @@ export function ChartSkeleton({ className }: { className?: string }) {
         {Array.from({ length: 12 }).map((_, i) => (
           <motion.div
             key={i}
+            aria-hidden="true"
             initial={{ height: 0 }}
             animate={{ height: `${Math.random() * 100}%` }}
             transition={{ delay: i * 0.05, duration: 0.5 }}
@@ -169,6 +215,7 @@ export function ChartSkeleton({ className }: { className?: string }) {
           />
         ))}
       </div>
+      <span className="sr-only">Carregando gráfico…</span>
     </div>
   );
 }
@@ -176,7 +223,13 @@ export function ChartSkeleton({ className }: { className?: string }) {
 // Full Page Loading
 export function PageLoadingSkeleton() {
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label="Carregando página…"
+      className="space-y-6 p-4 md:p-6"
+    >
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="space-y-2">
@@ -194,6 +247,7 @@ export function PageLoadingSkeleton() {
         <ChartSkeleton />
         <ListSkeleton count={4} />
       </div>
+      <span className="sr-only">Carregando página…</span>
     </div>
   );
 }
@@ -213,6 +267,8 @@ export function Spinner({ size = 'md', className }: SpinnerProps) {
 
   return (
     <motion.div
+      role="status"
+      aria-label="Carregando…"
       className={cn(
         'rounded-full border-primary/30 border-t-primary',
         sizeClasses[size],
@@ -237,6 +293,10 @@ interface LoadingOverlayProps {
 export function LoadingOverlay({ message = 'Carregando...', className }: LoadingOverlayProps) {
   return (
     <motion.div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label={message}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -274,7 +334,13 @@ export function ProgressBar({ progress, showLabel = true, className }: ProgressB
           <span className="font-medium">{Math.round(progress)}%</span>
         </div>
       )}
-      <div className="h-2 bg-muted rounded-full overflow-hidden">
+      <div
+        role="progressbar"
+        aria-valuenow={Math.round(progress)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        className="h-2 bg-muted rounded-full overflow-hidden"
+      >
         <motion.div
           className="h-full bg-primary rounded-full"
           initial={{ width: 0 }}

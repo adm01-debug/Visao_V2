@@ -3,7 +3,7 @@ import { FiltersBarSkeleton } from './FiltersBarSkeleton';
 
 export function CamerasSkeleton() {
   return (
-    <div className="p-6 space-y-6">
+    <div role="status" aria-live="polite" aria-busy="true" aria-label="Carregando câmeras…" className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <Skeleton className="h-8 w-32 mb-2" />
@@ -26,6 +26,7 @@ export function CamerasSkeleton() {
           </div>
         ))}
       </div>
+      <span className="sr-only">Carregando câmeras…</span>
     </div>
   );
 }
