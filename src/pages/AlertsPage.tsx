@@ -118,14 +118,30 @@ export function AlertsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2"><Bell className="w-6 h-6" />Alertas</h1>
-          <p className="text-sm text-muted-foreground">{stats.total} alertas • {stats.unread} não lidos</p>
+          <p className="text-sm text-muted-foreground">
+            {loading ? '— alertas • — não lidos' : `${stats.total} alertas • ${stats.unread} não lidos`}
+          </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => refetch()}><RefreshCw className="w-4 h-4 mr-2" />Atualizar</Button>
-          {unreadCount > 0 && <Button variant="outline" size="sm" onClick={() => markAllAsRead()}><CheckCheck className="w-4 h-4 mr-2" />Marcar todos como lidos</Button>}
+          <Button variant="outline" size="sm" onClick={() => refetch()} disabled={loading}>
+            <RefreshCw className={cn('w-4 h-4 mr-2', loading && 'animate-spin')} />Atualizar
+          </Button>
+          {!loading && unreadCount > 0 && <Button variant="outline" size="sm" onClick={() => markAllAsRead()}><CheckCheck className="w-4 h-4 mr-2" />Marcar todos como lidos</Button>}
           <ExportMenu onExportCSV={() => exportAlerts(filteredAlerts, 'csv')} onExportPDF={() => exportAlerts(filteredAlerts, 'pdf')} />
         </div>
       </div>
+
+      <AlertStatsCards stats={stats} activeFilter={activeStatsFilter} onFilterClick={handleStatsFilterClick} loading={loading} />
+      <AlertSeveritySummary
+        counts={severityCounts}
+        total={stats.total}
+        activeSeverity={filters.severity !== 'all' ? filters.severity : undefined}
+        onSeverityClick={(severity) => {
+          setActiveStatsFilter(null);
+          setFilters(f => ({ ...defaultFilters, severity }));
+        }}
+        loading={loading}
+      />
 
       <AlertStatsCards stats={stats} activeFilter={activeStatsFilter} onFilterClick={handleStatsFilterClick} />
       <AlertSeveritySummary
