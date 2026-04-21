@@ -34,7 +34,11 @@ function BrandedSkeleton({ className, ...props }: React.HTMLAttributes<HTMLDivEl
       {...props}
     >
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none animate-skeleton-brand-pulse">
-        <Shield className="w-8 h-8 text-primary" />
+        {Shield ? (
+          <Shield className="w-8 h-8 text-primary" />
+        ) : (
+          <div className="w-8 h-8 rounded bg-muted-foreground/20" />
+        )}
       </div>
     </div>
   );
