@@ -98,11 +98,11 @@ export function DashboardV2() {
   const handleRefresh = useCallback(() => { refetchCameras(); refetchAlerts(); toast.success('Dados atualizados'); }, [refetchCameras, refetchAlerts]);
 
   if (loading) {
-    return <div className="p-6 space-y-6 overflow-auto h-[calc(100vh-4rem)]"><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">{[...Array(4)].map((_, i) => <Skeleton key={i} className="h-32" />)}</div><Skeleton className="h-96" /></div>;
+    return <div className="p-6 space-y-6"><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">{[...Array(4)].map((_, i) => <Skeleton key={i} className="h-32" />)}</div><Skeleton className="h-96" /></div>;
   }
 
   return (
-    <div className="page-container space-y-4 sm:space-y-6 overflow-auto h-[calc(100vh-4rem)]">
+    <div className="page-container space-y-4 sm:space-y-6">
       <PageMeta title="Dashboard" description="Painel de controle principal do sistema de vigilância" />
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

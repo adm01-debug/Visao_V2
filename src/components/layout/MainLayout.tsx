@@ -22,7 +22,7 @@ export function MainLayout({ children }: MainLayoutProps) {
   const { showHelp, setShowHelp, getShortcutsByCategory, formatShortcut } = useGlobalShortcuts();
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen h-[100dvh] bg-background">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-4 focus:left-4 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg"
