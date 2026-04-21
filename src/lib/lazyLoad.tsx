@@ -4,6 +4,7 @@
  */
 import React, { lazy, Suspense, ComponentType } from 'react';
 import { Loader2 } from 'lucide-react';
+import { SkeletonErrorBoundary } from '@/components/skeletons/SkeletonErrorBoundary';
 
 /**
  * Loading fallback component
@@ -38,9 +39,13 @@ export function withLazyLoad<T extends ComponentType<any>>(
 
   return function LazyWrapper(props: React.ComponentProps<T>) {
     return (
-      <Suspense fallback={fallback}>
-        <LazyComponent {...props} />
-      </Suspense>
+      <SkeletonErrorBoundary>
+        <Suspense
+          fallback={<SkeletonErrorBoundary>{fallback}</SkeletonErrorBoundary>}
+        >
+          <LazyComponent {...props} />
+        </Suspense>
+      </SkeletonErrorBoundary>
     );
   };
 }
