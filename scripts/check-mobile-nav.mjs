@@ -15,23 +15,26 @@ import { join, relative } from 'node:path';
 const PAGES_DIR = 'src/pages';
 const REQUIRED_CLASS = 'mb-mobile-nav';
 
-// Páginas isentas (sem bottom nav: auth, 404, redirects puros)
+// Páginas isentas (sem bottom nav: auth, 404, redirects puros, telas standalone)
 const ALLOWLIST = new Set([
   'AuthPage.tsx',
+  'Auth.tsx',
+  'AuthCallback.tsx',
   'ResetPasswordPage.tsx',
   'NotFound.tsx',
   'Index.tsx',
+  'AcessoNegado.tsx',
 ]);
 
-function walk(dir) {
-  const out = [];
-  for (const entry of readdirSync(dir)) {
-    const full = join(dir, entry);
-    const st = statSync(full);
-    if (st.isDirectory()) out.push(...walk(full));
-    else if (entry.endsWith('.tsx')) out.push(full);
-  }
-  return out;
+// Apenas arquivos no nível raiz de src/pages/ são páginas roteadas.
+// Subdiretórios contêm subcomponentes (não páginas), portanto são ignorados.
+function listPages(dir) {
+  return readdirSync(dir)
+    .filter((entry) => {
+      const full = join(dir, entry);
+      return statSync(full).isFile() && entry.endsWith('.tsx');
+    })
+    .map((entry) => join(dir, entry));
 }
 
 const files = walk(PAGES_DIR);
