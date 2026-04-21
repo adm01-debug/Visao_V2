@@ -120,6 +120,13 @@ export default {
           "0%": { transform: "translateX(-150%) skewX(-12deg)" },
           "100%": { transform: "translateX(250%) skewX(-12deg)" },
         },
+        "shimmer": {
+          "100%": { transform: "translateX(100%)" },
+        },
+        "skeleton-brand-pulse": {
+          "0%, 100%": { opacity: "0.06", transform: "translate(-50%, -50%) scale(1)" },
+          "50%": { opacity: "0.1", transform: "translate(-50%, -50%) scale(1.03)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -130,6 +137,8 @@ export default {
         "scan-line": "scan-line 4s linear infinite",
         "card-enter": "card-enter 0.4s ease-out both",
         "sheen": "sheen 0.7s ease-out",
+        "shimmer": "shimmer 2s infinite",
+        "skeleton-brand-pulse": "skeleton-brand-pulse 3s ease-in-out infinite",
       },
     },
   },
