@@ -1,34 +1,41 @@
 
 
-## Plano: Cobertura final de `mb-mobile-nav`
+## Plano: Skeletons branded animados nas páginas de listagem
 
-### Status atual
-- `PageContent` (em `src/components/layout/MainLayout.tsx`) **já inclui `mb-mobile-nav`** → cobre automaticamente `AutomationRulesPage` e `ReportsPage`. Nenhuma alteração necessária nelas.
-- 26 páginas já possuem a classe aplicada manualmente.
+### Problema
+As páginas `CamerasPage`, `AlertsPage` e `ZonesPage` exibem skeletons genéricos básicos (apenas alguns retângulos cinza) durante o loading, que não refletem a estrutura real da página — causando "salto de layout" (CLS) quando os dados chegam.
 
-### Páginas que ainda precisam de auditoria/aplicação
-Páginas autenticadas com chrome de app (sidebar + bottom nav) que não foram verificadas:
-
-1. `src/pages/DashboardV2.tsx` — dashboard principal
-2. `src/pages/HeatmapPage.tsx` — visualização de heatmap
-3. `src/pages/AnalyticsPage.tsx` — analytics
-4. `src/pages/TelegramSettingsPage.tsx` — configurações do Telegram
-
-### Páginas excluídas intencionalmente
-Não recebem `mb-mobile-nav` por design (não usam o BottomNavigation):
-- `Auth.tsx`, `AuthCallback.tsx`, `ResetPasswordPage.tsx` — fluxo de login
-- `Index.tsx`, `NotFound.tsx`, `AcessoNegado.tsx` — redirects/erros standalone
+Os skeletons branded ricos já existem em `src/components/skeletons/` (`CamerasSkeleton`, `AlertsSkeleton`, `ZonesSkeleton`) — com shimmer animado, `BrandedSkeleton` (watermark Shield VISÃO) e estrutura idêntica à página real — mas **não estão sendo usados**.
 
 ### Ação
-Para cada uma das 4 páginas restantes:
-1. Ler o arquivo para localizar o container raiz.
-2. Adicionar `mb-mobile-nav` ao `className` do wrapper de mais alto nível (mesmo padrão dos outros: junto a `min-h-screen bg-background` ou `space-y-6 p-6`).
-3. Não alterar lógica nem estrutura — apenas a className.
 
-### Validação
-- `npx tsc --noEmit` para confirmar build limpo.
-- Confirmar via grep que todas as páginas de app autenticadas (exceto auth/erro) contêm `mb-mobile-nav`.
+**1. `src/pages/CamerasPage.tsx`** (linhas 72–82)
+- Substituir o bloco `if (loading)` pelo import e uso de `<CamerasSkeleton />`.
+- Remover import não utilizado de `Skeleton` se não houver outro uso.
+
+**2. `src/pages/AlertsPage.tsx`** (linhas 113–121)
+- Substituir o bloco `if (loading)` pelo import e uso de `<AlertsSkeleton />`.
+- Limpar import de `Skeleton` se órfão.
+
+**3. `src/pages/ZonesPage.tsx`** (linhas 116–132)
+- Substituir o bloco `if (loading)` pelo import e uso de `<ZonesSkeleton />`.
+- Manter `<PageMeta />` dentro do skeleton wrapper para SEO consistente.
+
+**4. Verificação de animação shimmer**
+- Confirmar que o keyframe `shimmer` referenciado em `src/components/ui/skeleton.tsx` (`after:animate-[shimmer_2s_infinite]`) existe em `tailwind.config.ts`. Se ausente, adicionar:
+  ```ts
+  shimmer: { '0%': { transform: 'translateX(-100%)' }, '100%': { transform: 'translateX(100%)' } }
+  ```
+- Também verificar `skeleton-brand-pulse` usado em `BrandedSkeleton`.
+
+**5. Validação**
+- `npx tsc --noEmit` para garantir build limpo.
 
 ### Resultado esperado
-100% de consistência: nenhuma página autenticada terá conteúdo escondido pela barra de navegação inferior no mobile.
+- Loading com layout idêntico ao conteúdo final (zero CLS).
+- Shimmer animado contínuo + watermark Shield VISÃO em áreas grandes (thumbnails de câmera, mapa de zona).
+- Stats cards, filtros, tabs e grids com forma exata — transição suave entre skeleton e dado real via `animate-fade-in` já presente nos containers.
+
+### Tempo estimado
+~5 minutos.
 
