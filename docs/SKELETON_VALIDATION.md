@@ -49,6 +49,31 @@ npm run check:skeletons -- --skip-build   # iteração rápida (sem vite build)
 > `CamerasSkeleton`/`AlertsSkeleton`/`ZonesSkeleton` em early-return é uma **regressão
 > conhecida** e deve ser rejeitado em review.
 
+## Fallback e Error Boundary
+
+Para evitar tela em branco caso um skeleton branded (`BrandedSkeleton`,
+`DashboardSkeleton`, `CamerasSkeleton`, `AlertsSkeleton`, `ZonesSkeleton`)
+falhe ao carregar — chunk corrompido, erro de runtime ou import dinâmico
+rejeitado — o sistema usa uma cadeia dupla de defesa em `src/lib/lazyLoad.tsx`:
+
+```
+<SkeletonErrorBoundary>                  ← captura falha do componente lazy
+  <Suspense fallback={
+    <SkeletonErrorBoundary>{fallback}</SkeletonErrorBoundary>  ← captura falha do próprio skeleton
+  }>
+    <LazyComponent />
+  </Suspense>
+</SkeletonErrorBoundary>
+```
+
+Quando qualquer boundary captura um erro, ele renderiza
+`SkeletonFallback` — um skeleton genérico **sem dependências externas**
+(apenas `cn` + Tailwind `animate-pulse`) e loga via `logger.error`. Em DEV,
+o stack completo também vai para `console.error` para visibilidade no DevTools.
+
+`BrandedSkeleton` faz render condicional do ícone `Shield` (`lucide-react`)
+para tolerar falha isolada da biblioteca de ícones.
+
 ## Observações
 
 - Pipeline **não substitui** os gates de CI (`type-check:strict`, `lint:ci`, `test:ci`,
