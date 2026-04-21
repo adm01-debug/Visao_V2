@@ -128,9 +128,9 @@ export function AnalyticsPage() {
                 <p className="text-muted-foreground mt-0.5 text-sm">Estatísticas e relatórios do período</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
               <Select value={dateRange} onValueChange={(v) => setDateRange(v as DateRange)}>
-                <SelectTrigger className="w-36 border-border/40">
+                <SelectTrigger className="w-full sm:w-36 border-border/40">
                   <Calendar className="w-4 h-4 mr-2" /><SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -140,22 +140,24 @@ export function AnalyticsPage() {
                   <SelectItem value="90d">Últimos 90 dias</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="outline" size="icon" onClick={() => { setRefreshing(true); loadData(); }} className="border-border/40">
-                <RefreshCw className={cn('w-4 h-4', refreshing && 'animate-spin')} />
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="border-border/40">
-                    <Download className="w-4 h-4 mr-2" />Exportar
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => exportReport('csv')}><FileText className="w-4 h-4 mr-2" />CSV</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => exportReport('xlsx')}><FileText className="w-4 h-4 mr-2" />Excel</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => exportReport('pdf')}><FileText className="w-4 h-4 mr-2" />PDF</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => toast.success('Relatório enviado por email')}><Mail className="w-4 h-4 mr-2" />Email</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <div className="flex items-center gap-2 ml-auto sm:ml-0">
+                <Button variant="outline" size="icon" onClick={() => { setRefreshing(true); loadData(); }} className="border-border/40 shrink-0">
+                  <RefreshCw className={cn('w-4 h-4', refreshing && 'animate-spin')} />
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="border-border/40">
+                      <Download className="w-4 h-4 sm:mr-2" /><span className="hidden sm:inline">Exportar</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => exportReport('csv')}><FileText className="w-4 h-4 mr-2" />CSV</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => exportReport('xlsx')}><FileText className="w-4 h-4 mr-2" />Excel</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => exportReport('pdf')}><FileText className="w-4 h-4 mr-2" />PDF</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => toast.success('Relatório enviado por email')}><Mail className="w-4 h-4 mr-2" />Email</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
           </div>
         </div>
