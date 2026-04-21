@@ -5,11 +5,12 @@ import { Shield } from "lucide-react";
 const Skeleton = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(function Skeleton({ className, ...props }, ref) {
   return (
     <div
+      ref={ref}
       className={cn(
         "rounded-md bg-muted relative overflow-hidden",
         "after:absolute after:inset-0 after:translate-x-[-100%]",
-        "after:bg-gradient-to-r after:from-transparent after:via-primary/5 after:to-transparent",
-        "after:animate-[shimmer_2s_infinite]",
+        "after:bg-gradient-to-r after:from-transparent after:via-primary/10 after:to-transparent",
+        "after:animate-shimmer",
         className
       )}
       {...props}
@@ -26,13 +27,13 @@ function BrandedSkeleton({ className, ...props }: React.HTMLAttributes<HTMLDivEl
       className={cn(
         "rounded-md bg-muted relative overflow-hidden",
         "after:absolute after:inset-0 after:translate-x-[-100%]",
-        "after:bg-gradient-to-r after:from-transparent after:via-primary/5 after:to-transparent",
-        "after:animate-[shimmer_2s_infinite]",
+        "after:bg-gradient-to-r after:from-transparent after:via-primary/10 after:to-transparent",
+        "after:animate-shimmer",
         className
       )}
       {...props}
     >
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ animation: 'skeleton-brand-pulse 3s ease-in-out infinite' }}>
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none animate-skeleton-brand-pulse">
         <Shield className="w-8 h-8 text-primary" />
       </div>
     </div>
