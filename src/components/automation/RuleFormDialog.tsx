@@ -48,17 +48,17 @@ export function RuleFormDialog({ open, onOpenChange, formData, setFormData, isEd
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-2xl w-[calc(100vw-2rem)] sm:w-full max-h-[90vh] overflow-hidden flex flex-col p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle>{isEditing ? 'Editar Regra' : 'Nova Regra de Automação'}</DialogTitle>
           <DialogDescription>Configure as condições e ações para esta regra</DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 -mx-6 px-6">
+        <ScrollArea className="flex-1 -mx-4 sm:-mx-6 px-4 sm:px-6">
           <div className="space-y-6 py-4">
             {/* Basic Info */}
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Nome da Regra</Label>
                   <Input placeholder="Ex: Alerta de Movimento Noturno" value={formData.name} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} />
@@ -83,9 +83,9 @@ export function RuleFormDialog({ open, onOpenChange, formData, setFormData, isEd
               </div>
               <div className="space-y-2">
                 <Label>Severidade Mínima</Label>
-                <div className="flex gap-2">
+                <div className="grid grid-cols-2 sm:flex gap-2">
                   {SEVERITIES.map(sev => (
-                    <Button key={sev.value} variant={formData.severity === sev.value ? 'default' : 'outline'} size="sm" onClick={() => setFormData(prev => ({ ...prev, severity: sev.value }))} className="flex-1">
+                    <Button key={sev.value} variant={formData.severity === sev.value ? 'default' : 'outline'} size="sm" onClick={() => setFormData(prev => ({ ...prev, severity: sev.value }))} className="sm:flex-1">
                       <div className={cn('w-2 h-2 rounded-full mr-2', sev.color)} />{sev.label}
                     </Button>
                   ))}
@@ -149,7 +149,7 @@ export function RuleFormDialog({ open, onOpenChange, formData, setFormData, isEd
                     {cameras.length === 0 ? <p className="text-sm text-muted-foreground">Nenhuma câmera disponível</p> : (
                       <>
                         <p className="text-sm text-muted-foreground mb-2">{formData.cameras.length === 0 ? 'Aplica a todas as câmeras. Selecione para restringir:' : 'Selecionadas:'}</p>
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {cameras.map(camera => (
                             <div key={camera.id} className={cn('flex items-center gap-2 p-2 rounded border cursor-pointer', formData.cameras.includes(camera.id) ? 'border-primary bg-primary/5' : 'hover:bg-muted')} onClick={() => toggleCamera(camera.id)}>
                               <Checkbox checked={formData.cameras.includes(camera.id)} /><span className="text-sm">{camera.name}</span>
@@ -171,9 +171,9 @@ export function RuleFormDialog({ open, onOpenChange, formData, setFormData, isEd
                     </div>
                     {formData.schedule.enabled && (
                       <>
-                        <div className="flex gap-2">
+                        <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
                           {DAYS_OF_WEEK.map(day => (
-                            <Button key={day.value} variant={formData.schedule.days.includes(day.value) ? 'default' : 'outline'} size="sm" className="flex-1" onClick={() => toggleDay(day.value)}>{day.label}</Button>
+                            <Button key={day.value} variant={formData.schedule.days.includes(day.value) ? 'default' : 'outline'} size="sm" className="w-full" onClick={() => toggleDay(day.value)}>{day.label}</Button>
                           ))}
                         </div>
                         <div className="grid grid-cols-2 gap-4">
@@ -195,9 +195,9 @@ export function RuleFormDialog({ open, onOpenChange, formData, setFormData, isEd
           </div>
         </ScrollArea>
 
-        <DialogFooter className="pt-4 border-t">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
-          <Button onClick={onSave} disabled={!formData.name || formData.actions.length === 0}>
+        <DialogFooter className="pt-4 border-t flex-col sm:flex-row gap-2">
+          <Button variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">Cancelar</Button>
+          <Button onClick={onSave} disabled={!formData.name || formData.actions.length === 0} className="w-full sm:w-auto">
             <Save className="h-4 w-4 mr-2" />{isEditing ? 'Salvar Alterações' : 'Criar Regra'}
           </Button>
         </DialogFooter>
