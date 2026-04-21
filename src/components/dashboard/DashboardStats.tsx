@@ -22,6 +22,7 @@ export function DashboardStats({
   return (
     <div className="stats-grid stagger-in">
       <StatsCard
+        index={0}
         title="Câmeras"
         value={`${onlineCameras}/${totalCameras}`}
         subtitle="online"
@@ -30,6 +31,7 @@ export function DashboardStats({
         trend={{ value: uptimePercent, isPositive: uptimePercent >= 80 }}
       />
       <StatsCard
+        index={1}
         title="Alertas"
         value={activeAlerts}
         subtitle={activeAlerts === 0 ? 'tudo limpo' : `${activeAlerts > 10 ? 'atenção' : 'ativos'}`}
@@ -38,6 +40,7 @@ export function DashboardStats({
         trend={{ value: 5, isPositive: false }}
       />
       <StatsCard
+        index={2}
         title="Pessoas"
         value={totalPeople}
         subtitle="detectadas"
@@ -46,6 +49,7 @@ export function DashboardStats({
         trend={{ value: 12, isPositive: true }}
       />
       <StatsCard
+        index={3}
         title="Segurança"
         value={`${uptimePercent}%`}
         subtitle="score dinâmico"
@@ -53,6 +57,7 @@ export function DashboardStats({
         variant={uptimePercent >= 90 ? 'success' : uptimePercent >= 70 ? 'warning' : 'danger'}
       />
       <StatsCard
+        index={4}
         title="IA"
         value={streamingCameras > 0 ? 'Ativa' : 'Inativa'}
         subtitle={streamingCameras > 0 ? `${streamingCameras} streams` : 'sem streams'}
