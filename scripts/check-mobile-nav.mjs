@@ -35,6 +35,15 @@ const CUSTOM_WRAPPER_ALLOWLIST = new Set([
   'HeatmapPage.tsx',
   'AnalyticsPage.tsx',
   'TelegramSettingsPage.tsx',
+  'LicensePlatePage.tsx',
+  'NotificationSettingsPage.tsx',
+  'PPEPage.tsx',
+  'PeoplePage.tsx',
+  'RecognitionAnalyticsPage.tsx',
+  'RecognitionLogsPage.tsx',
+  'RecordingsPage.tsx',
+  'StreamSettingsPage.tsx',
+  'ZonesPage.tsx',
 ]);
 
 function listPages(dir) {
