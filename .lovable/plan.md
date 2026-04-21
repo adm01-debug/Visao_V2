@@ -1,39 +1,69 @@
 
 
-## Decisão: não substituir
+## Fallback de skeleton para evitar tela em branco
 
-A proposta vai **na direção oposta** do que acabamos de implementar e aprovar nas duas últimas tarefas. Recomendo **não executar** e explico abaixo.
+Garantir que, se um componente branded de skeleton (ex.: `BrandedSkeleton`, `CamerasSkeleton`, `AlertsSkeleton`, `ZonesSkeleton`, `DashboardSkeleton`) falhar ao carregar — seja por erro de import dinâmico, chunk corrompido ou exceção de runtime —, o usuário veja um skeleton genérico em vez de tela em branco.
 
-### Estado atual (após tarefas anteriores aprovadas)
+### Estado atual
 
-As páginas `CamerasPage`, `AlertsPage` e `ZonesPage` foram refatoradas para:
+- Page-level skeletons (`CamerasSkeleton`, `AlertsSkeleton`, `ZonesSkeleton`, `DashboardSkeleton`) são usados como `Suspense` fallback no lazy-load das páginas (via `LazyPages` / `App.tsx`).
+- `BrandedSkeleton` (em `src/components/ui/skeleton.tsx`) é usado dentro de vários skeletons granulares (cards de câmera, mapas, etc.).
+- Hoje **não há** Error Boundary em volta desses fallbacks. Se o próprio chunk do skeleton falhar (raro mas possível em rede instável ou após deploy quebrado), o `Suspense` pode ficar pendurado e o usuário vê tela branca.
+- Também não há try/catch em volta de `BrandedSkeleton` quando ele monta o `<Shield>` icon — se `lucide-react` falhar de forma isolada, o slot fica vazio.
 
-1. Renderizar **sempre** o shell (header, filtros, tabs, contadores) — mesmo durante `loading`.
-2. Substituir **apenas** a região de conteúdo (grid/lista/tabela) por skeletons granulares (`CameraSkeleton`, `ListSkeleton`, `TableSkeleton`).
-3. Desabilitar inputs/selects via `disabled={loading}` enquanto carrega.
+### Mudanças
 
-Isso eliminou o CLS na faixa de filtros — objetivo central da tarefa anterior.
+**1. Novo componente** `src/components/skeletons/SkeletonFallback.tsx`
+   - Skeleton genérico mínimo, **sem dependências externas** além de `cn` e Tailwind (não importa `lucide-react`, `framer-motion` nem `@/components/ui/skeleton`).
+   - Renderiza 3 barras cinzas animadas via puro `animate-pulse` do Tailwind.
+   - Aceita prop `label?` para texto acessível (`aria-label`, default: "Carregando…").
+   - ~30 linhas, zero risco de cascata de falha.
 
-### O que aconteceria se voltássemos a usar `CamerasSkeleton` / `AlertsSkeleton` / `ZonesSkeleton`
+**2. Novo componente** `src/components/skeletons/SkeletonErrorBoundary.tsx`
+   - `class SkeletonErrorBoundary extends React.Component` com `componentDidCatch` que loga via `logger.error` (já existente em `src/lib/logger.ts`) e renderiza `<SkeletonFallback />`.
+   - Aceita `children` e prop opcional `fallback?: ReactNode` para customização.
+   - Reseta estado quando `children` muda (via `getDerivedStateFromProps` comparando key).
 
-Esses componentes são **page-level skeletons** que redesenham o header + filtros + conteúdo do zero como blocos `<Skeleton>`. Usá-los como early-return reintroduz exatamente o problema que acabamos de corrigir:
+**3. Wrapper de Suspense + ErrorBoundary** em `src/lib/lazyLoad.tsx`
+   - Atualizar `withLazyLoad` (e o uso direto de `Suspense` no App) para envolver o fallback assim:
+     ```
+     <SkeletonErrorBoundary>
+       <Suspense fallback={<SkeletonErrorBoundary>{fallback}</SkeletonErrorBoundary>}>
+         <LazyComponent />
+       </Suspense>
+     </SkeletonErrorBoundary>
+     ```
+   - O ErrorBoundary externo cobre falhas no `LazyComponent` real; o interno cobre falhas no próprio `fallback` (ex.: `DashboardSkeleton` quebrado).
 
-- A faixa de filtros real só aparece quando `loading` vira `false`, causando salto vertical (CLS).
-- Os shells reais (com `disabled`) deixam de ser renderizados → perdemos a estabilidade conquistada.
-- O gate `npm run check:skeletons` provavelmente continuaria passando (não detecta CLS), mas o comportamento visual regrediria.
+**4. Hardening do `BrandedSkeleton`** em `src/components/ui/skeleton.tsx`
+   - Envolver o `<Shield />` em try/catch via componente wrapper que cai para um `<div className="w-8 h-8 rounded bg-muted-foreground/20" />` se o ícone não montar. Implementação: pequeno `IconOrFallback` interno que usa Error Boundary local.
+   - Alternativa mais leve: render condicional `{Shield ? <Shield /> : <div className="w-8 h-8" />}` — escolher essa, evitando boundary duplicado.
 
-### Onde os page-level skeletons continuam corretos
+**5. Aplicar boundary nos pontos de uso de page-level skeletons**
+   - `src/App.tsx` (ou onde `<Suspense fallback={<DashboardSkeleton />}>` é declarado): substituir pelos wrappers de `lazyLoad.tsx` já hardened. Sem mudanças adicionais nas páginas.
 
-`CamerasSkeleton`, `AlertsSkeleton`, `ZonesSkeleton` ainda têm uso legítimo como **fallback de `React.lazy` / Suspense** no `App.tsx` — quando o bundle da página inteira ainda não chegou e nem o shell pode ser montado. Esse uso permanece intacto e não deve mudar.
+### Critérios de aceitação
 
-### Recomendação
+- Se `DashboardSkeleton` lançar erro durante render (simulável via teste), o `<SkeletonFallback />` aparece e o app não fica em branco.
+- Se um chunk lazy falhar (`import()` rejeita), o `<SkeletonFallback />` aparece com label "Carregando…" e o erro vai para `logger.error`.
+- `BrandedSkeleton` sem `lucide-react` disponível ainda renderiza o shimmer + um placeholder cinza no centro.
+- `npm run check:skeletons` continua verde (TS, lint, mobile-nav, build).
+- Sem regressão visual: em rota normal, o usuário vê os mesmos skeletons branded de hoje.
 
-**Não fazer a substituição.** Em vez disso, posso:
+### Arquivos a criar/editar
 
-- **Opção A** — Encerrar como "no-op intencional" e adicionar uma nota em `docs/SKELETON_VALIDATION.md` explicando a regra:
-  > Page-level skeletons (`CamerasSkeleton` etc.) são reservados para Suspense de lazy-load. Estados `loading` dentro da página devem trocar apenas a região de conteúdo, mantendo o shell visível.
-- **Opção B** — Se houver uma motivação que eu não captei (ex.: reverter a refatoração anterior, ou aplicar isso em outras páginas que ainda usam early-return), me diga qual e eu refaço o plano.
-- **Opção C** — Se o objetivo era apenas garantir que `CamerasSkeleton`/`AlertsSkeleton`/`ZonesSkeleton` continuem sendo **usados em algum lugar** (e não viraram código morto após a refatoração), posso auditar `App.tsx` e os `Suspense` boundaries para confirmar.
+- ➕ `src/components/skeletons/SkeletonFallback.tsx` (novo, ~30 linhas)
+- ➕ `src/components/skeletons/SkeletonErrorBoundary.tsx` (novo, ~50 linhas)
+- ✏️ `src/components/ui/skeleton.tsx` — hardening do `BrandedSkeleton` (~5 linhas)
+- ✏️ `src/lib/lazyLoad.tsx` — envolver `withLazyLoad` com `SkeletonErrorBoundary` interno+externo
+- ✏️ `docs/SKELETON_VALIDATION.md` — adicionar seção curta "Fallback e Error Boundary" explicando a cadeia de defesa
 
-Qual opção seguimos?
+### Riscos
+
+- **Risco:** Error Boundary excessivo pode mascarar erros reais em desenvolvimento.
+  - **Mitigação:** em `import.meta.env.DEV`, além de renderizar o fallback, re-loga com stack completa via `console.error` para visibilidade no DevTools.
+- **Risco:** `SkeletonErrorBoundary` precisa ser componente de classe (React não tem hook equivalente para `componentDidCatch`).
+  - **Mitigação:** aceitar — é o único caminho oficial; manter o arquivo pequeno e isolado.
+- **Risco:** dupla camada de boundary pode adicionar nós extras na árvore React.
+  - **Mitigação:** impacto desprezível (~2 nós por rota lazy); ganho de resiliência compensa.
 
