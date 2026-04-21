@@ -1,61 +1,39 @@
 
 
-## Checklist de validação automatizada pós-skeletons
+## Decisão: não substituir
 
-Adicionar um script único que roda em sequência os gates relevantes para garantir que as trocas de skeleton em **Câmeras**, **Alertas** e **Zonas** não introduzam regressões de tipo, imports órfãos ou layout.
+A proposta vai **na direção oposta** do que acabamos de implementar e aprovar nas duas últimas tarefas. Recomendo **não executar** e explico abaixo.
 
-### O que será criado
+### Estado atual (após tarefas anteriores aprovadas)
 
-**1. Novo script** `scripts/validate-skeletons.mjs`
+As páginas `CamerasPage`, `AlertsPage` e `ZonesPage` foram refatoradas para:
 
-Pipeline sequencial (falha em qualquer etapa):
+1. Renderizar **sempre** o shell (header, filtros, tabs, contadores) — mesmo durante `loading`.
+2. Substituir **apenas** a região de conteúdo (grid/lista/tabela) por skeletons granulares (`CameraSkeleton`, `ListSkeleton`, `TableSkeleton`).
+3. Desabilitar inputs/selects via `disabled={loading}` enquanto carrega.
 
-| # | Etapa | Comando interno | Falha se… |
-|---|---|---|---|
-| 1 | TypeScript estrito | `tsc --noEmit -p tsconfig.json` | qualquer erro TS |
-| 2 | Lint nas páginas-alvo | `eslint --max-warnings 0 src/pages/{Cameras,Alerts,Zones}Page.tsx src/components/skeletons/**` | qualquer warning/erro |
-| 3 | Imports não-usados focados | regex sobre `Skeleton`, `CamerasSkeleton`, `AlertsSkeleton`, `ZonesSkeleton`, `FiltersBarSkeleton`, `TabsSkeleton` nos arquivos editados — flag se importado e nunca referenciado no JSX | qualquer match órfão |
-| 4 | Mobile-nav gate | reusar `npm run check:mobile-nav` | regressão `mb-mobile-nav` |
-| 5 | Build de produção | `vite build` | falha de build / chunk |
+Isso eliminou o CLS na faixa de filtros — objetivo central da tarefa anterior.
 
-Saída humana clara: `✓` por etapa + resumo final com tempo total. Em falha, imprime apenas o output da etapa quebrada e sai com código `1`.
+### O que aconteceria se voltássemos a usar `CamerasSkeleton` / `AlertsSkeleton` / `ZonesSkeleton`
 
-**2. Novo entry no `package.json`**
+Esses componentes são **page-level skeletons** que redesenham o header + filtros + conteúdo do zero como blocos `<Skeleton>`. Usá-los como early-return reintroduz exatamente o problema que acabamos de corrigir:
 
-```json
-"scripts": {
-  "check:skeletons": "node scripts/validate-skeletons.mjs"
-}
-```
+- A faixa de filtros real só aparece quando `loading` vira `false`, causando salto vertical (CLS).
+- Os shells reais (com `disabled`) deixam de ser renderizados → perdemos a estabilidade conquistada.
+- O gate `npm run check:skeletons` provavelmente continuaria passando (não detecta CLS), mas o comportamento visual regrediria.
 
-Não substitui gates existentes; é um **pré-flight focado** rodável manualmente ou via Husky `pre-push` (opcional, fora do escopo).
+### Onde os page-level skeletons continuam corretos
 
-**3. Documentação curta** em `docs/SKELETON_VALIDATION.md`
+`CamerasSkeleton`, `AlertsSkeleton`, `ZonesSkeleton` ainda têm uso legítimo como **fallback de `React.lazy` / Suspense** no `App.tsx` — quando o bundle da página inteira ainda não chegou e nem o shell pode ser montado. Esse uso permanece intacto e não deve mudar.
 
-- Quando rodar: após qualquer alteração em `src/components/skeletons/**` ou nas três páginas.
-- Como interpretar cada falha (mapa erro → arquivo provável).
-- Comando de fallback para reproduzir cada etapa isoladamente.
+### Recomendação
 
-### Critérios de aceitação
+**Não fazer a substituição.** Em vez disso, posso:
 
-- `npm run check:skeletons` executa as 5 etapas em < 60s e termina com `✓ All skeleton checks passed`.
-- Se introduzir um import órfão de `Skeleton` em qualquer arquivo do alvo, etapa 3 falha com nome do arquivo + símbolo.
-- Se um TS error reaparecer (ex.: prop `loading` removida de `AlertStatsCards`), etapa 1 falha apontando linha exata.
-- Mobile-nav gate continua independente e verde.
-- Nenhum gate existente é alterado — é apenas um agregador adicional.
+- **Opção A** — Encerrar como "no-op intencional" e adicionar uma nota em `docs/SKELETON_VALIDATION.md` explicando a regra:
+  > Page-level skeletons (`CamerasSkeleton` etc.) são reservados para Suspense de lazy-load. Estados `loading` dentro da página devem trocar apenas a região de conteúdo, mantendo o shell visível.
+- **Opção B** — Se houver uma motivação que eu não captei (ex.: reverter a refatoração anterior, ou aplicar isso em outras páginas que ainda usam early-return), me diga qual e eu refaço o plano.
+- **Opção C** — Se o objetivo era apenas garantir que `CamerasSkeleton`/`AlertsSkeleton`/`ZonesSkeleton` continuem sendo **usados em algum lugar** (e não viraram código morto após a refatoração), posso auditar `App.tsx` e os `Suspense` boundaries para confirmar.
 
-### Arquivos a criar/editar
-
-- ➕ `scripts/validate-skeletons.mjs` (novo, ~80 linhas, Node ESM puro, sem dependências extras)
-- ✏️ `package.json` — adicionar `"check:skeletons"` em `scripts`
-- ➕ `docs/SKELETON_VALIDATION.md` (novo, ~30 linhas)
-
-### Riscos
-
-- **Risco:** ESLint focado em paths específicos pode mascarar erros em arquivos não listados.
-  - **Mitigação:** etapa 1 (`tsc` global) já cobre o resto do projeto; o lint focado é complementar para feedback rápido.
-- **Risco:** detector de imports órfãos via regex pode dar falso-positivo se símbolo for usado em string template ou comentário.
-  - **Mitigação:** procurar matches **fora** das linhas de `import`, em padrões `<Símbolo` ou `Símbolo(`/`Símbolo.` — ignorar comentários `//` e strings.
-- **Risco:** `vite build` é lento (~30s) e pode tornar o script tedioso.
-  - **Mitigação:** flag opcional `--skip-build` para iteração rápida; pipeline completo continua sendo o default.
+Qual opção seguimos?
 
