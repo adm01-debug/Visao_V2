@@ -474,6 +474,14 @@
     .mb-mobile-nav {
       padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
     }
+    /* Fallback de defesa em profundidade: garante padding inferior em qualquer
+       wrapper customizado que substitua o <main> padrão e esqueça mb-mobile-nav.
+       Aplica apenas se o último filho NÃO tem a classe (evita dupla margem). */
+    [data-app-scroll] > main:last-child:not(.mb-mobile-nav),
+    [data-app-scroll] > div:last-child:not(.mb-mobile-nav),
+    [data-app-scroll] > section:last-child:not(.mb-mobile-nav) {
+      padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+    }
   }
 
   .text-responsive-truncate { @apply truncate; max-width: 100%; }
