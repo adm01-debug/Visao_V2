@@ -152,4 +152,32 @@ const breakpoints = {
 
 ---
 
+## 11. Mobile Layout Checklist (Automatizada)
+
+Toda página em `src/pages/*.tsx` **deve** garantir espaçamento inferior para a bottom navigation mobile, seja:
+
+1. Aplicando a classe `mb-mobile-nav` no container raiz, **ou**
+2. Envolvendo o conteúdo com `<PageContent>` (que já aplica internamente).
+
+### Verificação
+
+```bash
+npm run check:mobile-nav
+```
+
+O script roda automaticamente no `prebuild` e no CI (GitHub Actions). Falha quebra o build.
+
+### Exceções
+
+Páginas legitimamente isentas (auth, 404, redirects) ficam na `ALLOWLIST` em `scripts/check-mobile-nav.mjs`. Para adicionar uma exceção:
+
+```js
+const ALLOWLIST = new Set([
+  'AuthPage.tsx',
+  'NovaPaginaIsenta.tsx', // ← adicionar aqui
+]);
+```
+
+---
+
 **Última atualização:** 06/01/2026

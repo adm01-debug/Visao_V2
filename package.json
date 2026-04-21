@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "analyze": "vite-bundle-analyzer",
-    "build": "vite build",
+    "build": "npm run check:mobile-nav && vite build",
     "build-storybook": "storybook build",
     "build:dev": "vite build --mode development",
     "bundle-size": "size-limit",
+    "check:mobile-nav": "node scripts/check-mobile-nav.mjs",
     "clean": "rm -rf dist node_modules/.cache",
     "coverage": "vitest run --coverage",
     "coverage:ci": "vitest run --coverage --reporter=lcov",
