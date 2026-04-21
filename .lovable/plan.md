@@ -1,83 +1,34 @@
 
 
-## Plano: Correção de Build + Polish Visual Rumo ao 10/10
+## Plano: Cobertura final de `mb-mobile-nav`
 
-### Problema Atual
-Erro de build: `@dnd-kit/utilities` não encontrado. Pacote necessário para widgets arrastáveis do dashboard.
+### Status atual
+- `PageContent` (em `src/components/layout/MainLayout.tsx`) **já inclui `mb-mobile-nav`** → cobre automaticamente `AutomationRulesPage` e `ReportsPage`. Nenhuma alteração necessária nelas.
+- 26 páginas já possuem a classe aplicada manualmente.
 
-### Tarefas de Correção
+### Páginas que ainda precisam de auditoria/aplicação
+Páginas autenticadas com chrome de app (sidebar + bottom nav) que não foram verificadas:
 
-#### 1. Correção Imediata de Build (5 min)
-- **Arquivo**: `package.json`
-- **Ação**: Adicionar `"@dnd-kit/utilities": "^3.2.2"` às dependências
-- **Verificação**: Executar `npm install && npx tsc --noEmit` para confirmar build limpo
+1. `src/pages/DashboardV2.tsx` — dashboard principal
+2. `src/pages/HeatmapPage.tsx` — visualização de heatmap
+3. `src/pages/AnalyticsPage.tsx` — analytics
+4. `src/pages/TelegramSettingsPage.tsx` — configurações do Telegram
 
-#### 2. Alinhamento React/React-DOM (3 min)
-- **Arquivo**: `package.json`
-- **Ação**: Alinhar `react-dom` para `^18.3.1` (compatível com React 18.3.1)
-- **Por quê**: Evitar warnings de mismatch de versão
+### Páginas excluídas intencionalmente
+Não recebem `mb-mobile-nav` por design (não usam o BottomNavigation):
+- `Auth.tsx`, `AuthCallback.tsx`, `ResetPasswordPage.tsx` — fluxo de login
+- `Index.tsx`, `NotFound.tsx`, `AcessoNegado.tsx` — redirects/erros standalone
 
-#### 3. Verificação Visual Dashboard (Dark Mode) - 5 min
-- **Viewport**: Desktop 1280x720
-- **Rota**: `/dashboard`
-- **Verificar**: 
-  - Header com glow line superior
-  - Stats cards com hover lift animation
-  - Widgets com skeleton loading
-  - Empty states animados
+### Ação
+Para cada uma das 4 páginas restantes:
+1. Ler o arquivo para localizar o container raiz.
+2. Adicionar `mb-mobile-nav` ao `className` do wrapper de mais alto nível (mesmo padrão dos outros: junto a `min-h-screen bg-background` ou `space-y-6 p-6`).
+3. Não alterar lógica nem estrutura — apenas a className.
 
-#### 4. Verificação Visual Dashboard (Light Mode) - 5 min
-- **Ação**: Toggle tema para light
-- **Verificar**: Mesmos elementos em modo claro
-- **Validar**: Consistência de cores HSL tokens
+### Validação
+- `npx tsc --noEmit` para confirmar build limpo.
+- Confirmar via grep que todas as páginas de app autenticadas (exceto auth/erro) contêm `mb-mobile-nav`.
 
-#### 5. Verificação Busca Global (Ctrl+K) - 5 min
-- **Viewport**: Desktop
-- **Atalho**: Ctrl+K
-- **Verificar**: 
-  - Dialog de busca aparece corretamente
-  - Resultados em dark e light mode
-  - Animações de entrada/saída
-
-#### 6. Verificação Empty States - 5 min
-- **Rotas**: `/cameras`, `/alertas`, `/zonas` (se dados vazios)
-- **Verificar**:
-  - Ícones animados com pulse ring
-  - Títulos e descrições legíveis
-  - Botões de ação com ripple effect
-
-#### 7. Verificação Mobile (375px) - 5 min
-- **Viewport**: Mobile 375x812
-- **Ação**: Toggle entre dark/light
-- **Verificar**: 
-  - Bottom nav com transições suaves
-  - Ícones ativos corretamente
-  - Header colapsado apropriadamente
-
-#### 8. Verificação Sidebar Ripple Effect - 3 min
-- **Desktop**: Categoria headers (Monitoramento, Segurança, etc.)
-- **Verificar**: Efeito ripple ao expandir/colapsar categorias
-
-### Critérios de Aceitação 10/10
-
-| Elemento | Critério |
-|----------|----------|
-| **Header** | Glow line visível, botões com active:scale-95, backdrop-blur funcionando |
-| **Empty States** | Animação spring/pulse, ícones em camadas, botões com ripple |
-| **Search** | Focus ring, sugestões com hover state, transições smooth |
-| **Dark/Light** | Tokens HSL consistentes, nenhum hex hardcoded |
-| **Mobile** | Bottom nav ícones ativos, transições 300ms, sem overflow |
-
-### Checklist de Qualidade Final
-- [ ] Build zero erros (`tsc --noEmit`)
-- [ ] Lighthouse Acessibilidade 100%
-- [ ] Lighthouse Performance 95%+
-- [ ] Animações 60fps no toggle tema
-- [ ] Ripple effects visíveis em todos os botões interativos
-
-### Tempo Estimado
-**Total: ~30 minutos** (sequencial, uma tarefa por vez conforme preferência do usuário)
-
-### Após Correção
-Assim que o build estiver limpo, poderei executar a verificação visual completa em ambos os modos e confirmar que o polish está no nível 10/10.
+### Resultado esperado
+100% de consistência: nenhuma página autenticada terá conteúdo escondido pela barra de navegação inferior no mobile.
 
