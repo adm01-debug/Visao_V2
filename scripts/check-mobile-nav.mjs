@@ -131,7 +131,16 @@ if (scrollDrift.length > 0) {
   failed = true;
 }
 
-if (failed) process.exit(1);
+if (missingInCustom.length > 0) {
+  console.error(`\n❌ ${missingInCustom.length} página(s) com wrapper customizado SEM \`${REQUIRED_CLASS}\`:`);
+  for (const f of missingInCustom) console.error(`   - ${f}`);
+  console.error(
+    `\nEssas páginas substituem o <main> do MainLayout (wrapper próprio) ` +
+    `e estão na CUSTOM_WRAPPER_ALLOWLIST do script. ` +
+    `Reaplique \`${REQUIRED_CLASS}\` no container raiz para garantir o padding inferior.\n`
+  );
+  failed = true;
+}
 
 console.log(`\n✨ Layout mobile centralizado e consistente!`);
 console.log(`   ↳ Defesa em profundidade ativa: classe explícita no <main> + fallback CSS [data-app-scroll].\n`);
