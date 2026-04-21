@@ -69,8 +69,8 @@ function handleEntries(list: PerformanceObserverEntryList): void {
     if (entry.hadRecentInput || !entry.value) continue;
     session.cls += entry.value;
     const sources = entry.sources ?? [];
-    const selector =
-      sources.length > 0 ? serializeNode(sources[0].node) : '<no-source>';
+    const firstSource = sources[0];
+    const selector = firstSource ? serializeNode(firstSource.node) : '<no-source>';
     session.shifts.push({
       selector,
       value: entry.value,
