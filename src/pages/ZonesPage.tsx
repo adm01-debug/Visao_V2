@@ -11,7 +11,7 @@ import { useCameras } from '@/hooks/useCameras';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
+import { ZonesSkeleton } from '@/components/skeletons/ZonesSkeleton';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -115,18 +115,9 @@ export function ZonesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background mb-mobile-nav">
         <PageMeta title="Zonas" description="Configure zonas de detecção e monitoramento" />
-        <div className="border-b border-border/40 bg-card/80 backdrop-blur-sm">
-          <div className="container py-6">
-            <Skeleton className="h-8 w-48 mb-2" />
-            <Skeleton className="h-4 w-32" />
-          </div>
-        </div>
-        <div className="container py-6 space-y-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">{[...Array(4)].map((_, i) => <Skeleton key={i} className="h-24 rounded-xl" />)}</div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">{[...Array(6)].map((_, i) => <Skeleton key={i} className="h-40 rounded-xl" />)}</div>
-        </div>
+        <ZonesSkeleton />
       </div>
     );
   }

@@ -9,7 +9,7 @@ import { useFaceRecognitionAlerts } from "@/hooks/useFaceRecognitionAlerts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Skeleton } from "@/components/ui/skeleton";
+import { AlertsSkeleton } from "@/components/skeletons/AlertsSkeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PaginationControls, usePagination } from "@/components/PaginationControls";
 import { ExportMenu } from "@/components/ExportMenu";
@@ -112,11 +112,10 @@ export function AlertsPage() {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-6">
-        <Skeleton className="h-8 w-48" />
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">{[...Array(4)].map((_, i) => <Skeleton key={i} className="h-24" />)}</div>
-        <Skeleton className="h-96" />
-      </div>
+      <>
+        <PageMeta title="Alertas" description="Central de alertas e notificações do sistema de vigilância" />
+        <AlertsSkeleton />
+      </>
     );
   }
 
