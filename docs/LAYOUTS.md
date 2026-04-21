@@ -154,6 +154,8 @@ const breakpoints = {
 
 ## 11. Mobile Layout Checklist (Defesa em Profundidade — 6 camadas)
 
+> 📋 **QA manual relacionado:** [`docs/QA-MANUAL-RESPONSIVIDADE.md`](./QA-MANUAL-RESPONSIVIDADE.md) — snapshot pontual de validação humana das rotas autenticadas + menu mobile, com matriz de cobertura E2E equivalente e procedimento para reproduzir.
+
 A classe `mb-mobile-nav` é aplicada **uma única vez**, no `<main>` de `src/components/layout/MainLayout.tsx`. Como todas as rotas autenticadas passam pelo `MainLayout`, isso cobre 100% das páginas roteadas automaticamente. Combinada com fallback CSS, allowlist, snapshot, teste runtime e snapshot visual, essa garantia é validada de 6 formas independentes.
 
 **Páginas NÃO devem redeclarar `mb-mobile-nav`** — fazê-lo causa dupla margem inferior. Exceções: páginas com wrapper raiz próprio cadastradas na `CUSTOM_WRAPPER_ALLOWLIST`.
