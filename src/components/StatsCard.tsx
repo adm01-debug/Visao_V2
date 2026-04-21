@@ -147,6 +147,7 @@ export function StatsCard({
   trend,
   variant = 'default',
   sparklineData,
+  index = 0,
 }: StatsCardProps) {
   const fakeData = useFakeSparkline(value);
   const data = sparklineData || fakeData;
@@ -156,16 +157,21 @@ export function StatsCard({
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-xl border border-border/50 bg-card p-4 sm:p-5',
+        'relative overflow-hidden rounded-xl border border-border/50 bg-card p-4 sm:p-5 animate-card-enter',
         'transition-all duration-300 ease-out',
         'hover:border-border hover:-translate-y-1 active:scale-[0.98] active:translate-y-0',
+        'motion-reduce:transform-none motion-reduce:animate-none motion-reduce:transition-none',
         glowVariantStyles[variant],
         'group'
       )}
-      style={{ boxShadow: 'var(--shadow-card)' }}
+      style={{ boxShadow: 'var(--shadow-card)', animationDelay: `${index * 60}ms` }}
       role="region"
       aria-label={`${title}: ${value}${subtitle ? `, ${subtitle}` : ''}${trend ? `, ${trend.isPositive ? 'subiu' : 'caiu'} ${Math.abs(trend.value)}%` : ''}`}
     >
+      {/* Sheen overlay on hover */}
+      <span aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-300 motion-reduce:hidden">
+        <span className="absolute top-0 left-0 h-full w-1/3 bg-gradient-to-r from-transparent via-primary/10 to-transparent group-hover:animate-sheen" />
+      </span>
       {/* Top accent line with glow on hover */}
       <div className={cn('absolute top-0 left-0 right-0 h-[2px] transition-all duration-300', accentLine[variant])}>
         <div className={cn(
