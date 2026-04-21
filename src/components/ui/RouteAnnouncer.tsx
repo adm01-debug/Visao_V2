@@ -36,6 +36,7 @@ const ROUTE_TITLES: Record<string, string> = {
   '/collaborator-flow': 'Fluxo de Colaboradores',
   '/productivity': 'Produtividade',
   '/help': 'Ajuda',
+  '/coverage': 'Cobertura de Testes',
 };
 
 export const RouteAnnouncer = React.forwardRef<HTMLDivElement, Record<string, never>>(function RouteAnnouncer(_props, _ref) {
