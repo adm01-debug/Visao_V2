@@ -1,85 +1,71 @@
 
 
-## Diagnóstico: scroll duplo e corte de conteúdo no mobile (iOS/Safari)
+## Fallback global para `mb-mobile-nav` em wrappers customizados
 
-### Problemas confirmados na auditoria
+Hoje, se uma página renderizar seu próprio scroll container ou substituir o `<main>` por outra estrutura, ela perde o `mb-mobile-nav` aplicado pelo `MainLayout`. A solução é garantir que **todo conteúdo dentro do layout autenticado** receba o padding inferior automaticamente, independente do wrapper que a página escolha.
 
-**1. Scroll duplo em várias páginas (CRÍTICO)**
+### Estratégia: defesa em profundidade no CSS global
 
-5 páginas declaram seu próprio container com `h-[calc(100vh-4rem)] overflow-auto`, criando um segundo scroll dentro do scroll do `SwipeableView`/`<main>` do `MainLayout`:
+Em vez de depender apenas da classe `mb-mobile-nav` no `<main>`, adicionar uma regra CSS global que aplica o `padding-bottom` seguro a **qualquer descendente direto de scroll do layout autenticado**, usando um seletor por atributo data.
 
-- `src/pages/SettingsPage.tsx:41`
-- `src/pages/SecurityPage.tsx:92`
-- `src/pages/AlertsPage.tsx:123`
-- `src/pages/DashboardV2.tsx:101, 105`
-- `src/pages/CamerasPage.tsx:82`
+### Mudanças
 
-Sintomas no iOS: dois scrolls aninhados, momentum quebrado, `mb-mobile-nav` aplicado no `<main>` é "engolido" pelo overflow interno → conteúdo fica escondido atrás do BottomNavigation. No iOS Safari, `100vh` ainda inclui a barra de URL dinâmica, então `calc(100vh - 4rem)` extrapola a altura visível e corta a parte inferior.
-
-**2. `h-screen` no root do MainLayout**
-
-`src/components/layout/MainLayout.tsx:25` usa `h-screen` (= `100vh`). No iOS Safari, isso causa overflow de viewport quando a barra de URL aparece/desaparece. Padrão moderno: `h-dvh` (dynamic viewport height).
-
-**3. `mb-mobile-nav` usa `margin-bottom` em vez de `padding-bottom`**
-
-`src/index.css:472-477` aplica `margin-bottom: calc(4rem + safe-area-inset-bottom)` no `<main>`. Margem em elemento com `min-h-full` dentro de container `overflow-auto` pode colapsar ou ser ignorada em alguns motores. **`padding-bottom` é mais robusto** e garante que o conteúdo nunca seja cortado.
-
-### Correções planejadas
-
-**A. Centralizar scroll no MainLayout (eliminar scroll duplo)**
-
-Remover `h-[calc(100vh-4rem)] overflow-auto` das 5 páginas. O scroll já é provido pelo `SwipeableView` (`flex-1 overflow-auto`). Substituir por classes simples (`space-y-6` quando necessário).
-
-```diff
-- <div className="page-container space-y-6 h-[calc(100vh-4rem)] overflow-auto">
-+ <div className="page-container space-y-6">
+**1. `src/components/layout/MainLayout.tsx`** — marcar o container de scroll com `data-app-scroll`:
+```tsx
+<SwipeableView className="flex-1 overflow-auto" data-app-scroll>
+  <main id="main-content" className="p-4 md:p-6 mb-mobile-nav min-h-full" ...>
 ```
 
-**B. Trocar `h-screen` por `h-dvh` com fallback**
-
-`src/components/layout/MainLayout.tsx` e `src/layouts/MainLayout.tsx`:
-```diff
-- <div className="flex h-screen bg-background">
-+ <div className="flex h-screen h-[100dvh] bg-background">
+**2. `src/layouts/MainLayout.tsx`** (wrapper alternativo) — mesma marcação:
+```tsx
+<SwipeableView className="flex-1 overflow-auto" data-app-scroll>
 ```
-A segunda classe sobrescreve em browsers que suportam `dvh`; mantém compatibilidade.
 
-**C. Converter `mb-mobile-nav` para padding (mais seguro)**
-
-`src/index.css`:
-```diff
-  .mb-mobile-nav { @apply mb-0 md:mb-0; }
-  @media (max-width: 767px) {
-    .mb-mobile-nav {
--     margin-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
-+     padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
-    }
+**3. `src/index.css`** — regra fallback no `@layer components`:
+```css
+@media (max-width: 767px) {
+  /* Fallback: garante padding inferior para qualquer conteúdo dentro do scroll do layout,
+     mesmo que a página substitua o <main> ou use wrapper customizado sem mb-mobile-nav */
+  [data-app-scroll] > *:last-child:not(.mb-mobile-nav) {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
   }
+}
 ```
-Como o `<main>` já tem `p-4` e `min-h-full`, padding extra inferior empilha corretamente sem colapso de margem.
 
-**D. Reforçar script de checagem**
+A regra só aplica se o último filho **não** já tiver `mb-mobile-nav` (evita dupla margem). Cobre casos como:
+- Página renderiza `<div>` raiz própria em vez do `<main>` do layout
+- Wrapper customizado embutido (ex.: `<DashboardShell>`) que esquece a classe
+- Conteúdo direto sem wrapper (children diretos do `SwipeableView`)
 
-Estender `scripts/check-mobile-nav.mjs` para também alertar sobre o anti-padrão `h-[calc(100vh-` em páginas (causa scroll duplo). Lista isso como "drift de scroll" separado, com mensagem explicativa.
+**4. `SwipeableView`** — confirmar que aceita e propaga `data-app-scroll` (provavelmente já o faz via `...rest props`; só verificar/ajustar se necessário).
 
-### Validação pós-mudança
+**5. `scripts/check-mobile-nav.mjs`** — atualizar mensagem de log para mencionar o fallback como rede de proteção, mas manter as validações atuais (a classe explícita ainda é a forma preferida; fallback é segurança).
 
-1. `npm run check:mobile-nav` — deve passar e listar 0 ocorrências de scroll duplo
-2. `npx tsc --noEmit` — sem erros
-3. **QA visual via browser** (após sua aprovação): viewport 390×844 (iPhone 12), navegar Dashboard → Cameras → Alerts → Settings, scrollar até o fim de cada página, screenshot confirmando que o último item fica visível acima do BottomNavigation com folga do safe-area-inset
+**6. Documentação e memória**:
+- `docs/LAYOUTS.md` seção 11: adicionar nota sobre o fallback automático e quando ele atua.
+- `mem://standards/mobile-nav-checklist`: documentar a defesa em profundidade (classe explícita + fallback CSS).
+
+### Validação
+
+1. Inspecionar via DOM no preview: confirmar que `[data-app-scroll]` está presente e que o último filho recebe padding em viewport mobile (≤767px).
+2. Testar caso de wrapper customizado: criar mentalmente uma página que substitui o `<main>` e verificar (via seletor CSS) que o fallback ativa.
+3. Confirmar que páginas com `mb-mobile-nav` explícito **não** recebem padding duplicado (graças ao `:not(.mb-mobile-nav)`).
+4. `npm run check:mobile-nav` continua passando sem regressão.
 
 ### Arquivos editados
 
-- ✏️ `src/index.css` (margin → padding em `mb-mobile-nav`)
-- ✏️ `src/components/layout/MainLayout.tsx` (`h-dvh` fallback)
-- ✏️ `src/layouts/MainLayout.tsx` (`h-dvh` fallback)
-- ✏️ `src/pages/SettingsPage.tsx`, `SecurityPage.tsx`, `AlertsPage.tsx`, `DashboardV2.tsx`, `CamerasPage.tsx` (remover scroll duplicado)
-- ✏️ `scripts/check-mobile-nav.mjs` (detectar `h-[calc(100vh-` em pages)
-- ✏️ `docs/LAYOUTS.md` seção 11 (anotar regra anti-scroll-duplo)
-- ✏️ `mem://style/mobile-layout-compatibility` + `mem://standards/mobile-nav-checklist` (atualizar)
+- ✏️ `src/components/layout/MainLayout.tsx` (atributo `data-app-scroll`)
+- ✏️ `src/layouts/MainLayout.tsx` (atributo `data-app-scroll`)
+- ✏️ `src/components/SwipeableView.tsx` (verificar propagação de props se necessário)
+- ✏️ `src/index.css` (regra fallback `[data-app-scroll] > *:last-child`)
+- ✏️ `scripts/check-mobile-nav.mjs` (mensagem informativa atualizada)
+- ✏️ `docs/LAYOUTS.md` (seção 11 — fallback)
+- ✏️ `.lovable/memory/standards/mobile-nav-checklist.md` (defesa em profundidade)
 
 ### Riscos
 
-- **Risco:** páginas que dependiam do `h-[calc(100vh-4rem)]` para layout interno (ex.: lista com altura fixa + filtros sticky) podem perder comportamento esperado.
-  - **Mitigação:** após remoção, abrir cada uma das 5 páginas em viewport mobile + desktop; se algum filtro precisava ser sticky, aplicar `sticky top-0` no header interno em vez de altura fixa no container raiz.
+- **Risco:** seletor `> *:last-child` pode pegar elemento decorativo (ex.: portal, toast container) se renderizado dentro do scroll.
+  - **Mitigação:** portais geralmente vivem em `document.body` (fora do scroll); restringir ainda mais o seletor para `[data-app-scroll] > main:last-child, [data-app-scroll] > div:last-child` se aparecerem efeitos colaterais.
+- **Risco:** nested wrappers (`<div><div>conteúdo</div></div>`) — só o `div` externo recebe padding, conteúdo interno pode ainda ser cortado se tiver overflow próprio.
+  - **Mitigação:** padding no externo empurra todo o conteúdo interno para cima; só falha se o `div` interno tiver `height` fixa (já bloqueado pelo script anti `h-[calc(100vh-...)]`).
 
