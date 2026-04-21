@@ -14,6 +14,8 @@ import { join, relative } from 'node:path';
 
 const PAGES_DIR = 'src/pages';
 const REQUIRED_CLASS = 'mb-mobile-nav';
+// Wrappers que já aplicam `mb-mobile-nav` internamente — usar qualquer um conta como conformidade.
+const COMPLIANT_WRAPPERS = ['PageContent'];
 
 // Páginas isentas (sem bottom nav: auth, 404, redirects puros, telas standalone)
 const ALLOWLIST = new Set([
