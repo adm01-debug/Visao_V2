@@ -41,6 +41,9 @@ jobs:
       - name: Lint
         run: npm run lint
       
+      - name: Mobile Nav Checklist
+        run: npm run check:mobile-nav
+      
       - name: Test
         run: npm run test -- --run
         env:
