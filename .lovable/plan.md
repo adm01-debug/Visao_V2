@@ -1,69 +1,114 @@
 
 
-## Verificação de build: garantir `mb-mobile-nav` em todas as páginas autenticadas
+## Snapshot visual: BottomNavigation não cobre conteúdo no mobile
 
-Hoje o `scripts/check-mobile-nav.mjs` valida o **MainLayout** e a **CUSTOM_WRAPPER_ALLOWLIST** (4 páginas com wrapper próprio), mas não inspeciona o conteúdo real renderizado por cada página autenticada para confirmar que o padding inferior está aplicado em runtime. Vamos fortalecer a verificação com checagem **estática + runtime** que falha o build.
+Adicionar teste E2E Playwright que captura screenshots do final do conteúdo em viewport mobile e valida que o último elemento renderizado fica acima da BottomNavigation (sem sobreposição).
 
-### Camada 1 — Análise estática expandida (script atual)
+### Estratégia
 
-Estender `scripts/check-mobile-nav.mjs` para detectar **novos wrappers customizados não-cadastrados**:
+Em vez de comparação pixel-a-pixel (frágil com dados dinâmicos), o teste combina:
 
-- Heurística: páginas em `src/pages/*.tsx` que contenham `min-h-screen`, `h-screen`, `h-dvh`, ou `<Sidebar` no JSX e **não** estejam em `ALLOWLIST` nem em `CUSTOM_WRAPPER_ALLOWLIST`.
-- Para cada match: exigir que `mb-mobile-nav` esteja presente OU que a página seja adicionada explicitamente à `CUSTOM_WRAPPER_ALLOWLIST`.
-- Mensagem de erro clara apontando o arquivo + linha do wrapper detectado, com sugestão de correção.
+1. **Asserção geométrica** — mede `getBoundingClientRect()` do último elemento "real" do conteúdo (último filho com altura > 0 dentro de `[data-app-scroll]`) após scroll até o fim. Valida que `bottom <= viewportHeight - 60` (altura da BottomNav).
+2. **Screenshot visual** — captura a região inferior da viewport (últimos ~200px) e salva como snapshot baseline. Comparação subsequente com tolerância (`maxDiffPixelRatio: 0.05`) detecta regressões visuais reais sem ruído.
 
-Isso captura o cenário "desenvolvedor cria nova página com `min-h-screen` próprio e esquece a classe" — hoje silenciosamente coberto só pelo fallback CSS.
+### Arquivo novo
 
-### Camada 2 — Verificação runtime via Playwright (novo)
+**`tests/e2e/mobile-nav-overlap.spec.ts`**
 
-Criar `tests/e2e/mobile-nav-padding.spec.ts` que:
+```ts
+import { test, expect, devices } from '@playwright/test';
 
-1. Faz login como usuário de teste (reusa fixtures existentes em `tests/e2e/`).
-2. Define viewport mobile (390×844, iPhone 12).
-3. Itera sobre uma lista de rotas autenticadas (lida de `src/config/protected-routes.ts` ou hardcoded com as principais: `/dashboard`, `/cameras`, `/alerts`, `/heatmap`, `/analytics`, `/settings`, `/telegram`, `/users`, `/license-plates`, `/face-recognition`, `/productivity`, `/journey-reports`, `/panic-events`, `/behavior-detection`, `/admin/telemetria`).
-4. Para cada rota, executa no browser:
-   ```js
-   const scroll = document.querySelector('[data-app-scroll]');
-   const lastChild = scroll?.lastElementChild;
-   const padding = parseFloat(getComputedStyle(lastChild).paddingBottom);
-   return padding >= 64; // 4rem mínimo
-   ```
-5. Falha o teste se `padding < 64px` em qualquer rota, listando todas as rotas problemáticas em uma única mensagem.
+const PAGES = [
+  { path: '/dashboard', name: 'dashboard-v2' },
+  { path: '/heatmap', name: 'heatmap' },
+  { path: '/analytics', name: 'analytics' },
+];
 
-### Camada 3 — Integração com CI
+const NAV_HEIGHT = 60;
 
-Atualizar `.github/workflows/ci.yml`:
+test.use({ ...devices['iPhone 12'] });
 
-- Manter o passo `Mobile Nav Checklist` (script estático — rápido, < 1s).
-- Adicionar novo passo `Mobile Nav Runtime Check` que executa **apenas** o spec novo do Playwright (`npx playwright test mobile-nav-padding.spec.ts`), evitando rodar a suíte E2E completa nesse job.
-- Posicionar antes do `Build` para falhar cedo.
+test.describe('BottomNav não cobre conteúdo (mobile)', () => {
+  for (const { path, name } of PAGES) {
+    test(`${name}: último conteúdo fica acima da BottomNav`, async ({ page }) => {
+      const resp = await page.goto(path, { waitUntil: 'networkidle' });
+      if (/\/(auth|login)/.test(page.url())) {
+        test.skip(true, 'Requer autenticação — coberto pela checagem estática');
+        return;
+      }
 
-### Camada 4 — Snapshot de regressão (opcional, ativável)
+      // Scroll até o fim do scroll container do app
+      await page.evaluate(() => {
+        const el = document.querySelector('[data-app-scroll]') as HTMLElement;
+        if (el) el.scrollTop = el.scrollHeight;
+      });
+      await page.waitForTimeout(300);
 
-Adicionar flag `--snapshot` no script estático que gera `scripts/.mobile-nav-snapshot.json` com a lista atual de páginas e seus modos (padrão / customWrapper / standalone). Em CI, comparar com snapshot commitado: novo arquivo em `src/pages/` sem entry no snapshot quebra o build, forçando classificação explícita.
+      // Asserção geométrica: último filho visível não invade os 60px da BottomNav
+      const overlap = await page.evaluate((navH) => {
+        const scroll = document.querySelector('[data-app-scroll]');
+        if (!scroll) return { ok: false, reason: 'no-scroll' };
+        const children = Array.from(scroll.querySelectorAll('*')).filter((n) => {
+          const r = (n as HTMLElement).getBoundingClientRect();
+          return r.height > 0 && r.width > 0;
+        });
+        const last = children[children.length - 1] as HTMLElement | undefined;
+        if (!last) return { ok: false, reason: 'no-children' };
+        const rect = last.getBoundingClientRect();
+        const vh = window.innerHeight;
+        return { ok: rect.bottom <= vh - navH + 1, bottom: rect.bottom, vh };
+      }, NAV_HEIGHT);
+
+      expect(overlap.ok, `Último elemento em ${path} sobrepõe BottomNav (bottom=${overlap.bottom}, vh=${overlap.vh})`).toBe(true);
+
+      // Snapshot visual da faixa inferior (170px)
+      const vp = page.viewportSize()!;
+      await expect(page).toHaveScreenshot(`${name}-bottom.png`, {
+        clip: { x: 0, y: vp.height - 170, width: vp.width, height: 170 },
+        maxDiffPixelRatio: 0.05,
+        animations: 'disabled',
+      });
+    });
+  }
+});
+```
+
+### Suporte
+
+- **`package.json`** — adicionar script:
+  ```json
+  "test:mobile-nav-overlap": "playwright test mobile-nav-overlap"
+  ```
+- **`playwright.config.ts`** — confirmar `snapshotPathTemplate` (cria `tests/e2e/mobile-nav-overlap.spec.ts-snapshots/`); ajustar se já houver convenção.
+- **`.github/workflows/ci.yml`** — adicionar passo após `Mobile Nav Runtime Check`:
+  ```yaml
+  - name: Mobile Nav Overlap (Visual)
+    run: npm run test:mobile-nav-overlap
+    continue-on-error: false
+  ```
+  Snapshots iniciais gerados localmente com `--update-snapshots` antes do primeiro run.
+
+### Comportamento sem credenciais no CI
+
+Igual ao spec runtime existente: rotas que redirecionam para `/auth` retornam `test.skip` (cobertura garantida pelas camadas estáticas). Quando rodar localmente autenticado, valida geometria + snapshot.
+
+### Documentação
+
+- **`docs/LAYOUTS.md` §11** — adicionar Camada 6: "Snapshot visual de sobreposição (BottomNav vs conteúdo)".
+- **`mem://standards/mobile-nav-checklist`** — atualizar de 5 para 6 camadas.
 
 ### Arquivos editados/criados
 
-- ✏️ `scripts/check-mobile-nav.mjs` — heurística para detectar wrappers não-cadastrados
-- ➕ `tests/e2e/mobile-nav-padding.spec.ts` — verificação runtime
-- ✏️ `.github/workflows/ci.yml` — novo passo de runtime check
-- ✏️ `package.json` — script `test:mobile-nav-runtime` (npx playwright test mobile-nav-padding)
-- ✏️ `docs/LAYOUTS.md` seção 11 — documentar as 4 camadas
-- ✏️ `.lovable/memory/standards/mobile-nav-checklist.md` — atualizar para 5 camadas (incluindo runtime)
-- ➕ `scripts/.mobile-nav-snapshot.json` (opcional, se camada 4 aprovada)
-
-### Validação pós-implementação
-
-1. `npm run check:mobile-nav` — passa, lista as 4 páginas customizadas + 25 padrão limpas
-2. `npx playwright test mobile-nav-padding` — passa, todas as ~15 rotas com padding ≥ 64px
-3. Teste de regressão proposital: remover `mb-mobile-nav` de `DashboardV2.tsx` → ambos os passos devem falhar com mensagens claras
+- ➕ `tests/e2e/mobile-nav-overlap.spec.ts`
+- ➕ `tests/e2e/mobile-nav-overlap.spec.ts-snapshots/*.png` (gerados na primeira execução com `--update-snapshots`)
+- ✏️ `package.json` (script `test:mobile-nav-overlap`)
+- ✏️ `.github/workflows/ci.yml` (novo passo)
+- ✏️ `docs/LAYOUTS.md` (§11 — Camada 6)
+- ✏️ `.lovable/memory/standards/mobile-nav-checklist.md` (5 → 6 camadas)
 
 ### Riscos
 
-- **Risco:** teste runtime depende de credenciais de login no CI.
-  - **Mitigação:** reusar fixture `tests/e2e/auth.setup.ts` se existir; senão, ajustar plano para usar usuário de teste seedado via Supabase service role.
-- **Risco:** rotas dinâmicas (ex.: `/cameras/:id`) não cobertas pelo seed.
-  - **Mitigação:** lista inicial só com rotas estáticas; cobertura dinâmica fica como follow-up.
-- **Risco:** Playwright lento no CI (~30-60s para 15 rotas).
-  - **Mitigação:** rodar em paralelo (`workers: 4`) e sem screenshots/vídeos para esse spec.
+- **Snapshot baseline ausente em CI** — primeira execução falha pedindo `--update-snapshots`. Mitigação: gerar localmente os 3 PNGs e commitar antes de habilitar o passo no CI; alternativamente, o passo roda com `if: false` até baselines existirem.
+- **Variação de fontes/cores entre OS** — comparações cross-platform (macOS dev vs Linux CI) podem divergir. Mitigação: gerar baselines no mesmo SO do CI (Ubuntu via container Playwright) ou tolerar com `maxDiffPixelRatio: 0.05`.
+- **Conteúdo dinâmico (gráficos/Recharts)** — animações ou dados em tempo real causam flakiness. Mitigação: `animations: 'disabled'` + `waitUntil: 'networkidle'` + clip restrito à faixa inferior (geralmente padding/footer estável).
 
