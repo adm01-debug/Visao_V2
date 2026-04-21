@@ -25,7 +25,7 @@ import { PageMeta } from '@/components/PageMeta';
 type DbZoneLocal = Tables<'zones'>;
 
 export function ZonesPage() {
-  const { _user } = useAuth();
+  const { user: _user } = useAuth();
   const { cameras } = useCameras();
 
   const [zones, setZones] = useState<DbZoneLocal[]>([]);

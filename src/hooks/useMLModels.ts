@@ -233,7 +233,7 @@ interface UseContinuousDetectionOptions {
 
 export function useContinuousDetection(options: UseContinuousDetectionOptions) {
   const { videoElement, enabled = false, interval = 500, onDetection } = options;
-  const { detectObjects, detectPoses, isReady, _loadAllModels } = useMLModels({ models: ['coco-ssd', 'movenet'], autoLoad: enabled });
+  const { detectObjects, detectPoses, isReady, loadAllModels: _loadAllModels } = useMLModels({ models: ['coco-ssd', 'movenet'], autoLoad: enabled });
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 

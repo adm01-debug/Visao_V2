@@ -47,7 +47,7 @@ export default function ProfilePage() {
     async function loadProfile() {
       if (!user) return;
 
-      const { data, _error } = await supabase
+      const { data, error: _error } = await supabase
         .from('profiles')
         .select('full_name, avatar_url')
         .eq('user_id', user.id)

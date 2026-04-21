@@ -37,7 +37,7 @@ export function AlertsPage() {
   const [removingAlerts, setRemovingAlerts] = useState<Set<string>>(new Set());
 
   const { alerts, loading, unreadCount, markAsRead, markAllAsRead, deleteAlert, refetch } = useAlerts();
-  const { _cameras } = useCameras();
+  const { cameras: _cameras } = useCameras();
 
   const filteredAlerts = useMemo(() => {
     let result = [...alerts];

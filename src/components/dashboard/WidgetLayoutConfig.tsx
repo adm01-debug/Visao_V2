@@ -16,7 +16,7 @@ interface WidgetLayoutConfigProps {
   resetLayout: () => void;
 }
 
-export function WidgetLayoutConfig({ widgets, toggleWidget, _reorderWidgets, resetLayout }: WidgetLayoutConfigProps) {
+export function WidgetLayoutConfig({ widgets, toggleWidget, reorderWidgets: _reorderWidgets, resetLayout }: WidgetLayoutConfigProps) {
   return (
     <Sheet>
       <SheetTrigger asChild>
