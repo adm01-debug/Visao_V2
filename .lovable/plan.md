@@ -1,64 +1,61 @@
 
 
-## Reservar espaço em filtros/tabs durante o loading
+## Checklist de validação automatizada pós-skeletons
 
-Garantir que as áreas de filtros, tabs e contadores em Alertas, Câmeras e Zonas mantenham altura/largura estáveis enquanto os dados chegam, eliminando o "salto" da UI no primeiro render.
+Adicionar um script único que roda em sequência os gates relevantes para garantir que as trocas de skeleton em **Câmeras**, **Alertas** e **Zonas** não introduzam regressões de tipo, imports órfãos ou layout.
 
-### Problema observado
+### O que será criado
 
-Hoje, quando `loading === true`, várias páginas renderizam **somente o skeleton do conteúdo principal** e ocultam toda a faixa de filtros/tabs/contadores. Quando os dados chegam, essa faixa aparece de uma vez e empurra o conteúdo para baixo — gerando CLS visível mesmo após os fixes anteriores nos skeletons de cards/tabelas.
+**1. Novo script** `scripts/validate-skeletons.mjs`
 
-Exemplo em `CamerasPage.tsx`: durante `loading` retorna apenas `<CamerasSkeleton />`, sem header, filtros nem o switcher de view mode. O mesmo padrão se repete em `AlertsPage` e `ZonesPage`.
+Pipeline sequencial (falha em qualquer etapa):
 
-### Mudanças
+| # | Etapa | Comando interno | Falha se… |
+|---|---|---|---|
+| 1 | TypeScript estrito | `tsc --noEmit -p tsconfig.json` | qualquer erro TS |
+| 2 | Lint nas páginas-alvo | `eslint --max-warnings 0 src/pages/{Cameras,Alerts,Zones}Page.tsx src/components/skeletons/**` | qualquer warning/erro |
+| 3 | Imports não-usados focados | regex sobre `Skeleton`, `CamerasSkeleton`, `AlertsSkeleton`, `ZonesSkeleton`, `FiltersBarSkeleton`, `TabsSkeleton` nos arquivos editados — flag se importado e nunca referenciado no JSX | qualquer match órfão |
+| 4 | Mobile-nav gate | reusar `npm run check:mobile-nav` | regressão `mb-mobile-nav` |
+| 5 | Build de produção | `vite build` | falha de build / chunk |
 
-**1. Novo componente reutilizável** `src/components/skeletons/FiltersBarSkeleton.tsx`
-   - Altura fixa (`h-10`) replicando a barra real: search input + N selects + view switcher.
-   - Props: `searchWidth?`, `selectsCount?`, `showViewSwitcher?`, `showResetButton?`.
-   - Usa `Skeleton` existente — mesmas dimensões dos componentes finais (`Input` h-10, `Select` h-10, botões h-10).
+Saída humana clara: `✓` por etapa + resumo final com tempo total. Em falha, imprime apenas o output da etapa quebrada e sai com código `1`.
 
-**2. Novo componente** `src/components/skeletons/TabsSkeleton.tsx`
-   - Reserva altura da `TabsList` (h-10) com N "pílulas" cinzas.
-   - Props: `tabsCount?` (default 3).
+**2. Novo entry no `package.json`**
 
-**3. Refatorar páginas para renderizar header+filtros sempre, e skeleton apenas no conteúdo:**
+```json
+"scripts": {
+  "check:skeletons": "node scripts/validate-skeletons.mjs"
+}
+```
 
-   - **`src/pages/CamerasPage.tsx`** — remover early `return <CamerasSkeleton />`. Em vez disso:
-     - Sempre renderizar header (com contador "—" enquanto carrega).
-     - Sempre renderizar barra de filtros (desabilitada durante loading via `disabled` prop).
-     - Substituir apenas o `<div className="grid">` por `<CameraGridSkeleton count={8} />` quando `loading`.
+Não substitui gates existentes; é um **pré-flight focado** rodável manualmente ou via Husky `pre-push` (opcional, fora do escopo).
 
-   - **`src/pages/AlertsPage.tsx`** — mesmo padrão: manter `AlertSeveritySummary`+`AlertStatsCards`+filtros visíveis, trocar apenas a lista de alertas por `<ListSkeleton count={5} />`.
-     - `AlertSeveritySummary` e `AlertStatsCards` precisam aceitar `loading?: boolean` para mostrar valores `—` em vez de zeros enganosos.
+**3. Documentação curta** em `docs/SKELETON_VALIDATION.md`
 
-   - **`src/pages/ZonesPage.tsx`** — manter tabs e header; trocar apenas o conteúdo da tab ativa por `<TableSkeleton rows={6} />` ou equivalente.
-
-**4. Atualizar `CamerasSkeleton.tsx`** para usar os novos blocos compostos (`FiltersBarSkeleton` + `CameraGridSkeleton`), eliminando duplicação de markup.
+- Quando rodar: após qualquer alteração em `src/components/skeletons/**` ou nas três páginas.
+- Como interpretar cada falha (mapa erro → arquivo provável).
+- Comando de fallback para reproduzir cada etapa isoladamente.
 
 ### Critérios de aceitação
 
-- Em `/cameras`, `/alerts`, `/zones`: ao recarregar, o header, faixa de filtros e (quando aplicável) tabs aparecem **imediatamente** com altura estável; só o conteúdo abaixo troca de skeleton para dados.
-- Nenhum botão/filtro fica clicável durante `loading` (atributo `disabled` aplicado).
-- CLS visual percebido em torno da faixa de filtros ≈ 0 nas três rotas.
-- `npm run check:mobile-nav` continua verde (não mexer em `mb-mobile-nav`).
-- Sem hardcoded hex; usar tokens semânticos existentes.
+- `npm run check:skeletons` executa as 5 etapas em < 60s e termina com `✓ All skeleton checks passed`.
+- Se introduzir um import órfão de `Skeleton` em qualquer arquivo do alvo, etapa 3 falha com nome do arquivo + símbolo.
+- Se um TS error reaparecer (ex.: prop `loading` removida de `AlertStatsCards`), etapa 1 falha apontando linha exata.
+- Mobile-nav gate continua independente e verde.
+- Nenhum gate existente é alterado — é apenas um agregador adicional.
 
-### Arquivos a editar/criar
+### Arquivos a criar/editar
 
-- ➕ `src/components/skeletons/FiltersBarSkeleton.tsx` (novo)
-- ➕ `src/components/skeletons/TabsSkeleton.tsx` (novo)
-- ✏️ `src/components/skeletons/CamerasSkeleton.tsx` (consumir novos blocos)
-- ✏️ `src/pages/CamerasPage.tsx` (remover early return; skeleton só no grid)
-- ✏️ `src/pages/AlertsPage.tsx` (manter shell; skeleton só na lista)
-- ✏️ `src/pages/ZonesPage.tsx` (manter shell+tabs; skeleton só no conteúdo)
-- ✏️ `src/components/alerts/AlertSeveritySummary.tsx` e `AlertStatsCards.tsx` (aceitar prop `loading`)
+- ➕ `scripts/validate-skeletons.mjs` (novo, ~80 linhas, Node ESM puro, sem dependências extras)
+- ✏️ `package.json` — adicionar `"check:skeletons"` em `scripts`
+- ➕ `docs/SKELETON_VALIDATION.md` (novo, ~30 linhas)
 
 ### Riscos
 
-- **Risco:** filtros interativos durante loading podem disparar refetch antes da primeira resposta.
-  - **Mitigação:** prop `disabled` em todos inputs/selects enquanto `loading === true`.
-- **Risco:** `CamerasSkeleton` é importado por outras rotas (lazy fallback).
-  - **Mitigação:** manter export default funcional; refatorar internamente sem quebrar API.
-- **Risco:** `AlertSeveritySummary`/`AlertStatsCards` podem ter outros consumidores.
-  - **Mitigação:** prop `loading` opcional com default `false` — comportamento preserva-se.
+- **Risco:** ESLint focado em paths específicos pode mascarar erros em arquivos não listados.
+  - **Mitigação:** etapa 1 (`tsc` global) já cobre o resto do projeto; o lint focado é complementar para feedback rápido.
+- **Risco:** detector de imports órfãos via regex pode dar falso-positivo se símbolo for usado em string template ou comentário.
+  - **Mitigação:** procurar matches **fora** das linhas de `import`, em padrões `<Símbolo` ou `Símbolo(`/`Símbolo.` — ignorar comentários `//` e strings.
+- **Risco:** `vite build` é lento (~30s) e pode tornar o script tedioso.
+  - **Mitigação:** flag opcional `--skip-build` para iteração rápida; pipeline completo continua sendo o default.
 
