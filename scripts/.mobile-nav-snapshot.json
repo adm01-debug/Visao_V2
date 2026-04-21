@@ -1,0 +1,145 @@
+{
+  "generatedAt": "2026-04-21T14:51:49.879Z",
+  "pages": [
+    {
+      "file": "AcessoNegado.tsx",
+      "mode": "standalone"
+    },
+    {
+      "file": "AlertsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "AnalyticsPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "Auth.tsx",
+      "mode": "standalone"
+    },
+    {
+      "file": "AuthCallback.tsx",
+      "mode": "standalone"
+    },
+    {
+      "file": "AutomationRulesPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "BehaviorDetectionPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "CamerasPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "CollaboratorFlowMapPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "DashboardV2.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "FaceRecognitionPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "GoalsAlertsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "HeatmapPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "HelpPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "Index.tsx",
+      "mode": "standalone"
+    },
+    {
+      "file": "JourneyReportsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "LicensePlatePage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "NotFound.tsx",
+      "mode": "standalone"
+    },
+    {
+      "file": "NotificationSettingsPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "PPEPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "PanicEventsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "PeoplePage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "ProductivityDashboardPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "ProfilePage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "RecognitionAnalyticsPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "RecognitionLogsPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "RecordingsPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "ReportsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "ResetPasswordPage.tsx",
+      "mode": "standalone"
+    },
+    {
+      "file": "SecurityPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "SettingsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "StreamSettingsPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "TelegramSettingsPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "UserManagementPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "ZonesPage.tsx",
+      "mode": "customWrapper"
+    }
+  ]
+}
