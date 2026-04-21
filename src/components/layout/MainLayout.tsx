@@ -61,7 +61,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 }
 
 export function PageContent({ children }: MainLayoutProps) {
-  return <div className="space-y-6">{children}</div>;
+  return <div className="space-y-6 mb-mobile-nav">{children}</div>;
 }
 
 export default MainLayout;

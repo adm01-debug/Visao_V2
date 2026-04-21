@@ -143,7 +143,7 @@ const UserManagementPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 mb-mobile-nav">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Shield className="h-8 w-8 text-primary" />
