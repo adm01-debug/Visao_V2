@@ -1,14 +1,12 @@
 ---
 name: mobile-nav-checklist
-description: Script automatizado garante mb-mobile-nav em todas as páginas roteadas
+description: mb-mobile-nav vive no MainLayout único; páginas não redeclaram (validado por script)
 type: feature
 ---
-Para evitar regressões de layout em mobile (overlap pela bottom navigation), o script `scripts/check-mobile-nav.mjs` valida automaticamente que toda página em `src/pages/*.tsx` (top-level) inclua a classe `mb-mobile-nav` OU use o wrapper `<PageContent>` (que aplica a classe internamente em `src/components/layout/MainLayout.tsx`).
+A classe `mb-mobile-nav` é aplicada **uma única vez** no `<main>` de `src/components/layout/MainLayout.tsx`. Como todas as rotas autenticadas passam pelo `ProtectedLayoutRoute → MainLayout`, isso cobre 100% das páginas. Páginas NÃO devem redeclarar a classe — causa dupla margem.
 
-**Execução:** `npm run check:mobile-nav` — encadeado em `prebuild` (executa antes de `vite build`) e no workflow CI (`.github/workflows/ci.yml`) antes dos testes. Exit code 1 quebra o build.
+**Script:** `scripts/check-mobile-nav.mjs` valida (a) que `MainLayout.tsx` contém a classe e (b) que nenhuma página em `src/pages/*.tsx` redeclara. Encadeado em `prebuild` e CI (`.github/workflows/ci.yml`). Exit code 1 quebra build.
 
-**Allowlist:** páginas isentas (auth, 404, callbacks, redirects) ficam na constante `ALLOWLIST` no topo do script: `AuthPage.tsx`, `Auth.tsx`, `AuthCallback.tsx`, `ResetPasswordPage.tsx`, `NotFound.tsx`, `Index.tsx`, `AcessoNegado.tsx`.
-
-**Wrappers reconhecidos:** `PageContent` (extensível via constante `COMPLIANT_WRAPPERS`).
+**Allowlist** (páginas standalone fora do MainLayout): `AuthPage.tsx`, `Auth.tsx`, `AuthCallback.tsx`, `ResetPasswordPage.tsx`, `NotFound.tsx`, `Index.tsx`, `AcessoNegado.tsx`.
 
 **Documentação:** `docs/LAYOUTS.md` seção 11.

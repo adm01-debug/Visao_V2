@@ -26,7 +26,7 @@ export default function PPEPage() {
   }, [cameras]);
 
   return (
-    <div role="main" aria-label="Detecção de EPIs" className="min-h-screen bg-background mb-mobile-nav">
+    <div role="main" aria-label="Detecção de EPIs" className="min-h-screen bg-background">
       <PageMeta title="Detecção de EPI" description="Monitore o uso de equipamentos de proteção individual" />
 
       {/* Premium Header */}

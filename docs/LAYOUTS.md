@@ -152,12 +152,11 @@ const breakpoints = {
 
 ---
 
-## 11. Mobile Layout Checklist (Automatizada)
+## 11. Mobile Layout Checklist (Wrapper Único)
 
-Toda página em `src/pages/*.tsx` **deve** garantir espaçamento inferior para a bottom navigation mobile, seja:
+A classe `mb-mobile-nav` é aplicada **uma única vez**, no `<main>` de `src/components/layout/MainLayout.tsx`. Como todas as rotas autenticadas passam pelo `MainLayout`, isso cobre 100% das páginas roteadas automaticamente.
 
-1. Aplicando a classe `mb-mobile-nav` no container raiz, **ou**
-2. Envolvendo o conteúdo com `<PageContent>` (que já aplica internamente).
+**Páginas NÃO devem redeclarar `mb-mobile-nav`** — fazê-lo causa dupla margem inferior.
 
 ### Verificação
 
@@ -165,11 +164,15 @@ Toda página em `src/pages/*.tsx` **deve** garantir espaçamento inferior para a
 npm run check:mobile-nav
 ```
 
-O script roda automaticamente no `prebuild` e no CI (GitHub Actions). Falha quebra o build.
+O script valida que:
+1. `MainLayout.tsx` contém `mb-mobile-nav` (rede de segurança contra remoção acidental).
+2. Nenhuma página em `src/pages/*.tsx` redeclara a classe (evita drift).
+
+Roda automaticamente no `prebuild` e no CI. Falha quebra o build.
 
 ### Exceções
 
-Páginas legitimamente isentas (auth, 404, redirects) ficam na `ALLOWLIST` em `scripts/check-mobile-nav.mjs`. Para adicionar uma exceção:
+Páginas standalone que não passam pelo `MainLayout` (auth, 404, redirects) ficam na `ALLOWLIST` em `scripts/check-mobile-nav.mjs`:
 
 ```js
 const ALLOWLIST = new Set([
@@ -180,4 +183,4 @@ const ALLOWLIST = new Set([
 
 ---
 
-**Última atualização:** 06/01/2026
+**Última atualização:** 21/04/2026

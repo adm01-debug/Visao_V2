@@ -32,7 +32,7 @@ export default function PeoplePage() {
   } = usePeopleData();
 
   return (
-    <div role="main" aria-label="Colaboradores" className="min-h-screen bg-background mb-mobile-nav">
+    <div role="main" aria-label="Colaboradores" className="min-h-screen bg-background">
       <PageMeta title="Colaboradores" description="Cadastro e gestão de pessoas reconhecidas" />
 
       {/* Header */}

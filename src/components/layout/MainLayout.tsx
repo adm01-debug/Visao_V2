@@ -37,7 +37,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           <Header />
         </SectionErrorBoundary>
         <SwipeableView className="flex-1 overflow-auto">
-          <main id="main-content" className="p-4 md:p-6 pb-20 md:pb-6 min-h-full" role="main" aria-label="Conteúdo principal">
+          <main id="main-content" className="p-4 md:p-6 mb-mobile-nav min-h-full" role="main" aria-label="Conteúdo principal">
             <SectionErrorBoundary section="Conteúdo Principal">
               <PageTransition>
                 {children}
@@ -61,7 +61,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 }
 
 export function PageContent({ children }: MainLayoutProps) {
-  return <div className="space-y-6 mb-mobile-nav">{children}</div>;
+  return <div className="space-y-6">{children}</div>;
 }
 
 export default MainLayout;

@@ -30,7 +30,7 @@ export default function HeatmapPage() {
   }, [heatmapHook]);
 
   return (
-    <div role="main" aria-label="Mapa de calor" className="min-h-screen bg-background mb-mobile-nav">
+    <div role="main" aria-label="Mapa de calor" className="min-h-screen bg-background">
       <PageMeta title="Mapa de Calor" description="Visualize mapas de calor de movimentação" />
 
       {/* Premium Header */}

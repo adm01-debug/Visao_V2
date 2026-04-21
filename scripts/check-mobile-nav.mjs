@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * VISÃO - Mobile Nav Checklist
+ * VISÃO - Mobile Nav Checklist (wrapper-based)
  *
- * Verifica se todas as páginas em src/pages/ incluem a classe `mb-mobile-nav`
- * para evitar sobreposição pela bottom navigation em dispositivos móveis.
+ * Garante que `mb-mobile-nav` é aplicado UMA ÚNICA VEZ no wrapper global
+ * (`src/components/layout/MainLayout.tsx`) e que NENHUMA página em
+ * `src/pages/*.tsx` redeclara a classe — evitando drift e dupla margem.
  *
- * Allowlist: páginas legitimamente isentas (auth, 404, redirects).
  * Exit code 1 em caso de falha (quebra CI).
  */
 
@@ -13,11 +13,10 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 const PAGES_DIR = 'src/pages';
+const WRAPPER_FILE = 'src/components/layout/MainLayout.tsx';
 const REQUIRED_CLASS = 'mb-mobile-nav';
-// Wrappers que já aplicam `mb-mobile-nav` internamente — usar qualquer um conta como conformidade.
-const COMPLIANT_WRAPPERS = ['PageContent'];
 
-// Páginas isentas (sem bottom nav: auth, 404, redirects puros, telas standalone)
+// Páginas isentas (standalone — não passam pelo MainLayout)
 const ALLOWLIST = new Set([
   'AuthPage.tsx',
   'Auth.tsx',
@@ -28,8 +27,6 @@ const ALLOWLIST = new Set([
   'AcessoNegado.tsx',
 ]);
 
-// Apenas arquivos no nível raiz de src/pages/ são páginas roteadas.
-// Subdiretórios contêm subcomponentes (não páginas), portanto são ignorados.
 function listPages(dir) {
   return readdirSync(dir)
     .filter((entry) => {
@@ -39,9 +36,24 @@ function listPages(dir) {
     .map((entry) => join(dir, entry));
 }
 
+let failed = false;
+
+console.log(`\n📐 Mobile Nav Checklist (wrapper-based)\n`);
+
+// 1. Wrapper deve conter a classe
+const wrapperContent = readFileSync(WRAPPER_FILE, 'utf8');
+if (!wrapperContent.includes(REQUIRED_CLASS)) {
+  console.error(`❌ ${WRAPPER_FILE} NÃO contém \`${REQUIRED_CLASS}\`.`);
+  console.error(`   A classe deve viver no <main> do wrapper para cobrir todas as rotas.\n`);
+  failed = true;
+} else {
+  console.log(`✅ MainLayout aplica \`${REQUIRED_CLASS}\` globalmente`);
+}
+
+// 2. Nenhuma página deve redeclarar
 const files = listPages(PAGES_DIR);
-const missing = [];
-let okCount = 0;
+const drift = [];
+let cleanCount = 0;
 let skipped = 0;
 
 for (const file of files) {
@@ -51,28 +63,26 @@ for (const file of files) {
     continue;
   }
   const content = readFileSync(file, 'utf8');
-  const usesWrapper = COMPLIANT_WRAPPERS.some((w) =>
-    new RegExp(`<${w}[\\s/>]`).test(content)
-  );
-  if (content.includes(REQUIRED_CLASS) || usesWrapper) {
-    okCount++;
+  if (content.includes(REQUIRED_CLASS)) {
+    drift.push(relative(process.cwd(), file));
   } else {
-    missing.push(relative(process.cwd(), file));
+    cleanCount++;
   }
 }
 
-console.log(`\n📐 Mobile Nav Checklist\n`);
-console.log(`✅ ${okCount} páginas OK`);
+console.log(`✅ ${cleanCount} páginas limpas (sem duplicação)`);
 console.log(`⊘  ${skipped} páginas isentas (allowlist)`);
 
-if (missing.length > 0) {
-  console.error(`\n❌ ${missing.length} página(s) sem \`${REQUIRED_CLASS}\`:`);
-  for (const f of missing) console.error(`   - ${f}`);
+if (drift.length > 0) {
+  console.error(`\n❌ ${drift.length} página(s) redeclaram \`${REQUIRED_CLASS}\`:`);
+  for (const f of drift) console.error(`   - ${f}`);
   console.error(
-    `\nAdicione \`${REQUIRED_CLASS}\` ao container raiz da página, ` +
-    `ou inclua o arquivo na ALLOWLIST de scripts/check-mobile-nav.mjs se for legitimamente isento.\n`
+    `\nA classe é aplicada globalmente em ${WRAPPER_FILE}. ` +
+    `Remova \`${REQUIRED_CLASS}\` da página para evitar dupla margem.\n`
   );
-  process.exit(1);
+  failed = true;
 }
 
-console.log(`\n✨ Todas as páginas estão consistentes!\n`);
+if (failed) process.exit(1);
+
+console.log(`\n✨ Layout mobile centralizado e consistente!\n`);
