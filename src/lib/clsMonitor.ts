@@ -46,10 +46,9 @@ function serializeNode(node: Node | null): string {
   if (!node || !(node instanceof Element)) return '<unknown>';
   const tag = node.tagName.toLowerCase();
   const cls = node.className;
-  const firstClass =
-    typeof cls === 'string' && cls.length > 0
-      ? '.' + cls.split(/\s+/)[0].slice(0, 20)
-      : '';
+  const firstToken =
+    typeof cls === 'string' && cls.length > 0 ? cls.split(/\s+/)[0] : undefined;
+  const firstClass = firstToken ? '.' + firstToken.slice(0, 20) : '';
   if (isDev) {
     const id = node.id ? `#${node.id}` : '';
     return `${tag}${firstClass}${id}`;
