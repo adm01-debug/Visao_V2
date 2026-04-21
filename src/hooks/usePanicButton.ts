@@ -84,7 +84,12 @@ export function usePanicButton() {
 
   const resolvePanic = useMutation({
     mutationFn: async ({ eventId, notes }: { eventId: string; notes?: string }) => {
-      const updates: Record<string, string | boolean | null> = {
+      const updates: {
+        resolved: boolean;
+        resolved_at: string;
+        resolved_by: string | null;
+        notes?: string;
+      } = {
         resolved: true,
         resolved_at: new Date().toISOString(),
         resolved_by: user!.email ?? null,
