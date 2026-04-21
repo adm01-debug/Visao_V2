@@ -48,6 +48,7 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "test:e2e": "cypress run",
+    "test:mobile-nav-runtime": "playwright test mobile-nav-padding",
     "test:integration": "vitest run --dir src/__tests__/integration",
     "test:ui": "vitest --ui",
     "test:unit": "vitest run --dir src/__tests__/unit",
