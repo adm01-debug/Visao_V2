@@ -98,6 +98,18 @@ for (const file of files) {
       drift.push(relative(process.cwd(), file));
       pageOk = false;
     }
+    // Heurística: página NÃO-customizada que parece declarar wrapper raiz próprio
+    // deve ser explicitamente cadastrada na CUSTOM_WRAPPER_ALLOWLIST.
+    if (CUSTOM_WRAPPER_HEURISTIC.test(content) && !content.includes(REQUIRED_CLASS)) {
+      const lines = content.split('\n');
+      const lineIdx = lines.findIndex((l) => CUSTOM_WRAPPER_HEURISTIC.test(l));
+      undeclaredCustomWrappers.push({
+        file: relative(process.cwd(), file),
+        line: lineIdx + 1,
+        snippet: lines[lineIdx]?.trim().slice(0, 120),
+      });
+      pageOk = false;
+    }
   }
 
   if (SCROLL_ANTIPATTERN.test(content)) {
