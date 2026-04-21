@@ -14,7 +14,7 @@ import type { CameraData, ViewMode } from '@/components/cameras';
 import { EmptyState } from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CamerasSkeleton } from '@/components/skeletons/CamerasSkeleton';
+import { CameraSkeleton } from '@/components/ui/skeleton';
 import { Label } from '@/components/ui/label';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -69,17 +69,10 @@ export function CamerasPage() {
     if (currentIndex < filteredCameras.length - 1) setExpandedCamera(filteredCameras[currentIndex + 1]!);
   };
 
-  if (loading) {
-    return (
-      <>
-        <PageMeta title="Câmeras" description="Gerencie e monitore suas câmeras de vigilância em tempo real" />
-        <CamerasSkeleton />
-      </>
-    );
-  }
 
   return (
     <div className="page-container space-y-4 sm:space-y-6">
+      <PageMeta title="Câmeras" description="Gerencie e monitore suas câmeras de vigilância em tempo real" />
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
