@@ -51,7 +51,10 @@ for (const file of files) {
     continue;
   }
   const content = readFileSync(file, 'utf8');
-  if (content.includes(REQUIRED_CLASS)) {
+  const usesWrapper = COMPLIANT_WRAPPERS.some((w) =>
+    new RegExp(`<${w}[\\s/>]`).test(content)
+  );
+  if (content.includes(REQUIRED_CLASS) || usesWrapper) {
     okCount++;
   } else {
     missing.push(relative(process.cwd(), file));
