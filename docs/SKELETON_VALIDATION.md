@@ -80,3 +80,56 @@ para tolerar falha isolada da biblioteca de ícones.
   `check:bundle-size`); é um agregador rápido para o ciclo skeleton.
 - Saída é silenciosa em sucesso; em falha, imprime apenas o stdout/stderr da etapa que
   quebrou para facilitar diagnóstico.
+
+## Acessibilidade dos skeletons
+
+Todo estado de loading deve ser anunciado corretamente para tecnologias assistivas (NVDA, VoiceOver, JAWS).
+
+### Regras
+
+**Skeletons primitivos** (puramente decorativos — `Skeleton`, `Shimmer`, `BrandedSkeleton`, `SkeletonLoader`, `StatSkeleton`, `AlertSkeleton`, `CameraSkeleton`):
+
+- Sempre marcados com `aria-hidden="true"`.
+- Não carregam `role`, `aria-label` nem `aria-live` — quem anuncia é o container externo.
+
+**Skeletons compostos / page-level** (`DashboardSkeleton`, `CamerasSkeleton`, `AlertsSkeleton`, `ZonesSkeleton`, `PeopleSkeleton`, `RecordingsSkeleton`, `AnalyticsSkeleton`, `SecuritySkeleton`, `SettingsSkeleton`, `CardSkeleton`, `ListSkeleton`, `TableSkeleton`, `StatsSkeleton`, `ChartSkeleton`, `PageLoadingSkeleton`, `CameraGridSkeleton`, `AlertsSidebarSkeleton`):
+
+```tsx
+<div
+  role="status"
+  aria-live="polite"
+  aria-busy="true"
+  aria-label="Carregando {recurso}…"
+  className="…"
+>
+  {/* shimmer/conteúdo decorativo */}
+  <span className="sr-only">Carregando {recurso}…</span>
+</div>
+```
+
+**Páginas com shell estável** (`CamerasPage`, `AlertsPage`, `ZonesPage`):
+
+A região de conteúdo que troca entre skeleton e dados reais recebe:
+
+```tsx
+<div aria-busy={loading} aria-live="polite">
+  {loading ? <Skeleton/> : <Content/>}
+</div>
+```
+
+Quando `loading` vira `false`, o `aria-busy` cai automaticamente e leitores de tela anunciam o conteúdo recém-renderizado.
+
+### Checklist para novos skeletons
+
+- [ ] Primitivo decorativo? → `aria-hidden="true"`, sem outros atributos.
+- [ ] Visível ao usuário durante o load? → `role="status"` + `aria-live="polite"` + `aria-busy="true"` + `aria-label` em PT-BR + `<span className="sr-only">` redundante.
+- [ ] Está dentro de uma página com shell estável? → o wrapper que faz `loading ? <Skeleton/> : <Content/>` declara `aria-busy={loading}` + `aria-live="polite"`.
+- [ ] Validar com leitor de tela: anúncio único ao entrar; anúncio de conteúdo após carregamento.
+
+### Validação manual
+
+1. Abra a página em DEV.
+2. Ative NVDA (Windows) ou VoiceOver (`Cmd+F5`, macOS).
+3. Navegue até a rota — deve ouvir "Carregando câmeras…" (ou label equivalente).
+4. Quando o carregamento termina, o leitor anuncia o novo conteúdo automaticamente.
+5. Inspecione no DevTools: o container do skeleton tem `role="status"`, `aria-busy="true"`; primitivos internos têm `aria-hidden="true"`.
