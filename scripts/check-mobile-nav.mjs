@@ -64,7 +64,9 @@ if (!wrapperContent.includes(REQUIRED_CLASS)) {
 const files = listPages(PAGES_DIR);
 const drift = [];
 const scrollDrift = [];
+const missingInCustom = [];
 let cleanCount = 0;
+let customWrapperCount = 0;
 let skipped = 0;
 
 const SCROLL_ANTIPATTERN = /h-\[calc\(100vh-/;
@@ -77,18 +79,34 @@ for (const file of files) {
   }
   const content = readFileSync(file, 'utf8');
   let pageOk = true;
-  if (content.includes(REQUIRED_CLASS)) {
-    drift.push(relative(process.cwd(), file));
-    pageOk = false;
+  const isCustomWrapper = CUSTOM_WRAPPER_ALLOWLIST.has(basename);
+
+  if (isCustomWrapper) {
+    // Wrapper customizado: a classe DEVE estar presente
+    if (!content.includes(REQUIRED_CLASS)) {
+      missingInCustom.push(relative(process.cwd(), file));
+      pageOk = false;
+    }
+  } else {
+    // Página padrão: a classe NÃO deve ser redeclarada (vem do MainLayout)
+    if (content.includes(REQUIRED_CLASS)) {
+      drift.push(relative(process.cwd(), file));
+      pageOk = false;
+    }
   }
+
   if (SCROLL_ANTIPATTERN.test(content)) {
     scrollDrift.push(relative(process.cwd(), file));
     pageOk = false;
   }
-  if (pageOk) cleanCount++;
+  if (pageOk) {
+    if (isCustomWrapper) customWrapperCount++;
+    else cleanCount++;
+  }
 }
 
-console.log(`✅ ${cleanCount} páginas limpas (sem duplicação nem scroll duplo)`);
+console.log(`✅ ${cleanCount} páginas limpas (delegam ao MainLayout)`);
+console.log(`✅ ${customWrapperCount} páginas com wrapper customizado (reaplicam \`${REQUIRED_CLASS}\`)`);
 console.log(`⊘  ${skipped} páginas isentas (allowlist)`);
 
 if (drift.length > 0) {
