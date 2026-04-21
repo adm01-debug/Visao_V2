@@ -1,4 +1,3 @@
-import { logger } from "@/lib/logger";
 /**
  * VISÃO - WebcamCapture Component (refactored)
  * Captura de foto via webcam para reconhecimento facial

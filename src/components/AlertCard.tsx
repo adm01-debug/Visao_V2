@@ -9,7 +9,6 @@ import {
   BarChart3,
   Info,
   AlertCircle,
-  OctagonAlert,
   Flame,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';

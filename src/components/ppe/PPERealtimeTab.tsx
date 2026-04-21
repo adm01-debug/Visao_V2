@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { PPEIcon } from './PPEIcon';
-import { PPE_LABELS, PPEType } from '@/hooks/usePPEDetection';
+import { PPE_LABELS } from '@/hooks/usePPEDetection';
 import { Activity, Eye, RefreshCw, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';

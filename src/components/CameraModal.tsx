@@ -1,4 +1,3 @@
-import { useOnClickOutside } from "@/hooks";
 import { useState } from 'react';
 import { X, ExternalLink, Settings, Bell, History, MapPin, Save } from 'lucide-react';
 import { Camera } from '@/types/surveillance';
@@ -10,7 +9,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 
 interface ExtendedCamera extends Camera {
   latitude?: number | null;

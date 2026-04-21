@@ -1,5 +1,4 @@
 import { describe, it, expect } from "vitest";
-import { renderHook, act } from "@testing-library/react";
 
 // Hook tests need React 19 compat which may not work in jsdom.
 // Test pure logic equivalents instead.
@@ -73,7 +72,7 @@ describe("hooks (logic tests)", () => {
 
   describe("useQueue logic", () => {
     it("enqueue/dequeue/peek", () => {
-      let q = [1, 2, 3];
+      const q = [1, 2, 3];
       q.push(4); // enqueue
       expect(q).toEqual([1, 2, 3, 4]);
       expect(q[0]).toBe(1); // peek

@@ -3,9 +3,7 @@
  */
 
 import { useState } from 'react';
-import {
-  Camera, Maximize2, Pause, Play, Volume2, VolumeX,
-  Wifi, WifiOff, Circle, MoreHorizontal, Settings,
+import { Maximize2, Pause, Play, Volume2, VolumeX, WifiOff, Circle, MoreHorizontal, Settings,
   Trash2, MapPin, AlertTriangle, ScanFace, Clock,
 } from 'lucide-react';
 import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';

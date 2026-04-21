@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Check, X, Search, Star } from 'lucide-react';
+import { Plus, Check, X, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { WIDGET_CATALOG, type WidgetConfig, type WidgetType } from '@/types/widgets';

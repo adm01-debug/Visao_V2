@@ -31,7 +31,7 @@ import {
   UserCog,
   TestTube2,
 } from "lucide-react";
-import type { NavCategory, CategoryStatus } from "../types";
+import type { NavCategory } from "../types";
 import type { SidebarStatus } from "@/hooks/useSidebarStatus";
 
 export const createSidebarCategories = (status: SidebarStatus): NavCategory[] => [

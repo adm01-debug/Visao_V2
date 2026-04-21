@@ -2,7 +2,6 @@
  * OnboardingTour (Refactored)
  * Steps extracted to ./onboarding/onboardingSteps.ts
  */
-import { useLocalStorage } from "@/hooks";
 import { useState } from 'react';
 import { Camera, Shield, Bell, BarChart3, Map, Settings, Users, Car, Zap, ChevronRight, ChevronLeft, X, Sparkles, Play, CheckCircle2, Eye, Brain } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -10,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useOnboardingTour, TourStep } from '@/hooks/useOnboardingTour';
-import { TourHighlight } from '@/components/TourHighlight';
 import { tourSteps } from './onboarding/onboardingSteps';
 
 const iconMap: Record<string, any> = { shield: Shield, camera: Camera, brain: Brain, play: Play, bell: Bell, car: Car, chart: BarChart3, check: CheckCircle2, eye: Eye, zap: Zap, map: Map, settings: Settings, users: Users };

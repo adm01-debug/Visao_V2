@@ -5,7 +5,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import {
-  Zone, ZoneStats, ZoneEvent, ZoneEventType, TrackedObject, Point,
+  Zone, ZoneStats, ZoneEvent, TrackedObject, Point,
   ZoneEvents, ZoneDetectionConfig, defaultZoneDetectionConfig, isBoxInZone, didCrossLine,
 } from '@/types/zones';
 import { useZoneCRUD } from './zone-detection/useZoneCRUD';

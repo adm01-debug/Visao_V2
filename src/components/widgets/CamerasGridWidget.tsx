@@ -1,5 +1,5 @@
 import React from 'react';
-import { Camera, Circle, CheckCircle2, XCircle } from 'lucide-react';
+import { Camera, CheckCircle2, XCircle } from 'lucide-react';
 import { useCameras } from '@/hooks/useCameras';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';

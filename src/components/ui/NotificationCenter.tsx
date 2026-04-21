@@ -10,7 +10,6 @@ import {
   Check,
   CheckCheck,
   X,
-  Filter,
   AlertTriangle,
   Info,
   AlertCircle,
@@ -18,7 +17,6 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { formatDistanceToNow } from 'date-fns';

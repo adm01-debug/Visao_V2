@@ -1,4 +1,3 @@
-import { useMediaQuery, useWindowSize } from "@/hooks";
 import { LayoutGrid, Grid3X3, List, Maximize2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {

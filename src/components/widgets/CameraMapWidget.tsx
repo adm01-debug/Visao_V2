@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Camera } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { useCameras } from '@/hooks/useCameras';
 import { cn } from '@/lib/utils';
 

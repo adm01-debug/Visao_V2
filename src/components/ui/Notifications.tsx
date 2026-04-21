@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, X, AlertTriangle, Info, Bell } from 'lucide-react';
+import { Check, X, AlertTriangle, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // Re-export NotificationCenter from extracted module

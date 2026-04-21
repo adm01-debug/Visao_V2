@@ -7,7 +7,6 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   User,
-  Mail,
   Shield,
   Camera,
   Bell,

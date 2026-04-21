@@ -2,7 +2,7 @@
  * VISÃO - Accessibility Components
  * Extracted from accessibility.tsx
  */
-import { createContext, useContext, useRef, useEffect, useCallback, useState, ReactNode, KeyboardEvent, forwardRef } from 'react';
+import { createContext, useContext, useRef, useEffect, ReactNode, KeyboardEvent, forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
 // ============================================

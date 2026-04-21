@@ -8,7 +8,6 @@ import {
   MessageSquare,
   Send,
   Check,
-  X,
   Loader2,
   AlertTriangle,
   HelpCircle

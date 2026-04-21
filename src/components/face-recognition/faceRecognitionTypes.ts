@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, UserCheck, UserX, Star, AlertTriangle, Shield, Clock, Ban } from 'lucide-react';
+import { User, UserCheck, Star, AlertTriangle, Shield, Ban } from 'lucide-react';
 
 export type ListType = 'whitelist' | 'blacklist' | 'vip' | 'employee' | 'visitor' | 'contractor' | 'unknown';
 

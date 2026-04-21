@@ -14,7 +14,6 @@ import {
   WifiOff,
   MoreVertical,
   Eye,
-  EyeOff,
   Camera as CameraIcon,
   RefreshCw,
   Download,

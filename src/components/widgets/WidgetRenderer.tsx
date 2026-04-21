@@ -1,5 +1,5 @@
 import React from 'react';
-import { WidgetType, WidgetInstance, WIDGET_CATALOG } from '@/types/widgets';
+import { WidgetInstance, WIDGET_CATALOG } from '@/types/widgets';
 import { WidgetWrapper } from './WidgetWrapper';
 import { StatsWidget } from './StatsWidget';
 import { CamerasGridWidget } from './CamerasGridWidget';

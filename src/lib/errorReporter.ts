@@ -24,7 +24,7 @@ const FLUSH_INTERVAL_MS = 10_000;
 const MAX_QUEUE_SIZE = 20;
 const DEDUP_WINDOW_MS = 30_000;
 
-let queue: ErrorReport[] = [];
+const queue: ErrorReport[] = [];
 let flushTimer: ReturnType<typeof setInterval> | null = null;
 const recentHashes = new Map<string, number>();
 
