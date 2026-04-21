@@ -130,16 +130,18 @@ export function ZonesPage() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-foreground">Zonas de Interesse</h1>
-                <p className="text-muted-foreground mt-0.5 text-sm">{stats.total} zonas • {stats.active} ativas</p>
+                <p className="text-muted-foreground mt-0.5 text-sm">
+                  {loading ? '— zonas • — ativas' : `${stats.total} zonas • ${stats.active} ativas`}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" onClick={loadZones} className="border-border/40">
-                <RefreshCw className="w-4 h-4" />
+              <Button variant="outline" size="icon" onClick={loadZones} disabled={loading} className="border-border/40">
+                <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button><Plus className="w-4 h-4 mr-2" />Nova Zona<ChevronDown className="w-4 h-4 ml-2" /></Button>
+                  <Button disabled={loading}><Plus className="w-4 h-4 mr-2" />Nova Zona<ChevronDown className="w-4 h-4 ml-2" /></Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   {cameras.length === 0 ? (
@@ -163,7 +165,7 @@ export function ZonesPage() {
                     <Target className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-foreground">{stats.total}</p>
+                    <p className="text-2xl font-bold text-foreground tabular-nums">{loading ? '—' : stats.total}</p>
                     <p className="text-xs text-muted-foreground">Total</p>
                   </div>
                 </div>
@@ -176,7 +178,7 @@ export function ZonesPage() {
                     <Activity className="w-5 h-5 text-success" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-success">{stats.active}</p>
+                    <p className="text-2xl font-bold text-success tabular-nums">{loading ? '—' : stats.active}</p>
                     <p className="text-xs text-muted-foreground">Ativas</p>
                   </div>
                 </div>
@@ -189,7 +191,7 @@ export function ZonesPage() {
                     <AlertTriangle className="w-5 h-5 text-destructive" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-destructive">{stats.restricted}</p>
+                    <p className="text-2xl font-bold text-destructive tabular-nums">{loading ? '—' : stats.restricted}</p>
                     <p className="text-xs text-muted-foreground">Restritas</p>
                   </div>
                 </div>
@@ -202,7 +204,7 @@ export function ZonesPage() {
                     <Users className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-primary">{stats.counting}</p>
+                    <p className="text-2xl font-bold text-primary tabular-nums">{loading ? '—' : stats.counting}</p>
                     <p className="text-xs text-muted-foreground">Contagem</p>
                   </div>
                 </div>
@@ -218,31 +220,45 @@ export function ZonesPage() {
         <div className="flex flex-wrap items-center gap-4">
           <div className="relative flex-1 min-w-[200px] max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Buscar zonas..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 border-border/40 bg-card/60" />
-            {searchQuery && <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6" onClick={() => setSearchQuery('')}><X className="w-3 h-3" /></Button>}
+            <Input placeholder="Buscar zonas..." value={searchQuery} disabled={loading} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 border-border/40 bg-card/60" />
+            {!loading && searchQuery && <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6" onClick={() => setSearchQuery('')}><X className="w-3 h-3" /></Button>}
           </div>
-          <Select value={selectedCameraFilter} onValueChange={setSelectedCameraFilter}>
+          <Select value={selectedCameraFilter} onValueChange={setSelectedCameraFilter} disabled={loading}>
             <SelectTrigger className="w-[180px] border-border/40 bg-card/60"><Camera className="w-4 h-4 mr-2" /><SelectValue placeholder="Câmera" /></SelectTrigger>
             <SelectContent><SelectItem value="all">Todas câmeras</SelectItem>{cameras.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
           </Select>
-          <Select value={selectedTypeFilter} onValueChange={setSelectedTypeFilter}>
+          <Select value={selectedTypeFilter} onValueChange={setSelectedTypeFilter} disabled={loading}>
             <SelectTrigger className="w-[180px] border-border/40 bg-card/60"><SelectValue placeholder="Tipo" /></SelectTrigger>
             <SelectContent><SelectItem value="all">Todos tipos</SelectItem>{Object.entries(zoneTypeConfig).map(([key, config]) => <SelectItem key={key} value={key}>{config.label}</SelectItem>)}</SelectContent>
           </Select>
-          {hasActiveFilters && (
+          {!loading && hasActiveFilters && (
             <Button variant="ghost" size="sm" onClick={() => { setSearchQuery(''); setSelectedCameraFilter('all'); setSelectedTypeFilter('all'); }}>
               <X className="w-4 h-4 mr-1" />Limpar
             </Button>
           )}
           <div className="flex items-center border border-border/40 rounded-lg p-1 ml-auto bg-card/60">
-            <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('grid')}><LayoutGrid className="w-4 h-4" /></Button>
-            <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('list')}><List className="w-4 h-4" /></Button>
+            <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('grid')} disabled={loading}><LayoutGrid className="w-4 h-4" /></Button>
+            <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('list')} disabled={loading}><List className="w-4 h-4" /></Button>
           </div>
         </div>
 
-        <div className="text-sm text-muted-foreground">{filteredZones.length} zonas encontradas</div>
+        <div className="text-sm text-muted-foreground">
+          {loading ? 'Carregando zonas...' : `${filteredZones.length} zonas encontradas`}
+        </div>
 
-        {filteredZones.length === 0 ? (
+        {loading ? (
+          <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'flex flex-col gap-2')}>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Card key={i} className="border-border/40 bg-card/60 min-h-[180px] overflow-hidden">
+                <CardContent className="p-4 space-y-3">
+                  <div className="h-5 w-1/2 rounded bg-muted animate-pulse" />
+                  <div className="h-3 w-1/3 rounded bg-muted animate-pulse" />
+                  <div className="h-24 w-full rounded bg-muted animate-pulse" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : filteredZones.length === 0 ? (
           <EmptyState icon={<Target />} title={zones.length === 0 ? 'Nenhuma zona configurada' : 'Nenhuma zona encontrada'}
             description={zones.length === 0 ? 'Crie zonas de interesse nas suas câmeras.' : 'Nenhuma zona corresponde aos filtros.'}
             action={zones.length === 0 && cameras.length > 0 ? { label: '+ Criar Zona', onClick: () => openEditor(cameras[0]) } : undefined}
