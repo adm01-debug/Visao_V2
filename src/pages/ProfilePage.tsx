@@ -32,7 +32,7 @@ import { logger } from '@/lib/logger';
 import { PageMeta } from '@/components/PageMeta';
 
 export default function ProfilePage() {
-  const navigate = useNavigate();
+  const _navigate = useNavigate();
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { uploading, uploadAvatar, removeAvatar, avatarUrl, setAvatarUrl } = useAvatarUpload();
@@ -47,7 +47,7 @@ export default function ProfilePage() {
     async function loadProfile() {
       if (!user) return;
 
-      const { data, error } = await supabase
+      const { data, _error } = await supabase
         .from('profiles')
         .select('full_name, avatar_url')
         .eq('user_id', user.id)

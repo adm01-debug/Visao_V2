@@ -92,7 +92,7 @@ function NotificationConfigComponent({
     });
   };
 
-  const addPhone = () => {
+  const _addPhone = () => {
     if (newPhone && !config.sms.recipients.includes(newPhone)) {
       updateConfig({
         sms: {
@@ -104,7 +104,7 @@ function NotificationConfigComponent({
     }
   };
 
-  const removePhone = (phone: string) => {
+  const _removePhone = (phone: string) => {
     updateConfig({
       sms: {
         ...config.sms,

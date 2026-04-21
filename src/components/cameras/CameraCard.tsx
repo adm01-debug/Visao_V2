@@ -47,7 +47,7 @@ export function CameraCard({
 }: CameraCardProps) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
-  const [showOverlays, setShowOverlays] = useState(true);
+  const [showOverlays, _setShowOverlays] = useState(true);
 
   const isOnline = camera.status !== 'offline';
   const isCompact = viewMode === 'grid-4x4' || viewMode === 'list';

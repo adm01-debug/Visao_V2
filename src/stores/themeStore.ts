@@ -16,7 +16,7 @@ const defaultState: ThemeState = {
 
 export const useThemeStore = create<ThemeStore>()(
   persist(
-    (set, get) => ({
+    (set, _get) => ({
       ...defaultState,
       setMode: (mode) => set({ mode }),
       setVariant: (variant) => set({ variant }),

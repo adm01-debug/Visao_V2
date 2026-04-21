@@ -8,7 +8,7 @@ interface PerformanceMemory {
   jsHeapSizeLimit: number;
 }
 
-interface Performance {
+interface _Performance {
   memory?: PerformanceMemory;
 }
 
@@ -24,7 +24,7 @@ interface PeriodicSyncManager {
   getTags(): Promise<string[]>;
 }
 
-interface ServiceWorkerRegistration {
+interface _ServiceWorkerRegistration {
   sync?: SyncManager;
   periodicSync?: PeriodicSyncManager;
 }
@@ -39,7 +39,7 @@ interface IdleRequestOptions {
   timeout?: number;
 }
 
-interface Window {
+interface _Window {
   requestIdleCallback?(
     callback: (deadline: IdleDeadline) => void,
     options?: IdleRequestOptions
@@ -59,18 +59,18 @@ interface NetworkInformation extends EventTarget {
   onchange: ((this: NetworkInformation, ev: Event) => void) | null;
 }
 
-interface Navigator {
+interface _Navigator {
   connection?: NetworkInformation;
   mozConnection?: NetworkInformation;
   webkitConnection?: NetworkInformation;
 }
 
 // Device Motion API with permission
-interface DeviceMotionEventPermissionState {
+interface _DeviceMotionEventPermissionState {
   state: 'granted' | 'denied' | 'prompt';
 }
 
-interface DeviceMotionEventStatic {
+interface _DeviceMotionEventStatic {
   requestPermission?(): Promise<'granted' | 'denied'>;
 }
 
@@ -80,13 +80,13 @@ interface Window {
 }
 
 // Fullscreen API vendor prefixes
-interface HTMLElement {
+interface _HTMLElement {
   webkitRequestFullscreen?(): Promise<void>;
   mozRequestFullScreen?(): Promise<void>;
   msRequestFullscreen?(): Promise<void>;
 }
 
-interface Document {
+interface _Document {
   webkitExitFullscreen?(): Promise<void>;
   mozCancelFullScreen?(): Promise<void>;
   msExitFullscreen?(): Promise<void>;
@@ -96,7 +96,7 @@ interface Document {
 }
 
 // Preload link types
-interface HTMLLinkElement {
+interface _HTMLLinkElement {
   rel: 'preload' | 'prefetch' | 'preconnect' | 'dns-prefetch' | 'stylesheet' | string;
   as?: 'script' | 'style' | 'image' | 'font' | 'fetch' | 'document' | 'audio' | 'video';
 }

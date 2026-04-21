@@ -19,7 +19,7 @@ import { GoalsSettingsPanel } from "./goals-alerts/GoalsSettingsPanel";
 import { PageMeta } from '@/components/PageMeta';
 
 export default function GoalsAlertsPage() {
-  const { user } = useAuth();
+  const { _user } = useAuth();
   const [goals, setGoals] = useState<KPIGoal[]>(DEFAULT_GOALS);
   const [showSettings, setShowSettings] = useState(false);
   const [departmentFilter, setDepartmentFilter] = useState("all");

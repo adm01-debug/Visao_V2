@@ -123,7 +123,7 @@ export function VideoStreamPlayer({
 
   // ML models (unused but kept for future)
   const { loadModel, isLoading: isMLLoading, isModelLoaded } = useMLModels();
-  const [enableMLOverlay, setEnableMLOverlay] = useState(false);
+  const [enableMLOverlay, _setEnableMLOverlay] = useState(false);
   useEffect(() => {
     if (enableMLOverlay && !isModelLoaded && !isMLLoading) { /* loadModel() */ }
   }, [enableMLOverlay, isModelLoaded, isMLLoading, loadModel]);

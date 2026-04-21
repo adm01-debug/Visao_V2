@@ -1,5 +1,5 @@
 // Date utility functions
-export const formatDate = (date: string | Date, format?: string): string => {
+export const formatDate = (date: string | Date, _format?: string): string => {
   const d = new Date(date);
   if (isNaN(d.getTime())) return '';
   return d.toLocaleDateString('pt-BR');

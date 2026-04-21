@@ -63,7 +63,7 @@ function SecuritySettingsComponent({
     onChange({ ...settings, ...updates });
   };
 
-  const addIp = () => {
+  const _addIp = () => {
     if (newIp && !settings.ipWhitelist.ips.includes(newIp)) {
       updateSettings({
         ipWhitelist: {
@@ -75,7 +75,7 @@ function SecuritySettingsComponent({
     }
   };
 
-  const removeIp = (ip: string) => {
+  const _removeIp = (ip: string) => {
     updateSettings({
       ipWhitelist: {
         ...settings.ipWhitelist,

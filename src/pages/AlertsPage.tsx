@@ -27,7 +27,7 @@ import type { AlertRecord, AlertFilters, ViewMode, SortOption } from "@/componen
 import { defaultFilters, severityConfig } from "@/components/alerts/AlertTypes";
 
 export function AlertsPage() {
-  const { events: recognitionEvents } = useFaceRecognitionAlerts({ cameraId: '', cameraName: '' });
+  const { events: _recognitionEvents } = useFaceRecognitionAlerts({ cameraId: '', cameraName: '' });
 
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [sortBy, setSortBy] = useState<SortOption>('date-desc');
@@ -37,7 +37,7 @@ export function AlertsPage() {
   const [removingAlerts, setRemovingAlerts] = useState<Set<string>>(new Set());
 
   const { alerts, loading, unreadCount, markAsRead, markAllAsRead, deleteAlert, refetch } = useAlerts();
-  const { cameras } = useCameras();
+  const { _cameras } = useCameras();
 
   const filteredAlerts = useMemo(() => {
     let result = [...alerts];
@@ -138,7 +138,7 @@ export function AlertsPage() {
         activeSeverity={filters.severity !== 'all' ? filters.severity : undefined}
         onSeverityClick={(severity) => {
           setActiveStatsFilter(null);
-          setFilters(f => ({ ...defaultFilters, severity }));
+          setFilters(_f => ({ ...defaultFilters, severity }));
         }}
         loading={loading}
       />
@@ -150,7 +150,7 @@ export function AlertsPage() {
         activeSeverity={filters.severity !== 'all' ? filters.severity : undefined}
         onSeverityClick={(severity) => {
           setActiveStatsFilter(null);
-          setFilters(f => ({ ...defaultFilters, severity }));
+          setFilters(_f => ({ ...defaultFilters, severity }));
         }}
       />
 

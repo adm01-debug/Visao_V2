@@ -40,7 +40,7 @@ export function SearchInput({ value, onChange, placeholder = 'Buscar...', classN
   const inputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [history, setHistory] = useState<string[]>(getSearchHistory);
-  const [isFocused, setIsFocused] = useState(false);
+  const [_isFocused, setIsFocused] = useState(false);
 
   // Update history when value changes and search is submitted
   const addToHistory = (term: string) => {

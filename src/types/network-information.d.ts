@@ -23,7 +23,7 @@ interface NetworkInformation extends EventTarget {
   onchange?: ((this: NetworkInformation, ev: Event) => void) | null;
 }
 
-interface NavigatorWithConnection extends Navigator {
+interface _NavigatorWithConnection extends Navigator {
   readonly connection?: NetworkInformation;
   readonly mozConnection?: NetworkInformation;
   readonly webkitConnection?: NetworkInformation;

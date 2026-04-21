@@ -74,7 +74,7 @@ export function EnhancedCameraCard({
   const [isLoading, setIsLoading] = useState(false);
 
   const status = statusConfig[camera.status];
-  const StatusIcon = status.icon;
+  const _StatusIcon = status.icon;
 
   const handleRefresh = useCallback(async () => {
     setIsLoading(true);

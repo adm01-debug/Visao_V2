@@ -15,7 +15,7 @@ interface CameraFocusProps {
   hasPrevious?: boolean; hasNext?: boolean; onSettingsClick?: () => void;
 }
 
-export function CameraFocusMode({ cameraId, cameraName, streamUrl, thumbnail, isOpen, onClose, onPrevious, onNext, hasPrevious = false, hasNext = false, onSettingsClick }: CameraFocusProps) {
+export function CameraFocusMode({ _cameraId, cameraName, _streamUrl, thumbnail, isOpen, onClose, onPrevious, onNext, hasPrevious = false, hasNext = false, onSettingsClick }: CameraFocusProps) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [zoom, setZoom] = useState(1);

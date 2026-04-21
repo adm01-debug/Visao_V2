@@ -138,7 +138,7 @@ export function useFaceRecognitionAlerts(
           isActive: true,
         })));
       }
-    } catch (err) {
+    } catch (_err) {
       // error removed
     }
   }, []);
@@ -161,7 +161,7 @@ export function useFaceRecognitionAlerts(
           welcomeMessage: `Bem-vindo(a), ${p.name}!`,
         })));
       }
-    } catch (err) {
+    } catch (_err) {
       // error removed
     }
   }, []);
@@ -222,7 +222,7 @@ export function useFaceRecognitionAlerts(
           confidence: match?.similarity || 0,
           user_id: user.id,
         });
-      } catch (err) {
+      } catch (_err) {
         // error removed
       }
     }
@@ -244,7 +244,7 @@ export function useFaceRecognitionAlerts(
       await loadBlacklist();
       toast.success('Pessoa adicionada à blacklist');
       return true;
-    } catch (err) {
+    } catch (_err) {
       // error removed
       toast.error('Erro ao adicionar à blacklist');
       return false;
@@ -264,7 +264,7 @@ export function useFaceRecognitionAlerts(
       await loadBlacklist();
       toast.success('Pessoa removida da blacklist');
       return true;
-    } catch (err) {
+    } catch (_err) {
       // error removed
       toast.error('Erro ao remover da blacklist');
       return false;
@@ -284,7 +284,7 @@ export function useFaceRecognitionAlerts(
       await loadVIPList();
       toast.success('Pessoa adicionada à lista VIP');
       return true;
-    } catch (err) {
+    } catch (_err) {
       // error removed
       toast.error('Erro ao adicionar à lista VIP');
       return false;
@@ -304,7 +304,7 @@ export function useFaceRecognitionAlerts(
       await loadVIPList();
       toast.success('Pessoa removida da lista VIP');
       return true;
-    } catch (err) {
+    } catch (_err) {
       // error removed
       toast.error('Erro ao remover da lista VIP');
       return false;

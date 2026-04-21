@@ -13,7 +13,7 @@ import { RefreshCw, Activity, Calendar, MapPin, Download, Flame } from 'lucide-r
 import { cn } from '@/lib/utils';
 
 export default function HeatmapPage() {
-  const [selectedCameraId, setSelectedCameraId] = useState<string | undefined>();
+  const [selectedCameraId, _setSelectedCameraId] = useState<string | undefined>();
   const [timeRange, setTimeRange] = useState<'1h' | '6h' | '24h' | '7d' | '30d'>('24h');
   const [refreshing, setRefreshing] = useState(false);
 

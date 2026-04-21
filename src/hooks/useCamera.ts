@@ -14,7 +14,7 @@ interface CameraState {
 }
 
 export function useCamera(cameraId: string, options: UseCameraOptions = {}) {
-  const { autoConnect = true, reconnectInterval = 5000 } = options;
+  const { autoConnect = true, _reconnectInterval = 5000 } = options;
   const [state, setState] = useState<CameraState>({
     isConnected: false, isRecording: false, isLoading: false, error: null, streamUrl: null
   });

@@ -129,7 +129,7 @@ export function SearchInput({
             exit={{ opacity: 0, y: -10 }}
             className="absolute top-full left-0 right-0 mt-1 bg-popover border rounded-lg shadow-lg z-50 overflow-hidden"
           >
-            {filteredSuggestions.slice(0, 5).map((suggestion, index) => (
+            {filteredSuggestions.slice(0, 5).map((suggestion, _index) => (
               <button
                 key={suggestion}
                 onClick={() => handleSuggestionClick(suggestion)}

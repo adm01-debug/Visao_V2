@@ -132,7 +132,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
     try {
       const actions = await getPendingActions();
       setState(prev => ({ ...prev, pendingActionsCount: actions.length }));
-    } catch (error) {
+    } catch (_error) {
 }
   };
 
@@ -159,7 +159,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           await executeSyncAction(action);
           await removePendingAction(action.id);
           successCount++;
-        } catch (error) {
+        } catch (_error) {
           await updatePendingActionRetries(action.id);
           failCount++;
         }
@@ -246,7 +246,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
       if (persons) await cachePersons(persons);
 
       setState(prev => ({ ...prev, lastSyncAt: new Date() }));
-    } catch (error) {
+    } catch (_error) {
 }
   }, []);
 
@@ -263,7 +263,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           await cacheAlerts(data);
           return data;
         }
-      } catch (error) {
+      } catch (_error) {
 }
     }
 
@@ -282,7 +282,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           await cacheCameras(data);
           return data;
         }
-      } catch (error) {
+      } catch (_error) {
 }
     }
 
@@ -301,7 +301,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           await cachePersons(data);
           return data;
         }
-      } catch (error) {
+      } catch (_error) {
 }
     }
 

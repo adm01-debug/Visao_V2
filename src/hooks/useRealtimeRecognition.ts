@@ -76,7 +76,7 @@ export interface UseRealtimeRecognitionOptions {
 export function useRealtimeRecognition(options: UseRealtimeRecognitionOptions = {}) {
   const {
     cameraId = 'default',
-    cameraName = 'Câmera',
+    _cameraName = 'Câmera',
     config: userConfig,
     onFaceRecognized,
     onUnknownFace,

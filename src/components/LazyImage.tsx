@@ -15,7 +15,7 @@ export const LazyImage = React.memo(function LazyImage({
   ...props
 }: LazyImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [error, setError] = useState(false);
+  const [_error, setError] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {

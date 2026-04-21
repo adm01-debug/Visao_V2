@@ -64,7 +64,7 @@ export function useCameras() {
       if (error) throw error;
       await fetchCameras();
       toast.success('Câmeras inicializadas com sucesso');
-    } catch (err) {
+    } catch (_err) {
       // rm
     }
   };

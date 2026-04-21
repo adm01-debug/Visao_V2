@@ -32,7 +32,7 @@ interface RecognitionEvent {
 }
 
 export default function FaceRecognitionPage() {
-  const { isLoaded, loadModels, detectFaces } = useFaceAPI();
+  const { _isLoaded, _loadModels, _detectFaces } = useFaceAPI();
   const [activeTab, setActiveTab] = useState<'webcam' | 'multicam'>('multicam');
   const [recognitionHistory, setRecognitionHistory] = useState<RecognitionEvent[]>([]);
   const [stats, setStats] = useState({

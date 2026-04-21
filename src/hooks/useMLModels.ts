@@ -43,7 +43,7 @@ export type { ModelType, ModelInfo, DetectedObject, DetectedPose, MLModelsConfig
 export type { BackendType, PoseKeypoint } from './ml-models/mlModelTypes';
 
 // Debug log condicional
-const debugLog = (message: string, ..._args: unknown[]) => {
+const debugLog = (_message: string, ..._args: unknown[]) => {
   if (import.meta.env.DEV) { /* noop */ }
 };
 
@@ -233,7 +233,7 @@ interface UseContinuousDetectionOptions {
 
 export function useContinuousDetection(options: UseContinuousDetectionOptions) {
   const { videoElement, enabled = false, interval = 500, onDetection } = options;
-  const { detectObjects, detectPoses, isReady, loadAllModels } = useMLModels({ models: ['coco-ssd', 'movenet'], autoLoad: enabled });
+  const { detectObjects, detectPoses, isReady, _loadAllModels } = useMLModels({ models: ['coco-ssd', 'movenet'], autoLoad: enabled });
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 

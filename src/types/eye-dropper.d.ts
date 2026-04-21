@@ -14,7 +14,7 @@ declare class EyeDropper {
   open(options?: ColorSelectionOptions): Promise<ColorSelectionResult>;
 }
 
-interface Window {
+interface _Window {
   EyeDropper?: typeof EyeDropper;
 }
 
