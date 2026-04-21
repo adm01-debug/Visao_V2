@@ -112,6 +112,14 @@ export default {
           "0%": { top: "-2px" },
           "100%": { top: "100%" },
         },
+        "card-enter": {
+          "0%": { opacity: "0", transform: "translateY(8px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "sheen": {
+          "0%": { transform: "translateX(-150%) skewX(-12deg)" },
+          "100%": { transform: "translateX(250%) skewX(-12deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -120,6 +128,8 @@ export default {
         "collapsible-down": "collapsible-down 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)",
         "collapsible-up": "collapsible-up 0.25s cubic-bezier(0.25, 0.1, 0.25, 1)",
         "scan-line": "scan-line 4s linear infinite",
+        "card-enter": "card-enter 0.4s ease-out both",
+        "sheen": "sheen 0.7s ease-out",
       },
     },
   },
