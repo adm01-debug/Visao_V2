@@ -1,70 +1,128 @@
 
 
-## Documentar páginas standalone sem `mb-mobile-nav` (allowlist)
+## Smoke tests para páginas principais (DashboardV2, Heatmap, Analytics)
 
-Hoje a `ALLOWLIST` em `scripts/check-mobile-nav.mjs` enumera 7 páginas isentas, mas a justificativa para cada uma vive apenas como comentário curto (`// standalone — não passam pelo MainLayout`). Vamos formalizar a documentação para que o motivo fique explícito tanto no código quanto na documentação consultável.
+Adicionar uma suíte enxuta de smoke tests Playwright que verifica que as 3 páginas críticas carregam sem erros JS, sem erros de rede e renderizam o conteúdo essencial — em viewports desktop **e** mobile (para cobrir regressões de responsividade).
 
-### Páginas isentas e razão
+### Estratégia
 
-| Página | Rota | Motivo |
-|---|---|---|
-| `AuthPage.tsx` | `/auth` | Tela de login/signup; não autenticada, não passa por `MainLayout`/`Sidebar`/`BottomNavigation`. Layout próprio centralizado (`min-h-screen flex items-center`). |
-| `Auth.tsx` | (legado, redirecionado) | Variante histórica da tela de auth, mantida por compatibilidade de rota. Mesmo motivo do `AuthPage`. |
-| `AuthCallback.tsx` | `/auth/callback` | Handler OAuth pós-redirect (Google). Renderiza só um spinner durante troca de código por sessão; sem UI navegável, sem BottomNav. |
-| `ResetPasswordPage.tsx` | `/reset-password` | Fluxo de recuperação de senha acessado via link de e-mail (sem sessão completa). Layout próprio centralizado, sem `MainLayout`. |
-| `NotFound.tsx` | `*` (404) | Página de erro genérica, pode ser exibida fora de contexto autenticado. Layout centrado próprio (`min-h-screen flex items-center`). |
-| `Index.tsx` | `/` | Apenas redireciona (`/dashboard` se autenticado, `/auth` se não). Renderiza `<SplashScreen />` em transição — sem conteúdo persistente nem BottomNav. |
-| `AcessoNegado.tsx` | `/acesso-negado` | Tela de bloqueio RBAC/IP whitelist. Layout standalone próprio para mensagem de erro de permissão. |
+Smoke tests são intencionalmente rasos: validam apenas que a página **não quebra**, não testam funcionalidades específicas. Escopo:
 
-### Mudanças
+1. **Sem erros no console** — capturar `console.error` durante o load; falhar se houver qualquer erro (com allowlist mínima para ruído conhecido, ex.: HMR/preload warnings).
+2. **Sem erros de rede críticos** — capturar respostas 5xx em chamadas XHR/fetch; ignorar 4xx esperados (ex.: `/auth` quando não logado).
+3. **Conteúdo essencial renderizado** — verificar presença de marcadores estáveis: `[data-app-scroll]` (layout autenticado), `<h1>` com título da página, ausência de mensagens de erro do `SectionErrorBoundary`.
+4. **Cobertura responsiva** — rodar cada teste em 2 viewports: desktop (1280×720) e mobile (iPhone 12, 390×844).
 
-**1. Atualizar o cabeçalho de `scripts/check-mobile-nav.mjs`** para incluir uma tabela compacta explicando cada entrada da `ALLOWLIST`:
+### Arquivo novo
 
-```js
-// Páginas isentas (standalone — não passam pelo MainLayout):
-//   AuthPage.tsx, Auth.tsx     → telas de login/signup pré-autenticação
-//   AuthCallback.tsx           → handler OAuth (apenas spinner)
-//   ResetPasswordPage.tsx      → fluxo de recuperação via link de e-mail
-//   NotFound.tsx               → 404 genérico (pode aparecer fora de auth)
-//   Index.tsx                  → apenas redireciona; renderiza SplashScreen
-//   AcessoNegado.tsx           → tela de bloqueio RBAC/IP whitelist
+**`tests/e2e/smoke-pages.spec.ts`**
+
+```ts
+import { test, expect, devices } from '@playwright/test';
+
+const PAGES = [
+  { path: '/dashboard', name: 'DashboardV2', heading: /dashboard/i },
+  { path: '/heatmap',   name: 'Heatmap',     heading: /mapa de calor/i },
+  { path: '/analytics', name: 'Analytics',   heading: /analytics|análise/i },
+];
+
+const VIEWPORTS = [
+  { name: 'desktop', config: { viewport: { width: 1280, height: 720 } } },
+  { name: 'mobile',  config: { ...devices['iPhone 12'] } },
+];
+
+// Ruído conhecido a ignorar (HMR, devtools, extensions)
+const CONSOLE_IGNORE = [
+  /\[vite\]/i,
+  /Download the React DevTools/i,
+  /Lovable/i, // badge/preview noise
+];
+
+for (const vp of VIEWPORTS) {
+  test.describe(`Smoke (${vp.name})`, () => {
+    test.use(vp.config);
+
+    for (const page_ of PAGES) {
+      test(`${page_.name} carrega sem erros`, async ({ page }) => {
+        const consoleErrors: string[] = [];
+        const networkErrors: string[] = [];
+
+        page.on('console', (msg) => {
+          if (msg.type() === 'error') {
+            const text = msg.text();
+            if (!CONSOLE_IGNORE.some((rx) => rx.test(text))) consoleErrors.push(text);
+          }
+        });
+        page.on('response', (resp) => {
+          if (resp.status() >= 500) networkErrors.push(`${resp.status()} ${resp.url()}`);
+        });
+
+        await page.goto(page_.path, { waitUntil: 'networkidle' });
+
+        // Pular se redirecionou para auth (sem credenciais seedadas)
+        if (/\/(auth|login)/.test(page.url())) {
+          test.skip(true, 'Requer autenticação');
+          return;
+        }
+
+        // 1. Layout autenticado montou
+        await expect(page.locator('[data-app-scroll]')).toBeVisible({ timeout: 10000 });
+
+        // 2. Heading principal presente
+        await expect(page.locator('h1').first()).toContainText(page_.heading);
+
+        // 3. Nenhum SectionErrorBoundary disparou
+        await expect(page.getByText(/algo deu errado|erro ao carregar/i)).toHaveCount(0);
+
+        // 4. Sem erros JS / rede
+        expect(consoleErrors, `Console errors em ${page_.path}:\n${consoleErrors.join('\n')}`).toHaveLength(0);
+        expect(networkErrors, `Network 5xx em ${page_.path}:\n${networkErrors.join('\n')}`).toHaveLength(0);
+      });
+    }
+  });
+}
 ```
 
-**2. Criar nova seção "Camada 0 — Páginas standalone (isentas)" em `docs/LAYOUTS.md` §11**, antes da Camada 1, com a tabela completa acima e a regra:
+Total: **6 testes** (3 páginas × 2 viewports), execução paralela < 30s.
 
-> Páginas standalone NÃO renderizam `BottomNavigation`. Adicionar `mb-mobile-nav` nelas geraria espaço inferior morto (gap de 64px sem motivo). A `ALLOWLIST` do script garante que essas páginas não falhem o build por ausência da classe.
+### Suporte
 
-**3. Adicionar JSDoc curto no topo de cada uma das 7 páginas**, padronizando:
+- **`package.json`** — adicionar script:
+  ```json
+  "test:smoke": "playwright test smoke-pages"
+  ```
+- **`.github/workflows/ci.yml`** — novo passo após o build, antes da suíte E2E completa:
+  ```yaml
+  - name: Smoke tests (páginas principais)
+    run: npm run test:smoke
+  ```
+  Posicionado cedo para falhar rápido em regressões críticas.
 
-```tsx
-/**
- * Standalone page — renders OUTSIDE MainLayout (no BottomNavigation).
- * Listed in scripts/check-mobile-nav.mjs ALLOWLIST.
- * Reason: <motivo específico>
- */
-```
+### Documentação
 
-**4. Atualizar `mem://standards/mobile-nav-checklist`** para listar a justificativa de cada entrada da allowlist standalone (hoje só nomeia os arquivos sem explicar o porquê).
+- **`docs/LAYOUTS.md`** — adicionar nota curta na seção de testes apontando para `tests/e2e/smoke-pages.spec.ts` como gate mínimo após mudanças de responsividade.
+- **`mem://testing/e2e-infrastructure`** — atualizar para mencionar smoke suite separada das suítes de validação específicas.
 
-**5. Atualizar `mem://style/mobile-layout-compatibility`** se contiver referência genérica a "todas as páginas" sem ressalva sobre as standalone.
+### Validação pós-implementação
 
-### Arquivos editados
+1. `npm run test:smoke` localmente — 6 testes passam (ou skip nas rotas auth).
+2. Regressão proposital: introduzir `console.error('boom')` no `useEffect` do `HeatmapPage` → smoke deve falhar com mensagem clara apontando o erro capturado.
+3. Verificar que rodar `test:smoke` é < 30s (vs ~3min da suíte E2E completa) — adequado como gate rápido.
 
-- ✏️ `scripts/check-mobile-nav.mjs` — comentário expandido sobre a ALLOWLIST
-- ✏️ `docs/LAYOUTS.md` §11 — nova subseção "Camada 0 — Páginas standalone"
-- ✏️ `src/pages/AuthPage.tsx`, `Auth.tsx`, `AuthCallback.tsx`, `ResetPasswordPage.tsx`, `NotFound.tsx`, `Index.tsx`, `AcessoNegado.tsx` — JSDoc no topo
-- ✏️ `.lovable/memory/standards/mobile-nav-checklist.md` — tabela de razões por página
-- ✏️ `.lovable/memory/style/mobile-layout-compatibility.md` — ressalva sobre standalone (se aplicável)
+### Arquivos editados/criados
 
-### Validação
-
-1. `npm run check:mobile-nav` — deve continuar passando sem mudanças funcionais (só documentação).
-2. Inspeção visual: abrir cada uma das 7 páginas e confirmar ausência de `BottomNavigation` (justifica a isenção).
+- ➕ `tests/e2e/smoke-pages.spec.ts`
+- ✏️ `package.json` — script `test:smoke`
+- ✏️ `.github/workflows/ci.yml` — novo passo "Smoke tests"
+- ✏️ `docs/LAYOUTS.md` — nota sobre smoke suite
+- ✏️ `.lovable/memory/testing/e2e-infrastructure.md` — registrar smoke suite
 
 ### Riscos
 
-- **Risco:** JSDoc nas páginas pode ser removido em refatorações futuras.
-  - **Mitigação:** documentação primária fica em `docs/LAYOUTS.md` e na memória; JSDoc é reforço local, não fonte da verdade.
-- **Risco:** alguma das 7 páginas pode estar erroneamente na allowlist (ex.: se um dia ganhar `BottomNavigation`).
-  - **Mitigação:** processo manual — sempre que rota mudar para usar `MainLayout`, remover entry da allowlist e a heurística do script captura novos wrappers customizados.
+- **Risco:** rotas redirecionam para `/auth` no CI sem credenciais seedadas → testes ficam todos `skipped`.
+  - **Mitigação:** mesmo padrão do `mobile-nav-padding.spec.ts` (skip explícito com motivo). Cobertura local autenticada continua valendo; CI pode adicionar fixture de auth depois.
+- **Risco:** ruído de console específico do app (logs de dev, warnings de libs) pode causar flakiness.
+  - **Mitigação:** `CONSOLE_IGNORE` extensível com regex; ajustar conforme primeiros runs identificarem padrões legítimos.
+- **Risco:** `networkidle` pode ser longo em páginas com polling realtime (Supabase subscriptions).
+  - **Mitigação:** `waitUntil: 'domcontentloaded'` como fallback se networkidle exceder timeout — ajustar após primeira execução.
 
