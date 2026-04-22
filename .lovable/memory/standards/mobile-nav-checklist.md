@@ -17,7 +17,7 @@ type: feature
    - (c) páginas na `CUSTOM_WRAPPER_ALLOWLIST` CONTÊM `mb-mobile-nav`;
    - (d) nenhuma página usa `h-[calc(100vh-...)]` (scroll duplo);
    - (e) **heurística**: páginas com `min-h-screen` / `h-screen` / `h-dvh` / `<Sidebar` que não estão cadastradas falham com mensagem clara;
-   - (f) **snapshot** `scripts/.mobile-nav-snapshot.json` registra `standard | customWrapper | standalone` por página — novos arquivos sem entry quebram o build. Regenere com `npm run check:mobile-nav -- --snapshot`.
+   - (f) **snapshot** `scripts/.mobile-nav-snapshot.json` registra `standard | customWrapper | standalone` por página. **Build usa `--auto-classify`** (`npm run check:mobile-nav:auto`) que classifica páginas novas automaticamente via heurísticas (wrapper raiz `min-h-screen`/`<Sidebar` → customWrapper; default → standard; padrão sensível auth/erro/redirect → `needsReview` que falha o build exigindo cadastro manual em ALLOWLIST). Para regenerar manualmente: `npm run check:mobile-nav:snapshot`.
 
 5. **Runtime Playwright** `tests/e2e/mobile-nav-padding.spec.ts` — viewport iPhone 12, itera ~15 rotas autenticadas e mede `paddingBottom` real do último filho de `[data-app-scroll]`, exigindo ≥ 64px. Rodado no CI via `npm run test:mobile-nav-runtime`. Usa o helper `gotoAuthenticated` (`tests/e2e/helpers/authSession.ts`) que tenta autenticar via storage state ou login REST programático antes de fazer skip controlado.
 
