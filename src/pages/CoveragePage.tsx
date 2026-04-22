@@ -17,26 +17,37 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CoverageStatsCards } from "@/components/coverage/CoverageStatsCards";
 import { CoverageTable } from "@/components/coverage/CoverageTable";
 import { downloadCoverageTextReport } from "@/lib/coverageTextReport";
+import { parseCoverageReport, type ParseCoverageResult } from "@/lib/coverageSchema";
 import type { CoverageReport } from "@/types/coverage";
 
 const COVERAGE_URL = "/coverage-report.json";
 
-const fetchCoverage = async (): Promise<CoverageReport | null> => {
+const fetchCoverage = async (): Promise<ParseCoverageResult | null> => {
   const res = await fetch(`${COVERAGE_URL}?t=${Date.now()}`, {
     headers: { Accept: "application/json" },
   });
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(`Falha ao carregar coverage (${res.status})`);
-  return (await res.json()) as CoverageReport;
+  let raw: unknown;
+  try {
+    raw = await res.json();
+  } catch (e) {
+    throw new Error(`JSON inválido em ${COVERAGE_URL}: ${(e as Error).message}`);
+  }
+  return parseCoverageReport(raw);
 };
 
 const CoveragePage = () => {
-  const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
+  const { data: parsed, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["coverage-report"],
     queryFn: fetchCoverage,
     staleTime: 60_000,
     retry: 1,
   });
+
+  const data: CoverageReport | undefined = parsed?.report;
+  const degraded = parsed?.degraded ?? false;
+  const warnings = parsed?.warnings ?? [];
 
   return (
     <div className="space-y-6 p-4 md:p-6">
@@ -135,6 +146,19 @@ const CoveragePage = () => {
 
       {data && (
         <>
+          {degraded && warnings.length > 0 && (
+            <Alert variant="destructive">
+              <AlertTitle>Relatório carregado com avisos</AlertTitle>
+              <AlertDescription>
+                O JSON tem campos ausentes/inválidos. Fallbacks foram aplicados; números podem estar incompletos.
+                <ul className="mt-2 list-inside list-disc text-xs">
+                  {warnings.map((w) => (
+                    <li key={w}>{w}</li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
+          )}
           <Alert>
             <AlertTitle className="text-sm">
               Última execução:{" "}
