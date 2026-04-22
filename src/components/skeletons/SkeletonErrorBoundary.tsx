@@ -1,7 +1,10 @@
 /**
  * SkeletonErrorBoundary - Captura erros de render em skeletons branded e
  * em componentes lazy, exibindo um SkeletonFallback genérico para evitar
- * tela em branco. Loga via logger.error (e console.error em DEV).
+ * tela em branco. Loga via logger.error com:
+ *   - rota atual (window.location.pathname + search)
+ *   - nome do componente skeleton/lazy que falhou (extraído da componentStack)
+ *   - label opcional do boundary
  */
 import React, { Component, ReactNode, ErrorInfo } from 'react';
 import { logger } from '@/lib/logger';
@@ -11,10 +14,41 @@ interface Props {
   children: ReactNode;
   fallback?: ReactNode;
   label?: string;
+  /** Identificador opcional para indicar QUAL boundary capturou (ex.: "withLazyLoad:Cameras"). */
+  boundaryName?: string;
 }
 
 interface State {
   hasError: boolean;
+}
+
+/**
+ * Extrai o primeiro componente "interessante" da componentStack do React.
+ * A stack vem no formato:
+ *   "\n    at MyComp (...)\n    at Suspense\n    at div\n..."
+ * Ignora primitivos (div/span/etc.) e wrappers comuns (Suspense, Boundary).
+ */
+function extractFailingComponent(componentStack: string | null | undefined): string | null {
+  if (!componentStack) return null;
+  const SKIP = /^(Suspense|SkeletonErrorBoundary|Anonymous|Fragment|div|span|main|section|button|ul|li|p|a|svg|path|g|h\d|tr|td|tbody|thead|table)$/i;
+  const lines = componentStack.split('\n');
+  for (const raw of lines) {
+    const m = raw.match(/at\s+([A-Za-z_$][\w$]*)/);
+    const name = m?.[1];
+    if (!name) continue;
+    if (SKIP.test(name)) continue;
+    return name;
+  }
+  return null;
+}
+
+function getCurrentRoute(): string {
+  if (typeof window === 'undefined') return 'ssr';
+  try {
+    return `${window.location.pathname}${window.location.search}`;
+  } catch {
+    return 'unknown';
+  }
 }
 
 export class SkeletonErrorBoundary extends Component<Props, State> {
@@ -25,14 +59,31 @@ export class SkeletonErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo): void {
+    const route = getCurrentRoute();
+    const failingComponent = extractFailingComponent(info.componentStack) ?? 'unknown';
+    const boundaryName = this.props.boundaryName ?? 'SkeletonErrorBoundary';
+
     logger.error(
-      'Skeleton render failed; using generic fallback',
-      { message: error.message, stack: error.stack, componentStack: info.componentStack },
-      'SkeletonErrorBoundary'
+      `Skeleton render failed on "${route}" → component "${failingComponent}"; using generic fallback`,
+      {
+        route,
+        failingComponent,
+        boundaryName,
+        boundaryLabel: this.props.label ?? null,
+        message: error.message,
+        stack: error.stack,
+        componentStack: info.componentStack,
+      },
+      'SkeletonErrorBoundary',
     );
+
     if (import.meta.env?.DEV) {
       // eslint-disable-next-line no-console
-      console.error('[SkeletonErrorBoundary]', error, info);
+      console.error(
+        `[SkeletonErrorBoundary] route=${route} component=${failingComponent} boundary=${boundaryName}`,
+        error,
+        info,
+      );
     }
   }
 

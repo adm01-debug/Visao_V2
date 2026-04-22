@@ -34,15 +34,20 @@ export const PageLoadingFallback = () => (
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function withLazyLoad<T extends ComponentType<any>>(
   importFn: () => Promise<{ default: T }>,
-  fallback: React.ReactNode = <LoadingFallback />
+  fallback: React.ReactNode = <LoadingFallback />,
+  boundaryName = 'withLazyLoad',
 ) {
   const LazyComponent = lazy(importFn);
 
   return function LazyWrapper(props: React.ComponentProps<T>) {
     return (
-      <SkeletonErrorBoundary>
+      <SkeletonErrorBoundary boundaryName={`${boundaryName}:outer`}>
         <Suspense
-          fallback={<SkeletonErrorBoundary>{fallback}</SkeletonErrorBoundary>}
+          fallback={
+            <SkeletonErrorBoundary boundaryName={`${boundaryName}:fallback`}>
+              {fallback}
+            </SkeletonErrorBoundary>
+          }
         >
           <LazyComponent {...props} />
         </Suspense>
