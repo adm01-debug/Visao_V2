@@ -203,7 +203,7 @@ export function useManagedFilters<T extends Record<string, unknown>>(
     undoTimerRef.current = setTimeout(() => {
       undoSnapshotRef.current = null;
     }, UNDO_WINDOW_MS);
-  }, [filters, defaults, persistAndSync, storageKey, persistKeys, activeEntries]);
+  }, [filters, defaults, persistAndSync, storageKey, persistKeys, activeEntries, onAfterClear]);
 
   const clearFilters = useCallback(() => {
     if (!hasActiveFilters) {
