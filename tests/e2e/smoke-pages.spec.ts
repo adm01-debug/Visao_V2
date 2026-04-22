@@ -19,7 +19,8 @@
  * Atualizar baselines após mudança visual intencional:
  *   npx playwright test smoke-pages --update-snapshots
  */
-import { test, expect, devices, type Locator, type Page } from '@playwright/test';
+import { devices, type Locator, type Page } from '@playwright/test';
+import { test, expect } from './helpers/testFixtures';
 import { gotoAuthenticated } from './helpers/authSession';
 
 const PAGES: Array<{

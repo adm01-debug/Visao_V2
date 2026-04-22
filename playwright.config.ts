@@ -53,8 +53,10 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('/')` */
     baseURL: isCI ? "http://localhost:4173" : "http://localhost:5173",
 
-    /* Collect trace when retrying the failed test */
-    trace: "on-first-retry",
+    /* Collect trace on first retry AND keep on failure for full debug context.
+     * Combina com a fixture `testFixtures.ts` que anexa console+network+screenshot
+     * automaticamente em cada falha. */
+    trace: "retain-on-failure",
     
     /* Capture screenshot on failure - full page */
     screenshot: {
