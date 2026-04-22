@@ -11,6 +11,8 @@ interface ShiftSource {
   selector: string;
   value: number;
   timestamp: number;
+  /** WeakRef opcional ao elemento DOM (apenas em runtime; não serializa). */
+  nodeRef?: WeakRef<Element>;
 }
 
 interface RouteSession {
@@ -70,10 +72,16 @@ function handleEntries(list: PerformanceObserverEntryList): void {
     const sources = entry.sources ?? [];
     const firstSource = sources[0];
     const selector = firstSource ? serializeNode(firstSource.node) : '<no-source>';
+    const node = firstSource?.node;
+    const nodeRef =
+      node && node instanceof Element && typeof WeakRef !== 'undefined'
+        ? new WeakRef(node)
+        : undefined;
     session.shifts.push({
       selector,
       value: entry.value,
       timestamp: entry.startTime - session.startedAt,
+      nodeRef,
     });
 
     if (
