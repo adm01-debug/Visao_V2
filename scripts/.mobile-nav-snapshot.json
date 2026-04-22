@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-21T19:07:14.954Z",
+  "generatedAt": "2026-04-22T11:46:04.691Z",
   "pages": [
     {
       "file": "AcessoNegado.tsx",
@@ -7,6 +7,10 @@
     },
     {
       "file": "AlertsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "AlertsTimelinePage.tsx",
       "mode": "standard"
     },
     {
@@ -43,7 +47,11 @@
     },
     {
       "file": "DashboardV2.tsx",
-      "mode": "customWrapper"
+      "mode": "standard"
+    },
+    {
+      "file": "EvaluationPage.tsx",
+      "mode": "standard"
     },
     {
       "file": "FaceRecognitionPage.tsx",

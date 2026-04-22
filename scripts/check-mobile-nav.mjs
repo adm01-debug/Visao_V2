@@ -261,6 +261,147 @@ if (rootClassDrift.length > 0) {
   );
   failed = true;
 }
+// ─────────────────────────────────────────────────────────────────────────────
+// Camada 8 — Route-based audit: mapeia rotas autenticadas em src/App.tsx,
+// resolve cada componente JSX → import → arquivo de página, e valida que cada
+// página cumpre o contrato `mb-mobile-nav` (via MainLayout para 'standard' ou
+// reaplicando no wrapper para 'customWrapper'). Garante que NENHUMA rota
+// autenticada fica de fora da auditoria — mesmo que o snapshot esteja
+// desatualizado ou o componente seja referenciado por um path não-óbvio.
+// ─────────────────────────────────────────────────────────────────────────────
+const APP_FILE = 'src/App.tsx';
+const ROUTE_AUDIT_ISSUES = [];
+let routeAuditCount = 0;
+try {
+  const appContent = readFileSync(APP_FILE, 'utf8');
+
+  // 1. Mapa de imports lazy: `const Foo = lazy(() => import("@/pages/Foo"))` ou `./pages/Foo`
+  const importMap = new Map();
+  const lazyRe = /const\s+(\w+)\s*=\s*lazy\(\s*\(\s*\)\s*=>\s*import\(\s*['"]([^'"]+)['"]\s*\)/g;
+  let im;
+  while ((im = lazyRe.exec(appContent)) !== null) {
+    const [, name, path] = im;
+    // Normaliza '@/pages/Foo' e './pages/Foo' → 'Foo.tsx'
+    const match = path.match(/pages\/([\w-]+)$/);
+    if (match) importMap.set(name, `${match[1]}.tsx`);
+  }
+
+  // 2. Extrai rotas envolvidas em <ProtectedLayoutRoute>...<ComponentName />...</ProtectedLayoutRoute>
+  const routeRe = /<Route\s+path=["']([^"']+)["'][^>]*element=\{<ProtectedLayoutRoute>([\s\S]*?)<\/ProtectedLayoutRoute>\}/g;
+  const componentInRouteRe = /<(\w+)\s*\/>/g;
+  const authenticatedRoutes = [];
+  let rm;
+  while ((rm = routeRe.exec(appContent)) !== null) {
+    const [, routePath, inner] = rm;
+    const components = [];
+    let cm;
+    while ((cm = componentInRouteRe.exec(inner)) !== null) {
+      const compName = cm[1];
+      // Ignora wrappers utilitários — queremos apenas componentes de página
+      if (['ProtectedRoute', 'PageLoader', 'PanicButton'].includes(compName)) continue;
+      if (importMap.has(compName)) components.push(compName);
+    }
+    if (components.length > 0) {
+      // Última ocorrência costuma ser o componente real da página (após ProtectedRoute wrapper)
+      const pageComp = components[components.length - 1];
+      authenticatedRoutes.push({
+        path: routePath,
+        component: pageComp,
+        file: importMap.get(pageComp),
+      });
+    }
+  }
+
+  routeAuditCount = authenticatedRoutes.length;
+
+  // 3. Para cada rota autenticada, valida o arquivo de página
+  for (const r of authenticatedRoutes) {
+    const pageFile = join(PAGES_DIR, r.file);
+    let pageContent;
+    try {
+      pageContent = readFileSync(pageFile, 'utf8');
+    } catch {
+      ROUTE_AUDIT_ISSUES.push({
+        route: r.path,
+        component: r.component,
+        file: r.file,
+        reason: `Arquivo não encontrado em ${pageFile}`,
+      });
+      continue;
+    }
+
+    const inAllowlist = ALLOWLIST.has(r.file);
+    const inCustomWrapper = CUSTOM_WRAPPER_ALLOWLIST.has(r.file);
+
+    if (inAllowlist) {
+      // Standalone NÃO deveria aparecer como rota autenticada (vai pelo MainLayout)
+      ROUTE_AUDIT_ISSUES.push({
+        route: r.path,
+        component: r.component,
+        file: r.file,
+        reason: `Página está em ALLOWLIST (standalone) mas é referenciada como rota autenticada — contrato inconsistente`,
+      });
+      continue;
+    }
+
+    if (inCustomWrapper) {
+      // Wrapper customizado: arquivo precisa conter a classe explicitamente
+      if (!pageContent.includes(REQUIRED_CLASS)) {
+        ROUTE_AUDIT_ISSUES.push({
+          route: r.path,
+          component: r.component,
+          file: r.file,
+          reason: `Wrapper customizado SEM \`${REQUIRED_CLASS}\` no container raiz`,
+        });
+      }
+      continue;
+    }
+
+    // Página padrão: NÃO deve redeclarar a classe E NÃO deve criar wrapper raiz próprio
+    if (pageContent.includes(REQUIRED_CLASS)) {
+      ROUTE_AUDIT_ISSUES.push({
+        route: r.path,
+        component: r.component,
+        file: r.file,
+        reason: `Página padrão redeclara \`${REQUIRED_CLASS}\` (dupla margem) — remova OU adicione à CUSTOM_WRAPPER_ALLOWLIST`,
+      });
+    }
+    if (CUSTOM_WRAPPER_HEURISTIC.test(pageContent) && !pageContent.includes(REQUIRED_CLASS)) {
+      ROUTE_AUDIT_ISSUES.push({
+        route: r.path,
+        component: r.component,
+        file: r.file,
+        reason: `Página padrão usa wrapper raiz próprio (min-h-screen / h-screen / h-dvh / <Sidebar) sem \`${REQUIRED_CLASS}\` — cadastrar em CUSTOM_WRAPPER_ALLOWLIST`,
+      });
+    }
+  }
+
+  if (routeAuditCount === 0) {
+    console.error(`\n❌ Nenhuma rota autenticada extraída de ${APP_FILE} — regex pode estar quebrada.`);
+    failed = true;
+  } else {
+    console.log(`✅ ${routeAuditCount} rotas autenticadas mapeadas em ${APP_FILE} (auditoria route-based)`);
+  }
+} catch (err) {
+  console.error(`\n❌ Falha ao auditar rotas em ${APP_FILE}: ${err.message}`);
+  failed = true;
+}
+
+if (ROUTE_AUDIT_ISSUES.length > 0) {
+  console.error(`\n❌ ${ROUTE_AUDIT_ISSUES.length} rota(s) autenticada(s) violam o contrato \`${REQUIRED_CLASS}\`:`);
+  for (const issue of ROUTE_AUDIT_ISSUES) {
+    console.error(`   - ${issue.route}  →  ${issue.component} (${issue.file})`);
+    console.error(`       ↳ ${issue.reason}`);
+  }
+  console.error(
+    `\nCada rota envolvida em <ProtectedLayoutRoute> deve renderizar uma página que:\n` +
+    `  1. Delega ao <main mb-mobile-nav> do MainLayout (página padrão), OU\n` +
+    `  2. Reaplica \`${REQUIRED_CLASS}\` no container raiz do wrapper customizado.\n` +
+    `Veja docs/LAYOUTS.md §11 e mem://standards/mobile-nav-checklist.\n`
+  );
+  failed = true;
+}
+
 if (SNAPSHOT_MODE) {
   const { writeFileSync } = await import('node:fs');
   const snapshot = {
