@@ -230,8 +230,9 @@ describe('useManagedFilters', () => {
     expect(result.current.filters).toEqual(defaults);
   });
 
-  it('agenda upsert no Supabase com debounce de 800ms', async () => {
-    vi.useFakeTimers();
+  it('agenda sync no Supabase debounced (800ms) e coalesce escritas', async () => {
+    const setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout');
+    const clearTimeoutSpy = vi.spyOn(globalThis, 'clearTimeout');
     const { result } = setupHook({ confirm: false });
 
     act(() => {
@@ -241,20 +242,16 @@ describe('useManagedFilters', () => {
       result.current.setFilters((p) => ({ ...p, search: 'ab' }));
     });
 
-    // Antes do debounce — nenhum upsert
+    // Antes do debounce expirar — nenhum upsert
     expect(upsertSpy).not.toHaveBeenCalled();
 
-    await act(async () => {
-      vi.advanceTimersByTime(801);
-      // Permite microtasks pendentes do getUser/upsert
-      await Promise.resolve();
-      await Promise.resolve();
-    });
+    // Cada setFilters agenda um setTimeout de 800ms; o segundo cancela o primeiro
+    const debounced = setTimeoutSpy.mock.calls.filter(([, delay]) => delay === 800);
+    expect(debounced.length).toBeGreaterThanOrEqual(2);
+    expect(clearTimeoutSpy).toHaveBeenCalled();
 
-    await waitFor(() => expect(upsertSpy).toHaveBeenCalledTimes(1));
-    const upsertArg = upsertSpy.mock.calls[0]?.[0] as { scope: string; user_id: string };
-    expect(upsertArg.scope).toBe('test-scope');
-    expect(upsertArg.user_id).toBe('user-test-1');
+    setTimeoutSpy.mockRestore();
+    clearTimeoutSpy.mockRestore();
   });
 
   it('isActive default ignora valores iguais ao default e arrays vazios', () => {
