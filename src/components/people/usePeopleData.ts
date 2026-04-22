@@ -2,14 +2,22 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { useManagedFilters } from '@/hooks/useManagedFilters';
 import type { DbPerson, DbPersonInsert, Filters, ViewMode } from './types';
+
+const defaultPeopleFilters: Filters = { search: '', activeOnly: false };
 
 export function usePeopleData() {
   const { user } = useAuth();
   const [people, setPeople] = useState<DbPerson[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
-  const [filters, setFilters] = useState<Filters>({ search: '', activeOnly: false });
+  const { filters, setFilters, clearFilters, hasActiveFilters } = useManagedFilters<Filters & { [key: string]: unknown }>({
+    scope: 'people',
+    defaults: defaultPeopleFilters,
+    labels: { search: 'busca', activeOnly: 'apenas ativos' },
+    isActive: (key, value) => key === 'search' ? value !== '' : value === true,
+  });
   const [selectedPerson, setSelectedPerson] = useState<DbPerson | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingPerson, setEditingPerson] = useState<DbPerson | null>(null);
