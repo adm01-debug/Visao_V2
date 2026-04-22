@@ -5,6 +5,7 @@
 import React, { lazy, Suspense, ComponentType } from 'react';
 import { Loader2 } from 'lucide-react';
 import { SkeletonErrorBoundary } from '@/components/skeletons/SkeletonErrorBoundary';
+import type { SkeletonFallbackVariant } from '@/components/skeletons/SkeletonFallback';
 import { shouldSimulateSkeletonFailure } from '@/lib/skeletonFailureFlag';
 
 /**
@@ -36,15 +37,22 @@ export function withLazyLoad<T extends ComponentType<any>>(
   importFn: () => Promise<{ default: T }>,
   fallback: React.ReactNode = <LoadingFallback />,
   boundaryName = 'withLazyLoad',
+  fallbackVariant: SkeletonFallbackVariant = 'page',
 ) {
   const LazyComponent = lazy(importFn);
 
   return function LazyWrapper(props: React.ComponentProps<T>) {
     return (
-      <SkeletonErrorBoundary boundaryName={`${boundaryName}:outer`}>
+      <SkeletonErrorBoundary
+        boundaryName={`${boundaryName}:outer`}
+        fallbackVariant={fallbackVariant}
+      >
         <Suspense
           fallback={
-            <SkeletonErrorBoundary boundaryName={`${boundaryName}:fallback`}>
+            <SkeletonErrorBoundary
+              boundaryName={`${boundaryName}:fallback`}
+              fallbackVariant={fallbackVariant}
+            >
               {fallback}
             </SkeletonErrorBoundary>
           }
