@@ -168,7 +168,7 @@ export function useFaceRecognitionAlerts(
 
   // Processar reconhecimento
   const processRecognition = useCallback(async (
-    detection: FaceDetection,
+    _detection: FaceDetection,
     match: FaceMatch | null
   ): Promise<RecognitionEvent> => {
     setIsProcessing(true);
