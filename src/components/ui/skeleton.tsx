@@ -2,18 +2,33 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { Shield } from "lucide-react";
 
-const Skeleton = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(function Skeleton({ className, ...props }, ref) {
+/**
+ * Skeleton primitivo. Sempre renderiza com dimensões estáticas:
+ * - `flex-shrink-0` impede que pais flex colapsem o tamanho
+ * - `style={{ aspectRatio }}` opcional trava proporção até o conteúdo chegar
+ * - Consumidores devem passar `h-*`/`w-*` (ou aspectRatio) para reserva fixa
+ */
+interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Trava a proporção (ex: "16 / 9", "1 / 1") via CSS aspect-ratio. */
+  aspectRatio?: React.CSSProperties['aspectRatio'];
+}
+
+const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(function Skeleton(
+  { className, aspectRatio, style, ...props },
+  ref,
+) {
   return (
     <div
       ref={ref}
       aria-hidden="true"
       className={cn(
-        "rounded-md bg-muted relative overflow-hidden",
+        "rounded-md bg-muted relative overflow-hidden flex-shrink-0",
         "after:absolute after:inset-0 after:translate-x-[-100%]",
         "after:bg-gradient-to-r after:from-transparent after:via-primary/10 after:to-transparent",
         "after:animate-shimmer",
         className
       )}
+      style={aspectRatio ? { aspectRatio, ...style } : style}
       {...props}
     />
   );
@@ -22,17 +37,21 @@ const Skeleton = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
 Skeleton.displayName = 'Skeleton';
 
 /** Branded skeleton with VISÃO watermark for larger areas */
-function BrandedSkeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+interface BrandedSkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
+  aspectRatio?: React.CSSProperties['aspectRatio'];
+}
+function BrandedSkeleton({ className, aspectRatio, style, ...props }: BrandedSkeletonProps) {
   return (
     <div
       aria-hidden="true"
       className={cn(
-        "rounded-md bg-muted relative overflow-hidden",
+        "rounded-md bg-muted relative overflow-hidden flex-shrink-0",
         "after:absolute after:inset-0 after:translate-x-[-100%]",
         "after:bg-gradient-to-r after:from-transparent after:via-primary/10 after:to-transparent",
         "after:animate-shimmer",
         className
       )}
+      style={aspectRatio ? { aspectRatio, ...style } : style}
       {...props}
     >
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none animate-skeleton-brand-pulse">
