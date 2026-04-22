@@ -3,6 +3,7 @@
  */
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import { useSkeletonToggle } from '@/contexts/SkeletonToggleContext';
 
 export { DashboardSkeleton } from './skeletons/DashboardSkeleton';
 export { CamerasSkeleton } from './skeletons/CamerasSkeleton';
@@ -64,6 +65,10 @@ const SKELETON_MAP: Record<string, React.FC> = {
 };
 
 export function PageSkeleton({ type = 'dashboard' }: PageSkeletonProps) {
+  const { skeletonsEnabled } = useSkeletonToggle();
+  if (!skeletonsEnabled) {
+    return <div aria-hidden="true" data-skeleton-disabled="true" className="min-h-[200px]" />;
+  }
   const Component = SKELETON_MAP[type] || DashboardSkeleton;
   return <Component />;
 }
