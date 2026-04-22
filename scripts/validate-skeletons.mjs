@@ -146,7 +146,15 @@ checkOrphanImports();
 // 4. Mobile-nav
 run('mobile-nav gate', 'node', ['scripts/check-mobile-nav.mjs']);
 
-// 5. Build
+// 5. Testes de skeleton (anti-CLS + placeholders + snapshots de dimensão)
+run('vitest skeletons (LoadingPlaceholders + DimensionSnapshots)', 'npx', [
+  'vitest',
+  'run',
+  'src/components/skeletons/__tests__/',
+  '--reporter=basic',
+]);
+
+// 6. Build
 if (!SKIP_BUILD) {
   run('vite build', 'npx', ['vite', 'build']);
 } else {
