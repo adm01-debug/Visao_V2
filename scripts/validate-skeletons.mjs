@@ -114,10 +114,46 @@ function run(label, cmd, args, { mute = true } = {}) {
   console.log(`✓ (${dt}s)`);
 }
 
+/**
+ * Parse simples de uma cláusula `import ... from "..."`.
+ * Suporta: default, namespace (* as), named ({ a, b as c, type D }), mistos.
+ * Retorna lista de nomes locais (após `as`) que ficam no escopo.
+ */
+function extractImportedSymbols(clause) {
+  const symbols = [];
+  const defaultMatch = clause.match(/^\s*([A-Za-z_$][\w$]*)\s*(?:,|$)/);
+  if (defaultMatch) symbols.push(defaultMatch[1]);
+
+  const nsMatch = clause.match(/\*\s+as\s+([A-Za-z_$][\w$]*)/);
+  if (nsMatch) symbols.push(nsMatch[1]);
+
+  const namedMatch = clause.match(/\{([^}]*)\}/);
+  if (namedMatch) {
+    for (const raw of namedMatch[1].split(',')) {
+      const part = raw.replace(/^\s*type\s+/, '').trim();
+      if (!part) continue;
+      const aliased = part.split(/\s+as\s+/i);
+      const local = (aliased[1] ?? aliased[0]).trim();
+      if (/^[A-Za-z_$][\w$]*$/.test(local)) symbols.push(local);
+    }
+  }
+  return symbols;
+}
+
 function checkOrphanImports() {
   process.stdout.write('▶ orphan-import scan… ');
-  const files = [...TARGET_PAGES, ...listSkeletonFiles()];
+
+  // União dinâmica: páginas-alvo + skeletons + qualquer arquivo do projeto que
+  // importe de fontes relacionadas a skeleton (ui/skeleton, skeletons/*, PageSkeletons).
+  const dynamic = collectFilesImportingSkeletons();
+  const files = Array.from(
+    new Set([...TARGET_PAGES, ...listSkeletonFiles(), ...dynamic]),
+  );
+
+  const importStmt = /import\s+([\s\S]*?)\s+from\s*['"]([^'"]+)['"]\s*;?/g;
   const offenders = [];
+  let scannedFiles = 0;
+  let scannedImports = 0;
 
   for (const file of files) {
     let src;
@@ -126,46 +162,48 @@ function checkOrphanImports() {
     } catch {
       continue;
     }
+    scannedFiles++;
 
-    // Coleta símbolos importados de fontes relevantes (ui/skeleton ou skeletons/*)
-    const importRegex =
-      /import\s*(?:type\s*)?\{([^}]+)\}\s*from\s*['"](@\/components\/(?:ui\/skeleton|skeletons\/[^'"]+))['"]/g;
-    const imported = new Set();
+    const importedHere = [];
+    importStmt.lastIndex = 0;
     let m;
-    while ((m = importRegex.exec(src))) {
-      for (const raw of m[1].split(',')) {
-        const name = raw.trim().split(/\s+as\s+/i).pop()?.trim();
-        if (name && TRACKED_SYMBOLS.includes(name)) imported.add(name);
+    while ((m = importStmt.exec(src))) {
+      const [, clause, source] = m;
+      if (!SKELETON_SOURCE_RE.test(source)) continue;
+      for (const s of extractImportedSymbols(clause)) {
+        importedHere.push({ symbol: s, source });
       }
+      scannedImports++;
     }
 
-    if (imported.size === 0) continue;
+    if (importedHere.length === 0) continue;
 
-    // Remove blocos de import + comentários de linha + strings simples
+    // Remove imports + comentários + strings literais para evitar falsos positivos
     const stripped = src
       .replace(/import[\s\S]*?from\s*['"][^'"]+['"];?/g, '')
+      .replace(/import\s*['"][^'"]+['"];?/g, '')
       .replace(/\/\/.*$/gm, '')
-      .replace(/\/\*[\s\S]*?\*\//g, '');
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/(['"`])(?:\\.|(?!\1).)*\1/g, '""');
 
-    for (const sym of imported) {
-      // Uso real: <Sym, Sym(, Sym., Sym} (destructure), Sym, (lista)
-      const usageRe = new RegExp(`(?:<|\\b)${sym}(?:\\b|>|\\.|\\(|\\s|,|})`);
+    for (const { symbol, source } of importedHere) {
+      const usageRe = new RegExp(`(?:<|[^\\w$.])${symbol}(?:[^\\w$]|$)`);
       if (!usageRe.test(stripped)) {
-        offenders.push(`${file} → ${sym}`);
+        offenders.push(`${file} → ${symbol}  (import "${source}")`);
       }
     }
   }
 
   if (offenders.length) {
-    console.log('✗');
+    console.log(`✗ (${scannedFiles} arquivos, ${scannedImports} imports)`);
     console.error(`\n--- imports órfãos detectados ---`);
     for (const o of offenders) console.error(`   - ${o}`);
     console.error(
-      `\nRemova o import ou utilize o símbolo no JSX. Símbolos rastreados: ${TRACKED_SYMBOLS.join(', ')}.\n`,
+      `\nRemova o import ou utilize o símbolo. Fontes analisadas: ui/skeleton, skeletons/*, PageSkeletons.\n`,
     );
     process.exit(1);
   }
-  console.log('✓');
+  console.log(`✓ (${scannedFiles} arquivos, ${scannedImports} imports)`);
 }
 
 console.log(`\n🔎 Skeleton Validation Pipeline${SKIP_BUILD ? ' (--skip-build)' : ''}\n`);
