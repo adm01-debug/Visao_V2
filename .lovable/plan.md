@@ -1,70 +1,141 @@
 
 
-## Relatório de bundle com análise de tree-shaking
+## CI gate para dead code (módulos/exports não referenciados)
 
-Gerar um relatório acionável que identifica os maiores ofensores no bundle JS, oportunidades de tree-shaking perdidas e candidatos a code-splitting/lazy loading.
+Adicionar verificação automatizada via Knip no CI que falha o build quando aparecerem arquivos, exports ou dependências não referenciados. Resolver primeiro o erro recorrente de cache stale do `CoveragePage` que está bloqueando o build.
 
 ### Estado atual
 
-- `vite.config.ts` já tem `manualChunks` configurado (vendor-react, vendor-ui, vendor-charts, vendor-motion, vendor-query, vendor-supabase, vendor-pdf).
-- `scripts/check-bundle-size.mjs` reporta top 5 chunks raw/gzipped e enforça orçamento (600KB/chunk, 2MB total raw).
-- `scripts/analyze-bundle.sh` faz listagem básica via `du`.
-- Faltam: visualização gráfica (treemap), análise de imports duplicados, detecção de barrel imports não tree-shaken, breakdown por dependência dentro de cada chunk.
+- `knip` já está instalado (rodadas anteriores), mas **não há configuração** (`knip.json`) nem integração no CI.
+- `.github/workflows/dependency-audit.yml` só roda `npm audit` (vulnerabilidades), não detecta código morto.
+- `.github/workflows/ci.yml` tem 4 gates (TS strict, lint, build, bundle budget) — sem dead-code gate.
+- Build atual falhando com `ENOENT` em `src/components/coverage/CoverageTable` (cache Vite stale, padrão recorrente desta sessão).
+- Sem baseline conhecido — primeira execução do Knip provavelmente lista dezenas/centenas de itens.
 
-### Solução em 3 entregas
+### Solução em 4 passos
 
-**Entrega 1 — Visualização interativa (rollup-plugin-visualizer)**
+**Passo 0 — Destravar build (pré-requisito)**
 
-- Instalar `rollup-plugin-visualizer` (devDep).
-- Patch em `vite.config.ts`: ativar plugin condicionalmente via env (`ANALYZE=true npm run build`), gerando `dist/stats.html` (treemap interativo, sunburst e network) com `gzipSize: true` e `brotliSize: true`.
-- Não impacta builds normais (plugin só entra quando `ANALYZE=true`).
-- Adicionar script: `"build:analyze": "ANALYZE=true vite build"`.
+- `rm -rf node_modules/.vite dist`
+- `touch src/components/coverage/*.tsx src/pages/CoveragePage.tsx`
+- Validar `npm run build` antes de adicionar gate.
 
-**Entrega 2 — Relatório consolidado (`scripts/bundle-report.mjs`)**
+**Passo 1 — Configurar Knip com baseline**
 
-Script Node que roda após o build e gera `/mnt/documents/bundle-report.md` com:
+Criar `knip.json` na raiz:
 
-1. **Sumário executivo**: total raw/gzipped, número de chunks, comparação com o orçamento atual (`check-bundle-size.mjs`).
-2. **Top 15 chunks** (raw + gzipped) com % do total.
-3. **Top 20 dependências por peso** (parsing dos `stats.html` JSON gerado pelo visualizer ou via `source-map-explorer` como fallback).
-4. **Detecção de duplicados**: pacotes que aparecem em múltiplos chunks (ex.: `lodash`, `date-fns`) — sintoma de import path inconsistente.
-5. **Barrel imports suspeitos**: grep em `src/**/*.{ts,tsx}` por padrões `import { X } from '@/components/ui'` (ao invés de path direto), `import * as X from`, e imports completos de libs com tree-shaking ruim (`import _ from 'lodash'`, `import * as Icons from 'lucide-react'`).
-6. **Candidatos a lazy loading**: chunks > 100KB raw que NÃO estão em `lazyRoutes.ts`.
-7. **Heavy deps já presentes**: cross-check com `package.json` para listar peso de `@tensorflow/*`, `@mediapipe/*`, `face-api.js`, `recharts`, `framer-motion`, `jspdf`, `html2canvas`.
-8. **Recomendações priorizadas**: lista ordenada por impacto estimado (KB economizados).
+```json
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/main.tsx",
+    "src/App.tsx",
+    "vite.config.ts",
+    "tailwind.config.ts",
+    "eslint.config.js",
+    "scripts/**/*.{mjs,js,ts}",
+    "supabase/functions/**/index.ts",
+    "tests/**/*.{ts,tsx}",
+    "src/**/*.test.{ts,tsx}",
+    "src/**/*.stories.{ts,tsx}"
+  ],
+  "project": ["src/**/*.{ts,tsx}"],
+  "ignore": [
+    "src/integrations/supabase/types.ts",
+    "src/types/**/*.d.ts",
+    "src/components/ui/**"
+  ],
+  "ignoreDependencies": [
+    "@types/*",
+    "eslint-plugin-*",
+    "@typescript-eslint/*"
+  ],
+  "ignoreBinaries": ["husky"]
+}
+```
 
-**Entrega 3 — Documentação + script npm**
+Justificativa dos `ignore`:
+- `types.ts` é gerado pelo Supabase.
+- `*.d.ts` são ambient types (Knip pode não detectar uso).
+- `components/ui/**` é shadcn/ui (mantemos para uso futuro, padrão da comunidade).
 
-- Criar `docs/BUNDLE_ANALYSIS.md` explicando como rodar (`npm run bundle:report`), interpretar `stats.html`, e processo de iteração.
-- Script npm: `"bundle:report": "npm run build:analyze && node scripts/bundle-report.mjs"`.
-- Não altera CI nem orçamentos atuais (escopo: relatório, não enforcement).
+**Passo 2 — Scripts npm + relatório de baseline**
+
+Adicionar em `package.json`:
+
+```json
+{
+  "scripts": {
+    "deadcode": "knip",
+    "deadcode:production": "knip --production --strict",
+    "deadcode:report": "knip --reporter markdown > dead-code-report.md || true",
+    "deadcode:fix": "knip --fix --allow-remove-files"
+  }
+}
+```
+
+- `deadcode`: modo padrão (todos os tipos de issues).
+- `deadcode:production`: usado no CI (foco em código de produção, ignora dev-only).
+- `deadcode:report`: gera relatório sem falhar (para humanos).
+- `deadcode:fix`: auto-remove (uso manual local).
+
+**Passo 3 — Gerar baseline + integrar ao CI**
+
+1. Rodar `npm run deadcode:report` localmente, salvar saída em `/mnt/documents/dead-code-baseline.md`.
+2. Analisar: se houver muitos falsos positivos, refinar `knip.json` (ignore patterns adicionais).
+3. Adicionar step em `.github/workflows/ci.yml` (após "Bundle Size Budget", antes dos E2E):
+
+```yaml
+- name: Dead Code Check (Knip)
+  run: npm run deadcode:production
+```
+
+4. Adicionar mesmo step em `.github/workflows/dependency-audit.yml` (job paralelo).
+
+**Estratégia de adoção:**
+- Se baseline tiver > 20 itens: adicionar step com `continue-on-error: true` inicialmente + criar issue de cleanup. Promover para gate hard após cleanup.
+- Se baseline tiver ≤ 20 itens: corrigir todos no mesmo PR e ativar gate hard direto.
+
+**Passo 4 — Documentação**
+
+Criar `docs/DEAD_CODE_POLICY.md` cobrindo:
+- O que Knip detecta (arquivos órfãos, exports não usados, deps não usadas, deps não declaradas).
+- Como rodar localmente (`npm run deadcode`).
+- Como auto-corrigir (`npm run deadcode:fix`).
+- Como adicionar exceções legítimas (editar `knip.json` com justificativa em comentário).
+- Como interpretar saída do CI quando falhar.
 
 ### Critérios de aceitação
 
-- ✅ `npm run build:analyze` gera `dist/stats.html` (treemap interativo).
-- ✅ `npm run bundle:report` gera `/mnt/documents/bundle-report.md` com 8 seções acima.
-- ✅ Relatório lista pelo menos 3 recomendações concretas com KB estimados.
-- ✅ Build normal (`npm run build`) continua funcionando sem o plugin.
-- ✅ `docs/BUNDLE_ANALYSIS.md` criado.
-- ✅ Artifact `bundle-report.md` exposto via `<lov-artifact>` para download.
+- ✅ `npm run build` passa (Passo 0).
+- ✅ `npm run deadcode:production` executa sem erro de configuração.
+- ✅ `knip.json` criado com entries cobrindo todos os entry points (app, scripts, edge functions, tests).
+- ✅ Baseline gerado em `/mnt/documents/dead-code-baseline.md` com classificação por tipo.
+- ✅ Step "Dead Code Check (Knip)" adicionado ao `ci.yml`.
+- ✅ `docs/DEAD_CODE_POLICY.md` criado.
+- ✅ Tentativa de adicionar `export const unused = 1` em arquivo novo → CI falha.
 
 ### Arquivos a criar/editar
 
 | Arquivo | Mudança |
 |---|---|
-| `package.json` | ➕ devDep `rollup-plugin-visualizer` + scripts `build:analyze`, `bundle:report` |
-| `vite.config.ts` | ✏️ Plugin condicional via `process.env.ANALYZE` |
-| `scripts/bundle-report.mjs` | ➕ Criar (gera markdown consolidado) |
-| `docs/BUNDLE_ANALYSIS.md` | ➕ Criar (guia de uso) |
+| `knip.json` | ➕ Criar (config principal) |
+| `package.json` | ✏️ Adicionar 4 scripts `deadcode:*` |
+| `.github/workflows/ci.yml` | ✏️ Adicionar step "Dead Code Check (Knip)" |
+| `.github/workflows/dependency-audit.yml` | ✏️ Adicionar step "Dead Code Check (Knip)" |
+| `docs/DEAD_CODE_POLICY.md` | ➕ Criar (guia de uso) |
+| `/mnt/documents/dead-code-baseline.md` | ➕ Gerar (relatório inicial) |
 
 ### Riscos e mitigações
 
-- **Risco:** plugin visualizer infla tempo de build.
-  - **Mitigação:** ativado só com `ANALYZE=true`, não roda em CI/dev.
-- **Risco:** parsing do `stats.html` é frágil (formato pode mudar entre versões).
-  - **Mitigação:** usar `template: 'raw-data'` do plugin, que emite JSON estável (`stats.json`); fallback para `source-map-explorer` se necessário.
-- **Risco:** detecção de barrel imports gera ruído (alguns barrels SÃO tree-shaken corretamente quando lib tem `sideEffects: false`).
-  - **Mitigação:** relatório marca como "suspeito", não como erro; explica no doc como verificar.
-- **Risco:** primeira execução lista muitas oportunidades, dificultando priorização.
-  - **Mitigação:** ordenar por KB economizados; limitar top 10 recomendações.
+- **Risco:** baseline lista centenas de falsos positivos (componentes usados via lazy import, edge functions Deno).
+  - **Mitigação:** `entry` inclui `lazyRoutes.ts`, `supabase/functions/**`, `*.stories.tsx`, `*.test.tsx`. Refinar `ignore` iterativamente.
+- **Risco:** Knip não detecta uso dinâmico (`React.lazy(() => import('...'))` com strings).
+  - **Mitigação:** `entry` em `knip.json` inclui explicitamente arquivos referenciados dinamicamente; usar `ignore` para casos restantes.
+- **Risco:** Edge functions (Deno, não-Node) confundem Knip.
+  - **Mitigação:** entry específico `supabase/functions/**/index.ts`; revisar primeiro relatório.
+- **Risco:** ativar como hard gate quebra CI imediatamente.
+  - **Mitigação:** Passo 3 prevê `continue-on-error: true` se baseline > 20 itens; promover para hard após cleanup.
+- **Risco:** cache Vite stale volta a quebrar build durante a operação.
+  - **Mitigação:** Passo 0 sempre executado primeiro.
 
