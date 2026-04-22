@@ -150,9 +150,11 @@ checkOrphanImports();
 run('mobile-nav gate', 'node', ['scripts/check-mobile-nav.mjs']);
 
 // 5. Testes de skeleton (anti-CLS + placeholders + snapshots de dimensão)
-run('vitest skeletons (LoadingPlaceholders + DimensionSnapshots)', 'npx', [
-  'vitest',
-  'run',
+run('vitest skeletons (LoadingPlaceholders + DimensionSnapshots)', 'npm', [
+  'test',
+  '--silent',
+  '--',
+  '--run',
   'src/components/skeletons/__tests__/',
 ]);
 
