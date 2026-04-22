@@ -170,6 +170,8 @@ export function useManagedFilters<T extends Record<string, unknown>>(
       }
     });
 
+    onAfterClear?.();
+
     const fieldList = activeEntries.map((e) => e.label).join(', ') || 'nenhum';
     const keyList = [storageKey, ...persistKeys].join(', ');
 
