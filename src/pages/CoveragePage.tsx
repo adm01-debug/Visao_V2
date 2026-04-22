@@ -66,14 +66,30 @@ const CoveragePage = () => {
             Atualizar
           </Button>
           {data && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => downloadCoverageTextReport(data)}
-            >
-              <Download className="mr-2 h-4 w-4" />
-              Baixar .txt consolidado
-            </Button>
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => downloadCoverageTextReport(data)}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Baixar .txt consolidado
+              </Button>
+              <Button asChild variant="outline" size="sm">
+                <a
+                  href={
+                    import.meta.env.VITE_COVERAGE_HTML_ARTIFACTS_URL ??
+                    "https://github.com/?q=coverage.yml"
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Baixar relatório HTML completo (artifact do CI)"
+                >
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  Baixar HTML completo (CI)
+                </a>
+              </Button>
+            </>
           )}
         </div>
       </header>
