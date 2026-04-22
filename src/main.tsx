@@ -13,9 +13,31 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations()
     .then((registrations) => {
       registrations.forEach((r) => r.unregister());
+      if (import.meta.env.DEV && registrations.length > 0) {
+        console.log('[PWA cleanup] Unregistered', registrations.length, 'service worker(s)');
+      }
     })
     .catch(() => {
       // Silencioso: não há SW para limpar
+    });
+}
+
+// Limpeza de caches legados do Workbox/PWA
+if ('caches' in window) {
+  caches.keys()
+    .then((keys) => {
+      const stale = keys.filter((k) =>
+        k.startsWith('workbox-') || k.startsWith('visao-') || k.startsWith('precache-')
+      );
+      return Promise.all(stale.map((k) => caches.delete(k))).then(() => stale);
+    })
+    .then((stale) => {
+      if (import.meta.env.DEV && stale.length > 0) {
+        console.log('[PWA cleanup] Deleted stale caches:', stale);
+      }
+    })
+    .catch(() => {
+      // Silencioso
     });
 }
 

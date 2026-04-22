@@ -13,5 +13,6 @@ export const STORAGE_KEYS = {
   LANGUAGE: "visao_language",
   SETTINGS: "visao_settings",
   TOKEN: "visao_token",
+  PWA_MIGRATION_DISMISSED: "visao_pwa_migration_dismissed_v1",
 };
 
