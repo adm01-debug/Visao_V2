@@ -212,7 +212,7 @@ export function DashboardV2() {
 
       {selectedCamera && <CameraModal camera={selectedCamera} isOpen={!!selectedCamera} onClose={() => setSelectedCamera(null)} onUpdateCoordinates={async (id, latitude, longitude) => { await updateCamera(id, { latitude, longitude }); setSelectedCamera(prev => prev ? { ...prev, latitude, longitude } : null); }} />}
       <OnboardingTour autoStart={true} />
-    </div>
+    </PageContent>
   );
 }
 

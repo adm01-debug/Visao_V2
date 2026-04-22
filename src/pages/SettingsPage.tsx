@@ -101,7 +101,7 @@ export function SettingsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </PageContent>
   );
 }
 

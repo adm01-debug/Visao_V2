@@ -223,7 +223,7 @@ export function CamerasPage() {
           )}
         </SheetContent>
       </Sheet>
-    </div>
+    </PageContent>
   );
 }
 

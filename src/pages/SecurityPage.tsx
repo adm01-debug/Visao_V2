@@ -116,7 +116,7 @@ export function SecurityPage() {
         <TabsContent value="access" className="mt-4"><AccessEventsList events={accessEvents} /></TabsContent>
         <TabsContent value="lists" className="mt-4"><SecurityListsPanel persons={securityPersons} onPersonsChange={setSecurityPersons} /></TabsContent>
       </Tabs>
-    </div>
+    </div></PageContent>
   );
 }
 

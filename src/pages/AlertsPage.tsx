@@ -225,7 +225,7 @@ export function AlertsPage() {
       <AlertDetailsDialog alert={detailsAlert} isOpen={!!detailsAlert} onClose={() => setDetailsAlert(null)}
         onMarkRead={() => { if (detailsAlert) markAsRead(detailsAlert.id); setDetailsAlert(null); }}
         onDelete={() => { if (detailsAlert) { animateAndDelete([detailsAlert.id]); } setDetailsAlert(null); }} />
-    </div>
+    </div></PageContent>
   );
 }
 
