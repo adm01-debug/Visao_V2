@@ -581,37 +581,63 @@ function Detail({ label, value }: { label: string; value: string }) {
 interface ThresholdCardProps {
   preset: (typeof RISK_TYPE_PRESETS)[number];
   minConfidence: number;
+  minQuality: number | null;
   isDefault: boolean;
-  onSave: (min_confidence: number) => Promise<unknown>;
+  onSave: (min_confidence: number, min_quality: number | null) => Promise<unknown>;
   onReset: () => Promise<unknown>;
   stats?: { precision: number; recall: number; total: number };
 }
 
-function ThresholdCard({ preset, minConfidence, isDefault, onSave, onReset, stats }: ThresholdCardProps) {
-  const [value, setValue] = useState(minConfidence);
+function ThresholdCard({ preset, minConfidence, minQuality, isDefault, onSave, onReset, stats }: ThresholdCardProps) {
+  const [confValue, setConfValue] = useState(minConfidence);
+  const supportsSens = preset.supportsSensitivity === true;
+  const initialSens =
+    minQuality ?? preset.defaultSensitivity ?? 0.5;
+  const [sensValue, setSensValue] = useState(initialSens);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    setValue(minConfidence);
+    setConfValue(minConfidence);
   }, [minConfidence]);
 
-  const dirty = Math.abs(value - minConfidence) > 0.001;
+  useEffect(() => {
+    setSensValue(minQuality ?? preset.defaultSensitivity ?? 0.5);
+  }, [minQuality, preset.defaultSensitivity]);
+
+  const dirty =
+    Math.abs(confValue - minConfidence) > 0.001 ||
+    (supportsSens && Math.abs(sensValue - initialSens) > 0.001);
 
   const handleSave = async () => {
     setSaving(true);
     try {
-      await onSave(value);
+      await onSave(confValue, supportsSens ? sensValue : null);
     } finally {
       setSaving(false);
     }
   };
 
+  const categoryColor =
+    preset.category === 'presence' ? 'bg-severity-low/10 text-severity-low border-severity-low/30' :
+    preset.category === 'behavior' ? 'bg-severity-high/10 text-severity-high border-severity-high/30' :
+    preset.category === 'identity' ? 'bg-primary/10 text-primary border-primary/30' :
+    'bg-muted text-muted-foreground border-border';
+
   return (
     <Card>
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between gap-2">
-          <div>
-            <CardTitle className="text-base">{preset.label}</CardTitle>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <CardTitle className="text-base">{preset.label}</CardTitle>
+              {preset.category && (
+                <Badge variant="outline" className={cn('text-[10px] px-1.5 py-0', categoryColor)}>
+                  {preset.category === 'presence' ? 'Presença' :
+                   preset.category === 'behavior' ? 'Comportamento' :
+                   preset.category === 'identity' ? 'Identidade' : 'Objeto'}
+                </Badge>
+              )}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">{preset.description}</p>
           </div>
           {isDefault ? (
@@ -630,22 +656,47 @@ function ThresholdCard({ preset, minConfidence, isDefault, onSave, onReset, stat
               Confiança mínima
             </span>
             <span className="text-lg font-bold font-mono tabular-nums">
-              {(value * 100).toFixed(0)}%
+              {(confValue * 100).toFixed(0)}%
             </span>
           </div>
           <Slider
-            value={[Math.round(value * 100)]}
+            value={[Math.round(confValue * 100)]}
             min={10}
             max={99}
             step={1}
-            onValueChange={(v) => setValue((v[0] ?? 70) / 100)}
+            onValueChange={(v) => setConfValue((v[0] ?? 70) / 100)}
             aria-label={`Confiança mínima para ${preset.label}`}
           />
           <div className="flex justify-between text-[10px] text-muted-foreground mt-1 tabular-nums">
-            <span>10% (permissivo)</span>
-            <span>99% (restritivo)</span>
+            <span>10% (↑ falsos positivos)</span>
+            <span>99% (↑ falsos negativos)</span>
           </div>
         </div>
+
+        {supportsSens && (
+          <div className="pt-2 border-t border-border">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs text-muted-foreground uppercase tracking-wide">
+                {preset.sensitivityLabel ?? 'Sensibilidade'}
+              </span>
+              <span className="text-lg font-bold font-mono tabular-nums text-severity-high">
+                {(sensValue * 100).toFixed(0)}%
+              </span>
+            </div>
+            <Slider
+              value={[Math.round(sensValue * 100)]}
+              min={10}
+              max={99}
+              step={1}
+              onValueChange={(v) => setSensValue((v[0] ?? 50) / 100)}
+              aria-label={`Sensibilidade para ${preset.label}`}
+            />
+            <div className="flex justify-between text-[10px] text-muted-foreground mt-1 tabular-nums">
+              <span>10% (tolerante)</span>
+              <span>99% (sensível)</span>
+            </div>
+          </div>
+        )}
 
         {stats && stats.total > 0 && (
           <div className="text-xs grid grid-cols-3 gap-2 p-2 rounded bg-muted/40">
@@ -680,3 +731,4 @@ function ThresholdCard({ preset, minConfidence, isDefault, onSave, onReset, stat
     </Card>
   );
 }
+
