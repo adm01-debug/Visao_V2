@@ -93,6 +93,14 @@
     "src/contexts/index.tsx",
     "src/data/index.ts",
     "src/data/mockRules.ts",
+    "src/i18n/index.ts",
+    "src/integrations/index.ts",
+    "src/layouts/AuthLayout.tsx",
+    "src/layouts/DashboardLayout.tsx",
+    "src/layouts/ErrorLayout.tsx",
+    "src/layouts/MainLayout.tsx",
+    "src/layouts/MinimalLayout.tsx",
+    "src/layouts/index.tsx",
     "src/hooks/index.ts",
     "src/hooks/use-mobile.tsx",
     "src/hooks/useAnalytics.ts",
@@ -143,13 +151,6 @@
     "src/hooks/useTitle.ts",
     "src/hooks/useToggle.ts",
     "src/hooks/useWindowSize.ts",
-    "src/integrations/index.ts",
-    "src/layouts/AuthLayout.tsx",
-    "src/layouts/DashboardLayout.tsx",
-    "src/layouts/ErrorLayout.tsx",
-    "src/layouts/MainLayout.tsx",
-    "src/layouts/MinimalLayout.tsx",
-    "src/layouts/index.tsx",
     "src/middleware/errorHandler.ts",
     "src/middleware/index.ts",
     "src/middleware/ipWhitelist.ts",
@@ -180,7 +181,6 @@
     "src/stores/themeStore.ts",
     "src/stores/uiStore.ts",
     "src/stores/userStore.ts",
-    "src/i18n/index.ts",
     "src/types/clips.ts",
     "src/types/faceRecognition.ts",
     "src/types/index.ts",
@@ -208,10 +208,10 @@
     "src/components/sidebar/index.ts",
     "src/components/skeleton/SkeletonLoader.tsx",
     "src/components/skeleton/index.ts",
-    "src/components/tabs/Tabs.tsx",
-    "src/components/tabs/index.ts",
     "src/components/switch/Switch.tsx",
     "src/components/switch/index.ts",
+    "src/components/tabs/Tabs.tsx",
+    "src/components/tabs/index.ts",
     "src/components/textarea/TextArea.tsx",
     "src/components/textarea/index.ts",
     "src/components/thumbnail/Thumbnail.tsx",
@@ -222,11 +222,11 @@
     "src/contexts/a11y/components.tsx",
     "src/contexts/a11y/hooks.tsx",
     "src/contexts/a11y/styles.ts",
+    "src/integrations/supabase/index.ts",
     "src/hooks/clip-recorder/types.ts",
     "src/hooks/clip-recorder/useClipStorage.ts",
     "src/hooks/global-streaming/streamingTypes.ts",
     "src/hooks/settings/types.ts",
-    "src/integrations/supabase/index.ts",
     "src/types/faceRecognition/helpers.ts",
     "src/types/faceRecognition/index.ts",
     "src/types/faceRecognition/types.ts",
@@ -244,215 +244,215 @@
       "dependencies": [
         {
           "name": "@hookform/resolvers",
-          "line": 94,
+          "line": 98,
           "col": 6,
-          "pos": 4719
+          "pos": 5005
         },
         {
           "name": "@radix-ui/react-aspect-ratio",
-          "line": 98,
+          "line": 102,
           "col": 6,
-          "pos": 4891
+          "pos": 5177
         },
         {
           "name": "@radix-ui/react-context-menu",
-          "line": 102,
+          "line": 106,
           "col": 6,
-          "pos": 5066
+          "pos": 5352
         },
         {
           "name": "@radix-ui/react-hover-card",
-          "line": 105,
+          "line": 109,
           "col": 6,
-          "pos": 5202
+          "pos": 5488
         },
         {
           "name": "@radix-ui/react-menubar",
-          "line": 107,
+          "line": 111,
           "col": 6,
-          "pos": 5286
+          "pos": 5572
         },
         {
           "name": "@radix-ui/react-navigation-menu",
-          "line": 108,
+          "line": 112,
           "col": 6,
-          "pos": 5328
+          "pos": 5614
         },
         {
           "name": "@radix-ui/react-radio-group",
-          "line": 111,
+          "line": 115,
           "col": 6,
-          "pos": 5462
+          "pos": 5748
         },
         {
           "name": "@sentry/react",
-          "line": 123,
+          "line": 127,
           "col": 6,
-          "pos": 5961
+          "pos": 6247
         },
         {
           "name": "@sentry/tracing",
-          "line": 124,
+          "line": 128,
           "col": 6,
-          "pos": 5992
+          "pos": 6278
         },
         {
           "name": "@tanstack/react-virtual",
-          "line": 127,
+          "line": 131,
           "col": 6,
-          "pos": 6108
+          "pos": 6394
         },
         {
           "name": "ably",
-          "line": 131,
+          "line": 135,
           "col": 6,
-          "pos": 6282
+          "pos": 6568
         },
         {
           "name": "cmdk",
-          "line": 134,
+          "line": 138,
           "col": 6,
-          "pos": 6368
+          "pos": 6654
         },
         {
           "name": "dompurify",
-          "line": 136,
+          "line": 140,
           "col": 6,
-          "pos": 6416
+          "pos": 6702
         },
         {
           "name": "embla-carousel-react",
-          "line": 137,
+          "line": 141,
           "col": 6,
-          "pos": 6443
+          "pos": 6729
         },
         {
           "name": "file-saver",
-          "line": 139,
+          "line": 143,
           "col": 6,
-          "pos": 6511
+          "pos": 6797
         },
         {
           "name": "helmet",
-          "line": 141,
+          "line": 145,
           "col": 6,
-          "pos": 6572
+          "pos": 6858
         },
         {
           "name": "i18next",
-          "line": 144,
+          "line": 148,
           "col": 6,
-          "pos": 6650
+          "pos": 6936
         },
         {
           "name": "i18next-browser-languagedetector",
-          "line": 145,
+          "line": 149,
           "col": 6,
-          "pos": 6676
+          "pos": 6962
         },
         {
           "name": "immer",
-          "line": 146,
+          "line": 150,
           "col": 6,
-          "pos": 6726
+          "pos": 7012
         },
         {
           "name": "input-otp",
-          "line": 147,
+          "line": 151,
           "col": 6,
-          "pos": 6750
+          "pos": 7036
         },
         {
           "name": "jotai",
-          "line": 148,
+          "line": 152,
           "col": 6,
-          "pos": 6777
+          "pos": 7063
         },
         {
           "name": "pusher-js",
-          "line": 152,
+          "line": 156,
           "col": 6,
-          "pos": 6883
+          "pos": 7169
         },
         {
           "name": "react-error-boundary",
-          "line": 156,
+          "line": 160,
           "col": 6,
-          "pos": 6995
+          "pos": 7281
         },
         {
           "name": "react-hook-form",
-          "line": 158,
+          "line": 162,
           "col": 6,
-          "pos": 7069
+          "pos": 7355
         },
         {
           "name": "react-i18next",
-          "line": 159,
+          "line": 163,
           "col": 6,
-          "pos": 7103
+          "pos": 7389
         },
         {
           "name": "react-pdf",
-          "line": 160,
+          "line": 164,
           "col": 6,
-          "pos": 7135
+          "pos": 7421
         },
         {
           "name": "react-resizable-panels",
-          "line": 161,
+          "line": 165,
           "col": 6,
-          "pos": 7163
+          "pos": 7449
         },
         {
           "name": "react-virtuoso",
-          "line": 163,
+          "line": 167,
           "col": 6,
-          "pos": 7238
+          "pos": 7524
         },
         {
           "name": "sanitize-html",
-          "line": 165,
+          "line": 169,
           "col": 6,
-          "pos": 7298
+          "pos": 7584
         },
         {
           "name": "socket.io-client",
-          "line": 166,
+          "line": 170,
           "col": 6,
-          "pos": 7330
+          "pos": 7616
         },
         {
           "name": "vaul",
-          "line": 170,
+          "line": 174,
           "col": 6,
-          "pos": 7457
+          "pos": 7743
         },
         {
           "name": "xss",
-          "line": 174,
+          "line": 178,
           "col": 6,
-          "pos": 7576
+          "pos": 7862
         },
         {
           "name": "zustand",
-          "line": 176,
+          "line": 180,
           "col": 6,
-          "pos": 7621
+          "pos": 7907
         }
       ],
       "devDependencies": [
         {
           "name": "@tanstack/react-query-devtools",
-          "line": 188,
+          "line": 192,
           "col": 6,
-          "pos": 8027
+          "pos": 8313
         },
         {
           "name": "@testing-library/user-event",
-          "line": 191,
+          "line": 195,
           "col": 6,
-          "pos": 8160
+          "pos": 8446
         }
       ],
       "optionalPeerDependencies": [],
@@ -4562,6 +4562,386 @@
       "duplicates": []
     },
     {
+      "file": "src/lib/browserNotifications.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "showNotification",
+          "line": 100,
+          "col": 14,
+          "pos": 2601
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "showBrowserNotification",
+            "line": 41,
+            "col": 13,
+            "pos": 1125
+          },
+          {
+            "name": "showNotification",
+            "line": 100,
+            "col": 32,
+            "pos": 2619
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/types/coverage.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "getCoverageStatus",
+          "line": 56,
+          "col": 14,
+          "pos": 1560
+        }
+      ],
+      "types": [
+        {
+          "name": "CoverageMetric",
+          "line": 7,
+          "col": 18,
+          "pos": 159
+        },
+        {
+          "name": "CoverageFileEntry",
+          "line": 14,
+          "col": 18,
+          "pos": 267
+        },
+        {
+          "name": "CoverageTotals",
+          "line": 23,
+          "col": 18,
+          "pos": 507
+        },
+        {
+          "name": "CoverageAlert",
+          "line": 30,
+          "col": 18,
+          "pos": 656
+        },
+        {
+          "name": "CoverageMetricKey",
+          "line": 52,
+          "col": 13,
+          "pos": 1445
+        },
+        {
+          "name": "CoverageStatus",
+          "line": 54,
+          "col": 13,
+          "pos": 1500
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/lib/coverageSchema.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "coverageReportSchema",
+          "line": 65,
+          "col": 14,
+          "pos": 2028
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/lib/coverageTextReport.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "buildCoverageTextReport",
+          "line": 24,
+          "col": 17,
+          "pos": 885
+        }
+      ],
+      "types": [
+        {
+          "name": "BuildCoverageTextOptions",
+          "line": 19,
+          "col": 18,
+          "pos": 743
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/lib/lazyHls.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "getCachedHls",
+          "line": 17,
+          "col": 17,
+          "pos": 370
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/skeletons/SkeletonFallback.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 134,
+          "col": 8,
+          "pos": 4111
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "SkeletonFallback",
+            "line": 23,
+            "col": 2,
+            "pos": 941
+          },
+          {
+            "name": "default",
+            "line": 134,
+            "col": 15,
+            "pos": 4118
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/lib/navigationCLSLog.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "exportNavigationCLSLogNDJSON",
+          "line": 120,
+          "col": 17,
+          "pos": 3579
+        },
+        {
+          "name": "exportNavigationCLSLogJSON",
+          "line": 125,
+          "col": 17,
+          "pos": 3743
+        }
+      ],
+      "types": [
+        {
+          "name": "NavigationCLSEntry",
+          "line": 13,
+          "col": 18,
+          "pos": 496
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/lib/offlineStorage.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "getOfflineDB",
+          "line": 75,
+          "col": 14,
+          "pos": 2181
+        },
+        {
+          "name": "cacheData",
+          "line": 82,
+          "col": 14,
+          "pos": 2349
+        },
+        {
+          "name": "getCachedData",
+          "line": 105,
+          "col": 14,
+          "pos": 2913
+        },
+        {
+          "name": "clearExpiredCache",
+          "line": 135,
+          "col": 14,
+          "pos": 3780
+        },
+        {
+          "name": "clearAllOfflineData",
+          "line": 331,
+          "col": 14,
+          "pos": 10013
+        }
+      ],
+      "types": [
+        {
+          "name": "CachedData",
+          "line": 18,
+          "col": 18,
+          "pos": 360
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/lib/schemas.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "personFormSchema",
+          "line": 12,
+          "col": 14,
+          "pos": 275
+        },
+        {
+          "name": "cameraFormSchema",
+          "line": 47,
+          "col": 14,
+          "pos": 1732
+        },
+        {
+          "name": "ruleFormSchema",
+          "line": 61,
+          "col": 14,
+          "pos": 2290
+        }
+      ],
+      "types": [
+        {
+          "name": "PersonFormData",
+          "line": 21,
+          "col": 13,
+          "pos": 783
+        },
+        {
+          "name": "PlateRegistrationData",
+          "line": 41,
+          "col": 13,
+          "pos": 1546
+        },
+        {
+          "name": "CameraFormData",
+          "line": 55,
+          "col": 13,
+          "pos": 2106
+        },
+        {
+          "name": "RuleFormData",
+          "line": 69,
+          "col": 13,
+          "pos": 2689
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
       "file": "src/hooks/useAuth.ts",
       "owners": [
         {
@@ -4872,62 +5252,6 @@
       ]
     },
     {
-      "file": "src/lib/offlineStorage.ts",
-      "owners": [
-        {
-          "name": "@adm01-debug"
-        }
-      ],
-      "dependencies": [],
-      "devDependencies": [],
-      "optionalPeerDependencies": [],
-      "unlisted": [],
-      "binaries": [],
-      "unresolved": [],
-      "exports": [
-        {
-          "name": "getOfflineDB",
-          "line": 75,
-          "col": 14,
-          "pos": 2181
-        },
-        {
-          "name": "cacheData",
-          "line": 82,
-          "col": 14,
-          "pos": 2349
-        },
-        {
-          "name": "getCachedData",
-          "line": 105,
-          "col": 14,
-          "pos": 2913
-        },
-        {
-          "name": "clearExpiredCache",
-          "line": 135,
-          "col": 14,
-          "pos": 3780
-        },
-        {
-          "name": "clearAllOfflineData",
-          "line": 331,
-          "col": 14,
-          "pos": 10013
-        }
-      ],
-      "types": [
-        {
-          "name": "CachedData",
-          "line": 18,
-          "col": 18,
-          "pos": 360
-        }
-      ],
-      "enumMembers": {},
-      "duplicates": []
-    },
-    {
       "file": "src/hooks/usePPEDetection.ts",
       "owners": [
         {
@@ -5009,84 +5333,6 @@
           }
         ]
       ]
-    },
-    {
-      "file": "src/lib/browserNotifications.ts",
-      "owners": [
-        {
-          "name": "@adm01-debug"
-        }
-      ],
-      "dependencies": [],
-      "devDependencies": [],
-      "optionalPeerDependencies": [],
-      "unlisted": [],
-      "binaries": [],
-      "unresolved": [],
-      "exports": [
-        {
-          "name": "showNotification",
-          "line": 100,
-          "col": 14,
-          "pos": 2601
-        }
-      ],
-      "types": [],
-      "enumMembers": {},
-      "duplicates": [
-        [
-          {
-            "name": "showBrowserNotification",
-            "line": 41,
-            "col": 13,
-            "pos": 1125
-          },
-          {
-            "name": "showNotification",
-            "line": 100,
-            "col": 32,
-            "pos": 2619
-          }
-        ]
-      ]
-    },
-    {
-      "file": "src/lib/navigationCLSLog.ts",
-      "owners": [
-        {
-          "name": "@adm01-debug"
-        }
-      ],
-      "dependencies": [],
-      "devDependencies": [],
-      "optionalPeerDependencies": [],
-      "unlisted": [],
-      "binaries": [],
-      "unresolved": [],
-      "exports": [
-        {
-          "name": "exportNavigationCLSLogNDJSON",
-          "line": 120,
-          "col": 17,
-          "pos": 3579
-        },
-        {
-          "name": "exportNavigationCLSLogJSON",
-          "line": 125,
-          "col": 17,
-          "pos": 3743
-        }
-      ],
-      "types": [
-        {
-          "name": "NavigationCLSEntry",
-          "line": 13,
-          "col": 18,
-          "pos": 496
-        }
-      ],
-      "enumMembers": {},
-      "duplicates": []
     },
     {
       "file": "src/hooks/useStorage.ts",
@@ -5202,252 +5448,6 @@
           }
         ]
       ]
-    },
-    {
-      "file": "src/types/coverage.ts",
-      "owners": [
-        {
-          "name": "@adm01-debug"
-        }
-      ],
-      "dependencies": [],
-      "devDependencies": [],
-      "optionalPeerDependencies": [],
-      "unlisted": [],
-      "binaries": [],
-      "unresolved": [],
-      "exports": [
-        {
-          "name": "getCoverageStatus",
-          "line": 56,
-          "col": 14,
-          "pos": 1560
-        }
-      ],
-      "types": [
-        {
-          "name": "CoverageMetric",
-          "line": 7,
-          "col": 18,
-          "pos": 159
-        },
-        {
-          "name": "CoverageFileEntry",
-          "line": 14,
-          "col": 18,
-          "pos": 267
-        },
-        {
-          "name": "CoverageTotals",
-          "line": 23,
-          "col": 18,
-          "pos": 507
-        },
-        {
-          "name": "CoverageAlert",
-          "line": 30,
-          "col": 18,
-          "pos": 656
-        },
-        {
-          "name": "CoverageMetricKey",
-          "line": 52,
-          "col": 13,
-          "pos": 1445
-        },
-        {
-          "name": "CoverageStatus",
-          "line": 54,
-          "col": 13,
-          "pos": 1500
-        }
-      ],
-      "enumMembers": {},
-      "duplicates": []
-    },
-    {
-      "file": "src/lib/coverageSchema.ts",
-      "owners": [
-        {
-          "name": "@adm01-debug"
-        }
-      ],
-      "dependencies": [],
-      "devDependencies": [],
-      "optionalPeerDependencies": [],
-      "unlisted": [],
-      "binaries": [],
-      "unresolved": [],
-      "exports": [
-        {
-          "name": "coverageReportSchema",
-          "line": 65,
-          "col": 14,
-          "pos": 2028
-        }
-      ],
-      "types": [],
-      "enumMembers": {},
-      "duplicates": []
-    },
-    {
-      "file": "src/lib/coverageTextReport.ts",
-      "owners": [
-        {
-          "name": "@adm01-debug"
-        }
-      ],
-      "dependencies": [],
-      "devDependencies": [],
-      "optionalPeerDependencies": [],
-      "unlisted": [],
-      "binaries": [],
-      "unresolved": [],
-      "exports": [
-        {
-          "name": "buildCoverageTextReport",
-          "line": 24,
-          "col": 17,
-          "pos": 885
-        }
-      ],
-      "types": [
-        {
-          "name": "BuildCoverageTextOptions",
-          "line": 19,
-          "col": 18,
-          "pos": 743
-        }
-      ],
-      "enumMembers": {},
-      "duplicates": []
-    },
-    {
-      "file": "src/lib/lazyHls.ts",
-      "owners": [
-        {
-          "name": "@adm01-debug"
-        }
-      ],
-      "dependencies": [],
-      "devDependencies": [],
-      "optionalPeerDependencies": [],
-      "unlisted": [],
-      "binaries": [],
-      "unresolved": [],
-      "exports": [
-        {
-          "name": "getCachedHls",
-          "line": 17,
-          "col": 17,
-          "pos": 370
-        }
-      ],
-      "types": [],
-      "enumMembers": {},
-      "duplicates": []
-    },
-    {
-      "file": "src/components/skeletons/SkeletonFallback.tsx",
-      "owners": [
-        {
-          "name": "@adm01-debug"
-        }
-      ],
-      "dependencies": [],
-      "devDependencies": [],
-      "optionalPeerDependencies": [],
-      "unlisted": [],
-      "binaries": [],
-      "unresolved": [],
-      "exports": [
-        {
-          "name": "default",
-          "line": 134,
-          "col": 8,
-          "pos": 4111
-        }
-      ],
-      "types": [],
-      "enumMembers": {},
-      "duplicates": [
-        [
-          {
-            "name": "SkeletonFallback",
-            "line": 23,
-            "col": 2,
-            "pos": 941
-          },
-          {
-            "name": "default",
-            "line": 134,
-            "col": 15,
-            "pos": 4118
-          }
-        ]
-      ]
-    },
-    {
-      "file": "src/lib/schemas.ts",
-      "owners": [
-        {
-          "name": "@adm01-debug"
-        }
-      ],
-      "dependencies": [],
-      "devDependencies": [],
-      "optionalPeerDependencies": [],
-      "unlisted": [],
-      "binaries": [],
-      "unresolved": [],
-      "exports": [
-        {
-          "name": "personFormSchema",
-          "line": 12,
-          "col": 14,
-          "pos": 275
-        },
-        {
-          "name": "cameraFormSchema",
-          "line": 47,
-          "col": 14,
-          "pos": 1732
-        },
-        {
-          "name": "ruleFormSchema",
-          "line": 61,
-          "col": 14,
-          "pos": 2290
-        }
-      ],
-      "types": [
-        {
-          "name": "PersonFormData",
-          "line": 21,
-          "col": 13,
-          "pos": 783
-        },
-        {
-          "name": "PlateRegistrationData",
-          "line": 41,
-          "col": 13,
-          "pos": 1546
-        },
-        {
-          "name": "CameraFormData",
-          "line": 55,
-          "col": 13,
-          "pos": 2106
-        },
-        {
-          "name": "RuleFormData",
-          "line": 69,
-          "col": 13,
-          "pos": 2689
-        }
-      ],
-      "enumMembers": {},
-      "duplicates": []
     },
     {
       "file": "src/components/alerts-timeline/AlertReplayPlayer.tsx",

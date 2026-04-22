@@ -1,7 +1,7 @@
 # Dependency Audit Report
 
 **Projeto:** VISÃO  
-**Gerado em:** 2026-04-22T18:10:50.137Z  
+**Gerado em:** 2026-04-22T18:16:02.117Z  
 **Fonte:** `reports/deadcode/raw.json` (knip)  
 **Total de achados:** 762
 
@@ -54,6 +54,13 @@
 - `src/contexts/UserContext.tsx`
 - `src/contexts/accessibility.tsx`
 - `src/contexts/index.tsx`
+- `src/integrations/index.ts`
+- `src/layouts/AuthLayout.tsx`
+- `src/layouts/DashboardLayout.tsx`
+- `src/layouts/ErrorLayout.tsx`
+- `src/layouts/MainLayout.tsx`
+- `src/layouts/MinimalLayout.tsx`
+- `src/layouts/index.tsx`
 - `src/hooks/useAnalytics.ts`
 - `src/hooks/useAsync.ts`
 - `src/hooks/useCamera.ts`
@@ -102,13 +109,6 @@
 - `src/hooks/useTitle.ts`
 - `src/hooks/useToggle.ts`
 - `src/hooks/useWindowSize.ts`
-- `src/integrations/index.ts`
-- `src/layouts/AuthLayout.tsx`
-- `src/layouts/DashboardLayout.tsx`
-- `src/layouts/ErrorLayout.tsx`
-- `src/layouts/MainLayout.tsx`
-- `src/layouts/MinimalLayout.tsx`
-- `src/layouts/index.tsx`
 - `src/providers/AnalyticsProvider.tsx`
 - `src/providers/AppProviders.tsx`
 - `src/providers/ModalProvider.tsx`
@@ -199,9 +199,9 @@
 - `src/components/sidebar/index.ts`
 - `src/components/skeleton/SkeletonLoader.tsx`
 - `src/components/skeleton/index.ts`
-- `src/components/tabs/Tabs.tsx`
-- `src/components/tabs/index.ts`
 - `src/components/switch/Switch.tsx`
+- `src/components/switch/index.ts`
+- `src/components/tabs/Tabs.tsx`
 - _…e mais 9 (ver `summary.md`/`raw.json`)._
 
 ### 🟢 baixo — 59 item(ns)
@@ -230,6 +230,7 @@
 - `src/constants/zIndex.ts`
 - `src/data/index.ts`
 - `src/data/mockRules.ts`
+- `src/i18n/index.ts`
 - `src/hooks/index.ts`
 - `src/hooks/use-mobile.tsx`
 - `src/middleware/errorHandler.ts`
@@ -255,7 +256,6 @@
 - `src/stores/themeStore.ts`
 - `src/stores/uiStore.ts`
 - `src/stores/userStore.ts`
-- `src/i18n/index.ts`
 - `src/types/clips.ts`
 - `src/types/faceRecognition.ts`
 - `src/types/index.ts`
@@ -523,17 +523,17 @@
 - `src/components/ZoneOverlay.tsx:13` — `ZoneType`
 - `src/components/ZoneOverlay.tsx:13` — `ZoneGeometry`
 - `src/components/ZoneOverlay.tsx:13` — `ZoneStats`
-- `src/hooks/useFaceAPI.ts:24` — `FaceMatchStatus`
-- `src/hooks/useFaceDetection.ts:20` — `DetectedFace`
-- `src/hooks/useFaceDetection.ts:39` — `UseFaceDetectionOptions`
-- `src/hooks/useFaceRecognitionAlerts.ts:18` — `RecognitionEvent`
-- `src/hooks/useFaceRecognitionAlerts.ts:32` — `BlacklistPerson`
-- `src/hooks/useFaceRecognitionAlerts.ts:42` — `VIPPerson`
-- `src/hooks/useFaceRecognitionAlerts.ts:51` — `RecognitionStats`
-- `src/hooks/useMediaMTX.ts:20` — `MediaMTXPath`
-- `src/hooks/useMediaMTX.ts:38` — `MediaMTXConfig`
-- `src/hooks/useMediaMTX.ts:45` — `StreamInfo`
-- `src/hooks/useMediaMTX.ts:57` — `MediaMTXStats`
+- `src/types/coverage.ts:7` — `CoverageMetric`
+- `src/types/coverage.ts:14` — `CoverageFileEntry`
+- `src/types/coverage.ts:23` — `CoverageTotals`
+- `src/types/coverage.ts:30` — `CoverageAlert`
+- `src/types/coverage.ts:52` — `CoverageMetricKey`
+- `src/types/coverage.ts:54` — `CoverageStatus`
+- `src/lib/coverageTextReport.ts:19` — `BuildCoverageTextOptions`
+- `src/lib/navigationCLSLog.ts:13` — `NavigationCLSEntry`
+- `src/lib/offlineStorage.ts:18` — `CachedData`
+- `src/lib/schemas.ts:21` — `PersonFormData`
+- `src/lib/schemas.ts:41` — `PlateRegistrationData`
 - _…e mais 79 (ver `summary.md`/`raw.json`)._
 
 ### 🟢 baixo — 11 item(ns)
