@@ -154,7 +154,6 @@ run('vitest skeletons (LoadingPlaceholders + DimensionSnapshots)', 'npx', [
   'vitest',
   'run',
   'src/components/skeletons/__tests__/',
-  '--reporter=basic',
 ]);
 
 // 6. Build
