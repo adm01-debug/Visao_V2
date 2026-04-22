@@ -474,12 +474,13 @@
     .mb-mobile-nav {
       padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
     }
-    /* Fallback de defesa em profundidade: garante padding inferior em qualquer
-       wrapper customizado que substitua o <main> padrão e esqueça mb-mobile-nav.
-       Aplica apenas se o último filho NÃO tem a classe (evita dupla margem). */
-    [data-app-scroll] > main:last-child:not(.mb-mobile-nav),
-    [data-app-scroll] > div:last-child:not(.mb-mobile-nav),
-    [data-app-scroll] > section:last-child:not(.mb-mobile-nav) {
+    /* Fallback de defesa em profundidade — escopo restrito ao layout autenticado.
+       Cobre apenas o <main role="main"> dentro do scroll container do app
+       (`[data-app-scroll]`), que é o único nó semanticamente "conteúdo da página".
+       Evita pegar elementos decorativos (banners, toasters, overlays, divs
+       de animação) que podem ser último filho do scroll container.
+       Opt-out explícito via `[data-no-mobile-nav-pad]` quando necessário. */
+    [data-app-scroll] > main[role="main"]:last-child:not(.mb-mobile-nav):not([data-no-mobile-nav-pad]) {
       padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
     }
   }
