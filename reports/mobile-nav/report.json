@@ -1,27 +1,18 @@
 {
-  "generatedAt": "2026-04-22T11:10:53.915Z",
+  "generatedAt": "2026-04-22T11:11:10.770Z",
   "wrapperFile": "src/components/layout/MainLayout.tsx",
   "requiredClass": "mb-mobile-nav",
   "totals": {
     "total": 36,
-    "ok": 29,
-    "pendente": 1,
+    "ok": 30,
+    "pendente": 0,
     "isenta": 6,
-    "standard": 17,
-    "customWrapper": 13,
+    "standard": 18,
+    "customWrapper": 12,
     "standalone": 6
   },
-  "failed": true,
+  "failed": false,
   "rows": [
-    {
-      "file": "DashboardV2.tsx",
-      "path": "src/pages/DashboardV2.tsx",
-      "category": "customWrapper",
-      "status": "pendente",
-      "issues": [
-        "Falta `mb-mobile-nav` no container raiz"
-      ]
-    },
     {
       "file": "AlertsPage.tsx",
       "path": "src/pages/AlertsPage.tsx",
@@ -67,6 +58,13 @@
     {
       "file": "CoveragePage.tsx",
       "path": "src/pages/CoveragePage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "DashboardV2.tsx",
+      "path": "src/pages/DashboardV2.tsx",
       "category": "standard",
       "status": "ok",
       "issues": []
