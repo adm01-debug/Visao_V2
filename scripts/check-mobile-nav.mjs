@@ -78,6 +78,32 @@ if (!wrapperContent.includes(REQUIRED_CLASS)) {
   console.log(`✅ MainLayout aplica \`${REQUIRED_CLASS}\` globalmente`);
 }
 
+// 1b. Wrapper deve declarar EXATAMENTE UM scroll container `data-app-scroll`
+const scrollMarkerMatches = wrapperContent.match(/data-app-scroll/g) || [];
+if (scrollMarkerMatches.length === 0) {
+  console.error(`❌ ${WRAPPER_FILE} NÃO declara \`data-app-scroll\`.`);
+  console.error(`   O scroll container único da app deve estar marcado com \`data-app-scroll\` no SwipeableView.\n`);
+  failed = true;
+} else if (scrollMarkerMatches.length > 1) {
+  console.error(`❌ ${WRAPPER_FILE} declara \`data-app-scroll\` ${scrollMarkerMatches.length}x — deve ser ÚNICO.\n`);
+  failed = true;
+} else {
+  console.log(`✅ MainLayout declara \`data-app-scroll\` (scroll container único)`);
+}
+
+// 1c. O <main mb-mobile-nav> deve ser descendente do `data-app-scroll`
+//     (heurística: aparece DEPOIS no arquivo, garantindo que o último filho do
+//     scroll container recebe o padding inferior).
+const scrollIdx = wrapperContent.indexOf('data-app-scroll');
+const mainMbIdx = wrapperContent.search(/<main[^>]*mb-mobile-nav/);
+if (scrollIdx >= 0 && mainMbIdx >= 0 && mainMbIdx < scrollIdx) {
+  console.error(`❌ Em ${WRAPPER_FILE}, o <main mb-mobile-nav> aparece ANTES do \`data-app-scroll\`.`);
+  console.error(`   O <main> deve ser filho do scroll container — o último filho recebe o padding inferior via mb-mobile-nav.\n`);
+  failed = true;
+} else if (scrollIdx >= 0 && mainMbIdx > scrollIdx) {
+  console.log(`✅ <main mb-mobile-nav> é descendente do \`data-app-scroll\` (último filho recebe padding)`);
+}
+
 // 2. Nenhuma página deve redeclarar nem criar scroll duplo
 const files = listPages(PAGES_DIR);
 const drift = [];
