@@ -2,6 +2,7 @@
  * VISÃO - Página de Alertas (Modularizada)
  */
 import { useState, useMemo, useCallback } from "react";
+import { useManagedFilters } from "@/hooks/useManagedFilters";
 import { Bell, BellOff, Check, CheckCheck, LayoutGrid, List, RefreshCw, Search, Trash2, X } from "lucide-react";
 import { useAlerts } from "@/hooks/useAlerts";
 import { useCameras } from "@/hooks/useCameras";
@@ -32,7 +33,14 @@ export function AlertsPage() {
 
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [sortBy, setSortBy] = useState<SortOption>('date-desc');
-  const [filters, setFilters] = useState<AlertFilters>(defaultFilters);
+  const [activeStatsFilter, setActiveStatsFilter] = useState<'total' | 'unread' | 'critical' | 'today' | null>(null);
+  const { filters, setFilters, clearFilters, hasActiveFilters } = useManagedFilters<AlertFilters>({
+    scope: 'alerts',
+    defaults: defaultFilters,
+    labels: { search: 'busca', severity: 'severidade', type: 'tipo', cameraId: 'câmera', readStatus: 'leitura', dateRange: 'período' },
+    isActive: (key, value) => key === 'search' ? value !== '' : value !== 'all',
+    onAfterClear: () => setActiveStatsFilter(null),
+  });
   const [selectedAlerts, setSelectedAlerts] = useState<Set<string>>(new Set());
   const [detailsAlert, setDetailsAlert] = useState<AlertRecord | null>(null);
   const [removingAlerts, setRemovingAlerts] = useState<Set<string>>(new Set());
@@ -78,9 +86,8 @@ export function AlertsPage() {
     setRemovingAlerts(new Set());
   }, [deleteAlert]);
   const handleDeleteSelected = useCallback(async () => { const ids = [...selectedAlerts]; await animateAndDelete(ids); setSelectedAlerts(new Set()); toast.success(`${ids.length} alertas excluídos`); }, [selectedAlerts, animateAndDelete]);
-  const clearFilters = () => { setFilters(defaultFilters); setActiveStatsFilter(null); };
-  const hasActiveFilters = Object.entries(filters).some(([key, value]) => key === 'search' ? value !== '' : value !== 'all');
-  const [activeStatsFilter, setActiveStatsFilter] = useState<'total' | 'unread' | 'critical' | 'today' | null>(null);
+
+
 
   const handleStatsFilterClick = (key: 'total' | 'unread' | 'critical' | 'today') => {
     if (activeStatsFilter === key) {

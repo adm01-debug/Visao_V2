@@ -21,8 +21,17 @@ import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/type
 
 import { ZoneCard, ZoneEditorSheet, ZoneViewDialog, zoneTypeConfig, type ZoneStats, type ZoneEvent } from '@/components/zones';
 import { PageMeta } from '@/components/PageMeta';
+import { useManagedFilters } from '@/hooks/useManagedFilters';
 
 type DbZoneLocal = Tables<'zones'>;
+
+interface ZonesFilters {
+  searchQuery: string;
+  selectedCameraFilter: string;
+  selectedTypeFilter: string;
+  [key: string]: unknown;
+}
+const defaultZonesFilters: ZonesFilters = { searchQuery: '', selectedCameraFilter: 'all', selectedTypeFilter: 'all' };
 
 export function ZonesPage() {
   const { user: _user } = useAuth();
@@ -30,9 +39,18 @@ export function ZonesPage() {
 
   const [zones, setZones] = useState<DbZoneLocal[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCameraFilter, setSelectedCameraFilter] = useState<string>('all');
-  const [selectedTypeFilter, setSelectedTypeFilter] = useState<string>('all');
+  const { filters, setFilters, clearFilters, hasActiveFilters } = useManagedFilters<ZonesFilters>({
+    scope: 'zones',
+    defaults: defaultZonesFilters,
+    labels: { searchQuery: 'busca', selectedCameraFilter: 'câmera', selectedTypeFilter: 'tipo' },
+    isActive: (key, value) => key === 'searchQuery' ? value !== '' : value !== 'all',
+  });
+  const searchQuery = filters.searchQuery;
+  const selectedCameraFilter = filters.selectedCameraFilter;
+  const selectedTypeFilter = filters.selectedTypeFilter;
+  const setSearchQuery = (v: string) => setFilters((p) => ({ ...p, searchQuery: v }));
+  const setSelectedCameraFilter = (v: string) => setFilters((p) => ({ ...p, selectedCameraFilter: v }));
+  const setSelectedTypeFilter = (v: string) => setFilters((p) => ({ ...p, selectedTypeFilter: v }));
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editorCamera, setEditorCamera] = useState<{ id: string; name: string; stream_url?: string | null; stream_protocol?: string; thumbnail?: string | null } | null>(null);
@@ -113,7 +131,7 @@ export function ZonesPage() {
   const getCameraById = (cameraId: string | null) => (!cameraId ? null : cameras.find(c => c.id === cameraId));
 
 
-  const hasActiveFilters = searchQuery || selectedCameraFilter !== 'all' || selectedTypeFilter !== 'all';
+  
 
   return (
     <div role="main" aria-label="Zonas de interesse" className="min-h-screen bg-background mb-mobile-nav">
@@ -231,7 +249,7 @@ export function ZonesPage() {
             <SelectContent><SelectItem value="all">Todos tipos</SelectItem>{Object.entries(zoneTypeConfig).map(([key, config]) => <SelectItem key={key} value={key}>{config.label}</SelectItem>)}</SelectContent>
           </Select>
           {!loading && hasActiveFilters && (
-            <Button variant="ghost" size="sm" onClick={() => { setSearchQuery(''); setSelectedCameraFilter('all'); setSelectedTypeFilter('all'); }}>
+            <Button variant="ghost" size="sm" onClick={clearFilters}>
               <X className="w-4 h-4 mr-1" />Limpar
             </Button>
           )}

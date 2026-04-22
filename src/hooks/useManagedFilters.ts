@@ -24,6 +24,8 @@ export interface UseManagedFiltersOptions<T extends Record<string, unknown>> {
   confirm?: boolean;
   /** Predicate para decidir se um valor "está ativo". Default: !== default && não-vazio. */
   isActive?: (key: keyof T, value: T[keyof T], defaultValue: T[keyof T]) => boolean;
+  /** Callback opcional executado após o reset, antes do toast — útil para resetar estado satélite. */
+  onAfterClear?: () => void;
 }
 
 const STORAGE_PREFIX = 'managed-filters:';
@@ -52,6 +54,7 @@ export function useManagedFilters<T extends Record<string, unknown>>(
     persistKeys = [],
     confirm = true,
     isActive = defaultIsActive,
+    onAfterClear,
   } = opts;
 
   const storageKey = `${STORAGE_PREFIX}${scope}`;
@@ -167,6 +170,8 @@ export function useManagedFilters<T extends Record<string, unknown>>(
       }
     });
 
+    onAfterClear?.();
+
     const fieldList = activeEntries.map((e) => e.label).join(', ') || 'nenhum';
     const keyList = [storageKey, ...persistKeys].join(', ');
 
@@ -198,7 +203,7 @@ export function useManagedFilters<T extends Record<string, unknown>>(
     undoTimerRef.current = setTimeout(() => {
       undoSnapshotRef.current = null;
     }, UNDO_WINDOW_MS);
-  }, [filters, defaults, persistAndSync, storageKey, persistKeys, activeEntries]);
+  }, [filters, defaults, persistAndSync, storageKey, persistKeys, activeEntries, onAfterClear]);
 
   const clearFilters = useCallback(() => {
     if (!hasActiveFilters) {

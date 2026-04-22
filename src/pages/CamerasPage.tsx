@@ -3,6 +3,7 @@
  */
 
 import { useState, useMemo } from 'react';
+import { useManagedFilters } from '@/hooks/useManagedFilters';
 import {
   Camera, Maximize2, Grid3X3, LayoutGrid, List, RefreshCw,
   Search, Plus, X,
@@ -26,10 +27,25 @@ import { cn } from '@/lib/utils';
 import { PageMeta } from '@/components/PageMeta';
 import { PageContent } from '@/components/layout/MainLayout';
 
+interface CamerasFilters {
+  searchQuery: string;
+  statusFilter: string;
+  [key: string]: unknown;
+}
+const defaultCamerasFilters: CamerasFilters = { searchQuery: '', statusFilter: 'all' };
+
 export function CamerasPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('grid-2x2');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const { filters, setFilters, clearFilters, hasActiveFilters } = useManagedFilters<CamerasFilters>({
+    scope: 'cameras',
+    defaults: defaultCamerasFilters,
+    labels: { searchQuery: 'busca', statusFilter: 'status' },
+    isActive: (key, value) => key === 'searchQuery' ? value !== '' : value !== 'all',
+  });
+  const searchQuery = filters.searchQuery;
+  const statusFilter = filters.statusFilter;
+  const setSearchQuery = (v: string) => setFilters((p) => ({ ...p, searchQuery: v }));
+  const setStatusFilter = (v: string) => setFilters((p) => ({ ...p, statusFilter: v }));
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
   const [expandedCamera, setExpandedCamera] = useState<CameraData | null>(null);
   const [settingsCamera, setSettingsCamera] = useState<CameraData | null>(null);
@@ -116,8 +132,8 @@ export function CamerasPage() {
             <SelectItem value="offline">Offline</SelectItem>
           </SelectContent>
         </Select>
-        {(searchQuery || statusFilter !== 'all') && (
-          <Button variant="ghost" size="sm" onClick={() => { setSearchQuery(''); setStatusFilter('all'); }}>
+        {hasActiveFilters && (
+          <Button variant="ghost" size="sm" onClick={clearFilters}>
             <X className="w-4 h-4 mr-1" />Limpar
           </Button>
         )}
@@ -166,7 +182,7 @@ export function CamerasPage() {
             actionLabel={cameras.length === 0 ? '+ Adicionar Câmera' : undefined}
             onAction={cameras.length === 0 ? () => {} : undefined}
             secondaryActionLabel={cameras.length > 0 ? 'Limpar filtros' : undefined}
-            onSecondaryAction={cameras.length > 0 ? () => { setSearchQuery(''); setStatusFilter('all'); } : undefined}
+            onSecondaryAction={cameras.length > 0 ? clearFilters : undefined}
           />
         ) : (
           <div className={cn('grid gap-4', GRID_CLASSES[viewMode])}>
