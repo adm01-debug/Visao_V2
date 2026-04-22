@@ -234,7 +234,175 @@ if (SNAPSHOT_MODE) {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Relatório (HTML + JSON) — gerado sempre, com --report ou flag CI
+// ─────────────────────────────────────────────────────────────────────────────
+const REPORT_MODE = process.argv.includes('--report') || process.env.CI === 'true' || !SNAPSHOT_MODE;
+if (REPORT_MODE) {
+  const { writeFileSync, mkdirSync } = await import('node:fs');
+  const REPORT_DIR = 'reports/mobile-nav';
+  mkdirSync(REPORT_DIR, { recursive: true });
+
+  const repoBase = process.env.GITHUB_REPOSITORY
+    ? `https://github.com/${process.env.GITHUB_REPOSITORY}/blob/${process.env.GITHUB_SHA || 'main'}`
+    : null;
+
+  const driftSet = new Set(drift);
+  const scrollDriftSet = new Set(scrollDrift);
+  const missingInCustomSet = new Set(missingInCustom);
+  const undeclaredMap = new Map(undeclaredCustomWrappers.map((u) => [u.file, u]));
+
+  const rows = files
+    .map((file) => {
+      const basename = file.split(/[\\/]/).pop();
+      const rel = relative(process.cwd(), file).replace(/\\/g, '/');
+      let category;
+      let status;
+      const issues = [];
+
+      if (ALLOWLIST.has(basename)) {
+        category = 'standalone';
+        status = 'isenta';
+      } else if (CUSTOM_WRAPPER_ALLOWLIST.has(basename)) {
+        category = 'customWrapper';
+        if (missingInCustomSet.has(rel)) {
+          status = 'pendente';
+          issues.push(`Falta \`${REQUIRED_CLASS}\` no container raiz`);
+        } else {
+          status = 'ok';
+        }
+      } else {
+        category = 'standard';
+        status = 'ok';
+        if (driftSet.has(rel)) {
+          status = 'pendente';
+          issues.push(`Redeclara \`${REQUIRED_CLASS}\` (remover)`);
+        }
+        if (undeclaredMap.has(rel)) {
+          status = 'pendente';
+          const u = undeclaredMap.get(rel);
+          issues.push(`Wrapper customizado não cadastrado (linha ${u.line})`);
+        }
+      }
+      if (scrollDriftSet.has(rel)) {
+        status = 'pendente';
+        issues.push('Usa `h-[calc(100vh-...)]` (scroll duplo)');
+      }
+
+      return { file: basename, path: rel, category, status, issues };
+    })
+    .sort((a, b) => {
+      const order = { pendente: 0, ok: 1, isenta: 2 };
+      return order[a.status] - order[b.status] || a.file.localeCompare(b.file);
+    });
+
+  const summary = {
+    generatedAt: new Date().toISOString(),
+    wrapperFile: WRAPPER_FILE,
+    requiredClass: REQUIRED_CLASS,
+    totals: {
+      total: rows.length,
+      ok: rows.filter((r) => r.status === 'ok').length,
+      pendente: rows.filter((r) => r.status === 'pendente').length,
+      isenta: rows.filter((r) => r.status === 'isenta').length,
+      standard: rows.filter((r) => r.category === 'standard').length,
+      customWrapper: rows.filter((r) => r.category === 'customWrapper').length,
+      standalone: rows.filter((r) => r.category === 'standalone').length,
+    },
+    failed,
+    rows,
+  };
+
+  // JSON
+  writeFileSync(`${REPORT_DIR}/report.json`, JSON.stringify(summary, null, 2) + '\n');
+
+  // HTML
+  const statusBadge = (s) => {
+    const map = {
+      ok: ['hsl(142 71% 45%)', '✓ OK'],
+      pendente: ['hsl(0 84% 60%)', '⚠ Pendente'],
+      isenta: ['hsl(220 9% 46%)', '⊘ Isenta'],
+    };
+    const [color, label] = map[s];
+    return `<span class="badge" style="background:${color}">${label}</span>`;
+  };
+  const categoryLabel = (c) =>
+    ({ standard: 'Padrão', customWrapper: 'Wrapper customizado', standalone: 'Standalone' }[c]);
+  const fileLink = (path) =>
+    repoBase ? `<a href="${repoBase}/${path}" target="_blank" rel="noopener">${path}</a>` : path;
+
+  const html = `<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Mobile Nav Report — VISÃO</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; padding: 24px; max-width: 1200px; margin-inline: auto; background: hsl(0 0% 98%); color: hsl(220 13% 18%); }
+  @media (prefers-color-scheme: dark) { body { background: hsl(220 13% 10%); color: hsl(0 0% 95%); } th { background: hsl(220 13% 18%) !important; } tr:hover { background: hsl(220 13% 14%) !important; } }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  .meta { color: hsl(220 9% 46%); font-size: 12px; margin-bottom: 20px; }
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .card { padding: 14px 16px; border-radius: 8px; background: hsl(0 0% 100%); border: 1px solid hsl(220 13% 90%); }
+  @media (prefers-color-scheme: dark) { .card { background: hsl(220 13% 14%); border-color: hsl(220 13% 22%); } }
+  .card .label { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: hsl(220 9% 46%); }
+  .card .value { font-size: 24px; font-weight: 600; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; background: hsl(0 0% 100%); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px hsl(0 0% 0% / .05); }
+  @media (prefers-color-scheme: dark) { table { background: hsl(220 13% 14%); } }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid hsl(220 13% 92%); }
+  @media (prefers-color-scheme: dark) { th, td { border-color: hsl(220 13% 22%); } }
+  th { background: hsl(220 13% 96%); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: hsl(220 9% 46%); }
+  tr:hover { background: hsl(220 13% 97%); }
+  td.file a { color: hsl(217 91% 50%); text-decoration: none; font-family: ui-monospace, "SF Mono", monospace; font-size: 13px; }
+  td.file a:hover { text-decoration: underline; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; color: white; font-size: 11px; font-weight: 600; }
+  .issues { color: hsl(0 84% 50%); font-size: 12px; }
+  .issues ul { margin: 0; padding-left: 18px; }
+  .legend { margin-top: 24px; padding: 14px 16px; background: hsl(220 13% 96%); border-radius: 8px; font-size: 12px; color: hsl(220 9% 30%); }
+  @media (prefers-color-scheme: dark) { .legend { background: hsl(220 13% 16%); color: hsl(0 0% 80%); } }
+  .failed-banner { background: hsl(0 84% 95%); color: hsl(0 84% 30%); padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-weight: 500; }
+  @media (prefers-color-scheme: dark) { .failed-banner { background: hsl(0 50% 20%); color: hsl(0 80% 80%); } }
+</style></head>
+<body>
+  <h1>📐 Mobile Nav Report — VISÃO</h1>
+  <div class="meta">Gerado em ${summary.generatedAt} · wrapper: <code>${WRAPPER_FILE}</code> · classe: <code>${REQUIRED_CLASS}</code></div>
+  ${failed ? `<div class="failed-banner">⚠ Verificação falhou — ${summary.totals.pendente} página(s) pendente(s). Veja detalhes na tabela abaixo.</div>` : ''}
+  <div class="summary">
+    <div class="card"><div class="label">Total</div><div class="value">${summary.totals.total}</div></div>
+    <div class="card"><div class="label">OK</div><div class="value" style="color:hsl(142 71% 40%)">${summary.totals.ok}</div></div>
+    <div class="card"><div class="label">Pendente</div><div class="value" style="color:hsl(0 84% 55%)">${summary.totals.pendente}</div></div>
+    <div class="card"><div class="label">Isentas</div><div class="value" style="color:hsl(220 9% 46%)">${summary.totals.isenta}</div></div>
+    <div class="card"><div class="label">Padrão</div><div class="value">${summary.totals.standard}</div></div>
+    <div class="card"><div class="label">Wrapper custom</div><div class="value">${summary.totals.customWrapper}</div></div>
+  </div>
+  <table>
+    <thead><tr><th>Arquivo</th><th>Categoria</th><th>Status</th><th>Problemas</th></tr></thead>
+    <tbody>
+      ${rows
+        .map(
+          (r) => `<tr>
+        <td class="file">${fileLink(r.path)}</td>
+        <td>${categoryLabel(r.category)}</td>
+        <td>${statusBadge(r.status)}</td>
+        <td class="issues">${
+          r.issues.length ? `<ul>${r.issues.map((i) => `<li>${i}</li>`).join('')}</ul>` : '—'
+        }</td>
+      </tr>`
+        )
+        .join('\n      ')}
+    </tbody>
+  </table>
+  <div class="legend">
+    <strong>Categorias:</strong>
+    <b>Padrão</b> = delega ao <code>&lt;main&gt;</code> do MainLayout (sem redeclarar classe) ·
+    <b>Wrapper customizado</b> = substitui o <code>&lt;main&gt;</code> e reaplica <code>${REQUIRED_CLASS}</code> ·
+    <b>Standalone</b> = fora do MainLayout (auth/erro/redirect).
+    Documentação: <code>docs/LAYOUTS.md §11–§14</code>.
+  </div>
+</body></html>`;
+  writeFileSync(`${REPORT_DIR}/report.html`, html);
+  console.log(`\n📊 Relatório gerado em ${REPORT_DIR}/report.html (e report.json)`);
+}
+
 if (failed) process.exit(1);
 
 console.log(`\n✨ Layout mobile centralizado e consistente!`);
-console.log(`   ↳ Defesa em profundidade ativa: classe explícita + fallback CSS + heurística + snapshot + runtime E2E.\n`);
+console.log(`   ↳ Defesa em profundidade ativa: classe explícita + fallback CSS + heurística + snapshot + runtime E2E + relatório.\n`);

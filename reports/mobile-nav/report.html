@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Mobile Nav Report — VISÃO</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; padding: 24px; max-width: 1200px; margin-inline: auto; background: hsl(0 0% 98%); color: hsl(220 13% 18%); }
+  @media (prefers-color-scheme: dark) { body { background: hsl(220 13% 10%); color: hsl(0 0% 95%); } th { background: hsl(220 13% 18%) !important; } tr:hover { background: hsl(220 13% 14%) !important; } }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  .meta { color: hsl(220 9% 46%); font-size: 12px; margin-bottom: 20px; }
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .card { padding: 14px 16px; border-radius: 8px; background: hsl(0 0% 100%); border: 1px solid hsl(220 13% 90%); }
+  @media (prefers-color-scheme: dark) { .card { background: hsl(220 13% 14%); border-color: hsl(220 13% 22%); } }
+  .card .label { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: hsl(220 9% 46%); }
+  .card .value { font-size: 24px; font-weight: 600; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; background: hsl(0 0% 100%); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px hsl(0 0% 0% / .05); }
+  @media (prefers-color-scheme: dark) { table { background: hsl(220 13% 14%); } }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid hsl(220 13% 92%); }
+  @media (prefers-color-scheme: dark) { th, td { border-color: hsl(220 13% 22%); } }
+  th { background: hsl(220 13% 96%); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: hsl(220 9% 46%); }
+  tr:hover { background: hsl(220 13% 97%); }
+  td.file a { color: hsl(217 91% 50%); text-decoration: none; font-family: ui-monospace, "SF Mono", monospace; font-size: 13px; }
+  td.file a:hover { text-decoration: underline; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; color: white; font-size: 11px; font-weight: 600; }
+  .issues { color: hsl(0 84% 50%); font-size: 12px; }
+  .issues ul { margin: 0; padding-left: 18px; }
+  .legend { margin-top: 24px; padding: 14px 16px; background: hsl(220 13% 96%); border-radius: 8px; font-size: 12px; color: hsl(220 9% 30%); }
+  @media (prefers-color-scheme: dark) { .legend { background: hsl(220 13% 16%); color: hsl(0 0% 80%); } }
+  .failed-banner { background: hsl(0 84% 95%); color: hsl(0 84% 30%); padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-weight: 500; }
+  @media (prefers-color-scheme: dark) { .failed-banner { background: hsl(0 50% 20%); color: hsl(0 80% 80%); } }
+</style></head>
+<body>
+  <h1>📐 Mobile Nav Report — VISÃO</h1>
+  <div class="meta">Gerado em 2026-04-22T11:08:30.480Z · wrapper: <code>src/components/layout/MainLayout.tsx</code> · classe: <code>mb-mobile-nav</code></div>
+  
+  <div class="summary">
+    <div class="card"><div class="label">Total</div><div class="value">36</div></div>
+    <div class="card"><div class="label">OK</div><div class="value" style="color:hsl(142 71% 40%)">30</div></div>
+    <div class="card"><div class="label">Pendente</div><div class="value" style="color:hsl(0 84% 55%)">0</div></div>
+    <div class="card"><div class="label">Isentas</div><div class="value" style="color:hsl(220 9% 46%)">6</div></div>
+    <div class="card"><div class="label">Padrão</div><div class="value">17</div></div>
+    <div class="card"><div class="label">Wrapper custom</div><div class="value">13</div></div>
+  </div>
+  <table>
+    <thead><tr><th>Arquivo</th><th>Categoria</th><th>Status</th><th>Problemas</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="file">src/pages/AlertsPage.tsx</td>
+        <td>Padrão</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/AnalyticsPage.tsx</td>
+        <td>Wrapper customizado</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/AutomationRulesPage.tsx</td>
+        <td>Padrão</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/BehaviorDetectionPage.tsx</td>
+        <td>Padrão</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/CamerasPage.tsx</td>
+        <td>Padrão</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/CollaboratorFlowMapPage.tsx</td>
+        <td>Padrão</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/CoveragePage.tsx</td>
+        <td>Padrão</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/DashboardV2.tsx</td>
+        <td>Wrapper customizado</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/FaceRecognitionPage.tsx</td>
+        <td>Padrão</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/GoalsAlertsPage.tsx</td>
+        <td>Padrão</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/HeatmapPage.tsx</td>
+        <td>Wrapper customizado</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/HelpPage.tsx</td>
+        <td>Padrão</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/JourneyReportsPage.tsx</td>
+        <td>Padrão</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/LicensePlatePage.tsx</td>
+        <td>Wrapper customizado</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/NotificationSettingsPage.tsx</td>
+        <td>Wrapper customizado</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/PanicEventsPage.tsx</td>
+        <td>Padrão</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/PeoplePage.tsx</td>
+        <td>Wrapper customizado</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/PPEPage.tsx</td>
+        <td>Wrapper customizado</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/ProductivityDashboardPage.tsx</td>
+        <td>Padrão</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/ProfilePage.tsx</td>
+        <td>Padrão</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/RecognitionAnalyticsPage.tsx</td>
+        <td>Wrapper customizado</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/RecognitionLogsPage.tsx</td>
+        <td>Wrapper customizado</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/RecordingsPage.tsx</td>
+        <td>Wrapper customizado</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/ReportsPage.tsx</td>
+        <td>Padrão</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/SecurityPage.tsx</td>
+        <td>Padrão</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/SettingsPage.tsx</td>
+        <td>Padrão</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/StreamSettingsPage.tsx</td>
+        <td>Wrapper customizado</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/TelegramSettingsPage.tsx</td>
+        <td>Wrapper customizado</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/UserManagementPage.tsx</td>
+        <td>Padrão</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/ZonesPage.tsx</td>
+        <td>Wrapper customizado</td>
+        <td><span class="badge" style="background:hsl(142 71% 45%)">✓ OK</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/AcessoNegado.tsx</td>
+        <td>Standalone</td>
+        <td><span class="badge" style="background:hsl(220 9% 46%)">⊘ Isenta</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/Auth.tsx</td>
+        <td>Standalone</td>
+        <td><span class="badge" style="background:hsl(220 9% 46%)">⊘ Isenta</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/AuthCallback.tsx</td>
+        <td>Standalone</td>
+        <td><span class="badge" style="background:hsl(220 9% 46%)">⊘ Isenta</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/Index.tsx</td>
+        <td>Standalone</td>
+        <td><span class="badge" style="background:hsl(220 9% 46%)">⊘ Isenta</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/NotFound.tsx</td>
+        <td>Standalone</td>
+        <td><span class="badge" style="background:hsl(220 9% 46%)">⊘ Isenta</span></td>
+        <td class="issues">—</td>
+      </tr>
+      <tr>
+        <td class="file">src/pages/ResetPasswordPage.tsx</td>
+        <td>Standalone</td>
+        <td><span class="badge" style="background:hsl(220 9% 46%)">⊘ Isenta</span></td>
+        <td class="issues">—</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="legend">
+    <strong>Categorias:</strong>
+    <b>Padrão</b> = delega ao <code>&lt;main&gt;</code> do MainLayout (sem redeclarar classe) ·
+    <b>Wrapper customizado</b> = substitui o <code>&lt;main&gt;</code> e reaplica <code>mb-mobile-nav</code> ·
+    <b>Standalone</b> = fora do MainLayout (auth/erro/redirect).
+    Documentação: <code>docs/LAYOUTS.md §11–§14</code>.
+  </div>
+</body></html>
