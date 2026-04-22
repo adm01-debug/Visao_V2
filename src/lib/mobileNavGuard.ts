@@ -25,6 +25,23 @@ const MOBILE_BREAKPOINT_PX = 768;
 const MIN_BOTTOM_PADDING_PX = 64; // h-16 da BottomNavigation
 const SCROLL_OWNER_ATTR = 'data-app-scroll';
 const OPT_OUT_ATTR = 'data-allow-no-mobile-nav-padding';
+const REQUIRED_CLASS = 'mb-mobile-nav';
+
+/**
+ * Rotas standalone (NÃO renderizam BottomNavigation, logo NÃO precisam de
+ * `mb-mobile-nav`). Espelha `ALLOWLIST` em `scripts/check-mobile-nav.mjs`.
+ */
+const STANDALONE_ROUTE_PATTERNS: RegExp[] = [
+  /^\/auth(\/|$|\?)/,
+  /^\/login(\/|$|\?)/,
+  /^\/reset-password(\/|$|\?)/,
+  /^\/acesso-negado(\/|$|\?)/,
+  /^\/$/,
+];
+
+function isStandaloneRoute(path: string): boolean {
+  return STANDALONE_ROUTE_PATTERNS.some((re) => re.test(path));
+}
 
 interface OffenderInfo {
   selector: string;
