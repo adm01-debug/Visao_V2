@@ -27,6 +27,7 @@
  * código-fonte. SEM essa env var, qualquer redirect para /auth FALHA o build.
  */
 import { test, expect, devices } from '@playwright/test';
+import { ensureAuthenticatedContext, isAuthRedirect } from './helpers/authSession';
 
 /** Rotas autenticadas que devem renderizar o wrapper com `mb-mobile-nav`. */
 const AUTHENTICATED_ROUTES = [
@@ -61,6 +62,9 @@ test.use({ ...devices['iPhone 12'] });
 test.describe('Build gate: presença de mb-mobile-nav no DOM (mobile)', () => {
   for (const route of AUTHENTICATED_ROUTES) {
     test(`${route} renderiza wrapper com classe \`${REQUIRED_CLASS}\``, async ({ page }) => {
+      // Tenta autenticar via storage state ou login programático antes da navegação.
+      await ensureAuthenticatedContext(page.context());
+
       const response = await page.goto(route, { waitUntil: 'domcontentloaded' });
       expect(response, `falha ao carregar ${route}`).toBeTruthy();
 
@@ -68,7 +72,7 @@ test.describe('Build gate: presença de mb-mobile-nav no DOM (mobile)', () => {
       await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});
 
       const url = page.url();
-      const redirectedToAuth = /\/(auth|login)(\?|#|$|\/)/.test(url);
+      const redirectedToAuth = isAuthRedirect(url);
 
       if (redirectedToAuth) {
         if (ALLOW_AUTH_SKIP) {
@@ -81,7 +85,8 @@ test.describe('Build gate: presença de mb-mobile-nav no DOM (mobile)', () => {
         }
         throw new Error(
           `[mobile-nav-class] Rota ${route} redirecionou para ${url}. ` +
-            `Defina MOBILE_NAV_CLASS_AUTH_BYPASS=1 para permitir skip controlado, ou seede credenciais de teste.`,
+            `Configure E2E_TEST_EMAIL + E2E_TEST_PASSWORD para autenticação automática, ` +
+            `defina MOBILE_NAV_CLASS_AUTH_BYPASS=1 para skip controlado, ou seede credenciais de teste.`,
         );
       }
 
