@@ -1,7 +1,7 @@
 # Dead Code Audit (knip)
 
-**Gerado em:** 2026-04-22T18:10:50.115Z  
-**Duração:** 11.06s  
+**Gerado em:** 2026-04-22T18:16:02.097Z  
+**Duração:** 8.68s  
 **Total de achados:** 767
 
 ## Resumo por categoria
@@ -77,44 +77,44 @@
 
 ## Dependências não utilizadas (33)
 
-- package.json:94 — @hookform/resolvers
-- package.json:98 — @radix-ui/react-aspect-ratio
-- package.json:102 — @radix-ui/react-context-menu
-- package.json:105 — @radix-ui/react-hover-card
-- package.json:107 — @radix-ui/react-menubar
-- package.json:108 — @radix-ui/react-navigation-menu
-- package.json:111 — @radix-ui/react-radio-group
-- package.json:123 — @sentry/react
-- package.json:124 — @sentry/tracing
-- package.json:127 — @tanstack/react-virtual
-- package.json:131 — ably
-- package.json:134 — cmdk
-- package.json:136 — dompurify
-- package.json:137 — embla-carousel-react
-- package.json:139 — file-saver
-- package.json:141 — helmet
-- package.json:144 — i18next
-- package.json:145 — i18next-browser-languagedetector
-- package.json:146 — immer
-- package.json:147 — input-otp
-- package.json:148 — jotai
-- package.json:152 — pusher-js
-- package.json:156 — react-error-boundary
-- package.json:158 — react-hook-form
-- package.json:159 — react-i18next
-- package.json:160 — react-pdf
-- package.json:161 — react-resizable-panels
-- package.json:163 — react-virtuoso
-- package.json:165 — sanitize-html
-- package.json:166 — socket.io-client
-- package.json:170 — vaul
-- package.json:174 — xss
-- package.json:176 — zustand
+- package.json:98 — @hookform/resolvers
+- package.json:102 — @radix-ui/react-aspect-ratio
+- package.json:106 — @radix-ui/react-context-menu
+- package.json:109 — @radix-ui/react-hover-card
+- package.json:111 — @radix-ui/react-menubar
+- package.json:112 — @radix-ui/react-navigation-menu
+- package.json:115 — @radix-ui/react-radio-group
+- package.json:127 — @sentry/react
+- package.json:128 — @sentry/tracing
+- package.json:131 — @tanstack/react-virtual
+- package.json:135 — ably
+- package.json:138 — cmdk
+- package.json:140 — dompurify
+- package.json:141 — embla-carousel-react
+- package.json:143 — file-saver
+- package.json:145 — helmet
+- package.json:148 — i18next
+- package.json:149 — i18next-browser-languagedetector
+- package.json:150 — immer
+- package.json:151 — input-otp
+- package.json:152 — jotai
+- package.json:156 — pusher-js
+- package.json:160 — react-error-boundary
+- package.json:162 — react-hook-form
+- package.json:163 — react-i18next
+- package.json:164 — react-pdf
+- package.json:165 — react-resizable-panels
+- package.json:167 — react-virtuoso
+- package.json:169 — sanitize-html
+- package.json:170 — socket.io-client
+- package.json:174 — vaul
+- package.json:178 — xss
+- package.json:180 — zustand
 
 ## DevDependencies não utilizadas (2)
 
-- package.json:188 — @tanstack/react-query-devtools
-- package.json:191 — @testing-library/user-event
+- package.json:192 — @tanstack/react-query-devtools
+- package.json:195 — @testing-library/user-event
 
 ## Imports não declarados em package.json (5)
 
