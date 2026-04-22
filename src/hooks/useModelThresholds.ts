@@ -31,7 +31,19 @@ export interface ThresholdInput {
   notes?: string | null;
 }
 
-/** Catálogo padrão de tipos de risco com defaults sugeridos. */
+/**
+ * Catálogo padrão de tipos de risco com defaults sugeridos.
+ *
+ * `min_confidence` controla o limiar de **confiança** do modelo (0-1):
+ *   - Mais alto = menos falsos positivos, mais falsos negativos
+ *   - Mais baixo = mais detecções, mais ruído
+ *
+ * `defaultSensitivity` (0-1, opcional): para detecções comportamentais
+ * (loitering, ausência, aglomeração) controla quão facilmente o evento
+ * dispara — ex: tempo mínimo de permanência, densidade de pessoas.
+ *   - Mais alto = mais sensível (dispara antes)
+ *   - Mais baixo = mais tolerante (exige mais evidência)
+ */
 export const RISK_TYPE_PRESETS: Array<{
   key: string;
   label: string;
@@ -39,6 +51,14 @@ export const RISK_TYPE_PRESETS: Array<{
   defaultModel: string;
   defaultMinConfidence: number;
   supportsQuality?: boolean;
+  /** Habilita 2º slider de sensibilidade (para detecções comportamentais). */
+  supportsSensitivity?: boolean;
+  /** Valor padrão da sensibilidade (0-1). */
+  defaultSensitivity?: number;
+  /** Rótulo customizado para o slider de sensibilidade. */
+  sensitivityLabel?: string;
+  /** Categoria para agrupamento na UI. */
+  category?: 'presence' | 'behavior' | 'identity' | 'object';
 }> = [
   {
     key: 'security',
@@ -46,6 +66,7 @@ export const RISK_TYPE_PRESETS: Array<{
     description: 'Detecções gerais de segurança (intrusão, perímetro, comportamento suspeito).',
     defaultModel: 'gemini-vision',
     defaultMinConfidence: 0.7,
+    category: 'behavior',
   },
   {
     key: 'face_recognition',
@@ -54,6 +75,7 @@ export const RISK_TYPE_PRESETS: Array<{
     defaultModel: 'face-api',
     defaultMinConfidence: 0.6,
     supportsQuality: true,
+    category: 'identity',
   },
   {
     key: 'license_plate',
@@ -61,6 +83,7 @@ export const RISK_TYPE_PRESETS: Array<{
     description: 'Leitura automática de placas de veículos.',
     defaultModel: 'alpr',
     defaultMinConfidence: 0.85,
+    category: 'identity',
   },
   {
     key: 'ppe',
@@ -68,6 +91,7 @@ export const RISK_TYPE_PRESETS: Array<{
     description: 'Detecção de capacete, colete, máscara, óculos, etc.',
     defaultModel: 'coco-ssd',
     defaultMinConfidence: 0.6,
+    category: 'object',
   },
   {
     key: 'behavior',
@@ -75,6 +99,10 @@ export const RISK_TYPE_PRESETS: Array<{
     description: 'Padrões anômalos: queda, briga, ausência prolongada, aglomeração.',
     defaultModel: 'detect-behavior',
     defaultMinConfidence: 0.7,
+    supportsSensitivity: true,
+    defaultSensitivity: 0.5,
+    sensitivityLabel: 'Sensibilidade ao padrão anômalo',
+    category: 'behavior',
   },
   {
     key: 'object_detection',
@@ -82,8 +110,63 @@ export const RISK_TYPE_PRESETS: Array<{
     description: 'Detecção de pessoas, veículos e objetos via COCO-SSD.',
     defaultModel: 'coco-ssd',
     defaultMinConfidence: 0.5,
+    category: 'object',
+  },
+  // ── Detecções específicas (presence vs risky behavior) ──
+  {
+    key: 'presence',
+    label: 'Presença de Pessoa',
+    description: 'Pessoa detectada na cena (presença simples — sem julgamento de comportamento).',
+    defaultModel: 'coco-ssd',
+    defaultMinConfidence: 0.55,
+    category: 'presence',
+  },
+  {
+    key: 'off_duty_presence',
+    label: 'Presença Fora de Expediente',
+    description: 'Pessoa detectada fora do horário/turno autorizado.',
+    defaultModel: 'coco-ssd',
+    defaultMinConfidence: 0.65,
+    supportsSensitivity: true,
+    defaultSensitivity: 0.7,
+    sensitivityLabel: 'Sensibilidade ao horário não autorizado',
+    category: 'presence',
+  },
+  {
+    key: 'loitering',
+    label: 'Permanência Suspeita (Loitering)',
+    description: 'Pessoa parada na mesma área por tempo prolongado.',
+    defaultModel: 'detect-behavior',
+    defaultMinConfidence: 0.6,
+    supportsSensitivity: true,
+    defaultSensitivity: 0.5,
+    sensitivityLabel: 'Tempo mínimo (↑ dispara mais cedo)',
+    category: 'behavior',
+  },
+  {
+    key: 'break_in_indicator',
+    label: 'Indício de Invasão',
+    description: 'Sinais de tentativa de invasão: porta forçada, janela quebrada, entrada irregular.',
+    defaultModel: 'gemini-vision',
+    defaultMinConfidence: 0.75,
+    supportsSensitivity: true,
+    defaultSensitivity: 0.6,
+    sensitivityLabel: 'Sensibilidade a sinais de invasão',
+    category: 'behavior',
+  },
+  {
+    key: 'crowd_density',
+    label: 'Aglomeração',
+    description: 'Densidade de pessoas acima do limite aceitável para a zona.',
+    defaultModel: 'coco-ssd',
+    defaultMinConfidence: 0.6,
+    supportsSensitivity: true,
+    defaultSensitivity: 0.5,
+    sensitivityLabel: 'Densidade mínima para alertar',
+    category: 'behavior',
   },
 ];
+
 
 export function useModelThresholds() {
   const { user } = useAuth();
