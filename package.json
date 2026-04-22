@@ -66,6 +66,7 @@
     "validate": "npm run lint && npm run type-check && npm run test",
     "check:skeletons": "node scripts/validate-skeletons.mjs",
     "test:mobile-nav-class": "playwright test mobile-nav-class-presence",
+    "test:mobile-nav-content-overlap": "playwright test mobile-nav-content-overlap",
     "report:mobile-nav-diff": "node scripts/build-mobile-nav-diff-report.mjs",
     "report:qa-screenshots": "node scripts/build-qa-screenshots-report.mjs",
     "qa:visual-snapshots": "playwright test qa-visual-snapshots --project=chromium",
