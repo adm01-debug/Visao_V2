@@ -13,9 +13,9 @@ export default function TelegramSettingsPage() {
     <>
       <PageMeta title="Configurações Telegram" description="Configure notificações via Telegram" />
 
-      <div className="flex min-h-screen w-full bg-background">
+      <div className="flex min-h-screen w-full bg-background mb-mobile-nav">
         <Sidebar />
-        <main className="flex-1 p-6 overflow-auto mb-mobile-nav">
+        <main className="flex-1 p-6 overflow-auto">
           <TelegramConfigPanel />
         </main>
       </div>
