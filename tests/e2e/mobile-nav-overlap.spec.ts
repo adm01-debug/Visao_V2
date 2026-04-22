@@ -17,6 +17,7 @@
  * Atualizar baselines: `npm run test:mobile-nav-overlap -- --update-snapshots`
  */
 import { test, expect, devices } from '@playwright/test';
+import { expectLastRealElementAboveNav } from './helpers/lastRealElement';
 
 const PAGES = [
   { path: '/dashboard', name: 'dashboard-v2' },
@@ -48,25 +49,10 @@ test.describe('BottomNav não cobre conteúdo (mobile)', () => {
       });
       await page.waitForTimeout(400);
 
-      // Asserção geométrica: último filho visível não invade a BottomNav
-      const overlap = await page.evaluate((navH) => {
-        const scroll = document.querySelector('[data-app-scroll]');
-        if (!scroll) return { ok: false, reason: 'no-scroll', bottom: 0, vh: 0 };
-        const candidates = Array.from(scroll.querySelectorAll('*')).filter((n) => {
-          const r = (n as HTMLElement).getBoundingClientRect();
-          return r.height > 0 && r.width > 0;
-        });
-        const last = candidates[candidates.length - 1] as HTMLElement | undefined;
-        if (!last) return { ok: false, reason: 'no-children', bottom: 0, vh: window.innerHeight };
-        const rect = last.getBoundingClientRect();
-        const vh = window.innerHeight;
-        return { ok: rect.bottom <= vh - navH + 1, reason: 'measured', bottom: rect.bottom, vh };
-      }, NAV_HEIGHT);
-
-      expect(
-        overlap.ok,
-        `Último elemento em ${path} sobrepõe BottomNav (bottom=${overlap.bottom}, vh=${overlap.vh}, motivo=${overlap.reason})`
-      ).toBe(true);
+      // Asserção geométrica usando o helper que ignora skeletons/placeholders
+      // e elementos invisíveis — evita falsos positivos quando a página ainda
+      // tem loaders no fim do scroll.
+      await expectLastRealElementAboveNav(page, NAV_HEIGHT, path);
 
       // Snapshot visual da faixa inferior
       const vp = page.viewportSize();
