@@ -181,17 +181,31 @@ Páginas que **não** passam pelo `MainLayout` também **não** renderizam `Bott
 
 ### Camada 2 — Fallback CSS global
 
-Mesmo que uma página renderize seu próprio wrapper customizado e esqueça `mb-mobile-nav`, o layout aplica padding inferior automaticamente:
+Mesmo que uma página renderize seu próprio wrapper customizado e esqueça `mb-mobile-nav`, o layout aplica padding inferior automaticamente em **três níveis** (do mais específico ao mais genérico):
 
 ```css
-[data-app-scroll] > main:last-child:not(.mb-mobile-nav),
-[data-app-scroll] > div:last-child:not(.mb-mobile-nav),
-[data-app-scroll] > section:last-child:not(.mb-mobile-nav) {
-  padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+@media (max-width: 767px) {
+  /* (1) Classe explícita */
+  .mb-mobile-nav {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+  }
+  /* (2) <main role="main"> dentro do scroll container raiz */
+  [data-app-scroll] > main[role="main"]:last-child:not(.mb-mobile-nav):not([data-no-mobile-nav-pad]) {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+  }
+  /* (3) Qualquer descendente marcado com data-scroll-container
+         (cobre wrappers alternativos com overflow:auto próprio) */
+  [data-app-scroll] [data-scroll-container]:not(.mb-mobile-nav):not([data-no-mobile-nav-pad]) {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+  }
 }
 ```
 
-O atributo `data-app-scroll` está no `<SwipeableView>` do `MainLayout`. O seletor `:not(.mb-mobile-nav)` evita dupla margem quando a classe já está presente.
+- `data-app-scroll` marca o `<SwipeableView>` do `MainLayout` (scroll container único da app).
+- `data-scroll-container` é a marcação opt-in para wrappers que aninham seu próprio `overflow-y: auto/scroll`.
+- `:not(.mb-mobile-nav)` evita dupla margem quando a classe já está presente.
+- `[data-no-mobile-nav-pad]` é o opt-out explícito quando o padding inferior precisa ser desabilitado.
+- Em todos os casos somamos `env(safe-area-inset-bottom)` para que iOS/Safari não corte a última linha por baixo da home indicator.
 
 ### Camada 3 — Allowlist de wrappers customizados
 
