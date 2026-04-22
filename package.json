@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "analyze": "vite-bundle-analyzer",
-    "build": "npm run check:mobile-nav && npm run check:page-content && vite build && npm run check:tailwind-animations",
+    "build": "npm run check:mobile-nav && npm run check:page-content && npm run check:skeletons -- --skip-build && vite build && npm run check:tailwind-animations",
     "check:tailwind-animations": "node scripts/check-tailwind-animations.mjs",
     "build-storybook": "storybook build",
     "build:dev": "vite build --mode development",
