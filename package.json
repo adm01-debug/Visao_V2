@@ -65,7 +65,9 @@
     "typecheck": "tsc --noEmit",
     "validate": "npm run lint && npm run type-check && npm run test",
     "check:skeletons": "node scripts/validate-skeletons.mjs",
-    "test:mobile-nav-class": "playwright test mobile-nav-class-presence"
+    "test:mobile-nav-class": "playwright test mobile-nav-class-presence",
+    "report:mobile-nav-diff": "node scripts/build-mobile-nav-diff-report.mjs",
+    "seed:e2e-user": "node scripts/seed-e2e-user.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
