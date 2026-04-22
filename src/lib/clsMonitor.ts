@@ -7,10 +7,21 @@
  */
 import { logger } from '@/lib/logger';
 
+interface WeakRefLike<T extends object> {
+  deref(): T | undefined;
+}
+type WeakRefCtor = new <T extends object>(target: T) => WeakRefLike<T>;
+const WeakRefCtor: WeakRefCtor | undefined =
+  typeof globalThis !== 'undefined'
+    ? ((globalThis as unknown as { WeakRef?: WeakRefCtor }).WeakRef)
+    : undefined;
+
 interface ShiftSource {
   selector: string;
   value: number;
   timestamp: number;
+  /** Ref fraca ao elemento DOM (apenas runtime; não serializa). */
+  nodeRef?: WeakRefLike<Element>;
 }
 
 interface RouteSession {
@@ -70,10 +81,16 @@ function handleEntries(list: PerformanceObserverEntryList): void {
     const sources = entry.sources ?? [];
     const firstSource = sources[0];
     const selector = firstSource ? serializeNode(firstSource.node) : '<no-source>';
+    const node = firstSource?.node;
+    const nodeRef =
+      node && node instanceof Element && WeakRefCtor
+        ? new WeakRefCtor(node)
+        : undefined;
     session.shifts.push({
       selector,
       value: entry.value,
       timestamp: entry.startTime - session.startedAt,
+      nodeRef,
     });
 
     if (
@@ -231,6 +248,26 @@ export function getCurrentPath(): string {
 
 export function getShiftLog(): ShiftSource[] {
   return [...session.shifts];
+}
+
+/**
+ * Resolve as N maiores fontes de shift da rota atual cujos elementos
+ * ainda existem no DOM. Pensado para o overlay DEV.
+ */
+export function getTopLiveSources(limit = 5): Array<{
+  selector: string;
+  value: number;
+  timestamp: number;
+  element: Element;
+}> {
+  return [...session.shifts]
+    .sort((a, b) => b.value - a.value)
+    .map((s) => {
+      const el = s.nodeRef?.deref();
+      return el ? { selector: s.selector, value: s.value, timestamp: s.timestamp, element: el } : null;
+    })
+    .filter((x): x is { selector: string; value: number; timestamp: number; element: Element } => x !== null)
+    .slice(0, limit);
 }
 
 export function getRouteSnapshot() {

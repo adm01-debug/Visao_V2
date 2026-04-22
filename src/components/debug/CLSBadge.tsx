@@ -58,15 +58,35 @@ export function CLSBadge() {
       >
         CLS {cls.toFixed(3)}
       </button>
-      {open && shifts.length > 0 && (
+      {open && (
         <div className="mt-1 max-w-xs rounded bg-black/85 text-white p-2 space-y-1 shadow-xl">
-          <div className="opacity-70">{path}</div>
-          {shifts.map((s, i) => (
+          <div className="flex items-center justify-between gap-2">
+            <span className="opacity-70 truncate">{path}</span>
+            <button
+              type="button"
+              onClick={() => {
+                try {
+                  const cur = window.localStorage.getItem('visao:cls-overlay:v1') === '1';
+                  window.localStorage.setItem('visao:cls-overlay:v1', cur ? '0' : '1');
+                } catch { /* ignore */ }
+                // dispara evento sintético para o overlay reler (Alt+Shift+L equivalente)
+                window.dispatchEvent(new KeyboardEvent('keydown', { key: 'L', altKey: true, shiftKey: true }));
+              }}
+              className="px-1.5 py-0.5 rounded bg-white/15 hover:bg-white/25 text-[10px]"
+              title="Marcar shifts no DOM (Alt+Shift+L)"
+            >
+              🎯 Marcar
+            </button>
+          </div>
+          {shifts.length > 0 && shifts.map((s, i) => (
             <div key={i} className="flex justify-between gap-2">
               <span className="truncate">{s.selector}</span>
               <span>{s.value.toFixed(3)}</span>
             </div>
           ))}
+          {shifts.length === 0 && (
+            <div className="text-[11px] opacity-60">Nenhum shift ainda.</div>
+          )}
         </div>
       )}
     </div>
