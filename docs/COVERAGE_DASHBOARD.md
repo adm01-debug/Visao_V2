@@ -53,12 +53,21 @@ A ordenação padrão da tabela é **menor cobertura primeiro**, justamente para
 
 O workflow `.github/workflows/coverage.yml` roda `npm run coverage` em todo push para `main` (e em PRs):
 
-1. Publica o **artifact `coverage-report`** (retenção 14 dias) contendo:
-   - `coverage/` — relatório **HTML interativo** do Istanbul (abrir `coverage/index.html`).
-   - `public/coverage-report.json` — consumido pelo dashboard `/coverage`.
-   - `public/coverage-report.txt` — snapshot human-readable.
-2. Adiciona um **summary** em `$GITHUB_STEP_SUMMARY` com **link direto de download** do artifact (via `steps.upload_coverage.outputs.artifact-url`), totais por métrica e top 10 arquivos menos cobertos.
-3. Em PRs, posta/atualiza um **comentário idempotente** (marker `<!-- coverage-report-comment -->`) com o mesmo conteúdo + link de download do `.zip`.
+1. Publica dois **artifacts** (retenção 14 dias):
+   - **`coverage-report`** — `coverage/` (HTML Istanbul) + `public/coverage-report.json` + `public/coverage-report.txt`.
+   - **`coverage-html`** — `coverage-html.zip` standalone (apenas o HTML interativo, mais leve para download rápido).
+2. Adiciona um **summary** em `$GITHUB_STEP_SUMMARY` com **link direto de download** dos dois artifacts (`steps.upload_coverage.outputs.artifact-url` e `steps.upload_html.outputs.artifact-url`), totais por métrica e top 10 arquivos menos cobertos (ordenação asc explícita).
+3. Em PRs, posta/atualiza um **comentário idempotente** (marker `<!-- coverage-report-comment -->`) com os mesmos links.
+
+### Botão "Baixar HTML completo (CI)" no dashboard
+
+A página `/coverage` tem um botão que abre a aba de Artifacts do workflow. Para apontar diretamente para a página correta no GitHub do projeto, defina a env Vite:
+
+```
+VITE_COVERAGE_HTML_ARTIFACTS_URL=https://github.com/<owner>/<repo>/actions/workflows/coverage.yml
+```
+
+Sem essa env, o botão usa um link genérico de busca por `coverage.yml`.
 
 ## Estrutura do JSON
 
