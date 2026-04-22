@@ -20,6 +20,9 @@ a transição loading → dados.
 - Verde (`< 0.1`), amarelo (`< 0.25`), vermelho (`>= 0.25`).
 - Click expande os 5 shifts mais recentes (selector + valor).
 - Quando o CLS cruza `0.1`, um `console.warn` exibe os top-3 shifts em tabela.
+- Além disso, um **toast `sonner`** (`useCLSAlert`) é disparado uma vez por rota,
+  mostrando `CLS X.XXX em /rota` + maior shift (selector + valor) e link para
+  `/cls-report`. Reseta no próximo `pathname`.
 - Para ocultar o badge (ex.: screenshots de QA): `?nocls=1` na URL.
 
 ## Em PROD
