@@ -138,7 +138,7 @@ export function useManagedFilters<T extends Record<string, unknown>>(
     const entries: Array<{ key: keyof T; label: string }> = [];
     (Object.keys(defaults) as Array<keyof T>).forEach((key) => {
       if (isActive(key, filters[key], defaults[key])) {
-        entries.push({ key, label: labels[key] ?? String(key) });
+        entries.push({ key, label: (labels as Record<string, string>)[String(key)] ?? String(key) });
       }
     });
     return entries;
