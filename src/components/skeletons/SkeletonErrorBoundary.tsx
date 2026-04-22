@@ -34,9 +34,10 @@ function extractFailingComponent(componentStack: string | null | undefined): str
   const lines = componentStack.split('\n');
   for (const raw of lines) {
     const m = raw.match(/at\s+([A-Za-z_$][\w$]*)/);
-    if (!m) continue;
-    const name = m[1];
-    if (!SKIP.test(name)) return name;
+    const name = m?.[1];
+    if (!name) continue;
+    if (SKIP.test(name)) continue;
+    return name;
   }
   return null;
 }
