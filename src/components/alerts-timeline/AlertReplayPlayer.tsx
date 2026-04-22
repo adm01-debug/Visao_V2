@@ -31,7 +31,7 @@ export interface AlertReplayPlayerProps {
 }
 
 const SEVERITY_RING: Record<string, string> = {
-  low: 'ring-info/40',
+  low: 'ring-primary/40',
   medium: 'ring-warning/50',
   high: 'ring-destructive/60',
   critical: 'ring-destructive/80',

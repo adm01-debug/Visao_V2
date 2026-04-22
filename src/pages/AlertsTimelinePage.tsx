@@ -42,7 +42,7 @@ const SEVERITY_STYLES: Record<string, { label: string; dot: string; text: string
   critical: { label: 'Crítico', dot: 'bg-destructive', text: 'text-destructive', ring: 'ring-destructive/40' },
   high: { label: 'Alto', dot: 'bg-destructive/80', text: 'text-destructive', ring: 'ring-destructive/30' },
   medium: { label: 'Médio', dot: 'bg-warning', text: 'text-warning', ring: 'ring-warning/30' },
-  low: { label: 'Baixo', dot: 'bg-info', text: 'text-info', ring: 'ring-info/30' },
+  low: { label: 'Baixo', dot: 'bg-primary', text: 'text-primary', ring: 'ring-primary/30' },
 };
 
 export default function AlertsTimelinePage() {
