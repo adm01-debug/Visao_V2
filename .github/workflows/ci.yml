@@ -46,6 +46,9 @@ jobs:
       - name: Mobile Nav Checklist
         run: npm run check:mobile-nav
 
+      - name: Page Content Standard
+        run: npm run check:page-content
+
       - name: Build (production)
         run: npm run build
         env:
