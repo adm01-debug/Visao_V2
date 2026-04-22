@@ -394,5 +394,134 @@ Em DEV, o `mobileNavGuard` (`src/lib/mobileNavGuard.ts`) também avisa no consol
 
 ---
 
+## 15. Páginas com scroll container próprio
+
+Algumas telas precisam de um container interno com `overflow-y: auto` (timelines longas, painéis lado-a-lado com scroll independente, viewers de logs). Esses casos exigem decisão consciente para não quebrar o padding mobile nem o momentum do iOS.
+
+### 15.1 Árvore de decisão
+
+```
+Sua página precisa de scroll próprio?
+├─ NÃO → Use o wrapper PADRÃO (delegue tudo ao MainLayout)
+│        └─ Veja §13.1 (PageContent dentro de <main> do MainLayout)
+│
+└─ SIM → Por quê?
+   ├─ Só rolar a página inteira → REMOVA o overflow.
+   │  O <SwipeableView data-app-scroll> do MainLayout já rola a página.
+   │  Anti-padrão: `h-[calc(100vh-4rem)] overflow-auto` (scroll duplo).
+   │
+   ├─ Painéis com scroll independente (ex.: lista + detalhe) → CONFIE no fallback CSS
+   │  Marque o container interno com `data-scroll-container` e o CSS aplica
+   │  o padding inferior automaticamente. NÃO precisa adicionar `mb-mobile-nav`
+   │  manualmente nem entrar em allowlist.
+   │
+   └─ Wrapper que substitui o <main> (Sidebar embutido, full-bleed, etc.) →
+      Use a CLASSE EXPLÍCITA + allowlist (Camadas 1 + 3).
+      Adicione `mb-mobile-nav` ao container raiz E registre o arquivo na
+      CUSTOM_WRAPPER_ALLOWLIST de scripts/check-mobile-nav.mjs.
+```
+
+### 15.2 Quando usar cada estratégia
+
+| Situação | Estratégia | Marcação | Allowlist? |
+|---|---|---|---|
+| Página padrão (sem scroll próprio) | Delegar ao MainLayout | `<PageContent>` dentro do `<main>` herdado | Não |
+| Painel/coluna interna com scroll independente | **Fallback CSS (Camada 2.3)** | `data-scroll-container` no nó com `overflow-y:auto` | Não |
+| Wrapper substituindo `<main>` | Classe explícita (Camadas 1 + 3) | `mb-mobile-nav` no container raiz | **Sim** |
+| Elemento que NÃO deve receber padding | Opt-out | `data-no-mobile-nav-pad` | Não |
+
+### 15.3 Checklist para containers de scroll próprio
+
+Antes de aprovar um PR que introduz `overflow-y: auto/scroll` numa página:
+
+- [ ] **O scroll é realmente necessário?** Páginas comuns NÃO precisam — o `<SwipeableView>` do MainLayout já rola tudo.
+- [ ] **Não há `h-[calc(100vh-…)]`** no container raiz (anti-padrão de scroll duplo — o script `check:mobile-nav` falha).
+- [ ] **O container interno está marcado** com `data-scroll-container` (opt-in para o fallback CSS aplicar `padding-bottom` no mobile).
+- [ ] **Última linha visível em mobile**: testou em viewport 375×667 com BottomNavigation visível?
+- [ ] **iOS/Safari**: `env(safe-area-inset-bottom)` é somado automaticamente pelas 3 camadas de fallback — não recriar manualmente.
+- [ ] **Momentum scroll**: `-webkit-overflow-scrolling: touch` herdado do `SwipeableView` (não precisa redeclarar).
+- [ ] **Testes verdes**: `npm run check:mobile-nav` + `npm run test:mobile-nav-overlap`.
+
+### 15.4 Exemplos canônicos
+
+#### ✅ Bom — painel com scroll interno usando fallback CSS
+
+```tsx
+import { PageContent } from '@/components/layout/MainLayout';
+
+export default function LogsViewerPage() {
+  return (
+    <PageContent>
+      <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-4">
+        {/* Sidebar de filtros */}
+        <aside className="space-y-2">{/* ... */}</aside>
+
+        {/* Painel com scroll independente — fallback CSS aplica padding-bottom no mobile */}
+        <section
+          data-scroll-container
+          className="h-[60vh] overflow-y-auto rounded-md border border-border"
+        >
+          <LogsList />
+        </section>
+      </div>
+    </PageContent>
+  );
+}
+```
+
+Por que funciona: `data-scroll-container` ativa a regra `[data-app-scroll] [data-scroll-container]` que adiciona `padding-bottom: calc(4rem + safe-area-inset-bottom)` no mobile, garantindo que a última linha não fique escondida atrás do BottomNavigation.
+
+#### ✅ Bom — wrapper customizado com classe explícita
+
+```tsx
+// Reaplique a classe no RAIZ + adicione o arquivo à CUSTOM_WRAPPER_ALLOWLIST.
+export default function CustomDashboardPage() {
+  return (
+    <div className="flex min-h-screen w-full bg-background mb-mobile-nav">
+      <Sidebar />
+      <main className="flex-1 p-6 overflow-auto">
+        <DashboardWidgets />
+      </main>
+    </div>
+  );
+}
+```
+
+#### ❌ Ruim — scroll duplo (anti-padrão)
+
+```tsx
+// O MainLayout já rola via <SwipeableView>. Adicionar overflow + altura calculada
+// cria scroll aninhado, quebra momentum no iOS e esconde a última linha.
+export default function BrokenPage() {
+  return (
+    <div className="h-[calc(100vh-4rem)] overflow-auto p-6">
+      <Content />
+    </div>
+  );
+}
+```
+
+O script `check:mobile-nav` falha com a mensagem **"usam `h-[calc(100vh-...)]` (scroll duplo)"**.
+
+#### ❌ Ruim — scroll interno sem marcação
+
+```tsx
+// Sem data-scroll-container, o fallback CSS NÃO aplica padding e a última
+// linha pode ficar escondida atrás do BottomNavigation no mobile.
+export default function MissingMarkerPage() {
+  return (
+    <PageContent>
+      <section className="h-[60vh] overflow-y-auto">
+        <LogsList />
+      </section>
+    </PageContent>
+  );
+}
+```
+
+Correção: adicione `data-scroll-container` no `<section>`.
+
+---
+
 **Última atualização:** 22/04/2026
 
