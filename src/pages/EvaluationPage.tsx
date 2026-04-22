@@ -370,6 +370,7 @@ export default function EvaluationPage() {
                 {selected ? (
                   <>
                     <Card className={cn('overflow-hidden ring-2 ring-inset', selectedReview ? VERDICT_BG[selectedReview.verdict] : 'ring-border')}>
+                      {/* eslint-disable-next-line visao/no-hardcoded-colors -- player de vídeo precisa de fundo preto */}
                       <div className="aspect-video bg-black flex items-center justify-center">
                         {selected.thumbnail ? (
                           <img

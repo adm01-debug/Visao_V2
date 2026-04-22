@@ -170,6 +170,7 @@ export function AlertReplayPlayer({
       {/* Frame */}
       <div
         className={cn(
+          // eslint-disable-next-line visao/no-hardcoded-colors -- player de vídeo precisa de fundo preto
           'relative aspect-video bg-black ring-2 ring-inset',
           SEVERITY_RING[severity] ?? SEVERITY_RING.medium,
         )}

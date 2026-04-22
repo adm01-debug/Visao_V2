@@ -185,6 +185,7 @@ export function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonForm
               <div className="relative">
                 <Avatar className={cn(
                   "w-24 h-24 ring-2 ring-offset-2",
+                  {/* eslint-disable-next-line visao/no-hardcoded-colors -- ring verde indica face validada (semântica de sucesso) */}
                   faceValidation?.valid ? "ring-green-500" :
                   faceValidation && !faceValidation.valid ? "ring-destructive" : "ring-transparent"
                 )}>

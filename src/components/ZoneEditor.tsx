@@ -14,6 +14,7 @@ import { DrawingInstructions } from './zone-editor/DrawingInstructions';
 
 export function ZoneEditor({
   existingZones = [], onZoneCreated, onZoneUpdated, onZoneDeleted,
+  // eslint-disable-next-line visao/no-hardcoded-colors -- cor padrão de zona (HSL literal usada pelo Canvas)
   selectedColor = 'hsl(217, 91%, 60%)', drawingMode: externalMode, className, readOnly = false,
 }: ZoneEditorProps) {
   const containerRef = useRef<HTMLDivElement>(null);

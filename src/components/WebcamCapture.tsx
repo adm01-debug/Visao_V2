@@ -64,6 +64,7 @@ export function WebcamCapture({
         {status === 'ready' && (
           <>
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              {/* eslint-disable-next-line visao/no-hardcoded-colors -- guia visual de captura sobre vídeo escuro */}
               <div className="w-48 h-60 border-2 border-dashed border-white/50 rounded-full" />
             </div>
             <div className="absolute top-3 left-3">

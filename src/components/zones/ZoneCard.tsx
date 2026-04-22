@@ -28,6 +28,7 @@ export function ZoneCard({ zone, stats, cameraName, onEdit, onDelete, onToggle, 
       <div className="p-4 pb-2">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
+            {/* eslint-disable-next-line visao/no-hardcoded-colors -- cor dinâmica vinda do banco (zone.color) com fallback HSL */}
             <div className="w-4 h-4 rounded" style={{ backgroundColor: zone.color || 'hsl(217, 91%, 60%)' }} />
             <div>
               <h3 className="font-semibold text-base">{zone.name}</h3>

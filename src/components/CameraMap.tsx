@@ -136,6 +136,7 @@ export function CameraMap({ cameras, onCameraClick, className = '' }: CameraMapP
       el.addEventListener('mouseleave', handleMouseLeave);
       el.addEventListener('click', handleClick);
 
+      // eslint-disable-next-line visao/no-hardcoded-colors -- HTML inline injetado no Mapbox popup; não consome CSS vars
       const popup = new mapboxgl.Popup({ offset: 25, closeButton: false }).setHTML(`
         <div style="padding: 8px; min-width: 150px;">
           <strong style="font-size: 14px;">${camera.name}</strong>

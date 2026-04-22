@@ -139,6 +139,7 @@ export function CLSShiftOverlay() {
             }}
           >
             <span
+              // eslint-disable-next-line visao/no-hardcoded-colors -- overlay debug DEV-only com legenda branca sobre cor dinâmica
               className="absolute -top-5 left-0 px-1.5 py-0.5 rounded text-white whitespace-nowrap"
               style={{ background: color }}
             >

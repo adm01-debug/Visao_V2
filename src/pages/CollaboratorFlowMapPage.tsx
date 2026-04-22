@@ -36,6 +36,7 @@ export default function CollaboratorFlowMapPage() {
   const { zoneMetrics, flowEdges, bottlenecks } = useMemo(() => {
     const zoneMap = new Map<string, ZoneData>();
     if (zones.length > 0) {
+      // eslint-disable-next-line visao/no-hardcoded-colors -- cor de zona dinâmica do banco com fallback HSL para Canvas
       zones.forEach(z => zoneMap.set(z.id, { id: z.id, name: z.name, type: z.type, color: z.color || "hsl(217, 91%, 60%)", currentPeople: Math.floor(Math.random() * 15) + 1, capacity: z.type === "restricted" ? 5 : 15, avgDwell: Math.floor(Math.random() * 45) + 10 }));
     } else {
       DEMO_ZONES.forEach(z => zoneMap.set(z.id, z));
