@@ -35,8 +35,10 @@ const requestNotificationPermission = async () => {
 // ============================================
 
 import { startCLSMonitor } from '@/lib/clsMonitor';
+import { installMobileNavGuard } from '@/lib/mobileNavGuard';
 
 startCLSMonitor();
+installMobileNavGuard();
 
 createRoot(document.getElementById("root")!).render(<StrictMode>
     <App />
