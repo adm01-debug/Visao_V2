@@ -79,7 +79,9 @@ if (!wrapperContent.includes(REQUIRED_CLASS)) {
 }
 
 // 1b. Wrapper deve declarar EXATAMENTE UM scroll container `data-app-scroll`
-const scrollMarkerMatches = wrapperContent.match(/data-app-scroll/g) || [];
+//     (contamos apenas ocorrências como atributo JSX: `data-app-scroll` seguido
+//     de `>`, espaço/quebra, ou `=` — para ignorar menções em comentários/docs).
+const scrollMarkerMatches = wrapperContent.match(/data-app-scroll(?=[\s=>])/g) || [];
 if (scrollMarkerMatches.length === 0) {
   console.error(`❌ ${WRAPPER_FILE} NÃO declara \`data-app-scroll\`.`);
   console.error(`   O scroll container único da app deve estar marcado com \`data-app-scroll\` no SwipeableView.\n`);
