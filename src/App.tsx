@@ -29,6 +29,9 @@ errorReporter.installGlobalHandlers();
 const CLSBadge = import.meta.env.DEV
   ? lazy(() => import("@/components/debug/CLSBadge").then((m) => ({ default: m.CLSBadge })))
   : null;
+const CLSShiftOverlay = import.meta.env.DEV
+  ? lazy(() => import("@/components/debug/CLSShiftOverlay").then((m) => ({ default: m.CLSShiftOverlay })))
+  : null;
 
 // Lazy loaded pages
 const Index = lazy(() => import("@/pages/Index"));
@@ -167,6 +170,11 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
           {CLSBadge && (
             <Suspense fallback={null}>
               <CLSBadge />
+            </Suspense>
+          )}
+          {CLSShiftOverlay && (
+            <Suspense fallback={null}>
+              <CLSShiftOverlay />
             </Suspense>
           )}
         </TooltipProvider>
