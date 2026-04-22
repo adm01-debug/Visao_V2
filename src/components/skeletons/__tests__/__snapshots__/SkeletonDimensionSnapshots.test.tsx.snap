@@ -1,0 +1,1496 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Snapshots de dimensões dos skeletons (anti-CLS) > AlertsSkeleton: 8 linhas de tabela com min-h fixo 1`] = `
+[
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+]
+`;
+
+exports[`Snapshots de dimensões dos skeletons (anti-CLS) > AlertsSkeleton: footprint vertical estável 1`] = `
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [],
+              "dims": [
+                "h-8",
+              ],
+              "tag": "div",
+            },
+            {
+              "children": [],
+              "dims": [
+                "h-4",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [],
+          "dims": [
+            "h-10",
+          ],
+          "tag": "div",
+        },
+      ],
+      "dims": [],
+      "tag": "div",
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [],
+              "dims": [
+                "h-4",
+              ],
+              "tag": "div",
+            },
+            {
+              "children": [],
+              "dims": [
+                "h-8",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "dims": [
+                "h-4",
+              ],
+              "tag": "div",
+            },
+            {
+              "children": [],
+              "dims": [
+                "h-8",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "dims": [
+                "h-4",
+              ],
+              "tag": "div",
+            },
+            {
+              "children": [],
+              "dims": [
+                "h-8",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "dims": [
+                "h-4",
+              ],
+              "tag": "div",
+            },
+            {
+              "children": [],
+              "dims": [
+                "h-8",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+      ],
+      "dims": [],
+      "tag": "div",
+    },
+    {
+      "children": [
+        {
+          "children": [],
+          "dims": [
+            "h-10",
+          ],
+          "tag": "div",
+        },
+        {
+          "children": [],
+          "dims": [
+            "h-10",
+          ],
+          "tag": "div",
+        },
+        {
+          "children": [],
+          "dims": [
+            "h-10",
+          ],
+          "tag": "div",
+        },
+        {
+          "children": [],
+          "dims": [
+            "h-10",
+          ],
+          "tag": "div",
+        },
+      ],
+      "dims": [],
+      "tag": "div",
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-4",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-4",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-4",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-4",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-4",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-10",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-4",
+                      ],
+                      "tag": "div",
+                    },
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-3",
+                      ],
+                      "tag": "div",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-6",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-10",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-4",
+                      ],
+                      "tag": "div",
+                    },
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-3",
+                      ],
+                      "tag": "div",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-6",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-10",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-4",
+                      ],
+                      "tag": "div",
+                    },
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-3",
+                      ],
+                      "tag": "div",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-6",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-10",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-4",
+                      ],
+                      "tag": "div",
+                    },
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-3",
+                      ],
+                      "tag": "div",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-6",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-10",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-4",
+                      ],
+                      "tag": "div",
+                    },
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-3",
+                      ],
+                      "tag": "div",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-6",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-10",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-4",
+                      ],
+                      "tag": "div",
+                    },
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-3",
+                      ],
+                      "tag": "div",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-6",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-10",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-4",
+                      ],
+                      "tag": "div",
+                    },
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-3",
+                      ],
+                      "tag": "div",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-6",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-10",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-4",
+                      ],
+                      "tag": "div",
+                    },
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-3",
+                      ],
+                      "tag": "div",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-6",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+      ],
+      "dims": [],
+      "tag": "div",
+    },
+    {
+      "children": [],
+      "dims": [],
+      "tag": "span",
+    },
+  ],
+  "dims": [],
+  "tag": "div",
+}
+`;
+
+exports[`Snapshots de dimensões dos skeletons (anti-CLS) > CamerasSkeleton: cards de câmera com aspect-ratio 16/9 1`] = `
+[
+  "16 / 9",
+  "16 / 9",
+  "16 / 9",
+  "16 / 9",
+  "16 / 9",
+  "16 / 9",
+  "16 / 9",
+  "16 / 9",
+]
+`;
+
+exports[`Snapshots de dimensões dos skeletons (anti-CLS) > CamerasSkeleton: footprint vertical estável 1`] = `
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [],
+              "dims": [
+                "h-8",
+              ],
+              "tag": "div",
+            },
+            {
+              "children": [],
+              "dims": [
+                "h-4",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "dims": [
+                "h-10",
+              ],
+              "tag": "div",
+            },
+            {
+              "children": [],
+              "dims": [
+                "h-10",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+      ],
+      "dims": [
+        "min-h-[64px]",
+      ],
+      "tag": "div",
+    },
+    {
+      "children": [
+        {
+          "children": [],
+          "dims": [
+            "h-10",
+          ],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "dims": [
+                "h-10",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "dims": [
+                "h-8",
+              ],
+              "tag": "div",
+            },
+            {
+              "children": [],
+              "dims": [
+                "h-8",
+              ],
+              "tag": "div",
+            },
+            {
+              "children": [],
+              "dims": [
+                "h-8",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [
+            "h-10",
+          ],
+          "tag": "div",
+        },
+        {
+          "children": [],
+          "dims": [],
+          "tag": "span",
+        },
+      ],
+      "dims": [
+        "min-h-[96px]",
+      ],
+      "tag": "div",
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "aspectRatio": "16 / 9",
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "dims": [],
+                          "tag": "path",
+                        },
+                      ],
+                      "dims": [
+                        "h-8",
+                      ],
+                      "tag": "svg",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-4",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-3",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [
+                "min-h-[64px]",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "aspectRatio": "16 / 9",
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "dims": [],
+                          "tag": "path",
+                        },
+                      ],
+                      "dims": [
+                        "h-8",
+                      ],
+                      "tag": "svg",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-4",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-3",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [
+                "min-h-[64px]",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "aspectRatio": "16 / 9",
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "dims": [],
+                          "tag": "path",
+                        },
+                      ],
+                      "dims": [
+                        "h-8",
+                      ],
+                      "tag": "svg",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-4",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-3",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [
+                "min-h-[64px]",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "aspectRatio": "16 / 9",
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "dims": [],
+                          "tag": "path",
+                        },
+                      ],
+                      "dims": [
+                        "h-8",
+                      ],
+                      "tag": "svg",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-4",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-3",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [
+                "min-h-[64px]",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "aspectRatio": "16 / 9",
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "dims": [],
+                          "tag": "path",
+                        },
+                      ],
+                      "dims": [
+                        "h-8",
+                      ],
+                      "tag": "svg",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-4",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-3",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [
+                "min-h-[64px]",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "aspectRatio": "16 / 9",
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "dims": [],
+                          "tag": "path",
+                        },
+                      ],
+                      "dims": [
+                        "h-8",
+                      ],
+                      "tag": "svg",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-4",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-3",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [
+                "min-h-[64px]",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "aspectRatio": "16 / 9",
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "dims": [],
+                          "tag": "path",
+                        },
+                      ],
+                      "dims": [
+                        "h-8",
+                      ],
+                      "tag": "svg",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-4",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-3",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [
+                "min-h-[64px]",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "aspectRatio": "16 / 9",
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "dims": [],
+                          "tag": "path",
+                        },
+                      ],
+                      "dims": [
+                        "h-8",
+                      ],
+                      "tag": "svg",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-4",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-3",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [
+                "min-h-[64px]",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+      ],
+      "dims": [],
+      "tag": "div",
+    },
+    {
+      "children": [],
+      "dims": [],
+      "tag": "span",
+    },
+  ],
+  "dims": [
+    "min-h-[calc(100vh-8rem)]",
+  ],
+  "tag": "div",
+}
+`;
+
+exports[`Snapshots de dimensões dos skeletons (anti-CLS) > ZonesSkeleton: canvas principal e sidebar mantêm reserva 1`] = `
+{
+  "canvasAspectRatio": "16 / 9",
+  "sidebarChildren": 5,
+  "sidebarReserved": true,
+}
+`;
+
+exports[`Snapshots de dimensões dos skeletons (anti-CLS) > ZonesSkeleton: footprint vertical estável 1`] = `
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [],
+              "dims": [
+                "h-8",
+              ],
+              "tag": "div",
+            },
+            {
+              "children": [],
+              "dims": [
+                "h-4",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [],
+          "dims": [
+            "h-10",
+          ],
+          "tag": "div",
+        },
+      ],
+      "dims": [
+        "min-h-[64px]",
+      ],
+      "tag": "div",
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "aspectRatio": "16 / 9",
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "dims": [],
+                          "tag": "path",
+                        },
+                      ],
+                      "dims": [
+                        "h-8",
+                      ],
+                      "tag": "svg",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "dims": [
+                    "h-10",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-10",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-10",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-10",
+                  ],
+                  "tag": "div",
+                },
+                {
+                  "children": [],
+                  "dims": [
+                    "h-10",
+                  ],
+                  "tag": "div",
+                },
+              ],
+              "dims": [],
+              "tag": "div",
+            },
+          ],
+          "dims": [],
+          "tag": "div",
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "dims": [
+                "h-6",
+              ],
+              "tag": "div",
+            },
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-8",
+                      ],
+                      "tag": "div",
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "dims": [
+                            "h-4",
+                          ],
+                          "tag": "div",
+                        },
+                        {
+                          "children": [],
+                          "dims": [
+                            "h-3",
+                          ],
+                          "tag": "div",
+                        },
+                      ],
+                      "dims": [],
+                      "tag": "div",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+              ],
+              "dims": [
+                "min-h-[72px]",
+              ],
+              "tag": "div",
+            },
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-8",
+                      ],
+                      "tag": "div",
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "dims": [
+                            "h-4",
+                          ],
+                          "tag": "div",
+                        },
+                        {
+                          "children": [],
+                          "dims": [
+                            "h-3",
+                          ],
+                          "tag": "div",
+                        },
+                      ],
+                      "dims": [],
+                      "tag": "div",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+              ],
+              "dims": [
+                "min-h-[72px]",
+              ],
+              "tag": "div",
+            },
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-8",
+                      ],
+                      "tag": "div",
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "dims": [
+                            "h-4",
+                          ],
+                          "tag": "div",
+                        },
+                        {
+                          "children": [],
+                          "dims": [
+                            "h-3",
+                          ],
+                          "tag": "div",
+                        },
+                      ],
+                      "dims": [],
+                      "tag": "div",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+              ],
+              "dims": [
+                "min-h-[72px]",
+              ],
+              "tag": "div",
+            },
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "dims": [
+                        "h-8",
+                      ],
+                      "tag": "div",
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "dims": [
+                            "h-4",
+                          ],
+                          "tag": "div",
+                        },
+                        {
+                          "children": [],
+                          "dims": [
+                            "h-3",
+                          ],
+                          "tag": "div",
+                        },
+                      ],
+                      "dims": [],
+                      "tag": "div",
+                    },
+                  ],
+                  "dims": [],
+                  "tag": "div",
+                },
+              ],
+              "dims": [
+                "min-h-[72px]",
+              ],
+              "tag": "div",
+            },
+          ],
+          "dims": [
+            "min-h-[400px]",
+          ],
+          "tag": "div",
+        },
+      ],
+      "dims": [],
+      "tag": "div",
+    },
+    {
+      "children": [],
+      "dims": [],
+      "tag": "span",
+    },
+  ],
+  "dims": [
+    "min-h-[calc(100vh-8rem)]",
+  ],
+  "tag": "div",
+}
+`;
