@@ -15,6 +15,7 @@ import { SecurityStatsCards } from '@/components/security/SecurityStatsCards';
 import { AuditLogTable } from '@/components/security/AuditLogTable';
 import { AccessEventsList } from '@/components/security/AccessEventsList';
 import { SecurityListsPanel } from '@/components/security/SecurityListsPanel';
+import { PageContent } from '@/components/layout/MainLayout';
 
 import type { AuditLog, AccessEvent, SecurityPerson, SecurityStats, ListType } from '@/components/security/SecurityTypes';
 
@@ -80,16 +81,16 @@ export function SecurityPage() {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-6">
+      <PageContent>
         <Skeleton className="h-8 w-48" />
         <div className="grid grid-cols-4 gap-4">{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-24" />)}</div>
         <Skeleton className="h-[400px]" />
-      </div>
+      </PageContent>
     );
   }
 
   return (
-    <div role="main" aria-label="Segurança" className="page-container space-y-6">
+    <PageContent className="[&]:contents" aria-label="Segurança"><div role="main" aria-label="Segurança" className="space-y-6">
       <PageMeta title="Segurança" description="Logs de auditoria, controle de acesso e listas de segurança" />
       <div className="flex items-center justify-between">
         <div>
