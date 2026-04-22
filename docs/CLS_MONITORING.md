@@ -25,6 +25,21 @@ a transição loading → dados.
   `/cls-report`. Reseta no próximo `pathname`.
 - Para ocultar o badge (ex.: screenshots de QA): `?nocls=1` na URL.
 
+### Overlay de shifts
+
+Componente `CLSShiftOverlay` (DEV) destaca visualmente os elementos que mais
+geraram CLS na rota atual com boxes coloridos (top 1 = vermelho, 2-3 = âmbar,
+demais = primary) e rótulos `#N selector +valor`.
+
+- Toggle: **Alt+Shift+L** ou botão **🎯 Marcar** no painel expandido do badge.
+- Estado persistido em `localStorage` (`visao:cls-overlay:v1`).
+- Reposiciona em `scroll`/`resize` e re-poll por 8s após o toggle para
+  capturar shifts tardios.
+- Usa `WeakRef` para o nó DOM original capturado pelo `PerformanceObserver`,
+  garantindo que o overlay aponte para o elemento real (não para um seletor
+  reconstruído).
+- `pointer-events: none` — não interfere em cliques.
+
 ## Log de navegação (antes vs depois)
 
 A cada navegação, o `useRouteCLS` chama `appendNavigationCLS(report)` 3s após
