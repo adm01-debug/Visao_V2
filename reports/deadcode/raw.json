@@ -1,0 +1,7318 @@
+{
+  "files": [
+    "src/components/AccessDenied.tsx",
+    "src/components/AlertDetail.tsx",
+    "src/components/AlertNotification.tsx",
+    "src/components/AuthCallback.tsx",
+    "src/components/CameraCard.tsx",
+    "src/components/CameraGrid.tsx",
+    "src/components/CameraLayoutControls.tsx",
+    "src/components/Dashboard.tsx",
+    "src/components/DataTable.tsx",
+    "src/components/DateRangePicker.tsx",
+    "src/components/DetectionOverlay.tsx",
+    "src/components/Divider.tsx",
+    "src/components/Dock.tsx",
+    "src/components/ErrorFallback.tsx",
+    "src/components/ErrorState.tsx",
+    "src/components/FloatingAction.tsx",
+    "src/components/FocusTrap.tsx",
+    "src/components/Gauge.tsx",
+    "src/components/GlobalSearch.tsx",
+    "src/components/Head.tsx",
+    "src/components/ImageAnalysis.tsx",
+    "src/components/KeyboardShortcuts.tsx",
+    "src/components/LazyComponent.tsx",
+    "src/components/LazyImage.tsx",
+    "src/components/LazyLoad.tsx",
+    "src/components/LiveRegion.tsx",
+    "src/components/LoadingOverlay.tsx",
+    "src/components/Meta.tsx",
+    "src/components/NavLink.tsx",
+    "src/components/NotificationConfig.tsx",
+    "src/components/NotificationSettings.tsx",
+    "src/components/PageHeader.tsx",
+    "src/components/Pagination.tsx",
+    "src/components/PersonCard.tsx",
+    "src/components/PersonForm.tsx",
+    "src/components/RecognitionLogs.tsx",
+    "src/components/RuleCard.tsx",
+    "src/components/RuleEditor.tsx",
+    "src/components/SectionErrorBoundary.tsx",
+    "src/components/SecuritySettings.tsx",
+    "src/components/Spotlight.tsx",
+    "src/components/StatCard.tsx",
+    "src/components/StatusBadge.tsx",
+    "src/components/StreamPlayer.tsx",
+    "src/components/TableSkeleton.tsx",
+    "src/components/TelegramConfig.tsx",
+    "src/components/TelegramSettings.tsx",
+    "src/components/TimeAgo.tsx",
+    "src/components/Timeline.tsx",
+    "src/components/Tooltip.tsx",
+    "src/components/Tour.tsx",
+    "src/components/TourHighlight.tsx",
+    "src/components/VisuallyHidden.tsx",
+    "src/config/api.ts",
+    "src/config/env.ts",
+    "src/config/features.ts",
+    "src/config/index.ts",
+    "src/config/ipWhitelist.ts",
+    "src/config/lazyRoutes.ts",
+    "src/config/locale.ts",
+    "src/config/models_config.ts",
+    "src/config/routes.ts",
+    "src/config/sentry.ts",
+    "src/config/supabase.ts",
+    "src/config/theme.ts",
+    "src/constants/animations.ts",
+    "src/constants/api.ts",
+    "src/constants/breakpoints.ts",
+    "src/constants/colors.ts",
+    "src/constants/endpoints.ts",
+    "src/constants/errors.ts",
+    "src/constants/events.ts",
+    "src/constants/features.ts",
+    "src/constants/index.ts",
+    "src/constants/keybindings.ts",
+    "src/constants/keys.ts",
+    "src/constants/messages.ts",
+    "src/constants/permissions.ts",
+    "src/constants/regex.ts",
+    "src/constants/roles.ts",
+    "src/constants/routes.ts",
+    "src/constants/status.ts",
+    "src/constants/transitions.ts",
+    "src/constants/validation.ts",
+    "src/constants/zIndex.ts",
+    "src/contexts/AnalyticsContext.tsx",
+    "src/contexts/CameraContext.tsx",
+    "src/contexts/SettingsContext.tsx",
+    "src/contexts/UserContext.tsx",
+    "src/contexts/accessibility.tsx",
+    "src/contexts/index.tsx",
+    "src/data/index.ts",
+    "src/data/mockRules.ts",
+    "src/hooks/index.ts",
+    "src/hooks/use-mobile.tsx",
+    "src/hooks/useAnalytics.ts",
+    "src/hooks/useAsync.ts",
+    "src/hooks/useCamera.ts",
+    "src/hooks/useClickAway.ts",
+    "src/hooks/useClipboard.ts",
+    "src/hooks/useCopyToClipboard.ts",
+    "src/hooks/useCountdown.ts",
+    "src/hooks/useDebounce.ts",
+    "src/hooks/useDisclosure.ts",
+    "src/hooks/useEventListener.ts",
+    "src/hooks/useFaceRecognition.ts",
+    "src/hooks/useFetch.ts",
+    "src/hooks/useFilter.ts",
+    "src/hooks/useFocus.ts",
+    "src/hooks/useForm.ts",
+    "src/hooks/useFullscreen.ts",
+    "src/hooks/useHover.ts",
+    "src/hooks/useInfiniteScroll.ts",
+    "src/hooks/useInterval.ts",
+    "src/hooks/useKeyboardShortcut.ts",
+    "src/hooks/useKeyboardShortcuts.ts",
+    "src/hooks/useLatest.ts",
+    "src/hooks/useLocalStorage.ts",
+    "src/hooks/useLockBodyScroll.ts",
+    "src/hooks/useLongPress.ts",
+    "src/hooks/useMap.ts",
+    "src/hooks/useMediaQuery.ts",
+    "src/hooks/useMount.ts",
+    "src/hooks/useMounted.ts",
+    "src/hooks/useNetworkState.ts",
+    "src/hooks/useOffline.ts",
+    "src/hooks/useOnScreen.ts",
+    "src/hooks/usePagination.ts",
+    "src/hooks/usePerformance.ts",
+    "src/hooks/usePrevious.ts",
+    "src/hooks/useQueue.ts",
+    "src/hooks/useRecording.ts",
+    "src/hooks/useScript.ts",
+    "src/hooks/useScrollPosition.ts",
+    "src/hooks/useSet.ts",
+    "src/hooks/useSettings.ts",
+    "src/hooks/useSpeechRecognition.ts",
+    "src/hooks/useSpeechSynthesis.ts",
+    "src/hooks/useThrottle.ts",
+    "src/hooks/useTimeout.ts",
+    "src/hooks/useTitle.ts",
+    "src/hooks/useToggle.ts",
+    "src/hooks/useWindowSize.ts",
+    "src/integrations/index.ts",
+    "src/layouts/AuthLayout.tsx",
+    "src/layouts/DashboardLayout.tsx",
+    "src/layouts/ErrorLayout.tsx",
+    "src/layouts/MainLayout.tsx",
+    "src/layouts/MinimalLayout.tsx",
+    "src/layouts/index.tsx",
+    "src/middleware/errorHandler.ts",
+    "src/middleware/index.ts",
+    "src/middleware/ipWhitelist.ts",
+    "src/middleware/logging.ts",
+    "src/middleware/validation.ts",
+    "src/pages/index.ts",
+    "src/providers/AnalyticsProvider.tsx",
+    "src/providers/AppProviders.tsx",
+    "src/providers/ModalProvider.tsx",
+    "src/providers/QueryProvider.tsx",
+    "src/providers/ToastProvider.tsx",
+    "src/providers/index.tsx",
+    "src/stores/aiStore.ts",
+    "src/stores/alertStore.ts",
+    "src/stores/analyticsStore.ts",
+    "src/stores/appStore.ts",
+    "src/stores/authStore.ts",
+    "src/stores/cameraStore.ts",
+    "src/stores/filterStore.ts",
+    "src/stores/index.ts",
+    "src/stores/integrationStore.ts",
+    "src/stores/mediaStore.ts",
+    "src/stores/notificationStore.ts",
+    "src/stores/playbackStore.ts",
+    "src/stores/recordingStore.ts",
+    "src/stores/settingsStore.ts",
+    "src/stores/syncStore.ts",
+    "src/stores/themeStore.ts",
+    "src/stores/uiStore.ts",
+    "src/stores/userStore.ts",
+    "src/i18n/index.ts",
+    "src/types/clips.ts",
+    "src/types/faceRecognition.ts",
+    "src/types/index.ts",
+    "src/utils/index.ts",
+    "src/components/analysis/StatCard.tsx",
+    "src/components/analytics/analyticsConstants.ts",
+    "src/components/clips/ClipCard.tsx",
+    "src/components/clips/clipConstants.ts",
+    "src/components/dashboard/DashboardAlerts.tsx",
+    "src/components/dashboard/DashboardCameraGrid.tsx",
+    "src/components/dashboard/DashboardControlsBar.tsx",
+    "src/components/dashboard/DashboardSkeleton.tsx",
+    "src/components/dashboard/DashboardStats.tsx",
+    "src/components/dashboard/StreamCameraCard.tsx",
+    "src/components/dashboard/index.ts",
+    "src/components/dashboard/types.ts",
+    "src/components/notifications/notificationHelpers.ts",
+    "src/components/person-card/PersonCardCompact.tsx",
+    "src/components/rule-editor/ConditionsSection.tsx",
+    "src/components/rule-editor/RuleEditorConstants.ts",
+    "src/components/rule-editor/ScheduleSection.tsx",
+    "src/components/scanner/DetectedRisksCard.tsx",
+    "src/components/search/searchHelpers.tsx",
+    "src/components/settings/index.ts",
+    "src/components/sidebar/index.ts",
+    "src/components/skeleton/SkeletonLoader.tsx",
+    "src/components/skeleton/index.ts",
+    "src/components/tabs/Tabs.tsx",
+    "src/components/tabs/index.ts",
+    "src/components/switch/Switch.tsx",
+    "src/components/switch/index.ts",
+    "src/components/textarea/TextArea.tsx",
+    "src/components/textarea/index.ts",
+    "src/components/thumbnail/Thumbnail.tsx",
+    "src/components/thumbnail/index.ts",
+    "src/components/tooltip/Tooltip.tsx",
+    "src/components/tooltip/index.ts",
+    "src/components/widgets/index.ts",
+    "src/contexts/a11y/components.tsx",
+    "src/contexts/a11y/hooks.tsx",
+    "src/contexts/a11y/styles.ts",
+    "src/hooks/clip-recorder/types.ts",
+    "src/hooks/clip-recorder/useClipStorage.ts",
+    "src/hooks/global-streaming/streamingTypes.ts",
+    "src/hooks/settings/types.ts",
+    "src/integrations/supabase/index.ts",
+    "src/types/faceRecognition/helpers.ts",
+    "src/types/faceRecognition/index.ts",
+    "src/types/faceRecognition/types.ts",
+    "src/components/sidebar/config/index.ts",
+    "src/components/sidebar/hooks/index.ts"
+  ],
+  "issues": [
+    {
+      "file": "package.json",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [
+        {
+          "name": "@hookform/resolvers",
+          "line": 94,
+          "col": 6,
+          "pos": 4719
+        },
+        {
+          "name": "@radix-ui/react-aspect-ratio",
+          "line": 98,
+          "col": 6,
+          "pos": 4891
+        },
+        {
+          "name": "@radix-ui/react-context-menu",
+          "line": 102,
+          "col": 6,
+          "pos": 5066
+        },
+        {
+          "name": "@radix-ui/react-hover-card",
+          "line": 105,
+          "col": 6,
+          "pos": 5202
+        },
+        {
+          "name": "@radix-ui/react-menubar",
+          "line": 107,
+          "col": 6,
+          "pos": 5286
+        },
+        {
+          "name": "@radix-ui/react-navigation-menu",
+          "line": 108,
+          "col": 6,
+          "pos": 5328
+        },
+        {
+          "name": "@radix-ui/react-radio-group",
+          "line": 111,
+          "col": 6,
+          "pos": 5462
+        },
+        {
+          "name": "@sentry/react",
+          "line": 123,
+          "col": 6,
+          "pos": 5961
+        },
+        {
+          "name": "@sentry/tracing",
+          "line": 124,
+          "col": 6,
+          "pos": 5992
+        },
+        {
+          "name": "@tanstack/react-virtual",
+          "line": 127,
+          "col": 6,
+          "pos": 6108
+        },
+        {
+          "name": "ably",
+          "line": 131,
+          "col": 6,
+          "pos": 6282
+        },
+        {
+          "name": "cmdk",
+          "line": 134,
+          "col": 6,
+          "pos": 6368
+        },
+        {
+          "name": "dompurify",
+          "line": 136,
+          "col": 6,
+          "pos": 6416
+        },
+        {
+          "name": "embla-carousel-react",
+          "line": 137,
+          "col": 6,
+          "pos": 6443
+        },
+        {
+          "name": "file-saver",
+          "line": 139,
+          "col": 6,
+          "pos": 6511
+        },
+        {
+          "name": "helmet",
+          "line": 141,
+          "col": 6,
+          "pos": 6572
+        },
+        {
+          "name": "i18next",
+          "line": 144,
+          "col": 6,
+          "pos": 6650
+        },
+        {
+          "name": "i18next-browser-languagedetector",
+          "line": 145,
+          "col": 6,
+          "pos": 6676
+        },
+        {
+          "name": "immer",
+          "line": 146,
+          "col": 6,
+          "pos": 6726
+        },
+        {
+          "name": "input-otp",
+          "line": 147,
+          "col": 6,
+          "pos": 6750
+        },
+        {
+          "name": "jotai",
+          "line": 148,
+          "col": 6,
+          "pos": 6777
+        },
+        {
+          "name": "pusher-js",
+          "line": 152,
+          "col": 6,
+          "pos": 6883
+        },
+        {
+          "name": "react-error-boundary",
+          "line": 156,
+          "col": 6,
+          "pos": 6995
+        },
+        {
+          "name": "react-hook-form",
+          "line": 158,
+          "col": 6,
+          "pos": 7069
+        },
+        {
+          "name": "react-i18next",
+          "line": 159,
+          "col": 6,
+          "pos": 7103
+        },
+        {
+          "name": "react-pdf",
+          "line": 160,
+          "col": 6,
+          "pos": 7135
+        },
+        {
+          "name": "react-resizable-panels",
+          "line": 161,
+          "col": 6,
+          "pos": 7163
+        },
+        {
+          "name": "react-virtuoso",
+          "line": 163,
+          "col": 6,
+          "pos": 7238
+        },
+        {
+          "name": "sanitize-html",
+          "line": 165,
+          "col": 6,
+          "pos": 7298
+        },
+        {
+          "name": "socket.io-client",
+          "line": 166,
+          "col": 6,
+          "pos": 7330
+        },
+        {
+          "name": "vaul",
+          "line": 170,
+          "col": 6,
+          "pos": 7457
+        },
+        {
+          "name": "xss",
+          "line": 174,
+          "col": 6,
+          "pos": 7576
+        },
+        {
+          "name": "zustand",
+          "line": 176,
+          "col": 6,
+          "pos": 7621
+        }
+      ],
+      "devDependencies": [
+        {
+          "name": "@tanstack/react-query-devtools",
+          "line": 188,
+          "col": 6,
+          "pos": 8027
+        },
+        {
+          "name": "@testing-library/user-event",
+          "line": 191,
+          "col": 6,
+          "pos": 8160
+        }
+      ],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [
+        {
+          "name": "vite-bundle-analyzer"
+        },
+        {
+          "name": "storybook"
+        },
+        {
+          "name": "i18next-parser"
+        },
+        {
+          "name": "semantic-release"
+        }
+      ],
+      "unresolved": [],
+      "exports": [],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "prettier.config.js",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [
+        {
+          "name": "prettier-plugin-tailwindcss"
+        }
+      ],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "eslint.config.js",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [
+        {
+          "name": "eslint-plugin-unused-imports"
+        }
+      ],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/widgets/WidgetWrapper.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [
+        {
+          "name": "@dnd-kit/utilities"
+        }
+      ],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "scripts/generate-icons.js",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [
+        {
+          "name": "sharp"
+        }
+      ],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/widgets/EnhancedWidgetWrapper.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [
+        {
+          "name": "@dnd-kit/utilities"
+        }
+      ],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "EnhancedWidgetWrapper",
+          "line": 22,
+          "col": 17,
+          "pos": 659
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": ".eslintrc.cjs",
+      "owners": [],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [
+        {
+          "name": "@typescript-eslint/eslint-plugin"
+        },
+        {
+          "name": "eslint-plugin-react"
+        },
+        {
+          "name": "@typescript-eslint/parser"
+        }
+      ],
+      "exports": [],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/cameras/EnhancedCameraGrid.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "EnhancedCameraCard",
+          "line": 63,
+          "col": 17,
+          "pos": 1553
+        },
+        {
+          "name": "CameraGrid",
+          "line": 263,
+          "col": 17,
+          "pos": 8371
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/settings/NotificationSettingsPanel.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 223,
+          "col": 8,
+          "pos": 8222
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "NotificationSettingsPanel",
+            "line": 15,
+            "col": 32,
+            "pos": 731
+          },
+          {
+            "name": "default",
+            "line": 223,
+            "col": 15,
+            "pos": 8229
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/widgets/EnhancedWidgets.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "EnhancedWidgetWrapper",
+          "line": 4,
+          "col": 9,
+          "pos": 51
+        },
+        {
+          "name": "WidgetGrid",
+          "line": 5,
+          "col": 9,
+          "pos": 116
+        },
+        {
+          "name": "StatCard",
+          "line": 6,
+          "col": 9,
+          "pos": 159
+        },
+        {
+          "name": "MiniChart",
+          "line": 7,
+          "col": 9,
+          "pos": 198
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/lib/alertSounds.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "updateSoundSettings",
+          "line": 79,
+          "col": 17,
+          "pos": 1660
+        }
+      ],
+      "types": [
+        {
+          "name": "AlertSeverity",
+          "line": 4,
+          "col": 13,
+          "pos": 101
+        },
+        {
+          "name": "ToneType",
+          "line": 5,
+          "col": 13,
+          "pos": 169
+        },
+        {
+          "name": "SoundConfig",
+          "line": 9,
+          "col": 18,
+          "pos": 326
+        },
+        {
+          "name": "SoundSettings",
+          "line": 18,
+          "col": 13,
+          "pos": 469
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/lib/dateUtils.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "getTimeAgo",
+          "line": 51,
+          "col": 14,
+          "pos": 1559
+        },
+        {
+          "name": "getRelativeTime",
+          "line": 52,
+          "col": 14,
+          "pos": 1605
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "formatRelativeTime",
+            "line": 20,
+            "col": 13,
+            "pos": 566
+          },
+          {
+            "name": "getTimeAgo",
+            "line": 51,
+            "col": 26,
+            "pos": 1571
+          },
+          {
+            "name": "getRelativeTime",
+            "line": 52,
+            "col": 31,
+            "pos": 1622
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/lib/errorTracking.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 20,
+          "col": 8,
+          "pos": 617
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/lib/ipUtils.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "getClientIP",
+          "line": 80,
+          "col": 14,
+          "pos": 2447
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/lib/logger.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 142,
+          "col": 8,
+          "pos": 4006
+        }
+      ],
+      "types": [
+        {
+          "name": "LogLevel",
+          "line": 10,
+          "col": 13,
+          "pos": 394
+        },
+        {
+          "name": "LogEntry",
+          "line": 12,
+          "col": 18,
+          "pos": 470
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "logger",
+            "line": 111,
+            "col": 13,
+            "pos": 2711
+          },
+          {
+            "name": "default",
+            "line": 142,
+            "col": 15,
+            "pos": 4013
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/skeletons/FiltersBarSkeleton.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 55,
+          "col": 8,
+          "pos": 1640
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "FiltersBarSkeleton",
+            "line": 10,
+            "col": 2,
+            "pos": 255
+          },
+          {
+            "name": "default",
+            "line": 55,
+            "col": 15,
+            "pos": 1647
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/skeletons/TabsSkeleton.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 29,
+          "col": 8,
+          "pos": 712
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "TabsSkeleton",
+            "line": 7,
+            "col": 2,
+            "pos": 163
+          },
+          {
+            "name": "default",
+            "line": 29,
+            "col": 15,
+            "pos": 719
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/skeletons/SkeletonErrorBoundary.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 113,
+          "col": 8,
+          "pos": 3486
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "SkeletonErrorBoundary",
+            "line": 54,
+            "col": 2,
+            "pos": 1919
+          },
+          {
+            "name": "default",
+            "line": 113,
+            "col": 15,
+            "pos": 3493
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/lib/lazyLoad.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "LoadingFallback",
+          "line": 14,
+          "col": 14,
+          "pos": 491
+        },
+        {
+          "name": "PageLoadingFallback",
+          "line": 23,
+          "col": 14,
+          "pos": 710
+        },
+        {
+          "name": "LazyPages",
+          "line": 88,
+          "col": 14,
+          "pos": 2504
+        },
+        {
+          "name": "default",
+          "line": 97,
+          "col": 8,
+          "pos": 3053
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "LazyPages",
+            "line": 88,
+            "col": 13,
+            "pos": 2503
+          },
+          {
+            "name": "default",
+            "line": 97,
+            "col": 15,
+            "pos": 3060
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/contexts/ThemeContext.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "useTheme",
+          "line": 10,
+          "col": 24,
+          "pos": 292
+        },
+        {
+          "name": "toggleTheme",
+          "line": 14,
+          "col": 14,
+          "pos": 480
+        }
+      ],
+      "types": [
+        {
+          "name": "ThemeMode",
+          "line": 11,
+          "col": 14,
+          "pos": 341
+        },
+        {
+          "name": "ThemeVariant",
+          "line": 11,
+          "col": 25,
+          "pos": 352
+        },
+        {
+          "name": "ThemeState",
+          "line": 11,
+          "col": 39,
+          "pos": 366
+        },
+        {
+          "name": "ThemeContextType",
+          "line": 11,
+          "col": 51,
+          "pos": 378
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/dev/SkeletonToggleButton.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 44,
+          "col": 8,
+          "pos": 1604
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "SkeletonToggleButton",
+            "line": 4,
+            "col": 34,
+            "pos": 199
+          },
+          {
+            "name": "default",
+            "line": 44,
+            "col": 15,
+            "pos": 1611
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/dev/SkeletonFailureToggleButton.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 75,
+          "col": 8,
+          "pos": 2320
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "SkeletonFailureToggleButton",
+            "line": 19,
+            "col": 3,
+            "pos": 535
+          },
+          {
+            "name": "default",
+            "line": 75,
+            "col": 15,
+            "pos": 2327
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/dev/MobileMenuChecklist.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 229,
+          "col": 8,
+          "pos": 7610
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "MobileMenuChecklist",
+            "line": 39,
+            "col": 3,
+            "pos": 1441
+          },
+          {
+            "name": "default",
+            "line": 229,
+            "col": 15,
+            "pos": 7617
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/ErrorBoundary.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "withErrorBoundary",
+          "line": 140,
+          "col": 17,
+          "pos": 4509
+        },
+        {
+          "name": "ErrorBoundaryWrapper",
+          "line": 161,
+          "col": 17,
+          "pos": 5003
+        },
+        {
+          "name": "default",
+          "line": 197,
+          "col": 8,
+          "pos": 5867
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "ErrorBoundary",
+            "line": 25,
+            "col": 2,
+            "pos": 743
+          },
+          {
+            "name": "default",
+            "line": 197,
+            "col": 15,
+            "pos": 5874
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/LoadingSpinner.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "LoadingSpinner",
+          "line": 14,
+          "col": 14,
+          "pos": 352
+        },
+        {
+          "name": "default",
+          "line": 65,
+          "col": 8,
+          "pos": 2864
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "LoadingSpinner",
+            "line": 14,
+            "col": 13,
+            "pos": 351
+          },
+          {
+            "name": "default",
+            "line": 65,
+            "col": 15,
+            "pos": 2871
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/layout/MainLayout.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 146,
+          "col": 8,
+          "pos": 4878
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "MainLayout",
+            "line": 34,
+            "col": 2,
+            "pos": 1633
+          },
+          {
+            "name": "default",
+            "line": 146,
+            "col": 15,
+            "pos": 4885
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/ProtectedRoute.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 46,
+          "col": 8,
+          "pos": 1275
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "ProtectedRoute",
+            "line": 16,
+            "col": 13,
+            "pos": 516
+          },
+          {
+            "name": "default",
+            "line": 46,
+            "col": 15,
+            "pos": 1282
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/PanicButton.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 76,
+          "col": 8,
+          "pos": 2692
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "PanicButton",
+            "line": 17,
+            "col": 13,
+            "pos": 453
+          },
+          {
+            "name": "default",
+            "line": 76,
+            "col": 15,
+            "pos": 2699
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/RouteErrorBoundary.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "RouteErrorBoundary",
+          "line": 18,
+          "col": 14,
+          "pos": 511
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/lib/errorReporter.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 178,
+          "col": 8,
+          "pos": 4974
+        }
+      ],
+      "types": [
+        {
+          "name": "ErrorReport",
+          "line": 11,
+          "col": 18,
+          "pos": 286
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "errorReporter",
+            "line": 125,
+            "col": 13,
+            "pos": 3346
+          },
+          {
+            "name": "default",
+            "line": 178,
+            "col": 15,
+            "pos": 4981
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/debug/CLSBadge.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 97,
+          "col": 8,
+          "pos": 3147
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "CLSBadge",
+            "line": 19,
+            "col": 2,
+            "pos": 618
+          },
+          {
+            "name": "default",
+            "line": 97,
+            "col": 15,
+            "pos": 3154
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/debug/CLSShiftOverlay.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 155,
+          "col": 8,
+          "pos": 4707
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "CLSShiftOverlay",
+            "line": 59,
+            "col": 2,
+            "pos": 1760
+          },
+          {
+            "name": "default",
+            "line": 155,
+            "col": 15,
+            "pos": 4714
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/pages/DashboardV2.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "DashboardV2",
+          "line": 50,
+          "col": 17,
+          "pos": 2953
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "DashboardV2",
+            "line": 48,
+            "col": 2,
+            "pos": 2935
+          },
+          {
+            "name": "default",
+            "line": 219,
+            "col": 15,
+            "pos": 17121
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/pages/CamerasPage.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "CamerasPage",
+          "line": 29,
+          "col": 17,
+          "pos": 1080
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "CamerasPage",
+            "line": 27,
+            "col": 62,
+            "pos": 1062
+          },
+          {
+            "name": "default",
+            "line": 230,
+            "col": 15,
+            "pos": 9819
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/pages/AlertsPage.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "AlertsPage",
+          "line": 30,
+          "col": 17,
+          "pos": 1619
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "AlertsPage",
+            "line": 28,
+            "col": 62,
+            "pos": 1601
+          },
+          {
+            "name": "default",
+            "line": 232,
+            "col": 15,
+            "pos": 14817
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/pages/ZonesPage.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "ZonesPage",
+          "line": 27,
+          "col": 17,
+          "pos": 1432
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "ZonesPage",
+            "line": 25,
+            "col": 36,
+            "pos": 1414
+          },
+          {
+            "name": "default",
+            "line": 294,
+            "col": 15,
+            "pos": 17663
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/pages/RecordingsPage.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "RecordingsPage",
+          "line": 30,
+          "col": 17,
+          "pos": 1724
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "RecordingsPage",
+            "line": 28,
+            "col": 68,
+            "pos": 1706
+          },
+          {
+            "name": "default",
+            "line": 257,
+            "col": 15,
+            "pos": 17004
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/pages/AnalyticsPage.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "AnalyticsPage",
+          "line": 34,
+          "col": 17,
+          "pos": 1947
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "AnalyticsPage",
+            "line": 32,
+            "col": 128,
+            "pos": 1929
+          },
+          {
+            "name": "default",
+            "line": 298,
+            "col": 15,
+            "pos": 17595
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/pages/SettingsPage.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "SettingsPage",
+          "line": 25,
+          "col": 17,
+          "pos": 1203
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "SettingsPage",
+            "line": 23,
+            "col": 62,
+            "pos": 1185
+          },
+          {
+            "name": "default",
+            "line": 108,
+            "col": 15,
+            "pos": 5100
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/pages/SecurityPage.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "SecurityPage",
+          "line": 22,
+          "col": 17,
+          "pos": 1069
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "SecurityPage",
+            "line": 20,
+            "col": 123,
+            "pos": 1051
+          },
+          {
+            "name": "default",
+            "line": 123,
+            "col": 15,
+            "pos": 7212
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/lib/clsMonitor.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "getAllReports",
+          "line": 290,
+          "col": 17,
+          "pos": 8319
+        }
+      ],
+      "types": [
+        {
+          "name": "TrackedRoute",
+          "line": 133,
+          "col": 13,
+          "pos": 3907
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/alerts/alertFilterTypes.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "SEVERITY_LABELS",
+          "line": 49,
+          "col": 14,
+          "pos": 1362
+        }
+      ],
+      "types": [
+        {
+          "name": "AlertSeverity",
+          "line": 7,
+          "col": 13,
+          "pos": 380
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/AlertFilters.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "AlertFiltersComponent",
+          "line": 33,
+          "col": 17,
+          "pos": 1530
+        }
+      ],
+      "types": [
+        {
+          "name": "AlertType",
+          "line": 20,
+          "col": 14,
+          "pos": 931
+        },
+        {
+          "name": "AlertSeverity",
+          "line": 20,
+          "col": 25,
+          "pos": 942
+        },
+        {
+          "name": "DateRange",
+          "line": 20,
+          "col": 40,
+          "pos": 957
+        },
+        {
+          "name": "CameraOption",
+          "line": 20,
+          "col": 51,
+          "pos": 968
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/AnalysisHistoryPanel.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 141,
+          "col": 8,
+          "pos": 8892
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "AnalysisHistoryPanel",
+            "line": 69,
+            "col": 13,
+            "pos": 4046
+          },
+          {
+            "name": "default",
+            "line": 141,
+            "col": 15,
+            "pos": 8899
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/hooks/useImageAnalysis.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "useImageAnalysis",
+          "line": 58,
+          "col": 17,
+          "pos": 1378
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/ArmDisarmControl.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 83,
+          "col": 8,
+          "pos": 2377
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "ArmDisarmControl",
+            "line": 18,
+            "col": 2,
+            "pos": 450
+          },
+          {
+            "name": "default",
+            "line": 83,
+            "col": 15,
+            "pos": 2384
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/types/rules.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "mapDbRuleToUI",
+          "line": 54,
+          "col": 17,
+          "pos": 1678
+        },
+        {
+          "name": "mapUIRuleToDb",
+          "line": 77,
+          "col": 17,
+          "pos": 2446
+        }
+      ],
+      "types": [
+        {
+          "name": "RuleCategory",
+          "line": 13,
+          "col": 13,
+          "pos": 451
+        },
+        {
+          "name": "RuleSeverity",
+          "line": 14,
+          "col": 13,
+          "pos": 524
+        },
+        {
+          "name": "RuleActionType",
+          "line": 15,
+          "col": 13,
+          "pos": 597
+        },
+        {
+          "name": "RuleConditionType",
+          "line": 16,
+          "col": 13,
+          "pos": 670
+        },
+        {
+          "name": "RuleConditionOperator",
+          "line": 17,
+          "col": 13,
+          "pos": 749
+        },
+        {
+          "name": "RuleCondition",
+          "line": 22,
+          "col": 18,
+          "pos": 967
+        },
+        {
+          "name": "RuleSchedule",
+          "line": 29,
+          "col": 18,
+          "pos": 1136
+        },
+        {
+          "name": "UIRule",
+          "line": 36,
+          "col": 18,
+          "pos": 1252
+        },
+        {
+          "name": "Rule",
+          "line": 96,
+          "col": 18,
+          "pos": 3118
+        },
+        {
+          "name": "RuleTriggerType",
+          "line": 110,
+          "col": 13,
+          "pos": 3397
+        },
+        {
+          "name": "RuleTrigger",
+          "line": 118,
+          "col": 18,
+          "pos": 3546
+        },
+        {
+          "name": "RuleLegacyConditionOperator",
+          "line": 123,
+          "col": 13,
+          "pos": 3635
+        },
+        {
+          "name": "RuleLegacyCondition",
+          "line": 132,
+          "col": 18,
+          "pos": 3786
+        },
+        {
+          "name": "RuleLegacyActionType",
+          "line": 139,
+          "col": 13,
+          "pos": 3962
+        },
+        {
+          "name": "RuleLegacyAction",
+          "line": 148,
+          "col": 18,
+          "pos": 4143
+        },
+        {
+          "name": "RuleActionConfig",
+          "line": 154,
+          "col": 18,
+          "pos": 4258
+        },
+        {
+          "name": "RuleLegacySchedule",
+          "line": 163,
+          "col": 18,
+          "pos": 4433
+        },
+        {
+          "name": "RuleViolation",
+          "line": 172,
+          "col": 18,
+          "pos": 4621
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/AutomationRulesManager.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 134,
+          "col": 8,
+          "pos": 6424
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "AutomationRulesManager",
+            "line": 19,
+            "col": 77,
+            "pos": 967
+          },
+          {
+            "name": "default",
+            "line": 134,
+            "col": 15,
+            "pos": 6431
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/BottomNavigation.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 148,
+          "col": 8,
+          "pos": 8058
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "BottomNavigation",
+            "line": 11,
+            "col": 78,
+            "pos": 482
+          },
+          {
+            "name": "default",
+            "line": 148,
+            "col": 15,
+            "pos": 8065
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/Breadcrumbs.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 211,
+          "col": 8,
+          "pos": 7340
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "Breadcrumbs",
+            "line": 86,
+            "col": 13,
+            "pos": 2522
+          },
+          {
+            "name": "default",
+            "line": 211,
+            "col": 15,
+            "pos": 7347
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/ClipRecorderControls.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 138,
+          "col": 8,
+          "pos": 6821
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "ClipRecorderControls",
+            "line": 28,
+            "col": 80,
+            "pos": 889
+          },
+          {
+            "name": "default",
+            "line": 138,
+            "col": 15,
+            "pos": 6828
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/ConfirmDialog.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "ConfirmDialog",
+          "line": 24,
+          "col": 14,
+          "pos": 511
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/EmptyState.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 80,
+          "col": 8,
+          "pos": 2957
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "EmptyState",
+            "line": 18,
+            "col": 13,
+            "pos": 441
+          },
+          {
+            "name": "default",
+            "line": 80,
+            "col": 15,
+            "pos": 2964
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/FaceRecognitionOverlay.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "useFaceDetectionAnimation",
+          "line": 94,
+          "col": 17,
+          "pos": 6239
+        },
+        {
+          "name": "default",
+          "line": 105,
+          "col": 8,
+          "pos": 6823
+        }
+      ],
+      "types": [
+        {
+          "name": "FaceRecognitionOverlayProps",
+          "line": 14,
+          "col": 38,
+          "pos": 486
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "FaceRecognitionOverlay",
+            "line": 68,
+            "col": 2,
+            "pos": 4600
+          },
+          {
+            "name": "default",
+            "line": 105,
+            "col": 15,
+            "pos": 6830
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/UserAvatar.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 22,
+          "col": 8,
+          "pos": 672
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "UserAvatar",
+            "line": 12,
+            "col": 13,
+            "pos": 281
+          },
+          {
+            "name": "default",
+            "line": 22,
+            "col": 15,
+            "pos": 679
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/NotificationBell.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 20,
+          "col": 8,
+          "pos": 729
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "NotificationBell",
+            "line": 6,
+            "col": 13,
+            "pos": 187
+          },
+          {
+            "name": "default",
+            "line": 20,
+            "col": 15,
+            "pos": 736
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/hooks/useOnlineStatus.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 20,
+          "col": 8,
+          "pos": 483
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "useOnlineStatus",
+            "line": 14,
+            "col": 2,
+            "pos": 368
+          },
+          {
+            "name": "default",
+            "line": 20,
+            "col": 15,
+            "pos": 490
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/Header.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 100,
+          "col": 8,
+          "pos": 3730
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "Header",
+            "line": 19,
+            "col": 13,
+            "pos": 756
+          },
+          {
+            "name": "default",
+            "line": 100,
+            "col": 15,
+            "pos": 3737
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/hooks/useHeatmap.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 218,
+          "col": 8,
+          "pos": 9473
+        }
+      ],
+      "types": [
+        {
+          "name": "HeatmapPoint",
+          "line": 11,
+          "col": 14,
+          "pos": 359
+        },
+        {
+          "name": "HeatmapData",
+          "line": 11,
+          "col": 28,
+          "pos": 373
+        },
+        {
+          "name": "HeatmapConfig",
+          "line": 11,
+          "col": 41,
+          "pos": 386
+        },
+        {
+          "name": "HeatmapStats",
+          "line": 11,
+          "col": 56,
+          "pos": 401
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "useHeatmap",
+            "line": 37,
+            "col": 2,
+            "pos": 1328
+          },
+          {
+            "name": "default",
+            "line": 218,
+            "col": 15,
+            "pos": 9480
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/heatmap/HeatmapMatrixTab.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "getHeatClass",
+          "line": 76,
+          "col": 9,
+          "pos": 3169
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/HeatmapVisualization.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 178,
+          "col": 8,
+          "pos": 9225
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/LicensePlateRecognition.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 119,
+          "col": 8,
+          "pos": 6492
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "LicensePlateRecognition",
+            "line": 17,
+            "col": 63,
+            "pos": 866
+          },
+          {
+            "name": "default",
+            "line": 119,
+            "col": 15,
+            "pos": 6499
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/LiveFaceRecognition.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 113,
+          "col": 8,
+          "pos": 6354
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "LiveFaceRecognition",
+            "line": 24,
+            "col": 2,
+            "pos": 989
+          },
+          {
+            "name": "default",
+            "line": 113,
+            "col": 15,
+            "pos": 6361
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/hooks/useNotifications.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 113,
+          "col": 8,
+          "pos": 8616
+        }
+      ],
+      "types": [
+        {
+          "name": "NotificationChannel",
+          "line": 15,
+          "col": 14,
+          "pos": 541
+        },
+        {
+          "name": "NotificationSeverity",
+          "line": 15,
+          "col": 35,
+          "pos": 562
+        },
+        {
+          "name": "NotificationStatus",
+          "line": 15,
+          "col": 57,
+          "pos": 584
+        },
+        {
+          "name": "NotificationConfig",
+          "line": 15,
+          "col": 77,
+          "pos": 604
+        },
+        {
+          "name": "Notification",
+          "line": 15,
+          "col": 97,
+          "pos": 624
+        },
+        {
+          "name": "NotificationStats",
+          "line": 15,
+          "col": 111,
+          "pos": 638
+        },
+        {
+          "name": "UseNotificationsOptions",
+          "line": 15,
+          "col": 130,
+          "pos": 657
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "useNotifications",
+            "line": 15,
+            "col": 157,
+            "pos": 684
+          },
+          {
+            "name": "default",
+            "line": 113,
+            "col": 15,
+            "pos": 8623
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/hooks/use-toast.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "reducer",
+          "line": 71,
+          "col": 14,
+          "pos": 1435
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/hooks/useOfflineSync.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 353,
+          "col": 8,
+          "pos": 8942
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "useOfflineSync",
+            "line": 53,
+            "col": 23,
+            "pos": 1282
+          },
+          {
+            "name": "default",
+            "line": 353,
+            "col": 15,
+            "pos": 8949
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/OfflineIndicator.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 259,
+          "col": 8,
+          "pos": 8141
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "OfflineIndicator",
+            "line": 36,
+            "col": 2,
+            "pos": 778
+          },
+          {
+            "name": "default",
+            "line": 259,
+            "col": 15,
+            "pos": 8148
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/hooks/useOnboardingTour.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 131,
+          "col": 8,
+          "pos": 3164
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "useOnboardingTour",
+            "line": 40,
+            "col": 2,
+            "pos": 934
+          },
+          {
+            "name": "default",
+            "line": 131,
+            "col": 15,
+            "pos": 3171
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/OnboardingTour.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "RestartTourButton",
+          "line": 58,
+          "col": 17,
+          "pos": 4375
+        },
+        {
+          "name": "default",
+          "line": 63,
+          "col": 8,
+          "pos": 4790
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "OnboardingTour",
+            "line": 40,
+            "col": 80,
+            "pos": 3189
+          },
+          {
+            "name": "default",
+            "line": 63,
+            "col": 15,
+            "pos": 4797
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/constants/app.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "APP_NAME",
+          "line": 2,
+          "col": 14,
+          "pos": 38
+        },
+        {
+          "name": "APP_VERSION",
+          "line": 3,
+          "col": 14,
+          "pos": 71
+        },
+        {
+          "name": "API_TIMEOUT",
+          "line": 4,
+          "col": 14,
+          "pos": 107
+        },
+        {
+          "name": "REFRESH_INTERVAL",
+          "line": 5,
+          "col": 14,
+          "pos": 141
+        },
+        {
+          "name": "MAX_CAMERAS",
+          "line": 6,
+          "col": 14,
+          "pos": 179
+        },
+        {
+          "name": "MAX_ZONES",
+          "line": 7,
+          "col": 14,
+          "pos": 210
+        },
+        {
+          "name": "MAX_RULES",
+          "line": 8,
+          "col": 14,
+          "pos": 239
+        },
+        {
+          "name": "SUPPORTED_LANGUAGES",
+          "line": 9,
+          "col": 14,
+          "pos": 269
+        },
+        {
+          "name": "DEFAULT_LANGUAGE",
+          "line": 10,
+          "col": 14,
+          "pos": 333
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/PWAMigrationBanner.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 115,
+          "col": 8,
+          "pos": 3533
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "PWAMigrationBanner",
+            "line": 16,
+            "col": 78,
+            "pos": 687
+          },
+          {
+            "name": "default",
+            "line": 115,
+            "col": 15,
+            "pos": 3540
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/PageSkeletons.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "DashboardSkeleton",
+          "line": 8,
+          "col": 9,
+          "pos": 229
+        },
+        {
+          "name": "CamerasSkeleton",
+          "line": 9,
+          "col": 9,
+          "pos": 296
+        },
+        {
+          "name": "AlertsSkeleton",
+          "line": 10,
+          "col": 9,
+          "pos": 359
+        },
+        {
+          "name": "PeopleSkeleton",
+          "line": 11,
+          "col": 9,
+          "pos": 420
+        },
+        {
+          "name": "ZonesSkeleton",
+          "line": 12,
+          "col": 9,
+          "pos": 481
+        },
+        {
+          "name": "RecordingsSkeleton",
+          "line": 13,
+          "col": 9,
+          "pos": 540
+        },
+        {
+          "name": "AnalyticsSkeleton",
+          "line": 14,
+          "col": 9,
+          "pos": 609
+        },
+        {
+          "name": "SecuritySkeleton",
+          "line": 15,
+          "col": 9,
+          "pos": 676
+        },
+        {
+          "name": "SettingsSkeleton",
+          "line": 16,
+          "col": 9,
+          "pos": 741
+        },
+        {
+          "name": "CardSkeleton",
+          "line": 28,
+          "col": 17,
+          "pos": 1393
+        },
+        {
+          "name": "TableSkeleton",
+          "line": 41,
+          "col": 17,
+          "pos": 1979
+        },
+        {
+          "name": "PageSkeleton",
+          "line": 67,
+          "col": 17,
+          "pos": 3148
+        },
+        {
+          "name": "default",
+          "line": 83,
+          "col": 8,
+          "pos": 3808
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "PageSkeleton",
+            "line": 65,
+            "col": 3,
+            "pos": 3130
+          },
+          {
+            "name": "default",
+            "line": 83,
+            "col": 15,
+            "pos": 3815
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/lib/pdfGenerator.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "captureElementToPDF",
+          "line": 303,
+          "col": 23,
+          "pos": 7955
+        }
+      ],
+      "types": [
+        {
+          "name": "ReportSection",
+          "line": 19,
+          "col": 18,
+          "pos": 447
+        },
+        {
+          "name": "TableRow",
+          "line": 25,
+          "col": 18,
+          "pos": 565
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/ReportsPanel.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 111,
+          "col": 8,
+          "pos": 7778
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "ReportsPanel",
+            "line": 17,
+            "col": 57,
+            "pos": 765
+          },
+          {
+            "name": "default",
+            "line": 111,
+            "col": 15,
+            "pos": 7785
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/SearchInput.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "searchInText",
+          "line": 197,
+          "col": 17,
+          "pos": 6511
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/SeverityBadge.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "SeverityBadge",
+          "line": 18,
+          "col": 14,
+          "pos": 422
+        },
+        {
+          "name": "default",
+          "line": 24,
+          "col": 8,
+          "pos": 645
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "SeverityBadge",
+            "line": 18,
+            "col": 13,
+            "pos": 421
+          },
+          {
+            "name": "default",
+            "line": 24,
+            "col": 15,
+            "pos": 652
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/ShortcutsHelpDialog.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 76,
+          "col": 8,
+          "pos": 2554
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "ShortcutsHelpDialog",
+            "line": 26,
+            "col": 2,
+            "pos": 681
+          },
+          {
+            "name": "default",
+            "line": 76,
+            "col": 15,
+            "pos": 2561
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/sidebar/components/index.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "SidebarHeader",
+          "line": 5,
+          "col": 9,
+          "pos": 61
+        },
+        {
+          "name": "SidebarNav",
+          "line": 6,
+          "col": 9,
+          "pos": 110
+        },
+        {
+          "name": "SidebarFooter",
+          "line": 7,
+          "col": 9,
+          "pos": 153
+        },
+        {
+          "name": "AnimatedCategoryIcon",
+          "line": 10,
+          "col": 9,
+          "pos": 302
+        },
+        {
+          "name": "CategoryStatusIndicator",
+          "line": 11,
+          "col": 9,
+          "pos": 365
+        },
+        {
+          "name": "SearchTrigger",
+          "line": 12,
+          "col": 9,
+          "pos": 434
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/Sidebar.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 43,
+          "col": 8,
+          "pos": 1098
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "Sidebar",
+            "line": 42,
+            "col": 13,
+            "pos": 1056
+          },
+          {
+            "name": "default",
+            "line": 43,
+            "col": 15,
+            "pos": 1105
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/StreamConfigPanel.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 107,
+          "col": 8,
+          "pos": 4731
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/TelegramConfigPanel.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 123,
+          "col": 8,
+          "pos": 5528
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "TelegramConfigPanel",
+            "line": 18,
+            "col": 2,
+            "pos": 858
+          },
+          {
+            "name": "default",
+            "line": 123,
+            "col": 15,
+            "pos": 5535
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/hooks/useVideoStream.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 217,
+          "col": 8,
+          "pos": 7334
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "useVideoStream",
+            "line": 48,
+            "col": 2,
+            "pos": 1478
+          },
+          {
+            "name": "default",
+            "line": 217,
+            "col": 15,
+            "pos": 7341
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/hooks/useMLModels.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "useContinuousDetection",
+          "line": 234,
+          "col": 17,
+          "pos": 10144
+        },
+        {
+          "name": "default",
+          "line": 260,
+          "col": 8,
+          "pos": 11353
+        }
+      ],
+      "types": [
+        {
+          "name": "ModelType",
+          "line": 42,
+          "col": 14,
+          "pos": 1345
+        },
+        {
+          "name": "ModelInfo",
+          "line": 42,
+          "col": 25,
+          "pos": 1356
+        },
+        {
+          "name": "DetectedPose",
+          "line": 42,
+          "col": 52,
+          "pos": 1383
+        },
+        {
+          "name": "MLModelsConfig",
+          "line": 42,
+          "col": 66,
+          "pos": 1397
+        },
+        {
+          "name": "BackendType",
+          "line": 43,
+          "col": 14,
+          "pos": 1429
+        },
+        {
+          "name": "PoseKeypoint",
+          "line": 43,
+          "col": 27,
+          "pos": 1442
+        },
+        {
+          "name": "UseMLModelsReturn",
+          "line": 99,
+          "col": 18,
+          "pos": 3457
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "useMLModels",
+            "line": 124,
+            "col": 2,
+            "pos": 4530
+          },
+          {
+            "name": "default",
+            "line": 260,
+            "col": 15,
+            "pos": 11360
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/hooks/useStreamFaceDetection.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 104,
+          "col": 8,
+          "pos": 7235
+        }
+      ],
+      "types": [
+        {
+          "name": "UseStreamFaceDetectionOptions",
+          "line": 12,
+          "col": 14,
+          "pos": 578
+        },
+        {
+          "name": "UseStreamFaceDetectionReturn",
+          "line": 12,
+          "col": 45,
+          "pos": 609
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "useStreamFaceDetection",
+            "line": 12,
+            "col": 77,
+            "pos": 641
+          },
+          {
+            "name": "default",
+            "line": 104,
+            "col": 15,
+            "pos": 7242
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/hooks/useContinuousAnalysis.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 217,
+          "col": 8,
+          "pos": 8586
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "useContinuousAnalysis",
+            "line": 64,
+            "col": 3,
+            "pos": 2177
+          },
+          {
+            "name": "default",
+            "line": 217,
+            "col": 15,
+            "pos": 8593
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/hooks/useFrameBuffer.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "pushFrame",
+          "line": 63,
+          "col": 17,
+          "pos": 2133
+        },
+        {
+          "name": "clearFrameBuffer",
+          "line": 74,
+          "col": 17,
+          "pos": 2476
+        },
+        {
+          "name": "getReplayFrames",
+          "line": 87,
+          "col": 17,
+          "pos": 2892
+        },
+        {
+          "name": "getBufferStats",
+          "line": 103,
+          "col": 17,
+          "pos": 3363
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/VideoStreamPlayer.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 318,
+          "col": 8,
+          "pos": 14196
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/ZoneEditor.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 146,
+          "col": 8,
+          "pos": 7207
+        }
+      ],
+      "types": [
+        {
+          "name": "DrawingMode",
+          "line": 144,
+          "col": 14,
+          "pos": 7050
+        },
+        {
+          "name": "Point",
+          "line": 144,
+          "col": 27,
+          "pos": 7063
+        },
+        {
+          "name": "ZoneEditorProps",
+          "line": 144,
+          "col": 34,
+          "pos": 7070
+        },
+        {
+          "name": "Zone",
+          "line": 145,
+          "col": 14,
+          "pos": 7140
+        },
+        {
+          "name": "ZoneGeometry",
+          "line": 145,
+          "col": 20,
+          "pos": 7146
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/ZoneOverlay.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 124,
+          "col": 8,
+          "pos": 7866
+        }
+      ],
+      "types": [
+        {
+          "name": "Zone",
+          "line": 12,
+          "col": 14,
+          "pos": 398
+        },
+        {
+          "name": "Point",
+          "line": 12,
+          "col": 20,
+          "pos": 404
+        },
+        {
+          "name": "ZoneOverlayProps",
+          "line": 12,
+          "col": 27,
+          "pos": 411
+        },
+        {
+          "name": "ZoneType",
+          "line": 13,
+          "col": 14,
+          "pos": 445
+        },
+        {
+          "name": "ZoneGeometry",
+          "line": 13,
+          "col": 24,
+          "pos": 455
+        },
+        {
+          "name": "ZoneStats",
+          "line": 13,
+          "col": 38,
+          "pos": 469
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "ZoneOverlay",
+            "line": 95,
+            "col": 2,
+            "pos": 5687
+          },
+          {
+            "name": "default",
+            "line": 124,
+            "col": 15,
+            "pos": 7873
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/common/index.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "PageHeader",
+          "line": 6,
+          "col": 9,
+          "pos": 97
+        },
+        {
+          "name": "SearchInput",
+          "line": 7,
+          "col": 9,
+          "pos": 140
+        },
+        {
+          "name": "StatusBadge",
+          "line": 8,
+          "col": 9,
+          "pos": 185
+        },
+        {
+          "name": "DataCard",
+          "line": 9,
+          "col": 9,
+          "pos": 230
+        },
+        {
+          "name": "Avatar",
+          "line": 10,
+          "col": 9,
+          "pos": 269
+        },
+        {
+          "name": "Badge",
+          "line": 11,
+          "col": 9,
+          "pos": 304
+        },
+        {
+          "name": "Tooltip",
+          "line": 12,
+          "col": 9,
+          "pos": 337
+        },
+        {
+          "name": "Divider",
+          "line": 13,
+          "col": 9,
+          "pos": 374
+        },
+        {
+          "name": "Text",
+          "line": 14,
+          "col": 9,
+          "pos": 411
+        },
+        {
+          "name": "Heading",
+          "line": 15,
+          "col": 9,
+          "pos": 442
+        },
+        {
+          "name": "SkipLink",
+          "line": 16,
+          "col": 9,
+          "pos": 479
+        },
+        {
+          "name": "LoadingSpinner",
+          "line": 17,
+          "col": 9,
+          "pos": 518
+        },
+        {
+          "name": "ErrorState",
+          "line": 19,
+          "col": 9,
+          "pos": 612
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/timeago/index.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "TimeAgo",
+          "line": 1,
+          "col": 9,
+          "pos": 8
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/layout/index.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "MainLayout",
+          "line": 6,
+          "col": 9,
+          "pos": 97
+        },
+        {
+          "name": "PageContent",
+          "line": 6,
+          "col": 21,
+          "pos": 109
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/index.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "Avatar",
+          "line": 7,
+          "col": 9,
+          "pos": 124
+        },
+        {
+          "name": "Badge",
+          "line": 7,
+          "col": 17,
+          "pos": 132
+        },
+        {
+          "name": "DataCard",
+          "line": 7,
+          "col": 24,
+          "pos": 139
+        },
+        {
+          "name": "Divider",
+          "line": 7,
+          "col": 34,
+          "pos": 149
+        },
+        {
+          "name": "ErrorState",
+          "line": 7,
+          "col": 55,
+          "pos": 170
+        },
+        {
+          "name": "Heading",
+          "line": 7,
+          "col": 67,
+          "pos": 182
+        },
+        {
+          "name": "LoadingSpinner",
+          "line": 7,
+          "col": 76,
+          "pos": 191
+        },
+        {
+          "name": "PageHeader",
+          "line": 7,
+          "col": 92,
+          "pos": 207
+        },
+        {
+          "name": "SearchInput",
+          "line": 7,
+          "col": 104,
+          "pos": 219
+        },
+        {
+          "name": "SkipLink",
+          "line": 7,
+          "col": 117,
+          "pos": 232
+        },
+        {
+          "name": "StatusBadge",
+          "line": 7,
+          "col": 127,
+          "pos": 242
+        },
+        {
+          "name": "Text",
+          "line": 7,
+          "col": 140,
+          "pos": 255
+        },
+        {
+          "name": "Tooltip",
+          "line": 7,
+          "col": 146,
+          "pos": 261
+        },
+        {
+          "name": "TimeAgo",
+          "line": 10,
+          "col": 9,
+          "pos": 309
+        },
+        {
+          "name": "ErrorBoundary",
+          "line": 13,
+          "col": 9,
+          "pos": 364
+        },
+        {
+          "name": "MainLayout",
+          "line": 16,
+          "col": 9,
+          "pos": 428
+        },
+        {
+          "name": "PageContent",
+          "line": 16,
+          "col": 21,
+          "pos": 440
+        },
+        {
+          "name": "Sidebar",
+          "line": 19,
+          "col": 9,
+          "pos": 492
+        },
+        {
+          "name": "ConfirmDialog",
+          "line": 22,
+          "col": 9,
+          "pos": 547
+        },
+        {
+          "name": "SeverityBadge",
+          "line": 25,
+          "col": 9,
+          "pos": 614
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/data/mockData.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "mockAnalytics",
+          "line": 113,
+          "col": 14,
+          "pos": 2445
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/hooks/useAuth.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 53,
+          "col": 8,
+          "pos": 1402
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "useAuth",
+            "line": 14,
+            "col": 2,
+            "pos": 248
+          },
+          {
+            "name": "default",
+            "line": 53,
+            "col": 15,
+            "pos": 1409
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/hooks/useFaceAPI.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 134,
+          "col": 8,
+          "pos": 3695
+        }
+      ],
+      "types": [
+        {
+          "name": "FaceMatchStatus",
+          "line": 24,
+          "col": 13,
+          "pos": 626
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "useFaceAPI",
+            "line": 45,
+            "col": 2,
+            "pos": 1163
+          },
+          {
+            "name": "default",
+            "line": 134,
+            "col": 15,
+            "pos": 3702
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/hooks/useFaceDetection.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 216,
+          "col": 8,
+          "pos": 6168
+        }
+      ],
+      "types": [
+        {
+          "name": "DetectedFace",
+          "line": 20,
+          "col": 18,
+          "pos": 608
+        },
+        {
+          "name": "UseFaceDetectionOptions",
+          "line": 39,
+          "col": 18,
+          "pos": 1016
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "useFaceDetection",
+            "line": 42,
+            "col": 2,
+            "pos": 1143
+          },
+          {
+            "name": "default",
+            "line": 216,
+            "col": 15,
+            "pos": 6175
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/hooks/useFaceRecognitionAlerts.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 336,
+          "col": 8,
+          "pos": 9388
+        }
+      ],
+      "types": [
+        {
+          "name": "RecognitionEvent",
+          "line": 18,
+          "col": 18,
+          "pos": 538
+        },
+        {
+          "name": "BlacklistPerson",
+          "line": 32,
+          "col": 18,
+          "pos": 854
+        },
+        {
+          "name": "VIPPerson",
+          "line": 42,
+          "col": 18,
+          "pos": 1018
+        },
+        {
+          "name": "RecognitionStats",
+          "line": 51,
+          "col": 18,
+          "pos": 1166
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "useFaceRecognitionAlerts",
+            "line": 90,
+            "col": 2,
+            "pos": 2523
+          },
+          {
+            "name": "default",
+            "line": 336,
+            "col": 15,
+            "pos": 9395
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/hooks/useGlobalShortcuts.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 115,
+          "col": 8,
+          "pos": 4621
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "useGlobalShortcuts",
+            "line": 13,
+            "col": 2,
+            "pos": 287
+          },
+          {
+            "name": "default",
+            "line": 115,
+            "col": 15,
+            "pos": 4628
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/hooks/useMediaMTX.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 327,
+          "col": 8,
+          "pos": 8779
+        }
+      ],
+      "types": [
+        {
+          "name": "MediaMTXPath",
+          "line": 20,
+          "col": 18,
+          "pos": 489
+        },
+        {
+          "name": "MediaMTXConfig",
+          "line": 38,
+          "col": 18,
+          "pos": 784
+        },
+        {
+          "name": "StreamInfo",
+          "line": 45,
+          "col": 18,
+          "pos": 913
+        },
+        {
+          "name": "MediaMTXStats",
+          "line": 57,
+          "col": 18,
+          "pos": 1125
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "useMediaMTX",
+            "line": 110,
+            "col": 2,
+            "pos": 2673
+          },
+          {
+            "name": "default",
+            "line": 327,
+            "col": 15,
+            "pos": 8786
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/lib/offlineStorage.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "getOfflineDB",
+          "line": 75,
+          "col": 14,
+          "pos": 2181
+        },
+        {
+          "name": "cacheData",
+          "line": 82,
+          "col": 14,
+          "pos": 2349
+        },
+        {
+          "name": "getCachedData",
+          "line": 105,
+          "col": 14,
+          "pos": 2913
+        },
+        {
+          "name": "clearExpiredCache",
+          "line": 135,
+          "col": 14,
+          "pos": 3780
+        },
+        {
+          "name": "clearAllOfflineData",
+          "line": 331,
+          "col": 14,
+          "pos": 10013
+        }
+      ],
+      "types": [
+        {
+          "name": "CachedData",
+          "line": 18,
+          "col": 18,
+          "pos": 360
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/hooks/usePPEDetection.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "PPE_TYPES",
+          "line": 20,
+          "col": 9,
+          "pos": 761
+        },
+        {
+          "name": "default",
+          "line": 163,
+          "col": 8,
+          "pos": 7747
+        }
+      ],
+      "types": [
+        {
+          "name": "PPEConfig",
+          "line": 18,
+          "col": 23,
+          "pos": 616
+        },
+        {
+          "name": "PPEStats",
+          "line": 18,
+          "col": 57,
+          "pos": 650
+        },
+        {
+          "name": "PPEZoneConfig",
+          "line": 18,
+          "col": 87,
+          "pos": 680
+        },
+        {
+          "name": "PPEItem",
+          "line": 19,
+          "col": 14,
+          "pos": 711
+        },
+        {
+          "name": "PPEStatus",
+          "line": 19,
+          "col": 23,
+          "pos": 720
+        },
+        {
+          "name": "UsePPEDetectionOptions",
+          "line": 22,
+          "col": 18,
+          "pos": 805
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "usePPEDetection",
+            "line": 26,
+            "col": 2,
+            "pos": 976
+          },
+          {
+            "name": "default",
+            "line": 163,
+            "col": 15,
+            "pos": 7754
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/lib/browserNotifications.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "showNotification",
+          "line": 100,
+          "col": 14,
+          "pos": 2601
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "showBrowserNotification",
+            "line": 41,
+            "col": 13,
+            "pos": 1125
+          },
+          {
+            "name": "showNotification",
+            "line": 100,
+            "col": 32,
+            "pos": 2619
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/lib/navigationCLSLog.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "exportNavigationCLSLogNDJSON",
+          "line": 120,
+          "col": 17,
+          "pos": 3579
+        },
+        {
+          "name": "exportNavigationCLSLogJSON",
+          "line": 125,
+          "col": 17,
+          "pos": 3743
+        }
+      ],
+      "types": [
+        {
+          "name": "NavigationCLSEntry",
+          "line": 13,
+          "col": 18,
+          "pos": 496
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/hooks/useStorage.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "ALLOWED_FILE_TYPES",
+          "line": 298,
+          "col": 14,
+          "pos": 7645
+        },
+        {
+          "name": "MAX_FILE_SIZES",
+          "line": 305,
+          "col": 14,
+          "pos": 7971
+        }
+      ],
+      "types": [
+        {
+          "name": "UploadOptions",
+          "line": 17,
+          "col": 18,
+          "pos": 458
+        },
+        {
+          "name": "UploadResult",
+          "line": 34,
+          "col": 18,
+          "pos": 1016
+        },
+        {
+          "name": "UseStorageReturn",
+          "line": 43,
+          "col": 18,
+          "pos": 1197
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/hooks/video-stream/useStreamState.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "initialState",
+          "line": 25,
+          "col": 14,
+          "pos": 448
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/hooks/useZoneDetection.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 217,
+          "col": 8,
+          "pos": 9562
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "useZoneDetection",
+            "line": 28,
+            "col": 2,
+            "pos": 907
+          },
+          {
+            "name": "default",
+            "line": 217,
+            "col": 15,
+            "pos": 9569
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/types/coverage.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "getCoverageStatus",
+          "line": 56,
+          "col": 14,
+          "pos": 1560
+        }
+      ],
+      "types": [
+        {
+          "name": "CoverageMetric",
+          "line": 7,
+          "col": 18,
+          "pos": 159
+        },
+        {
+          "name": "CoverageFileEntry",
+          "line": 14,
+          "col": 18,
+          "pos": 267
+        },
+        {
+          "name": "CoverageTotals",
+          "line": 23,
+          "col": 18,
+          "pos": 507
+        },
+        {
+          "name": "CoverageAlert",
+          "line": 30,
+          "col": 18,
+          "pos": 656
+        },
+        {
+          "name": "CoverageMetricKey",
+          "line": 52,
+          "col": 13,
+          "pos": 1445
+        },
+        {
+          "name": "CoverageStatus",
+          "line": 54,
+          "col": 13,
+          "pos": 1500
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/lib/coverageSchema.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "coverageReportSchema",
+          "line": 65,
+          "col": 14,
+          "pos": 2028
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/lib/coverageTextReport.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "buildCoverageTextReport",
+          "line": 24,
+          "col": 17,
+          "pos": 885
+        }
+      ],
+      "types": [
+        {
+          "name": "BuildCoverageTextOptions",
+          "line": 19,
+          "col": 18,
+          "pos": 743
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/lib/lazyHls.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "getCachedHls",
+          "line": 17,
+          "col": 17,
+          "pos": 370
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/skeletons/SkeletonFallback.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 134,
+          "col": 8,
+          "pos": 4111
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "SkeletonFallback",
+            "line": 23,
+            "col": 2,
+            "pos": 941
+          },
+          {
+            "name": "default",
+            "line": 134,
+            "col": 15,
+            "pos": 4118
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/lib/schemas.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "personFormSchema",
+          "line": 12,
+          "col": 14,
+          "pos": 275
+        },
+        {
+          "name": "cameraFormSchema",
+          "line": 47,
+          "col": 14,
+          "pos": 1732
+        },
+        {
+          "name": "ruleFormSchema",
+          "line": 61,
+          "col": 14,
+          "pos": 2290
+        }
+      ],
+      "types": [
+        {
+          "name": "PersonFormData",
+          "line": 21,
+          "col": 13,
+          "pos": 783
+        },
+        {
+          "name": "PlateRegistrationData",
+          "line": 41,
+          "col": 13,
+          "pos": 1546
+        },
+        {
+          "name": "CameraFormData",
+          "line": 55,
+          "col": 13,
+          "pos": 2106
+        },
+        {
+          "name": "RuleFormData",
+          "line": 69,
+          "col": 13,
+          "pos": 2689
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/alerts-timeline/AlertReplayPlayer.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 303,
+          "col": 8,
+          "pos": 10220
+        }
+      ],
+      "types": [
+        {
+          "name": "AlertReplayPlayerProps",
+          "line": 19,
+          "col": 18,
+          "pos": 819
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "AlertReplayPlayer",
+            "line": 38,
+            "col": 3,
+            "pos": 1421
+          },
+          {
+            "name": "default",
+            "line": 303,
+            "col": 15,
+            "pos": 10227
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/dashboard/DashboardTypes.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "severityOrder",
+          "line": 33,
+          "col": 14,
+          "pos": 863
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/types/widgets.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "DEFAULT_LAYOUT",
+          "line": 121,
+          "col": 14,
+          "pos": 2645
+        }
+      ],
+      "types": [
+        {
+          "name": "DashboardLayout",
+          "line": 37,
+          "col": 18,
+          "pos": 669
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/common/Avatar.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "Avatar",
+          "line": 37,
+          "col": 17,
+          "pos": 873
+        },
+        {
+          "name": "default",
+          "line": 63,
+          "col": 8,
+          "pos": 1392
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "Avatar",
+            "line": 35,
+            "col": 2,
+            "pos": 855
+          },
+          {
+            "name": "default",
+            "line": 63,
+            "col": 15,
+            "pos": 1399
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/common/Badge.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "Badge",
+          "line": 23,
+          "col": 17,
+          "pos": 570
+        },
+        {
+          "name": "default",
+          "line": 38,
+          "col": 8,
+          "pos": 889
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "Badge",
+            "line": 21,
+            "col": 3,
+            "pos": 552
+          },
+          {
+            "name": "default",
+            "line": 38,
+            "col": 15,
+            "pos": 896
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/common/DataCard.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "DataCard",
+          "line": 15,
+          "col": 17,
+          "pos": 368
+        },
+        {
+          "name": "default",
+          "line": 55,
+          "col": 8,
+          "pos": 1984
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "DataCard",
+            "line": 13,
+            "col": 2,
+            "pos": 350
+          },
+          {
+            "name": "default",
+            "line": 55,
+            "col": 15,
+            "pos": 1991
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/common/Divider.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "Divider",
+          "line": 9,
+          "col": 17,
+          "pos": 171
+        },
+        {
+          "name": "default",
+          "line": 23,
+          "col": 8,
+          "pos": 479
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "Divider",
+            "line": 7,
+            "col": 2,
+            "pos": 153
+          },
+          {
+            "name": "default",
+            "line": 23,
+            "col": 15,
+            "pos": 486
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/common/EmptyState.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "default",
+          "line": 54,
+          "col": 8,
+          "pos": 1128
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "EmptyState",
+            "line": 53,
+            "col": 13,
+            "pos": 1080
+          },
+          {
+            "name": "default",
+            "line": 54,
+            "col": 15,
+            "pos": 1135
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/common/ErrorState.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "ErrorState",
+          "line": 51,
+          "col": 14,
+          "pos": 1285
+        },
+        {
+          "name": "default",
+          "line": 52,
+          "col": 8,
+          "pos": 1332
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "ErrorState",
+            "line": 51,
+            "col": 13,
+            "pos": 1284
+          },
+          {
+            "name": "default",
+            "line": 52,
+            "col": 15,
+            "pos": 1339
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/common/Heading.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "Heading",
+          "line": 19,
+          "col": 17,
+          "pos": 424
+        },
+        {
+          "name": "default",
+          "line": 28,
+          "col": 8,
+          "pos": 631
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "Heading",
+            "line": 17,
+            "col": 3,
+            "pos": 406
+          },
+          {
+            "name": "default",
+            "line": 28,
+            "col": 15,
+            "pos": 638
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/common/LoadingSpinner.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "LoadingSpinner",
+          "line": 39,
+          "col": 14,
+          "pos": 790
+        },
+        {
+          "name": "default",
+          "line": 40,
+          "col": 8,
+          "pos": 845
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "LoadingSpinner",
+            "line": 39,
+            "col": 13,
+            "pos": 789
+          },
+          {
+            "name": "default",
+            "line": 40,
+            "col": 15,
+            "pos": 852
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/common/PageHeader.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "PageHeader",
+          "line": 9,
+          "col": 17,
+          "pos": 145
+        },
+        {
+          "name": "default",
+          "line": 21,
+          "col": 8,
+          "pos": 563
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "PageHeader",
+            "line": 7,
+            "col": 2,
+            "pos": 127
+          },
+          {
+            "name": "default",
+            "line": 21,
+            "col": 15,
+            "pos": 570
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/common/SearchInput.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "SearchInput",
+          "line": 13,
+          "col": 17,
+          "pos": 314
+        },
+        {
+          "name": "default",
+          "line": 37,
+          "col": 8,
+          "pos": 1013
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "SearchInput",
+            "line": 11,
+            "col": 2,
+            "pos": 296
+          },
+          {
+            "name": "default",
+            "line": 37,
+            "col": 15,
+            "pos": 1020
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/common/SkipLink.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "SkipLink",
+          "line": 45,
+          "col": 14,
+          "pos": 1071
+        },
+        {
+          "name": "default",
+          "line": 46,
+          "col": 8,
+          "pos": 1114
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "SkipLink",
+            "line": 45,
+            "col": 13,
+            "pos": 1070
+          },
+          {
+            "name": "default",
+            "line": 46,
+            "col": 15,
+            "pos": 1121
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/common/StatusBadge.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "StatusBadge",
+          "line": 20,
+          "col": 17,
+          "pos": 499
+        },
+        {
+          "name": "default",
+          "line": 28,
+          "col": 8,
+          "pos": 747
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "StatusBadge",
+            "line": 18,
+            "col": 3,
+            "pos": 481
+          },
+          {
+            "name": "default",
+            "line": 28,
+            "col": 15,
+            "pos": 754
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/common/Text.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "Text",
+          "line": 35,
+          "col": 17,
+          "pos": 725
+        },
+        {
+          "name": "default",
+          "line": 46,
+          "col": 8,
+          "pos": 1011
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "Text",
+            "line": 33,
+            "col": 3,
+            "pos": 707
+          },
+          {
+            "name": "default",
+            "line": 46,
+            "col": 15,
+            "pos": 1018
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/common/Tooltip.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "Tooltip",
+          "line": 18,
+          "col": 17,
+          "pos": 480
+        },
+        {
+          "name": "default",
+          "line": 44,
+          "col": 8,
+          "pos": 1125
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "Tooltip",
+            "line": 16,
+            "col": 3,
+            "pos": 462
+          },
+          {
+            "name": "default",
+            "line": 44,
+            "col": 15,
+            "pos": 1132
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/timeago/TimeAgo.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "TimeAgo",
+          "line": 2,
+          "col": 17,
+          "pos": 134
+        },
+        {
+          "name": "default",
+          "line": 3,
+          "col": 8,
+          "pos": 676
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": [
+        [
+          {
+            "name": "TimeAgo",
+            "line": 1,
+            "col": 118,
+            "pos": 117
+          },
+          {
+            "name": "default",
+            "line": 3,
+            "col": 15,
+            "pos": 683
+          }
+        ]
+      ]
+    },
+    {
+      "file": "src/components/widgets/WidgetGrid.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "WidgetGrid",
+          "line": 20,
+          "col": 17,
+          "pos": 423
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/widgets/StatCard.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "StatCard",
+          "line": 24,
+          "col": 17,
+          "pos": 595
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/widgets/MiniChart.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "MiniChart",
+          "line": 15,
+          "col": 17,
+          "pos": 265
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/types/continuousAnalysis/helpers.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "severityToPriority",
+          "line": 41,
+          "col": 17,
+          "pos": 1350
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/types/zones/helpers.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [
+        {
+          "name": "isPointInPolygon",
+          "line": 7,
+          "col": 17,
+          "pos": 113
+        },
+        {
+          "name": "calculatePolygonArea",
+          "line": 37,
+          "col": 17,
+          "pos": 1180
+        },
+        {
+          "name": "generateZoneColor",
+          "line": 72,
+          "col": 17,
+          "pos": 2375
+        },
+        {
+          "name": "getZoneTypeLabel",
+          "line": 77,
+          "col": 17,
+          "pos": 2574
+        }
+      ],
+      "types": [],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/hooks/usePlateDetections.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "PlateDetection",
+          "line": 16,
+          "col": 14,
+          "pos": 611
+        },
+        {
+          "name": "RegisteredPlate",
+          "line": 16,
+          "col": 30,
+          "pos": 627
+        },
+        {
+          "name": "PlateDetectionInsert",
+          "line": 16,
+          "col": 47,
+          "pos": 644
+        },
+        {
+          "name": "RegisteredPlateInsert",
+          "line": 16,
+          "col": 69,
+          "pos": 666
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/AlertCard.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "AlertType",
+          "line": 24,
+          "col": 13,
+          "pos": 466
+        },
+        {
+          "name": "AlertSeverity",
+          "line": 25,
+          "col": 13,
+          "pos": 696
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/hooks/useArmDisarm.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "ArmDisarmState",
+          "line": 6,
+          "col": 18,
+          "pos": 245
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/hooks/useCameras.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "DbCameraInsert",
+          "line": 9,
+          "col": 13,
+          "pos": 372
+        },
+        {
+          "name": "DbCameraUpdate",
+          "line": 10,
+          "col": 13,
+          "pos": 426
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/navigation/bottomNavData.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "NavItem",
+          "line": 8,
+          "col": 18,
+          "pos": 307
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/types/surveillance.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "AlertType",
+          "line": 1,
+          "col": 13,
+          "pos": 12
+        },
+        {
+          "name": "AlertSeverity",
+          "line": 2,
+          "col": 13,
+          "pos": 90
+        },
+        {
+          "name": "RuleConditionType",
+          "line": 38,
+          "col": 13,
+          "pos": 845
+        },
+        {
+          "name": "RuleAction",
+          "line": 50,
+          "col": 13,
+          "pos": 1069
+        },
+        {
+          "name": "RuleCondition",
+          "line": 52,
+          "col": 18,
+          "pos": 1147
+        },
+        {
+          "name": "Rule",
+          "line": 60,
+          "col": 18,
+          "pos": 1372
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/contexts/ThemeProvider.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "ThemeMode",
+          "line": 12,
+          "col": 13,
+          "pos": 321
+        },
+        {
+          "name": "ThemeVariant",
+          "line": 13,
+          "col": 13,
+          "pos": 374
+        },
+        {
+          "name": "ThemeState",
+          "line": 217,
+          "col": 14,
+          "pos": 5990
+        },
+        {
+          "name": "ThemeContextType",
+          "line": 217,
+          "col": 26,
+          "pos": 6002
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/hooks/useRealtimeRecognition.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "RealtimeRecognitionConfig",
+          "line": 39,
+          "col": 18,
+          "pos": 823
+        },
+        {
+          "name": "UseRealtimeRecognitionOptions",
+          "line": 66,
+          "col": 18,
+          "pos": 1564
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/types/streaming.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "PTZCapabilities",
+          "line": 212,
+          "col": 18,
+          "pos": 4977
+        },
+        {
+          "name": "PTZPreset",
+          "line": 239,
+          "col": 18,
+          "pos": 5441
+        },
+        {
+          "name": "PTZCommand",
+          "line": 245,
+          "col": 18,
+          "pos": 5525
+        },
+        {
+          "name": "CameraStream",
+          "line": 256,
+          "col": 18,
+          "pos": 5850
+        },
+        {
+          "name": "StreamRecording",
+          "line": 286,
+          "col": 18,
+          "pos": 6432
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/telegram/useTelegramConfig.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "TelegramConfig",
+          "line": 8,
+          "col": 18,
+          "pos": 194
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/video-player/index.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "Detection",
+          "line": 5,
+          "col": 14,
+          "pos": 253
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/WebcamCapture.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "WebcamCaptureProps",
+          "line": 10,
+          "col": 18,
+          "pos": 358
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/zone-editor/ZoneEditorTypes.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "ZoneGeometry",
+          "line": 4,
+          "col": 18,
+          "pos": 135
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/zone-overlay/zoneOverlayTypes.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "ZoneType",
+          "line": 5,
+          "col": 13,
+          "pos": 106
+        },
+        {
+          "name": "ZoneGeometry",
+          "line": 12,
+          "col": 18,
+          "pos": 297
+        },
+        {
+          "name": "ZoneStats",
+          "line": 17,
+          "col": 18,
+          "pos": 405
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/hooks/useAlerts.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "DbAlertInsert",
+          "line": 10,
+          "col": 13,
+          "pos": 439
+        },
+        {
+          "name": "DbAlertUpdate",
+          "line": 11,
+          "col": 13,
+          "pos": 491
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/hooks/useDetectionReviews.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "DetectionReview",
+          "line": 16,
+          "col": 18,
+          "pos": 648
+        },
+        {
+          "name": "ReviewInput",
+          "line": 33,
+          "col": 18,
+          "pos": 1032
+        },
+        {
+          "name": "ReviewStatsByRisk",
+          "line": 45,
+          "col": 18,
+          "pos": 1317
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/hooks/ml-models/mlModelTypes.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "BackendType",
+          "line": 6,
+          "col": 13,
+          "pos": 122
+        },
+        {
+          "name": "PoseKeypoint",
+          "line": 24,
+          "col": 18,
+          "pos": 470
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/hooks/useModelThresholds.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "ModelThreshold",
+          "line": 14,
+          "col": 18,
+          "pos": 529
+        },
+        {
+          "name": "ThresholdInput",
+          "line": 26,
+          "col": 18,
+          "pos": 766
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/alerts/AlertSeveritySummary.tsx",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "SeverityCounts",
+          "line": 9,
+          "col": 18,
+          "pos": 214
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/behavior/useBehaviorAnalysis.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "BehavioralPattern",
+          "line": 7,
+          "col": 18,
+          "pos": 326
+        },
+        {
+          "name": "BehaviorAnalysis",
+          "line": 18,
+          "col": 18,
+          "pos": 598
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/recognition-logs/useRecognitionData.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "RecognitionFilters",
+          "line": 58,
+          "col": 18,
+          "pos": 1730
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/security/SecurityTypes.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "LogLevel",
+          "line": 7,
+          "col": 13,
+          "pos": 183
+        },
+        {
+          "name": "LogCategory",
+          "line": 8,
+          "col": 13,
+          "pos": 249
+        },
+        {
+          "name": "AccessStatus",
+          "line": 9,
+          "col": 13,
+          "pos": 346
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/types/themes.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "ThemeMode",
+          "line": 2,
+          "col": 13,
+          "pos": 148
+        },
+        {
+          "name": "ThemeVariant",
+          "line": 4,
+          "col": 13,
+          "pos": 202
+        },
+        {
+          "name": "ThemeConfig",
+          "line": 11,
+          "col": 18,
+          "pos": 307
+        },
+        {
+          "name": "ThemeState",
+          "line": 81,
+          "col": 18,
+          "pos": 1749
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/cameras/types.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "CameraStatus",
+          "line": 6,
+          "col": 13,
+          "pos": 155
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/sidebar/types.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "SidebarContextValue",
+          "line": 36,
+          "col": 18,
+          "pos": 819
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/components/zones/zonesConfig.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "DbZoneEvent",
+          "line": 14,
+          "col": 13,
+          "pos": 391
+        },
+        {
+          "name": "ZonePointsData",
+          "line": 16,
+          "col": 18,
+          "pos": 446
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/types/continuousAnalysis/types.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "AlertThresholds",
+          "line": 31,
+          "col": 18,
+          "pos": 674
+        },
+        {
+          "name": "AnalysisSessionStatus",
+          "line": 63,
+          "col": 13,
+          "pos": 1505
+        },
+        {
+          "name": "BatchAnalysisConfig",
+          "line": 148,
+          "col": 18,
+          "pos": 3975
+        },
+        {
+          "name": "BatchAnalysisStatus",
+          "line": 156,
+          "col": 18,
+          "pos": 4238
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    },
+    {
+      "file": "src/types/zones/types.ts",
+      "owners": [
+        {
+          "name": "@adm01-debug"
+        }
+      ],
+      "dependencies": [],
+      "devDependencies": [],
+      "optionalPeerDependencies": [],
+      "unlisted": [],
+      "binaries": [],
+      "unresolved": [],
+      "exports": [],
+      "types": [
+        {
+          "name": "ZoneShape",
+          "line": 10,
+          "col": 13,
+          "pos": 213
+        },
+        {
+          "name": "TripwireDirection",
+          "line": 16,
+          "col": 13,
+          "pos": 421
+        },
+        {
+          "name": "ZoneGeometry",
+          "line": 26,
+          "col": 18,
+          "pos": 789
+        },
+        {
+          "name": "ZoneConfig",
+          "line": 54,
+          "col": 18,
+          "pos": 1317
+        },
+        {
+          "name": "ZoneRule",
+          "line": 73,
+          "col": 18,
+          "pos": 1912
+        }
+      ],
+      "enumMembers": {},
+      "duplicates": []
+    }
+  ]
+}
