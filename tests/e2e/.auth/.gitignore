@@ -1,0 +1,3 @@
+# NUNCA commitar tokens de auth gerados pelo global-setup
+*
+!.gitignore
