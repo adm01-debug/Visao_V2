@@ -38,7 +38,7 @@ export function SkeletonFailureToggleButton() {
 
   if (!visible) return null;
 
-  const next = ORDER[(ORDER.indexOf(mode) + 1) % ORDER.length];
+  const next: SkeletonFailureMode = ORDER[(ORDER.indexOf(mode) + 1) % ORDER.length] ?? 'off';
 
   const handleClick = () => {
     setSkeletonFailureMode(next);
