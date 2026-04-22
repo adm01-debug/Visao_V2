@@ -85,7 +85,7 @@ const VERDICT_BG: Record<ReviewVerdict, string> = {
 
 export default function EvaluationPage() {
   const { alerts, loading: loadingAlerts } = useAlerts();
-  const { plateDetections, loading: loadingPlates } = usePlateDetections();
+  const { detections: plateDetections, loading: loadingPlates } = usePlateDetections();
   const { reviews, upsertReview, getReviewFor, statsByRisk, loading: loadingReviews } =
     useDetectionReviews();
   const { thresholds, upsertThreshold, getThresholdFor, resetToDefault, loading: loadingThresholds } =
