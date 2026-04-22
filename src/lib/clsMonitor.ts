@@ -250,6 +250,26 @@ export function getShiftLog(): ShiftSource[] {
   return [...session.shifts];
 }
 
+/**
+ * Resolve as N maiores fontes de shift da rota atual cujos elementos
+ * ainda existem no DOM. Pensado para o overlay DEV.
+ */
+export function getTopLiveSources(limit = 5): Array<{
+  selector: string;
+  value: number;
+  timestamp: number;
+  element: Element;
+}> {
+  return [...session.shifts]
+    .sort((a, b) => b.value - a.value)
+    .map((s) => {
+      const el = s.nodeRef?.deref();
+      return el ? { selector: s.selector, value: s.value, timestamp: s.timestamp, element: el } : null;
+    })
+    .filter((x): x is { selector: string; value: number; timestamp: number; element: Element } => x !== null)
+    .slice(0, limit);
+}
+
 export function getRouteSnapshot() {
   return {
     path: session.path,
