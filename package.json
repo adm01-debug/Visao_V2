@@ -83,7 +83,10 @@
     "preview:reset": "bash scripts/reset-preview-qa.sh",
     "preview:reset:fast": "bash scripts/reset-preview-qa.sh --fast",
     "preview:reset:no-qa": "bash scripts/reset-preview-qa.sh --no-qa",
-    "preview:reset-and-qa": "bash scripts/reset-preview-qa.sh"
+    "preview:reset-and-qa": "bash scripts/reset-preview-qa.sh",
+    "qa:gates": "node scripts/quality-gates.mjs --profile=dev",
+    "qa:gates:ci": "node scripts/quality-gates.mjs --profile=ci",
+    "qa:gates:dev": "node scripts/quality-gates.mjs --profile=dev"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
