@@ -25,6 +25,8 @@ type: feature
 
 7. **Build gate de presença de classe no DOM** `tests/e2e/mobile-nav-class-presence.spec.ts` — itera 21 rotas autenticadas em viewport iPhone 12 e exige que EXISTA pelo menos um elemento descendente de `[data-app-scroll]` cuja `class` contenha LITERALMENTE `mb-mobile-nav` (não basta padding-bottom computado). Rodado no CI como gate obrigatório (`npm run test:mobile-nav-class`, sem `continue-on-error`). Em CI sem credenciais seedadas, respeita `MOBILE_NAV_CLASS_AUTH_BYPASS=1` para skip controlado de rotas que redirecionam — checagem estática (Camada 4) cobre essas rotas a nível de código-fonte. Sem a env var, qualquer redirect para /auth FALHA o build.
 
+8. **Auditoria route-based** (parte do `scripts/check-mobile-nav.mjs`) — extrai dinamicamente todas as rotas envolvidas em `<ProtectedLayoutRoute>` dentro de `src/App.tsx` (atualmente 32 rotas), resolve `<ComponentName />` → import lazy → arquivo de página, e valida que cada arquivo cumpre o contrato `mb-mobile-nav`: páginas padrão NÃO redeclaram (vem do MainLayout), wrappers customizados reaplicam explicitamente. Garante que NENHUMA rota autenticada fica de fora da auditoria — mesmo que o snapshot esteja desatualizado ou um arquivo de página seja referenciado por path não-óbvio. Relatório no console lista `rota → componente → arquivo → motivo`. Falha o build via exit code 1.
+
 **MainLayout usa `h-screen h-[100dvh]`** — `dvh` sobrescreve `vh` em browsers compatíveis, evitando overflow no iOS Safari.
 
 **SwipeableView** propaga `data-app-scroll` via `...rest` em ambos os branches (mobile com motion.div e desktop com div simples).
