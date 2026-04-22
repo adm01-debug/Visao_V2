@@ -17,7 +17,7 @@ export interface UseManagedFiltersOptions<T extends Record<string, unknown>> {
   scope: FilterScope | string;
   defaults: T;
   /** Mapa de chave do filtro → label legível em pt-BR usado no toast e modal. */
-  labels?: Partial<Record<keyof T, string>>;
+  labels?: Partial<Record<keyof T & string, string>>;
   /** Chaves extras de localStorage que devem ser limpas junto e restauradas no undo. */
   persistKeys?: string[];
   /** Pular modal de confirmação. Default: true (com confirmação). */
