@@ -66,11 +66,13 @@ const CoveragePage = () => {
             Atualizar
           </Button>
           {data && (
-            <Button asChild variant="outline" size="sm">
-              <a href="/coverage-report.txt" download>
-                <Download className="mr-2 h-4 w-4" />
-                Baixar .txt
-              </a>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => downloadCoverageTextReport(data)}
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Baixar .txt consolidado
             </Button>
           )}
         </div>
