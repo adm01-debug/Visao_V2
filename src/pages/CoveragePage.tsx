@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CoverageStatsCards } from "@/components/coverage/CoverageStatsCards";
 import { CoverageTable } from "@/components/coverage/CoverageTable";
+import { downloadCoverageTextReport } from "@/lib/coverageTextReport";
 import type { CoverageReport } from "@/types/coverage";
 
 const COVERAGE_URL = "/coverage-report.json";
