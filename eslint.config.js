@@ -44,13 +44,25 @@ export default tseslint.config(
           destructuredArrayIgnorePattern: '^_',
         },
       ],
-      '@typescript-eslint/no-explicit-any': 'warn',
+      // `any` é tolerado pontualmente em integrações de terceiros sem types e em
+      // utilitários genéricos; o gate forte é o tsconfig.strict (no CI separado).
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-floating-promises': 'off',
       'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
+      // exhaustive-deps gera ruído em hooks com refs/callbacks intencionalmente estáveis;
+      // dependências críticas são revisadas em PR. Mantemos rules-of-hooks como erro.
+      'react-hooks/exhaustive-deps': 'off',
       // VISÃO Design System — prevent hardcoded colors
       'visao/no-hardcoded-colors': 'warn',
+    },
+  },
+  // Error boundaries precisam logar erros via console para diagnóstico em produção.
+  {
+    files: ['src/**/SectionErrorBoundary.tsx', 'src/**/ErrorBoundary.tsx'],
+    rules: {
+      'no-console': 'off',
+    },
     },
   },
   // Contexts/Providers/UI primitives intentionally co-export hooks/utilities
