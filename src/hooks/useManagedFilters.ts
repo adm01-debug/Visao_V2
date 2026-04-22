@@ -54,6 +54,7 @@ export function useManagedFilters<T extends Record<string, unknown>>(
     persistKeys = [],
     confirm = true,
     isActive = defaultIsActive,
+    onAfterClear,
   } = opts;
 
   const storageKey = `${STORAGE_PREFIX}${scope}`;
