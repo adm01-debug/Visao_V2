@@ -3,6 +3,7 @@
  */
 
 import { useState, useMemo } from 'react';
+import { useManagedFilters } from '@/hooks/useManagedFilters';
 import {
   Camera, Maximize2, Grid3X3, LayoutGrid, List, RefreshCw,
   Search, Plus, X,
