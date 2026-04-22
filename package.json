@@ -68,6 +68,7 @@
     "test:mobile-nav-class": "playwright test mobile-nav-class-presence",
     "test:mobile-nav-content-overlap": "playwright test mobile-nav-content-overlap",
     "test:mobile-drawer": "playwright test mobile-drawer",
+    "test:auth-routes-mobile-nav": "playwright test auth-routes-mobile-nav",
     "report:mobile-nav-diff": "node scripts/build-mobile-nav-diff-report.mjs",
     "report:qa-screenshots": "node scripts/build-qa-screenshots-report.mjs",
     "qa:visual-snapshots": "playwright test qa-visual-snapshots --project=chromium",
