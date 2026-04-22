@@ -10,6 +10,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { SkeletonToggleProvider } from "@/contexts/SkeletonToggleContext";
 import { SkeletonToggleButton } from "@/components/dev/SkeletonToggleButton";
+import { MobileMenuChecklist } from "@/components/dev/MobileMenuChecklist";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SplashScreen } from "@/components/LoadingSpinner";
 import { MainLayout } from "@/components/layout/MainLayout";
@@ -103,6 +104,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
           <Toaster />
           <Sonner />
           <SkeletonToggleButton />
+          <MobileMenuChecklist />
           <BrowserRouter>
             <AuthProvider>
               <NotificationProvider>

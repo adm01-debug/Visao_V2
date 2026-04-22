@@ -183,7 +183,7 @@ export function MobileMenuChecklist() {
             {items.map((item) => (
               <li key={item.id} className="flex items-start gap-1.5">
                 {item.state === 'pass' ? (
-                  <Check className="mt-0.5 h-3 w-3 shrink-0 text-emerald-500" />
+                  <Check className="mt-0.5 h-3 w-3 shrink-0 text-primary" />
                 ) : item.state === 'fail' ? (
                   <X className="mt-0.5 h-3 w-3 shrink-0 text-destructive" />
                 ) : (
