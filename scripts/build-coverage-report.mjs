@@ -73,10 +73,37 @@ const files = Object.entries(raw)
   })
   .sort((a, b) => a.statements.pct - b.statements.pct);
 
+// Read previous report (if any) for delta comparison.
+let previousTotals = null;
+let previousGeneratedAt = null;
+if (existsSync(OUT_JSON)) {
+  try {
+    const prev = JSON.parse(readFileSync(OUT_JSON, "utf8"));
+    previousTotals = prev.totals ?? null;
+    previousGeneratedAt = prev.generatedAt ?? null;
+  } catch {
+    // Ignore — previous file is corrupt; treat as no baseline.
+  }
+}
+
+const currentPct = totals.statements.pct;
+const previousPct = previousTotals?.statements?.pct ?? null;
+const delta = previousPct != null ? +(currentPct - previousPct).toFixed(2) : null;
+const dropExceeded = delta != null && delta < 0 && Math.abs(delta) >= DROP_THRESHOLD;
+
+const alert = {
+  threshold: DROP_THRESHOLD,
+  delta, // null on first run; positive = improved, negative = dropped
+  dropExceeded,
+  previousPct,
+  previousGeneratedAt,
+};
+
 const report = {
   generatedAt: new Date().toISOString(),
   totals,
   files,
+  alert,
 };
 
 writeFileSync(OUT_JSON, JSON.stringify(report, null, 2));
