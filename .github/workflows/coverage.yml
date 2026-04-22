@@ -103,6 +103,27 @@ jobs:
           lines.push('');
           lines.push(`Generated: \`${r.generatedAt}\` — ${r.files.length} files analyzed — commit \`${sha}\`.`);
           lines.push('');
+          if (r.alert) {
+            const a = r.alert;
+            if (a.dropExceeded && a.delta != null) {
+              lines.push(`### 🚨 Alerta: queda de cobertura`);
+              lines.push('');
+              lines.push(`A cobertura global de statements caiu **${Math.abs(a.delta).toFixed(2)} pp** (de **${a.previousPct?.toFixed(2)}%** para **${t.statements.pct.toFixed(2)}%**), ultrapassando o limite configurado de **${a.threshold.toFixed(2)} pp**.`);
+              lines.push('');
+              lines.push('> Adicione testes para os arquivos do top 10 abaixo antes de mesclar.');
+              lines.push('');
+            } else if (a.delta != null) {
+              const sign = a.delta >= 0 ? '+' : '';
+              const emoji = a.delta >= 0 ? '📈' : '📉';
+              lines.push(`### ${emoji} Delta vs. execução anterior`);
+              lines.push('');
+              lines.push(`Variação: **${sign}${a.delta.toFixed(2)} pp** (anterior: ${a.previousPct?.toFixed(2)}% → atual: **${t.statements.pct.toFixed(2)}%**). Limite de alerta: ${a.threshold.toFixed(2)} pp.`);
+              lines.push('');
+            } else {
+              lines.push(`> ℹ️ Sem baseline anterior — primeira execução registrada (limite de alerta: ${a.threshold.toFixed(2)} pp).`);
+              lines.push('');
+            }
+          }
           lines.push('### 📦 Artefatos');
           lines.push('');
           if (htmlUrl) {
