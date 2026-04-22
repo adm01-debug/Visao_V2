@@ -24,6 +24,8 @@ export interface UseManagedFiltersOptions<T extends Record<string, unknown>> {
   confirm?: boolean;
   /** Predicate para decidir se um valor "está ativo". Default: !== default && não-vazio. */
   isActive?: (key: keyof T, value: T[keyof T], defaultValue: T[keyof T]) => boolean;
+  /** Callback opcional executado após o reset, antes do toast — útil para resetar estado satélite. */
+  onAfterClear?: () => void;
 }
 
 const STORAGE_PREFIX = 'managed-filters:';
