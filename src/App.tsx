@@ -59,6 +59,7 @@ const CollaboratorFlowMapPage = lazy(() => import("@/pages/CollaboratorFlowMapPa
 const GoalsAlertsPage = lazy(() => import("@/pages/GoalsAlertsPage"));
 const UserManagementPage = lazy(() => import("@/pages/UserManagementPage"));
 const CoveragePage = lazy(() => import("@/pages/CoveragePage"));
+const AlertsTimelinePage = lazy(() => import("@/pages/AlertsTimelinePage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const AcessoNegado = lazy(() => import("@/pages/AcessoNegado"));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
@@ -114,6 +115,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/dashboard" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<DashboardV2 />, "Dashboard")}</ProtectedLayoutRoute>} />
                     <Route path="/cameras" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<CamerasPage />, "Câmeras")}</ProtectedLayoutRoute>} />
                     <Route path="/alerts" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<AlertsPage />, "Alertas")}</ProtectedLayoutRoute>} />
+                    <Route path="/alerts-timeline" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<AlertsTimelinePage />, "Timeline de Alertas")}</ProtectedLayoutRoute>} />
                     <Route path="/zones" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<ZonesPage />, "Zonas")}</ProtectedLayoutRoute>} />
                     <Route path="/recordings" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<RecordingsPage />, "Gravações")}</ProtectedLayoutRoute>} />
                     <Route path="/analytics" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<AnalyticsPage />, "Analytics")}</ProtectedLayoutRoute>} />

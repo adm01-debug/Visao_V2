@@ -24,6 +24,7 @@ import { useStreamFaceDetection } from '@/hooks/useStreamFaceDetection';
 import { ClipRecorderControls } from './ClipRecorderControls';
 import { AnalysisResultsOverlay } from './AnalysisResultsOverlay';
 import { useContinuousAnalysis } from '@/hooks/useContinuousAnalysis';
+import { useFrameBuffer } from '@/hooks/useFrameBuffer';
 import {
   VideoStatusBadge,
   VideoQualitySelector,
@@ -73,6 +74,18 @@ export function VideoStreamPlayer({
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     return canvas.toDataURL('image/jpeg', 0.7);
   }, [videoRef]);
+
+  // Alimenta o buffer circular de frames (para replay curto de alertas).
+  // Captura ~2 fps enquanto o vídeo está em playback ativo.
+  const { push: pushFrameToBuffer } = useFrameBuffer(cameraId);
+  useEffect(() => {
+    if (state.status !== 'playing') return undefined;
+    const id = window.setInterval(() => {
+      const snap = getFrameForAnalysis();
+      if (snap) pushFrameToBuffer(snap);
+    }, 500);
+    return () => window.clearInterval(id);
+  }, [state.status, getFrameForAnalysis, pushFrameToBuffer]);
 
   // Continuous analysis hook
   const {
