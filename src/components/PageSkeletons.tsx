@@ -3,6 +3,7 @@
  */
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import { useSkeletonToggle } from '@/contexts/SkeletonToggleContext';
 
 export { DashboardSkeleton } from './skeletons/DashboardSkeleton';
 export { CamerasSkeleton } from './skeletons/CamerasSkeleton';
@@ -64,9 +65,6 @@ const SKELETON_MAP: Record<string, React.FC> = {
 };
 
 export function PageSkeleton({ type = 'dashboard' }: PageSkeletonProps) {
-  // Lazy import to avoid circular issues; safe default when context absent.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { useSkeletonToggle } = require('@/contexts/SkeletonToggleContext') as typeof import('@/contexts/SkeletonToggleContext');
   const { skeletonsEnabled } = useSkeletonToggle();
   if (!skeletonsEnabled) {
     return <div aria-hidden="true" data-skeleton-disabled="true" className="min-h-[200px]" />;
