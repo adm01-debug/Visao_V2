@@ -10,19 +10,35 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
     coverage: {
+      provider: "v8",
       reporter: ["text", "html", "json", "json-summary"],
+      reportsDirectory: "./coverage",
+      all: true, // inclui arquivos sem testes (cobertura real do src/)
       include: ["src/**/*.{ts,tsx}"],
       exclude: [
-        "**/*.test.*",
-        "**/*.spec.*",
+        // ---- Testes e infra de teste ----
+        "**/*.{test,spec}.{ts,tsx}",
         "src/test/**",
         "src/**/__tests__/**",
         "src/**/__mocks__/**",
+        "src/**/*.fixture.{ts,tsx}",
+        "src/**/*.fixtures.{ts,tsx}",
+        "src/**/test-utils.{ts,tsx}",
+        // ---- Tipos puros e declarações ----
+        "**/*.d.ts",
+        "src/**/types.ts",
+        "src/**/types/**",
+        "src/types/**",
+        // ---- Stories / docs ----
+        "src/**/*.stories.{ts,tsx}",
+        "src/**/*.mdx",
+        // ---- Gerados / não-executáveis ----
         "src/integrations/supabase/types.ts",
+        "src/integrations/supabase/client.ts",
         "src/main.tsx",
         "src/vite-env.d.ts",
-        "**/*.d.ts",
-        "**/*.stories.{ts,tsx}",
+        // ---- Re-export barrels (apenas re-exports, sem lógica) ----
+        "src/**/index.{ts,tsx}",
       ],
     },
   },
