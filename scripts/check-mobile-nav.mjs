@@ -135,6 +135,24 @@ for (const file of files) {
     if (!content.includes(REQUIRED_CLASS)) {
       missingInCustom.push(relative(process.cwd(), file));
       pageOk = false;
+    } else {
+      // A classe deve estar no container RAIZ (primeiro className do componente),
+      // garantindo que o último filho receba o padding inferior no mobile.
+      // Heurística: localizar o primeiro `className=` do arquivo após `return (`
+      // ou no início do JSX, e validar que contém `mb-mobile-nav`.
+      const returnIdx = content.search(/return\s*\(/);
+      const searchFrom = returnIdx >= 0 ? returnIdx : 0;
+      const firstClassMatch = content.slice(searchFrom).match(/className=(?:"([^"]+)"|\{`([^`]+)`\}|\{cn\(([^)]+)\))/);
+      const firstClass = firstClassMatch
+        ? (firstClassMatch[1] || firstClassMatch[2] || firstClassMatch[3] || '')
+        : '';
+      if (firstClass && !firstClass.includes(REQUIRED_CLASS)) {
+        rootClassDrift.push({
+          file: relative(process.cwd(), file),
+          firstClass: firstClass.trim().slice(0, 100),
+        });
+        pageOk = false;
+      }
     }
   } else {
     // Página padrão: a classe NÃO deve ser redeclarada (vem do MainLayout)
