@@ -131,7 +131,7 @@ export function ZonesPage() {
   const getCameraById = (cameraId: string | null) => (!cameraId ? null : cameras.find(c => c.id === cameraId));
 
 
-  const hasActiveFilters = searchQuery || selectedCameraFilter !== 'all' || selectedTypeFilter !== 'all';
+  
 
   return (
     <div role="main" aria-label="Zonas de interesse" className="min-h-screen bg-background mb-mobile-nav">
