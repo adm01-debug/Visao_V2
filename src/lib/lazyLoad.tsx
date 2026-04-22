@@ -52,15 +52,33 @@ export function withLazyLoad<T extends ComponentType<any>>(
 }
 
 /**
+ * Wraps an importFn so that, when the debug flag is set for the given scope,
+ * the dynamic import REJECTS — exercising the SkeletonErrorBoundary fallback.
+ */
+function withFailureSimulation<T>(
+  importFn: () => Promise<T>,
+  scope: 'cameras' | 'alerts' | 'zones' | 'global',
+): () => Promise<T> {
+  return () => {
+    if (shouldSimulateSkeletonFailure(scope)) {
+      return Promise.reject(
+        new Error(`[debug] simulated lazy chunk failure for "${scope}"`),
+      );
+    }
+    return importFn();
+  };
+}
+
+/**
  * Lazy-loaded page components
  */
 export const LazyPages = {
-  Dashboard: lazy(() => import('@/pages/DashboardV2')),
-  Cameras: lazy(() => import('@/pages/CamerasPage')),
-  Alerts: lazy(() => import('@/pages/AlertsPage')),
-  Zones: lazy(() => import('@/pages/ZonesPage')),
-  Analytics: lazy(() => import('@/pages/AnalyticsPage')),
-  Settings: lazy(() => import('@/pages/SettingsPage')),
+  Dashboard: lazy(withFailureSimulation(() => import('@/pages/DashboardV2'), 'global')),
+  Cameras: lazy(withFailureSimulation(() => import('@/pages/CamerasPage'), 'cameras')),
+  Alerts: lazy(withFailureSimulation(() => import('@/pages/AlertsPage'), 'alerts')),
+  Zones: lazy(withFailureSimulation(() => import('@/pages/ZonesPage'), 'zones')),
+  Analytics: lazy(withFailureSimulation(() => import('@/pages/AnalyticsPage'), 'global')),
+  Settings: lazy(withFailureSimulation(() => import('@/pages/SettingsPage'), 'global')),
 };
 
 export default LazyPages;
