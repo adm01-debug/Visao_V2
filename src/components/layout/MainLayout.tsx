@@ -26,6 +26,7 @@ import { PageTransition } from '@/components/ui/PageTransition';
 import { RouteAnnouncer } from '@/components/ui/RouteAnnouncer';
 import { PWAMigrationBanner } from '@/components/PWAMigrationBanner';
 import { useRouteCLS } from '@/hooks/useRouteCLS';
+import { useCLSAlert } from '@/hooks/useCLSAlert';
 import { cn } from '@/lib/utils';
 
 interface MainLayoutProps {
@@ -35,6 +36,7 @@ interface MainLayoutProps {
 export function MainLayout({ children }: MainLayoutProps) {
   const { showHelp, setShowHelp, getShortcutsByCategory, formatShortcut } = useGlobalShortcuts();
   useRouteCLS();
+  useCLSAlert();
 
   return (
     <div className="flex h-screen h-dvh bg-background">
