@@ -1,3 +1,4 @@
+/* eslint-disable visao/no-hardcoded-colors -- Paleta HSL centralizada para libs externas (Recharts/Canvas/Mapbox) que exigem strings de cor concretas. Documentado em mem://style/chart-color-standardization. */
 /**
  * Centralized chart color palette using HSL values.
  * Used by Recharts, Canvas API, and Mapbox where raw color strings are required.

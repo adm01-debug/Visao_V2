@@ -1,3 +1,4 @@
+/* eslint-disable visao/no-hardcoded-colors -- Cores configuráveis das zonas vêm do backend; renderizadas via style inline. */
 import type { LucideIcon } from 'lucide-react';
 import { Camera, Clock, Activity } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';

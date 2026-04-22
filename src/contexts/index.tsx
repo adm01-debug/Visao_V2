@@ -1,3 +1,4 @@
+
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Contexts barrel export - Exportação centralizada de todos os contextos React

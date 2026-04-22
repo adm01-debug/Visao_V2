@@ -23,6 +23,7 @@ export function Thumbnail({ src, alt = '', type = 'image', aspectRatio = '16:9',
       )}
       {type === 'video' && (
         <div className="absolute inset-0 flex items-center justify-center bg-foreground/30 group-hover:bg-foreground/50 transition-colors">
+          {/* eslint-disable-next-line visao/no-hardcoded-colors -- ícone play branco sobre overlay escuro */}
           <Play className="h-10 w-10 text-foreground fill-white" />
         </div>
       )}

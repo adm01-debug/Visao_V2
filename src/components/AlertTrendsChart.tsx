@@ -1,3 +1,4 @@
+/* eslint-disable visao/no-hardcoded-colors -- Recharts requer strings HSL literais; ver mem://style/chart-color-standardization. */
 import { useMemo, useState } from 'react';
 import {
   AreaChart,

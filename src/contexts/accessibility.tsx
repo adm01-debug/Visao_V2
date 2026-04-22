@@ -1,3 +1,4 @@
+
 /**
  * VISÃO - Acessibilidade (ARIA) - Refactored
  * Main context and provider, with components and hooks extracted to submodules.

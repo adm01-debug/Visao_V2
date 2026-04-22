@@ -202,6 +202,7 @@ export function useHeatmap(options: UseHeatmapOptions): UseHeatmapReturn {
 
     if (config.blur > 0) { ctx.filter = `blur(${config.blur}px)`; ctx.drawImage(canvas, 0, 0); ctx.filter = 'none'; }
     if (config.showGrid) {
+      // eslint-disable-next-line visao/no-hardcoded-colors -- grid de heatmap em Canvas (rgba literal)
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
       ctx.lineWidth = 1;
       for (let x = 0; x <= width; x += config.gridSize) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke(); }

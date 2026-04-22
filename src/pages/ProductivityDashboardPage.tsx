@@ -76,11 +76,13 @@ export default function ProductivityDashboardPage() {
 
   const topPerformers = useMemo(() => [...filteredData].sort((a, b) => b.productivity - a.productivity).slice(0, 10), [filteredData]);
 
+  /* eslint-disable visao/no-hardcoded-colors -- Recharts requer strings HSL literais para Cell colors */
   const punctualityDistribution = useMemo(() => [
     { name: "No horário", value: filteredData.filter((d) => d.punctuality === "on_time").length, color: "hsl(var(--success))" },
     { name: "Atrasado", value: filteredData.filter((d) => d.punctuality === "late").length, color: "hsl(38, 92%, 50%)" },
     { name: "Muito atrasado", value: filteredData.filter((d) => d.punctuality === "very_late").length, color: "hsl(var(--destructive))" },
   ], [filteredData]);
+  /* eslint-enable visao/no-hardcoded-colors */
 
   const hourlyActivity = useMemo(() => Array.from({ length: 10 }, (_, i) => ({
     hora: `${8 + i}:00`, produtivo: Math.round(60 + Math.random() * 30), ocioso: Math.round(5 + Math.random() * 25),

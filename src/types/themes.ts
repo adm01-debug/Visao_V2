@@ -1,3 +1,4 @@
+/* eslint-disable visao/no-hardcoded-colors -- Definições de tema (preview swatches) precisam de hex literais para o seletor visual. */
 export type ThemeMode = 'light' | 'dark' | 'system';
 
 export type ThemeVariant =

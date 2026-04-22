@@ -1,3 +1,4 @@
+/* eslint-disable visao/no-hardcoded-colors -- Mapeamento de severidade para badges de toast (strings hex). */
 import { useState, useMemo, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';

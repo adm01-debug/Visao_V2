@@ -1,3 +1,4 @@
+/* eslint-disable visao/no-hardcoded-colors -- Cores oficiais da marca Google no SVG do botão OAuth (exceção do design system). */
 /**
  * VISÃO - OAuth Buttons (Google only - Lovable Cloud managed)
  */

@@ -124,6 +124,7 @@ export const ThemeProvider = React.forwardRef<HTMLDivElement, ThemeProviderProps
     // Update meta theme-color
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
+      // eslint-disable-next-line visao/no-hardcoded-colors -- meta theme-color exige hex literal por especificação HTML
       metaThemeColor.setAttribute('content', shouldBeDark ? '#0f172a' : '#ffffff');
     }
 

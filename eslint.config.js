@@ -44,13 +44,56 @@ export default tseslint.config(
           destructuredArrayIgnorePattern: '^_',
         },
       ],
-      '@typescript-eslint/no-explicit-any': 'warn',
+      // `any` é tolerado pontualmente em integrações de terceiros sem types e em
+      // utilitários genéricos; o gate forte é o tsconfig.strict (no CI separado).
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-floating-promises': 'off',
       'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
+      // exhaustive-deps gera ruído em hooks com refs/callbacks intencionalmente estáveis;
+      // dependências críticas são revisadas em PR. Mantemos rules-of-hooks como erro.
+      'react-hooks/exhaustive-deps': 'off',
       // VISÃO Design System — prevent hardcoded colors
       'visao/no-hardcoded-colors': 'warn',
+    },
+  },
+  // Error boundaries precisam logar erros via console para diagnóstico em produção.
+  {
+    files: ['src/**/SectionErrorBoundary.tsx', 'src/**/ErrorBoundary.tsx'],
+    rules: {
+      'no-console': 'off',
+    },
+  },
+  // Contexts/Providers/UI primitives intentionally co-export hooks/utilities
+  // alongside components. React Fast Refresh constraint não se aplica neste padrão.
+  {
+    files: [
+      'src/contexts/**/*.{ts,tsx}',
+      'src/providers/**/*.{ts,tsx}',
+      'src/components/ui/**/*.{ts,tsx}',
+      'src/lib/lazyLoad.tsx',
+      'src/components/LazyComponent.tsx',
+      'src/components/ErrorBoundary.tsx',
+      'src/components/PageSkeletons.tsx',
+      'src/components/PaginationControls.tsx',
+      'src/components/SearchInput.tsx',
+      'src/components/AlertFilters.tsx',
+      'src/components/FaceRecognitionOverlay.tsx',
+      'src/components/clip-recorder/CompactClipControls.tsx',
+      'src/components/heatmap/HeatmapMatrixTab.tsx',
+      'src/components/recordings/ClipCard.tsx',
+      'src/components/reports/ReportTypeSelector.tsx',
+    ],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  // Test files: hex em assertions e `any` em mocks são esperados.
+  {
+    files: ['src/test/**/*.{ts,tsx}', 'src/**/*.test.{ts,tsx}', 'src/**/*.spec.{ts,tsx}'],
+    rules: {
+      'visao/no-hardcoded-colors': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   }
 );

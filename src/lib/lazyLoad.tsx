@@ -32,7 +32,7 @@ export const PageLoadingFallback = () => (
 /**
  * Wrapper for lazy-loaded components with Suspense
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 export function withLazyLoad<T extends ComponentType<any>>(
   importFn: () => Promise<{ default: T }>,
   fallback: React.ReactNode = <LoadingFallback />,

@@ -1,3 +1,4 @@
+/* eslint-disable visao/no-hardcoded-colors -- Gradientes de heatmap (Canvas API) exigem strings RGBA literais. */
 /**
  * VISÃO - Heatmap Types & Constants
  */

@@ -1,3 +1,4 @@
+/* eslint-disable no-console -- Bootstrap autoriza logs de inicialização e SW cleanup. */
 // VISÃO - Sistema de Vigilância Inteligente - Main Entry Point
 import { StrictMode } from 'react';
 import { createRoot } from "react-dom/client";

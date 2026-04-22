@@ -201,6 +201,7 @@ const CoveragePage = () => {
               {data.alert?.delta != null && (
                 <>
                   {" "}
+                  {/* eslint-disable-next-line visao/no-hardcoded-colors -- semântica positivo/negativo via paleta tailwind */}
                   <span className={data.alert.delta >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-destructive"}>
                     ({data.alert.delta >= 0 ? "+" : ""}{data.alert.delta.toFixed(2)} pp vs. anterior)
                   </span>
