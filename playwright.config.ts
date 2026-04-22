@@ -8,6 +8,10 @@ const isCI = !!process.env.CI;
  */
 export default defineConfig({
   testDir: "./tests/e2e",
+
+  /* Global setup: seed E2E user + persist auth storageState */
+  globalSetup: require.resolve("./tests/e2e/global-setup"),
+
   
   /* Run tests in files in parallel */
   fullyParallel: true,
