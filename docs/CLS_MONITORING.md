@@ -25,6 +25,29 @@ a transição loading → dados.
   `/cls-report`. Reseta no próximo `pathname`.
 - Para ocultar o badge (ex.: screenshots de QA): `?nocls=1` na URL.
 
+## Log de navegação (antes vs depois)
+
+A cada navegação, o `useRouteCLS` chama `appendNavigationCLS(report)` 3s após
+o "load completo", gravando uma entrada em `localStorage`
+(`visao:cls-nav-log:v1`, máx. 500 entradas, FIFO) com:
+
+```
+{ sessionId, capturedAt, path, cls, rating, shiftCount, shiftWindowMs, topSources[] }
+```
+
+- `sessionId` é único por aba (sessionStorage) — facilita comparar runs.
+- Em DEV: `console.info` curto por entrada + `window.__clsNavLog` no console:
+  `__clsNavLog.get()`, `__clsNavLog.download('ndjson'|'json')`, `.clear()`, `.sessionId()`.
+- Em PROD: silencioso, exceto `logger.warn` quando `cls >= 0.1`.
+- Em `/cls-report` há o botão **Exportar log** que baixa
+  `cls-nav-log_<sessionId>.ndjson` (uma entrada por linha — fácil de `diff`).
+
+Fluxo recomendado para comparar antes/depois:
+1. Antes da mudança: navegue pelas rotas, abra `/cls-report` → **Exportar log**.
+2. Faça a refatoração.
+3. Recarregue a aba (gera novo `sessionId`), repita as navegações, exporte
+   novamente e compare os arquivos com `diff`/`jq`.
+
 ## Em PROD
 
 - Sem badge, sem `console.log`.
