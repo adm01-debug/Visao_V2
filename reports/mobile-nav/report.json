@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-22T11:11:10.770Z",
+  "generatedAt": "2026-04-22T11:20:37.121Z",
   "wrapperFile": "src/components/layout/MainLayout.tsx",
   "requiredClass": "mb-mobile-nav",
   "totals": {
@@ -11,7 +11,7 @@
     "customWrapper": 12,
     "standalone": 6
   },
-  "failed": false,
+  "failed": true,
   "rows": [
     {
       "file": "AlertsPage.tsx",
