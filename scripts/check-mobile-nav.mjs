@@ -139,20 +139,28 @@ for (const file of files) {
       missingInCustom.push(relative(process.cwd(), file));
       pageOk = false;
     } else {
-      // A classe deve estar no container RAIZ (primeiro className do componente),
-      // garantindo que o último filho receba o padding inferior no mobile.
-      // Heurística: localizar o primeiro `className=` do arquivo após `return (`
-      // ou no início do JSX, e validar que contém `mb-mobile-nav`.
-      const returnIdx = content.search(/return\s*\(/);
-      const searchFrom = returnIdx >= 0 ? returnIdx : 0;
-      const firstClassMatch = content.slice(searchFrom).match(/className=(?:"([^"]+)"|\{`([^`]+)`\}|\{cn\(([^)]+)\))/);
-      const firstClass = firstClassMatch
-        ? (firstClassMatch[1] || firstClassMatch[2] || firstClassMatch[3] || '')
-        : '';
-      if (firstClass && !firstClass.includes(REQUIRED_CLASS)) {
+      // A classe deve coexistir num className que ALSO declara altura raiz
+      // (`min-h-screen|h-screen|h-dvh`). Isso garante que o container raiz —
+      // não um filho aninhado — recebe o padding inferior, fazendo com que o
+      // último filho fique acima do BottomNavigation no mobile.
+      const classNameRe = /className=(?:"([^"]+)"|\{`([^`]+)`\}|\{cn\(([^)]+)\))/g;
+      let m;
+      let foundRootWithPadding = false;
+      const rootClasses = [];
+      while ((m = classNameRe.exec(content)) !== null) {
+        const cls = m[1] || m[2] || m[3] || '';
+        if (/(?:min-h-screen|h-screen|h-dvh|h-\[100dvh\])/.test(cls)) {
+          rootClasses.push(cls.trim().slice(0, 100));
+          if (cls.includes(REQUIRED_CLASS)) {
+            foundRootWithPadding = true;
+            break;
+          }
+        }
+      }
+      if (rootClasses.length > 0 && !foundRootWithPadding) {
         rootClassDrift.push({
           file: relative(process.cwd(), file),
-          firstClass: firstClass.trim().slice(0, 100),
+          firstClass: rootClasses[0],
         });
         pageOk = false;
       }
