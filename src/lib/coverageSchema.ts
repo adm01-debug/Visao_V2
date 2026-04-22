@@ -52,6 +52,16 @@ const safeFilesSchema = z
       .filter((e): e is z.infer<typeof fileEntrySchema> => e !== null),
   );
 
+const alertSchema = z
+  .object({
+    threshold: z.number().finite().nonnegative().catch(2),
+    delta: z.number().finite().nullable().catch(null),
+    dropExceeded: z.boolean().catch(false),
+    previousPct: z.number().finite().min(0).max(100).nullable().catch(null),
+    previousGeneratedAt: z.string().nullable().catch(null),
+  })
+  .optional();
+
 export const coverageReportSchema = z
   .object({
     generatedAt: z
@@ -60,6 +70,7 @@ export const coverageReportSchema = z
       .catch(() => new Date().toISOString()),
     totals: totalsSchema,
     files: safeFilesSchema,
+    alert: alertSchema,
   })
   .catch(() => ({
     generatedAt: new Date().toISOString(),
@@ -70,6 +81,7 @@ export const coverageReportSchema = z
       lines: { pct: 0, total: 0, covered: 0, skipped: 0 },
     },
     files: [],
+    alert: undefined,
   }));
 
 export interface ParseCoverageResult {

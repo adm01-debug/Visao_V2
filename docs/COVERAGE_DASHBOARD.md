@@ -53,11 +53,43 @@ A ordenação padrão da tabela é **menor cobertura primeiro**, justamente para
 
 O workflow `.github/workflows/coverage.yml` roda `npm run coverage` em todo push para `main` (e em PRs):
 
-1. Publica dois **artifacts** (retenção 14 dias):
+1. **Restaura o `coverage-report.json` da última execução em `main`** (via `dawidd6/action-download-artifact`) para servir como baseline de delta. Se não existir, segue como primeira execução.
+2. Publica dois **artifacts** (retenção 14 dias):
    - **`coverage-report`** — `coverage/` (HTML Istanbul) + `public/coverage-report.json` + `public/coverage-report.txt`.
    - **`coverage-html`** — `coverage-html.zip` standalone (apenas o HTML interativo, mais leve para download rápido).
-2. Adiciona um **summary** em `$GITHUB_STEP_SUMMARY` com **link direto de download** dos dois artifacts (`steps.upload_coverage.outputs.artifact-url` e `steps.upload_html.outputs.artifact-url`), totais por métrica e top 10 arquivos menos cobertos (ordenação asc explícita).
-3. Em PRs, posta/atualiza um **comentário idempotente** (marker `<!-- coverage-report-comment -->`) com os mesmos links.
+3. Adiciona um **summary** em `$GITHUB_STEP_SUMMARY` com totais por métrica, top 10 arquivos menos cobertos e o **status do alerta de queda** (ver abaixo).
+4. Em PRs, posta/atualiza um **comentário idempotente** (marker `<!-- coverage-report-comment -->`) com os mesmos links.
+
+### 🚨 Alerta de queda de cobertura
+
+O script `scripts/build-coverage-report.mjs` compara a cobertura global de **statements** com a execução anterior e grava o resultado em `report.alert`:
+
+```ts
+alert: {
+  threshold: number;        // pp configurado (default 2)
+  delta: number | null;     // pp de variação (null na 1ª execução)
+  dropExceeded: boolean;    // true se delta < 0 e |delta| >= threshold
+  previousPct: number | null;
+  previousGeneratedAt: string | null;
+}
+```
+
+Quando `dropExceeded` for `true`:
+
+- O **dashboard** (`/coverage`) exibe um banner vermelho destacando a queda.
+- O **comentário do PR** abre com uma seção `🚨 Alerta: queda de cobertura`.
+- O script imprime erro no log do CI. Para **falhar o job** automaticamente, defina o repo variable `COVERAGE_FAIL_ON_DROP=1`.
+
+Configure via repo variables (Settings → Variables → Actions):
+
+- `COVERAGE_DROP_THRESHOLD` — pp tolerados de queda antes do alerta (default `2`).
+- `COVERAGE_FAIL_ON_DROP` — `1` para falhar o job (default `0`, apenas avisa).
+
+Localmente:
+
+```bash
+COVERAGE_DROP_THRESHOLD=1 COVERAGE_FAIL_ON_DROP=1 npm run coverage
+```
 
 ### Botão "Baixar HTML completo (CI)" no dashboard
 
