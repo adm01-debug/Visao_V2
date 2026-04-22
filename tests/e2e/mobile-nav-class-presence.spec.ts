@@ -81,7 +81,7 @@ test.describe('Build gate: presença de mb-mobile-nav no DOM (mobile)', () => {
         }
         throw new Error(
           `[mobile-nav-class] Rota ${route} redirecionou para ${url}. ` +
-            `Configure auth-bypass de teste ou setApMOBILE_NAV_CLASS_AUTH_BYPASS=1 para permitir skip controlado.`,
+            `Defina MOBILE_NAV_CLASS_AUTH_BYPASS=1 para permitir skip controlado, ou seede credenciais de teste.`,
         );
       }
 

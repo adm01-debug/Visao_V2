@@ -67,6 +67,12 @@ jobs:
         env:
           CI: true
 
+      - name: Mobile Nav Class Presence (build gate)
+        run: npm run test:mobile-nav-class -- --project=mobile-safari --workers=4
+        env:
+          CI: true
+          MOBILE_NAV_CLASS_AUTH_BYPASS: '1'
+
       - name: Mobile Nav Overlap (Visual Snapshot)
         run: npm run test:mobile-nav-overlap -- --project=mobile-safari --workers=2
         continue-on-error: true
