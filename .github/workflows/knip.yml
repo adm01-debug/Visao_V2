@@ -68,6 +68,16 @@ jobs:
             echo "types=$types"
           } >> "$GITHUB_OUTPUT"
 
+      - name: Compare against baseline (warning-only)
+        run: node scripts/check-deadcode-baseline.mjs
+        continue-on-error: true
+
+      - name: Update baseline (manual dispatch only)
+        if: github.event_name == 'workflow_dispatch' && inputs.update_baseline == true
+        run: |
+          node scripts/check-deadcode-baseline.mjs --update
+          echo "ℹ️ Baseline atualizado em reports/deadcode/baseline.json — disponível como artefato."
+
       - name: Upload HEAD report
         if: always()
         uses: actions/upload-artifact@v4
