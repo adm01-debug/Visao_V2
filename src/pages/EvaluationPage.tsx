@@ -125,7 +125,7 @@ export default function EvaluationPage() {
       out.push({
         source_table: 'plate_detections',
         source_id: p.id,
-        timestamp: p.timestamp,
+        timestamp: typeof p.timestamp === 'string' ? p.timestamp : new Date(p.timestamp).toISOString(),
         camera_id: p.camera_id,
         camera_name: p.camera_name,
         risk_type: 'license_plate',
