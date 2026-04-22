@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "analyze": "vite-bundle-analyzer",
+    "prebuild": "npm run type-check:strict",
     "build": "npm run check:mobile-nav:auto && npm run check:page-content && npm run check:skeletons -- --skip-build && vite build && npm run check:tailwind-animations",
     "check:tailwind-animations": "node scripts/check-tailwind-animations.mjs",
     "build-storybook": "storybook build",
+    "prebuild:dev": "npm run type-check:strict",
     "build:dev": "vite build --mode development",
     "bundle-size": "size-limit",
     "check:bundle-size": "node scripts/check-bundle-size.mjs",
