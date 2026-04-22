@@ -238,7 +238,19 @@ if (undeclaredCustomWrappers.length > 0) {
   failed = true;
 }
 
-// Snapshot de regressão (Camada 4)
+if (rootClassDrift.length > 0) {
+  console.error(`\n❌ ${rootClassDrift.length} página(s) com wrapper customizado têm \`${REQUIRED_CLASS}\` FORA do container raiz:`);
+  for (const r of rootClassDrift) {
+    console.error(`   - ${r.file}`);
+    console.error(`       ↳ raiz: ${r.firstClass}`);
+  }
+  console.error(
+    `\nA classe \`${REQUIRED_CLASS}\` deve estar no container RAIZ do componente para que\n` +
+    `o ÚLTIMO FILHO receba o padding inferior no mobile (acima do BottomNavigation).\n` +
+    `Mover a classe para um filho cria espaço morto antes do nav e oculta conteúdo.\n`
+  );
+  failed = true;
+}
 if (SNAPSHOT_MODE) {
   const { writeFileSync } = await import('node:fs');
   const snapshot = {
