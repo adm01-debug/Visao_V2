@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components -- Barrel file: re-exports apenas (HMR não se aplica). */
+
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Contexts barrel export - Exportação centralizada de todos os contextos React
