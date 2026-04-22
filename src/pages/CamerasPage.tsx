@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 
 export function CamerasPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('grid-2x2');
@@ -70,7 +71,7 @@ export function CamerasPage() {
 
 
   return (
-    <div className="page-container space-y-4 sm:space-y-6">
+    <PageContent className="space-y-4 sm:space-y-6">
       <PageMeta title="Câmeras" description="Gerencie e monitore suas câmeras de vigilância em tempo real" />
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -222,7 +223,7 @@ export function CamerasPage() {
           )}
         </SheetContent>
       </Sheet>
-    </div>
+    </PageContent>
   );
 }
 

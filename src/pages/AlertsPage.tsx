@@ -25,6 +25,7 @@ import { AlertStatsCards } from "@/components/alerts/AlertStatsCards";
 import { AlertSeveritySummary } from "@/components/alerts/AlertSeveritySummary";
 import type { AlertRecord, AlertFilters, ViewMode, SortOption } from "@/components/alerts/AlertTypes";
 import { defaultFilters, severityConfig } from "@/components/alerts/AlertTypes";
+import { PageContent } from "@/components/layout/MainLayout";
 
 export function AlertsPage() {
   const { events: _recognitionEvents } = useFaceRecognitionAlerts({ cameraId: '', cameraName: '' });
@@ -112,7 +113,8 @@ export function AlertsPage() {
 
 
   return (
-    <div role="main" aria-label="Central de alertas" className="page-container space-y-6">
+    <PageContent>
+      <div role="main" aria-label="Central de alertas" className="space-y-6">
       <PageMeta title="Alertas" description="Central de alertas e notificações do sistema de vigilância" />
 
       <div className="flex items-center justify-between">
@@ -223,7 +225,7 @@ export function AlertsPage() {
       <AlertDetailsDialog alert={detailsAlert} isOpen={!!detailsAlert} onClose={() => setDetailsAlert(null)}
         onMarkRead={() => { if (detailsAlert) markAsRead(detailsAlert.id); setDetailsAlert(null); }}
         onDelete={() => { if (detailsAlert) { animateAndDelete([detailsAlert.id]); } setDetailsAlert(null); }} />
-    </div>
+    </div></PageContent>
   );
 }
 

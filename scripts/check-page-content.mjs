@@ -31,12 +31,9 @@ const STANDALONE_ALLOWLIST = new Set([
 // Mover para [] (lista vazia) após migração + revisão visual em mobile.
 // Quando vazia, mude o gate para --strict no CI.
 const PENDING_MIGRATION = new Set([
-  'AlertsPage.tsx',
   'AnalyticsPage.tsx',
   'BehaviorDetectionPage.tsx',
-  'CamerasPage.tsx',
   'CollaboratorFlowMapPage.tsx',
-  'DashboardV2.tsx',
   'FaceRecognitionPage.tsx',
   'GoalsAlertsPage.tsx',
   'HeatmapPage.tsx',
@@ -52,8 +49,6 @@ const PENDING_MIGRATION = new Set([
   'RecognitionAnalyticsPage.tsx',
   'RecognitionLogsPage.tsx',
   'RecordingsPage.tsx',
-  'SecurityPage.tsx',
-  'SettingsPage.tsx',
   'StreamSettingsPage.tsx',
   'TelegramSettingsPage.tsx',
   'UserManagementPage.tsx',

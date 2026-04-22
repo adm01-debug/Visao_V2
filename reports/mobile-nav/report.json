@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-22T11:08:30.480Z",
+  "generatedAt": "2026-04-22T11:11:10.770Z",
   "wrapperFile": "src/components/layout/MainLayout.tsx",
   "requiredClass": "mb-mobile-nav",
   "totals": {
@@ -7,8 +7,8 @@
     "ok": 30,
     "pendente": 0,
     "isenta": 6,
-    "standard": 17,
-    "customWrapper": 13,
+    "standard": 18,
+    "customWrapper": 12,
     "standalone": 6
   },
   "failed": false,
@@ -65,7 +65,7 @@
     {
       "file": "DashboardV2.tsx",
       "path": "src/pages/DashboardV2.tsx",
-      "category": "customWrapper",
+      "category": "standard",
       "status": "ok",
       "issues": []
     },
