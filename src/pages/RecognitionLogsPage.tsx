@@ -17,16 +17,57 @@ import { useRecognitionData, useFilteredLogs, useRecognitionExport } from '@/com
 import { RecognitionStatsCards } from '@/components/recognition-logs/RecognitionStatsCards';
 import { RecognitionLogsTable } from '@/components/recognition-logs/RecognitionLogsTable';
 import { PageMeta } from '@/components/PageMeta';
+import { useManagedFilters } from '@/hooks/useManagedFilters';
 
 const ITEMS_PER_PAGE = 20;
 
+interface RecognitionFilters {
+  searchTerm: string;
+  selectedPerson: string;
+  selectedCamera: string;
+  selectedStatus: string;
+  dateFrom: string | null;
+  dateTo: string | null;
+  [key: string]: unknown;
+}
+
+const defaultFilters: RecognitionFilters = {
+  searchTerm: '',
+  selectedPerson: 'all',
+  selectedCamera: 'all',
+  selectedStatus: 'all',
+  dateFrom: null,
+  dateTo: null,
+};
+
 export default function RecognitionLogsPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedPerson, setSelectedPerson] = useState('all');
-  const [selectedCamera, setSelectedCamera] = useState('all');
-  const [selectedStatus, setSelectedStatus] = useState('all');
-  const [dateFrom, setDateFrom] = useState<Date | undefined>();
-  const [dateTo, setDateTo] = useState<Date | undefined>();
+  const { filters, setFilters, clearFilters, hasActiveFilters } = useManagedFilters<RecognitionFilters>({
+    scope: 'recognition-logs',
+    defaults: defaultFilters,
+    labels: {
+      searchTerm: 'busca',
+      selectedPerson: 'pessoa',
+      selectedCamera: 'câmera',
+      selectedStatus: 'status',
+      dateFrom: 'data inicial',
+      dateTo: 'data final',
+    },
+  });
+
+  const searchTerm = filters.searchTerm;
+  const selectedPerson = filters.selectedPerson;
+  const selectedCamera = filters.selectedCamera;
+  const selectedStatus = filters.selectedStatus;
+  const dateFrom = filters.dateFrom ? new Date(filters.dateFrom) : undefined;
+  const dateTo = filters.dateTo ? new Date(filters.dateTo) : undefined;
+
+  const setSearchTerm = (v: string) => setFilters((p) => ({ ...p, searchTerm: v }));
+  const setSelectedPerson = (v: string) => setFilters((p) => ({ ...p, selectedPerson: v }));
+  const setSelectedCamera = (v: string) => setFilters((p) => ({ ...p, selectedCamera: v }));
+  const setSelectedStatus = (v: string) => setFilters((p) => ({ ...p, selectedStatus: v }));
+  const setDateFrom = (d: Date | undefined) => setFilters((p) => ({ ...p, dateFrom: d ? d.toISOString() : null }));
+  const setDateTo = (d: Date | undefined) => setFilters((p) => ({ ...p, dateTo: d ? d.toISOString() : null }));
+
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedLog, setSelectedLog] = useState<Tables<'recognition_logs'> | null>(null);
 
@@ -39,12 +80,6 @@ export default function RecognitionLogsPage() {
   const totalPages = Math.ceil(filteredLogs.length / ITEMS_PER_PAGE);
   const paginatedLogs = filteredLogs.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
-  const clearFilters = () => {
-    setSearchTerm(''); setSelectedPerson('all'); setSelectedCamera('all');
-    setSelectedStatus('all'); setDateFrom(undefined); setDateTo(undefined); setCurrentPage(1);
-  };
-
-  const hasActiveFilters = searchTerm || selectedPerson !== 'all' || selectedCamera !== 'all' || selectedStatus !== 'all' || dateFrom || dateTo;
 
   return (
     <div role="main" aria-label="Logs de reconhecimento" className="min-h-screen bg-background mb-mobile-nav">
