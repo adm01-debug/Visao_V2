@@ -61,6 +61,7 @@
     "test:mobile-nav-visual": "playwright test mobile-nav-visual --project=mobile-safari",
     "test:mobile-nav-visual:update": "playwright test mobile-nav-visual --project=mobile-safari --update-snapshots",
     "test:smoke": "playwright test smoke-pages",
+    "test:filters": "playwright test filters-lifecycle",
     "test:cls-regression": "playwright test cls-regression",
     "test:integration": "vitest run --dir src/__tests__/integration",
     "test:ui": "vitest --ui",
