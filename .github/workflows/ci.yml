@@ -70,6 +70,20 @@ jobs:
         env:
           CI: true
 
+      - name: Mobile Nav Visual Regression (full suite)
+        run: npm run test:mobile-nav-visual -- --workers=2
+        continue-on-error: true
+        env:
+          CI: true
+
+      - name: Upload Visual Diff Artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-nav-visual-diffs
+          path: test-results/
+          retention-days: 14
+
       - name: Smoke Tests (páginas principais)
         run: npm run test:smoke -- --project=chromium --workers=4
         env:
