@@ -1,121 +1,86 @@
 
 
-## Filtros: confirmação, undo, persistência por usuário e toast detalhado
+## Migrar 7 páginas para `useManagedFilters`
 
-Aplicar quatro melhorias UX em **todos** os "Limpar filtros" do sistema, criando uma arquitetura única reutilizável + corrigir o build quebrado que está bloqueando deploys.
+Aplicar confirmação, toast detalhado e undo (10s) ao "Limpar filtros" das páginas restantes, reaproveitando o hook já criado e o padrão validado em `RecognitionLogsPage`.
 
-### Etapa 0 — Desbloquear o build (pré-requisito)
+### Páginas e mudanças
 
-`npm run build` falha em `type-check:strict` por flags introduzidas no `tsconfig.strict.json` (`exactOptionalPropertyTypes`, `noUnusedLocals`, `noPropertyAccessFromIndexSignature`). Estes erros **são pré-existentes**, não vieram do PR de bundle-report.
+| Página | Scope | Filtros mapeados | Labels (pt-BR) |
+|---|---|---|---|
+| `AlertsPage.tsx` | `alerts` | `search`, `severity`, `type`, `cameraId`, `readStatus`, `dateRange` | busca, severidade, tipo, câmera, leitura, período |
+| `CamerasPage.tsx` | `cameras` | `searchQuery`, `statusFilter` | busca, status |
+| `PeoplePage.tsx` (`usePeopleData`) | `people` | `search`, `activeOnly` | busca, apenas ativos |
+| `ZonesPage.tsx` | `zones` | `searchQuery`, `selectedCameraFilter`, `selectedTypeFilter` | busca, câmera, tipo |
+| `RecordingsPage.tsx` | `recordings` | `searchQuery`, `cameraFilter`, `dateFilter` | busca, câmera, período |
+| `AnalysisHistoryPanel.tsx` | `analysis-history` | `typeFilter`, `severityFilter` | tipo, severidade |
+| `LicensePlatePage` → `DetectionsHistoryTab.tsx` | `license-plate-history` | `searchQuery` | busca |
 
-Correção mínima e segura: ajustar `tsconfig.strict.json` para desligar **apenas** as três flags acima (manter `strict: true`, `noUnusedParameters`, `noImplicitReturns`, `noUncheckedIndexedAccess`). Documentar no `docs/CODE_QUALITY_RULES.md` que essas três flags ficam em backlog para limpeza incremental — mantém parity com CI sem bloquear feature work.
+### Padrão de migração (5–10 linhas por página)
 
-### Etapa 1 — Hook + Provider central `useManagedFilters`
-
-Criar `src/hooks/useManagedFilters.ts` + `src/providers/FilterPersistenceProvider.tsx`. API única que cada página adota:
+Cada página segue exatamente o template já validado em `RecognitionLogsPage`:
 
 ```ts
-const { filters, setFilters, clearFilters, hasActiveFilters } = useManagedFilters({
-  scope: 'alerts',                     // chave única por página
-  defaults: defaultAlertFilters,
-  labels: { search: 'busca', severity: 'severidade', ... },
-  persistKeys: ['cameras-filter-v1'],  // chaves localStorage extras a limpar
-});
+interface AlertFiltersShape extends AlertFilters { [key: string]: unknown; }
+const { filters, setFilters, clearFilters, hasActiveFilters } =
+  useManagedFilters<AlertFiltersShape>({
+    scope: 'alerts',
+    defaults: defaultFilters,
+    labels: { search: 'busca', severity: 'severidade', /* ... */ },
+  });
 ```
 
-Internamente o hook entrega: confirmação → execução → toast detalhado → janela de undo → persistência dual.
+Substituir o `useState<...>(defaultFilters)` + `clearFilters` ad-hoc; manter os `setFilters(f => ({...}))` existentes (assinatura compatível). Botões que hoje fazem reset inline (ex.: "Limpar" em `CamerasPage`, `ZonesPage`) passam a chamar `clearFilters()` do hook, ganhando modal + toast + undo automaticamente.
 
-### Etapa 2 — Confirmação antes de limpar
+### Casos especiais
 
-Reusar `ConfirmDialog` existente (`src/components/ConfirmDialog.tsx`). Disparado por `clearFilters()`:
-- Título: "Limpar filtros?"
-- Descrição lista campos ativos (ex.: "Você vai limpar: busca, severidade, período, câmera").
-- Botões: "Cancelar" (default) / "Limpar filtros" (destructive).
-- Skip via prop `confirm: false` para casos onde já houve confirmação implícita.
+- **AlertsPage**: o `clearFilters` atual também reseta `activeStatsFilter` (estado local). Após `clearFilters` do hook abrir o modal, o reset do `activeStatsFilter` é feito num callback `onAfterClear` (extensão simples no hook: aceitar prop opcional `onAfterClear?: () => void` chamada no `performClear`, antes do toast). Mantém comportamento atual sem regressão.
+- **PeoplePage**: filtros vivem em `usePeopleData` — substituir `useState<Filters>` pelo hook lá dentro e expor `clearFilters` no retorno; UI atual já tem botão `X` apenas para `search`, adicionar botão "Limpar" condicionado em `hasActiveFilters` (consistência com outras páginas).
+- **AnalysisHistoryPanel**: filtros são dois `useState` separados — consolidar em um objeto `{ typeFilter, severityFilter }` para o hook; props do `<AnalysisHistoryFilters>` permanecem iguais (continua recebendo handlers `onTypeChange` / `onSeverityChange`).
+- **LicensePlatePage**: o "histórico" hoje só tem busca textual e o botão "Buscar" dispara `handleSearchDetections`. Adicionar `clearFilters` ao lado do botão Buscar quando `hasActiveFilters` (atualmente não há botão "Limpar" — passa a ter).
+- **`useFilterStore` (Zustand)**: já recebeu wrapper compat em PR anterior. Sem mudança.
 
-### Etapa 3 — Toast detalhado
+### Pequena extensão do hook
 
-Após confirmar, `toast.success` (sonner) com:
-- Linha 1: "Filtros limpos"
-- Linha 2 (description): lista enxuta — "Removido: busca, severidade, período • localStorage: alerts-filter-v1, alerts-sort-v1"
-- Action button: **"Desfazer"** (10s).
+Adicionar prop opcional ao `UseManagedFiltersOptions`:
 
-### Etapa 4 — Undo (10 segundos)
+```ts
+onAfterClear?: () => void;  // chamado após reset, antes do toast
+```
 
-Snapshot completo antes de limpar (`{ filters, persistedKeys: { key: rawValue } }`). Action do toast restaura:
-1. `setFilters(snapshot.filters)`
-2. Re-grava localStorage (`localStorage.setItem(key, raw)`)
-3. Re-sincroniza preferências no Supabase (insert ou update).
-4. Toast confirmando: "Filtros restaurados".
-
-Após 10s o snapshot é descartado da memória.
-
-### Etapa 5 — Persistência por usuário (Supabase)
-
-Nova tabela `user_filter_preferences`:
-
-| coluna | tipo |
-|---|---|
-| `id` | uuid PK |
-| `user_id` | uuid FK auth.users (cascade) |
-| `scope` | text (ex.: 'alerts', 'cameras', 'people') |
-| `filters` | jsonb |
-| `updated_at` | timestamptz default now() |
-| unique(user_id, scope) | |
-
-- RLS: `auth.uid() = user_id` em SELECT/INSERT/UPDATE/DELETE.
-- Trigger `update_updated_at_column` reaproveitado.
-- Hook usa estratégia **localStorage-first + Supabase background sync**: lê localStorage no mount (instant), em paralelo faz `select` no Supabase; se servidor for mais novo, sobrescreve estado e localStorage. Em cada `setFilters`, debounce 800ms → upsert no Supabase.
-- Resultado: filtros viajam entre navegadores sem latência perceptível na primeira pintura.
-
-### Etapa 6 — Migrar consumidores
-
-Substituir `clearFilters` ad-hoc nos 9 pontos identificados pelo hook único:
-`AlertsPage`, `CamerasPage`, `PeoplePage`, `ZonesPage`, `RecordingsPage`, `RecognitionLogsPage`, `AnalysisHistoryPanel`, `LicensePlatePage` (history tab), `useFilterStore` (Zustand → wrapper compatível).
-
-Cada migração: 5–10 linhas alteradas, sem mudar o layout. Páginas que já usam `defaultFilters` ganham automaticamente labels traduzíveis para o toast.
-
-### Etapa 7 — Documentação + testes
-
-- `docs/FILTER_SYSTEM.md`: API do hook, como adicionar nova `scope`, regras de label.
-- Atualizar `mem://features/alert-visual-filters` com referência ao novo padrão.
-- Vitest: `useManagedFilters.test.ts` cobrindo confirm/cancel, undo restaura, snapshot expira após 10s, sync Supabase com mock.
-- Playwright E2E: cenário "limpar → cancelar", "limpar → confirmar → desfazer", "filtros persistem após reload" em uma página representativa (Alertas).
-
-### Detalhes técnicos
-
-- **Tipos**: `FilterScope = 'alerts' | 'cameras' | 'people' | 'zones' | 'recordings' | 'recognition-logs' | 'analysis-history' | 'license-plate-history'`. Genérico `useManagedFilters<T extends Record<string, unknown>>`.
-- **i18n**: labels em `pt-BR` por scope, definidas no call-site (não centralizadas) para flexibilidade.
-- **A11y**: `ConfirmDialog` já tem foco em "Cancelar"; toast usa `role="status"` (sonner default).
-- **Edge cases**: usuário não logado → só localStorage (sem Supabase); offline → enfileira upsert via `useOnline` existente; conflito de versão → último write wins por `updated_at`.
-
-### Arquivos a criar/editar
-
-| Arquivo | Mudança |
-|---|---|
-| `tsconfig.strict.json` | ✏️ desligar 3 flags problemáticas |
-| `docs/CODE_QUALITY_RULES.md` | ✏️ documentar flags em backlog |
-| `src/hooks/useManagedFilters.ts` | ➕ hook central |
-| `src/providers/FilterPersistenceProvider.tsx` | ➕ context para snapshot/undo |
-| `supabase/migrations/*_user_filter_preferences.sql` | ➕ tabela + RLS |
-| `src/integrations/supabase/types.ts` | ⚙️ regenerado automaticamente |
-| 9 páginas/componentes consumidores | ✏️ migração leve |
-| `docs/FILTER_SYSTEM.md` | ➕ guia |
-| `tests/useManagedFilters.test.ts` + 1 spec Playwright | ➕ cobertura |
+Necessário para `AlertsPage` (resetar `activeStatsFilter`) e útil para futuras páginas que tenham estado satélite.
 
 ### Critérios de aceitação
 
-- ✅ `npm run build` passa.
-- ✅ Clicar "Limpar filtros" em qualquer página abre modal de confirmação.
-- ✅ Após confirmar, toast lista exatamente os campos e chaves localStorage limpas.
-- ✅ Botão "Desfazer" no toast restaura filtros + preferências em até 10s.
-- ✅ Logado em outro navegador, filtros aparecem (após sync inicial < 1s).
-- ✅ Offline, hook degrada para localStorage sem erro.
-- ✅ Testes Vitest + 1 Playwright verdes.
+- ✅ Cada uma das 7 páginas usa `useManagedFilters` com `scope` único.
+- ✅ Clicar "Limpar filtros" abre `ConfirmDialog` listando os campos ativos em pt-BR.
+- ✅ Após confirmar, toast lista campos removidos + chave localStorage; botão "Desfazer" restaura por 10s.
+- ✅ Filtros persistem entre browsers via `user_filter_preferences` (tabela já criada).
+- ✅ `npm run build` passa (sem novos erros de `noUnusedParameters` nem strict).
+- ✅ Layouts visuais permanecem idênticos (apenas comportamento de "Limpar" muda).
+- ✅ `mem://features/managed-filters-system` atualizada listando as 8 páginas migradas.
+
+### Arquivos a editar/criar
+
+| Arquivo | Mudança |
+|---|---|
+| `src/hooks/useManagedFilters.ts` | ✏️ adicionar `onAfterClear?` opcional |
+| `src/pages/AlertsPage.tsx` | ✏️ migrar (usa `onAfterClear` para `activeStatsFilter`) |
+| `src/pages/CamerasPage.tsx` | ✏️ migrar + chamar `clearFilters()` no botão e `EmptyState` |
+| `src/components/people/usePeopleData.ts` | ✏️ migrar + expor `clearFilters`/`hasActiveFilters` |
+| `src/pages/PeoplePage.tsx` | ✏️ adicionar botão "Limpar" no header de filtros |
+| `src/pages/ZonesPage.tsx` | ✏️ migrar (substitui reset inline) |
+| `src/pages/RecordingsPage.tsx` | ✏️ migrar + adicionar botão "Limpar" |
+| `src/components/AnalysisHistoryPanel.tsx` | ✏️ migrar (consolida 2 useStates num objeto) |
+| `src/components/license-plate/DetectionsHistoryTab.tsx` | ✏️ migrar busca + adicionar botão "Limpar" |
+| `src/pages/LicensePlatePage.tsx` | ✏️ ajustar prop drilling do `searchQuery`/`clearFilters` |
+| `docs/FILTER_SYSTEM.md` | ✏️ marcar 8 páginas como ✅ migradas |
+| `mem://features/managed-filters-system` | ✏️ atualizar inventário |
 
 ### Riscos e mitigações
 
-- **Risco:** modal de confirmação atrapalha fluxos rápidos. **Mitigação:** prop `confirm: false` permite skip; futuramente preferência "não perguntar de novo".
-- **Risco:** sync Supabase causa race conditions com edição local. **Mitigação:** debounce 800ms + comparação por `updated_at`; localStorage continua sendo source-of-truth para latência zero.
-- **Risco:** ajuste do `tsconfig.strict.json` parece um relax. **Mitigação:** documentar como débito técnico explícito; manter outras flags strict; criar issue de cleanup incremental.
+- **Risco:** `setFilters(f => ({...f}))` em alguns lugares passa filtros parciais sem todas as keys de `defaults`. **Mitigação:** o hook já faz spread `{...defaults, ...filters}` no estado inicial; assinatura functional preserva keys.
+- **Risco:** `AlertsPage` tem múltiplos pontos que chamam `setFilters(defaultFilters)` direto (stats card, severity click). **Mitigação:** esses NÃO são "limpar filtros" do usuário (são filtros direcionados), continuam usando `setFilters` direto sem confirmação — só o botão "Limpar" usa `clearFilters()`.
+- **Risco:** `usePeopleData` é compartilhado e mudar assinatura pode quebrar consumidores. **Mitigação:** apenas adicionar campos ao retorno (não remover nem renomear); 100% retro-compatível.
+- **Risco:** primeira render no Sheet do `AnalysisHistoryPanel` chama o hook mesmo fechado. **Mitigação:** hook é leve (localStorage sync), sem custo perceptível.
 
