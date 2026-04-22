@@ -8,7 +8,6 @@
  * load (para acompanhar shifts tardios) e em scroll/resize.
  */
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { getTopLiveSources, subscribeCLS } from '@/lib/clsMonitor';
 
 interface OverlayBox {
@@ -60,7 +59,6 @@ function computeBoxes(): OverlayBox[] {
 }
 
 export function CLSShiftOverlay() {
-  const location = useLocation();
   const [enabled, setEnabled] = useState<boolean>(() => readEnabled());
   const [boxes, setBoxes] = useState<OverlayBox[]>([]);
 
@@ -106,7 +104,7 @@ export function CLSShiftOverlay() {
       window.clearTimeout(stop);
       cancelAnimationFrame(raf);
     };
-  }, [enabled, location.pathname]);
+  }, [enabled]);
 
   if (!import.meta.env?.DEV) return null;
   if (
