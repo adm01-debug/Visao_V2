@@ -27,6 +27,15 @@ jobs:
         run: npm run coverage
         env:
           CI: true
+      - name: Zip HTML coverage report
+        if: always()
+        run: |
+          if [ -d coverage ]; then
+            (cd coverage && zip -qr ../coverage-html.zip .)
+            ls -lh coverage-html.zip || true
+          else
+            echo "::warning::coverage/ directory not found, skipping HTML zip"
+          fi
       - name: Upload coverage artifacts (HTML + JSON + TXT)
         id: upload_coverage
         if: always()
@@ -37,6 +46,15 @@ jobs:
             coverage/
             public/coverage-report.json
             public/coverage-report.txt
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Upload HTML zip (standalone)
+        id: upload_html
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: coverage-html.zip
           retention-days: 14
           if-no-files-found: warn
       - name: Build PR/job summary
