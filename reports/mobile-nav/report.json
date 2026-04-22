@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-04-22T11:45:59.838Z",
+  "generatedAt": "2026-04-22T15:27:58.544Z",
   "wrapperFile": "src/components/layout/MainLayout.tsx",
   "requiredClass": "mb-mobile-nav",
   "totals": {
-    "total": 38,
-    "ok": 32,
+    "total": 39,
+    "ok": 33,
     "pendente": 0,
     "isenta": 6,
-    "standard": 20,
+    "standard": 21,
     "customWrapper": 12,
     "standalone": 6
   },
@@ -51,6 +51,13 @@
     {
       "file": "CamerasPage.tsx",
       "path": "src/pages/CamerasPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "CLSReportPage.tsx",
+      "path": "src/pages/CLSReportPage.tsx",
       "category": "standard",
       "status": "ok",
       "issues": []
