@@ -469,18 +469,35 @@
 
   .touch-target { @apply min-h-[44px] min-w-[44px]; }
 
+  /* ─────────────────────────────────────────────────────────────────────────
+     Mobile nav bottom padding — defesa em profundidade.
+
+     Estratégia (do mais específico ao mais genérico):
+       1. `.mb-mobile-nav` — classe explícita aplicada no <main> do MainLayout
+          e em wrappers customizados validados pelo script check-mobile-nav.
+       2. Fallback CSS no <main role="main"> dentro do scroll container do app.
+       3. Fallback CSS em qualquer descendente com scroll próprio
+          (`overflow-y: auto/scroll`) dentro do layout autenticado — protege
+          páginas que aninham containers de rolagem em wrappers alternativos.
+
+     Em todos os casos somamos `env(safe-area-inset-bottom)` para que iOS/Safari
+     não corte a última linha por baixo da home indicator nem do BottomNavigation.
+
+     Opt-out explícito: adicione `[data-no-mobile-nav-pad]` ao elemento. */
   .mb-mobile-nav { @apply pb-0 md:pb-0; }
   @media (max-width: 767px) {
+    /* (1) Classe explícita */
     .mb-mobile-nav {
       padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
     }
-    /* Fallback de defesa em profundidade — escopo restrito ao layout autenticado.
-       Cobre apenas o <main role="main"> dentro do scroll container do app
-       (`[data-app-scroll]`), que é o único nó semanticamente "conteúdo da página".
-       Evita pegar elementos decorativos (banners, toasters, overlays, divs
-       de animação) que podem ser último filho do scroll container.
-       Opt-out explícito via `[data-no-mobile-nav-pad]` quando necessário. */
+    /* (2) Fallback no <main> do scroll container raiz */
     [data-app-scroll] > main[role="main"]:last-child:not(.mb-mobile-nav):not([data-no-mobile-nav-pad]) {
+      padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+    }
+    /* (3) Fallback em qualquer descendente com scroll próprio dentro do layout
+       autenticado — cobre wrappers alternativos que aninham overflow:auto e
+       quebrariam o padding herdado do <main>. */
+    [data-app-scroll] [data-scroll-container]:not(.mb-mobile-nav):not([data-no-mobile-nav-pad]) {
       padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
     }
   }
