@@ -6,7 +6,7 @@
  */
 
 import { useQuery } from "@tanstack/react-query";
-import { Download, RefreshCw, TestTube2 } from "lucide-react";
+import { Download, ExternalLink, RefreshCw, TestTube2 } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
