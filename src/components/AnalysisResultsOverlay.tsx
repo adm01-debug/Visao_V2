@@ -277,7 +277,7 @@ function AnalysisResultsOverlayComponent({
 
         {/* Summary */}
         {lastAnalysis.summary && (
-          {/* eslint-disable-next-line visao/no-hardcoded-colors -- border sutil sobre overlay escuro */}
+          // eslint-disable-next-line visao/no-hardcoded-colors -- border sutil sobre overlay escuro
           <p className="text-[10px] text-foreground/50 mt-1.5 leading-tight border-t border-white/10 pt-1.5">
             {lastAnalysis.summary}
           </p>
