@@ -1,3 +1,4 @@
+/* eslint-disable visao/no-hardcoded-colors -- Cores hex para PDFs (jsPDF) e CSV/XLSX, que não consomem tokens CSS. */
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 

@@ -1,3 +1,4 @@
+/* eslint-disable visao/no-hardcoded-colors -- Recharts requer strings HSL literais. */
 import { useMemo, useState } from 'react';
 import {
   BarChart,

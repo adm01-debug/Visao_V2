@@ -1,3 +1,4 @@
+/* eslint-disable visao/no-hardcoded-colors -- Cores literais para renderização SVG/Canvas do mapa de fluxo. */
 /**
  * VISÃO - CollaboratorFlowMap Types & Helpers
  */

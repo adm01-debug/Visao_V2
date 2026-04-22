@@ -1,3 +1,4 @@
+/* eslint-disable no-console, visao/no-hardcoded-colors -- Logger é o ponto autorizado para console.* e usa cores ANSI/CSS literais. */
 /**
  * VISÃO - Logger Estruturado Unificado
  * 

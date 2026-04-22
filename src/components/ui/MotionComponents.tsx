@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- Re-exporta variants utilitários junto com os componentes (intencional). */
 /**
  * MotionComponents (Refactored)
  * Variants extracted to ./motion/motionVariants.ts

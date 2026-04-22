@@ -1,3 +1,4 @@
+/* eslint-disable visao/no-hardcoded-colors -- Componente de debug DEV-only com cores fixas para legibilidade do badge. */
 /**
  * CLSBadge - Indicador visual de CLS por rota. Apenas DEV.
  * Pode ser ocultado via querystring `?nocls=1`.

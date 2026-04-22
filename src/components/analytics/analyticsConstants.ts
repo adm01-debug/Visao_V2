@@ -1,3 +1,4 @@
+/* eslint-disable visao/no-hardcoded-colors -- Constantes HSL para gráficos Recharts. Ver mem://style/chart-color-standardization. */
 export const ANALYTICS_COLORS = {
   primary: 'hsl(168, 84%, 44%)',
   destructive: 'hsl(0, 72%, 51%)',
