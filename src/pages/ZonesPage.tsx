@@ -21,6 +21,7 @@ import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/type
 
 import { ZoneCard, ZoneEditorSheet, ZoneViewDialog, zoneTypeConfig, type ZoneStats, type ZoneEvent } from '@/components/zones';
 import { PageMeta } from '@/components/PageMeta';
+import { useManagedFilters } from '@/hooks/useManagedFilters';
 
 type DbZoneLocal = Tables<'zones'>;
 
