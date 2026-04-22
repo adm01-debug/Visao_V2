@@ -86,9 +86,8 @@ export function AlertsPage() {
     setRemovingAlerts(new Set());
   }, [deleteAlert]);
   const handleDeleteSelected = useCallback(async () => { const ids = [...selectedAlerts]; await animateAndDelete(ids); setSelectedAlerts(new Set()); toast.success(`${ids.length} alertas excluídos`); }, [selectedAlerts, animateAndDelete]);
-  const clearFilters = () => { setFilters(defaultFilters); setActiveStatsFilter(null); };
-  const hasActiveFilters = Object.entries(filters).some(([key, value]) => key === 'search' ? value !== '' : value !== 'all');
-  const [activeStatsFilter, setActiveStatsFilter] = useState<'total' | 'unread' | 'critical' | 'today' | null>(null);
+
+
 
   const handleStatsFilterClick = (key: 'total' | 'unread' | 'critical' | 'today') => {
     if (activeStatsFilter === key) {
