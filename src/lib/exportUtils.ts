@@ -54,7 +54,7 @@ export function exportToCSV<T extends Record<string, unknown>>(
 // PDF Export (simple HTML-based)
 export function exportToPDF<T extends Record<string, unknown>>(
   data: T[],
-  filename: string,
+  _filename: string,
   title: string,
   headers?: { key: keyof T; label: string }[]
 ) {
