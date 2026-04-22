@@ -120,8 +120,26 @@ let skipped = 0;
 const SCROLL_ANTIPATTERN = /h-\[calc\(100vh-/;
 // Heurística: detecta wrappers customizados (raiz com altura própria ou Sidebar embutido)
 const CUSTOM_WRAPPER_HEURISTIC = /(min-h-screen|h-screen|h-dvh|h-\[100dvh\]|<Sidebar\b)/;
+// Heurística: páginas standalone (login/auth/erro/redirect) — NÃO devem ser
+// auto-classificadas. Se o auto-classify detectar este padrão, marca como
+// "needsReview" e exige cadastro manual em ALLOWLIST.
+const STANDALONE_HEURISTIC = /(useAuth|signInWith|<Navigate\s+to=|404|Not\s*Found|AcessoNegado|AccessDenied|<SplashScreen)/i;
 const SNAPSHOT_MODE = process.argv.includes('--snapshot');
+const AUTO_CLASSIFY_MODE = process.argv.includes('--auto-classify');
 const SNAPSHOT_PATH = 'scripts/.mobile-nav-snapshot.json';
+
+/**
+ * Classifica automaticamente uma página nova com base em heurísticas:
+ *   - Wrapper raiz próprio (min-h-screen, Sidebar...) → customWrapper
+ *   - Padrão de auth/erro/redirect → needsReview (não auto-classifica como standalone)
+ *   - Caso contrário → standard (delega ao MainLayout)
+ */
+function autoClassifyPage(filePath) {
+  const content = readFileSync(filePath, 'utf8');
+  if (CUSTOM_WRAPPER_HEURISTIC.test(content)) return 'customWrapper';
+  if (STANDALONE_HEURISTIC.test(content)) return 'needsReview';
+  return 'standard';
+}
 
 for (const file of files) {
   const basename = file.split(/[\\/]/).pop();
