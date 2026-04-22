@@ -34,7 +34,7 @@ export function AlertsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [sortBy, setSortBy] = useState<SortOption>('date-desc');
   const [activeStatsFilter, setActiveStatsFilter] = useState<'total' | 'unread' | 'critical' | 'today' | null>(null);
-  const { filters, setFilters, clearFilters, hasActiveFilters } = useManagedFilters<AlertFilters & { [key: string]: unknown }>({
+  const { filters, setFilters, clearFilters, hasActiveFilters } = useManagedFilters<AlertFilters>({
     scope: 'alerts',
     defaults: defaultFilters,
     labels: { search: 'busca', severity: 'severidade', type: 'tipo', cameraId: 'câmera', readStatus: 'leitura', dateRange: 'período' },
