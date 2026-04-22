@@ -251,6 +251,57 @@ export type Database = {
         }
         Relationships: []
       }
+      detection_reviews: {
+        Row: {
+          camera_id: string | null
+          camera_name: string | null
+          created_at: string
+          id: string
+          model_name: string | null
+          notes: string | null
+          original_confidence: number | null
+          reviewed_at: string
+          risk_type: string
+          source_id: string
+          source_table: string
+          updated_at: string
+          user_id: string
+          verdict: string
+        }
+        Insert: {
+          camera_id?: string | null
+          camera_name?: string | null
+          created_at?: string
+          id?: string
+          model_name?: string | null
+          notes?: string | null
+          original_confidence?: number | null
+          reviewed_at?: string
+          risk_type: string
+          source_id: string
+          source_table: string
+          updated_at?: string
+          user_id?: string
+          verdict: string
+        }
+        Update: {
+          camera_id?: string | null
+          camera_name?: string | null
+          created_at?: string
+          id?: string
+          model_name?: string | null
+          notes?: string | null
+          original_confidence?: number | null
+          reviewed_at?: string
+          risk_type?: string
+          source_id?: string
+          source_table?: string
+          updated_at?: string
+          user_id?: string
+          verdict?: string
+        }
+        Relationships: []
+      }
       face_recognition_configs: {
         Row: {
           alert_cooldown: number
@@ -365,6 +416,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      model_thresholds: {
+        Row: {
+          created_at: string
+          id: string
+          min_confidence: number
+          min_quality: number | null
+          model_name: string
+          notes: string | null
+          risk_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          min_confidence?: number
+          min_quality?: number | null
+          model_name?: string
+          notes?: string | null
+          risk_type: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          min_confidence?: number
+          min_quality?: number | null
+          model_name?: string
+          notes?: string | null
+          risk_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       notification_configs: {
         Row: {
