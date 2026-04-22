@@ -46,6 +46,20 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
 
   useEffect(() => { if (user) loadData(); }, [user, period, selectedCamera, refreshKey]);
 
+  // Realtime: re-fetch when new zone_events or recognition_logs arrive for this user
+  useEffect(() => {
+    if (!user) return;
+    const channelId = `heatmap-rt-${user.id}-${Date.now()}`;
+    const channel = supabase
+      .channel(channelId)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'zone_events', filter: `user_id=eq.${user.id}` },
+        () => setRefreshKey(k => k + 1))
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'recognition_logs', filter: `user_id=eq.${user.id}` },
+        () => setRefreshKey(k => k + 1))
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user]);
+
   const loadData = async () => {
     if (!user) return;
     setLoading(true);
