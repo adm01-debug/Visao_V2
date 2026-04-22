@@ -78,12 +78,41 @@ if (!wrapperContent.includes(REQUIRED_CLASS)) {
   console.log(`✅ MainLayout aplica \`${REQUIRED_CLASS}\` globalmente`);
 }
 
+// 1b. Wrapper deve declarar EXATAMENTE UM scroll container `data-app-scroll`
+//     (contamos apenas ocorrências como atributo JSX: `data-app-scroll` seguido
+//     de `>`, espaço/quebra, ou `=` — para ignorar menções em comentários/docs).
+const scrollMarkerMatches = wrapperContent.match(/data-app-scroll(?=[\s=>])/g) || [];
+if (scrollMarkerMatches.length === 0) {
+  console.error(`❌ ${WRAPPER_FILE} NÃO declara \`data-app-scroll\`.`);
+  console.error(`   O scroll container único da app deve estar marcado com \`data-app-scroll\` no SwipeableView.\n`);
+  failed = true;
+} else if (scrollMarkerMatches.length > 1) {
+  console.error(`❌ ${WRAPPER_FILE} declara \`data-app-scroll\` ${scrollMarkerMatches.length}x — deve ser ÚNICO.\n`);
+  failed = true;
+} else {
+  console.log(`✅ MainLayout declara \`data-app-scroll\` (scroll container único)`);
+}
+
+// 1c. O <main mb-mobile-nav> deve ser descendente do `data-app-scroll`
+//     (heurística: aparece DEPOIS no arquivo, garantindo que o último filho do
+//     scroll container recebe o padding inferior).
+const scrollIdx = wrapperContent.indexOf('data-app-scroll');
+const mainMbIdx = wrapperContent.search(/<main[^>]*mb-mobile-nav/);
+if (scrollIdx >= 0 && mainMbIdx >= 0 && mainMbIdx < scrollIdx) {
+  console.error(`❌ Em ${WRAPPER_FILE}, o <main mb-mobile-nav> aparece ANTES do \`data-app-scroll\`.`);
+  console.error(`   O <main> deve ser filho do scroll container — o último filho recebe o padding inferior via mb-mobile-nav.\n`);
+  failed = true;
+} else if (scrollIdx >= 0 && mainMbIdx > scrollIdx) {
+  console.log(`✅ <main mb-mobile-nav> é descendente do \`data-app-scroll\` (último filho recebe padding)`);
+}
+
 // 2. Nenhuma página deve redeclarar nem criar scroll duplo
 const files = listPages(PAGES_DIR);
 const drift = [];
 const scrollDrift = [];
 const missingInCustom = [];
 const undeclaredCustomWrappers = [];
+const rootClassDrift = [];
 let cleanCount = 0;
 let customWrapperCount = 0;
 let skipped = 0;
@@ -109,6 +138,32 @@ for (const file of files) {
     if (!content.includes(REQUIRED_CLASS)) {
       missingInCustom.push(relative(process.cwd(), file));
       pageOk = false;
+    } else {
+      // A classe deve coexistir num className que ALSO declara altura raiz
+      // (`min-h-screen|h-screen|h-dvh`). Isso garante que o container raiz —
+      // não um filho aninhado — recebe o padding inferior, fazendo com que o
+      // último filho fique acima do BottomNavigation no mobile.
+      const classNameRe = /className=(?:"([^"]+)"|\{`([^`]+)`\}|\{cn\(([^)]+)\))/g;
+      let m;
+      let foundRootWithPadding = false;
+      const rootClasses = [];
+      while ((m = classNameRe.exec(content)) !== null) {
+        const cls = m[1] || m[2] || m[3] || '';
+        if (/(?:min-h-screen|h-screen|h-dvh|h-\[100dvh\])/.test(cls)) {
+          rootClasses.push(cls.trim().slice(0, 100));
+          if (cls.includes(REQUIRED_CLASS)) {
+            foundRootWithPadding = true;
+            break;
+          }
+        }
+      }
+      if (rootClasses.length > 0 && !foundRootWithPadding) {
+        rootClassDrift.push({
+          file: relative(process.cwd(), file),
+          firstClass: rootClasses[0],
+        });
+        pageOk = false;
+      }
     }
   } else {
     // Página padrão: a classe NÃO deve ser redeclarada (vem do MainLayout)
@@ -193,7 +248,19 @@ if (undeclaredCustomWrappers.length > 0) {
   failed = true;
 }
 
-// Snapshot de regressão (Camada 4)
+if (rootClassDrift.length > 0) {
+  console.error(`\n❌ ${rootClassDrift.length} página(s) com wrapper customizado têm \`${REQUIRED_CLASS}\` FORA do container raiz:`);
+  for (const r of rootClassDrift) {
+    console.error(`   - ${r.file}`);
+    console.error(`       ↳ raiz: ${r.firstClass}`);
+  }
+  console.error(
+    `\nA classe \`${REQUIRED_CLASS}\` deve estar no container RAIZ do componente para que\n` +
+    `o ÚLTIMO FILHO receba o padding inferior no mobile (acima do BottomNavigation).\n` +
+    `Mover a classe para um filho cria espaço morto antes do nav e oculta conteúdo.\n`
+  );
+  failed = true;
+}
 if (SNAPSHOT_MODE) {
   const { writeFileSync } = await import('node:fs');
   const snapshot = {
