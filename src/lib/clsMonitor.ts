@@ -7,12 +7,21 @@
  */
 import { logger } from '@/lib/logger';
 
+interface WeakRefLike<T extends object> {
+  deref(): T | undefined;
+}
+type WeakRefCtor = new <T extends object>(target: T) => WeakRefLike<T>;
+const WeakRefCtor: WeakRefCtor | undefined =
+  typeof globalThis !== 'undefined'
+    ? ((globalThis as unknown as { WeakRef?: WeakRefCtor }).WeakRef)
+    : undefined;
+
 interface ShiftSource {
   selector: string;
   value: number;
   timestamp: number;
-  /** WeakRef opcional ao elemento DOM (apenas em runtime; não serializa). */
-  nodeRef?: WeakRef<Element>;
+  /** Ref fraca ao elemento DOM (apenas runtime; não serializa). */
+  nodeRef?: WeakRefLike<Element>;
 }
 
 interface RouteSession {
@@ -74,8 +83,8 @@ function handleEntries(list: PerformanceObserverEntryList): void {
     const selector = firstSource ? serializeNode(firstSource.node) : '<no-source>';
     const node = firstSource?.node;
     const nodeRef =
-      node && node instanceof Element && typeof WeakRef !== 'undefined'
-        ? new WeakRef(node)
+      node && node instanceof Element && WeakRefCtor
+        ? new WeakRefCtor(node)
         : undefined;
     session.shifts.push({
       selector,
