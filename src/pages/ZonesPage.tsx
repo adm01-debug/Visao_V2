@@ -249,7 +249,7 @@ export function ZonesPage() {
             <SelectContent><SelectItem value="all">Todos tipos</SelectItem>{Object.entries(zoneTypeConfig).map(([key, config]) => <SelectItem key={key} value={key}>{config.label}</SelectItem>)}</SelectContent>
           </Select>
           {!loading && hasActiveFilters && (
-            <Button variant="ghost" size="sm" onClick={() => { setSearchQuery(''); setSelectedCameraFilter('all'); setSelectedTypeFilter('all'); }}>
+            <Button variant="ghost" size="sm" onClick={clearFilters}>
               <X className="w-4 h-4 mr-1" />Limpar
             </Button>
           )}
