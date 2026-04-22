@@ -139,6 +139,55 @@ Para evitar duplicação de esforço futuro, o QA manual aqui descrito está **i
 
 ## 7. Procedimento para re-executar
 
+### 7.0 ⚠️ Passo zero — Verificar sessão autenticada (OBRIGATÓRIO antes de §7.1/§7.2)
+
+Antes de testar qualquer rota da §2 (todas autenticadas), confirme o estado de sessão para evitar falsos negativos (rota "quebrada" quando na verdade redirecionou para `/auth`).
+
+**a) Verificação rápida via browser (manual):**
+1. Abrir o preview e navegar para `/dashboard`.
+2. Observar a URL final na barra de endereço:
+
+| URL final | Estado | Ação |
+|---|---|---|
+| `/dashboard` (heading "Dashboard" visível) | ✅ **logged in** | Prosseguir para §7.1/§7.2 |
+| `/auth` ou `/auth?redirect=...` | ❌ **redirect para /auth** | Fazer login antes de prosseguir |
+| `/acesso-negado` | ⚠️ **logged in mas sem RBAC** | Trocar para conta admin/manager |
+
+3. Registrar o resultado na tabela §8 (coluna "Estado de sessão") junto com timestamp.
+
+**b) Verificação automatizada (CI/headless):**
+
+Os specs E2E usam o helper centralizado `gotoAuthenticated` (`tests/e2e/helpers/authSession.ts`) que:
+- Tenta restaurar `tests/e2e/.auth/user.json` (gerado por `tests/e2e/global-setup.ts`).
+- Faz fallback para login programático via REST se `E2E_TEST_EMAIL` + `E2E_TEST_PASSWORD` + `VITE_SUPABASE_URL` + `VITE_SUPABASE_PUBLISHABLE_KEY` estiverem no env.
+- Detecta redirect para `/auth` e aciona `test.skip` controlado (ou `throw` se `E2E_AUTH_REQUIRED=1`).
+
+Para forçar autenticação obrigatória em CI:
+```bash
+E2E_AUTH_REQUIRED=1 npm run test:smoke
+```
+Saída esperada de **logged in** para cada rota:
+```
+✓ smoke-pages.spec.ts › DashboardV2 carrega sem erros (desktop)
+✓ smoke-pages.spec.ts › Heatmap carrega sem erros (desktop)
+✓ smoke-pages.spec.ts › Analytics carrega sem erros (desktop)
+```
+Saída esperada de **redirect** (sem credenciais):
+```
+- smoke-pages.spec.ts › DashboardV2 carrega sem erros (desktop)
+  [authSession] Rota /dashboard requer sessão (sem credenciais E2E_TEST_* configuradas).
+```
+
+**c) Como semear/garantir o usuário de teste:**
+```bash
+# Cria/atualiza o usuário e2e-bot@visao.test (idempotente, requer SUPABASE_SERVICE_ROLE_KEY)
+npm run seed:e2e-user
+
+# Persiste storage state em tests/e2e/.auth/user.json (rodado automaticamente em CI via globalSetup)
+```
+
+> **Por que este passo é obrigatório:** sem confirmação prévia de sessão, qualquer falha em §7.1/§7.2 pode ser falso positivo de "página quebrada" quando na verdade é apenas falta de autenticação. Em testes manuais, registrar o resultado em §8 cria trilha auditável de QA.
+
 ### 7.1 Cobertura automatizada (recomendado — rápido, confiável)
 
 ```bash
