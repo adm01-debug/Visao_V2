@@ -27,11 +27,26 @@ export interface CoverageTotals {
   lines: CoverageMetric;
 }
 
+export interface CoverageAlert {
+  /** Threshold in percentage points that triggers a drop alert. */
+  threshold: number;
+  /** Statements pct delta vs previous report. Positive = improved, negative = dropped, null = first run. */
+  delta: number | null;
+  /** True when delta is negative AND |delta| >= threshold. */
+  dropExceeded: boolean;
+  /** Previous statements pct (null on first run). */
+  previousPct: number | null;
+  /** ISO timestamp of the previous report (null on first run). */
+  previousGeneratedAt: string | null;
+}
+
 export interface CoverageReport {
   /** ISO timestamp of when the report was generated */
   generatedAt: string;
   totals: CoverageTotals;
   files: CoverageFileEntry[];
+  /** Optional: missing in legacy reports (pre-alert era). */
+  alert?: CoverageAlert;
 }
 
 export type CoverageMetricKey = keyof CoverageTotals;
