@@ -1,114 +1,62 @@
 
 
-## Teste visual automatizado: validação `mb-mobile-nav` em todas as rotas mobile
+## Aviso de migração: PWA desativado e limpeza de cache
 
-Adicionar suíte Playwright que captura screenshots em viewport mobile (iPhone 13) de cada rota crítica, comparando com snapshots baseline. Detecta automaticamente sobreposição da `BottomNavigation` com conteúdo da página (problema recorrente que `mb-mobile-nav` deve resolver).
+Adicionar um banner não-intrusivo que detecta resíduos do antigo PWA (service workers ou caches do Workbox) e orienta o usuário a recarregar para limpar caches stale. Mostra uma única vez por usuário, com ação clara de "Recarregar agora".
 
-### Estado atual
+### Comportamento
 
-- `playwright.config` existe com projetos `mobile-safari` (iPhone 13).
-- `tests/mobile-nav-overlap.spec.ts` já existe (referenciado em `package.json` como `test:mobile-nav-overlap`) — provavelmente testa overlap pontual em poucas rotas.
-- `tests/mobile-nav-padding.spec.ts` valida padding programaticamente (sem screenshot).
-- `scripts/check-mobile-nav.mjs` valida estaticamente que `mb-mobile-nav` aparece só no `MainLayout`.
-- Falta: snapshot visual completo cobrindo TODAS as rotas autenticadas em mobile, com baseline versionado.
+- Ao montar o app, detectar:
+  1. Service workers registrados (`navigator.serviceWorker.getRegistrations()`)
+  2. Caches antigos do Workbox/PWA (`caches.keys()` filtrando por `workbox-`, `visao-`, `precache-`)
+- Se qualquer um existir **e** o usuário ainda não dispensou o aviso (`localStorage['visao_pwa_migration_dismissed_v1']`):
+  - Executar limpeza silenciosa: `unregister()` em todos SWs + `caches.delete()` nos caches detectados (já parcialmente feito no `main.tsx`, mas hoje sem feedback ao usuário).
+  - Exibir banner persistente no topo do app com:
+    - Ícone de aviso + título: "Atualização do sistema"
+    - Texto: "O modo offline foi desativado nesta versão. Recarregue a página para remover caches antigos e garantir que você está vendo a versão mais recente."
+    - Botão primário: "Recarregar agora" → `window.location.reload()`
+    - Botão secundário "Dispensar" → grava flag no localStorage e oculta
+- Se nenhum resíduo for detectado, banner nunca aparece (usuários novos não veem nada).
 
-### Solução em 3 entregas
+### Arquivos
 
-**Entrega 1 — Suíte de visual regression (`tests/mobile-nav-visual.spec.ts`)**
+**Novo: `src/components/PWAMigrationBanner.tsx`**
+- Componente client-side com `useEffect` para detecção + estado local `show`
+- Usa `Alert` do shadcn (`@/components/ui/alert`) com variante `default`, ícone `AlertTriangle` (lucide-react)
+- Tokens semânticos HSL (sem hex hardcoded), seguindo padrão do design system
+- `role="status"` + `aria-live="polite"` para acessibilidade
+- Renderiza `null` quando `show=false` (sem custo visual)
 
-Nova spec dedicada que:
+**Editado: `src/components/layout/MainLayout.tsx`**
+- Renderizar `<PWAMigrationBanner />` logo após o `<Header />` dentro do `<SwipeableView>`, **fora** do `<main>` para não interferir no contrato de scroll/padding
+- Não afeta `mb-mobile-nav` nem `PageContent` (banner fica acima do conteúdo das páginas)
 
-1. Define array de rotas críticas (alinhado ao `lazyRoutes.ts`): `/`, `/cameras`, `/alerts`, `/zones`, `/recordings`, `/analytics`, `/settings`, `/users`, `/face-recognition`, `/license-plate`, `/productivity`, `/heatmap`, `/automation`, `/security`, `/behavior-detection`.
-2. Para cada rota:
-   - Faz login (reutiliza `tests/helpers/auth.ts` se existir, senão cria fixture).
-   - Navega até a rota.
-   - Aguarda `networkidle` + heurística de carregamento (sem skeletons visíveis).
-   - Captura **2 screenshots**:
-     - **Full-page**: detecta visualmente layout geral.
-     - **Bottom 200px crop**: zoom na zona crítica onde `BottomNavigation` (h-16 = 64px) sobrepõe conteúdo.
-   - Compara com baseline em `tests/__snapshots__/mobile-nav-visual/`.
-3. Threshold: `maxDiffPixelRatio: 0.02` (2%, tolera anti-aliasing) + `threshold: 0.2` por pixel.
-4. Falha se diff > threshold OU se baseline não existir (CI gera baseline → commit manual).
+**Editado: `src/layouts/MainLayout.tsx`** (variante legada)
+- Mesmo posicionamento, para consistência caso alguma rota use este layout
 
-**Entrega 2 — Helper de detecção programática de overlap (`tests/helpers/detectOverlap.ts`)**
+**Editado: `src/main.tsx`**
+- Estender o bloco existente de cleanup de SWs para também limpar `caches.keys()` filtrando por prefixos conhecidos (`workbox-precache`, `workbox-runtime`, `visao-`)
+- Manter logs apenas em DEV (`import.meta.env.DEV`)
 
-Função reutilizável que, dado um page Playwright:
-
-1. Pega `boundingBox` da `BottomNavigation` (selector `[data-testid="bottom-navigation"]` ou `nav.fixed.bottom-0`).
-2. Pega `boundingBox` do **último elemento interativo visível** dentro do `<main>` (botão, link, input).
-3. Calcula intersecção; falha com mensagem clara se houver overlap > 4px (margem de tolerância).
-4. Retorna metadata (`{overlap: number, mainBottom: number, navTop: number}`) para diagnóstico.
-
-A spec visual também chama esse helper como **assertion programática paralela** (defesa em profundidade — pega casos que diff visual perde por anti-aliasing).
-
-**Entrega 3 — Scripts npm + integração CI**
-
-Adicionar em `package.json`:
-
-```json
-{
-  "scripts": {
-    "test:mobile-nav-visual": "playwright test mobile-nav-visual --project=mobile-safari",
-    "test:mobile-nav-visual:update": "playwright test mobile-nav-visual --project=mobile-safari --update-snapshots"
-  }
-}
-```
-
-Adicionar step em `.github/workflows/ci.yml` (após `test:mobile-nav-overlap`):
-
-```yaml
-- name: Mobile Nav Visual Regression
-  run: npm run test:mobile-nav-visual -- --workers=2
-  env:
-    CI: true
-- name: Upload Visual Diff Artifacts
-  if: failure()
-  uses: actions/upload-artifact@v4
-  with:
-    name: mobile-nav-visual-diffs
-    path: test-results/
-    retention-days: 14
-```
-
-Criar `docs/MOBILE_NAV_VISUAL_TESTING.md`:
-- Como rodar localmente (`npm run test:mobile-nav-visual`).
-- Como atualizar baseline após mudança intencional (`npm run test:mobile-nav-visual:update`).
-- Como interpretar diff (pasta `test-results/<spec>/<name>/`).
-- Política: baseline commitado no repo; mudança visual exige update + revisão no PR.
+**Editado: `src/constants/app.ts`**
+- Adicionar `PWA_MIGRATION_DISMISSED: "visao_pwa_migration_dismissed_v1"` ao objeto `STORAGE_KEYS`
 
 ### Critérios de aceitação
 
-- ✅ `npm run build` passa (Passo 0 herdado: limpar cache se necessário).
-- ✅ `tests/mobile-nav-visual.spec.ts` cobre ≥ 12 rotas mobile.
-- ✅ Helper `detectOverlap.ts` retorna `overlap: 0` quando `mb-mobile-nav` está aplicado corretamente.
-- ✅ Primeira execução gera baselines em `tests/__snapshots__/mobile-nav-visual/` (commit manual no PR).
-- ✅ Step CI adicionado e configurado para upload de artifacts em failure.
-- ✅ `docs/MOBILE_NAV_VISUAL_TESTING.md` criado.
-- ✅ Tentativa simulada: remover `mb-mobile-nav` do MainLayout → spec falha com diff visual + helper detecta overlap.
-
-### Arquivos a criar/editar
-
-| Arquivo | Mudança |
-|---|---|
-| `tests/mobile-nav-visual.spec.ts` | ➕ Criar (suíte principal) |
-| `tests/helpers/detectOverlap.ts` | ➕ Criar (helper compartilhado) |
-| `tests/helpers/auth.ts` | ✏️ Reusar se existir, senão criar mínimo |
-| `package.json` | ✏️ 2 scripts `test:mobile-nav-visual*` |
-| `.github/workflows/ci.yml` | ✏️ 2 steps (visual + upload) |
-| `docs/MOBILE_NAV_VISUAL_TESTING.md` | ➕ Criar (guia) |
+- Usuário com SW antigo registrado vê o banner uma única vez ao abrir o app
+- Clicar em "Recarregar agora" recarrega a página; após reload, SWs/caches removidos → banner não reaparece
+- Clicar em "Dispensar" oculta e grava flag; não reaparece em sessões futuras
+- Usuários sem resíduo de PWA nunca veem o banner
+- Banner não quebra contrato `mb-mobile-nav` (renderizado fora de `<main>`)
+- `npm run check:mobile-nav` e `npm run check:page-content` continuam passando
+- Sem hex hardcoded; usa tokens semânticos do design system
 
 ### Riscos e mitigações
 
-- **Risco:** snapshots variam entre OS (Linux CI vs Mac dev) por anti-aliasing/fontes.
-  - **Mitigação:** rodar baseline geração no CI Linux (não em Mac local); usar `maxDiffPixelRatio: 0.02` para tolerar pequenas variações; documentar processo no `.md`.
-- **Risco:** rotas com dados dinâmicos (timestamps, contadores realtime) geram diff falso.
-  - **Mitigação:** mascarar elementos dinâmicos via `mask: [page.locator('[data-dynamic]')]` no `toHaveScreenshot`. Documentar convenção de adicionar `data-dynamic` em widgets que mudam.
-- **Risco:** primeira execução gera 12+ baselines de uma vez, dificultando revisão.
-  - **Mitigação:** PR de introdução commita baselines + screenshots no description; revisão manual obrigatória; doc explica processo.
-- **Risco:** suíte fica lenta (12 rotas × 2 screenshots = 24+ comparações).
-  - **Mitigação:** `--workers=2` no CI; cada rota tem timeout 30s; total esperado < 4min.
-- **Risco:** auth fixture quebra se Supabase auth mudar.
-  - **Mitigação:** reusar helper existente; criar usuário de teste dedicado via env var `E2E_TEST_EMAIL`/`E2E_TEST_PASSWORD` documentado no `.md`.
-- **Risco:** cache Vite stale volta a quebrar build.
-  - **Mitigação:** Passo 0 (rm -rf cache) sempre executado primeiro.
+- **Risco:** banner aparecer em loop se cleanup falhar.
+  - **Mitigação:** flag de dismiss respeitada independente do resultado do cleanup; usuário sempre pode fechar.
+- **Risco:** detecção de `caches` API indisponível em browsers antigos.
+  - **Mitigação:** guard `'caches' in window` antes de chamar.
+- **Risco:** banner interferir com layout em mobile.
+  - **Mitigação:** posicionado entre Header e `<main>` dentro do SwipeableView (já scrollável); padding interno consistente com Header.
 
