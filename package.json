@@ -90,7 +90,10 @@
     "audit:deadcode": "node scripts/audit-deadcode.mjs",
     "audit:deadcode:json": "node scripts/audit-deadcode.mjs --format=json",
     "audit:deadcode:strict": "node scripts/audit-deadcode.mjs --strict",
-    "audit:report": "node scripts/build-dependency-audit-report.mjs --refresh"
+    "audit:report": "node scripts/build-dependency-audit-report.mjs --refresh",
+    "audit:deadcode:check": "node scripts/audit-deadcode.mjs --quiet && node scripts/check-deadcode-baseline.mjs",
+    "audit:deadcode:check:strict": "node scripts/audit-deadcode.mjs --quiet && node scripts/check-deadcode-baseline.mjs --strict",
+    "audit:deadcode:baseline": "node scripts/audit-deadcode.mjs --quiet && node scripts/check-deadcode-baseline.mjs --update"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
