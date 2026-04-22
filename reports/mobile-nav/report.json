@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-04-22T15:42:17.902Z",
+  "generatedAt": "2026-04-22T15:45:05.629Z",
   "wrapperFile": "src/components/layout/MainLayout.tsx",
   "requiredClass": "mb-mobile-nav",
   "totals": {
-    "total": 39,
-    "ok": 33,
+    "total": 40,
+    "ok": 34,
     "pendente": 0,
     "isenta": 6,
-    "standard": 21,
+    "standard": 22,
     "customWrapper": 12,
     "standalone": 6
   },
@@ -129,6 +129,13 @@
       "file": "LicensePlatePage.tsx",
       "path": "src/pages/LicensePlatePage.tsx",
       "category": "customWrapper",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "LoadingStatesChecklistPage.tsx",
+      "path": "src/pages/LoadingStatesChecklistPage.tsx",
+      "category": "standard",
       "status": "ok",
       "issues": []
     },

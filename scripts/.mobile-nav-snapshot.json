@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-22T15:29:18.535Z",
+  "generatedAt": "2026-04-22T15:44:15.374Z",
   "pages": [
     {
       "file": "AcessoNegado.tsx",
@@ -84,6 +84,10 @@
     {
       "file": "LicensePlatePage.tsx",
       "mode": "customWrapper"
+    },
+    {
+      "file": "LoadingStatesChecklistPage.tsx",
+      "mode": "standard"
     },
     {
       "file": "NotFound.tsx",

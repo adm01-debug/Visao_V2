@@ -64,6 +64,7 @@ const GoalsAlertsPage = lazy(() => import("@/pages/GoalsAlertsPage"));
 const UserManagementPage = lazy(() => import("@/pages/UserManagementPage"));
 const CoveragePage = lazy(() => import("@/pages/CoveragePage"));
 const CLSReportPage = lazy(() => import("@/pages/CLSReportPage"));
+const LoadingStatesChecklistPage = lazy(() => import("@/pages/LoadingStatesChecklistPage"));
 const AlertsTimelinePage = lazy(() => import("@/pages/AlertsTimelinePage"));
 const EvaluationPage = lazy(() => import("@/pages/EvaluationPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
@@ -155,6 +156,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/users" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<UserManagementPage />, "Gestão de Usuários")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/coverage" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<CoveragePage />, "Cobertura de Testes")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/cls-report" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<CLSReportPage />, "Relatório CLS")}</ProtectedLayoutRoute>} />
+                    <Route path="/dev/loading-states" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<LoadingStatesChecklistPage />, "Loading States Checklist")}</ProtectedLayoutRoute>} />
                     <Route path="/acesso-negado" element={withRouteErrorBoundary(<AcessoNegado />, "Acesso Negado")} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
