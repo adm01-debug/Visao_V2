@@ -146,6 +146,19 @@ const CoveragePage = () => {
 
       {data && (
         <>
+          {degraded && warnings.length > 0 && (
+            <Alert variant="destructive">
+              <AlertTitle>Relatório carregado com avisos</AlertTitle>
+              <AlertDescription>
+                O JSON tem campos ausentes/inválidos. Fallbacks foram aplicados; números podem estar incompletos.
+                <ul className="mt-2 list-inside list-disc text-xs">
+                  {warnings.map((w) => (
+                    <li key={w}>{w}</li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
+          )}
           <Alert>
             <AlertTitle className="text-sm">
               Última execução:{" "}
