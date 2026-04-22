@@ -46,6 +46,10 @@
       "mode": "standard"
     },
     {
+      "file": "CLSReportPage.tsx",
+      "mode": "standard"
+    },
+    {
       "file": "DashboardV2.tsx",
       "mode": "standard"
     },
