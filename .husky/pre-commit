@@ -1,18 +1,22 @@
 # ─────────────────────────────────────────────────────────────
 # VISÃO — pre-commit hook (Husky v9+)
-# Espelha exatamente os gates rápidos do CI (.github/workflows/ci.yml):
-#   - npm run type-check:strict   (ci.yml:41 — tsc -p tsconfig.strict.json)
-#   - npm run lint:ci             (ci.yml:44 — eslint . --max-warnings=0)
 #
-# Garante paridade total entre máquina local e pipeline.
+# Estratégia em 2 camadas:
+#   1. lint-staged → ESLint --max-warnings=0 nos arquivos staged (rápido)
+#   2. type-check:strict + lint:ci → gates globais (paridade com ci.yml:41,44)
+#
+# Garante zero warnings localmente antes de chegar ao CI.
 # Skip emergencial: `git commit --no-verify`
 # ─────────────────────────────────────────────────────────────
 set -e
 
-echo "🔍 [pre-commit] type-check:strict (paridade com ci.yml:41)"
+echo "🔍 [pre-commit 1/3] lint-staged (eslint --max-warnings=0 nos arquivos staged)"
+npx --no-install lint-staged
+
+echo "🔍 [pre-commit 2/3] type-check:strict (paridade com ci.yml:41)"
 npm run --silent type-check:strict
 
-echo "🔍 [pre-commit] lint:ci (paridade com ci.yml:44)"
+echo "🔍 [pre-commit 3/3] lint:ci (paridade com ci.yml:44)"
 npm run --silent lint:ci
 
-echo "✅ [pre-commit] gates do CI passaram"
+echo "✅ [pre-commit] todos os gates do CI passaram (zero warnings)"
