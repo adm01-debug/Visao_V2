@@ -1,9 +1,9 @@
 ---
 name: mobile-nav-checklist
-description: mb-mobile-nav vive no MainLayout único; fallback CSS via [data-app-scroll]; allowlist para wrappers customizados; script estático + heurística + snapshot + runtime Playwright + snapshot visual validam (6 camadas)
+description: mb-mobile-nav vive no MainLayout único; fallback CSS via [data-app-scroll]; allowlist para wrappers customizados; script estático + heurística + snapshot + runtime Playwright + snapshot visual + class-presence build gate validam (7 camadas)
 type: feature
 ---
-**Defesa em profundidade (6 camadas):**
+**Defesa em profundidade (7 camadas):**
 
 1. **Classe explícita** `mb-mobile-nav` no `<main>` de `src/components/layout/MainLayout.tsx` (e `src/layouts/MainLayout.tsx`). Implementada como `padding-bottom: calc(4rem + safe-area-inset-bottom)` em `src/index.css`.
 
@@ -22,6 +22,8 @@ type: feature
 5. **Runtime Playwright** `tests/e2e/mobile-nav-padding.spec.ts` — viewport iPhone 12, itera ~15 rotas autenticadas e mede `paddingBottom` real do último filho de `[data-app-scroll]`, exigindo ≥ 64px. Rodado no CI via `npm run test:mobile-nav-runtime`. Rotas que redirecionam para `/auth` (sem credenciais seedadas) são marcadas como `skipped` — a checagem estática + snapshot já garantem cobertura nesses casos.
 
 6. **Snapshot visual de sobreposição** `tests/e2e/mobile-nav-overlap.spec.ts` — para `/dashboard`, `/heatmap`, `/analytics` em viewport iPhone 12: scrolla até o fim, mede `getBoundingClientRect()` do último elemento dentro de `[data-app-scroll]` (deve ter `bottom <= viewportHeight - 60`) e captura screenshot da faixa inferior (170px) comparado contra baseline com `maxDiffPixelRatio: 0.05`. Rodado no CI via `npm run test:mobile-nav-overlap` (passo `continue-on-error: true` até baselines existirem). Atualizar baselines com `--update-snapshots`.
+
+7. **Build gate de presença de classe no DOM** `tests/e2e/mobile-nav-class-presence.spec.ts` — itera 21 rotas autenticadas em viewport iPhone 12 e exige que EXISTA pelo menos um elemento descendente de `[data-app-scroll]` cuja `class` contenha LITERALMENTE `mb-mobile-nav` (não basta padding-bottom computado). Rodado no CI como gate obrigatório (`npm run test:mobile-nav-class`, sem `continue-on-error`). Em CI sem credenciais seedadas, respeita `MOBILE_NAV_CLASS_AUTH_BYPASS=1` para skip controlado de rotas que redirecionam — checagem estática (Camada 4) cobre essas rotas a nível de código-fonte. Sem a env var, qualquer redirect para /auth FALHA o build.
 
 **MainLayout usa `h-screen h-[100dvh]`** — `dvh` sobrescreve `vh` em browsers compatíveis, evitando overflow no iOS Safari.
 
