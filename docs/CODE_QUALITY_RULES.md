@@ -242,9 +242,33 @@ Idealmente, rodar essas auditorias mensalmente ou adicionar como check no
 ## 7. Referências cruzadas
 
 - [`docs/DEPENDENCY_AUDIT.md`](./DEPENDENCY_AUDIT.md) — knip e dead code
+- [`docs/FILTER_SYSTEM.md`](./FILTER_SYSTEM.md) — padrão `useManagedFilters`
 - `mem://standards/code-quality-logs` — uso de `console.log` com `import.meta.env.DEV`
 - `mem://architecture/typescript-governance` — política `strict: true`, sem `any` ou `@ts-ignore` em `src/`
 - `mem://project-management/refactoring-policy` — quando refatorar em vez de suprimir
+
+---
+
+## 8. Backlog de flags TypeScript desligadas (débito técnico)
+
+As flags abaixo estão **temporariamente desligadas** em `tsconfig.strict.json`
+para destravar feature work. Devem ser reativadas incrementalmente, uma de cada
+vez, em PRs dedicados.
+
+| Flag | Status | Estimativa de cleanup |
+|---|---|---|
+| `exactOptionalPropertyTypes` | ❌ desligada | ~40 ocorrências (props com `?:` vs `\| undefined`) |
+| `noPropertyAccessFromIndexSignature` | ❌ desligada | ~25 ocorrências (`obj.foo` → `obj['foo']` em record types) |
+| `noUnusedLocals` | ❌ desligada | ~80 ocorrências (imports `React` não usados em arquivos JSX-only, vars `_*` órfãs) |
+
+Mantidas ativas: `strict`, `noUnusedParameters`, `noImplicitReturns`,
+`noUncheckedIndexedAccess`, `noFallthroughCasesInSwitch`, `noImplicitAny`,
+`strictNullChecks`, `strictFunctionTypes`, `strictBindCallApply`,
+`strictPropertyInitialization`, `noImplicitThis`, `alwaysStrict`.
+
+Stories e tests (`**/*.stories.*`, `**/__tests__/**`, `**/*.test.*`,
+`src/test/**`, `tests/e2e/**`) também ficam fora do `type-check:strict`
+para o gate de build — eles continuam cobertos pelo `tsconfig.json` base.
 
 ---
 

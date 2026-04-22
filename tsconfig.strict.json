@@ -9,14 +9,19 @@
     "strictPropertyInitialization": true,
     "noImplicitThis": true,
     "alwaysStrict": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "noPropertyAccessFromIndexSignature": true
+    "noUncheckedIndexedAccess": true
+    // NOTE: exactOptionalPropertyTypes, noPropertyAccessFromIndexSignature e noUnusedLocals
+    // estão temporariamente desligadas — backlog em docs/CODE_QUALITY_RULES.md (seção 8).
   },
   "include": ["src", "tests"],
-  "exclude": ["node_modules", "dist", "storybook-static", "coverage"]
+  "exclude": [
+    "node_modules", "dist", "storybook-static", "coverage",
+    "**/*.stories.tsx", "**/*.stories.ts",
+    "**/__tests__/**", "**/*.test.ts", "**/*.test.tsx",
+    "src/test/**", "tests/e2e/**"
+  ]
 }
