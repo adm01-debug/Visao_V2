@@ -90,7 +90,7 @@ export function SecurityPage() {
   }
 
   return (
-    <PageContent className="[&]:contents" aria-label="Segurança"><div role="main" aria-label="Segurança" className="space-y-6">
+    <PageContent><div role="main" aria-label="Segurança" className="space-y-6 contents">
       <PageMeta title="Segurança" description="Logs de auditoria, controle de acesso e listas de segurança" />
       <div className="flex items-center justify-between">
         <div>
