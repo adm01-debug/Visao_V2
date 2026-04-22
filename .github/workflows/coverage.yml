@@ -85,7 +85,8 @@ jobs:
           lines.push('');
           lines.push('| File | Stmts | Branches | Funcs | Lines |');
           lines.push('|------|------:|---------:|------:|------:|');
-          for (const f of r.files.slice(0, 10)) {
+          const worst = [...r.files].sort((a, b) => a.statements.pct - b.statements.pct).slice(0, 10);
+          for (const f of worst) {
             lines.push(`| \`${f.path}\` | ${f.statements.pct.toFixed(1)}% | ${f.branches.pct.toFixed(1)}% | ${f.functions.pct.toFixed(1)}% | ${f.lines.pct.toFixed(1)}% |`);
           }
           const out = lines.join('\n');
