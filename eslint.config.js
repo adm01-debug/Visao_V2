@@ -63,7 +63,6 @@ export default tseslint.config(
     rules: {
       'no-console': 'off',
     },
-    },
   },
   // Contexts/Providers/UI primitives intentionally co-export hooks/utilities
   // alongside components. React Fast Refresh constraint não se aplica neste padrão.
