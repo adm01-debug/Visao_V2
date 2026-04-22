@@ -19,7 +19,7 @@
 
 import { spawnSync } from 'node:child_process';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, relative } from 'node:path';
 
 const SKIP_BUILD = process.argv.includes('--skip-build');
 const startedAt = Date.now();
@@ -30,18 +30,33 @@ const TARGET_PAGES = [
   'src/pages/ZonesPage.tsx',
 ];
 const SKELETON_DIR = 'src/components/skeletons';
-const TRACKED_SYMBOLS = [
-  'Skeleton',
-  'BrandedSkeleton',
-  'CameraSkeleton',
-  'AlertSkeleton',
-  'StatSkeleton',
-  'CamerasSkeleton',
-  'AlertsSkeleton',
-  'ZonesSkeleton',
-  'FiltersBarSkeleton',
-  'TabsSkeleton',
-];
+const SRC_DIR = 'src';
+
+/** Fontes de import consideradas “relacionadas a skeleton”. */
+const SKELETON_SOURCE_RE =
+  /^@\/components\/(?:ui\/skeleton|skeletons(?:\/[^'"]+)?|PageSkeletons)$/;
+
+function walk(dir, acc = []) {
+  let entries;
+  try {
+    entries = readdirSync(dir);
+  } catch {
+    return acc;
+  }
+  for (const name of entries) {
+    if (name === 'node_modules' || name === '__tests__' || name.startsWith('.')) continue;
+    const full = join(dir, name);
+    let st;
+    try {
+      st = statSync(full);
+    } catch {
+      continue;
+    }
+    if (st.isDirectory()) walk(full, acc);
+    else if (/\.(tsx?|jsx?)$/.test(name)) acc.push(full);
+  }
+  return acc;
+}
 
 function listSkeletonFiles() {
   try {
@@ -51,6 +66,33 @@ function listSkeletonFiles() {
   } catch {
     return [];
   }
+}
+
+/**
+ * Coleta todos os arquivos do projeto que importam de fontes relacionadas a
+ * skeleton (ui/skeleton, skeletons/*, PageSkeletons). Retorna paths relativos.
+ */
+function collectFilesImportingSkeletons() {
+  const all = walk(SRC_DIR);
+  const importLine = /from\s*['"]([^'"]+)['"]/g;
+  const hits = new Set();
+  for (const file of all) {
+    let src;
+    try {
+      src = readFileSync(file, 'utf8');
+    } catch {
+      continue;
+    }
+    importLine.lastIndex = 0;
+    let m;
+    while ((m = importLine.exec(src))) {
+      if (SKELETON_SOURCE_RE.test(m[1])) {
+        hits.add(relative('.', file));
+        break;
+      }
+    }
+  }
+  return [...hits];
 }
 
 function run(label, cmd, args, { mute = true } = {}) {
