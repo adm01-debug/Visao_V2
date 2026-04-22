@@ -56,10 +56,12 @@ describe('Loading placeholders permanecem renderizados durante o loading', () =>
 
     it('renderiza header de tabela + 8 linhas reservadas', () => {
       const { container } = render(<AlertsSkeleton />);
-      const table = container.querySelector('.rounded-lg.border');
-      expect(table).not.toBeNull();
+      // Tabela é o último .rounded-lg.border (após stat cards)
+      const tables = container.querySelectorAll('.rounded-lg.border');
+      const table = tables[tables.length - 1];
+      expect(table).toBeDefined();
       // 1 header + 8 rows = 9 filhos diretos
-      expect(table?.children.length).toBe(9);
+      expect(table.children.length).toBe(9);
     });
   });
 
