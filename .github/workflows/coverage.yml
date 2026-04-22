@@ -27,7 +27,8 @@ jobs:
         run: npm run coverage
         env:
           CI: true
-      - name: Upload coverage artifacts
+      - name: Upload coverage artifacts (HTML + JSON + TXT)
+        id: upload_coverage
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -37,8 +38,13 @@ jobs:
             public/coverage-report.json
             public/coverage-report.txt
           retention-days: 14
+          if-no-files-found: warn
       - name: Build PR/job summary
         if: always()
+        env:
+          ARTIFACT_URL: ${{ steps.upload_coverage.outputs.artifact-url }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          COMMIT_SHA: ${{ github.sha }}
         run: |
           node <<'EOF'
           const fs = require('node:fs');
@@ -49,10 +55,24 @@ jobs:
           }
           const r = JSON.parse(fs.readFileSync(path, 'utf8'));
           const t = r.totals;
+          const artifactUrl = process.env.ARTIFACT_URL || '';
+          const runUrl = process.env.RUN_URL || '';
+          const sha = (process.env.COMMIT_SHA || '').slice(0, 7);
           const lines = [];
           lines.push('## ✅ Coverage Report');
           lines.push('');
-          lines.push(`Generated: \`${r.generatedAt}\` — ${r.files.length} files analyzed.`);
+          lines.push(`Generated: \`${r.generatedAt}\` — ${r.files.length} files analyzed — commit \`${sha}\`.`);
+          lines.push('');
+          lines.push('### 📦 Artefatos');
+          lines.push('');
+          if (artifactUrl) {
+            lines.push(`- 🔗 **[Baixar coverage-report.zip](${artifactUrl})** — HTML interativo + JSON + TXT (retenção 14 dias).`);
+          } else {
+            lines.push('- ⚠️ Artifact URL indisponível neste run — acesse via aba *Artifacts* da execução.');
+          }
+          lines.push(`- 🧭 [Ver execução completa](${runUrl})`);
+          lines.push('');
+          lines.push('> Após baixar, abra `coverage/index.html` no navegador para o relatório HTML interativo do Istanbul.');
           lines.push('');
           lines.push('| Metric | Coverage | Covered / Total |');
           lines.push('|--------|---------:|----------------:|');
