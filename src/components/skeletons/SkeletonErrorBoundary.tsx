@@ -8,7 +8,7 @@
  */
 import React, { Component, ReactNode, ErrorInfo } from 'react';
 import { logger } from '@/lib/logger';
-import { SkeletonFallback } from './SkeletonFallback';
+import { SkeletonFallback, type SkeletonFallbackVariant } from './SkeletonFallback';
 
 interface Props {
   children: ReactNode;
@@ -16,6 +16,8 @@ interface Props {
   label?: string;
   /** Identificador opcional para indicar QUAL boundary capturou (ex.: "withLazyLoad:Cameras"). */
   boundaryName?: string;
+  /** Variante do SkeletonFallback genérico quando `fallback` não é fornecido. */
+  fallbackVariant?: SkeletonFallbackVariant;
 }
 
 interface State {
