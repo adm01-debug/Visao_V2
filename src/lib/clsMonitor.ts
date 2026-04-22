@@ -7,6 +7,13 @@
  */
 import { logger } from '@/lib/logger';
 
+// Declaração local: WeakRef pode não estar no lib do TS, mas existe runtime moderno.
+declare class WeakRef<T extends object> {
+  constructor(target: T);
+  deref(): T | undefined;
+}
+declare const WeakRef: { new <T extends object>(target: T): WeakRef<T> } | undefined;
+
 interface ShiftSource {
   selector: string;
   value: number;
