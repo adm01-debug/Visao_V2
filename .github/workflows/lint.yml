@@ -1,10 +1,12 @@
 name: Lint
 
+# Gate de qualidade: zero warnings no ESLint (--max-warnings=0)
+# Paridade com .husky/pre-commit, .husky/pre-push e .github/workflows/ci.yml:44
 on:
   push:
     branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
   workflow_dispatch:
 
 concurrency:
@@ -13,18 +15,29 @@ concurrency:
 
 jobs:
   lint:
+    name: ESLint (--max-warnings=0)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-      
+
       - run: npm ci --legacy-peer-deps
-      
-      - run: npm run lint
-      
+
+      # Gate estrito: falha em qualquer warning (não apenas erros).
+      # Paridade exata com .husky/pre-commit + .husky/pre-push.
+      - name: Run lint:ci (zero warnings)
+        run: npm run lint:ci
+
       - if: always()
-        run: echo "Lint completed" >> $GITHUB_STEP_SUMMARY
+        run: |
+          {
+            echo "## Lint Gate"
+            echo ""
+            echo "- **Comando:** \`npm run lint:ci\` → \`eslint . --max-warnings=0\`"
+            echo "- **Resultado:** ${{ job.status }}"
+            echo "- **Paridade:** \`.husky/pre-commit\`, \`.husky/pre-push\`, \`ci.yml:44\`"
+          } >> "$GITHUB_STEP_SUMMARY"
