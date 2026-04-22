@@ -132,8 +132,8 @@ export function CamerasPage() {
             <SelectItem value="offline">Offline</SelectItem>
           </SelectContent>
         </Select>
-        {(searchQuery || statusFilter !== 'all') && (
-          <Button variant="ghost" size="sm" onClick={() => { setSearchQuery(''); setStatusFilter('all'); }}>
+        {hasActiveFilters && (
+          <Button variant="ghost" size="sm" onClick={clearFilters}>
             <X className="w-4 h-4 mr-1" />Limpar
           </Button>
         )}
