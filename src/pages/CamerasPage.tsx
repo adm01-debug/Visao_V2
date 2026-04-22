@@ -182,7 +182,7 @@ export function CamerasPage() {
             actionLabel={cameras.length === 0 ? '+ Adicionar Câmera' : undefined}
             onAction={cameras.length === 0 ? () => {} : undefined}
             secondaryActionLabel={cameras.length > 0 ? 'Limpar filtros' : undefined}
-            onSecondaryAction={cameras.length > 0 ? () => { setSearchQuery(''); setStatusFilter('all'); } : undefined}
+            onSecondaryAction={cameras.length > 0 ? clearFilters : undefined}
           />
         ) : (
           <div className={cn('grid gap-4', GRID_CLASSES[viewMode])}>
