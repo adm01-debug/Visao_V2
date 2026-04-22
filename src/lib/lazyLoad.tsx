@@ -5,6 +5,7 @@
 import React, { lazy, Suspense, ComponentType } from 'react';
 import { Loader2 } from 'lucide-react';
 import { SkeletonErrorBoundary } from '@/components/skeletons/SkeletonErrorBoundary';
+import { shouldSimulateSkeletonFailure } from '@/lib/skeletonFailureFlag';
 
 /**
  * Loading fallback component
