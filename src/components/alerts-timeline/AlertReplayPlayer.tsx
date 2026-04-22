@@ -67,7 +67,9 @@ export function AlertReplayPlayer({
     let best = 0;
     let bestDiff = Infinity;
     for (let i = 0; i < totalFrames; i++) {
-      const d = Math.abs(frames[i].t - eventTs);
+      const f = frames[i];
+      if (!f) continue;
+      const d = Math.abs(f.t - eventTs);
       if (d < bestDiff) {
         bestDiff = d;
         best = i;
@@ -125,10 +127,10 @@ export function AlertReplayPlayer({
   // Posição do marcador "EVENTO" no slider (0..100)
   const eventMarkerPct = useMemo(() => {
     if (totalFrames < 2) return 50;
-    const first = frames[0].t;
-    const last = frames[totalFrames - 1].t;
-    if (last === first) return 50;
-    return ((eventTs - first) / (last - first)) * 100;
+    const firstF = frames[0];
+    const lastF = frames[totalFrames - 1];
+    if (!firstF || !lastF || lastF.t === firstF.t) return 50;
+    return ((eventTs - firstF.t) / (lastF.t - firstF.t)) * 100;
   }, [frames, totalFrames, eventTs]);
 
   const handleReset = useCallback(() => {

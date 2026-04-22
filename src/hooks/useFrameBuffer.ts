@@ -45,7 +45,11 @@ function subscribe(cb: () => void) {
 function pruneOld(frames: BufferedFrame[], now: number): BufferedFrame[] {
   const cutoff = now - BUFFER_SECONDS * 1000;
   let i = 0;
-  while (i < frames.length && frames[i].t < cutoff) i++;
+  while (i < frames.length) {
+    const f = frames[i];
+    if (!f || f.t >= cutoff) break;
+    i++;
+  }
   const trimmed = i > 0 ? frames.slice(i) : frames;
   return trimmed.length > MAX_FRAMES_PER_CAMERA
     ? trimmed.slice(trimmed.length - MAX_FRAMES_PER_CAMERA)
@@ -98,10 +102,12 @@ export function getReplayFrames(
  */
 export function getBufferStats(cameraId: string): { count: number; spanSec: number } {
   const frames = buffers.get(cameraId) ?? [];
-  if (frames.length < 2) return { count: frames.length, spanSec: 0 };
+  const first = frames[0];
+  const last = frames[frames.length - 1];
+  if (!first || !last || frames.length < 2) return { count: frames.length, spanSec: 0 };
   return {
     count: frames.length,
-    spanSec: Math.round((frames[frames.length - 1].t - frames[0].t) / 1000),
+    spanSec: Math.round((last.t - first.t) / 1000),
   };
 }
 
