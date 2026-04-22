@@ -159,6 +159,32 @@ const CoveragePage = () => {
               </AlertDescription>
             </Alert>
           )}
+          {data.alert?.dropExceeded && data.alert.delta != null && (
+            <Alert variant="destructive">
+              <AlertTitle>⚠️ Queda de cobertura detectada</AlertTitle>
+              <AlertDescription>
+                A cobertura global de statements caiu{" "}
+                <strong>{Math.abs(data.alert.delta).toFixed(2)} pp</strong>
+                {data.alert.previousPct != null && (
+                  <>
+                    {" "}(de <strong>{data.alert.previousPct.toFixed(2)}%</strong> para{" "}
+                    <strong>{data.totals.statements.pct.toFixed(2)}%</strong>)
+                  </>
+                )}
+                , ultrapassando o limite de <strong>{data.alert.threshold.toFixed(2)} pp</strong>.
+                Adicione testes para os arquivos listados abaixo antes de mesclar.
+              </AlertDescription>
+            </Alert>
+          )}
+          {data.alert && !data.alert.dropExceeded && data.alert.delta != null && data.alert.delta < 0 && (
+            <Alert>
+              <AlertTitle className="text-sm">📉 Cobertura caiu levemente</AlertTitle>
+              <AlertDescription>
+                Variação de <strong>{data.alert.delta.toFixed(2)} pp</strong> vs. execução anterior
+                (limite de alerta: {data.alert.threshold.toFixed(2)} pp).
+              </AlertDescription>
+            </Alert>
+          )}
           <Alert>
             <AlertTitle className="text-sm">
               Última execução:{" "}
@@ -171,7 +197,16 @@ const CoveragePage = () => {
             </AlertTitle>
             <AlertDescription>
               {data.files.length.toLocaleString("pt-BR")} arquivos analisados. Cobertura global de statements:{" "}
-              <strong>{data.totals.statements.pct.toFixed(2)}%</strong>.
+              <strong>{data.totals.statements.pct.toFixed(2)}%</strong>
+              {data.alert?.delta != null && (
+                <>
+                  {" "}
+                  <span className={data.alert.delta >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-destructive"}>
+                    ({data.alert.delta >= 0 ? "+" : ""}{data.alert.delta.toFixed(2)} pp vs. anterior)
+                  </span>
+                </>
+              )}
+              .
             </AlertDescription>
           </Alert>
 
