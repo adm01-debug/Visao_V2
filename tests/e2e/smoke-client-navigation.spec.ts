@@ -24,7 +24,8 @@
  *
  * Cobertura responsiva: desktop (Sidebar) + mobile (BottomNavigation).
  */
-import { test, expect, devices, type Page, type Locator } from '@playwright/test';
+import { devices, type Page, type Locator } from '@playwright/test';
+import { test, expect } from './helpers/testFixtures';
 import { gotoAuthenticated } from './helpers/authSession';
 
 interface NavStep {
