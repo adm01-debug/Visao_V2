@@ -97,7 +97,14 @@ export class SkeletonErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
-      return this.props.fallback ?? <SkeletonFallback label={this.props.label} />;
+      return (
+        this.props.fallback ?? (
+          <SkeletonFallback
+            label={this.props.label}
+            variant={this.props.fallbackVariant}
+          />
+        )
+      );
     }
     return this.props.children;
   }
