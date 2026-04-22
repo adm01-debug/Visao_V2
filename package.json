@@ -86,7 +86,11 @@
     "preview:reset-and-qa": "bash scripts/reset-preview-qa.sh",
     "qa:gates": "node scripts/quality-gates.mjs --profile=dev",
     "qa:gates:ci": "node scripts/quality-gates.mjs --profile=ci",
-    "qa:gates:dev": "node scripts/quality-gates.mjs --profile=dev"
+    "qa:gates:dev": "node scripts/quality-gates.mjs --profile=dev",
+    "audit:deadcode": "node scripts/audit-deadcode.mjs",
+    "audit:deadcode:json": "node scripts/audit-deadcode.mjs --format=json",
+    "audit:deadcode:strict": "node scripts/audit-deadcode.mjs --strict",
+    "audit:report": "node scripts/build-dependency-audit-report.mjs --refresh"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
