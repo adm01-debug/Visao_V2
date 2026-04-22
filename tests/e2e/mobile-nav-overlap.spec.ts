@@ -28,6 +28,7 @@
  */
 import { test, expect } from '@playwright/test';
 import { expectLastRealElementAboveNav } from './helpers/lastRealElement';
+import { gotoAuthenticated } from './helpers/authSession';
 
 const PAGES = [
   { path: '/dashboard', name: 'dashboard-v2' },
@@ -64,15 +65,8 @@ test.describe('BottomNav não cobre conteúdo (multi-viewport mobile)', () => {
 
       for (const { path, name } of PAGES) {
         test(`${name}: último conteúdo acima da BottomNav`, async ({ page }) => {
-          await page.goto(path, { waitUntil: 'networkidle' }).catch(() => {});
-
-          if (/\/(auth|login)(\?|$|\/)/.test(page.url())) {
-            test.skip(
-              true,
-              `Rota ${path} requer autenticação — coberta pela checagem estática.`,
-            );
-            return;
-          }
+          const ready = await gotoAuthenticated(page, path, { waitUntil: 'networkidle' });
+          if (!ready) return;
 
           await page.waitForSelector('[data-app-scroll]', { timeout: 10000 }).catch(() => {});
 

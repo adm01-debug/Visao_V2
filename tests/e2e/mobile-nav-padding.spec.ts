@@ -13,6 +13,7 @@
  * Para rodar isolado: `npm run test:mobile-nav-runtime`.
  */
 import { test, expect, devices } from '@playwright/test';
+import { gotoAuthenticated } from './helpers/authSession';
 
 const ROUTES = [
   '/dashboard',
@@ -39,13 +40,10 @@ test.use({ ...devices['iPhone 12'] });
 test.describe('Mobile nav padding (runtime)', () => {
   for (const route of ROUTES) {
     test(`${route} aplica padding-bottom ≥ ${MIN_PADDING_PX}px`, async ({ page }) => {
-      const response = await page.goto(route, { waitUntil: 'domcontentloaded' });
-      // Se redirecionou para auth (sem login seedado em CI), pular sem falhar.
-      const url = page.url();
-      if (/\/(auth|login)(\?|$|\/)/.test(url)) {
-        test.skip(true, `Rota ${route} requer autenticação — coberta pela checagem estática.`);
-        return;
-      }
+      // Tenta autenticar via helper; faz skip controlado se não houver sessão.
+      const ready = await gotoAuthenticated(page, route, { waitUntil: 'domcontentloaded' });
+      if (!ready) return;
+
       // Aguarda o layout autenticado montar
       await page.waitForSelector('[data-app-scroll]', { timeout: 10000 }).catch(() => {});
 
