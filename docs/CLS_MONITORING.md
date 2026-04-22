@@ -73,6 +73,26 @@ Fluxo recomendado para comparar antes/depois:
 
 ## Validação manual
 
+## Regressão automatizada (Playwright)
+
+Suite `tests/e2e/cls-regression.spec.ts` injeta um `PerformanceObserver`
+para `layout-shift` **antes** do JS da página, navega por uma lista de
+rotas e falha se o CLS final ultrapassar o threshold.
+
+```bash
+npm run test:cls-regression                       # default: 0.1 em /cameras,/alerts,/zones,/dashboard
+CLS_THRESHOLD=0.05 npm run test:cls-regression    # threshold mais estrito
+CLS_ROUTES=/cameras,/alerts npm run test:cls-regression
+CLS_SETTLE_MS=5000 npm run test:cls-regression    # janela maior para shifts tardios
+```
+
+- Cada teste anexa `cls-<rota>.json` ao relatório com `cls`, `shiftCount`
+  e `topSources` para diagnóstico imediato.
+- Thresholds por rota podem ser sobrescritos no objeto `ROUTE_THRESHOLDS`
+  do próprio spec (útil para isolar regressão conhecida sem mascarar
+  outras rotas).
+- Roda em modo `serial` para isolar medições entre rotas.
+
 1. Abrir DevTools → Network → throttle `Slow 3G`.
 2. Navegar para `/dashboard`, `/cameras`, `/alerts`, `/zones`.
 3. Esperar o badge ficar verde com `CLS < 0.05`.
