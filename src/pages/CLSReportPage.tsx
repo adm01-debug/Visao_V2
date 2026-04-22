@@ -14,7 +14,7 @@
  */
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Gauge, RefreshCw, Trash2 } from 'lucide-react';
+import { ArrowRight, Download, Gauge, RefreshCw, Trash2 } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { PageMeta } from '@/components/PageMeta';
@@ -29,6 +29,12 @@ import {
   type RouteCLSReport,
 } from '@/lib/clsMonitor';
 import { cn } from '@/lib/utils';
+import {
+  downloadNavigationCLSLog,
+  clearNavigationCLSLog,
+  getNavigationCLSLog,
+  getNavigationCLSSessionId,
+} from '@/lib/navigationCLSLog';
 
 const RATING_STYLES: Record<RouteCLSReport['rating'], { label: string; bg: string; text: string }> = {
   good: { label: 'Bom', bg: 'bg-success/10', text: 'text-success' },
@@ -241,9 +247,19 @@ export default function CLSReportPage() {
           </Button>
           <Button
             size="sm"
+            variant="outline"
+            onClick={() => downloadNavigationCLSLog('ndjson')}
+            className="gap-1.5"
+            title={`Sessão atual: ${getNavigationCLSSessionId()} • ${getNavigationCLSLog().length} entradas`}
+          >
+            <Download className="h-3.5 w-3.5" /> Exportar log
+          </Button>
+          <Button
+            size="sm"
             variant="ghost"
             onClick={() => {
               clearReports();
+              clearNavigationCLSLog();
               setEntries(getTrackedReports());
             }}
             className="gap-1.5 text-destructive hover:text-destructive"
