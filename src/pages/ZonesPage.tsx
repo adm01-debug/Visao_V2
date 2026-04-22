@@ -25,15 +25,32 @@ import { useManagedFilters } from '@/hooks/useManagedFilters';
 
 type DbZoneLocal = Tables<'zones'>;
 
+interface ZonesFilters {
+  searchQuery: string;
+  selectedCameraFilter: string;
+  selectedTypeFilter: string;
+  [key: string]: unknown;
+}
+const defaultZonesFilters: ZonesFilters = { searchQuery: '', selectedCameraFilter: 'all', selectedTypeFilter: 'all' };
+
 export function ZonesPage() {
   const { user: _user } = useAuth();
   const { cameras } = useCameras();
 
   const [zones, setZones] = useState<DbZoneLocal[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCameraFilter, setSelectedCameraFilter] = useState<string>('all');
-  const [selectedTypeFilter, setSelectedTypeFilter] = useState<string>('all');
+  const { filters, setFilters, clearFilters, hasActiveFilters } = useManagedFilters<ZonesFilters>({
+    scope: 'zones',
+    defaults: defaultZonesFilters,
+    labels: { searchQuery: 'busca', selectedCameraFilter: 'câmera', selectedTypeFilter: 'tipo' },
+    isActive: (key, value) => key === 'searchQuery' ? value !== '' : value !== 'all',
+  });
+  const searchQuery = filters.searchQuery;
+  const selectedCameraFilter = filters.selectedCameraFilter;
+  const selectedTypeFilter = filters.selectedTypeFilter;
+  const setSearchQuery = (v: string) => setFilters((p) => ({ ...p, searchQuery: v }));
+  const setSelectedCameraFilter = (v: string) => setFilters((p) => ({ ...p, selectedCameraFilter: v }));
+  const setSelectedTypeFilter = (v: string) => setFilters((p) => ({ ...p, selectedTypeFilter: v }));
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editorCamera, setEditorCamera] = useState<{ id: string; name: string; stream_url?: string | null; stream_protocol?: string; thumbnail?: string | null } | null>(null);
