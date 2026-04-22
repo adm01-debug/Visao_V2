@@ -10,6 +10,7 @@ export interface AlertFilters {
   cameraId: string;
   dateRange: string;
   readStatus: 'all' | 'read' | 'unread';
+  [key: string]: unknown;
 }
 
 export const defaultFilters: AlertFilters = {
