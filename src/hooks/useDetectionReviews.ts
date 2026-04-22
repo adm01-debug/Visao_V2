@@ -94,8 +94,12 @@ export function useDetectionReviews() {
         user_id: user.id,
         reviewed_at: new Date().toISOString(),
       };
-      const { data, error: err } = await supabase
-        .from('detection_reviews' as never)
+      const { data, error: err } = await (supabase
+        .from('detection_reviews' as never) as unknown as {
+          upsert: (p: unknown, opts: { onConflict: string }) => {
+            select: () => { single: () => Promise<{ data: unknown; error: { message: string } | null }> };
+          };
+        })
         .upsert(payload, { onConflict: 'user_id,source_table,source_id' })
         .select()
         .single();

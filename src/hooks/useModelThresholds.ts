@@ -127,8 +127,12 @@ export function useModelThresholds() {
         min_quality: input.min_quality ?? null,
         notes: input.notes ?? null,
       };
-      const { data, error: err } = await supabase
-        .from('model_thresholds' as never)
+      const { data, error: err } = await (supabase
+        .from('model_thresholds' as never) as unknown as {
+          upsert: (p: unknown, opts: { onConflict: string }) => {
+            select: () => { single: () => Promise<{ data: unknown; error: { message: string } | null }> };
+          };
+        })
         .upsert(payload, { onConflict: 'user_id,risk_type,model_name' })
         .select()
         .single();
