@@ -10,7 +10,7 @@
  */
 import React from 'react';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { useManagedFilters } from '@/hooks/useManagedFilters';
 import { FilterPersistenceProvider } from '@/providers/FilterPersistenceProvider';
 
