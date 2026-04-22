@@ -13,13 +13,22 @@
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { resolve, relative, sep } from "node:path";
-import { cwd } from "node:process";
+import { cwd, env, exit } from "node:process";
 
 const ROOT = cwd();
 const SUMMARY_PATH = resolve(ROOT, "coverage", "coverage-summary.json");
 const PUBLIC_DIR = resolve(ROOT, "public");
 const OUT_JSON = resolve(PUBLIC_DIR, "coverage-report.json");
 const OUT_TXT = resolve(PUBLIC_DIR, "coverage-report.txt");
+
+// Threshold (in percentage points) for global statements drop alerts.
+// Override via env: COVERAGE_DROP_THRESHOLD=1.5
+const DROP_THRESHOLD = (() => {
+  const raw = Number.parseFloat(env.COVERAGE_DROP_THRESHOLD ?? "2");
+  return Number.isFinite(raw) && raw > 0 ? raw : 2;
+})();
+// When true, exit with non-zero code if drop exceeds threshold (used by CI).
+const FAIL_ON_DROP = env.COVERAGE_FAIL_ON_DROP === "1";
 
 if (!existsSync(SUMMARY_PATH)) {
   console.error(
