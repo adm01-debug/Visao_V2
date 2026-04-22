@@ -120,8 +120,26 @@ let skipped = 0;
 const SCROLL_ANTIPATTERN = /h-\[calc\(100vh-/;
 // Heurística: detecta wrappers customizados (raiz com altura própria ou Sidebar embutido)
 const CUSTOM_WRAPPER_HEURISTIC = /(min-h-screen|h-screen|h-dvh|h-\[100dvh\]|<Sidebar\b)/;
+// Heurística: páginas standalone (login/auth/erro/redirect) — NÃO devem ser
+// auto-classificadas. Se o auto-classify detectar este padrão, marca como
+// "needsReview" e exige cadastro manual em ALLOWLIST.
+const STANDALONE_HEURISTIC = /(useAuth|signInWith|<Navigate\s+to=|404|Not\s*Found|AcessoNegado|AccessDenied|<SplashScreen)/i;
 const SNAPSHOT_MODE = process.argv.includes('--snapshot');
+const AUTO_CLASSIFY_MODE = process.argv.includes('--auto-classify');
 const SNAPSHOT_PATH = 'scripts/.mobile-nav-snapshot.json';
+
+/**
+ * Classifica automaticamente uma página nova com base em heurísticas:
+ *   - Wrapper raiz próprio (min-h-screen, Sidebar...) → customWrapper
+ *   - Padrão de auth/erro/redirect → needsReview (não auto-classifica como standalone)
+ *   - Caso contrário → standard (delega ao MainLayout)
+ */
+function autoClassifyPage(filePath) {
+  const content = readFileSync(filePath, 'utf8');
+  if (CUSTOM_WRAPPER_HEURISTIC.test(content)) return 'customWrapper';
+  if (STANDALONE_HEURISTIC.test(content)) return 'needsReview';
+  return 'standard';
+}
 
 for (const file of files) {
   const basename = file.split(/[\\/]/).pop();
@@ -421,20 +439,83 @@ if (SNAPSHOT_MODE) {
   writeFileSync(SNAPSHOT_PATH, JSON.stringify(snapshot, null, 2) + '\n');
   console.log(`\n📸 Snapshot salvo em ${SNAPSHOT_PATH} (${snapshot.pages.length} páginas)`);
 } else {
-  // Comparar com snapshot existente, se houver
+  // Compara com snapshot existente; em modo --auto-classify, classifica
+  // novas páginas automaticamente e atualiza o snapshot durante o build.
   try {
     const existing = JSON.parse(readFileSync(SNAPSHOT_PATH, 'utf8'));
-    const existingNames = new Set(existing.pages.map((p) => p.file));
-    const currentNames = new Set(files.map((f) => f.split(/[\\/]/).pop()));
-    const newPages = [...currentNames].filter((n) => !existingNames.has(n));
+    const existingByName = new Map(existing.pages.map((p) => [p.file, p]));
+    const currentBasenames = files.map((f) => f.split(/[\\/]/).pop());
+    const currentNames = new Set(currentBasenames);
+    const newPages = currentBasenames.filter((n) => !existingByName.has(n));
+    const removedPages = [...existingByName.keys()].filter((n) => !currentNames.has(n));
+
     if (newPages.length > 0) {
-      console.error(`\n❌ ${newPages.length} nova(s) página(s) sem classificação no snapshot:`);
-      for (const n of newPages) console.error(`   - src/pages/${n}`);
-      console.error(
-        `\nClassifique cada página (standard / customWrapper / standalone) ajustando as allowlists\n` +
-        `e regenere o snapshot com: \`npm run check:mobile-nav -- --snapshot\`.\n`
-      );
-      failed = true;
+      if (AUTO_CLASSIFY_MODE) {
+        const { writeFileSync } = await import('node:fs');
+        const autoClassified = [];
+        const needsReview = [];
+        for (const basename of newPages) {
+          const fullPath = join(PAGES_DIR, basename);
+          // Allowlists vencem heurísticas (cobre cadastros manuais simultâneos)
+          let mode;
+          if (ALLOWLIST.has(basename)) mode = 'standalone';
+          else if (CUSTOM_WRAPPER_ALLOWLIST.has(basename)) mode = 'customWrapper';
+          else mode = autoClassifyPage(fullPath);
+
+          if (mode === 'needsReview') {
+            needsReview.push({ basename, fullPath });
+          } else {
+            autoClassified.push({ file: basename, mode });
+          }
+        }
+
+        if (autoClassified.length > 0) {
+          const mergedMap = new Map(existingByName);
+          for (const entry of autoClassified) mergedMap.set(entry.file, entry);
+          for (const removed of removedPages) mergedMap.delete(removed);
+
+          const merged = {
+            generatedAt: new Date().toISOString(),
+            pages: [...mergedMap.values()].sort((a, b) => a.file.localeCompare(b.file)),
+          };
+          writeFileSync(SNAPSHOT_PATH, JSON.stringify(merged, null, 2) + '\n');
+
+          console.log(`\n🤖 Auto-classificadas ${autoClassified.length} página(s) novas no snapshot:`);
+          for (const e of autoClassified) console.log(`   + ${e.file} → ${e.mode}`);
+          if (removedPages.length > 0) {
+            console.log(`   - removida(s): ${removedPages.join(', ')}`);
+          }
+        }
+
+        if (needsReview.length > 0) {
+          console.error(`\n⚠️  ${needsReview.length} página(s) com padrão sensível (auth/erro/redirect) — classificação MANUAL exigida:`);
+          for (const r of needsReview) console.error(`   - ${r.fullPath}`);
+          console.error(
+            `\nAdicione à ALLOWLIST (standalone) ou CUSTOM_WRAPPER_ALLOWLIST em\n` +
+            `scripts/check-mobile-nav.mjs e rode \`npm run check:mobile-nav -- --snapshot\`.\n`
+          );
+          failed = true;
+        }
+      } else {
+        console.error(`\n❌ ${newPages.length} nova(s) página(s) sem classificação no snapshot:`);
+        for (const n of newPages) console.error(`   - src/pages/${n}`);
+        console.error(
+          `\nOpções:\n` +
+          `  1. Auto-classificar (recomendado em build): \`npm run check:mobile-nav -- --auto-classify\`\n` +
+          `  2. Regenerar snapshot manualmente: \`npm run check:mobile-nav -- --snapshot\`\n`
+        );
+        failed = true;
+      }
+    } else if (AUTO_CLASSIFY_MODE && removedPages.length > 0) {
+      const { writeFileSync } = await import('node:fs');
+      const mergedMap = new Map(existingByName);
+      for (const removed of removedPages) mergedMap.delete(removed);
+      const merged = {
+        generatedAt: new Date().toISOString(),
+        pages: [...mergedMap.values()].sort((a, b) => a.file.localeCompare(b.file)),
+      };
+      writeFileSync(SNAPSHOT_PATH, JSON.stringify(merged, null, 2) + '\n');
+      console.log(`\n🤖 Snapshot atualizado: ${removedPages.length} página(s) removida(s) (${removedPages.join(', ')}).`);
     }
   } catch {
     // snapshot ainda não existe — ok, gere com --snapshot na primeira vez
