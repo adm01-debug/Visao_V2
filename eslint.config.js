@@ -52,5 +52,37 @@ export default tseslint.config(
       // VISÃO Design System — prevent hardcoded colors
       'visao/no-hardcoded-colors': 'warn',
     },
+  },
+  // Contexts/Providers/UI primitives intentionally co-export hooks/utilities
+  // alongside components. React Fast Refresh constraint não se aplica neste padrão.
+  {
+    files: [
+      'src/contexts/**/*.{ts,tsx}',
+      'src/providers/**/*.{ts,tsx}',
+      'src/components/ui/**/*.{ts,tsx}',
+      'src/lib/lazyLoad.tsx',
+      'src/components/LazyComponent.tsx',
+      'src/components/ErrorBoundary.tsx',
+      'src/components/PageSkeletons.tsx',
+      'src/components/PaginationControls.tsx',
+      'src/components/SearchInput.tsx',
+      'src/components/AlertFilters.tsx',
+      'src/components/FaceRecognitionOverlay.tsx',
+      'src/components/clip-recorder/CompactClipControls.tsx',
+      'src/components/heatmap/HeatmapMatrixTab.tsx',
+      'src/components/recordings/ClipCard.tsx',
+      'src/components/reports/ReportTypeSelector.tsx',
+    ],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  // Test files: hex em assertions e `any` em mocks são esperados.
+  {
+    files: ['src/test/**/*.{ts,tsx}', 'src/**/*.test.{ts,tsx}', 'src/**/*.spec.{ts,tsx}'],
+    rules: {
+      'visao/no-hardcoded-colors': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
   }
 );
