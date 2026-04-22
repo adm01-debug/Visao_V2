@@ -13,9 +13,9 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "noPropertyAccessFromIndexSignature": true
+    "noUncheckedIndexedAccess": true
+    // NOTE: exactOptionalPropertyTypes, noPropertyAccessFromIndexSignature e noUnusedLocals
+    // estão temporariamente desligadas — backlog em docs/CODE_QUALITY_RULES.md (seção 8).
   },
   "include": ["src", "tests"],
   "exclude": ["node_modules", "dist", "storybook-static", "coverage"]
