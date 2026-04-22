@@ -52,6 +52,8 @@
     "test:e2e": "cypress run",
     "test:mobile-nav-runtime": "playwright test mobile-nav-padding",
     "test:mobile-nav-overlap": "playwright test mobile-nav-overlap",
+    "test:mobile-nav-visual": "playwright test mobile-nav-visual --project=mobile-safari",
+    "test:mobile-nav-visual:update": "playwright test mobile-nav-visual --project=mobile-safari --update-snapshots",
     "test:smoke": "playwright test smoke-pages",
     "test:integration": "vitest run --dir src/__tests__/integration",
     "test:ui": "vitest --ui",
