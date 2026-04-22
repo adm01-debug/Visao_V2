@@ -33,7 +33,14 @@ export function AlertsPage() {
 
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [sortBy, setSortBy] = useState<SortOption>('date-desc');
-  const [filters, setFilters] = useState<AlertFilters>(defaultFilters);
+  const [activeStatsFilter, setActiveStatsFilter] = useState<'total' | 'unread' | 'critical' | 'today' | null>(null);
+  const { filters, setFilters, clearFilters, hasActiveFilters } = useManagedFilters<AlertFilters & { [key: string]: unknown }>({
+    scope: 'alerts',
+    defaults: defaultFilters,
+    labels: { search: 'busca', severity: 'severidade', type: 'tipo', cameraId: 'câmera', readStatus: 'leitura', dateRange: 'período' },
+    isActive: (key, value) => key === 'search' ? value !== '' : value !== 'all',
+    onAfterClear: () => setActiveStatsFilter(null),
+  });
   const [selectedAlerts, setSelectedAlerts] = useState<Set<string>>(new Set());
   const [detailsAlert, setDetailsAlert] = useState<AlertRecord | null>(null);
   const [removingAlerts, setRemovingAlerts] = useState<Set<string>>(new Set());
