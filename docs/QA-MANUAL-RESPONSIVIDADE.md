@@ -209,7 +209,9 @@ Falha em qualquer comando = regressão real, sem precisar de QA manual.
 
 ### 7.2 QA manual visual (quando o preview estiver saudável)
 
-1. Abrir preview Lovable, fazer login.
+> **Pré-requisito:** §7.0 confirmado (sessão autenticada, sem redirect para `/auth`).
+
+1. Abrir preview Lovable, fazer login (ver §7.0).
 2. **Desktop (1280×720):** navegar pelas 12 rotas da §2; console limpo (F12), Sidebar persistente, conteúdo renderizando.
 3. **Mobile (DevTools → 390×844):** repetir as 12 rotas:
    - Hamburger no canto superior esquerdo (ícone `Menu`).
@@ -223,6 +225,7 @@ Falha em qualquer comando = regressão real, sem precisar de QA manual.
 
 ## 8. Histórico
 
-| Data | Mudança | Autor |
-|---|---|---|
-| 2026-04-21 | Documento inicial. Cobertura validada via E2E + estática; QA visual ao vivo bloqueado por incidente §5.1 (preview Bun). Build error §5.2 corrigido. | Lovable AI |
+| Data | Mudança | Estado de sessão | Autor |
+|---|---|---|---|
+| 2026-04-21 | Documento inicial. Cobertura validada via E2E + estática; QA visual ao vivo bloqueado por incidente §5.1 (preview Bun). Build error §5.2 corrigido. | N/A (preview indisponível) | Lovable AI |
+| 2026-04-22 | Adicionado §7.0 — passo obrigatório de verificação de sessão (logged in / redirect / RBAC) antes de §7.1/§7.2; coluna "Estado de sessão" no histórico. | — | Lovable AI |
