@@ -10,8 +10,10 @@ import {
   resetForRoute,
   markFinalReport,
   getRouteSnapshot,
+  getCurrentReport,
 } from '@/lib/clsMonitor';
 import { trackEvent } from '@/lib/analytics';
+import { appendNavigationCLS } from '@/lib/navigationCLSLog';
 
 export function useRouteCLS(): void {
   const location = useLocation();
@@ -26,6 +28,10 @@ export function useRouteCLS(): void {
     const timer = window.setTimeout(() => {
       const snap = getRouteSnapshot();
       trackEvent('cls.route', snap);
+      // Captura o relatório completo ANTES de markFinalReport (que reseta flags),
+      // para registrar no log de navegação persistente.
+      const full = getCurrentReport();
+      appendNavigationCLS(full);
       markFinalReport();
     }, 3000);
     return () => window.clearTimeout(timer);
