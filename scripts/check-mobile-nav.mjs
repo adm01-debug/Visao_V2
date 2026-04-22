@@ -110,6 +110,7 @@ const drift = [];
 const scrollDrift = [];
 const missingInCustom = [];
 const undeclaredCustomWrappers = [];
+const rootClassDrift = [];
 let cleanCount = 0;
 let customWrapperCount = 0;
 let skipped = 0;
