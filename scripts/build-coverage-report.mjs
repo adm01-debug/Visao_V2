@@ -119,6 +119,17 @@ lines.push(`  Branches:   ${fmt(totals.branches.pct)}  (${totals.branches.covere
 lines.push(`  Functions:  ${fmt(totals.functions.pct)}  (${totals.functions.covered}/${totals.functions.total})`);
 lines.push(`  Lines:      ${fmt(totals.lines.pct)}  (${totals.lines.covered}/${totals.lines.total})`);
 lines.push("");
+lines.push("Coverage Drop Alert:");
+lines.push(`  Threshold: ${DROP_THRESHOLD.toFixed(2)} pp`);
+if (delta == null) {
+  lines.push(`  Delta vs previous: N/A (no previous report).`);
+} else {
+  const sign = delta > 0 ? "+" : "";
+  lines.push(`  Previous: ${previousPct?.toFixed(2)}% (${previousGeneratedAt ?? "?"})`);
+  lines.push(`  Delta vs previous: ${sign}${delta.toFixed(2)} pp`);
+  lines.push(`  Status: ${dropExceeded ? "❌ DROP EXCEEDS THRESHOLD" : "✅ OK"}`);
+}
+lines.push("");
 lines.push("Files (lowest coverage first):");
 lines.push("Stmts   Branch  Funcs   Lines   File");
 for (const f of files) {
@@ -132,5 +143,16 @@ console.log(
   `[coverage-report] Wrote ${files.length} files → ${relative(ROOT, OUT_JSON)} & ${relative(ROOT, OUT_TXT)}`,
 );
 console.log(
-  `[coverage-report] Global statements: ${totals.statements.pct.toFixed(2)}%`,
+  `[coverage-report] Global statements: ${totals.statements.pct.toFixed(2)}%` +
+    (delta != null ? ` (delta ${delta > 0 ? "+" : ""}${delta.toFixed(2)} pp vs previous ${previousPct?.toFixed(2)}%)` : " (no previous baseline)"),
 );
+
+if (dropExceeded) {
+  const msg =
+    `[coverage-report] ❌ Coverage drop of ${Math.abs(delta).toFixed(2)} pp ` +
+    `exceeds threshold of ${DROP_THRESHOLD.toFixed(2)} pp ` +
+    `(was ${previousPct?.toFixed(2)}%, now ${currentPct.toFixed(2)}%).`;
+  console.error(msg);
+  if (FAIL_ON_DROP) exit(2);
+}
+
