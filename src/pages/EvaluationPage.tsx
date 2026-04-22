@@ -511,12 +511,14 @@ export default function EvaluationPage() {
                     key={preset.key}
                     preset={preset}
                     minConfidence={current.min_confidence}
+                    minQuality={current.min_quality}
                     isDefault={current.isDefault}
-                    onSave={(min_confidence) =>
+                    onSave={(min_confidence, min_quality) =>
                       upsertThreshold({
                         risk_type: preset.key,
                         model_name: preset.defaultModel,
                         min_confidence,
+                        min_quality,
                       })
                     }
                     onReset={() => resetToDefault(preset.key)}
