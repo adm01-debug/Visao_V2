@@ -211,6 +211,27 @@ Falha em qualquer comando = regressão real, sem precisar de QA manual.
 
 > **Pré-requisito:** §7.0 confirmado (sessão autenticada, sem redirect para `/auth`).
 
+**Atalho automatizado (recomendado):** capturar screenshots de TODAS as rotas de uma vez e revisar offline:
+```bash
+# Pré-requisito: variáveis E2E_TEST_EMAIL/E2E_TEST_PASSWORD setadas (§7.0c)
+npm run qa:visual-snapshots         # captura 11 auth + 4 standalone × {desktop, mobile} + drawers
+npm run report:qa-screenshots       # gera qa-screenshots/index.html (auto-contido, base64)
+open qa-screenshots/index.html
+```
+O relatório HTML gerado mostra:
+- **Grid lado-a-lado** desktop/mobile/drawer por rota.
+- **Badge de classificação** (`AUTH — com chrome` vs `STANDALONE — sem chrome`).
+- **Sumário navegável** com âncoras para cada rota.
+- **Anexar diretamente** a este documento ou enviar por e-mail/Slack para validação humana assíncrona.
+
+**Validações visuais a observar no relatório:**
+- ✅ Rotas autenticadas mobile: hamburger no topo + BottomNav fixa no rodapé.
+- ✅ Rotas autenticadas mobile + drawer: Sheet aberto à esquerda com categorias.
+- ✅ Rotas autenticadas desktop: Sidebar persistente à esquerda.
+- ✅ Rotas standalone (auth/acesso-negado/reset-password/404): SEM hamburger e SEM BottomNav.
+- ✅ Último elemento do conteúdo NÃO coberto pela BottomNav (verificar scroll até o fim).
+
+**Fluxo manual completo (caso de regressão visual ou bloqueio do automatizado):**
 1. Abrir preview Lovable, fazer login (ver §7.0).
 2. **Desktop (1280×720):** navegar pelas 12 rotas da §2; console limpo (F12), Sidebar persistente, conteúdo renderizando.
 3. **Mobile (DevTools → 390×844):** repetir as 12 rotas:
