@@ -5,7 +5,15 @@ on:
     branches: [main]
   push:
     branches: [main]
+  schedule:
+    # Toda segunda-feira às 06:00 UTC — modo warning-only
+    - cron: "0 6 * * 1"
   workflow_dispatch:
+    inputs:
+      update_baseline:
+        description: "Atualizar baseline.json após a execução"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -59,6 +67,16 @@ jobs:
             echo "exports=$exports"
             echo "types=$types"
           } >> "$GITHUB_OUTPUT"
+
+      - name: Compare against baseline (warning-only)
+        run: node scripts/check-deadcode-baseline.mjs
+        continue-on-error: true
+
+      - name: Update baseline (manual dispatch only)
+        if: github.event_name == 'workflow_dispatch' && inputs.update_baseline == true
+        run: |
+          node scripts/check-deadcode-baseline.mjs --update
+          echo "ℹ️ Baseline atualizado em reports/deadcode/baseline.json — disponível como artefato."
 
       - name: Upload HEAD report
         if: always()
