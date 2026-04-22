@@ -23,7 +23,7 @@ const DefaultErrorFallback = () => (
   </div>
 );
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 export function createLazyComponent<T extends ComponentType<any>>(
   importFn: () => Promise<{ default: T }>,
   options: LazyComponentProps = {}

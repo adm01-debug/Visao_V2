@@ -205,7 +205,7 @@ export function useContinuousAnalysis(
   useEffect(() => {
     if (autoStart) startAnalysis();
     return () => { if (intervalRef.current) clearTimeout(intervalRef.current); };
-  }, [autoStart]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [autoStart]);
 
   return {
     session, history, lastAnalysis, isAnalyzing,
