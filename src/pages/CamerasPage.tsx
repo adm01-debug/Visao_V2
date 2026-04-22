@@ -27,10 +27,25 @@ import { cn } from '@/lib/utils';
 import { PageMeta } from '@/components/PageMeta';
 import { PageContent } from '@/components/layout/MainLayout';
 
+interface CamerasFilters {
+  searchQuery: string;
+  statusFilter: string;
+  [key: string]: unknown;
+}
+const defaultCamerasFilters: CamerasFilters = { searchQuery: '', statusFilter: 'all' };
+
 export function CamerasPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('grid-2x2');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const { filters, setFilters, clearFilters, hasActiveFilters } = useManagedFilters<CamerasFilters>({
+    scope: 'cameras',
+    defaults: defaultCamerasFilters,
+    labels: { searchQuery: 'busca', statusFilter: 'status' },
+    isActive: (key, value) => key === 'searchQuery' ? value !== '' : value !== 'all',
+  });
+  const searchQuery = filters.searchQuery;
+  const statusFilter = filters.statusFilter;
+  const setSearchQuery = (v: string) => setFilters((p) => ({ ...p, searchQuery: v }));
+  const setStatusFilter = (v: string) => setFilters((p) => ({ ...p, statusFilter: v }));
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
   const [expandedCamera, setExpandedCamera] = useState<CameraData | null>(null);
   const [settingsCamera, setSettingsCamera] = useState<CameraData | null>(null);
