@@ -74,10 +74,7 @@ function scanForOffenders(): OffenderInfo[] {
 
   candidates.forEach((el) => {
     if (reported.has(el)) return;
-    if (el.hasAttribute(SCROLL_OWNER_ATTR)) return; // scroll oficial
-    if (el.closest(`[${SCROLL_OWNER_ATTR}]`) === el.closest(`[${SCROLL_OWNER_ATTR}]`) === null) {
-      // dentro do scroll oficial — segue
-    }
+    if (el.hasAttribute(SCROLL_OWNER_ATTR)) return; // scroll oficial do app
     if (hasOptOut(el)) return;
     if (!isScrollContainer(el)) return;
 
