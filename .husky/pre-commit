@@ -1,4 +1,18 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+# ─────────────────────────────────────────────────────────────
+# VISÃO — pre-commit hook (Husky v9+)
+# Espelha exatamente os gates rápidos do CI (.github/workflows/ci.yml):
+#   - npm run type-check:strict   (ci.yml:41 — tsc -p tsconfig.strict.json)
+#   - npm run lint:ci             (ci.yml:44 — eslint . --max-warnings=0)
+#
+# Garante paridade total entre máquina local e pipeline.
+# Skip emergencial: `git commit --no-verify`
+# ─────────────────────────────────────────────────────────────
+set -e
 
-npx lint-staged
+echo "🔍 [pre-commit] type-check:strict (paridade com ci.yml:41)"
+npm run --silent type-check:strict
+
+echo "🔍 [pre-commit] lint:ci (paridade com ci.yml:44)"
+npm run --silent lint:ci
+
+echo "✅ [pre-commit] gates do CI passaram"

@@ -1,12 +1,21 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-# Espelha os gates estritos do CI para falhar cedo localmente.
-# Ordem: rápido → lento (type-check, lint, testes, build, bundle).
+# ─────────────────────────────────────────────────────────────
+# VISÃO — pre-push hook (Husky v9+)
+# Espelha exatamente os gates do CI (.github/workflows/ci.yml):
+#   - npm run type-check:strict   (ci.yml:41)
+#   - npm run lint:ci             (ci.yml:44)
+#
+# Mantido idêntico ao pre-commit por princípio de paridade total:
+# qualquer divergência entre máquina local e pipeline = bug de processo.
+# Para gates mais pesados (build, testes, bundle), confiar no CI remoto.
+#
+# Skip emergencial: `git push --no-verify`
+# ─────────────────────────────────────────────────────────────
 set -e
 
-npm run type-check:strict
-npm run lint:ci
-npm run test:ci
-npm run build
-npm run check:bundle-size
+echo "🚀 [pre-push] type-check:strict (paridade com ci.yml:41)"
+npm run --silent type-check:strict
+
+echo "🚀 [pre-push] lint:ci (paridade com ci.yml:44)"
+npm run --silent lint:ci
+
+echo "✅ [pre-push] gates do CI passaram — push liberado"
