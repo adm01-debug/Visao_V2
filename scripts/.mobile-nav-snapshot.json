@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-22T11:46:04.691Z",
+  "generatedAt": "2026-04-22T15:29:18.535Z",
   "pages": [
     {
       "file": "AcessoNegado.tsx",
@@ -34,6 +34,10 @@
       "mode": "standard"
     },
     {
+      "file": "CLSReportPage.tsx",
+      "mode": "standard"
+    },
+    {
       "file": "CamerasPage.tsx",
       "mode": "standard"
     },
@@ -43,10 +47,6 @@
     },
     {
       "file": "CoveragePage.tsx",
-      "mode": "standard"
-    },
-    {
-      "file": "CLSReportPage.tsx",
       "mode": "standard"
     },
     {
