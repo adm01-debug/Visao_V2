@@ -8,6 +8,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
+import { SkeletonToggleProvider } from "@/contexts/SkeletonToggleContext";
+import { SkeletonToggleButton } from "@/components/dev/SkeletonToggleButton";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SplashScreen } from "@/components/LoadingSpinner";
 import { MainLayout } from "@/components/layout/MainLayout";
@@ -96,9 +98,11 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
     <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
+        <SkeletonToggleProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
+          <SkeletonToggleButton />
           <BrowserRouter>
             <AuthProvider>
               <NotificationProvider>
@@ -158,6 +162,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
             </Suspense>
           )}
         </TooltipProvider>
+        </SkeletonToggleProvider>
       </ThemeProvider>
     </QueryClientProvider>
     </HelmetProvider>
