@@ -51,7 +51,14 @@ A ordenação padrão da tabela é **menor cobertura primeiro**, justamente para
 
 ## CI
 
-O workflow `.github/workflows/coverage.yml` roda `npm run coverage` em todo push para `main` (e em PRs), publica os relatórios HTML/JSON como artefato e adiciona um summary com o top-10 de arquivos menos cobertos no `$GITHUB_STEP_SUMMARY`.
+O workflow `.github/workflows/coverage.yml` roda `npm run coverage` em todo push para `main` (e em PRs):
+
+1. Publica o **artifact `coverage-report`** (retenção 14 dias) contendo:
+   - `coverage/` — relatório **HTML interativo** do Istanbul (abrir `coverage/index.html`).
+   - `public/coverage-report.json` — consumido pelo dashboard `/coverage`.
+   - `public/coverage-report.txt` — snapshot human-readable.
+2. Adiciona um **summary** em `$GITHUB_STEP_SUMMARY` com **link direto de download** do artifact (via `steps.upload_coverage.outputs.artifact-url`), totais por métrica e top 10 arquivos menos cobertos.
+3. Em PRs, posta/atualiza um **comentário idempotente** (marker `<!-- coverage-report-comment -->`) com o mesmo conteúdo + link de download do `.zip`.
 
 ## Estrutura do JSON
 
