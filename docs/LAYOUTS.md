@@ -270,5 +270,115 @@ npm run test:smoke
 
 ---
 
-**Última atualização:** 21/04/2026
+---
+
+## 13. Páginas: standalone vs protegidas (exemplos canônicos)
+
+> 📋 **Referência completa do contrato:** [`docs/PAGE_CONTENT_STANDARD.md`](./PAGE_CONTENT_STANDARD.md).
+
+### 13.1 Página protegida (autenticada) — padrão obrigatório
+
+Toda página dentro de `MainLayout` (rotas autenticadas) **deve** usar `<PageContent>` como wrapper raiz. Sem `<div className="...">`, sem `<>`, sem `min-h-screen`, sem `mb-mobile-nav`, sem padding lateral próprio.
+
+```tsx
+// src/pages/MyFeaturePage.tsx
+import { PageContent } from '@/components/layout/MainLayout';
+import { PageMeta } from '@/components/PageMeta';
+
+export default function MyFeaturePage() {
+  return (
+    <PageContent>
+      <PageMeta title="Minha Feature" description="Descrição curta para SEO" />
+      <PageHeader title="Minha Feature" />
+      <FeatureSectionA />
+      <FeatureSectionB />
+    </PageContent>
+  );
+}
+```
+
+**Variante: largura limitada (formulários, settings):**
+```tsx
+<PageContent maxWidth="md">
+  <PageMeta title="Configurações" description="..." />
+  <SettingsForm />
+</PageContent>
+```
+
+**Variante: dashboard com mais respiro entre seções:**
+```tsx
+<PageContent spacing={8}>
+  <KpiGrid />
+  <ChartsRow />
+  <CamerasGrid />
+</PageContent>
+```
+
+### 13.2 Página standalone (fora do MainLayout) — exceção controlada
+
+Páginas que **não** passam pelo `MainLayout` (login, callbacks, telas de erro) renderizam seu próprio container raiz. **Não** devem usar `<PageContent>` nem `mb-mobile-nav`. Devem estar cadastradas em `STANDALONE_ALLOWLIST` (`scripts/check-page-content.mjs`) e na `ALLOWLIST` de `scripts/check-mobile-nav.mjs`.
+
+```tsx
+// src/pages/AcessoNegado.tsx (exemplo real)
+/**
+ * Standalone page — renders OUTSIDE MainLayout (no BottomNavigation).
+ * Listed in scripts/check-mobile-nav.mjs ALLOWLIST.
+ * See docs/LAYOUTS.md §11 — Camada 0.
+ */
+export default function AcessoNegadoPage() {
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <PageMeta title="Acesso Negado" description="..." />
+      <Card className="w-full max-w-md">
+        {/* conteúdo standalone */}
+      </Card>
+    </div>
+  );
+}
+```
+
+**Standalones atuais (allowlists):** `Auth`, `AuthCallback`, `ResetPasswordPage`, `NotFound`, `AcessoNegado`, `CoveragePage`, `Index`.
+
+> Adicionar nova página standalone exige justificativa explícita no PR + entry em ambas allowlists + comentário JSDoc no topo do arquivo apontando para esta seção.
+
+---
+
+## 14. Checklist: o que NÃO declarar mais nas páginas
+
+A `<main>` do `MainLayout` é a **única fonte de verdade** para layout/scroll/padding. Páginas autenticadas devem ser enxutas — apenas conteúdo. Use esta checklist em code review:
+
+### ❌ Nunca em páginas autenticadas
+
+- [ ] `mb-mobile-nav` — já aplicado no `<main>` do `MainLayout`. Duplicar gera 128px de margem inferior.
+- [ ] `p-4 md:p-6` (ou variantes) no wrapper raiz — padding lateral/topo já vem do `<main>`.
+- [ ] `min-h-full`, `min-h-screen`, `h-screen`, `h-dvh` no wrapper raiz — altura é gerida pelo `MainLayout`.
+- [ ] `h-[calc(100vh-...)]` — causa scroll duplo. Scroll oficial é `[data-app-scroll]` no `SwipeableView`.
+- [ ] `overflow-y-auto` / `overflow-y-scroll` no wrapper raiz — cria container de scroll próprio. O `mobileNavGuard` (DEV) avisa em runtime.
+- [ ] `<Sidebar />` ou `<Header />` manuais — incluídos pelo `MainLayout`.
+- [ ] `<div className="space-y-6">` como wrapper raiz — substitua por `<PageContent>` (que já aplica `space-y-6`).
+- [ ] `<>` (Fragment) como wrapper raiz — use `<PageContent>` para garantir `data-page-content` e contrato uniforme.
+- [ ] `container mx-auto` no wrapper raiz — use `<PageContent maxWidth="...">` se precisar limitar largura.
+
+### ✅ Sempre em páginas autenticadas
+
+- [ ] `<PageContent>` como wrapper raiz único.
+- [ ] `<PageMeta title="..." description="..." />` como primeiro filho (SEO).
+- [ ] Conteúdo organizado em seções/componentes filhos diretos do `<PageContent>` (sem `space-y-*` redundante neles).
+- [ ] Em widgets dinâmicos (timestamps, contadores realtime): atributo `data-dynamic` para serem mascarados nos snapshots visuais.
+
+### 🔍 Validação automatizada (rode antes do PR)
+
+```bash
+npm run check:mobile-nav        # estático: mb-mobile-nav só no MainLayout
+npm run check:page-content      # estático: PageContent em todas autenticadas
+npm run test:mobile-nav-runtime # E2E: padding ≥ 64px no último filho de [data-app-scroll]
+npm run test:mobile-nav-overlap # E2E: BottomNav não invade conteúdo
+npm run test:mobile-nav-visual  # E2E: snapshots visuais 16 rotas mobile
+```
+
+Em DEV, o `mobileNavGuard` (`src/lib/mobileNavGuard.ts`) também avisa no console se uma página criar scroll container próprio sem padding mobile.
+
+---
+
+**Última atualização:** 22/04/2026
 
