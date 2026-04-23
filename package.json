@@ -61,6 +61,8 @@
     "test:mobile-nav-visual": "playwright test mobile-nav-visual --project=mobile-safari",
     "test:mobile-nav-visual:update": "playwright test mobile-nav-visual --project=mobile-safari --update-snapshots",
     "test:mobile-nav-scroll-positions": "playwright test tests/e2e/mobile-nav-scroll-positions.spec.ts --project=mobile-safari",
+    "test:mobile-nav-multi-viewport-theme": "playwright test tests/e2e/mobile-nav-multi-viewport-theme.spec.ts --project=mobile-safari",
+    "test:mobile-nav-multi-viewport-theme:update": "playwright test tests/e2e/mobile-nav-multi-viewport-theme.spec.ts --project=mobile-safari --update-snapshots",
     "test:smoke": "playwright test smoke-pages",
     "test:filters": "playwright test filters-lifecycle",
     "test:cls-regression": "playwright test cls-regression",
