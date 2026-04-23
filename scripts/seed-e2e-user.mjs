@@ -19,6 +19,11 @@ import { pathToFileURL } from 'node:url';
 // Permite importar o .ts dinamicamente via tsx/esbuild se disponíveis.
 // Para máxima portabilidade, replicamos a lógica essencial aqui em JS puro.
 
+// `--ci` (ou env `CI=true`/`E2E_SEED_STRICT=1`) bloqueia geração automática de
+// senha e exige todas as vars explicitamente — evita drift entre run/CI.
+const argv = new Set(process.argv.slice(2));
+const isCI = argv.has('--ci') || process.env.CI === 'true' || process.env.E2E_SEED_STRICT === '1';
+
 const supabaseUrl = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;
 const anonKey = process.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -26,17 +31,23 @@ const email = process.env.E2E_TEST_EMAIL || 'e2e-bot@visao.test';
 let password = process.env.E2E_TEST_PASSWORD;
 
 if (!supabaseUrl || !anonKey || !serviceKey) {
-  console.error('[seed-e2e] Faltam vars: VITE_SUPABASE_URL, VITE_SUPABASE_PUBLISHABLE_KEY, SUPABASE_SERVICE_ROLE_KEY');
+  console.error('[seed-e2e] ❌ Faltam vars: VITE_SUPABASE_URL, VITE_SUPABASE_PUBLISHABLE_KEY, SUPABASE_SERVICE_ROLE_KEY');
   process.exit(1);
 }
 
 if (!password) {
-  // Gera senha forte
+  if (isCI) {
+    console.error('[seed-e2e] ❌ Modo CI: defina E2E_TEST_PASSWORD explicitamente. Geração automática desabilitada para garantir reprodutibilidade.');
+    process.exit(1);
+  }
+  // Gera senha forte (apenas em dev local).
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%&*';
   password = 'Aa1!' + Array.from({ length: 14 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-  console.log(`[seed-e2e] Senha gerada: ${password}`);
+  console.log(`[seed-e2e] 🔑 Senha gerada (dev local): ${password}`);
   console.log(`[seed-e2e] (exporte E2E_TEST_PASSWORD="${password}" para reuso)`);
 }
+
+console.log(`[seed-e2e] 🌱 Seedando usuário ${email}${isCI ? ' (modo CI estrito)' : ''}…`);
 
 const headers = {
   'Content-Type': 'application/json',
