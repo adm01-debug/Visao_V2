@@ -28,31 +28,16 @@
  */
 import { test, expect, devices } from '@playwright/test';
 import { ensureAuthenticatedContext, isAuthRedirect } from './helpers/authSession';
+import { getAuthenticatedRoutesForSweep } from './helpers/discoverAuthRoutes';
 
-/** Rotas autenticadas que devem renderizar o wrapper com `mb-mobile-nav`. */
-const AUTHENTICATED_ROUTES = [
-  '/dashboard',
-  '/cameras',
-  '/alerts',
-  '/alerts-timeline',
-  '/heatmap',
-  '/analytics',
-  '/settings',
-  '/telegram',
-  '/users',
-  '/license-plates',
-  '/face-recognition',
-  '/productivity',
-  '/journey-reports',
-  '/panic-events',
-  '/behavior-detection',
-  '/evaluation',
-  '/recordings',
-  '/zones',
-  '/people',
-  '/ppe',
-  '/admin/telemetria',
-] as const;
+/**
+ * Lista derivada automaticamente de `src/App.tsx` (parsing estático de
+ * `<Route>` envoltas em `ProtectedLayoutRoute`/`ProtectedRoute`).
+ *
+ * Adicionar uma nova rota protegida em `App.tsx` cobre este spec sem edição
+ * manual. Ver `tests/e2e/helpers/discoverAuthRoutes.ts` para detalhes.
+ */
+const AUTHENTICATED_ROUTES = getAuthenticatedRoutesForSweep();
 
 const REQUIRED_CLASS = 'mb-mobile-nav';
 const ALLOW_AUTH_SKIP = process.env.MOBILE_NAV_CLASS_AUTH_BYPASS === '1';
