@@ -219,6 +219,54 @@ function generatePassword(): string {
   return out;
 }
 
+/**
+ * Tenta reutilizar `user.json` existente sem fazer novo login.
+ * Retorna true se o token ainda é válido (> margem) e o storage está bem-formado.
+ *
+ * Critérios de invalidação (re-seed obrigatório):
+ *   - `E2E_FORCE_RESEED=1` no env
+ *   - Arquivo inexistente, JSON inválido, sem `origins` ou sem `localStorage`
+ *   - Nenhum origin contém a chave `sb-<ref>-auth-token`
+ *   - `expires_at` ausente, no passado, ou expira em < 5 min
+ */
+function tryReuseStorageState(storageStatePath: string, ref: string): boolean {
+  if (FORCE_RESEED) {
+    log('info', 'E2E_FORCE_RESEED=1 — ignorando cache.');
+    return false;
+  }
+  if (!existsSync(storageStatePath)) return false;
+
+  try {
+    const raw = readFileSync(storageStatePath, 'utf8');
+    const parsed = JSON.parse(raw) as {
+      origins?: Array<{ localStorage?: Array<{ name: string; value: string }> }>;
+    };
+    const expectedKey = `sb-${ref}-auth-token`;
+    const allItems = (parsed.origins ?? []).flatMap(o => o.localStorage ?? []);
+    const tokenItem = allItems.find(i => i.name === expectedKey);
+    if (!tokenItem) return false;
+
+    const session = JSON.parse(tokenItem.value) as { expires_at?: number };
+    if (!session.expires_at) return false;
+
+    const nowSec = Math.floor(Date.now() / 1000);
+    const remaining = session.expires_at - nowSec;
+    if (remaining < TOKEN_REUSE_MARGIN_SECONDS) {
+      log('info', `Token expira em ${remaining}s (< margem) — re-seed.`);
+      return false;
+    }
+
+    log(
+      'info',
+      `♻️  Reaproveitando storageState (válido por mais ${Math.floor(remaining / 60)} min).`,
+    );
+    return true;
+  } catch (err) {
+    log('warn', `Cache inválido (${(err as Error).message}) — re-seed.`);
+    return false;
+  }
+}
+
 export default async function globalSetup(config: FullConfig) {
   const supabaseUrl =
     process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL ?? '';
