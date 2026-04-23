@@ -9,6 +9,7 @@ export type ViewMode = 'grid' | 'list';
 export interface Filters {
   search: string;
   activeOnly: boolean;
+  [key: string]: unknown;
 }
 
 export interface FaceEncoding {
