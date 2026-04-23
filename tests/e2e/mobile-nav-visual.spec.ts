@@ -20,6 +20,11 @@
  */
 import { test, expect, devices } from '@playwright/test';
 import { detectBottomNavOverlap, formatOverlapMessage } from './helpers/detectOverlap';
+import {
+  collectCoverageData,
+  writeVisualFailureReport,
+  REPORT_ROUTES,
+} from './helpers/visualFailureReport';
 
 const ROUTES = [
   { path: '/', name: 'root' },
@@ -46,7 +51,7 @@ test.use({ ...devices['iPhone 12'] });
 
 test.describe('Mobile Nav Visual Regression', () => {
   for (const { path, name } of ROUTES) {
-    test(`${name}: snapshot mobile + sem overlap da BottomNav`, async ({ page }) => {
+    test(`${name}: snapshot mobile + sem overlap da BottomNav`, async ({ page }, testInfo) => {
       test.setTimeout(30_000);
 
       await page.goto(path, { waitUntil: 'networkidle' }).catch(() => {});
@@ -178,30 +183,63 @@ test.describe('Mobile Nav Visual Regression', () => {
         ).toBe(0);
       }
 
-      // Snapshot full-page (camada 2)
-      await expect(page).toHaveScreenshot(`${name}-fullpage.png`, {
-        fullPage: true,
-        maxDiffPixelRatio: 0.02,
-        threshold: 0.2,
-        animations: 'disabled',
-        mask: [page.locator('[data-dynamic]')],
-      });
-
-      // Snapshot faixa inferior — zona crítica (camada 3)
+      // Snapshots — para rotas alvo (dashboard/heatmap/analytics) geramos
+      // relatório pós-teste detalhado em caso de falha.
+      const snapshotsAttempted: string[] = [];
+      const fullPageName = `${name}-fullpage.png`;
+      const bottomStripName = `${name}-bottom-strip.png`;
       const vp = page.viewportSize();
-      if (!vp) return;
-      await expect(page).toHaveScreenshot(`${name}-bottom-strip.png`, {
-        clip: {
-          x: 0,
-          y: vp.height - BOTTOM_STRIP_HEIGHT,
-          width: vp.width,
-          height: BOTTOM_STRIP_HEIGHT,
-        },
-        maxDiffPixelRatio: 0.02,
-        threshold: 0.2,
-        animations: 'disabled',
-        mask: [page.locator('[data-dynamic]')],
-      });
+
+      const runSnapshots = async () => {
+        snapshotsAttempted.push(fullPageName);
+        await expect(page).toHaveScreenshot(fullPageName, {
+          fullPage: true,
+          maxDiffPixelRatio: 0.02,
+          threshold: 0.2,
+          animations: 'disabled',
+          mask: [page.locator('[data-dynamic]')],
+        });
+
+        if (!vp) return;
+        snapshotsAttempted.push(bottomStripName);
+        await expect(page).toHaveScreenshot(bottomStripName, {
+          clip: {
+            x: 0,
+            y: vp.height - BOTTOM_STRIP_HEIGHT,
+            width: vp.width,
+            height: BOTTOM_STRIP_HEIGHT,
+          },
+          maxDiffPixelRatio: 0.02,
+          threshold: 0.2,
+          animations: 'disabled',
+          mask: [page.locator('[data-dynamic]')],
+        });
+      };
+
+      try {
+        await runSnapshots();
+      } catch (err) {
+        if (REPORT_ROUTES.has(name)) {
+          const coverage = await collectCoverageData(page).catch(() => null);
+          if (coverage) {
+            await writeVisualFailureReport(
+              testInfo,
+              {
+                routeName: name,
+                routePath: path,
+                url: page.url(),
+                viewport: coverage.viewport,
+                navTop: coverage.navTop,
+                covered: coverage.covered,
+                scannedCount: coverage.scannedCount,
+                errorMessage: err instanceof Error ? err.message : String(err),
+              },
+              snapshotsAttempted,
+            ).catch(() => undefined);
+          }
+        }
+        throw err;
+      }
     });
   }
 });
