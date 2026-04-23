@@ -51,6 +51,22 @@ const STORAGE_STATE_PATH = join(process.cwd(), 'tests', 'e2e', '.auth', 'user.js
 let cachedSession: SupabaseSession | null = null;
 let cachedFailure = false;
 
+/** Estratégia de auth aplicada na última chamada de `ensureAuthenticatedContext`.
+ *  Lida pelo `gotoAuthenticated` para emitir log por rota. */
+type AuthStrategy = 'storage-state' | 'rest-login' | 'unavailable' | 'failed';
+let lastStrategy: AuthStrategy | null = null;
+
+/** Logger compacto e silenciável. Desativa via `E2E_AUTH_LOG=0`. */
+function authLog(route: string, outcome: string, detail?: string): void {
+  if (process.env.E2E_AUTH_LOG === '0') return;
+  const tag = '[authSession]';
+  const msg = detail
+    ? `${tag} ${outcome.padEnd(16)} ${route}  — ${detail}`
+    : `${tag} ${outcome.padEnd(16)} ${route}`;
+  // eslint-disable-next-line no-console
+  console.log(msg);
+}
+
 interface SupabaseSession {
   access_token: string;
   refresh_token: string;
@@ -196,18 +212,28 @@ export async function ensureAuthenticatedContext(
   context: BrowserContext,
 ): Promise<'ready' | 'unavailable' | 'failed'> {
   // 1. Storage state em disco
-  if (await tryRestoreStorageState(context)) return 'ready';
+  if (await tryRestoreStorageState(context)) {
+    lastStrategy = 'storage-state';
+    return 'ready';
+  }
 
   // 2. Login programático
   const session = await loginViaRest();
   if (!session) {
     // sem credenciais OU login falhou — distinguir para mensagens corretas
-    return cachedFailure && (process.env.E2E_TEST_EMAIL || process.env.E2E_TEST_PASSWORD)
-      ? 'failed'
-      : 'unavailable';
+    const hasCreds = !!(process.env.E2E_TEST_EMAIL || process.env.E2E_TEST_PASSWORD);
+    const outcome = cachedFailure && hasCreds ? 'failed' : 'unavailable';
+    lastStrategy = outcome;
+    return outcome;
   }
   const injected = await injectSessionIntoContext(context, session);
+  lastStrategy = injected ? 'rest-login' : 'failed';
   return injected ? 'ready' : 'failed';
+}
+
+/** Retorna a estratégia aplicada na última chamada de `ensureAuthenticatedContext`. */
+export function getLastAuthStrategy(): AuthStrategy | null {
+  return lastStrategy;
 }
 
 /**
@@ -228,16 +254,24 @@ export async function gotoAuthenticated(
 
   // Tenta estabelecer sessão (idempotente — usa cache)
   await ensureAuthenticatedContext(page.context());
+  const strategy = lastStrategy;
 
   await page.goto(path, { waitUntil, timeout }).catch(() => {});
 
-  if (!isAuthRedirect(page.url())) return true;
+  if (!isAuthRedirect(page.url())) {
+    // Sucesso: log mostra qual estratégia entregou a sessão
+    if (strategy === 'storage-state') authLog(path, 'OK storage-state');
+    else if (strategy === 'rest-login') authLog(path, 'OK rest-login');
+    else authLog(path, 'OK anon-or-public', `strategy=${strategy ?? 'none'}`);
+    return true;
+  }
 
   // Redirecionou para /auth: decidir entre skip ou falha
   const allowSkip = process.env.MOBILE_NAV_CLASS_AUTH_BYPASS === '1';
   const required = process.env.E2E_AUTH_REQUIRED === '1';
 
   if (required && !allowSkip) {
+    authLog(path, 'FAIL redirect', `→ ${page.url()} (E2E_AUTH_REQUIRED=1)`);
     throw new Error(
       `[authSession] Rota ${path} redirecionou para ${page.url()} e E2E_AUTH_REQUIRED=1.\n` +
         `Configure E2E_TEST_EMAIL + E2E_TEST_PASSWORD (e VITE_SUPABASE_URL/PUBLISHABLE_KEY)\n` +
@@ -245,9 +279,18 @@ export async function gotoAuthenticated(
     );
   }
 
+  // Skip: distinguir motivo (sem credenciais vs login falhou vs auth-bypass)
+  const reason =
+    strategy === 'failed'
+      ? 'login-failed'
+      : strategy === 'unavailable'
+        ? 'no-credentials'
+        : 'redirect-to-auth';
+  authLog(path, 'SKIP', `${reason} → ${page.url()}`);
+
   test.skip(
     true,
-    `[authSession] Rota ${path} requer sessão (sem credenciais E2E_TEST_* configuradas). ` +
+    `[authSession] Rota ${path} requer sessão (motivo: ${reason}). ` +
       `Cobertura garantida pelas camadas estáticas.`,
   );
   return false;
