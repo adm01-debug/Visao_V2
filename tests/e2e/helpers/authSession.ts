@@ -51,6 +51,22 @@ const STORAGE_STATE_PATH = join(process.cwd(), 'tests', 'e2e', '.auth', 'user.js
 let cachedSession: SupabaseSession | null = null;
 let cachedFailure = false;
 
+/** Estratégia de auth aplicada na última chamada de `ensureAuthenticatedContext`.
+ *  Lida pelo `gotoAuthenticated` para emitir log por rota. */
+type AuthStrategy = 'storage-state' | 'rest-login' | 'unavailable' | 'failed';
+let lastStrategy: AuthStrategy | null = null;
+
+/** Logger compacto e silenciável. Desativa via `E2E_AUTH_LOG=0`. */
+function authLog(route: string, outcome: string, detail?: string): void {
+  if (process.env.E2E_AUTH_LOG === '0') return;
+  const tag = '[authSession]';
+  const msg = detail
+    ? `${tag} ${outcome.padEnd(16)} ${route}  — ${detail}`
+    : `${tag} ${outcome.padEnd(16)} ${route}`;
+  // eslint-disable-next-line no-console
+  console.log(msg);
+}
+
 interface SupabaseSession {
   access_token: string;
   refresh_token: string;
