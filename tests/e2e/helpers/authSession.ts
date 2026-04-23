@@ -212,18 +212,28 @@ export async function ensureAuthenticatedContext(
   context: BrowserContext,
 ): Promise<'ready' | 'unavailable' | 'failed'> {
   // 1. Storage state em disco
-  if (await tryRestoreStorageState(context)) return 'ready';
+  if (await tryRestoreStorageState(context)) {
+    lastStrategy = 'storage-state';
+    return 'ready';
+  }
 
   // 2. Login programático
   const session = await loginViaRest();
   if (!session) {
     // sem credenciais OU login falhou — distinguir para mensagens corretas
-    return cachedFailure && (process.env.E2E_TEST_EMAIL || process.env.E2E_TEST_PASSWORD)
-      ? 'failed'
-      : 'unavailable';
+    const hasCreds = !!(process.env.E2E_TEST_EMAIL || process.env.E2E_TEST_PASSWORD);
+    const outcome = cachedFailure && hasCreds ? 'failed' : 'unavailable';
+    lastStrategy = outcome;
+    return outcome;
   }
   const injected = await injectSessionIntoContext(context, session);
+  lastStrategy = injected ? 'rest-login' : 'failed';
   return injected ? 'ready' : 'failed';
+}
+
+/** Retorna a estratégia aplicada na última chamada de `ensureAuthenticatedContext`. */
+export function getLastAuthStrategy(): AuthStrategy | null {
+  return lastStrategy;
 }
 
 /**
