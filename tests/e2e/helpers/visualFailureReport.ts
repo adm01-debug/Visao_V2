@@ -49,6 +49,21 @@ export async function collectCoverageData(page: Page): Promise<{
   scannedCount: number;
 }> {
   const data = await page.evaluate(() => {
+    type CoveredEl = {
+      tag: string;
+      text: string;
+      selector: string;
+      rect: {
+        top: number;
+        bottom: number;
+        left: number;
+        right: number;
+        width: number;
+        height: number;
+      };
+      overlapPx: number;
+    };
+
     const TOLERANCE = 4;
     const vh = window.innerHeight;
     const vw = window.innerWidth;
@@ -90,8 +105,8 @@ export async function collectCoverageData(page: Page): Promise<{
       return `${el.tagName.toLowerCase()}${cls}`;
     };
 
-    const covered: CoveredElement[] = visible
-      .map((el) => {
+    const covered: CoveredEl[] = visible
+      .map<CoveredEl>((el) => {
         const r = el.getBoundingClientRect();
         const overlapPx = r.bottom - navTop;
         return {
@@ -117,20 +132,6 @@ export async function collectCoverageData(page: Page): Promise<{
       viewport: { width: vw, height: vh },
       covered,
       scannedCount: visible.length,
-    };
-    type CoveredElement = {
-      tag: string;
-      text: string;
-      selector: string;
-      rect: {
-        top: number;
-        bottom: number;
-        left: number;
-        right: number;
-        width: number;
-        height: number;
-      };
-      overlapPx: number;
     };
   });
 
