@@ -30,11 +30,15 @@
  * commitado (`.auth/` está no `.gitignore`).
  */
 import type { FullConfig } from '@playwright/test';
-import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 
 const STORAGE_STATE_PATH = join(process.cwd(), 'tests', 'e2e', '.auth', 'user.json');
 const DEFAULT_EMAIL = 'e2e-bot@visao.test';
+/** Margem (s) — só reusa o storage state se o token ainda durar > 5 min. */
+const TOKEN_REUSE_MARGIN_SECONDS = 5 * 60;
+/** Bypass de cache: `E2E_FORCE_RESEED=1` quando precisa rotacionar credenciais. */
+const FORCE_RESEED = process.env.E2E_FORCE_RESEED === '1';
 
 interface AdminUserResponse {
   id: string;
