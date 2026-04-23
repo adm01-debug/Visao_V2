@@ -29,6 +29,8 @@ const CRITICAL_ROUTES = [
   '/dashboard',
   '/cameras',
   '/alerts',
+  '/alerts-timeline',
+  '/evaluation',
   '/heatmap',
   '/analytics',
   '/recordings',

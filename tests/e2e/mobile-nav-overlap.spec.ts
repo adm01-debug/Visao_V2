@@ -34,6 +34,8 @@ const PAGES = [
   { path: '/dashboard', name: 'dashboard-v2' },
   { path: '/heatmap', name: 'heatmap' },
   { path: '/analytics', name: 'analytics' },
+  { path: '/alerts-timeline', name: 'alerts-timeline' },
+  { path: '/evaluation', name: 'evaluation' },
 ] as const;
 
 /** Viewports cobertos. Cada um produz screenshot baseline próprio. */

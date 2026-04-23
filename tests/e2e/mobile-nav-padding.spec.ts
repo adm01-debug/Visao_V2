@@ -19,6 +19,8 @@ const ROUTES = [
   '/dashboard',
   '/cameras',
   '/alerts',
+  '/alerts-timeline',
+  '/evaluation',
   '/heatmap',
   '/analytics',
   '/settings',

@@ -31,6 +31,8 @@ const ROUTES = [
   { path: '/dashboard', name: 'dashboard' },
   { path: '/cameras', name: 'cameras' },
   { path: '/alerts', name: 'alerts' },
+  { path: '/alerts-timeline', name: 'alerts-timeline' },
+  { path: '/evaluation', name: 'evaluation' },
   { path: '/zones', name: 'zones' },
   { path: '/recordings', name: 'recordings' },
   { path: '/analytics', name: 'analytics' },
