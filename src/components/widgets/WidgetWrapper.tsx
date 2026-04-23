@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { CSS } from '@/lib/dnd-utilities';
 import { motion } from 'framer-motion';
 import { GripVertical, X, Maximize2, Minimize2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';

@@ -5,7 +5,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { CSS } from '@/lib/dnd-utilities';
 import { GripVertical, X, Maximize2, Minimize2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { WidgetInstance, WidgetConfig } from '@/types/widgets';
