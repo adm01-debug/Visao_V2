@@ -254,16 +254,24 @@ export async function gotoAuthenticated(
 
   // Tenta estabelecer sessão (idempotente — usa cache)
   await ensureAuthenticatedContext(page.context());
+  const strategy = lastStrategy;
 
   await page.goto(path, { waitUntil, timeout }).catch(() => {});
 
-  if (!isAuthRedirect(page.url())) return true;
+  if (!isAuthRedirect(page.url())) {
+    // Sucesso: log mostra qual estratégia entregou a sessão
+    if (strategy === 'storage-state') authLog(path, 'OK storage-state');
+    else if (strategy === 'rest-login') authLog(path, 'OK rest-login');
+    else authLog(path, 'OK anon-or-public', `strategy=${strategy ?? 'none'}`);
+    return true;
+  }
 
   // Redirecionou para /auth: decidir entre skip ou falha
   const allowSkip = process.env.MOBILE_NAV_CLASS_AUTH_BYPASS === '1';
   const required = process.env.E2E_AUTH_REQUIRED === '1';
 
   if (required && !allowSkip) {
+    authLog(path, 'FAIL redirect', `→ ${page.url()} (E2E_AUTH_REQUIRED=1)`);
     throw new Error(
       `[authSession] Rota ${path} redirecionou para ${page.url()} e E2E_AUTH_REQUIRED=1.\n` +
         `Configure E2E_TEST_EMAIL + E2E_TEST_PASSWORD (e VITE_SUPABASE_URL/PUBLISHABLE_KEY)\n` +
@@ -271,9 +279,18 @@ export async function gotoAuthenticated(
     );
   }
 
+  // Skip: distinguir motivo (sem credenciais vs login falhou vs auth-bypass)
+  const reason =
+    strategy === 'failed'
+      ? 'login-failed'
+      : strategy === 'unavailable'
+        ? 'no-credentials'
+        : 'redirect-to-auth';
+  authLog(path, 'SKIP', `${reason} → ${page.url()}`);
+
   test.skip(
     true,
-    `[authSession] Rota ${path} requer sessão (sem credenciais E2E_TEST_* configuradas). ` +
+    `[authSession] Rota ${path} requer sessão (motivo: ${reason}). ` +
       `Cobertura garantida pelas camadas estáticas.`,
   );
   return false;
