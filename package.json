@@ -60,6 +60,7 @@
     "test:mobile-nav-overlap": "playwright test mobile-nav-overlap",
     "test:mobile-nav-visual": "playwright test mobile-nav-visual --project=mobile-safari",
     "test:mobile-nav-visual:update": "playwright test mobile-nav-visual --project=mobile-safari --update-snapshots",
+    "test:mobile-nav-scroll-positions": "playwright test tests/e2e/mobile-nav-scroll-positions.spec.ts --project=mobile-safari",
     "test:smoke": "playwright test smoke-pages",
     "test:filters": "playwright test filters-lifecycle",
     "test:cls-regression": "playwright test cls-regression",
