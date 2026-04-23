@@ -74,6 +74,7 @@
     "check:skeletons": "node scripts/validate-skeletons.mjs",
     "test:mobile-nav-class": "playwright test mobile-nav-class-presence",
     "test:mobile-nav-content-overlap": "playwright test mobile-nav-content-overlap",
+    "test:mobile-nav-measured": "playwright test mobile-nav-measured-overlap",
     "test:mobile-drawer": "playwright test mobile-drawer",
     "test:auth-routes-mobile-nav": "playwright test auth-routes-mobile-nav",
     "report:mobile-nav-diff": "node scripts/build-mobile-nav-diff-report.mjs",
