@@ -25,6 +25,7 @@ import {
   writeVisualFailureReport,
   REPORT_ROUTES,
 } from './helpers/visualFailureReport';
+import { snapshotName } from './helpers/snapshotName';
 
 const ROUTES = [
   { path: '/', name: 'root' },
@@ -185,11 +186,11 @@ test.describe('Mobile Nav Visual Regression', () => {
         ).toBe(0);
       }
 
-      // Snapshots — para rotas alvo (dashboard/heatmap/analytics) geramos
-      // relatório pós-teste detalhado em caso de falha.
+      // Snapshots — naming padronizado via helper:
+      //   __screenshots__/<spec>/<project>/<route>/<variant>.png
       const snapshotsAttempted: string[] = [];
-      const fullPageName = `${name}-fullpage.png`;
-      const bottomStripName = `${name}-bottom-strip.png`;
+      const fullPageName = snapshotName({ route: name, variant: 'fullpage' });
+      const bottomStripName = snapshotName({ route: name, variant: 'bottom-strip' });
       const vp = page.viewportSize();
 
       const runSnapshots = async () => {
