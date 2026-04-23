@@ -75,6 +75,17 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('/')` */
     baseURL: isCI ? "http://localhost:4173" : "http://localhost:5173",
 
+    /**
+     * Reusa storageState gerado pelo global-setup (`tests/e2e/.auth/user.json`).
+     * - Se o arquivo não existir (ex.: setup pulou por falta de credenciais),
+     *   o teste falhará na criação do contexto — por isso o helper
+     *   `gotoAuthenticated` continua em uso como camada secundária. Para
+     *   tornar opcional, basta remover esta linha e confiar no helper.
+     * - Specs que precisam de contexto anônimo podem sobrescrever via
+     *   `test.use({ storageState: { cookies: [], origins: [] } })`.
+     */
+    storageState: "tests/e2e/.auth/user.json",
+
     /* Collect trace on first retry AND keep on failure for full debug context.
      * Combina com a fixture `testFixtures.ts` que anexa console+network+screenshot
      * automaticamente em cada falha. */
