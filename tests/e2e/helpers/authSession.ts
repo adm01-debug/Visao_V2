@@ -266,26 +266,54 @@ export async function gotoAuthenticated(
     return true;
   }
 
-  // Redirecionou para /auth: decidir entre skip ou falha
+  // Redirecionou para /auth — decidir entre FALHA e SKIP.
+  //
+  // Política anti-falso-positivo:
+  //   1. `E2E_AUTH_REQUIRED=1` → sempre FALHA (a menos que MOBILE_NAV_CLASS_AUTH_BYPASS=1).
+  //   2. **Credenciais presentes no env** (E2E_TEST_EMAIL + E2E_TEST_PASSWORD)
+  //      OU storage state em disco → FALHA. Nesse cenário o usuário sinalizou
+  //      que auth deve funcionar; um redirect indica login quebrado, role
+  //      insuficiente, ou rota mal protegida — todas regressões reais.
+  //   3. `MOBILE_NAV_CLASS_AUTH_BYPASS=1` → SKIP explícito (compat).
+  //   4. Caso contrário (sem credenciais e sem bypass) → SKIP silencioso.
+  //
+  // Override de emergência: `E2E_ALLOW_AUTH_REDIRECT_SKIP=1` força skip mesmo
+  // com credenciais presentes — usar apenas em incidente confirmado.
   const allowSkip = process.env.MOBILE_NAV_CLASS_AUTH_BYPASS === '1';
   const required = process.env.E2E_AUTH_REQUIRED === '1';
+  const escapeHatch = process.env.E2E_ALLOW_AUTH_REDIRECT_SKIP === '1';
+  const hasCredentials =
+    !!(process.env.E2E_TEST_EMAIL && process.env.E2E_TEST_PASSWORD) ||
+    existsSync(STORAGE_STATE_PATH);
 
-  if (required && !allowSkip) {
-    authLog(path, 'FAIL redirect', `→ ${page.url()} (E2E_AUTH_REQUIRED=1)`);
-    throw new Error(
-      `[authSession] Rota ${path} redirecionou para ${page.url()} e E2E_AUTH_REQUIRED=1.\n` +
-        `Configure E2E_TEST_EMAIL + E2E_TEST_PASSWORD (e VITE_SUPABASE_URL/PUBLISHABLE_KEY)\n` +
-        `OU gere tests/e2e/.auth/user.json via setup global.`,
-    );
-  }
-
-  // Skip: distinguir motivo (sem credenciais vs login falhou vs auth-bypass)
+  // Distingue motivo do redirect para mensagem de erro / log
   const reason =
     strategy === 'failed'
       ? 'login-failed'
       : strategy === 'unavailable'
         ? 'no-credentials'
         : 'redirect-to-auth';
+
+  const shouldFail = !escapeHatch && !allowSkip && (required || hasCredentials);
+
+  if (shouldFail) {
+    authLog(path, 'FAIL redirect', `→ ${page.url()} (reason=${reason})`);
+    const trigger = required
+      ? 'E2E_AUTH_REQUIRED=1'
+      : 'credenciais presentes (E2E_TEST_* ou storageState)';
+    throw new Error(
+      `[authSession] Rota ${path} redirecionou para ${page.url()}.\n` +
+        `Motivo detectado: ${reason}.\n` +
+        `Falha aplicada porque ${trigger} — auth deveria estar funcionando.\n\n` +
+        `Possíveis causas:\n` +
+        `  • Login REST falhou (cheque logs anteriores [authSession] Login REST falhou)\n` +
+        `  • Usuário não tem role mínima exigida pela rota (ProtectedRoute minRole)\n` +
+        `  • Storage state expirou — re-seed via E2E_FORCE_RESEED=1 npm run test:e2e\n` +
+        `  • ProtectedRoute mal configurada redirecionando usuário válido\n\n` +
+        `Para skip controlado em incidente: E2E_ALLOW_AUTH_REDIRECT_SKIP=1.`,
+    );
+  }
+
   authLog(path, 'SKIP', `${reason} → ${page.url()}`);
 
   test.skip(

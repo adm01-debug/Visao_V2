@@ -19,17 +19,23 @@ type: feature
 **Env vars:**
 - `E2E_TEST_EMAIL` + `E2E_TEST_PASSWORD` — credencial seed (criar usuário com `npm run seed:e2e-user` ou via dashboard Lovable Cloud).
 - `E2E_AUTH_REQUIRED=1` — força FALHA em vez de skip quando auth indisponível.
-- `MOBILE_NAV_CLASS_AUTH_BYPASS=1` — alias para skip explícito (mantido por compat com `mobile-nav-class-presence.spec.ts`).
+- `MOBILE_NAV_CLASS_AUTH_BYPASS=1` — alias para skip explícito (compat com `mobile-nav-class-presence.spec.ts`).
 - `E2E_AUTH_LOG=0` — silencia os logs por rota (default: ligado).
+- `E2E_ALLOW_AUTH_REDIRECT_SKIP=1` — escape hatch: força skip mesmo com credenciais presentes (usar apenas em incidente confirmado).
+
+**Política anti-falso-positivo (FAIL vs SKIP em redirect para `/auth`):**
+1. `E2E_AUTH_REQUIRED=1` → sempre FALHA.
+2. **Credenciais presentes** (`E2E_TEST_EMAIL`+`E2E_TEST_PASSWORD` OU `tests/e2e/.auth/user.json` em disco) → FALHA. Razão: usuário sinalizou que auth deve funcionar; redirect indica login quebrado, role insuficiente ou rota mal protegida — todas regressões reais.
+3. `MOBILE_NAV_CLASS_AUTH_BYPASS=1` → SKIP explícito (compat).
+4. Sem credenciais e sem flags → SKIP silencioso.
+5. `E2E_ALLOW_AUTH_REDIRECT_SKIP=1` → escape global, ignora regras 1+2.
 
 **Logs por rota** (formato `[authSession] <OUTCOME> <route> — <detail>`):
 - `OK storage-state` — sessão carregada de `tests/e2e/.auth/user.json`.
 - `OK rest-login` — login programático via `/auth/v1/token`.
-- `OK anon-or-public` — rota não exigiu auth (página pública); detalhe inclui `strategy=...`.
-- `SKIP no-credentials` — sem `E2E_TEST_*` no env, redirect para `/auth`.
-- `SKIP login-failed` — credenciais presentes mas login REST retornou erro.
-- `SKIP redirect-to-auth` — sessão estabelecida mas rota ainda redirecionou (regressão RLS/role?).
-- `FAIL redirect` — `E2E_AUTH_REQUIRED=1` + redirect → throw.
+- `OK anon-or-public` — rota não exigiu auth (página pública).
+- `SKIP no-credentials` / `SKIP login-failed` / `SKIP redirect-to-auth` — motivos do skip.
+- `FAIL redirect` — política 1 ou 2 acionada, throw com diagnóstico de causas prováveis.
 
 **API extra:** `getLastAuthStrategy()` retorna `'storage-state' | 'rest-login' | 'unavailable' | 'failed' | null` para asserções em specs.
 
