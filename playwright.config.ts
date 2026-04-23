@@ -1,6 +1,15 @@
 import { defineConfig, devices } from "@playwright/test";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 
 const isCI = !!process.env.CI;
+
+/** StorageState gerado pelo global-setup. Aplicado apenas se já existir
+ *  (Playwright falha em runtime se apontarmos para arquivo inexistente). */
+const STORAGE_STATE_PATH = join(process.cwd(), "tests", "e2e", ".auth", "user.json");
+const sharedStorageState = existsSync(STORAGE_STATE_PATH)
+  ? STORAGE_STATE_PATH
+  : undefined;
 
 /**
  * Playwright E2E Test Configuration with Coverage Reports
