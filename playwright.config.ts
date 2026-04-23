@@ -32,6 +32,28 @@ export default defineConfig({
   expect: {
     timeout: 10000,
   },
+
+  /**
+   * Convenção padronizada de baselines:
+   *   tests/e2e/__screenshots__/<spec>/<project>/<route>/<snapshot>.png
+   *
+   * - `{testFileDir}` resolve para `tests/e2e`.
+   * - `{testFileName}` é o nome do spec (sem extensão).
+   * - `{projectName}` identifica o viewport/browser (mobile-safari, chromium, ...).
+   * - `{arg}` é o nome lógico passado em `toHaveScreenshot('rota/snapshot.png')`,
+   *   permitindo organizar baselines por rota dentro do diretório do project.
+   *
+   * Vantagens vs default (`<spec>-snapshots/<arg>-<project>-<platform>.png`):
+   *   1. Hierarquia visual: `mobile-safari/dashboard/fullpage.png` é auditável.
+   *   2. Diff fácil entre projects: comparação direta entre `mobile-safari/...` e
+   *      `mobile-chrome/...`.
+   *   3. Atualização cirúrgica: `git checkout __screenshots__/.../mobile-safari/dashboard`.
+   *   4. Suffix de plataforma removido — testes visuais devem rodar em CI Linux
+   *      para ter baseline estável; rodar localmente exige `--update-snapshots`
+   *      consciente.
+   */
+  snapshotPathTemplate:
+    "{testFileDir}/__screenshots__/{testFileName}/{projectName}/{arg}{ext}",
   
   /* Reporter configuration with multiple outputs for coverage */
   reporter: isCI 
