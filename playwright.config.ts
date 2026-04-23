@@ -1,6 +1,15 @@
 import { defineConfig, devices } from "@playwright/test";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 
 const isCI = !!process.env.CI;
+
+/** StorageState gerado pelo global-setup. Aplicado apenas se já existir
+ *  (Playwright falha em runtime se apontarmos para arquivo inexistente). */
+const STORAGE_STATE_PATH = join(process.cwd(), "tests", "e2e", ".auth", "user.json");
+const sharedStorageState = existsSync(STORAGE_STATE_PATH)
+  ? STORAGE_STATE_PATH
+  : undefined;
 
 /**
  * Playwright E2E Test Configuration with Coverage Reports
@@ -74,6 +83,18 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')` */
     baseURL: isCI ? "http://localhost:4173" : "http://localhost:5173",
+
+    /**
+     * Reusa storageState gerado pelo global-setup (`tests/e2e/.auth/user.json`).
+     * Aplicado condicionalmente via `existsSync` no topo do arquivo — se o
+     * arquivo não existir (primeira run sem credenciais), o context inicia
+     * anônimo e o helper `gotoAuthenticated` faz fallback (login REST ou
+     * skip controlado).
+     *
+     * Specs que precisam de contexto anônimo podem sobrescrever via
+     * `test.use({ storageState: { cookies: [], origins: [] } })`.
+     */
+    storageState: sharedStorageState,
 
     /* Collect trace on first retry AND keep on failure for full debug context.
      * Combina com a fixture `testFixtures.ts` que anexa console+network+screenshot

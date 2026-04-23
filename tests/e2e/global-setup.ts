@@ -30,11 +30,15 @@
  * commitado (`.auth/` está no `.gitignore`).
  */
 import type { FullConfig } from '@playwright/test';
-import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 
 const STORAGE_STATE_PATH = join(process.cwd(), 'tests', 'e2e', '.auth', 'user.json');
 const DEFAULT_EMAIL = 'e2e-bot@visao.test';
+/** Margem (s) — só reusa o storage state se o token ainda durar > 5 min. */
+const TOKEN_REUSE_MARGIN_SECONDS = 5 * 60;
+/** Bypass de cache: `E2E_FORCE_RESEED=1` quando precisa rotacionar credenciais. */
+const FORCE_RESEED = process.env.E2E_FORCE_RESEED === '1';
 
 interface AdminUserResponse {
   id: string;
@@ -215,6 +219,54 @@ function generatePassword(): string {
   return out;
 }
 
+/**
+ * Tenta reutilizar `user.json` existente sem fazer novo login.
+ * Retorna true se o token ainda é válido (> margem) e o storage está bem-formado.
+ *
+ * Critérios de invalidação (re-seed obrigatório):
+ *   - `E2E_FORCE_RESEED=1` no env
+ *   - Arquivo inexistente, JSON inválido, sem `origins` ou sem `localStorage`
+ *   - Nenhum origin contém a chave `sb-<ref>-auth-token`
+ *   - `expires_at` ausente, no passado, ou expira em < 5 min
+ */
+function tryReuseStorageState(storageStatePath: string, ref: string): boolean {
+  if (FORCE_RESEED) {
+    log('info', 'E2E_FORCE_RESEED=1 — ignorando cache.');
+    return false;
+  }
+  if (!existsSync(storageStatePath)) return false;
+
+  try {
+    const raw = readFileSync(storageStatePath, 'utf8');
+    const parsed = JSON.parse(raw) as {
+      origins?: Array<{ localStorage?: Array<{ name: string; value: string }> }>;
+    };
+    const expectedKey = `sb-${ref}-auth-token`;
+    const allItems = (parsed.origins ?? []).flatMap(o => o.localStorage ?? []);
+    const tokenItem = allItems.find(i => i.name === expectedKey);
+    if (!tokenItem) return false;
+
+    const session = JSON.parse(tokenItem.value) as { expires_at?: number };
+    if (!session.expires_at) return false;
+
+    const nowSec = Math.floor(Date.now() / 1000);
+    const remaining = session.expires_at - nowSec;
+    if (remaining < TOKEN_REUSE_MARGIN_SECONDS) {
+      log('info', `Token expira em ${remaining}s (< margem) — re-seed.`);
+      return false;
+    }
+
+    log(
+      'info',
+      `♻️  Reaproveitando storageState (válido por mais ${Math.floor(remaining / 60)} min).`,
+    );
+    return true;
+  } catch (err) {
+    log('warn', `Cache inválido (${(err as Error).message}) — re-seed.`);
+    return false;
+  }
+}
+
 export default async function globalSetup(config: FullConfig) {
   const supabaseUrl =
     process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL ?? '';
@@ -236,6 +288,15 @@ export default async function globalSetup(config: FullConfig) {
   const ref = extractRef(supabaseUrl);
   if (!ref) {
     log('warn', `Não foi possível extrair project ref de ${supabaseUrl}`);
+    return;
+  }
+
+  // ───── Cache hit: reusar storageState anterior se ainda válido ─────
+  // Critério: arquivo existe + chave sb-<ref>-auth-token + expires_at > now+5min.
+  // Bypass via E2E_FORCE_RESEED=1. Em CI sem cache de disco, o arquivo nunca
+  // existe → seed roda 1x; em dev local, reusa entre runs até o token expirar.
+  if (tryReuseStorageState(STORAGE_STATE_PATH, ref)) {
+    process.env.E2E_TEST_EMAIL = process.env.E2E_TEST_EMAIL || DEFAULT_EMAIL;
     return;
   }
 
