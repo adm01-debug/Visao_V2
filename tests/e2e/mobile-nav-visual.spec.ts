@@ -81,6 +81,103 @@ test.describe('Mobile Nav Visual Regression', () => {
       const overlap = await detectBottomNavOverlap(page);
       expect(overlap.overlap, formatOverlapMessage(path, overlap)).toBe(0);
 
+      // Camada 1b: visibilidade do último elemento via getBoundingClientRect
+      // + verificação de que a BottomNav não cobre área interativa/clicável.
+      const lastElementCheck = await page.evaluate(() => {
+        const scroll = document.querySelector('[data-app-scroll]') as HTMLElement | null;
+        const nav = document.querySelector(
+          '[data-testid="bottom-navigation"], nav.fixed.bottom-0'
+        ) as HTMLElement | null;
+        if (!scroll) return { ok: false, reason: 'no-scroll-container' };
+
+        const vh = window.innerHeight;
+        const navTop = nav ? nav.getBoundingClientRect().top : vh;
+
+        // Último elemento (qualquer com tamanho > 0) dentro do scroll
+        const allEls = Array.from(scroll.querySelectorAll<HTMLElement>('*')).filter((el) => {
+          const r = el.getBoundingClientRect();
+          const cs = window.getComputedStyle(el);
+          return (
+            r.width > 0 &&
+            r.height > 0 &&
+            cs.visibility !== 'hidden' &&
+            cs.display !== 'none' &&
+            parseFloat(cs.opacity || '1') >= 0.1
+          );
+        });
+        const last = allEls.reduce<HTMLElement | null>((acc, el) => {
+          if (!acc) return el;
+          return el.getBoundingClientRect().bottom > acc.getBoundingClientRect().bottom ? el : acc;
+        }, null);
+
+        if (!last) return { ok: false, reason: 'no-last-element' };
+        const lastRect = last.getBoundingClientRect();
+        const lastVisible =
+          lastRect.width > 0 &&
+          lastRect.height > 0 &&
+          lastRect.bottom > 0 &&
+          lastRect.top < vh;
+
+        // Elementos clicáveis/interativos visíveis no viewport
+        const interactiveSel = 'button, a[href], input, select, textarea, [role="button"], [tabindex]:not([tabindex="-1"])';
+        const interactives = Array.from(
+          scroll.querySelectorAll<HTMLElement>(interactiveSel)
+        ).filter((el) => {
+          const r = el.getBoundingClientRect();
+          const cs = window.getComputedStyle(el);
+          return (
+            r.width > 0 &&
+            r.height > 0 &&
+            r.top < vh &&
+            r.bottom > 0 &&
+            cs.visibility !== 'hidden' &&
+            cs.display !== 'none' &&
+            parseFloat(cs.opacity || '1') >= 0.1
+          );
+        });
+
+        const TOLERANCE = 4;
+        const covered = interactives
+          .map((el) => {
+            const r = el.getBoundingClientRect();
+            const overlapPx = r.bottom - navTop;
+            return { overlapPx, top: r.top, bottom: r.bottom, tag: el.tagName.toLowerCase(),
+              text: (el.textContent ?? '').trim().slice(0, 60) };
+          })
+          .filter((c) => c.overlapPx > TOLERANCE && c.top < navTop);
+
+        return {
+          ok: true,
+          lastVisible,
+          lastRect: { top: lastRect.top, bottom: lastRect.bottom, width: lastRect.width, height: lastRect.height },
+          viewportHeight: vh,
+          navTop,
+          interactivesScanned: interactives.length,
+          coveredCount: covered.length,
+          coveredSample: covered.slice(0, 5),
+        };
+      });
+
+      expect(
+        lastElementCheck.ok,
+        `[${path}] última verificação falhou: ${('reason' in lastElementCheck && lastElementCheck.reason) || 'desconhecido'}`
+      ).toBe(true);
+
+      if (lastElementCheck.ok) {
+        expect(
+          lastElementCheck.lastVisible,
+          `[${path}] último elemento não está visível (rect=${JSON.stringify(lastElementCheck.lastRect)}, vh=${lastElementCheck.viewportHeight})`
+        ).toBe(true);
+
+        expect(
+          lastElementCheck.coveredCount,
+          `[${path}] BottomNav cobre ${lastElementCheck.coveredCount} elemento(s) interativo(s) ` +
+            `(navTop=${lastElementCheck.navTop}, vh=${lastElementCheck.viewportHeight}, ` +
+            `scanned=${lastElementCheck.interactivesScanned}). Amostra: ` +
+            JSON.stringify(lastElementCheck.coveredSample)
+        ).toBe(0);
+      }
+
       // Snapshot full-page (camada 2)
       await expect(page).toHaveScreenshot(`${name}-fullpage.png`, {
         fullPage: true,
