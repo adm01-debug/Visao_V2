@@ -291,6 +291,15 @@ export default async function globalSetup(config: FullConfig) {
     return;
   }
 
+  // ───── Cache hit: reusar storageState anterior se ainda válido ─────
+  // Critério: arquivo existe + chave sb-<ref>-auth-token + expires_at > now+5min.
+  // Bypass via E2E_FORCE_RESEED=1. Em CI sem cache de disco, o arquivo nunca
+  // existe → seed roda 1x; em dev local, reusa entre runs até o token expirar.
+  if (tryReuseStorageState(STORAGE_STATE_PATH, ref)) {
+    process.env.E2E_TEST_EMAIL = process.env.E2E_TEST_EMAIL || DEFAULT_EMAIL;
+    return;
+  }
+
   const email = process.env.E2E_TEST_EMAIL || DEFAULT_EMAIL;
   let password = process.env.E2E_TEST_PASSWORD || '';
 
