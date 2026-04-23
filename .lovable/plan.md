@@ -1,86 +1,72 @@
 
 
-## Migrar 7 páginas para `useManagedFilters`
+## Validar overlap da BottomNavigation em múltiplas posições de scroll
 
-Aplicar confirmação, toast detalhado e undo (10s) ao "Limpar filtros" das páginas restantes, reaproveitando o hook já criado e o padrão validado em `RecognitionLogsPage`.
+Hoje todos os specs (`mobile-nav-overlap`, `mobile-nav-content-overlap`, `mobile-nav-measured-overlap`) só verificam overlap após `scrollTop = scrollHeight`. Isso esconde casos onde elementos com `position: sticky`, modais inline, FABs ou banners flutuantes cobrem conteúdo no **topo** ou **meio** do scroll, mas ficam fora da viewport no fim.
 
-### Páginas e mudanças
+### Implementação
 
-| Página | Scope | Filtros mapeados | Labels (pt-BR) |
-|---|---|---|---|
-| `AlertsPage.tsx` | `alerts` | `search`, `severity`, `type`, `cameraId`, `readStatus`, `dateRange` | busca, severidade, tipo, câmera, leitura, período |
-| `CamerasPage.tsx` | `cameras` | `searchQuery`, `statusFilter` | busca, status |
-| `PeoplePage.tsx` (`usePeopleData`) | `people` | `search`, `activeOnly` | busca, apenas ativos |
-| `ZonesPage.tsx` | `zones` | `searchQuery`, `selectedCameraFilter`, `selectedTypeFilter` | busca, câmera, tipo |
-| `RecordingsPage.tsx` | `recordings` | `searchQuery`, `cameraFilter`, `dateFilter` | busca, câmera, período |
-| `AnalysisHistoryPanel.tsx` | `analysis-history` | `typeFilter`, `severityFilter` | tipo, severidade |
-| `LicensePlatePage` → `DetectionsHistoryTab.tsx` | `license-plate-history` | `searchQuery` | busca |
+**Novo spec: `tests/e2e/mobile-nav-scroll-positions.spec.ts`**
 
-### Padrão de migração (5–10 linhas por página)
+- Para cada rota crítica × posição de scroll (`top` 0%, `middle` 50%, `bottom` 100%):
+  1. `gotoAuthenticated` + `waitForVisualStable`.
+  2. Mede `scrollHeight` real do `[data-app-scroll]` (fallback `window`).
+  3. Posiciona scroll no offset alvo (`top: 0`, `middle: (scrollHeight - vh) / 2`, `bottom: scrollHeight`).
+  4. Aguarda 350ms para virtual lists / lazy renders estabilizarem.
+  5. Mede altura dinâmica da nav via `measureBottomNav` (helper existente).
+  6. Coleta elementos visíveis na viewport (interativos + texto significativo) com `getBoundingClientRect`.
+  7. Filtra os que cruzam `navTop` com tolerância de 4px.
+  8. Falha listando os 5 primeiros (tag, texto, seletor, overlapPx, scrollPosition).
 
-Cada página segue exatamente o template já validado em `RecognitionLogsPage`:
+**Rotas cobertas (8, alto volume de conteúdo scrollável):**
+`/dashboard`, `/cameras`, `/alerts`, `/alerts-timeline`, `/heatmap`, `/analytics`, `/recordings`, `/people`.
 
+**Estrutura de teste:**
 ```ts
-interface AlertFiltersShape extends AlertFilters { [key: string]: unknown; }
-const { filters, setFilters, clearFilters, hasActiveFilters } =
-  useManagedFilters<AlertFiltersShape>({
-    scope: 'alerts',
-    defaults: defaultFilters,
-    labels: { search: 'busca', severity: 'severidade', /* ... */ },
-  });
+for (const route of ROUTES) {
+  for (const pos of ['top', 'middle', 'bottom'] as const) {
+    test(`${route} @ scroll=${pos} — sem overlap com BottomNav`, async ({ page }) => {
+      ...
+    });
+  }
+}
 ```
 
-Substituir o `useState<...>(defaultFilters)` + `clearFilters` ad-hoc; manter os `setFilters(f => ({...}))` existentes (assinatura compatível). Botões que hoje fazem reset inline (ex.: "Limpar" em `CamerasPage`, `ZonesPage`) passam a chamar `clearFilters()` do hook, ganhando modal + toast + undo automaticamente.
-
-### Casos especiais
-
-- **AlertsPage**: o `clearFilters` atual também reseta `activeStatsFilter` (estado local). Após `clearFilters` do hook abrir o modal, o reset do `activeStatsFilter` é feito num callback `onAfterClear` (extensão simples no hook: aceitar prop opcional `onAfterClear?: () => void` chamada no `performClear`, antes do toast). Mantém comportamento atual sem regressão.
-- **PeoplePage**: filtros vivem em `usePeopleData` — substituir `useState<Filters>` pelo hook lá dentro e expor `clearFilters` no retorno; UI atual já tem botão `X` apenas para `search`, adicionar botão "Limpar" condicionado em `hasActiveFilters` (consistência com outras páginas).
-- **AnalysisHistoryPanel**: filtros são dois `useState` separados — consolidar em um objeto `{ typeFilter, severityFilter }` para o hook; props do `<AnalysisHistoryFilters>` permanecem iguais (continua recebendo handlers `onTypeChange` / `onSeverityChange`).
-- **LicensePlatePage**: o "histórico" hoje só tem busca textual e o botão "Buscar" dispara `handleSearchDetections`. Adicionar `clearFilters` ao lado do botão Buscar quando `hasActiveFilters` (atualmente não há botão "Limpar" — passa a ter).
-- **`useFilterStore` (Zustand)**: já recebeu wrapper compat em PR anterior. Sem mudança.
-
-### Pequena extensão do hook
-
-Adicionar prop opcional ao `UseManagedFiltersOptions`:
-
-```ts
-onAfterClear?: () => void;  // chamado após reset, antes do toast
+**Mensagem de falha estruturada:**
+```
+[mobile-nav-scroll-positions] /dashboard @ middle (scrollTop=1240/2480)
+  navTop=752, navHeight=60, scanned=42, overlaps=2
+  1. <button> "Ver detalhes" → button.card-action (bottom=778, overlap=26px)
+  2. <a> "Câmera 03" → a.camera-link (bottom=765, overlap=13px)
 ```
 
-Necessário para `AlertsPage` (resetar `activeStatsFilter`) e útil para futuras páginas que tenham estado satélite.
+**Script npm:**
+- Adicionar `"test:mobile-nav-scroll-positions": "playwright test tests/e2e/mobile-nav-scroll-positions.spec.ts --project=mobile-safari"` em `package.json`.
 
-### Critérios de aceitação
+**Reuso de helpers existentes (sem duplicação):**
+- `gotoAuthenticated` (helpers/authSession)
+- `measureBottomNav` (helpers/measureBottomNav)
+- `waitForVisualStable` (helper de estabilidade já existente)
 
-- ✅ Cada uma das 7 páginas usa `useManagedFilters` com `scope` único.
-- ✅ Clicar "Limpar filtros" abre `ConfirmDialog` listando os campos ativos em pt-BR.
-- ✅ Após confirmar, toast lista campos removidos + chave localStorage; botão "Desfazer" restaura por 10s.
-- ✅ Filtros persistem entre browsers via `user_filter_preferences` (tabela já criada).
-- ✅ `npm run build` passa (sem novos erros de `noUnusedParameters` nem strict).
-- ✅ Layouts visuais permanecem idênticos (apenas comportamento de "Limpar" muda).
-- ✅ `mem://features/managed-filters-system` atualizada listando as 8 páginas migradas.
+### Diferencial vs specs atuais
 
-### Arquivos a editar/criar
-
-| Arquivo | Mudança |
+| Spec | Posição de scroll testada |
 |---|---|
-| `src/hooks/useManagedFilters.ts` | ✏️ adicionar `onAfterClear?` opcional |
-| `src/pages/AlertsPage.tsx` | ✏️ migrar (usa `onAfterClear` para `activeStatsFilter`) |
-| `src/pages/CamerasPage.tsx` | ✏️ migrar + chamar `clearFilters()` no botão e `EmptyState` |
-| `src/components/people/usePeopleData.ts` | ✏️ migrar + expor `clearFilters`/`hasActiveFilters` |
-| `src/pages/PeoplePage.tsx` | ✏️ adicionar botão "Limpar" no header de filtros |
-| `src/pages/ZonesPage.tsx` | ✏️ migrar (substitui reset inline) |
-| `src/pages/RecordingsPage.tsx` | ✏️ migrar + adicionar botão "Limpar" |
-| `src/components/AnalysisHistoryPanel.tsx` | ✏️ migrar (consolida 2 useStates num objeto) |
-| `src/components/license-plate/DetectionsHistoryTab.tsx` | ✏️ migrar busca + adicionar botão "Limpar" |
-| `src/pages/LicensePlatePage.tsx` | ✏️ ajustar prop drilling do `searchQuery`/`clearFilters` |
-| `docs/FILTER_SYSTEM.md` | ✏️ marcar 8 páginas como ✅ migradas |
-| `mem://features/managed-filters-system` | ✏️ atualizar inventário |
+| `mobile-nav-padding` | implícito (padding estático) |
+| `mobile-nav-overlap` | apenas fim |
+| `mobile-nav-content-overlap` | apenas fim |
+| `mobile-nav-measured-overlap` | apenas fim |
+| **novo `mobile-nav-scroll-positions`** | **topo + meio + fim** |
 
-### Riscos e mitigações
+Captura overflow de elementos sticky/fixed/absolute que aparecem só em scroll parcial — falha invisível para a suíte atual.
 
-- **Risco:** `setFilters(f => ({...f}))` em alguns lugares passa filtros parciais sem todas as keys de `defaults`. **Mitigação:** o hook já faz spread `{...defaults, ...filters}` no estado inicial; assinatura functional preserva keys.
-- **Risco:** `AlertsPage` tem múltiplos pontos que chamam `setFilters(defaultFilters)` direto (stats card, severity click). **Mitigação:** esses NÃO são "limpar filtros" do usuário (são filtros direcionados), continuam usando `setFilters` direto sem confirmação — só o botão "Limpar" usa `clearFilters()`.
-- **Risco:** `usePeopleData` é compartilhado e mudar assinatura pode quebrar consumidores. **Mitigação:** apenas adicionar campos ao retorno (não remover nem renomear); 100% retro-compatível.
-- **Risco:** primeira render no Sheet do `AnalysisHistoryPanel` chama o hook mesmo fechado. **Mitigação:** hook é leve (localStorage sync), sem custo perceptível.
+### Memória
+
+Atualizar `mem://testing/e2e-infrastructure` referenciando o novo spec e criar `mem://testing/mobile-nav-scroll-positions` descrevendo algoritmo + cobertura.
+
+### Riscos & mitigações
+
+- **Virtual lists podem renderizar elementos diferentes em cada posição** → tolerância 4px + scan apenas de elementos `visibility: visible` e dimensões `> 4px`.
+- **Animações de entrada (fade/slide) durante scroll** → `waitForTimeout(350)` + `animations: 'disabled'` no contexto Playwright.
+- **Skip controlado quando rota redireciona para `/auth`** → reuso do retorno booleano de `gotoAuthenticated`.
 
