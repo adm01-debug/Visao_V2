@@ -216,7 +216,7 @@
     "@vitest/coverage-v8": "^4.0.16",
     "autoprefixer": "^10.4.21",
     "bundlesize": "^0.18.2",
-    "cypress": "^15.8.2",
+    "cypress": "^15.14.2",
     "eslint": "^9.32.0",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.20",
