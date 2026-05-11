@@ -230,7 +230,7 @@
     "pa11y-ci": "^3.1.0",
     "postcss": "^8.5.6",
     "prettier": "^3.2.0",
-    "size-limit": "^11.0.0",
+    "size-limit": "^12.1.0",
     "source-map-explorer": "^2.5.3",
     "stylelint": "^16.0.0",
     "stylelint-config-standard": "^36.0.0",
