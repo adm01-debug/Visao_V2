@@ -31,7 +31,8 @@ export async function validateFileSignature(file: File, expectedType: string): P
         return;
       }
 
-      const arr = new Uint8Array(result).subarray(0, 4);
+      const buffer = result as ArrayBuffer;
+      const arr = new Uint8Array(buffer).subarray(0, 4);
       let header = '';
       for (let i = 0; i < arr.length; i++) {
         const hex = arr[i].toString(16).toUpperCase();
