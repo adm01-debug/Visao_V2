@@ -86,6 +86,6 @@ export default function LicensePlatePage() {
 
       <VehicleFormDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}
         editingVehicle={editingVehicle} formData={formData} onFormChange={setFormData} onSave={handleSaveVehicle} />
-    </div>
+    </PageContent>
   );
 }
