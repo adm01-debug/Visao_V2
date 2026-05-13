@@ -222,7 +222,7 @@ export function ZonesPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </PageContent>
   );
 }
 
