@@ -216,7 +216,7 @@ export default function EvaluationPage() {
   const loading = loadingAlerts || loadingPlates || loadingReviews;
 
   return (
-    <div className="p-6 space-y-6">
+    <PageContent className="space-y-6">
       <PageMeta
         title="Avaliação de Detecções | VISÃO"
         description="Revise detecções, marque acertos e erros, e ajuste thresholds dos modelos por tipo de risco."
