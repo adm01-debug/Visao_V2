@@ -31,6 +31,7 @@ import {
   type SkeletonFailureMode,
 } from '@/lib/skeletonFailureFlag';
 import { cn } from '@/lib/utils';
+import { PageContent } from '@/components/layout/MainLayout';
 
 interface ChecklistItem {
   id: string;
