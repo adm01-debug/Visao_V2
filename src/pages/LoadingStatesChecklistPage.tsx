@@ -252,6 +252,6 @@ export default function LoadingStatesChecklistPage() {
           </div>
         </TabsContent>
       </Tabs>
-    </div>
+    </PageContent>
   );
 }
