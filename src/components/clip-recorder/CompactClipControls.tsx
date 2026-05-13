@@ -27,7 +27,7 @@ interface CompactClipControlsProps {
   onStop: () => void;
   onDownload: () => void;
   onDiscard: () => void;
-  className?: string;
+  className: string | undefined;
 }
 
 export function CompactClipControls({ state, duration, savedClip, onStart, onStop, onDownload, onDiscard, className }: CompactClipControlsProps) {
