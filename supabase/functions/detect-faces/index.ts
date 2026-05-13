@@ -64,8 +64,9 @@ serve(async (req: Request) => {
     const validation = validateInput(detectFacesSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
     const { imageBase64, minConfidence, maxFaces } = validation.data;
+    const traceId = req.headers.get("x-request-id") || undefined;
 
-    log.info("Detecting faces", { minConfidence, maxFaces });
+    log.info("Detecting faces", { minConfidence, maxFaces, traceId });
     const result = await detectFaces(imageBase64, minConfidence, maxFaces);
     log.info("Detection complete", { count: result.count });
 

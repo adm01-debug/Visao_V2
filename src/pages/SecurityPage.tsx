@@ -2,7 +2,7 @@
  * VISÃO - Página de Segurança (Modularizada)
  */
 import { useState, useEffect, useCallback } from 'react';
-import { Shield, RefreshCw, Download, FileText, Lock, Users } from 'lucide-react';
+import { Shield, RefreshCw, Download, FileText, Lock, Users, Smartphone } from 'lucide-react';
 import { PageMeta } from '@/components/PageMeta';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -11,13 +11,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { format, subDays } from 'date-fns';
 import { toast } from 'sonner';
 
-import { SecurityStatsCards } from '@/components/security/SecurityStatsCards';
-import { AuditLogTable } from '@/components/security/AuditLogTable';
-import { AccessEventsList } from '@/components/security/AccessEventsList';
-import { SecurityListsPanel } from '@/components/security/SecurityListsPanel';
+import { 
+  SecurityStatsCards, 
+  AuditLogTable, 
+  AccessEventsList, 
+  SecurityListsPanel,
+  SecurityMFAPanel,
+  type AuditLog, 
+  type AccessEvent, 
+  type SecurityPerson, 
+  type SecurityStats, 
+  type ListType 
+} from '@/components/security';
 import { PageContent } from '@/components/layout/MainLayout';
-
-import type { AuditLog, AccessEvent, SecurityPerson, SecurityStats, ListType } from '@/components/security/SecurityTypes';
 
 export function SecurityPage() {
   const [activeTab, setActiveTab] = useState('logs');
@@ -111,10 +117,12 @@ export function SecurityPage() {
           <TabsTrigger value="logs"><FileText className="w-4 h-4 mr-2" />Logs de Auditoria</TabsTrigger>
           <TabsTrigger value="access"><Lock className="w-4 h-4 mr-2" />Controle de Acesso</TabsTrigger>
           <TabsTrigger value="lists"><Users className="w-4 h-4 mr-2" />Listas de Segurança</TabsTrigger>
+          <TabsTrigger value="mfa"><Smartphone className="w-4 h-4 mr-2" />Segurança da Conta</TabsTrigger>
         </TabsList>
         <TabsContent value="logs" className="mt-4"><AuditLogTable logs={logs} /></TabsContent>
         <TabsContent value="access" className="mt-4"><AccessEventsList events={accessEvents} /></TabsContent>
         <TabsContent value="lists" className="mt-4"><SecurityListsPanel persons={securityPersons} onPersonsChange={setSecurityPersons} /></TabsContent>
+        <TabsContent value="mfa" className="mt-4"><SecurityMFAPanel /></TabsContent>
       </Tabs>
     </div></PageContent>
   );

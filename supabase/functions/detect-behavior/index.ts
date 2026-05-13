@@ -71,6 +71,7 @@ serve(async (req) => {
     const validation = validateInput(detectBehaviorSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
     const { imageUrl, imageBase64, cameraId, cameraName } = validation.data;
+    const traceId = req.headers.get("x-request-id") || undefined;
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -84,7 +85,7 @@ serve(async (req) => {
       ? { type: "image_url", image_url: { url: `data:image/jpeg;base64,${imageBase64}` } }
       : { type: "image_url", image_url: { url: imageUrl } };
 
-    log.info("Starting behavior analysis", { cameraId, cameraName });
+    log.info("Starting behavior analysis", { cameraId, cameraName, traceId });
 
     const response = await fetchWithRetry("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
