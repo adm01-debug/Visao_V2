@@ -194,6 +194,6 @@ export default function RecognitionLogsPage() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </PageContent>
   );
 }
