@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { validateFileSignature } from '@/lib/file-validation';
 
 export function useAvatarUpload() {
   const { user } = useAuth();
@@ -12,6 +13,11 @@ export function useAvatarUpload() {
     if (!user) return;
     if (file.size > 5 * 1024 * 1024) {
       toast.error('Arquivo muito grande. Máximo 5MB.');
+      return;
+    }
+    const isValid = await validateFileSignature(file, file.type);
+    if (!isValid) {
+      toast.error('Formato de arquivo inválido ou corrompido.');
       return;
     }
 
