@@ -14,7 +14,7 @@ const metricSchema = z
     pct: z.number().finite().min(0).max(100).catch(0),
     total: z.number().int().nonnegative().catch(0),
     covered: z.number().int().nonnegative().catch(0),
-    skipped: z.number().int().nonnegative().optional().catch(0),
+    skipped: z.number().int().nonnegative().catch(0),
   })
   .catch(() => ({ pct: 0, total: 0, covered: 0, skipped: 0 }));
 
