@@ -56,7 +56,7 @@ export const analyzeLicensePlateSchema = z.object({
 // ==========================================
 
 export const detectFacesSchema = z.object({
-  imageBase64: z.string().min(100, "imageBase64 is required"),
+  imageBase64: imageBase64Schema,
   minConfidence: z.number().min(0).max(1).default(0.5),
   maxFaces: z.number().int().min(1).max(50).default(10),
   returnLandmarks: z.boolean().default(false),
