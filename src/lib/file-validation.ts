@@ -20,18 +20,18 @@ const MAGIC_BYTES: MagicBytes = {
  */
 export async function validateFileSignature(file: File, expectedType: string): Promise<boolean> {
   const signatures = MAGIC_BYTES[expectedType];
-  if (!signatures) return true; // Se não temos assinatura definida, permitimos (fallback)
+  if (!signatures) return true;
 
   return new Promise((resolve) => {
     const reader = new FileReader();
-    reader.onloadend = (e) => {
-      const result = e.target?.result;
-      if (!result) {
+    reader.onloadend = () => {
+      const result = reader.result;
+      if (!result || !(result instanceof ArrayBuffer)) {
         resolve(false);
         return;
       }
 
-      const arr = new Uint8Array(result as ArrayBuffer).subarray(0, 4);
+      const arr = new Uint8Array(result).subarray(0, 4);
       let header = '';
       for (let i = 0; i < arr.length; i++) {
         const hex = arr[i].toString(16).toUpperCase();
@@ -49,7 +49,7 @@ export async function validateFileSignature(file: File, expectedType: string): P
       resolve(isValid);
     };
     
-    // Lemos apenas os primeiros 8 bytes para performance
+    reader.onerror = () => resolve(false);
     reader.readAsArrayBuffer(file.slice(0, 8));
   });
 }
