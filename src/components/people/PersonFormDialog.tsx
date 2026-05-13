@@ -90,6 +90,10 @@ export function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonForm
     if (!file) return;
     const validation = storage.validateFile(file, { maxSize: 5 * 1024 * 1024, allowedTypes: ['image/jpeg', 'image/png', 'image/webp'] });
     if (!validation.valid) { toast.error(validation.error || 'Arquivo inválido'); return; }
+    
+    const isValidSignature = await validateFileSignature(file, file.type);
+    if (!isValidSignature) { toast.error('Formato de arquivo inválido ou corrompido (magic bytes).'); return; }
+
     setPhotoFile(file);
     const reader = new FileReader();
     reader.onload = async () => {
