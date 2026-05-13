@@ -8,9 +8,9 @@ interface ZonesHeaderProps {
   totalCount: number;
   activeCount: number;
   loading: boolean;
-  cameras: CameraType[];
+  cameras: DbCamera[];
   onRefresh: () => void;
-  onNewZone: (camera: CameraType) => void;
+  onNewZone: (camera: DbCamera) => void;
 }
 
 export function ZonesHeader({ 
