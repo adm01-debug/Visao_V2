@@ -18,17 +18,22 @@ export function useAuditLogs() {
 
       if (error) throw error;
 
-      const mappedLogs: AuditLog[] = (data || []).map(log => ({
-        id: log.id,
-        timestamp: log.created_at,
-        level: (log.severity || 'info') as LogLevel,
-        category: (log.entity_type || 'system') as LogCategory,
-        action: log.action,
-        description: typeof log.details === 'string' ? log.details : JSON.stringify(log.details),
-        userId: log.user_id || undefined,
-        // Em um sistema real, faríamos um join com profiles para pegar o nome
-        userName: log.user_id ? 'Usuário' : 'Sistema',
-      }));
+      const mappedLogs: AuditLog[] = (data || []).map(log => {
+        const rawLog = log as any;
+        return {
+          id: log.id,
+          timestamp: log.created_at,
+          level: (rawLog.severity || 'info') as LogLevel,
+          category: (log.entity_type || 'system') as LogCategory,
+          action: log.action,
+          description: typeof rawLog.details === 'string' 
+            ? rawLog.details 
+            : (rawLog.details ? JSON.stringify(rawLog.details) : 'Sem detalhes'),
+          userId: log.user_id || undefined,
+          userName: log.user_id ? 'Usuário' : 'Sistema',
+          ipAddress: log.ip_address || undefined,
+        };
+      });
 
       setLogs(mappedLogs);
     } catch (err) {
