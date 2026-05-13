@@ -115,7 +115,7 @@ Respond in JSON format:
 
     const systemPrompt = systemPrompts[analysisType] || systemPrompts.security;
 
-    log.info("Starting analysis", { analysisType });
+    log.info("Starting analysis", { analysisType, traceId });
 
     const response = await fetchWithRetry("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
