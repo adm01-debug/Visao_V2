@@ -35,6 +35,7 @@ import {
   getNavigationCLSLog,
   getNavigationCLSSessionId,
 } from '@/lib/navigationCLSLog';
+import { PageContent } from '@/components/layout/MainLayout';
 
 const RATING_STYLES: Record<RouteCLSReport['rating'], { label: string; bg: string; text: string }> = {
   good: { label: 'Bom', bg: 'bg-success/10', text: 'text-success' },
