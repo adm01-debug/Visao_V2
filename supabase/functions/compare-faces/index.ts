@@ -32,13 +32,47 @@ interface CompareFacesResponse {
 const compareFaces = async (sourceImage: string, targetImage: string, threshold: number): Promise<CompareFacesResponse> => {
   const start = Date.now();
   try {
-    const similarity = Math.random();
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          {
+            role: "user",
+            content: [
+              { type: "text", text: "Compare these two faces:" },
+              { type: "image_url", image_url: { url: sourceImage.startsWith("http") ? sourceImage : `data:image/jpeg;base64,${sourceImage}` } },
+              { type: "image_url", image_url: { url: targetImage.startsWith("http") ? targetImage : `data:image/jpeg;base64,${targetImage}` } }
+            ]
+          }
+        ],
+        response_format: { type: "json_object" }
+      }),
+    });
+
+    if (!response.ok) throw new Error(`AI gateway error: ${response.status}`);
+    const data = await response.json();
+    const result = JSON.parse(data.choices[0].message.content);
+
     return {
       success: true,
-      result: { matched: similarity >= threshold, similarity, confidence: similarity * 100 },
+      result: { 
+        matched: result.matched || (result.similarity >= threshold), 
+        similarity: result.similarity, 
+        confidence: result.confidence 
+      },
       processingTime: Date.now() - start,
     };
   } catch (e) {
+    log.error("AI Comparison failed", { error: e instanceof Error ? e.message : 'Error' });
     return { success: false, processingTime: Date.now() - start, error: e instanceof Error ? e.message : 'Error' };
   }
 };
