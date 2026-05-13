@@ -11,13 +11,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { format, subDays } from 'date-fns';
 import { toast } from 'sonner';
 
-import { SecurityStatsCards } from '@/components/security/SecurityStatsCards';
-import { AuditLogTable } from '@/components/security/AuditLogTable';
-import { AccessEventsList } from '@/components/security/AccessEventsList';
-import { SecurityListsPanel } from '@/components/security/SecurityListsPanel';
+import { 
+  SecurityStatsCards, 
+  AuditLogTable, 
+  AccessEventsList, 
+  SecurityListsPanel,
+  SecurityMFAPanel,
+  type AuditLog, 
+  type AccessEvent, 
+  type SecurityPerson, 
+  type SecurityStats, 
+  type ListType 
+} from '@/components/security';
 import { PageContent } from '@/components/layout/MainLayout';
-
-import type { AuditLog, AccessEvent, SecurityPerson, SecurityStats, ListType } from '@/components/security/SecurityTypes';
 
 export function SecurityPage() {
   const [activeTab, setActiveTab] = useState('logs');
