@@ -21,7 +21,7 @@ interface ExecutionCallbacks {
   onAnalysisComplete?: (cameraId: string, result: AnalysisResult, duration: number) => void;
   onAnalysisError?: (cameraId: string, error: Error) => void;
   onAlertGenerated?: (cameraId: string, alert: AnalysisAlert, result: AnalysisResult) => void;
-  onRuleViolation?: (cameraId: string, evaluation: any, result: AnalysisResult) => void;
+  onRuleViolation?: (cameraId: string, evaluation: RuleEvaluation, result: AnalysisResult) => void;
   onStatsUpdate?: (session: AnalysisSession) => void;
 }
 
