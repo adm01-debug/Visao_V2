@@ -7,7 +7,15 @@ interface LogEntry {
   timestamp: string;
   duration_ms?: number;
   data?: Record<string, unknown>;
+  traceId?: string;
 }
+
+const getTraceId = () => {
+  // Em ambientes Deno/Edge, não temos um ThreadLocal nativo simples,
+  // mas podemos tentar extrair de headers globais se estiverem disponíveis
+  // em algum contexto compartilhado, ou deixar para injeção manual.
+  return undefined;
+};
 
 class Logger {
   private level: LogLevel;
