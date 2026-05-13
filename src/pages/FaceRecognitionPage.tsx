@@ -277,7 +277,7 @@ export default function FaceRecognitionPage() {
             </div>
           </div>
         )}
-      </div>
+      </PageContent>
     </>
   );
 }
