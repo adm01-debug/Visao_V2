@@ -7,7 +7,7 @@ import { ZoneStats, ZoneEvent, zoneTypeConfig } from '@/components/zones';
 
 type DbZoneLocal = Tables<'zones'>;
 
-interface ZonesFilters {
+interface ZonesFilters extends Record<string, unknown> {
   searchQuery: string;
   selectedCameraFilter: string;
   selectedTypeFilter: string;
