@@ -8,6 +8,7 @@ import {
   AnalysisSession,
   SessionStats,
   AnalysisHistoryEntry,
+  RuleEvaluation,
 } from '@/types/continuousAnalysis';
 import {
   AnalysisType,
@@ -20,14 +21,14 @@ interface ExecutionCallbacks {
   onAnalysisComplete?: (cameraId: string, result: AnalysisResult, duration: number) => void;
   onAnalysisError?: (cameraId: string, error: Error) => void;
   onAlertGenerated?: (cameraId: string, alert: AnalysisAlert, result: AnalysisResult) => void;
-  onRuleViolation?: (cameraId: string, evaluation: any, result: AnalysisResult) => void;
+  onRuleViolation?: (cameraId: string, evaluation: RuleEvaluation, result: AnalysisResult) => void;
   onStatsUpdate?: (session: AnalysisSession) => void;
 }
 
 interface ExecutionDeps {
   cameraId: string;
   getFrame: () => string | null;
-  evaluateRules: (result: AnalysisResult, type: AnalysisType) => any[];
+  evaluateRules: (result: AnalysisResult, type: AnalysisType) => RuleEvaluation[];
   checkThresholds: (result: AnalysisResult, thresholds: ContinuousAnalysisConfig['alertThresholds']) => AnalysisAlert[];
   createAlertInDatabase: (alert: AnalysisAlert, result: AnalysisResult) => Promise<void>;
   saveHistoryToDatabase: (entry: AnalysisHistoryEntry) => Promise<void>;
@@ -78,10 +79,10 @@ export function useAnalysisExecution(
       analysisTimesRef.current.push(duration);
 
       const ruleEvaluations = deps.evaluateRules(result, analysisType);
-      const violatedRules = ruleEvaluations.filter((e: any) => e.violated).map((e: any) => e.ruleId);
+      const violatedRules = ruleEvaluations.filter((e: RuleEvaluation) => e.violated).map((e: RuleEvaluation) => e.ruleId);
       const alerts = deps.checkThresholds(result, config.alertThresholds);
 
-      for (const evaluation of ruleEvaluations.filter((e: any) => e.violated)) {
+      for (const evaluation of ruleEvaluations.filter((e: RuleEvaluation) => e.violated)) {
         callbacks.onRuleViolation?.(deps.cameraId, evaluation, result);
         const ruleAlert: AnalysisAlert = {
           type: 'security', severity: evaluation.severity,

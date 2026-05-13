@@ -47,7 +47,7 @@ export async function tracedFetch(input: RequestInfo | URL, init: RequestInit = 
  */
 export async function safeFetch<T>(
   input: RequestInfo | URL, 
-  schema?: { parse: (data: any) => T },
+  schema?: { parse: (data: unknown) => T },
   init?: RequestInit
 ): Promise<T> {
   const response = await tracedFetch(input, init);

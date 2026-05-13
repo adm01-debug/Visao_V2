@@ -82,9 +82,9 @@ export function useSettings(options: UseSettingsOptions = {}) {
         });
       }
 
-      const tryLoad = (key: string, setter: (fn: (prev: any) => any) => void) => {
+      const tryLoad = <T extends object>(key: string, setter: (fn: (prev: T) => T) => void) => {
         const saved = localStorage.getItem(key);
-        if (saved) try { setter((prev: any) => ({ ...prev, ...JSON.parse(saved) })); } catch {}
+        if (saved) try { setter((prev: T) => ({ ...prev, ...JSON.parse(saved) })); } catch {}
       };
       tryLoad('visao-settings-general', setGeneralState);
       tryLoad('visao-settings-analysis', setAnalysisState);
