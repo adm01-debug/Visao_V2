@@ -293,7 +293,7 @@ export default function AlertsTimelinePage() {
           </div>
         </div>
       )}
-    </div>
+    </PageContent>
   );
 }
 
