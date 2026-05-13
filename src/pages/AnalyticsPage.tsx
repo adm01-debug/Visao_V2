@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { format, subDays, startOfDay, endOfDay, eachDayOfInterval } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
+import { PageContent } from "@/components/layout/MainLayout";
 
 import { KPICard } from "@/components/analytics/KPICard";
 import type { KPIData } from "@/components/analytics/KPICard";
