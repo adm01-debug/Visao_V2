@@ -15,6 +15,11 @@ export function useAvatarUpload() {
       toast.error('Arquivo muito grande. Máximo 5MB.');
       return;
     }
+    const isValid = await validateFileSignature(file, file.type);
+    if (!isValid) {
+      toast.error('Formato de arquivo inválido ou corrompido.');
+      return;
+    }
 
     setUploading(true);
     try {
