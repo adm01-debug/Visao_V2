@@ -30,8 +30,6 @@ import { useAccessEvents } from '@/hooks/useAccessEvents';
 export function SecurityPage() {
   const [activeTab, setActiveTab] = useState('logs');
   const [loading, setLoading] = useState(true);
-  const [logs, setLogs] = useState<AuditLog[]>([]);
-  const [accessEvents, setAccessEvents] = useState<AccessEvent[]>([]);
   const [securityPersons, setSecurityPersons] = useState<SecurityPerson[]>([]);
   const [stats, setStats] = useState<SecurityStats | null>(null);
 
