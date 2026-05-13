@@ -48,7 +48,7 @@ export const analyzeImageSchema = z.object({
 // ==========================================
 
 export const analyzeLicensePlateSchema = z.object({
-  image: z.string().min(10, "Image data is required"),
+  image: imageBase64Schema,
 });
 
 // ==========================================
