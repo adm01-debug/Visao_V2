@@ -3,6 +3,7 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 import { sendAlertNotificationSchema, validateInput } from "../_shared/validation.ts";
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { createLogger } from "../_shared/logger.ts";
+import { withIdempotency } from "../_shared/idempotency.ts";
 
 const log = createLogger("send-alert-notification");
 
