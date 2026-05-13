@@ -71,7 +71,8 @@ Deno.serve(async (req: Request) => {
     const clientIP = getClientIP(req);
     const result = checkIPAccess(clientIP);
 
-    log.info("IP check", { ip: clientIP, allowed: result.allowed, reason: result.reason });
+    const traceId = req.headers.get("x-request-id") || undefined;
+    log.info("IP check", { ip: clientIP, allowed: result.allowed, reason: result.reason, traceId });
 
     return new Response(
       JSON.stringify({
