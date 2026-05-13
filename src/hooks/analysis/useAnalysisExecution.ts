@@ -8,6 +8,7 @@ import {
   AnalysisSession,
   SessionStats,
   AnalysisHistoryEntry,
+  RuleEvaluation,
 } from '@/types/continuousAnalysis';
 import {
   AnalysisType,
