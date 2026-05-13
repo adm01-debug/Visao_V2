@@ -26,6 +26,8 @@ export const defaultFilters: AlertFilters = {
   severity: 'all',
   dateRange: 'all',
   cameraId: 'all',
+  customDateStart: undefined,
+  customDateEnd: undefined,
 };
 
 export const TYPE_LABELS: Record<AlertType, string> = {
