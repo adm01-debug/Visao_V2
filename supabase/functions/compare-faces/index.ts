@@ -90,10 +90,11 @@ serve(async (req: Request) => {
     const validation = validateInput(compareFacesSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
     const { sourceImage, targetImage, threshold } = validation.data;
+    const traceId = req.headers.get("x-request-id") || undefined;
 
-    log.info("Comparing faces", { threshold });
+    log.info("Comparing faces", { threshold, traceId });
     const result = await compareFaces(sourceImage, targetImage, threshold);
-    log.info("Comparison complete", { matched: result.result?.matched, similarity: result.result?.similarity });
+    log.info("Comparison complete", { matched: result.result?.matched, similarity: result.result?.similarity, traceId });
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
