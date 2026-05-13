@@ -82,7 +82,7 @@ export function useAnalysisExecution(
       const violatedRules = ruleEvaluations.filter((e: RuleEvaluation) => e.violated).map((e: RuleEvaluation) => e.ruleId);
       const alerts = deps.checkThresholds(result, config.alertThresholds);
 
-      for (const evaluation of ruleEvaluations.filter((e: any) => e.violated)) {
+      for (const evaluation of ruleEvaluations.filter((e: RuleEvaluation) => e.violated)) {
         callbacks.onRuleViolation?.(deps.cameraId, evaluation, result);
         const ruleAlert: AnalysisAlert = {
           type: 'security', severity: evaluation.severity,
