@@ -1,0 +1,12 @@
+CREATE INDEX IF NOT EXISTS idx_analysis_history_camera_id        ON public.analysis_history(camera_id);
+CREATE INDEX IF NOT EXISTS idx_arm_disarm_states_camera_id       ON public.arm_disarm_states(camera_id);
+CREATE INDEX IF NOT EXISTS idx_face_recognition_configs_camera_id ON public.face_recognition_configs(camera_id);
+CREATE INDEX IF NOT EXISTS idx_heatmap_snapshots_camera_id       ON public.heatmap_snapshots(camera_id);
+CREATE INDEX IF NOT EXISTS idx_plate_detections_camera_id        ON public.plate_detections(camera_id);
+CREATE INDEX IF NOT EXISTS idx_recognition_logs_camera_id        ON public.recognition_logs(camera_id);
+CREATE INDEX IF NOT EXISTS idx_recognition_logs_person_id        ON public.recognition_logs(person_id);
+CREATE INDEX IF NOT EXISTS idx_recording_configs_camera_id       ON public.recording_configs(camera_id);
+CREATE INDEX IF NOT EXISTS idx_rule_executions_alert_id          ON public.rule_executions(alert_id);
+CREATE INDEX IF NOT EXISTS idx_stream_recordings_camera_id       ON public.stream_recordings(camera_id);
+CREATE INDEX IF NOT EXISTS idx_video_clips_camera_id             ON public.video_clips(camera_id);
+CREATE INDEX IF NOT EXISTS idx_zones_camera_id                   ON public.zones(camera_id);
