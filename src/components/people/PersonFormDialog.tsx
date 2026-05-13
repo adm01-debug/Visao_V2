@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 import { WebcamCapture } from '@/components/WebcamCapture';
 import { useStorage, STORAGE_BUCKETS } from '@/hooks/useStorage';
 import { useFaceDetection } from '@/hooks/useFaceDetection';
+import { validateFileSignature } from '@/lib/file-validation';
 import type { DbPerson, DbPersonInsert, FaceEncoding } from './types';
 
 interface PersonFormDialogProps {
