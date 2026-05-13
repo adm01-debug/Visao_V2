@@ -17,6 +17,7 @@ import { SplashScreen } from "@/components/LoadingSpinner";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PanicButton } from "@/components/PanicButton";
+import { TraceIdManager } from "@/components/TraceIdManager";
 
 import { withRouteErrorBoundary } from "@/components/RouteErrorBoundary";
 import { NavigationProgress } from "@/components/ui/NavigationProgress";
