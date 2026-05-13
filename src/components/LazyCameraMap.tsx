@@ -15,7 +15,7 @@ interface LazyCameraMapProps {
     longitude?: number | null;
   }>;
   onCameraClick?: (cameraId: string) => void;
-  className?: string;
+  className: string | undefined;
 }
 
 export function LazyCameraMap(props: LazyCameraMapProps) {
