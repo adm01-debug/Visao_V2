@@ -33,8 +33,8 @@ export async function validateFileSignature(file: File, expectedType: string): P
 
       const arr = new Uint8Array(result).subarray(0, 4);
       let header = '';
-      for (let i = 0; i < arr.length; i++) {
-        const hex = arr[i].toString(16).toUpperCase();
+      for (const byte of arr) {
+        const hex = byte.toString(16).toUpperCase();
         header += hex.padStart(2, '0');
       }
 
