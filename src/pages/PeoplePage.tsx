@@ -179,6 +179,6 @@ export default function PeoplePage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </PageContent>
   );
 }
