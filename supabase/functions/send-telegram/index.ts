@@ -21,62 +21,73 @@ serve(async (req) => {
     const rawBody = await req.json();
     const validation = validateInput(sendTelegramSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
+    
     const { botToken, chatId, message, parseMode, photo } = validation.data;
+    const idempotencyKey = req.headers.get("x-idempotency-key");
 
-    log.info("Sending Telegram message", { chatId });
+    const { data: responseData, fromCache } = await withIdempotency(idempotencyKey, async () => {
+      log.info("Sending Telegram message", { chatId });
 
-    let response;
+      let response;
+      if (photo) {
+        const formData = new FormData();
+        formData.append('chat_id', chatId);
+        formData.append('caption', message);
+        formData.append('parse_mode', parseMode);
 
-    if (photo) {
-      const formData = new FormData();
-      formData.append('chat_id', chatId);
-      formData.append('caption', message);
-      formData.append('parse_mode', parseMode);
-
-      if (photo.startsWith('http')) {
-        formData.append('photo', photo);
-      } else if (photo.startsWith('data:image')) {
-        const base64Data = photo.split(',')[1];
-        const binaryString = atob(base64Data);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
+        if (photo.startsWith('http')) {
+          formData.append('photo', photo);
+        } else if (photo.startsWith('data:image')) {
+          const base64Data = photo.split(',')[1];
+          const binaryString = atob(base64Data);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          const blob = new Blob([bytes], { type: 'image/jpeg' });
+          formData.append('photo', blob, 'snapshot.jpg');
         }
-        const blob = new Blob([bytes], { type: 'image/jpeg' });
-        formData.append('photo', blob, 'snapshot.jpg');
+
+        response = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+          method: 'POST',
+          body: formData,
+        });
+      } else {
+        response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+            parse_mode: parseMode,
+          }),
+        });
       }
 
-      response = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-        method: 'POST',
-        body: formData,
-      });
+      const result = await response.json();
+
+      if (!result.ok) {
+        throw new Error(result.description || 'Failed to send message');
+      }
+
+      return { success: true, messageId: result.result.message_id };
+    });
+
+    if (fromCache) {
+      log.info("Telegram response served from idempotency cache", { idempotencyKey });
     } else {
-      response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message,
-          parse_mode: parseMode,
-        }),
-      });
+      log.info("Message sent successfully", { messageId: responseData.messageId });
     }
-
-    const result = await response.json();
-
-    if (!result.ok) {
-      log.error("Telegram API error", { description: result.description });
-      return new Response(
-        JSON.stringify({ error: result.description || 'Failed to send message' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    log.info("Message sent successfully", { messageId: result.result.message_id });
 
     return new Response(
-      JSON.stringify({ success: true, messageId: result.result.message_id }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify(responseData),
+      { 
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json',
+          'x-idempotency-cache': fromCache ? 'HIT' : 'MISS'
+        } 
+      }
     );
   } catch (error) {
     log.error("Unhandled error", { error: error instanceof Error ? error.message : "Unknown" });
