@@ -179,8 +179,9 @@ const handler = async (req: Request): Promise<Response> => {
     const validation = validateInput(processAutomationRulesSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
     const { alert } = validation.data;
+    const traceId = req.headers.get("x-request-id") || undefined;
 
-    log.info("Processing automation rules", { alertId: alert.id, userId: alert.user_id });
+    log.info("Processing automation rules", { alertId: alert.id, userId: alert.user_id, traceId });
 
     const { data: rules, error: rulesError } = await supabase.from("rules").select("*").eq("user_id", alert.user_id).eq("is_active", true);
 
@@ -201,7 +202,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     done();
-    log.info("Rules processed", { evaluated: rules?.length || 0, matched: matchedRules.length });
+    log.info("Rules processed", { evaluated: rules?.length || 0, matched: matchedRules.length, traceId });
 
     return new Response(JSON.stringify({
       success: true, alert_id: alert.id, rules_evaluated: rules?.length || 0, rules_matched: matchedRules.length,

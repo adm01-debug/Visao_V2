@@ -25,6 +25,7 @@ serve(async (req) => {
     const validation = validateInput(analyzeImageSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
     const { imageUrl, imageBase64, analysisType } = validation.data;
+    const traceId = req.headers.get("x-request-id") || undefined;
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -114,7 +115,7 @@ Respond in JSON format:
 
     const systemPrompt = systemPrompts[analysisType] || systemPrompts.security;
 
-    log.info("Starting analysis", { analysisType });
+    log.info("Starting analysis", { analysisType, traceId });
 
     const response = await fetchWithRetry("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -168,7 +169,7 @@ Respond in JSON format:
     }
 
     done();
-    log.info("Analysis completed", { analysisType, peopleCount: analysis.people_count });
+    log.info("Analysis completed", { analysisType, peopleCount: analysis.people_count, traceId });
 
     return new Response(JSON.stringify({
       success: true,

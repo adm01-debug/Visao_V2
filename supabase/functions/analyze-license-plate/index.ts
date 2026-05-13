@@ -24,6 +24,7 @@ serve(async (req) => {
     const validation = validateInput(analyzeLicensePlateSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
     const { image } = validation.data;
+    const traceId = req.headers.get("x-request-id") || undefined;
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
@@ -35,7 +36,7 @@ serve(async (req) => {
       );
     }
 
-    log.info("Analyzing license plate");
+    log.info("Analyzing license plate", { traceId });
 
     const response = await fetchWithRetry('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -112,7 +113,7 @@ Formato de resposta:
       const jsonStr = content.replace(/```json\n?|\n?```/g, '').trim();
       const result = JSON.parse(jsonStr);
       done();
-      log.info("Plate detected", { plate: result.plate, confidence: result.confidence });
+      log.info("Plate detected", { plate: result.plate, confidence: result.confidence, traceId });
       return new Response(
         JSON.stringify(result),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

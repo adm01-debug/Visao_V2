@@ -66,7 +66,8 @@ Deno.serve(async (req) => {
   const hasDegraded = Object.values(checks).some((c) => c.status === "degraded");
   const overallStatus = allHealthy ? "healthy" : hasDegraded ? "degraded" : "unhealthy";
 
-  log.info("Health check completed", { status: overallStatus, duration_ms: Date.now() - start });
+  const traceId = req.headers.get("x-request-id") || undefined;
+  log.info("Health check completed", { status: overallStatus, duration_ms: Date.now() - start, traceId });
 
   return new Response(
     JSON.stringify({
