@@ -122,6 +122,7 @@ export function SecurityPage() {
         <TabsContent value="logs" className="mt-4"><AuditLogTable logs={logs} /></TabsContent>
         <TabsContent value="access" className="mt-4"><AccessEventsList events={accessEvents} /></TabsContent>
         <TabsContent value="lists" className="mt-4"><SecurityListsPanel persons={securityPersons} onPersonsChange={setSecurityPersons} /></TabsContent>
+        <TabsContent value="mfa" className="mt-4"><SecurityMFAPanel /></TabsContent>
       </Tabs>
     </div></PageContent>
   );
