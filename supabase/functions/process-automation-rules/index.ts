@@ -202,7 +202,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     done();
-    log.info("Rules processed", { evaluated: rules?.length || 0, matched: matchedRules.length });
+    log.info("Rules processed", { evaluated: rules?.length || 0, matched: matchedRules.length, traceId });
 
     return new Response(JSON.stringify({
       success: true, alert_id: alert.id, rules_evaluated: rules?.length || 0, rules_matched: matchedRules.length,
