@@ -79,7 +79,7 @@ export function useAnalysisExecution(
       analysisTimesRef.current.push(duration);
 
       const ruleEvaluations = deps.evaluateRules(result, analysisType);
-      const violatedRules = ruleEvaluations.filter((e: any) => e.violated).map((e: any) => e.ruleId);
+      const violatedRules = ruleEvaluations.filter((e: RuleEvaluation) => e.violated).map((e: RuleEvaluation) => e.ruleId);
       const alerts = deps.checkThresholds(result, config.alertThresholds);
 
       for (const evaluation of ruleEvaluations.filter((e: any) => e.violated)) {
