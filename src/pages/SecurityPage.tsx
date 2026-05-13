@@ -24,50 +24,39 @@ import {
   type ListType 
 } from '@/components/security';
 import { PageContent } from '@/components/layout/MainLayout';
+import { useAuditLogs } from '@/hooks/useAuditLogs';
+import { useAccessEvents } from '@/hooks/useAccessEvents';
 
 export function SecurityPage() {
   const [activeTab, setActiveTab] = useState('logs');
   const [loading, setLoading] = useState(true);
-  const [logs, setLogs] = useState<AuditLog[]>([]);
-  const [accessEvents, setAccessEvents] = useState<AccessEvent[]>([]);
   const [securityPersons, setSecurityPersons] = useState<SecurityPerson[]>([]);
   const [stats, setStats] = useState<SecurityStats | null>(null);
+
+  const { logs, loading: logsLoading, refetch: refetchLogs } = useAuditLogs();
+  const { events: accessEvents, loading: accessLoading, refetch: refetchAccess } = useAccessEvents();
 
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const mockLogs: AuditLog[] = [
-        { id: '1', timestamp: new Date().toISOString(), level: 'info', category: 'auth', action: 'Login realizado', description: 'Usuário admin realizou login no sistema', userName: 'admin', ipAddress: '192.168.1.100' },
-        { id: '2', timestamp: subDays(new Date(), 0.1).toISOString(), level: 'warning', category: 'access', action: 'Acesso negado', description: 'Tentativa de acesso não autorizado detectada', userName: 'desconhecido', ipAddress: '10.0.0.50' },
-        { id: '3', timestamp: subDays(new Date(), 0.2).toISOString(), level: 'error', category: 'camera', action: 'Câmera offline', description: 'Câmera "Entrada Principal" ficou offline' },
-        { id: '4', timestamp: subDays(new Date(), 0.3).toISOString(), level: 'critical', category: 'alert', action: 'Intruso detectado', description: 'Pessoa não autorizada detectada na área restrita' },
-        { id: '5', timestamp: subDays(new Date(), 0.5).toISOString(), level: 'info', category: 'config', action: 'Configuração alterada', description: 'Configurações de notificação foram atualizadas', userName: 'admin' },
-      ];
-      setLogs(mockLogs);
-
-      const mockAccess: AccessEvent[] = [
-        { id: '1', timestamp: new Date().toISOString(), personId: 'p1', personName: 'João Silva', status: 'granted', cameraName: 'Entrada Principal', location: 'Portaria', confidence: 0.95 },
-        { id: '2', timestamp: subDays(new Date(), 0.05).toISOString(), personId: 'p2', personName: 'Desconhecido', status: 'denied', cameraName: 'Área Restrita', location: 'Depósito', confidence: 0.72, reason: 'Pessoa não cadastrada' },
-        { id: '3', timestamp: subDays(new Date(), 0.1).toISOString(), personId: 'p3', personName: 'Maria Santos', status: 'granted', cameraName: 'Recepção', location: 'Lobby', confidence: 0.98 },
-      ];
-      setAccessEvents(mockAccess);
-
+      await Promise.all([refetchLogs(), refetchAccess()]);
+      
       const { data: persons } = await supabase.from('registered_persons').select('*').in('list_type', ['whitelist', 'blacklist', 'watchlist']);
       const mapped = (persons || []).map(p => ({ id: p.id, name: p.name, photo: p.photo_url ?? undefined, listType: p.list_type as ListType, reason: p.notes ?? undefined, addedAt: p.created_at }));
       setSecurityPersons(mapped);
 
       setStats({
-        totalLogs: mockLogs.length,
-        errorCount: mockLogs.filter(l => l.level === 'error' || l.level === 'critical').length,
-        warningCount: mockLogs.filter(l => l.level === 'warning').length,
-        accessGranted: mockAccess.filter(a => a.status === 'granted').length,
-        accessDenied: mockAccess.filter(a => a.status === 'denied').length,
+        totalLogs: logs.length,
+        errorCount: logs.filter(l => l.level === 'error' || l.level === 'critical').length,
+        warningCount: logs.filter(l => l.level === 'warning').length,
+        accessGranted: accessEvents.filter(a => a.status === 'granted').length,
+        accessDenied: accessEvents.filter(a => a.status === 'denied').length,
         blacklistCount: mapped.filter(p => p.listType === 'blacklist').length,
         whitelistCount: mapped.filter(p => p.listType === 'whitelist').length,
       });
     } catch { toast.error('Erro ao carregar dados de segurança'); }
     finally { setLoading(false); }
-  }, []);
+  }, [refetchLogs, refetchAccess, logs, accessEvents]);
 
   useEffect(() => { loadData(); }, [loadData]);
 

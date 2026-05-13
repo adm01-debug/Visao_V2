@@ -93,7 +93,7 @@ export default function ResetPasswordPage() {
               <Shield className="w-7 h-7 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-bold text-2xl text-foreground">VisionAI</h1>
+              <h1 className="font-bold text-2xl text-foreground">VISÃO</h1>
               <p className="text-xs text-muted-foreground">Redefinir Senha</p>
             </div>
           </div>
