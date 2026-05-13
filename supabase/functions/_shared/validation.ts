@@ -78,7 +78,7 @@ export const compareFacesSchema = z.object({
 
 export const detectBehaviorSchema = z.object({
   imageUrl: z.string().url().optional(),
-  imageBase64: z.string().min(100).max(10_000_000).optional(),
+  imageBase64: imageBase64Schema.optional(),
   cameraId: z.string().uuid().optional(),
   cameraName: z.string().max(255).optional(),
 }).refine(
