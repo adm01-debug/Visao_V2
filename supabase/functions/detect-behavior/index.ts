@@ -85,7 +85,7 @@ serve(async (req) => {
       ? { type: "image_url", image_url: { url: `data:image/jpeg;base64,${imageBase64}` } }
       : { type: "image_url", image_url: { url: imageUrl } };
 
-    log.info("Starting behavior analysis", { cameraId, cameraName });
+    log.info("Starting behavior analysis", { cameraId, cameraName, traceId });
 
     const response = await fetchWithRetry("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
