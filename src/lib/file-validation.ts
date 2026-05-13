@@ -25,20 +25,17 @@ export async function validateFileSignature(file: File, expectedType: string): P
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onloadend = (e) => {
-      if (!e.target?.result) {
-        resolve(false);
-        return;
-      }
-
-      const result = e.target.result;
+      const result = e.target?.result;
       if (!result) {
         resolve(false);
         return;
       }
+
       const arr = new Uint8Array(result as ArrayBuffer).subarray(0, 4);
       let header = '';
       for (let i = 0; i < arr.length; i++) {
-        header += arr[i].toString(16).toUpperCase();
+        const hex = arr[i].toString(16).toUpperCase();
+        header += hex.padStart(2, '0');
       }
 
       // Especial para WebP (RIFF....WEBP)
