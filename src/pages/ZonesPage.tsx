@@ -177,7 +177,10 @@ export function ZonesPage() {
                   stats={zoneStats[zone.id]} 
                   cameraName={getCameraName(zone.camera_id)} 
                   onView={() => openView(zone)} 
-                  onEdit={() => openEditor(getCameraById(zone.camera_id)!, zone)} 
+                  onEdit={() => {
+                    const cam = getCameraById(zone.camera_id);
+                    if (cam) openEditor(cam, zone);
+                  }} 
                   onDelete={() => setDeleteConfirm(zone)} 
                   onToggle={() => toggleZone(zone)} 
                 />
