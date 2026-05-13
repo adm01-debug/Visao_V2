@@ -42,6 +42,7 @@ import {
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 import { useAlerts } from '@/hooks/useAlerts';
 import { usePlateDetections } from '@/hooks/usePlateDetections';
 import {
