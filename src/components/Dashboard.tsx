@@ -66,7 +66,7 @@ function DashboardComponent() {
     id: a.id, cameraId: a.camera_id || '', cameraName: a.camera_name,
     type: a.type, severity: a.severity, message: a.message,
     timestamp: new Date(a.timestamp), isRead: a.is_read,
-    thumbnail: a.thumbnail || undefined,
+    thumbnail: a.thumbnail,
   }));
 
   const searchedCameras = filterCamerasBySearch(uiCameras, searchQuery);
