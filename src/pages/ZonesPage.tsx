@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { cn } from '@/lib/utils';
+import { PageContent } from '@/components/layout/MainLayout';
 import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 import { EmptyState } from "@/components";
 import { ZoneCard, ZoneEditorSheet, ZoneViewDialog } from '@/components/zones';
@@ -76,7 +77,7 @@ export function ZonesPage() {
   };
 
   return (
-    <div role="main" aria-label="Zonas de interesse" className="min-h-screen bg-background mb-mobile-nav">
+    <PageContent className="min-h-screen bg-background">
       <PageMeta title="Zonas" description="Configure zonas de detecção e monitoramento" />
 
       <ZonesHeader 
@@ -221,7 +222,7 @@ export function ZonesPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </PageContent>
   );
 }
 

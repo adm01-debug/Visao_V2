@@ -15,6 +15,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 import { cn } from '@/lib/utils';
 import { format, startOfDay, subDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -89,7 +90,7 @@ export function RecordingsPage() {
   const stats = useMemo(() => ({ total: clips.length, totalDuration: clips.reduce((s, c) => s + (c.duration || 0), 0) }), [clips]);
 
   return (
-    <div role="main" aria-label="Gravações" className="min-h-screen bg-background mb-mobile-nav">
+    <PageContent className="min-h-screen bg-background">
       <PageMeta title="Gravações" description="Visualize e gerencie clips de vídeo gravados" />
 
       <div className="border-b border-border/40 bg-card/80 backdrop-blur-sm">
@@ -250,7 +251,7 @@ export function RecordingsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </PageContent>
   );
 }
 

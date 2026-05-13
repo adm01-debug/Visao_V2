@@ -23,6 +23,7 @@ import { RecognizedFace } from '@/hooks/useRealtimeRecognition';
 import { useFaceAPI } from '@/hooks/useFaceAPI';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { PageContent } from '@/components/layout/MainLayout';
 
 interface RecognitionEvent {
   id: string;
@@ -76,7 +77,7 @@ export default function FaceRecognitionPage() {
     <>
       <PageMeta title="Reconhecimento Facial" description="Sistema de reconhecimento facial com IA" />
 
-      <div className="flex flex-col h-full">
+      <PageContent className="flex flex-col h-full">
         {/* Header */}
         <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-4 sm:px-6 py-4 border-b border-border/40 bg-card/80 backdrop-blur-sm">
           <div className="flex items-center gap-3">
@@ -276,7 +277,7 @@ export default function FaceRecognitionPage() {
             </div>
           </div>
         )}
-      </div>
+      </PageContent>
     </>
   );
 }

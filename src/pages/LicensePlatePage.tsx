@@ -4,6 +4,7 @@
 
 import { useState } from 'react';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 import { LicensePlateRecognition } from '@/components/LicensePlateRecognition';
 import { ALPRDashboard } from '@/components/ALPRDashboard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -32,7 +33,7 @@ export default function LicensePlatePage() {
   };
 
   return (
-    <div role="main" aria-label="Reconhecimento de placas" className="min-h-screen bg-background mb-mobile-nav">
+    <PageContent className="min-h-screen bg-background">
       <PageMeta title="Placas Veiculares" description="Detecção e gestão de placas veiculares ALPR" />
 
       {/* Header */}
@@ -85,6 +86,6 @@ export default function LicensePlatePage() {
 
       <VehicleFormDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}
         editingVehicle={editingVehicle} formData={formData} onFormChange={setFormData} onSave={handleSaveVehicle} />
-    </div>
+    </PageContent>
   );
 }

@@ -21,6 +21,7 @@ import { PersonDetailsDialog } from '@/components/people/PersonDetailsDialog';
 import { PeopleStatsBar } from '@/components/people/PeopleStatsBar';
 import { PeopleListView } from '@/components/people/PeopleListView';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 
 export default function PeoplePage() {
   const {
@@ -32,7 +33,7 @@ export default function PeoplePage() {
   } = usePeopleData();
 
   return (
-    <div role="main" aria-label="Colaboradores" className="min-h-screen bg-background mb-mobile-nav">
+    <PageContent className="min-h-screen bg-background">
       <PageMeta title="Colaboradores" description="Cadastro e gestão de pessoas reconhecidas" />
 
       {/* Header */}
@@ -178,6 +179,6 @@ export default function PeoplePage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </PageContent>
   );
 }

@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { format, subDays, startOfDay, endOfDay, eachDayOfInterval } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
+import { PageContent } from "@/components/layout/MainLayout";
 
 import { KPICard } from "@/components/analytics/KPICard";
 import type { KPIData } from "@/components/analytics/KPICard";
@@ -112,7 +113,7 @@ export function AnalyticsPage() {
   };
 
   return (
-    <div role="main" aria-label="Analytics" className="min-h-screen bg-background mb-mobile-nav">
+    <PageContent className="min-h-screen bg-background">
       <PageMeta title="Analytics" description="Estatísticas e relatórios do sistema de vigilância" />
 
       {/* Premium Header */}
@@ -291,7 +292,7 @@ export function AnalyticsPage() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </PageContent>
   );
 }
 
