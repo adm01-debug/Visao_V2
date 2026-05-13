@@ -6,6 +6,16 @@ import { createLogger } from "../_shared/logger.ts";
 
 const log = createLogger("compare-faces");
 
+const SYSTEM_PROMPT = `You are an AI face recognition specialist. 
+Compare the two provided faces and determine if they belong to the same person.
+Respond ONLY with valid JSON:
+{
+  "matched": boolean,
+  "similarity": number (0-1),
+  "confidence": number (0-100),
+  "details": string
+}`;
+
 interface CompareResult {
   matched: boolean;
   similarity: number;
