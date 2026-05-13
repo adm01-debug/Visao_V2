@@ -113,7 +113,7 @@ Formato de resposta:
       const jsonStr = content.replace(/```json\n?|\n?```/g, '').trim();
       const result = JSON.parse(jsonStr);
       done();
-      log.info("Plate detected", { plate: result.plate, confidence: result.confidence });
+      log.info("Plate detected", { plate: result.plate, confidence: result.confidence, traceId });
       return new Response(
         JSON.stringify(result),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
