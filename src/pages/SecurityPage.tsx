@@ -24,6 +24,8 @@ import {
   type ListType 
 } from '@/components/security';
 import { PageContent } from '@/components/layout/MainLayout';
+import { useAuditLogs } from '@/hooks/useAuditLogs';
+import { useAccessEvents } from '@/hooks/useAccessEvents';
 
 export function SecurityPage() {
   const [activeTab, setActiveTab] = useState('logs');
