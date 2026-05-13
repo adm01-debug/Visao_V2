@@ -39,6 +39,7 @@ class Logger {
       fn: this.fnName,
       message,
       timestamp: new Date().toISOString(),
+      traceId: data?.traceId as string | undefined || getTraceId(),
       ...(data && { data }),
     };
 
