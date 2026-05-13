@@ -67,8 +67,8 @@ export const detectFacesSchema = z.object({
 // ==========================================
 
 export const compareFacesSchema = z.object({
-  sourceImage: z.string().min(10, "sourceImage is required"),
-  targetImage: z.string().min(10, "targetImage is required"),
+  sourceImage: imageBase64Schema,
+  targetImage: imageBase64Schema,
   threshold: z.number().min(0).max(1).default(0.6),
 });
 
