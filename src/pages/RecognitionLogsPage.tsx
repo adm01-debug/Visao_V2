@@ -17,6 +17,7 @@ import { useRecognitionData, useFilteredLogs, useRecognitionExport } from '@/com
 import { RecognitionStatsCards } from '@/components/recognition-logs/RecognitionStatsCards';
 import { RecognitionLogsTable } from '@/components/recognition-logs/RecognitionLogsTable';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 import { useManagedFilters } from '@/hooks/useManagedFilters';
 
 const ITEMS_PER_PAGE = 20;
