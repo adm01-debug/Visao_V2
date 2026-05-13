@@ -316,6 +316,6 @@ export default function CLSReportPage() {
         <strong className="text-destructive">ruim ≥ 0.25</strong>. As medições são finalizadas 3s após o
         carregamento da rota (sem queries em fetching) ou ao navegar para outra rota.
       </p>
-    </div>
+    </PageContent>
   );
 }
