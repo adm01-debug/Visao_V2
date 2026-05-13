@@ -99,6 +99,6 @@ export default function NotificationSettingsPage() {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </PageContent>
   );
 }
