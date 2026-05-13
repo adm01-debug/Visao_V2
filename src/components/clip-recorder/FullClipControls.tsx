@@ -32,7 +32,7 @@ interface FullClipControlsProps {
   onPause: () => void;
   onDownload: () => void;
   onDiscard: () => void;
-  className?: string;
+  className: string | undefined;
 }
 
 export function FullClipControls({
