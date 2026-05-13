@@ -23,6 +23,7 @@ import { RecognizedFace } from '@/hooks/useRealtimeRecognition';
 import { useFaceAPI } from '@/hooks/useFaceAPI';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { PageContent } from '@/components/layout/MainLayout';
 
 interface RecognitionEvent {
   id: string;
