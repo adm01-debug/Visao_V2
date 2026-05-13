@@ -24,6 +24,7 @@ serve(async (req) => {
     const validation = validateInput(analyzeLicensePlateSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
     const { image } = validation.data;
+    const traceId = req.headers.get("x-request-id") || undefined;
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
