@@ -33,10 +33,42 @@ interface DetectFacesResponse {
 const detectFaces = async (imageBase64: string, minConfidence: number, maxFaces: number): Promise<DetectFacesResponse> => {
   const startTime = Date.now();
   try {
-    const faces: DetectedFace[] = [];
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          { 
+            role: "system", 
+            content: "You are an AI face detection specialist. Detect faces in the image and return their bounding boxes and confidence. Respond ONLY with JSON: { \"faces\": [{ \"boundingBox\": { \"x\": number, \"y\": number, \"width\": number, \"height\": number }, \"confidence\": number }] }" 
+          },
+          {
+            role: "user",
+            content: [
+              { type: "text", text: "Detect faces in this image:" },
+              { type: "image_url", image_url: { url: `data:image/jpeg;base64,${imageBase64}` } }
+            ]
+          }
+        ],
+        response_format: { type: "json_object" }
+      }),
+    });
+
+    if (!response.ok) throw new Error(`AI gateway error: ${response.status}`);
+    const data = await response.json();
+    const result = JSON.parse(data.choices[0].message.content);
+    const faces = result.faces || [];
+
     return {
       success: true,
-      faces: faces.slice(0, maxFaces).filter(f => f.confidence >= minConfidence),
+      faces: faces.slice(0, maxFaces).filter((f: any) => f.confidence >= minConfidence),
       count: faces.length,
       processingTime: Date.now() - startTime,
     };
