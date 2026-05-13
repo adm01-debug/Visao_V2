@@ -4,6 +4,7 @@
 
 import { useState } from 'react';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 import { LicensePlateRecognition } from '@/components/LicensePlateRecognition';
 import { ALPRDashboard } from '@/components/ALPRDashboard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
