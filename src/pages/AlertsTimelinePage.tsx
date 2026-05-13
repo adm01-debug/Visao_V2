@@ -37,6 +37,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { PageMeta } from '@/components/PageMeta';
 import { AlertReplayPlayer } from '@/components/alerts-timeline/AlertReplayPlayer';
+import { PageContent } from '@/components/layout/MainLayout';
 
 const SEVERITY_STYLES: Record<string, { label: string; dot: string; text: string; ring: string }> = {
   critical: { label: 'Crítico', dot: 'bg-destructive', text: 'text-destructive', ring: 'ring-destructive/40' },
