@@ -36,7 +36,7 @@ serve(async (req) => {
       );
     }
 
-    log.info("Analyzing license plate");
+    log.info("Analyzing license plate", { traceId });
 
     const response = await fetchWithRetry('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
