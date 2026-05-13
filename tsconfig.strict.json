@@ -13,7 +13,8 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true
     // NOTE: exactOptionalPropertyTypes, noPropertyAccessFromIndexSignature e noUnusedLocals
     // estão temporariamente desligadas — backlog em docs/CODE_QUALITY_RULES.md (seção 8).
   },
