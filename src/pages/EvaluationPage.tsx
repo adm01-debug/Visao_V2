@@ -539,7 +539,7 @@ export default function EvaluationPage() {
           )}
         </TabsContent>
       </Tabs>
-    </div>
+    </PageContent>
   );
 }
 
