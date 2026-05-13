@@ -2,7 +2,7 @@
  * VISÃO - Página de Segurança (Modularizada)
  */
 import { useState, useEffect, useCallback } from 'react';
-import { Shield, RefreshCw, Download, FileText, Lock, Users } from 'lucide-react';
+import { Shield, RefreshCw, Download, FileText, Lock, Users, Smartphone } from 'lucide-react';
 import { PageMeta } from '@/components/PageMeta';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
