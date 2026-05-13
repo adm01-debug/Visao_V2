@@ -169,7 +169,7 @@ Respond in JSON format:
     }
 
     done();
-    log.info("Analysis completed", { analysisType, peopleCount: analysis.people_count });
+    log.info("Analysis completed", { analysisType, peopleCount: analysis.people_count, traceId });
 
     return new Response(JSON.stringify({
       success: true,
