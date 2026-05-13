@@ -16,8 +16,8 @@ export interface AlertFilters {
   type: AlertType;
   severity: AlertSeverity;
   dateRange: DateRange;
-  customDateStart?: Date;
-  customDateEnd?: Date;
+  customDateStart: Date | undefined;
+  customDateEnd: Date | undefined;
   cameraId: string;
 }
 
