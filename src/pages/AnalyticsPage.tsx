@@ -292,7 +292,7 @@ export function AnalyticsPage() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </PageContent>
   );
 }
 
