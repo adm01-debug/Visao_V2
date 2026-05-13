@@ -10,6 +10,7 @@ import { ChannelsTab } from '@/components/notification-settings/ChannelsTab';
 import { ScheduleTab } from '@/components/notification-settings/ScheduleTab';
 import { FiltersTab } from '@/components/notification-settings/FiltersTab';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 
 export default function NotificationSettingsPage() {
   const navigate = useNavigate();
