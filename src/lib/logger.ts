@@ -16,6 +16,7 @@ export interface LogEntry {
   context?: string;
   data?: unknown;
   requestId?: string;
+  traceId?: string;
 }
 
 interface LoggerConfig {
