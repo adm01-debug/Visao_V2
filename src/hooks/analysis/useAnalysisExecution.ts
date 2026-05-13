@@ -28,7 +28,7 @@ interface ExecutionCallbacks {
 interface ExecutionDeps {
   cameraId: string;
   getFrame: () => string | null;
-  evaluateRules: (result: AnalysisResult, type: AnalysisType) => any[];
+  evaluateRules: (result: AnalysisResult, type: AnalysisType) => RuleEvaluation[];
   checkThresholds: (result: AnalysisResult, thresholds: ContinuousAnalysisConfig['alertThresholds']) => AnalysisAlert[];
   createAlertInDatabase: (alert: AnalysisAlert, result: AnalysisResult) => Promise<void>;
   saveHistoryToDatabase: (entry: AnalysisHistoryEntry) => Promise<void>;
