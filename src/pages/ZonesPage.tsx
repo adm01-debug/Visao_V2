@@ -77,7 +77,7 @@ export function ZonesPage() {
   };
 
   return (
-    <div role="main" aria-label="Zonas de interesse" className="min-h-screen bg-background mb-mobile-nav">
+    <PageContent role="main" aria-label="Zonas de interesse" className="min-h-screen bg-background">
       <PageMeta title="Zonas" description="Configure zonas de detecção e monitoramento" />
 
       <ZonesHeader 
