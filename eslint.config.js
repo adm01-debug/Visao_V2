@@ -24,7 +24,7 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-      'no-console': 'warn',
+      'no-console': 'error',
       'no-debugger': 'error',
       'prefer-const': 'error',
       'eqeqeq': ['error', 'always'],
@@ -54,7 +54,7 @@ export default tseslint.config(
       // dependências críticas são revisadas em PR. Mantemos rules-of-hooks como erro.
       'react-hooks/exhaustive-deps': 'off',
       // VISÃO Design System — prevent hardcoded colors
-      'visao/no-hardcoded-colors': 'warn',
+      'visao/no-hardcoded-colors': 'error',
     },
   },
   // Error boundaries precisam logar erros via console para diagnóstico em produção.

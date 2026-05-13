@@ -12,7 +12,11 @@ import { cn } from '@/lib/utils';
 import { formatDuration } from './CompactClipControls';
 
 interface SavedClip {
-  id: string; duration: number; url: string; blob: Blob; thumbnail?: string;
+  id: string;
+  duration: number;
+  url: string;
+  blob: Blob;
+  thumbnail: string | undefined;
 }
 
 interface FullClipControlsProps {
@@ -28,7 +32,7 @@ interface FullClipControlsProps {
   onPause: () => void;
   onDownload: () => void;
   onDiscard: () => void;
-  className?: string;
+  className: string | undefined;
 }
 
 export function FullClipControls({

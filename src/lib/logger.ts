@@ -16,6 +16,7 @@ export interface LogEntry {
   context?: string;
   data?: unknown;
   requestId?: string;
+  traceId?: string;
 }
 
 interface LoggerConfig {
@@ -43,10 +44,21 @@ const config: LoggerConfig = {
 const buffer: LogEntry[] = [];
 
 let requestIdCounter = 0;
+let currentTraceId: string | undefined;
+
 const generateRequestId = (): string => {
   requestIdCounter += 1;
   return `req_${Date.now()}_${requestIdCounter}`;
 };
+
+/**
+ * Propriedade para manter o traceId atual (propagado pelo fetcher)
+ */
+export const setGlobalTraceId = (id: string | undefined) => {
+  currentTraceId = id;
+};
+
+export const getGlobalTraceId = () => currentTraceId;
 
 const shouldLog = (level: LogLevel): boolean => {
   return LOG_LEVELS[level] >= LOG_LEVELS[config.minLevel];
@@ -75,6 +87,7 @@ const log = (
     context,
     data,
     requestId: generateRequestId(),
+    traceId: currentTraceId,
   };
 
   // Console output with structured format

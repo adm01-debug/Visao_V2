@@ -216,6 +216,7 @@ export type Database = {
           thumbnail: string | null
           updated_at: string
           user_id: string
+          version: number
         }
         Insert: {
           alerts_count?: number | null
@@ -232,6 +233,7 @@ export type Database = {
           thumbnail?: string | null
           updated_at?: string
           user_id?: string
+          version?: number
         }
         Update: {
           alerts_count?: number | null
@@ -248,6 +250,7 @@ export type Database = {
           thumbnail?: string | null
           updated_at?: string
           user_id?: string
+          version?: number
         }
         Relationships: []
       }
@@ -416,6 +419,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      idempotency_keys: {
+        Row: {
+          created_at: string
+          key: string
+          response: Json
+        }
+        Insert: {
+          created_at?: string
+          key: string
+          response: Json
+        }
+        Update: {
+          created_at?: string
+          key?: string
+          response?: Json
+        }
+        Relationships: []
       }
       model_thresholds: {
         Row: {
@@ -1277,6 +1298,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      delete_user_data: {
+        Args: { _target_user_id: string }
+        Returns: undefined
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]

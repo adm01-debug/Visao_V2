@@ -5,7 +5,6 @@
 
 import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 
-// Re-export z for convenience
 export { z };
 
 // ==========================================
@@ -14,13 +13,30 @@ export { z };
 
 export const uuidSchema = z.string().uuid();
 
+/**
+ * Schema para arquivos de imagem base64 com validação de assinatura (magic bytes)
+ */
+export const imageBase64Schema = z.string()
+  .min(100)
+  .max(10_000_000)
+  .refine((val) => {
+    // Verifica assinaturas comuns de imagem em base64
+    // JPEG: /9j/
+    // PNG: iVBORw0KGgo
+    // WebP: UklGR
+    const prefix = val.substring(0, 15);
+    return prefix.includes('/9j/') || prefix.includes('iVBORw') || prefix.includes('UklGR');
+  }, {
+    message: "Assinatura de imagem inválida. Apenas JPEG, PNG e WebP são permitidos."
+  });
+
 // ==========================================
 // analyze-image
 // ==========================================
 
 export const analyzeImageSchema = z.object({
   imageUrl: z.string().url().optional(),
-  imageBase64: z.string().min(100).max(10_000_000).optional(),
+  imageBase64: imageBase64Schema.optional(),
   analysisType: z.enum(["security", "productivity", "safety"]).default("security"),
 }).refine(
   (data) => data.imageUrl || data.imageBase64,
@@ -32,7 +48,7 @@ export const analyzeImageSchema = z.object({
 // ==========================================
 
 export const analyzeLicensePlateSchema = z.object({
-  image: z.string().min(10, "Image data is required"),
+  image: imageBase64Schema,
 });
 
 // ==========================================
@@ -40,7 +56,7 @@ export const analyzeLicensePlateSchema = z.object({
 // ==========================================
 
 export const detectFacesSchema = z.object({
-  imageBase64: z.string().min(100, "imageBase64 is required"),
+  imageBase64: imageBase64Schema,
   minConfidence: z.number().min(0).max(1).default(0.5),
   maxFaces: z.number().int().min(1).max(50).default(10),
   returnLandmarks: z.boolean().default(false),
@@ -51,8 +67,8 @@ export const detectFacesSchema = z.object({
 // ==========================================
 
 export const compareFacesSchema = z.object({
-  sourceImage: z.string().min(10, "sourceImage is required"),
-  targetImage: z.string().min(10, "targetImage is required"),
+  sourceImage: imageBase64Schema,
+  targetImage: imageBase64Schema,
   threshold: z.number().min(0).max(1).default(0.6),
 });
 
@@ -62,7 +78,7 @@ export const compareFacesSchema = z.object({
 
 export const detectBehaviorSchema = z.object({
   imageUrl: z.string().url().optional(),
-  imageBase64: z.string().min(100).max(10_000_000).optional(),
+  imageBase64: imageBase64Schema.optional(),
   cameraId: z.string().uuid().optional(),
   cameraName: z.string().max(255).optional(),
 }).refine(
@@ -75,7 +91,7 @@ export const detectBehaviorSchema = z.object({
 // ==========================================
 
 export const generateFaceEncodingSchema = z.object({
-  imageBase64: z.string().min(100, "imageBase64 is required"),
+  imageBase64: imageBase64Schema,
   personId: z.string().uuid().optional(),
 });
 

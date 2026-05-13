@@ -8,7 +8,9 @@ import { Circle, Square, Download, Trash2, Check, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SavedClip {
-  id: string; duration: number; url: string;
+  id: string;
+  duration: number;
+  url: string;
 }
 
 function formatDuration(seconds: number): string {
@@ -25,7 +27,7 @@ interface CompactClipControlsProps {
   onStop: () => void;
   onDownload: () => void;
   onDiscard: () => void;
-  className?: string;
+  className: string | undefined;
 }
 
 export function CompactClipControls({ state, duration, savedClip, onStart, onStop, onDownload, onDiscard, className }: CompactClipControlsProps) {

@@ -8,7 +8,7 @@ export interface CoverageMetric {
   pct: number;
   total: number;
   covered: number;
-  skipped?: number;
+  skipped: number;
 }
 
 export interface CoverageFileEntry {

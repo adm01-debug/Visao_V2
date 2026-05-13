@@ -33,7 +33,7 @@ export interface UIAlert {
   message: string;
   timestamp: Date;
   isRead: boolean;
-  thumbnail?: string;
+  thumbnail: string | undefined;
 }
 
 interface AlertCardProps {
