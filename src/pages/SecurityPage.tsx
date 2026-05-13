@@ -117,6 +117,7 @@ export function SecurityPage() {
           <TabsTrigger value="logs"><FileText className="w-4 h-4 mr-2" />Logs de Auditoria</TabsTrigger>
           <TabsTrigger value="access"><Lock className="w-4 h-4 mr-2" />Controle de Acesso</TabsTrigger>
           <TabsTrigger value="lists"><Users className="w-4 h-4 mr-2" />Listas de Segurança</TabsTrigger>
+          <TabsTrigger value="mfa"><Smartphone className="w-4 h-4 mr-2" />Segurança da Conta</TabsTrigger>
         </TabsList>
         <TabsContent value="logs" className="mt-4"><AuditLogTable logs={logs} /></TabsContent>
         <TabsContent value="access" className="mt-4"><AccessEventsList events={accessEvents} /></TabsContent>
