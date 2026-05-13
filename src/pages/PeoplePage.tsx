@@ -21,6 +21,7 @@ import { PersonDetailsDialog } from '@/components/people/PersonDetailsDialog';
 import { PeopleStatsBar } from '@/components/people/PeopleStatsBar';
 import { PeopleListView } from '@/components/people/PeopleListView';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 
 export default function PeoplePage() {
   const {
