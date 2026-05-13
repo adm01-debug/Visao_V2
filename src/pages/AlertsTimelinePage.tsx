@@ -37,6 +37,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { PageMeta } from '@/components/PageMeta';
 import { AlertReplayPlayer } from '@/components/alerts-timeline/AlertReplayPlayer';
+import { PageContent } from '@/components/layout/MainLayout';
 
 const SEVERITY_STYLES: Record<string, { label: string; dot: string; text: string; ring: string }> = {
   critical: { label: 'Crítico', dot: 'bg-destructive', text: 'text-destructive', ring: 'ring-destructive/40' },
@@ -94,7 +95,7 @@ export default function AlertsTimelinePage() {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-6">
+      <PageContent className="space-y-6">
         <PageMeta title="Timeline de Alertas" description="Linha do tempo de alertas com replay curto antes e depois do evento" />
         <Skeleton className="h-10 w-72" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -104,12 +105,12 @@ export default function AlertsTimelinePage() {
           <Skeleton className="h-[500px]" />
           <Skeleton className="h-[500px]" />
         </div>
-      </div>
+      </PageContent>
     );
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <PageContent className="space-y-6">
       <PageMeta
         title="Timeline de Alertas | VISÃO"
         description="Linha do tempo de alertas em tempo real com replay curto das cenas antes e depois de cada evento detectado."
@@ -292,7 +293,7 @@ export default function AlertsTimelinePage() {
           </div>
         </div>
       )}
-    </div>
+    </PageContent>
   );
 }
 

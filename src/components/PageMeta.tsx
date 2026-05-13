@@ -36,20 +36,32 @@ export const PageMeta = React.forwardRef<HTMLDivElement, PageMetaProps>(function
     },
   };
 
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [location.pathname]);
+
   return (
     <Helmet>
       <title>{fullTitle}</title>
       <meta name="description" content={desc} />
       <link rel="canonical" href={canonicalUrl} />
       {noIndex && <meta name="robots" content="noindex, nofollow" />}
+      
+      {/* PWA / Mobile specific */}
+      <meta name="apple-mobile-web-app-title" content="VISÃO" />
+      <meta name="application-name" content="VISÃO" />
+      <meta name="theme-color" content="hsl(var(--background))" />
+      
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={desc} />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:site_name" content={APP_NAME} />
+      
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={desc} />
+      
       <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
     </Helmet>
   );

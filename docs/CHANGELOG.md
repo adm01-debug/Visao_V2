@@ -55,7 +55,7 @@
 ## Próximas Atualizações
 
 - [ ] Tutoriais em vídeo
-- [ ] Exemplos de código
+- [x] Exemplos de código (docs/CODE_EXAMPLES.md)
 - [ ] API interativa (Swagger)
 
 ---

@@ -42,6 +42,7 @@ import {
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 import { useAlerts } from '@/hooks/useAlerts';
 import { usePlateDetections } from '@/hooks/usePlateDetections';
 import {
@@ -215,7 +216,7 @@ export default function EvaluationPage() {
   const loading = loadingAlerts || loadingPlates || loadingReviews;
 
   return (
-    <div className="p-6 space-y-6">
+    <PageContent className="space-y-6">
       <PageMeta
         title="Avaliação de Detecções | VISÃO"
         description="Revise detecções, marque acertos e erros, e ajuste thresholds dos modelos por tipo de risco."
@@ -538,7 +539,7 @@ export default function EvaluationPage() {
           )}
         </TabsContent>
       </Tabs>
-    </div>
+    </PageContent>
   );
 }
 

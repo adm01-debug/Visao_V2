@@ -31,6 +31,7 @@ import {
   type SkeletonFailureMode,
 } from '@/lib/skeletonFailureFlag';
 import { cn } from '@/lib/utils';
+import { PageContent } from '@/components/layout/MainLayout';
 
 interface ChecklistItem {
   id: string;
@@ -84,7 +85,7 @@ export default function LoadingStatesChecklistPage() {
   };
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
+    <PageContent className="max-w-7xl mx-auto space-y-6">
       <PageMeta
         title="Loading States Checklist — VISÃO"
         description="Checklist visual dos estados de carregamento, error fallback e chunk falhou."
@@ -251,6 +252,6 @@ export default function LoadingStatesChecklistPage() {
           </div>
         </TabsContent>
       </Tabs>
-    </div>
+    </PageContent>
   );
 }

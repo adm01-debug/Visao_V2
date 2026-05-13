@@ -35,6 +35,7 @@ import {
   getNavigationCLSLog,
   getNavigationCLSSessionId,
 } from '@/lib/navigationCLSLog';
+import { PageContent } from '@/components/layout/MainLayout';
 
 const RATING_STYLES: Record<RouteCLSReport['rating'], { label: string; bg: string; text: string }> = {
   good: { label: 'Bom', bg: 'bg-success/10', text: 'text-success' },
@@ -219,7 +220,7 @@ export default function CLSReportPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <PageContent className="space-y-6">
       <PageMeta
         title="Relatório CLS"
         description="Relatório de Cumulative Layout Shift por rota crítica do VISÃO."
@@ -315,6 +316,6 @@ export default function CLSReportPage() {
         <strong className="text-destructive">ruim ≥ 0.25</strong>. As medições são finalizadas 3s após o
         carregamento da rota (sem queries em fetching) ou ao navegar para outra rota.
       </p>
-    </div>
+    </PageContent>
   );
 }
