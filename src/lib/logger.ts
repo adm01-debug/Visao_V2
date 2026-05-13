@@ -87,6 +87,7 @@ const log = (
     context,
     data,
     requestId: generateRequestId(),
+    traceId: currentTraceId,
   };
 
   // Console output with structured format
