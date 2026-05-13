@@ -2,7 +2,7 @@ import { Target, Plus, RefreshCw, ChevronDown, Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
-import { Camera as CameraType } from '@/hooks/useCameras';
+import { DbCamera } from '@/hooks/useCameras';
 
 interface ZonesHeaderProps {
   totalCount: number;
