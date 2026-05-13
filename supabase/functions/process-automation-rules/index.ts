@@ -179,6 +179,7 @@ const handler = async (req: Request): Promise<Response> => {
     const validation = validateInput(processAutomationRulesSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
     const { alert } = validation.data;
+    const traceId = req.headers.get("x-request-id") || undefined;
 
     log.info("Processing automation rules", { alertId: alert.id, userId: alert.user_id });
 
