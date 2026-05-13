@@ -19,10 +19,16 @@ interface ClipRecorderControlsProps {
   compact?: boolean;
 }
 
-interface SavedClip {
-  id: string; cameraId: string; cameraName: string;
-  startTime: Date; endTime: Date; duration: number;
-  blob: Blob; url: string; thumbnail?: string;
+export interface SavedClip {
+  id: string;
+  cameraId: string;
+  cameraName: string;
+  startTime: Date;
+  endTime: Date;
+  duration: number;
+  blob: Blob;
+  url: string;
+  thumbnail: string | undefined;
 }
 
 type RecordingState = 'idle' | 'recording' | 'paused' | 'processing' | 'saved';
