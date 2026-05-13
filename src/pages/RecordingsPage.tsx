@@ -251,7 +251,7 @@ export function RecordingsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </PageContent>
   );
 }
 
