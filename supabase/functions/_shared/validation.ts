@@ -17,14 +17,15 @@ export const uuidSchema = z.string().uuid();
  * Schema para arquivos de imagem base64 com validação de assinatura (magic bytes)
  */
 export const imageBase64Schema = z.string()
-  .min(100)
+  .min(10)
   .max(10_000_000)
   .refine((val) => {
+    // Remove prefix data:image/...;base64, se existir para validar o conteúdo
+    const pureBase64 = val.includes(',') ? val.split(',')[1] : val;
+    if (!pureBase64) return false;
+    
     // Verifica assinaturas comuns de imagem em base64
-    // JPEG: /9j/
-    // PNG: iVBORw0KGgo
-    // WebP: UklGR
-    const prefix = val.substring(0, 15);
+    const prefix = pureBase64.substring(0, 15);
     return prefix.includes('/9j/') || prefix.includes('iVBORw') || prefix.includes('UklGR');
   }, {
     message: "Assinatura de imagem inválida. Apenas JPEG, PNG e WebP são permitidos."
