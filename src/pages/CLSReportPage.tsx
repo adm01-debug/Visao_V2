@@ -220,7 +220,7 @@ export default function CLSReportPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <PageContent className="space-y-6">
       <PageMeta
         title="Relatório CLS"
         description="Relatório de Cumulative Layout Shift por rota crítica do VISÃO."
