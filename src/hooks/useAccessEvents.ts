@@ -19,8 +19,8 @@ export function useAccessEvents() {
       if (error) throw error;
 
       const mappedEvents: AccessEvent[] = (data || []).map(log => {
-        const person = log.registered_persons as any;
-        const camera = log.cameras as any;
+        const person = Array.isArray(log.registered_persons) ? log.registered_persons[0] : log.registered_persons;
+        const camera = Array.isArray(log.cameras) ? log.cameras[0] : log.cameras;
         
         return {
           id: log.id,
@@ -31,7 +31,7 @@ export function useAccessEvents() {
           status: (log.recognized ? 'granted' : 'denied') as AccessStatus,
           cameraName: camera?.name || 'Câmera',
           location: camera?.location || 'Local',
-          confidence: log.confidence || 0,
+          confidence: Number(log.confidence) || 0,
         };
       });
 
