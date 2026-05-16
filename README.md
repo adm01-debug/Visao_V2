@@ -30,6 +30,7 @@
 - [Configuração](#-configuração)
 - [Estrutura do Projeto](#-estrutura-do-projeto)
 - [API e Edge Functions](#-api-e-edge-functions)
+- [Auditoria Enterprise](#-auditoria-enterprise)
 - [Contribuição](#-contribuição)
 
 ---
@@ -293,6 +294,20 @@ vis-o/
 - [Setup MediaMTX](docs/MEDIAMTX_SETUP.md)
 - [Inventário Completo](docs/INVENTARIO_COMPLETO.md)
 - [Melhorias Pendentes](docs/MELHORIAS_PENDENTES_REAIS.md)
+
+---
+
+## 🛡️ Auditoria Enterprise
+
+O sistema passa por auditorias regulares de segurança, performance e conformidade.
+
+- [Relatório de Auditoria (Markdown)](audit_report.md)
+- [Relatório de Auditoria (PDF)](audit_report.pdf)
+
+Para gerar o PDF localmente ou no CI:
+```bash
+npm run gen:audit-pdf
+```
 
 ---
 
