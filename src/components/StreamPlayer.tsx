@@ -42,6 +42,7 @@ function StreamPlayerComponent({
 }: StreamPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<HlsType | null>(null);
+  const listenersRef = useRef<AbortController | null>(null);
 
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [isMuted, setIsMuted] = useState(muted);
@@ -60,6 +61,12 @@ function StreamPlayerComponent({
       hlsRef.current.destroy();
       hlsRef.current = null;
     }
+
+    // Cleanup previous media element listeners
+    listenersRef.current?.abort();
+    const controller = new AbortController();
+    listenersRef.current = controller;
+    const { signal } = controller;
 
     const video = videoRef.current;
 
@@ -103,7 +110,7 @@ function StreamPlayerComponent({
         if (autoPlay) {
           video.play().catch(() => {});
         }
-      });
+      }, { signal });
     } else {
       // Direct video source
       video.src = streamUrl;
@@ -112,20 +119,28 @@ function StreamPlayerComponent({
         if (autoPlay) {
           video.play().catch(() => {});
         }
-      });
+      }, { signal });
     }
 
     video.addEventListener('error', () => {
       setError('Erro ao reproduzir vídeo');
       onError?.(new Error('Video playback error'));
-    });
+    }, { signal });
   }, [streamUrl, autoPlay, onError]);
 
   useEffect(() => {
     initializePlayer();
     return () => {
+      listenersRef.current?.abort();
+      listenersRef.current = null;
       if (hlsRef.current) {
         hlsRef.current.destroy();
+        hlsRef.current = null;
+      }
+      const video = videoRef.current;
+      if (video) {
+        video.removeAttribute('src');
+        video.load();
       }
     };
   }, [initializePlayer]);

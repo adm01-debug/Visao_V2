@@ -193,14 +193,15 @@ export function useOfflineSync(): UseOfflineSyncReturn {
     const { type, table, data } = action;
 
     switch (type) {
-      case 'create':
+      case 'create': {
         const { error: createError } = await supabase
           .from(table as 'alerts')
           .insert(data as never);
         if (createError) throw createError;
         break;
+      }
 
-      case 'update':
+      case 'update': {
         const { id: updateId, ...updateData } = data;
         const { error: updateError } = await supabase
           .from(table as 'alerts')
@@ -208,14 +209,16 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           .eq('id', updateId as string);
         if (updateError) throw updateError;
         break;
+      }
 
-      case 'delete':
+      case 'delete': {
         const { error: deleteError } = await supabase
           .from(table as 'alerts')
           .delete()
           .eq('id', data.id as string);
         if (deleteError) throw deleteError;
         break;
+      }
     }
   };
 

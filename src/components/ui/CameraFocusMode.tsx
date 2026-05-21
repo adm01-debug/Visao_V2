@@ -21,6 +21,10 @@ export function CameraFocusMode({ cameraId: _cameraId, cameraName, streamUrl: _s
   const [zoom, setZoom] = useState(1);
   const [showControls, setShowControls] = useState(true);
 
+  const handleZoomIn = useCallback(() => setZoom(z => Math.min(z + 0.25, 3)), []);
+  const handleZoomOut = useCallback(() => setZoom(z => Math.max(z - 0.25, 1)), []);
+  const handleResetZoom = useCallback(() => setZoom(1), []);
+
   useEffect(() => { if (!showControls) return; const t = setTimeout(() => setShowControls(false), 3000); return () => clearTimeout(t); }, [showControls]);
 
   useEffect(() => {
@@ -68,9 +72,9 @@ export function CameraFocusMode({ cameraId: _cameraId, cameraName, streamUrl: _s
 
           <BottomControls isPlaying={isPlaying} isMuted={isMuted} zoom={zoom} showControls={showControls}
             onTogglePlay={() => setIsPlaying(p => !p)} onToggleMute={() => setIsMuted(m => !m)}
-            onZoomIn={useCallback(() => setZoom(z => Math.min(z + 0.25, 3)), [])}
-            onZoomOut={useCallback(() => setZoom(z => Math.max(z - 0.25, 1)), [])}
-            onResetZoom={useCallback(() => setZoom(1), [])} />
+            onZoomIn={handleZoomIn}
+            onZoomOut={handleZoomOut}
+            onResetZoom={handleResetZoom} />
         </motion.div>
       )}
     </AnimatePresence>

@@ -176,7 +176,6 @@ export function AlertReplayPlayer({
         )}
       >
         {currentFrame ? (
-          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={currentFrame.src}
             alt={`Frame replay ${cameraName} ${offsetLabel}`}

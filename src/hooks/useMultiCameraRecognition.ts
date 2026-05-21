@@ -29,6 +29,7 @@ export function useMultiCameraRecognition() {
   const [isGlobalRunning, setIsGlobalRunning] = useState(false);
   const [recognitionResults, setRecognitionResults] = useState<RecognitionResult[]>([]);
   const [fullscreenCamera, setFullscreenCamera] = useState<string | null>(null);
+  const [analyzingIds, setAnalyzingIds] = useState<Set<string>>(new Set());
 
   const videoRefs = useRef<Map<string, HTMLVideoElement>>(new Map());
   const canvasRefs = useRef<Map<string, HTMLCanvasElement>>(new Map());
@@ -105,11 +106,13 @@ export function useMultiCameraRecognition() {
     if (intervalsRef.current.has(cameraId)) return;
     const interval = setInterval(() => analyzeFrame(cameraId, cameraName), captureInterval);
     intervalsRef.current.set(cameraId, interval);
+    setAnalyzingIds(prev => { const next = new Set(prev); next.add(cameraId); return next; });
   }, [analyzeFrame, captureInterval]);
 
   const stopAnalysis = useCallback((cameraId: string) => {
     const interval = intervalsRef.current.get(cameraId);
     if (interval) { clearInterval(interval); intervalsRef.current.delete(cameraId); }
+    setAnalyzingIds(prev => { const next = new Set(prev); next.delete(cameraId); return next; });
   }, []);
 
   const toggleCamera = (cameraId: string) => {
@@ -149,6 +152,6 @@ export function useMultiCameraRecognition() {
     soundEnabled, setSoundEnabled, isGlobalRunning, recognitionResults,
     fullscreenCamera, setFullscreenCamera, personsCache,
     toggleCamera, startAllCameras, stopAllCameras, handleVideoLoaded,
-    getLayoutClass, getMaxCameras, intervalsRef,
+    getLayoutClass, getMaxCameras, analyzingIds,
   };
 }

@@ -4,6 +4,7 @@
 
 # Dependencies
 node_modules
+.npm-cache
 .pnp
 .pnp.js
 
@@ -51,7 +52,7 @@ ehthumbs.db
 Thumbs.db
 
 # Testing
-coverage
+/coverage
 .nyc_output
 
 # TypeScript
