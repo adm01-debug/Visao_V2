@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
+import { logger } from '@/lib/logger';
 import { useManagedFilters } from '@/hooks/useManagedFilters';
 import { ZoneStats, ZoneEvent, zoneTypeConfig } from '@/components/zones';
 
@@ -61,11 +62,11 @@ export function useZonesState() {
             };
           }
         } catch (e) {
-          console.error(`Error loading stats for zone ${zone.id}:`, e);
+          logger.error(`Erro ao carregar estatísticas da zona ${zone.id}`, e, 'useZonesState');
         }
       }
       setZoneStats(statsMap);
-    } catch (e) {
+    } catch {
       toast.error('Erro ao carregar zonas');
     } finally {
       setLoading(false);
@@ -81,7 +82,7 @@ export function useZonesState() {
         .order('created_at', { ascending: false })
         .limit(50);
       setZoneEvents(prev => ({ ...prev, [zoneId]: data || [] }));
-    } catch {}
+    } catch { /* carregamento de eventos best-effort; mantém lista atual da zona */ }
   };
 
   useEffect(() => { loadZones(); }, [loadZones]);
@@ -135,7 +136,7 @@ export function useZonesState() {
       }
       loadZones();
       return true;
-    } catch (e) {
+    } catch {
       toast.error('Erro ao salvar zona');
       return false;
     }

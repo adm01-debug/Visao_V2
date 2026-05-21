@@ -53,8 +53,7 @@ export const useFullscreen = <T extends HTMLElement = HTMLElement>(): UseFullscr
       } else if (element.webkitRequestFullscreen) {
         await element.webkitRequestFullscreen();
       }
-    } catch (_error) {
-}
+    } catch { /* entrada em tela cheia best-effort; ignora rejeição do navegador */ }
   }, []);
 
   const exit = useCallback(async () => {
@@ -64,8 +63,7 @@ export const useFullscreen = <T extends HTMLElement = HTMLElement>(): UseFullscr
       } else if (document.webkitExitFullscreen) {
         await document.webkitExitFullscreen();
       }
-    } catch (_error) {
-}
+    } catch { /* saída de tela cheia best-effort; ignora rejeição do navegador */ }
   }, []);
 
   const toggle = useCallback(async () => {

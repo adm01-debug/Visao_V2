@@ -2,6 +2,7 @@
  * Cache Utilities - VISÃO
  * Gerenciamento de cache em memória e localStorage com suporte a TTL (Time To Live).
  */
+import { logger } from '@/lib/logger';
 
 interface CacheItem<T> {
   value: T;
@@ -26,7 +27,7 @@ export function setCache<T>(key: string, value: T, ttlMs: number = 300000, stora
     try {
       localStorage.setItem(key, JSON.stringify(item));
     } catch (e) {
-      console.warn('[Cache] Erro ao salvar no localStorage:', e);
+      logger.warn('Erro ao salvar no localStorage', e, 'Cache');
     }
   }
 }
@@ -43,7 +44,7 @@ export function getCache<T>(key: string, storage: 'memory' | 'local' = 'memory')
     try {
       const saved = localStorage.getItem(key);
       if (saved) item = JSON.parse(saved);
-    } catch (e) {
+    } catch {
       return null;
     }
   }

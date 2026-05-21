@@ -5,7 +5,7 @@
  * se inscreve via Supabase Realtime para atualizações live.
  */
 
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Tables } from '@/integrations/supabase/types';
@@ -74,8 +74,6 @@ export function useRealtimeAnalysisHistory() {
   const { user } = useAuth();
   const [items, setItems] = useState<TimelineItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const itemsRef = useRef(items);
-  itemsRef.current = items;
 
   const addItem = useCallback((item: TimelineItem) => {
     setItems((prev) => {

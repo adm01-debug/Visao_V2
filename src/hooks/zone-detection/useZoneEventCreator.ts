@@ -50,7 +50,7 @@ export function useZoneEventCreator(options: UseZoneEventCreatorOptions) {
             timestamp: new Date().toISOString(),
           }]);
         }
-      } catch {}
+      } catch { /* gravação de evento best-effort; não bloqueia o fluxo de detecção */ }
     }
 
     if (generateAlert && createAlerts) {
@@ -60,7 +60,7 @@ export function useZoneEventCreator(options: UseZoneEventCreatorOptions) {
           camera_name: cameraName, type: 'security' as const, severity,
           message: `${zone.name}: ${getEventMessage(eventType, value)}`, is_read: false,
         });
-      } catch {}
+      } catch { /* criação de alerta best-effort; ainda notifica via callback onAlert */ }
       onAlert?.(zone, event);
     }
 

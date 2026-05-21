@@ -97,6 +97,8 @@ export function useContinuousAnalysis(
     configRef, sessionRef, setSession, setHistory, setLastAnalysis, setIsAnalyzing,
   );
 
+  const loopRef = useRef<() => void>(() => {});
+
   const runAnalysisLoop = useCallback(() => {
     const config = configRef.current;
     if (!config || !config.enabled) return;
@@ -105,7 +107,7 @@ export function useContinuousAnalysis(
       setSession(prev => prev ? { ...prev, status: 'scheduled' } : null);
       const nextTime = getNextScheduledTime(config.schedule, config.interval);
       const delay = nextTime.getTime() - Date.now();
-      intervalRef.current = setTimeout(() => runAnalysisLoop(), Math.min(delay, 60000));
+      intervalRef.current = setTimeout(() => loopRef.current(), Math.min(delay, 60000));
       return;
     }
 
@@ -116,8 +118,12 @@ export function useContinuousAnalysis(
     };
     runAll();
 
-    intervalRef.current = setTimeout(() => runAnalysisLoop(), config.interval);
+    intervalRef.current = setTimeout(() => loopRef.current(), config.interval);
   }, [executeAnalysis]);
+
+  useEffect(() => {
+    loopRef.current = runAnalysisLoop;
+  }, [runAnalysisLoop]);
 
   const startAnalysis = useCallback((configOverrides?: Partial<ContinuousAnalysisConfig>) => {
     if (intervalRef.current) clearTimeout(intervalRef.current);

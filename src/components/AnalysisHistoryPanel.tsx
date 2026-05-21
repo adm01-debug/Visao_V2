@@ -49,7 +49,7 @@ function TimelineEntry({ item }: { item: TimelineItem }) {
           <span className="flex items-center gap-1 text-[11px] text-muted-foreground"><Clock className="h-3 w-3" />{timeAgo}</span>
           {item.cameraName && <span className="flex items-center gap-1 text-[11px] text-muted-foreground"><Camera className="h-3 w-3" />{item.cameraName}</span>}
           {item.severity && <Badge variant="secondary" className={cn('text-[10px] px-1.5 py-0', SEVERITY_STYLES[item.severity])}>{item.severity}</Badge>}
-          {item.confidence != null && <span className="text-[11px] text-muted-foreground">{Math.round(item.confidence * 100)}%</span>}
+          {(item.confidence !== null && item.confidence !== undefined) && <span className="text-[11px] text-muted-foreground">{Math.round(item.confidence * 100)}%</span>}
         </div>
       </div>
     </div>
@@ -86,7 +86,7 @@ export const AnalysisHistoryPanel = React.forwardRef<HTMLDivElement>(function An
   const clearFilters = () => { setTypeFilter('all'); setSeverityFilter('all'); };
 
   const handleExport = (format: 'csv' | 'pdf') => {
-    const data = filteredItems.map(i => ({ ...i, type: i.type === 'alert' ? 'Alerta' : 'Análise', confidence: i.confidence != null ? `${Math.round(i.confidence * 100)}%` : '-' }));
+    const data = filteredItems.map(i => ({ ...i, type: i.type === 'alert' ? 'Alerta' : 'Análise', confidence: (i.confidence !== null && i.confidence !== undefined) ? `${Math.round(i.confidence * 100)}%` : '-' }));
     const filename = `historico_analises_${new Date().toISOString().split('T')[0]}`;
     if (format === 'csv') exportToCSV(data, filename, historyExportHeaders); else exportToPDF(data, filename, 'Histórico de Análises', historyExportHeaders);
   };

@@ -33,7 +33,7 @@ export function useZoneCRUD(
           color: newZone.color, is_active: newZone.enabled,
         }]);
       }
-    } catch {}
+    } catch { /* persistência best-effort; mantém zona em estado local mesmo sem Supabase */ }
 
     setZones(prev => [...prev, newZone]);
     setStats(prev => new Map(prev).set(newZone.id, initializeStats(newZone)));
@@ -51,13 +51,13 @@ export function useZoneCRUD(
       if (updates.color) updateData.color = updates.color;
       if (updates.enabled !== undefined) updateData.is_active = updates.enabled;
       await supabase.from('zones').update(updateData as never).eq('id', zoneId);
-    } catch {}
+    } catch { /* persistência best-effort; aplica atualização no estado local mesmo sem Supabase */ }
     setZones(prev => prev.map(z => z.id === zoneId ? { ...z, ...updates, updatedAt: new Date() } : z));
     toast.success('Zona atualizada');
   }, [setZones]);
 
   const removeZone = useCallback(async (zoneId: string) => {
-    try { await supabase.from('zones').delete().eq('id', zoneId); } catch {}
+    try { await supabase.from('zones').delete().eq('id', zoneId); } catch { /* persistência best-effort; remove do estado local mesmo sem Supabase */ }
     setZones(prev => prev.filter(z => z.id !== zoneId));
     setStats(prev => { const n = new Map(prev); n.delete(zoneId); return n; });
     zoneObjectsRef.current.delete(zoneId);

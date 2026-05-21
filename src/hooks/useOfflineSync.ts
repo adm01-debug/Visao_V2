@@ -132,8 +132,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
     try {
       const actions = await getPendingActions();
       setState(prev => ({ ...prev, pendingActionsCount: actions.length }));
-    } catch (_error) {
-}
+    } catch { /* contagem best-effort; ignora IndexedDB indisponível */ }
   };
 
   const syncPendingActions = useCallback(async () => {
@@ -249,8 +248,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
       if (persons) await cachePersons(persons);
 
       setState(prev => ({ ...prev, lastSyncAt: new Date() }));
-    } catch (_error) {
-}
+    } catch { /* atualização de cache best-effort; ignora falha de rede/storage */ }
   }, []);
 
   const getAlerts = useCallback(async (): Promise<unknown[]> => {
@@ -266,8 +264,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           await cacheAlerts(data);
           return data;
         }
-      } catch (_error) {
-}
+      } catch { /* online falhou; cai para cache local de alertas */ }
     }
 
     return getCachedAlerts();
@@ -285,8 +282,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           await cacheCameras(data);
           return data;
         }
-      } catch (_error) {
-}
+      } catch { /* online falhou; cai para cache local de câmeras */ }
     }
 
     return getCachedCameras();
@@ -304,8 +300,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           await cachePersons(data);
           return data;
         }
-      } catch (_error) {
-}
+      } catch { /* online falhou; cai para cache local de pessoas */ }
     }
 
     return getCachedPersons();

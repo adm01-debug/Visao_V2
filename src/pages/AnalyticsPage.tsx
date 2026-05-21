@@ -68,7 +68,7 @@ export function AnalyticsPage() {
           supabase.from('analysis_history').select('*', { count: 'exact', head: true }).gte('created_at', prevStart.toISOString()).lt('created_at', start.toISOString()),
         ]);
         analysisCount = count || 0; prevAnalysisCount = prevCount || 0;
-      } catch {}
+      } catch { /* contagem de análises best-effort; mantém zero se a consulta falhar */ }
 
       const totalAlerts = alertsData?.length || 0;
       setKpis([

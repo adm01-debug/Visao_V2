@@ -42,7 +42,10 @@ export function BottomSheet({
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
-  const getSnapHeight = (snapIndex: number) => windowHeight * (snapPoints[snapIndex] ?? 0);
+  const getSnapHeight = useCallback(
+    (snapIndex: number) => windowHeight * (snapPoints[snapIndex] ?? 0),
+    [windowHeight, snapPoints]
+  );
 
   const handleDragEnd = useCallback(
     (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
@@ -55,7 +58,7 @@ export function BottomSheet({
       });
       setCurrentSnap(nearestSnap);
     },
-    [currentSnap, snapPoints, onClose]
+    [currentSnap, snapPoints, onClose, getSnapHeight]
   );
 
   return (

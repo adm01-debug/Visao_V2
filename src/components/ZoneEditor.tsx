@@ -27,7 +27,9 @@ export function ZoneEditor({
   const [dragZoneId, setDragZoneId] = useState<string | null>(null);
   const [previewPoint, setPreviewPoint] = useState<Point | null>(null);
 
-  useEffect(() => { if (externalMode) { setMode(externalMode); cancelDrawing(); } }, [externalMode]);
+  const cancelDrawing = useCallback(() => { setIsDrawing(false); setCurrentPoints([]); setPreviewPoint(null); }, []);
+
+  useEffect(() => { if (externalMode) { setMode(externalMode); cancelDrawing(); } }, [externalMode, cancelDrawing]);
 
   const getMousePosition = useCallback((e: React.MouseEvent | MouseEvent): Point => {
     if (!containerRef.current) return { x: 0, y: 0 };
@@ -37,8 +39,6 @@ export function ZoneEditor({
       y: Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100)),
     };
   }, []);
-
-  const cancelDrawing = useCallback(() => { setIsDrawing(false); setCurrentPoints([]); setPreviewPoint(null); }, []);
 
   const finishZone = useCallback((shape: 'polygon' | 'rectangle' | 'line', points: Point[]) => {
     onZoneCreated?.({ geometry: { shape, points }, color: selectedColor, opacity: 0.3 });

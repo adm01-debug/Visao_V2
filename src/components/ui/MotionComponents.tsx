@@ -32,7 +32,7 @@ export function MotionButton({ children, className, variant = 'primary', ...prop
 export function MotionList({ children, className }: { children: React.ReactNode; className?: string }) {
   return <motion.div className={className} variants={staggerContainer} initial="hidden" animate="visible">{children}</motion.div>;
 }
-interface MotionListItemProps extends HTMLMotionProps<'div'> {}
+type MotionListItemProps = HTMLMotionProps<'div'>;
 export function MotionListItem({ children, className, ...props }: MotionListItemProps) {
   return <motion.div className={className} variants={staggerItem} {...props}>{children}</motion.div>;
 }

@@ -42,6 +42,48 @@ const COLORS = [
   'hsl(330, 80%, 55%)',
 ];
 
+const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { fullName?: string; count?: number; critical?: number; high?: number; medium?: number; low?: number } }> }) => {
+  if (active && payload && payload.length) {
+    const data = payload[0]!.payload;
+    return (
+      <div className="bg-card border border-border rounded-lg p-3 shadow-lg text-sm">
+        <p className="font-medium text-foreground mb-2">{data.fullName}</p>
+        <div className="space-y-1 text-xs">
+          <div className="flex justify-between gap-4">
+            <span className="text-muted-foreground">Total:</span>
+            <span className="font-medium">{data.count}</span>
+          </div>
+          {(data.critical ?? 0) > 0 && (
+            <div className="flex justify-between gap-4">
+              <span className="text-destructive">Crítico:</span>
+              <span>{data.critical}</span>
+            </div>
+          )}
+          {(data.high ?? 0) > 0 && (
+            <div className="flex justify-between gap-4">
+              <span className="text-warning">Alto:</span>
+              <span>{data.high}</span>
+            </div>
+          )}
+          {(data.medium ?? 0) > 0 && (
+            <div className="flex justify-between gap-4">
+              <span className="text-warning">Médio:</span>
+              <span>{data.medium}</span>
+            </div>
+          )}
+          {(data.low ?? 0) > 0 && (
+            <div className="flex justify-between gap-4">
+              <span className="text-success">Baixo:</span>
+              <span>{data.low}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
+
 export function AlertsByCameraChart({ alerts, className = '', onCameraClick }: AlertsByCameraChartProps) {
   const [chartType, setChartType] = useState<ChartType>('bar');
 
@@ -83,48 +125,6 @@ export function AlertsByCameraChart({ alerts, className = '', onCameraClick }: A
   }, [alerts]);
 
   const totalAlerts = chartData.reduce((sum, d) => sum + d.count, 0);
-
-  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { fullName?: string; count?: number; critical?: number; high?: number; medium?: number; low?: number } }> }) => {
-    if (active && payload && payload.length) {
-      const data = payload[0]!.payload;
-      return (
-        <div className="bg-card border border-border rounded-lg p-3 shadow-lg text-sm">
-          <p className="font-medium text-foreground mb-2">{data.fullName}</p>
-          <div className="space-y-1 text-xs">
-            <div className="flex justify-between gap-4">
-              <span className="text-muted-foreground">Total:</span>
-              <span className="font-medium">{data.count}</span>
-            </div>
-            {(data.critical ?? 0) > 0 && (
-              <div className="flex justify-between gap-4">
-                <span className="text-destructive">Crítico:</span>
-                <span>{data.critical}</span>
-              </div>
-            )}
-            {(data.high ?? 0) > 0 && (
-              <div className="flex justify-between gap-4">
-                <span className="text-warning">Alto:</span>
-                <span>{data.high}</span>
-              </div>
-            )}
-            {(data.medium ?? 0) > 0 && (
-              <div className="flex justify-between gap-4">
-                <span className="text-warning">Médio:</span>
-                <span>{data.medium}</span>
-              </div>
-            )}
-            {(data.low ?? 0) > 0 && (
-              <div className="flex justify-between gap-4">
-                <span className="text-success">Baixo:</span>
-                <span>{data.low}</span>
-              </div>
-            )}
-          </div>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div className={`glass-card p-5 ${className}`}>

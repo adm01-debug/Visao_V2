@@ -90,17 +90,12 @@ export function useFaceDetection(options: UseFaceDetectionOptions = {}) {
   const detectFacesRemote = useCallback(async (
     imageBase64: string
   ): Promise<DetectedFace[]> => {
-    try {
-      const { data, error: fnError } = await supabase.functions.invoke('detect-faces', {
-        body: { imageBase64 },
-      });
+    const { data, error: fnError } = await supabase.functions.invoke('detect-faces', {
+      body: { imageBase64 },
+    });
 
-      if (fnError) throw fnError;
-      return data?.faces || [];
-    } catch (err: unknown) {
-
-      throw err;
-    }
+    if (fnError) throw fnError;
+    return data?.faces || [];
   }, []);
 
   /**

@@ -51,6 +51,11 @@ export function ClipRecorderControls({ cameraId, cameraName, streamRef, maxDurat
     };
   }, []);
 
+  const stopRecording = useCallback(() => {
+    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') mediaRecorderRef.current.stop();
+  }, []);
+
   const startRecording = useCallback(async () => {
     try {
       let stream: MediaStream | null = null;
@@ -98,12 +103,7 @@ export function ClipRecorderControls({ cameraId, cameraName, streamRef, maxDurat
 
       toast.success('Gravação iniciada');
     } catch (error) { logger.error('Erro ao iniciar gravação', error); toast.error('Não foi possível iniciar a gravação'); }
-  }, [cameraId, cameraName, streamRef, maxDuration, onClipSaved]);
-
-  const stopRecording = useCallback(() => {
-    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') mediaRecorderRef.current.stop();
-  }, []);
+  }, [cameraId, cameraName, streamRef, maxDuration, onClipSaved, stopRecording]);
 
   const togglePause = useCallback(() => {
     if (!mediaRecorderRef.current) return;
