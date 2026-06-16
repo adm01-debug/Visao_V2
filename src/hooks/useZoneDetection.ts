@@ -206,7 +206,7 @@ export function useZoneDetection(options: UseZoneDetectionOptions) {
     configRef.current = { ...configRef.current, ...updates };
   }, []);
 
-  useEffect(() => { if (initialZones.length === 0) {} }, [initialZones.length]);
+  useEffect(() => { if (initialZones.length === 0) { /* sem zonas iniciais; nada a sincronizar */ } }, [initialZones.length]);
 
   return {
     zones, trackedObjects, stats, recentEvents, processDetections,

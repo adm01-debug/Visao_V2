@@ -2,6 +2,7 @@
  * VISÃO - Zone Geometry Helpers
  */
 
+import { ZONE_COLORS } from '@/constants/chartColors';
 import type { Point, Zone, ZoneType } from './types';
 
 export function isPointInPolygon(point: Point, polygon: Point[]): boolean {
@@ -70,7 +71,6 @@ export function didCrossLine(
 }
 
 export function generateZoneColor(): string {
-  const { ZONE_COLORS } = require('@/constants/chartColors');
   return ZONE_COLORS[Math.floor(Math.random() * ZONE_COLORS.length)] ?? ZONE_COLORS[0];
 }
 

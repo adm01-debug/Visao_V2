@@ -33,7 +33,7 @@ describe('Performance E2E', () => {
     it('deve ter CLS abaixo de 0.1', () => {
       cy.visit('/dashboard');
       cy.wait(3000);
-      cy.window().then((win) => {
+      cy.window().then((_win) => {
         let cls = 0;
         new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {

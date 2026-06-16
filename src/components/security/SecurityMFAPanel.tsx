@@ -45,7 +45,7 @@ export function SecurityMFAPanel() {
       
       setTabStep('verified');
       toast.success('MFA ativado com sucesso!');
-    } catch (err) {
+    } catch {
       toast.error('Código inválido ou erro na verificação');
     } finally {
       setLoading(false);
@@ -85,7 +85,7 @@ export function SecurityMFAPanel() {
             <div className="flex flex-col items-center space-y-4 text-center">
               <p className="text-sm font-medium">Escaneie o código QR no seu aplicativo de autenticação:</p>
               {qrCode ? (
-                <div className="p-4 bg-white rounded-xl border">
+                <div className="p-4 bg-card rounded-xl border">
                   <img src={qrCode} alt="QR Code MFA" className="w-48 h-48" />
                 </div>
               ) : (

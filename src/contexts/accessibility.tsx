@@ -53,13 +53,18 @@ const AccessibilityContext = createContext<AccessibilityContextValue | null>(nul
 
 export function AccessibilityProvider({ children }: { children: ReactNode }) {
   const [preferences, setPreferences] = useState<AccessibilityPreferences>(() => {
-    const saved = localStorage.getItem('visao-a11y-preferences');
-    if (saved) return JSON.parse(saved);
-    return {
+    const defaults: AccessibilityPreferences = {
       reduceMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
       highContrast: window.matchMedia('(prefers-contrast: more)').matches,
       largeText: false, screenReaderMode: false, keyboardNavigation: true, focusIndicators: true,
     };
+    const saved = localStorage.getItem('visao-a11y-preferences');
+    if (!saved) return defaults;
+    try {
+      return { ...defaults, ...JSON.parse(saved) };
+    } catch {
+      return defaults;
+    }
   });
 
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);

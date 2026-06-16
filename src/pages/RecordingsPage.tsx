@@ -69,7 +69,7 @@ export function RecordingsPage() {
   const totalPages = Math.ceil(filteredClips.length / itemsPerPage);
   const paginatedClips = filteredClips.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  const handleSelectClip = (id: string, sel: boolean) => setSelectedClips(p => { const s = new Set(p); sel ? s.add(id) : s.delete(id); return s; });
+  const handleSelectClip = (id: string, sel: boolean) => setSelectedClips(p => { const s = new Set(p); if (sel) { s.add(id); } else { s.delete(id); } return s; });
   const handleSelectAll = (sel: boolean) => setSelectedClips(sel ? new Set(paginatedClips.map(c => c.id)) : new Set());
   const handleDownloadClip = (clip: VideoClipWithCamera) => {
     if (!clip.file_url) { toast.error('URL não disponível'); return; }

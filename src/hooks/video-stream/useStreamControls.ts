@@ -115,7 +115,7 @@ export function useStreamControls(options: UseStreamControlsOptions) {
         await video.requestFullscreen();
         updateState({ isFullscreen: true });
       }
-    } catch {}
+    } catch { /* alternância de tela cheia best-effort; ignora rejeição do navegador */ }
   }, [videoRef, updateState]);
 
   return { play, pause, togglePlay, toggleMute, setVolume, setQuality, takeSnapshot, getCurrentFrame, toggleFullscreen };

@@ -6,14 +6,6 @@ import { cn } from '@/lib/utils';
 export function CameraMapWidget() {
   const { cameras, loading } = useCameras();
 
-  if (loading) {
-    return (
-      <div className="h-full flex items-center justify-center">
-        <div className="animate-pulse bg-muted rounded w-full h-full" />
-      </div>
-    );
-  }
-
   // Group cameras by location
   const locationGroups = React.useMemo(() => {
     const groups: Record<string, typeof cameras> = {};
@@ -26,6 +18,14 @@ export function CameraMapWidget() {
     });
     return groups;
   }, [cameras]);
+
+  if (loading) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="animate-pulse bg-muted rounded w-full h-full" />
+      </div>
+    );
+  }
 
   const locations = Object.entries(locationGroups);
 

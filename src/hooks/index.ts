@@ -42,7 +42,6 @@ export * from './useInterval';
 export * from './useTimeout';
 
 // Utility hooks
-export * from './usePrevious';
 export * from './useClipboard';
 export * from './useOffline';
 

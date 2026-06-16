@@ -124,17 +124,17 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     };
   }, [showAlertToast, queryClient]);
 
+  const removeNotification = useCallback((id: string) => {
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  }, []);
+
   const addNotification = useCallback((n: Omit<Notification, "id">) => {
     const id = Math.random().toString(36);
     setNotifications((prev) => [...prev, { ...n, id }]);
     if (n.duration !== 0) {
       setTimeout(() => removeNotification(id), n.duration || 5000);
     }
-  }, []);
-
-  const removeNotification = useCallback((id: string) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
-  }, []);
+  }, [removeNotification]);
 
   const toggleAlertSound = useCallback((enabled: boolean) => {
     setIsAlertSoundEnabled(enabled);

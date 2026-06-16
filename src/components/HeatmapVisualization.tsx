@@ -103,7 +103,7 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
       activities.sort((a, b) => b.total - a.total);
       setZoneActivities(activities);
       setTotalDetections((recognitionLogs || []).length);
-    } catch {} finally { setLoading(false); }
+    } catch { /* dados de mapa de calor best-effort; ignora falha de consulta */ } finally { setLoading(false); }
   };
 
   const stats = useMemo(() => {

@@ -12,12 +12,12 @@ interface DonutChartProps {
 
 export function DonutChart({ data, size = 160 }: DonutChartProps) {
   const total = data.reduce((sum, item) => sum + item.count, 0);
-  let currentAngle = 0;
 
-  const segments = data.map(item => {
+  const segments = data.map((item, i) => {
     const angle = (item.count / total) * 360;
-    const startAngle = currentAngle;
-    currentAngle += angle;
+    const startAngle = data
+      .slice(0, i)
+      .reduce((acc, prev) => acc + (prev.count / total) * 360, 0);
     return { ...item, startAngle, angle };
   });
 

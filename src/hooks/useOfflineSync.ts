@@ -132,8 +132,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
     try {
       const actions = await getPendingActions();
       setState(prev => ({ ...prev, pendingActionsCount: actions.length }));
-    } catch (_error) {
-}
+    } catch { /* contagem best-effort; ignora IndexedDB indisponível */ }
   };
 
   const syncPendingActions = useCallback(async () => {
@@ -193,14 +192,15 @@ export function useOfflineSync(): UseOfflineSyncReturn {
     const { type, table, data } = action;
 
     switch (type) {
-      case 'create':
+      case 'create': {
         const { error: createError } = await supabase
           .from(table as 'alerts')
           .insert(data as never);
         if (createError) throw createError;
         break;
+      }
 
-      case 'update':
+      case 'update': {
         const { id: updateId, ...updateData } = data;
         const { error: updateError } = await supabase
           .from(table as 'alerts')
@@ -208,14 +208,16 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           .eq('id', updateId as string);
         if (updateError) throw updateError;
         break;
+      }
 
-      case 'delete':
+      case 'delete': {
         const { error: deleteError } = await supabase
           .from(table as 'alerts')
           .delete()
           .eq('id', data.id as string);
         if (deleteError) throw deleteError;
         break;
+      }
     }
   };
 
@@ -246,8 +248,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
       if (persons) await cachePersons(persons);
 
       setState(prev => ({ ...prev, lastSyncAt: new Date() }));
-    } catch (_error) {
-}
+    } catch { /* atualização de cache best-effort; ignora falha de rede/storage */ }
   }, []);
 
   const getAlerts = useCallback(async (): Promise<unknown[]> => {
@@ -263,8 +264,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           await cacheAlerts(data);
           return data;
         }
-      } catch (_error) {
-}
+      } catch { /* online falhou; cai para cache local de alertas */ }
     }
 
     return getCachedAlerts();
@@ -282,8 +282,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           await cacheCameras(data);
           return data;
         }
-      } catch (_error) {
-}
+      } catch { /* online falhou; cai para cache local de câmeras */ }
     }
 
     return getCachedCameras();
@@ -301,8 +300,7 @@ export function useOfflineSync(): UseOfflineSyncReturn {
           await cachePersons(data);
           return data;
         }
-      } catch (_error) {
-}
+      } catch { /* online falhou; cai para cache local de pessoas */ }
     }
 
     return getCachedPersons();

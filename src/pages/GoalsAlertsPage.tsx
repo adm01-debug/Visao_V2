@@ -138,7 +138,7 @@ export default function GoalsAlertsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-40 w-full" />)}</div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {collaboratorKPIs.sort((a, b) => a.overallScore - b.overallScore).map((c, idx) => (
+              {[...collaboratorKPIs].sort((a, b) => a.overallScore - b.overallScore).map((c, idx) => (
                 <CollaboratorKPICard key={c.personId} collaborator={c} index={idx} />
               ))}
             </div>

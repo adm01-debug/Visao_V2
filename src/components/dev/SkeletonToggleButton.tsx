@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Layers, LayersIcon } from 'lucide-react';
+import { Layers } from 'lucide-react';
 import { useSkeletonToggle } from '@/contexts/SkeletonToggleContext';
 import { cn } from '@/lib/utils';
 

@@ -1,10 +1,9 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { useAppStore } from '../appStore';
 
 describe('appStore', () => {
   beforeEach(() => {
     // Reset o estado da store antes de cada teste se houver uma função de reset
-    const state = useAppStore.getState();
     // Como zustand stores não costumam ter reset nativo a menos que implementemos
     // vamos resetar manualmente as propriedades conhecidas
     useAppStore.setState({

@@ -127,7 +127,9 @@ export function getBufferStats(cameraId: string): { count: number; spanSec: numb
  */
 export function useFrameBuffer(cameraId: string | null | undefined) {
   const cameraIdRef = useRef(cameraId);
-  cameraIdRef.current = cameraId;
+  useEffect(() => {
+    cameraIdRef.current = cameraId;
+  }, [cameraId]);
 
   const stats = useSyncExternalStore(
     subscribe,

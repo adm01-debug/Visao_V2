@@ -108,7 +108,7 @@ export async function assertNoOverlapWithMeasuredNav(
   ).toBe(true);
 
   const overlap = await page.evaluate(
-    ({ navTop, tol }) => {
+    ({ navTop: _navTop, tol }) => {
       const scroll = document.querySelector('[data-app-scroll]') as HTMLElement | null;
       if (!scroll) return { mainBottom: 0, hasContent: false };
 

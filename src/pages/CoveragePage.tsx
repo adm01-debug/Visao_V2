@@ -158,13 +158,13 @@ const CoveragePage = () => {
               </AlertDescription>
             </Alert>
           )}
-          {data.alert?.dropExceeded && data.alert.delta != null && (
+          {data.alert?.dropExceeded && data.alert.delta !== null && (
             <Alert variant="destructive">
               <AlertTitle>⚠️ Queda de cobertura detectada</AlertTitle>
               <AlertDescription>
                 A cobertura global de statements caiu{" "}
                 <strong>{Math.abs(data.alert.delta).toFixed(2)} pp</strong>
-                {data.alert.previousPct != null && (
+                {data.alert.previousPct !== null && (
                   <>
                     {" "}(de <strong>{data.alert.previousPct.toFixed(2)}%</strong> para{" "}
                     <strong>{data.totals.statements.pct.toFixed(2)}%</strong>)
@@ -175,7 +175,7 @@ const CoveragePage = () => {
               </AlertDescription>
             </Alert>
           )}
-          {data.alert && !data.alert.dropExceeded && data.alert.delta != null && data.alert.delta < 0 && (
+          {data.alert && !data.alert.dropExceeded && data.alert.delta !== null && data.alert.delta < 0 && (
             <Alert>
               <AlertTitle className="text-sm">📉 Cobertura caiu levemente</AlertTitle>
               <AlertDescription>
@@ -197,7 +197,7 @@ const CoveragePage = () => {
             <AlertDescription>
               {data.files.length.toLocaleString("pt-BR")} arquivos analisados. Cobertura global de statements:{" "}
               <strong>{data.totals.statements.pct.toFixed(2)}%</strong>
-              {data.alert?.delta != null && (
+              {(data.alert?.delta !== null && data.alert?.delta !== undefined) && (
                 <>
                   {" "}
                   {/* eslint-disable-next-line visao/no-hardcoded-colors -- semântica positivo/negativo via paleta tailwind */}

@@ -12,7 +12,7 @@ export function usePeopleData() {
   const [people, setPeople] = useState<DbPerson[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
-  const { filters, setFilters, clearFilters, hasActiveFilters } = useManagedFilters<Filters & { [key: string]: unknown }>({
+  const { filters, setFilters } = useManagedFilters<Filters & { [key: string]: unknown }>({
     scope: 'people',
     defaults: defaultPeopleFilters,
     labels: { search: 'busca', activeOnly: 'apenas ativos' },

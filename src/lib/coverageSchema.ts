@@ -100,7 +100,7 @@ export function parseCoverageReport(raw: unknown): ParseCoverageResult {
   const warnings: string[] = [];
   let degraded = false;
 
-  if (raw == null || typeof raw !== "object") {
+  if (raw === null || raw === undefined || typeof raw !== "object") {
     warnings.push("JSON ausente ou não é um objeto — usando fallback vazio.");
     degraded = true;
     return {
@@ -116,7 +116,7 @@ export function parseCoverageReport(raw: unknown): ParseCoverageResult {
     warnings.push("Campo `generatedAt` ausente/inválido.");
     degraded = true;
   }
-  if (obj.totals == null || typeof obj.totals !== "object") {
+  if (obj.totals === null || obj.totals === undefined || typeof obj.totals !== "object") {
     warnings.push("Campo `totals` ausente/inválido.");
     degraded = true;
   }

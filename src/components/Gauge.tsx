@@ -3,7 +3,7 @@
  * Circular speedometer-style meter visualization
  */
 
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { CHART_COLORS } from '@/constants/chartColors';
 
@@ -75,25 +75,22 @@ export const Gauge: React.FC<GaugeProps> = ({
   // Calculate needle angle
   const needleAngle = startAngle + percentage * angleRange;
 
-  // Convert angle to radians
-  const toRadians = (angle: number) => (angle * Math.PI) / 180;
-
   // Get point on circle
-  const getPoint = (angle: number, r: number) => {
-    const rad = toRadians(angle);
+  const getPoint = useCallback((angle: number, r: number) => {
+    const rad = (angle * Math.PI) / 180;
     return {
       x: center + r * Math.cos(rad),
       y: center + r * Math.sin(rad),
     };
-  };
+  }, [center]);
 
   // Create arc path
-  const createArc = (startAng: number, endAng: number, r: number) => {
+  const createArc = useCallback((startAng: number, endAng: number, r: number) => {
     const start = getPoint(startAng, r);
     const end = getPoint(endAng, r);
     const largeArc = endAng - startAng > 180 ? 1 : 0;
     return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 1 ${end.x} ${end.y}`;
-  };
+  }, [getPoint]);
 
   // Generate segment arcs
   const segmentArcs = useMemo(() => {
@@ -115,7 +112,7 @@ export const Gauge: React.FC<GaugeProps> = ({
     });
 
     return arcs;
-  }, [segments, startAngle, angleRange, radius, min, max]);
+  }, [segments, startAngle, angleRange, radius, min, max, createArc]);
 
   // Generate tick marks
   const ticks = useMemo(() => {
@@ -144,7 +141,7 @@ export const Gauge: React.FC<GaugeProps> = ({
     }
 
     return tickMarks;
-  }, [tickCount, min, max, startAngle, angleRange, radius, thickness]);
+  }, [tickCount, min, max, startAngle, angleRange, radius, thickness, getPoint]);
 
   // Needle path
   const needlePath = useMemo(() => {
@@ -155,7 +152,7 @@ export const Gauge: React.FC<GaugeProps> = ({
     const base2 = getPoint(needleAngle - 90, needleWidth);
 
     return `M ${tip.x} ${tip.y} L ${base1.x} ${base1.y} L ${base2.x} ${base2.y} Z`;
-  }, [needleAngle, radius, thickness]);
+  }, [needleAngle, radius, thickness, getPoint]);
 
   const displayValue = formatValue ? formatValue(clampedValue) : Math.round(clampedValue).toString();
 

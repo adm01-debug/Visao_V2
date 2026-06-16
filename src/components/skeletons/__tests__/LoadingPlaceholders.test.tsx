@@ -6,7 +6,7 @@
  * dos dados chegarem, o conteúdo "salta" durante o load.
  */
 import { describe, it, expect } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { CamerasSkeleton } from '../CamerasSkeleton';
 import { AlertsSkeleton } from '../AlertsSkeleton';
 import { ZonesSkeleton } from '../ZonesSkeleton';
@@ -116,7 +116,6 @@ describe('Loading placeholders permanecem renderizados durante o loading', () =>
       const { container } = render(<TabsSkeleton tabsCount={4} />);
       const root = container.firstElementChild as HTMLElement;
       expect(root.className).toMatch(/h-10/);
-      const tabs = within(root).getAllByRole('generic', { hidden: true });
       // Não usamos getByRole pois Skeleton tem aria-hidden; conferimos filhos
       expect(root.children.length).toBe(4);
     });

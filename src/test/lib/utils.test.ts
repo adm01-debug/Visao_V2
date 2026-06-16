@@ -6,6 +6,7 @@ describe("cn (class names utility)", () => {
     expect(cn("p-2", "p-4")).toBe("p-4");
   });
   it("handles conditional", () => {
+    // eslint-disable-next-line no-constant-binary-expression -- intentional falsy input under test
     expect(cn("base", false && "hidden", "visible")).toBe("base visible");
   });
   it("handles undefined", () => {

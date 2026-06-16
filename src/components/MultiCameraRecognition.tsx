@@ -22,7 +22,7 @@ function MultiCameraRecognitionComponent() {
     soundEnabled, setSoundEnabled, isGlobalRunning, recognitionResults,
     fullscreenCamera, setFullscreenCamera, personsCache,
     toggleCamera, startAllCameras, stopAllCameras, handleVideoLoaded,
-    getLayoutClass, getMaxCameras, intervalsRef,
+    getLayoutClass, getMaxCameras, analyzingIds,
   } = useMultiCameraRecognition();
 
   return (
@@ -98,7 +98,7 @@ function MultiCameraRecognitionComponent() {
           ) : (
             <div className={cn('grid gap-4 h-full', getLayoutClass())}>
               {activeCameras.map(camera => (
-                <CameraFeedCard key={camera.id} camera={camera} isAnalyzing={intervalsRef.current.has(camera.id)}
+                <CameraFeedCard key={camera.id} camera={camera} isAnalyzing={analyzingIds.has(camera.id)}
                   onVideoLoaded={(video) => handleVideoLoaded(camera.id, video)} onRemove={() => toggleCamera(camera.id)}
                   onFullscreen={() => setFullscreenCamera(camera.id)} recentDetections={recognitionResults.filter(r => r.cameraId === camera.id).slice(0, 3)} />
               ))}

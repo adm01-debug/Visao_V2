@@ -75,7 +75,7 @@ interface _DeviceMotionEventStatic {
 }
 
 // Web Audio Context
-interface Window {
+interface _Window {
   webkitAudioContext?: typeof AudioContext;
 }
 

@@ -81,8 +81,8 @@ export function DataTable<T extends Record<string, any>>({
       const bVal = b[sortKey];
 
       if (aVal === bVal) return 0;
-      if (aVal == null) return 1;
-      if (bVal == null) return -1;
+      if (aVal === null || aVal === undefined) return 1;
+      if (bVal === null || bVal === undefined) return -1;
 
       const comparison = aVal < bVal ? -1 : 1;
       return sortDir === 'asc' ? comparison : -comparison;

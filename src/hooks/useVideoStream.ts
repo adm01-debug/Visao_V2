@@ -100,6 +100,9 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
     onStatsUpdate,
   });
 
+  // Indirection to break the connect <-> handleReconnect cycle.
+  const connectRef = useRef<() => Promise<void>>();
+
   // Reconnection handler
   const handleReconnect = useCallback(async () => {
     if (!reconnection?.enabled) return;
@@ -111,7 +114,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
     setStatus('reconnecting');
     updateState({ stats: { ...state.stats, reconnectAttempts: attempts } });
     const delay = reconnection.delayMs! * Math.pow(reconnection.backoffMultiplier || 1.5, attempts - 1);
-    reconnectTimeoutRef.current = setTimeout(() => { connect(); }, delay);
+    reconnectTimeoutRef.current = setTimeout(() => { connectRef.current?.(); }, delay);
   }, [reconnection, state.stats, setStatus, setError, updateState]);
 
   // HLS connection
@@ -164,6 +167,10 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
     }
     onConnect?.();
   }, [protocol, connectHLS, connectNative, onConnect]);
+
+  useEffect(() => {
+    connectRef.current = connect;
+  }, [connect]);
 
   // Disconnect
   const disconnect = useCallback(() => {

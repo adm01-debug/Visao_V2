@@ -72,7 +72,8 @@ export function escapeSpecialChars(input: string): string {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+    // color-exception -- '&#039;' is the HTML entity for a single quote, not a color
+    .replace(/'/g, /* color-exception */ '&#039;');
 }
 
 export default {

@@ -91,7 +91,7 @@ export function CameraMap({ cameras, onCameraClick, className = '' }: CameraMapP
 
     // Add new markers
     cameras.forEach((camera, index) => {
-      const coords: [number, number] = (camera.longitude != null && camera.latitude != null)
+      const coords: [number, number] = (camera.longitude !== null && camera.longitude !== undefined && camera.latitude !== null && camera.latitude !== undefined)
         ? [camera.longitude, camera.latitude]
         : locationCoordinates[camera.location] || [
             -46.6333 + (index * 0.001),

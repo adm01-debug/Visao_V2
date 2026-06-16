@@ -7,7 +7,7 @@ import tseslint from 'typescript-eslint';
 import visaoRules from './eslint-rules/index.js';
 
 export default tseslint.config(
-  { ignores: ['dist', 'node_modules', 'coverage', '.storybook', 'storybook-static'] },
+  { ignores: ['dist', 'node_modules', '.npm-cache', 'coverage', '.storybook', 'storybook-static'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
@@ -94,6 +94,29 @@ export default tseslint.config(
     rules: {
       'visao/no-hardcoded-colors': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
+  // Supabase Edge Functions rodam em Deno: `console` é o mecanismo de log oficial.
+  {
+    files: ['supabase/functions/**/*.{ts,tsx}'],
+    rules: {
+      'no-console': 'off',
+    },
+  },
+  // Cypress augmenta o namespace global `Cypress.Chainable` — padrão da lib.
+  // Asserções Chai (`expect(x).to.exist`) são statements de expressão por design.
+  {
+    files: ['cypress/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-namespace': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off',
+    },
+  },
+  // Config do Tailwind usa `require()` para carregar plugins (padrão do ecossistema).
+  {
+    files: ['tailwind.config.ts'],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
     },
   }
 );

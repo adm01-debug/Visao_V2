@@ -8,7 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { format, subDays } from 'date-fns';
+import { format } from 'date-fns';
 import { toast } from 'sonner';
 
 import { 
@@ -16,9 +16,7 @@ import {
   AuditLogTable, 
   AccessEventsList, 
   SecurityListsPanel,
-  SecurityMFAPanel,
-  type AuditLog, 
-  type AccessEvent, 
+  SecurityMFAPanel, 
   type SecurityPerson, 
   type SecurityStats, 
   type ListType 
@@ -33,8 +31,8 @@ export function SecurityPage() {
   const [securityPersons, setSecurityPersons] = useState<SecurityPerson[]>([]);
   const [stats, setStats] = useState<SecurityStats | null>(null);
 
-  const { logs, loading: logsLoading, refetch: refetchLogs } = useAuditLogs();
-  const { events: accessEvents, loading: accessLoading, refetch: refetchAccess } = useAccessEvents();
+  const { logs, refetch: refetchLogs } = useAuditLogs();
+  const { events: accessEvents, refetch: refetchAccess } = useAccessEvents();
 
   const loadData = useCallback(async () => {
     setLoading(true);
