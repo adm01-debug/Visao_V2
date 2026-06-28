@@ -68,6 +68,16 @@ function PersonFormComponent({
   const [photoPreview, setPhotoPreview] = useState<string | null>(initialData?.photoUrl || null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const isDirty = 
+    name !== (initialData?.name || '') ||
+    listType !== (initialData?.listType || 'authorized') ||
+    department !== (initialData?.department || '') ||
+    role !== (initialData?.role || '') ||
+    notes !== (initialData?.notes || '') ||
+    isActive !== (initialData?.isActive ?? true);
+
+  useUnsavedChanges(isDirty && !isLoading);
+
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
