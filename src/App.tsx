@@ -116,6 +116,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
           <MobileMenuChecklist />
           <BrowserRouter>
             <AuthProvider>
+              <HistoryProvider>
               <TraceIdManager />
               <NotificationProvider>
                 <NavigationProgress />
