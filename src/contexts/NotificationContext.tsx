@@ -149,6 +149,10 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("alert-sound-enabled", String(enabled));
   }, []);
 
+  const resetUnreadAlerts = useCallback(() => {
+    setUnreadAlertsCount(0);
+  }, []);
+
   return (
     <NotificationContext.Provider
       value={{
@@ -157,6 +161,8 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         removeNotification,
         toggleAlertSound,
         isAlertSoundEnabled,
+        unreadAlertsCount,
+        resetUnreadAlerts,
       }}
     >
       {children}
