@@ -37,7 +37,10 @@ export const BackButton = React.forwardRef<HTMLButtonElement, BackButtonProps>(
             ref={ref}
             variant="ghost"
             size="icon"
-            onClick={() => navigate(-1)}
+            onClick={() => {
+              triggerHaptic('light');
+              navigate(-1);
+            }}
             className={cn(
               "h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/80",
               className
