@@ -4,6 +4,7 @@ import { NotificationBell } from "@/components/NotificationBell";
 import { AnalysisHistoryPanel } from "@/components/AnalysisHistoryPanel";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PageTitle } from "@/components/Breadcrumbs";
+import { BackButton } from "@/components/ui/BackButton";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { useTheme } from "@/contexts/ThemeProvider";
