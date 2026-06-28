@@ -25,7 +25,7 @@ export * from './useDisclosure';
 export * from './useForm';
 
 // Data hooks
-export * from './useFetch';
+
 export * from './useAsync';
 
 // Toast
