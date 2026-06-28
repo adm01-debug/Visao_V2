@@ -116,6 +116,11 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         (payload) => {
           const newAlert = payload.new as AlertPayload;
           showAlertToast(newAlert);
+          
+          if (newAlert.severity === 'critical' || newAlert.severity === 'high') {
+            setUnreadAlertsCount(prev => prev + 1);
+          }
+
           queryClient.invalidateQueries({ queryKey: ["sidebar-alerts-count"] });
           queryClient.invalidateQueries({ queryKey: ["alerts"] });
         }
