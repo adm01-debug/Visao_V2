@@ -19,6 +19,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PanicButton } from "@/components/PanicButton";
 import { TraceIdManager } from "@/components/TraceIdManager";
 import { HistoryProvider } from "@/contexts/HistoryContext";
+import { DynamicTitleManager } from "@/components/DynamicTitleManager";
 
 import { withRouteErrorBoundary } from "@/components/RouteErrorBoundary";
 import { NavigationProgress } from "@/components/ui/NavigationProgress";
