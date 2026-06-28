@@ -31,6 +31,11 @@ import { PageContent } from "@/components/layout/MainLayout";
 
 export function AlertsPage() {
   const { events: _recognitionEvents } = useFaceRecognitionAlerts({ cameraId: '', cameraName: '' });
+  const { resetUnreadAlerts } = useNotifications();
+
+  useEffect(() => {
+    resetUnreadAlerts();
+  }, [resetUnreadAlerts]);
 
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [sortBy, setSortBy] = useState<SortOption>('date-desc');
