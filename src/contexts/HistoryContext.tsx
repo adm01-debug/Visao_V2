@@ -51,7 +51,7 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
     if (label) {
       setHistory(prev => {
         // Avoid consecutive duplicates
-        if (prev.length > 0 && prev[0].pathname === location.pathname) return prev;
+        if (prev.length > 0 && prev[0]?.pathname === location.pathname) return prev;
         
         const newEntry = {
           pathname: location.pathname,
