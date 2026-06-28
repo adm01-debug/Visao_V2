@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { useSidebarStatus } from "@/hooks/useSidebarStatus";
 import { useUserRole } from "@/hooks/useUserRole";
 import { allCategories, type NavCategory } from "./navigation/bottomNavData";
+import { triggerHaptic } from "@/lib/haptics";
 
 export function BottomNavigation() {
   const location = useLocation();
