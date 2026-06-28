@@ -40,6 +40,7 @@ export const BackButton = React.forwardRef<HTMLButtonElement, BackButtonProps>(
             size="icon"
             onClick={() => {
               triggerHaptic('light');
+              trackUXEvent('back_button_click', { from: location.pathname });
               navigate(-1);
             }}
             className={cn(
