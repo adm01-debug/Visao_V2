@@ -50,6 +50,7 @@ export function BottomNavigation() {
   };
 
   const handleCategoryClick = (cat: NavCategory) => {
+    triggerHaptic('light');
     if (expandedCategory === cat.id) setExpandedCategory(null);
     else if (activeCategory === cat.id) setExpandedCategory(cat.id);
     else { navigate(cat.defaultPath); setExpandedCategory(null); }
