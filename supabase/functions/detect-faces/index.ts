@@ -43,7 +43,7 @@ const detectFaces = async (imageBase64: string, minConfidence: number, maxFaces:
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "google/gemini-1.5-flash",
         messages: [
           { 
             role: "system", 
