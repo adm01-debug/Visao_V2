@@ -29,6 +29,8 @@ interface NotificationContextType {
   removeNotification: (id: string) => void;
   toggleAlertSound: (enabled: boolean) => void;
   isAlertSoundEnabled: boolean;
+  unreadAlertsCount: number;
+  resetUnreadAlerts: () => void;
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
