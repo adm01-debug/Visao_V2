@@ -167,7 +167,7 @@ export function useStorage(): UseStorageReturn {
       // Fazer upload
       const { data, error: uploadError } = await supabase.storage
         .from(options.bucket)
-        .upload(filePath, file, {
+        .upload(filePath, fileToUpload, {
           cacheControl: options.cacheControl ?? DEFAULT_CACHE_CONTROL,
           upsert: options.upsert ?? false,
         });
