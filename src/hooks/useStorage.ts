@@ -9,6 +9,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { optimizeImage } from '@/lib/imageOptimization';
 
 // ============================================
 // TIPOS
@@ -139,7 +140,18 @@ export function useStorage(): UseStorageReturn {
     setError(null);
 
     try {
-      setProgress(10);
+      setProgress(5);
+      
+      // Otimizar imagem se for um arquivo de imagem
+      let fileToUpload = file;
+      if (file.type.startsWith('image/')) {
+        const optimized = await optimizeImage(file);
+        if (optimized instanceof File) {
+          fileToUpload = optimized;
+        }
+      }
+
+      setProgress(15);
 
       // Gerar nome do arquivo
       const fileExt = file.name.split('.').pop()?.toLowerCase() || 'bin';
@@ -155,7 +167,7 @@ export function useStorage(): UseStorageReturn {
       // Fazer upload
       const { data, error: uploadError } = await supabase.storage
         .from(options.bucket)
-        .upload(filePath, file, {
+        .upload(filePath, fileToUpload, {
           cacheControl: options.cacheControl ?? DEFAULT_CACHE_CONTROL,
           upsert: options.upsert ?? false,
         });

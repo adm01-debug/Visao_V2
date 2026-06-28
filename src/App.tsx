@@ -19,6 +19,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PanicButton } from "@/components/PanicButton";
 import { TraceIdManager } from "@/components/TraceIdManager";
 import { HistoryProvider } from "@/contexts/HistoryContext";
+import { DynamicTitleManager } from "@/components/DynamicTitleManager";
 
 import { withRouteErrorBoundary } from "@/components/RouteErrorBoundary";
 import { NavigationProgress } from "@/components/ui/NavigationProgress";
@@ -96,8 +97,15 @@ PageLoader.displayName = 'PageLoader';
 // Layout wrapper para rotas protegidas com MainLayout
 const ProtectedLayoutRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
-  if (loading) return <PageLoader />;
-  if (!user) return <Navigate to="/auth" replace />;
+  
+  if (loading) {
+    return <PageLoader />;
+  }
+  
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+  
   return <MainLayout>{children}<PanicButton /></MainLayout>;
 };
 
@@ -119,6 +127,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
               <HistoryProvider>
               <TraceIdManager />
               <NotificationProvider>
+                <DynamicTitleManager />
                 <NavigationProgress />
                 <Suspense fallback={<PageLoader />}>
                   <Routes>

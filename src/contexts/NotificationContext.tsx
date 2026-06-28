@@ -29,6 +29,8 @@ interface NotificationContextType {
   removeNotification: (id: string) => void;
   toggleAlertSound: (enabled: boolean) => void;
   isAlertSoundEnabled: boolean;
+  unreadAlertsCount: number;
+  resetUnreadAlerts: () => void;
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
@@ -42,6 +44,7 @@ const NOTIFICATION_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2869
 export function NotificationProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadAlertsCount, setUnreadAlertsCount] = useState(0);
   const [isAlertSoundEnabled, setIsAlertSoundEnabled] = useState(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("alert-sound-enabled") !== "false";
@@ -113,6 +116,11 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         (payload) => {
           const newAlert = payload.new as AlertPayload;
           showAlertToast(newAlert);
+          
+          if (newAlert.severity === 'critical' || newAlert.severity === 'high') {
+            setUnreadAlertsCount(prev => prev + 1);
+          }
+
           queryClient.invalidateQueries({ queryKey: ["sidebar-alerts-count"] });
           queryClient.invalidateQueries({ queryKey: ["alerts"] });
         }
@@ -141,6 +149,10 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("alert-sound-enabled", String(enabled));
   }, []);
 
+  const resetUnreadAlerts = useCallback(() => {
+    setUnreadAlertsCount(0);
+  }, []);
+
   return (
     <NotificationContext.Provider
       value={{
@@ -149,6 +161,8 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         removeNotification,
         toggleAlertSound,
         isAlertSoundEnabled,
+        unreadAlertsCount,
+        resetUnreadAlerts,
       }}
     >
       {children}
