@@ -44,6 +44,7 @@ const NOTIFICATION_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2869
 export function NotificationProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadAlertsCount, setUnreadAlertsCount] = useState(0);
   const [isAlertSoundEnabled, setIsAlertSoundEnabled] = useState(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("alert-sound-enabled") !== "false";
