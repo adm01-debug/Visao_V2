@@ -127,6 +127,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
               <HistoryProvider>
               <TraceIdManager />
               <NotificationProvider>
+                <DynamicTitleManager />
                 <NavigationProgress />
                 <Suspense fallback={<PageLoader />}>
                   <Routes>
