@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { useSidebarStatus } from "@/hooks/useSidebarStatus";
 import { useUserRole } from "@/hooks/useUserRole";
 import { allCategories, type NavCategory } from "./navigation/bottomNavData";
+import { triggerHaptic } from "@/lib/haptics";
 
 export function BottomNavigation() {
   const location = useLocation();
@@ -49,6 +50,7 @@ export function BottomNavigation() {
   };
 
   const handleCategoryClick = (cat: NavCategory) => {
+    triggerHaptic('light');
     if (expandedCategory === cat.id) setExpandedCategory(null);
     else if (activeCategory === cat.id) setExpandedCategory(cat.id);
     else { navigate(cat.defaultPath); setExpandedCategory(null); }
@@ -76,7 +78,11 @@ export function BottomNavigation() {
                     const isActive = location.pathname === item.path;
                     return (
                       <motion.button key={item.id} whileTap={{ scale: 0.95 }}
-                        onClick={() => { navigate(item.path); setExpandedCategory(null); }}
+                        onClick={() => { 
+                          triggerHaptic('medium');
+                          navigate(item.path); 
+                          setExpandedCategory(null); 
+                        }}
                         className={cn(
                           "flex flex-col items-center gap-2 p-3.5 rounded-xl transition-all",
                           isActive

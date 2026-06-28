@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import { z } from 'zod';
+import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
 
 export type PersonListType = 'authorized' | 'vip' | 'blocked' | 'unknown';
 
@@ -66,6 +67,16 @@ function PersonFormComponent({
   const [isActive, setIsActive] = useState(initialData?.isActive ?? true);
   const [photoPreview, setPhotoPreview] = useState<string | null>(initialData?.photoUrl || null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const isDirty = 
+    name !== (initialData?.name || '') ||
+    listType !== (initialData?.listType || 'authorized') ||
+    department !== (initialData?.department || '') ||
+    role !== (initialData?.role || '') ||
+    notes !== (initialData?.notes || '') ||
+    isActive !== (initialData?.isActive ?? true);
+
+  useUnsavedChanges(isDirty && !isLoading);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

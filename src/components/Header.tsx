@@ -4,6 +4,7 @@ import { NotificationBell } from "@/components/NotificationBell";
 import { AnalysisHistoryPanel } from "@/components/AnalysisHistoryPanel";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PageTitle } from "@/components/Breadcrumbs";
+import { BackButton } from "@/components/ui/BackButton";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { useTheme } from "@/contexts/ThemeProvider";
@@ -29,6 +30,7 @@ export const Header = React.forwardRef<HTMLElement, { className?: string }>(func
     )} role="banner" aria-label="Barra de ferramentas principal">
       <div className="mx-auto flex h-14 max-w-[1600px] items-center justify-between gap-4 px-4 sm:px-6">
         <div className="min-w-0 flex-1 flex items-center gap-3">
+          <BackButton />
           <Breadcrumbs />
           <PageTitle />
         </div>
