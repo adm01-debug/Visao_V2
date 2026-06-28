@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { triggerHaptic } from '@/lib/haptics';
+import { trackUXEvent } from '@/lib/uxTracker';
 
 interface BackButtonProps {
   className?: string;
