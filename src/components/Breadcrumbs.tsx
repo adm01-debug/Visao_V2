@@ -72,6 +72,16 @@ const ROUTE_CATEGORIES: Record<string, string> = {
   '/goals-alerts': 'Análise',
 };
 
+const CATEGORY_PATHS: Record<string, string> = {
+  'Monitoramento': '/cameras',
+  'Segurança': '/alerts',
+  'Inteligência': '/face-recognition',
+  'Gestão': '/people',
+  'Administração': '/users',
+  'Sistema': '/settings',
+  'Análise': '/reports',
+};
+
 // Legacy interface for backward compatibility
 interface BreadcrumbItem {
   label: string;
