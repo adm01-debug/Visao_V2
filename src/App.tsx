@@ -18,6 +18,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PanicButton } from "@/components/PanicButton";
 import { TraceIdManager } from "@/components/TraceIdManager";
+import { HistoryProvider } from "@/contexts/HistoryContext";
 
 import { withRouteErrorBoundary } from "@/components/RouteErrorBoundary";
 import { NavigationProgress } from "@/components/ui/NavigationProgress";
