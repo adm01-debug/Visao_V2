@@ -1,8 +1,9 @@
 /**
  * VISÃO - Página de Alertas (Modularizada)
  */
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useManagedFilters } from "@/hooks/useManagedFilters";
+import { useNotifications } from "@/contexts/NotificationContext";
 import { Bell, BellOff, Check, CheckCheck, LayoutGrid, List, RefreshCw, Search, Trash2, X } from "lucide-react";
 import { useAlerts } from "@/hooks/useAlerts";
 import { useCameras } from "@/hooks/useCameras";
