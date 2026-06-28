@@ -151,7 +151,13 @@ export const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(funct
         {category && (
           <>
             <ChevronRight className="h-3 w-3 text-muted-foreground/50" aria-hidden="true" />
-            <span className="text-muted-foreground text-xs uppercase tracking-wider font-medium">{category}</span>
+            {CATEGORY_PATHS[category] ? (
+              <Link to={CATEGORY_PATHS[category]} className="text-muted-foreground hover:text-foreground transition-colors text-xs uppercase tracking-wider font-medium px-1 rounded-md hover:bg-muted/50">
+                {category}
+              </Link>
+            ) : (
+              <span className="text-muted-foreground text-xs uppercase tracking-wider font-medium">{category}</span>
+            )}
           </>
         )}
         <ChevronRight className="h-3 w-3 text-muted-foreground/50" aria-hidden="true" />
