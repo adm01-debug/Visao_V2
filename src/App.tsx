@@ -169,6 +169,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                   </Routes>
                 </Suspense>
               </NotificationProvider>
+              </HistoryProvider>
             </AuthProvider>
           </BrowserRouter>
           {CLSBadge && (
