@@ -162,7 +162,7 @@ export function useRealtimeAlertNotifications(
       requireInteraction: alert.severity === "critical",
       onClick: () => {
         // Navigate to alerts page when clicked
-        window.location.href = "/alertas";
+        window.location.href = "/alerts";
       },
     });
   }, [isPushEnabled, pushPermission]);
@@ -192,7 +192,7 @@ export function useRealtimeAlertNotifications(
       position: "top-right",
       action: alert.severity === "critical" ? {
         label: "Ver",
-        onClick: () => window.location.href = "/alertas",
+        onClick: () => window.location.href = "/alerts",
       } : undefined,
     });
 
