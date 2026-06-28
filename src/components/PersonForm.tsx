@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import { z } from 'zod';
+import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
 
 export type PersonListType = 'authorized' | 'vip' | 'blocked' | 'unknown';
 
