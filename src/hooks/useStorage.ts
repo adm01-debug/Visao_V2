@@ -140,7 +140,18 @@ export function useStorage(): UseStorageReturn {
     setError(null);
 
     try {
-      setProgress(10);
+      setProgress(5);
+      
+      // Otimizar imagem se for um arquivo de imagem
+      let fileToUpload = file;
+      if (file.type.startsWith('image/')) {
+        const optimized = await optimizeImage(file);
+        if (optimized instanceof File) {
+          fileToUpload = optimized;
+        }
+      }
+
+      setProgress(15);
 
       // Gerar nome do arquivo
       const fileExt = file.name.split('.').pop()?.toLowerCase() || 'bin';
