@@ -27,6 +27,8 @@ export function useGlobalShortcuts() {
     { key: "z", meta: true, action: () => navigate("/zones"), description: "Ir para Zonas", category: "Navegação" },
     { key: "y", meta: true, action: () => navigate("/analytics"), description: "Ir para Analytics", category: "Navegação" },
 
+    { key: "ArrowLeft", alt: true, action: () => window.history.back(), description: "Voltar para tela anterior", category: "Navegação" },
+    
     // Ações Rápidas
     { key: "k", meta: true, action: () => document.dispatchEvent(new CustomEvent('open-search')), description: "Abrir busca global", category: "Ações" },
     { key: "/", action: () => document.dispatchEvent(new CustomEvent('open-search')), description: "Abrir busca (alternativo)", category: "Ações" },
