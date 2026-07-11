@@ -90,7 +90,7 @@ export function RecordingsPage() {
   const stats = useMemo(() => ({ total: clips.length, totalDuration: clips.reduce((s, c) => s + (c.duration || 0), 0) }), [clips]);
 
   return (
-    <PageContent className="min-h-screen bg-background">
+    <PageContent>
       <PageMeta title="Gravações" description="Visualize e gerencie clips de vídeo gravados" />
 
       <div className="border-b border-border/40 bg-card/80 backdrop-blur-sm">

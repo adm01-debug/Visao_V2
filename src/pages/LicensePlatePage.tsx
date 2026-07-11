@@ -33,7 +33,7 @@ export default function LicensePlatePage() {
   };
 
   return (
-    <PageContent className="min-h-screen bg-background">
+    <PageContent>
       <PageMeta title="Placas Veiculares" description="Detecção e gestão de placas veiculares ALPR" />
 
       {/* Header */}

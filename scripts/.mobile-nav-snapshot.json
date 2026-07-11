@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-22T16:15:49.323Z",
+  "generatedAt": "2026-07-11T15:02:34.434Z",
   "pages": [
     {
       "file": "AcessoNegado.tsx",
@@ -15,7 +15,7 @@
     },
     {
       "file": "AnalyticsPage.tsx",
-      "mode": "customWrapper"
+      "mode": "standard"
     },
     {
       "file": "Auth.tsx",
@@ -34,11 +34,11 @@
       "mode": "standard"
     },
     {
-      "file": "CamerasPage.tsx",
+      "file": "CLSReportPage.tsx",
       "mode": "standard"
     },
     {
-      "file": "CLSReportPage.tsx",
+      "file": "CamerasPage.tsx",
       "mode": "standard"
     },
     {
@@ -83,7 +83,7 @@
     },
     {
       "file": "LicensePlatePage.tsx",
-      "mode": "customWrapper"
+      "mode": "standard"
     },
     {
       "file": "LoadingStatesChecklistPage.tsx",
@@ -98,16 +98,16 @@
       "mode": "customWrapper"
     },
     {
+      "file": "PPEPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
       "file": "PanicEventsPage.tsx",
       "mode": "standard"
     },
     {
       "file": "PeoplePage.tsx",
-      "mode": "customWrapper"
-    },
-    {
-      "file": "PPEPage.tsx",
-      "mode": "customWrapper"
+      "mode": "standard"
     },
     {
       "file": "ProductivityDashboardPage.tsx",
@@ -123,11 +123,11 @@
     },
     {
       "file": "RecognitionLogsPage.tsx",
-      "mode": "customWrapper"
+      "mode": "standard"
     },
     {
       "file": "RecordingsPage.tsx",
-      "mode": "customWrapper"
+      "mode": "standard"
     },
     {
       "file": "ReportsPage.tsx",
@@ -159,7 +159,7 @@
     },
     {
       "file": "ZonesPage.tsx",
-      "mode": "customWrapper"
+      "mode": "standard"
     }
   ]
 }
