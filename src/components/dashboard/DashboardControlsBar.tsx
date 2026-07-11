@@ -40,8 +40,9 @@ function DashboardControlsBarComponent({
         <div className="h-4 w-px bg-border/50" />
         <CameraLayoutControls layout={cameraLayout} onLayoutChange={onLayoutChange} />
         <EventSimulator cameras={simulatorCameras} />
-
+        <Tooltip>
           <TooltipTrigger asChild>
+
             <Button
               variant={showMap ? 'default' : 'ghost'}
               size="icon" className="h-8 w-8 rounded-lg"
