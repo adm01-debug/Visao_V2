@@ -1,7 +1,54 @@
+/**
+ * VISÃO — LoadingState
+ *
+ * Coleção de skeletons/spinners acessíveis. Refatorado para reduzir
+ * duplicação via `StatusRegion` (wrapper aria-live + sr-only) mantendo
+ * 100% da API pública e o mesmo comportamento visual.
+ */
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+/* -------------------------------------------------------------------------- */
+/* Helpers                                                                     */
+/* -------------------------------------------------------------------------- */
+
+interface StatusRegionProps extends React.HTMLAttributes<HTMLDivElement> {
+  label: string;
+  as?: 'div';
+  children: React.ReactNode;
+}
+
+/**
+ * Wrapper acessível padrão para regiões de loading.
+ * Aplica role/aria-live/aria-busy/aria-label + sr-only redundante.
+ */
+function StatusRegion({ label, className, children, ...rest }: StatusRegionProps) {
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label={label}
+      className={className}
+      {...rest}
+    >
+      {children}
+      <span className="sr-only">{label}</span>
+    </div>
+  );
+}
+
+const fadeIn = (i: number, axis: 'x' | 'y' | 'none' = 'y') => ({
+  initial: { opacity: 0, ...(axis === 'y' ? { y: 20 } : axis === 'x' ? { x: -20 } : {}) },
+  animate: { opacity: 1, ...(axis === 'y' ? { y: 0 } : axis === 'x' ? { x: 0 } : {}) },
+  transition: { delay: i * 0.05, duration: 0.3 },
+});
+
+/* -------------------------------------------------------------------------- */
+/* Primitives                                                                  */
+/* -------------------------------------------------------------------------- */
 
 interface SkeletonProps {
   className?: string;
@@ -12,45 +59,31 @@ export function Skeleton({ className, animate = true }: SkeletonProps) {
   return (
     <div
       aria-hidden="true"
-      className={cn(
-        'bg-muted rounded-md',
-        animate && 'animate-pulse',
-        className
-      )}
+      className={cn('bg-muted rounded-md', animate && 'animate-pulse', className)}
     />
   );
 }
 
-interface ShimmerProps {
-  className?: string;
-}
-
-export function Shimmer({ className }: ShimmerProps) {
+export function Shimmer({ className }: { className?: string }) {
   return (
     <div aria-hidden="true" className={cn('relative overflow-hidden bg-muted rounded-md', className)}>
       <motion.div
         className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-        animate={{
-          x: ['-100%', '100%'],
-        }}
-        transition={{
-          duration: 1.5,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
+        animate={{ x: ['-100%', '100%'] }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
       />
     </div>
   );
 }
 
-// Card Skeleton for Dashboard Widgets
+/* -------------------------------------------------------------------------- */
+/* Skeletons                                                                   */
+/* -------------------------------------------------------------------------- */
+
 export function CardSkeleton({ className }: { className?: string }) {
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      aria-busy="true"
-      aria-label="Carregando cartão…"
+    <StatusRegion
+      label="Carregando cartão…"
       className={cn('p-4 rounded-lg border border-border bg-card min-h-[120px]', className)}
     >
       <div className="flex items-center justify-between mb-4">
@@ -59,33 +92,29 @@ export function CardSkeleton({ className }: { className?: string }) {
       </div>
       <Shimmer className="h-8 w-16 mb-2" />
       <Shimmer className="h-4 w-32" />
-      <span className="sr-only">Carregando cartão…</span>
-    </div>
+    </StatusRegion>
   );
 }
 
-// Camera Grid Skeleton
 export function CameraGridSkeleton({ count = 4 }: { count?: number }) {
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      aria-busy="true"
-      aria-label="Carregando câmeras…"
+    <StatusRegion
+      label="Carregando câmeras…"
       className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
     >
       {Array.from({ length: count }).map((_, i) => (
         <motion.div
           key={i}
           aria-hidden="true"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.05, duration: 0.3 }}
+          {...fadeIn(i)}
           className="rounded-lg border border-border bg-card overflow-hidden"
         >
           <div className="relative">
             <Shimmer className="aspect-video w-full" />
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ animation: 'skeleton-brand-pulse 3s ease-in-out infinite' }}>
+            <div
+              className="absolute inset-0 flex items-center justify-center pointer-events-none"
+              style={{ animation: 'skeleton-brand-pulse 3s ease-in-out infinite' }}
+            >
               <Shield className="w-8 h-8 text-primary" />
             </div>
           </div>
@@ -95,28 +124,18 @@ export function CameraGridSkeleton({ count = 4 }: { count?: number }) {
           </div>
         </motion.div>
       ))}
-      <span className="sr-only">Carregando câmeras…</span>
-    </div>
+    </StatusRegion>
   );
 }
 
-// List Skeleton for Alerts, Activity Feed
 export function ListSkeleton({ count = 5 }: { count?: number }) {
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      aria-busy="true"
-      aria-label="Carregando lista…"
-      className="space-y-3"
-    >
+    <StatusRegion label="Carregando lista…" className="space-y-3">
       {Array.from({ length: count }).map((_, i) => (
         <motion.div
           key={i}
           aria-hidden="true"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: i * 0.05, duration: 0.3 }}
+          {...fadeIn(i, 'x')}
           className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card"
         >
           <Shimmer className="h-10 w-10 rounded-full flex-shrink-0" />
@@ -127,35 +146,23 @@ export function ListSkeleton({ count = 5 }: { count?: number }) {
           <Shimmer className="h-6 w-16 rounded-full" />
         </motion.div>
       ))}
-      <span className="sr-only">Carregando lista…</span>
-    </div>
+    </StatusRegion>
   );
 }
 
-// Table Skeleton
 export function TableSkeleton({ rows = 5, cols = 4 }: { rows?: number; cols?: number }) {
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      aria-busy="true"
-      aria-label="Carregando tabela…"
-      className="rounded-lg border border-border overflow-hidden"
-    >
-      {/* Header */}
+    <StatusRegion label="Carregando tabela…" className="rounded-lg border border-border overflow-hidden">
       <div className="flex bg-muted/50 p-3 gap-4">
         {Array.from({ length: cols }).map((_, i) => (
           <Shimmer key={i} className="h-4 flex-1" />
         ))}
       </div>
-      {/* Rows */}
       {Array.from({ length: rows }).map((_, rowIndex) => (
         <motion.div
           key={rowIndex}
           aria-hidden="true"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: rowIndex * 0.05, duration: 0.3 }}
+          {...fadeIn(rowIndex, 'none')}
           className="flex p-3 gap-4 border-t border-border"
         >
           {Array.from({ length: cols }).map((_, colIndex) => (
@@ -163,37 +170,24 @@ export function TableSkeleton({ rows = 5, cols = 4 }: { rows?: number; cols?: nu
           ))}
         </motion.div>
       ))}
-      <span className="sr-only">Carregando tabela…</span>
-    </div>
+    </StatusRegion>
   );
 }
 
-// Stats Skeleton
 export function StatsSkeleton({ count = 4 }: { count?: number }) {
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      aria-busy="true"
-      aria-label="Carregando estatísticas…"
-      className="grid grid-cols-2 md:grid-cols-4 gap-4"
-    >
+    <StatusRegion label="Carregando estatísticas…" className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {Array.from({ length: count }).map((_, i) => (
         <CardSkeleton key={i} />
       ))}
-      <span className="sr-only">Carregando estatísticas…</span>
-    </div>
+    </StatusRegion>
   );
 }
 
-// Chart Skeleton
 export function ChartSkeleton({ className }: { className?: string }) {
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      aria-busy="true"
-      aria-label="Carregando gráfico…"
+    <StatusRegion
+      label="Carregando gráfico…"
       className={cn('p-4 rounded-lg border border-border bg-card', className)}
     >
       <div className="flex items-center justify-between mb-4">
@@ -215,22 +209,13 @@ export function ChartSkeleton({ className }: { className?: string }) {
           />
         ))}
       </div>
-      <span className="sr-only">Carregando gráfico…</span>
-    </div>
+    </StatusRegion>
   );
 }
 
-// Full Page Loading
 export function PageLoadingSkeleton() {
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      aria-busy="true"
-      aria-label="Carregando página…"
-      className="space-y-6 p-4 md:p-6"
-    >
-      {/* Header */}
+    <StatusRegion label="Carregando página…" className="space-y-6 p-4 md:p-6">
       <div className="flex items-center justify-between">
         <div className="space-y-2">
           <Shimmer className="h-8 w-48" />
@@ -238,53 +223,42 @@ export function PageLoadingSkeleton() {
         </div>
         <Shimmer className="h-10 w-32 rounded-md" />
       </div>
-
-      {/* Stats */}
       <StatsSkeleton />
-
-      {/* Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ChartSkeleton />
         <ListSkeleton count={4} />
       </div>
-      <span className="sr-only">Carregando página…</span>
-    </div>
+    </StatusRegion>
   );
 }
 
-// Inline Loading Spinner
+/* -------------------------------------------------------------------------- */
+/* Spinner / Overlay / Progress                                                */
+/* -------------------------------------------------------------------------- */
+
+const SPINNER_SIZE_CLASSES = {
+  sm: 'w-4 h-4 border-2',
+  md: 'w-6 h-6 border-2',
+  lg: 'w-8 h-8 border-3',
+} as const;
+
 interface SpinnerProps {
-  size?: 'sm' | 'md' | 'lg';
+  size?: keyof typeof SPINNER_SIZE_CLASSES;
   className?: string;
 }
 
 export function Spinner({ size = 'md', className }: SpinnerProps) {
-  const sizeClasses = {
-    sm: 'w-4 h-4 border-2',
-    md: 'w-6 h-6 border-2',
-    lg: 'w-8 h-8 border-3',
-  };
-
   return (
     <motion.div
       role="status"
       aria-label="Carregando…"
-      className={cn(
-        'rounded-full border-primary/30 border-t-primary',
-        sizeClasses[size],
-        className
-      )}
+      className={cn('rounded-full border-primary/30 border-t-primary', SPINNER_SIZE_CLASSES[size], className)}
       animate={{ rotate: 360 }}
-      transition={{
-        duration: 1,
-        repeat: Infinity,
-        ease: 'linear',
-      }}
+      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
     />
   );
 }
 
-// Loading Overlay
 interface LoadingOverlayProps {
   message?: string;
   className?: string;
@@ -302,7 +276,7 @@ export function LoadingOverlay({ message = 'Carregando...', className }: Loading
       exit={{ opacity: 0 }}
       className={cn(
         'absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center z-50',
-        className
+        className,
       )}
     >
       <Spinner size="lg" />
@@ -318,7 +292,6 @@ export function LoadingOverlay({ message = 'Carregando...', className }: Loading
   );
 }
 
-// Progress Bar
 interface ProgressBarProps {
   progress: number;
   showLabel?: boolean;
@@ -326,17 +299,18 @@ interface ProgressBarProps {
 }
 
 export function ProgressBar({ progress, showLabel = true, className }: ProgressBarProps) {
+  const value = Math.round(progress);
   return (
     <div className={cn('space-y-1', className)}>
       {showLabel && (
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">Progresso</span>
-          <span className="font-medium">{Math.round(progress)}%</span>
+          <span className="font-medium">{value}%</span>
         </div>
       )}
       <div
         role="progressbar"
-        aria-valuenow={Math.round(progress)}
+        aria-valuenow={value}
         aria-valuemin={0}
         aria-valuemax={100}
         className="h-2 bg-muted rounded-full overflow-hidden"
