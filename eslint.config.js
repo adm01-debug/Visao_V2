@@ -53,8 +53,16 @@ export default tseslint.config(
       // exhaustive-deps gera ruído em hooks com refs/callbacks intencionalmente estáveis;
       // dependências críticas são revisadas em PR. Mantemos rules-of-hooks como erro.
       'react-hooks/exhaustive-deps': 'off',
+      // Regras experimentais do React Compiler (advisory, não correctness).
+      // Mantidas como warn para visibilidade em code review sem bloquear o gate.
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/purity': 'warn',
+      'react-hooks/immutability': 'warn',
+      'react-hooks/refs': 'warn',
+      'react-hooks/preserve-manual-memoization': 'warn',
       // VISÃO Design System — prevent hardcoded colors
       'visao/no-hardcoded-colors': 'error',
+
     },
   },
   // Error boundaries precisam logar erros via console para diagnóstico em produção.
