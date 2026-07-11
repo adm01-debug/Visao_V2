@@ -1,6 +1,7 @@
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.89.0";
 import { createLogger } from "../_shared/logger.ts";
+import { checkRateLimit } from "../_shared/rateLimiter.ts";
 
 const log = createLogger("health");
 
@@ -12,6 +13,12 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+
+  // Prevent DoS on health probe (30 req/min per IP is plenty for uptime checks)
+  const rl = checkRateLimit(req, { maxRequests: 30, windowMs: 60_000 }, "health", corsHeaders);
+  if (!rl.allowed) return rl.response;
+
+
 
   const start = Date.now();
 
