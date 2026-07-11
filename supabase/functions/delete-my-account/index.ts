@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.89.0";
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { createLogger } from "../_shared/logger.ts";
+import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 
 const log = createLogger("delete-my-account");
 
@@ -11,6 +12,17 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
+
+  // Rate limit destructive endpoint aggressively (5 req / hour per IP)
+  const rl = checkRateLimit(
+    req,
+    { maxRequests: 5, windowMs: 60 * 60 * 1000 },
+    "delete-my-account",
+    corsHeaders,
+  );
+  if (!rl.allowed) return rl.response;
+
+
 
   try {
     const authHeader = req.headers.get("Authorization");
