@@ -21,7 +21,7 @@ export default function NotificationSettingsPage() {
 
   if (loading) {
     return (
-      <div role="main" className="flex items-center justify-center min-h-screen">
+      <div role="main" className="flex items-center justify-center min-h-screen mb-mobile-nav">
       <PageMeta title="Configurações de Notificações" description="Gerencie canais e regras de notificação" />
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
@@ -30,7 +30,7 @@ export default function NotificationSettingsPage() {
 
   if (!config) {
     return (
-      <div role="main" className="flex items-center justify-center min-h-screen">
+      <div role="main" className="flex items-center justify-center min-h-screen mb-mobile-nav">
         <p className="text-muted-foreground">Erro ao carregar configurações</p>
       </div>
     );
