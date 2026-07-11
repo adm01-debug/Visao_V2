@@ -1,81 +1,18 @@
 {
-  "generatedAt": "2026-07-11T15:01:48.345Z",
+  "generatedAt": "2026-07-11T15:02:34.745Z",
   "wrapperFile": "src/components/layout/MainLayout.tsx",
   "requiredClass": "mb-mobile-nav",
   "totals": {
     "total": 40,
-    "ok": 27,
-    "pendente": 7,
+    "ok": 34,
+    "pendente": 0,
     "isenta": 6,
-    "standard": 22,
-    "customWrapper": 12,
+    "standard": 28,
+    "customWrapper": 6,
     "standalone": 6
   },
-  "failed": true,
+  "failed": false,
   "rows": [
-    {
-      "file": "AnalyticsPage.tsx",
-      "path": "src/pages/AnalyticsPage.tsx",
-      "category": "customWrapper",
-      "status": "pendente",
-      "issues": [
-        "Falta `mb-mobile-nav` no container raiz"
-      ]
-    },
-    {
-      "file": "LicensePlatePage.tsx",
-      "path": "src/pages/LicensePlatePage.tsx",
-      "category": "customWrapper",
-      "status": "pendente",
-      "issues": [
-        "Falta `mb-mobile-nav` no container raiz"
-      ]
-    },
-    {
-      "file": "NotificationSettingsPage.tsx",
-      "path": "src/pages/NotificationSettingsPage.tsx",
-      "category": "customWrapper",
-      "status": "pendente",
-      "issues": [
-        "Falta `mb-mobile-nav` no container raiz"
-      ]
-    },
-    {
-      "file": "PeoplePage.tsx",
-      "path": "src/pages/PeoplePage.tsx",
-      "category": "customWrapper",
-      "status": "pendente",
-      "issues": [
-        "Falta `mb-mobile-nav` no container raiz"
-      ]
-    },
-    {
-      "file": "RecognitionLogsPage.tsx",
-      "path": "src/pages/RecognitionLogsPage.tsx",
-      "category": "customWrapper",
-      "status": "pendente",
-      "issues": [
-        "Falta `mb-mobile-nav` no container raiz"
-      ]
-    },
-    {
-      "file": "RecordingsPage.tsx",
-      "path": "src/pages/RecordingsPage.tsx",
-      "category": "customWrapper",
-      "status": "pendente",
-      "issues": [
-        "Falta `mb-mobile-nav` no container raiz"
-      ]
-    },
-    {
-      "file": "ZonesPage.tsx",
-      "path": "src/pages/ZonesPage.tsx",
-      "category": "customWrapper",
-      "status": "pendente",
-      "issues": [
-        "Falta `mb-mobile-nav` no container raiz"
-      ]
-    },
     {
       "file": "AlertsPage.tsx",
       "path": "src/pages/AlertsPage.tsx",
@@ -86,6 +23,13 @@
     {
       "file": "AlertsTimelinePage.tsx",
       "path": "src/pages/AlertsTimelinePage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "AnalyticsPage.tsx",
+      "path": "src/pages/AnalyticsPage.tsx",
       "category": "standard",
       "status": "ok",
       "issues": []
@@ -182,6 +126,13 @@
       "issues": []
     },
     {
+      "file": "LicensePlatePage.tsx",
+      "path": "src/pages/LicensePlatePage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
       "file": "LoadingStatesChecklistPage.tsx",
       "path": "src/pages/LoadingStatesChecklistPage.tsx",
       "category": "standard",
@@ -189,8 +140,22 @@
       "issues": []
     },
     {
+      "file": "NotificationSettingsPage.tsx",
+      "path": "src/pages/NotificationSettingsPage.tsx",
+      "category": "customWrapper",
+      "status": "ok",
+      "issues": []
+    },
+    {
       "file": "PanicEventsPage.tsx",
       "path": "src/pages/PanicEventsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "PeoplePage.tsx",
+      "path": "src/pages/PeoplePage.tsx",
       "category": "standard",
       "status": "ok",
       "issues": []
@@ -220,6 +185,20 @@
       "file": "RecognitionAnalyticsPage.tsx",
       "path": "src/pages/RecognitionAnalyticsPage.tsx",
       "category": "customWrapper",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "RecognitionLogsPage.tsx",
+      "path": "src/pages/RecognitionLogsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "RecordingsPage.tsx",
+      "path": "src/pages/RecordingsPage.tsx",
+      "category": "standard",
       "status": "ok",
       "issues": []
     },
@@ -261,6 +240,13 @@
     {
       "file": "UserManagementPage.tsx",
       "path": "src/pages/UserManagementPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "ZonesPage.tsx",
+      "path": "src/pages/ZonesPage.tsx",
       "category": "standard",
       "status": "ok",
       "issues": []

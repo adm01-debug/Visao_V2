@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-11T15:01:48.016Z",
+  "generatedAt": "2026-07-11T15:02:34.434Z",
   "pages": [
     {
       "file": "AcessoNegado.tsx",
@@ -15,7 +15,7 @@
     },
     {
       "file": "AnalyticsPage.tsx",
-      "mode": "customWrapper"
+      "mode": "standard"
     },
     {
       "file": "Auth.tsx",
@@ -83,7 +83,7 @@
     },
     {
       "file": "LicensePlatePage.tsx",
-      "mode": "customWrapper"
+      "mode": "standard"
     },
     {
       "file": "LoadingStatesChecklistPage.tsx",
@@ -107,7 +107,7 @@
     },
     {
       "file": "PeoplePage.tsx",
-      "mode": "customWrapper"
+      "mode": "standard"
     },
     {
       "file": "ProductivityDashboardPage.tsx",
@@ -123,11 +123,11 @@
     },
     {
       "file": "RecognitionLogsPage.tsx",
-      "mode": "customWrapper"
+      "mode": "standard"
     },
     {
       "file": "RecordingsPage.tsx",
-      "mode": "customWrapper"
+      "mode": "standard"
     },
     {
       "file": "ReportsPage.tsx",
@@ -159,7 +159,7 @@
     },
     {
       "file": "ZonesPage.tsx",
-      "mode": "customWrapper"
+      "mode": "standard"
     }
   ]
 }
