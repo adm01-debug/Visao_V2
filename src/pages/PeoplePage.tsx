@@ -33,7 +33,7 @@ export default function PeoplePage() {
   } = usePeopleData();
 
   return (
-    <PageContent className="min-h-screen bg-background">
+    <PageContent>
       <PageMeta title="Colaboradores" description="Cadastro e gestão de pessoas reconhecidas" />
 
       {/* Header */}

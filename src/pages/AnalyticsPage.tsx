@@ -113,7 +113,7 @@ export function AnalyticsPage() {
   };
 
   return (
-    <PageContent className="min-h-screen bg-background">
+    <PageContent>
       <PageMeta title="Analytics" description="Estatísticas e relatórios do sistema de vigilância" />
 
       {/* Premium Header */}

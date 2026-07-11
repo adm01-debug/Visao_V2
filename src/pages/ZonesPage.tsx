@@ -77,7 +77,7 @@ export function ZonesPage() {
   };
 
   return (
-    <PageContent className="min-h-screen bg-background">
+    <PageContent>
       <PageMeta title="Zonas" description="Configure zonas de detecção e monitoramento" />
 
       <ZonesHeader 
