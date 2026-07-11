@@ -36,7 +36,7 @@ const TEMPLATES: EventTemplate[] = [
     messages: ['EPI ausente em área obrigatória', 'Situação de risco à segurança identificada'] },
 ];
 
-function pick<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)]; }
+function pick<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)] as T; }
 
 function EventSimulatorComponent({ cameras }: EventSimulatorProps) {
   const { user } = useAuth();
