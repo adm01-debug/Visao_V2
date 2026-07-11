@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { CameraLayoutControls, CameraLayout } from '@/components/CameraLayoutControls';
 import { SearchInput } from '@/components/SearchInput';
+import { EventSimulator } from './EventSimulator';
 
 interface DashboardControlsBarProps {
   searchQuery: string;
@@ -16,7 +17,9 @@ interface DashboardControlsBarProps {
   onLayoutChange: (layout: CameraLayout) => void;
   showMap: boolean;
   onShowMapChange: (value: boolean) => void;
+  simulatorCameras?: { id: string; name: string }[];
 }
+
 
 function DashboardControlsBarComponent({
   searchQuery, onSearchChange,
