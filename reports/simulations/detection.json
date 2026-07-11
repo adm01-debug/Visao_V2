@@ -1,11 +1,22 @@
 {
-  "generatedAt": "2026-07-11T18:01:02.547Z",
-  "seed": 42,
-  "totalScenarios": 600,
+  "generatedAt": "2026-07-11T18:23:16.996Z",
+  "seed": 99,
+  "totalScenarios": 900,
   "perDomain": {
     "risk": {
-      "n": 200,
-      "tp": 83,
+      "n": 300,
+      "tp": 151,
+      "fp": 0,
+      "fn": 0,
+      "tn": 149,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "accuracy": 1
+    },
+    "productivity": {
+      "n": 300,
+      "tp": 183,
       "fp": 0,
       "fn": 0,
       "tn": 117,
@@ -14,23 +25,12 @@
       "f1": 1,
       "accuracy": 1
     },
-    "productivity": {
-      "n": 200,
-      "tp": 130,
-      "fp": 0,
-      "fn": 0,
-      "tn": 70,
-      "precision": 1,
-      "recall": 1,
-      "f1": 1,
-      "accuracy": 1
-    },
     "break_in": {
-      "n": 200,
-      "tp": 8,
+      "n": 300,
+      "tp": 11,
       "fp": 0,
       "fn": 0,
-      "tn": 192,
+      "tn": 289,
       "precision": 1,
       "recall": 1,
       "f1": 1,
