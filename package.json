@@ -104,7 +104,11 @@
     "audit:report": "node scripts/build-dependency-audit-report.mjs --refresh",
     "audit:deadcode:check": "node scripts/audit-deadcode.mjs --quiet && node scripts/check-deadcode-baseline.mjs",
     "audit:deadcode:check:strict": "node scripts/audit-deadcode.mjs --quiet && node scripts/check-deadcode-baseline.mjs --strict",
-    "audit:deadcode:baseline": "node scripts/audit-deadcode.mjs --quiet && node scripts/check-deadcode-baseline.mjs --update"
+    "audit:deadcode:baseline": "node scripts/audit-deadcode.mjs --quiet && node scripts/check-deadcode-baseline.mjs --update",
+    "audit:unused": "node scripts/audit-unused-ts.mjs",
+    "audit:unused:strict": "node scripts/audit-unused-ts.mjs --strict",
+    "simulate:detection": "node scripts/simulate-detection-scenarios.mjs",
+    "simulate:detection:strict": "node scripts/simulate-detection-scenarios.mjs --strict"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
