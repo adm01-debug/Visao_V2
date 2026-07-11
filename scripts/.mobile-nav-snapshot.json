@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-22T16:15:49.323Z",
+  "generatedAt": "2026-07-11T15:01:48.016Z",
   "pages": [
     {
       "file": "AcessoNegado.tsx",
@@ -34,11 +34,11 @@
       "mode": "standard"
     },
     {
-      "file": "CamerasPage.tsx",
+      "file": "CLSReportPage.tsx",
       "mode": "standard"
     },
     {
-      "file": "CLSReportPage.tsx",
+      "file": "CamerasPage.tsx",
       "mode": "standard"
     },
     {
@@ -98,15 +98,15 @@
       "mode": "customWrapper"
     },
     {
+      "file": "PPEPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
       "file": "PanicEventsPage.tsx",
       "mode": "standard"
     },
     {
       "file": "PeoplePage.tsx",
-      "mode": "customWrapper"
-    },
-    {
-      "file": "PPEPage.tsx",
       "mode": "customWrapper"
     },
     {
