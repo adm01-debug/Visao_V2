@@ -39,7 +39,8 @@ function DashboardControlsBarComponent({
         </div>
         <div className="h-4 w-px bg-border/50" />
         <CameraLayoutControls layout={cameraLayout} onLayoutChange={onLayoutChange} />
-        <Tooltip>
+        <EventSimulator cameras={simulatorCameras} />
+
           <TooltipTrigger asChild>
             <Button
               variant={showMap ? 'default' : 'ghost'}
