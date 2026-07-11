@@ -8,9 +8,8 @@ import { toast } from 'sonner';
 import type { Database } from '@/integrations/supabase/types';
 
 type AlertType = Database['public']['Enums']['alert_type'];
-type Severity = Database['public']['Enums']['alert_severity'] extends never
-  ? 'low' | 'medium' | 'high' | 'critical'
-  : Database['public']['Enums']['alert_severity'];
+type Severity = 'low' | 'medium' | 'high' | 'critical';
+
 
 interface SimCamera { id: string; name: string; }
 interface EventSimulatorProps { cameras: SimCamera[]; }
