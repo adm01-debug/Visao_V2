@@ -83,7 +83,7 @@ export function AlertsPage() {
   const { currentPage, setCurrentPage, totalPages, paginatedItems, totalItems } = usePagination(filteredAlerts, viewMode === 'grid' ? 12 : 10);
 
   const handleSelectAll = useCallback((checked: boolean) => { setSelectedAlerts(checked ? new Set(paginatedItems.map(a => a.id)) : new Set()); }, [paginatedItems]);
-  const handleSelectAlert = useCallback((id: string, selected: boolean) => { setSelectedAlerts(prev => { const s = new Set(prev); selected ? s.add(id) : s.delete(id); return s; }); }, []);
+  const handleSelectAlert = useCallback((id: string, selected: boolean) => { setSelectedAlerts(prev => { const s = new Set(prev); if (selected) s.add(id); else s.delete(id); return s; }); }, []);
   const handleMarkSelectedRead = useCallback(async () => { for (const id of selectedAlerts) await markAsRead(id); setSelectedAlerts(new Set()); toast.success(`${selectedAlerts.size} alertas marcados como lidos`); }, [selectedAlerts, markAsRead]);
   const animateAndDelete = useCallback(async (ids: string[]) => {
     setRemovingAlerts(new Set(ids));
