@@ -26,7 +26,9 @@ function DashboardControlsBarComponent({
   enableStreams, onEnableStreamsChange,
   cameraLayout, onLayoutChange,
   showMap, onShowMapChange,
+  simulatorCameras = [],
 }: DashboardControlsBarProps) {
+
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-2">
       <SearchInput value={searchQuery} onChange={onSearchChange} placeholder="Buscar câmeras e alertas..." />
