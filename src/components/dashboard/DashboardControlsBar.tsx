@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { CameraLayoutControls, CameraLayout } from '@/components/CameraLayoutControls';
 import { SearchInput } from '@/components/SearchInput';
+import { EventSimulator } from './EventSimulator';
 
 interface DashboardControlsBarProps {
   searchQuery: string;
@@ -16,14 +17,18 @@ interface DashboardControlsBarProps {
   onLayoutChange: (layout: CameraLayout) => void;
   showMap: boolean;
   onShowMapChange: (value: boolean) => void;
+  simulatorCameras?: { id: string; name: string }[];
 }
+
 
 function DashboardControlsBarComponent({
   searchQuery, onSearchChange,
   enableStreams, onEnableStreamsChange,
   cameraLayout, onLayoutChange,
   showMap, onShowMapChange,
+  simulatorCameras = [],
 }: DashboardControlsBarProps) {
+
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-2">
       <SearchInput value={searchQuery} onChange={onSearchChange} placeholder="Buscar câmeras e alertas..." />
@@ -34,8 +39,10 @@ function DashboardControlsBarComponent({
         </div>
         <div className="h-4 w-px bg-border/50" />
         <CameraLayoutControls layout={cameraLayout} onLayoutChange={onLayoutChange} />
+        <EventSimulator cameras={simulatorCameras} />
         <Tooltip>
           <TooltipTrigger asChild>
+
             <Button
               variant={showMap ? 'default' : 'ghost'}
               size="icon" className="h-8 w-8 rounded-lg"

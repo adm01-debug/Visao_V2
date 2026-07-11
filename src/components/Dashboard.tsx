@@ -96,7 +96,9 @@ function DashboardComponent() {
               enableStreams={enableStreams} onEnableStreamsChange={setEnableStreams}
               cameraLayout={cameraLayout} onLayoutChange={setCameraLayout}
               showMap={showMap} onShowMapChange={setShowMap}
+              simulatorCameras={cameras.map(c => ({ id: c.id, name: c.name }))}
             />
+
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <AnimatedTransition loading={camerasLoading} skeleton={<CameraGridSkeleton count={4} />} className="lg:col-span-2 space-y-6">
