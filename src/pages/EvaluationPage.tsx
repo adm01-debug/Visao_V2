@@ -1,23 +1,14 @@
 /**
  * VISÃO - EvaluationPage
  *
- * Tela de avaliação humana de detecções. Permite ao operador percorrer
- * detecções recentes (alertas, reconhecimentos faciais, leituras de placa)
- * e marcar cada uma como verdadeiro/falso positivo/negativo ou incerto.
- *
- * Inclui também um painel para ajustar thresholds de confiança por tipo
- * de risco. Métricas de precisão/recall são calculadas em tempo real a
- * partir das avaliações.
+ * Tela de avaliação humana de detecções. Refatorada — subcomponentes em ./evaluation/.
  */
 import { useEffect, useMemo, useState } from 'react';
 import {
   CheckCircle2,
-  XCircle,
   HelpCircle,
-  AlertTriangle,
   Sliders,
   ListChecks,
-  RotateCcw,
   Search,
   Camera as CameraIcon,
   TrendingUp,
@@ -27,80 +18,35 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Slider } from '@/components/ui/slider';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { PageMeta } from '@/components/PageMeta';
 import { PageContent } from '@/components/layout/MainLayout';
 import { useAlerts } from '@/hooks/useAlerts';
 import { usePlateDetections } from '@/hooks/usePlateDetections';
-import {
-  useDetectionReviews,
-  type ReviewVerdict,
-  type SourceTable,
-} from '@/hooks/useDetectionReviews';
-import {
-  useModelThresholds,
-  RISK_TYPE_PRESETS,
-} from '@/hooks/useModelThresholds';
-
-interface UnifiedDetection {
-  source_table: SourceTable;
-  source_id: string;
-  timestamp: string;
-  camera_id: string | null;
-  camera_name: string;
-  risk_type: string;
-  model_name: string;
-  title: string;
-  subtitle: string;
-  confidence: number | null;
-  thumbnail: string | null;
-  severity?: 'low' | 'medium' | 'high' | 'critical';
-}
-
-const VERDICT_META: Record<ReviewVerdict, { label: string; icon: typeof CheckCircle2; tone: string }> = {
-  true_positive: { label: 'Verdadeiro Positivo', icon: CheckCircle2, tone: 'text-success' },
-  false_positive: { label: 'Falso Positivo', icon: XCircle, tone: 'text-destructive' },
-  false_negative: { label: 'Falso Negativo', icon: AlertTriangle, tone: 'text-warning' },
-  uncertain: { label: 'Incerto', icon: HelpCircle, tone: 'text-muted-foreground' },
-};
-
-const VERDICT_BG: Record<ReviewVerdict, string> = {
-  true_positive: 'bg-success/10 ring-success/40',
-  false_positive: 'bg-destructive/10 ring-destructive/40',
-  false_negative: 'bg-warning/10 ring-warning/40',
-  uncertain: 'bg-muted ring-border',
-};
+import { useDetectionReviews, type ReviewVerdict } from '@/hooks/useDetectionReviews';
+import { useModelThresholds, RISK_TYPE_PRESETS } from '@/hooks/useModelThresholds';
+import { KpiCard, Detail } from './evaluation/KpiCard';
+import { ThresholdCard } from './evaluation/ThresholdCard';
+import { VERDICT_META, VERDICT_BG, type UnifiedDetection } from './evaluation/types';
 
 export default function EvaluationPage() {
   const { alerts, loading: loadingAlerts } = useAlerts();
   const { detections: plateDetections, loading: loadingPlates } = usePlateDetections();
-  const { reviews, upsertReview, getReviewFor, statsByRisk, loading: loadingReviews } =
-    useDetectionReviews();
-  const { thresholds, upsertThreshold, getThresholdFor, resetToDefault, loading: loadingThresholds } =
-    useModelThresholds();
+  const { reviews, upsertReview, getReviewFor, statsByRisk, loading: loadingReviews } = useDetectionReviews();
+  const { thresholds, upsertThreshold, getThresholdFor, resetToDefault, loading: loadingThresholds } = useModelThresholds();
 
   const [search, setSearch] = useState('');
   const [riskFilter, setRiskFilter] = useState<string>('all');
   const [verdictFilter, setVerdictFilter] = useState<string>('all');
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  // Unifica detecções de várias fontes em uma lista cronológica
   const detections = useMemo<UnifiedDetection[]>(() => {
     const out: UnifiedDetection[] = [];
-
     for (const a of alerts) {
       out.push({
         source_table: 'alerts',
@@ -110,9 +56,7 @@ export default function EvaluationPage() {
         camera_name: a.camera_name,
         risk_type: a.type === 'security' || a.type === 'safety' || a.type === 'access'
           ? 'security'
-          : a.type === 'analytics'
-            ? 'behavior'
-            : 'security',
+          : a.type === 'analytics' ? 'behavior' : 'security',
         model_name: 'gemini-vision',
         title: a.message,
         subtitle: `Alerta · ${a.type}`,
@@ -121,7 +65,6 @@ export default function EvaluationPage() {
         severity: a.severity,
       });
     }
-
     for (const p of plateDetections) {
       out.push({
         source_table: 'plate_detections',
@@ -137,7 +80,6 @@ export default function EvaluationPage() {
         thumbnail: p.image_url,
       });
     }
-
     return out.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
   }, [alerts, plateDetections]);
 
@@ -158,7 +100,6 @@ export default function EvaluationPage() {
     });
   }, [detections, riskFilter, verdictFilter, search, getReviewFor]);
 
-  // Auto-seleciona o primeiro
   useEffect(() => {
     if (filtered.length === 0) {
       setSelectedId(null);
@@ -191,23 +132,18 @@ export default function EvaluationPage() {
     });
   };
 
-  // Stats globais
   const overallStats = useMemo(() => {
     const total = detections.length;
     const reviewed = reviews.length;
     const pending = Math.max(0, total - reviewed);
-    let tp = 0;
-    let fp = 0;
-    let fn = 0;
+    let tp = 0, fp = 0, fn = 0;
     for (const r of reviews) {
       if (r.verdict === 'true_positive') tp++;
       else if (r.verdict === 'false_positive') fp++;
       else if (r.verdict === 'false_negative') fn++;
     }
     return {
-      total,
-      reviewed,
-      pending,
+      total, reviewed, pending,
       precision: tp + fp > 0 ? tp / (tp + fp) : 0,
       recall: tp + fn > 0 ? tp / (tp + fn) : 0,
     };
@@ -232,7 +168,6 @@ export default function EvaluationPage() {
         </p>
       </header>
 
-      {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <KpiCard label="Detecções" value={overallStats.total} icon={<ListChecks className="w-4 h-4" />} />
         <KpiCard label="Avaliadas" value={overallStats.reviewed} tone="ok" icon={<CheckCircle2 className="w-4 h-4" />} />
@@ -261,36 +196,21 @@ export default function EvaluationPage() {
           </TabsTrigger>
         </TabsList>
 
-        {/* TAB 1: Revisão */}
         <TabsContent value="review" className="space-y-4">
-          {/* Filtros */}
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Buscar por título, câmera..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-9"
-              />
+              <Input placeholder="Buscar por título, câmera..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
             </div>
             <Select value={riskFilter} onValueChange={setRiskFilter}>
-              <SelectTrigger className="w-52">
-                <SelectValue placeholder="Tipo de risco" />
-              </SelectTrigger>
+              <SelectTrigger className="w-52"><SelectValue placeholder="Tipo de risco" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos os riscos</SelectItem>
-                {RISK_TYPE_PRESETS.map((r) => (
-                  <SelectItem key={r.key} value={r.key}>
-                    {r.label}
-                  </SelectItem>
-                ))}
+                {RISK_TYPE_PRESETS.map((r) => <SelectItem key={r.key} value={r.key}>{r.label}</SelectItem>)}
               </SelectContent>
             </Select>
             <Select value={verdictFilter} onValueChange={setVerdictFilter}>
-              <SelectTrigger className="w-52">
-                <SelectValue placeholder="Status da avaliação" />
-              </SelectTrigger>
+              <SelectTrigger className="w-52"><SelectValue placeholder="Status da avaliação" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todas</SelectItem>
                 <SelectItem value="pending">Pendentes</SelectItem>
@@ -308,19 +228,12 @@ export default function EvaluationPage() {
               <Skeleton className="h-[600px]" />
             </div>
           ) : filtered.length === 0 ? (
-            <Card>
-              <CardContent className="p-12 text-center text-muted-foreground">
-                Nenhuma detecção corresponde aos filtros atuais.
-              </CardContent>
-            </Card>
+            <Card><CardContent className="p-12 text-center text-muted-foreground">Nenhuma detecção corresponde aos filtros atuais.</CardContent></Card>
           ) : (
             <div className="grid lg:grid-cols-[420px_1fr] gap-4 items-start">
-              {/* Lista */}
               <Card className="overflow-hidden">
                 <CardHeader className="py-3 px-4 bg-muted/30 border-b border-border">
-                  <CardTitle className="text-sm font-semibold">
-                    {filtered.length} detecções
-                  </CardTitle>
+                  <CardTitle className="text-sm font-semibold">{filtered.length} detecções</CardTitle>
                 </CardHeader>
                 <ScrollArea className="h-[600px]">
                   <div className="divide-y divide-border">
@@ -329,9 +242,7 @@ export default function EvaluationPage() {
                       const isSelected = key === selectedId;
                       const review = getReviewFor(d.source_table, d.source_id);
                       const VIcon = review ? VERDICT_META[review.verdict].icon : HelpCircle;
-                      const verdictTone = review
-                        ? VERDICT_META[review.verdict].tone
-                        : 'text-muted-foreground/50';
+                      const verdictTone = review ? VERDICT_META[review.verdict].tone : 'text-muted-foreground/50';
                       return (
                         <button
                           key={key}
@@ -366,7 +277,6 @@ export default function EvaluationPage() {
                 </ScrollArea>
               </Card>
 
-              {/* Painel de detalhe */}
               <div className="space-y-4">
                 {selected ? (
                   <>
@@ -374,11 +284,7 @@ export default function EvaluationPage() {
                       {/* eslint-disable-next-line visao/no-hardcoded-colors -- player de vídeo precisa de fundo preto */}
                       <div className="aspect-video bg-black flex items-center justify-center">
                         {selected.thumbnail ? (
-                          <img
-                            src={selected.thumbnail}
-                            alt={selected.title}
-                            className="w-full h-full object-contain"
-                          />
+                          <img src={selected.thumbnail} alt={selected.title} className="w-full h-full object-contain" />
                         ) : (
                           <div className="text-muted-foreground/50 text-sm flex flex-col items-center gap-2">
                             <CameraIcon className="w-10 h-10" />
@@ -399,11 +305,7 @@ export default function EvaluationPage() {
                           <Detail label="Tipo de risco" value={RISK_TYPE_PRESETS.find((r) => r.key === selected.risk_type)?.label ?? selected.risk_type} />
                           <Detail
                             label="Confiança"
-                            value={
-                              typeof selected.confidence === 'number'
-                                ? `${(selected.confidence * 100).toFixed(1)}%`
-                                : '—'
-                            }
+                            value={typeof selected.confidence === 'number' ? `${(selected.confidence * 100).toFixed(1)}%` : '—'}
                           />
                         </div>
                       </CardContent>
@@ -430,9 +332,7 @@ export default function EvaluationPage() {
                                 className={cn('h-auto py-3 flex-col gap-1.5', !active && meta.tone)}
                               >
                                 <Icon className="w-5 h-5" />
-                                <span className="text-xs font-medium leading-tight text-center">
-                                  {meta.label}
-                                </span>
+                                <span className="text-xs font-medium leading-tight text-center">{meta.label}</span>
                               </Button>
                             );
                           })}
@@ -450,14 +350,9 @@ export default function EvaluationPage() {
                     </Card>
                   </>
                 ) : (
-                  <Card>
-                    <CardContent className="p-12 text-center text-muted-foreground">
-                      Selecione uma detecção à esquerda para começar a avaliar.
-                    </CardContent>
-                  </Card>
+                  <Card><CardContent className="p-12 text-center text-muted-foreground">Selecione uma detecção à esquerda para começar a avaliar.</CardContent></Card>
                 )}
 
-                {/* Stats por risco */}
                 {statsByRisk.length > 0 && (
                   <Card>
                     <CardHeader>
@@ -499,7 +394,6 @@ export default function EvaluationPage() {
           )}
         </TabsContent>
 
-        {/* TAB 2: Thresholds */}
         <TabsContent value="thresholds" className="space-y-4">
           {loadingThresholds ? (
             <Skeleton className="h-96" />
@@ -542,197 +436,3 @@ export default function EvaluationPage() {
     </PageContent>
   );
 }
-
-// ─────────────────────────── Subcomponentes ───────────────────────────
-
-function KpiCard({
-  label,
-  value,
-  icon,
-  tone,
-}: {
-  label: string;
-  value: string | number;
-  icon: React.ReactNode;
-  tone?: 'ok' | 'warn' | 'danger';
-}) {
-  const toneClass =
-    tone === 'danger' ? 'text-destructive' : tone === 'warn' ? 'text-warning' : tone === 'ok' ? 'text-success' : 'text-foreground';
-  return (
-    <Card>
-      <CardContent className="p-3 flex items-center justify-between">
-        <div>
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{label}</p>
-          <p className={cn('text-xl font-bold mt-0.5 tabular-nums', toneClass)}>{value}</p>
-        </div>
-        <div className={cn('w-8 h-8 rounded-full bg-muted flex items-center justify-center', toneClass)}>
-          {icon}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-function Detail({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <p className="text-muted-foreground uppercase text-[10px] tracking-wide">{label}</p>
-      <p className="font-medium text-foreground mt-0.5 truncate">{value}</p>
-    </div>
-  );
-}
-
-interface ThresholdCardProps {
-  preset: (typeof RISK_TYPE_PRESETS)[number];
-  minConfidence: number;
-  minQuality: number | null;
-  isDefault: boolean;
-  onSave: (min_confidence: number, min_quality: number | null) => Promise<unknown>;
-  onReset: () => Promise<unknown>;
-  stats?: { precision: number; recall: number; total: number };
-}
-
-function ThresholdCard({ preset, minConfidence, minQuality, isDefault, onSave, onReset, stats }: ThresholdCardProps) {
-  const [confValue, setConfValue] = useState(minConfidence);
-  const supportsSens = preset.supportsSensitivity === true;
-  const initialSens =
-    minQuality ?? preset.defaultSensitivity ?? 0.5;
-  const [sensValue, setSensValue] = useState(initialSens);
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    setConfValue(minConfidence);
-  }, [minConfidence]);
-
-  useEffect(() => {
-    setSensValue(minQuality ?? preset.defaultSensitivity ?? 0.5);
-  }, [minQuality, preset.defaultSensitivity]);
-
-  const dirty =
-    Math.abs(confValue - minConfidence) > 0.001 ||
-    (supportsSens && Math.abs(sensValue - initialSens) > 0.001);
-
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      await onSave(confValue, supportsSens ? sensValue : null);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const categoryColor =
-    preset.category === 'presence' ? 'bg-severity-low/10 text-severity-low border-severity-low/30' :
-    preset.category === 'behavior' ? 'bg-severity-high/10 text-severity-high border-severity-high/30' :
-    preset.category === 'identity' ? 'bg-primary/10 text-primary border-primary/30' :
-    'bg-muted text-muted-foreground border-border';
-
-  return (
-    <Card>
-      <CardHeader className="pb-2">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 flex-wrap">
-              <CardTitle className="text-base">{preset.label}</CardTitle>
-              {preset.category && (
-                <Badge variant="outline" className={cn('text-[10px] px-1.5 py-0', categoryColor)}>
-                  {preset.category === 'presence' ? 'Presença' :
-                   preset.category === 'behavior' ? 'Comportamento' :
-                   preset.category === 'identity' ? 'Identidade' : 'Objeto'}
-                </Badge>
-              )}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">{preset.description}</p>
-          </div>
-          {isDefault ? (
-            <Badge variant="outline" className="shrink-0">
-              Padrão
-            </Badge>
-          ) : (
-            <Badge className="shrink-0 bg-primary/10 text-primary border-primary/30">Customizado</Badge>
-          )}
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-muted-foreground uppercase tracking-wide">
-              Confiança mínima
-            </span>
-            <span className="text-lg font-bold font-mono tabular-nums">
-              {(confValue * 100).toFixed(0)}%
-            </span>
-          </div>
-          <Slider
-            value={[Math.round(confValue * 100)]}
-            min={10}
-            max={99}
-            step={1}
-            onValueChange={(v) => setConfValue((v[0] ?? 70) / 100)}
-            aria-label={`Confiança mínima para ${preset.label}`}
-          />
-          <div className="flex justify-between text-[10px] text-muted-foreground mt-1 tabular-nums">
-            <span>10% (↑ falsos positivos)</span>
-            <span>99% (↑ falsos negativos)</span>
-          </div>
-        </div>
-
-        {supportsSens && (
-          <div className="pt-2 border-t border-border">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-muted-foreground uppercase tracking-wide">
-                {preset.sensitivityLabel ?? 'Sensibilidade'}
-              </span>
-              <span className="text-lg font-bold font-mono tabular-nums text-severity-high">
-                {(sensValue * 100).toFixed(0)}%
-              </span>
-            </div>
-            <Slider
-              value={[Math.round(sensValue * 100)]}
-              min={10}
-              max={99}
-              step={1}
-              onValueChange={(v) => setSensValue((v[0] ?? 50) / 100)}
-              aria-label={`Sensibilidade para ${preset.label}`}
-            />
-            <div className="flex justify-between text-[10px] text-muted-foreground mt-1 tabular-nums">
-              <span>10% (tolerante)</span>
-              <span>99% (sensível)</span>
-            </div>
-          </div>
-        )}
-
-        {stats && stats.total > 0 && (
-          <div className="text-xs grid grid-cols-3 gap-2 p-2 rounded bg-muted/40">
-            <div>
-              <p className="text-muted-foreground text-[10px] uppercase">Avaliações</p>
-              <p className="font-bold tabular-nums">{stats.total}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground text-[10px] uppercase">Precisão</p>
-              <p className={cn('font-bold tabular-nums', stats.precision >= 0.8 ? 'text-success' : stats.precision >= 0.5 ? 'text-warning' : 'text-destructive')}>
-                {(stats.precision * 100).toFixed(0)}%
-              </p>
-            </div>
-            <div>
-              <p className="text-muted-foreground text-[10px] uppercase">Recall</p>
-              <p className={cn('font-bold tabular-nums', stats.recall >= 0.8 ? 'text-success' : stats.recall >= 0.5 ? 'text-warning' : 'text-destructive')}>
-                {(stats.recall * 100).toFixed(0)}%
-              </p>
-            </div>
-          </div>
-        )}
-
-        <div className="flex items-center gap-2">
-          <Button size="sm" onClick={handleSave} disabled={!dirty || saving} className="flex-1">
-            {saving ? 'Salvando...' : 'Salvar'}
-          </Button>
-          <Button size="sm" variant="ghost" onClick={() => onReset()} className="gap-1.5">
-            <RotateCcw className="w-3.5 h-3.5" /> Padrão
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
