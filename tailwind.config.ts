@@ -3,7 +3,15 @@ import type { Config } from "tailwindcss";
 export default {
   darkMode: ["class"],
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  safelist: [
+    "animate-shimmer",
+    "animate-pulse-glow",
+    "animate-sheen",
+    "animate-accordion-down",
+    "animate-accordion-up",
+  ],
   prefix: "",
+
   theme: {
     container: {
       center: true,
