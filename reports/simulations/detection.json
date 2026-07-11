@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-07-11T18:01:02.547Z",
+  "seed": 42,
+  "totalScenarios": 600,
+  "perDomain": {
+    "risk": {
+      "n": 200,
+      "tp": 83,
+      "fp": 0,
+      "fn": 0,
+      "tn": 117,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "accuracy": 1
+    },
+    "productivity": {
+      "n": 200,
+      "tp": 130,
+      "fp": 0,
+      "fn": 0,
+      "tn": 70,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "accuracy": 1
+    },
+    "break_in": {
+      "n": 200,
+      "tp": 8,
+      "fp": 0,
+      "fn": 0,
+      "tn": 192,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "accuracy": 1
+    }
+  },
+  "failureCount": 0,
+  "sampleFailures": []
+}
