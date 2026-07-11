@@ -1,6 +1,6 @@
 # Simulação de Detecção — VISÃO
 
-**Gerado em:** 2026-07-11T18:48:44.252Z  
+**Gerado em:** 2026-07-11T19:21:33.642Z  
 **Seed:** 42 · **Cenários:** 300
 
 ## Métricas por domínio
