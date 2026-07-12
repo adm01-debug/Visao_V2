@@ -64,6 +64,8 @@ export default defineConfig(({ mode }) => ({
   build: {
     target: "es2020",
     cssMinify: true,
+    // Sourcemaps ligados quando ANALYZE=1 para o visualizer atribuir bytes por dep/módulo.
+    sourcemap: process.env.ANALYZE === "1" ? "hidden" : false,
     // Warning só dispara acima de 2.6MB. Os únicos chunks acima de 700kB são
     // vendor-ml (TensorFlow/face-api ≈ 2.5MB) e vendor-mapbox (≈ 1.8MB); ambos
     // são lazy-loaded (não entram no bundle inicial nem bloqueiam o LCP).
