@@ -21,6 +21,7 @@ import { LiveFaceRecognition } from '@/components/LiveFaceRecognition';
 import { MultiCameraRecognition } from '@/components/MultiCameraRecognition';
 import { RecognizedFace } from '@/hooks/useRealtimeRecognition';
 import { useFaceAPI } from '@/hooks/useFaceAPI';
+import { useFeatureReadyMark } from '@/hooks/useFeatureReadyMark';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { PageContent } from '@/components/layout/MainLayout';
