@@ -43,7 +43,7 @@ const SEVERITY_TONE: Record<Severity, string> = {
   medium: "bg-primary/80 text-primary-foreground",
   low: "bg-muted text-muted-foreground",
 };
-const RANGES: Record<string, number> = {
+const RANGES = {
   "1h": 1, "6h": 6, "24h": 24, "7d": 24 * 7, "30d": 24 * 30,
 };
 
