@@ -21,6 +21,7 @@ import { LiveFaceRecognition } from '@/components/LiveFaceRecognition';
 import { MultiCameraRecognition } from '@/components/MultiCameraRecognition';
 import { RecognizedFace } from '@/hooks/useRealtimeRecognition';
 import { useFaceAPI } from '@/hooks/useFaceAPI';
+import { useFeatureReadyMark } from '@/hooks/useFeatureReadyMark';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { PageContent } from '@/components/layout/MainLayout';
@@ -33,6 +34,7 @@ interface RecognitionEvent {
 }
 
 export default function FaceRecognitionPage() {
+  useFeatureReadyMark('FaceRecognitionPage');
   const { isLoaded: _isLoaded, loadModels: _loadModels, detectFaces: _detectFaces } = useFaceAPI();
   const [activeTab, setActiveTab] = useState<'webcam' | 'multicam'>('multicam');
   const [recognitionHistory, setRecognitionHistory] = useState<RecognitionEvent[]>([]);

@@ -59,9 +59,11 @@ const requestNotificationPermission = async () => {
 
 import { startCLSMonitor } from '@/lib/clsMonitor';
 import { installMobileNavGuard } from '@/lib/mobileNavGuard';
+import { startPerfMetrics } from '@/lib/perfMetrics';
 
 startCLSMonitor();
 installMobileNavGuard();
+startPerfMetrics();
 
 createRoot(document.getElementById("root")!).render(<StrictMode>
     <App />
@@ -72,19 +74,3 @@ setTimeout(() => {
   requestNotificationPermission();
 }, 5000);
 
-// ============================================
-// PERFORMANCE MONITORING (Opcional)
-// ============================================
-
-// Report Web Vitals
-if (import.meta.env.DEV) {
-  import('web-vitals').then(({ onCLS, onFID, onFCP, onLCP, onTTFB }) => {
-    onCLS(import.meta.env.DEV ? console.log : () => {});
-    onFID(import.meta.env.DEV ? console.log : () => {});
-    onFCP(import.meta.env.DEV ? console.log : () => {});
-    onLCP(import.meta.env.DEV ? console.log : () => {});
-    onTTFB(import.meta.env.DEV ? console.log : () => {});
-  }).catch(() => {
-    // web-vitals não instalado, ignorar
-  });
-}
