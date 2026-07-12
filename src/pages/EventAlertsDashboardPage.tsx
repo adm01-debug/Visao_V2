@@ -42,11 +42,11 @@ const SEVERITY_TONE: Record<Severity, string> = {
   high: "bg-warning text-warning-foreground",
   medium: "bg-primary/80 text-primary-foreground",
   low: "bg-muted text-muted-foreground",
-} as const;
-type RangeKey = RangeKey;
+};
 const RANGES = {
   "1h": 1, "6h": 6, "24h": 24, "7d": 24 * 7, "30d": 24 * 30,
-};
+} as const;
+type RangeKey = keyof typeof RANGES;
 
 export default function EventAlertsDashboardPage() {
   const { user } = useAuth();
