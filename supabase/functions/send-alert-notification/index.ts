@@ -64,7 +64,7 @@ serve(async (req) => {
                 </div>
               </div>`;
 
-            const emailResponse = await fetch('https://api.resend.com/emails', {
+            const emailResponse = await fetchWithTimeout('https://api.resend.com/emails', {
               method: 'POST',
               headers: {
                 'Authorization': `Bearer ${RESEND_API_KEY}`,
@@ -76,7 +76,8 @@ serve(async (req) => {
                 subject: `[${notification.severity.toUpperCase()}] Alerta VISÃO - ${notification.cameraName}`,
                 html: emailHtml,
               }),
-            });
+            }, DEFAULT_TIMEOUTS.external_api);
+
 
             results.email = emailResponse.ok
               ? { success: true }
