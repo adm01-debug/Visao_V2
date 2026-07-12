@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
+import { visualizer } from "rollup-plugin-visualizer";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -9,7 +10,45 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
-  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  plugins: [
+    react(),
+    mode === "development" && componentTagger(),
+    // Bundle report: só ativa quando ANALYZE=1 (ex.: `ANALYZE=1 bun run build`)
+    // ou automaticamente no `bun run build:analyze`. Gera 3 artefatos em dist/stats/:
+    //   - report.html (treemap interativo)
+    //   - report.json (consumível por CI / scripts)
+    //   - report-network.html (visão de dependências brutas)
+    process.env.ANALYZE === "1" &&
+      visualizer({
+        filename: "dist/stats/report.html",
+        template: "treemap",
+        gzipSize: true,
+        brotliSize: true,
+        sourcemap: true,
+        emitFile: false,
+        open: false,
+      }),
+    process.env.ANALYZE === "1" &&
+      visualizer({
+        filename: "dist/stats/report.json",
+        template: "raw-data",
+        gzipSize: true,
+        brotliSize: true,
+        sourcemap: true,
+        emitFile: false,
+        open: false,
+      }),
+    process.env.ANALYZE === "1" &&
+      visualizer({
+        filename: "dist/stats/report-network.html",
+        template: "network",
+        gzipSize: true,
+        brotliSize: true,
+        sourcemap: true,
+        emitFile: false,
+        open: false,
+      }),
+  ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -25,6 +64,8 @@ export default defineConfig(({ mode }) => ({
   build: {
     target: "es2020",
     cssMinify: true,
+    // Sourcemaps ligados quando ANALYZE=1 para o visualizer atribuir bytes por dep/módulo.
+    sourcemap: process.env.ANALYZE === "1" ? "hidden" : false,
     // Warning só dispara acima de 2.6MB. Os únicos chunks acima de 700kB são
     // vendor-ml (TensorFlow/face-api ≈ 2.5MB) e vendor-mapbox (≈ 1.8MB); ambos
     // são lazy-loaded (não entram no bundle inicial nem bloqueiam o LCP).
