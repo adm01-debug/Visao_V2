@@ -8,6 +8,8 @@ export interface RetryConfig {
   baseDelayMs: number;
   maxDelayMs: number;
   retryableStatuses: number[];
+  /** Per-attempt timeout in ms (uses AbortController). 0 disables. */
+  timeoutMs: number;
 }
 
 export const DEFAULT_RETRY_CONFIG: RetryConfig = {
@@ -15,6 +17,7 @@ export const DEFAULT_RETRY_CONFIG: RetryConfig = {
   baseDelayMs: 1000,
   maxDelayMs: 10000,
   retryableStatuses: [500, 502, 503, 504],
+  timeoutMs: 30_000, // default LLM deadline
 };
 
 function sleep(ms: number): Promise<void> {
@@ -41,8 +44,13 @@ export async function fetchWithRetry(
   let lastError: Error | null = null;
 
   for (let attempt = 0; attempt <= cfg.maxRetries; attempt++) {
+    const controller = cfg.timeoutMs > 0 ? new AbortController() : null;
+    const timer = controller
+      ? setTimeout(() => controller.abort(new Error(`Timeout after ${cfg.timeoutMs}ms`)), cfg.timeoutMs)
+      : null;
     try {
-      const response = await fetch(url, init);
+      const response = await fetch(url, controller ? { ...init, signal: controller.signal } : init);
+      if (timer) clearTimeout(timer);
 
       // Don't retry client errors (4xx) except retryable server errors
       if (response.ok || !cfg.retryableStatuses.includes(response.status)) {
@@ -65,6 +73,7 @@ export async function fetchWithRetry(
         await sleep(delay);
       }
     } catch (error) {
+      if (timer) clearTimeout(timer);
       lastError = error instanceof Error ? error : new Error(String(error));
 
       if (attempt < cfg.maxRetries) {
