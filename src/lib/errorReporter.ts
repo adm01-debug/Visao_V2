@@ -75,7 +75,15 @@ async function flush(): Promise<void> {
   const log = logger.child('ErrorReporter');
 
   try {
+    const { data: authData } = await supabase.auth.getUser();
+    const userId = authData.user?.id;
+    if (!userId) {
+      // Unauthenticated — drop batch silently (RLS blocks anon inserts)
+      return;
+    }
+
     const rows = batch.map((r) => ({
+      user_id: userId,
       operation: 'error_boundary_capture',
       severity: 'error',
       duration_ms: 0,
@@ -92,6 +100,7 @@ async function flush(): Promise<void> {
     }));
 
     const { error } = await supabase.from('query_telemetry').insert(rows);
+
     if (error) {
       log.warn('Failed to persist error reports', { error: error.message });
       // Re-queue on transient failures (but don't exceed max)
