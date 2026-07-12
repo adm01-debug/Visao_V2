@@ -44,8 +44,48 @@ jobs:
       - name: Verify stack (lint + type-check + tests)
         run: bun run verify:stack
 
+      - name: Upload verify:stack reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-stack-reports-${{ github.run_id }}
+          path: |
+            reports/**
+            coverage/**
+            playwright-report/**
+            test-results/**
+            *.log
+          if-no-files-found: ignore
+          retention-days: 14
+
       - name: Build
         env:
           NODE_OPTIONS: --max-old-space-size=4096
         run: bun run build
+
+      - name: Upload build artifacts (dist)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ github.run_id }}
+          path: |
+            dist/**
+            !dist/**/*.map
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload post-build reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-reports-${{ github.run_id }}
+          path: |
+            reports/bundle/**
+            reports/quality-gates/**
+            reports/mobile-nav/**
+            reports/deadcode/**
+            stats.html
+          if-no-files-found: ignore
+          retention-days: 14
+
 
