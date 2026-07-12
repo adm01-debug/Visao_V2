@@ -105,52 +105,30 @@ if (process.argv.includes("--json")) {
 
 // -----------------------------------------------------------------------------
 function extractChunks(data) {
-  // v7 raw-data
-  if (data.nodeParts && data.nodeMetas && data.tree) {
-    const chunks = [];
-    walk(data.tree, (node) => {
-      if (node.uid && node.name && node.children) {
-        // chunk node contém children finais
+  if (data.tree?.children && data.nodeParts) {
+    // v7+: cada child de root é um chunk.
+    return data.tree.children
+      .filter((c) => (c.name ?? "").endsWith(".js"))
+      .map((chunkNode) => {
         const parts = [];
-        collectLeaves(node, parts, data);
-        if (parts.length) chunks.push({ name: node.name, parts });
-      }
-    });
-    return chunks.filter((c) => c.name.endsWith(".js"));
-  }
-  // v6 fallback (data.nodes[chunkId].groups)
-  if (Array.isArray(data)) {
-    return data.map((c) => ({
-      name: c.label ?? c.name,
-      parts: (c.groups ?? []).flatMap((g) => flattenGroup(g)),
-    }));
+        collectLeaves(chunkNode, parts, data);
+        return { name: chunkNode.name.replace(/^assets\//, ""), parts };
+      });
   }
   throw new Error("Formato de report.json não reconhecido.");
 }
-function walk(node, visit) {
-  visit(node);
-  if (node.children) for (const c of node.children) walk(c, visit);
-}
 function collectLeaves(node, out, data) {
-  if (!node.children) return;
-  for (const c of node.children) {
-    if (c.uid && data.nodeParts?.[c.uid]) {
-      const part = data.nodeParts[c.uid];
-      const meta = data.nodeMetas?.[c.uid] ?? {};
-      out.push({
-        id: meta.id ?? c.name,
-        renderedLength: part.renderedLength ?? 0,
-        gzipLength: part.gzipLength ?? 0,
-        brotliLength: part.brotliLength ?? 0,
-      });
-    } else if (c.children) {
-      collectLeaves(c, out, data);
-    }
+  if (node.uid && data.nodeParts?.[node.uid]) {
+    const part = data.nodeParts[node.uid];
+    const meta = data.nodeMetas?.[part.metaUid] ?? {};
+    out.push({
+      id: meta.id ?? node.name,
+      renderedLength: part.renderedLength ?? 0,
+      gzipLength: part.gzipLength ?? 0,
+      brotliLength: part.brotliLength ?? 0,
+    });
   }
-}
-function flattenGroup(g) {
-  if (g.groups) return g.groups.flatMap(flattenGroup);
-  return [{ id: g.label ?? g.id, renderedLength: g.parsedSize, gzipLength: g.gzipSize, brotliLength: 0 }];
+  if (node.children) for (const c of node.children) collectLeaves(c, out, data);
 }
 function depOf(id) {
   if (!id) return null;
