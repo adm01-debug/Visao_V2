@@ -119,15 +119,18 @@ function detect(scenario) {
       const s = scenario;
       const suspiciousHours = OFF_HOURS.has(s.hour);
       const loiter = s.dwellSec > 300 && ['perimetro', 'almoxarifado'].includes(s.cam.zone);
-      return (suspiciousHours && s.motion && !s.auth) || s.forcedEntry || loiter;
+      const insider = s.auth && suspiciousHours &&
+        ['almoxarifado', 'perimetro'].includes(s.cam.zone) && s.insiderThreat;
+      return (suspiciousHours && s.motion && !s.auth) || s.forcedEntry || loiter || insider;
     }
     case 'productivity': {
       const s = scenario;
-      if (!s.inShift) return false;
+      if (!s.inShift || s.lunchBreak) return false;
       return s.idleMin > 15 || s.peopleCount < Math.max(1, s.expected - 2);
     }
     case 'break_in': {
       const s = scenario;
+      if (s.sensorFault) return false;
       return (s.doorSensor || s.glassBreak) && OFF_HOURS.has(s.hour) && !s.auth && s.motion;
     }
     default:
