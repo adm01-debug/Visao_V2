@@ -205,7 +205,7 @@ export function AlertFiltersComponent({ filters, onFiltersChange, cameras = [] }
                     <CalendarComponent
                       mode="single"
                       selected={filters.customDateStart}
-                      onSelect={(date) => {
+                      onSelect={(date: Date | undefined) => {
                         onFiltersChange({ ...filters, customDateStart: date });
                         setShowStartCalendar(false);
                       }}
