@@ -8,6 +8,8 @@ export interface RetryConfig {
   baseDelayMs: number;
   maxDelayMs: number;
   retryableStatuses: number[];
+  /** Per-attempt timeout in ms (uses AbortController). 0 disables. */
+  timeoutMs: number;
 }
 
 export const DEFAULT_RETRY_CONFIG: RetryConfig = {
@@ -15,6 +17,7 @@ export const DEFAULT_RETRY_CONFIG: RetryConfig = {
   baseDelayMs: 1000,
   maxDelayMs: 10000,
   retryableStatuses: [500, 502, 503, 504],
+  timeoutMs: 30_000, // default LLM deadline
 };
 
 function sleep(ms: number): Promise<void> {
