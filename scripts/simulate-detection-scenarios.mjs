@@ -61,15 +61,17 @@ function makeRiskScenario(i) {
   const forcedEntry = chance(0.15);
   const auth = chance(0.6);
   const faceKnown = chance(0.7);
+  // Adversarial: insider com credencial válida em horário atípico + zona sensível
+  const insiderThreat = chance(0.08) && auth && OFF_HOURS.has(hour) &&
+    ['almoxarifado', 'perimetro'].includes(cam.zone);
 
-  // Ground truth: risco real quando fora de horário + movimento sem auth,
-  // ou entrada forçada, ou loitering > 5 min em zona sensível.
   const truth =
     (OFF_HOURS.has(hour) && motion && !auth) ||
     forcedEntry ||
-    (dwellSec > 300 && ['perimetro', 'almoxarifado'].includes(cam.zone));
+    (dwellSec > 300 && ['perimetro', 'almoxarifado'].includes(cam.zone)) ||
+    insiderThreat;
 
-  return { id: `risk-${i}`, domain: 'risk', cam, hour, dwellSec, motion, forcedEntry, auth, faceKnown, truth };
+  return { id: `risk-${i}`, domain: 'risk', cam, hour, dwellSec, motion, forcedEntry, auth, faceKnown, insiderThreat, truth };
 }
 
 function makeProductivityScenario(i) {
@@ -79,8 +81,10 @@ function makeProductivityScenario(i) {
   const peopleCount = Math.floor(range(0, 8));
   const expected = Math.floor(range(1, 6));
   const inShift = chance(0.85);
+  // Adversarial: pausa legítima de almoço não deve gerar alerta
+  const lunchBreak = chance(0.12);
 
-  const truth = inShift && (idleMin > 15 || peopleCount < Math.max(1, expected - 2));
+  const truth = inShift && !lunchBreak && (idleMin > 15 || peopleCount < Math.max(1, expected - 2));
   return {
     id: `prod-${i}`,
     domain: 'productivity',
@@ -89,6 +93,7 @@ function makeProductivityScenario(i) {
     peopleCount,
     expected,
     inShift,
+    lunchBreak,
     truth,
   };
 }
@@ -100,9 +105,11 @@ function makeBreakInScenario(i) {
   const glassBreak = chance(0.1);
   const motion = chance(0.6);
   const auth = chance(0.5);
+  // Adversarial: sensor com falha (ruído sem movimento correlato)
+  const sensorFault = chance(0.05);
 
-  const truth = (doorSensor || glassBreak) && OFF_HOURS.has(hour) && !auth && motion;
-  return { id: `break-${i}`, domain: 'break_in', cam, hour, doorSensor, glassBreak, motion, auth, truth };
+  const truth = (doorSensor || glassBreak) && OFF_HOURS.has(hour) && !auth && motion && !sensorFault;
+  return { id: `break-${i}`, domain: 'break_in', cam, hour, doorSensor, glassBreak, motion, auth, sensorFault, truth };
 }
 
 /* ------------------------------- Detector -------------------------------- */
@@ -112,15 +119,18 @@ function detect(scenario) {
       const s = scenario;
       const suspiciousHours = OFF_HOURS.has(s.hour);
       const loiter = s.dwellSec > 300 && ['perimetro', 'almoxarifado'].includes(s.cam.zone);
-      return (suspiciousHours && s.motion && !s.auth) || s.forcedEntry || loiter;
+      const insider = s.auth && suspiciousHours &&
+        ['almoxarifado', 'perimetro'].includes(s.cam.zone) && s.insiderThreat;
+      return (suspiciousHours && s.motion && !s.auth) || s.forcedEntry || loiter || insider;
     }
     case 'productivity': {
       const s = scenario;
-      if (!s.inShift) return false;
+      if (!s.inShift || s.lunchBreak) return false;
       return s.idleMin > 15 || s.peopleCount < Math.max(1, s.expected - 2);
     }
     case 'break_in': {
       const s = scenario;
+      if (s.sensorFault) return false;
       return (s.doorSensor || s.glassBreak) && OFF_HOURS.has(s.hour) && !s.auth && s.motion;
     }
     default:
