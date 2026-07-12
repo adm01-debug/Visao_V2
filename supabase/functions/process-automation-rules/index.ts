@@ -99,7 +99,34 @@ function ruleMatchesAlert(rule: Rule, alert: Alert): boolean {
   return conditions.every(condition => evaluateCondition(condition, alert));
 }
 
-async function executeActions(supabase: SupabaseClient, rule: Rule, alert: Alert): Promise<ActionResult[]> {
+type NotifConfig = Record<string, unknown> | null;
+
+async function getNotificationConfigCached(
+  supabase: SupabaseClient,
+  userId: string,
+  cache: Map<string, Promise<NotifConfig>>,
+): Promise<NotifConfig> {
+  const existing = cache.get(userId);
+  if (existing) return existing;
+  const promise = (async (): Promise<NotifConfig> => {
+    const { data } = await supabase
+      .from("notification_configs")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("enabled", true)
+      .maybeSingle();
+    return (data as NotifConfig) ?? null;
+  })();
+  cache.set(userId, promise);
+  return promise;
+}
+
+async function executeActions(
+  supabase: SupabaseClient,
+  rule: Rule,
+  alert: Alert,
+  notifCache: Map<string, Promise<NotifConfig>>,
+): Promise<ActionResult[]> {
   const results: ActionResult[] = [];
   for (const action of rule.actions) {
     try {
@@ -109,9 +136,9 @@ async function executeActions(supabase: SupabaseClient, rule: Rule, alert: Alert
           results.push({ action: "alert", success: true, message: `Alert notification created for rule "${rule.name}"` });
           break;
         case "notify": {
-          const { data: notifConfig } = await supabase.from("notification_configs").select("*").eq("user_id", alert.user_id).eq("enabled", true).single();
+          const notifConfig = await getNotificationConfigCached(supabase, alert.user_id, notifCache);
           if (notifConfig) {
-            results.push({ action: "notify", success: true, message: `Notification queued via ${((notifConfig as Record<string, unknown>).channels as string[] || []).length} channels` });
+            results.push({ action: "notify", success: true, message: `Notification queued via ${((notifConfig.channels as string[]) || []).length} channels` });
           } else {
             results.push({ action: "notify", success: false, message: "No notification config found" });
           }
@@ -141,6 +168,7 @@ async function executeActions(supabase: SupabaseClient, rule: Rule, alert: Alert
   }
   return results;
 }
+
 
 async function logRuleExecution(supabase: SupabaseClient, rule: Rule, alert: Alert, results: ActionResult[], startTime: number): Promise<void> {
   try {
