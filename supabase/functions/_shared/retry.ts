@@ -73,6 +73,7 @@ export async function fetchWithRetry(
         await sleep(delay);
       }
     } catch (error) {
+      if (timer) clearTimeout(timer);
       lastError = error instanceof Error ? error : new Error(String(error));
 
       if (attempt < cfg.maxRetries) {
