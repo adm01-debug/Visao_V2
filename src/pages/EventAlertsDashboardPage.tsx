@@ -140,7 +140,7 @@ export default function EventAlertsDashboardPage() {
   }, [alerts]);
 
   return (
-    <div className="space-y-6 p-4 md:p-6 mb-mobile-nav">
+    <div className="space-y-6 p-4 md:p-6">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Dashboard de Alertas</h1>
