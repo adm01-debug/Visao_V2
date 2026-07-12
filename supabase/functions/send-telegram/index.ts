@@ -4,6 +4,8 @@ import { sendTelegramSchema, validateInput } from "../_shared/validation.ts";
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { createLogger } from "../_shared/logger.ts";
 import { withIdempotency } from "../_shared/idempotency.ts";
+import { fetchWithTimeout, DEFAULT_TIMEOUTS } from "../_shared/timeout.ts";
+
 
 const log = createLogger("send-telegram");
 
@@ -48,21 +50,27 @@ serve(async (req) => {
           formData.append('photo', blob, 'snapshot.jpg');
         }
 
-        response = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-          method: 'POST',
-          body: formData,
-        });
+        response = await fetchWithTimeout(
+          `https://api.telegram.org/bot${botToken}/sendPhoto`,
+          { method: 'POST', body: formData },
+          DEFAULT_TIMEOUTS.webhook,
+        );
       } else {
-        response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: message,
-            parse_mode: parseMode,
-          }),
-        });
+        response = await fetchWithTimeout(
+          `https://api.telegram.org/bot${botToken}/sendMessage`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId,
+              text: message,
+              parse_mode: parseMode,
+            }),
+          },
+          DEFAULT_TIMEOUTS.webhook,
+        );
       }
+
 
       const result = await response.json();
 

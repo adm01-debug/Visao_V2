@@ -4,6 +4,8 @@ import { sendAlertNotificationSchema, validateInput } from "../_shared/validatio
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { createLogger } from "../_shared/logger.ts";
 import { withIdempotency } from "../_shared/idempotency.ts";
+import { fetchWithTimeout, DEFAULT_TIMEOUTS } from "../_shared/timeout.ts";
+
 
 const log = createLogger("send-alert-notification");
 
@@ -62,7 +64,7 @@ serve(async (req) => {
                 </div>
               </div>`;
 
-            const emailResponse = await fetch('https://api.resend.com/emails', {
+            const emailResponse = await fetchWithTimeout('https://api.resend.com/emails', {
               method: 'POST',
               headers: {
                 'Authorization': `Bearer ${RESEND_API_KEY}`,
@@ -74,7 +76,8 @@ serve(async (req) => {
                 subject: `[${notification.severity.toUpperCase()}] Alerta VISÃO - ${notification.cameraName}`,
                 html: emailHtml,
               }),
-            });
+            }, DEFAULT_TIMEOUTS.external_api);
+
 
             results.email = emailResponse.ok
               ? { success: true }
@@ -107,14 +110,15 @@ serve(async (req) => {
               formData.append('caption', telegramMessage);
               formData.append('parse_mode', 'HTML');
               formData.append('photo', notification.snapshotUrl);
-              telegramResponse = await fetch(`https://api.telegram.org/bot${telegramConfig.botToken}/sendPhoto`, { method: 'POST', body: formData });
+              telegramResponse = await fetchWithTimeout(`https://api.telegram.org/bot${telegramConfig.botToken}/sendPhoto`, { method: 'POST', body: formData }, DEFAULT_TIMEOUTS.webhook);
             } else {
-              telegramResponse = await fetch(`https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`, {
+              telegramResponse = await fetchWithTimeout(`https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ chat_id: telegramConfig.chatId, text: telegramMessage, parse_mode: 'HTML' }),
-              });
+              }, DEFAULT_TIMEOUTS.webhook);
             }
+
 
             const telegramResult = await telegramResponse.json();
             results.telegram = telegramResult.ok
@@ -141,11 +145,12 @@ serve(async (req) => {
 
             for (const phone of phones) {
               const cleanPhone = phone.replace(/\D/g, '');
-              await fetch(`${WHATSAPP_API_URL}/message/sendText/${WHATSAPP_INSTANCE}`, {
+              await fetchWithTimeout(`${WHATSAPP_API_URL}/message/sendText/${WHATSAPP_INSTANCE}`, {
                 method: 'POST',
                 headers: { 'apikey': WHATSAPP_API_KEY, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ number: cleanPhone, text: whatsappMessage }),
-              });
+              }, DEFAULT_TIMEOUTS.webhook);
+
             }
             results.whatsapp = { success: true };
           } catch (err) {
@@ -162,7 +167,7 @@ serve(async (req) => {
         if (webhookUrls.length > 0) {
           try {
             for (const url of webhookUrls) {
-              await fetch(url, {
+              await fetchWithTimeout(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -174,7 +179,8 @@ serve(async (req) => {
                   cameraName: notification.cameraName,
                   timestamp: notification.timestamp,
                 }),
-              });
+              }, DEFAULT_TIMEOUTS.webhook);
+
             }
             results.webhook = { success: true };
           } catch (err) {

@@ -3,6 +3,8 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 import { detectFacesSchema, validateInput } from "../_shared/validation.ts";
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { createLogger } from "../_shared/logger.ts";
+import { fetchWithTimeout, DEFAULT_TIMEOUTS } from "../_shared/timeout.ts";
+
 
 const log = createLogger("detect-faces");
 
@@ -36,7 +38,7 @@ const detectFaces = async (imageBase64: string, minConfidence: number, maxFaces:
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetchWithTimeout("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
@@ -59,7 +61,8 @@ const detectFaces = async (imageBase64: string, minConfidence: number, maxFaces:
         ],
         response_format: { type: "json_object" }
       }),
-    });
+    }, DEFAULT_TIMEOUTS.llm);
+
 
     if (!response.ok) throw new Error(`AI gateway error: ${response.status}`);
     const data = await response.json();
