@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-11T15:02:34.434Z",
+  "generatedAt": "2026-07-12T23:05:11.501Z",
   "pages": [
     {
       "file": "AcessoNegado.tsx",
@@ -55,6 +55,10 @@
     },
     {
       "file": "EvaluationPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "EventAlertsDashboardPage.tsx",
       "mode": "standard"
     },
     {

@@ -81,6 +81,11 @@ export default defineConfig(({ mode }) => ({
         // Funções (não objetos) permitem casar por caminho e capturar
         // sub-dependências que caem no chunk errado quando declaradas em array.
         manualChunks(id) {
+          // Vite preload helper — force into eager vendor-react para não
+          // "arrastar" um vendor lazy (jspdf/mapbox/ml) para o caminho crítico.
+          if (id.includes("vite/preload-helper") || id.includes("vite/dist/client/preload-helper")) {
+            return "vendor-react";
+          }
           if (!id.includes("node_modules")) return undefined;
 
           // React core (sempre no bundle inicial)
