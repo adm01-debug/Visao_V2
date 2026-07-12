@@ -41,6 +41,10 @@ jobs:
       - name: Unit tests
         run: bun run test:unit
 
+      - name: TypeScript type-check
+        run: bun run typecheck
+
+
       - name: Verify stack (lint + type-check + tests)
         run: bun run verify:stack
 
