@@ -11,9 +11,9 @@ concurrency:
 
 jobs:
   verify-and-build:
-    name: verify:stack + build
+    name: lint + test:unit + verify:stack + build
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     steps:
       - name: Checkout
@@ -35,6 +35,12 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Lint
+        run: bun run lint
+
+      - name: Unit tests
+        run: bun run test:unit
+
       - name: Verify stack (lint + type-check + tests)
         run: bun run verify:stack
 
@@ -42,3 +48,4 @@ jobs:
         env:
           NODE_OPTIONS: --max-old-space-size=4096
         run: bun run build
+
