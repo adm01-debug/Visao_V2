@@ -180,73 +180,157 @@ function metrics(rows) {
   const precision = tp + fp === 0 ? 1 : tp / (tp + fp);
   const recall = tp + fn === 0 ? 1 : tp / (tp + fn);
   const f1 = precision + recall === 0 ? 0 : (2 * precision * recall) / (precision + recall);
-  const accuracy = (tp + tn) / rows.length;
-  return { n: rows.length, tp, fp, fn, tn, precision, recall, f1, accuracy };
+  const accuracy = rows.length === 0 ? 1 : (tp + tn) / rows.length;
+  const fpr = fp + tn === 0 ? 0 : fp / (fp + tn); // False Positive Rate
+  const fnr = fn + tp === 0 ? 0 : fn / (fn + tp); // False Negative Rate (miss rate)
+  const specificity = 1 - fpr;
+  // Matthews Correlation Coefficient — robusto para dados desbalanceados
+  const mccDen = Math.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn));
+  const mcc = mccDen === 0 ? 0 : (tp * tn - fp * fn) / mccDen;
+  return { n: rows.length, tp, fp, fn, tn, precision, recall, f1, accuracy, fpr, fnr, specificity, mcc };
 }
+
+/* ---------------------- Análise de gaps por dimensão ---------------------- */
+const DIMENSIONS = {
+  risk:         ['cam.zone', 'hourBucket', 'motion', 'auth', 'forcedEntry', 'insiderThreat', 'tailgating'],
+  productivity: ['cam.zone', 'inShift', 'lunchBreak'],
+  break_in:     ['cam.zone', 'hourBucket', 'auth', 'sensorFault', 'credentialSharing', 'doorSensor', 'glassBreak'],
+};
+const hourBucket = (h) => (h < 6 ? '00-06' : h < 12 ? '06-12' : h < 18 ? '12-18' : '18-24');
+const pluck = (obj, path) => {
+  if (path === 'hourBucket') return hourBucket(obj.hour);
+  return path.split('.').reduce((a, k) => (a == null ? a : a[k]), obj);
+};
+
+function analyzeGaps(domain, failures, allScenarios) {
+  const dims = DIMENSIONS[domain] ?? [];
+  const domainFailures = failures.filter((f) => f.domain === domain);
+  const domainAll = allScenarios.filter((s) => s.domain === domain);
+  const gaps = [];
+  for (const dim of dims) {
+    const counts = new Map();
+    for (const s of domainAll) {
+      const key = String(pluck(s, dim));
+      const cur = counts.get(key) ?? { total: 0, fails: 0 };
+      cur.total++;
+      counts.set(key, cur);
+    }
+    for (const f of domainFailures) {
+      const key = String(pluck(f.snapshot, dim));
+      const cur = counts.get(key);
+      if (cur) cur.fails++;
+    }
+    for (const [value, { total, fails }] of counts) {
+      if (total < 5 || fails === 0) continue;
+      const rate = fails / total;
+      if (rate > 0.05) {
+        gaps.push({ domain, dimension: dim, value, total, fails, failureRate: rate });
+      }
+    }
+  }
+  return gaps.sort((a, b) => b.failureRate - a.failureRate);
+}
+
+const gapAnalysis = {
+  risk: analyzeGaps('risk', failures, scenarios),
+  productivity: analyzeGaps('productivity', failures, scenarios),
+  break_in: analyzeGaps('break_in', failures, scenarios),
+};
+
+/* ------------------------------ Métricas globais ------------------------- */
+const globalRows = [...results.risk, ...results.productivity, ...results.break_in];
+const globalMetrics = metrics(globalRows);
 
 const summary = {
   generatedAt: new Date().toISOString(),
   seed: SEED,
   totalScenarios: scenarios.length,
+  global: globalMetrics,
   perDomain: {
     risk: metrics(results.risk),
     productivity: metrics(results.productivity),
     break_in: metrics(results.break_in),
   },
   failureCount: failures.length,
-  sampleFailures: failures.slice(0, 15),
+  gapAnalysis,
+  sampleFailures: failures.slice(0, 20),
 };
 
 /* ------------------------------ Persistência ----------------------------- */
 mkdirSync(OUT_DIR, { recursive: true });
 writeFileSync(resolve(OUT_DIR, 'detection.json'), JSON.stringify(summary, null, 2));
 
-const pct = (n) => `${(n * 100).toFixed(1)}%`;
+const pct = (n) => `${(n * 100).toFixed(2)}%`;
+const num = (n) => n.toFixed(3);
 const md = [];
-md.push('# Simulação de Detecção — VISÃO', '');
+md.push('# Relatório de Qualidade — Detecção VISÃO', '');
 md.push(`**Gerado em:** ${summary.generatedAt}  `);
 md.push(`**Seed:** ${SEED} · **Cenários:** ${summary.totalScenarios}`, '');
-md.push('## Métricas por domínio', '');
-md.push('| Domínio | N | TP | FP | FN | TN | Precisão | Recall | F1 | Acurácia |');
-md.push('|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|');
+
+md.push('## Métricas globais', '');
+md.push('| N | TP | FP | FN | TN | Precisão | Recall | F1 | FPR | FNR | Especif. | MCC |');
+md.push('|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|');
+const g = globalMetrics;
+md.push(`| ${g.n} | ${g.tp} | ${g.fp} | ${g.fn} | ${g.tn} | ${pct(g.precision)} | ${pct(g.recall)} | ${pct(g.f1)} | ${pct(g.fpr)} | ${pct(g.fnr)} | ${pct(g.specificity)} | ${num(g.mcc)} |`);
+
+md.push('', '## Métricas por domínio', '');
+md.push('| Domínio | N | TP | FP | FN | TN | Precisão | Recall | F1 | FPR | FNR | MCC |');
+md.push('|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|');
 for (const [k, m] of Object.entries(summary.perDomain)) {
-  md.push(
-    `| ${k} | ${m.n} | ${m.tp} | ${m.fp} | ${m.fn} | ${m.tn} | ${pct(m.precision)} | ${pct(m.recall)} | ${pct(m.f1)} | ${pct(m.accuracy)} |`,
-  );
+  md.push(`| ${k} | ${m.n} | ${m.tp} | ${m.fp} | ${m.fn} | ${m.tn} | ${pct(m.precision)} | ${pct(m.recall)} | ${pct(m.f1)} | ${pct(m.fpr)} | ${pct(m.fnr)} | ${num(m.mcc)} |`);
 }
-md.push('', `## Falhas (${failures.length})`, '');
-if (failures.length === 0) {
-  md.push('✅ Nenhum gap detectado nos cenários gerados.');
+
+md.push('', '## Análise de gaps por dimensão', '');
+md.push('_Combinações com taxa de falha > 5% e pelo menos 5 cenários._', '');
+const allGaps = [...gapAnalysis.risk, ...gapAnalysis.productivity, ...gapAnalysis.break_in];
+if (allGaps.length === 0) {
+  md.push('✅ Nenhum gap sistêmico detectado nas dimensões monitoradas.');
 } else {
-  md.push('_Primeiras 15 divergências entre detector e ground truth:_', '');
-  for (const f of summary.sampleFailures) {
-    md.push(`- \`${f.id}\` [${f.domain}] previsto=${f.predicted} verdade=${f.truth}`);
+  md.push('| Domínio | Dimensão | Valor | Falhas/Total | Taxa |');
+  md.push('|---|---|---|---:|---:|');
+  for (const g of allGaps.slice(0, 30)) {
+    md.push(`| ${g.domain} | ${g.dimension} | ${g.value} | ${g.fails}/${g.total} | ${pct(g.failureRate)} |`);
   }
 }
+
+md.push('', `## Amostra de falhas (${failures.length})`, '');
+if (failures.length === 0) {
+  md.push('✅ Nenhuma divergência entre detector e ground truth.');
+} else {
+  md.push('| ID | Domínio | Tipo | Previsto | Verdade |');
+  md.push('|---|---|---|:-:|:-:|');
+  for (const f of summary.sampleFailures) {
+    const kind = f.predicted && !f.truth ? 'FP' : 'FN';
+    md.push(`| \`${f.id}\` | ${f.domain} | ${kind} | ${f.predicted} | ${f.truth} |`);
+  }
+}
+
+md.push('', '## Recomendações automáticas', '');
+const recs = [];
+if (globalMetrics.fpr > 0.05) recs.push(`- FPR global ${pct(globalMetrics.fpr)} > 5% — revisar limiares para reduzir falsos alarmes.`);
+if (globalMetrics.fnr > 0.05) recs.push(`- FNR global ${pct(globalMetrics.fnr)} > 5% — reforçar regras para reduzir omissões (miss rate).`);
+if (globalMetrics.mcc < 0.8) recs.push(`- MCC ${num(globalMetrics.mcc)} < 0.80 — desempenho geral abaixo do alvo.`);
+for (const gap of allGaps.slice(0, 5)) {
+  recs.push(`- Revisar heurística de \`${gap.domain}\` na dimensão **${gap.dimension}=${gap.value}** (falha ${pct(gap.failureRate)}).`);
+}
+md.push(recs.length ? recs.join('\n') : '✅ Sem recomendações — modelo dentro dos limites.');
+
 writeFileSync(resolve(OUT_DIR, 'detection.md'), md.join('\n'));
 
 console.log('══════════════════════════════════════════════');
-console.log(' VISÃO — Simulação de detecção');
+console.log(' VISÃO — Relatório de qualidade de detecção');
 console.log('══════════════════════════════════════════════');
 for (const [k, m] of Object.entries(summary.perDomain)) {
-  console.log(
-    `  • ${k.padEnd(14)} n=${m.n}  P=${pct(m.precision)}  R=${pct(m.recall)}  F1=${pct(m.f1)}  Acc=${pct(m.accuracy)}`,
-  );
+  console.log(`  • ${k.padEnd(14)} P=${pct(m.precision)} R=${pct(m.recall)} F1=${pct(m.f1)} FPR=${pct(m.fpr)} FNR=${pct(m.fnr)} MCC=${num(m.mcc)}`);
 }
 console.log('──────────────────────────────────────────────');
-console.log(` Falhas: ${failures.length}/${scenarios.length}`);
+console.log(`  GLOBAL          P=${pct(globalMetrics.precision)} R=${pct(globalMetrics.recall)} F1=${pct(globalMetrics.f1)} FPR=${pct(globalMetrics.fpr)} FNR=${pct(globalMetrics.fnr)} MCC=${num(globalMetrics.mcc)}`);
+console.log(` Falhas: ${failures.length}/${scenarios.length} · Gaps sistêmicos: ${allGaps.length}`);
 console.log(` Relatório: reports/simulations/detection.{md,json}`);
 
-// Exit non-zero apenas se F1 global < 0.85 (gap crítico)
-const globalTp = Object.values(summary.perDomain).reduce((a, m) => a + m.tp, 0);
-const globalFp = Object.values(summary.perDomain).reduce((a, m) => a + m.fp, 0);
-const globalFn = Object.values(summary.perDomain).reduce((a, m) => a + m.fn, 0);
-const globalP = globalTp + globalFp === 0 ? 1 : globalTp / (globalTp + globalFp);
-const globalR = globalTp + globalFn === 0 ? 1 : globalTp / (globalTp + globalFn);
-const globalF1 = globalP + globalR === 0 ? 0 : (2 * globalP * globalR) / (globalP + globalR);
-console.log(` F1 global: ${pct(globalF1)}`);
-if (args.includes('--strict') && globalF1 < 0.85) {
+if (args.includes('--strict') && globalMetrics.f1 < 0.85) {
   console.error('✖ F1 global abaixo do gate (0.85).');
   process.exit(1);
 }
 process.exit(0);
+
