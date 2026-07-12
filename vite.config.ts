@@ -25,24 +25,49 @@ export default defineConfig(({ mode }) => ({
   build: {
     target: "es2020",
     cssMinify: true,
+    // Warning só dispara acima de 2.6MB. Os únicos chunks acima de 700kB são
+    // vendor-ml (TensorFlow/face-api ≈ 2.5MB) e vendor-mapbox (≈ 1.8MB); ambos
+    // são lazy-loaded (não entram no bundle inicial nem bloqueiam o LCP).
+    // Regredir esse teto == alguém adicionou lib pesada ao caminho crítico.
+    chunkSizeWarningLimit: 2600,
     rollupOptions: {
       external: ["@mediapipe/pose", "@tensorflow/tfjs-backend-webgpu"],
       output: {
-        manualChunks: {
-          "vendor-react": ["react", "react-dom", "react-router-dom"],
-          "vendor-ui": [
-            "@radix-ui/react-dialog",
-            "@radix-ui/react-dropdown-menu",
-            "@radix-ui/react-tabs",
-            "@radix-ui/react-tooltip",
-            "@radix-ui/react-popover",
-            "@radix-ui/react-select",
-          ],
-          "vendor-charts": ["recharts"],
-          "vendor-motion": ["framer-motion"],
-          "vendor-query": ["@tanstack/react-query"],
-          "vendor-supabase": ["@supabase/supabase-js"],
-          "vendor-pdf": ["jspdf", "html2canvas"],
+        // Estratégia: manter vendors pesados fora do bundle inicial.
+        // Funções (não objetos) permitem casar por caminho e capturar
+        // sub-dependências que caem no chunk errado quando declaradas em array.
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return undefined;
+
+          // React core (sempre no bundle inicial)
+          if (/[\\/]node_modules[\\/](react|react-dom|react-router-dom|scheduler)[\\/]/.test(id)) {
+            return "vendor-react";
+          }
+          // Data + estado
+          if (id.includes("@tanstack/react-query")) return "vendor-query";
+          if (id.includes("@supabase/")) return "vendor-supabase";
+
+          // UI kits
+          if (id.includes("@radix-ui/")) return "vendor-radix";
+          if (id.includes("framer-motion")) return "vendor-motion";
+          if (id.includes("lucide-react")) return "vendor-icons";
+
+          // Visualização / relatórios (lazy nos pages consumidores)
+          if (id.includes("recharts") || id.includes("d3-")) return "vendor-charts";
+          if (id.includes("jspdf") || id.includes("html2canvas")) return "vendor-pdf";
+
+          // Mídia / mapas / ML (lazy)
+          if (id.includes("mapbox-gl")) return "vendor-mapbox";
+          if (id.includes("hls.js")) return "vendor-hls";
+          if (
+            id.includes("@tensorflow/") ||
+            id.includes("@mediapipe/") ||
+            id.includes("face-api")
+          ) {
+            return "vendor-ml";
+          }
+
+          return undefined;
         },
       },
     },
