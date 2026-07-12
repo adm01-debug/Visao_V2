@@ -908,6 +908,141 @@ export type Database = {
         }
         Relationships: []
       }
+      plate_detections_m2026_11: {
+        Row: {
+          camera_id: string | null
+          camera_name: string
+          confidence: number
+          created_at: string
+          direction: string | null
+          id: string
+          image_url: string | null
+          plate: string
+          status: string
+          timestamp: string
+          user_id: string
+          vehicle_type: string | null
+        }
+        Insert: {
+          camera_id?: string | null
+          camera_name: string
+          confidence?: number
+          created_at?: string
+          direction?: string | null
+          id?: string
+          image_url?: string | null
+          plate: string
+          status?: string
+          timestamp?: string
+          user_id: string
+          vehicle_type?: string | null
+        }
+        Update: {
+          camera_id?: string | null
+          camera_name?: string
+          confidence?: number
+          created_at?: string
+          direction?: string | null
+          id?: string
+          image_url?: string | null
+          plate?: string
+          status?: string
+          timestamp?: string
+          user_id?: string
+          vehicle_type?: string | null
+        }
+        Relationships: []
+      }
+      plate_detections_m2026_12: {
+        Row: {
+          camera_id: string | null
+          camera_name: string
+          confidence: number
+          created_at: string
+          direction: string | null
+          id: string
+          image_url: string | null
+          plate: string
+          status: string
+          timestamp: string
+          user_id: string
+          vehicle_type: string | null
+        }
+        Insert: {
+          camera_id?: string | null
+          camera_name: string
+          confidence?: number
+          created_at?: string
+          direction?: string | null
+          id?: string
+          image_url?: string | null
+          plate: string
+          status?: string
+          timestamp?: string
+          user_id: string
+          vehicle_type?: string | null
+        }
+        Update: {
+          camera_id?: string | null
+          camera_name?: string
+          confidence?: number
+          created_at?: string
+          direction?: string | null
+          id?: string
+          image_url?: string | null
+          plate?: string
+          status?: string
+          timestamp?: string
+          user_id?: string
+          vehicle_type?: string | null
+        }
+        Relationships: []
+      }
+      plate_detections_m2027_01: {
+        Row: {
+          camera_id: string | null
+          camera_name: string
+          confidence: number
+          created_at: string
+          direction: string | null
+          id: string
+          image_url: string | null
+          plate: string
+          status: string
+          timestamp: string
+          user_id: string
+          vehicle_type: string | null
+        }
+        Insert: {
+          camera_id?: string | null
+          camera_name: string
+          confidence?: number
+          created_at?: string
+          direction?: string | null
+          id?: string
+          image_url?: string | null
+          plate: string
+          status?: string
+          timestamp?: string
+          user_id: string
+          vehicle_type?: string | null
+        }
+        Update: {
+          camera_id?: string | null
+          camera_name?: string
+          confidence?: number
+          created_at?: string
+          direction?: string | null
+          id?: string
+          image_url?: string | null
+          plate?: string
+          status?: string
+          timestamp?: string
+          user_id?: string
+          vehicle_type?: string | null
+        }
+        Relationships: []
+      }
       plate_detections_y2025_y2026_pre: {
         Row: {
           camera_id: string | null
@@ -1260,6 +1395,114 @@ export type Database = {
         Relationships: []
       }
       recognition_logs_m2026_10: {
+        Row: {
+          camera_id: string | null
+          confidence: number | null
+          created_at: string
+          id: string
+          image_url: string | null
+          person_id: string | null
+          recognized: boolean
+          timestamp: string
+          user_id: string
+        }
+        Insert: {
+          camera_id?: string | null
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          person_id?: string | null
+          recognized?: boolean
+          timestamp?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string | null
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          person_id?: string | null
+          recognized?: boolean
+          timestamp?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      recognition_logs_m2026_11: {
+        Row: {
+          camera_id: string | null
+          confidence: number | null
+          created_at: string
+          id: string
+          image_url: string | null
+          person_id: string | null
+          recognized: boolean
+          timestamp: string
+          user_id: string
+        }
+        Insert: {
+          camera_id?: string | null
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          person_id?: string | null
+          recognized?: boolean
+          timestamp?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string | null
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          person_id?: string | null
+          recognized?: boolean
+          timestamp?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      recognition_logs_m2026_12: {
+        Row: {
+          camera_id: string | null
+          confidence: number | null
+          created_at: string
+          id: string
+          image_url: string | null
+          person_id: string | null
+          recognized: boolean
+          timestamp: string
+          user_id: string
+        }
+        Insert: {
+          camera_id?: string | null
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          person_id?: string | null
+          recognized?: boolean
+          timestamp?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string | null
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          person_id?: string | null
+          recognized?: boolean
+          timestamp?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      recognition_logs_m2027_01: {
         Row: {
           camera_id: string | null
           confidence: number | null
