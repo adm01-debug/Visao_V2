@@ -190,16 +190,20 @@ const handler = async (req: Request): Promise<Response> => {
       return new Response(JSON.stringify({ error: rulesError.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const matchedRules: { rule: Rule; results: ActionResult[] }[] = [];
-
-    for (const rule of (rules || []) as Rule[]) {
-      if (ruleMatchesAlert(rule, alert)) {
+    // Executa regras que casam em paralelo — cada regra é independente,
+    // logRuleExecution já é isolado. Reduz drasticamente a latência quando
+    // um usuário tem muitas regras ativas.
+    const matched = (rules || []).filter((r) => ruleMatchesAlert(r as Rule, alert));
+    const matchedRules = await Promise.all(
+      matched.map(async (rule) => {
+        const r = rule as Rule;
         const startTime = Date.now();
-        const results = await executeActions(supabase, rule, alert);
-        matchedRules.push({ rule, results });
-        await logRuleExecution(supabase, rule, alert, results, startTime);
-      }
-    }
+        const results = await executeActions(supabase, r, alert);
+        // fire-and-forget para não bloquear a resposta; erros já são logados internamente
+        void logRuleExecution(supabase, r, alert, results, startTime);
+        return { rule: r, results };
+      }),
+    );
 
     done();
     log.info("Rules processed", { evaluated: rules?.length || 0, matched: matchedRules.length, traceId });
