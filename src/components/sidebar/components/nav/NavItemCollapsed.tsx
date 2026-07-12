@@ -7,6 +7,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { prefetchRoute } from "@/lib/routePrefetch";
 import type { NavItem } from "../../types";
 import { getBadgeClasses } from "./getBadgeClasses";
 
@@ -24,6 +25,13 @@ export const NavItemCollapsed = memo(React.forwardRef(function NavItemCollapsed(
   const Icon = item.icon;
   const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([]);
   const rippleId = useRef(0);
+  const prefetchedRef = useRef(false);
+
+  const handlePrefetch = useCallback(() => {
+    if (prefetchedRef.current) return;
+    prefetchedRef.current = true;
+    prefetchRoute(item.path);
+  }, [item.path]);
 
   const handleClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -42,7 +50,11 @@ export const NavItemCollapsed = memo(React.forwardRef(function NavItemCollapsed(
           to={item.path}
           data-testid={`nav-${item.id}`}
           onClick={handleClick}
+          onMouseEnter={handlePrefetch}
+          onFocus={handlePrefetch}
+          onTouchStart={handlePrefetch}
           className={cn(
+
             "relative flex items-center justify-center px-2 py-2 rounded-lg text-sm overflow-hidden",
             "transition-all duration-200 ease-out",
             "text-sidebar-foreground/55",

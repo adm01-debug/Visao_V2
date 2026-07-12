@@ -90,11 +90,19 @@ console.log(`\n🛡️  Critical Path Guard`);
 console.log(`   Entry: ${entryKey}`);
 console.log(`   Chunks eager: ${eagerFiles.size}`);
 
-// Sanitização: remove arrays de strings de preload que citam OUTROS chunks pelo nome.
-// Padrão emitido pelo Vite: __vitePreload(...,["assets/vendor-ml-….js", ...])
+// Sanitização em 2 passos para evitar falso positivo:
+//  1. Remove arrays de preload-manifests do Vite: __vitePreload(...,["assets/vendor-ml-….js", ...])
+//  2. Remove strings literais dentro de `import("…")` / `import('…')` — ali o
+//     nome do módulo é o argumento do dynamic import (que emite CHUNK LAZY),
+//     não uso runtime da lib. Sem essa remoção, o guard flagga o próprio
+//     dispatcher lazy do módulo consumidor (ex.: `pdfGenerator.ts` que
+//     contém `import('jspdf')`) como se fosse leak eager.
 function stripPreloadManifests(src) {
-  return src.replace(/\[(?:"[^"]*\.(?:m?js|css)"(?:,\s*)?)+\]/g, "[]");
+  return src
+    .replace(/\[(?:"[^"]*\.(?:m?js|css)"(?:,\s*)?)+\]/g, "[]")
+    .replace(/import\(\s*["'][^"']+["']\s*\)/g, "import()");
 }
+
 
 const violations = [];
 for (const file of eagerFiles) {
