@@ -23,6 +23,7 @@ import { DynamicTitleManager } from "@/components/DynamicTitleManager";
 
 import { withRouteErrorBoundary } from "@/components/RouteErrorBoundary";
 import { NavigationProgress } from "@/components/ui/NavigationProgress";
+import { IdleRoutePrefetcher } from "@/components/IdleRoutePrefetcher";
 import { errorReporter } from "@/lib/errorReporter";
 
 // Install global error monitoring
