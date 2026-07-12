@@ -75,7 +75,7 @@ function makeRiskScenario(i) {
     insiderThreat ||
     tailgating;
 
-  return { id: `risk-${i}`, domain: 'risk', cam, hour, dwellSec, motion, forcedEntry, auth, faceKnown, insiderThreat, truth };
+  return { id: `risk-${i}`, domain: 'risk', cam, hour, dwellSec, motion, forcedEntry, auth, faceKnown, insiderThreat, tailgating, truth };
 }
 
 function makeProductivityScenario(i) {
