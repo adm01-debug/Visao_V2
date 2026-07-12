@@ -206,6 +206,90 @@ export type Database = {
         }
         Relationships: []
       }
+      camera_detection_rules: {
+        Row: {
+          active_days: number[]
+          active_from: string | null
+          active_to: string | null
+          alert_severity: Database["public"]["Enums"]["event_alert_severity"]
+          alert_title_template: string
+          camera_id: string
+          cooldown_seconds: number
+          created_at: string
+          created_by: string
+          enabled: boolean
+          id: string
+          metadata: Json
+          min_confidence: number
+          min_count: number
+          name: string
+          organization_id: string
+          target_categories: string[]
+          target_labels: string[]
+          updated_at: string
+          zone_id: string | null
+        }
+        Insert: {
+          active_days?: number[]
+          active_from?: string | null
+          active_to?: string | null
+          alert_severity?: Database["public"]["Enums"]["event_alert_severity"]
+          alert_title_template?: string
+          camera_id: string
+          cooldown_seconds?: number
+          created_at?: string
+          created_by: string
+          enabled?: boolean
+          id?: string
+          metadata?: Json
+          min_confidence?: number
+          min_count?: number
+          name: string
+          organization_id: string
+          target_categories?: string[]
+          target_labels?: string[]
+          updated_at?: string
+          zone_id?: string | null
+        }
+        Update: {
+          active_days?: number[]
+          active_from?: string | null
+          active_to?: string | null
+          alert_severity?: Database["public"]["Enums"]["event_alert_severity"]
+          alert_title_template?: string
+          camera_id?: string
+          cooldown_seconds?: number
+          created_at?: string
+          created_by?: string
+          enabled?: boolean
+          id?: string
+          metadata?: Json
+          min_confidence?: number
+          min_count?: number
+          name?: string
+          organization_id?: string
+          target_categories?: string[]
+          target_labels?: string[]
+          updated_at?: string
+          zone_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_detection_rules_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "camera_detection_rules_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       camera_events: {
         Row: {
           camera_id: string
