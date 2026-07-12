@@ -93,6 +93,10 @@ export default defineConfig(({ mode }) => ({
           if (id.includes("framer-motion")) return "vendor-motion";
           if (id.includes("lucide-react")) return "vendor-icons";
 
+          // Utilitários de data — consolidados em 1 chunk para evitar
+          // que cada page-chunk carregue seu próprio subset de date-fns.
+          if (/[\\/]node_modules[\\/]date-fns[\\/]/.test(id)) return "vendor-date-fns";
+
           // Visualização / relatórios (lazy nos pages consumidores)
           if (id.includes("recharts") || id.includes("d3-")) return "vendor-charts";
           if (id.includes("jspdf") || id.includes("html2canvas")) return "vendor-pdf";
