@@ -111,9 +111,13 @@ function makeBreakInScenario(i) {
   const auth = chance(0.5);
   // Adversarial: sensor com falha (ruído sem movimento correlato)
   const sensorFault = chance(0.05);
+  // Adversarial: mesma credencial em duas câmeras distantes em < 60s (fisicamente impossível)
+  const credentialSharing = chance(0.04) && auth;
 
-  const truth = (doorSensor || glassBreak) && OFF_HOURS.has(hour) && !auth && motion && !sensorFault;
-  return { id: `break-${i}`, domain: 'break_in', cam, hour, doorSensor, glassBreak, motion, auth, sensorFault, truth };
+  const truth =
+    ((doorSensor || glassBreak) && OFF_HOURS.has(hour) && !auth && motion && !sensorFault) ||
+    credentialSharing;
+  return { id: `break-${i}`, domain: 'break_in', cam, hour, doorSensor, glassBreak, motion, auth, sensorFault, credentialSharing, truth };
 }
 
 /* ------------------------------- Detector -------------------------------- */
