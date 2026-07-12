@@ -145,11 +145,12 @@ serve(async (req) => {
 
             for (const phone of phones) {
               const cleanPhone = phone.replace(/\D/g, '');
-              await fetch(`${WHATSAPP_API_URL}/message/sendText/${WHATSAPP_INSTANCE}`, {
+              await fetchWithTimeout(`${WHATSAPP_API_URL}/message/sendText/${WHATSAPP_INSTANCE}`, {
                 method: 'POST',
                 headers: { 'apikey': WHATSAPP_API_KEY, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ number: cleanPhone, text: whatsappMessage }),
-              });
+              }, DEFAULT_TIMEOUTS.webhook);
+
             }
             results.whatsapp = { success: true };
           } catch (err) {
