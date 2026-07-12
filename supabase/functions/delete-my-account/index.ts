@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.89.0";
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { createLogger } from "../_shared/logger.ts";
-import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
+import { checkRateLimit } from "../_shared/rateLimiter.ts";
 
 const log = createLogger("delete-my-account");
 
