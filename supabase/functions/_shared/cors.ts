@@ -1,10 +1,12 @@
 const ALLOWED_ORIGINS = [
-  "https://id-preview--837595d9-3a7f-4e37-9433-f7e4909f201a.lovable.app",
-  "https://837595d9-3a7f-4e37-9433-f7e4909f201a.lovableproject.com",
+  "https://id-preview--76579cc3-ec2f-4e92-bdb3-20d12f2c763d.lovable.app",
+  "https://76579cc3-ec2f-4e92-bdb3-20d12f2c763d.lovableproject.com",
   "http://localhost:5173",
   "http://localhost:4173",
   "http://localhost:3000",
+  "http://localhost:8080",
 ];
+
 
 function getAllowedOrigin(req?: Request): string {
   const origin = req?.headers?.get("origin") ?? "";
