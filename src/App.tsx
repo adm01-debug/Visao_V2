@@ -130,6 +130,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
               <NotificationProvider>
                 <DynamicTitleManager />
                 <NavigationProgress />
+                <IdleRoutePrefetcher />
                 <Suspense fallback={<PageLoader />}>
                   <Routes>
                     <Route path="/" element={withRouteErrorBoundary(<Index />, "Início")} />
