@@ -111,7 +111,10 @@
     "audit:unused": "node scripts/audit-unused-ts.mjs",
     "audit:unused:strict": "node scripts/audit-unused-ts.mjs --strict",
     "simulate:detection": "node scripts/simulate-detection-scenarios.mjs",
-    "simulate:detection:strict": "node scripts/simulate-detection-scenarios.mjs --strict"
+    "simulate:detection:strict": "node scripts/simulate-detection-scenarios.mjs --strict",
+    "chunks:report": "node scripts/chunk-size-report.mjs",
+    "chunks:report:warn": "node scripts/chunk-size-report.mjs --warn-only",
+    "build:chunks-report": "vite build && node scripts/chunk-size-report.mjs --warn-only"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
