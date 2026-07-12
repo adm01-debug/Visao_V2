@@ -2131,6 +2131,7 @@ export type Database = {
       }
       replace_user_role: {
         Args: {
+          _admin_id: string
           _new_role: Database["public"]["Enums"]["app_role"]
           _target_user_id: string
         }
