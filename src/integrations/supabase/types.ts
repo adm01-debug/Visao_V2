@@ -1129,7 +1129,7 @@ export type Database = {
           rpc_name: string | null
           severity: string
           table_name: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           count_mode?: string | null
@@ -1144,7 +1144,7 @@ export type Database = {
           rpc_name?: string | null
           severity?: string
           table_name?: string | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           count_mode?: string | null
@@ -1159,7 +1159,7 @@ export type Database = {
           rpc_name?: string | null
           severity?: string
           table_name?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
