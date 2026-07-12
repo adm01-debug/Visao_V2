@@ -159,6 +159,7 @@
     "dompurify": "^3.0.0",
     "embla-carousel-react": "^8.6.0",
     "face-api.js": "^0.22.2",
+    "fast-glob": "3.3.3",
     "file-saver": "^2.0.5",
     "framer-motion": "^10.16.0",
     "helmet": "^7.1.0",
