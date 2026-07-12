@@ -59,6 +59,15 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Cache TypeScript incremental info
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/*.tsbuildinfo
+            node_modules/.cache/tsbuildinfo
+          key: ${{ runner.os }}-tsbuildinfo-${{ matrix.node }}-${{ hashFiles('tsconfig*.json', 'src/**/*.ts', 'src/**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-tsbuildinfo-${{ matrix.node }}-
 
       - name: Lint
         run: bun run lint
@@ -66,12 +75,12 @@ jobs:
       - name: Unit tests
         run: bun run test:unit
 
-      - name: TypeScript type-check
-        run: bun run typecheck
+      - name: TypeScript type-check (strict — inclui tests/ + stories)
+        run: bun run type-check:strict
 
-
-      - name: Verify stack (lint + type-check + tests)
+      - name: Verify stack (deps + module resolution + tsgo + vite bootstrap)
         run: bun run verify:stack
+
 
       - name: Upload verify:stack reports
         if: always() && matrix.primary
