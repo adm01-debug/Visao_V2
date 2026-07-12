@@ -22,7 +22,7 @@ export default defineConfig({
   testDir: "./tests/e2e",
 
   /* Global setup: seed E2E user + persist auth storageState */
-  globalSetup: require.resolve("./tests/e2e/global-setup"),
+  globalSetup: resolve(__dirname, "tests/e2e/global-setup.ts"),
 
   
   /* Run tests in files in parallel */
