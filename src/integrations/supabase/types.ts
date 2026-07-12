@@ -2114,6 +2114,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      array_days_valid: { Args: { days: number[] }; Returns: boolean }
       delete_user_data: {
         Args: { _target_user_id: string }
         Returns: undefined
