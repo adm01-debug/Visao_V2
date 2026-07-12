@@ -104,10 +104,11 @@ describe("SheetContent — prop `side`", () => {
   it("side inválido é rejeitado pelo TypeScript", () => {
     // Este bloco não é executado — a asserção acontece em tempo de compilação.
     // Se a assinatura de SheetContent regredir, o @ts-expect-error falhará o build.
-    () => (
+    const _guard = () => (
       // @ts-expect-error - 'diagonal' não é um lado válido
       <SheetContent side="diagonal" />
     );
+    void _guard;
     expect(true).toBe(true);
   });
 });
