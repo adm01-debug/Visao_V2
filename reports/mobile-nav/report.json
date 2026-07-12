@@ -1,18 +1,27 @@
 {
-  "generatedAt": "2026-07-12T18:57:27.270Z",
+  "generatedAt": "2026-07-12T23:04:54.398Z",
   "wrapperFile": "src/components/layout/MainLayout.tsx",
   "requiredClass": "mb-mobile-nav",
   "totals": {
-    "total": 40,
+    "total": 41,
     "ok": 34,
-    "pendente": 0,
+    "pendente": 1,
     "isenta": 6,
-    "standard": 28,
+    "standard": 29,
     "customWrapper": 6,
     "standalone": 6
   },
-  "failed": false,
+  "failed": true,
   "rows": [
+    {
+      "file": "EventAlertsDashboardPage.tsx",
+      "path": "src/pages/EventAlertsDashboardPage.tsx",
+      "category": "standard",
+      "status": "pendente",
+      "issues": [
+        "Redeclara `mb-mobile-nav` (remover)"
+      ]
+    },
     {
       "file": "AlertsPage.tsx",
       "path": "src/pages/AlertsPage.tsx",
