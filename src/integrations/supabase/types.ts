@@ -206,6 +206,69 @@ export type Database = {
         }
         Relationships: []
       }
+      camera_events: {
+        Row: {
+          camera_id: string
+          created_at: string
+          created_by: string | null
+          duration_ms: number | null
+          event_type: Database["public"]["Enums"]["camera_event_type"]
+          id: string
+          metadata: Json
+          occurred_at: string
+          organization_id: string
+          received_at: string
+          snapshot_url: string | null
+          source: string
+          video_url: string | null
+        }
+        Insert: {
+          camera_id: string
+          created_at?: string
+          created_by?: string | null
+          duration_ms?: number | null
+          event_type: Database["public"]["Enums"]["camera_event_type"]
+          id?: string
+          metadata?: Json
+          occurred_at?: string
+          organization_id: string
+          received_at?: string
+          snapshot_url?: string | null
+          source?: string
+          video_url?: string | null
+        }
+        Update: {
+          camera_id?: string
+          created_at?: string
+          created_by?: string | null
+          duration_ms?: number | null
+          event_type?: Database["public"]["Enums"]["camera_event_type"]
+          id?: string
+          metadata?: Json
+          occurred_at?: string
+          organization_id?: string
+          received_at?: string
+          snapshot_url?: string | null
+          source?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_events_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "camera_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cameras: {
         Row: {
           alerts_count: number | null
@@ -310,6 +373,215 @@ export type Database = {
           verdict?: string
         }
         Relationships: []
+      }
+      event_alerts: {
+        Row: {
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          camera_id: string | null
+          created_at: string
+          dedup_key: string | null
+          description: string | null
+          event_id: string | null
+          id: string
+          metadata: Json
+          organization_id: string
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: Database["public"]["Enums"]["event_alert_severity"]
+          status: Database["public"]["Enums"]["event_alert_status"]
+          title: string
+          triggered_at: string
+          updated_at: string
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          camera_id?: string | null
+          created_at?: string
+          dedup_key?: string | null
+          description?: string | null
+          event_id?: string | null
+          id?: string
+          metadata?: Json
+          organization_id: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: Database["public"]["Enums"]["event_alert_severity"]
+          status?: Database["public"]["Enums"]["event_alert_status"]
+          title: string
+          triggered_at?: string
+          updated_at?: string
+        }
+        Update: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          camera_id?: string | null
+          created_at?: string
+          dedup_key?: string | null
+          description?: string | null
+          event_id?: string | null
+          id?: string
+          metadata?: Json
+          organization_id?: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: Database["public"]["Enums"]["event_alert_severity"]
+          status?: Database["public"]["Enums"]["event_alert_status"]
+          title?: string
+          triggered_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_alerts_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_alerts_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "camera_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_alerts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_detections: {
+        Row: {
+          attributes: Json
+          bbox: Json | null
+          category: string | null
+          confidence: number
+          created_at: string
+          event_id: string
+          id: string
+          label: string
+          model_name: string | null
+          model_version: string | null
+          organization_id: string
+          zone_id: string | null
+        }
+        Insert: {
+          attributes?: Json
+          bbox?: Json | null
+          category?: string | null
+          confidence: number
+          created_at?: string
+          event_id: string
+          id?: string
+          label: string
+          model_name?: string | null
+          model_version?: string | null
+          organization_id: string
+          zone_id?: string | null
+        }
+        Update: {
+          attributes?: Json
+          bbox?: Json | null
+          category?: string | null
+          confidence?: number
+          created_at?: string
+          event_id?: string
+          id?: string
+          label?: string
+          model_name?: string | null
+          model_version?: string | null
+          organization_id?: string
+          zone_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_detections_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "camera_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_detections_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_reviews: {
+        Row: {
+          alert_id: string | null
+          corrected_label: string | null
+          created_at: string
+          event_id: string | null
+          id: string
+          notes: string | null
+          organization_id: string
+          original_confidence: number | null
+          reviewed_at: string
+          reviewer_id: string
+          updated_at: string
+          verdict: Database["public"]["Enums"]["event_review_verdict"]
+        }
+        Insert: {
+          alert_id?: string | null
+          corrected_label?: string | null
+          created_at?: string
+          event_id?: string | null
+          id?: string
+          notes?: string | null
+          organization_id: string
+          original_confidence?: number | null
+          reviewed_at?: string
+          reviewer_id: string
+          updated_at?: string
+          verdict: Database["public"]["Enums"]["event_review_verdict"]
+        }
+        Update: {
+          alert_id?: string | null
+          corrected_label?: string | null
+          created_at?: string
+          event_id?: string | null
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          original_confidence?: number | null
+          reviewed_at?: string
+          reviewer_id?: string
+          updated_at?: string
+          verdict?: Database["public"]["Enums"]["event_review_verdict"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_reviews_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "event_alerts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_reviews_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "camera_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_reviews_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       face_recognition_configs: {
         Row: {
@@ -534,6 +806,65 @@ export type Database = {
           updated_at?: string
           user_id?: string
           webhook_urls?: string[]
+        }
+        Relationships: []
+      }
+      organization_members: {
+        Row: {
+          created_at: string
+          id: string
+          organization_id: string
+          role: Database["public"]["Enums"]["org_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          organization_id: string
+          role?: Database["public"]["Enums"]["org_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          organization_id?: string
+          role?: Database["public"]["Enums"]["org_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_members_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizations: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          id?: string
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          name?: string
+          slug?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -2123,6 +2454,14 @@ export type Database = {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
       }
+      has_org_role: {
+        Args: {
+          _org: string
+          _roles: Database["public"]["Enums"]["org_role"][]
+          _user: string
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -2130,6 +2469,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_org_member: { Args: { _org: string; _user: string }; Returns: boolean }
       replace_user_role: {
         Args: {
           _admin_id: string
@@ -2157,6 +2497,22 @@ export type Database = {
         | "recurrent_vehicle"
         | "qr_code_event"
       app_role: "admin" | "manager" | "operator" | "viewer"
+      camera_event_type:
+        | "motion"
+        | "person_detected"
+        | "vehicle_detected"
+        | "face_detected"
+        | "plate_detected"
+        | "zone_entry"
+        | "zone_exit"
+        | "loitering"
+        | "tampering"
+        | "offline"
+        | "online"
+        | "ppe_violation"
+        | "behavior_anomaly"
+        | "panic"
+        | "manual"
       camera_status: "online" | "offline" | "alert" | "warning"
       condition_operator:
         | "greater_than"
@@ -2183,6 +2539,14 @@ export type Database = {
         | "anomaly_displacement"
         | "scene_change"
         | "recurrent_vehicle"
+      event_alert_severity: "low" | "medium" | "high" | "critical"
+      event_alert_status: "open" | "acknowledged" | "resolved" | "dismissed"
+      event_review_verdict:
+        | "true_positive"
+        | "false_positive"
+        | "false_negative"
+        | "uncertain"
+      org_role: "owner" | "admin" | "member" | "viewer"
       rule_action:
         | "alert"
         | "notify"
@@ -2343,6 +2707,23 @@ export const Constants = {
         "qr_code_event",
       ],
       app_role: ["admin", "manager", "operator", "viewer"],
+      camera_event_type: [
+        "motion",
+        "person_detected",
+        "vehicle_detected",
+        "face_detected",
+        "plate_detected",
+        "zone_entry",
+        "zone_exit",
+        "loitering",
+        "tampering",
+        "offline",
+        "online",
+        "ppe_violation",
+        "behavior_anomaly",
+        "panic",
+        "manual",
+      ],
       camera_status: ["online", "offline", "alert", "warning"],
       condition_operator: [
         "greater_than",
@@ -2371,6 +2752,15 @@ export const Constants = {
         "scene_change",
         "recurrent_vehicle",
       ],
+      event_alert_severity: ["low", "medium", "high", "critical"],
+      event_alert_status: ["open", "acknowledged", "resolved", "dismissed"],
+      event_review_verdict: [
+        "true_positive",
+        "false_positive",
+        "false_negative",
+        "uncertain",
+      ],
+      org_role: ["owner", "admin", "member", "viewer"],
       rule_action: [
         "alert",
         "notify",
