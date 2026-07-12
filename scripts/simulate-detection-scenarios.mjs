@@ -64,12 +64,16 @@ function makeRiskScenario(i) {
   // Adversarial: insider com credencial válida em horário atípico + zona sensível
   const insiderThreat = chance(0.08) && auth && OFF_HOURS.has(hour) &&
     ['almoxarifado', 'perimetro'].includes(cam.zone);
+  // Adversarial: tailgating — pessoa autorizada + acompanhante não autorizado em zona sensível
+  const tailgating = chance(0.06) && auth &&
+    ['almoxarifado', 'perimetro'].includes(cam.zone);
 
   const truth =
     (OFF_HOURS.has(hour) && motion && !auth) ||
     forcedEntry ||
     (dwellSec > 300 && ['perimetro', 'almoxarifado'].includes(cam.zone)) ||
-    insiderThreat;
+    insiderThreat ||
+    tailgating;
 
   return { id: `risk-${i}`, domain: 'risk', cam, hour, dwellSec, motion, forcedEntry, auth, faceKnown, insiderThreat, truth };
 }
