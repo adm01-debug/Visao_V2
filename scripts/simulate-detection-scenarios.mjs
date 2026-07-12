@@ -129,7 +129,9 @@ function detect(scenario) {
       const loiter = s.dwellSec > 300 && ['perimetro', 'almoxarifado'].includes(s.cam.zone);
       const insider = s.auth && suspiciousHours &&
         ['almoxarifado', 'perimetro'].includes(s.cam.zone) && s.insiderThreat;
-      return (suspiciousHours && s.motion && !s.auth) || s.forcedEntry || loiter || insider;
+      const tailgate = s.auth && s.tailgating &&
+        ['almoxarifado', 'perimetro'].includes(s.cam.zone);
+      return (suspiciousHours && s.motion && !s.auth) || s.forcedEntry || loiter || insider || tailgate;
     }
     case 'productivity': {
       const s = scenario;
@@ -138,6 +140,7 @@ function detect(scenario) {
     }
     case 'break_in': {
       const s = scenario;
+      if (s.credentialSharing) return true;
       if (s.sensorFault) return false;
       return (s.doorSensor || s.glassBreak) && OFF_HOURS.has(s.hour) && !s.auth && s.motion;
     }
