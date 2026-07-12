@@ -6,6 +6,8 @@
   "scripts": {
     "analyze": "vite-bundle-analyzer",
     "verify:stack": "bash scripts/verify-stack.sh",
+    "build:analyze": "ANALYZE=1 vite build && node scripts/bundle-report.mjs",
+    "bundle:report": "node scripts/bundle-report.mjs",
     "prebuild": "npm run type-check:strict",
     "build": "npm run check:mobile-nav:auto && npm run check:page-content && npm run check:skeletons -- --skip-build && npm run gen:audit-pdf && vite build && npm run check:tailwind-animations",
     "gen:audit-pdf": "node scripts/generate-audit-pdf.mjs",
