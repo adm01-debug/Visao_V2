@@ -64,14 +64,18 @@ function makeRiskScenario(i) {
   // Adversarial: insider com credencial válida em horário atípico + zona sensível
   const insiderThreat = chance(0.08) && auth && OFF_HOURS.has(hour) &&
     ['almoxarifado', 'perimetro'].includes(cam.zone);
+  // Adversarial: tailgating — pessoa autorizada + acompanhante não autorizado em zona sensível
+  const tailgating = chance(0.06) && auth &&
+    ['almoxarifado', 'perimetro'].includes(cam.zone);
 
   const truth =
     (OFF_HOURS.has(hour) && motion && !auth) ||
     forcedEntry ||
     (dwellSec > 300 && ['perimetro', 'almoxarifado'].includes(cam.zone)) ||
-    insiderThreat;
+    insiderThreat ||
+    tailgating;
 
-  return { id: `risk-${i}`, domain: 'risk', cam, hour, dwellSec, motion, forcedEntry, auth, faceKnown, insiderThreat, truth };
+  return { id: `risk-${i}`, domain: 'risk', cam, hour, dwellSec, motion, forcedEntry, auth, faceKnown, insiderThreat, tailgating, truth };
 }
 
 function makeProductivityScenario(i) {
@@ -107,9 +111,13 @@ function makeBreakInScenario(i) {
   const auth = chance(0.5);
   // Adversarial: sensor com falha (ruído sem movimento correlato)
   const sensorFault = chance(0.05);
+  // Adversarial: mesma credencial em duas câmeras distantes em < 60s (fisicamente impossível)
+  const credentialSharing = chance(0.04) && auth;
 
-  const truth = (doorSensor || glassBreak) && OFF_HOURS.has(hour) && !auth && motion && !sensorFault;
-  return { id: `break-${i}`, domain: 'break_in', cam, hour, doorSensor, glassBreak, motion, auth, sensorFault, truth };
+  const truth =
+    ((doorSensor || glassBreak) && OFF_HOURS.has(hour) && !auth && motion && !sensorFault) ||
+    credentialSharing;
+  return { id: `break-${i}`, domain: 'break_in', cam, hour, doorSensor, glassBreak, motion, auth, sensorFault, credentialSharing, truth };
 }
 
 /* ------------------------------- Detector -------------------------------- */
@@ -121,7 +129,9 @@ function detect(scenario) {
       const loiter = s.dwellSec > 300 && ['perimetro', 'almoxarifado'].includes(s.cam.zone);
       const insider = s.auth && suspiciousHours &&
         ['almoxarifado', 'perimetro'].includes(s.cam.zone) && s.insiderThreat;
-      return (suspiciousHours && s.motion && !s.auth) || s.forcedEntry || loiter || insider;
+      const tailgate = s.auth && s.tailgating &&
+        ['almoxarifado', 'perimetro'].includes(s.cam.zone);
+      return (suspiciousHours && s.motion && !s.auth) || s.forcedEntry || loiter || insider || tailgate;
     }
     case 'productivity': {
       const s = scenario;
@@ -130,6 +140,7 @@ function detect(scenario) {
     }
     case 'break_in': {
       const s = scenario;
+      if (s.credentialSharing) return true;
       if (s.sensorFault) return false;
       return (s.doorSensor || s.glassBreak) && OFF_HOURS.has(s.hour) && !s.auth && s.motion;
     }
