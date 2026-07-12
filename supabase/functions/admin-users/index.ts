@@ -109,19 +109,14 @@ Deno.serve(async (req) => {
 
       log.info("Updating user role", { targetUser: user_id, newRole: new_role, adminId: caller.id });
 
-      // Substituição atômica: remove todos os papéis antigos e insere o novo.
-      // Evita o bug do upsert em (user_id, role) que criaria papéis duplicados
-      // e mantém o audit trigger `audit_role_changes` coerente.
-      const { error: deleteError } = await adminClient
-        .from("user_roles")
-        .delete()
-        .eq("user_id", user_id);
-      if (deleteError) throw deleteError;
-
-      const { error: insertError } = await adminClient
-        .from("user_roles")
-        .insert({ user_id, role: new_role });
-      if (insertError) throw insertError;
+      // Substituição atômica dentro de uma transação PL/pgSQL — evita janela
+      // sem papel e valida `admin` novamente do lado do banco (defesa em profundidade).
+      const { error: rpcError } = await adminClient.rpc("replace_user_role", {
+        _target_user_id: user_id,
+        _new_role: new_role,
+        _admin_id: caller.id,
+      });
+      if (rpcError) throw rpcError;
 
       log.info("Role updated successfully", { targetUser: user_id, newRole: new_role });
 
