@@ -2137,6 +2137,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      run_retention_cleanup: { Args: never; Returns: Json }
     }
     Enums: {
       alert_type:
