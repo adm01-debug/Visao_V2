@@ -44,8 +44,13 @@ export async function fetchWithRetry(
   let lastError: Error | null = null;
 
   for (let attempt = 0; attempt <= cfg.maxRetries; attempt++) {
+    const controller = cfg.timeoutMs > 0 ? new AbortController() : null;
+    const timer = controller
+      ? setTimeout(() => controller.abort(new Error(`Timeout after ${cfg.timeoutMs}ms`)), cfg.timeoutMs)
+      : null;
     try {
-      const response = await fetch(url, init);
+      const response = await fetch(url, controller ? { ...init, signal: controller.signal } : init);
+      if (timer) clearTimeout(timer);
 
       // Don't retry client errors (4xx) except retryable server errors
       if (response.ok || !cfg.retryableStatuses.includes(response.status)) {
