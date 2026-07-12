@@ -1,27 +1,18 @@
 {
-  "generatedAt": "2026-07-12T23:05:11.802Z",
+  "generatedAt": "2026-07-12T23:05:47.843Z",
   "wrapperFile": "src/components/layout/MainLayout.tsx",
   "requiredClass": "mb-mobile-nav",
   "totals": {
     "total": 41,
-    "ok": 34,
-    "pendente": 1,
+    "ok": 35,
+    "pendente": 0,
     "isenta": 6,
     "standard": 29,
     "customWrapper": 6,
     "standalone": 6
   },
-  "failed": true,
+  "failed": false,
   "rows": [
-    {
-      "file": "EventAlertsDashboardPage.tsx",
-      "path": "src/pages/EventAlertsDashboardPage.tsx",
-      "category": "standard",
-      "status": "pendente",
-      "issues": [
-        "Redeclara `mb-mobile-nav` (remover)"
-      ]
-    },
     {
       "file": "AlertsPage.tsx",
       "path": "src/pages/AlertsPage.tsx",
@@ -95,6 +86,13 @@
     {
       "file": "EvaluationPage.tsx",
       "path": "src/pages/EvaluationPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "EventAlertsDashboardPage.tsx",
+      "path": "src/pages/EventAlertsDashboardPage.tsx",
       "category": "standard",
       "status": "ok",
       "issues": []
