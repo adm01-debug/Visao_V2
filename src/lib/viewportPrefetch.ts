@@ -42,8 +42,9 @@ function extractPath(href: string): string {
       return "";
     }
   }
-  return href.split("?")[0].split("#")[0];
+  return href.split("?")[0]?.split("#")[0] ?? "";
 }
+
 
 function handleIntersect(entries: IntersectionObserverEntry[]) {
   for (const entry of entries) {
