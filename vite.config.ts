@@ -64,6 +64,9 @@ export default defineConfig(({ mode }) => ({
   build: {
     target: "es2020",
     cssMinify: true,
+    // Manifest do Vite habilitado para permitir que scripts (ex.: check-critical-path.mjs)
+    // caminhem o grafo eager x lazy sem depender do modo ANALYZE.
+    manifest: true,
     // Sourcemaps ligados quando ANALYZE=1 para o visualizer atribuir bytes por dep/módulo.
     sourcemap: process.env.ANALYZE === "1" ? "hidden" : false,
     // Warning só dispara acima de 2.6MB. Os únicos chunks acima de 700kB são
