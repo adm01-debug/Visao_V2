@@ -11,29 +11,54 @@ concurrency:
 
 jobs:
   verify-and-build:
-    name: lint + test:unit + verify:stack + build
+    name: verify (node ${{ matrix.node }} / bun ${{ matrix.bun }})
     runs-on: ubuntu-latest
     timeout-minutes: 25
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['20', '22']
+        bun: ['1.1.34', 'latest']
+        include:
+          - node: '20'
+            bun: '1.1.34'
+            primary: true
+          - node: '22'
+            bun: 'latest'
+            primary: false
+        exclude:
+          - node: '20'
+            bun: 'latest'
+          - node: '22'
+            bun: '1.1.34'
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Bun
+      - name: Setup Node ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Setup Bun ${{ matrix.bun }}
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version: ${{ matrix.bun }}
 
       - name: Cache Bun store
         uses: actions/cache@v4
         with:
           path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock', 'bun.lockb', 'package.json') }}
+          key: ${{ runner.os }}-bun-${{ matrix.bun }}-${{ hashFiles('bun.lock', 'bun.lockb', 'package.json') }}
           restore-keys: |
+            ${{ runner.os }}-bun-${{ matrix.bun }}-
             ${{ runner.os }}-bun-
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
+
 
       - name: Lint
         run: bun run lint
