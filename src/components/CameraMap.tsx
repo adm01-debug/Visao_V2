@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useMapboxToken } from '@/hooks/useMapboxToken';
+import { useFeatureReadyMark } from '@/hooks/useFeatureReadyMark';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AlertTriangle, MapPin } from 'lucide-react';
 import { CHART_COLORS } from '@/constants/chartColors';
