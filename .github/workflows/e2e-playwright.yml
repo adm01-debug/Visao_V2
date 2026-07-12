@@ -74,30 +74,43 @@ jobs:
       - name: Build app
         run: bun run build
 
-      - name: Run Playwright tests (headless, chromium)
+      - name: Guard required secrets
+        run: |
+          missing=()
+          [ -z "${E2E_TEST_EMAIL:-}" ] && missing+=("E2E_TEST_EMAIL")
+          [ -z "${E2E_TEST_PASSWORD:-}" ] && missing+=("E2E_TEST_PASSWORD")
+          [ -z "${SUPABASE_URL:-}" ] && missing+=("SUPABASE_URL")
+          [ -z "${SUPABASE_SERVICE_ROLE_KEY:-}" ] && missing+=("SUPABASE_SERVICE_ROLE_KEY")
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "::error::Secrets ausentes: ${missing[*]}. Configure em Settings → Secrets → Actions."
+            exit 1
+          fi
+
+      - name: Run Playwright tests (headless, chromium, shard ${{ matrix.shard }}/${{ matrix.total }})
         id: e2e
-        run: bunx playwright test --project=chromium --reporter=list,html,json
+        run: bunx playwright test --project=chromium --shard=${{ matrix.shard }}/${{ matrix.total }} --reporter=list,blob,json
         env:
-          PLAYWRIGHT_HTML_REPORT: playwright-report
-          PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results.json
+          PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
+          PLAYWRIGHT_JSON_OUTPUT_NAME: blob-report/results-${{ matrix.shard }}.json
 
-      - name: Upload Playwright HTML report
+      - name: Upload blob report (shard ${{ matrix.shard }})
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ github.run_id }}
-          path: playwright-report/**
+          name: playwright-blob-${{ github.run_id }}-${{ matrix.shard }}
+          path: blob-report/**
           if-no-files-found: warn
-          retention-days: 14
+          retention-days: 3
 
-      - name: Upload traces & videos
+      - name: Upload traces & videos (shard ${{ matrix.shard }})
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-traces-${{ github.run_id }}
+          name: playwright-traces-${{ github.run_id }}-${{ matrix.shard }}
           path: test-results/**
           if-no-files-found: ignore
           retention-days: 7
+
 
       - name: Build PR summary
         if: always() && github.event_name == 'pull_request'
