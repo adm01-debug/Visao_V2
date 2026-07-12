@@ -4,6 +4,8 @@ import { sendTelegramSchema, validateInput } from "../_shared/validation.ts";
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { createLogger } from "../_shared/logger.ts";
 import { withIdempotency } from "../_shared/idempotency.ts";
+import { fetchWithTimeout, DEFAULT_TIMEOUTS } from "../_shared/timeout.ts";
+
 
 const log = createLogger("send-telegram");
 
