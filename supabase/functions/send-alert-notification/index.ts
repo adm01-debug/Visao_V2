@@ -110,14 +110,15 @@ serve(async (req) => {
               formData.append('caption', telegramMessage);
               formData.append('parse_mode', 'HTML');
               formData.append('photo', notification.snapshotUrl);
-              telegramResponse = await fetch(`https://api.telegram.org/bot${telegramConfig.botToken}/sendPhoto`, { method: 'POST', body: formData });
+              telegramResponse = await fetchWithTimeout(`https://api.telegram.org/bot${telegramConfig.botToken}/sendPhoto`, { method: 'POST', body: formData }, DEFAULT_TIMEOUTS.webhook);
             } else {
-              telegramResponse = await fetch(`https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`, {
+              telegramResponse = await fetchWithTimeout(`https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ chat_id: telegramConfig.chatId, text: telegramMessage, parse_mode: 'HTML' }),
-              });
+              }, DEFAULT_TIMEOUTS.webhook);
             }
+
 
             const telegramResult = await telegramResponse.json();
             results.telegram = telegramResult.ok
