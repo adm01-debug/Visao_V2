@@ -1,6 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { join, dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const isCI = !!process.env.CI;
 
@@ -19,7 +22,7 @@ export default defineConfig({
   testDir: "./tests/e2e",
 
   /* Global setup: seed E2E user + persist auth storageState */
-  globalSetup: require.resolve("./tests/e2e/global-setup"),
+  globalSetup: resolve(__dirname, "tests/e2e/global-setup.ts"),
 
   
   /* Run tests in files in parallel */
