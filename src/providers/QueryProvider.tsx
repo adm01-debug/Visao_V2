@@ -1,5 +1,19 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode, useState } from 'react';
+import { errorReporter } from '@/lib/errorReporter';
+import { logger } from '@/lib/logger';
+
+function toError(err: unknown): Error {
+  return err instanceof Error ? err : new Error(typeof err === 'string' ? err : JSON.stringify(err));
+}
+
+function isClientError(err: unknown): boolean {
+  const status =
+    (err as { status?: number } | null)?.status ??
+    (err as { statusCode?: number } | null)?.statusCode;
+  return typeof status === 'number' && status >= 400 && status < 500;
+}
+
 
 /**
  * Global React Query configuration.
@@ -18,6 +32,30 @@ export const QueryProvider = ({ children }: { children: ReactNode }) => {
   const [queryClient] = useState(
     () =>
       new QueryClient({
+        queryCache: new QueryCache({
+          onError: (err, query) => {
+            if (isClientError(err)) {
+              logger.warn('Query client error', {
+                key: query.queryKey,
+                message: (err as Error)?.message,
+              }, 'ReactQuery');
+              return;
+            }
+            errorReporter.captureGlobalError(toError(err), 'global');
+          },
+        }),
+        mutationCache: new MutationCache({
+          onError: (err, _vars, _ctx, mutation) => {
+            if (isClientError(err)) {
+              logger.warn('Mutation client error', {
+                key: mutation.options.mutationKey,
+                message: (err as Error)?.message,
+              }, 'ReactQuery');
+              return;
+            }
+            errorReporter.captureGlobalError(toError(err), 'global');
+          },
+        }),
         defaultOptions: {
           queries: {
             staleTime: 60 * 1000,
@@ -25,18 +63,14 @@ export const QueryProvider = ({ children }: { children: ReactNode }) => {
             refetchOnWindowFocus: false,
             refetchOnReconnect: true,
             retry: (failureCount, error) => {
-              const status = (error as { status?: number; statusCode?: number } | null)?.status
-                ?? (error as { statusCode?: number } | null)?.statusCode;
-              if (typeof status === 'number' && status >= 400 && status < 500) return false;
+              if (isClientError(error)) return false;
               return failureCount < 3;
             },
             retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 30_000),
           },
           mutations: {
             retry: (failureCount, error) => {
-              const status = (error as { status?: number; statusCode?: number } | null)?.status
-                ?? (error as { statusCode?: number } | null)?.statusCode;
-              if (typeof status === 'number' && status >= 400 && status < 500) return false;
+              if (isClientError(error)) return false;
               return failureCount < 1;
             },
           },
