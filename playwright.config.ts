@@ -1,6 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { join, dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const isCI = !!process.env.CI;
 
