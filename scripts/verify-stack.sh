@@ -36,7 +36,7 @@ next "checagem de módulos críticos em node_modules"
 CRITICAL_MODULES=(
   "lucide-react/dist"
   "framer-motion/dist"
-  "@vitejs/plugin-react-swc/dist"
+  "@vitejs/plugin-react-swc/index.js"
   "@rolldown/pluginutils"
   "fast-glob"
   "vite/dist"
