@@ -324,6 +324,6 @@ export default function EventAlertsDashboardPage() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </PageContent>
   );
 }
