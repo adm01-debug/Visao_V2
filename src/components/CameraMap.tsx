@@ -45,6 +45,7 @@ const getStatusColor = (status: Camera['status']) => {
 };
 
 export function CameraMap({ cameras, onCameraClick, className = '' }: CameraMapProps) {
+  useFeatureReadyMark('CameraMap', { cameras: cameras?.length ?? 0 });
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
