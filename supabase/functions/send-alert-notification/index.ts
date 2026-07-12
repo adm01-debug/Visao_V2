@@ -167,7 +167,7 @@ serve(async (req) => {
         if (webhookUrls.length > 0) {
           try {
             for (const url of webhookUrls) {
-              await fetch(url, {
+              await fetchWithTimeout(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -179,7 +179,8 @@ serve(async (req) => {
                   cameraName: notification.cameraName,
                   timestamp: notification.timestamp,
                 }),
-              });
+              }, DEFAULT_TIMEOUTS.webhook);
+
             }
             results.webhook = { success: true };
           } catch (err) {
