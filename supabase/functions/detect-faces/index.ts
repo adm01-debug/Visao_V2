@@ -3,6 +3,8 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 import { detectFacesSchema, validateInput } from "../_shared/validation.ts";
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { createLogger } from "../_shared/logger.ts";
+import { fetchWithTimeout, DEFAULT_TIMEOUTS } from "../_shared/timeout.ts";
+
 
 const log = createLogger("detect-faces");
 
