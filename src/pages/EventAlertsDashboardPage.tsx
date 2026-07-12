@@ -43,14 +43,14 @@ const SEVERITY_TONE: Record<Severity, string> = {
   medium: "bg-primary/80 text-primary-foreground",
   low: "bg-muted text-muted-foreground",
 } as const;
-type RangeKey = keyof typeof RANGES;
+type RangeKey = RangeKey;
 const RANGES = {
   "1h": 1, "6h": 6, "24h": 24, "7d": 24 * 7, "30d": 24 * 30,
 };
 
 export default function EventAlertsDashboardPage() {
   const { user } = useAuth();
-  const [rangeKey, setRangeKey] = useState<keyof typeof RANGES>("24h");
+  const [rangeKey, setRangeKey] = useState<RangeKey>("24h");
   const [severity, setSeverity] = useState<Severity | "all">("all");
   const [cameraId, setCameraId] = useState<string>("all");
   const [riskType, setRiskType] = useState<string>("all");
@@ -158,7 +158,7 @@ export default function EventAlertsDashboardPage() {
       <Card>
         <CardContent className="p-4 flex flex-wrap gap-3 items-center">
           <Filter className="h-4 w-4 text-muted-foreground" />
-          <Select value={rangeKey} onValueChange={(v) => setRangeKey(v as keyof typeof RANGES)}>
+          <Select value={rangeKey} onValueChange={(v) => setRangeKey(v as RangeKey)}>
             <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="1h">Última hora</SelectItem>
