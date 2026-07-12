@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PageContent } from "@/components/layout/MainLayout";
 
 type Severity = "low" | "medium" | "high" | "critical";
 type Status = "open" | "acknowledged" | "resolved" | "dismissed";
