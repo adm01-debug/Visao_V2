@@ -11,9 +11,15 @@ concurrency:
 
 jobs:
   playwright:
-    name: Playwright E2E (chromium, headless)
+    name: Playwright E2E (chromium, shard ${{ matrix.shard }}/${{ matrix.total }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+        total: [2]
+
 
     env:
       CI: 'true'
