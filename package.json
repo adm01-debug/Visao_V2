@@ -9,7 +9,7 @@
     "build:analyze": "ANALYZE=1 vite build && node scripts/bundle-report.mjs",
     "bundle:report": "node scripts/bundle-report.mjs",
     "prebuild": "npm run type-check:strict",
-    "build": "npm run check:mobile-nav:auto && npm run check:page-content && npm run check:skeletons -- --skip-build && npm run gen:audit-pdf && vite build && npm run check:tailwind-animations",
+    "build": "npm run check:mobile-nav:auto && npm run check:page-content && npm run check:skeletons -- --skip-build && npm run gen:audit-pdf && vite build && npm run check:critical-path && npm run check:tailwind-animations",
     "gen:audit-pdf": "node scripts/generate-audit-pdf.mjs",
     "check:tailwind-animations": "node scripts/check-tailwind-animations.mjs",
     "build-storybook": "storybook build",
@@ -114,7 +114,8 @@
     "simulate:detection:strict": "node scripts/simulate-detection-scenarios.mjs --strict",
     "chunks:report": "node scripts/chunk-size-report.mjs",
     "chunks:report:warn": "node scripts/chunk-size-report.mjs --warn-only",
-    "build:chunks-report": "vite build && node scripts/chunk-size-report.mjs --warn-only"
+    "build:chunks-report": "vite build && node scripts/chunk-size-report.mjs --warn-only",
+    "check:critical-path": "node scripts/check-critical-path.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
