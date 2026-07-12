@@ -1,5 +1,19 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode, useState } from 'react';
+import { errorReporter } from '@/lib/errorReporter';
+import { logger } from '@/lib/logger';
+
+function toError(err: unknown): Error {
+  return err instanceof Error ? err : new Error(typeof err === 'string' ? err : JSON.stringify(err));
+}
+
+function isClientError(err: unknown): boolean {
+  const status =
+    (err as { status?: number } | null)?.status ??
+    (err as { statusCode?: number } | null)?.statusCode;
+  return typeof status === 'number' && status >= 400 && status < 500;
+}
+
 
 /**
  * Global React Query configuration.
