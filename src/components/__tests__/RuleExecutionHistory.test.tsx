@@ -5,11 +5,12 @@ import { RuleExecutionHistory } from '../RuleExecutionHistory';
 vi.mock('@/hooks/useRuleExecutions', () => ({
   useRuleExecutions: () => ({
     executions: [],
-    isLoading: false,
-    error: null,
+    loading: false,
     refetch: vi.fn(),
+    getStats: () => ({ total: 0, success: 0, failed: 0, pending: 0, successRate: 0 }),
   }),
 }));
+
 
 vi.mock('@/hooks/useRules', () => ({
   useRules: () => ({ rules: [], loading: false }),
