@@ -11,6 +11,6 @@ export function useFeatureReadyMark(name: string, detail?: Record<string, unknow
   useEffect(() => {
     markFeatureReady(name, detail);
     // Executa apenas na montagem — remontagens não recontam.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
 }
