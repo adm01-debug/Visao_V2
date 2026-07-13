@@ -40,27 +40,11 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
   useEffect(() => {
     if (canvasRef.current && heatmap.heatmapData && heatmap.heatmapData.grid.length > 0)
       heatmap.renderToCanvas(canvasRef.current);
-  }, [heatmap.heatmapData, canvasRef.current]);
+  }, [heatmap.heatmapData]);
 
   useEffect(() => { if (selectedCamera !== 'all') heatmap.loadHistory(period as TimeRange); }, [period, selectedCamera]);
 
-  useEffect(() => { if (user) loadData(); }, [user, period, selectedCamera, refreshKey]);
-
-  // Realtime: re-fetch when new zone_events or recognition_logs arrive for this user
-  useEffect(() => {
-    if (!user) return;
-    const channelId = `heatmap-rt-${user.id}-${Date.now()}`;
-    const channel = supabase
-      .channel(channelId)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'zone_events', filter: `user_id=eq.${user.id}` },
-        () => setRefreshKey(k => k + 1))
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'recognition_logs', filter: `user_id=eq.${user.id}` },
-        () => setRefreshKey(k => k + 1))
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [user]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     if (!user) return;
     setLoading(true);
     try {
@@ -104,7 +88,24 @@ export function HeatmapVisualization({ className }: HeatmapVisualizationProps) {
       setZoneActivities(activities);
       setTotalDetections((recognitionLogs || []).length);
     } catch { /* dados de mapa de calor best-effort; ignora falha de consulta */ } finally { setLoading(false); }
-  };
+  }, [user, period, selectedCamera]);
+
+  useEffect(() => { if (user) loadData(); }, [user, refreshKey, loadData]);
+
+  // Realtime: re-fetch when new zone_events or recognition_logs arrive for this user
+  useEffect(() => {
+    if (!user) return;
+    const channelId = `heatmap-rt-${user.id}-${Date.now()}`;
+    const channel = supabase
+      .channel(channelId)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'zone_events', filter: `user_id=eq.${user.id}` },
+        () => setRefreshKey(k => k + 1))
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'recognition_logs', filter: `user_id=eq.${user.id}` },
+        () => setRefreshKey(k => k + 1))
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user]);
+
 
   const stats = useMemo(() => {
     const totalEvents = zoneActivities.reduce((s, z) => s + z.total, 0);
