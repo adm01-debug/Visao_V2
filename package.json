@@ -115,7 +115,8 @@
     "chunks:report": "node scripts/chunk-size-report.mjs",
     "chunks:report:warn": "node scripts/chunk-size-report.mjs --warn-only",
     "build:chunks-report": "vite build && node scripts/chunk-size-report.mjs --warn-only",
-    "check:critical-path": "node scripts/check-critical-path.mjs"
+    "check:critical-path": "node scripts/check-critical-path.mjs",
+    "lint:advisory": "eslint . --no-error-on-unmatched-pattern --rule \"react-hooks/set-state-in-effect: warn\" --rule \"react-hooks/purity: warn\" --rule \"react-hooks/immutability: warn\" --rule \"react-hooks/refs: warn\" --rule \"react-hooks/preserve-manual-memoization: warn\""
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
@@ -260,7 +261,7 @@
     "vitest": "^4.0.16",
     "workbox-window": "^7.0.0"
   },
-  "description": "Sistema de Vigilância Inteligente com IA - Reconhecimento Facial, Detecção de EPIs, Placas e Alertas em Tempo Real",
+  "description": "Sistema de Vigil\u00e2ncia Inteligente com IA - Reconhecimento Facial, Detec\u00e7\u00e3o de EPIs, Placas e Alertas em Tempo Real",
   "author": "adm01-debug",
   "license": "MIT",
   "repository": {
