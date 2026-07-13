@@ -54,7 +54,7 @@ Auditoria removeu 8 componentes que a versão anterior listava mas **não existe
 
 ### 4. Regras experimentais do React Compiler (advisory)
 
-`react-hooks/purity`, `react-hooks/refs`, `react-hooks/set-state-in-effect`, `react-hooks/immutability`, `react-hooks/preserve-manual-memoization` estão **desativadas** (não bloqueiam CI). Ativar como `warn` durante refatorações direcionadas quando houver capacidade para tratar os 83 pontos identificados na varredura anterior.
+`react-hooks/purity`, `react-hooks/refs`, `react-hooks/set-state-in-effect`, `react-hooks/immutability`, `react-hooks/preserve-manual-memoization` ficam **off por padrão** e são promovidas a `warn` via `LINT_ADVISORY=1 npm run lint` (ou `npm run lint:advisory`). Snapshot atual: **82 warnings** para refactor guiado por página.
 
 ---
 
@@ -65,7 +65,8 @@ Auditoria removeu 8 componentes que a versão anterior listava mas **não existe
 - Migração de `.eslintignore` (deprecado) → `ignores` no `eslint.config.js`
 - Índices de performance em `event_alerts` (`event_id`, `(org, triggered_at) WHERE status='open'`, `(org, severity, triggered_at)`)
 - Remoção de `eslint-disable` órfão em `useFeatureReadyMark.ts`
-- +5 testes cobrindo `LazyLoad`, `SwipeableView`, `OfflineIndicator`, `BottomNavigation`
+- +5 testes cobrindo `LazyLoad`, `SwipeableView`, `OfflineIndicator`, `BottomNavigation`, `MainLayout`
+- Script `lint:advisory` + toggle `LINT_ADVISORY=1` para regras experimentais do React Compiler (82 pontos catalogados para refactor gradual)
 
 ---
 
