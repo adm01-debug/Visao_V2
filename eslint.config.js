@@ -7,7 +7,7 @@ import tseslint from 'typescript-eslint';
 import visaoRules from './eslint-rules/index.js';
 
 export default tseslint.config(
-  { ignores: ['dist', 'node_modules', '.npm-cache', 'coverage', '.storybook', 'storybook-static'] },
+  { ignores: ['dist', 'build', 'node_modules', '.npm-cache', 'coverage', '.storybook', 'storybook-static', 'public/**', '**/*.min.js'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
