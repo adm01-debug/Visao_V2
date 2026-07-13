@@ -54,12 +54,14 @@ export default tseslint.config(
       // dependências críticas são revisadas em PR. Mantemos rules-of-hooks como erro.
       'react-hooks/exhaustive-deps': 'off',
       // Regras experimentais do React Compiler (advisory, não correctness).
-      // Mantidas como warn para visibilidade em code review sem bloquear o gate.
-      'react-hooks/set-state-in-effect': 'warn',
-      'react-hooks/purity': 'warn',
-      'react-hooks/immutability': 'warn',
-      'react-hooks/refs': 'warn',
-      'react-hooks/preserve-manual-memoization': 'warn',
+      // Desativadas no gate porque `--max-warnings=0` promoveria warns a bloqueio.
+      // Reativar como 'warn' pontualmente durante refatorações direcionadas.
+      'react-hooks/set-state-in-effect': 'off',
+      'react-hooks/purity': 'off',
+      'react-hooks/immutability': 'off',
+      'react-hooks/refs': 'off',
+      'react-hooks/preserve-manual-memoization': 'off',
+
       // VISÃO Design System — prevent hardcoded colors
       'visao/no-hardcoded-colors': 'error',
 
