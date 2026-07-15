@@ -68,6 +68,7 @@ function StatsPanel({ faces }: { faces: DetectedFace[] }) {
 }
 
 export function FaceRecognitionOverlay({ faces, showLabels = true, showSimilarity = true, showDetails = false, animateBoxes = true, className, onFaceClick }: FaceRecognitionOverlayProps) {
+  // eslint-disable-next-line react-hooks/purity -- Date.now() inside useMemo is intentional for time-window filtering
   const activeFaces = useMemo(() => { const now = Date.now(); return faces.filter(f => now - new Date(f.timestamp).getTime() < 5000); }, [faces]);
   const sortedFaces = useMemo(() => [...activeFaces].sort((a, b) => (FACE_PRIORITY[a.listType] || 99) - (FACE_PRIORITY[b.listType] || 99)), [activeFaces]);
   if (sortedFaces.length === 0) return null;

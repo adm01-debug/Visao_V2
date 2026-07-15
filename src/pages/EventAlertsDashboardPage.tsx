@@ -111,6 +111,7 @@ export default function EventAlertsDashboardPage() {
     const hours = RANGES[rangeKey];
     const bucketMs = hours <= 24 ? 60 * 60 * 1000 : 6 * 60 * 60 * 1000;
     const bucketFmt = hours <= 24 ? "HH:mm" : "dd/MM HH'h'";
+    // eslint-disable-next-line react-hooks/purity -- Date.now() inside useMemo is intentional for timeline buckets
     const now = Date.now();
     const start = now - hours * 60 * 60 * 1000;
     const buckets = new Map<number, { time: string; critical: number; high: number; medium: number; low: number }>();

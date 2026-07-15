@@ -11,6 +11,11 @@ export default tseslint.config(
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
+    // Directives targeting advisory React Compiler rules (purity/immutability/refs/preserve-manual-memoization)
+    // are intentionally kept even when the rules are toggled 'off' outside LINT_ADVISORY mode.
+    linterOptions: {
+      reportUnusedDisableDirectives: 'off',
+    },
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,

@@ -84,10 +84,12 @@ export function DashboardV2() {
   const activeAlerts = uiAlerts.filter(a => !a.isRead).length;
   const streamingCameras = uiCameras.filter(c => c.streamUrl).length;
 
+  /* eslint-disable react-hooks/preserve-manual-memoization -- intentional useMemo for filtered/sorted alerts */
   const filteredAlerts = useMemo(() => {
     const af = filterAlerts(uiAlerts.map(a => ({ ...a, timestamp: a.timestamp.toISOString() })), alertFilters);
     return sortAlerts(filterAlertsBySearch(af, searchQuery), alertSortBy);
   }, [uiAlerts, alertFilters, searchQuery, alertSortBy]);
+  /* eslint-enable react-hooks/preserve-manual-memoization */
 
   const { currentPage: alertsPage, setCurrentPage: setAlertsPage, totalPages: alertsTotalPages, paginatedItems: paginatedAlerts, totalItems: alertsTotalItems } = usePagination(filteredAlerts, 5);
 
