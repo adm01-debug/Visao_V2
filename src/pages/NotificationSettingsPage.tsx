@@ -21,18 +21,18 @@ export default function NotificationSettingsPage() {
 
   if (loading) {
     return (
-      <div role="main" className="flex items-center justify-center min-h-screen mb-mobile-nav">
-      <PageMeta title="Configurações de Notificações" description="Gerencie canais e regras de notificação" />
+      <PageContent className="flex items-center justify-center min-h-[50vh]">
+        <PageMeta title="Configurações de Notificações" description="Gerencie canais e regras de notificação" />
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
+      </PageContent>
     );
   }
 
   if (!config) {
     return (
-      <div role="main" className="flex items-center justify-center min-h-screen mb-mobile-nav">
+      <PageContent className="flex items-center justify-center min-h-[50vh]">
         <p className="text-muted-foreground">Erro ao carregar configurações</p>
-      </div>
+      </PageContent>
     );
   }
 

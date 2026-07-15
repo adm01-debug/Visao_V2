@@ -1,6 +1,6 @@
 # Relatório de Qualidade — Detecção VISÃO
 
-**Gerado em:** 2026-07-13T13:04:03.176Z  
+**Gerado em:** 2026-07-15T18:07:20.968Z  
 **Seed:** 42 · **Cenários:** 300
 
 ## Métricas globais

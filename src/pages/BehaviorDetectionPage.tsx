@@ -1,4 +1,4 @@
-import { MainLayout } from '@/components/layout/MainLayout';
+import { PageContent } from '@/components/layout/MainLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -14,10 +14,9 @@ export default function BehaviorDetectionPage() {
   const { selectedCamera, setSelectedCamera, isAnalyzing, analysisResults, cameras, camerasLoading, analyzeCamera, analyzeFromFile, stats, patternDistribution, severityDistribution } = useBehaviorAnalysis();
 
   return (
-    <MainLayout>
+    <PageContent maxWidth="xl">
       <PageMeta title="Detecção de Comportamento" description="Análise comportamental com IA" />
 
-      <div className="space-y-6 max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -77,7 +76,6 @@ export default function BehaviorDetectionPage() {
         ) : (
           <div className="space-y-4">{analysisResults.map(record => <BehaviorResultCard key={record.id} record={record} />)}</div>
         )}
-      </div>
-    </MainLayout>
+    </PageContent>
   );
 }

@@ -34,6 +34,7 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 
 interface ManagedUser {
   id: string;
@@ -143,7 +144,7 @@ const UserManagementPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <PageContent>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Shield className="h-8 w-8 text-primary" />
@@ -294,7 +295,7 @@ const UserManagementPage: React.FC = () => {
           )}
         </CardContent>
       </Card>
-    </div>
+    </PageContent>
   );
 };
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 import { BarChart3, Calendar, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,11 +17,8 @@ export default function RecognitionAnalyticsPage() {
   const [dateRange, setDateRange] = useState(7);
 
   return (
-    <>
+    <PageContent>
       <PageMeta title="Analytics de Reconhecimento" description="Estatísticas de reconhecimento facial" />
-
-      <div className="min-h-screen bg-background mb-mobile-nav">
-        <div className="p-6 space-y-6">
           {/* Header */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center gap-4">
@@ -57,10 +55,8 @@ export default function RecognitionAnalyticsPage() {
             </div>
           </div>
 
-          {/* Analytics */}
-          <RecognitionAnalytics dateRange={dateRange} />
-        </div>
-      </div>
-    </>
+      {/* Analytics */}
+      <RecognitionAnalytics dateRange={dateRange} />
+    </PageContent>
   );
 }

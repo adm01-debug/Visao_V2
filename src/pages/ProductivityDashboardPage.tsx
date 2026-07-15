@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { PageContent } from "@/components/layout/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -107,9 +107,8 @@ export default function ProductivityDashboardPage() {
   };
 
   return (
-    <MainLayout>
+    <PageContent maxWidth="xl">
       <PageMeta title="Produtividade" description="Dashboard de produtividade e desempenho" />
-      <div className="space-y-6 max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-primary/10"><BarChart3 className="h-6 w-6 text-primary" /></div>
@@ -286,7 +285,6 @@ export default function ProductivityDashboardPage() {
             </Card>
           </>
         )}
-      </div>
-    </MainLayout>
+    </PageContent>
   );
 }

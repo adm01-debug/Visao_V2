@@ -17,6 +17,7 @@ import { PanicStatsCards } from '@/components/panic-events/PanicStatsCards';
 import { PanicEventCard } from '@/components/panic-events/PanicEventCard';
 import { PanicEventDetailDialog } from '@/components/panic-events/PanicEventDetailDialog';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 
 export default function PanicEventsPage() {
   const { events, isLoading, resolvePanic, unresolvedCount } = usePanicButton();
@@ -57,17 +58,18 @@ export default function PanicEventsPage() {
 
   if (isLoading) {
     return (
-      <div className="p-6 space-y-6">
-      <PageMeta title="Eventos de Pânico" description="Monitore e gerencie eventos de pânico" />
+      <PageContent>
+        <PageMeta title="Eventos de Pânico" description="Monitore e gerencie eventos de pânico" />
         <Skeleton className="h-10 w-64" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">{[1, 2, 3].map(i => <Skeleton key={i} className="h-28" />)}</div>
         <div className="space-y-3">{[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-24" />)}</div>
-      </div>
+      </PageContent>
     );
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <PageContent>
+      <PageMeta title="Eventos de Pânico" description="Monitore e gerencie eventos de pânico" />
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
@@ -136,6 +138,6 @@ export default function PanicEventsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </PageContent>
   );
 }

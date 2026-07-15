@@ -30,6 +30,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { logger } from '@/lib/logger';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 
 export default function ProfilePage() {
   const _navigate = useNavigate();
@@ -107,7 +108,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="p-6 space-y-6 max-w-4xl mx-auto animate-fade-in">
+    <PageContent maxWidth="md" className="animate-fade-in">
       <PageMeta title="Perfil" description="Gerencie seu perfil e informações pessoais" />
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -321,6 +322,6 @@ export default function ProfilePage() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </PageContent>
   );
 }

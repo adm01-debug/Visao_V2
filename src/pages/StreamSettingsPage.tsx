@@ -14,6 +14,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useMediaMTX } from '@/hooks/useMediaMTX';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 
 export default function StreamSettingsPage() {
   const { refresh: _refreshPaths } = useMediaMTX();
@@ -67,7 +68,7 @@ export default function StreamSettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background mb-mobile-nav">
+    <PageContent className="-m-4 md:-m-6 space-y-0">
       <PageMeta title="Configuração de Streams" description="Configure streams RTSP, HLS e câmeras IP profissionais" />
 
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
@@ -207,6 +208,6 @@ export default function StreamSettingsPage() {
           </section>
         </div>
       </main>
-    </div>
+    </PageContent>
   );
 }
