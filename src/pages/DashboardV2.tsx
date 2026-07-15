@@ -185,7 +185,8 @@ export function DashboardV2() {
               ? Math.round((onlineCameras / uiCameras.length) * 80 + (activeRules.length > 0 ? 15 : 0) + (settings.enableAnalysis ? 5 : 0))
               : 0;
             const clampedProd = Math.max(0, Math.min(100, productivityScore));
-            const prevScore = Math.max(0, clampedProd - Math.floor(Math.random() * 6 + 1));
+            // Delta determinístico baseado no próprio score (evita impureza em render).
+            const prevScore = Math.max(0, clampedProd - ((clampedProd % 6) + 1));
             const diff = clampedProd - prevScore;
             return (
               <div className="rounded-xl border border-border/50 bg-card p-4 mt-4" style={{ boxShadow: 'var(--shadow-card)' }}>

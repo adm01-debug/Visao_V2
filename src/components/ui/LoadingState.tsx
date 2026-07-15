@@ -198,16 +198,20 @@ export function ChartSkeleton({ className }: { className?: string }) {
         </div>
       </div>
       <div className="flex items-end gap-2 h-48">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <motion.div
-            key={i}
-            aria-hidden="true"
-            initial={{ height: 0 }}
-            animate={{ height: `${Math.random() * 100}%` }}
-            transition={{ delay: i * 0.05, duration: 0.5 }}
-            className="flex-1 bg-muted rounded-t"
-          />
-        ))}
+        {Array.from({ length: 12 }).map((_, i) => {
+          // Deterministic pseudo-random height per bar (stable across renders).
+          const h = 25 + ((i * 53 + 17) % 70);
+          return (
+            <motion.div
+              key={i}
+              aria-hidden="true"
+              initial={{ height: 0 }}
+              animate={{ height: `${h}%` }}
+              transition={{ delay: i * 0.05, duration: 0.5 }}
+              className="flex-1 bg-muted rounded-t"
+            />
+          );
+        })}
       </div>
     </StatusRegion>
   );
