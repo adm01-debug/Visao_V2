@@ -144,6 +144,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
   });
 
   // Native connection (MJPEG, MP4)
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization -- intentional manual memoization for stream connection
   const connectNative = useCallback(async () => {
     const video = videoRef.current;
     if (!video) { setError('UNKNOWN', 'Elemento de vídeo não encontrado'); return; }
