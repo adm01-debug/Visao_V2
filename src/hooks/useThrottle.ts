@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 export function useThrottle<T>(value: T, interval: number): T {
   const [throttledValue, setThrottledValue] = useState<T>(value);
+  // eslint-disable-next-line react-hooks/purity -- Date.now() in useRef initializer runs once for throttle baseline
   const lastUpdated = useRef<number>(Date.now());
 
   useEffect(() => {
