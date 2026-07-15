@@ -84,6 +84,7 @@ export function DashboardV2() {
   const activeAlerts = uiAlerts.filter(a => !a.isRead).length;
   const streamingCameras = uiCameras.filter(c => c.streamUrl).length;
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization -- intentional useMemo for filtered/sorted alerts
   const filteredAlerts = useMemo(() => {
     const af = filterAlerts(uiAlerts.map(a => ({ ...a, timestamp: a.timestamp.toISOString() })), alertFilters);
     return sortAlerts(filterAlertsBySearch(af, searchQuery), alertSortBy);
