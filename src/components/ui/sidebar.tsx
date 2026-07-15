@@ -531,14 +531,13 @@ const SidebarMenuSkeleton = React.forwardRef<
     showIcon?: boolean;
   }
 >(({ className, showIcon = false, ...props }, ref) => {
-  // Deterministic width between 50-90% based on a stable id per instance.
-  const idRef = React.useRef<number | null>(null);
-  if (idRef.current === null) {
-    const store = SidebarMenuSkeleton as unknown as { _c?: number };
-    store._c = (store._c ?? 0) + 1;
-    idRef.current = store._c;
-  }
-  const width = React.useMemo(() => `${50 + (((idRef.current ?? 1) * 37) % 40)}%`, []);
+  // Deterministic width 50-90% derived from a stable React id per instance.
+  const reactId = React.useId();
+  const width = React.useMemo(() => {
+    let hash = 0;
+    for (let i = 0; i < reactId.length; i++) hash = (hash * 31 + reactId.charCodeAt(i)) | 0;
+    return `${50 + (Math.abs(hash) % 40)}%`;
+  }, [reactId]);
 
   return (
     <div
