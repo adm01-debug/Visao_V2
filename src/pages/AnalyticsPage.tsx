@@ -280,7 +280,7 @@ export function AnalyticsPage() {
                 { label: 'Hora Mais Ativa', value: `${hourlyData.reduce((max, d) => d.alerts > (hourlyData[max]?.alerts || 0) ? hourlyData.indexOf(d) : max, 0)}h`, icon: Clock, color: 'text-primary' },
                 { label: 'Taxa Detecção', value: '94.2%', icon: Target, color: 'text-success' },
                 { label: 'Uptime Médio', value: '99.1%', icon: Activity, color: 'text-primary' },
-                { label: 'Faces Reconhecidas', value: Math.floor(Math.random() * 100), icon: ScanFace, color: 'text-primary' },
+                { label: 'Faces Reconhecidas', value: chartData.reduce((s, d) => s + (d.alerts || 0), 0), icon: ScanFace, color: 'text-primary' },
               ].map((stat, i) => (
                 <div key={i} className="text-center p-3.5 rounded-xl bg-muted/30 border border-border/30 transition-all hover:bg-muted/50 hover:border-border/50">
                   <stat.icon className={cn('w-5 h-5 mx-auto mb-1.5', stat.color)} />

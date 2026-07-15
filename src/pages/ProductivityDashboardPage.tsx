@@ -84,9 +84,15 @@ export default function ProductivityDashboardPage() {
   ], [filteredData]);
   /* eslint-enable visao/no-hardcoded-colors */
 
-  const hourlyActivity = useMemo(() => Array.from({ length: 10 }, (_, i) => ({
-    hora: `${8 + i}:00`, produtivo: Math.round(60 + Math.random() * 30), ocioso: Math.round(5 + Math.random() * 25),
-  })), [timeFilter]);
+  const hourlyActivity = useMemo(() => {
+    // Curva determinística seeded por timeFilter para evitar Math.random em render.
+    const seed = Array.from(timeFilter).reduce((s, c) => s + c.charCodeAt(0), 0);
+    return Array.from({ length: 10 }, (_, i) => ({
+      hora: `${8 + i}:00`,
+      produtivo: 60 + ((seed + i * 17) % 30),
+      ocioso: 5 + ((seed + i * 11) % 25),
+    }));
+  }, [timeFilter]);
 
   const departmentStats = useMemo(() => {
     const map = new Map<string, number[]>();
