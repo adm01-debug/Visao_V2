@@ -238,6 +238,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.20",
     "eslint-plugin-unused-imports": "^4.4.1",
+    "eslint-visitor-keys": "5.0.1",
     "globals": "^15.15.0",
     "husky": "^9.0.0",
     "jest-axe": "^8.0.0",
@@ -261,7 +262,7 @@
     "vitest": "^4.0.16",
     "workbox-window": "^7.0.0"
   },
-  "description": "Sistema de Vigil\u00e2ncia Inteligente com IA - Reconhecimento Facial, Detec\u00e7\u00e3o de EPIs, Placas e Alertas em Tempo Real",
+  "description": "Sistema de Vigilância Inteligente com IA - Reconhecimento Facial, Detecção de EPIs, Placas e Alertas em Tempo Real",
   "author": "adm01-debug",
   "license": "MIT",
   "repository": {
