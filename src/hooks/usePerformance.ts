@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, RefObject } from 'react';
 
 export function usePerformanceMonitor(componentName: string) {
   const renderCount = useRef(0);
+  // eslint-disable-next-line react-hooks/purity -- performance.now() in useRef initializer runs once for perf baseline
   const startTime = useRef(performance.now());
 
   useEffect(() => {
