@@ -174,6 +174,7 @@ export function useVideoStream(options: UseVideoStreamOptions): UseVideoStreamRe
   }, [connect]);
 
   // Disconnect
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization -- intentional manual memoization for stream teardown
   const disconnect = useCallback(() => {
     destroyHLS();
     const video = videoRef.current;
