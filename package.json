@@ -240,6 +240,7 @@
     "eslint-plugin-unused-imports": "^4.4.1",
     "eslint-scope": "9.1.2",
     "eslint-visitor-keys": "5.0.1",
+    "espree": "11.2.0",
     "globals": "^15.15.0",
     "husky": "^9.0.0",
     "jest-axe": "^8.0.0",
