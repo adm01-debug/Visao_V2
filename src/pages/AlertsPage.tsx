@@ -63,6 +63,7 @@ export function AlertsPage() {
     if (filters.readStatus === 'read') result = result.filter(a => a.is_read);
     else if (filters.readStatus === 'unread') result = result.filter(a => !a.is_read);
     if (filters.dateRange !== 'all') {
+      // eslint-disable-next-line react-hooks/purity -- Date.now() inside useMemo is intentional for date-range filtering
       const now = Date.now();
       const ms: Record<string, number> = { '1h': 3600000, '24h': 86400000, '7d': 604800000, '30d': 2592000000 };
       const min = now - (ms[filters.dateRange] || 0);
