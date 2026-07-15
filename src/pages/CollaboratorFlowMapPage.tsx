@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence } from "framer-motion";
 import { DEMO_ZONES, getOccupancyColor, getOccupancyBg, type ZoneData, type FlowEdge, type Bottleneck } from "./collaborator-flow/flowTypes";
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 
 export default function CollaboratorFlowMapPage() {
   const [timeRange, setTimeRange] = useState<"1h" | "6h" | "24h">("1h");
@@ -96,7 +97,7 @@ export default function CollaboratorFlowMapPage() {
   const totalFlows = flowEdges.reduce((s, e) => s + e.count, 0);
 
   return (
-    <div className="space-y-6 p-6 max-w-7xl mx-auto">
+    <PageContent maxWidth="xl">
       <PageMeta title="Fluxo de Colaboradores" description="Mapa de fluxo e movimentação de colaboradores" />
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -193,6 +194,6 @@ export default function CollaboratorFlowMapPage() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </PageContent>
   );
 }

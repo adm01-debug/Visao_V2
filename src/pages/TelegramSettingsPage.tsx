@@ -4,21 +4,14 @@
  */
 
 import { PageMeta } from '@/components/PageMeta';
-import { Sidebar } from '@/components/Sidebar';
+import { PageContent } from '@/components/layout/MainLayout';
 import { TelegramConfigPanel } from '@/components/TelegramConfigPanel';
 
 export default function TelegramSettingsPage() {
-
   return (
-    <>
+    <PageContent>
       <PageMeta title="Configurações Telegram" description="Configure notificações via Telegram" />
-
-      <div className="flex min-h-screen w-full bg-background mb-mobile-nav">
-        <Sidebar />
-        <main className="flex-1 p-6 overflow-auto">
-          <TelegramConfigPanel />
-        </main>
-      </div>
-    </>
+      <TelegramConfigPanel />
+    </PageContent>
   );
 }

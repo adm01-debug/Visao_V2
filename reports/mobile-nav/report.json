@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T17:51:34.434Z",
+  "generatedAt": "2026-07-15T18:12:58.423Z",
   "wrapperFile": "src/components/layout/MainLayout.tsx",
   "requiredClass": "mb-mobile-nav",
   "totals": {
@@ -7,8 +7,8 @@
     "ok": 35,
     "pendente": 0,
     "isenta": 6,
-    "standard": 29,
-    "customWrapper": 6,
+    "standard": 35,
+    "customWrapper": 0,
     "standalone": 6
   },
   "failed": false,
@@ -114,7 +114,7 @@
     {
       "file": "HeatmapPage.tsx",
       "path": "src/pages/HeatmapPage.tsx",
-      "category": "customWrapper",
+      "category": "standard",
       "status": "ok",
       "issues": []
     },
@@ -149,7 +149,7 @@
     {
       "file": "NotificationSettingsPage.tsx",
       "path": "src/pages/NotificationSettingsPage.tsx",
-      "category": "customWrapper",
+      "category": "standard",
       "status": "ok",
       "issues": []
     },
@@ -170,7 +170,7 @@
     {
       "file": "PPEPage.tsx",
       "path": "src/pages/PPEPage.tsx",
-      "category": "customWrapper",
+      "category": "standard",
       "status": "ok",
       "issues": []
     },
@@ -191,7 +191,7 @@
     {
       "file": "RecognitionAnalyticsPage.tsx",
       "path": "src/pages/RecognitionAnalyticsPage.tsx",
-      "category": "customWrapper",
+      "category": "standard",
       "status": "ok",
       "issues": []
     },
@@ -233,14 +233,14 @@
     {
       "file": "StreamSettingsPage.tsx",
       "path": "src/pages/StreamSettingsPage.tsx",
-      "category": "customWrapper",
+      "category": "standard",
       "status": "ok",
       "issues": []
     },
     {
       "file": "TelegramSettingsPage.tsx",
       "path": "src/pages/TelegramSettingsPage.tsx",
-      "category": "customWrapper",
+      "category": "standard",
       "status": "ok",
       "issues": []
     },

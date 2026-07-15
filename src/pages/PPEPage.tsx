@@ -15,6 +15,7 @@ import { PPERealtimeTab } from '@/components/ppe/PPERealtimeTab';
 import { HardHat, AlertTriangle, CheckCircle2, XCircle, Activity, Shield, Camera, Settings } from 'lucide-react';
 import { toast } from 'sonner';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 
 export default function PPEPage() {
   const { cameras } = useCameras();
@@ -26,7 +27,7 @@ export default function PPEPage() {
   }, [cameras]);
 
   return (
-    <div role="main" aria-label="Detecção de EPIs" className="min-h-screen bg-background mb-mobile-nav">
+    <PageContent className="-m-4 md:-m-6" spacing={4}>
       <PageMeta title="Detecção de EPI" description="Monitore o uso de equipamentos de proteção individual" />
 
       {/* Premium Header */}
@@ -97,6 +98,6 @@ export default function PPEPage() {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </PageContent>
   );
 }

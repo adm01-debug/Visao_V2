@@ -30,22 +30,7 @@ const STANDALONE_ALLOWLIST = new Set([
 // Páginas autenticadas pendentes de migração para <PageContent>.
 // Mover para [] (lista vazia) após migração + revisão visual em mobile.
 // Quando vazia, mude o gate para --strict no CI.
-const PENDING_MIGRATION = new Set([
-  'BehaviorDetectionPage.tsx',
-  'CollaboratorFlowMapPage.tsx',
-  'GoalsAlertsPage.tsx',
-  'HeatmapPage.tsx',
-  'HelpPage.tsx',
-  'JourneyReportsPage.tsx',
-  'PPEPage.tsx',
-  'PanicEventsPage.tsx',
-  'ProductivityDashboardPage.tsx',
-  'ProfilePage.tsx',
-  'RecognitionAnalyticsPage.tsx',
-  'StreamSettingsPage.tsx',
-  'TelegramSettingsPage.tsx',
-  'UserManagementPage.tsx',
-]);
+const PENDING_MIGRATION = new Set([]);
 
 const offenders = [];
 const newOffenders = [];

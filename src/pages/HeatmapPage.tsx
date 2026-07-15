@@ -4,6 +4,7 @@
 
 import { useState, useCallback } from 'react';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 import { HeatmapVisualization } from '@/components/HeatmapVisualization';
 import { useHeatmap } from '@/hooks/useHeatmap';
 import { Card, CardContent } from '@/components/ui/card';
@@ -30,7 +31,7 @@ export default function HeatmapPage() {
   }, [heatmapHook]);
 
   return (
-    <div role="main" aria-label="Mapa de calor" className="min-h-screen bg-background mb-mobile-nav">
+    <PageContent className="-m-4 md:-m-6" spacing={4}>
       <PageMeta title="Mapa de Calor" description="Visualize mapas de calor de movimentação" />
 
       {/* Premium Header */}
@@ -138,6 +139,6 @@ export default function HeatmapPage() {
         {/* Heatmap Visualization */}
         <HeatmapVisualization />
       </div>
-    </div>
+    </PageContent>
   );
 }
