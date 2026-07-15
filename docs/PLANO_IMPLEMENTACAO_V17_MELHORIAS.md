@@ -1,6 +1,7 @@
 # 🎯 PLANO DE IMPLEMENTAÇÃO V17 — MELHORIAS PENDENTES
 
-> **Última auditoria automatizada:** 2026-07-13
+> **Última auditoria automatizada:** 2026-07-15 (QA Full Audit — 9.8/10 ✅)
+> **Relatório completo:** `reports/qa-runs/2026-07-15-full-audit.md`
 > **Repositório:** adm01-debug/vis-o
 > **Status:** 🟡 EM ANDAMENTO — muitos itens já concluídos
 
