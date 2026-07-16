@@ -40,6 +40,9 @@ jobs:
       - name: TypeScript Strict Check (src + tests + stories)
         run: npm run type-check:strict
 
+      - name: TypeScript Full Check (inclui stories + tests — gate anti-regressão)
+        run: npm run type-check:full
+
       - name: ESLint (zero warnings)
         run: npm run lint:ci
 
