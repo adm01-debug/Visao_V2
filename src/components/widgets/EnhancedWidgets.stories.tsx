@@ -1,8 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { EnhancedWidgets } from './EnhancedWidgets';
+import { StatCard } from './EnhancedWidgets';
 
-const meta: Meta<typeof EnhancedWidgets> = { title: 'Widgets/EnhancedWidgets', component: EnhancedWidgets, tags: ['autodocs'] };
+const meta: Meta<typeof StatCard> = {
+  title: 'Widgets/EnhancedWidgets',
+  component: StatCard,
+  tags: ['autodocs'],
+};
 export default meta;
-type Story = StoryObj<typeof EnhancedWidgets>;
-export const Default: Story = {};
-
+type Story = StoryObj<typeof StatCard>;
+export const Default: Story = {
+  args: { title: 'Alertas hoje', value: 42, trend: 'up' },
+};
