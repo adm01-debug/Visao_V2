@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { PageMeta } from '@/components/PageMeta';
 import { Activity, Database, HardDrive, RefreshCw, ShieldAlert, CalendarClock } from 'lucide-react';
 import { SlowQueriesCard } from '@/components/admin/SlowQueriesCard';
+import { assessCronFreshness } from '@/lib/cronSchedule';
 
 interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
 interface CacheSize { total_rows: number; total_bytes: number; oldest: string | null; newest: string | null }
@@ -201,22 +202,29 @@ export default function OperationsPage() {
               <p className="text-sm text-muted-foreground">Nenhum job registrado.</p>
             ) : (
               <ul className="space-y-3">
-                {data.cron_health.map((h) => (
-                  <li key={h.jobname} className="flex items-center justify-between text-sm">
-                    <div className="min-w-0">
-                      <p className="font-mono text-foreground truncate">{h.jobname}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {h.schedule} · última: {h.last_run ? new Date(h.last_run).toLocaleString('pt-BR') : 'nunca'}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {!h.active && <Badge variant="secondary">inativo</Badge>}
-                      <Badge variant={h.failed_7d === 0 ? 'default' : 'destructive'}>
-                        {h.failed_7d} falha{h.failed_7d === 1 ? '' : 's'}
-                      </Badge>
-                    </div>
-                  </li>
-                ))}
+                {data.cron_health.map((h) => {
+                  const fresh = assessCronFreshness(h.schedule, h.last_run);
+                  const stale = fresh.status === 'stale';
+                  const never = fresh.status === 'never';
+                  return (
+                    <li key={h.jobname} className="flex items-center justify-between text-sm">
+                      <div className="min-w-0">
+                        <p className="font-mono text-foreground truncate">{h.jobname}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {h.schedule} · última: {h.last_run ? new Date(h.last_run).toLocaleString('pt-BR') : 'nunca'} · próxima: {fresh.nextRunLabel}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {!h.active && <Badge variant="secondary">inativo</Badge>}
+                        {never && <Badge variant="secondary">sem execução</Badge>}
+                        {stale && <Badge variant="destructive">atrasado</Badge>}
+                        <Badge variant={h.failed_7d === 0 ? 'default' : 'destructive'}>
+                          {h.failed_7d} falha{h.failed_7d === 1 ? '' : 's'}
+                        </Badge>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </CardContent>
