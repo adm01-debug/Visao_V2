@@ -81,6 +81,7 @@
     "typecheck": "tsc --noEmit",
     "validate": "npm run lint && npm run type-check && npm run test",
     "check:skeletons": "node scripts/validate-skeletons.mjs",
+    "check:migrations": "node scripts/lint-migrations.mjs",
     "test:mobile-nav-class": "playwright test mobile-nav-class-presence",
     "test:mobile-nav-content-overlap": "playwright test mobile-nav-content-overlap",
     "test:mobile-nav-measured": "playwright test mobile-nav-measured-overlap",

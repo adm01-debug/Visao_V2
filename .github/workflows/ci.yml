@@ -43,6 +43,9 @@ jobs:
       - name: TypeScript Full Check (inclui stories + tests — gate anti-regressão)
         run: npm run type-check:full
 
+      - name: Migration Lint (RLS + GRANT + search_path)
+        run: npm run check:migrations
+
       - name: ESLint (zero warnings)
         run: npm run lint:ci
 
