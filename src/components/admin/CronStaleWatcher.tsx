@@ -4,15 +4,14 @@ import { useUserRole } from '@/hooks/useUserRole';
 import { useCronFreshness } from '@/hooks/useCronFreshness';
 
 /**
- * Wave 34 — Alerta global de "cron atrasado".
- * Wave 36 — Dedup persistente em sessionStorage: não reemitir toast em navegação SPA
- * nem após reload dentro da mesma aba. Reset ao fechar aba.
- *
- * Componente headless: monta uma única vez no App e, se o usuário for admin,
- * verifica a cada 60 s a saúde dos crons `visao-*`. Dispara toast destrutivo
- * apenas UMA vez por (job, last_run) por sessão de aba.
+ * Wave 34 — Alerta global "cron atrasado".
+ * Wave 36 — Dedup persistente em sessionStorage.
+ * Wave 37 — Sincronização entre abas via BroadcastChannel: quando uma aba
+ * emite o toast para (job,last_run), as demais abas do mesmo admin registram
+ * o ack e não repetem.
  */
 const STORAGE_KEY = 'visao:cron-stale-notified:v1';
+const CHANNEL_NAME = 'visao:cron-stale-ack';
 
 function loadNotified(): Set<string> {
   if (typeof window === 'undefined' || !window.sessionStorage) return new Set();
@@ -40,17 +39,33 @@ export function CronStaleWatcher() {
   const { isAdmin, loading } = useUserRole();
   const { data } = useCronFreshness(isAdmin && !loading);
   const notifiedRef = useRef<Set<string>>(loadNotified());
+  const channelRef = useRef<BroadcastChannel | null>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof BroadcastChannel === 'undefined') return;
+    const ch = new BroadcastChannel(CHANNEL_NAME);
+    channelRef.current = ch;
+    ch.onmessage = (ev: MessageEvent<{ type: 'ack'; key: string }>) => {
+      if (ev.data?.type === 'ack' && typeof ev.data.key === 'string') {
+        notifiedRef.current.add(ev.data.key);
+      }
+    };
+    return () => {
+      ch.close();
+      channelRef.current = null;
+    };
+  }, []);
 
   useEffect(() => {
     if (!data) return;
     let changed = false;
     for (const row of data) {
       if (row.status !== 'stale') continue;
-      // Chave inclui last_run: nova execução (mesmo que ainda stale) permite realertar.
       const key = `${row.jobname}::${row.last_run ?? 'never'}`;
       if (notifiedRef.current.has(key)) continue;
       notifiedRef.current.add(key);
       changed = true;
+      channelRef.current?.postMessage({ type: 'ack', key });
       toast.error(`Cron atrasado: ${row.jobname}`, {
         description: `Última execução: ${row.last_run ? new Date(row.last_run).toLocaleString('pt-BR') : 'nunca'} · schedule: ${row.schedule}`,
         duration: 10_000,
