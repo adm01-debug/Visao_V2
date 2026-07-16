@@ -4,8 +4,8 @@
  */
 import { runReplicate, corsHeaders, errorResponse, verifyJwt, INSIGHTFACE_MODELS } from '../_shared/replicate.ts';
 import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
+import { LivenessSchema, parseBody } from '../_shared/insightface-schemas.ts';
 
-interface LivenessInput { image: string; threshold?: number }
 interface LivenessOutput {
   is_live: boolean;
   score: number;
@@ -24,9 +24,8 @@ Deno.serve(async (req) => {
         status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    const body = (await req.json()) as LivenessInput;
-    if (!body.image) throw new Error('[400]: image required');
-    const threshold = Math.min(0.99, Math.max(0.5, body.threshold ?? 0.85));
+    const body = await parseBody(req, LivenessSchema);
+    const threshold = body.threshold ?? 0.85;
 
     const pred = await runReplicate<Record<string, unknown> | number>({
       ...INSIGHTFACE_MODELS.liveness,

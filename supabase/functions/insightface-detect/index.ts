@@ -4,8 +4,8 @@
  */
 import { runReplicate, corsHeaders, errorResponse, verifyJwt, INSIGHTFACE_MODELS } from '../_shared/replicate.ts';
 import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
+import { DetectSchema, parseBody } from '../_shared/insightface-schemas.ts';
 
-interface DetectInput { image: string; max_faces?: number }
 interface DetectOutput {
   faces: Array<{
     bbox: [number, number, number, number];
@@ -26,8 +26,7 @@ Deno.serve(async (req) => {
         status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    const body = (await req.json()) as DetectInput;
-    if (!body.image) throw new Error('[400]: image required');
+    const body = await parseBody(req, DetectSchema);
 
     const pred = await runReplicate<unknown>({
       ...INSIGHTFACE_MODELS.detect,
