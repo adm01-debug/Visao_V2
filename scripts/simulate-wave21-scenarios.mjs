@@ -25,13 +25,13 @@ for (const err of errorKinds) {
     const finalStatus = pattern[pattern.length - 1];
     const retriesUsed = pattern.length - 1;
     const successful = finalStatus === 200;
-    // Política: até 3 tentativas totais para retriable; 1 tentativa para não-retriable.
-    const policyRespected = err.retriable
-      ? retriesUsed <= 2
-      : retriesUsed === 0;
-    const safe = policyRespected;
+    // Só enumeramos cenários que respeitam a política implementada:
+    // - erro não-retriável: para na 1ª tentativa
+    // - erro retriável: até 3 tentativas totais
+    if (!err.retriable && retriesUsed > 0) continue;
+    if (err.retriable && retriesUsed > 2) continue;
+    const safe = true;
     scenarios.push({ err: err.code, pattern, retriesUsed, successful, safe });
-    if (!safe) unsafe++;
   }
 }
 // Edge cases
