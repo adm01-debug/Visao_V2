@@ -22,7 +22,7 @@ function pad(n: number): number { return n; }
 export function parseCronSchedule(expr: string, from: Date = new Date()): CronParse | null {
   const parts = expr.trim().split(/\s+/);
   if (parts.length !== 5) return null;
-  const [minStr, hourStr, domStr, monStr, dowStr] = parts;
+  const [minStr, hourStr, domStr, monStr, dowStr] = parts as [string, string, string, string, string];
   if (monStr !== '*' || dowStr !== '*') return null;
 
   // Caso 1: * * * * *  (a cada minuto)
