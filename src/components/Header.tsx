@@ -56,6 +56,9 @@ export const Header = React.forwardRef<HTMLElement, { className?: string }>(func
             {isOnline ? "Online" : "Offline"}
           </span>
 
+          <CronStaleBadge className="hidden md:inline-flex" />
+
+
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
