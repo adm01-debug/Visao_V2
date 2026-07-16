@@ -1,0 +1,20 @@
+{
+  "wave": 36,
+  "total": 202,
+  "pass": 202,
+  "fail": 0,
+  "scenarios": [
+    {
+      "name": "20 remounts, mesmo last_run",
+      "totalToasts": 1,
+      "expected": 1,
+      "ok": true
+    },
+    {
+      "name": "nova execução ainda stale",
+      "t1": 1,
+      "t2": 1,
+      "ok": true
+    }
+  ]
+}
