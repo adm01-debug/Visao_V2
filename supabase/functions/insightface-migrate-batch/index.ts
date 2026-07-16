@@ -6,8 +6,8 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { runReplicate, corsHeaders, errorResponse, verifyJwt, INSIGHTFACE_MODELS } from '../_shared/replicate.ts';
 import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
+import { MigrateBatchSchema, parseBody } from '../_shared/insightface-schemas.ts';
 
-interface MigrateInput { batch_size?: number; dry_run?: boolean }
 interface MigrateOutput {
   processed: number;
   succeeded: number;
@@ -28,9 +28,13 @@ Deno.serve(async (req) => {
       });
     }
 
-    const body = (await req.json().catch(() => ({}))) as MigrateInput;
-    const batchSize = Math.min(50, Math.max(1, body.batch_size ?? 10));
-    const dryRun = Boolean(body.dry_run);
+    // Empty body is allowed for this endpoint; parse only if non-empty.
+    const raw = await req.text();
+    const body = raw.trim().length
+      ? await parseBody(new Request(req.url, { method: 'POST', body: raw }), MigrateBatchSchema)
+      : {};
+    const batchSize = body.batch_size ?? 10;
+    const dryRun = body.dry_run ?? false;
 
     const admin = createClient(
       Deno.env.get('SUPABASE_URL')!,
