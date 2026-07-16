@@ -48,6 +48,7 @@ describe('CronStaleWatcher', () => {
     toastError.mockClear();
     rpcMock.mockClear();
     roleMock.mockReset();
+    window.sessionStorage.clear();
   });
 
   it('não faz RPC quando usuário não é admin', async () => {
@@ -108,5 +109,29 @@ describe('CronStaleWatcher', () => {
     renderWatcher();
     await new Promise((r) => setTimeout(r, 50));
     expect(toastError).not.toHaveBeenCalled();
+  });
+
+  it('persistência sessionStorage: remount não reemite toast para mesmo (job,last_run)', async () => {
+    roleMock.mockReturnValue({ isAdmin: true, loading: false });
+    rpcMock.mockResolvedValue({ data: { cron_health: [staleRow] }, error: null });
+    const first = renderWatcher();
+    await waitFor(() => expect(toastError).toHaveBeenCalledTimes(1));
+    first.unmount();
+    // Novo mount (simula navegação SPA) — sessionStorage guarda a chave.
+    renderWatcher();
+    await new Promise((r) => setTimeout(r, 80));
+    expect(toastError).toHaveBeenCalledTimes(1);
+  });
+
+  it('nova execução (last_run diferente) reemite toast se ainda stale', async () => {
+    roleMock.mockReturnValue({ isAdmin: true, loading: false });
+    rpcMock.mockResolvedValueOnce({ data: { cron_health: [staleRow] }, error: null });
+    const first = renderWatcher();
+    await waitFor(() => expect(toastError).toHaveBeenCalledTimes(1));
+    first.unmount();
+    const newerStale = { ...staleRow, last_run: new Date(Date.now() - 4 * 24 * 60 * 60_000).toISOString() };
+    rpcMock.mockResolvedValueOnce({ data: { cron_health: [newerStale] }, error: null });
+    renderWatcher();
+    await waitFor(() => expect(toastError).toHaveBeenCalledTimes(2));
   });
 });
