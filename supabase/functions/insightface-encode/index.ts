@@ -34,7 +34,7 @@ Deno.serve(async (req) => {
     const hash = await sha256Hex(body.image);
     const key = cacheKey('encode', MODEL_VERSION, hash);
 
-    const cached = await readCache<EncodeOutput>(key);
+    const cached = await readCache<EncodeOutput>('encode', key);
     if (cached) {
       return new Response(JSON.stringify({ ...cached, cached: true }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json', 'X-Cache': 'HIT' },
