@@ -77,6 +77,7 @@
     "test:watch": "vitest --watch",
     "type-check": "tsc --noEmit",
     "type-check:strict": "tsc --noEmit -p tsconfig.strict.json",
+    "type-check:full": "tsc --noEmit -p tsconfig.app.json",
     "typecheck": "tsc --noEmit",
     "validate": "npm run lint && npm run type-check && npm run test",
     "check:skeletons": "node scripts/validate-skeletons.mjs",
