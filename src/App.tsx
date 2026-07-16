@@ -70,6 +70,7 @@ const CollaboratorFlowMapPage = lazy(() => import("@/pages/CollaboratorFlowMapPa
 const GoalsAlertsPage = lazy(() => import("@/pages/GoalsAlertsPage"));
 const UserManagementPage = lazy(() => import("@/pages/UserManagementPage"));
 const CoveragePage = lazy(() => import("@/pages/CoveragePage"));
+const OperationsPage = lazy(() => import("@/pages/OperationsPage"));
 const CLSReportPage = lazy(() => import("@/pages/CLSReportPage"));
 const LoadingStatesChecklistPage = lazy(() => import("@/pages/LoadingStatesChecklistPage"));
 const AlertsTimelinePage = lazy(() => import("@/pages/AlertsTimelinePage"));
