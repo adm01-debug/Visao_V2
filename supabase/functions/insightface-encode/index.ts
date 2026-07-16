@@ -66,7 +66,7 @@ Deno.serve(async (req) => {
       cached: false,
     };
     // Fire-and-forget cache write; failure never blocks the response.
-    writeCache(key, out).catch(() => {});
+    writeCache('encode', key, out).catch(() => {});
 
     return new Response(JSON.stringify(out), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json', 'X-Cache': 'MISS' },
