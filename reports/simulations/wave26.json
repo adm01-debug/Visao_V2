@@ -1,0 +1,755 @@
+{
+  "summary": {
+    "total": 134,
+    "unsafe": 0,
+    "passRate": "100.0%"
+  },
+  "scenarios": [
+    {
+      "id": "no_partitioned_parent_query_telemetry",
+      "ok": true
+    },
+    {
+      "id": "no_partitioned_parent_edge_cache",
+      "ok": true
+    },
+    {
+      "id": "no_partitioned_parent_audit_logs",
+      "ok": true
+    },
+    {
+      "id": "no_partitioned_parent_user_roles",
+      "ok": true
+    },
+    {
+      "id": "no_partitioned_parent_idempotency_keys",
+      "ok": true
+    },
+    {
+      "id": "schedule_30 4 1 * *",
+      "ok": true
+    },
+    {
+      "id": "isolation_run_0",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_1",
+      "failing": "user_roles",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_2",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_3",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_4",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_5",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_6",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_7",
+      "failing": "user_roles",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_8",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_9",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_10",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_11",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_12",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_13",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_14",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_15",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_16",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_17",
+      "failing": "user_roles",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_18",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_19",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_20",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_21",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_22",
+      "failing": "user_roles",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_23",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_24",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_25",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_26",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_27",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_28",
+      "failing": "user_roles",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_29",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_30",
+      "failing": "user_roles",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_31",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_32",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_33",
+      "failing": "user_roles",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_34",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_35",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_36",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_37",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_38",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_39",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_40",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_41",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_42",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_43",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_44",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_45",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_46",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_47",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_48",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_49",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_50",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_51",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_52",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_53",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_54",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_55",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_56",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_57",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_58",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_59",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_60",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_61",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_62",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_63",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_64",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_65",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_66",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_67",
+      "failing": "user_roles",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_68",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_69",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_70",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_71",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_72",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_73",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_74",
+      "failing": "user_roles",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_75",
+      "failing": "user_roles",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_76",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_77",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_78",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_79",
+      "failing": "user_roles",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_80",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_81",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_82",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_83",
+      "failing": "user_roles",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_84",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_85",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_86",
+      "failing": "user_roles",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_87",
+      "failing": "user_roles",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_88",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_89",
+      "failing": "user_roles",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_90",
+      "failing": "edge_cache",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_91",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_92",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_93",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_94",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_95",
+      "failing": "audit_logs",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_96",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_97",
+      "failing": "idempotency_keys",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_98",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "isolation_run_99",
+      "failing": "query_telemetry",
+      "okCount": 4,
+      "ok": true
+    },
+    {
+      "id": "lock_safety_query_telemetry",
+      "heavyWrites": false,
+      "reindexed": true,
+      "ok": true
+    },
+    {
+      "id": "lock_safety_edge_cache",
+      "heavyWrites": true,
+      "reindexed": false,
+      "ok": true
+    },
+    {
+      "id": "lock_safety_audit_logs",
+      "heavyWrites": true,
+      "reindexed": false,
+      "ok": true
+    },
+    {
+      "id": "lock_safety_user_roles",
+      "heavyWrites": false,
+      "reindexed": false,
+      "ok": true
+    },
+    {
+      "id": "lock_safety_idempotency_keys",
+      "heavyWrites": false,
+      "reindexed": false,
+      "ok": true
+    },
+    {
+      "id": "stats_100",
+      "ok": true
+    },
+    {
+      "id": "stats_500",
+      "ok": true
+    },
+    {
+      "id": "stats_1000",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_0",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_1",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_2",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_3",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_4",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_5",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_6",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_7",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_8",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_9",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_10",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_11",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_12",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_13",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_14",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_15",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_16",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_17",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_18",
+      "ok": true
+    },
+    {
+      "id": "idempotent_run_19",
+      "ok": true
+    }
+  ]
+}
