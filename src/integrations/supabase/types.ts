@@ -2914,6 +2914,17 @@ export type Database = {
         Returns: Json
       }
       get_operational_metrics: { Args: never; Returns: Json }
+      get_slow_queries: {
+        Args: { _limit?: number }
+        Returns: {
+          calls: number
+          max_ms: number
+          mean_ms: number
+          query: string
+          rows_returned: number
+          total_ms: number
+        }[]
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
