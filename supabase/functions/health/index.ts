@@ -56,9 +56,31 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Wave 24: last circuit-breaker transitions in the last 15 min.
+    let circuits: Array<Record<string, unknown>> = [];
+    try {
+      const since = new Date(Date.now() - 15 * 60_000).toISOString();
+      const { data: txs } = await supabase
+        .from('query_telemetry')
+        .select('query_type, severity, metadata, created_at')
+        .eq('operation', 'circuit_transition')
+        .gte('created_at', since)
+        .order('created_at', { ascending: false })
+        .limit(20);
+      circuits = txs ?? [];
+    } catch { /* observability must not break /health */ }
+
     const status = (data as { status?: string })?.status ?? 'unknown';
-    const httpStatus = status === 'unhealthy' ? 503 : 200;
-    return new Response(JSON.stringify({ ...(data as object), latency_ms: latency, version: 'v20' }), {
+    const anyOpen = circuits.some((c) => (c.query_type as string) === 'circuit:open');
+    const finalStatus = status === 'unhealthy' ? 'unhealthy' : anyOpen ? 'degraded' : status;
+    const httpStatus = finalStatus === 'unhealthy' ? 503 : 200;
+    return new Response(JSON.stringify({
+      ...(data as object),
+      status: finalStatus,
+      circuits: { recent_transitions: circuits, any_open: anyOpen },
+      latency_ms: latency,
+      version: 'v24',
+    }), {
       status: httpStatus,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
