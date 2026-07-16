@@ -1,15 +1,19 @@
 /**
- * VISÃO - Wave 9/21: Replicate proxy helper for InsightFace models.
+ * VISÃO - Wave 9/21/23: Replicate proxy helper for InsightFace models.
  * Retry policy (Wave 21): up to 3 attempts on 5xx/429/network with
  * exponential backoff (300ms base, ×3, +25% jitter). Total budget
  * bounded by opts.timeoutMs.
+ * Circuit breaker (Wave 23): 5 consecutive failures → open for 30s.
  */
+
+import { withCircuit, CircuitOpenError } from './circuitBreaker.ts';
 
 const REPLICATE_BASE = 'https://api.replicate.com/v1';
 const POLL_INTERVAL_MS = 800;
 const MAX_POLL_MS = 30_000;
 const MAX_ATTEMPTS = 3;
 const BASE_BACKOFF_MS = 300;
+const CIRCUIT_KEY = 'replicate:api';
 
 export interface ReplicatePrediction<TOutput = unknown> {
   id: string;
@@ -65,6 +69,12 @@ async function fetchWithRetry(
 }
 
 export async function runReplicate<TOutput = unknown>(
+  opts: RunModelOptions,
+): Promise<ReplicatePrediction<TOutput>> {
+  return withCircuit(CIRCUIT_KEY, () => runReplicateInner<TOutput>(opts));
+}
+
+async function runReplicateInner<TOutput = unknown>(
   opts: RunModelOptions,
 ): Promise<ReplicatePrediction<TOutput>> {
   const token = Deno.env.get('REPLICATE_API_TOKEN');
@@ -133,7 +143,7 @@ export const corsHeaders = {
 export function errorResponse(err: unknown): Response {
   const msg = err instanceof Error ? err.message : String(err);
   const match = msg.match(/^\[(\d{3})\]:\s*(.*)$/s);
-  const status = match ? Number(match[1]) : 500;
+  const status = match ? Number(match[1]) : (err instanceof CircuitOpenError ? 503 : 500);
   const details = match ? match[2] : msg;
   return new Response(
     JSON.stringify({ error: 'insightface_failed', status, details }),
