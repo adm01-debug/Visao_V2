@@ -48,7 +48,7 @@ vi.mock('@/integrations/supabase/client', () => ({
         error: null,
       }),
     },
-    from: (...args: unknown[]) => fromSpy(...args),
+    from: (...args: unknown[]) => (fromSpy as (...a: unknown[]) => unknown)(...args),
   },
 }));
 
