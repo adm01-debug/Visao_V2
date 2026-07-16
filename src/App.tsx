@@ -24,6 +24,7 @@ import { DynamicTitleManager } from "@/components/DynamicTitleManager";
 import { withRouteErrorBoundary } from "@/components/RouteErrorBoundary";
 import { NavigationProgress } from "@/components/ui/NavigationProgress";
 import { IdleRoutePrefetcher } from "@/components/IdleRoutePrefetcher";
+import { CronStaleWatcher } from "@/components/admin/CronStaleWatcher";
 import { errorReporter } from "@/lib/errorReporter";
 
 // Install global error monitoring
