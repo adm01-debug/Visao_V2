@@ -52,7 +52,7 @@ export default function ProfilePage() {
         .from('profiles')
         .select('full_name, avatar_url')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (data) {
         setFullName(data.full_name || '');
