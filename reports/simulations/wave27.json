@@ -1,0 +1,768 @@
+{
+  "summary": {
+    "total": 122,
+    "unsafe": 0,
+    "passRate": "100.0%"
+  },
+  "scenarios": [
+    {
+      "id": "clamp_1",
+      "input": "1",
+      "expected": 1,
+      "got": 1,
+      "ok": true
+    },
+    {
+      "id": "clamp_10",
+      "input": "10",
+      "expected": 10,
+      "got": 10,
+      "ok": true
+    },
+    {
+      "id": "clamp_20",
+      "input": "20",
+      "expected": 20,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "clamp_100",
+      "input": "100",
+      "expected": 100,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "clamp_101",
+      "input": "101",
+      "expected": 100,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "clamp_9999",
+      "input": "9999",
+      "expected": 100,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "clamp_0",
+      "input": "0",
+      "expected": 20,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "clamp_-5",
+      "input": "-5",
+      "expected": 20,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "clamp_abc",
+      "input": "abc",
+      "expected": 20,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "clamp_NaN",
+      "input": "NaN",
+      "expected": 20,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "clamp_undefined",
+      "expected": 20,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "clamp_null",
+      "input": null,
+      "expected": 20,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "clamp_",
+      "input": "",
+      "expected": 20,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "auth_anon",
+      "role": "anon",
+      "hasSession": false,
+      "expectStatus": 401,
+      "status": 401,
+      "ok": true
+    },
+    {
+      "id": "auth_authenticated_no_role",
+      "role": "authenticated_no_role",
+      "hasSession": true,
+      "isAdmin": false,
+      "expectStatus": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "id": "auth_viewer",
+      "role": "viewer",
+      "hasSession": true,
+      "isAdmin": false,
+      "expectStatus": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "id": "auth_operator",
+      "role": "operator",
+      "hasSession": true,
+      "isAdmin": false,
+      "expectStatus": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "id": "auth_manager",
+      "role": "manager",
+      "hasSession": true,
+      "isAdmin": false,
+      "expectStatus": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "id": "auth_admin",
+      "role": "admin",
+      "hasSession": true,
+      "isAdmin": true,
+      "expectStatus": 200,
+      "status": 200,
+      "ok": true
+    },
+    {
+      "id": "ratelimit_burst_15",
+      "denied": 5,
+      "expected": 5,
+      "ok": true
+    },
+    {
+      "id": "schema_filter",
+      "keptCount": 2,
+      "expected": 2,
+      "ok": true
+    },
+    {
+      "id": "payload_shape",
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_0",
+      "v": 88,
+      "got": 88,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_1",
+      "v": 86,
+      "got": 86,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_2",
+      "v": 193,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_3",
+      "v": 0,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_4",
+      "v": 159,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_5",
+      "v": -90,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_6",
+      "v": 68,
+      "got": 68,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_7",
+      "v": 351,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_8",
+      "v": -73,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_9",
+      "v": 267,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_10",
+      "v": 61,
+      "got": 61,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_11",
+      "v": 138,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_12",
+      "v": 53,
+      "got": 53,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_13",
+      "v": 48,
+      "got": 48,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_14",
+      "v": 384,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_15",
+      "v": 131,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_16",
+      "v": 340,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_17",
+      "v": -59,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_18",
+      "v": 316,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_19",
+      "v": 327,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_20",
+      "v": -58,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_21",
+      "v": 38,
+      "got": 38,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_22",
+      "v": 54,
+      "got": 54,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_23",
+      "v": -3,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_24",
+      "v": 191,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_25",
+      "v": 212,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_26",
+      "v": -90,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_27",
+      "v": 181,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_28",
+      "v": 27,
+      "got": 27,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_29",
+      "v": 390,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_30",
+      "v": -87,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_31",
+      "v": 258,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_32",
+      "v": 393,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_33",
+      "v": -71,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_34",
+      "v": 372,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_35",
+      "v": 33,
+      "got": 33,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_36",
+      "v": 198,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_37",
+      "v": 312,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_38",
+      "v": 36,
+      "got": 36,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_39",
+      "v": 176,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_40",
+      "v": 269,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_41",
+      "v": -87,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_42",
+      "v": 45,
+      "got": 45,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_43",
+      "v": 102,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_44",
+      "v": 191,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_45",
+      "v": 240,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_46",
+      "v": 75,
+      "got": 75,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_47",
+      "v": 58,
+      "got": 58,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_48",
+      "v": -53,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_49",
+      "v": -7,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_50",
+      "v": 197,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_51",
+      "v": -1,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_52",
+      "v": 188,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_53",
+      "v": -59,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_54",
+      "v": 331,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_55",
+      "v": 290,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_56",
+      "v": 364,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_57",
+      "v": 205,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_58",
+      "v": 392,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_59",
+      "v": 278,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_60",
+      "v": -41,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_61",
+      "v": 82,
+      "got": 82,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_62",
+      "v": -31,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_63",
+      "v": 212,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_64",
+      "v": -59,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_65",
+      "v": 212,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_66",
+      "v": 118,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_67",
+      "v": -16,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_68",
+      "v": 2,
+      "got": 2,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_69",
+      "v": 333,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_70",
+      "v": -25,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_71",
+      "v": -30,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_72",
+      "v": 16,
+      "got": 16,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_73",
+      "v": -19,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_74",
+      "v": 24,
+      "got": 24,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_75",
+      "v": 59,
+      "got": 59,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_76",
+      "v": 174,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_77",
+      "v": 2,
+      "got": 2,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_78",
+      "v": 377,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_79",
+      "v": 39,
+      "got": 39,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_80",
+      "v": 361,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_81",
+      "v": 104,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_82",
+      "v": 309,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_83",
+      "v": 331,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_84",
+      "v": -21,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_85",
+      "v": 277,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_86",
+      "v": -48,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_87",
+      "v": 313,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_88",
+      "v": 310,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_89",
+      "v": 194,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_90",
+      "v": 363,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_91",
+      "v": 290,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_92",
+      "v": -78,
+      "got": 20,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_93",
+      "v": 316,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_94",
+      "v": 300,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_95",
+      "v": 365,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_96",
+      "v": 131,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_97",
+      "v": 247,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_98",
+      "v": 202,
+      "got": 100,
+      "ok": true
+    },
+    {
+      "id": "fuzz_limit_99",
+      "v": -41,
+      "got": 20,
+      "ok": true
+    }
+  ]
+}
