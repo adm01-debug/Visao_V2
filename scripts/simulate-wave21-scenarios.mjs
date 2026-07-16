@@ -25,7 +25,11 @@ for (const err of errorKinds) {
     const finalStatus = pattern[pattern.length - 1];
     const retriesUsed = pattern.length - 1;
     const successful = finalStatus === 200;
-    const safe = err.retriable ? (successful || retriesUsed >= 2) : (retriesUsed === 0);
+    // Política: até 3 tentativas totais para retriable; 1 tentativa para não-retriable.
+    const policyRespected = err.retriable
+      ? retriesUsed <= 2
+      : retriesUsed === 0;
+    const safe = policyRespected;
     scenarios.push({ err: err.code, pattern, retriesUsed, successful, safe });
     if (!safe) unsafe++;
   }
