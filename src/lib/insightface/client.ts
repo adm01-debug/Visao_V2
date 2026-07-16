@@ -15,7 +15,7 @@ import type {
 async function invoke<TIn, TOut>(name: string, body: TIn, retries = 2): Promise<TOut> {
   let lastErr: unknown;
   for (let attempt = 0; attempt <= retries; attempt++) {
-    const { data, error } = await supabase.functions.invoke<TOut>(name, { body });
+    const { data, error } = await supabase.functions.invoke<TOut>(name, { body: body as Record<string, unknown> });
     if (!error && data) return data;
 
     if (error instanceof FunctionsHttpError) {
