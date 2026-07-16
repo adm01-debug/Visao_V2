@@ -5,6 +5,7 @@
  */
 import { runReplicate, corsHeaders, errorResponse, verifyJwt, INSIGHTFACE_MODELS } from '../_shared/replicate.ts';
 import { sha256Hex, cacheKey, readCache, writeCache } from '../_shared/insightface-cache.ts';
+import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
 
 interface EncodeInput { image: string; align?: boolean }
 interface EncodeOutput {
@@ -20,6 +21,8 @@ const MODEL_VERSION = 'arcface_r100_v1';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  const rl = checkRateLimit(req, RATE_LIMITS.ai, 'insightface-encode', corsHeaders);
+  if (!rl.allowed) return rl.response;
   try {
     const userId = await verifyJwt(req);
     if (!userId) {

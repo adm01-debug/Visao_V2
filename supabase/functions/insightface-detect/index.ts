@@ -3,6 +3,7 @@
  * RetinaFace detection: returns bboxes + 5 landmarks + scores.
  */
 import { runReplicate, corsHeaders, errorResponse, verifyJwt, INSIGHTFACE_MODELS } from '../_shared/replicate.ts';
+import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
 
 interface DetectInput { image: string; max_faces?: number }
 interface DetectOutput {
@@ -16,6 +17,8 @@ interface DetectOutput {
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  const rl = checkRateLimit(req, RATE_LIMITS.ai, 'insightface-detect', corsHeaders);
+  if (!rl.allowed) return rl.response;
   try {
     const userId = await verifyJwt(req);
     if (!userId) {
