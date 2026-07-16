@@ -1,0 +1,189 @@
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
+import { PageMeta } from '@/components/seo/PageMeta';
+import { Activity, Database, HardDrive, RefreshCw } from 'lucide-react';
+
+interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
+interface CacheSize { total_rows: number; total_bytes: number; oldest: string | null; newest: string | null }
+interface CronRun { jobid: number; runid: number; status: string; return_message: string | null; start_time: string; end_time: string | null }
+interface OperationalMetrics { cache_stats: CacheStat[]; cache_size: CacheSize; cron_runs: CronRun[]; generated_at: string }
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+}
+
+export default function OperationsPage() {
+  const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
+    queryKey: ['operational-metrics'],
+    queryFn: async (): Promise<OperationalMetrics> => {
+      const { data, error } = await supabase.rpc('get_operational_metrics');
+      if (error) throw error;
+      return data as unknown as OperationalMetrics;
+    },
+    refetchInterval: 30_000,
+    staleTime: 15_000,
+  });
+
+  return (
+    <div className="container mx-auto px-4 py-6 space-y-6">
+      <PageMeta title="Operações — VISÃO" description="Métricas operacionais do sistema" />
+
+      <header className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Operações</h1>
+          <p className="text-sm text-muted-foreground">
+            Cache InsightFace, retenção diária e saúde da infraestrutura de dados.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => refetch()}
+          disabled={isFetching}
+          className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground hover:bg-muted disabled:opacity-50"
+          aria-label="Atualizar métricas"
+        >
+          <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
+          Atualizar
+        </button>
+      </header>
+
+      {isError && (
+        <Card className="border-destructive">
+          <CardContent className="p-4 text-sm text-destructive">
+            Falha ao carregar métricas: {(error as Error)?.message ?? 'erro desconhecido'}
+          </CardContent>
+        </Card>
+      )}
+
+      <section className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader className="flex flex-row items-center gap-2 pb-2">
+            <Database className="h-4 w-4 text-primary" />
+            <CardTitle className="text-base">Cache — Hit ratio (24 h)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <Skeleton className="h-24 w-full" />
+            ) : !data?.cache_stats?.length ? (
+              <p className="text-sm text-muted-foreground">Sem tráfego nas últimas 24 h.</p>
+            ) : (
+              <ul className="space-y-2">
+                {data.cache_stats.map((s) => (
+                  <li key={s.namespace} className="flex items-center justify-between text-sm">
+                    <span className="font-mono text-foreground">{s.namespace}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground">
+                        {s.hits}/{s.hits + s.misses}
+                      </span>
+                      <Badge variant={((s.hit_ratio_pct ?? 0) >= 70) ? 'default' : 'secondary'}>
+                        {(s.hit_ratio_pct ?? 0).toFixed(1)}%
+                      </Badge>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center gap-2 pb-2">
+            <HardDrive className="h-4 w-4 text-primary" />
+            <CardTitle className="text-base">Cache — Tamanho</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <Skeleton className="h-24 w-full" />
+            ) : !data?.cache_size ? (
+              <p className="text-sm text-muted-foreground">Sem dados.</p>
+            ) : (
+              <dl className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <dt className="text-muted-foreground">Linhas</dt>
+                  <dd className="font-semibold text-foreground">{data.cache_size.total_rows.toLocaleString('pt-BR')}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">Total</dt>
+                  <dd className="font-semibold text-foreground">{formatBytes(data.cache_size.total_bytes)}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">Mais antigo</dt>
+                  <dd className="text-xs text-foreground">
+                    {data.cache_size.oldest ? new Date(data.cache_size.oldest).toLocaleString('pt-BR') : '—'}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">Mais recente</dt>
+                  <dd className="text-xs text-foreground">
+                    {data.cache_size.newest ? new Date(data.cache_size.newest).toLocaleString('pt-BR') : '—'}
+                  </dd>
+                </div>
+              </dl>
+            )}
+          </CardContent>
+        </Card>
+      </section>
+
+      <section>
+        <Card>
+          <CardHeader className="flex flex-row items-center gap-2 pb-2">
+            <Activity className="h-4 w-4 text-primary" />
+            <CardTitle className="text-base">Retenção diária — últimas 10 execuções</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <Skeleton className="h-32 w-full" />
+            ) : !data?.cron_runs?.length ? (
+              <p className="text-sm text-muted-foreground">
+                Nenhuma execução registrada ainda. O job roda às 03:30 UTC diariamente.
+              </p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border text-left text-muted-foreground">
+                      <th className="py-2 pr-4">Início</th>
+                      <th className="py-2 pr-4">Duração</th>
+                      <th className="py-2 pr-4">Status</th>
+                      <th className="py-2">Mensagem</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.cron_runs.map((r) => {
+                      const dur = r.end_time
+                        ? `${Math.round((new Date(r.end_time).getTime() - new Date(r.start_time).getTime()) / 100) / 10}s`
+                        : '—';
+                      return (
+                        <tr key={r.runid} className="border-b border-border/50">
+                          <td className="py-2 pr-4 font-mono text-xs">{new Date(r.start_time).toLocaleString('pt-BR')}</td>
+                          <td className="py-2 pr-4">{dur}</td>
+                          <td className="py-2 pr-4">
+                            <Badge variant={r.status === 'succeeded' ? 'default' : 'destructive'}>{r.status}</Badge>
+                          </td>
+                          <td className="py-2 text-xs text-muted-foreground truncate max-w-xs">
+                            {r.return_message ?? '—'}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </section>
+
+      {data?.generated_at && (
+        <p className="text-xs text-muted-foreground">
+          Gerado em {new Date(data.generated_at).toLocaleString('pt-BR')} · auto-refresh 30 s
+        </p>
+      )}
+    </div>
+  );
+}
