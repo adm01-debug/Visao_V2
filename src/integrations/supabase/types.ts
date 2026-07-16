@@ -667,19 +667,82 @@ export type Database = {
           },
         ]
       }
+      face_embeddings: {
+        Row: {
+          created_at: string
+          embedding: number[]
+          embedding_dim: number
+          id: string
+          model_version: string
+          person_id: string
+          pose_pitch: number | null
+          pose_roll: number | null
+          pose_yaw: number | null
+          quality_score: number | null
+          source_hash: string | null
+          source_photo_url: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          embedding: number[]
+          embedding_dim?: number
+          id?: string
+          model_version?: string
+          person_id: string
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
+          quality_score?: number | null
+          source_hash?: string | null
+          source_photo_url?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          embedding?: number[]
+          embedding_dim?: number
+          id?: string
+          model_version?: string
+          person_id?: string
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
+          quality_score?: number | null
+          source_hash?: string | null
+          source_photo_url?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "face_embeddings_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "registered_persons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       face_recognition_configs: {
         Row: {
           alert_cooldown: number
           alert_on_unknown: boolean
+          arcface_threshold: number
           camera_id: string | null
           created_at: string
           detect_multiple_faces: boolean
           enabled: boolean
           id: string
+          liveness_required: boolean
+          liveness_threshold: number
           match_threshold: number
           max_faces_per_frame: number
           min_face_quality: number
           min_face_size: number
+          provider: string
           save_unknown_faces: boolean
           updated_at: string
           user_id: string
@@ -687,15 +750,19 @@ export type Database = {
         Insert: {
           alert_cooldown?: number
           alert_on_unknown?: boolean
+          arcface_threshold?: number
           camera_id?: string | null
           created_at?: string
           detect_multiple_faces?: boolean
           enabled?: boolean
           id?: string
+          liveness_required?: boolean
+          liveness_threshold?: number
           match_threshold?: number
           max_faces_per_frame?: number
           min_face_quality?: number
           min_face_size?: number
+          provider?: string
           save_unknown_faces?: boolean
           updated_at?: string
           user_id: string
@@ -703,15 +770,19 @@ export type Database = {
         Update: {
           alert_cooldown?: number
           alert_on_unknown?: boolean
+          arcface_threshold?: number
           camera_id?: string | null
           created_at?: string
           detect_multiple_faces?: boolean
           enabled?: boolean
           id?: string
+          liveness_required?: boolean
+          liveness_threshold?: number
           match_threshold?: number
           max_faces_per_frame?: number
           min_face_quality?: number
           min_face_size?: number
+          provider?: string
           save_unknown_faces?: boolean
           updated_at?: string
           user_id?: string
@@ -1580,35 +1651,59 @@ export type Database = {
       }
       recognition_logs: {
         Row: {
+          age_estimated: number | null
           camera_id: string | null
           confidence: number | null
           created_at: string
+          gender_estimated: string | null
           id: string
           image_url: string | null
+          liveness_score: number | null
+          model_version: string | null
           person_id: string | null
+          pose_pitch: number | null
+          pose_roll: number | null
+          pose_yaw: number | null
           recognized: boolean
+          spoof_detected: boolean
           timestamp: string
           user_id: string
         }
         Insert: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id: string
         }
         Update: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id?: string
         }
@@ -1631,35 +1726,59 @@ export type Database = {
       }
       recognition_logs_m2026_05: {
         Row: {
+          age_estimated: number | null
           camera_id: string | null
           confidence: number | null
           created_at: string
+          gender_estimated: string | null
           id: string
           image_url: string | null
+          liveness_score: number | null
+          model_version: string | null
           person_id: string | null
+          pose_pitch: number | null
+          pose_roll: number | null
+          pose_yaw: number | null
           recognized: boolean
+          spoof_detected: boolean
           timestamp: string
           user_id: string
         }
         Insert: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id: string
         }
         Update: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id?: string
         }
@@ -1667,35 +1786,59 @@ export type Database = {
       }
       recognition_logs_m2026_06: {
         Row: {
+          age_estimated: number | null
           camera_id: string | null
           confidence: number | null
           created_at: string
+          gender_estimated: string | null
           id: string
           image_url: string | null
+          liveness_score: number | null
+          model_version: string | null
           person_id: string | null
+          pose_pitch: number | null
+          pose_roll: number | null
+          pose_yaw: number | null
           recognized: boolean
+          spoof_detected: boolean
           timestamp: string
           user_id: string
         }
         Insert: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id: string
         }
         Update: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id?: string
         }
@@ -1703,35 +1846,59 @@ export type Database = {
       }
       recognition_logs_m2026_07: {
         Row: {
+          age_estimated: number | null
           camera_id: string | null
           confidence: number | null
           created_at: string
+          gender_estimated: string | null
           id: string
           image_url: string | null
+          liveness_score: number | null
+          model_version: string | null
           person_id: string | null
+          pose_pitch: number | null
+          pose_roll: number | null
+          pose_yaw: number | null
           recognized: boolean
+          spoof_detected: boolean
           timestamp: string
           user_id: string
         }
         Insert: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id: string
         }
         Update: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id?: string
         }
@@ -1739,35 +1906,59 @@ export type Database = {
       }
       recognition_logs_m2026_08: {
         Row: {
+          age_estimated: number | null
           camera_id: string | null
           confidence: number | null
           created_at: string
+          gender_estimated: string | null
           id: string
           image_url: string | null
+          liveness_score: number | null
+          model_version: string | null
           person_id: string | null
+          pose_pitch: number | null
+          pose_roll: number | null
+          pose_yaw: number | null
           recognized: boolean
+          spoof_detected: boolean
           timestamp: string
           user_id: string
         }
         Insert: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id: string
         }
         Update: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id?: string
         }
@@ -1775,35 +1966,59 @@ export type Database = {
       }
       recognition_logs_m2026_09: {
         Row: {
+          age_estimated: number | null
           camera_id: string | null
           confidence: number | null
           created_at: string
+          gender_estimated: string | null
           id: string
           image_url: string | null
+          liveness_score: number | null
+          model_version: string | null
           person_id: string | null
+          pose_pitch: number | null
+          pose_roll: number | null
+          pose_yaw: number | null
           recognized: boolean
+          spoof_detected: boolean
           timestamp: string
           user_id: string
         }
         Insert: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id: string
         }
         Update: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id?: string
         }
@@ -1811,35 +2026,59 @@ export type Database = {
       }
       recognition_logs_m2026_10: {
         Row: {
+          age_estimated: number | null
           camera_id: string | null
           confidence: number | null
           created_at: string
+          gender_estimated: string | null
           id: string
           image_url: string | null
+          liveness_score: number | null
+          model_version: string | null
           person_id: string | null
+          pose_pitch: number | null
+          pose_roll: number | null
+          pose_yaw: number | null
           recognized: boolean
+          spoof_detected: boolean
           timestamp: string
           user_id: string
         }
         Insert: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id: string
         }
         Update: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id?: string
         }
@@ -1847,35 +2086,59 @@ export type Database = {
       }
       recognition_logs_m2026_11: {
         Row: {
+          age_estimated: number | null
           camera_id: string | null
           confidence: number | null
           created_at: string
+          gender_estimated: string | null
           id: string
           image_url: string | null
+          liveness_score: number | null
+          model_version: string | null
           person_id: string | null
+          pose_pitch: number | null
+          pose_roll: number | null
+          pose_yaw: number | null
           recognized: boolean
+          spoof_detected: boolean
           timestamp: string
           user_id: string
         }
         Insert: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id: string
         }
         Update: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id?: string
         }
@@ -1883,35 +2146,59 @@ export type Database = {
       }
       recognition_logs_m2026_12: {
         Row: {
+          age_estimated: number | null
           camera_id: string | null
           confidence: number | null
           created_at: string
+          gender_estimated: string | null
           id: string
           image_url: string | null
+          liveness_score: number | null
+          model_version: string | null
           person_id: string | null
+          pose_pitch: number | null
+          pose_roll: number | null
+          pose_yaw: number | null
           recognized: boolean
+          spoof_detected: boolean
           timestamp: string
           user_id: string
         }
         Insert: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id: string
         }
         Update: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id?: string
         }
@@ -1919,35 +2206,59 @@ export type Database = {
       }
       recognition_logs_m2027_01: {
         Row: {
+          age_estimated: number | null
           camera_id: string | null
           confidence: number | null
           created_at: string
+          gender_estimated: string | null
           id: string
           image_url: string | null
+          liveness_score: number | null
+          model_version: string | null
           person_id: string | null
+          pose_pitch: number | null
+          pose_roll: number | null
+          pose_yaw: number | null
           recognized: boolean
+          spoof_detected: boolean
           timestamp: string
           user_id: string
         }
         Insert: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id: string
         }
         Update: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id?: string
         }
@@ -1955,35 +2266,59 @@ export type Database = {
       }
       recognition_logs_y2025_y2026_pre: {
         Row: {
+          age_estimated: number | null
           camera_id: string | null
           confidence: number | null
           created_at: string
+          gender_estimated: string | null
           id: string
           image_url: string | null
+          liveness_score: number | null
+          model_version: string | null
           person_id: string | null
+          pose_pitch: number | null
+          pose_roll: number | null
+          pose_yaw: number | null
           recognized: boolean
+          spoof_detected: boolean
           timestamp: string
           user_id: string
         }
         Insert: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id: string
         }
         Update: {
+          age_estimated?: number | null
           camera_id?: string | null
           confidence?: number | null
           created_at?: string
+          gender_estimated?: string | null
           id?: string
           image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
           person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
           recognized?: boolean
+          spoof_detected?: boolean
           timestamp?: string
           user_id?: string
         }
@@ -2055,6 +2390,8 @@ export type Database = {
         Row: {
           created_at: string
           department: string | null
+          encoding_migrated_at: string | null
+          encoding_version: string
           face_encoding: Json | null
           id: string
           is_active: boolean
@@ -2069,6 +2406,8 @@ export type Database = {
         Insert: {
           created_at?: string
           department?: string | null
+          encoding_migrated_at?: string | null
+          encoding_version?: string
           face_encoding?: Json | null
           id?: string
           is_active?: boolean
@@ -2083,6 +2422,8 @@ export type Database = {
         Update: {
           created_at?: string
           department?: string | null
+          encoding_migrated_at?: string | null
+          encoding_version?: string
           face_encoding?: Json | null
           id?: string
           is_active?: boolean
