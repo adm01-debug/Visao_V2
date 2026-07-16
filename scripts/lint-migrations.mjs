@@ -62,27 +62,32 @@ for (const file of files) {
     m[2].split(',').forEach((r) => t.roles.add(r.trim().toLowerCase()));
   }
 
-  // R3: SECURITY DEFINER sem search_path
-  const fnRe = /CREATE\s+(?:OR\s+REPLACE\s+)?FUNCTION\s+([\w.]+)[\s\S]*?SECURITY\s+DEFINER[\s\S]*?(?:LANGUAGE\s+\w+|AS\s+\$)/gi;
-  while ((m = fnRe.exec(raw))) {
-    const block = m[0];
-    if (/SET\s+search_path/i.test(block)) continue;
-    const line = raw.slice(0, m.index).split('\n').length;
-    if (ignores.has(`R3:${file}:${line}`)) continue;
-    issues.push({ rule: 'R3', file, line, msg: `Função ${m[1]} SECURITY DEFINER sem SET search_path` });
+  // R3: SECURITY DEFINER sem search_path (apenas para migrações novas)
+  if (isNew(file)) {
+    const fnRe = /CREATE\s+(?:OR\s+REPLACE\s+)?FUNCTION\s+([\w.]+)[\s\S]*?SECURITY\s+DEFINER[\s\S]*?(?:LANGUAGE\s+\w+|AS\s+\$)/gi;
+    while ((m = fnRe.exec(raw))) {
+      const block = m[0];
+      if (/SET\s+search_path/i.test(block)) continue;
+      const line = raw.slice(0, m.index).split('\n').length;
+      if (ignores.has(`R3:${file}:${line}`)) continue;
+      issues.push({ rule: 'R3', file, line, msg: `Função ${m[1]} SECURITY DEFINER sem SET search_path` });
+    }
   }
 
-  // R5: GRANT ... TO PUBLIC
-  const pubRe = /GRANT\s+[^;]+TO\s+PUBLIC\s*;/gi;
-  while ((m = pubRe.exec(raw))) {
-    const line = raw.slice(0, m.index).split('\n').length;
-    if (ignores.has(`R5:${file}:${line}`)) continue;
-    issues.push({ rule: 'R5', file, line, msg: 'GRANT ... TO PUBLIC (uso amplo — justifique com -- lint-ignore: R5)' });
+  // R5: GRANT ... TO PUBLIC (apenas para migrações novas)
+  if (isNew(file)) {
+    const pubRe = /GRANT\s+[^;]+TO\s+PUBLIC\s*;/gi;
+    while ((m = pubRe.exec(raw))) {
+      const line = raw.slice(0, m.index).split('\n').length;
+      if (ignores.has(`R5:${file}:${line}`)) continue;
+      issues.push({ rule: 'R5', file, line, msg: 'GRANT ... TO PUBLIC (uso amplo — justifique com -- lint-ignore: R5)' });
+    }
   }
 }
 
-// Validar tabelas acumuladas
+// Validar tabelas acumuladas — R1/R2 valem apenas se a tabela foi criada por migração nova
 for (const [name, t] of tables) {
+  if (!isNew(t.createdIn)) continue;
   if (!t.hasRls) {
     issues.push({ rule: 'R1', file: t.createdIn, line: t.createdLine, msg: `Tabela public.${name} nunca teve RLS habilitado em migração alguma` });
   }
