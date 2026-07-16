@@ -53,17 +53,20 @@ const N = 600;
 const scenarios = [];
 for (let i = 0; i < N; i++) {
   const category = CATEGORIES[i % CATEGORIES.length];
+  const entropy = category === 'password_policy_low_entropy' ? Math.floor(rand() * 20) : null;
   const malicious =
     category.startsWith('storage_') ||
     category.startsWith('edge_cors_') ||
     category === 'realtime_channel_hijack' ||
     category.startsWith('trigger_bypass_') ||
     category === 'session_replay_expired_jwt' ||
-    category.startsWith('password_policy_');
+    category === 'password_policy_hibp_known' ||
+    category === 'password_policy_too_short' ||
+    (category === 'password_policy_low_entropy' && entropy < 12);
   const meta = {
     bucket: category.startsWith('storage_') ? pick(BUCKETS) : null,
     origin: category.startsWith('edge_cors_') ? (chance(0.5) ? 'https://evil.example' : 'null') : null,
-    entropy: category === 'password_policy_low_entropy' ? Math.floor(rand() * 20) : null,
+    entropy,
   };
   scenarios.push({ id: `w8-${i}`, category, malicious, meta, jitter: rand() });
 }
