@@ -1,18 +1,17 @@
 #!/usr/bin/env node
 /**
- * Wave 31 — Migration Lint Gate
+ * Wave 31 — Migration Lint Gate (acumulado)
  *
- * Analisa TODAS as migrações em supabase/migrations e falha o CI se detectar
- * anti-padrões conhecidos (regras alinhadas com o Supabase Linter oficial):
- *
- *   R1) CREATE TABLE public.X sem ALTER TABLE ... ENABLE ROW LEVEL SECURITY
- *   R2) CREATE TABLE public.X sem GRANT ... ON public.X TO {authenticated|service_role}
- *   R3) CREATE FUNCTION ... SECURITY DEFINER sem SET search_path
- *   R4) CREATE POLICY em public.X mas sem RLS habilitado no mesmo arquivo/histórico
+ * Regras (alinhadas ao Supabase Linter oficial):
+ *   R1) Tabela public.X sem RLS habilitado em nenhum ponto da história
+ *   R2) Tabela public.X sem GRANT p/ authenticated ou service_role em nenhum ponto
+ *   R3) Função SECURITY DEFINER sem SET search_path no bloco em que é criada
  *   R5) GRANT ... TO PUBLIC (uso amplo, pede justificativa)
  *
- * Regras podem ser suprimidas por comentário de linha:
- *   -- lint-ignore: R2 justificativa curta
+ * Estado é acumulado ao longo do histórico ordenado por nome do arquivo,
+ * refletindo o comportamento real do banco após todas as migrações rodarem.
+ *
+ * Suprima linhas específicas com "-- lint-ignore: R<n> motivo".
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -20,86 +19,81 @@ import { join } from 'node:path';
 const MIG_DIR = 'supabase/migrations';
 const files = readdirSync(MIG_DIR).filter((f) => f.endsWith('.sql')).sort();
 
-const HISTORY_RLS = new Set();
-const HISTORY_GRANTS = new Map(); // table -> Set(roles)
-
+const tables = new Map(); // name -> { createdIn, createdLine, hasRls, roles:Set }
 const issues = [];
-const summary = { files: files.length, tables_created: 0, functions_created: 0, issues: 0 };
-
-const push = (file, rule, msg, line) => {
-  issues.push({ file, rule, line, msg });
-};
 
 for (const file of files) {
   const raw = readFileSync(join(MIG_DIR, file), 'utf8');
-  const lines = raw.split('\n');
   const ignores = new Set();
-  lines.forEach((l, i) => {
+  raw.split('\n').forEach((l, i) => {
     const m = l.match(/--\s*lint-ignore:\s*(R\d+)/i);
-    if (m) ignores.add(m[1].toUpperCase() + ':' + (i + 1));
+    if (m) ignores.add(`${m[1].toUpperCase()}:${file}:${i + 1}`);
   });
 
-  // ---- R1/R2: CREATE TABLE public.X ----
+  // CREATE TABLE public.X
   const tableRe = /CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?public\.(\w+)/gi;
   let m;
   while ((m = tableRe.exec(raw))) {
-    const table = m[1];
-    // skip partitions (auto-managed)
-    if (/_(m\d{4}_\d{2}|y\d{4}_y\d{4}_pre)$/.test(table)) continue;
-    summary.tables_created++;
-    const lineNo = raw.slice(0, m.index).split('\n').length;
-
-    const rlsRe = new RegExp(`ALTER\\s+TABLE\\s+(?:ONLY\\s+)?public\\.${table}\\b[\\s\\S]{0,200}?ENABLE\\s+ROW\\s+LEVEL\\s+SECURITY`, 'i');
-    if (!rlsRe.test(raw) && !HISTORY_RLS.has(table)) {
-      if (!ignores.has('R1:' + lineNo)) push(file, 'R1', `Tabela public.${table} sem ENABLE ROW LEVEL SECURITY`, lineNo);
-    } else {
-      HISTORY_RLS.add(table);
-    }
-
-    const grantRe = new RegExp(`GRANT\\s+[^;]+\\s+ON\\s+(?:TABLE\\s+)?public\\.${table}\\b[^;]*TO\\s+([^;]+);`, 'gi');
-    let g;
-    const roles = HISTORY_GRANTS.get(table) ?? new Set();
-    while ((g = grantRe.exec(raw))) {
-      g[1].split(',').forEach((r) => roles.add(r.trim().toLowerCase()));
-    }
-    HISTORY_GRANTS.set(table, roles);
-    const needsAuth = roles.has('authenticated') || roles.has('service_role');
-    if (!needsAuth) {
-      if (!ignores.has('R2:' + lineNo)) push(file, 'R2', `Tabela public.${table} sem GRANT p/ authenticated ou service_role`, lineNo);
+    const name = m[1];
+    if (/_(m\d{4}_\d{2}|y\d{4}_y\d{4}_pre)$/.test(name)) continue;
+    if (!tables.has(name)) {
+      const line = raw.slice(0, m.index).split('\n').length;
+      tables.set(name, { createdIn: file, createdLine: line, hasRls: false, roles: new Set() });
     }
   }
 
-  // ---- R3: SECURITY DEFINER sem search_path ----
-  const fnRe = /CREATE\s+(?:OR\s+REPLACE\s+)?FUNCTION\s+([\w.]+)[\s\S]*?SECURITY\s+DEFINER[\s\S]*?(?:AS\s+\$|LANGUAGE\s+)/gi;
+  // ENABLE RLS
+  const rlsRe = /ALTER\s+TABLE\s+(?:ONLY\s+)?public\.(\w+)[\s\S]{0,200}?ENABLE\s+ROW\s+LEVEL\s+SECURITY/gi;
+  while ((m = rlsRe.exec(raw))) {
+    const t = tables.get(m[1]);
+    if (t) t.hasRls = true;
+  }
+
+  // GRANT ... ON public.X ... TO roles
+  const grantRe = /GRANT\s+[^;]+\s+ON\s+(?:TABLE\s+)?public\.(\w+)[^;]*TO\s+([^;]+);/gi;
+  while ((m = grantRe.exec(raw))) {
+    const t = tables.get(m[1]);
+    if (!t) continue;
+    m[2].split(',').forEach((r) => t.roles.add(r.trim().toLowerCase()));
+  }
+
+  // R3: SECURITY DEFINER sem search_path
+  const fnRe = /CREATE\s+(?:OR\s+REPLACE\s+)?FUNCTION\s+([\w.]+)[\s\S]*?SECURITY\s+DEFINER[\s\S]*?(?:LANGUAGE\s+\w+|AS\s+\$)/gi;
   while ((m = fnRe.exec(raw))) {
-    summary.functions_created++;
-    const fn = m[1];
     const block = m[0];
-    const lineNo = raw.slice(0, m.index).split('\n').length;
-    if (!/SET\s+search_path/i.test(block)) {
-      if (!ignores.has('R3:' + lineNo)) push(file, 'R3', `Função ${fn} SECURITY DEFINER sem SET search_path`, lineNo);
-    }
+    if (/SET\s+search_path/i.test(block)) continue;
+    const line = raw.slice(0, m.index).split('\n').length;
+    if (ignores.has(`R3:${file}:${line}`)) continue;
+    issues.push({ rule: 'R3', file, line, msg: `Função ${m[1]} SECURITY DEFINER sem SET search_path` });
   }
 
-  // ---- R5: GRANT ... TO PUBLIC ----
-  const publicGrantRe = /GRANT\s+[^;]+TO\s+PUBLIC\s*;/gi;
-  while ((m = publicGrantRe.exec(raw))) {
-    const lineNo = raw.slice(0, m.index).split('\n').length;
-    if (!ignores.has('R5:' + lineNo)) push(file, 'R5', `GRANT ... TO PUBLIC (uso amplo)`, lineNo);
+  // R5: GRANT ... TO PUBLIC
+  const pubRe = /GRANT\s+[^;]+TO\s+PUBLIC\s*;/gi;
+  while ((m = pubRe.exec(raw))) {
+    const line = raw.slice(0, m.index).split('\n').length;
+    if (ignores.has(`R5:${file}:${line}`)) continue;
+    issues.push({ rule: 'R5', file, line, msg: 'GRANT ... TO PUBLIC (uso amplo — justifique com -- lint-ignore: R5)' });
   }
 }
 
-summary.issues = issues.length;
+// Validar tabelas acumuladas
+for (const [name, t] of tables) {
+  if (!t.hasRls) {
+    issues.push({ rule: 'R1', file: t.createdIn, line: t.createdLine, msg: `Tabela public.${name} nunca teve RLS habilitado em migração alguma` });
+  }
+  const ok = t.roles.has('authenticated') || t.roles.has('service_role');
+  if (!ok) {
+    issues.push({ rule: 'R2', file: t.createdIn, line: t.createdLine, msg: `Tabela public.${name} sem GRANT p/ authenticated ou service_role no histórico` });
+  }
+}
 
 if (issues.length === 0) {
-  console.log(`✓ Migration lint OK — ${summary.files} arquivos, ${summary.tables_created} tabelas, ${summary.functions_created} funções`);
+  console.log(`✓ Migration lint OK — ${files.length} arquivos, ${tables.size} tabelas verificadas`);
   process.exit(0);
 }
 
 console.log('✗ Migration lint falhou\n');
-for (const i of issues) {
-  console.log(`  [${i.rule}] ${i.file}:${i.line} — ${i.msg}`);
-}
-console.log(`\nTotal: ${issues.length} issue(s) em ${summary.files} migração(ões).`);
-console.log('Suprima linhas com "-- lint-ignore: R<n> motivo" quando intencional.');
+issues.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line);
+for (const i of issues) console.log(`  [${i.rule}] ${i.file}:${i.line} — ${i.msg}`);
+console.log(`\nTotal: ${issues.length} issue(s) em ${files.length} migração(ões).`);
 process.exit(1);
