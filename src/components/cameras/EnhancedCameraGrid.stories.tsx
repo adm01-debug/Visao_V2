@@ -1,8 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { EnhancedCameraGrid } from './EnhancedCameraGrid';
+import { CameraGrid } from './EnhancedCameraGrid';
 
-const meta: Meta<typeof EnhancedCameraGrid> = { title: 'Cameras/EnhancedCameraGrid', component: EnhancedCameraGrid, tags: ['autodocs'] };
+const meta: Meta<typeof CameraGrid> = {
+  title: 'Cameras/EnhancedCameraGrid',
+  component: CameraGrid,
+  tags: ['autodocs'],
+};
 export default meta;
-type Story = StoryObj<typeof EnhancedCameraGrid>;
-export const Default: Story = {};
-
+type Story = StoryObj<typeof CameraGrid>;
+export const Default: Story = { args: { cameras: [] } };

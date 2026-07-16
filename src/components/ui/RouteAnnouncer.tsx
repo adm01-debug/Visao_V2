@@ -50,7 +50,7 @@ export const RouteAnnouncer = React.forwardRef<HTMLDivElement, Record<string, ne
     prevPathRef.current = location.pathname;
 
     // Try exact match first, then prefix match
-    let title = ROUTE_TITLES[location.pathname];
+    let title: string | undefined = ROUTE_TITLES[location.pathname];
     if (!title) {
       const match = Object.entries(ROUTE_TITLES).find(([path]) =>
         location.pathname.startsWith(path) && path !== '/'
