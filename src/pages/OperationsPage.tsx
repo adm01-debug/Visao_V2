@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { PageMeta } from '@/components/PageMeta';
 import { Activity, Database, HardDrive, RefreshCw, ShieldAlert, CalendarClock } from 'lucide-react';
 import { SlowQueriesCard } from '@/components/admin/SlowQueriesCard';
+import { assessCronFreshness } from '@/lib/cronSchedule';
 
 interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
 interface CacheSize { total_rows: number; total_bytes: number; oldest: string | null; newest: string | null }
