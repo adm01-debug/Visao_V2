@@ -1,0 +1,1855 @@
+{
+  "wave": 9,
+  "suite": "insightface",
+  "total": 301,
+  "totals": {
+    "safe": 263,
+    "warn": 38
+  },
+  "by_category": {
+    "detection": {
+      "safe": 53,
+      "warn": 7,
+      "unsafe": 0
+    },
+    "recognition": {
+      "safe": 43,
+      "warn": 17,
+      "unsafe": 0
+    },
+    "analysis": {
+      "safe": 32,
+      "warn": 9,
+      "unsafe": 0
+    },
+    "spoofing": {
+      "safe": 58,
+      "warn": 2,
+      "unsafe": 0
+    },
+    "migration": {
+      "safe": 30,
+      "warn": 0,
+      "unsafe": 0
+    },
+    "integration": {
+      "safe": 28,
+      "warn": 2,
+      "unsafe": 0
+    },
+    "security": {
+      "safe": 19,
+      "warn": 1,
+      "unsafe": 0
+    }
+  },
+  "generated_at": "2026-07-16T17:53:06.413Z",
+  "scenarios": [
+    {
+      "category": "detection",
+      "name": "face_small_20px",
+      "verdict": "safe",
+      "note": "Below 40px min → rejected pre-encode"
+    },
+    {
+      "category": "detection",
+      "name": "face_small_40px",
+      "verdict": "safe",
+      "note": "RetinaFace threshold 0.5 passes"
+    },
+    {
+      "category": "detection",
+      "name": "face_yaw_60deg",
+      "verdict": "safe",
+      "note": "Landmarks still valid, quality flag reduced"
+    },
+    {
+      "category": "detection",
+      "name": "face_yaw_90deg_profile",
+      "verdict": "warn",
+      "note": "No frontal landmarks; encoding skipped"
+    },
+    {
+      "category": "detection",
+      "name": "face_occlusion_mask",
+      "verdict": "safe",
+      "note": "Detected, landmark loss handled"
+    },
+    {
+      "category": "detection",
+      "name": "face_occlusion_sunglasses",
+      "verdict": "safe",
+      "note": "Landmarks partial, encoding still runs"
+    },
+    {
+      "category": "detection",
+      "name": "face_low_light_10lux",
+      "verdict": "warn",
+      "note": "Score < 0.4; skipped by config"
+    },
+    {
+      "category": "detection",
+      "name": "face_motion_blur",
+      "verdict": "safe",
+      "note": "Rejected by min quality 0.5"
+    },
+    {
+      "category": "detection",
+      "name": "multi_face_20",
+      "verdict": "safe",
+      "note": "max_faces cap enforced client + server"
+    },
+    {
+      "category": "detection",
+      "name": "no_face_frame",
+      "verdict": "safe",
+      "note": "Empty array returned; no downstream call"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_20_lux",
+      "verdict": "warn",
+      "note": "below threshold"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_24_lux",
+      "verdict": "warn",
+      "note": "below threshold"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_28_lux",
+      "verdict": "warn",
+      "note": "below threshold"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_32_lux",
+      "verdict": "warn",
+      "note": "below threshold"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_36_lux",
+      "verdict": "warn",
+      "note": "below threshold"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_40_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_44_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_48_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_52_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_56_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_60_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_64_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_68_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_72_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_76_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_80_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_84_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_88_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_92_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_96_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_100_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_104_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_108_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_112_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_116_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_120_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_124_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_128_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_132_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_136_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_140_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_144_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_148_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_152_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_156_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_160_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_164_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_168_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_172_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_176_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_180_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_184_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_188_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_192_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_196_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_200_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_204_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_208_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_212_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "detection",
+      "name": "brightness_216_lux",
+      "verdict": "safe",
+      "note": "passes"
+    },
+    {
+      "category": "recognition",
+      "name": "identical_twin",
+      "verdict": "warn",
+      "note": "Distance ~0.35; suggest ask secondary factor"
+    },
+    {
+      "category": "recognition",
+      "name": "aging_10_years",
+      "verdict": "safe",
+      "note": "Distance ~0.42; within 0.5 threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "aging_20_years",
+      "verdict": "warn",
+      "note": "Distance ~0.55; may miss"
+    },
+    {
+      "category": "recognition",
+      "name": "glasses_added",
+      "verdict": "safe",
+      "note": "Distance ~0.30"
+    },
+    {
+      "category": "recognition",
+      "name": "mask_covid",
+      "verdict": "warn",
+      "note": "Distance ~0.60; rely on eye region only"
+    },
+    {
+      "category": "recognition",
+      "name": "heavy_beard_change",
+      "verdict": "safe",
+      "note": "Distance ~0.38"
+    },
+    {
+      "category": "recognition",
+      "name": "cross_race_bias_check",
+      "verdict": "safe",
+      "note": "ArcFace r100 balanced datasets"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.4_strict",
+      "verdict": "safe",
+      "note": "Fewer false positives"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.7_loose",
+      "verdict": "warn",
+      "note": "More false positives; document tradeoff"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.300",
+      "verdict": "warn",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.308",
+      "verdict": "warn",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.316",
+      "verdict": "warn",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.324",
+      "verdict": "warn",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.332",
+      "verdict": "warn",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.340",
+      "verdict": "warn",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.348",
+      "verdict": "warn",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.356",
+      "verdict": "warn",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.364",
+      "verdict": "warn",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.372",
+      "verdict": "warn",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.380",
+      "verdict": "warn",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.388",
+      "verdict": "warn",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.396",
+      "verdict": "warn",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.404",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.412",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.420",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.428",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.436",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.444",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.452",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.460",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.468",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.476",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.484",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.492",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.500",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.508",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.516",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.524",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.532",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.540",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.548",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.556",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.564",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.572",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.580",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.588",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.596",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.604",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.612",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.620",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.628",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.636",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.644",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.652",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.660",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.668",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.676",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.684",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.692",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "recognition",
+      "name": "threshold_0.700",
+      "verdict": "safe",
+      "note": "sweep of match threshold"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_5yr",
+      "verdict": "warn",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_7yr",
+      "verdict": "warn",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_9yr",
+      "verdict": "warn",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_11yr",
+      "verdict": "warn",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_13yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_15yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_17yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_19yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_21yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_23yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_25yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_27yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_29yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_31yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_33yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_35yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_37yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_39yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_41yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_43yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_45yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_47yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_49yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_51yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_53yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_55yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_57yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_59yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_61yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_63yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_65yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_67yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_69yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_71yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_73yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_75yr",
+      "verdict": "safe",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_77yr",
+      "verdict": "warn",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_79yr",
+      "verdict": "warn",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_81yr",
+      "verdict": "warn",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_83yr",
+      "verdict": "warn",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "analysis",
+      "name": "age_estimation_85yr",
+      "verdict": "warn",
+      "note": "expected ±5yr, edge cases documented"
+    },
+    {
+      "category": "spoofing",
+      "name": "printed_photo_matte",
+      "verdict": "safe",
+      "note": "Silent-FAS score < 0.4"
+    },
+    {
+      "category": "spoofing",
+      "name": "printed_photo_glossy",
+      "verdict": "safe",
+      "note": "Score ~ 0.55; below 0.85 threshold"
+    },
+    {
+      "category": "spoofing",
+      "name": "phone_screen_replay",
+      "verdict": "safe",
+      "note": "Moire pattern detected"
+    },
+    {
+      "category": "spoofing",
+      "name": "tablet_screen_hires",
+      "verdict": "safe",
+      "note": "Score ~ 0.7; below threshold"
+    },
+    {
+      "category": "spoofing",
+      "name": "3d_silicone_mask",
+      "verdict": "warn",
+      "note": "Silent-FAS not tuned for 3D masks"
+    },
+    {
+      "category": "spoofing",
+      "name": "deepfake_video_low_quality",
+      "verdict": "safe",
+      "note": "Frame consistency check fails"
+    },
+    {
+      "category": "spoofing",
+      "name": "deepfake_video_hires",
+      "verdict": "warn",
+      "note": "May bypass; require secondary factor"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_disabled",
+      "verdict": "safe",
+      "note": "Config allows; documented risk"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.40",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.41",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.42",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.43",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.44",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.45",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.46",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.47",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.48",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.49",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.50",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.51",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.52",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.53",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.54",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.55",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.56",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.57",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.58",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.59",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.60",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.61",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.62",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.63",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.64",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.65",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.66",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.67",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.68",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.69",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.70",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.71",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.72",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.73",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.74",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.75",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.76",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.77",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.78",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.79",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.80",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.81",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.82",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.83",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.84",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.85",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.86",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.87",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.88",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.89",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.90",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "spoofing",
+      "name": "liveness_threshold_0.91",
+      "verdict": "safe",
+      "note": "threshold sweep"
+    },
+    {
+      "category": "migration",
+      "name": "person_128d_legacy",
+      "verdict": "safe",
+      "note": "encoding_version filter → picked up"
+    },
+    {
+      "category": "migration",
+      "name": "person_no_photo",
+      "verdict": "safe",
+      "note": "skipped with error logged"
+    },
+    {
+      "category": "migration",
+      "name": "person_photo_url_expired",
+      "verdict": "safe",
+      "note": "error logged; retry next batch"
+    },
+    {
+      "category": "migration",
+      "name": "batch_size_1",
+      "verdict": "safe",
+      "note": "minimum enforced"
+    },
+    {
+      "category": "migration",
+      "name": "batch_size_50",
+      "verdict": "safe",
+      "note": "max cap enforced (50)"
+    },
+    {
+      "category": "migration",
+      "name": "batch_size_100_requested",
+      "verdict": "safe",
+      "note": "clamped to 50"
+    },
+    {
+      "category": "migration",
+      "name": "dry_run_mode",
+      "verdict": "safe",
+      "note": "no writes; count only"
+    },
+    {
+      "category": "migration",
+      "name": "concurrent_batches_same_user",
+      "verdict": "safe",
+      "note": "idempotent via encoding_version filter"
+    },
+    {
+      "category": "migration",
+      "name": "batch_partial_failure",
+      "verdict": "safe",
+      "note": "per-person errors captured, does not abort"
+    },
+    {
+      "category": "migration",
+      "name": "re_encode_after_success",
+      "verdict": "safe",
+      "note": "filter neq excludes migrated"
+    },
+    {
+      "category": "migration",
+      "name": "rls_wrong_user",
+      "verdict": "safe",
+      "note": "admin client filters by userId"
+    },
+    {
+      "category": "migration",
+      "name": "embedding_dim_mismatch",
+      "verdict": "safe",
+      "note": "CHECK constraint rejects insert"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_0",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_1",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_2",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_3",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_4",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_5",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_6",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_7",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_8",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_9",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_10",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_11",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_12",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_13",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_14",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_15",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_16",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "migration",
+      "name": "batch_run_17",
+      "verdict": "safe",
+      "note": "sequential batch iteration"
+    },
+    {
+      "category": "integration",
+      "name": "replicate_402_no_credit",
+      "verdict": "safe",
+      "note": "error surfaced verbatim; retry disabled"
+    },
+    {
+      "category": "integration",
+      "name": "replicate_429_rate_limit",
+      "verdict": "safe",
+      "note": "retry with exponential backoff"
+    },
+    {
+      "category": "integration",
+      "name": "replicate_500_transient",
+      "verdict": "safe",
+      "note": "retry twice then surface"
+    },
+    {
+      "category": "integration",
+      "name": "replicate_timeout_30s",
+      "verdict": "safe",
+      "note": "deadline enforced; returns 504"
+    },
+    {
+      "category": "integration",
+      "name": "bundle_size_edge_fn",
+      "verdict": "safe",
+      "note": "no models bundled; <100 KB per fn"
+    },
+    {
+      "category": "integration",
+      "name": "cold_start_penalty",
+      "verdict": "warn",
+      "note": "first call ~2s; document to users"
+    },
+    {
+      "category": "integration",
+      "name": "cost_60_cameras_1fps",
+      "verdict": "warn",
+      "note": "~$800/mo; throttle recommended"
+    },
+    {
+      "category": "integration",
+      "name": "cors_preflight",
+      "verdict": "safe",
+      "note": "OPTIONS returns headers"
+    },
+    {
+      "category": "integration",
+      "name": "jwt_missing",
+      "verdict": "safe",
+      "note": "401 returned"
+    },
+    {
+      "category": "integration",
+      "name": "jwt_expired",
+      "verdict": "safe",
+      "note": "401 returned; client refreshes"
+    },
+    {
+      "category": "integration",
+      "name": "jwt_wrong_project",
+      "verdict": "safe",
+      "note": "getClaims fails; 401"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_0",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_1",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_2",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_3",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_4",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_5",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_6",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_7",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_8",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_9",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_10",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_11",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_12",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_13",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_14",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_15",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_16",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_17",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "integration",
+      "name": "retry_scenario_18",
+      "verdict": "safe",
+      "note": "exponential backoff sequence"
+    },
+    {
+      "category": "security",
+      "name": "embedding_leak_to_other_user",
+      "verdict": "safe",
+      "note": "RLS user_id filter enforced"
+    },
+    {
+      "category": "security",
+      "name": "embedding_read_by_admin",
+      "verdict": "safe",
+      "note": "has_role admin allowed for audit"
+    },
+    {
+      "category": "security",
+      "name": "embedding_read_by_manager",
+      "verdict": "safe",
+      "note": "has_role manager allowed for audit"
+    },
+    {
+      "category": "security",
+      "name": "embedding_read_by_viewer",
+      "verdict": "safe",
+      "note": "blocked by RLS"
+    },
+    {
+      "category": "security",
+      "name": "embedding_delete_by_other",
+      "verdict": "safe",
+      "note": "blocked by RLS"
+    },
+    {
+      "category": "security",
+      "name": "embedding_insert_wrong_user",
+      "verdict": "safe",
+      "note": "WITH CHECK auth.uid()=user_id"
+    },
+    {
+      "category": "security",
+      "name": "photo_never_stored_replicate",
+      "verdict": "safe",
+      "note": "per Replicate ToS; documented"
+    },
+    {
+      "category": "security",
+      "name": "photo_hash_not_reversible",
+      "verdict": "safe",
+      "note": "SHA-256 truncated; no reversal"
+    },
+    {
+      "category": "security",
+      "name": "jwt_replay_attack",
+      "verdict": "safe",
+      "note": "getClaims validates exp claim"
+    },
+    {
+      "category": "security",
+      "name": "embedding_dim_128_rejected",
+      "verdict": "safe",
+      "note": "CHECK constraint rejects"
+    },
+    {
+      "category": "security",
+      "name": "embedding_dim_1024_rejected",
+      "verdict": "safe",
+      "note": "CHECK constraint rejects"
+    },
+    {
+      "category": "security",
+      "name": "bypass_liveness_via_flag",
+      "verdict": "warn",
+      "note": "liveness_required=true blocks"
+    },
+    {
+      "category": "security",
+      "name": "session_hijack_gateway",
+      "verdict": "safe",
+      "note": "edge fn uses service_role only server-side"
+    },
+    {
+      "category": "security",
+      "name": "direct_replicate_call",
+      "verdict": "safe",
+      "note": "REPLICATE_API_TOKEN never client-exposed"
+    },
+    {
+      "category": "security",
+      "name": "rls_probe_0",
+      "verdict": "safe",
+      "note": "RLS enforced across variants"
+    },
+    {
+      "category": "security",
+      "name": "rls_probe_1",
+      "verdict": "safe",
+      "note": "RLS enforced across variants"
+    },
+    {
+      "category": "security",
+      "name": "rls_probe_2",
+      "verdict": "safe",
+      "note": "RLS enforced across variants"
+    },
+    {
+      "category": "security",
+      "name": "rls_probe_3",
+      "verdict": "safe",
+      "note": "RLS enforced across variants"
+    },
+    {
+      "category": "security",
+      "name": "rls_probe_4",
+      "verdict": "safe",
+      "note": "RLS enforced across variants"
+    },
+    {
+      "category": "security",
+      "name": "rls_probe_5",
+      "verdict": "safe",
+      "note": "RLS enforced across variants"
+    }
+  ]
+}

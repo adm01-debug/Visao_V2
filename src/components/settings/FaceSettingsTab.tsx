@@ -3,6 +3,7 @@ import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { Separator } from '@/components/ui/separator';
 import { SettingsSection, SettingRow } from './SettingsSection';
+import { InsightFaceMigrationBanner } from './InsightFaceMigrationBanner';
 import type { FaceRecognitionSettings } from './types';
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
 export function FaceSettingsTab({ settings, onChange }: Props) {
   return (
     <div className="space-y-6 mt-6">
+      <InsightFaceMigrationBanner />
       <SettingsSection title="Reconhecimento Facial" description="Detecção e identificação de rostos" icon={ScanFace}>
         <SettingRow label="Ativar" description="Detecção de rostos">
           <Switch checked={settings.enabled} onCheckedChange={(checked) => onChange(prev => ({ ...prev, enabled: checked }))} />
