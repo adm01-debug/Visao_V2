@@ -9,5 +9,5 @@ const meta: Meta<typeof StatCard> = {
 export default meta;
 type Story = StoryObj<typeof StatCard>;
 export const Default: Story = {
-  args: { title: 'Alertas hoje', value: 42, trend: 'up' },
+  args: { label: 'Alertas hoje', value: 42, icon: null },
 };
