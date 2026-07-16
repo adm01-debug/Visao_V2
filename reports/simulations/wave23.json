@@ -1,0 +1,546 @@
+{
+  "summary": {
+    "total": 121,
+    "unsafe": 0,
+    "passRate": "100.0%"
+  },
+  "scenarios": [
+    {
+      "id": "threshold_1",
+      "fails": 1,
+      "opened": false,
+      "expected": false,
+      "ok": true
+    },
+    {
+      "id": "threshold_2",
+      "fails": 2,
+      "opened": false,
+      "expected": false,
+      "ok": true
+    },
+    {
+      "id": "threshold_3",
+      "fails": 3,
+      "opened": false,
+      "expected": false,
+      "ok": true
+    },
+    {
+      "id": "threshold_4",
+      "fails": 4,
+      "opened": false,
+      "expected": false,
+      "ok": true
+    },
+    {
+      "id": "threshold_5",
+      "fails": 5,
+      "opened": true,
+      "expected": true,
+      "ok": true
+    },
+    {
+      "id": "threshold_6",
+      "fails": 6,
+      "opened": true,
+      "expected": true,
+      "ok": true
+    },
+    {
+      "id": "threshold_7",
+      "fails": 7,
+      "opened": true,
+      "expected": true,
+      "ok": true
+    },
+    {
+      "id": "threshold_8",
+      "fails": 8,
+      "opened": true,
+      "expected": true,
+      "ok": true
+    },
+    {
+      "id": "threshold_9",
+      "fails": 9,
+      "opened": true,
+      "expected": true,
+      "ok": true
+    },
+    {
+      "id": "threshold_10",
+      "fails": 10,
+      "opened": true,
+      "expected": true,
+      "ok": true
+    },
+    {
+      "id": "cooldown_wait_0",
+      "fastFail": true,
+      "expectFastFail": true,
+      "ok": true
+    },
+    {
+      "id": "cooldown_wait_1000",
+      "fastFail": true,
+      "expectFastFail": true,
+      "ok": true
+    },
+    {
+      "id": "cooldown_wait_15000",
+      "fastFail": true,
+      "expectFastFail": true,
+      "ok": true
+    },
+    {
+      "id": "cooldown_wait_29999",
+      "fastFail": true,
+      "expectFastFail": true,
+      "ok": true
+    },
+    {
+      "id": "cooldown_wait_30000",
+      "fastFail": false,
+      "expectFastFail": false,
+      "ok": true
+    },
+    {
+      "id": "cooldown_wait_30001",
+      "fastFail": false,
+      "expectFastFail": false,
+      "ok": true
+    },
+    {
+      "id": "cooldown_wait_60000",
+      "fastFail": false,
+      "expectFastFail": false,
+      "ok": true
+    },
+    {
+      "id": "half_open_success_closes",
+      "state": "closed",
+      "failures": 0,
+      "ok": true
+    },
+    {
+      "id": "half_open_fail_reopens",
+      "state": "open",
+      "openedAt": 32000,
+      "ok": true
+    },
+    {
+      "id": "intermittent_never_opens",
+      "state": "closed",
+      "failures": 2,
+      "ok": true
+    },
+    {
+      "id": "cycle_0",
+      "ok": true
+    },
+    {
+      "id": "cycle_1",
+      "ok": true
+    },
+    {
+      "id": "cycle_2",
+      "ok": true
+    },
+    {
+      "id": "cycle_3",
+      "ok": true
+    },
+    {
+      "id": "cycle_4",
+      "ok": true
+    },
+    {
+      "id": "cycle_5",
+      "ok": true
+    },
+    {
+      "id": "cycle_6",
+      "ok": true
+    },
+    {
+      "id": "cycle_7",
+      "ok": true
+    },
+    {
+      "id": "cycle_8",
+      "ok": true
+    },
+    {
+      "id": "cycle_9",
+      "ok": true
+    },
+    {
+      "id": "cycle_10",
+      "ok": true
+    },
+    {
+      "id": "cycle_11",
+      "ok": true
+    },
+    {
+      "id": "cycle_12",
+      "ok": true
+    },
+    {
+      "id": "cycle_13",
+      "ok": true
+    },
+    {
+      "id": "cycle_14",
+      "ok": true
+    },
+    {
+      "id": "cycle_15",
+      "ok": true
+    },
+    {
+      "id": "cycle_16",
+      "ok": true
+    },
+    {
+      "id": "cycle_17",
+      "ok": true
+    },
+    {
+      "id": "cycle_18",
+      "ok": true
+    },
+    {
+      "id": "cycle_19",
+      "ok": true
+    },
+    {
+      "id": "cycle_20",
+      "ok": true
+    },
+    {
+      "id": "cycle_21",
+      "ok": true
+    },
+    {
+      "id": "cycle_22",
+      "ok": true
+    },
+    {
+      "id": "cycle_23",
+      "ok": true
+    },
+    {
+      "id": "cycle_24",
+      "ok": true
+    },
+    {
+      "id": "cycle_25",
+      "ok": true
+    },
+    {
+      "id": "cycle_26",
+      "ok": true
+    },
+    {
+      "id": "cycle_27",
+      "ok": true
+    },
+    {
+      "id": "cycle_28",
+      "ok": true
+    },
+    {
+      "id": "cycle_29",
+      "ok": true
+    },
+    {
+      "id": "cycle_30",
+      "ok": true
+    },
+    {
+      "id": "cycle_31",
+      "ok": true
+    },
+    {
+      "id": "cycle_32",
+      "ok": true
+    },
+    {
+      "id": "cycle_33",
+      "ok": true
+    },
+    {
+      "id": "cycle_34",
+      "ok": true
+    },
+    {
+      "id": "cycle_35",
+      "ok": true
+    },
+    {
+      "id": "cycle_36",
+      "ok": true
+    },
+    {
+      "id": "cycle_37",
+      "ok": true
+    },
+    {
+      "id": "cycle_38",
+      "ok": true
+    },
+    {
+      "id": "cycle_39",
+      "ok": true
+    },
+    {
+      "id": "cycle_40",
+      "ok": true
+    },
+    {
+      "id": "cycle_41",
+      "ok": true
+    },
+    {
+      "id": "cycle_42",
+      "ok": true
+    },
+    {
+      "id": "cycle_43",
+      "ok": true
+    },
+    {
+      "id": "cycle_44",
+      "ok": true
+    },
+    {
+      "id": "cycle_45",
+      "ok": true
+    },
+    {
+      "id": "cycle_46",
+      "ok": true
+    },
+    {
+      "id": "cycle_47",
+      "ok": true
+    },
+    {
+      "id": "cycle_48",
+      "ok": true
+    },
+    {
+      "id": "cycle_49",
+      "ok": true
+    },
+    {
+      "id": "cycle_50",
+      "ok": true
+    },
+    {
+      "id": "cycle_51",
+      "ok": true
+    },
+    {
+      "id": "cycle_52",
+      "ok": true
+    },
+    {
+      "id": "cycle_53",
+      "ok": true
+    },
+    {
+      "id": "cycle_54",
+      "ok": true
+    },
+    {
+      "id": "cycle_55",
+      "ok": true
+    },
+    {
+      "id": "cycle_56",
+      "ok": true
+    },
+    {
+      "id": "cycle_57",
+      "ok": true
+    },
+    {
+      "id": "cycle_58",
+      "ok": true
+    },
+    {
+      "id": "cycle_59",
+      "ok": true
+    },
+    {
+      "id": "cycle_60",
+      "ok": true
+    },
+    {
+      "id": "cycle_61",
+      "ok": true
+    },
+    {
+      "id": "cycle_62",
+      "ok": true
+    },
+    {
+      "id": "cycle_63",
+      "ok": true
+    },
+    {
+      "id": "cycle_64",
+      "ok": true
+    },
+    {
+      "id": "cycle_65",
+      "ok": true
+    },
+    {
+      "id": "cycle_66",
+      "ok": true
+    },
+    {
+      "id": "cycle_67",
+      "ok": true
+    },
+    {
+      "id": "cycle_68",
+      "ok": true
+    },
+    {
+      "id": "cycle_69",
+      "ok": true
+    },
+    {
+      "id": "cycle_70",
+      "ok": true
+    },
+    {
+      "id": "cycle_71",
+      "ok": true
+    },
+    {
+      "id": "cycle_72",
+      "ok": true
+    },
+    {
+      "id": "cycle_73",
+      "ok": true
+    },
+    {
+      "id": "cycle_74",
+      "ok": true
+    },
+    {
+      "id": "cycle_75",
+      "ok": true
+    },
+    {
+      "id": "cycle_76",
+      "ok": true
+    },
+    {
+      "id": "cycle_77",
+      "ok": true
+    },
+    {
+      "id": "cycle_78",
+      "ok": true
+    },
+    {
+      "id": "cycle_79",
+      "ok": true
+    },
+    {
+      "id": "cycle_80",
+      "ok": true
+    },
+    {
+      "id": "cycle_81",
+      "ok": true
+    },
+    {
+      "id": "cycle_82",
+      "ok": true
+    },
+    {
+      "id": "cycle_83",
+      "ok": true
+    },
+    {
+      "id": "cycle_84",
+      "ok": true
+    },
+    {
+      "id": "cycle_85",
+      "ok": true
+    },
+    {
+      "id": "cycle_86",
+      "ok": true
+    },
+    {
+      "id": "cycle_87",
+      "ok": true
+    },
+    {
+      "id": "cycle_88",
+      "ok": true
+    },
+    {
+      "id": "cycle_89",
+      "ok": true
+    },
+    {
+      "id": "cycle_90",
+      "ok": true
+    },
+    {
+      "id": "cycle_91",
+      "ok": true
+    },
+    {
+      "id": "cycle_92",
+      "ok": true
+    },
+    {
+      "id": "cycle_93",
+      "ok": true
+    },
+    {
+      "id": "cycle_94",
+      "ok": true
+    },
+    {
+      "id": "cycle_95",
+      "ok": true
+    },
+    {
+      "id": "cycle_96",
+      "ok": true
+    },
+    {
+      "id": "cycle_97",
+      "ok": true
+    },
+    {
+      "id": "cycle_98",
+      "ok": true
+    },
+    {
+      "id": "cycle_99",
+      "ok": true
+    },
+    {
+      "id": "custom_opts",
+      "opened": true,
+      "fastFail": true,
+      "recovered": true,
+      "ok": true
+    }
+  ]
+}
