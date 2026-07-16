@@ -458,6 +458,33 @@ export type Database = {
         }
         Relationships: []
       }
+      edge_cache: {
+        Row: {
+          created_at: string
+          expires_at: string
+          key: string
+          namespace: string
+          response: Json
+          size_bytes: number
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          key: string
+          namespace: string
+          response: Json
+          size_bytes?: number
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          key?: string
+          namespace?: string
+          response?: Json
+          size_bytes?: number
+        }
+        Relationships: []
+      }
       event_alerts: {
         Row: {
           acknowledged_at: string | null
@@ -2871,6 +2898,7 @@ export type Database = {
     }
     Functions: {
       array_days_valid: { Args: { days: number[] }; Returns: boolean }
+      cleanup_edge_cache: { Args: never; Returns: number }
       delete_user_data: {
         Args: { _target_user_id: string }
         Returns: undefined

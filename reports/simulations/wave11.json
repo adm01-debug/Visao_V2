@@ -1,0 +1,1832 @@
+{
+  "summary": {
+    "total": 300,
+    "unsafe": 0,
+    "telemetry_hits": 10,
+    "telemetry_misses": 15,
+    "by_category": {
+      "ttl_per_namespace_encode_24h": 18,
+      "ttl_per_namespace_detect_1h": 17,
+      "ttl_per_namespace_liveness_15m": 6,
+      "rls_denies_client_read": 14,
+      "rls_denies_client_write": 19,
+      "service_role_bypasses_rls": 17,
+      "cleanup_job_purges_expired": 20,
+      "cleanup_job_keeps_fresh": 10,
+      "telemetry_records_hit": 10,
+      "telemetry_records_miss": 15,
+      "concurrent_upsert_no_dup": 10,
+      "namespace_collision_impossible": 12,
+      "sha256_deterministic": 11,
+      "sha256_diff_input_diff_key": 20,
+      "ttl_zero_never_caches": 28,
+      "cache_size_cap_10k_rows": 14,
+      "migration_backfill_from_idempotency": 15,
+      "null_response_not_cached": 14,
+      "oversized_payload_rejected_1mb": 12,
+      "expired_row_returns_null": 18
+    }
+  },
+  "rows": [
+    {
+      "id": 1,
+      "category": "sha256_deterministic",
+      "safe": true,
+      "note": "same_bytes_same_hash"
+    },
+    {
+      "id": 2,
+      "category": "service_role_bypasses_rls",
+      "safe": true,
+      "note": "service_role_grants_all"
+    },
+    {
+      "id": 3,
+      "category": "ttl_per_namespace_liveness_15m",
+      "safe": true,
+      "note": "liveness_short_ttl_prevents_replay"
+    },
+    {
+      "id": 4,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 5,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 6,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 7,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 8,
+      "category": "telemetry_records_hit",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 9,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 10,
+      "category": "ttl_per_namespace_detect_1h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 11,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 12,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 13,
+      "category": "ttl_per_namespace_detect_1h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 14,
+      "category": "oversized_payload_rejected_1mb",
+      "safe": true,
+      "note": "check_constraint_size"
+    },
+    {
+      "id": 15,
+      "category": "rls_denies_client_read",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 16,
+      "category": "cache_size_cap_10k_rows",
+      "safe": true,
+      "note": "cleanup_keeps_bounded"
+    },
+    {
+      "id": 17,
+      "category": "service_role_bypasses_rls",
+      "safe": true,
+      "note": "service_role_grants_all"
+    },
+    {
+      "id": 18,
+      "category": "oversized_payload_rejected_1mb",
+      "safe": true,
+      "note": "check_constraint_size"
+    },
+    {
+      "id": 19,
+      "category": "sha256_deterministic",
+      "safe": true,
+      "note": "same_bytes_same_hash"
+    },
+    {
+      "id": 20,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 21,
+      "category": "ttl_per_namespace_detect_1h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 22,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 23,
+      "category": "cache_size_cap_10k_rows",
+      "safe": true,
+      "note": "cleanup_keeps_bounded"
+    },
+    {
+      "id": 24,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 25,
+      "category": "concurrent_upsert_no_dup",
+      "safe": true,
+      "note": "onConflict_key_atomic"
+    },
+    {
+      "id": 26,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 27,
+      "category": "service_role_bypasses_rls",
+      "safe": true,
+      "note": "service_role_grants_all"
+    },
+    {
+      "id": 28,
+      "category": "cache_size_cap_10k_rows",
+      "safe": true,
+      "note": "cleanup_keeps_bounded"
+    },
+    {
+      "id": 29,
+      "category": "cleanup_job_keeps_fresh",
+      "safe": true,
+      "note": "delete_leaves_valid_rows"
+    },
+    {
+      "id": 30,
+      "category": "null_response_not_cached",
+      "safe": true,
+      "note": "guard_skips_null"
+    },
+    {
+      "id": 31,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 32,
+      "category": "ttl_per_namespace_liveness_15m",
+      "safe": true,
+      "note": "liveness_short_ttl_prevents_replay"
+    },
+    {
+      "id": 33,
+      "category": "null_response_not_cached",
+      "safe": true,
+      "note": "guard_skips_null"
+    },
+    {
+      "id": 34,
+      "category": "concurrent_upsert_no_dup",
+      "safe": true,
+      "note": "onConflict_key_atomic"
+    },
+    {
+      "id": 35,
+      "category": "rls_denies_client_read",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 36,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 37,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 38,
+      "category": "migration_backfill_from_idempotency",
+      "safe": true,
+      "note": "insert_where_key_like_if-enc"
+    },
+    {
+      "id": 39,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 40,
+      "category": "service_role_bypasses_rls",
+      "safe": true,
+      "note": "service_role_grants_all"
+    },
+    {
+      "id": 41,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 42,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 43,
+      "category": "service_role_bypasses_rls",
+      "safe": true,
+      "note": "service_role_grants_all"
+    },
+    {
+      "id": 44,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 45,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 46,
+      "category": "oversized_payload_rejected_1mb",
+      "safe": true,
+      "note": "check_constraint_size"
+    },
+    {
+      "id": 47,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 48,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 49,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 50,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 51,
+      "category": "sha256_deterministic",
+      "safe": true,
+      "note": "same_bytes_same_hash"
+    },
+    {
+      "id": 52,
+      "category": "service_role_bypasses_rls",
+      "safe": true,
+      "note": "service_role_grants_all"
+    },
+    {
+      "id": 53,
+      "category": "rls_denies_client_read",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 54,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 55,
+      "category": "migration_backfill_from_idempotency",
+      "safe": true,
+      "note": "insert_where_key_like_if-enc"
+    },
+    {
+      "id": 56,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 57,
+      "category": "oversized_payload_rejected_1mb",
+      "safe": true,
+      "note": "check_constraint_size"
+    },
+    {
+      "id": 58,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 59,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 60,
+      "category": "cleanup_job_keeps_fresh",
+      "safe": true,
+      "note": "delete_leaves_valid_rows"
+    },
+    {
+      "id": 61,
+      "category": "ttl_per_namespace_liveness_15m",
+      "safe": true,
+      "note": "liveness_short_ttl_prevents_replay"
+    },
+    {
+      "id": 62,
+      "category": "null_response_not_cached",
+      "safe": true,
+      "note": "guard_skips_null"
+    },
+    {
+      "id": 63,
+      "category": "service_role_bypasses_rls",
+      "safe": true,
+      "note": "service_role_grants_all"
+    },
+    {
+      "id": 64,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 65,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 66,
+      "category": "oversized_payload_rejected_1mb",
+      "safe": true,
+      "note": "check_constraint_size"
+    },
+    {
+      "id": 67,
+      "category": "ttl_per_namespace_liveness_15m",
+      "safe": true,
+      "note": "liveness_short_ttl_prevents_replay"
+    },
+    {
+      "id": 68,
+      "category": "cleanup_job_keeps_fresh",
+      "safe": true,
+      "note": "delete_leaves_valid_rows"
+    },
+    {
+      "id": 69,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 70,
+      "category": "namespace_collision_impossible",
+      "safe": true,
+      "note": "key_composite_ns_ver_hash"
+    },
+    {
+      "id": 71,
+      "category": "concurrent_upsert_no_dup",
+      "safe": true,
+      "note": "onConflict_key_atomic"
+    },
+    {
+      "id": 72,
+      "category": "service_role_bypasses_rls",
+      "safe": true,
+      "note": "service_role_grants_all"
+    },
+    {
+      "id": 73,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 74,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 75,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 76,
+      "category": "ttl_per_namespace_detect_1h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 77,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 78,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 79,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 80,
+      "category": "telemetry_records_hit",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 81,
+      "category": "ttl_per_namespace_detect_1h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 82,
+      "category": "cache_size_cap_10k_rows",
+      "safe": true,
+      "note": "cleanup_keeps_bounded"
+    },
+    {
+      "id": 83,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 84,
+      "category": "null_response_not_cached",
+      "safe": true,
+      "note": "guard_skips_null"
+    },
+    {
+      "id": 85,
+      "category": "telemetry_records_miss",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 86,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 87,
+      "category": "null_response_not_cached",
+      "safe": true,
+      "note": "guard_skips_null"
+    },
+    {
+      "id": 88,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 89,
+      "category": "null_response_not_cached",
+      "safe": true,
+      "note": "guard_skips_null"
+    },
+    {
+      "id": 90,
+      "category": "migration_backfill_from_idempotency",
+      "safe": true,
+      "note": "insert_where_key_like_if-enc"
+    },
+    {
+      "id": 91,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 92,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 93,
+      "category": "migration_backfill_from_idempotency",
+      "safe": true,
+      "note": "insert_where_key_like_if-enc"
+    },
+    {
+      "id": 94,
+      "category": "oversized_payload_rejected_1mb",
+      "safe": true,
+      "note": "check_constraint_size"
+    },
+    {
+      "id": 95,
+      "category": "telemetry_records_miss",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 96,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 97,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 98,
+      "category": "telemetry_records_miss",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 99,
+      "category": "ttl_per_namespace_detect_1h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 100,
+      "category": "null_response_not_cached",
+      "safe": true,
+      "note": "guard_skips_null"
+    },
+    {
+      "id": 101,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 102,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 103,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 104,
+      "category": "cleanup_job_keeps_fresh",
+      "safe": true,
+      "note": "delete_leaves_valid_rows"
+    },
+    {
+      "id": 105,
+      "category": "rls_denies_client_read",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 106,
+      "category": "telemetry_records_hit",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 107,
+      "category": "rls_denies_client_read",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 108,
+      "category": "concurrent_upsert_no_dup",
+      "safe": true,
+      "note": "onConflict_key_atomic"
+    },
+    {
+      "id": 109,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 110,
+      "category": "ttl_per_namespace_detect_1h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 111,
+      "category": "migration_backfill_from_idempotency",
+      "safe": true,
+      "note": "insert_where_key_like_if-enc"
+    },
+    {
+      "id": 112,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 113,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 114,
+      "category": "rls_denies_client_read",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 115,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 116,
+      "category": "migration_backfill_from_idempotency",
+      "safe": true,
+      "note": "insert_where_key_like_if-enc"
+    },
+    {
+      "id": 117,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 118,
+      "category": "ttl_per_namespace_detect_1h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 119,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 120,
+      "category": "rls_denies_client_read",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 121,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 122,
+      "category": "migration_backfill_from_idempotency",
+      "safe": true,
+      "note": "insert_where_key_like_if-enc"
+    },
+    {
+      "id": 123,
+      "category": "service_role_bypasses_rls",
+      "safe": true,
+      "note": "service_role_grants_all"
+    },
+    {
+      "id": 124,
+      "category": "sha256_deterministic",
+      "safe": true,
+      "note": "same_bytes_same_hash"
+    },
+    {
+      "id": 125,
+      "category": "telemetry_records_miss",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 126,
+      "category": "concurrent_upsert_no_dup",
+      "safe": true,
+      "note": "onConflict_key_atomic"
+    },
+    {
+      "id": 127,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 128,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 129,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 130,
+      "category": "service_role_bypasses_rls",
+      "safe": true,
+      "note": "service_role_grants_all"
+    },
+    {
+      "id": 131,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 132,
+      "category": "cache_size_cap_10k_rows",
+      "safe": true,
+      "note": "cleanup_keeps_bounded"
+    },
+    {
+      "id": 133,
+      "category": "sha256_deterministic",
+      "safe": true,
+      "note": "same_bytes_same_hash"
+    },
+    {
+      "id": 134,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 135,
+      "category": "cache_size_cap_10k_rows",
+      "safe": true,
+      "note": "cleanup_keeps_bounded"
+    },
+    {
+      "id": 136,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 137,
+      "category": "concurrent_upsert_no_dup",
+      "safe": true,
+      "note": "onConflict_key_atomic"
+    },
+    {
+      "id": 138,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 139,
+      "category": "ttl_per_namespace_detect_1h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 140,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 141,
+      "category": "rls_denies_client_read",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 142,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 143,
+      "category": "telemetry_records_hit",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 144,
+      "category": "telemetry_records_hit",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 145,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 146,
+      "category": "null_response_not_cached",
+      "safe": true,
+      "note": "guard_skips_null"
+    },
+    {
+      "id": 147,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 148,
+      "category": "concurrent_upsert_no_dup",
+      "safe": true,
+      "note": "onConflict_key_atomic"
+    },
+    {
+      "id": 149,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 150,
+      "category": "namespace_collision_impossible",
+      "safe": true,
+      "note": "key_composite_ns_ver_hash"
+    },
+    {
+      "id": 151,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 152,
+      "category": "telemetry_records_hit",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 153,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 154,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 155,
+      "category": "oversized_payload_rejected_1mb",
+      "safe": true,
+      "note": "check_constraint_size"
+    },
+    {
+      "id": 156,
+      "category": "telemetry_records_miss",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 157,
+      "category": "null_response_not_cached",
+      "safe": true,
+      "note": "guard_skips_null"
+    },
+    {
+      "id": 158,
+      "category": "concurrent_upsert_no_dup",
+      "safe": true,
+      "note": "onConflict_key_atomic"
+    },
+    {
+      "id": 159,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 160,
+      "category": "null_response_not_cached",
+      "safe": true,
+      "note": "guard_skips_null"
+    },
+    {
+      "id": 161,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 162,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 163,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 164,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 165,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 166,
+      "category": "telemetry_records_miss",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 167,
+      "category": "migration_backfill_from_idempotency",
+      "safe": true,
+      "note": "insert_where_key_like_if-enc"
+    },
+    {
+      "id": 168,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 169,
+      "category": "namespace_collision_impossible",
+      "safe": true,
+      "note": "key_composite_ns_ver_hash"
+    },
+    {
+      "id": 170,
+      "category": "migration_backfill_from_idempotency",
+      "safe": true,
+      "note": "insert_where_key_like_if-enc"
+    },
+    {
+      "id": 171,
+      "category": "telemetry_records_miss",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 172,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 173,
+      "category": "namespace_collision_impossible",
+      "safe": true,
+      "note": "key_composite_ns_ver_hash"
+    },
+    {
+      "id": 174,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 175,
+      "category": "cache_size_cap_10k_rows",
+      "safe": true,
+      "note": "cleanup_keeps_bounded"
+    },
+    {
+      "id": 176,
+      "category": "ttl_per_namespace_detect_1h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 177,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 178,
+      "category": "null_response_not_cached",
+      "safe": true,
+      "note": "guard_skips_null"
+    },
+    {
+      "id": 179,
+      "category": "sha256_deterministic",
+      "safe": true,
+      "note": "same_bytes_same_hash"
+    },
+    {
+      "id": 180,
+      "category": "telemetry_records_miss",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 181,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 182,
+      "category": "service_role_bypasses_rls",
+      "safe": true,
+      "note": "service_role_grants_all"
+    },
+    {
+      "id": 183,
+      "category": "null_response_not_cached",
+      "safe": true,
+      "note": "guard_skips_null"
+    },
+    {
+      "id": 184,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 185,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 186,
+      "category": "cleanup_job_keeps_fresh",
+      "safe": true,
+      "note": "delete_leaves_valid_rows"
+    },
+    {
+      "id": 187,
+      "category": "namespace_collision_impossible",
+      "safe": true,
+      "note": "key_composite_ns_ver_hash"
+    },
+    {
+      "id": 188,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 189,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 190,
+      "category": "oversized_payload_rejected_1mb",
+      "safe": true,
+      "note": "check_constraint_size"
+    },
+    {
+      "id": 191,
+      "category": "service_role_bypasses_rls",
+      "safe": true,
+      "note": "service_role_grants_all"
+    },
+    {
+      "id": 192,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 193,
+      "category": "ttl_per_namespace_detect_1h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 194,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 195,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 196,
+      "category": "cleanup_job_keeps_fresh",
+      "safe": true,
+      "note": "delete_leaves_valid_rows"
+    },
+    {
+      "id": 197,
+      "category": "sha256_deterministic",
+      "safe": true,
+      "note": "same_bytes_same_hash"
+    },
+    {
+      "id": 198,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 199,
+      "category": "null_response_not_cached",
+      "safe": true,
+      "note": "guard_skips_null"
+    },
+    {
+      "id": 200,
+      "category": "telemetry_records_miss",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 201,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 202,
+      "category": "ttl_per_namespace_detect_1h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 203,
+      "category": "cache_size_cap_10k_rows",
+      "safe": true,
+      "note": "cleanup_keeps_bounded"
+    },
+    {
+      "id": 204,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 205,
+      "category": "namespace_collision_impossible",
+      "safe": true,
+      "note": "key_composite_ns_ver_hash"
+    },
+    {
+      "id": 206,
+      "category": "oversized_payload_rejected_1mb",
+      "safe": true,
+      "note": "check_constraint_size"
+    },
+    {
+      "id": 207,
+      "category": "cache_size_cap_10k_rows",
+      "safe": true,
+      "note": "cleanup_keeps_bounded"
+    },
+    {
+      "id": 208,
+      "category": "rls_denies_client_read",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 209,
+      "category": "oversized_payload_rejected_1mb",
+      "safe": true,
+      "note": "check_constraint_size"
+    },
+    {
+      "id": 210,
+      "category": "ttl_per_namespace_detect_1h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 211,
+      "category": "telemetry_records_hit",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 212,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 213,
+      "category": "telemetry_records_miss",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 214,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 215,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 216,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 217,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 218,
+      "category": "sha256_deterministic",
+      "safe": true,
+      "note": "same_bytes_same_hash"
+    },
+    {
+      "id": 219,
+      "category": "cleanup_job_keeps_fresh",
+      "safe": true,
+      "note": "delete_leaves_valid_rows"
+    },
+    {
+      "id": 220,
+      "category": "cleanup_job_keeps_fresh",
+      "safe": true,
+      "note": "delete_leaves_valid_rows"
+    },
+    {
+      "id": 221,
+      "category": "telemetry_records_miss",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 222,
+      "category": "migration_backfill_from_idempotency",
+      "safe": true,
+      "note": "insert_where_key_like_if-enc"
+    },
+    {
+      "id": 223,
+      "category": "rls_denies_client_read",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 224,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 225,
+      "category": "telemetry_records_miss",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 226,
+      "category": "telemetry_records_hit",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 227,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 228,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 229,
+      "category": "ttl_per_namespace_liveness_15m",
+      "safe": true,
+      "note": "liveness_short_ttl_prevents_replay"
+    },
+    {
+      "id": 230,
+      "category": "cache_size_cap_10k_rows",
+      "safe": true,
+      "note": "cleanup_keeps_bounded"
+    },
+    {
+      "id": 231,
+      "category": "rls_denies_client_read",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 232,
+      "category": "migration_backfill_from_idempotency",
+      "safe": true,
+      "note": "insert_where_key_like_if-enc"
+    },
+    {
+      "id": 233,
+      "category": "null_response_not_cached",
+      "safe": true,
+      "note": "guard_skips_null"
+    },
+    {
+      "id": 234,
+      "category": "namespace_collision_impossible",
+      "safe": true,
+      "note": "key_composite_ns_ver_hash"
+    },
+    {
+      "id": 235,
+      "category": "ttl_per_namespace_detect_1h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 236,
+      "category": "ttl_per_namespace_liveness_15m",
+      "safe": true,
+      "note": "liveness_short_ttl_prevents_replay"
+    },
+    {
+      "id": 237,
+      "category": "service_role_bypasses_rls",
+      "safe": true,
+      "note": "service_role_grants_all"
+    },
+    {
+      "id": 238,
+      "category": "sha256_deterministic",
+      "safe": true,
+      "note": "same_bytes_same_hash"
+    },
+    {
+      "id": 239,
+      "category": "migration_backfill_from_idempotency",
+      "safe": true,
+      "note": "insert_where_key_like_if-enc"
+    },
+    {
+      "id": 240,
+      "category": "telemetry_records_hit",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 241,
+      "category": "service_role_bypasses_rls",
+      "safe": true,
+      "note": "service_role_grants_all"
+    },
+    {
+      "id": 242,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 243,
+      "category": "oversized_payload_rejected_1mb",
+      "safe": true,
+      "note": "check_constraint_size"
+    },
+    {
+      "id": 244,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 245,
+      "category": "sha256_deterministic",
+      "safe": true,
+      "note": "same_bytes_same_hash"
+    },
+    {
+      "id": 246,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 247,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 248,
+      "category": "service_role_bypasses_rls",
+      "safe": true,
+      "note": "service_role_grants_all"
+    },
+    {
+      "id": 249,
+      "category": "namespace_collision_impossible",
+      "safe": true,
+      "note": "key_composite_ns_ver_hash"
+    },
+    {
+      "id": 250,
+      "category": "cleanup_job_keeps_fresh",
+      "safe": true,
+      "note": "delete_leaves_valid_rows"
+    },
+    {
+      "id": 251,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 252,
+      "category": "cleanup_job_purges_expired",
+      "safe": true,
+      "note": "delete_where_expires_at_lt_now"
+    },
+    {
+      "id": 253,
+      "category": "telemetry_records_hit",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 254,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 255,
+      "category": "concurrent_upsert_no_dup",
+      "safe": true,
+      "note": "onConflict_key_atomic"
+    },
+    {
+      "id": 256,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 257,
+      "category": "rls_denies_client_read",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 258,
+      "category": "oversized_payload_rejected_1mb",
+      "safe": true,
+      "note": "check_constraint_size"
+    },
+    {
+      "id": 259,
+      "category": "cache_size_cap_10k_rows",
+      "safe": true,
+      "note": "cleanup_keeps_bounded"
+    },
+    {
+      "id": 260,
+      "category": "namespace_collision_impossible",
+      "safe": true,
+      "note": "key_composite_ns_ver_hash"
+    },
+    {
+      "id": 261,
+      "category": "migration_backfill_from_idempotency",
+      "safe": true,
+      "note": "insert_where_key_like_if-enc"
+    },
+    {
+      "id": 262,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 263,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 264,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 265,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 266,
+      "category": "cache_size_cap_10k_rows",
+      "safe": true,
+      "note": "cleanup_keeps_bounded"
+    },
+    {
+      "id": 267,
+      "category": "service_role_bypasses_rls",
+      "safe": true,
+      "note": "service_role_grants_all"
+    },
+    {
+      "id": 268,
+      "category": "cache_size_cap_10k_rows",
+      "safe": true,
+      "note": "cleanup_keeps_bounded"
+    },
+    {
+      "id": 269,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 270,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 271,
+      "category": "sha256_deterministic",
+      "safe": true,
+      "note": "same_bytes_same_hash"
+    },
+    {
+      "id": 272,
+      "category": "telemetry_records_miss",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 273,
+      "category": "telemetry_records_miss",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 274,
+      "category": "ttl_per_namespace_detect_1h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 275,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 276,
+      "category": "migration_backfill_from_idempotency",
+      "safe": true,
+      "note": "insert_where_key_like_if-enc"
+    },
+    {
+      "id": 277,
+      "category": "ttl_per_namespace_encode_24h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 278,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 279,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 280,
+      "category": "namespace_collision_impossible",
+      "safe": true,
+      "note": "key_composite_ns_ver_hash"
+    },
+    {
+      "id": 281,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 282,
+      "category": "migration_backfill_from_idempotency",
+      "safe": true,
+      "note": "insert_where_key_like_if-enc"
+    },
+    {
+      "id": 283,
+      "category": "rls_denies_client_read",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 284,
+      "category": "rls_denies_client_read",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 285,
+      "category": "cleanup_job_keeps_fresh",
+      "safe": true,
+      "note": "delete_leaves_valid_rows"
+    },
+    {
+      "id": 286,
+      "category": "sha256_diff_input_diff_key",
+      "safe": true,
+      "note": "entropy_2^256"
+    },
+    {
+      "id": 287,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    },
+    {
+      "id": 288,
+      "category": "namespace_collision_impossible",
+      "safe": true,
+      "note": "key_composite_ns_ver_hash"
+    },
+    {
+      "id": 289,
+      "category": "concurrent_upsert_no_dup",
+      "safe": true,
+      "note": "onConflict_key_atomic"
+    },
+    {
+      "id": 290,
+      "category": "namespace_collision_impossible",
+      "safe": true,
+      "note": "key_composite_ns_ver_hash"
+    },
+    {
+      "id": 291,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 292,
+      "category": "telemetry_records_miss",
+      "safe": true,
+      "note": "insert_query_telemetry"
+    },
+    {
+      "id": 293,
+      "category": "ttl_per_namespace_detect_1h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 294,
+      "category": "service_role_bypasses_rls",
+      "safe": true,
+      "note": "service_role_grants_all"
+    },
+    {
+      "id": 295,
+      "category": "ttl_per_namespace_detect_1h",
+      "safe": true,
+      "note": "ttl_from_config_table"
+    },
+    {
+      "id": 296,
+      "category": "ttl_zero_never_caches",
+      "safe": true,
+      "note": "guard_skips_write"
+    },
+    {
+      "id": 297,
+      "category": "cache_size_cap_10k_rows",
+      "safe": true,
+      "note": "cleanup_keeps_bounded"
+    },
+    {
+      "id": 298,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 299,
+      "category": "expired_row_returns_null",
+      "safe": true,
+      "note": "read_filters_expires_at_gt_now"
+    },
+    {
+      "id": 300,
+      "category": "rls_denies_client_write",
+      "safe": true,
+      "note": "policy_using_false_returning_false"
+    }
+  ]
+}

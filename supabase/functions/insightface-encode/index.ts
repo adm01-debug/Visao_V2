@@ -34,7 +34,7 @@ Deno.serve(async (req) => {
     const hash = await sha256Hex(body.image);
     const key = cacheKey('encode', MODEL_VERSION, hash);
 
-    const cached = await readCache<EncodeOutput>(key);
+    const cached = await readCache<EncodeOutput>('encode', key);
     if (cached) {
       return new Response(JSON.stringify({ ...cached, cached: true }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json', 'X-Cache': 'HIT' },
@@ -66,7 +66,7 @@ Deno.serve(async (req) => {
       cached: false,
     };
     // Fire-and-forget cache write; failure never blocks the response.
-    writeCache(key, out).catch(() => {});
+    writeCache('encode', key, out).catch(() => {});
 
     return new Response(JSON.stringify(out), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json', 'X-Cache': 'MISS' },
