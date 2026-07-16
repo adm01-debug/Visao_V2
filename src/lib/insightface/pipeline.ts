@@ -33,7 +33,7 @@ export interface PipelineResult {
  * would require re-uploading). Consumers should pre-crop and pass crops.
  */
 export async function runInsightFacePipeline(
-  fullImage: string,
+  _fullImage: string,
   faceCrops: Array<{ crop: string; bbox: InsightFaceBBox }>,
   options: PipelineOptions = {},
 ): Promise<PipelineResult> {
