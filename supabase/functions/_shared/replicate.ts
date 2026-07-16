@@ -1,11 +1,15 @@
 /**
- * VISÃO - Wave 9: Replicate proxy helper for InsightFace models.
- * Shared by insightface-* edge functions.
+ * VISÃO - Wave 9/21: Replicate proxy helper for InsightFace models.
+ * Retry policy (Wave 21): up to 3 attempts on 5xx/429/network with
+ * exponential backoff (300ms base, ×3, +25% jitter). Total budget
+ * bounded by opts.timeoutMs.
  */
 
 const REPLICATE_BASE = 'https://api.replicate.com/v1';
 const POLL_INTERVAL_MS = 800;
 const MAX_POLL_MS = 30_000;
+const MAX_ATTEMPTS = 3;
+const BASE_BACKOFF_MS = 300;
 
 export interface ReplicatePrediction<TOutput = unknown> {
   id: string;
@@ -16,18 +20,50 @@ export interface ReplicatePrediction<TOutput = unknown> {
 }
 
 export interface RunModelOptions {
-  /** Official model owner/name, e.g. `cjwbw/insightface-detect`. */
   model?: string;
-  /** Community model version hash (used if model omitted). */
   version?: string;
   input: Record<string, unknown>;
   timeoutMs?: number;
 }
 
-/**
- * Run a Replicate model and wait for completion. Returns the parsed prediction.
- * Throws with `[status]: body` on error so the caller can surface it verbatim.
- */
+function isRetriableStatus(status: number): boolean {
+  return status === 429 || (status >= 500 && status <= 599);
+}
+
+function backoffMs(attempt: number): number {
+  const base = BASE_BACKOFF_MS * Math.pow(3, attempt);
+  const jitter = base * 0.25 * Math.random();
+  return Math.round(base + jitter);
+}
+
+/** fetch with retry on 5xx/429/network errors, bounded by deadline. */
+async function fetchWithRetry(
+  url: string,
+  init: RequestInit,
+  deadline: number,
+): Promise<Response> {
+  let lastErr: unknown = null;
+  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+    if (Date.now() > deadline) {
+      throw new Error(`[504]: replicate deadline exceeded before attempt ${attempt + 1}`);
+    }
+    try {
+      const res = await fetch(url, init);
+      if (res.ok || !isRetriableStatus(res.status)) return res;
+      lastErr = new Error(`[${res.status}]: ${await res.text()}`);
+    } catch (err) {
+      lastErr = err;
+    }
+    if (attempt < MAX_ATTEMPTS - 1) {
+      const wait = backoffMs(attempt);
+      const remaining = deadline - Date.now();
+      if (wait >= remaining) break;
+      await new Promise((r) => setTimeout(r, wait));
+    }
+  }
+  throw lastErr instanceof Error ? lastErr : new Error(`[502]: replicate transient failure`);
+}
+
 export async function runReplicate<TOutput = unknown>(
   opts: RunModelOptions,
 ): Promise<ReplicatePrediction<TOutput>> {
@@ -41,7 +77,9 @@ export async function runReplicate<TOutput = unknown>(
   const body: Record<string, unknown> = { input: opts.input };
   if (opts.version) body.version = opts.version;
 
-  const createRes = await fetch(createUrl, {
+  const deadline = Date.now() + (opts.timeoutMs ?? MAX_POLL_MS);
+
+  const createRes = await fetchWithRetry(createUrl, {
     method: 'POST',
     headers: {
       Authorization: `Token ${token}`,
@@ -49,7 +87,7 @@ export async function runReplicate<TOutput = unknown>(
       Prefer: 'wait=5',
     },
     body: JSON.stringify(body),
-  });
+  }, deadline);
 
   const createText = await createRes.text();
   if (!createRes.ok) {
@@ -63,17 +101,16 @@ export async function runReplicate<TOutput = unknown>(
     throw new Error(`[502]: invalid replicate response: ${createText.slice(0, 200)}`);
   }
 
-  const deadline = Date.now() + (opts.timeoutMs ?? MAX_POLL_MS);
-  while (
-    pred.status === 'starting' || pred.status === 'processing'
-  ) {
+  while (pred.status === 'starting' || pred.status === 'processing') {
     if (Date.now() > deadline) {
       throw new Error(`[504]: replicate timeout after ${opts.timeoutMs ?? MAX_POLL_MS}ms`);
     }
     await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
-    const pollRes = await fetch(`${REPLICATE_BASE}/predictions/${pred.id}`, {
-      headers: { Authorization: `Token ${token}` },
-    });
+    const pollRes = await fetchWithRetry(
+      `${REPLICATE_BASE}/predictions/${pred.id}`,
+      { headers: { Authorization: `Token ${token}` } },
+      deadline,
+    );
     const pollText = await pollRes.text();
     if (!pollRes.ok) throw new Error(`[${pollRes.status}]: ${pollText}`);
     pred = JSON.parse(pollText);
