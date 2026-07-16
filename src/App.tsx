@@ -175,6 +175,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/goals-alerts" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<GoalsAlertsPage />, "Metas e Alertas")}</ProtectedLayoutRoute>} />
                     <Route path="/users" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<UserManagementPage />, "Gestão de Usuários")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/coverage" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<CoveragePage />, "Cobertura de Testes")}</ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/operations" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<OperationsPage />, "Operações")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/cls-report" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<CLSReportPage />, "Relatório CLS")}</ProtectedLayoutRoute>} />
                     <Route path="/dev/loading-states" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<LoadingStatesChecklistPage />, "Loading States Checklist")}</ProtectedLayoutRoute>} />
                     <Route path="/acesso-negado" element={withRouteErrorBoundary(<AcessoNegado />, "Acesso Negado")} />
