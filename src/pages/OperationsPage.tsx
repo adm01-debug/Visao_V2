@@ -4,12 +4,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { PageMeta } from '@/components/PageMeta';
-import { Activity, Database, HardDrive, RefreshCw } from 'lucide-react';
+import { Activity, Database, HardDrive, RefreshCw, ShieldAlert, CalendarClock } from 'lucide-react';
 
 interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
 interface CacheSize { total_rows: number; total_bytes: number; oldest: string | null; newest: string | null }
 interface CronRun { jobid: number; runid: number; status: string; return_message: string | null; start_time: string; end_time: string | null }
-interface OperationalMetrics { cache_stats: CacheStat[]; cache_size: CacheSize; cron_runs: CronRun[]; generated_at: string }
+interface CronHealth { jobname: string; schedule: string; active: boolean; failed_7d: number; last_run: string | null; last_status: string | null }
+interface OperationalMetrics {
+  cache_stats: CacheStat[];
+  cache_size: CacheSize;
+  cron_runs: CronRun[];
+  partition_runs: CronRun[];
+  cron_health: CronHealth[];
+  generated_at: string;
+}
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -174,6 +182,68 @@ export default function OperationsPage() {
                   </tbody>
                 </table>
               </div>
+            )}
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader className="flex flex-row items-center gap-2 pb-2">
+            <ShieldAlert className="h-4 w-4 text-primary" />
+            <CardTitle className="text-base">Saúde dos jobs automatizados (7 d)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <Skeleton className="h-24 w-full" />
+            ) : !data?.cron_health?.length ? (
+              <p className="text-sm text-muted-foreground">Nenhum job registrado.</p>
+            ) : (
+              <ul className="space-y-3">
+                {data.cron_health.map((h) => (
+                  <li key={h.jobname} className="flex items-center justify-between text-sm">
+                    <div className="min-w-0">
+                      <p className="font-mono text-foreground truncate">{h.jobname}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {h.schedule} · última: {h.last_run ? new Date(h.last_run).toLocaleString('pt-BR') : 'nunca'}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {!h.active && <Badge variant="secondary">inativo</Badge>}
+                      <Badge variant={h.failed_7d === 0 ? 'default' : 'destructive'}>
+                        {h.failed_7d} falha{h.failed_7d === 1 ? '' : 's'}
+                      </Badge>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center gap-2 pb-2">
+            <CalendarClock className="h-4 w-4 text-primary" />
+            <CardTitle className="text-base">Partições mensais — últimas execuções</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <Skeleton className="h-24 w-full" />
+            ) : !data?.partition_runs?.length ? (
+              <p className="text-sm text-muted-foreground">
+                Nenhuma execução registrada. O job roda dia 1 às 02:00 UTC.
+              </p>
+            ) : (
+              <ul className="space-y-2 text-sm">
+                {data.partition_runs.map((r) => (
+                  <li key={r.runid} className="flex items-center justify-between border-b border-border/50 pb-2 last:border-0">
+                    <span className="font-mono text-xs text-foreground">
+                      {new Date(r.start_time).toLocaleString('pt-BR')}
+                    </span>
+                    <Badge variant={r.status === 'succeeded' ? 'default' : 'destructive'}>{r.status}</Badge>
+                  </li>
+                ))}
+              </ul>
             )}
           </CardContent>
         </Card>
