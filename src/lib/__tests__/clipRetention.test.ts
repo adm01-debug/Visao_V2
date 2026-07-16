@@ -28,9 +28,9 @@ describe('clipRetention', () => {
 
   it('isClipExpired detecta expiração', () => {
     const created = new Date('2026-01-01T00:00:00Z');
-    const now = new Date('2026-04-01T00:00:00Z'); // ~90 dias
-    expect(isClipExpired({ createdAt: created, objectClass: 'person' }, DEFAULT_POLICY, now)).toBe(true);
-    expect(isClipExpired({ createdAt: created, objectClass: 'plate' }, DEFAULT_POLICY, now)).toBe(false);
+    const now60 = new Date(created.getTime() + 60 * day);
+    expect(isClipExpired({ createdAt: created, objectClass: 'person' }, DEFAULT_POLICY, now60)).toBe(true);
+    expect(isClipExpired({ createdAt: created, objectClass: 'plate' }, DEFAULT_POLICY, now60)).toBe(false);
   });
 
   it('policy com defaultDays=0 mantém indefinidamente', () => {
