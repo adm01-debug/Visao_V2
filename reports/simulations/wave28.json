@@ -1,0 +1,548 @@
+{
+  "summary": {
+    "total": 127,
+    "unsafe": 0,
+    "passRate": "100.0%"
+  },
+  "scenarios": [
+    {
+      "id": "severity_0",
+      "expected": "ok",
+      "got": "ok",
+      "ok": true
+    },
+    {
+      "id": "severity_1",
+      "expected": "ok",
+      "got": "ok",
+      "ok": true
+    },
+    {
+      "id": "severity_49.9",
+      "expected": "ok",
+      "got": "ok",
+      "ok": true
+    },
+    {
+      "id": "severity_50",
+      "expected": "warn",
+      "got": "warn",
+      "ok": true
+    },
+    {
+      "id": "severity_100",
+      "expected": "warn",
+      "got": "warn",
+      "ok": true
+    },
+    {
+      "id": "severity_249",
+      "expected": "warn",
+      "got": "warn",
+      "ok": true
+    },
+    {
+      "id": "severity_250",
+      "expected": "critical",
+      "got": "critical",
+      "ok": true
+    },
+    {
+      "id": "severity_1000",
+      "expected": "critical",
+      "got": "critical",
+      "ok": true
+    },
+    {
+      "id": "severity_99999",
+      "expected": "critical",
+      "got": "critical",
+      "ok": true
+    },
+    {
+      "id": "severity_-1",
+      "expected": "unknown",
+      "got": "unknown",
+      "ok": true
+    },
+    {
+      "id": "severity_NaN",
+      "expected": "unknown",
+      "got": "unknown",
+      "ok": true
+    },
+    {
+      "id": "severity_Infinity",
+      "expected": "unknown",
+      "got": "unknown",
+      "ok": true
+    },
+    {
+      "id": "trunc_SELECT 1",
+      "len": 8,
+      "ok": true
+    },
+    {
+      "id": "trunc_SELECT x,x,x,x,x,x,x",
+      "len": 140,
+      "ok": true
+    },
+    {
+      "id": "trunc_",
+      "len": 0,
+      "ok": true
+    },
+    {
+      "id": "trunc_A\n\n\nB   C",
+      "len": 5,
+      "ok": true
+    },
+    {
+      "id": "trunc_null",
+      "len": 0,
+      "ok": true
+    },
+    {
+      "id": "trunc_undefined",
+      "len": 0,
+      "ok": true
+    },
+    {
+      "id": "trunc_42",
+      "len": 0,
+      "ok": true
+    },
+    {
+      "id": "render_loading",
+      "ok": true
+    },
+    {
+      "id": "render_empty",
+      "ok": true
+    },
+    {
+      "id": "render_error_401",
+      "ok": true
+    },
+    {
+      "id": "render_error_403",
+      "ok": true
+    },
+    {
+      "id": "render_error_429",
+      "ok": true
+    },
+    {
+      "id": "render_error_500",
+      "ok": true
+    },
+    {
+      "id": "render_data_20",
+      "ok": true
+    },
+    {
+      "id": "render_data_1",
+      "ok": true
+    },
+    {
+      "id": "sort_0",
+      "ok": true
+    },
+    {
+      "id": "sort_1",
+      "ok": true
+    },
+    {
+      "id": "sort_2",
+      "ok": true
+    },
+    {
+      "id": "sort_3",
+      "ok": true
+    },
+    {
+      "id": "sort_4",
+      "ok": true
+    },
+    {
+      "id": "sort_5",
+      "ok": true
+    },
+    {
+      "id": "sort_6",
+      "ok": true
+    },
+    {
+      "id": "sort_7",
+      "ok": true
+    },
+    {
+      "id": "sort_8",
+      "ok": true
+    },
+    {
+      "id": "sort_9",
+      "ok": true
+    },
+    {
+      "id": "sort_10",
+      "ok": true
+    },
+    {
+      "id": "sort_11",
+      "ok": true
+    },
+    {
+      "id": "sort_12",
+      "ok": true
+    },
+    {
+      "id": "sort_13",
+      "ok": true
+    },
+    {
+      "id": "sort_14",
+      "ok": true
+    },
+    {
+      "id": "sort_15",
+      "ok": true
+    },
+    {
+      "id": "sort_16",
+      "ok": true
+    },
+    {
+      "id": "sort_17",
+      "ok": true
+    },
+    {
+      "id": "sort_18",
+      "ok": true
+    },
+    {
+      "id": "sort_19",
+      "ok": true
+    },
+    {
+      "id": "sort_20",
+      "ok": true
+    },
+    {
+      "id": "sort_21",
+      "ok": true
+    },
+    {
+      "id": "sort_22",
+      "ok": true
+    },
+    {
+      "id": "sort_23",
+      "ok": true
+    },
+    {
+      "id": "sort_24",
+      "ok": true
+    },
+    {
+      "id": "sort_25",
+      "ok": true
+    },
+    {
+      "id": "sort_26",
+      "ok": true
+    },
+    {
+      "id": "sort_27",
+      "ok": true
+    },
+    {
+      "id": "sort_28",
+      "ok": true
+    },
+    {
+      "id": "sort_29",
+      "ok": true
+    },
+    {
+      "id": "sort_30",
+      "ok": true
+    },
+    {
+      "id": "sort_31",
+      "ok": true
+    },
+    {
+      "id": "sort_32",
+      "ok": true
+    },
+    {
+      "id": "sort_33",
+      "ok": true
+    },
+    {
+      "id": "sort_34",
+      "ok": true
+    },
+    {
+      "id": "sort_35",
+      "ok": true
+    },
+    {
+      "id": "sort_36",
+      "ok": true
+    },
+    {
+      "id": "sort_37",
+      "ok": true
+    },
+    {
+      "id": "sort_38",
+      "ok": true
+    },
+    {
+      "id": "sort_39",
+      "ok": true
+    },
+    {
+      "id": "sort_40",
+      "ok": true
+    },
+    {
+      "id": "sort_41",
+      "ok": true
+    },
+    {
+      "id": "sort_42",
+      "ok": true
+    },
+    {
+      "id": "sort_43",
+      "ok": true
+    },
+    {
+      "id": "sort_44",
+      "ok": true
+    },
+    {
+      "id": "sort_45",
+      "ok": true
+    },
+    {
+      "id": "sort_46",
+      "ok": true
+    },
+    {
+      "id": "sort_47",
+      "ok": true
+    },
+    {
+      "id": "sort_48",
+      "ok": true
+    },
+    {
+      "id": "sort_49",
+      "ok": true
+    },
+    {
+      "id": "sort_50",
+      "ok": true
+    },
+    {
+      "id": "sort_51",
+      "ok": true
+    },
+    {
+      "id": "sort_52",
+      "ok": true
+    },
+    {
+      "id": "sort_53",
+      "ok": true
+    },
+    {
+      "id": "sort_54",
+      "ok": true
+    },
+    {
+      "id": "sort_55",
+      "ok": true
+    },
+    {
+      "id": "sort_56",
+      "ok": true
+    },
+    {
+      "id": "sort_57",
+      "ok": true
+    },
+    {
+      "id": "sort_58",
+      "ok": true
+    },
+    {
+      "id": "sort_59",
+      "ok": true
+    },
+    {
+      "id": "sort_60",
+      "ok": true
+    },
+    {
+      "id": "sort_61",
+      "ok": true
+    },
+    {
+      "id": "sort_62",
+      "ok": true
+    },
+    {
+      "id": "sort_63",
+      "ok": true
+    },
+    {
+      "id": "sort_64",
+      "ok": true
+    },
+    {
+      "id": "sort_65",
+      "ok": true
+    },
+    {
+      "id": "sort_66",
+      "ok": true
+    },
+    {
+      "id": "sort_67",
+      "ok": true
+    },
+    {
+      "id": "sort_68",
+      "ok": true
+    },
+    {
+      "id": "sort_69",
+      "ok": true
+    },
+    {
+      "id": "sort_70",
+      "ok": true
+    },
+    {
+      "id": "sort_71",
+      "ok": true
+    },
+    {
+      "id": "sort_72",
+      "ok": true
+    },
+    {
+      "id": "sort_73",
+      "ok": true
+    },
+    {
+      "id": "sort_74",
+      "ok": true
+    },
+    {
+      "id": "sort_75",
+      "ok": true
+    },
+    {
+      "id": "sort_76",
+      "ok": true
+    },
+    {
+      "id": "sort_77",
+      "ok": true
+    },
+    {
+      "id": "sort_78",
+      "ok": true
+    },
+    {
+      "id": "sort_79",
+      "ok": true
+    },
+    {
+      "id": "sort_80",
+      "ok": true
+    },
+    {
+      "id": "sort_81",
+      "ok": true
+    },
+    {
+      "id": "sort_82",
+      "ok": true
+    },
+    {
+      "id": "sort_83",
+      "ok": true
+    },
+    {
+      "id": "sort_84",
+      "ok": true
+    },
+    {
+      "id": "sort_85",
+      "ok": true
+    },
+    {
+      "id": "sort_86",
+      "ok": true
+    },
+    {
+      "id": "sort_87",
+      "ok": true
+    },
+    {
+      "id": "sort_88",
+      "ok": true
+    },
+    {
+      "id": "sort_89",
+      "ok": true
+    },
+    {
+      "id": "sort_90",
+      "ok": true
+    },
+    {
+      "id": "sort_91",
+      "ok": true
+    },
+    {
+      "id": "sort_92",
+      "ok": true
+    },
+    {
+      "id": "sort_93",
+      "ok": true
+    },
+    {
+      "id": "sort_94",
+      "ok": true
+    },
+    {
+      "id": "sort_95",
+      "ok": true
+    },
+    {
+      "id": "sort_96",
+      "ok": true
+    },
+    {
+      "id": "sort_97",
+      "ok": true
+    },
+    {
+      "id": "sort_98",
+      "ok": true
+    },
+    {
+      "id": "sort_99",
+      "ok": true
+    }
+  ]
+}
