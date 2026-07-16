@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
-import { PageMeta } from '@/components/seo/PageMeta';
+import { PageMeta } from '@/components/PageMeta';
 import { Activity, Database, HardDrive, RefreshCw } from 'lucide-react';
 
 interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
