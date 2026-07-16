@@ -6,8 +6,8 @@
 import { runReplicate, corsHeaders, errorResponse, verifyJwt, INSIGHTFACE_MODELS } from '../_shared/replicate.ts';
 import { sha256Hex, cacheKey, readCache, writeCache } from '../_shared/insightface-cache.ts';
 import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
+import { EncodeSchema, parseBody } from '../_shared/insightface-schemas.ts';
 
-interface EncodeInput { image: string; align?: boolean }
 interface EncodeOutput {
   embedding: number[];
   dim: number;
@@ -30,8 +30,7 @@ Deno.serve(async (req) => {
         status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    const body = (await req.json()) as EncodeInput;
-    if (!body.image) throw new Error('[400]: image required');
+    const body = await parseBody(req, EncodeSchema);
 
     // Hash the FULL image payload so identical crops collapse to one Replicate call.
     const hash = await sha256Hex(body.image);
