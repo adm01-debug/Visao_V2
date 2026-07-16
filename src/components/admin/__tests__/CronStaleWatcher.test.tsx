@@ -48,6 +48,7 @@ describe('CronStaleWatcher', () => {
     toastError.mockClear();
     rpcMock.mockClear();
     roleMock.mockReset();
+    window.sessionStorage.clear();
   });
 
   it('não faz RPC quando usuário não é admin', async () => {
