@@ -1,0 +1,72 @@
+{
+  "ran_at": "2026-07-16T16:51:56.451Z",
+  "seed": 20260715,
+  "totals": {
+    "total": 600,
+    "safe": 578,
+    "unsafe": 22
+  },
+  "by_category": {
+    "storage_rls_cross_tenant": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    },
+    "edge_cors_origin_denied": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    },
+    "edge_cors_preflight_malformed": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    },
+    "realtime_channel_hijack": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    },
+    "partition_routing_out_of_range": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    },
+    "trigger_bypass_audit_update": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    },
+    "trigger_bypass_audit_delete": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    },
+    "optimistic_concurrency_3way_race": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    },
+    "session_replay_expired_jwt": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    },
+    "password_policy_hibp_known": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    },
+    "password_policy_low_entropy": {
+      "total": 50,
+      "safe": 28,
+      "unsafe": 22
+    },
+    "password_policy_too_short": {
+      "total": 50,
+      "safe": 50,
+      "unsafe": 0
+    }
+  },
+  "safety_score": 0.9633333333333334
+}
