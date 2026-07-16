@@ -22,7 +22,9 @@ function renderBadge() {
   return render(
     <MemoryRouter>
       <QueryClientProvider client={client}>
-        <CronStaleBadge />
+        <TooltipProvider>
+          <CronStaleBadge />
+        </TooltipProvider>
       </QueryClientProvider>
     </MemoryRouter>,
   );
