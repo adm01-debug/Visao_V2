@@ -5,6 +5,7 @@
  */
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { runReplicate, corsHeaders, errorResponse, verifyJwt, INSIGHTFACE_MODELS } from '../_shared/replicate.ts';
+import { checkRateLimit, RATE_LIMITS } from '../_shared/rateLimiter.ts';
 
 interface MigrateInput { batch_size?: number; dry_run?: boolean }
 interface MigrateOutput {
@@ -17,6 +18,8 @@ interface MigrateOutput {
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  const rl = checkRateLimit(req, RATE_LIMITS.sensitive, 'insightface-migrate-batch', corsHeaders);
+  if (!rl.allowed) return rl.response;
   try {
     const userId = await verifyJwt(req);
     if (!userId) {
