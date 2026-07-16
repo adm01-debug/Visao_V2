@@ -24,6 +24,7 @@ import { DynamicTitleManager } from "@/components/DynamicTitleManager";
 import { withRouteErrorBoundary } from "@/components/RouteErrorBoundary";
 import { NavigationProgress } from "@/components/ui/NavigationProgress";
 import { IdleRoutePrefetcher } from "@/components/IdleRoutePrefetcher";
+import { CronStaleWatcher } from "@/components/admin/CronStaleWatcher";
 import { errorReporter } from "@/lib/errorReporter";
 
 // Install global error monitoring
@@ -133,6 +134,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                 <DynamicTitleManager />
                 <NavigationProgress />
                 <IdleRoutePrefetcher />
+                <CronStaleWatcher />
                 <Suspense fallback={<PageLoader />}>
                   <Routes>
                     <Route path="/" element={withRouteErrorBoundary(<Index />, "Início")} />
