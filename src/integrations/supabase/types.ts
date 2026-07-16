@@ -1635,14 +1635,16 @@ export type Database = {
           duration_ms: number
           error_message: string | null
           id: string
+          metadata: Json | null
           operation: string
           query_limit: number | null
           query_offset: number | null
+          query_type: string | null
           record_count: number | null
           rpc_name: string | null
           severity: string
           table_name: string | null
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           count_mode?: string | null
@@ -1650,14 +1652,16 @@ export type Database = {
           duration_ms?: number
           error_message?: string | null
           id?: string
+          metadata?: Json | null
           operation?: string
           query_limit?: number | null
           query_offset?: number | null
+          query_type?: string | null
           record_count?: number | null
           rpc_name?: string | null
           severity?: string
           table_name?: string | null
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           count_mode?: string | null
@@ -1665,14 +1669,16 @@ export type Database = {
           duration_ms?: number
           error_message?: string | null
           id?: string
+          metadata?: Json | null
           operation?: string
           query_limit?: number | null
           query_offset?: number | null
+          query_type?: string | null
           record_count?: number | null
           rpc_name?: string | null
           severity?: string
           table_name?: string | null
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
