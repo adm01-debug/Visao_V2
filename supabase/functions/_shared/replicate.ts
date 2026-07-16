@@ -1,12 +1,15 @@
 /**
- * VISÃO - Wave 9/21/23: Replicate proxy helper for InsightFace models.
+ * VISÃO - Wave 9/21/23/24: Replicate proxy helper for InsightFace models.
  * Retry policy (Wave 21): up to 3 attempts on 5xx/429/network with
  * exponential backoff (300ms base, ×3, +25% jitter). Total budget
  * bounded by opts.timeoutMs.
  * Circuit breaker (Wave 23): 5 consecutive failures → open for 30s.
+ * Observability (Wave 24): every state transition is persisted to
+ * public.query_telemetry (fire-and-forget) for cross-isolate visibility
+ * via the /health endpoint.
  */
 
-import { withCircuit, CircuitOpenError } from './circuitBreaker.ts';
+import { withCircuit, CircuitOpenError, type StateChangeEvent } from './circuitBreaker.ts';
 
 const REPLICATE_BASE = 'https://api.replicate.com/v1';
 const POLL_INTERVAL_MS = 800;
@@ -14,6 +17,32 @@ const MAX_POLL_MS = 30_000;
 const MAX_ATTEMPTS = 3;
 const BASE_BACKOFF_MS = 300;
 const CIRCUIT_KEY = 'replicate:api';
+
+/** Fire-and-forget: log circuit transitions to query_telemetry.
+ *  Uses SUPABASE_SERVICE_ROLE_KEY so it works from any edge function. */
+function persistTransition(ev: StateChangeEvent): void {
+  const url = Deno.env.get('SUPABASE_URL');
+  const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  if (!url || !key) return;
+  const payload = {
+    operation: 'circuit_transition',
+    query_type: `circuit:${ev.next}`,
+    duration_ms: 0,
+    severity: ev.next === 'open' ? 'warn' : ev.next === 'closed' ? 'info' : 'info',
+    metadata: { key: ev.key, prev: ev.prev, next: ev.next, failures: ev.failures, at: ev.at },
+  };
+  fetch(`${url}/rest/v1/query_telemetry`, {
+    method: 'POST',
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal',
+    },
+    body: JSON.stringify(payload),
+  }).catch(() => { /* observability must never block */ });
+}
+
 
 export interface ReplicatePrediction<TOutput = unknown> {
   id: string;
@@ -71,7 +100,9 @@ async function fetchWithRetry(
 export async function runReplicate<TOutput = unknown>(
   opts: RunModelOptions,
 ): Promise<ReplicatePrediction<TOutput>> {
-  return withCircuit(CIRCUIT_KEY, () => runReplicateInner<TOutput>(opts));
+  return withCircuit(CIRCUIT_KEY, () => runReplicateInner<TOutput>(opts), {
+    onStateChange: persistTransition,
+  });
 }
 
 async function runReplicateInner<TOutput = unknown>(
