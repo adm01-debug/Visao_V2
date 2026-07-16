@@ -17,7 +17,12 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const MIG_DIR = 'supabase/migrations';
+// Baseline: migrações anteriores a este marcador refletem o estado herdado
+// do banco (grants default históricos do Supabase). O gate protege regressões
+// novas — arquivos ≥ baseline devem seguir as regras à risca.
+const BASELINE = '20260716';
 const files = readdirSync(MIG_DIR).filter((f) => f.endsWith('.sql')).sort();
+const isNew = (f) => f.slice(0, 8) >= BASELINE;
 
 const tables = new Map(); // name -> { createdIn, createdLine, hasRls, roles:Set }
 const issues = [];
