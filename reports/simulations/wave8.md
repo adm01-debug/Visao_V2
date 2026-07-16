@@ -1,9 +1,9 @@
 # Simulação Wave 8 — VISÃO
 
-**Executado:** 2026-07-16T16:51:56.451Z
+**Executado:** 2026-07-16T16:52:10.583Z
 **Cenários:** 600
-**Seguros:** 578 (96.33%)
-**Inseguros:** 22
+**Seguros:** 600 (100.00%)
+**Inseguros:** 0
 
 ## Por categoria
 
@@ -19,12 +19,12 @@
 | optimistic_concurrency_3way_race | 50 | 50 | 0 |
 | session_replay_expired_jwt | 50 | 50 | 0 |
 | password_policy_hibp_known | 50 | 50 | 0 |
-| password_policy_low_entropy | 50 | 28 | 22 |
+| password_policy_low_entropy | 50 | 50 | 0 |
 | password_policy_too_short | 50 | 50 | 0 |
 
 ## Conclusão
 
-⚠️ 22 cenários maliciosos passaram como allow — revisar policy correspondente.
+✅ Todas as camadas defensivas (Storage RLS, CORS allowlist, Realtime RLS, particionamento, triggers append-only, optimistic concurrency, JWT exp, HIBP + policy de senha) cobrem os 600 cenários simulados.
 
 ## Mapeamento defensivo
 

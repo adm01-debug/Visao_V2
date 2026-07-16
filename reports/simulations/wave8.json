@@ -1,10 +1,10 @@
 {
-  "ran_at": "2026-07-16T16:51:56.451Z",
+  "ran_at": "2026-07-16T16:52:10.583Z",
   "seed": 20260715,
   "totals": {
     "total": 600,
-    "safe": 578,
-    "unsafe": 22
+    "safe": 600,
+    "unsafe": 0
   },
   "by_category": {
     "storage_rls_cross_tenant": {
@@ -59,8 +59,8 @@
     },
     "password_policy_low_entropy": {
       "total": 50,
-      "safe": 28,
-      "unsafe": 22
+      "safe": 50,
+      "unsafe": 0
     },
     "password_policy_too_short": {
       "total": 50,
@@ -68,5 +68,5 @@
       "unsafe": 0
     }
   },
-  "safety_score": 0.9633333333333334
+  "safety_score": 1
 }
