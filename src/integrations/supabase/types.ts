@@ -2942,6 +2942,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      run_index_maintenance: { Args: never; Returns: Json }
       run_retention_cleanup: { Args: never; Returns: Json }
       system_health: { Args: never; Returns: Json }
     }
