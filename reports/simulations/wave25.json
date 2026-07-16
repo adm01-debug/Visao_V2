@@ -1,0 +1,169 @@
+{
+  "summary": {
+    "total": 23,
+    "unsafe": 0,
+    "passRate": "100.0%"
+  },
+  "scenarios": [
+    {
+      "id": "total_10000_share_0.0001",
+      "circuitRows": 1,
+      "withPartial": 1,
+      "withoutPartial": 20,
+      "speedup": 20,
+      "ok": true
+    },
+    {
+      "id": "total_10000_share_0.001",
+      "circuitRows": 10,
+      "withPartial": 10,
+      "withoutPartial": 20,
+      "speedup": 2,
+      "ok": true
+    },
+    {
+      "id": "total_10000_share_0.01",
+      "circuitRows": 100,
+      "withPartial": 20,
+      "withoutPartial": 20,
+      "speedup": 1,
+      "ok": true
+    },
+    {
+      "id": "total_10000_share_0.05",
+      "circuitRows": 500,
+      "withPartial": 20,
+      "withoutPartial": 20,
+      "speedup": 1,
+      "ok": true
+    },
+    {
+      "id": "total_100000_share_0.0001",
+      "circuitRows": 10,
+      "withPartial": 10,
+      "withoutPartial": 100,
+      "speedup": 10,
+      "ok": true
+    },
+    {
+      "id": "total_100000_share_0.001",
+      "circuitRows": 100,
+      "withPartial": 20,
+      "withoutPartial": 100,
+      "speedup": 5,
+      "ok": true
+    },
+    {
+      "id": "total_100000_share_0.01",
+      "circuitRows": 1000,
+      "withPartial": 20,
+      "withoutPartial": 100,
+      "speedup": 5,
+      "ok": true
+    },
+    {
+      "id": "total_100000_share_0.05",
+      "circuitRows": 5000,
+      "withPartial": 20,
+      "withoutPartial": 100,
+      "speedup": 5,
+      "ok": true
+    },
+    {
+      "id": "total_1000000_share_0.0001",
+      "circuitRows": 100,
+      "withPartial": 20,
+      "withoutPartial": 1000,
+      "speedup": 50,
+      "ok": true
+    },
+    {
+      "id": "total_1000000_share_0.001",
+      "circuitRows": 1000,
+      "withPartial": 20,
+      "withoutPartial": 1000,
+      "speedup": 50,
+      "ok": true
+    },
+    {
+      "id": "total_1000000_share_0.01",
+      "circuitRows": 10000,
+      "withPartial": 20,
+      "withoutPartial": 1000,
+      "speedup": 50,
+      "ok": true
+    },
+    {
+      "id": "total_1000000_share_0.05",
+      "circuitRows": 50000,
+      "withPartial": 20,
+      "withoutPartial": 1000,
+      "speedup": 50,
+      "ok": true
+    },
+    {
+      "id": "total_10000000_share_0.0001",
+      "circuitRows": 1000,
+      "withPartial": 20,
+      "withoutPartial": 10000,
+      "speedup": 500,
+      "ok": true
+    },
+    {
+      "id": "total_10000000_share_0.001",
+      "circuitRows": 10000,
+      "withPartial": 20,
+      "withoutPartial": 10000,
+      "speedup": 500,
+      "ok": true
+    },
+    {
+      "id": "total_10000000_share_0.01",
+      "circuitRows": 100000,
+      "withPartial": 20,
+      "withoutPartial": 10000,
+      "speedup": 500,
+      "ok": true
+    },
+    {
+      "id": "total_10000000_share_0.05",
+      "circuitRows": 500000,
+      "withPartial": 20,
+      "withoutPartial": 10000,
+      "speedup": 500,
+      "ok": true
+    },
+    {
+      "id": "concurrency_1rps",
+      "p95_ms": 2,
+      "ok": true
+    },
+    {
+      "id": "concurrency_10rps",
+      "p95_ms": 2,
+      "ok": true
+    },
+    {
+      "id": "concurrency_60rps",
+      "p95_ms": 2,
+      "ok": true
+    },
+    {
+      "id": "concurrency_120rps",
+      "p95_ms": 32,
+      "ok": true
+    },
+    {
+      "id": "migration_fresh",
+      "ok": true
+    },
+    {
+      "id": "migration_idx_already_exists",
+      "ok": true
+    },
+    {
+      "id": "migration_concurrent_create",
+      "ok": true
+    }
+  ]
+}
