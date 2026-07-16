@@ -2903,6 +2903,10 @@ export type Database = {
         Args: { _target_user_id: string }
         Returns: undefined
       }
+      ensure_future_partitions: {
+        Args: { months_ahead?: number }
+        Returns: Json
+      }
       get_operational_metrics: { Args: never; Returns: Json }
       get_user_role: {
         Args: { _user_id: string }
