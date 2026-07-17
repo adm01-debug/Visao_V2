@@ -3537,6 +3537,20 @@ export type Database = {
           total_pretty: string
         }[]
       }
+      get_tables_without_pk: {
+        Args: never
+        Returns: {
+          estimated_rows: number
+          has_unique_index: boolean
+          recommendation: string
+          replica_identity: string
+          schema_name: string
+          severity: string
+          table_name: string
+          total_size_bytes: number
+          total_size_pretty: string
+        }[]
+      }
       get_temp_file_offenders: {
         Args: { _limit?: number }
         Returns: {
