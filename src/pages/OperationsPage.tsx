@@ -23,6 +23,7 @@ import { TempFileOffendersCard } from '@/components/admin/TempFileOffendersCard'
 import { TxidWraparoundCard } from '@/components/admin/TxidWraparoundCard';
 import { ReplicationSlotsCard } from '@/components/admin/ReplicationSlotsCard';
 import { BlockingChainsCard } from '@/components/admin/BlockingChainsCard';
+import { RlsCoverageCard } from '@/components/admin/RlsCoverageCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
 
 interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
