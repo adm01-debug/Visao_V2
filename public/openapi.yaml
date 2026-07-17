@@ -1,0 +1,144 @@
+openapi: 3.1.0
+info:
+  title: VISÃO Public API
+  version: 1.0.0-rc.1
+  description: |
+    API REST pública v1 do VISÃO (read-only nesta versão).
+    Autenticação via Bearer JWT do usuário (mesmo token do SPA).
+    Rate-limit: 60 req/min por IP.
+  contact:
+    name: VISÃO Team
+    url: https://attentive-cam.lovable.app
+servers:
+  - url: https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/public-api
+    description: Produção
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 1, default: 1 }
+    Limit:
+      name: limit
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+    From:
+      name: from
+      in: query
+      description: ISO 8601 timestamp (inclusive)
+      schema: { type: string, format: date-time }
+    To:
+      name: to
+      in: query
+      schema: { type: string, format: date-time }
+    CameraId:
+      name: camera_id
+      in: query
+      schema: { type: string, format: uuid }
+    Severity:
+      name: severity
+      in: query
+      schema: { type: string, enum: [low, medium, high, critical] }
+  schemas:
+    Meta:
+      type: object
+      properties:
+        total: { type: integer }
+        page: { type: integer }
+        limit: { type: integer }
+        hasMore: { type: boolean }
+    Camera:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        location: { type: string }
+        status: { type: string }
+        type: { type: string }
+        created_at: { type: string, format: date-time }
+    Event:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        event_id: { type: string }
+        camera_id: { type: string, format: uuid }
+        severity: { type: string }
+        status: { type: string }
+        triggered_at: { type: string, format: date-time }
+        description: { type: string }
+paths:
+  /v1/cameras:
+    get:
+      summary: Lista câmeras do usuário autenticado
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Camera' } }
+                  meta: { $ref: '#/components/schemas/Meta' }
+  /v1/cameras/{id}:
+    get:
+      summary: Detalhe da câmera
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+        '404': { description: Camera not found }
+  /v1/events:
+    get:
+      summary: Lista eventos (event_alerts) com filtros
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/CameraId'
+        - $ref: '#/components/parameters/Severity'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Event' } }
+                  meta: { $ref: '#/components/schemas/Meta' }
+  /v1/events/count:
+    get:
+      summary: Contagem de eventos com filtros
+      parameters:
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/CameraId'
+        - $ref: '#/components/parameters/Severity'
+      responses:
+        '200': { description: OK }
+  /v1/alerts:
+    get:
+      summary: Lista alertas
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/CameraId'
+      responses:
+        '200': { description: OK }
