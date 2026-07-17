@@ -323,6 +323,11 @@ export default function OperationsPage() {
         <ConnectionSaturationCard />
       </section>
 
+      <section>
+        <MaintenanceProgressCard />
+      </section>
+
+
 
 
 
