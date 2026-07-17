@@ -5,8 +5,9 @@
 import { useState, useEffect } from 'react';
 import {
   Camera, X, MapPin, Volume2, VolumeX, ChevronLeft, ChevronRight,
-  Target, ScanFace, Brain, AlertTriangle,
+  Target, ScanFace, Brain, AlertTriangle, Gamepad2,
 } from 'lucide-react';
+import { PtzControlPanel } from '@/components/ptz/PtzControlPanel';
 import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';
 import { ClipRecorderControls } from '@/components/ClipRecorderControls';
 import { FaceRecognitionOverlay } from '@/components/FaceRecognitionOverlay';
