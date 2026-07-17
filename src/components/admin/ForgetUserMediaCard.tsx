@@ -160,7 +160,7 @@ export function ForgetUserMediaCard() {
           <AlertDialogTrigger asChild>
             <Button
               variant={dryRun ? 'secondary' : 'destructive'}
-              disabled={!isValid || mutation.isPending}
+              disabled={!isValid || !reasonOk || mutation.isPending}
               className="w-full md:w-auto"
             >
               {mutation.isPending ? (
