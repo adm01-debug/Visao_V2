@@ -333,20 +333,20 @@ Deno.serve(async (req: Request) => {
         bySeverity[sev] = (bySeverity[sev] ?? 0) + 1;
         byStatus[st] = (byStatus[st] ?? 0) + 1;
       }
-      return json({
+      return wrap(json({
         data: {
           total: data?.length ?? 0,
           by_severity: bySeverity,
           by_status: byStatus,
           window: { from: parsed.from ?? null, to: parsed.to ?? null },
         },
-      }, 200, cors);
+      }, 200, cors));
     }
 
     // ============ GET /v1/alerts ============
     if (path === "/v1/alerts" && method === "GET") {
       const parsed = parseFilters(url, ALERTS_FILTERABLE, new Set(["created_at"]));
-      if ("error" in parsed) return json({ error: parsed.error }, 400, cors);
+      if ("error" in parsed) return wrap(json({ error: parsed.error }, 400, cors));
       const offset = (parsed.page - 1) * parsed.limit;
       let q = supabase.from("alerts").select("*", { count: "exact" })
         .range(offset, offset + parsed.limit - 1);
@@ -358,15 +358,15 @@ Deno.serve(async (req: Request) => {
         : q.order("created_at", { ascending: false });
       const { data, error, count } = await q;
       if (error) throw error;
-      return json({
+      return wrap(json({
         data,
         meta: { total: count ?? 0, page: parsed.page, limit: parsed.limit, hasMore: (count ?? 0) > offset + parsed.limit },
-      }, 200, cors);
+      }, 200, cors));
     }
 
-    return json({ error: "Not found", path, method }, 404, cors);
+    return wrap(json({ error: "Not found", path, method }, 404, cors));
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    return json({ error: "Internal error", message }, 500, cors);
+    return wrap(json({ error: "Internal error", message }, 500, cors));
   }
 });
