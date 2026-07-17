@@ -1277,6 +1277,7 @@ export type Database = {
       }
       media_assets: {
         Row: {
+          archived_at: string | null
           bucket: string
           camera_id: string
           captured_at: string
@@ -1285,18 +1286,23 @@ export type Database = {
           duration_seconds: number | null
           expires_at: string | null
           id: string
+          legal_hold: boolean
           metadata: Json
           mime_type: string
           object_key: string
           promoted_at: string | null
+          restore_available_until: string | null
+          restore_requested_at: string | null
           retention_class: Database["public"]["Enums"]["retention_class"]
           size_bytes: number
+          storage_class: string | null
           storage_tier: Database["public"]["Enums"]["storage_tier"]
           type: Database["public"]["Enums"]["media_type"]
           updated_at: string
           user_id: string
         }
         Insert: {
+          archived_at?: string | null
           bucket: string
           camera_id: string
           captured_at?: string
@@ -1305,18 +1311,23 @@ export type Database = {
           duration_seconds?: number | null
           expires_at?: string | null
           id?: string
+          legal_hold?: boolean
           metadata?: Json
           mime_type?: string
           object_key: string
           promoted_at?: string | null
+          restore_available_until?: string | null
+          restore_requested_at?: string | null
           retention_class?: Database["public"]["Enums"]["retention_class"]
           size_bytes: number
+          storage_class?: string | null
           storage_tier?: Database["public"]["Enums"]["storage_tier"]
           type: Database["public"]["Enums"]["media_type"]
           updated_at?: string
           user_id: string
         }
         Update: {
+          archived_at?: string | null
           bucket?: string
           camera_id?: string
           captured_at?: string
@@ -1325,12 +1336,16 @@ export type Database = {
           duration_seconds?: number | null
           expires_at?: string | null
           id?: string
+          legal_hold?: boolean
           metadata?: Json
           mime_type?: string
           object_key?: string
           promoted_at?: string | null
+          restore_available_until?: string | null
+          restore_requested_at?: string | null
           retention_class?: Database["public"]["Enums"]["retention_class"]
           size_bytes?: number
+          storage_class?: string | null
           storage_tier?: Database["public"]["Enums"]["storage_tier"]
           type?: Database["public"]["Enums"]["media_type"]
           updated_at?: string
