@@ -1,5 +1,19 @@
 # 🤝 Guia de Contribuição - VISÃO
 
+Antes de trabalhar em um PR, leia o **Coding Style Guide** em [`docs/CODING_STYLE.md`](docs/CODING_STYLE.md).
+
+## Resumo (as 5 regras não-negociáveis)
+
+1. **1 PR por issue.** PR grande vira épico com filhos.
+2. **Escolha o branch base correto** (`main` para features, `hotfix/*` para produção).
+3. **Inclua testes e documentação** para qualquer mudança de comportamento.
+4. **Limpe commits "oops"** com squash/rebase local antes de abrir o PR.
+5. **Siga o [Coding Style Guide](docs/CODING_STYLE.md)** — ESLint/Prettier sem warnings.
+
+Reportes de segurança seguem a [Política de Segurança](SECURITY.md) — **não** abra Issue pública.
+
+---
+
 Obrigado por considerar contribuir com o projeto VISÃO! Este documento fornece as diretrizes para contribuir de forma eficaz.
 
 ## 📋 Índice
