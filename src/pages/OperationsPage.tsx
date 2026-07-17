@@ -380,6 +380,11 @@ export default function OperationsPage() {
         <PermissiveRlsCard />
       </section>
 
+      <section>
+        <DefinerSearchPathCard />
+      </section>
+
+
 
 
       <section>
