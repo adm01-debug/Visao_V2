@@ -3084,6 +3084,7 @@ export type Database = {
           blocking_user: string
         }[]
       }
+      get_connection_saturation: { Args: never; Returns: Json }
       get_csp_report_stats: { Args: { _days?: number }; Returns: Json }
       get_duplicate_indexes: {
         Args: never
