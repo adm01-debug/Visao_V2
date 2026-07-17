@@ -42,6 +42,7 @@ const CLSShiftOverlay = import.meta.env.DEV
 const Index = lazy(() => import("@/pages/Index"));
 const Auth = lazy(() => import("@/pages/Auth"));
 const ApiDocsPage = lazy(() => import("@/pages/ApiDocsPage"));
+const PricingPage = lazy(() => import("@/pages/PricingPage"));
 const DashboardV2 = lazy(() => import("@/pages/DashboardV2"));
 const CamerasPage = lazy(() => import("@/pages/CamerasPage"));
 const AlertsPage = lazy(() => import("@/pages/AlertsPage"));
