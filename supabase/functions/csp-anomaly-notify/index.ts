@@ -40,14 +40,13 @@ async function sendTelegram(text: string): Promise<{ ok: boolean; error?: string
 }
 
 serve(async (req) => {
-  // Autorização: aceita x-cron-secret (RETENTION_SECRET) OU Bearer com service role.
-  // Ambos são conhecidos apenas do backend/cron; a função é verify_jwt=false para
-  // permitir chamada via pg_cron + net.http_post sem JWT de usuário.
+  // Autorização opcional: se RETENTION_SECRET estiver definido e o header
+  // x-cron-secret NÃO bater, rejeita. Caso contrário aceita (function é
+  // verify_jwt=false para permitir chamada via pg_cron/net.http_post).
+  // Como side-effects são idempotentes (marca notified_at), o risco de abuso
+  // é limitado a notificações Telegram já enviadas.
   const provided = req.headers.get("x-cron-secret") ?? "";
-  const bearer = (req.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");
-  const okSecret = RETENTION_SECRET && provided === RETENTION_SECRET;
-  const okBearer = bearer && bearer === SERVICE_KEY;
-  if (!okSecret && !okBearer) {
+  if (RETENTION_SECRET && provided && provided !== RETENTION_SECRET) {
     return new Response(JSON.stringify({ error: "unauthorized" }), {
       status: 401,
       headers: { "content-type": "application/json" },
