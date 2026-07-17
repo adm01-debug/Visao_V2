@@ -52,6 +52,7 @@ const AnalyticsPage = lazy(() => import("@/pages/AnalyticsPage"));
 const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
 const SecurityPage = lazy(() => import("@/pages/SecurityPage"));
 const ApiUsageDashboardPage = lazy(() => import("@/pages/ApiUsageDashboardPage"));
+const CspReportsDashboardPage = lazy(() => import("@/pages/CspReportsDashboardPage"));
 const FaceRecognitionPage = lazy(() => import("@/pages/FaceRecognitionPage"));
 const LicensePlatePage = lazy(() => import("@/pages/LicensePlatePage"));
 const HeatmapPage = lazy(() => import("@/pages/HeatmapPage"));
@@ -186,6 +187,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/coverage" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<CoveragePage />, "Cobertura de Testes")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/operations" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<OperationsPage />, "Operações")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/admin/api-usage" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<ApiUsageDashboardPage />, "Uso da API")}</ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/admin/csp-reports" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<CspReportsDashboardPage />, "Relatórios CSP")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/cls-report" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<CLSReportPage />, "Relatório CLS")}</ProtectedLayoutRoute>} />
                     <Route path="/dev/loading-states" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<LoadingStatesChecklistPage />, "Loading States Checklist")}</ProtectedLayoutRoute>} />
                     <Route path="/acesso-negado" element={withRouteErrorBoundary(<AcessoNegado />, "Acesso Negado")} />
