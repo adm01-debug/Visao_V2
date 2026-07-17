@@ -3259,6 +3259,17 @@ export type Database = {
           temp_files: number
         }[]
       }
+      get_txid_wraparound_status: {
+        Args: { _limit?: number }
+        Returns: {
+          age_ratio_pct: number
+          object_name: string
+          recommendation: string
+          scope: string
+          severity: string
+          xid_age: number
+        }[]
+      }
       get_unused_indexes: {
         Args: { _max_scans?: number; _min_size_mb?: number }
         Returns: {
