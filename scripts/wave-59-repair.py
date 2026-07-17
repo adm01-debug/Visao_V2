@@ -28,7 +28,7 @@ PAT_ARROW = re.compile(rf'=\s+aria-label="(?:{label_alt})">\s?')
 def repair(path: Path) -> int:
     src = path.read_text()
     changed = 0
-    new = PAT_ARROW.sub("= ", src)
+    new = PAT_ARROW.sub("=> ", src)
     if new != src:
         changed += len(PAT_ARROW.findall(src))
         src = new

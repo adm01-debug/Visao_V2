@@ -54,7 +54,7 @@ export const BackButton = React.forwardRef<HTMLButtonElement, BackButtonProps>(
                 ref={ref}
                 variant="ghost"
                 size="icon"
-                onClick={() = aria-label="Ação"> {
+                onClick={() = {
                   triggerHaptic('light');
                   trackUXEvent('back_button_click', { from: location.pathname });
                   navigate(-1);

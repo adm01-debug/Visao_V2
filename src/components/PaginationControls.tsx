@@ -51,7 +51,7 @@ export function PaginationControls({
             variant="ghost"
             size="icon"
             className="h-7 w-7"
-            onClick={() = aria-label="Anterior"> onPageChange(currentPage - 1)}
+            onClick={() = onPageChange(currentPage - 1)}
             disabled={currentPage <= 1}
           >
             <ChevronLeft className="h-4 w-4" />
@@ -63,7 +63,7 @@ export function PaginationControls({
             variant="ghost"
             size="icon"
             className="h-7 w-7"
-            onClick={() = aria-label="Próximo"> onPageChange(currentPage + 1)}
+            onClick={() = onPageChange(currentPage + 1)}
             disabled={currentPage >= totalPages}
           >
             <ChevronRight className="h-4 w-4" />
@@ -106,7 +106,7 @@ export function PaginationControls({
           variant="outline"
           size="icon"
           className="h-8 w-8"
-          onClick={() = aria-label="Anterior"> onPageChange(currentPage - 1)}
+          onClick={() = onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
         >
           <ChevronLeft className="h-4 w-4" />
@@ -120,7 +120,7 @@ export function PaginationControls({
               variant={currentPage === page ? 'default' : 'outline'}
               size="icon"
               className="h-8 w-8"
-              onClick={() = aria-label="Ação"> onPageChange(page)}
+              onClick={() = onPageChange(page)}
             >
               {page}
             </Button>
@@ -132,7 +132,7 @@ export function PaginationControls({
               variant={currentPage === 1 ? 'default' : 'outline'}
               size="icon"
               className="h-8 w-8"
-              onClick={() = aria-label="Ação"> onPageChange(1)}
+              onClick={() = onPageChange(1)}
             >
               1
             </Button>
@@ -150,7 +150,7 @@ export function PaginationControls({
                   variant={currentPage === page ? 'default' : 'outline'}
                   size="icon"
                   className="h-8 w-8"
-                  onClick={() = aria-label="Ação"> onPageChange(page)}
+                  onClick={() = onPageChange(page)}
                 >
                   {page}
                 </Button>
@@ -162,7 +162,7 @@ export function PaginationControls({
               variant={currentPage === totalPages ? 'default' : 'outline'}
               size="icon"
               className="h-8 w-8"
-              onClick={() = aria-label="Ação"> onPageChange(totalPages)}
+              onClick={() = onPageChange(totalPages)}
             >
               {totalPages}
             </Button>
@@ -173,7 +173,7 @@ export function PaginationControls({
           variant="outline"
           size="icon"
           className="h-8 w-8"
-          onClick={() = aria-label="Próximo"> onPageChange(currentPage + 1)}
+          onClick={() = onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
         >
           <ChevronRight className="h-4 w-4" />

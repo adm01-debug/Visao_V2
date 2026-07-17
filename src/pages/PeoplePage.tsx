@@ -78,7 +78,7 @@ export default function PeoplePage() {
             />
             {filters.search && (
               <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
-                onClick={() = aria-label="Ação"> setFilters(f => ({ ...f, search: '' }))}>
+                onClick={() = setFilters(f => ({ ...f, search: '' }))}>
                 <X className="w-3 h-3" />
               </Button>
             )}
@@ -89,10 +89,10 @@ export default function PeoplePage() {
             <Label htmlFor="active-only" className="text-sm">Apenas ativos</Label>
           </div>
           <div className="flex items-center border border-border/40 rounded-lg p-1 ml-auto bg-card/60">
-            <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() = aria-label="Visualizar em grade"> setViewMode('grid')}>
+            <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() = setViewMode('grid')}>
               <LayoutGrid className="w-4 h-4" />
             </Button>
-            <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() = aria-label="Visualizar em lista"> setViewMode('list')}>
+            <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() = setViewMode('list')}>
               <List className="w-4 h-4" />
             </Button>
           </div>

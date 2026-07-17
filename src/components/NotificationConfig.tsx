@@ -296,7 +296,7 @@ function NotificationConfigComponent({
                 {config.webhook.urls.map((url) => (
                   <div key={url} className="flex items-center gap-2 text-sm">
                     <span className="flex-1 truncate text-muted-foreground">{url}</span>
-                    <Button variant="ghost" size="icon" onClick={() = aria-label="Excluir"> removeWebhook(url)}>
+                    <Button variant="ghost" size="icon" onClick={() = removeWebhook(url)}>
                       <Trash2 className="w-3 h-3" />
                     </Button>
                   </div>

@@ -118,7 +118,7 @@ export function DashboardV2() {
           <Select value={settings.gridLayout} onValueChange={(v) => setSettings(s => ({ ...s, gridLayout: v as GridLayout }))}><SelectTrigger className="w-20 sm:w-24 h-9"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="1x1">1x1</SelectItem><SelectItem value="2x2">2x2</SelectItem><SelectItem value="3x3">3x3</SelectItem><SelectItem value="4x4">4x4</SelectItem><SelectItem value="list">Lista</SelectItem></SelectContent></Select>
           <div className="h-5 w-px bg-border/40 hidden sm:block" />
           <Button variant="outline" size="icon" onClick={handleRefresh} className="shrink-0 h-9 w-9" aria-label="Atualizar dashboard"><RefreshCw className="w-4 h-4" /></Button>
-          <Button variant="outline" size="icon" onClick={() = aria-label="Ação"> document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()} className="hidden sm:inline-flex shrink-0 h-9 w-9" aria-label="Alternar tela cheia"><Maximize2 className="w-4 h-4" /></Button>
+          <Button variant="outline" size="icon" onClick={() = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()} className="hidden sm:inline-flex shrink-0 h-9 w-9" aria-label="Alternar tela cheia"><Maximize2 className="w-4 h-4" /></Button>
           <WidgetLayoutConfig widgets={widgets} toggleWidget={toggleWidget} reorderWidgets={reorderWidgets} resetLayout={resetLayout} />
           <SettingsSheet settings={settings} onSettingsChange={setSettings} />
         </div>

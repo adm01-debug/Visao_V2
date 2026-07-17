@@ -82,7 +82,7 @@ export const Header = React.forwardRef<HTMLElement, { className?: string }>(func
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground"
-                onClick={() = aria-label="Som ligado"> toggleAlertSound(!isAlertSoundEnabled)}
+                onClick={() = toggleAlertSound(!isAlertSoundEnabled)}
               >
                 {isAlertSoundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
               </Button>

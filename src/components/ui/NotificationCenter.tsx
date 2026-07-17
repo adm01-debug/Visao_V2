@@ -84,7 +84,7 @@ export function NotificationCenter({
       <Button
         variant="ghost"
         size="icon"
-        onClick={() = aria-label="Notificações"> setIsOpen(!isOpen)}
+        onClick={() = setIsOpen(!isOpen)}
         className="relative"
       >
         <Bell className="w-5 h-5" />
@@ -132,7 +132,7 @@ export function NotificationCenter({
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() = aria-label="Ação"> setIsOpen(false)}
+                    onClick={() = setIsOpen(false)}
                   >
                     <X className="w-4 h-4" />
                   </Button>
@@ -193,7 +193,7 @@ export function NotificationCenter({
                                       variant="ghost"
                                       size="icon"
                                       className="w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                                      onClick={(e) = aria-label="Ação"> {
+                                      onClick={(e) = {
                                         e.stopPropagation();
                                         onDelete(notification.id);
                                       }}
@@ -299,7 +299,7 @@ export function ToastStack({
                 variant="ghost"
                 size="icon"
                 className="w-6 h-6 flex-shrink-0"
-                onClick={() = aria-label="Ação"> onDismiss(toast.id)}
+                onClick={() = onDismiss(toast.id)}
               >
                 <X className="w-3 h-3" />
               </Button>

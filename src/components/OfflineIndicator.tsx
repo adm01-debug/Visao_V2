@@ -76,7 +76,7 @@ export function OfflineIndicator({
               !isOnline && 'text-warning',
               className
             )}
-            onClick={() = aria-label="Atualizar"> isOnline && syncNow()}
+            onClick={() = isOnline && syncNow()}
             disabled={isSyncing}
           >
             {isSyncing ? (

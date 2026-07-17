@@ -110,7 +110,7 @@ export function ZonesPage() {
               className="pl-9 border-border/40 bg-card/60" 
             />
             {!loading && filters.searchQuery && (
-              <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6" onClick={() = aria-label="Ação"> setFilters(p => ({ ...p, searchQuery: '' }))} aria-label="Limpar busca">
+              <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6" onClick={() = setFilters(p => ({ ...p, searchQuery: '' }))} aria-label="Limpar busca">
                 <X className="w-3 h-3" />
               </Button>
             )}
@@ -146,8 +146,8 @@ export function ZonesPage() {
           )}
 
           <div className="flex items-center border border-border/40 rounded-lg p-1 ml-auto bg-card/60">
-            <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() = aria-label="Visualizar em grade"> setViewMode('grid')} disabled={loading} aria-label="Visualizar em grade" aria-pressed={viewMode === 'grid'}><LayoutGrid className="w-4 h-4" /></Button>
-            <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() = aria-label="Visualizar em lista"> setViewMode('list')} disabled={loading} aria-label="Visualizar em lista" aria-pressed={viewMode === 'list'}><List className="w-4 h-4" /></Button>
+            <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() = setViewMode('grid')} disabled={loading} aria-label="Visualizar em grade" aria-pressed={viewMode === 'grid'}><LayoutGrid className="w-4 h-4" /></Button>
+            <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() = setViewMode('list')} disabled={loading} aria-label="Visualizar em lista" aria-pressed={viewMode === 'list'}><List className="w-4 h-4" /></Button>
           </div>
         </div>
 

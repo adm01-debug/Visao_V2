@@ -125,7 +125,7 @@ export function PPEZonesTab({ zones, selectedCamera, createZone, deleteZone }: P
                   <TableCell><Badge variant={zone.alertEnabled ? 'default' : 'secondary'}>{zone.alertEnabled ? 'Ativo' : 'Desativado'}</Badge></TableCell>
                   <TableCell><Badge variant="default">Ativo</Badge></TableCell>
                   <TableCell className="text-right">
-                    <Button variant="ghost" size="icon" onClick={() = aria-label="Excluir"> deleteZone(zone.id)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() = deleteZone(zone.id)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
                   </TableCell>
                 </TableRow>
               ))}

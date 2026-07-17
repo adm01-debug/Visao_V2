@@ -122,7 +122,7 @@ function AlertNotificationComponent({
                 variant="ghost"
                 size="icon"
                 className="h-7 w-7"
-                onClick={() = aria-label="Som desligado"> setIsMuted(!isMuted)}
+                onClick={() = setIsMuted(!isMuted)}
               >
                 {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
               </Button>

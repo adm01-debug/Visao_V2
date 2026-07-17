@@ -111,7 +111,7 @@ export const PlateRegistrationForm = memo(function PlateRegistrationForm({
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge variant={plate.list_type === 'blacklist' ? 'destructive' : 'secondary'}>{plate.list_type}</Badge>
-                      <Button variant="ghost" size="icon" onClick={() = aria-label="Excluir"> onDelete(plate.id)}><Trash2 className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" onClick={() = onDelete(plate.id)}><Trash2 className="h-4 w-4" /></Button>
                     </div>
                   </div>
                 ))}

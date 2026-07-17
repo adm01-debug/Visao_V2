@@ -147,7 +147,7 @@ export function CamerasPage() {
             { mode: 'list' as ViewMode, icon: List },
           ].map(({ mode, icon: Icon }) => (
             <Button key={mode} variant={viewMode === mode ? 'secondary' : 'ghost'}
-              size="icon" className="h-8 w-8" onClick={() = aria-label="Ação"> setViewMode(mode)}>
+              size="icon" className="h-8 w-8" onClick={() = setViewMode(mode)}>
               <Icon className="w-4 h-4" />
             </Button>
           ))}
