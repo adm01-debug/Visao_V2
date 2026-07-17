@@ -3712,6 +3712,19 @@ export type Database = {
           table_name: string
         }[]
       }
+      get_storage_tier_stats: {
+        Args: never
+        Returns: {
+          asset_count: number
+          legal_hold_count: number
+          newest_created_at: string
+          oldest_created_at: string
+          restore_in_progress_count: number
+          retention_class: string
+          storage_tier: string
+          total_bytes: number
+        }[]
+      }
       get_table_bloat_estimate: {
         Args: { _limit?: number; _min_size_mb?: number }
         Returns: {
