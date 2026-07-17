@@ -288,6 +288,10 @@ export default function OperationsPage() {
         <MissingFkIndexesCard />
       </section>
 
+      <section>
+        <TableCacheStatsCard />
+      </section>
+
 
 
 
