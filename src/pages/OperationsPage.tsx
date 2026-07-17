@@ -346,6 +346,11 @@ export default function OperationsPage() {
       </section>
 
       <section>
+        <SequenceExhaustionCard />
+      </section>
+
+
+      <section>
         <BlockingChainsCard />
       </section>
 
