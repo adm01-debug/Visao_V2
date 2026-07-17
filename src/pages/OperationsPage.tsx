@@ -268,6 +268,11 @@ export default function OperationsPage() {
         <DbHealthCard />
       </section>
 
+      <section>
+        <TableBloatCard />
+      </section>
+
+
 
 
       {data?.generated_at && (
