@@ -6,6 +6,12 @@ import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { getCorsHeaders, handleCors } from "../_shared/cors.ts";
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { securityHeaders } from "../_shared/securityHeaders.ts";
+import {
+  acknowledgeAlertSchema,
+  armDisarmSchema,
+  panicSchema,
+  parseBody,
+} from "../_shared/publicApiSchemas.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
@@ -217,12 +223,14 @@ Deno.serve(async (req: Request) => {
       return wrap(json({ data }, 200, cors));
     }
 
-    // ============ POST /v1/cameras/:id/arm | /disarm  (Onda 44) ============
+    // ============ POST /v1/cameras/:id/arm | /disarm  (Onda 44 + 57) ============
     const armMatch = path.match(/^\/v1\/cameras\/([0-9a-f-]{36})\/(arm|disarm)$/i);
     if (armMatch && method === "POST") {
       const [, camId, action] = armMatch;
-      const body = await req.json().catch(() => ({} as Record<string, unknown>));
-      const reason = typeof body.reason === "string" ? body.reason.slice(0, 500) : null;
+      const raw = await req.json().catch(() => ({}));
+      const parsed = parseBody(armDisarmSchema, raw);
+      if ("error" in parsed) return wrap(json(parsed.error, 400, cors));
+      const reason = parsed.data.reason ?? null;
       if (action === "disarm" && !reason) {
         return wrap(json({ error: "Campo 'reason' obrigatório para disarm" }, 400, cors));
       }
@@ -241,10 +249,13 @@ Deno.serve(async (req: Request) => {
       return wrap(json({ data, action }, 200, cors));
     }
 
-    // ============ POST /v1/alerts/:id/acknowledge (Onda 44) ============
+    // ============ POST /v1/alerts/:id/acknowledge (Onda 44 + 57) ============
     const ackMatch = path.match(/^\/v1\/alerts\/([0-9a-f-]{36})\/acknowledge$/i);
     if (ackMatch && method === "POST") {
       const alertId = ackMatch[1];
+      const raw = await req.json().catch(() => ({}));
+      const parsed = parseBody(acknowledgeAlertSchema, raw);
+      if ("error" in parsed) return wrap(json(parsed.error, 400, cors));
       const { data, error } = await supabase
         .from("event_alerts")
         .update({ status: "acknowledged", acknowledged_at: new Date().toISOString(), acknowledged_by: userId })
@@ -256,17 +267,21 @@ Deno.serve(async (req: Request) => {
       return wrap(json({ data, idempotent: !!data.acknowledged_at }, 200, cors));
     }
 
-    // ============ POST /v1/panic (Onda 44) ============
+    // ============ POST /v1/panic (Onda 44 + 57) ============
     if (path === "/v1/panic" && method === "POST") {
-      const body = await req.json().catch(() => ({} as Record<string, unknown>));
-      const description = typeof body.description === "string" ? body.description.slice(0, 1000) : "Panic acionado via API";
-      const cameraId = typeof body.camera_id === "string" && UUID_RX.test(body.camera_id) ? body.camera_id : null;
+      const raw = await req.json().catch(() => ({}));
+      const parsed = parseBody(panicSchema, raw);
+      if ("error" in parsed) return wrap(json(parsed.error, 400, cors));
+      const description = parsed.data.message ?? "Panic acionado via API";
+      const cameraId = parsed.data.camera_id ?? null;
       const { data, error } = await supabase.from("panic_events").insert({
         user_id: userId,
         camera_id: cameraId,
         description,
         source: "api_v1",
         triggered_at: new Date().toISOString(),
+        latitude: parsed.data.latitude ?? null,
+        longitude: parsed.data.longitude ?? null,
       }).select().maybeSingle();
       if (error) throw error;
       return wrap(json({ data }, 201, cors));
