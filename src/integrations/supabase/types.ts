@@ -3117,6 +3117,7 @@ export type Database = {
           wait_event_type: string
         }[]
       }
+      get_maintenance_progress: { Args: never; Returns: Json }
       get_missing_fk_indexes: {
         Args: never
         Returns: {
