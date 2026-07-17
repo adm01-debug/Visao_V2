@@ -343,6 +343,10 @@ export default function OperationsPage() {
         <ReplicationSlotsCard />
       </section>
 
+      <section>
+        <BlockingChainsCard />
+      </section>
+
 
 
 
