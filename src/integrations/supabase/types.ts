@@ -3398,6 +3398,23 @@ export type Database = {
           table_size_pretty: string
         }[]
       }
+      get_nullable_foreign_keys: {
+        Args: never
+        Returns: {
+          column_name: string
+          constraint_name: string
+          estimated_rows: number
+          on_delete_action: string
+          recommendation: string
+          referenced_column: string
+          referenced_table: string
+          schema_name: string
+          severity: string
+          table_name: string
+          table_size_bytes: number
+          table_size_pretty: string
+        }[]
+      }
       get_operational_metrics: { Args: never; Returns: Json }
       get_replication_slot_status: {
         Args: never
