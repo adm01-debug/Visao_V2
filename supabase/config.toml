@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.admin-slow-queries]
 verify_jwt = true
+
+[functions.csp-anomaly-notify]
+verify_jwt = false
