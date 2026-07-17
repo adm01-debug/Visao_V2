@@ -3434,6 +3434,22 @@ export type Database = {
           table_size_pretty: string
         }[]
       }
+      get_sequence_exhaustion: {
+        Args: never
+        Returns: {
+          data_type: string
+          increment_by: number
+          is_cycled: boolean
+          last_value: number
+          max_value: number
+          owned_by_column: string
+          owned_by_table: string
+          pct_used: number
+          schema_name: string
+          sequence_name: string
+          severity: string
+        }[]
+      }
       get_slow_queries: {
         Args: { _limit?: number }
         Returns: {
