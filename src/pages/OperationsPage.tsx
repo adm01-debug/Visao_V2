@@ -338,6 +338,10 @@ export default function OperationsPage() {
         <TxidWraparoundCard />
       </section>
 
+      <section>
+        <ReplicationSlotsCard />
+      </section>
+
 
 
 
