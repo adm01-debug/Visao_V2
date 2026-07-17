@@ -55,6 +55,10 @@ jobs:
       - name: Page Content Standard
         run: npm run check:page-content
 
+      - name: CSP Allowlist (Onda 62)
+        run: npm run check:csp
+
+
       - name: Skeleton Regression Gate (anti-CLS)
         run: npm run check:skeletons -- --skip-build
         env:

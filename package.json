@@ -22,6 +22,7 @@
     "check:mobile-nav:auto": "node scripts/check-mobile-nav.mjs --auto-classify",
     "check:mobile-nav:snapshot": "node scripts/check-mobile-nav.mjs --snapshot",
     "check:page-content": "node scripts/check-page-content.mjs",
+    "check:csp": "node scripts/check-csp-allowlist.mjs",
     "clean": "rm -rf dist node_modules/.cache",
     "coverage": "vitest run --coverage && node scripts/build-coverage-report.mjs",
     "coverage:ci": "vitest run --coverage --reporter=lcov",
