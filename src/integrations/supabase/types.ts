@@ -3401,15 +3401,12 @@ export type Database = {
       get_duplicate_indexes: {
         Args: never
         Returns: {
-          a_is_unique: boolean
-          b_is_unique: boolean
-          index_a: string
-          index_b: string
-          relation: string
+          duplicate_index: string
+          index_definition: string
+          keeper_index: string
+          recommendation: string
           schema_name: string
-          size_a_pretty: string
-          size_b_pretty: string
-          suggestion: string
+          size_bytes: number
           table_name: string
         }[]
       }
