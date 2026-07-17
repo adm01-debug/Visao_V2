@@ -210,26 +210,27 @@ export function ForgetUserMediaCard() {
               {!auditQuery.isLoading && (auditQuery.data?.length ?? 0) === 0 && (
                 <div className="p-3 text-sm text-muted-foreground">Nenhuma execução registrada.</div>
               )}
-              {auditQuery.data?.map((entry) => (
-                <div key={entry.id} className="flex flex-wrap items-center justify-between gap-2 p-3 text-sm">
-                  <div className="flex flex-col">
-                    <span className="font-mono text-xs">{entry.target_user_id}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(entry.created_at).toLocaleString('pt-BR')}
-                    </span>
+              {auditQuery.data?.map((entry) => {
+                const totalDeleted = (entry.hot_deleted ?? 0) + (entry.warm_deleted ?? 0) + (entry.cold_deleted ?? 0);
+                return (
+                  <div key={entry.id} className="flex flex-wrap items-center justify-between gap-2 p-3 text-sm">
+                    <div className="flex flex-col">
+                      <span className="font-mono text-xs">{entry.subject_user_id}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(entry.created_at).toLocaleString('pt-BR')}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {entry.dry_run && <Badge variant="secondary">dry_run</Badge>}
+                      <Badge variant="default">del {totalDeleted}</Badge>
+                      <Badge variant="outline">H{entry.hot_deleted ?? 0}·W{entry.warm_deleted ?? 0}·C{entry.cold_deleted ?? 0}</Badge>
+                      {(entry.legal_hold_skipped ?? 0) > 0 && (
+                        <Badge variant="outline">hold {entry.legal_hold_skipped}</Badge>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-1">
-                    {entry.dry_run && <Badge variant="secondary">dry_run</Badge>}
-                    <Badge variant="default">del {entry.deleted_count ?? 0}</Badge>
-                    {(entry.legal_hold_skipped_count ?? 0) > 0 && (
-                      <Badge variant="outline">hold {entry.legal_hold_skipped_count}</Badge>
-                    )}
-                    {(entry.failed_count ?? 0) > 0 && (
-                      <Badge variant="destructive">fail {entry.failed_count}</Badge>
-                    )}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </ScrollArea>
         </div>
