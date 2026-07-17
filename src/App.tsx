@@ -145,6 +145,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/vehicles" element={<Navigate to="/license-plate" replace />} />
                     <Route path="/auth/callback" element={withRouteErrorBoundary(<AuthCallback />, "Auth Callback")} />
                     <Route path="/reset-password" element={withRouteErrorBoundary(<ResetPasswordPage />, "Redefinir Senha")} />
+                    <Route path="/docs/api" element={withRouteErrorBoundary(<ApiDocsPage />, "API Docs")} />
                     <Route path="/dashboard" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<DashboardV2 />, "Dashboard")}</ProtectedLayoutRoute>} />
                     <Route path="/cameras" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<CamerasPage />, "Câmeras")}</ProtectedLayoutRoute>} />
                     <Route path="/alerts" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<AlertsPage />, "Alertas")}</ProtectedLayoutRoute>} />
