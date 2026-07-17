@@ -17,6 +17,10 @@ const IGNORE_HOSTS = new Set([
   "schema.org", "www.w3.org", "example.com", "localhost",
   "vis-o.app", "attentive-cam.lovable.app",
   "id-preview--76579cc3-ec2f-4e92-bdb3-20d12f2c763d.lovable.app",
+  // Placeholder / documentação em strings de UI
+  "servidor.com", "api.exemplo.com", "www.google.com", "github.com", "t.me",
+  "react.i18next.com", "wicg.github.io", "w3c.github.io", "test-streams.mux.dev",
+  "developer.mozilla.org", "docs.lovable.dev",
 ]);
 const IGNORE_DIRS = ["node_modules", "dist", "build", ".git", "tests", "cypress",
   "docs", "public", "reports", "supabase/functions", ".storybook", "scripts"];
