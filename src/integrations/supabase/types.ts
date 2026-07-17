@@ -3083,6 +3083,21 @@ export type Database = {
         }[]
       }
       get_csp_report_stats: { Args: { _days?: number }; Returns: Json }
+      get_duplicate_indexes: {
+        Args: never
+        Returns: {
+          a_is_unique: boolean
+          b_is_unique: boolean
+          index_a: string
+          index_b: string
+          relation: string
+          schema_name: string
+          size_a_pretty: string
+          size_b_pretty: string
+          suggestion: string
+          table_name: string
+        }[]
+      }
       get_long_running_sessions: {
         Args: { _active_min_secs?: number; _idle_tx_min_secs?: number }
         Returns: {
