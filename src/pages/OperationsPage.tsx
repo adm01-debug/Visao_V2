@@ -401,8 +401,9 @@ export default function OperationsPage() {
         <StorageTierCostsCard />
       </section>
 
-      <section>
+      <section className="grid gap-6 lg:grid-cols-2">
         <ForgetUserMediaCard />
+        <LegalHoldManagerCard />
       </section>
 
 
