@@ -32,6 +32,7 @@ import { PermissiveRlsCard } from '@/components/admin/PermissiveRlsCard';
 import { DefinerSearchPathCard } from '@/components/admin/DefinerSearchPathCard';
 import { MissingUpdatedAtTriggersCard } from '@/components/admin/MissingUpdatedAtTriggersCard';
 import { InvalidIndexesCard } from '@/components/admin/InvalidIndexesCard';
+import { StorageTierCostsCard } from '@/components/admin/StorageTierCostsCard';
 import { BlockingChainsCard } from '@/components/admin/BlockingChainsCard';
 import { RlsCoverageCard } from '@/components/admin/RlsCoverageCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
