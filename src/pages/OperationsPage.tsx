@@ -293,6 +293,10 @@ export default function OperationsPage() {
         <TableCacheStatsCard />
       </section>
 
+      <section>
+        <DuplicateIndexesCard />
+      </section>
+
 
 
 
