@@ -308,6 +308,11 @@ export default function OperationsPage() {
         <StatsStalenessCard />
       </section>
 
+      <section>
+        <SeqScanHotspotsCard />
+      </section>
+
+
 
 
 
