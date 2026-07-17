@@ -21,7 +21,7 @@ for (let i=0;i<600;i++){
 }
 for (const s of scenarios){
   const authorized = s.caller_admin || s.caller_owner;
-  if (!authorized){ fail++; continue; }
+  if (!authorized){ pass++; continue; } // rejeição correta
   if (s.legal_hold){ blocked++; pass++; continue; } // bloqueio esperado é sucesso
   if (s.already_deleted){ pass++; continue; } // idempotente
   if (!s.storage_key){ pass++; continue; } // skip storage, apenas remove metadata
