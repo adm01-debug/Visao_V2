@@ -42,7 +42,7 @@ export function CameraLayoutControls({
                   "h-8 w-8",
                   layout === id && "bg-primary text-primary-foreground"
                 )}
-                onClick={() => onLayoutChange(id)}
+                onClick={() = aria-label="Ação"> onLayoutChange(id)}
               >
                 <Icon className="w-4 h-4" />
               </Button>
@@ -63,7 +63,7 @@ export function CameraLayoutControls({
                   size="icon"
                   className="h-8 w-8"
                   onClick={onFullscreen}
-                >
+                 aria-label="Tela cheia">
                   <Maximize2 className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>

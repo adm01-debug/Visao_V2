@@ -36,7 +36,7 @@ export function CompactClipControls({ state, duration, savedClip, onStart, onSto
       <div className={cn('flex items-center gap-1', className)}>
         {state === 'idle' && (
           <Tooltip><TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground hover:bg-background/20" onClick={onStart}>
+            <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground hover:bg-background/20" onClick={onStart} aria-label="Iniciar">
               <Circle className="w-4 h-4 fill-destructive text-destructive" />
             </Button>
           </TooltipTrigger><TooltipContent>Iniciar gravação</TooltipContent></Tooltip>
@@ -47,7 +47,7 @@ export function CompactClipControls({ state, duration, savedClip, onStart, onSto
               <Circle className="w-2 h-2 fill-current" />{formatDuration(duration)}
             </Badge>
             <Tooltip><TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground hover:bg-background/20" onClick={onStop}>
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground hover:bg-background/20" onClick={onStop} aria-label="Parar">
                 <Square className="w-4 h-4 fill-current" />
               </Button>
             </TooltipTrigger><TooltipContent>Parar gravação</TooltipContent></Tooltip>
@@ -58,10 +58,10 @@ export function CompactClipControls({ state, duration, savedClip, onStart, onSto
           <>
             <Badge variant="secondary" className="gap-1"><Check className="w-3 h-3" />{formatDuration(savedClip.duration)}</Badge>
             <Tooltip><TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground hover:bg-background/20" onClick={onDownload}><Download className="w-4 h-4" /></Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground hover:bg-background/20" onClick={onDownload} aria-label="Baixar"><Download className="w-4 h-4" /></Button>
             </TooltipTrigger><TooltipContent>Download</TooltipContent></Tooltip>
             <Tooltip><TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground hover:bg-background/20" onClick={onDiscard}><Trash2 className="w-4 h-4" /></Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground hover:bg-background/20" onClick={onDiscard} aria-label="Excluir"><Trash2 className="w-4 h-4" /></Button>
             </TooltipTrigger><TooltipContent>Descartar</TooltipContent></Tooltip>
           </>
         )}

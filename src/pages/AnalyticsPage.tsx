@@ -142,7 +142,7 @@ export function AnalyticsPage() {
                 </SelectContent>
               </Select>
               <div className="flex items-center gap-2 ml-auto sm:ml-0">
-                <Button variant="outline" size="icon" onClick={() => { setRefreshing(true); loadData(); }} className="border-border/40 shrink-0" aria-label="Atualizar analytics">
+                <Button variant="outline" size="icon" onClick={() = aria-label="Atualizar"> { setRefreshing(true); loadData(); }} className="border-border/40 shrink-0" aria-label="Atualizar analytics">
                   <RefreshCw className={cn('w-4 h-4', refreshing && 'animate-spin')} />
                 </Button>
                 <DropdownMenu>

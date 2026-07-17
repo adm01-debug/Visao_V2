@@ -49,7 +49,7 @@ export function PersonCard({ person, onEdit, onDelete, onAddPhoto, onToggleStatu
           </div>
           <div className="absolute top-2 right-2">
             <DropdownMenu>
-              <DropdownMenuTrigger asChild><Button variant="secondary" size="icon" className="h-8 w-8"><MoreVertical className="w-4 h-4" /></Button></DropdownMenuTrigger>
+              <DropdownMenuTrigger asChild><Button variant="secondary" size="icon" className="h-8 w-8" aria-label="Mais opções"><MoreVertical className="w-4 h-4" /></Button></DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => onViewDetails?.(person)}><Eye className="w-4 h-4 mr-2" />Ver detalhes</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => onEdit?.(person)}><Edit className="w-4 h-4 mr-2" />Editar</DropdownMenuItem>

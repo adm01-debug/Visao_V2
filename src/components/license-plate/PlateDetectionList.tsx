@@ -80,7 +80,7 @@ export const PlateDetectionList = memo(function PlateDetectionList({
                         <span>Confiança: {Math.round(detection.confidence * 100)}%</span>
                       </div>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={() => onDelete(detection.id)}>
+                    <Button variant="ghost" size="icon" onClick={() = aria-label="Excluir"> onDelete(detection.id)}>
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
                   </div>

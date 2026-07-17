@@ -182,8 +182,8 @@ export function AlertsPage() {
           {!loading && hasActiveFilters && <Button variant="ghost" size="sm" onClick={clearFilters}><X className="w-4 h-4 mr-1" />Limpar</Button>}
         </div>
         <div className="flex items-center gap-1 border rounded-lg p-1">
-          <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('list')} disabled={loading}><List className="w-4 h-4" /></Button>
-          <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('grid')} disabled={loading}><LayoutGrid className="w-4 h-4" /></Button>
+          <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() = aria-label="Visualizar em lista"> setViewMode('list')} disabled={loading}><List className="w-4 h-4" /></Button>
+          <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() = aria-label="Visualizar em grade"> setViewMode('grid')} disabled={loading}><LayoutGrid className="w-4 h-4" /></Button>
         </div>
       </div>
 

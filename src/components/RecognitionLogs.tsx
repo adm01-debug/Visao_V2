@@ -177,7 +177,7 @@ function RecognitionLogsComponent({
                           </span>
                         </TableCell>
                         <TableCell>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Visualizar">
                             <Eye className="w-4 h-4" />
                           </Button>
                         </TableCell>
@@ -198,7 +198,7 @@ function RecognitionLogsComponent({
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    onClick={() = aria-label="Anterior"> setCurrentPage(p => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
                   >
                     <ChevronLeft className="w-4 h-4" />
@@ -207,7 +207,7 @@ function RecognitionLogsComponent({
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    onClick={() = aria-label="Próximo"> setCurrentPage(p => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages}
                   >
                     <ChevronRight className="w-4 h-4" />

@@ -124,7 +124,7 @@ export function RuleCard({ rule, onToggle, onEdit, onDelete }: RuleCardProps) {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Mais opções">
                 <MoreVertical className="w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>

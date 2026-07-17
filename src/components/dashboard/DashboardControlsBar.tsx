@@ -46,7 +46,7 @@ function DashboardControlsBarComponent({
             <Button
               variant={showMap ? 'default' : 'ghost'}
               size="icon" className="h-8 w-8 rounded-lg"
-              onClick={() => onShowMapChange(!showMap)}
+              onClick={() = aria-label="Ação"> onShowMapChange(!showMap)}
             >
               <Map className="h-4 w-4" />
             </Button>

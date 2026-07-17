@@ -106,14 +106,14 @@ export function CameraDetailView({
               {hasPrev && (
                 <Button variant="ghost" size="icon"
                   className="absolute left-4 top-1/2 -translate-y-1/2 text-background bg-foreground/50 hover:bg-foreground/70"
-                  onClick={onPrev}>
+                  onClick={onPrev} aria-label="Anterior">
                   <ChevronLeft className="w-6 h-6" />
                 </Button>
               )}
               {hasNext && (
                 <Button variant="ghost" size="icon"
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-background bg-foreground/50 hover:bg-foreground/70"
-                  onClick={onNext}>
+                  onClick={onNext} aria-label="Próximo">
                   <ChevronRight className="w-6 h-6" />
                 </Button>
               )}

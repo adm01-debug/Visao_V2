@@ -75,11 +75,11 @@ export function WebcamCapture({
             </div>
             <div className="absolute top-3 right-3 flex items-center gap-2">
               <Button variant="secondary" size="icon" className="h-8 w-8 bg-foreground/50 hover:bg-foreground/70"
-                onClick={() => setIsMirrored(!isMirrored)} title={isMirrored ? 'Desativar espelhamento' : 'Ativar espelhamento'}>
+                onClick={() = aria-label="Ação"> setIsMirrored(!isMirrored)} title={isMirrored ? 'Desativar espelhamento' : 'Ativar espelhamento'}>
                 <FlipHorizontal className="w-4 h-4 text-foreground" />
               </Button>
               <Button variant="secondary" size="icon" className="h-8 w-8 bg-foreground/50 hover:bg-foreground/70"
-                onClick={switchCamera} title="Trocar câmera">
+                onClick={switchCamera} title="Trocar câmera" aria-label="Atualizar">
                 <RefreshCw className="w-4 h-4 text-foreground" />
               </Button>
             </div>

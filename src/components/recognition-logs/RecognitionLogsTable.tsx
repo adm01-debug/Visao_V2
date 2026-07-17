@@ -81,7 +81,7 @@ export function RecognitionLogsTable({ logs, selectedLog, onSelectLog, getPerson
               <TableCell>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="ghost" size="icon" onClick={() => onSelectLog(log)}>
+                    <Button variant="ghost" size="icon" onClick={() = aria-label="Visualizar"> onSelectLog(log)}>
                       <Eye className="h-4 w-4" />
                     </Button>
                   </DialogTrigger>

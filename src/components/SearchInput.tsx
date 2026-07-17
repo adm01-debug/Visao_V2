@@ -123,7 +123,7 @@ export function SearchInput({ value, onChange, placeholder = 'Buscar...', classN
               variant="ghost"
               size="icon"
               className="absolute right-8 top-1/2 -translate-y-1/2 h-6 w-6"
-              onClick={() => onChange('')}
+              onClick={() = aria-label="Ação"> onChange('')}
             >
               <X className="w-3 h-3" />
             </Button>
@@ -171,7 +171,7 @@ export function SearchInput({ value, onChange, placeholder = 'Buscar...', classN
                       variant="ghost"
                       size="icon"
                       className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={(e) => {
+                      onClick={(e) = aria-label="Ação"> {
                         e.stopPropagation();
                         removeFromHistory(term);
                       }}

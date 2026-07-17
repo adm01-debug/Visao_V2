@@ -198,7 +198,7 @@ export function PersonFormDialog({ person, isOpen, onClose, onSave }: PersonForm
                   <AvatarFallback className="text-2xl">{formData.name?.charAt(0) || 'P'}</AvatarFallback>
                 </Avatar>
                 {photoPreview && (
-                  <Button variant="destructive" size="icon" className="absolute -top-1 -right-1 h-6 w-6 rounded-full" onClick={handleRemovePhoto} type="button">
+                  <Button variant="destructive" size="icon" className="absolute -top-1 -right-1 h-6 w-6 rounded-full" onClick={handleRemovePhoto} type="button" aria-label="Remover">
                     <X className="w-3 h-3" />
                   </Button>
                 )}

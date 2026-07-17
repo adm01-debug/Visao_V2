@@ -92,7 +92,7 @@ export function SecurityListsPanel({ persons, onPersonsChange }: SecurityListsPa
                             {person.reason && <p className="text-xs text-muted-foreground">{person.reason}</p>}
                           </div>
                         </div>
-                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setDeleteConfirm(person)}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() = aria-label="Excluir"> setDeleteConfirm(person)}>
                           <Trash2 className="w-4 h-4 text-muted-foreground" />
                         </Button>
                       </div>

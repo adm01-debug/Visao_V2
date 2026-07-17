@@ -113,7 +113,7 @@ export function RuleFormDialog({ open, onOpenChange, formData, setFormData, isEd
                         <SelectTrigger className="flex-1"><SelectValue /></SelectTrigger>
                         <SelectContent>{CONDITION_TYPES.map(type => <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>)}</SelectContent>
                       </Select>
-                      <Button variant="ghost" size="icon" className="shrink-0" onClick={() => removeCondition(index)}><X className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" className="shrink-0" onClick={() = aria-label="Ação"> removeCondition(index)}><X className="h-4 w-4" /></Button>
                     </div>
                   ))}
                 </div>

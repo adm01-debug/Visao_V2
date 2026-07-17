@@ -111,8 +111,8 @@ export const AnalysisHistoryPanel = React.forwardRef<HTMLDivElement>(function An
               <span className="text-xs text-muted-foreground">Últimas 24h</span>
             </div>
             <div className="flex gap-1">
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleExport('csv')} disabled={filteredItems.length === 0} title="Exportar CSV" aria-label="Exportar CSV"><FileSpreadsheet className="h-3.5 w-3.5" /></Button>
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleExport('pdf')} disabled={filteredItems.length === 0} title="Exportar PDF" aria-label="Exportar PDF"><FileText className="h-3.5 w-3.5" /></Button>
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() = aria-label="Ação"> handleExport('csv')} disabled={filteredItems.length === 0} title="Exportar CSV" aria-label="Exportar CSV"><FileSpreadsheet className="h-3.5 w-3.5" /></Button>
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() = aria-label="Ação"> handleExport('pdf')} disabled={filteredItems.length === 0} title="Exportar PDF" aria-label="Exportar PDF"><FileText className="h-3.5 w-3.5" /></Button>
             </div>
           </div>
         </SheetHeader>

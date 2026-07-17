@@ -75,7 +75,7 @@ export const SidebarFooter = memo(React.forwardRef(function SidebarFooter({
       ) : (
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className={footerButtonClasses} onClick={handleShowTour}>
+            <Button variant="ghost" size="icon" className={footerButtonClasses} onClick={handleShowTour} aria-label="Iniciar tour">
               <HelpCircle className="w-4 h-4" />
             </Button>
           </TooltipTrigger>

@@ -41,7 +41,7 @@ function ClipCardBase({
           </div>
         )}
         <div className="absolute inset-0 bg-foreground/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-          <Button variant="secondary" size="icon" className="w-12 h-12 rounded-full" onClick={() => onPlay?.(clip)}>
+          <Button variant="secondary" size="icon" className="w-12 h-12 rounded-full" onClick={() = aria-label="Reproduzir"> onPlay?.(clip)}>
             <Play className="w-6 h-6" />
           </Button>
         </div>
@@ -75,7 +75,7 @@ function ClipCardBase({
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Mais opções">
                 <MoreVertical className="w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>

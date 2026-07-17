@@ -152,7 +152,7 @@ export function RecordingsPage() {
           <div className="relative flex-1 min-w-[200px] max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input placeholder="Buscar por câmera..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 border-border/40 bg-card/60" />
-            {searchQuery && <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6" onClick={() => setSearchQuery('')} aria-label="Limpar busca"><X className="w-3 h-3" /></Button>}
+            {searchQuery && <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6" onClick={() = aria-label="Ação"> setSearchQuery('')} aria-label="Limpar busca"><X className="w-3 h-3" /></Button>}
           </div>
           <Select value={cameraFilter} onValueChange={setCameraFilter}>
             <SelectTrigger className="w-[180px] border-border/40 bg-card/60"><Camera className="w-4 h-4 mr-2" /><SelectValue placeholder="Câmera" /></SelectTrigger>
@@ -163,8 +163,8 @@ export function RecordingsPage() {
             <SelectContent><SelectItem value="today">Hoje</SelectItem><SelectItem value="yesterday">Ontem</SelectItem><SelectItem value="week">Última semana</SelectItem><SelectItem value="month">Último mês</SelectItem><SelectItem value="all">Todos</SelectItem></SelectContent>
           </Select>
           <div className="flex items-center border border-border/40 rounded-lg p-1 ml-auto bg-card/60">
-            <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('grid')} aria-label="Visualizar em grade" aria-pressed={viewMode === 'grid'}><LayoutGrid className="w-4 h-4" /></Button>
-            <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() => setViewMode('list')} aria-label="Visualizar em lista" aria-pressed={viewMode === 'list'}><List className="w-4 h-4" /></Button>
+            <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() = aria-label="Visualizar em grade"> setViewMode('grid')} aria-label="Visualizar em grade" aria-pressed={viewMode === 'grid'}><LayoutGrid className="w-4 h-4" /></Button>
+            <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={() = aria-label="Visualizar em lista"> setViewMode('list')} aria-label="Visualizar em lista" aria-pressed={viewMode === 'list'}><List className="w-4 h-4" /></Button>
           </div>
         </div>
 
@@ -211,7 +211,7 @@ export function RecordingsPage() {
                     </div>
                   </div>
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreHorizontal className="w-4 h-4" /></Button></DropdownMenuTrigger>
+                    <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label="Mais opções"><MoreHorizontal className="w-4 h-4" /></Button></DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={() => setPlayingClip(clip)}><Play className="w-4 h-4 mr-2" />Reproduzir</DropdownMenuItem>
                       <DropdownMenuItem onClick={() => handleDownloadClip(clip)}><Download className="w-4 h-4 mr-2" />Download</DropdownMenuItem>

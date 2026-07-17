@@ -55,7 +55,7 @@ export const SidebarHeader = memo(React.forwardRef(function SidebarHeader({
           )}
           onClick={onToggle}
           data-testid="sidebar-toggle"
-        >
+         aria-label="Próximo">
           {collapsed ? (
             <ChevronRight className="w-3.5 h-3.5" />
           ) : (
