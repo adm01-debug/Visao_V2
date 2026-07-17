@@ -350,6 +350,10 @@ export default function OperationsPage() {
         <SequenceExhaustionCard />
       </section>
 
+      <section>
+        <TablesWithoutPkCard />
+      </section>
+
 
       <section>
         <BlockingChainsCard />
