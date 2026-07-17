@@ -11,3 +11,7 @@ verify_jwt = false
 
 [functions.camera-ptz-control]
 verify_jwt = true
+
+[functions.upload-media]
+verify_jwt = true
+
