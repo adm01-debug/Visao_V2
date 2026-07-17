@@ -173,19 +173,19 @@ Deno.serve(async (req: Request) => {
     if (path === "/v1/status" && method === "GET") {
       const { count: camerasCount } = await supabase
         .from("cameras").select("id", { count: "exact", head: true });
-      return json({
+      return wrap(json({
         status: "healthy",
         user_id: userId,
         cameras_visible: camerasCount ?? 0,
         rate_limit: { remaining: rl.remaining, resetAt: rl.resetAt },
         api_version: "1.0.0",
-      }, 200, cors);
+      }, 200, cors));
     }
 
     // ============ GET /v1/cameras ============
     if (path === "/v1/cameras" && method === "GET") {
       const parsed = parseFilters(url, CAMERAS_FILTERABLE, new Set(["created_at", "name"]));
-      if ("error" in parsed) return json({ error: parsed.error }, 400, cors);
+      if ("error" in parsed) return wrap(json({ error: parsed.error }, 400, cors));
       const offset = (parsed.page - 1) * parsed.limit;
       let q = supabase.from("cameras")
         .select("id,name,location,status,type,created_at,updated_at", { count: "exact" })
@@ -196,10 +196,10 @@ Deno.serve(async (req: Request) => {
         : q.order("created_at", { ascending: false });
       const { data, error, count } = await q;
       if (error) throw error;
-      return json({
+      return wrap(json({
         data,
         meta: { total: count ?? 0, page: parsed.page, limit: parsed.limit, hasMore: (count ?? 0) > offset + parsed.limit },
-      }, 200, cors);
+      }, 200, cors));
     }
 
     // ============ GET /v1/cameras/:id ============
@@ -207,8 +207,8 @@ Deno.serve(async (req: Request) => {
     if (camMatch && method === "GET") {
       const { data, error } = await supabase.from("cameras").select("*").eq("id", camMatch[1]).maybeSingle();
       if (error) throw error;
-      if (!data) return json({ error: "Camera not found" }, 404, cors);
-      return json({ data }, 200, cors);
+      if (!data) return wrap(json({ error: "Camera not found" }, 404, cors));
+      return wrap(json({ data }, 200, cors));
     }
 
     // ============ POST /v1/cameras/:id/arm | /disarm  (Onda 44) ============
@@ -218,11 +218,11 @@ Deno.serve(async (req: Request) => {
       const body = await req.json().catch(() => ({} as Record<string, unknown>));
       const reason = typeof body.reason === "string" ? body.reason.slice(0, 500) : null;
       if (action === "disarm" && !reason) {
-        return json({ error: "Campo 'reason' obrigatório para disarm" }, 400, cors);
+        return wrap(json({ error: "Campo 'reason' obrigatório para disarm" }, 400, cors));
       }
       const { data: cam, error: cErr } = await supabase.from("cameras").select("id,user_id").eq("id", camId).maybeSingle();
       if (cErr) throw cErr;
-      if (!cam) return json({ error: "Camera not found" }, 404, cors);
+      if (!cam) return wrap(json({ error: "Camera not found" }, 404, cors));
       const { data, error } = await supabase.from("arm_disarm_states").upsert({
         camera_id: camId,
         user_id: userId,
@@ -232,7 +232,7 @@ Deno.serve(async (req: Request) => {
         disarmed_at: action === "disarm" ? new Date().toISOString() : null,
       }, { onConflict: "camera_id" }).select().maybeSingle();
       if (error) throw error;
-      return json({ data, action }, 200, cors);
+      return wrap(json({ data, action }, 200, cors));
     }
 
     // ============ POST /v1/alerts/:id/acknowledge (Onda 44) ============
@@ -246,8 +246,8 @@ Deno.serve(async (req: Request) => {
         .select()
         .maybeSingle();
       if (error) throw error;
-      if (!data) return json({ error: "Alert not found or not accessible" }, 404, cors);
-      return json({ data, idempotent: !!data.acknowledged_at }, 200, cors);
+      if (!data) return wrap(json({ error: "Alert not found or not accessible" }, 404, cors));
+      return wrap(json({ data, idempotent: !!data.acknowledged_at }, 200, cors));
     }
 
     // ============ POST /v1/panic (Onda 44) ============
@@ -263,7 +263,7 @@ Deno.serve(async (req: Request) => {
         triggered_at: new Date().toISOString(),
       }).select().maybeSingle();
       if (error) throw error;
-      return json({ data }, 201, cors);
+      return wrap(json({ data }, 201, cors));
     }
 
     // ============ GET /v1/clips/:id/url  (Onda 44 — signed URL) ============
@@ -273,17 +273,17 @@ Deno.serve(async (req: Request) => {
       const { data: clip, error: cErr } = await supabase
         .from("video_clips").select("id,storage_path").eq("id", clipMatch[1]).maybeSingle();
       if (cErr) throw cErr;
-      if (!clip?.storage_path) return json({ error: "Clip not found" }, 404, cors);
+      if (!clip?.storage_path) return wrap(json({ error: "Clip not found" }, 404, cors));
       const { data: signed, error: sErr } = await supabase.storage
         .from("recordings").createSignedUrl(clip.storage_path, ttl);
       if (sErr) throw sErr;
-      return json({ data: { url: signed.signedUrl, expires_in: ttl } }, 200, cors);
+      return wrap(json({ data: { url: signed.signedUrl, expires_in: ttl } }, 200, cors));
     }
 
     // ============ GET /v1/events ============
     if (path === "/v1/events" && method === "GET") {
       const parsed = parseFilters(url, EVENTS_FILTERABLE, EVENTS_ORDERABLE);
-      if ("error" in parsed) return json({ error: parsed.error }, 400, cors);
+      if ("error" in parsed) return wrap(json({ error: parsed.error }, 400, cors));
       const offset = (parsed.page - 1) * parsed.limit;
       let q = supabase.from("event_alerts")
         .select("id,event_id,camera_id,severity,status,triggered_at,acknowledged_at,description", { count: "exact" })
@@ -296,29 +296,29 @@ Deno.serve(async (req: Request) => {
         : q.order("triggered_at", { ascending: false });
       const { data, error, count } = await q;
       if (error) throw error;
-      return json({
+      return wrap(json({
         data,
         meta: { total: count ?? 0, page: parsed.page, limit: parsed.limit, hasMore: (count ?? 0) > offset + parsed.limit },
-      }, 200, cors);
+      }, 200, cors));
     }
 
     // ============ GET /v1/events/count ============
     if (path === "/v1/events/count" && method === "GET") {
       const parsed = parseFilters(url, EVENTS_FILTERABLE, EVENTS_ORDERABLE);
-      if ("error" in parsed) return json({ error: parsed.error }, 400, cors);
+      if ("error" in parsed) return wrap(json({ error: parsed.error }, 400, cors));
       let q = supabase.from("event_alerts").select("id", { count: "exact", head: true });
       if (parsed.from) q = q.gte("triggered_at", parsed.from);
       if (parsed.to) q = q.lte("triggered_at", parsed.to);
       q = applyWhere(q, parsed.where);
       const { count, error } = await q;
       if (error) throw error;
-      return json({ data: { count: count ?? 0 } }, 200, cors);
+      return wrap(json({ data: { count: count ?? 0 } }, 200, cors));
     }
 
     // ============ GET /v1/events/summary (Onda 45) ============
     if (path === "/v1/events/summary" && method === "GET") {
       const parsed = parseFilters(url, EVENTS_FILTERABLE, EVENTS_ORDERABLE);
-      if ("error" in parsed) return json({ error: parsed.error }, 400, cors);
+      if ("error" in parsed) return wrap(json({ error: parsed.error }, 400, cors));
       let q = supabase.from("event_alerts").select("severity,status");
       if (parsed.from) q = q.gte("triggered_at", parsed.from);
       if (parsed.to) q = q.lte("triggered_at", parsed.to);
