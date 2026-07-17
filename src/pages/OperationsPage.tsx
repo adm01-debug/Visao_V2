@@ -21,6 +21,7 @@ import { ConnectionSaturationCard } from '@/components/admin/ConnectionSaturatio
 import { MaintenanceProgressCard } from '@/components/admin/MaintenanceProgressCard';
 import { TempFileOffendersCard } from '@/components/admin/TempFileOffendersCard';
 import { TxidWraparoundCard } from '@/components/admin/TxidWraparoundCard';
+import { ReplicationSlotsCard } from '@/components/admin/ReplicationSlotsCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
 
 interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
