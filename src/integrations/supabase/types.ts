@@ -3129,6 +3129,24 @@ export type Database = {
         }[]
       }
       get_operational_metrics: { Args: never; Returns: Json }
+      get_seq_scan_hotspots: {
+        Args: { _min_seq_scans?: number; _min_size_mb?: number }
+        Returns: {
+          avg_rows_per_seq_scan: number
+          idx_scan: number
+          idx_tup_fetch: number
+          n_live_tup: number
+          recommendation: string
+          schema_name: string
+          seq_ratio_pct: number
+          seq_scan: number
+          seq_tup_read: number
+          severity: string
+          table_name: string
+          table_size_bytes: number
+          table_size_pretty: string
+        }[]
+      }
       get_slow_queries: {
         Args: { _limit?: number }
         Returns: {
