@@ -3637,6 +3637,21 @@ export type Database = {
           table_size_bytes: number
         }[]
       }
+      get_unvalidated_constraints: {
+        Args: never
+        Returns: {
+          constraint_name: string
+          constraint_type: string
+          definition: string
+          recommendation: string
+          schema_name: string
+          severity: string
+          table_name: string
+          total_size_bytes: number
+          total_size_pretty: string
+          validate_sql: string
+        }[]
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
