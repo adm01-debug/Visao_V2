@@ -34,6 +34,7 @@ import { MissingUpdatedAtTriggersCard } from '@/components/admin/MissingUpdatedA
 import { InvalidIndexesCard } from '@/components/admin/InvalidIndexesCard';
 import { StorageTierCostsCard } from '@/components/admin/StorageTierCostsCard';
 import { ForgetUserMediaCard } from '@/components/admin/ForgetUserMediaCard';
+import { LegalHoldManagerCard } from '@/components/admin/LegalHoldManagerCard';
 import { BlockingChainsCard } from '@/components/admin/BlockingChainsCard';
 import { RlsCoverageCard } from '@/components/admin/RlsCoverageCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
