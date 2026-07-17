@@ -18,6 +18,7 @@ import { StatsStalenessCard } from '@/components/admin/StatsStalenessCard';
 import { SeqScanHotspotsCard } from '@/components/admin/SeqScanHotspotsCard';
 import { BgWriterStatsCard } from '@/components/admin/BgWriterStatsCard';
 import { ConnectionSaturationCard } from '@/components/admin/ConnectionSaturationCard';
+import { MaintenanceProgressCard } from '@/components/admin/MaintenanceProgressCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
 
 interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
