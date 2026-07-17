@@ -3443,6 +3443,18 @@ export type Database = {
           table_size_pretty: string
         }[]
       }
+      get_missing_updated_at_triggers: {
+        Args: never
+        Returns: {
+          column_name: string
+          has_trigger: boolean
+          is_partition: boolean
+          recommendation: string
+          schema_name: string
+          severity: string
+          table_name: string
+        }[]
+      }
       get_nullable_foreign_keys: {
         Args: never
         Returns: {
