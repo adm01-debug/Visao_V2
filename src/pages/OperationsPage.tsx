@@ -27,6 +27,7 @@ import { TablesWithoutPkCard } from '@/components/admin/TablesWithoutPkCard';
 import { NullableForeignKeysCard } from '@/components/admin/NullableForeignKeysCard';
 import { AutovacuumOverridesCard } from '@/components/admin/AutovacuumOverridesCard';
 import { UnvalidatedConstraintsCard } from '@/components/admin/UnvalidatedConstraintsCard';
+import { DisabledTriggersCard } from '@/components/admin/DisabledTriggersCard';
 import { BlockingChainsCard } from '@/components/admin/BlockingChainsCard';
 import { RlsCoverageCard } from '@/components/admin/RlsCoverageCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
@@ -367,6 +368,10 @@ export default function OperationsPage() {
 
       <section>
         <UnvalidatedConstraintsCard />
+      </section>
+
+      <section>
+        <DisabledTriggersCard />
       </section>
 
 
