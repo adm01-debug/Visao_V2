@@ -3449,6 +3449,20 @@ export type Database = {
         }[]
       }
       get_operational_metrics: { Args: never; Returns: Json }
+      get_permissive_rls_policies: {
+        Args: never
+        Returns: {
+          cmd: string
+          policyname: string
+          qual: string
+          recommendation: string
+          roles: string[]
+          schemaname: string
+          severity: string
+          tablename: string
+          with_check: string
+        }[]
+      }
       get_replication_slot_status: {
         Args: never
         Returns: {
