@@ -8,6 +8,7 @@ import { Activity, Database, HardDrive, RefreshCw, ShieldAlert, CalendarClock } 
 import { SlowQueriesCard } from '@/components/admin/SlowQueriesCard';
 import { DbHealthCard } from '@/components/admin/DbHealthCard';
 import { TableBloatCard } from '@/components/admin/TableBloatCard';
+import { SessionWatchdogCard } from '@/components/admin/SessionWatchdogCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
 
 interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
