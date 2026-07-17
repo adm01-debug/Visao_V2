@@ -3003,6 +3003,7 @@ export type Database = {
     }
     Functions: {
       array_days_valid: { Args: { days: number[] }; Returns: boolean }
+      check_csp_anomaly: { Args: never; Returns: Json }
       cleanup_api_usage_logs: { Args: never; Returns: number }
       cleanup_edge_cache: { Args: never; Returns: number }
       delete_user_data: {
