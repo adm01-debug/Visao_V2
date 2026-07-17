@@ -28,6 +28,8 @@ const HOST_RE = /https?:\/\/([a-z0-9.-]+\.[a-z]{2,})/gi;
 
 function walk(dir, out = []) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    // skip src/types (contém URLs de documentação em .d.ts)
+    if (entry.name === "types" && dir.endsWith("/src")) continue;
     if (IGNORE_DIRS.includes(entry.name)) continue;
     const p = path.join(dir, entry.name);
     if (entry.isDirectory()) walk(p, out);
