@@ -3132,6 +3132,23 @@ export type Database = {
         }[]
       }
       get_operational_metrics: { Args: never; Returns: Json }
+      get_replication_slot_status: {
+        Args: never
+        Returns: {
+          active: boolean
+          active_pid: number
+          confirmed_flush_lsn: string
+          database: string
+          plugin: string
+          recommendation: string
+          restart_lsn: string
+          retained_wal_bytes: number
+          retained_wal_pretty: string
+          severity: string
+          slot_name: string
+          slot_type: string
+        }[]
+      }
       get_seq_scan_hotspots: {
         Args: { _min_seq_scans?: number; _min_size_mb?: number }
         Returns: {
