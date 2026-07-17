@@ -27,7 +27,9 @@ if (!/forced-colors/.test(css) && !/@media \(forced-colors/.test(css)) {
 }
 
 // Invariante 2: MainLayout tem skip-link + main#main-content
-const layout = fs.readFileSync(path.join(ROOT, "src/components/MainLayout.tsx"), "utf8");
+const layoutPath = ["src/layouts/MainLayout.tsx", "src/components/layout/MainLayout.tsx"]
+  .map(p => path.join(ROOT, p)).find(p => fs.existsSync(p));
+const layout = layoutPath ? fs.readFileSync(layoutPath, "utf8") : "";
 if (!/main-content/.test(layout)) issues.push("MainLayout sem âncora #main-content");
 if (!/Pular para o conteúdo|skip/i.test(layout)) issues.push("MainLayout sem skip-link");
 
