@@ -3,7 +3,7 @@
 from pathlib import Path
 import re
 
-PAT = re.compile(r'(\))\s*=\s+(?=[A-Za-z_])')
+PAT = re.compile(r'(\))\s*=\s+(?=[A-Za-z_(\{])')
 
 def fix(path: Path) -> int:
     src = path.read_text()
