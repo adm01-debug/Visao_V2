@@ -3077,6 +3077,48 @@ export type Database = {
         }
         Relationships: []
       }
+      storage_tiering_runs: {
+        Row: {
+          created_at: string
+          details: Json
+          duration_ms: number | null
+          error_message: string | null
+          failed_count: number
+          finished_at: string | null
+          id: string
+          processed_count: number
+          started_at: string
+          status: string
+          tier: string
+        }
+        Insert: {
+          created_at?: string
+          details?: Json
+          duration_ms?: number | null
+          error_message?: string | null
+          failed_count?: number
+          finished_at?: string | null
+          id?: string
+          processed_count?: number
+          started_at?: string
+          status: string
+          tier: string
+        }
+        Update: {
+          created_at?: string
+          details?: Json
+          duration_ms?: number | null
+          error_message?: string | null
+          failed_count?: number
+          finished_at?: string | null
+          id?: string
+          processed_count?: number
+          started_at?: string
+          status?: string
+          tier?: string
+        }
+        Relationships: []
+      }
       stream_recordings: {
         Row: {
           camera_id: string | null
