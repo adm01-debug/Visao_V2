@@ -3624,6 +3624,29 @@ export type Database = {
         }[]
       }
       get_maintenance_progress: { Args: never; Returns: Json }
+      get_media_forget_audit: {
+        Args: { _limit?: number; _offset?: number; _user_filter?: string }
+        Returns: {
+          cold_deleted: number
+          created_at: string
+          dry_run: boolean
+          errors: Json
+          executed_by: string
+          hot_deleted: number
+          id: string
+          legal_hold_skipped: number
+          reason: string
+          requested_by: string
+          subject_user_id: string
+          warm_deleted: number
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "media_forget_audit"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       get_missing_fk_indexes: {
         Args: never
         Returns: {
@@ -3948,6 +3971,14 @@ export type Database = {
       run_selective_vacuum: {
         Args: { _max_tables?: number; _min_dead_ratio?: number }
         Returns: Json
+      }
+      set_media_legal_hold: {
+        Args: { _asset_id: string; _legal_hold: boolean; _reason?: string }
+        Returns: {
+          asset_id: string
+          changed: boolean
+          legal_hold: boolean
+        }[]
       }
       system_health: { Args: never; Returns: Json }
       terminate_db_session: {
