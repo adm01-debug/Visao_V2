@@ -298,6 +298,10 @@ export default function OperationsPage() {
         <DuplicateIndexesCard />
       </section>
 
+      <section>
+        <TableSizeStatsCard />
+      </section>
+
 
 
 
