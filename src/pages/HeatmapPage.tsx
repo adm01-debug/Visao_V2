@@ -61,7 +61,7 @@ export default function HeatmapPage() {
                 </SelectContent>
               </Select>
               <div className="flex items-center gap-2 ml-auto sm:ml-0">
-                <Button variant="outline" size="icon" onClick={refreshData} disabled={refreshing} className="border-border/40 shrink-0">
+                <Button variant="outline" size="icon" onClick={refreshData} disabled={refreshing} className="border-border/40 shrink-0" aria-label="Atualizar mapa de calor">
                   <RefreshCw className={cn('h-4 w-4', refreshing && 'animate-spin')} />
                 </Button>
                 <Button variant="outline" className="border-border/40">

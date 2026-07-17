@@ -52,7 +52,7 @@ export default function PeoplePage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" onClick={loadPeople} disabled={loading} className="border-border/40">
+              <Button variant="outline" size="icon" onClick={loadPeople} disabled={loading} className="border-border/40" aria-label="Atualizar lista de pessoas">
                 <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
               </Button>
               <Button onClick={() => { setEditingPerson(null); setIsFormOpen(true); }}>

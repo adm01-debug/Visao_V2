@@ -42,7 +42,7 @@ function MultiCameraRecognitionComponent() {
           </Select>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={() => setSoundEnabled(!soundEnabled)}>
+          <Button variant="ghost" size="icon" onClick={() => setSoundEnabled(!soundEnabled)} aria-label={soundEnabled ? "Desativar som" : "Ativar som"} aria-pressed={soundEnabled}>
             {soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
           </Button>
           <Dialog>

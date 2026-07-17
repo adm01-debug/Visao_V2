@@ -38,7 +38,7 @@ export function LoginForm({ email, password, showPassword, isLoading, errors, on
           <Label htmlFor="login-password">Senha</Label>
           <div className="relative">
             <Input id="login-password" type={showPassword ? 'text' : 'password'} placeholder="••••••••" value={password} onChange={(e) => onPasswordChange(e.target.value)} disabled={isLoading} className={errors.password ? 'border-destructive pr-10' : 'pr-10'} />
-            <Button type="button" variant="ghost" size="icon" className="absolute right-0 top-0 h-full px-3 hover:bg-transparent" onClick={onTogglePassword}>
+            <Button type="button" variant="ghost" size="icon" className="absolute right-0 top-0 h-full px-3 hover:bg-transparent" onClick={onTogglePassword} aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"} aria-pressed={showPassword}>
               {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
             </Button>
           </div>
@@ -82,7 +82,7 @@ export function RegisterForm({ email, password, fullName, showPassword, isLoadin
           <Label htmlFor="register-password">Senha</Label>
           <div className="relative">
             <Input id="register-password" type={showPassword ? 'text' : 'password'} placeholder="Mínimo 8 caracteres" value={password} onChange={(e) => onPasswordChange(e.target.value)} disabled={isLoading} className={errors.password || isPasswordBlocked ? 'border-destructive pr-10' : 'pr-10'} />
-            <Button type="button" variant="ghost" size="icon" className="absolute right-0 top-0 h-full px-3 hover:bg-transparent" onClick={onTogglePassword}>
+            <Button type="button" variant="ghost" size="icon" className="absolute right-0 top-0 h-full px-3 hover:bg-transparent" onClick={onTogglePassword} aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"} aria-pressed={showPassword}>
               {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
             </Button>
           </div>

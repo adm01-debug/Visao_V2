@@ -155,14 +155,14 @@ function ImageAnalysisComponent({
               </TabsList>
 
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.max(0.5, z - 0.25))}>
+                <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.max(0.5, z - 0.25))} aria-label="Diminuir zoom">
                   <ZoomOut className="w-4 h-4" />
                 </Button>
-                <span className="text-sm w-12 text-center">{Math.round(zoom * 100)}%</span>
-                <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.min(2, z + 0.25))}>
+                <span className="text-sm w-12 text-center" aria-live="polite">{Math.round(zoom * 100)}%</span>
+                <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.min(2, z + 0.25))} aria-label="Aumentar zoom">
                   <ZoomIn className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={handleClear}>
+                <Button variant="ghost" size="icon" onClick={handleClear} aria-label="Limpar imagem">
                   <X className="w-4 h-4" />
                 </Button>
               </div>
