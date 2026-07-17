@@ -37,12 +37,13 @@ interface ForgetResponse {
 
 interface AuditEntry {
   id: string;
-  target_user_id: string;
+  subject_user_id: string;
   requested_by: string;
   dry_run: boolean;
-  deleted_count: number | null;
-  legal_hold_skipped_count: number | null;
-  failed_count: number | null;
+  hot_deleted: number | null;
+  warm_deleted: number | null;
+  cold_deleted: number | null;
+  legal_hold_skipped: number | null;
   created_at: string;
 }
 
@@ -54,19 +55,21 @@ function clampBatch(n: number): number {
 export function ForgetUserMediaCard() {
   const qc = useQueryClient();
   const [userId, setUserId] = useState('');
+  const [reason, setReason] = useState('');
   const [batchSize, setBatchSize] = useState(100);
   const [dryRun, setDryRun] = useState(true);
   const [lastResult, setLastResult] = useState<ForgetResponse | null>(null);
 
   const trimmed = userId.trim();
   const isValid = UUID_RE.test(trimmed);
+  const reasonOk = dryRun || reason.trim().length >= 5;
 
   const auditQuery = useQuery({
     queryKey: ['media-forget-audit'],
     queryFn: async (): Promise<AuditEntry[]> => {
       const { data, error } = await supabase
         .from('media_forget_audit')
-        .select('id, target_user_id, requested_by, dry_run, deleted_count, legal_hold_skipped_count, failed_count, created_at')
+        .select('id, subject_user_id, requested_by, dry_run, hot_deleted, warm_deleted, cold_deleted, legal_hold_skipped, created_at')
         .order('created_at', { ascending: false })
         .limit(10);
       if (error) throw error;
