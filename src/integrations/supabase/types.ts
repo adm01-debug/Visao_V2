@@ -108,6 +108,48 @@ export type Database = {
           },
         ]
       }
+      api_usage_logs: {
+        Row: {
+          api_version: string
+          created_at: string
+          endpoint_group: string | null
+          id: string
+          ip_hash: string | null
+          latency_ms: number | null
+          method: string
+          path: string
+          status: number
+          user_agent_hash: string | null
+          user_id: string | null
+        }
+        Insert: {
+          api_version?: string
+          created_at?: string
+          endpoint_group?: string | null
+          id?: string
+          ip_hash?: string | null
+          latency_ms?: number | null
+          method: string
+          path: string
+          status: number
+          user_agent_hash?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          api_version?: string
+          created_at?: string
+          endpoint_group?: string | null
+          id?: string
+          ip_hash?: string | null
+          latency_ms?: number | null
+          method?: string
+          path?: string
+          status?: number
+          user_agent_hash?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       arm_disarm_states: {
         Row: {
           armed_at: string | null
@@ -2904,6 +2946,7 @@ export type Database = {
     }
     Functions: {
       array_days_valid: { Args: { days: number[] }; Returns: boolean }
+      cleanup_api_usage_logs: { Args: never; Returns: number }
       cleanup_edge_cache: { Args: never; Returns: number }
       delete_user_data: {
         Args: { _target_user_id: string }
@@ -2913,6 +2956,7 @@ export type Database = {
         Args: { months_ahead?: number }
         Returns: Json
       }
+      get_api_usage_stats: { Args: { _days?: number }; Returns: Json }
       get_operational_metrics: { Args: never; Returns: Json }
       get_slow_queries: {
         Args: { _limit?: number }
@@ -2943,6 +2987,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      import_settings_backup: {
+        Args: { _payload: Json; _strategy?: string }
+        Returns: Json
       }
       is_org_member: { Args: { _org: string; _user: string }; Returns: boolean }
       replace_user_role: {
