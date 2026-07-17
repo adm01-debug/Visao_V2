@@ -267,17 +267,21 @@ Deno.serve(async (req: Request) => {
       return wrap(json({ data, idempotent: !!data.acknowledged_at }, 200, cors));
     }
 
-    // ============ POST /v1/panic (Onda 44) ============
+    // ============ POST /v1/panic (Onda 44 + 57) ============
     if (path === "/v1/panic" && method === "POST") {
-      const body = await req.json().catch(() => ({} as Record<string, unknown>));
-      const description = typeof body.description === "string" ? body.description.slice(0, 1000) : "Panic acionado via API";
-      const cameraId = typeof body.camera_id === "string" && UUID_RX.test(body.camera_id) ? body.camera_id : null;
+      const raw = await req.json().catch(() => ({}));
+      const parsed = parseBody(panicSchema, raw);
+      if ("error" in parsed) return wrap(json(parsed.error, 400, cors));
+      const description = parsed.data.message ?? "Panic acionado via API";
+      const cameraId = parsed.data.camera_id ?? null;
       const { data, error } = await supabase.from("panic_events").insert({
         user_id: userId,
         camera_id: cameraId,
         description,
         source: "api_v1",
         triggered_at: new Date().toISOString(),
+        latitude: parsed.data.latitude ?? null,
+        longitude: parsed.data.longitude ?? null,
       }).select().maybeSingle();
       if (error) throw error;
       return wrap(json({ data }, 201, cors));
