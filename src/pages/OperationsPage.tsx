@@ -375,6 +375,11 @@ export default function OperationsPage() {
         <DisabledTriggersCard />
       </section>
 
+      <section>
+        <PermissiveRlsCard />
+      </section>
+
+
 
       <section>
         <BlockingChainsCard />
