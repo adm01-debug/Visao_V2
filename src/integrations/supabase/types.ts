@@ -1292,7 +1292,9 @@ export type Database = {
           object_key: string
           promoted_at: string | null
           restore_available_until: string | null
+          restore_expires_at: string | null
           restore_requested_at: string | null
+          restore_status: Database["public"]["Enums"]["restore_status"]
           retention_class: Database["public"]["Enums"]["retention_class"]
           size_bytes: number
           storage_class: string | null
@@ -1317,7 +1319,9 @@ export type Database = {
           object_key: string
           promoted_at?: string | null
           restore_available_until?: string | null
+          restore_expires_at?: string | null
           restore_requested_at?: string | null
+          restore_status?: Database["public"]["Enums"]["restore_status"]
           retention_class?: Database["public"]["Enums"]["retention_class"]
           size_bytes: number
           storage_class?: string | null
@@ -1342,7 +1346,9 @@ export type Database = {
           object_key?: string
           promoted_at?: string | null
           restore_available_until?: string | null
+          restore_expires_at?: string | null
           restore_requested_at?: string | null
+          restore_status?: Database["public"]["Enums"]["restore_status"]
           retention_class?: Database["public"]["Enums"]["retention_class"]
           size_bytes?: number
           storage_class?: string | null
@@ -3959,6 +3965,7 @@ export type Database = {
         | "uncertain"
       media_type: "snapshot" | "clip" | "continuous"
       org_role: "owner" | "admin" | "member" | "viewer"
+      restore_status: "none" | "in_progress" | "available" | "expired"
       retention_class: "standard" | "extended" | "forensic"
       rule_action:
         | "alert"
@@ -4176,6 +4183,7 @@ export const Constants = {
       ],
       media_type: ["snapshot", "clip", "continuous"],
       org_role: ["owner", "admin", "member", "viewer"],
+      restore_status: ["none", "in_progress", "available", "expired"],
       retention_class: ["standard", "extended", "forensic"],
       rule_action: [
         "alert",
