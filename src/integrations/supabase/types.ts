@@ -3083,6 +3083,21 @@ export type Database = {
           total_ms: number
         }[]
       }
+      get_table_bloat_stats: {
+        Args: { _min_dead_rows?: number }
+        Returns: {
+          dead_ratio_pct: number
+          dead_rows: number
+          last_analyze: string
+          last_autoanalyze: string
+          last_autovacuum: string
+          last_vacuum: string
+          live_rows: number
+          n_mod_since_analyze: number
+          schema_name: string
+          table_name: string
+        }[]
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
@@ -3117,6 +3132,10 @@ export type Database = {
       }
       run_index_maintenance: { Args: never; Returns: Json }
       run_retention_cleanup: { Args: never; Returns: Json }
+      run_selective_vacuum: {
+        Args: { _max_tables?: number; _min_dead_ratio?: number }
+        Returns: Json
+      }
       system_health: { Args: never; Returns: Json }
     }
     Enums: {
