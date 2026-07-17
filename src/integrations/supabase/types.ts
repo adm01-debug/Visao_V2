@@ -1201,6 +1201,47 @@ export type Database = {
           },
         ]
       }
+      glacier_stuck_alerts: {
+        Row: {
+          alerted_at: string
+          asset_id: string
+          channel: string
+          created_at: string
+          delivered: boolean
+          error_message: string | null
+          hours_stuck: number
+          id: string
+        }
+        Insert: {
+          alerted_at?: string
+          asset_id: string
+          channel?: string
+          created_at?: string
+          delivered?: boolean
+          error_message?: string | null
+          hours_stuck: number
+          id?: string
+        }
+        Update: {
+          alerted_at?: string
+          asset_id?: string
+          channel?: string
+          created_at?: string
+          delivered?: boolean
+          error_message?: string | null
+          hours_stuck?: number
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "glacier_stuck_alerts_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       heatmap_snapshots: {
         Row: {
           avg_intensity: number
@@ -3494,6 +3535,15 @@ export type Database = {
       ensure_future_partitions: {
         Args: { months_ahead?: number }
         Returns: Json
+      }
+      find_glacier_stuck_pending_alert: {
+        Args: { _dedup_window_hours?: number; _hours_threshold?: number }
+        Returns: {
+          asset_id: string
+          hours_stuck: number
+          object_key: string
+          user_id: string
+        }[]
       }
       get_api_usage_stats: { Args: { _days?: number }; Returns: Json }
       get_autovacuum_overrides: {
