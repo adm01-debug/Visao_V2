@@ -313,6 +313,11 @@ export default function OperationsPage() {
         <SeqScanHotspotsCard />
       </section>
 
+      <section>
+        <BgWriterStatsCard />
+      </section>
+
+
 
 
 
