@@ -8,3 +8,6 @@ verify_jwt = true
 
 [functions.csp-anomaly-notify]
 verify_jwt = false
+
+[functions.camera-ptz-control]
+verify_jwt = true

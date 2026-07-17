@@ -5,8 +5,9 @@
 import { useState, useEffect } from 'react';
 import {
   Camera, X, MapPin, Volume2, VolumeX, ChevronLeft, ChevronRight,
-  Target, ScanFace, Brain, AlertTriangle,
+  Target, ScanFace, Brain, AlertTriangle, Gamepad2,
 } from 'lucide-react';
+import { PtzControlPanel } from '@/components/ptz/PtzControlPanel';
 import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';
 import { ClipRecorderControls } from '@/components/ClipRecorderControls';
 import { FaceRecognitionOverlay } from '@/components/FaceRecognitionOverlay';
@@ -151,6 +152,7 @@ export function CameraDetailView({
             <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
               <TabsList className="mx-4 mt-4">
                 <TabsTrigger value="live">Ao Vivo</TabsTrigger>
+                <TabsTrigger value="ptz"><Gamepad2 className="w-3.5 h-3.5 mr-1" />PTZ</TabsTrigger>
                 <TabsTrigger value="alerts">Alertas</TabsTrigger>
                 <TabsTrigger value="config">Config</TabsTrigger>
               </TabsList>
@@ -182,6 +184,11 @@ export function CameraDetailView({
                     </CardContent>
                   </Card>
                 </TabsContent>
+
+                <TabsContent value="ptz" className="m-0">
+                  <PtzControlPanel cameraId={camera.id} cameraName={camera.name} />
+                </TabsContent>
+
 
                 <TabsContent value="alerts" className="m-0">
                   <div className="text-center py-8 text-muted-foreground">

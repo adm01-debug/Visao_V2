@@ -395,6 +395,227 @@ export type Database = {
           },
         ]
       }
+      camera_patrol_stops: {
+        Row: {
+          created_at: string
+          dwell_seconds: number
+          id: string
+          patrol_id: string
+          preset_id: string
+          stop_order: number
+        }
+        Insert: {
+          created_at?: string
+          dwell_seconds?: number
+          id?: string
+          patrol_id: string
+          preset_id: string
+          stop_order: number
+        }
+        Update: {
+          created_at?: string
+          dwell_seconds?: number
+          id?: string
+          patrol_id?: string
+          preset_id?: string
+          stop_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_patrol_stops_patrol_id_fkey"
+            columns: ["patrol_id"]
+            isOneToOne: false
+            referencedRelation: "camera_patrols"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "camera_patrol_stops_preset_id_fkey"
+            columns: ["preset_id"]
+            isOneToOne: false
+            referencedRelation: "camera_presets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      camera_patrols: {
+        Row: {
+          camera_id: string
+          created_at: string
+          current_stop_index: number | null
+          id: string
+          is_active: boolean
+          loop_enabled: boolean
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          camera_id: string
+          created_at?: string
+          current_stop_index?: number | null
+          id?: string
+          is_active?: boolean
+          loop_enabled?: boolean
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string
+          created_at?: string
+          current_stop_index?: number | null
+          id?: string
+          is_active?: boolean
+          loop_enabled?: boolean
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_patrols_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      camera_presets: {
+        Row: {
+          camera_id: string
+          created_at: string
+          id: string
+          is_home: boolean
+          name: string
+          preset_number: number
+          ptz_position: Json
+          thumbnail_url: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          camera_id: string
+          created_at?: string
+          id?: string
+          is_home?: boolean
+          name: string
+          preset_number: number
+          ptz_position?: Json
+          thumbnail_url?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string
+          created_at?: string
+          id?: string
+          is_home?: boolean
+          name?: string
+          preset_number?: number
+          ptz_position?: Json
+          thumbnail_url?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_presets_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      camera_ptz_config: {
+        Row: {
+          camera_id: string
+          capabilities: Json
+          channel: number
+          created_at: string
+          default_speed: number
+          endpoint: string
+          id: string
+          password_encrypted: string | null
+          port: number
+          protocol: string
+          updated_at: string
+          user_id: string
+          username: string | null
+        }
+        Insert: {
+          camera_id: string
+          capabilities?: Json
+          channel?: number
+          created_at?: string
+          default_speed?: number
+          endpoint: string
+          id?: string
+          password_encrypted?: string | null
+          port?: number
+          protocol: string
+          updated_at?: string
+          user_id: string
+          username?: string | null
+        }
+        Update: {
+          camera_id?: string
+          capabilities?: Json
+          channel?: number
+          created_at?: string
+          default_speed?: number
+          endpoint?: string
+          id?: string
+          password_encrypted?: string | null
+          port?: number
+          protocol?: string
+          updated_at?: string
+          user_id?: string
+          username?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_ptz_config_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: true
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      camera_ptz_locks: {
+        Row: {
+          acquired_at: string
+          camera_id: string
+          expires_at: string
+          user_email: string | null
+          user_id: string
+        }
+        Insert: {
+          acquired_at?: string
+          camera_id: string
+          expires_at?: string
+          user_email?: string | null
+          user_id: string
+        }
+        Update: {
+          acquired_at?: string
+          camera_id?: string
+          expires_at?: string
+          user_email?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_ptz_locks_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: true
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cameras: {
         Row: {
           alerts_count: number | null
@@ -406,6 +627,7 @@ export type Database = {
           location: string
           longitude: number | null
           name: string
+          ptz_capable: boolean
           status: Database["public"]["Enums"]["camera_status"]
           stream_url: string | null
           thumbnail: string | null
@@ -423,6 +645,7 @@ export type Database = {
           location: string
           longitude?: number | null
           name: string
+          ptz_capable?: boolean
           status?: Database["public"]["Enums"]["camera_status"]
           stream_url?: string | null
           thumbnail?: string | null
@@ -440,6 +663,7 @@ export type Database = {
           location?: string
           longitude?: number | null
           name?: string
+          ptz_capable?: boolean
           status?: Database["public"]["Enums"]["camera_status"]
           stream_url?: string | null
           thumbnail?: string | null
@@ -3056,6 +3280,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      acquire_ptz_lock: {
+        Args: { _camera_id: string; _ttl_seconds?: number }
+        Returns: Json
+      }
       analyze_table: { Args: { _table_name: string }; Returns: Json }
       array_days_valid: { Args: { days: number[] }; Returns: boolean }
       audit_rls_coverage: {
@@ -3366,6 +3594,7 @@ export type Database = {
         Returns: Json
       }
       is_org_member: { Args: { _org: string; _user: string }; Returns: boolean }
+      release_ptz_lock: { Args: { _camera_id: string }; Returns: boolean }
       replace_user_role: {
         Args: {
           _admin_id: string
