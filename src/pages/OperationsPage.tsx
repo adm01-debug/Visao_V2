@@ -22,6 +22,7 @@ import { MaintenanceProgressCard } from '@/components/admin/MaintenanceProgressC
 import { TempFileOffendersCard } from '@/components/admin/TempFileOffendersCard';
 import { TxidWraparoundCard } from '@/components/admin/TxidWraparoundCard';
 import { ReplicationSlotsCard } from '@/components/admin/ReplicationSlotsCard';
+import { BlockingChainsCard } from '@/components/admin/BlockingChainsCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
 
 interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
@@ -340,6 +341,10 @@ export default function OperationsPage() {
 
       <section>
         <ReplicationSlotsCard />
+      </section>
+
+      <section>
+        <BlockingChainsCard />
       </section>
 
 
