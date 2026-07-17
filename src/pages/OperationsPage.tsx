@@ -33,6 +33,7 @@ import { DefinerSearchPathCard } from '@/components/admin/DefinerSearchPathCard'
 import { MissingUpdatedAtTriggersCard } from '@/components/admin/MissingUpdatedAtTriggersCard';
 import { InvalidIndexesCard } from '@/components/admin/InvalidIndexesCard';
 import { StorageTierCostsCard } from '@/components/admin/StorageTierCostsCard';
+import { ForgetUserMediaCard } from '@/components/admin/ForgetUserMediaCard';
 import { BlockingChainsCard } from '@/components/admin/BlockingChainsCard';
 import { RlsCoverageCard } from '@/components/admin/RlsCoverageCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
@@ -397,6 +398,10 @@ export default function OperationsPage() {
 
       <section>
         <StorageTierCostsCard />
+      </section>
+
+      <section>
+        <ForgetUserMediaCard />
       </section>
 
 
