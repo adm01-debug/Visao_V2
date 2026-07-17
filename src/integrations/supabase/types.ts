@@ -3373,6 +3373,18 @@ export type Database = {
       }
       get_connection_saturation: { Args: never; Returns: Json }
       get_csp_report_stats: { Args: { _days?: number }; Returns: Json }
+      get_definer_functions_without_search_path: {
+        Args: never
+        Returns: {
+          arguments: string
+          function_name: string
+          language: string
+          recommendation: string
+          schema_name: string
+          search_path_config: string
+          severity: string
+        }[]
+      }
       get_disabled_triggers: {
         Args: never
         Returns: {

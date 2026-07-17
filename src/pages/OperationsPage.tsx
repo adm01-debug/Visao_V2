@@ -29,6 +29,7 @@ import { AutovacuumOverridesCard } from '@/components/admin/AutovacuumOverridesC
 import { UnvalidatedConstraintsCard } from '@/components/admin/UnvalidatedConstraintsCard';
 import { DisabledTriggersCard } from '@/components/admin/DisabledTriggersCard';
 import { PermissiveRlsCard } from '@/components/admin/PermissiveRlsCard';
+import { DefinerSearchPathCard } from '@/components/admin/DefinerSearchPathCard';
 import { BlockingChainsCard } from '@/components/admin/BlockingChainsCard';
 import { RlsCoverageCard } from '@/components/admin/RlsCoverageCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
@@ -378,6 +379,11 @@ export default function OperationsPage() {
       <section>
         <PermissiveRlsCard />
       </section>
+
+      <section>
+        <DefinerSearchPathCard />
+      </section>
+
 
 
 
