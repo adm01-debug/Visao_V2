@@ -101,9 +101,9 @@ export function StorageTierCostsCard() {
         {!isLoading && !isError && (
           <div className="grid gap-3 sm:grid-cols-3">
             {(['hot', 'warm', 'cold'] as const).map((tier) => {
-              const meta = TIER_LABELS[tier];
+              const meta = TIER_LABELS[tier] ?? { label: tier, icon: HardDrive, color: 'text-muted-foreground' };
               const Icon = meta.icon;
-              const stats = aggregated.acc[tier];
+              const stats = aggregated.acc[tier] ?? { bytes: 0, count: 0, legal: 0, restoring: 0, cost: 0 };
               return (
                 <div key={tier} className="rounded-lg border border-border bg-card p-3">
                   <div className="mb-2 flex items-center gap-2">
