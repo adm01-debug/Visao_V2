@@ -3126,6 +3126,22 @@ export type Database = {
           table_name: string
         }[]
       }
+      get_unused_indexes: {
+        Args: { _max_scans?: number; _min_size_mb?: number }
+        Returns: {
+          definition: string
+          idx_scan: number
+          idx_tup_read: number
+          index_name: string
+          index_size_bytes: number
+          index_size_pretty: string
+          is_primary: boolean
+          is_unique: boolean
+          schema_name: string
+          table_name: string
+          table_size_bytes: number
+        }[]
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
