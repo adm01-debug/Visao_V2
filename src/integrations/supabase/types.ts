@@ -3056,6 +3056,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      analyze_table: { Args: { _table_name: string }; Returns: Json }
       array_days_valid: { Args: { days: number[] }; Returns: boolean }
       capture_db_health_snapshot: { Args: never; Returns: string }
       check_csp_anomaly: { Args: never; Returns: Json }
@@ -3137,6 +3138,20 @@ export type Database = {
           query: string
           rows_returned: number
           total_ms: number
+        }[]
+      }
+      get_stats_staleness: {
+        Args: { _min_mod_since?: number }
+        Returns: {
+          hours_since_analyze: number
+          last_analyze: string
+          last_autoanalyze: string
+          mod_ratio_pct: number
+          n_live_tup: number
+          n_mod_since_analyze: number
+          schema_name: string
+          severity: string
+          table_name: string
         }[]
       }
       get_table_bloat_stats: {
