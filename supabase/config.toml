@@ -24,6 +24,10 @@ verify_jwt = true
 [functions.storage-tiering-orchestrator]
 verify_jwt = true
 
+[functions.resolve-media-url]
+verify_jwt = true
+
+
 
 
 
