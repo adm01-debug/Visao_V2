@@ -506,6 +506,60 @@ export type Database = {
         }
         Relationships: []
       }
+      db_health_snapshots: {
+        Row: {
+          blks_hit: number
+          blks_read: number
+          cache_hit_ratio: number | null
+          captured_at: string
+          connections_active: number
+          connections_idle: number
+          connections_idle_in_tx: number
+          connections_total: number
+          db_size_bytes: number
+          deadlocks: number
+          id: string
+          metadata: Json
+          temp_bytes: number
+          xact_commit: number
+          xact_rollback: number
+        }
+        Insert: {
+          blks_hit: number
+          blks_read: number
+          cache_hit_ratio?: number | null
+          captured_at?: string
+          connections_active: number
+          connections_idle: number
+          connections_idle_in_tx: number
+          connections_total: number
+          db_size_bytes: number
+          deadlocks: number
+          id?: string
+          metadata?: Json
+          temp_bytes: number
+          xact_commit: number
+          xact_rollback: number
+        }
+        Update: {
+          blks_hit?: number
+          blks_read?: number
+          cache_hit_ratio?: number | null
+          captured_at?: string
+          connections_active?: number
+          connections_idle?: number
+          connections_idle_in_tx?: number
+          connections_total?: number
+          db_size_bytes?: number
+          deadlocks?: number
+          id?: string
+          metadata?: Json
+          temp_bytes?: number
+          xact_commit?: number
+          xact_rollback?: number
+        }
+        Relationships: []
+      }
       detection_reviews: {
         Row: {
           camera_id: string | null
@@ -3003,6 +3057,7 @@ export type Database = {
     }
     Functions: {
       array_days_valid: { Args: { days: number[] }; Returns: boolean }
+      capture_db_health_snapshot: { Args: never; Returns: string }
       check_csp_anomaly: { Args: never; Returns: Json }
       cleanup_api_usage_logs: { Args: never; Returns: number }
       cleanup_edge_cache: { Args: never; Returns: number }
