@@ -328,6 +328,10 @@ export default function OperationsPage() {
         <MaintenanceProgressCard />
       </section>
 
+      <section>
+        <TempFileOffendersCard />
+      </section>
+
 
 
 
