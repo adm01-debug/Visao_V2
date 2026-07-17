@@ -79,7 +79,7 @@ for (let i = 0; i < 40; i++) {
 for (let i = 0; i < 40; i++) {
   const bytes = crypto.randomBytes(1024 + i);
   const good = crypto.createHash("sha256").update(bytes).digest("hex");
-  const bad = good.replace(/^./, "f");
+  const bad = (good[0] === "0" ? "1" : "0") + good.slice(1);
   record("checksum", `case-${i}`, () => {
     assert.equal(verifyChecksum(bytes, good), true);
     assert.equal(verifyChecksum(bytes, bad), false);
