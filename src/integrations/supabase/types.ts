@@ -1367,6 +1367,51 @@ export type Database = {
           },
         ]
       }
+      media_forget_audit: {
+        Row: {
+          cold_deleted: number
+          created_at: string
+          dry_run: boolean
+          errors: Json
+          executed_by: string
+          hot_deleted: number
+          id: string
+          legal_hold_skipped: number
+          reason: string
+          requested_by: string
+          subject_user_id: string
+          warm_deleted: number
+        }
+        Insert: {
+          cold_deleted?: number
+          created_at?: string
+          dry_run?: boolean
+          errors?: Json
+          executed_by: string
+          hot_deleted?: number
+          id?: string
+          legal_hold_skipped?: number
+          reason: string
+          requested_by: string
+          subject_user_id: string
+          warm_deleted?: number
+        }
+        Update: {
+          cold_deleted?: number
+          created_at?: string
+          dry_run?: boolean
+          errors?: Json
+          executed_by?: string
+          hot_deleted?: number
+          id?: string
+          legal_hold_skipped?: number
+          reason?: string
+          requested_by?: string
+          subject_user_id?: string
+          warm_deleted?: number
+        }
+        Relationships: []
+      }
       model_thresholds: {
         Row: {
           created_at: string
