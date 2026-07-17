@@ -1275,6 +1275,77 @@ export type Database = {
         }
         Relationships: []
       }
+      media_assets: {
+        Row: {
+          bucket: string
+          camera_id: string
+          captured_at: string
+          checksum_sha256: string
+          created_at: string
+          duration_seconds: number | null
+          expires_at: string | null
+          id: string
+          metadata: Json
+          mime_type: string
+          object_key: string
+          promoted_at: string | null
+          retention_class: Database["public"]["Enums"]["retention_class"]
+          size_bytes: number
+          storage_tier: Database["public"]["Enums"]["storage_tier"]
+          type: Database["public"]["Enums"]["media_type"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bucket: string
+          camera_id: string
+          captured_at?: string
+          checksum_sha256: string
+          created_at?: string
+          duration_seconds?: number | null
+          expires_at?: string | null
+          id?: string
+          metadata?: Json
+          mime_type?: string
+          object_key: string
+          promoted_at?: string | null
+          retention_class?: Database["public"]["Enums"]["retention_class"]
+          size_bytes: number
+          storage_tier?: Database["public"]["Enums"]["storage_tier"]
+          type: Database["public"]["Enums"]["media_type"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bucket?: string
+          camera_id?: string
+          captured_at?: string
+          checksum_sha256?: string
+          created_at?: string
+          duration_seconds?: number | null
+          expires_at?: string | null
+          id?: string
+          metadata?: Json
+          mime_type?: string
+          object_key?: string
+          promoted_at?: string | null
+          retention_class?: Database["public"]["Enums"]["retention_class"]
+          size_bytes?: number
+          storage_tier?: Database["public"]["Enums"]["storage_tier"]
+          type?: Database["public"]["Enums"]["media_type"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_assets_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       model_thresholds: {
         Row: {
           created_at: string
@@ -3829,7 +3900,9 @@ export type Database = {
         | "false_positive"
         | "false_negative"
         | "uncertain"
+      media_type: "snapshot" | "clip" | "continuous"
       org_role: "owner" | "admin" | "member" | "viewer"
+      retention_class: "standard" | "extended" | "forensic"
       rule_action:
         | "alert"
         | "notify"
@@ -3846,6 +3919,7 @@ export type Database = {
         | "access"
         | "analytics"
       rule_severity: "low" | "medium" | "high" | "critical"
+      storage_tier: "hot" | "warm" | "cold"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -4043,7 +4117,9 @@ export const Constants = {
         "false_negative",
         "uncertain",
       ],
+      media_type: ["snapshot", "clip", "continuous"],
       org_role: ["owner", "admin", "member", "viewer"],
+      retention_class: ["standard", "extended", "forensic"],
       rule_action: [
         "alert",
         "notify",
@@ -4062,6 +4138,7 @@ export const Constants = {
         "analytics",
       ],
       rule_severity: ["low", "medium", "high", "critical"],
+      storage_tier: ["hot", "warm", "cold"],
     },
   },
 } as const
