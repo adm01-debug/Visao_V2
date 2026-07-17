@@ -3317,6 +3317,26 @@ export type Database = {
         Returns: Json
       }
       get_api_usage_stats: { Args: { _days?: number }; Returns: Json }
+      get_autovacuum_overrides: {
+        Args: never
+        Returns: {
+          autovacuum_enabled_override: boolean
+          dead_pct: number
+          last_autovacuum: string
+          last_vacuum: string
+          n_dead_tuples: number
+          n_live_tuples: number
+          recommendation: string
+          reloptions: string[]
+          scale_factor_override: number
+          schema_name: string
+          severity: string
+          table_name: string
+          threshold_override: number
+          total_size_bytes: number
+          total_size_pretty: string
+        }[]
+      }
       get_bgwriter_stats: { Args: never; Returns: Json }
       get_blocking_chains: {
         Args: never
