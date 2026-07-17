@@ -283,6 +283,10 @@ export default function OperationsPage() {
         <UnusedIndexesCard />
       </section>
 
+      <section>
+        <MissingFkIndexesCard />
+      </section>
+
 
 
 
