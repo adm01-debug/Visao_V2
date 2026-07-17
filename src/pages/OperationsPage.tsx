@@ -355,6 +355,10 @@ export default function OperationsPage() {
         <TablesWithoutPkCard />
       </section>
 
+      <section>
+        <NullableForeignKeysCard />
+      </section>
+
 
       <section>
         <BlockingChainsCard />
