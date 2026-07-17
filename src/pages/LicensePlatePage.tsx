@@ -50,7 +50,7 @@ export default function LicensePlatePage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" onClick={handleRefresh} disabled={refreshing} className="border-border/40">
+              <Button variant="outline" size="icon" onClick={handleRefresh} disabled={refreshing} className="border-border/40" aria-label="Atualizar">
                 <RefreshCw className={cn('w-4 h-4', refreshing && 'animate-spin')} />
               </Button>
               <Button onClick={openAddDialog}>
