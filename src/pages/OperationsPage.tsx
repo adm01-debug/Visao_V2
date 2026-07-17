@@ -273,6 +273,11 @@ export default function OperationsPage() {
         <TableBloatCard />
       </section>
 
+      <section>
+        <SessionWatchdogCard />
+      </section>
+
+
 
 
 
