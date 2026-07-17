@@ -16,6 +16,7 @@ import { DuplicateIndexesCard } from '@/components/admin/DuplicateIndexesCard';
 import { TableSizeStatsCard } from '@/components/admin/TableSizeStatsCard';
 import { StatsStalenessCard } from '@/components/admin/StatsStalenessCard';
 import { SeqScanHotspotsCard } from '@/components/admin/SeqScanHotspotsCard';
+import { BgWriterStatsCard } from '@/components/admin/BgWriterStatsCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
 
 interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
@@ -311,6 +312,11 @@ export default function OperationsPage() {
       <section>
         <SeqScanHotspotsCard />
       </section>
+
+      <section>
+        <BgWriterStatsCard />
+      </section>
+
 
 
 
