@@ -3139,6 +3139,21 @@ export type Database = {
           table_name: string
         }[]
       }
+      get_table_cache_stats: {
+        Args: { _min_activity?: number }
+        Returns: {
+          heap_hit: number
+          heap_hit_ratio: number
+          heap_read: number
+          idx_hit: number
+          idx_hit_ratio: number
+          idx_read: number
+          schema_name: string
+          table_name: string
+          table_size_pretty: string
+          total_reads: number
+        }[]
+      }
       get_unused_indexes: {
         Args: { _max_scans?: number; _min_size_mb?: number }
         Returns: {
