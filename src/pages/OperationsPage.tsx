@@ -31,6 +31,7 @@ import { DisabledTriggersCard } from '@/components/admin/DisabledTriggersCard';
 import { PermissiveRlsCard } from '@/components/admin/PermissiveRlsCard';
 import { DefinerSearchPathCard } from '@/components/admin/DefinerSearchPathCard';
 import { MissingUpdatedAtTriggersCard } from '@/components/admin/MissingUpdatedAtTriggersCard';
+import { InvalidIndexesCard } from '@/components/admin/InvalidIndexesCard';
 import { BlockingChainsCard } from '@/components/admin/BlockingChainsCard';
 import { RlsCoverageCard } from '@/components/admin/RlsCoverageCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
@@ -387,6 +388,10 @@ export default function OperationsPage() {
 
       <section>
         <MissingUpdatedAtTriggersCard />
+      </section>
+
+      <section>
+        <InvalidIndexesCard />
       </section>
 
 

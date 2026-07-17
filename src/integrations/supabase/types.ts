@@ -3413,6 +3413,21 @@ export type Database = {
           table_name: string
         }[]
       }
+      get_invalid_indexes: {
+        Args: never
+        Returns: {
+          index_name: string
+          index_size_bytes: number
+          index_size_pretty: string
+          is_live: boolean
+          is_ready: boolean
+          is_unique: boolean
+          recommendation: string
+          schema_name: string
+          severity: string
+          table_name: string
+        }[]
+      }
       get_long_running_sessions: {
         Args: { _active_min_secs?: number; _idle_tx_min_secs?: number }
         Returns: {
