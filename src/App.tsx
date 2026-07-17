@@ -52,6 +52,7 @@ const AnalyticsPage = lazy(() => import("@/pages/AnalyticsPage"));
 const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
 const SecurityPage = lazy(() => import("@/pages/SecurityPage"));
 const ApiUsageDashboardPage = lazy(() => import("@/pages/ApiUsageDashboardPage"));
+const CspReportsDashboardPage = lazy(() => import("@/pages/CspReportsDashboardPage"));
 const FaceRecognitionPage = lazy(() => import("@/pages/FaceRecognitionPage"));
 const LicensePlatePage = lazy(() => import("@/pages/LicensePlatePage"));
 const HeatmapPage = lazy(() => import("@/pages/HeatmapPage"));
