@@ -3175,6 +3175,21 @@ export type Database = {
           table_name: string
         }[]
       }
+      get_table_bloat_estimate: {
+        Args: { _limit?: number; _min_size_mb?: number }
+        Returns: {
+          dead_ratio: number
+          dead_tuples: number
+          estimated_bloat_bytes: number
+          last_autovacuum: string
+          last_vacuum: string
+          live_tuples: number
+          recommendation: string
+          schema_name: string
+          table_name: string
+          total_bytes: number
+        }[]
+      }
       get_table_bloat_stats: {
         Args: { _min_dead_rows?: number }
         Returns: {
