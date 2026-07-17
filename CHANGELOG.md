@@ -1,5 +1,26 @@
 # Changelog
 
+## [API-1.0.0] - 2026-07-17 — API REST Pública v1 (Ondas 43-52)
+
+### Added
+- API REST v1 estável com 13 endpoints (health, status, cameras CRUD read + arm/disarm, events + summary, alerts + acknowledge, panic, signed clip URLs)
+- Filtros declarativos com whitelist anti-injeção (`?filter=campo:valor,campo:valor`)
+- SDK TypeScript autogerado via `scripts/generate-api-sdk.mjs` (openapi-typescript 7)
+- Utilitário HMAC-SHA256 timing-safe para webhooks v2 (`_shared/webhookHmac.ts`)
+- Tabela `api_usage_logs` com RLS user-or-admin e retenção 90d (integrada ao cron `visao-daily-retention`)
+- Dashboard admin `/admin/api-usage` (top endpoints, p95, error rate, volume/dia)
+- Edge function `settings-backup` (export/import de config com whitelist estrita, RPC transacional `import_settings_backup`)
+- Página pública `/precos` com JSON-LD Product e 3 tiers (Free/Pro/Enterprise)
+- `POSTING_RULES.md` normatizando issues/PRs/branches/deprecação
+- Release notes completas em `docs/api/RELEASE_NOTES_v1.0.0.md`
+
+### Security
+- IP hasheado (SHA-256 + salt) em telemetria — sem PII
+- TTL máx. 7 dias em signed URLs (LGPD + custo storage)
+- Rate-limit sensível (20 req/min) em `/v1/panic` e `/v1/trigger-alert`; padrão 60 req/min
+- Contrato `/v1/*` congelado — mudanças breaking exigem `/v2/*` com header `Sunset`
+- Whitelist estrita de campos filtráveis/ordenáveis (SQL-injection prevention)
+
 ## [2026-01-16] - Auditoria de Código
 
 ### Fixed
