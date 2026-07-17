@@ -19,6 +19,7 @@ import { SeqScanHotspotsCard } from '@/components/admin/SeqScanHotspotsCard';
 import { BgWriterStatsCard } from '@/components/admin/BgWriterStatsCard';
 import { ConnectionSaturationCard } from '@/components/admin/ConnectionSaturationCard';
 import { MaintenanceProgressCard } from '@/components/admin/MaintenanceProgressCard';
+import { TempFileOffendersCard } from '@/components/admin/TempFileOffendersCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
 
 interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
@@ -325,6 +326,10 @@ export default function OperationsPage() {
 
       <section>
         <MaintenanceProgressCard />
+      </section>
+
+      <section>
+        <TempFileOffendersCard />
       </section>
 
 

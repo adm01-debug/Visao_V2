@@ -3222,6 +3222,28 @@ export type Database = {
           total_pretty: string
         }[]
       }
+      get_temp_file_offenders: {
+        Args: { _limit?: number }
+        Returns: {
+          avg_temp_bytes_per_call: number
+          calls: number
+          query_text: string
+          scope: string
+          temp_blks_read: number
+          temp_blks_written: number
+          temp_bytes_total: number
+          total_time_ms: number
+        }[]
+      }
+      get_temp_files_summary: {
+        Args: never
+        Returns: {
+          datname: string
+          stats_reset: string
+          temp_bytes: number
+          temp_files: number
+        }[]
+      }
       get_unused_indexes: {
         Args: { _max_scans?: number; _min_size_mb?: number }
         Returns: {
