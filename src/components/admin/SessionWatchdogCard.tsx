@@ -43,6 +43,34 @@ function stateBadge(state: string | null, runtime: number): 'default' | 'seconda
  * Combina `get_long_running_sessions` + `get_blocking_locks` (admin RPCs).
  */
 export function SessionWatchdogCard() {
+  const qc = useQueryClient();
+  const [pendingPid, setPendingPid] = useState<number | null>(null);
+
+  const terminate = useMutation({
+    mutationFn: async ({ pid, force }: { pid: number; force: boolean }) => {
+      const { data, error } = await supabase.rpc('terminate_db_session', {
+        _pid: pid,
+        _force: force,
+        _reason: 'admin dashboard',
+      });
+      if (error) throw error;
+      return data as { ok: boolean; action: string; target_user: string };
+    },
+    onMutate: ({ pid }) => setPendingPid(pid),
+    onSettled: () => setPendingPid(null),
+    onSuccess: (res) => {
+      toast.success(`${res.action} enviado (usuário ${res.target_user})`);
+      qc.invalidateQueries({ queryKey: ['long-running-sessions'] });
+      qc.invalidateQueries({ queryKey: ['blocking-locks'] });
+    },
+    onError: (e: Error) => toast.error(e.message ?? 'Falha ao encerrar sessão'),
+  });
+
+  const handleTerminate = (pid: number, force: boolean) => {
+    const label = force ? 'TERMINAR (matar sessão)' : 'CANCELAR query';
+    if (!window.confirm(`Confirma ${label} do pid ${pid}?`)) return;
+    terminate.mutate({ pid, force });
+  };
   const sessions = useQuery({
     queryKey: ['long-running-sessions'],
     queryFn: async (): Promise<SessionRow[]> => {
