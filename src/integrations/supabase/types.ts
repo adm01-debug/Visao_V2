@@ -3592,6 +3592,21 @@ export type Database = {
           table_name: string
         }[]
       }
+      get_glacier_restore_status: {
+        Args: { _limit?: number }
+        Returns: {
+          asset_id: string
+          camera_id: string
+          hours_since_request: number
+          is_stuck: boolean
+          object_key: string
+          restore_available_until: string
+          restore_requested_at: string
+          restore_status: string
+          size_bytes: number
+          user_id: string
+        }[]
+      }
       get_invalid_indexes: {
         Args: never
         Returns: {

@@ -35,6 +35,7 @@ import { InvalidIndexesCard } from '@/components/admin/InvalidIndexesCard';
 import { StorageTierCostsCard } from '@/components/admin/StorageTierCostsCard';
 import { ForgetUserMediaCard } from '@/components/admin/ForgetUserMediaCard';
 import { LegalHoldManagerCard } from '@/components/admin/LegalHoldManagerCard';
+import { GlacierRestoreMonitorCard } from '@/components/admin/GlacierRestoreMonitorCard';
 import { BlockingChainsCard } from '@/components/admin/BlockingChainsCard';
 import { RlsCoverageCard } from '@/components/admin/RlsCoverageCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
@@ -404,6 +405,10 @@ export default function OperationsPage() {
       <section className="grid gap-6 lg:grid-cols-2">
         <ForgetUserMediaCard />
         <LegalHoldManagerCard />
+      </section>
+
+      <section>
+        <GlacierRestoreMonitorCard />
       </section>
 
 
