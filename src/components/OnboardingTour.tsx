@@ -48,7 +48,7 @@ export function OnboardingTour({ onComplete, autoStart = true }: OnboardingTourP
     <Dialog open={isActive} onOpenChange={(open) => !open && handleSkip()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="sr-only"><DialogTitle>Tour de Onboarding</DialogTitle></DialogHeader>
-        <Button variant="ghost" size="icon" className="absolute right-4 top-4" onClick={handleSkip}><X className="w-4 h-4" /></Button>
+        <Button variant="ghost" size="icon" className="absolute right-4 top-4" onClick={handleSkip} aria-label="Pular tour"><X className="w-4 h-4" /></Button>
         <TourStepCard step={currentStepData} stepNumber={currentStep + 1} totalSteps={totalSteps} progress={progress} onNext={handleNext} onPrevious={previous} onSkip={handleSkip} isFirst={currentStep === 0} isLast={currentStep === totalSteps - 1} />
       </DialogContent>
     </Dialog>

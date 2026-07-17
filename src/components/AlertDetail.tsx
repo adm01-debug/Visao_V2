@@ -95,7 +95,7 @@ function AlertDetailComponent({
             </div>
           </div>
           {onDismiss && (
-            <Button variant="ghost" size="icon" onClick={onDismiss}>
+            <Button variant="ghost" size="icon" onClick={onDismiss} aria-label="Fechar alerta">
               <X className="w-4 h-4" />
             </Button>
           )}
