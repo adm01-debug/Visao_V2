@@ -185,6 +185,11 @@ export function CameraDetailView({
                   </Card>
                 </TabsContent>
 
+                <TabsContent value="ptz" className="m-0">
+                  <PtzControlPanel cameraId={camera.id} cameraName={camera.name} />
+                </TabsContent>
+
+
                 <TabsContent value="alerts" className="m-0">
                   <div className="text-center py-8 text-muted-foreground">
                     <AlertTriangle className="w-10 h-10 mx-auto mb-2 opacity-50" />
