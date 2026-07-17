@@ -3071,6 +3071,7 @@ export type Database = {
         Returns: Json
       }
       get_api_usage_stats: { Args: { _days?: number }; Returns: Json }
+      get_bgwriter_stats: { Args: never; Returns: Json }
       get_blocking_locks: {
         Args: never
         Returns: {
