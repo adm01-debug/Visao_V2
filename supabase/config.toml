@@ -30,6 +30,9 @@ verify_jwt = true
 [functions.forget-user-media]
 verify_jwt = true
 
+[functions.glacier-stuck-monitor]
+verify_jwt = false
+
 
 
 
