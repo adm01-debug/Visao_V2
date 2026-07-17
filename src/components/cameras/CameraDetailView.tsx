@@ -152,6 +152,7 @@ export function CameraDetailView({
             <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
               <TabsList className="mx-4 mt-4">
                 <TabsTrigger value="live">Ao Vivo</TabsTrigger>
+                <TabsTrigger value="ptz"><Gamepad2 className="w-3.5 h-3.5 mr-1" />PTZ</TabsTrigger>
                 <TabsTrigger value="alerts">Alertas</TabsTrigger>
                 <TabsTrigger value="config">Config</TabsTrigger>
               </TabsList>
