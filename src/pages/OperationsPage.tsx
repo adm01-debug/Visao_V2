@@ -333,6 +333,10 @@ export default function OperationsPage() {
         <TempFileOffendersCard />
       </section>
 
+      <section>
+        <TxidWraparoundCard />
+      </section>
+
 
 
 
