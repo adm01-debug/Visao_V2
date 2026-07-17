@@ -24,7 +24,7 @@ for (const tier of tiers) {
   }
 }
 // 2. legal hold + restore + owner scoping
-for (let i = 0; i < 50; i++) {
+for (let i = 0; i < 400; i++) {
   scenarios.push({
     tier: tiers[i % 3],
     retention: retentions[i % 3],
