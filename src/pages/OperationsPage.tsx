@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { PageMeta } from '@/components/PageMeta';
 import { Activity, Database, HardDrive, RefreshCw, ShieldAlert, CalendarClock } from 'lucide-react';
 import { SlowQueriesCard } from '@/components/admin/SlowQueriesCard';
+import { DbHealthCard } from '@/components/admin/DbHealthCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
 
 interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
@@ -261,6 +262,11 @@ export default function OperationsPage() {
       <section>
         <SlowQueriesCard limit={20} />
       </section>
+
+      <section>
+        <DbHealthCard />
+      </section>
+
 
 
       {data?.generated_at && (
