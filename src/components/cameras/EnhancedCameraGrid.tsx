@@ -170,7 +170,7 @@ export function EnhancedCameraCard({
                     variant="ghost"
                     size="icon"
                     className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-background"
-                    onClick={() = setIsMuted(!isMuted)}
+                    onClick={() => setIsMuted(!isMuted)}
                   >
                     {isMuted ? (
                       <VolumeX className="w-4 h-4" />

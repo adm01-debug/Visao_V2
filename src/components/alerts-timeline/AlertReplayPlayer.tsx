@@ -245,7 +245,7 @@ export function AlertReplayPlayer({
             <Button
               size="icon"
               variant="ghost"
-              onClick={() = setIsPlaying((p) => !p)}
+              onClick={() => setIsPlaying((p) => !p)}
               aria-label={isPlaying ? 'Pausar' : 'Reproduzir'}
               className="h-8 w-8"
             >

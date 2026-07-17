@@ -22,7 +22,7 @@ export default function RecognitionAnalyticsPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" onClick={() = window.history.back()} aria-label="Voltar">
+              <Button variant="ghost" size="icon" onClick={() => window.history.back()} aria-label="Voltar">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               <div>

@@ -42,7 +42,7 @@ export function CameraLayoutControls({
                   "h-8 w-8",
                   layout === id && "bg-primary text-primary-foreground"
                 )}
-                onClick={() = onLayoutChange(id)}
+                onClick={() => onLayoutChange(id)}
               >
                 <Icon className="w-4 h-4" />
               </Button>

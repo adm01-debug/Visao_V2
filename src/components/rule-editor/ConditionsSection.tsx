@@ -85,7 +85,7 @@ export function ConditionsSection({ conditions, onAdd, onUpdate, onRemove }: Con
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 text-destructive hover:text-destructive"
-                onClick={() = onRemove(index)}
+                onClick={() => onRemove(index)}
               >
                 <Trash2 className="w-4 h-4" />
               </Button>

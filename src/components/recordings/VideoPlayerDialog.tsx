@@ -43,8 +43,8 @@ export function VideoPlayerDialog({ clip, isOpen, onClose, onPrev, onNext, hasPr
             <Slider value={[progress]} max={100} step={0.1} className="cursor-pointer" />
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" onClick={() = setIsPlaying(!isPlaying)}>{isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}</Button>
-                <Button variant="ghost" size="icon" onClick={() = setIsMuted(!isMuted)}>{isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}</Button>
+                <Button variant="ghost" size="icon" onClick={() => setIsPlaying(!isPlaying)}>{isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}</Button>
+                <Button variant="ghost" size="icon" onClick={() => setIsMuted(!isMuted)}>{isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}</Button>
               </div>
               <Button variant="outline" size="sm"><Download className="w-4 h-4 mr-2" />Download</Button>
             </div>

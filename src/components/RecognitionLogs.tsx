@@ -198,7 +198,7 @@ function RecognitionLogsComponent({
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() = setCurrentPage(p => Math.max(1, p - 1))}
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
                   >
                     <ChevronLeft className="w-4 h-4" />
@@ -207,7 +207,7 @@ function RecognitionLogsComponent({
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() = setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages}
                   >
                     <ChevronRight className="w-4 h-4" />
