@@ -3072,6 +3072,27 @@ export type Database = {
       }
       get_api_usage_stats: { Args: { _days?: number }; Returns: Json }
       get_bgwriter_stats: { Args: never; Returns: Json }
+      get_blocking_chains: {
+        Args: never
+        Returns: {
+          blocked_app: string
+          blocked_pid: number
+          blocked_query: string
+          blocked_state: string
+          blocked_user: string
+          blocked_wait_event: string
+          blocked_wait_seconds: number
+          blocking_app: string
+          blocking_pid: number
+          blocking_query: string
+          blocking_state: string
+          blocking_user: string
+          lock_mode: string
+          lock_type: string
+          relation: string
+          severity: string
+        }[]
+      }
       get_blocking_locks: {
         Args: never
         Returns: {
