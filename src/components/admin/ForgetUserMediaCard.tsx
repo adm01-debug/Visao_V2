@@ -145,6 +145,17 @@ export function ForgetUserMediaCard() {
           </div>
         </div>
 
+        <div className="space-y-1">
+          <Label htmlFor="forget-reason">Motivo (obrigatório para execução real, mín. 5 caracteres)</Label>
+          <Input
+            id="forget-reason"
+            placeholder="Ex.: Solicitação LGPD #1234 do titular"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            aria-invalid={!dryRun && reason.length > 0 && !reasonOk}
+          />
+        </div>
+
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
