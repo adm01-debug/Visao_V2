@@ -395,6 +395,11 @@ export default function OperationsPage() {
         <InvalidIndexesCard />
       </section>
 
+      <section>
+        <StorageTierCostsCard />
+      </section>
+
+
 
 
 
