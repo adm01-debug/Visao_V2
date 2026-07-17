@@ -58,6 +58,7 @@ export const Header = React.forwardRef<HTMLElement, { className?: string }>(func
           </span>
 
           <CronStaleBadge className="hidden md:inline-flex" />
+          <CspAnomalyBadge className="hidden md:inline-flex" />
 
 
           <Tooltip>
