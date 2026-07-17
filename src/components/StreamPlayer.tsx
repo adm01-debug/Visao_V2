@@ -232,7 +232,7 @@ function StreamPlayerComponent({
               size="icon"
               className="h-8 w-8 text-foreground hover:bg-background/20"
               onClick={togglePlay}
-            >
+             aria-label="Pausar">
               {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
             </Button>
 
@@ -241,7 +241,7 @@ function StreamPlayerComponent({
               size="icon"
               className="h-8 w-8 text-foreground hover:bg-background/20"
               onClick={toggleMute}
-            >
+             aria-label="Som desligado">
               {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
             </Button>
 
@@ -260,7 +260,7 @@ function StreamPlayerComponent({
               size="icon"
               className="h-8 w-8 text-foreground hover:bg-background/20"
               onClick={handleFullscreen}
-            >
+             aria-label="Ação">
               <Maximize className="w-4 h-4" />
             </Button>
           </div>

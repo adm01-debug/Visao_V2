@@ -58,7 +58,7 @@ export function StreamConfigTab({ config, setConfig, testing, testResult, onTest
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" onClick={onTest} disabled={testing}>
+                    <Button variant="outline" size="icon" onClick={onTest} disabled={testing} aria-label="Testar conexão">
                       {testing ? <RefreshCw className="h-4 w-4 animate-spin" /> : testResult === 'success' ? <CheckCircle2 className="h-4 w-4 text-success" /> : testResult === 'error' ? <AlertCircle className="h-4 w-4 text-destructive" /> : <Play className="h-4 w-4" />}
                     </Button>
                   </TooltipTrigger>

@@ -79,7 +79,7 @@ export function WebcamCapture({
                 <FlipHorizontal className="w-4 h-4 text-foreground" />
               </Button>
               <Button variant="secondary" size="icon" className="h-8 w-8 bg-foreground/50 hover:bg-foreground/70"
-                onClick={switchCamera} title="Trocar câmera">
+                onClick={switchCamera} title="Trocar câmera" aria-label="Atualizar">
                 <RefreshCw className="w-4 h-4 text-foreground" />
               </Button>
             </div>

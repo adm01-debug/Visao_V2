@@ -44,7 +44,7 @@ export function ZonesHeader({
               disabled={loading} 
               className="border-border/40"
               title="Atualizar dados"
-            >
+             aria-label="Atualizar">
               <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
             </Button>
             <DropdownMenu>

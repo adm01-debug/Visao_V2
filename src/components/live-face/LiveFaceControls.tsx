@@ -34,7 +34,7 @@ export function LiveFaceControls({
 }: LiveFaceControlsProps) {
   return (
     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
-      <Button variant={isCameraOn ? 'default' : 'secondary'} size="icon" onClick={onToggleCamera}>
+      <Button variant={isCameraOn ? 'default' : 'secondary'} size="icon" onClick={onToggleCamera} aria-label="Alternar câmera">
         {isCameraOn ? <Camera className="w-5 h-5" /> : <CameraOff className="w-5 h-5" />}
       </Button>
 
@@ -42,17 +42,17 @@ export function LiveFaceControls({
         {isRunning ? <><Pause className="w-5 h-5 mr-2" />Parar</> : <><Play className="w-5 h-5 mr-2" />Iniciar</>}
       </Button>
 
-      <Button variant="ghost" size="icon" onClick={onToggleSound}>
+      <Button variant="ghost" size="icon" onClick={onToggleSound} aria-label="Alternar som">
         {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
       </Button>
 
-      <Button variant="ghost" size="icon" onClick={onToggleFullscreen}>
+      <Button variant="ghost" size="icon" onClick={onToggleFullscreen} aria-label="Alternar tela cheia">
         {isFullscreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
       </Button>
 
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="ghost" size="icon"><Settings className="w-5 h-5" /></Button>
+          <Button variant="ghost" size="icon" aria-label="Configurações"><Settings className="w-5 h-5" /></Button>
         </PopoverTrigger>
         <PopoverContent className="w-72" align="end">
           <div className="space-y-4">

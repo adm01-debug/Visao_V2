@@ -23,7 +23,7 @@ export const SidebarMobile = memo(React.forwardRef(function SidebarMobile({
           variant="ghost"
           size="icon"
           className="fixed top-4 left-4 z-50 md:hidden bg-background/80 backdrop-blur-sm shadow-sm"
-        >
+         aria-label="Ação">
           <Menu className="w-5 h-5" />
         </Button>
       </SheetTrigger>

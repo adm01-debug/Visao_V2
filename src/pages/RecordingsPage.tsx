@@ -211,7 +211,7 @@ export function RecordingsPage() {
                     </div>
                   </div>
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreHorizontal className="w-4 h-4" /></Button></DropdownMenuTrigger>
+                    <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label="Mais opções"><MoreHorizontal className="w-4 h-4" /></Button></DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={() => setPlayingClip(clip)}><Play className="w-4 h-4 mr-2" />Reproduzir</DropdownMenuItem>
                       <DropdownMenuItem onClick={() => handleDownloadClip(clip)}><Download className="w-4 h-4 mr-2" />Download</DropdownMenuItem>

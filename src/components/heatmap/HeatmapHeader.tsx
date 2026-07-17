@@ -43,7 +43,7 @@ export function HeatmapHeader({ cameras, selectedCamera, setSelectedCamera, peri
             <SelectItem value="7d">7 dias</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="outline" size="icon" onClick={onRefresh}>
+        <Button variant="outline" size="icon" onClick={onRefresh} aria-label="Atualizar">
           <RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} />
         </Button>
       </div>

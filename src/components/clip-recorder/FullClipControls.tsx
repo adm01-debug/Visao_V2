@@ -68,7 +68,7 @@ export function FullClipControls({
               <Circle className="w-4 h-4 mr-2 fill-current" />Gravar
             </Button>
             <Popover>
-              <PopoverTrigger asChild><Button variant="outline" size="icon" className="h-9 w-9"><Clock className="w-4 h-4" /></Button></PopoverTrigger>
+              <PopoverTrigger asChild><Button variant="outline" size="icon" className="h-9 w-9" aria-label="Ação"><Clock className="w-4 h-4" /></Button></PopoverTrigger>
               <PopoverContent className="w-64">
                 <div className="space-y-3">
                   <Label>Duração máxima: {formatDuration(clipDurationSetting)}</Label>

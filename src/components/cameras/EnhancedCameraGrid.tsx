@@ -183,7 +183,7 @@ export function EnhancedCameraCard({
                     size="icon"
                     className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-background"
                     onClick={handleRefresh}
-                  >
+                   aria-label="Atualizar">
                     <RefreshCw className={cn("w-4 h-4", isLoading && "animate-spin")} />
                   </Button>
                 </div>
@@ -193,7 +193,7 @@ export function EnhancedCameraCard({
                     size="icon"
                     className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-background"
                     onClick={onFullscreen}
-                  >
+                   aria-label="Tela cheia">
                     <Maximize2 className="w-4 h-4" />
                   </Button>
                   <DropdownMenu>
@@ -202,7 +202,7 @@ export function EnhancedCameraCard({
                         variant="ghost"
                         size="icon"
                         className="w-8 h-8 bg-foreground/40 hover:bg-foreground/60 text-background"
-                      >
+                       aria-label="Mais opções">
                         <MoreVertical className="w-4 h-4" />
                       </Button>
                     </DropdownMenuTrigger>

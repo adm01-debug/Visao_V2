@@ -96,7 +96,7 @@ export function WidgetWrapper({
               size="icon"
               className="h-6 w-6"
               onClick={handleToggleSize}
-            >
+             aria-label="Minimizar">
               {isExpanded ? (
                 <Minimize2 className="h-3 w-3" />
               ) : (
@@ -108,7 +108,7 @@ export function WidgetWrapper({
               size="icon"
               className="h-6 w-6 text-destructive hover:text-destructive"
               onClick={onRemove}
-            >
+             aria-label="Remover">
               <X className="h-3 w-3" />
             </Button>
           </div>

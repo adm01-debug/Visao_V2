@@ -50,7 +50,7 @@ export function ArmDisarmControl({ cameraId, cameraName, compact = false, classN
                 isScheduled && 'bg-accent text-accent-foreground hover:bg-accent/90',
                 className
               )}
-            >
+             aria-label="Ação">
               {icon}
             </Button>
           </TooltipTrigger>

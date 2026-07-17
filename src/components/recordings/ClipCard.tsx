@@ -54,7 +54,7 @@ export function ClipCard({ clip, isSelected, onSelect, onPlay, onDownload, onDel
             <p className="text-xs text-muted-foreground mt-1">{format(new Date(clip.start_time), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</p>
           </div>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8"><MoreHorizontal className="w-4 h-4" /></Button></DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Mais opções"><MoreHorizontal className="w-4 h-4" /></Button></DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={onPlay}><Play className="w-4 h-4 mr-2" />Reproduzir</DropdownMenuItem>
               <DropdownMenuItem onClick={onDownload}><Download className="w-4 h-4 mr-2" />Download</DropdownMenuItem>

@@ -177,7 +177,7 @@ function RecognitionLogsComponent({
                           </span>
                         </TableCell>
                         <TableCell>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Visualizar">
                             <Eye className="w-4 h-4" />
                           </Button>
                         </TableCell>
