@@ -400,6 +400,10 @@ export default function OperationsPage() {
         <StorageTierCostsCard />
       </section>
 
+      <section>
+        <ForgetUserMediaCard />
+      </section>
+
 
 
 
