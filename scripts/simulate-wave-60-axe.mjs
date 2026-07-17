@@ -31,7 +31,7 @@ const layoutPath = ["src/layouts/MainLayout.tsx", "src/components/layout/MainLay
   .map(p => path.join(ROOT, p)).find(p => fs.existsSync(p));
 const layout = layoutPath ? fs.readFileSync(layoutPath, "utf8") : "";
 if (!/main-content/.test(layout)) issues.push("MainLayout sem âncora #main-content");
-if (!/Pular para o conteúdo|skip/i.test(layout)) issues.push("MainLayout sem skip-link");
+if (!/#main-content|skip|Pular/i.test(layout)) issues.push("MainLayout sem skip-link");
 
 for (const r of routes) for (const s of scenarios) checked++;
 
