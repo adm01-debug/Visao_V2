@@ -81,7 +81,7 @@ export function ForgetUserMediaCard() {
   const mutation = useMutation({
     mutationFn: async (): Promise<ForgetResponse> => {
       const { data, error } = await supabase.functions.invoke('forget-user-media', {
-        body: { user_id: trimmed, dry_run: dryRun, batch_size: clampBatch(batchSize) },
+        body: { user_id: trimmed, dry_run: dryRun, batch_size: clampBatch(batchSize), reason: reason.trim() || 'dry_run_preview' },
       });
       if (error) throw error;
       return (data ?? {}) as ForgetResponse;
