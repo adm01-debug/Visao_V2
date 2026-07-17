@@ -3099,6 +3099,19 @@ export type Database = {
           wait_event_type: string
         }[]
       }
+      get_missing_fk_indexes: {
+        Args: never
+        Returns: {
+          constraint_name: string
+          fk_columns: string
+          referenced_table: string
+          schema_name: string
+          suggested_index: string
+          table_name: string
+          table_size_bytes: number
+          table_size_pretty: string
+        }[]
+      }
       get_operational_metrics: { Args: never; Returns: Json }
       get_slow_queries: {
         Args: { _limit?: number }

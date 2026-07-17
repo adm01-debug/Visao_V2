@@ -10,6 +10,7 @@ import { DbHealthCard } from '@/components/admin/DbHealthCard';
 import { TableBloatCard } from '@/components/admin/TableBloatCard';
 import { SessionWatchdogCard } from '@/components/admin/SessionWatchdogCard';
 import { UnusedIndexesCard } from '@/components/admin/UnusedIndexesCard';
+import { MissingFkIndexesCard } from '@/components/admin/MissingFkIndexesCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
 
 interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
@@ -280,6 +281,10 @@ export default function OperationsPage() {
 
       <section>
         <UnusedIndexesCard />
+      </section>
+
+      <section>
+        <MissingFkIndexesCard />
       </section>
 
 
