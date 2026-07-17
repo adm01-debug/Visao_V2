@@ -142,6 +142,24 @@ export function SessionWatchdogCard() {
                   <p className="text-xs font-mono text-muted-foreground mt-1 truncate">
                     {s.query ?? '—'}
                   </p>
+                  <div className="flex gap-2 mt-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={pendingPid === s.pid}
+                      onClick={() => handleTerminate(s.pid, false)}
+                    >
+                      <XCircle className="h-3 w-3 mr-1" /> Cancelar query
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      disabled={pendingPid === s.pid}
+                      onClick={() => handleTerminate(s.pid, true)}
+                    >
+                      <Zap className="h-3 w-3 mr-1" /> Terminar sessão
+                    </Button>
+                  </div>
                 </li>
               ))}
             </ul>
