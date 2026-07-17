@@ -370,6 +370,10 @@ export default function OperationsPage() {
         <UnvalidatedConstraintsCard />
       </section>
 
+      <section>
+        <DisabledTriggersCard />
+      </section>
+
 
       <section>
         <BlockingChainsCard />
