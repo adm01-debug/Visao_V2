@@ -449,6 +449,63 @@ export type Database = {
         }
         Relationships: []
       }
+      csp_violation_reports: {
+        Row: {
+          blocked_uri: string | null
+          column_number: number | null
+          created_at: string
+          disposition: string | null
+          document_uri: string | null
+          effective_directive: string | null
+          id: string
+          ip_hash: string | null
+          line_number: number | null
+          original_policy: string | null
+          raw_report: Json
+          referrer: string | null
+          source_file: string | null
+          status_code: number | null
+          user_agent: string | null
+          violated_directive: string | null
+        }
+        Insert: {
+          blocked_uri?: string | null
+          column_number?: number | null
+          created_at?: string
+          disposition?: string | null
+          document_uri?: string | null
+          effective_directive?: string | null
+          id?: string
+          ip_hash?: string | null
+          line_number?: number | null
+          original_policy?: string | null
+          raw_report: Json
+          referrer?: string | null
+          source_file?: string | null
+          status_code?: number | null
+          user_agent?: string | null
+          violated_directive?: string | null
+        }
+        Update: {
+          blocked_uri?: string | null
+          column_number?: number | null
+          created_at?: string
+          disposition?: string | null
+          document_uri?: string | null
+          effective_directive?: string | null
+          id?: string
+          ip_hash?: string | null
+          line_number?: number | null
+          original_policy?: string | null
+          raw_report?: Json
+          referrer?: string | null
+          source_file?: string | null
+          status_code?: number | null
+          user_agent?: string | null
+          violated_directive?: string | null
+        }
+        Relationships: []
+      }
       detection_reviews: {
         Row: {
           camera_id: string | null
