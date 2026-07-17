@@ -360,6 +360,10 @@ export default function OperationsPage() {
         <NullableForeignKeysCard />
       </section>
 
+      <section>
+        <AutovacuumOverridesCard />
+      </section>
+
 
       <section>
         <BlockingChainsCard />
