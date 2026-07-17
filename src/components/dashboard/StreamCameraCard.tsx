@@ -120,17 +120,17 @@ export function StreamCameraCard({ camera, onClick, compact, showStream = true, 
         {showStream && camera.streamUrl && (
           <>
             <Button variant="secondary" size="icon" className="h-7 w-7 rounded-lg backdrop-blur-sm"
-              onClick={(e) = { e.stopPropagation(); setIsPlaying(!isPlaying); }}>
+              onClick={(e) => { e.stopPropagation(); setIsPlaying(!isPlaying); }}>
               {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
             </Button>
             <Button variant="secondary" size="icon" className="h-7 w-7 rounded-lg backdrop-blur-sm"
-              onClick={(e) = { e.stopPropagation(); setIsMuted(!isMuted); }}>
+              onClick={(e) => { e.stopPropagation(); setIsMuted(!isMuted); }}>
               {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
             </Button>
           </>
         )}
         <Button variant="secondary" size="icon" className="h-7 w-7 rounded-lg backdrop-blur-sm"
-          onClick={(e) = { e.stopPropagation(); onClick(); }}>
+          onClick={(e) => { e.stopPropagation(); onClick(); }}>
           <Maximize2 className="w-3.5 h-3.5" />
         </Button>
       </div>

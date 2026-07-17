@@ -137,18 +137,18 @@ export function CameraCard({
           <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between">
             <div className="flex items-center gap-1">
               <Button variant="ghost" size="icon" className="h-7 w-7 text-foreground/90 hover:text-foreground hover:bg-background/15 rounded-lg"
-                onClick={(e) = { e.stopPropagation(); setIsPlaying(!isPlaying); }}>
+                onClick={(e) => { e.stopPropagation(); setIsPlaying(!isPlaying); }}>
                 {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
               </Button>
               <Button variant="ghost" size="icon" className="h-7 w-7 text-foreground/90 hover:text-foreground hover:bg-background/15 rounded-lg"
-                onClick={(e) = { e.stopPropagation(); setIsMuted(!isMuted); }}>
+                onClick={(e) => { e.stopPropagation(); setIsMuted(!isMuted); }}>
                 {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
               </Button>
             </div>
             <div className="flex items-center gap-1">
               <ClipRecorderControls cameraId={camera.id} cameraName={camera.name} compact />
               <Button variant="ghost" size="icon" className="h-7 w-7 text-foreground/90 hover:text-foreground hover:bg-background/15 rounded-lg"
-                onClick={(e) = { e.stopPropagation(); onExpand(); }}>
+                onClick={(e) => { e.stopPropagation(); onExpand(); }}>
                 <Maximize2 className="w-4 h-4" />
               </Button>
             </div>
