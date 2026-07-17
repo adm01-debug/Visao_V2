@@ -28,6 +28,7 @@ import { NullableForeignKeysCard } from '@/components/admin/NullableForeignKeysC
 import { AutovacuumOverridesCard } from '@/components/admin/AutovacuumOverridesCard';
 import { UnvalidatedConstraintsCard } from '@/components/admin/UnvalidatedConstraintsCard';
 import { DisabledTriggersCard } from '@/components/admin/DisabledTriggersCard';
+import { PermissiveRlsCard } from '@/components/admin/PermissiveRlsCard';
 import { BlockingChainsCard } from '@/components/admin/BlockingChainsCard';
 import { RlsCoverageCard } from '@/components/admin/RlsCoverageCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
