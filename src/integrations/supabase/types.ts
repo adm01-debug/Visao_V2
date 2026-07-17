@@ -3070,7 +3070,35 @@ export type Database = {
         Returns: Json
       }
       get_api_usage_stats: { Args: { _days?: number }; Returns: Json }
+      get_blocking_locks: {
+        Args: never
+        Returns: {
+          blocked_pid: number
+          blocked_statement: string
+          blocked_user: string
+          blocked_wait_secs: number
+          blocking_pid: number
+          blocking_statement: string
+          blocking_user: string
+        }[]
+      }
       get_csp_report_stats: { Args: { _days?: number }; Returns: Json }
+      get_long_running_sessions: {
+        Args: { _active_min_secs?: number; _idle_tx_min_secs?: number }
+        Returns: {
+          application_name: string
+          client_addr: unknown
+          pid: number
+          query: string
+          query_start: string
+          runtime_secs: number
+          state: string
+          state_change: string
+          usename: string
+          wait_event: string
+          wait_event_type: string
+        }[]
+      }
       get_operational_metrics: { Args: never; Returns: Json }
       get_slow_queries: {
         Args: { _limit?: number }
