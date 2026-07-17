@@ -98,7 +98,39 @@ async function authenticate(req: Request): Promise<{ supabase: SupabaseClient; u
   return { supabase, userId: claims.claims.sub as string };
 }
 
+// Fire-and-forget usage logging (não bloqueia resposta)
+function logUsageAsync(params: {
+  userId: string | null; method: string; path: string; status: number;
+  latencyMs: number; ipHash: string | null;
+}): void {
+  try {
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!serviceKey) return;
+    const admin = createClient(SUPABASE_URL, serviceKey, { auth: { persistSession: false } });
+    const group = params.path.replace(/[0-9a-f-]{36}/gi, ":id").slice(0, 64);
+    // Não aguardamos (fire-and-forget)
+    admin.from("api_usage_logs").insert({
+      user_id: params.userId,
+      method: params.method,
+      path: params.path.slice(0, 512),
+      endpoint_group: group,
+      status: params.status,
+      latency_ms: params.latencyMs,
+      ip_hash: params.ipHash,
+      api_version: "v1",
+    }).then(() => {}, () => {}); // silent
+  } catch { /* nunca deixar telemetria falhar a request */ }
+}
+
+async function hashIp(ip: string): Promise<string> {
+  const data = new TextEncoder().encode(ip + "|visao-salt-v1");
+  const buf = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(buf)).slice(0, 16)
+    .map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
 Deno.serve(async (req: Request) => {
+  const startedAt = Date.now();
   const preflight = handleCors(req);
   if (preflight) return preflight;
   const cors = getCorsHeaders(req);
@@ -106,14 +138,21 @@ Deno.serve(async (req: Request) => {
   const url = new URL(req.url);
   const path = url.pathname.replace(/^.*?(\/v1\/)/, "$1");
   const method = req.method;
+  const ipRaw = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const ipHash = await hashIp(ipRaw);
+
+  const finish = (res: Response, userId: string | null): Response => {
+    logUsageAsync({ userId, method, path, status: res.status, latencyMs: Date.now() - startedAt, ipHash });
+    return res;
+  };
 
   // ============ Rota pública: /v1/health ============
   if (path === "/v1/health" && method === "GET") {
-    return json({
+    return finish(json({
       status: "ok",
       version: "1.0.0",
       timestamp: new Date().toISOString(),
-    }, 200, cors);
+    }, 200, cors), null);
   }
 
   // Rate-limit por endpoint (panic é mais restritivo)
@@ -121,11 +160,13 @@ Deno.serve(async (req: Request) => {
     ? RATE_LIMITS.sensitive
     : RATE_LIMITS.standard;
   const rl = checkRateLimit(req, rlConfig, `public-api:${path}`, cors);
-  if (!rl.allowed) return rl.response;
+  if (!rl.allowed) return finish(rl.response, null);
 
   const auth = await authenticate(req);
-  if ("error" in auth) return auth.error;
+  if ("error" in auth) return finish(auth.error, null);
   const { supabase, userId } = auth;
+
+  const wrap = (res: Response): Response => finish(res, userId);
 
   try {
     // ============ /v1/status (autenticado) ============
