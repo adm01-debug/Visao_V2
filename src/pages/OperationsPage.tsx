@@ -407,6 +407,10 @@ export default function OperationsPage() {
         <LegalHoldManagerCard />
       </section>
 
+      <section>
+        <GlacierRestoreMonitorCard />
+      </section>
+
 
 
 
