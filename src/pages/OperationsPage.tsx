@@ -303,6 +303,10 @@ export default function OperationsPage() {
         <TableSizeStatsCard />
       </section>
 
+      <section>
+        <StatsStalenessCard />
+      </section>
+
 
 
 
