@@ -13,6 +13,7 @@ import { UnusedIndexesCard } from '@/components/admin/UnusedIndexesCard';
 import { MissingFkIndexesCard } from '@/components/admin/MissingFkIndexesCard';
 import { TableCacheStatsCard } from '@/components/admin/TableCacheStatsCard';
 import { DuplicateIndexesCard } from '@/components/admin/DuplicateIndexesCard';
+import { TableSizeStatsCard } from '@/components/admin/TableSizeStatsCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
 
 interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
@@ -295,6 +296,10 @@ export default function OperationsPage() {
 
       <section>
         <DuplicateIndexesCard />
+      </section>
+
+      <section>
+        <TableSizeStatsCard />
       </section>
 
 

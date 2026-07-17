@@ -3169,6 +3169,23 @@ export type Database = {
           total_reads: number
         }[]
       }
+      get_table_size_stats: {
+        Args: { _min_size_mb?: number }
+        Returns: {
+          heap_bytes: number
+          heap_pretty: string
+          index_bytes: number
+          index_pretty: string
+          index_ratio_pct: number
+          row_estimate: number
+          schema_name: string
+          table_name: string
+          toast_bytes: number
+          toast_pretty: string
+          total_bytes: number
+          total_pretty: string
+        }[]
+      }
       get_unused_indexes: {
         Args: { _max_scans?: number; _min_size_mb?: number }
         Returns: {
