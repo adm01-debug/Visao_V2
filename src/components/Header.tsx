@@ -6,6 +6,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PageTitle } from "@/components/Breadcrumbs";
 import { BackButton } from "@/components/ui/BackButton";
 import { CronStaleBadge } from "@/components/admin/CronStaleBadge";
+import { CspAnomalyBadge } from "@/components/admin/CspAnomalyBadge";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { useTheme } from "@/contexts/ThemeProvider";
@@ -57,6 +58,7 @@ export const Header = React.forwardRef<HTMLElement, { className?: string }>(func
           </span>
 
           <CronStaleBadge className="hidden md:inline-flex" />
+          <CspAnomalyBadge className="hidden md:inline-flex" />
 
 
           <Tooltip>
