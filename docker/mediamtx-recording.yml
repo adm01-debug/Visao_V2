@@ -1,0 +1,30 @@
+# MediaMTX config para gravação contínua HLS (Etapa 4 - Cloud Storage)
+# Cada câmera gera segmentos de 10s em /recordings/{camera_id}/*.ts
+# O worker external monitora a pasta e sobe cada segmento fechado.
+
+logLevel: info
+logDestinations: [stdout]
+
+# HLS de baixa latência para preview no browser
+hlsAddress: :8888
+hlsSegmentDuration: 2s
+hlsPartDuration: 200ms
+hlsSegmentCount: 7
+
+# WebRTC opcional (preview PTZ)
+webrtcAddress: :8889
+
+# Gravação: pasta compartilhada com o worker
+recordPath: /recordings/%path/%Y-%m-%d_%H-%M-%S-%f
+recordFormat: fmp4         # frag-mp4 é mais interoperável que .ts para upload
+recordPartDuration: 10s    # segmentos de 10s (~2.5 MB @ 2Mbps)
+recordSegmentDuration: 10s
+recordDeleteAfter: 24h     # segurança: worker deve ter subido antes disso
+
+paths:
+  # Padrão para todas as câmeras (auto-descoberta via RTSP)
+  "~^cam_[0-9a-f-]+$":
+    source: publisher
+    record: yes
+    runOnRecordSegmentComplete: >
+      /usr/local/bin/notify-worker.sh $MTX_PATH $MTX_SEGMENT_PATH
