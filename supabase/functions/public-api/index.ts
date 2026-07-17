@@ -6,6 +6,12 @@ import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { getCorsHeaders, handleCors } from "../_shared/cors.ts";
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { securityHeaders } from "../_shared/securityHeaders.ts";
+import {
+  acknowledgeAlertSchema,
+  armDisarmSchema,
+  panicSchema,
+  parseBody,
+} from "../_shared/publicApiSchemas.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
@@ -217,12 +223,14 @@ Deno.serve(async (req: Request) => {
       return wrap(json({ data }, 200, cors));
     }
 
-    // ============ POST /v1/cameras/:id/arm | /disarm  (Onda 44) ============
+    // ============ POST /v1/cameras/:id/arm | /disarm  (Onda 44 + 57) ============
     const armMatch = path.match(/^\/v1\/cameras\/([0-9a-f-]{36})\/(arm|disarm)$/i);
     if (armMatch && method === "POST") {
       const [, camId, action] = armMatch;
-      const body = await req.json().catch(() => ({} as Record<string, unknown>));
-      const reason = typeof body.reason === "string" ? body.reason.slice(0, 500) : null;
+      const raw = await req.json().catch(() => ({}));
+      const parsed = parseBody(armDisarmSchema, raw);
+      if ("error" in parsed) return wrap(json(parsed.error, 400, cors));
+      const reason = parsed.data.reason ?? null;
       if (action === "disarm" && !reason) {
         return wrap(json({ error: "Campo 'reason' obrigatório para disarm" }, 400, cors));
       }
@@ -241,10 +249,13 @@ Deno.serve(async (req: Request) => {
       return wrap(json({ data, action }, 200, cors));
     }
 
-    // ============ POST /v1/alerts/:id/acknowledge (Onda 44) ============
+    // ============ POST /v1/alerts/:id/acknowledge (Onda 44 + 57) ============
     const ackMatch = path.match(/^\/v1\/alerts\/([0-9a-f-]{36})\/acknowledge$/i);
     if (ackMatch && method === "POST") {
       const alertId = ackMatch[1];
+      const raw = await req.json().catch(() => ({}));
+      const parsed = parseBody(acknowledgeAlertSchema, raw);
+      if ("error" in parsed) return wrap(json(parsed.error, 400, cors));
       const { data, error } = await supabase
         .from("event_alerts")
         .update({ status: "acknowledged", acknowledged_at: new Date().toISOString(), acknowledged_by: userId })
