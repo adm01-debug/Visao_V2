@@ -3275,6 +3275,10 @@ export type Database = {
         Returns: Json
       }
       system_health: { Args: never; Returns: Json }
+      terminate_db_session: {
+        Args: { _force?: boolean; _pid: number; _reason?: string }
+        Returns: Json
+      }
     }
     Enums: {
       alert_type:

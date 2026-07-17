@@ -1,9 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, Lock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { AlertTriangle, Lock, XCircle, Zap } from 'lucide-react';
 
 interface SessionRow {
   pid: number;
@@ -40,6 +43,34 @@ function stateBadge(state: string | null, runtime: number): 'default' | 'seconda
  * Combina `get_long_running_sessions` + `get_blocking_locks` (admin RPCs).
  */
 export function SessionWatchdogCard() {
+  const qc = useQueryClient();
+  const [pendingPid, setPendingPid] = useState<number | null>(null);
+
+  const terminate = useMutation({
+    mutationFn: async ({ pid, force }: { pid: number; force: boolean }) => {
+      const { data, error } = await supabase.rpc('terminate_db_session', {
+        _pid: pid,
+        _force: force,
+        _reason: 'admin dashboard',
+      });
+      if (error) throw error;
+      return data as { ok: boolean; action: string; target_user: string };
+    },
+    onMutate: ({ pid }) => setPendingPid(pid),
+    onSettled: () => setPendingPid(null),
+    onSuccess: (res) => {
+      toast.success(`${res.action} enviado (usuário ${res.target_user})`);
+      qc.invalidateQueries({ queryKey: ['long-running-sessions'] });
+      qc.invalidateQueries({ queryKey: ['blocking-locks'] });
+    },
+    onError: (e: Error) => toast.error(e.message ?? 'Falha ao encerrar sessão'),
+  });
+
+  const handleTerminate = (pid: number, force: boolean) => {
+    const label = force ? 'TERMINAR (matar sessão)' : 'CANCELAR query';
+    if (!window.confirm(`Confirma ${label} do pid ${pid}?`)) return;
+    terminate.mutate({ pid, force });
+  };
   const sessions = useQuery({
     queryKey: ['long-running-sessions'],
     queryFn: async (): Promise<SessionRow[]> => {
@@ -111,6 +142,24 @@ export function SessionWatchdogCard() {
                   <p className="text-xs font-mono text-muted-foreground mt-1 truncate">
                     {s.query ?? '—'}
                   </p>
+                  <div className="flex gap-2 mt-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={pendingPid === s.pid}
+                      onClick={() => handleTerminate(s.pid, false)}
+                    >
+                      <XCircle className="h-3 w-3 mr-1" /> Cancelar query
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      disabled={pendingPid === s.pid}
+                      onClick={() => handleTerminate(s.pid, true)}
+                    >
+                      <Zap className="h-3 w-3 mr-1" /> Terminar sessão
+                    </Button>
+                  </div>
                 </li>
               ))}
             </ul>
