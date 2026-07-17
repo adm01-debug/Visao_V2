@@ -318,6 +318,11 @@ export default function OperationsPage() {
         <BgWriterStatsCard />
       </section>
 
+      <section>
+        <ConnectionSaturationCard />
+      </section>
+
+
 
 
 
