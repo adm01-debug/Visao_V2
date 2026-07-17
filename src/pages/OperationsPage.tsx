@@ -348,6 +348,10 @@ export default function OperationsPage() {
         <BlockingChainsCard />
       </section>
 
+      <section>
+        <RlsCoverageCard />
+      </section>
+
 
 
 
