@@ -3058,6 +3058,24 @@ export type Database = {
     Functions: {
       analyze_table: { Args: { _table_name: string }; Returns: Json }
       array_days_valid: { Args: { days: number[] }; Returns: boolean }
+      audit_rls_coverage: {
+        Args: never
+        Returns: {
+          all_policies: number
+          delete_policies: number
+          finding: string
+          insert_policies: number
+          is_partition: boolean
+          rls_enabled: boolean
+          rls_forced: boolean
+          schema_name: string
+          select_policies: number
+          severity: string
+          table_name: string
+          total_policies: number
+          update_policies: number
+        }[]
+      }
       capture_db_health_snapshot: { Args: never; Returns: string }
       check_csp_anomaly: { Args: never; Returns: Json }
       cleanup_api_usage_logs: { Args: never; Returns: number }
