@@ -4,6 +4,7 @@
 import { insightFaceClient } from './client';
 import { topKMatches, type MatchCandidate, type MatchResult } from './similarity';
 import type { InsightFaceBBox, LivenessResult, ArcFaceEmbedding } from './types';
+import { logger } from '@/lib/logger';
 
 export interface PipelineOptions {
   runLiveness?: boolean;
@@ -35,7 +36,7 @@ export interface PipelineResult {
 export async function runInsightFacePipeline(
   _fullImage: string,
   faceCrops: Array<{ crop: string; bbox: InsightFaceBBox }>,
-  options: PipelineOptions = {},
+  options: PipelineOptions = {}
 ): Promise<PipelineResult> {
   const {
     runLiveness = true,
@@ -64,7 +65,7 @@ export async function runInsightFacePipeline(
           continue;
         }
       } catch (err) {
-        console.warn('liveness failed, continuing', err);
+        logger.warn('liveness failed, continuing', { error: err });
       }
     }
 
@@ -77,7 +78,7 @@ export async function runInsightFacePipeline(
         entry.matches = topKMatches(enc.embedding, candidates, 5, matchThreshold);
       }
     } catch (err) {
-      console.error('encode failed', err);
+      logger.error('encode failed', { error: err });
       entry.skipped = 'low_quality';
     }
 

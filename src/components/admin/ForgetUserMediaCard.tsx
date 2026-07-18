@@ -69,7 +69,9 @@ export function ForgetUserMediaCard() {
     queryFn: async (): Promise<AuditEntry[]> => {
       const { data, error } = await supabase
         .from('media_forget_audit')
-        .select('id, subject_user_id, requested_by, dry_run, hot_deleted, warm_deleted, cold_deleted, legal_hold_skipped, created_at')
+        .select(
+          'id, subject_user_id, requested_by, dry_run, hot_deleted, warm_deleted, cold_deleted, legal_hold_skipped, created_at'
+        )
         .order('created_at', { ascending: false })
         .limit(10);
       if (error) throw error;
@@ -81,7 +83,12 @@ export function ForgetUserMediaCard() {
   const mutation = useMutation({
     mutationFn: async (): Promise<ForgetResponse> => {
       const { data, error } = await supabase.functions.invoke('forget-user-media', {
-        body: { user_id: trimmed, dry_run: dryRun, batch_size: clampBatch(batchSize), reason: reason.trim() || 'dry_run_preview' },
+        body: {
+          user_id: trimmed,
+          dry_run: dryRun,
+          batch_size: clampBatch(batchSize),
+          reason: reason.trim() || 'dry_run_preview',
+        },
       });
       if (error) throw error;
       return (data ?? {}) as ForgetResponse;
@@ -112,8 +119,8 @@ export function ForgetUserMediaCard() {
           <CardTitle>Direito ao Esquecimento (LGPD)</CardTitle>
         </div>
         <CardDescription>
-          Remove permanentemente as mídias do usuário nos três tiers (Hot/Warm/Cold). Ativos sob retenção legal
-          são preservados. Toda execução é registrada em trilha imutável.
+          Remove permanentemente as mídias do usuário nos três tiers (Hot/Warm/Cold). Ativos sob
+          retenção legal são preservados. Toda execução é registrada em trilha imutável.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -141,15 +148,19 @@ export function ForgetUserMediaCard() {
           </div>
           <div className="flex items-end gap-2 pb-1">
             <Switch id="forget-dryrun" checked={dryRun} onCheckedChange={setDryRun} />
-            <Label htmlFor="forget-dryrun" className="cursor-pointer">Dry run</Label>
+            <Label htmlFor="forget-dryrun" className="cursor-pointer">
+              Dry run
+            </Label>
           </div>
         </div>
 
         <div className="space-y-1">
-          <Label htmlFor="forget-reason">Motivo (obrigatório para execução real, mín. 5 caracteres)</Label>
+          <Label htmlFor="forget-reason">
+            Motivo (obrigatório para execução real, mín. 5 caracteres)
+          </Label>
           <Input
             id="forget-reason"
-            placeholder="Ex.: Solicitação LGPD #1234 do titular"
+            placeholder="Ex.: Solicitação LGPD do titular"
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             aria-invalid={!dryRun && reason.length > 0 && !reasonOk}
@@ -191,7 +202,9 @@ export function ForgetUserMediaCard() {
 
         {lastResult && !lastResult.error && (
           <Alert>
-            <AlertTitle>{lastResult.dry_run ? 'Prévia da simulação' : 'Execução concluída'}</AlertTitle>
+            <AlertTitle>
+              {lastResult.dry_run ? 'Prévia da simulação' : 'Execução concluída'}
+            </AlertTitle>
             <AlertDescription className="flex flex-wrap gap-2 pt-2">
               {lastResult.dry_run ? (
                 <Badge variant="secondary">Elegíveis: {lastResult.would_delete ?? 0}</Badge>
@@ -219,12 +232,18 @@ export function ForgetUserMediaCard() {
                 <div className="p-3 text-sm text-muted-foreground">Carregando…</div>
               )}
               {!auditQuery.isLoading && (auditQuery.data?.length ?? 0) === 0 && (
-                <div className="p-3 text-sm text-muted-foreground">Nenhuma execução registrada.</div>
+                <div className="p-3 text-sm text-muted-foreground">
+                  Nenhuma execução registrada.
+                </div>
               )}
               {auditQuery.data?.map((entry) => {
-                const totalDeleted = (entry.hot_deleted ?? 0) + (entry.warm_deleted ?? 0) + (entry.cold_deleted ?? 0);
+                const totalDeleted =
+                  (entry.hot_deleted ?? 0) + (entry.warm_deleted ?? 0) + (entry.cold_deleted ?? 0);
                 return (
-                  <div key={entry.id} className="flex flex-wrap items-center justify-between gap-2 p-3 text-sm">
+                  <div
+                    key={entry.id}
+                    className="flex flex-wrap items-center justify-between gap-2 p-3 text-sm"
+                  >
                     <div className="flex flex-col">
                       <span className="font-mono text-xs">{entry.subject_user_id}</span>
                       <span className="text-xs text-muted-foreground">
@@ -234,7 +253,10 @@ export function ForgetUserMediaCard() {
                     <div className="flex flex-wrap gap-1">
                       {entry.dry_run && <Badge variant="secondary">dry_run</Badge>}
                       <Badge variant="default">del {totalDeleted}</Badge>
-                      <Badge variant="outline">H{entry.hot_deleted ?? 0}·W{entry.warm_deleted ?? 0}·C{entry.cold_deleted ?? 0}</Badge>
+                      <Badge variant="outline">
+                        H{entry.hot_deleted ?? 0}·W{entry.warm_deleted ?? 0}·C
+                        {entry.cold_deleted ?? 0}
+                      </Badge>
                       {(entry.legal_hold_skipped ?? 0) > 0 && (
                         <Badge variant="outline">hold {entry.legal_hold_skipped}</Badge>
                       )}
