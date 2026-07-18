@@ -39,9 +39,7 @@ export function TxidWraparoundCard({ limit = 15 }: { limit?: number }) {
     <Card>
       <CardHeader className="flex flex-row items-center gap-2 pb-2">
         <AlertTriangle className="h-4 w-4 text-primary" />
-        <CardTitle className="text-base">
-          Idade de transações (prevenção de wraparound)
-        </CardTitle>
+        <CardTitle className="text-base">Idade de transações (prevenção de wraparound)</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {isLoading ? (
@@ -65,17 +63,14 @@ export function TxidWraparoundCard({ limit = 15 }: { limit?: number }) {
                       dbRow.severity === 'critical'
                         ? 'destructive'
                         : dbRow.severity === 'warn'
-                        ? 'secondary'
-                        : 'default'
+                          ? 'secondary'
+                          : 'default'
                     }
                   >
                     {dbRow.severity}
                   </Badge>
                 </div>
-                <Progress
-                  value={Math.min(100, Number(dbRow.age_ratio_pct))}
-                  className="h-2"
-                />
+                <Progress value={Math.min(100, Number(dbRow.age_ratio_pct))} className="h-2" />
                 <p className="mt-2 text-xs text-muted-foreground">
                   Idade: {Number(dbRow.xid_age).toLocaleString('pt-BR')} XIDs (
                   {Number(dbRow.age_ratio_pct).toFixed(1)}% do freeze_max_age)
@@ -91,13 +86,11 @@ export function TxidWraparoundCard({ limit = 15 }: { limit?: number }) {
             <div className="grid grid-cols-3 gap-2 text-center text-sm">
               <div className="rounded-md border border-border p-2">
                 <p className="text-xs text-muted-foreground">Tabelas OK</p>
-                <p className="font-medium tabular-nums">
-                  {tables.length - critical - warns}
-                </p>
+                <p className="font-medium tabular-nums">{tables.length - critical - warns}</p>
               </div>
               <div className="rounded-md border border-border p-2">
                 <p className="text-xs text-muted-foreground">Atenção</p>
-                <p className="font-medium tabular-nums text-yellow-600">{warns}</p>
+                <p className="font-medium tabular-nums text-warning">{warns}</p>
               </div>
               <div className="rounded-md border border-border p-2">
                 <p className="text-xs text-muted-foreground">Crítico</p>
@@ -136,8 +129,8 @@ export function TxidWraparoundCard({ limit = 15 }: { limit?: number }) {
                               r.severity === 'critical'
                                 ? 'destructive'
                                 : r.severity === 'warn'
-                                ? 'secondary'
-                                : 'default'
+                                  ? 'secondary'
+                                  : 'default'
                             }
                           >
                             {r.severity}

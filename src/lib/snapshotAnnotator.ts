@@ -28,8 +28,7 @@ export interface AnnotateOptions {
   labelBgAlpha?: number;
 }
 
-// Paleta HSL determinística por classe. Consistente com design system (semântico).
-// eslint-disable-next-line visao/no-hardcoded-colors -- Canvas 2D exige strings CSS resolvidas; ver mem://style/design-system-color-exceptions.
+/* eslint-disable visao/no-hardcoded-colors -- Canvas 2D requires resolved CSS color strings */
 const COLOR_MAP: Record<ObjectClass, string> = {
   person: 'hsl(210, 90%, 55%)',
   vehicle: 'hsl(38, 92%, 50%)',
@@ -38,6 +37,7 @@ const COLOR_MAP: Record<ObjectClass, string> = {
   ppe: 'hsl(48, 96%, 50%)',
   other: 'hsl(215, 20%, 55%)',
 };
+/* eslint-enable visao/no-hardcoded-colors */
 
 const DEFAULT_OPTS: Required<AnnotateOptions> = {
   lineWidth: 2,
@@ -54,7 +54,12 @@ export function resolveBoxColor(objectClass?: ObjectClass, override?: string): s
 }
 
 export function clampBox(box: DetectionBox, frame: FrameDims): DetectionBox | null {
-  if (!Number.isFinite(box.x) || !Number.isFinite(box.y) || !Number.isFinite(box.w) || !Number.isFinite(box.h)) {
+  if (
+    !Number.isFinite(box.x) ||
+    !Number.isFinite(box.y) ||
+    !Number.isFinite(box.w) ||
+    !Number.isFinite(box.h)
+  ) {
     return null;
   }
   // Normaliza box invertido (w/h negativos)
@@ -64,8 +69,14 @@ export function clampBox(box: DetectionBox, frame: FrameDims): DetectionBox | nu
   let h = Math.abs(box.h);
 
   // Clamp aos limites do frame
-  if (x < 0) { w += x; x = 0; }
-  if (y < 0) { h += y; y = 0; }
+  if (x < 0) {
+    w += x;
+    x = 0;
+  }
+  if (y < 0) {
+    h += y;
+    y = 0;
+  }
   if (x + w > frame.width) w = frame.width - x;
   if (y + h > frame.height) h = frame.height - y;
 
@@ -89,7 +100,7 @@ export function annotateFrame(
   ctx: CanvasRenderingContext2D,
   frame: FrameDims,
   detections: readonly DetectionBox[],
-  opts: AnnotateOptions = {},
+  opts: AnnotateOptions = {}
 ): number {
   const o = { ...DEFAULT_OPTS, ...opts };
   let drawn = 0;

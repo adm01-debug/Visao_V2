@@ -27,7 +27,11 @@ export const DEFAULT_POLICY: RetentionPolicy = {
 
 /** Resolve quantos dias reter um clip, aplicando override por objeto quando presente. */
 export function resolveRetentionDays(policy: RetentionPolicy, objectClass?: ObjectClass): number {
-  if (objectClass && policy.perObject?.[objectClass] != null) {
+  if (
+    objectClass &&
+    policy.perObject?.[objectClass] !== null &&
+    policy.perObject?.[objectClass] !== undefined
+  ) {
     return Math.max(0, policy.perObject[objectClass]!);
   }
   return Math.max(0, policy.defaultDays);
@@ -43,7 +47,11 @@ export function computeExpiryDate(clip: ClipMetadata, policy: RetentionPolicy): 
 }
 
 /** Retorna true se o clip já ultrapassou a retenção conforme `now`. */
-export function isClipExpired(clip: ClipMetadata, policy: RetentionPolicy, now: Date = new Date()): boolean {
+export function isClipExpired(
+  clip: ClipMetadata,
+  policy: RetentionPolicy,
+  now: Date = new Date()
+): boolean {
   const expiry = computeExpiryDate(clip, policy);
   if (!expiry) return false;
   return now.getTime() >= expiry.getTime();
@@ -57,7 +65,8 @@ export function validatePolicy(policy: RetentionPolicy): string[] {
   }
   if (policy.perObject) {
     for (const [k, v] of Object.entries(policy.perObject)) {
-      if (v != null && (!Number.isInteger(v) || v < 0)) errs.push(`perObject.${k} deve ser inteiro >= 0`);
+      if (v !== null && v !== undefined && (!Number.isInteger(v) || v < 0))
+        errs.push(`perObject.${k} deve ser inteiro >= 0`);
     }
   }
   return errs;
