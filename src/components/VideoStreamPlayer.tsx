@@ -64,6 +64,14 @@ export function VideoStreamPlayer({
     onSnapshot: (data) => onSnapshot?.(data),
   });
 
+  // Onda Shinobi 2 — Digital Zoom (client-side, não afeta stream para IA)
+  const digitalZoom = useDigitalZoom({
+    cameraId,
+    containerRef,
+    enabled: enableDigitalZoom,
+    persist: persistDigitalZoom,
+  });
+
   // Frame capture for continuous analysis
   const getFrameForAnalysis = useCallback((): string | null => {
     const video = videoRef.current;
