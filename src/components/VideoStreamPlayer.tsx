@@ -32,6 +32,8 @@ import {
   VideoDetectionOverlay,
 } from './video-player';
 import type { VideoStreamPlayerProps } from './video-player';
+import { useDigitalZoom } from '@/hooks/useDigitalZoom';
+import { DigitalZoomOverlay } from './DigitalZoomOverlay';
 
 export function VideoStreamPlayer({
   cameraId, cameraName, location, streamUrl, protocol = 'hls',
@@ -41,6 +43,7 @@ export function VideoStreamPlayer({
   enableContinuousAnalysis = false, analysisType = 'security',
   analysisIntervalMs = 15000, analysisRules = [],
   saveAnalysisHistory = false, onAnalysisAlert, onAnalysisResult,
+  enableDigitalZoom = false, persistDigitalZoom = false,
 }: VideoStreamPlayerProps) {
   const [showStatsOverlay, setShowStatsOverlay] = useState(showStats);
   const [controlsVisible, setControlsVisible] = useState(true);
@@ -59,6 +62,14 @@ export function VideoStreamPlayer({
     url, protocol, autoPlay: true, enableAudio: false,
     onError: (error) => onError?.(error.message),
     onSnapshot: (data) => onSnapshot?.(data),
+  });
+
+  // Onda Shinobi 2 — Digital Zoom (client-side, não afeta stream para IA)
+  const digitalZoom = useDigitalZoom({
+    cameraId,
+    containerRef,
+    enabled: enableDigitalZoom,
+    persist: persistDigitalZoom,
   });
 
   // Frame capture for continuous analysis
@@ -168,14 +179,33 @@ export function VideoStreamPlayer({
     <TooltipProvider>
       <div
         ref={containerRef}
+        tabIndex={enableDigitalZoom ? 0 : undefined}
         className={cn('relative bg-foreground rounded-xl overflow-hidden group', height ? '' : 'aspect-video', className)}
         style={height ? { height } : undefined}
         onMouseMove={showControls}
         onMouseLeave={() => state.isPlaying && setControlsVisible(false)}
         onClick={onClick}
+        onWheel={enableDigitalZoom ? digitalZoom.onWheel : undefined}
+        onPointerDown={enableDigitalZoom ? digitalZoom.onPointerDown : undefined}
+        onPointerMove={enableDigitalZoom ? digitalZoom.onPointerMove : undefined}
+        onPointerUp={enableDigitalZoom ? digitalZoom.onPointerUp : undefined}
+        onTouchStart={enableDigitalZoom ? digitalZoom.onTouchStart : undefined}
+        onTouchMove={enableDigitalZoom ? digitalZoom.onTouchMove : undefined}
+        onTouchEnd={enableDigitalZoom ? digitalZoom.onTouchEnd : undefined}
       >
         {/* Video element */}
-        <video ref={videoRef} className="w-full h-full object-cover" playsInline muted={state.isMuted} />
+        <video
+          ref={videoRef}
+          className="w-full h-full object-cover will-change-transform"
+          playsInline
+          muted={state.isMuted}
+          style={enableDigitalZoom ? { transform: digitalZoom.transform, transformOrigin: 'center center' } : undefined}
+        />
+
+        {/* Onda Shinobi 2 — Toolbar de zoom digital */}
+        {enableDigitalZoom && state.status === 'playing' && (
+          <DigitalZoomOverlay zoom={digitalZoom} />
+        )}
 
         {/* Disconnected placeholder */}
         {state.status === 'disconnected' && (
