@@ -38,6 +38,7 @@ import { LegalHoldManagerCard } from '@/components/admin/LegalHoldManagerCard';
 import { GlacierRestoreMonitorCard } from '@/components/admin/GlacierRestoreMonitorCard';
 import { GlacierStuckAlertsCard } from '@/components/admin/GlacierStuckAlertsCard';
 import { StorageTieringSloCard } from '@/components/admin/StorageTieringSloCard';
+import { PrometheusMetricsCard } from '@/components/admin/PrometheusMetricsCard';
 import { BlockingChainsCard } from '@/components/admin/BlockingChainsCard';
 import { RlsCoverageCard } from '@/components/admin/RlsCoverageCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
@@ -414,8 +415,9 @@ export default function OperationsPage() {
         <GlacierStuckAlertsCard />
       </section>
 
-      <section>
+      <section className="grid gap-4 lg:grid-cols-2">
         <StorageTieringSloCard />
+        <PrometheusMetricsCard />
       </section>
 
 

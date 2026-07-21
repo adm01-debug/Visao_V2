@@ -33,6 +33,9 @@ verify_jwt = true
 [functions.glacier-stuck-monitor]
 verify_jwt = false
 
+[functions.metrics-prometheus]
+verify_jwt = false
+
 
 
 
