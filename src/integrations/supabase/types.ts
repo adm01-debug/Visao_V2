@@ -3858,6 +3858,21 @@ export type Database = {
           total_bytes: number
         }[]
       }
+      get_storage_tiering_slo: {
+        Args: { _window_hours?: number }
+        Returns: {
+          failed_runs: number
+          operation: string
+          p50_duration_ms: number
+          p95_duration_ms: number
+          p99_duration_ms: number
+          slo_status: string
+          success_rate: number
+          success_runs: number
+          target_p95_ms: number
+          total_runs: number
+        }[]
+      }
       get_table_bloat_estimate: {
         Args: { _limit?: number; _min_size_mb?: number }
         Returns: {
