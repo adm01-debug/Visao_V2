@@ -1,0 +1,2304 @@
+{
+  "summary": {
+    "wave": "storage-25",
+    "totalChecks": 28,
+    "passedChecks": 28,
+    "scenarios": 654,
+    "misfires": 0,
+    "passRate": "100.0%"
+  },
+  "checks": [
+    {
+      "name": "exists:observability/alertmanager/visao-routing.yml",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "exists:observability/prometheus/visao-deploy-freeze.recording.yml",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "exists:scripts/ci/check-deploy-freeze.mjs",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "exists:.github/workflows/deploy-freeze-check.yml",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "exists:docs/runbooks/VisaoDeployFreezeActive.md",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "routing:has_business_hours",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "routing:has_after_hours",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "routing:has_telegram_oncall",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "routing:has_slack_warnings",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "routing:has_ticket_jira",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "routing:has_pagerduty",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "routing:critical_repeat_1h",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "routing:group_by_slo",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "routing:inhibit_fast_over_medium",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "routing:inhibit_critical_over_warning",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "freeze:record_active",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "freeze:budget_50pct",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "freeze:fast_burn_14_4x",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "freeze:alert_has_for_2m",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "freeze:severity_critical",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ci:has_timeout",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ci:has_retries",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ci:fail_mode",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ci:bypass_flag",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ci:queries_deploy_freeze",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "inhibitions:correct_ratio_12/12",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "antiflap:isolated_spike_does_not_activate",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "antiflap:sustained_activates",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "scenarios": [
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "backend",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "business",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "critical",
+      "team": "storage",
+      "window": "after",
+      "recv": [
+        "telegram-oncall",
+        "pagerduty-oncall"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "business",
+      "recv": [
+        "slack-warnings"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    },
+    {
+      "kind": "routing",
+      "sev": "warning",
+      "team": "sre",
+      "window": "after",
+      "recv": [
+        "ticket-jira"
+      ],
+      "ok": true
+    }
+  ]
+}
