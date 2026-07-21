@@ -684,6 +684,9 @@ export type Database = {
           ptz_capable: boolean
           status: Database["public"]["Enums"]["camera_status"]
           stream_url: string | null
+          substream_enabled: boolean
+          substream_protocol: string | null
+          substream_url: string | null
           thumbnail: string | null
           updated_at: string
           user_id: string
@@ -702,6 +705,9 @@ export type Database = {
           ptz_capable?: boolean
           status?: Database["public"]["Enums"]["camera_status"]
           stream_url?: string | null
+          substream_enabled?: boolean
+          substream_protocol?: string | null
+          substream_url?: string | null
           thumbnail?: string | null
           updated_at?: string
           user_id?: string
@@ -720,6 +726,9 @@ export type Database = {
           ptz_capable?: boolean
           status?: Database["public"]["Enums"]["camera_status"]
           stream_url?: string | null
+          substream_enabled?: boolean
+          substream_protocol?: string | null
+          substream_url?: string | null
           thumbnail?: string | null
           updated_at?: string
           user_id?: string
