@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      alertmanager_silences_audit: {
+        Row: {
+          action: string
+          actor_user_id: string
+          comment: string | null
+          created_at: string
+          duration_minutes: number | null
+          error_message: string | null
+          id: string
+          matchers: Json | null
+          silence_id: string | null
+          status: string
+        }
+        Insert: {
+          action: string
+          actor_user_id: string
+          comment?: string | null
+          created_at?: string
+          duration_minutes?: number | null
+          error_message?: string | null
+          id?: string
+          matchers?: Json | null
+          silence_id?: string | null
+          status: string
+        }
+        Update: {
+          action?: string
+          actor_user_id?: string
+          comment?: string | null
+          created_at?: string
+          duration_minutes?: number | null
+          error_message?: string | null
+          id?: string
+          matchers?: Json | null
+          silence_id?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       alerts: {
         Row: {
           camera_id: string | null
