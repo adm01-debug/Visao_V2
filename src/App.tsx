@@ -88,6 +88,7 @@ const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const SchedulesPage = lazy(() => import("@/pages/SchedulesPage"));
 const TimelapsePage = lazy(() => import("@/pages/TimelapsePage"));
 const MotionMasksPage = lazy(() => import("@/pages/MotionMasksPage"));
+const StreamHealthPage = lazy(() => import("@/pages/StreamHealthPage"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -184,6 +185,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/schedules" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<SchedulesPage />, "Agendamentos")}</ProtectedLayoutRoute>} />
                     <Route path="/timelapse" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<TimelapsePage />, "Timelapse")}</ProtectedLayoutRoute>} />
                     <Route path="/motion-masks" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<MotionMasksPage />, "Máscaras de Movimento")}</ProtectedLayoutRoute>} />
+                    <Route path="/stream-health" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<StreamHealthPage />, "Saúde dos Streams")}</ProtectedLayoutRoute>} />
                     <Route path="/productivity" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<ProductivityDashboardPage />, "Produtividade")}</ProtectedLayoutRoute>} />
                     <Route path="/behavior-detection" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<BehaviorDetectionPage />, "Detecção de Comportamento")}</ProtectedLayoutRoute>} />
                     <Route path="/journey-reports" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<JourneyReportsPage />, "Relatórios de Jornada")}</ProtectedLayoutRoute>} />

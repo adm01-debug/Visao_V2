@@ -3503,6 +3503,47 @@ export type Database = {
         }
         Relationships: []
       }
+      stream_health_checks: {
+        Row: {
+          camera_id: string
+          created_at: string
+          http_code: number | null
+          id: string
+          latency_ms: number | null
+          message: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          camera_id: string
+          created_at?: string
+          http_code?: number | null
+          id?: string
+          latency_ms?: number | null
+          message?: string | null
+          status: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string
+          created_at?: string
+          http_code?: number | null
+          id?: string
+          latency_ms?: number | null
+          message?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stream_health_checks_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stream_recordings: {
         Row: {
           camera_id: string | null
@@ -3558,6 +3599,50 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "stream_recordings_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stream_restart_events: {
+        Row: {
+          attempt: number
+          camera_id: string
+          created_at: string
+          id: string
+          message: string | null
+          reason: string
+          succeeded: boolean | null
+          triggered_by: string
+          user_id: string
+        }
+        Insert: {
+          attempt?: number
+          camera_id: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          reason: string
+          succeeded?: boolean | null
+          triggered_by?: string
+          user_id: string
+        }
+        Update: {
+          attempt?: number
+          camera_id?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          reason?: string
+          succeeded?: boolean | null
+          triggered_by?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stream_restart_events_camera_id_fkey"
             columns: ["camera_id"]
             isOneToOne: false
             referencedRelation: "cameras"
@@ -3999,6 +4084,7 @@ export type Database = {
         Args: { months_ahead?: number }
         Returns: Json
       }
+      evaluate_and_restart_streams: { Args: never; Returns: number }
       execute_camera_schedules: { Args: never; Returns: number }
       find_glacier_stuck_pending_alert: {
         Args: { _dedup_window_hours?: number; _hours_threshold?: number }
