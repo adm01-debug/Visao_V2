@@ -1,0 +1,67 @@
+# VISÃO — Onda Storage 25: Deploy Freeze recording + alerta
+# `visao:deploy_freeze:active` = 1 quando o error budget está esgotado
+# ou um fast-burn está ativo — usado pelo CI para bloquear deploys
+# (Google SRE Workbook cap. 5: "freeze deploys when burning fast").
+groups:
+  - name: visao-deploy-freeze-recording
+    interval: 30s
+    rules:
+      # Sinal auxiliar: qualquer SLO com >50% do budget consumido em 30d/7d.
+      - record: visao:budget_exhausted_50pct:any
+        expr: |
+          max(
+            (slo:error_budget_burned:metrics_30d > 0.5)
+            or (slo:error_budget_burned:app_30d > 0.5)
+            or (slo:error_budget_burned:tiering_7d > 0.5)
+          ) or vector(0)
+
+      # Sinal auxiliar: fast-burn ativo nos últimos 30m em QUALQUER SLO.
+      # Reutiliza recording rules da Onda 24 (multi-window ratio > 14.4x threshold).
+      - record: visao:fast_burn_active:any
+        expr: |
+          max(
+            (
+              (1 - slo:probe_success_ratio:metrics_1h) / (1 - slo:target:metrics) > 14.4
+              and
+              (1 - slo:probe_success_ratio:metrics_5m) / (1 - slo:target:metrics) > 14.4
+            )
+            or
+            (
+              (1 - slo:probe_success_ratio:app_1h) / (1 - slo:target:app) > 14.4
+              and
+              (1 - slo:probe_success_ratio:app_5m) / (1 - slo:target:app) > 14.4
+            )
+            or
+            (
+              (1 - slo:tiering_success_ratio:1h) / (1 - slo:target:tiering) > 14.4
+              and
+              (1 - slo:tiering_success_ratio:5m) / (1 - slo:target:tiering) > 14.4
+            )
+          ) or vector(0)
+
+      # Decisão final: freeze ativo quando budget baixo OU fast burn.
+      # Anti-flap: exige 2 avaliações consecutivas (via `for` no alert).
+      - record: visao:deploy_freeze:active
+        expr: |
+          clamp_max(
+            visao:budget_exhausted_50pct:any + visao:fast_burn_active:any,
+            1
+          )
+
+  - name: visao-deploy-freeze-alerts
+    rules:
+      - alert: VisaoDeployFreezeActive
+        expr: visao:deploy_freeze:active == 1
+        for: 2m
+        labels:
+          severity: critical
+          team: sre
+          slo: multi
+          burn_rate_window: freeze
+        annotations:
+          summary: 'Deploy freeze ativo — error budget esgotado ou fast burn detectado'
+          description: |
+            Deploys estão bloqueados automaticamente. Verifique dashboard SLO
+            e runbook antes de aplicar bypass.
+          runbook_url: 'https://github.com/visao/docs/runbooks/VisaoDeployFreezeActive.md'
+          dashboard_url: 'https://grafana/d/visao-slo'

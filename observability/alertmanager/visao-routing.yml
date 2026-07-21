@@ -1,0 +1,135 @@
+# VISÃO — Onda Storage 25: Alertmanager routing inteligente
+# Roteamento multi-tier por severity + team, com inhibitions p/ multi-burn-rate
+# e time_intervals p/ silenciar warnings fora do horário comercial.
+#
+# Substituir placeholders *_file / *_url por secrets do ambiente antes de subir.
+global:
+  resolve_timeout: 5m
+
+time_intervals:
+  - name: business_hours
+    time_intervals:
+      - weekdays: ['monday:friday']
+        times:
+          - start_time: '09:00'
+            end_time: '19:00'
+        location: 'America/Sao_Paulo'
+  - name: after_hours
+    time_intervals:
+      - weekdays: ['monday:friday']
+        times:
+          - start_time: '19:00'
+            end_time: '24:00'
+          - start_time: '00:00'
+            end_time: '09:00'
+        location: 'America/Sao_Paulo'
+      - weekdays: ['saturday', 'sunday']
+        location: 'America/Sao_Paulo'
+
+route:
+  receiver: ticket-jira
+  group_by: [alertname, slo, region]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  routes:
+    # --- CRITICAL: sempre paginar on-call (24/7) ---
+    - matchers: [severity="critical"]
+      receiver: telegram-oncall
+      group_wait: 10s
+      repeat_interval: 1h
+      continue: true
+    # Espelha critical no PagerDuty
+    - matchers: [severity="critical"]
+      receiver: pagerduty-oncall
+      group_wait: 10s
+      repeat_interval: 1h
+
+    # --- WARNING em horário comercial: Slack #visao-alerts ---
+    - matchers: [severity="warning"]
+      active_time_intervals: [business_hours]
+      receiver: slack-warnings
+      group_wait: 1m
+      repeat_interval: 6h
+      routes:
+        - matchers: [team="storage"]
+          receiver: slack-storage
+        - matchers: [team="backend"]
+          receiver: slack-backend
+        - matchers: [team="sre"]
+          receiver: slack-warnings
+
+    # --- WARNING fora de horário: vira ticket, não paginar ---
+    - matchers: [severity="warning"]
+      active_time_intervals: [after_hours]
+      receiver: ticket-jira
+      group_wait: 5m
+      repeat_interval: 12h
+
+    # --- INFO: sempre ticket ---
+    - matchers: [severity="info"]
+      receiver: ticket-jira
+      group_wait: 5m
+      repeat_interval: 24h
+
+receivers:
+  - name: telegram-oncall
+    telegram_configs:
+      - bot_token_file: /etc/alertmanager/telegram_oncall_token
+        chat_id: -1000000000001
+        parse_mode: HTML
+        message: |
+          <b>🚨 {{ .CommonLabels.severity | toUpper }}</b> — {{ .CommonLabels.alertname }}
+          SLO: {{ .CommonLabels.slo }} | Region: {{ .CommonLabels.region }}
+          {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}
+  - name: pagerduty-oncall
+    pagerduty_configs:
+      - routing_key_file: /etc/alertmanager/pagerduty_key
+        severity: '{{ .CommonLabels.severity }}'
+        client: visao-alertmanager
+        details:
+          slo: '{{ .CommonLabels.slo }}'
+          region: '{{ .CommonLabels.region }}'
+          burn_rate_window: '{{ .CommonLabels.burn_rate_window }}'
+  - name: slack-warnings
+    slack_configs:
+      - api_url_file: /etc/alertmanager/slack_webhook
+        channel: '#visao-alerts'
+        send_resolved: true
+        title: '⚠️ {{ .CommonLabels.alertname }}'
+        text: |
+          *SLO:* {{ .CommonLabels.slo }} | *Team:* {{ .CommonLabels.team }}
+          {{ range .Alerts }}• {{ .Annotations.summary }}
+          {{ end }}
+  - name: slack-storage
+    slack_configs:
+      - api_url_file: /etc/alertmanager/slack_webhook_storage
+        channel: '#visao-storage'
+        send_resolved: true
+  - name: slack-backend
+    slack_configs:
+      - api_url_file: /etc/alertmanager/slack_webhook_backend
+        channel: '#visao-backend'
+        send_resolved: true
+  - name: ticket-jira
+    webhook_configs:
+      - url_file: /etc/alertmanager/jira_webhook
+        send_resolved: false
+        max_alerts: 10
+
+# --- Inhibitions: multi-burn-rate hierarchy ---
+# Fast burn (14.4x/1h) silencia medium/slow do MESMO SLO — evita triplicar page.
+# Critical silencia warning do mesmo alertname/slo/region.
+inhibit_rules:
+  - source_matchers: [burn_rate_window="fast", severity="critical"]
+    target_matchers: [burn_rate_window=~"medium|slow"]
+    equal: [slo]
+  - source_matchers: [burn_rate_window="medium", severity="critical"]
+    target_matchers: [burn_rate_window="slow"]
+    equal: [slo]
+  - source_matchers: [severity="critical"]
+    target_matchers: [severity="warning"]
+    equal: [alertname, slo, region]
+  - source_matchers: [alertname="VisaoDeployFreezeActive"]
+    target_matchers: [alertname=~"VisaoSlo.*BudgetLow"]
+    equal: [slo]
