@@ -414,6 +414,10 @@ export default function OperationsPage() {
         <GlacierStuckAlertsCard />
       </section>
 
+      <section>
+        <StorageTieringSloCard />
+      </section>
+
 
 
 
