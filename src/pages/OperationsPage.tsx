@@ -37,6 +37,7 @@ import { ForgetUserMediaCard } from '@/components/admin/ForgetUserMediaCard';
 import { LegalHoldManagerCard } from '@/components/admin/LegalHoldManagerCard';
 import { GlacierRestoreMonitorCard } from '@/components/admin/GlacierRestoreMonitorCard';
 import { GlacierStuckAlertsCard } from '@/components/admin/GlacierStuckAlertsCard';
+import { StorageTieringSloCard } from '@/components/admin/StorageTieringSloCard';
 import { BlockingChainsCard } from '@/components/admin/BlockingChainsCard';
 import { RlsCoverageCard } from '@/components/admin/RlsCoverageCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
