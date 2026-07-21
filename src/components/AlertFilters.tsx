@@ -209,7 +209,7 @@ export function AlertFiltersComponent({ filters, onFiltersChange, cameras = [] }
                         onFiltersChange({ ...filters, customDateStart: date });
                         setShowStartCalendar(false);
                       }}
-                      initialFocus
+                      autoFocus
                     />
                   </PopoverContent>
                 </Popover>
