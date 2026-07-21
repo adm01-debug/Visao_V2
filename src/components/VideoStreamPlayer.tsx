@@ -32,6 +32,8 @@ import {
   VideoDetectionOverlay,
 } from './video-player';
 import type { VideoStreamPlayerProps } from './video-player';
+import { useDigitalZoom } from '@/hooks/useDigitalZoom';
+import { DigitalZoomOverlay } from './DigitalZoomOverlay';
 
 export function VideoStreamPlayer({
   cameraId, cameraName, location, streamUrl, protocol = 'hls',
@@ -41,6 +43,7 @@ export function VideoStreamPlayer({
   enableContinuousAnalysis = false, analysisType = 'security',
   analysisIntervalMs = 15000, analysisRules = [],
   saveAnalysisHistory = false, onAnalysisAlert, onAnalysisResult,
+  enableDigitalZoom = false, persistDigitalZoom = false,
 }: VideoStreamPlayerProps) {
   const [showStatsOverlay, setShowStatsOverlay] = useState(showStats);
   const [controlsVisible, setControlsVisible] = useState(true);
