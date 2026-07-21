@@ -1,0 +1,84 @@
+{
+  "checks": [
+    {
+      "name": "valid matcher accepted",
+      "ok": true
+    },
+    {
+      "name": "empty matchers rejected",
+      "ok": true
+    },
+    {
+      "name": "too many matchers rejected",
+      "ok": true
+    },
+    {
+      "name": "match everything (.*)  rejected",
+      "ok": true
+    },
+    {
+      "name": "match everything (empty regex) rejected",
+      "ok": true
+    },
+    {
+      "name": "invalid regex rejected",
+      "ok": true
+    },
+    {
+      "name": "invalid label name rejected",
+      "ok": true
+    },
+    {
+      "name": "duration below min clamped up",
+      "ok": true
+    },
+    {
+      "name": "duration above max clamped down",
+      "ok": true
+    },
+    {
+      "name": "duration NaN → default",
+      "ok": true
+    },
+    {
+      "name": "duration negative → default",
+      "ok": true
+    },
+    {
+      "name": "from_alert derives alertname+labels",
+      "ok": true
+    },
+    {
+      "name": "from_alert skips instance label",
+      "ok": true
+    },
+    {
+      "name": "from_alert caps at MAX_MATCHERS",
+      "ok": true
+    },
+    {
+      "name": "from_alert drops non-string label values",
+      "ok": true
+    },
+    {
+      "name": "zero misfires across scenario sweep",
+      "ok": true,
+      "misfires": 0
+    },
+    {
+      "name": "from_alert derivations always valid",
+      "ok": true,
+      "derivedFailures": 0
+    }
+  ],
+  "scenarios": [],
+  "summary": {
+    "wave": "storage-26",
+    "passed": 17,
+    "total": 17,
+    "scenarios_run": 700,
+    "misfires": 0,
+    "derived_failures": 0,
+    "timestamp": "2026-07-21T18:18:14.081Z"
+  }
+}
