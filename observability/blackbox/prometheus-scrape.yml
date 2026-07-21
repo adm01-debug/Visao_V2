@@ -1,0 +1,19 @@
+# VISÃO — Blackbox targets & scrape config snippet (Onda Storage 21)
+# Cole este bloco em prometheus.yml (ajuste PROJECT_REF e host do blackbox_exporter).
+scrape_configs:
+  - job_name: "visao-blackbox-https"
+    metrics_path: /probe
+    params:
+      module: [http_2xx_tls]
+    static_configs:
+      - targets:
+          - https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/metrics-prometheus
+          - https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/health
+          - https://attentive-cam.lovable.app/
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115   # host:porta do blackbox_exporter
