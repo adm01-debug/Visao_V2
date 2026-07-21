@@ -12,7 +12,7 @@
 const PROTOCOLS = ['hls', 'webrtc', 'rtsp'];
 const NETWORK_STATES = ['ok', 'timeout', 'unauthorized', 'not_found', 'malformed'];
 const BITRATE_MAIN_KBPS = [2000, 3000, 4000, 6000, 8000];
-const BITRATE_SUB_KBPS = [256, 384, 512, 768, 1024];
+const BITRATE_SUB_KBPS = [256, 384, 512, 640, 768];
 
 function pickAnalysisStream({ mainUrl, subUrl, subState, allowFallback = true }) {
   if (subUrl && subState === 'ok') return { chosen: 'substream', url: subUrl };
