@@ -17,39 +17,54 @@ export type Database = {
       alertmanager_silences_audit: {
         Row: {
           action: string
+          actor_email: string | null
           actor_user_id: string
           comment: string | null
           created_at: string
           duration_minutes: number | null
           error_message: string | null
           id: string
+          ip_address: string | null
+          justification: string | null
           matchers: Json | null
+          request_id: string | null
           silence_id: string | null
           status: string
+          user_agent: string | null
         }
         Insert: {
           action: string
+          actor_email?: string | null
           actor_user_id: string
           comment?: string | null
           created_at?: string
           duration_minutes?: number | null
           error_message?: string | null
           id?: string
+          ip_address?: string | null
+          justification?: string | null
           matchers?: Json | null
+          request_id?: string | null
           silence_id?: string | null
           status: string
+          user_agent?: string | null
         }
         Update: {
           action?: string
+          actor_email?: string | null
           actor_user_id?: string
           comment?: string | null
           created_at?: string
           duration_minutes?: number | null
           error_message?: string | null
           id?: string
+          ip_address?: string | null
+          justification?: string | null
           matchers?: Json | null
+          request_id?: string | null
           silence_id?: string | null
           status?: string
+          user_agent?: string | null
         }
         Relationships: []
       }
