@@ -100,8 +100,11 @@ export function useMotionMasks(cameraId?: string) {
 
   const update = useCallback(async (id: string, patch: Partial<MotionMaskInput>) => {
     const payload: Record<string, unknown> = { ...patch };
-    if (patch.polygon) payload.polygon = patch.polygon;
-    const { error } = await supabase.from('motion_masks').update(payload).eq('id', id);
+    if (patch.polygon) payload.polygon = patch.polygon as unknown as never;
+    const { error } = await supabase
+      .from('motion_masks')
+      .update(payload as never)
+      .eq('id', id);
     if (error) toast.error(error.message);
   }, []);
 
@@ -123,8 +126,11 @@ export function useMotionMasks(cameraId?: string) {
 export function pointInPolygon(pt: [number, number], poly: MaskPolygon): boolean {
   let inside = false;
   for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-    const [xi, yi] = poly[i];
-    const [xj, yj] = poly[j];
+    const pi = poly[i];
+    const pj = poly[j];
+    if (!pi || !pj) continue;
+    const [xi, yi] = pi;
+    const [xj, yj] = pj;
     const intersect = ((yi > pt[1]) !== (yj > pt[1])) &&
       (pt[0] < ((xj - xi) * (pt[1] - yi)) / (yj - yi) + xi);
     if (intersect) inside = !inside;
