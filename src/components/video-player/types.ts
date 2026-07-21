@@ -39,4 +39,6 @@ export interface VideoStreamPlayerProps {
   saveAnalysisHistory?: boolean;
   onAnalysisAlert?: (alert: AnalysisAlert, result: AnalysisResult) => void;
   onAnalysisResult?: (result: AnalysisResult) => void;
+  enableDigitalZoom?: boolean;
+  persistDigitalZoom?: boolean;
 }
