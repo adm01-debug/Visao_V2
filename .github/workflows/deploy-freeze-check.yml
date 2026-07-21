@@ -1,0 +1,43 @@
+name: SLO Deploy Freeze Check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-freeze-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-deploy-freeze:
+    name: slo/deploy-freeze
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Detect override label
+        id: override
+        if: github.event_name == 'pull_request'
+        run: |
+          if echo '${{ toJSON(github.event.pull_request.labels.*.name) }}' | grep -q '"deploy-freeze-override"'; then
+            echo "bypass=true" >> $GITHUB_OUTPUT
+            echo "::warning::PR label deploy-freeze-override presente — bypass será auditado."
+          fi
+      - name: Check SLO deploy freeze
+        env:
+          PROMETHEUS_URL: ${{ secrets.PROMETHEUS_URL }}
+          PROMETHEUS_TOKEN: ${{ secrets.PROMETHEUS_TOKEN }}
+          FREEZE_FAIL_MODE: ${{ github.event_name == 'pull_request' && 'open' || 'closed' }}
+          BYPASS_DEPLOY_FREEZE: ${{ steps.override.outputs.bypass || 'false' }}
+        run: node scripts/ci/check-deploy-freeze.mjs
+      - name: Summary
+        if: always()
+        run: |
+          echo "## SLO Deploy Freeze" >> $GITHUB_STEP_SUMMARY
+          echo "- Fail mode: **${{ github.event_name == 'pull_request' && 'open' || 'closed' }}**" >> $GITHUB_STEP_SUMMARY
+          echo "- Bypass: **${{ steps.override.outputs.bypass || 'false' }}**" >> $GITHUB_STEP_SUMMARY
