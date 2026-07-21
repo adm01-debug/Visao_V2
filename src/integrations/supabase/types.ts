@@ -1731,6 +1731,56 @@ export type Database = {
         }
         Relationships: []
       }
+      motion_masks: {
+        Row: {
+          camera_id: string
+          color: string
+          created_at: string
+          enabled: boolean
+          id: string
+          mode: string
+          name: string
+          polygon: Json
+          sensitivity: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          camera_id: string
+          color?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          mode?: string
+          name: string
+          polygon: Json
+          sensitivity?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string
+          color?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          mode?: string
+          name?: string
+          polygon?: Json
+          sensitivity?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "motion_masks_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notification_configs: {
         Row: {
           channels: string[]
@@ -4451,6 +4501,14 @@ export type Database = {
         Returns: Json
       }
       is_org_member: { Args: { _org: string; _user: string }; Returns: boolean }
+      point_in_polygon: {
+        Args: { _poly: Json; _x: number; _y: number }
+        Returns: boolean
+      }
+      point_triggers_motion: {
+        Args: { _camera_id: string; _x: number; _y: number }
+        Returns: boolean
+      }
       purge_timelapse_snapshots: { Args: never; Returns: number }
       release_ptz_lock: { Args: { _camera_id: string }; Returns: boolean }
       replace_user_role: {
