@@ -12,6 +12,7 @@ Runbooks executáveis para cada alerta configurado em `observability/prometheus/
 | 🔴 critical | `VisaoGlacierRestoreStuck` | [`VisaoGlacierRestoreStuck.md`](./VisaoGlacierRestoreStuck.md) |
 | 🟡 warning | `VisaoGlacierStuckAlertsSpike` | [`VisaoGlacierStuckAlertsSpike.md`](./VisaoGlacierStuckAlertsSpike.md) |
 | 🟡 warning | `VisaoTieringMetricsAbsent` | [`VisaoTieringMetricsAbsent.md`](./VisaoTieringMetricsAbsent.md) |
+| 🔴 critical | `VisaoMetricsExporterDown` / `Absent` / `HeartbeatStale` | [`VisaoMetricsExporterDown.md`](./VisaoMetricsExporterDown.md) |
 
 ## Convenções
 
