@@ -152,12 +152,12 @@ for (let i = 0; i < 200; i++) {
 // ── 6. Drag pan (100 sequências)
 for (let i = 0; i < 100; i++) {
   const scale = 2 + Math.random() * 4;
-  let st = { scale, offsetX: 0, offsetY: 0, width: W, height: H };
+  let st = { scale, offsetX: 0, offsetY: 0 };
   const steps = 5 + Math.floor(Math.random() * 10);
   for (let k = 0; k < steps; k++) {
     const dx = (Math.random() - 0.5) * 400;
     const dy = (Math.random() - 0.5) * 400;
-    st = clampOffsets({ ...st, offsetX: st.offsetX + dx, offsetY: st.offsetY + dy });
+    st = clampOffsets({ scale: st.scale, offsetX: st.offsetX + dx, offsetY: st.offsetY + dy, width: W, height: H });
     const maxX = (W * (st.scale - 1)) / 2;
     const maxY = (H * (st.scale - 1)) / 2;
     assert(Math.abs(st.offsetX) <= maxX + 1e-6, `drag pan X clamp iter=${i}/${k}`);
