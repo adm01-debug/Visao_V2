@@ -1,0 +1,128 @@
+{
+  "summary": {
+    "total": 26,
+    "unsafe": 0,
+    "scenarios": 600,
+    "misfires": 0,
+    "divergenceFires": 222,
+    "globalFires": 1,
+    "quietOK": 377,
+    "regions": [
+      "us-east-1",
+      "eu-west-1",
+      "sa-east-1"
+    ]
+  },
+  "rows": [
+    {
+      "n": "scrape file exists",
+      "ok": true
+    },
+    {
+      "n": "rules file exists",
+      "ok": true
+    },
+    {
+      "n": "runbook exists",
+      "ok": true
+    },
+    {
+      "n": "readme updated",
+      "ok": true
+    },
+    {
+      "n": "3 blackbox jobs",
+      "ok": true
+    },
+    {
+      "n": "job visao-blackbox-https has region label",
+      "ok": true,
+      "region": "us-east-1"
+    },
+    {
+      "n": "job visao-blackbox-https points to regional exporter",
+      "ok": true
+    },
+    {
+      "n": "job visao-blackbox-https-eu has region label",
+      "ok": true,
+      "region": "eu-west-1"
+    },
+    {
+      "n": "job visao-blackbox-https-eu points to regional exporter",
+      "ok": true
+    },
+    {
+      "n": "job visao-blackbox-https-sa has region label",
+      "ok": true,
+      "region": "sa-east-1"
+    },
+    {
+      "n": "job visao-blackbox-https-sa points to regional exporter",
+      "ok": true
+    },
+    {
+      "n": "3 distinct regions",
+      "ok": true
+    },
+    {
+      "n": "region:us-east-1",
+      "ok": true
+    },
+    {
+      "n": "region:eu-west-1",
+      "ok": true
+    },
+    {
+      "n": "region:sa-east-1",
+      "ok": true
+    },
+    {
+      "n": "group visao-blackbox-regional",
+      "ok": true
+    },
+    {
+      "n": "alert VisaoBlackboxRegionalDivergence",
+      "ok": true
+    },
+    {
+      "n": "alert VisaoBlackboxGlobalOutage",
+      "ok": true
+    },
+    {
+      "n": "divergence uses max+min",
+      "ok": true
+    },
+    {
+      "n": "global outage uses max==0",
+      "ok": true
+    },
+    {
+      "n": "divergence severity=warning",
+      "ok": true
+    },
+    {
+      "n": "global severity=critical",
+      "ok": true
+    },
+    {
+      "n": "regex job matches all blackbox jobs",
+      "ok": true
+    },
+    {
+      "n": "sim:600_no_misfire",
+      "ok": true,
+      "divergenceFires": 222,
+      "globalFires": 1,
+      "quietOK": 377
+    },
+    {
+      "n": "probe_failed still exists (per-region)",
+      "ok": true
+    },
+    {
+      "n": "probe_failed uses instance-level",
+      "ok": true
+    }
+  ]
+}
