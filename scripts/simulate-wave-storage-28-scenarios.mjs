@@ -18,7 +18,7 @@ check('Chama functions.invoke("alertmanager-silence")', /alertmanager-silence/.t
 check('Bloqueia matcher global .* no client', /match_everything|\\\.\\\*|globalMatcher|isDangerousMatcher/.test(src));
 check('Exige justificativa >= 5 chars', /(justif|comment)[^\n]*length\s*[<>]=?\s*5/i.test(src) || /min\s*=\s*"?5"?/i.test(src));
 check('Duração min 5 max 1440', /min=\{?5\}?[\s\S]{0,80}max=\{?1440\}?/.test(src) || /min="5"[\s\S]{0,80}max="1440"/.test(src));
-check('Renderiza lista de silences ativos', /silences?\.map/i.test(src));
+check('Renderiza lista de silences ativos', /data\.map\(\(s\)/.test(src) && /Silence\[\]|Silence\s*\{/.test(src));
 check('Botão expirar silence', /expire|Expirar/i.test(src));
 check('Trata estado de erro', /isError|onError/i.test(src));
 check('Trata estado de loading', /isLoading|isPending/i.test(src));
