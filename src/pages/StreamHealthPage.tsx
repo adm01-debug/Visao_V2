@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useStreamHealth } from '@/hooks/useStreamHealth';
 import { Activity, RotateCcw, Loader2 } from 'lucide-react';
-import { PageMeta } from '@/components/seo/PageMeta';
+import { PageMeta } from '@/components/PageMeta';
 
 export default function StreamHealthPage() {
   const { summaries, restarts, loading, reload, triggerManualRestart } = useStreamHealth();
