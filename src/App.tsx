@@ -86,6 +86,7 @@ const AcessoNegado = lazy(() => import("@/pages/AcessoNegado"));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const SchedulesPage = lazy(() => import("@/pages/SchedulesPage"));
+const TimelapsePage = lazy(() => import("@/pages/TimelapsePage"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -180,6 +181,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/help" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<HelpPage />, "Ajuda")}</ProtectedLayoutRoute>} />
                     <Route path="/panic-events" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<PanicEventsPage />, "Eventos de Pânico")}</ProtectedLayoutRoute>} />
                     <Route path="/schedules" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<SchedulesPage />, "Agendamentos")}</ProtectedLayoutRoute>} />
+                    <Route path="/timelapse" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<TimelapsePage />, "Timelapse")}</ProtectedLayoutRoute>} />
                     <Route path="/productivity" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<ProductivityDashboardPage />, "Produtividade")}</ProtectedLayoutRoute>} />
                     <Route path="/behavior-detection" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<BehaviorDetectionPage />, "Detecção de Comportamento")}</ProtectedLayoutRoute>} />
                     <Route path="/journey-reports" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<JourneyReportsPage />, "Relatórios de Jornada")}</ProtectedLayoutRoute>} />
