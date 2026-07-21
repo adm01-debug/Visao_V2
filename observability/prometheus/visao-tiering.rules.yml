@@ -66,3 +66,43 @@ groups:
         annotations:
           summary: "Métricas de tiering ausentes há 30min"
           description: "Exporter /metrics não retornou dados ou todas as operações estão com status=no_data."
+
+  - name: visao-exporter-deadman
+    interval: 30s
+    rules:
+      # Dead-man's switch: se o scrape do exporter falhar por 2min, dispara critical.
+      # Complementa VisaoTieringMetricsAbsent (que depende do próprio dado do exporter).
+      - alert: VisaoMetricsExporterDown
+        expr: up{job="visao-metrics"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: visao-observability
+        annotations:
+          summary: "Exporter Prometheus VISÃO fora do ar (job=visao-metrics)"
+          description: "Scrape do endpoint /functions/v1/metrics-prometheus falhou há >2min. Cegueira operacional — todos os demais alertas de tiering ficam mudos."
+          runbook: "docs/runbooks/VisaoMetricsExporterDown.md"
+
+      - alert: VisaoMetricsExporterAbsent
+        expr: absent(up{job="visao-metrics"})
+        for: 5m
+        labels:
+          severity: critical
+          service: visao-observability
+        annotations:
+          summary: "Job visao-metrics não existe no Prometheus"
+          description: "Nenhum target com job=visao-metrics há >5min. Verificar prometheus.yml e reload."
+          runbook: "docs/runbooks/VisaoMetricsExporterDown.md"
+
+      # Heartbeat sintético: métrica visao_exporter_heartbeat_timestamp_seconds deve ser
+      # sempre recente (< 3min). Se antigo, o exporter respondeu mas a fonte está congelada.
+      - alert: VisaoMetricsExporterHeartbeatStale
+        expr: (time() - visao_exporter_heartbeat_timestamp_seconds) > 180
+        for: 3m
+        labels:
+          severity: warning
+          service: visao-observability
+        annotations:
+          summary: "Heartbeat do exporter VISÃO desatualizado"
+          description: "visao_exporter_heartbeat_timestamp_seconds tem >3min. Exporter responde mas fonte pode estar travada."
+          runbook: "docs/runbooks/VisaoMetricsExporterDown.md"

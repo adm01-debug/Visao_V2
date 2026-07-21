@@ -1,0 +1,82 @@
+{
+  "summary": {
+    "total": 18,
+    "unsafe": 0,
+    "scenarios": 200,
+    "misfires": 0
+  },
+  "rows": [
+    {
+      "name": "rule:VisaoMetricsExporterDown",
+      "ok": true
+    },
+    {
+      "name": "rule:VisaoMetricsExporterAbsent",
+      "ok": true
+    },
+    {
+      "name": "rule:VisaoMetricsExporterHeartbeatStale",
+      "ok": true
+    },
+    {
+      "name": "rule:up_zero",
+      "ok": true
+    },
+    {
+      "name": "rule:absent_up",
+      "ok": true
+    },
+    {
+      "name": "rule:heartbeat_expr",
+      "ok": true
+    },
+    {
+      "name": "rule:severity_critical",
+      "ok": true
+    },
+    {
+      "name": "fn:heartbeat_metric",
+      "ok": true
+    },
+    {
+      "name": "fn:build_info",
+      "ok": true
+    },
+    {
+      "name": "fn:heartbeat_after_try",
+      "ok": true
+    },
+    {
+      "name": "runbook:## Sintomas",
+      "ok": true
+    },
+    {
+      "name": "runbook:## Diagnóstico",
+      "ok": true
+    },
+    {
+      "name": "runbook:## Mitigação",
+      "ok": true
+    },
+    {
+      "name": "runbook:## Escalonamento",
+      "ok": true
+    },
+    {
+      "name": "runbook:## Pós-incidente",
+      "ok": true
+    },
+    {
+      "name": "runbook:code_block",
+      "ok": true
+    },
+    {
+      "name": "index:link",
+      "ok": true
+    },
+    {
+      "name": "threshold:200_scenarios_no_misfire",
+      "ok": true
+    }
+  ]
+}
