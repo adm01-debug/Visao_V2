@@ -1552,6 +1552,78 @@ export type Database = {
         }
         Relationships: []
       }
+      monitor_group_cameras: {
+        Row: {
+          camera_id: string
+          created_at: string
+          group_id: string
+          id: string
+          slot_index: number
+          user_id: string
+        }
+        Insert: {
+          camera_id: string
+          created_at?: string
+          group_id: string
+          id?: string
+          slot_index: number
+          user_id: string
+        }
+        Update: {
+          camera_id?: string
+          created_at?: string
+          group_id?: string
+          id?: string
+          slot_index?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "monitor_group_cameras_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "monitor_group_cameras_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "monitor_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      monitor_groups: {
+        Row: {
+          created_at: string
+          id: string
+          is_default: boolean
+          layout: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          layout: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          layout?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notification_configs: {
         Row: {
           channels: string[]
