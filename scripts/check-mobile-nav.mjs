@@ -35,7 +35,10 @@ const ALLOWLIST = new Set([
   'NotFound.tsx',
   'Index.tsx',
   'AcessoNegado.tsx',
+  'PricingPage.tsx',
+  'ApiDocsPage.tsx',
 ]);
+
 
 // Páginas com wrapper customizado que SUBSTITUEM o <main> do MainLayout
 // (ex.: declaram seu próprio `min-h-screen` ou Sidebar). Devem reaplicar
