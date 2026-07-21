@@ -1,0 +1,32 @@
+# VISÃO — Alertmanager routing (Onda Storage 18)
+# Exemplo de configuração; substituir tokens por secrets do ambiente.
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: ops-chat
+  group_by: [alertname, service, operation]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  routes:
+    - matchers: [severity="critical"]
+      receiver: pager
+      continue: true
+    - matchers: [service="visao-glacier"]
+      receiver: ops-chat
+
+receivers:
+  - name: ops-chat
+    telegram_configs:
+      - bot_token_file: /etc/alertmanager/telegram_token
+        chat_id: -1000000000000
+        parse_mode: HTML
+  - name: pager
+    pagerduty_configs:
+      - routing_key_file: /etc/alertmanager/pagerduty_key
+
+inhibit_rules:
+  - source_matchers: [severity="critical"]
+    target_matchers: [severity="warning"]
+    equal: [alertname, service, operation]

@@ -1,0 +1,68 @@
+# VISÃO — Alertmanager rules (Onda Storage 18)
+# Consumidas pelo Prometheus (job apontando para /functions/v1/metrics-prometheus).
+# Severidade: critical -> pager; warning -> chat ops; info -> registro.
+groups:
+  - name: visao-tiering
+    interval: 60s
+    rules:
+      - alert: VisaoTieringSloViolated
+        expr: max by (operation) (visao_tiering_slo_status) == 2
+        for: 10m
+        labels:
+          severity: critical
+          service: visao-tiering
+        annotations:
+          summary: "SLO de tiering VIOLADO em {{ $labels.operation }}"
+          description: "Operação {{ $labels.operation }} está com status SLO violated (2) há 10min. Verificar orquestrador, R2/Glacier."
+          runbook: "https://docs.internal/visao/runbooks/tiering-slo"
+
+      - alert: VisaoTieringSloAtRisk
+        expr: max by (operation) (visao_tiering_slo_status) == 1
+        for: 15m
+        labels:
+          severity: warning
+          service: visao-tiering
+        annotations:
+          summary: "SLO de tiering em RISCO em {{ $labels.operation }}"
+          description: "Operação {{ $labels.operation }} em risco (status=1) há 15min."
+
+      - alert: VisaoTieringSuccessRatioLow
+        expr: min by (operation) (visao_tiering_success_ratio) < 0.9
+        for: 20m
+        labels:
+          severity: warning
+          service: visao-tiering
+        annotations:
+          summary: "Success ratio baixo em {{ $labels.operation }}"
+          description: "Success ratio {{ $value | humanizePercentage }} < 90% há 20min."
+
+      - alert: VisaoGlacierRestoreStuck
+        expr: visao_glacier_restore_stuck_total > 0
+        for: 5m
+        labels:
+          severity: critical
+          service: visao-glacier
+        annotations:
+          summary: "{{ $value }} restaurações Glacier travadas (>12h)"
+          description: "Existe(m) restauração(ões) Glacier pendente(s) há mais de 12h. Verificar console AWS."
+          runbook: "https://docs.internal/visao/runbooks/glacier-stuck"
+
+      - alert: VisaoGlacierStuckAlertsSpike
+        expr: visao_glacier_stuck_alerts_24h > 5
+        for: 10m
+        labels:
+          severity: warning
+          service: visao-glacier
+        annotations:
+          summary: "Spike de alertas Glacier stuck: {{ $value }} em 24h"
+          description: "Volume elevado de alertas de restauração travada nas últimas 24h."
+
+      - alert: VisaoTieringMetricsAbsent
+        expr: absent(visao_tiering_slo_status) or max(visao_tiering_slo_status) == 3
+        for: 30m
+        labels:
+          severity: warning
+          service: visao-tiering
+        annotations:
+          summary: "Métricas de tiering ausentes há 30min"
+          description: "Exporter /metrics não retornou dados ou todas as operações estão com status=no_data."
