@@ -89,6 +89,7 @@ function MonitorGroupEditorImpl({
     setSelected((prev) => {
       const arr = [...prev];
       const [m] = arr.splice(from, 1);
+      if (m === undefined) return prev;
       arr.splice(to, 0, m);
       return arr;
     });

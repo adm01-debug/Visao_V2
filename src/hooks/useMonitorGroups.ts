@@ -93,7 +93,7 @@ export function useMonitorGroups(): UseMonitorGroupsReturn {
     for (const s of slots) {
       (map[s.group_id] ??= []).push(s);
     }
-    for (const k of Object.keys(map)) map[k].sort((a, b) => a.slot_index - b.slot_index);
+    for (const k of Object.keys(map)) map[k]!.sort((a, b) => a.slot_index - b.slot_index);
     return map;
   }, [slots]);
 
