@@ -132,15 +132,37 @@ async function callAlertmanager(path: string, init: RequestInit): Promise<Respon
   throw lastErr instanceof Error ? lastErr : new Error('am_unreachable');
 }
 
+type AuditContext = {
+  actor_user_id: string;
+  actor_email: string | null;
+  ip_address: string | null;
+  user_agent: string | null;
+  request_id: string;
+};
+
+function buildAuditContext(req: Request, user: { id: string; email?: string | null }): AuditContext {
+  const fwd = req.headers.get('x-forwarded-for') || '';
+  const ip = fwd.split(',')[0]?.trim() || req.headers.get('cf-connecting-ip') || null;
+  const ua = req.headers.get('user-agent');
+  return {
+    actor_user_id: user.id,
+    actor_email: user.email ?? null,
+    ip_address: ip ? ip.slice(0, 64) : null,
+    user_agent: ua ? ua.slice(0, 512) : null,
+    request_id: req.headers.get('x-request-id') || crypto.randomUUID(),
+  };
+}
+
 async function audit(
   supabase: ReturnType<typeof createClient>,
+  ctx: AuditContext,
   entry: {
     action: string;
     silence_id: string | null;
-    user_id: string;
     matchers: Matcher[] | null;
     duration_minutes: number | null;
     comment: string | null;
+    justification: string | null;
     status: 'ok' | 'error';
     error_message?: string | null;
   },
@@ -149,14 +171,25 @@ async function audit(
     await supabase.from('alertmanager_silences_audit').insert({
       action: entry.action,
       silence_id: entry.silence_id,
-      actor_user_id: entry.user_id,
+      actor_user_id: ctx.actor_user_id,
+      actor_email: ctx.actor_email,
+      ip_address: ctx.ip_address,
+      user_agent: ctx.user_agent,
+      request_id: ctx.request_id,
       matchers: entry.matchers,
       duration_minutes: entry.duration_minutes,
       comment: entry.comment,
+      justification: entry.justification,
       status: entry.status,
       error_message: entry.error_message ?? null,
     });
-  } catch { /* audit best-effort */ }
+  } catch (err) {
+    console.error('[alertmanager-silence] audit_write_failed', {
+      request_id: ctx.request_id,
+      action: entry.action,
+      error: err instanceof Error ? err.message : String(err),
+    });
+  }
 }
 
 function json(status: number, body: unknown) {
