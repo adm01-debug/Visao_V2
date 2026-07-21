@@ -167,7 +167,9 @@ export function useDigitalZoom({ cameraId, containerRef, persist: shouldPersist 
 
   const onTouchStart = useCallback((e: React.TouchEvent) => {
     if (!enabled || e.touches.length !== 2) return;
-    const [a, b] = [e.touches[0], e.touches[1]];
+    const a = e.touches[0];
+    const b = e.touches[1];
+    if (!a || !b) return;
     const dx = a.clientX - b.clientX;
     const dy = a.clientY - b.clientY;
     const dist = Math.hypot(dx, dy);
