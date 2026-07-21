@@ -1,0 +1,323 @@
+{
+  "summary": {
+    "total": 74,
+    "unsafe": 0,
+    "scenarios": 2600,
+    "misfires": 0,
+    "slos": [
+      "metrics",
+      "app",
+      "tiering"
+    ],
+    "burnLevels": [
+      "fast",
+      "medium",
+      "slow"
+    ]
+  },
+  "rows": [
+    {
+      "n": "exists:observability/prometheus/visao-slo.recording.yml",
+      "ok": true
+    },
+    {
+      "n": "exists:observability/prometheus/visao-slo.rules.yml",
+      "ok": true
+    },
+    {
+      "n": "exists:observability/grafana/visao-slo-dashboard.json",
+      "ok": true
+    },
+    {
+      "n": "exists:docs/runbooks/VisaoSloFastBurn.md",
+      "ok": true
+    },
+    {
+      "n": "exists:docs/runbooks/VisaoSloSlowBurn.md",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:probe_success_ratio:metrics_5m",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:probe_success_ratio:metrics_1h",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:probe_success_ratio:metrics_6h",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:probe_success_ratio:metrics_1d",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:probe_success_ratio:metrics_30d",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:probe_success_ratio:app_5m",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:probe_success_ratio:app_1h",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:probe_success_ratio:app_6h",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:probe_success_ratio:app_1d",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:probe_success_ratio:app_30d",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:tiering_success_ratio:5m",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:tiering_success_ratio:1h",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:tiering_success_ratio:1d",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:tiering_success_ratio:7d",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:probe_duration_gauge:5m",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:probe_duration_gauge:1h",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:target:metrics",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:target:app",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:target:tiering",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:target:latency_seconds",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:error_budget_burned:metrics_30d",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:error_budget_burned:app_30d",
+      "ok": true
+    },
+    {
+      "n": "rec:slo:error_budget_burned:tiering_7d",
+      "ok": true
+    },
+    {
+      "n": "alert:VisaoSloMetricsFastBurn",
+      "ok": true
+    },
+    {
+      "n": "alert:VisaoSloMetricsMediumBurn",
+      "ok": true
+    },
+    {
+      "n": "alert:VisaoSloMetricsSlowBurn",
+      "ok": true
+    },
+    {
+      "n": "alert:VisaoSloAppFastBurn",
+      "ok": true
+    },
+    {
+      "n": "alert:VisaoSloAppMediumBurn",
+      "ok": true
+    },
+    {
+      "n": "alert:VisaoSloAppSlowBurn",
+      "ok": true
+    },
+    {
+      "n": "alert:VisaoSloLatencyP95High",
+      "ok": true
+    },
+    {
+      "n": "alert:VisaoSloTieringFastBurn",
+      "ok": true
+    },
+    {
+      "n": "alert:VisaoSloTieringSlowBurn",
+      "ok": true
+    },
+    {
+      "n": "alert:VisaoSloBudgetExhausted",
+      "ok": true
+    },
+    {
+      "n": "alert:VisaoSloBudgetLow",
+      "ok": true
+    },
+    {
+      "n": "multi-window:VisaoSloMetricsFastBurn",
+      "ok": true
+    },
+    {
+      "n": "multi-window:VisaoSloMetricsMediumBurn",
+      "ok": true
+    },
+    {
+      "n": "multi-window:VisaoSloMetricsSlowBurn",
+      "ok": true
+    },
+    {
+      "n": "multi-window:VisaoSloAppFastBurn",
+      "ok": true
+    },
+    {
+      "n": "multi-window:VisaoSloAppMediumBurn",
+      "ok": true
+    },
+    {
+      "n": "multi-window:VisaoSloAppSlowBurn",
+      "ok": true
+    },
+    {
+      "n": "multi-window:VisaoSloTieringFastBurn",
+      "ok": true
+    },
+    {
+      "n": "multi-window:VisaoSloTieringSlowBurn",
+      "ok": true
+    },
+    {
+      "n": "sev-critical:VisaoSloMetricsFastBurn",
+      "ok": true
+    },
+    {
+      "n": "sev-critical:VisaoSloAppFastBurn",
+      "ok": true
+    },
+    {
+      "n": "sev-critical:VisaoSloTieringFastBurn",
+      "ok": true
+    },
+    {
+      "n": "sev-warning:VisaoSloMetricsSlowBurn",
+      "ok": true
+    },
+    {
+      "n": "sev-warning:VisaoSloAppSlowBurn",
+      "ok": true
+    },
+    {
+      "n": "sev-warning:VisaoSloTieringSlowBurn",
+      "ok": true
+    },
+    {
+      "n": "runbook:VisaoSloMetricsFastBurn",
+      "ok": true
+    },
+    {
+      "n": "runbook:VisaoSloMetricsMediumBurn",
+      "ok": true
+    },
+    {
+      "n": "runbook:VisaoSloMetricsSlowBurn",
+      "ok": true
+    },
+    {
+      "n": "runbook:VisaoSloAppFastBurn",
+      "ok": true
+    },
+    {
+      "n": "runbook:VisaoSloAppMediumBurn",
+      "ok": true
+    },
+    {
+      "n": "runbook:VisaoSloAppSlowBurn",
+      "ok": true
+    },
+    {
+      "n": "runbook:VisaoSloLatencyP95High",
+      "ok": true
+    },
+    {
+      "n": "runbook:VisaoSloTieringFastBurn",
+      "ok": true
+    },
+    {
+      "n": "runbook:VisaoSloTieringSlowBurn",
+      "ok": true
+    },
+    {
+      "n": "runbook:VisaoSloBudgetExhausted",
+      "ok": true
+    },
+    {
+      "n": "runbook:VisaoSloBudgetLow",
+      "ok": true
+    },
+    {
+      "n": "sweep:no_misfire",
+      "ok": true,
+      "scenarios": 1800,
+      "misfires": 0
+    },
+    {
+      "n": "anti-flap:short_spike_only_never_pages",
+      "ok": true,
+      "flapScenarios": 200
+    },
+    {
+      "n": "positive:both_windows_hot_always_fires",
+      "ok": true,
+      "bothScenarios": 200
+    },
+    {
+      "n": "anti-flap:recovery_no_page",
+      "ok": true,
+      "recoveryScenarios": 200
+    },
+    {
+      "n": "latency:matches_rule",
+      "ok": true,
+      "latScenarios": 100
+    },
+    {
+      "n": "budget:exhaustion_and_low_correct",
+      "ok": true,
+      "bxScenarios": 100
+    },
+    {
+      "n": "dash:title_has_wave24",
+      "ok": true
+    },
+    {
+      "n": "dash:has_error_budget_panels",
+      "ok": true
+    },
+    {
+      "n": "dash:has_burn_rate_panels",
+      "ok": true
+    },
+    {
+      "n": "dash:refs_recording_rules",
+      "ok": true
+    }
+  ]
+}
