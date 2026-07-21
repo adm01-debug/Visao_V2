@@ -179,14 +179,33 @@ export function VideoStreamPlayer({
     <TooltipProvider>
       <div
         ref={containerRef}
+        tabIndex={enableDigitalZoom ? 0 : undefined}
         className={cn('relative bg-foreground rounded-xl overflow-hidden group', height ? '' : 'aspect-video', className)}
         style={height ? { height } : undefined}
         onMouseMove={showControls}
         onMouseLeave={() => state.isPlaying && setControlsVisible(false)}
         onClick={onClick}
+        onWheel={enableDigitalZoom ? digitalZoom.onWheel : undefined}
+        onPointerDown={enableDigitalZoom ? digitalZoom.onPointerDown : undefined}
+        onPointerMove={enableDigitalZoom ? digitalZoom.onPointerMove : undefined}
+        onPointerUp={enableDigitalZoom ? digitalZoom.onPointerUp : undefined}
+        onTouchStart={enableDigitalZoom ? digitalZoom.onTouchStart : undefined}
+        onTouchMove={enableDigitalZoom ? digitalZoom.onTouchMove : undefined}
+        onTouchEnd={enableDigitalZoom ? digitalZoom.onTouchEnd : undefined}
       >
         {/* Video element */}
-        <video ref={videoRef} className="w-full h-full object-cover" playsInline muted={state.isMuted} />
+        <video
+          ref={videoRef}
+          className="w-full h-full object-cover will-change-transform"
+          playsInline
+          muted={state.isMuted}
+          style={enableDigitalZoom ? { transform: digitalZoom.transform, transformOrigin: 'center center' } : undefined}
+        />
+
+        {/* Onda Shinobi 2 — Toolbar de zoom digital */}
+        {enableDigitalZoom && state.status === 'playing' && (
+          <DigitalZoomOverlay zoom={digitalZoom} />
+        )}
 
         {/* Disconnected placeholder */}
         {state.status === 'disconnected' && (
