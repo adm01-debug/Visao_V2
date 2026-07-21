@@ -157,3 +157,39 @@ groups:
           summary: "Latência externa alta em {{ $labels.instance }}"
           description: "Fase processing >3s há 10min. Investigar backend / Edge Function."
           runbook: "docs/runbooks/VisaoBlackboxProbeFailed.md"
+
+  - name: visao-blackbox-regional
+    interval: 60s
+    rules:
+      # Divergência regional: >=1 região reporta UP e >=1 reporta DOWN para o
+      # mesmo instance por 5min. Indica partial outage (BGP/DNS/CDN local),
+      # não um problema global — precisa investigação por PoP.
+      - alert: VisaoBlackboxRegionalDivergence
+        expr: |
+          (
+            max by (instance) (probe_success{job=~"visao-blackbox-https.*"}) == 1
+          )
+          and
+          (
+            min by (instance) (probe_success{job=~"visao-blackbox-https.*"}) == 0
+          )
+        for: 5m
+        labels:
+          severity: warning
+          service: visao-observability
+        annotations:
+          summary: "Divergência regional em {{ $labels.instance }}"
+          description: "Ao menos 1 região reporta UP e outra reporta DOWN há >5min. Possível partial outage (BGP/DNS/CDN)."
+          runbook: "docs/runbooks/VisaoBlackboxRegionalDivergence.md"
+
+      # Todas as regiões DOWN para o mesmo instance -> outage global confirmado.
+      - alert: VisaoBlackboxGlobalOutage
+        expr: max by (instance) (probe_success{job=~"visao-blackbox-https.*"}) == 0
+        for: 3m
+        labels:
+          severity: critical
+          service: visao-observability
+        annotations:
+          summary: "Outage global confirmado em {{ $labels.instance }}"
+          description: "Todas as regiões (us-east/eu-west/sa-east) reportam DOWN há >3min. Backend indisponível globalmente."
+          runbook: "docs/runbooks/VisaoBlackboxRegionalDivergence.md"
