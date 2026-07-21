@@ -59,7 +59,7 @@ check(!matches(f, new Date(Date.UTC(2026, 6, 20, 8, 31))), 'no_match_off_minute'
 check(!matches(f, new Date(Date.UTC(2026, 6, 18, 8, 30))), 'no_match_saturday'); // Sat
 
 // ---------- Next-run within 24h (600+ ticks) ----------
-function findNext(fields, from, maxMinutes = 60 * 24 * 7) {
+function findNext(fields, from, maxMinutes = 60 * 24 * 400) {
   const d = new Date(from);
   d.setUTCSeconds(0, 0);
   d.setUTCMinutes(d.getUTCMinutes() + 1);
@@ -162,12 +162,15 @@ function daysToCron(bitmask) {
 check(daysToCron(0b1111111) === '*', 'bitmask_all');
 check(daysToCron(0b0111110) === '1,2,3,4,5', 'bitmask_weekdays');
 check(daysToCron(0b1000001) === '0,6', 'bitmask_weekends');
-for (let m = 0; m < 128; m++) {
+for (let m = 1; m < 128; m++) {
   const s = daysToCron(m);
   const cron = `0 8 * * ${s}`;
   try { parseCron(cron); check(true, `bitmask_${m}`); }
   catch { check(false, `bitmask_${m}`); }
 }
+// bitmask 0 = no days → cron field is empty, must be rejected
+try { parseCron(`0 8 * * ${daysToCron(0)}`); check(false, 'bitmask_0_rejected'); }
+catch { check(true, 'bitmask_0_rejected'); }
 
 // ---------- Timezone sanity ----------
 // Just validate string list; DST handled by Postgres AT TIME ZONE
