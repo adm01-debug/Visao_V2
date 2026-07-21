@@ -10,7 +10,8 @@ observability/
 │   ├── visao-tiering.rules.yml   # Regras de alerta (SLO, Glacier)
 │   └── alertmanager.yml          # Roteamento por severidade
 └── grafana/
-    └── visao-tiering-dashboard.json  # Dashboard provisionado (uid: visao-tiering)
+    ├── visao-tiering-dashboard.json    # Dashboard SLO tiering + Glacier (uid: visao-tiering)
+    └── visao-blackbox-dashboard.json   # Dashboard probes externos + SSL (uid: visao-blackbox)
 ```
 
 ## Prometheus
