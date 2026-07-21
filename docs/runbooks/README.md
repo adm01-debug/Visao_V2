@@ -15,6 +15,8 @@ Runbooks executáveis para cada alerta configurado em `observability/prometheus/
 | 🔴 critical | `VisaoMetricsExporterDown` / `Absent` / `HeartbeatStale` | [`VisaoMetricsExporterDown.md`](./VisaoMetricsExporterDown.md) |
 | 🔴 critical | `VisaoBlackboxProbeFailed` / `SslExpiryCritical` / `SslExpiringSoon` / `HighLatency` | [`VisaoBlackboxProbeFailed.md`](./VisaoBlackboxProbeFailed.md) |
 | 🔴 critical / 🟡 warning | `VisaoBlackboxGlobalOutage` / `VisaoBlackboxRegionalDivergence` | [`VisaoBlackboxRegionalDivergence.md`](./VisaoBlackboxRegionalDivergence.md) |
+| 🔴 critical | `VisaoSlo*FastBurn` / `MediumBurn` / `BudgetExhausted` | [`VisaoSloFastBurn.md`](./VisaoSloFastBurn.md) |
+| 🟡 warning | `VisaoSlo*SlowBurn` / `BudgetLow` / `LatencyP95High` | [`VisaoSloSlowBurn.md`](./VisaoSloSlowBurn.md) |
 
 ## Convenções
 
