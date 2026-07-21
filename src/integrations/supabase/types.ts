@@ -3515,6 +3515,173 @@ export type Database = {
           },
         ]
       }
+      timelapse_configs: {
+        Row: {
+          camera_id: string
+          capture_interval_minutes: number
+          created_at: string
+          enabled: boolean
+          end_hour: number
+          fps: number
+          id: string
+          last_capture_at: string | null
+          last_render_at: string | null
+          retention_days: number
+          start_hour: number
+          timezone: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          camera_id: string
+          capture_interval_minutes?: number
+          created_at?: string
+          enabled?: boolean
+          end_hour?: number
+          fps?: number
+          id?: string
+          last_capture_at?: string | null
+          last_render_at?: string | null
+          retention_days?: number
+          start_hour?: number
+          timezone?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string
+          capture_interval_minutes?: number
+          created_at?: string
+          enabled?: boolean
+          end_hour?: number
+          fps?: number
+          id?: string
+          last_capture_at?: string | null
+          last_render_at?: string | null
+          retention_days?: number
+          start_hour?: number
+          timezone?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "timelapse_configs_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      timelapse_snapshots: {
+        Row: {
+          camera_id: string
+          captured_at: string
+          config_id: string
+          created_at: string
+          id: string
+          storage_path: string
+          user_id: string
+        }
+        Insert: {
+          camera_id: string
+          captured_at?: string
+          config_id: string
+          created_at?: string
+          id?: string
+          storage_path: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string
+          captured_at?: string
+          config_id?: string
+          created_at?: string
+          id?: string
+          storage_path?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "timelapse_snapshots_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "timelapse_snapshots_config_id_fkey"
+            columns: ["config_id"]
+            isOneToOne: false
+            referencedRelation: "timelapse_configs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      timelapse_videos: {
+        Row: {
+          camera_id: string
+          config_id: string
+          created_at: string
+          duration_seconds: number
+          error: string | null
+          frame_count: number
+          id: string
+          rendered_at: string | null
+          status: string
+          storage_path: string | null
+          updated_at: string
+          user_id: string
+          video_date: string
+        }
+        Insert: {
+          camera_id: string
+          config_id: string
+          created_at?: string
+          duration_seconds?: number
+          error?: string | null
+          frame_count?: number
+          id?: string
+          rendered_at?: string | null
+          status?: string
+          storage_path?: string | null
+          updated_at?: string
+          user_id: string
+          video_date: string
+        }
+        Update: {
+          camera_id?: string
+          config_id?: string
+          created_at?: string
+          duration_seconds?: number
+          error?: string | null
+          frame_count?: number
+          id?: string
+          rendered_at?: string | null
+          status?: string
+          storage_path?: string | null
+          updated_at?: string
+          user_id?: string
+          video_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "timelapse_videos_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "timelapse_videos_config_id_fkey"
+            columns: ["config_id"]
+            isOneToOne: false
+            referencedRelation: "timelapse_configs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_filter_preferences: {
         Row: {
           created_at: string
@@ -4284,6 +4451,7 @@ export type Database = {
         Returns: Json
       }
       is_org_member: { Args: { _org: string; _user: string }; Returns: boolean }
+      purge_timelapse_snapshots: { Args: never; Returns: number }
       release_ptz_lock: { Args: { _camera_id: string }; Returns: boolean }
       replace_user_role: {
         Args: {
@@ -4321,6 +4489,7 @@ export type Database = {
         Args: { _force?: boolean; _pid: number; _reason?: string }
         Returns: Json
       }
+      tick_timelapse_capture: { Args: never; Returns: number }
     }
     Enums: {
       alert_type:
