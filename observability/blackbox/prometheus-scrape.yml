@@ -1,5 +1,8 @@
-# VISÃO — Blackbox targets & scrape config snippet (Onda Storage 21)
-# Cole este bloco em prometheus.yml (ajuste PROJECT_REF e host do blackbox_exporter).
+# VISÃO — Blackbox targets & multi-region scrape config (Onda Storage 21 + 23)
+#
+# Cada região roda um blackbox_exporter próprio (us-east / eu-west / sa-east) e o
+# Prometheus federa os probes. A label `region` diferencia origens no dashboard e
+# habilita o alerta VisaoBlackboxRegionalDivergence (ver visao-tiering.rules.yml).
 scrape_configs:
   - job_name: "visao-blackbox-https"
     metrics_path: /probe
@@ -10,10 +13,57 @@ scrape_configs:
           - https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/metrics-prometheus
           - https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/health
           - https://attentive-cam.lovable.app/
+        labels:
+          region: us-east-1
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: blackbox-exporter:9115   # host:porta do blackbox_exporter
+        replacement: blackbox-us-east:9115   # blackbox_exporter regional (US)
+
+  - job_name: "visao-blackbox-https-eu"
+    metrics_path: /probe
+    params:
+      module: [http_2xx_tls]
+    static_configs:
+      - targets:
+          - https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/metrics-prometheus
+          - https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/health
+          - https://attentive-cam.lovable.app/
+        labels:
+          region: eu-west-1
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-eu-west:9115
+
+  - job_name: "visao-blackbox-https-sa"
+    metrics_path: /probe
+    params:
+      module: [http_2xx_tls]
+    static_configs:
+      - targets:
+          - https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/metrics-prometheus
+          - https://fsisdfdwlbfeadwfqpir.supabase.co/functions/v1/health
+          - https://attentive-cam.lovable.app/
+        labels:
+          region: sa-east-1
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-sa-east:9115
+
+# Notas operacionais:
+# - Todos os 3 blackbox_exporter reutilizam observability/blackbox/blackbox.yml.
+# - Se algum PoP não estiver disponível, comente o job — jamais remova a label
+#   `region`, pois quebra a regra de divergência regional.
+# - O alerta VisaoBlackboxProbeFailed continua disparando por região (via
+#   $labels.region no annotation) para não mascarar falhas locais em multi-região.
