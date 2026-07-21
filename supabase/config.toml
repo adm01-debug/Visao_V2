@@ -40,3 +40,6 @@ verify_jwt = false
 
 
 
+
+[functions.stream-health-probe]
+verify_jwt = false
