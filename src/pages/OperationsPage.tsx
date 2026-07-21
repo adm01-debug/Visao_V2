@@ -41,6 +41,7 @@ import { StorageTieringSloCard } from '@/components/admin/StorageTieringSloCard'
 import { PrometheusMetricsCard } from '@/components/admin/PrometheusMetricsCard';
 import { BlockingChainsCard } from '@/components/admin/BlockingChainsCard';
 import { RlsCoverageCard } from '@/components/admin/RlsCoverageCard';
+import { AlertmanagerSilencesCard } from '@/components/admin/AlertmanagerSilencesCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
 
 interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
@@ -430,6 +431,10 @@ export default function OperationsPage() {
 
       <section>
         <RlsCoverageCard />
+      </section>
+
+      <section>
+        <AlertmanagerSilencesCard />
       </section>
 
 
