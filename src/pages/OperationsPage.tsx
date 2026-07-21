@@ -414,8 +414,9 @@ export default function OperationsPage() {
         <GlacierStuckAlertsCard />
       </section>
 
-      <section>
+      <section className="grid gap-4 lg:grid-cols-2">
         <StorageTieringSloCard />
+        <PrometheusMetricsCard />
       </section>
 
 
