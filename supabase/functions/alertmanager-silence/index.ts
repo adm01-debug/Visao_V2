@@ -231,41 +231,84 @@ Deno.serve(async (req) => {
 
   const admin = createClient(SUPABASE_URL, SERVICE);
   const createdBy = user.email || user.id;
+  const auditCtx = buildAuditContext(req, user);
+
+  const respHeaders = { ...corsHeaders, 'Content-Type': 'application/json', 'x-request-id': auditCtx.request_id };
+  const jsonR = (status: number, body: unknown) =>
+    new Response(JSON.stringify(body), { status, headers: respHeaders });
 
   try {
     if (req.method === 'GET' && action === 'list') {
       const res = await callAlertmanager('/api/v2/silences', { method: 'GET' });
       const body = await res.json().catch(() => []);
-      return json(res.ok ? 200 : 502, res.ok ? { silences: body } : { error: 'am_error', details: body });
+      await audit(admin, auditCtx, {
+        action: 'list', silence_id: null, matchers: null,
+        duration_minutes: null, comment: null, justification: null,
+        status: res.ok ? 'ok' : 'error',
+        error_message: res.ok ? null : `am_http_${res.status}`,
+      });
+      return jsonR(res.ok ? 200 : 502, res.ok ? { silences: body, request_id: auditCtx.request_id } : { error: 'am_error', details: body });
     }
 
     if (req.method === 'DELETE' || action === 'expire') {
       const id = url.searchParams.get('id') || '';
-      if (!/^[a-zA-Z0-9-]{8,64}$/.test(id)) return json(400, { error: 'invalid_silence_id' });
+      if (!/^[a-zA-Z0-9-]{8,64}$/.test(id)) {
+        await audit(admin, auditCtx, {
+          action: 'expire', silence_id: null, matchers: null,
+          duration_minutes: null, comment: null, justification: null,
+          status: 'error', error_message: 'invalid_silence_id',
+        });
+        return jsonR(400, { error: 'invalid_silence_id' });
+      }
+
+      // Justificativa obrigatória para encerrar silences (auditabilidade).
+      let justification: string | null = null;
+      if (req.method !== 'GET') {
+        const jFromQuery = url.searchParams.get('justification');
+        if (jFromQuery && jFromQuery.trim().length > 0) {
+          justification = jFromQuery.trim().slice(0, 500);
+        } else {
+          try {
+            const body = await req.json();
+            if (body && typeof body.justification === 'string' && body.justification.trim().length > 0) {
+              justification = body.justification.trim().slice(0, 500);
+            }
+          } catch { /* body opcional */ }
+        }
+      }
+      if (!justification || justification.length < 5) {
+        await audit(admin, auditCtx, {
+          action: 'expire', silence_id: id, matchers: null,
+          duration_minutes: null, comment: null, justification: null,
+          status: 'error', error_message: 'justification_required',
+        });
+        return jsonR(400, { error: 'justification_required' });
+      }
+
       const res = await callAlertmanager(`/api/v2/silence/${id}`, { method: 'DELETE' });
       const ok = res.ok || res.status === 404;
-      await audit(admin, {
-        action: 'expire', silence_id: id, user_id: user.id,
-        matchers: null, duration_minutes: null, comment: null,
+      await audit(admin, auditCtx, {
+        action: 'expire', silence_id: id, matchers: null,
+        duration_minutes: null, comment: null, justification,
         status: ok ? 'ok' : 'error',
         error_message: ok ? null : `am_http_${res.status}`,
       });
-      return json(ok ? 200 : 502, { ok, silence_id: id });
+      return jsonR(ok ? 200 : 502, { ok, silence_id: id, request_id: auditCtx.request_id });
     }
 
     if (req.method === 'POST' && (action === 'create' || action === 'from_alert')) {
       let payload: Record<string, unknown> = {};
-      try { payload = await req.json(); } catch { return json(400, { error: 'invalid_json' }); }
+      try { payload = await req.json(); } catch { return jsonR(400, { error: 'invalid_json' }); }
 
       let matchers: Matcher[];
       if (action === 'from_alert') {
         const derived = buildMatchersFromAlert(payload);
         const v = validateMatchers(derived);
-        if (!v.ok) return json(400, { error: v.error });
+        if (!v.ok) return jsonR(400, { error: v.error });
         matchers = v.matchers;
       } else {
         const v = validateMatchers(payload.matchers);
-        if (!v.ok) return json(400, { error: v.error });
+        if (!v.ok) return jsonR(400, { error: v.error });
         matchers = v.matchers;
       }
 
@@ -273,7 +316,11 @@ Deno.serve(async (req) => {
       const comment = typeof payload.comment === 'string' && payload.comment.trim().length > 0
         ? payload.comment.trim().slice(0, 500)
         : null;
-      if (!comment) return json(400, { error: 'comment_required' });
+      if (!comment) return jsonR(400, { error: 'comment_required' });
+
+      const justification = typeof payload.justification === 'string' && payload.justification.trim().length >= 5
+        ? payload.justification.trim().slice(0, 500)
+        : comment; // fallback: comentário serve como justificativa
 
       const now = new Date();
       const endsAt = new Date(now.getTime() + minutes * 60_000);
@@ -288,27 +335,27 @@ Deno.serve(async (req) => {
       const body = await res.json().catch(() => ({}));
       const silenceId = typeof body?.silenceID === 'string' ? body.silenceID : null;
 
-      await audit(admin, {
-        action, silence_id: silenceId, user_id: user.id,
-        matchers, duration_minutes: minutes, comment,
+      await audit(admin, auditCtx, {
+        action, silence_id: silenceId, matchers,
+        duration_minutes: minutes, comment, justification,
         status: res.ok ? 'ok' : 'error',
         error_message: res.ok ? null : `am_http_${res.status}`,
       });
 
-      return json(res.ok ? 201 : 502,
+      return jsonR(res.ok ? 201 : 502,
         res.ok
-          ? { silence_id: silenceId, endsAt: amPayload.endsAt, matchers, duration_minutes: minutes }
+          ? { silence_id: silenceId, endsAt: amPayload.endsAt, matchers, duration_minutes: minutes, request_id: auditCtx.request_id }
           : { error: 'am_error', details: body });
     }
 
-    return json(400, { error: 'unknown_action' });
+    return jsonR(400, { error: 'unknown_action' });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    await audit(admin, {
-      action, silence_id: null, user_id: user.id,
-      matchers: null, duration_minutes: null, comment: null,
+    await audit(admin, auditCtx, {
+      action, silence_id: null, matchers: null,
+      duration_minutes: null, comment: null, justification: null,
       status: 'error', error_message: msg,
     });
-    return json(502, { error: 'am_unreachable', details: msg });
+    return jsonR(502, { error: 'am_unreachable', details: msg, request_id: auditCtx.request_id });
   }
 });
