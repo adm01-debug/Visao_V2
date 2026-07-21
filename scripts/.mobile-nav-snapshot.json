@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-12T23:05:11.501Z",
+  "generatedAt": "2026-07-21T23:46:06.651Z",
   "pages": [
     {
       "file": "AcessoNegado.tsx",
@@ -15,6 +15,14 @@
     },
     {
       "file": "AnalyticsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "ApiDocsPage.tsx",
+      "mode": "standalone"
+    },
+    {
+      "file": "ApiUsageDashboardPage.tsx",
       "mode": "standard"
     },
     {
@@ -34,11 +42,11 @@
       "mode": "standard"
     },
     {
-      "file": "CLSReportPage.tsx",
+      "file": "CamerasPage.tsx",
       "mode": "standard"
     },
     {
-      "file": "CamerasPage.tsx",
+      "file": "CLSReportPage.tsx",
       "mode": "standard"
     },
     {
@@ -47,6 +55,10 @@
     },
     {
       "file": "CoveragePage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "CspReportsDashboardPage.tsx",
       "mode": "standard"
     },
     {
@@ -94,6 +106,10 @@
       "mode": "standard"
     },
     {
+      "file": "MotionMasksPage.tsx",
+      "mode": "standard"
+    },
+    {
       "file": "NotFound.tsx",
       "mode": "standalone"
     },
@@ -102,8 +118,8 @@
       "mode": "customWrapper"
     },
     {
-      "file": "PPEPage.tsx",
-      "mode": "customWrapper"
+      "file": "OperationsPage.tsx",
+      "mode": "standard"
     },
     {
       "file": "PanicEventsPage.tsx",
@@ -112,6 +128,14 @@
     {
       "file": "PeoplePage.tsx",
       "mode": "standard"
+    },
+    {
+      "file": "PPEPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "PricingPage.tsx",
+      "mode": "standalone"
     },
     {
       "file": "ProductivityDashboardPage.tsx",
@@ -142,11 +166,19 @@
       "mode": "standalone"
     },
     {
+      "file": "SchedulesPage.tsx",
+      "mode": "standard"
+    },
+    {
       "file": "SecurityPage.tsx",
       "mode": "standard"
     },
     {
       "file": "SettingsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "StreamHealthPage.tsx",
       "mode": "standard"
     },
     {
@@ -156,6 +188,10 @@
     {
       "file": "TelegramSettingsPage.tsx",
       "mode": "customWrapper"
+    },
+    {
+      "file": "TimelapsePage.tsx",
+      "mode": "standard"
     },
     {
       "file": "UserManagementPage.tsx",
