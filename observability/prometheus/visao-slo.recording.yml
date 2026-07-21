@@ -1,0 +1,111 @@
+# VISÃO — Onda Storage 24: SLO recording rules (multi-window)
+# Pré-agrega probe_success e probe_duration_seconds em janelas curtas e longas
+# usadas pelos alertas multi-burn-rate (Google SRE Workbook cap. 5).
+groups:
+  - name: visao-slo-availability-recording
+    interval: 30s
+    rules:
+      # ---- Availability: /metrics endpoint (SLO 99.9%) ----
+      - record: slo:probe_success_ratio:metrics_5m
+        expr: |
+          avg_over_time(probe_success{job=~"visao-blackbox-https.*", instance=~".*metrics-prometheus.*"}[5m])
+      - record: slo:probe_success_ratio:metrics_30m
+        expr: |
+          avg_over_time(probe_success{job=~"visao-blackbox-https.*", instance=~".*metrics-prometheus.*"}[30m])
+      - record: slo:probe_success_ratio:metrics_1h
+        expr: |
+          avg_over_time(probe_success{job=~"visao-blackbox-https.*", instance=~".*metrics-prometheus.*"}[1h])
+      - record: slo:probe_success_ratio:metrics_6h
+        expr: |
+          avg_over_time(probe_success{job=~"visao-blackbox-https.*", instance=~".*metrics-prometheus.*"}[6h])
+      - record: slo:probe_success_ratio:metrics_1d
+        expr: |
+          avg_over_time(probe_success{job=~"visao-blackbox-https.*", instance=~".*metrics-prometheus.*"}[1d])
+      - record: slo:probe_success_ratio:metrics_3d
+        expr: |
+          avg_over_time(probe_success{job=~"visao-blackbox-https.*", instance=~".*metrics-prometheus.*"}[3d])
+      - record: slo:probe_success_ratio:metrics_30d
+        expr: |
+          avg_over_time(probe_success{job=~"visao-blackbox-https.*", instance=~".*metrics-prometheus.*"}[30d])
+
+      # ---- Availability: app público (SLO 99.5%) ----
+      - record: slo:probe_success_ratio:app_5m
+        expr: |
+          avg_over_time(probe_success{job=~"visao-blackbox-https.*", instance=~"https://attentive-cam.*"}[5m])
+      - record: slo:probe_success_ratio:app_30m
+        expr: |
+          avg_over_time(probe_success{job=~"visao-blackbox-https.*", instance=~"https://attentive-cam.*"}[30m])
+      - record: slo:probe_success_ratio:app_1h
+        expr: |
+          avg_over_time(probe_success{job=~"visao-blackbox-https.*", instance=~"https://attentive-cam.*"}[1h])
+      - record: slo:probe_success_ratio:app_6h
+        expr: |
+          avg_over_time(probe_success{job=~"visao-blackbox-https.*", instance=~"https://attentive-cam.*"}[6h])
+      - record: slo:probe_success_ratio:app_1d
+        expr: |
+          avg_over_time(probe_success{job=~"visao-blackbox-https.*", instance=~"https://attentive-cam.*"}[1d])
+      - record: slo:probe_success_ratio:app_3d
+        expr: |
+          avg_over_time(probe_success{job=~"visao-blackbox-https.*", instance=~"https://attentive-cam.*"}[3d])
+      - record: slo:probe_success_ratio:app_30d
+        expr: |
+          avg_over_time(probe_success{job=~"visao-blackbox-https.*", instance=~"https://attentive-cam.*"}[30d])
+
+      # ---- Constantes de SLO expostas como métrica (facilita alerts/dashboards) ----
+      - record: slo:target:metrics
+        expr: vector(0.999)
+      - record: slo:target:app
+        expr: vector(0.995)
+      - record: slo:target:tiering
+        expr: vector(0.99)
+      - record: slo:target:latency_seconds
+        expr: vector(2)
+
+  - name: visao-slo-latency-recording
+    interval: 30s
+    rules:
+      # p95 curto e longo do probe_duration_seconds
+      - record: slo:probe_duration_p95:5m
+        expr: |
+          histogram_quantile(0.95,
+            sum by (le, instance) (rate(probe_http_duration_seconds_bucket{job=~"visao-blackbox-https.*"}[5m])))
+      - record: slo:probe_duration_p95:1h
+        expr: |
+          histogram_quantile(0.95,
+            sum by (le, instance) (rate(probe_http_duration_seconds_bucket{job=~"visao-blackbox-https.*"}[1h])))
+      - record: slo:probe_duration_p95:1d
+        expr: |
+          histogram_quantile(0.95,
+            sum by (le, instance) (rate(probe_http_duration_seconds_bucket{job=~"visao-blackbox-https.*"}[1d])))
+      - record: slo:probe_duration_p95:30d
+        expr: |
+          histogram_quantile(0.95,
+            sum by (le, instance) (rate(probe_http_duration_seconds_bucket{job=~"visao-blackbox-https.*"}[30d])))
+      # Fallback quando probe_http_duration_seconds não é histogram (gauge simples)
+      - record: slo:probe_duration_gauge:5m
+        expr: avg_over_time(probe_duration_seconds{job=~"visao-blackbox-https.*"}[5m])
+      - record: slo:probe_duration_gauge:1h
+        expr: avg_over_time(probe_duration_seconds{job=~"visao-blackbox-https.*"}[1h])
+
+  - name: visao-slo-tiering-recording
+    interval: 1m
+    rules:
+      # Tiering success ratio já é gauge (exposto pelo /metrics). Agregamos janelas.
+      - record: slo:tiering_success_ratio:5m
+        expr: avg_over_time(visao_tiering_success_ratio[5m])
+      - record: slo:tiering_success_ratio:1h
+        expr: avg_over_time(visao_tiering_success_ratio[1h])
+      - record: slo:tiering_success_ratio:6h
+        expr: avg_over_time(visao_tiering_success_ratio[6h])
+      - record: slo:tiering_success_ratio:1d
+        expr: avg_over_time(visao_tiering_success_ratio[1d])
+      - record: slo:tiering_success_ratio:7d
+        expr: avg_over_time(visao_tiering_success_ratio[7d])
+
+      # Error budget consumido (0..1) em 30d p/ availability e 7d p/ tiering.
+      - record: slo:error_budget_burned:metrics_30d
+        expr: (1 - slo:probe_success_ratio:metrics_30d) / (1 - slo:target:metrics)
+      - record: slo:error_budget_burned:app_30d
+        expr: (1 - slo:probe_success_ratio:app_30d) / (1 - slo:target:app)
+      - record: slo:error_budget_burned:tiering_7d
+        expr: (1 - slo:tiering_success_ratio:7d) / (1 - slo:target:tiering)
