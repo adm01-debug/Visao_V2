@@ -670,6 +670,113 @@ export type Database = {
           },
         ]
       }
+      camera_schedule_runs: {
+        Row: {
+          affected_cameras: number
+          error: string | null
+          id: string
+          ran_at: string
+          schedule_id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          affected_cameras?: number
+          error?: string | null
+          id?: string
+          ran_at?: string
+          schedule_id: string
+          status: string
+          user_id: string
+        }
+        Update: {
+          affected_cameras?: number
+          error?: string | null
+          id?: string
+          ran_at?: string
+          schedule_id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_schedule_runs_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: false
+            referencedRelation: "camera_schedules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      camera_schedules: {
+        Row: {
+          action: string
+          camera_id: string | null
+          created_at: string
+          cron_expression: string
+          enabled: boolean
+          group_id: string | null
+          id: string
+          last_error: string | null
+          last_run_at: string | null
+          last_status: string | null
+          name: string
+          scope: string
+          timezone: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          camera_id?: string | null
+          created_at?: string
+          cron_expression: string
+          enabled?: boolean
+          group_id?: string | null
+          id?: string
+          last_error?: string | null
+          last_run_at?: string | null
+          last_status?: string | null
+          name: string
+          scope: string
+          timezone?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          camera_id?: string | null
+          created_at?: string
+          cron_expression?: string
+          enabled?: boolean
+          group_id?: string | null
+          id?: string
+          last_error?: string | null
+          last_run_at?: string | null
+          last_status?: string | null
+          name?: string
+          scope?: string
+          timezone?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_schedules_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "camera_schedules_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "monitor_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cameras: {
         Row: {
           alerts_count: number | null
@@ -3663,6 +3770,10 @@ export type Database = {
       check_csp_anomaly: { Args: never; Returns: Json }
       cleanup_api_usage_logs: { Args: never; Returns: number }
       cleanup_edge_cache: { Args: never; Returns: number }
+      cron_matches: {
+        Args: { expr: string; ts: string; tz?: string }
+        Returns: boolean
+      }
       delete_user_data: {
         Args: { _target_user_id: string }
         Returns: undefined
@@ -3671,6 +3782,7 @@ export type Database = {
         Args: { months_ahead?: number }
         Returns: Json
       }
+      execute_camera_schedules: { Args: never; Returns: number }
       find_glacier_stuck_pending_alert: {
         Args: { _dedup_window_hours?: number; _hours_threshold?: number }
         Returns: {
@@ -4180,6 +4292,15 @@ export type Database = {
           _target_user_id: string
         }
         Returns: undefined
+      }
+      resolve_schedule_cameras: {
+        Args: {
+          _camera_id: string
+          _group_id: string
+          _scope: string
+          _user_id: string
+        }
+        Returns: string[]
       }
       run_index_maintenance: { Args: never; Returns: Json }
       run_retention_cleanup: { Args: never; Returns: Json }
