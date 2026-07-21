@@ -112,6 +112,22 @@ Deno.serve(async (req) => {
     blocks.push("# glacier_stuck_alerts_unavailable");
   }
 
+  // 4) Heartbeat sintético — dead-man's switch (Onda Storage 20).
+  //    Sempre emitido, independente das fontes acima. Se este valor ficar stale
+  //    no Prometheus, o alerta VisaoMetricsExporterHeartbeatStale dispara.
+  blocks.push(fmt(
+    "visao_exporter_heartbeat_timestamp_seconds",
+    "Unix timestamp of the last successful /metrics render (dead-man's switch).",
+    "gauge",
+    [{ value: Math.floor(Date.now() / 1000) }],
+  ));
+  blocks.push(fmt(
+    "visao_exporter_build_info",
+    "Build info of the VISÃO Prometheus exporter.",
+    "gauge",
+    [{ labels: { version: "20.0.0", wave: "storage-20" }, value: 1 }],
+  ));
+
   const body = blocks.join("\n") + "\n";
   return new Response(body, {
     status: 200,
