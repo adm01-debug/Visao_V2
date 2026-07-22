@@ -653,9 +653,11 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
               type="button"
               variant="secondary"
               onClick={handleTest}
-              disabled={submitting || rtspValidation.loading}
+              disabled={submitting || rtspValidation.loading || substreamValidation.loading}
+              title="Valida principal e substream via Edge Function (latência, jitter, codec, auth)"
             >
-              {rtspValidation.loading
+              {(rtspValidation.loading || substreamValidation.loading)
+
                 ? <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 : <Activity className="mr-2 h-4 w-4" />}
               Testar conexão
