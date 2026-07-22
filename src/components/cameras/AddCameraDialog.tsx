@@ -100,6 +100,8 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
   const { createCamera, deleteCamera, refetch } = useCameras();
   const { storeCredentials, loading: vaultLoading } = useCameraVault();
   const rtspValidation = useRtspValidation();
+  const substreamValidation = useRtspValidation();
+
 
   const form = useForm<AddCameraFormValues>({
     resolver: zodResolver(addCameraSchema),
