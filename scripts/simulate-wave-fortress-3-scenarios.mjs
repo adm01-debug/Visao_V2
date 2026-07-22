@@ -99,17 +99,18 @@ for (let i = 0; i < 40; i++) {
 }
 
 // -------- 5) Rate-limit por worker (>=40) --------
-const workers = ['ptz', 'health', 'restart', 'bandwidth'];
-for (const w of workers) {
-  const key = `vault-reveal-${w}:1.1.1.1`;
-  for (let i = 1; i <= 130; i++) {
-    const allowed = rlCheck(key, 1000);
-    if (i <= 120) check(`rl-${w}-${i}`, allowed === true);
-    else check(`rl-${w}-block-${i}`, allowed === false);
-  }
+// Esgota o worker "ptz" e valida que "health" segue liberado (prefixo isolado).
+rlStore.clear();
+for (let i = 1; i <= 130; i++) {
+  const allowed = rlCheck('vault-reveal-ptz:1.1.1.1', 1000);
+  if (i <= 120) check(`rl-ptz-${i}`, allowed === true);
+  else check(`rl-ptz-block-${i}`, allowed === false);
 }
-// prefixos independentes: worker A esgotado não bloqueia B
-check('rl-isolation-ptz-vs-health', rlStore.get('vault-reveal-health:1.1.1.1').c < 121);
+check('rl-isolation-health-free', rlCheck('vault-reveal-health:1.1.1.1', 1000) === true);
+check('rl-isolation-restart-free', rlCheck('vault-reveal-restart:1.1.1.1', 1000) === true);
+check('rl-isolation-bandwidth-free', rlCheck('vault-reveal-bandwidth:1.1.1.1', 1000) === true);
+// IPs distintos também são isolados
+check('rl-isolation-ip', rlCheck('vault-reveal-ptz:2.2.2.2', 1000) === true);
 
 // -------- 6) Rotação em voo (>=50) --------
 const KEY_OLD = crypto.randomBytes(32).toString('hex');
