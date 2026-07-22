@@ -5,7 +5,7 @@ import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { createLogger } from "../_shared/logger.ts";
 import { withIdempotency } from "../_shared/idempotency.ts";
 import { fetchWithTimeout, DEFAULT_TIMEOUTS } from "../_shared/timeout.ts";
-import { isTestModeActive, buildTestModeResponse } from "../_shared/testMode.ts";
+import { isTestModeActive, buildTestModeResponse, recordTestModeSuppression } from "../_shared/testMode.ts";
 
 
 const log = createLogger("send-telegram");
