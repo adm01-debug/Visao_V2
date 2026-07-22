@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronDown, ChevronUp, CheckCircle2, XCircle, PlayCircle, Loader2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, CheckCircle2, XCircle, PlayCircle, Loader2, FileDown } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { supabase } from '@/integrations/supabase/client';
@@ -11,9 +11,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { useRtspValidation, type ValidationResult } from '@/hooks/useRtspValidation';
 import { toast } from 'sonner';
+import { generateAndDownloadStreamReport } from '@/lib/streamQualityReport';
 
 interface Props {
   cameraId: string;
+  cameraName?: string;
+  cameraLocation?: string | null;
+  cameraModel?: string | null;
 }
 
 interface HealthCheck {
