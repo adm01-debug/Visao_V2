@@ -15,7 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';
 import { ZoneEditor } from '@/components/ZoneEditor';
 import { TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
-import { zoneTypeConfig, defaultColors, parsePointsData, type ZoneType, type DbZone, type ZoneFormData } from './zonesConfig';
+import { zoneTypeConfig, defaultColors, parsePointsData, locationPresets, type ZoneType, type DbZone, type ZoneFormData } from './zonesConfig';
 
 interface ZoneEditorSheetProps {
   isOpen: boolean;
