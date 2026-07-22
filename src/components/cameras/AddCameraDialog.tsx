@@ -108,9 +108,11 @@ function safeErrorMessage(err: unknown): string {
   return raw.replace(/rtsps?:\/\/[^\s"']+/gi, "rtsp://[REDACTED]");
 }
 
-export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDialogProps) {
+export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" }: AddCameraDialogProps) {
+  const guided = mode === "guided";
   const [showPassword, setShowPassword] = useState(false);
   const [showPtzPass, setShowPtzPass] = useState(false);
+  const [forceCritical, setForceCritical] = useState(false);
   const [discover, setDiscover] = useState<DiscoverState>({ loading: false, ok: null, message: null });
   const [autoDiscover, setAutoDiscover] = useState<AutoDiscoverState>({
     loading: false,
