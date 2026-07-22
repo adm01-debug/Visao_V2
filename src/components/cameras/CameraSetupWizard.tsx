@@ -17,12 +17,18 @@ import { EmptyState } from '@/components/EmptyState';
 import { ZoneEditorSheet } from '@/components/zones';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRules } from '@/hooks/useRules';
 import { ruleTemplates, getSeverityLabel, type RuleTemplate } from '@/data/ruleTemplates';
 import type { CameraData } from '@/components/cameras';
 import type { Tables, TablesInsert, TablesUpdate, Json } from '@/integrations/supabase/types';
 import { toast } from 'sonner';
 import { ShieldAlert, Users, Layers3, Sparkles, Plus, Loader2, MapPin } from 'lucide-react';
+import {
+  applyCameraSetup,
+  trackWizardEvent,
+  startPostWizardDryRun,
+  resetWizardSession,
+  type WizardRuleInput,
+} from '@/lib/wizardClient';
 
 type DbZone = Tables<'zones'>;
 
