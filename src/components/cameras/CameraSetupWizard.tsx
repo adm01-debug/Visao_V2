@@ -17,12 +17,18 @@ import { EmptyState } from '@/components/EmptyState';
 import { ZoneEditorSheet } from '@/components/zones';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRules } from '@/hooks/useRules';
 import { ruleTemplates, getSeverityLabel, type RuleTemplate } from '@/data/ruleTemplates';
 import type { CameraData } from '@/components/cameras';
 import type { Tables, TablesInsert, TablesUpdate, Json } from '@/integrations/supabase/types';
 import { toast } from 'sonner';
 import { ShieldAlert, Users, Layers3, Sparkles, Plus, Loader2, MapPin } from 'lucide-react';
+import {
+  applyCameraSetup,
+  trackWizardEvent,
+  startPostWizardDryRun,
+  resetWizardSession,
+  type WizardRuleInput,
+} from '@/lib/wizardClient';
 
 type DbZone = Tables<'zones'>;
 
@@ -51,7 +57,6 @@ const DEFAULT_SCHEDULE = {
 
 export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWizardProps) {
   const { user } = useAuth();
-  const { createRule } = useRules();
   const [tab, setTab] = useState<'zones' | 'rules'>('zones');
   const [zones, setZones] = useState<DbZone[]>([]);
   const [loadingZones, setLoadingZones] = useState(false);
@@ -88,6 +93,7 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
       setTab('zones');
       setSelectedTemplates(new Set(RECOMMENDED_TEMPLATE_IDS));
       loadZones();
+      void trackWizardEvent('started', 'zones', { camera_id: camera.id });
     }
   }, [open, camera?.id, loadZones]);
 
@@ -118,30 +124,54 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
       toast.info('Selecione ao menos uma regra para aplicar');
       return;
     }
+
+    // Vincula cada regra à primeira zona compatível (por tipo) ou à primeira zona existente.
+    const pickZoneId = (tpl: RuleTemplate): string | null => {
+      if (zones.length === 0) return null;
+      const byCategory = zones.find((z) =>
+        (tpl.category === 'security' && ['restricted', 'safety', 'tripwire'].includes(z.type)) ||
+        (tpl.category === 'safety' && z.type === 'safety'),
+      );
+      return (byCategory ?? zones[0])!.id;
+    };
+
+    const rulesPayload: WizardRuleInput[] = templates.map((tpl) => ({
+      name: `${tpl.name} — ${camera.name}`,
+      description: tpl.description,
+      category: tpl.category,
+      severity: tpl.severity,
+      conditions: tpl.conditions as unknown as Json,
+      actions: tpl.actions,
+      zone_id: pickZoneId(tpl),
+      is_active: true,
+    }));
+
     setApplying(true);
-    let created = 0;
-    for (const tpl of templates) {
-      try {
-        await createRule({
-          name: `${tpl.name} — ${camera.name}`,
-          description: tpl.description,
-          category: tpl.category,
-          severity: tpl.severity,
-          is_active: true,
-          conditions: tpl.conditions as unknown as Json,
-          actions: tpl.actions,
-          cameras: [camera.id],
-          schedule: DEFAULT_SCHEDULE as unknown as Json,
+    try {
+      const result = await applyCameraSetup(camera.id, [], rulesPayload);
+      toast.success(`${result.rule_ids.length} regra(s) aplicada(s) à câmera ${camera.name}`);
+      void trackWizardEvent('completed', 'rules', {
+        camera_id: camera.id,
+        rules: result.rule_ids.length,
+        zones: zones.length,
+      });
+      const dryRun = await startPostWizardDryRun(camera.id, result.rule_ids, 15);
+      if (dryRun) {
+        toast.info('Modo teste iniciado por 15 minutos', {
+          description: 'Detecções serão registradas sem disparar notificações reais.',
         });
-        created += 1;
-      } catch {
-        /* toast já vem do hook */
       }
-    }
-    setApplying(false);
-    if (created > 0) {
-      toast.success(`${created} regra(s) aplicada(s) à câmera ${camera.name}`);
+      resetWizardSession();
       onOpenChange(false);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Falha ao aplicar configuração';
+      toast.error('Erro ao aplicar regras', { description: message });
+      void trackWizardEvent('abandoned', 'rules', {
+        camera_id: camera.id,
+        error: message,
+      });
+    } finally {
+      setApplying(false);
     }
   };
 
