@@ -6,6 +6,7 @@ import { getCorsHeaders, handleCors } from "../_shared/cors.ts";
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 
 const VAULT_KEY = Deno.env.get("CAMERA_VAULT_KEY") ?? "";
+const KEK_V1 = Deno.env.get("CAMERA_VAULT_KEK_V1") ?? "";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
@@ -16,6 +17,10 @@ const bodySchema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("audit") }),
   z.object({ action: z.literal("migrate_batch"), limit: z.number().int().min(1).max(200).default(50) }),
   z.object({ action: z.literal("rotate_key"), new_key: z.string().min(16).max(512) }),
+  z.object({ action: z.literal("rotate_dek"), camera_id: z.string().uuid() }),
+  z.object({ action: z.literal("rewrap_kek"), new_kek: z.string().min(16).max(512), from_version: z.number().int().min(0).max(255).default(1), to_version: z.number().int().min(1).max(255), limit: z.number().int().min(1).max(1000).default(200) }),
+  z.object({ action: z.literal("backfill_envelope"), limit: z.number().int().min(1).max(500).default(100) }),
+  z.object({ action: z.literal("stats") }),
 ]);
 
 const j = (payload: unknown, status: number, cors: Record<string, string>) =>
