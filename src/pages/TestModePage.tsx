@@ -74,17 +74,34 @@ export default function TestModePage() {
     };
   }, [qc]);
 
-  const handlePromote = async (id: string) => {
-    const { error } = await supabase
-      .from('rule_executions')
-      .update({ is_test: false })
-      .eq('id', id);
+  const invokePromote = async (payload: { executionIds?: string[]; sessionId?: string }) => {
+    const { data, error } = await supabase.functions.invoke('promote-test-executions', {
+      body: payload,
+    });
     if (error) {
       toast.error('Falha ao promover', { description: error.message });
       return;
     }
-    toast.success('Execução promovida para produção');
+    const summary = data as { promoted: number; notified: number; failed: unknown[]; skipped: unknown[] };
+    const parts = [
+      `${summary.promoted} promovida(s)`,
+      `${summary.notified} notificação(ões) reenviada(s)`,
+    ];
+    if (summary.failed.length) parts.push(`${summary.failed.length} falha(s)`);
+    if (summary.skipped.length) parts.push(`${summary.skipped.length} ignorada(s)`);
+    if (summary.failed.length > 0) {
+      toast.warning('Promoção concluída com avisos', { description: parts.join(' · ') });
+    } else {
+      toast.success('Promoção concluída', { description: parts.join(' · ') });
+    }
     await refetch();
+  };
+
+  const handlePromote = (id: string) => invokePromote({ executionIds: [id] });
+
+  const handlePromoteSession = () => {
+    if (!activeSession) return;
+    void invokePromote({ sessionId: activeSession.id });
   };
 
   const handleDiscard = async (id: string) => {
@@ -134,9 +151,21 @@ export default function TestModePage() {
                 <FlaskConical className="h-4 w-4 text-warning" />
                 Sessão ativa
               </span>
-              <Button size="sm" variant="outline" onClick={() => stop()}>
-                Encerrar agora
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="default"
+                  onClick={handlePromoteSession}
+                  disabled={executions.length === 0}
+                  title="Remove is_test e reenvia notificações de todas as detecções da sessão"
+                >
+                  <Camera className="mr-1 h-3.5 w-3.5" />
+                  Promover sessão ({executions.length})
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => stop()}>
+                  Encerrar agora
+                </Button>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent className="grid gap-4 text-sm md:grid-cols-4">
