@@ -43,6 +43,11 @@ export function RuleCard({ rule, zoneName, onEdit, onToggle, onDelete }: RuleCar
                     {severity?.label}
                   </Badge>
                   {!rule.is_active && <Badge variant="secondary">Inativo</Badge>}
+                  {zoneName && (
+                    <Badge variant="outline" className="gap-1 text-xs">
+                      <MapPin className="h-3 w-3" /> {zoneName}
+                    </Badge>
+                  )}
                 </div>
                 {rule.description && <p className="text-sm text-muted-foreground line-clamp-2">{rule.description}</p>}
                 <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground flex-wrap">
