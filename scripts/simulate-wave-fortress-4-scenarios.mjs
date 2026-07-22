@@ -47,7 +47,6 @@ function assert(cond, label) {
 }
 
 async function runMask() {
-  const { maskString, maskSecrets } = await loadMask();
 
   // 500 cenários gerados combinatorialmente
   const schemes = ["rtsp", "rtsps", "http", "https", "ftp", "ws", "wss"];
