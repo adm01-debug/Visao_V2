@@ -55,6 +55,10 @@ export default function TestModePage() {
   const { activeSession, stop, refetch: refetchSession } = useTestMode();
   const qc = useQueryClient();
 
+  const [cameraFilter, setCameraFilter] = useState<string>(ALL);
+  const [ruleFilter, setRuleFilter] = useState<string>(ALL);
+  const [zoneFilter, setZoneFilter] = useState<string>(ALL);
+
   const {
     data: executions = [],
     isLoading,
@@ -64,7 +68,9 @@ export default function TestModePage() {
     queryFn: async (): Promise<ShadowExecution[]> => {
       const { data, error } = await supabase
         .from('rule_executions')
-        .select('*, rule:rules(name, category, severity)')
+        .select(
+          '*, rule:rules(name, category, severity, zone_id), alert:alerts(camera_id, camera_name, thumbnail, message)',
+        )
         .eq('is_test', true)
         .order('triggered_at', { ascending: false })
         .limit(100);
@@ -72,6 +78,16 @@ export default function TestModePage() {
       return (data as ShadowExecution[]) ?? [];
     },
     refetchInterval: 10_000,
+  });
+
+  const { data: zonesMap = {} } = useQuery({
+    queryKey: ['test-mode', 'zones-map'],
+    queryFn: async (): Promise<Record<string, string>> => {
+      const { data, error } = await supabase.from('zones').select('id, name');
+      if (error) throw error;
+      return Object.fromEntries((data ?? []).map((z) => [z.id as string, z.name as string]));
+    },
+    staleTime: 60_000,
   });
 
   // Realtime: novos rule_executions marcados como test
@@ -91,6 +107,95 @@ export default function TestModePage() {
       void supabase.removeChannel(channel);
     };
   }, [qc]);
+
+  const cameraOptions = useMemo(() => {
+    const map = new Map<string, string>();
+    executions.forEach((e) => {
+      if (e.alert?.camera_id) map.set(e.alert.camera_id, e.alert.camera_name ?? e.alert.camera_id);
+    });
+    return Array.from(map.entries());
+  }, [executions]);
+
+  const ruleOptions = useMemo(() => {
+    const map = new Map<string, string>();
+    executions.forEach((e) => {
+      if (e.rule_id) map.set(e.rule_id, e.rule?.name ?? e.rule_id);
+    });
+    return Array.from(map.entries());
+  }, [executions]);
+
+  const zoneOptions = useMemo(() => {
+    const set = new Set<string>();
+    let hasNone = false;
+    executions.forEach((e) => {
+      if (e.rule?.zone_id) set.add(e.rule.zone_id);
+      else hasNone = true;
+    });
+    return { list: Array.from(set), hasNone };
+  }, [executions]);
+
+  const filtered = useMemo(() => {
+    return executions.filter((e) => {
+      if (cameraFilter !== ALL && e.alert?.camera_id !== cameraFilter) return false;
+      if (ruleFilter !== ALL && e.rule_id !== ruleFilter) return false;
+      if (zoneFilter === '__none__') {
+        if (e.rule?.zone_id) return false;
+      } else if (zoneFilter !== ALL && e.rule?.zone_id !== zoneFilter) return false;
+      return true;
+    });
+  }, [executions, cameraFilter, ruleFilter, zoneFilter]);
+
+  const handleExportCsv = () => {
+    if (filtered.length === 0) {
+      toast.info('Nada para exportar', { description: 'Ajuste os filtros ou aguarde novas detecções.' });
+      return;
+    }
+    const headers = [
+      'triggered_at',
+      'execution_id',
+      'rule_id',
+      'rule_name',
+      'category',
+      'severity',
+      'camera_id',
+      'camera_name',
+      'zone_id',
+      'zone_name',
+      'status',
+      'actions_executed',
+      'match_reason',
+      'snapshot_url',
+    ];
+    const rows = filtered.map((e) => [
+      e.triggered_at,
+      e.id,
+      e.rule_id,
+      e.rule?.name ?? '',
+      e.rule?.category ?? '',
+      e.rule?.severity ?? '',
+      e.alert?.camera_id ?? '',
+      e.alert?.camera_name ?? '',
+      e.rule?.zone_id ?? '',
+      e.rule?.zone_id ? zonesMap[e.rule.zone_id] ?? '' : '',
+      e.status,
+      (e.actions_executed ?? []).join('|'),
+      e.alert?.message ?? e.error_message ?? '',
+      e.alert?.thumbnail ?? '',
+    ]);
+    const csv = [headers, ...rows].map((r) => r.map(toCsvCell).join(',')).join('\n');
+    const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+    a.href = url;
+    a.download = `test-mode-detections-${stamp}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success('CSV exportado', { description: `${filtered.length} detecção(ões).` });
+  };
+
 
   const invokePromote = async (payload: { executionIds?: string[]; sessionId?: string }) => {
     const { data, error } = await supabase.functions.invoke('promote-test-executions', {
