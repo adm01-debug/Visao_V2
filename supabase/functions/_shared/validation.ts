@@ -136,6 +136,11 @@ export const sendAlertNotificationSchema = z.object({
 // process-automation-rules
 // ==========================================
 
+const pointSchema = z.object({ x: z.number(), y: z.number() });
+const boundingBoxSchema = z.object({
+  x: z.number(), y: z.number(), width: z.number().positive(), height: z.number().positive(),
+});
+
 export const processAutomationRulesSchema = z.object({
   alert: z.object({
     id: z.string().min(1),
@@ -147,6 +152,10 @@ export const processAutomationRulesSchema = z.object({
     timestamp: z.string(),
     user_id: z.string().uuid(),
   }),
+  detection: z.object({
+    bounding_box: boundingBoxSchema.nullish(),
+    point: pointSchema.nullish(),
+  }).nullish(),
 });
 
 // ==========================================

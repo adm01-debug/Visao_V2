@@ -4,6 +4,7 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 import { processAutomationRulesSchema, validateInput } from "../_shared/validation.ts";
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { createLogger } from "../_shared/logger.ts";
+import { fetchZonesById, matchesRuleZone, type Detection, type ZoneRow } from "../_shared/zoneMatcher.ts";
 
 const log = createLogger("process-automation-rules");
 
@@ -35,6 +36,7 @@ interface Rule {
   schedule: { days?: number[]; start_time?: string; end_time?: string } | null;
   is_active: boolean;
   user_id: string;
+  zone_id?: string | null;
 }
 
 interface ActionResult {
@@ -84,7 +86,12 @@ function evaluateCondition(condition: RuleCondition, alert: Alert): boolean {
   }
 }
 
-function ruleMatchesAlert(rule: Rule, alert: Alert): boolean {
+function ruleMatchesAlert(
+  rule: Rule,
+  alert: Alert,
+  detection: Detection | null | undefined,
+  zonesById: Map<string, ZoneRow>,
+): boolean {
   if (!rule.is_active) return false;
   if (!isWithinSchedule(rule.schedule)) return false;
   if (rule.cameras.length > 0 && alert.camera_id) {
@@ -94,6 +101,7 @@ function ruleMatchesAlert(rule: Rule, alert: Alert): boolean {
   const ruleSeverityIndex = severityLevels.indexOf(rule.severity);
   const alertSeverityIndex = severityLevels.indexOf(alert.severity);
   if (alertSeverityIndex < ruleSeverityIndex) return false;
+  if (!matchesRuleZone(rule, detection ?? null, zonesById)) return false;
   const conditions = Array.isArray(rule.conditions) ? rule.conditions : [];
   if (conditions.length === 0) return true;
   return conditions.every(condition => evaluateCondition(condition, alert));
@@ -206,10 +214,10 @@ const handler = async (req: Request): Promise<Response> => {
     const rawBody = await req.json();
     const validation = validateInput(processAutomationRulesSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
-    const { alert } = validation.data;
+    const { alert, detection } = validation.data;
     const traceId = req.headers.get("x-request-id") || undefined;
 
-    log.info("Processing automation rules", { alertId: alert.id, userId: alert.user_id, traceId });
+    log.info("Processing automation rules", { alertId: alert.id, userId: alert.user_id, traceId, hasDetection: !!detection });
 
     const { data: rules, error: rulesError } = await supabase.from("rules").select("*").eq("user_id", alert.user_id).eq("is_active", true);
 
@@ -218,13 +226,20 @@ const handler = async (req: Request): Promise<Response> => {
       return new Response(JSON.stringify({ error: rulesError.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Executa regras que casam em paralelo — cada regra é independente,
-    // logRuleExecution já é isolado. Reduz drasticamente a latência quando
-    // um usuário tem muitas regras ativas.
-    const matched = (rules || []).filter((r) => ruleMatchesAlert(r as Rule, alert));
+    // Pré-carrega zonas referenciadas pelas regras para filtro espacial.
+    const zoneIds = (rules || [])
+      .map((r) => (r as Rule).zone_id)
+      .filter((z): z is string => !!z);
+    const zonesById = zoneIds.length > 0
+      ? await fetchZonesById(supabase, alert.user_id, zoneIds)
+      : new Map<string, ZoneRow>();
+
+    const evaluated = (rules || []).map((r) => r as Rule);
+    const matched = evaluated.filter((r) => ruleMatchesAlert(r, alert, detection ?? null, zonesById));
+    const filteredByZone = evaluated.filter((r) => r.zone_id && !matched.includes(r)).length;
+
     const matchedRules = await Promise.all(
-      matched.map(async (rule) => {
-        const r = rule as Rule;
+      matched.map(async (r) => {
         const startTime = Date.now();
         const results = await executeActions(supabase, r, alert);
         // fire-and-forget para não bloquear a resposta; erros já são logados internamente
@@ -234,10 +249,11 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
     done();
-    log.info("Rules processed", { evaluated: rules?.length || 0, matched: matchedRules.length, traceId });
+    log.info("Rules processed", { evaluated: rules?.length || 0, matched: matchedRules.length, filteredByZone, traceId });
 
     return new Response(JSON.stringify({
       success: true, alert_id: alert.id, rules_evaluated: rules?.length || 0, rules_matched: matchedRules.length,
+      rules_filtered_by_zone: filteredByZone,
       executions: matchedRules.map(({ rule, results }) => ({ rule_id: rule.id, rule_name: rule.name, actions: results })),
     }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
