@@ -9,7 +9,7 @@ export interface EmbeddedCredentialRow {
   stream_url: string;
 }
 
-interface VaultResponse<T> { ok?: boolean; error?: string; details?: unknown } // eslint-disable-line @typescript-eslint/no-unused-vars
+
 
 export function useCameraVault() {
   const [loading, setLoading] = useState(false);
