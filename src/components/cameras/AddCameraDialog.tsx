@@ -773,19 +773,26 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
             </div>
           )}
 
-          {(substreamValidation.loading || substreamValidation.result || substreamValidation.error) && (
-            <div className="space-y-2">
-              <p className="text-xs font-medium text-muted-foreground">Substream (IA)</p>
-              <RtspValidationPanel
-                result={substreamValidation.result}
-                loading={substreamValidation.loading}
-                error={substreamValidation.error}
-                onRetry={handleTest}
-                compact
+          {guided && rtspValidation.result?.score === "critical" && (
+            <label className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/5 p-3 text-xs">
+              <input
+                type="checkbox"
+                checked={forceCritical}
+                onChange={(e) => setForceCritical(e.target.checked)}
+                className="mt-0.5 h-3.5 w-3.5"
               />
-            </div>
+              <span>
+                O stream está com score <strong>crítico</strong>. Marque esta caixa para salvar
+                mesmo assim — recomendamos ajustar as sugestões acima antes.
+              </span>
+            </label>
           )}
 
+          {guided && !rtspValidation.result && (
+            <p className="rounded-md border border-dashed bg-muted/30 p-2 text-center text-xs text-muted-foreground">
+              🔒 No modo guiado é obrigatório <strong>testar a conexão</strong> antes de cadastrar.
+            </p>
+          )}
 
           <DialogFooter className="gap-2 sm:gap-2">
             <Button
@@ -811,7 +818,13 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
             </Button>
             <Button
               type="submit"
-              disabled={submitting || rtspValidation.loading || substreamValidation.loading}
+              disabled={
+                submitting ||
+                rtspValidation.loading ||
+                substreamValidation.loading ||
+                (guided && !rtspValidation.result) ||
+                (guided && rtspValidation.result?.score === "critical" && !forceCritical)
+              }
             >
               {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Cadastrar câmera
