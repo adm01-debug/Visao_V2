@@ -653,6 +653,7 @@ export type Database = {
           thumbnail_url: string | null
           updated_at: string
           user_id: string
+          uses: number
         }
         Insert: {
           camera_id: string
@@ -665,6 +666,7 @@ export type Database = {
           thumbnail_url?: string | null
           updated_at?: string
           user_id: string
+          uses?: number
         }
         Update: {
           camera_id?: string
@@ -677,6 +679,7 @@ export type Database = {
           thumbnail_url?: string | null
           updated_at?: string
           user_id?: string
+          uses?: number
         }
         Relationships: [
           {
