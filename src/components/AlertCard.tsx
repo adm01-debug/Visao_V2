@@ -36,6 +36,13 @@ export interface UIAlert {
   timestamp: Date;
   isRead: boolean;
   thumbnail: string | undefined;
+  /**
+   * Contexto espacial do alerta para justificar regras acionadas.
+   *  - `string` → nome da zona onde a detecção ocorreu (regra com `zone_id`).
+   *  - `null`   → detecção ocorreu FORA da zona configurada na regra.
+   *  - `undefined` → sem contexto de zona (regra sem `zone_id` ou alerta legado).
+   */
+  zoneName?: string | null;
 }
 
 interface AlertCardProps {
