@@ -64,6 +64,7 @@ const RecognitionAnalyticsPage = lazy(() => import("@/pages/RecognitionAnalytics
 const StreamSettingsPage = lazy(() => import("@/pages/StreamSettingsPage"));
 const TelegramSettingsPage = lazy(() => import("@/pages/TelegramSettingsPage"));
 const NotificationSettingsPage = lazy(() => import("@/pages/NotificationSettingsPage"));
+const StreamAlertThresholdsPage = lazy(() => import("@/pages/StreamAlertThresholdsPage"));
 const AutomationRulesPage = lazy(() => import("@/pages/AutomationRulesPage"));
 const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
 const HelpPage = lazy(() => import("@/pages/HelpPage"));
@@ -181,6 +182,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/stream-settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<StreamSettingsPage />, "Config. de Stream")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/telegram-settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<TelegramSettingsPage />, "Config. Telegram")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/notification-settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<NotificationSettingsPage />, "Config. Notificações")}</ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/stream-alert-thresholds" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<StreamAlertThresholdsPage />, "Parâmetros de Alerta")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/automation-rules" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<AutomationRulesPage />, "Regras de Automação")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/profile" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<ProfilePage />, "Perfil")}</ProtectedLayoutRoute>} />
                     <Route path="/help" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<HelpPage />, "Ajuda")}</ProtectedLayoutRoute>} />

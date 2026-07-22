@@ -7,8 +7,28 @@ import type { Suggestion } from "./suggestions.ts";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-const COOLDOWN_MIN = 30;
-const CONSECUTIVE_THRESHOLD = 2;
+const DEFAULT_COOLDOWN_MIN = 30;
+const DEFAULT_CONSECUTIVE_THRESHOLD = 2;
+
+async function resolveThresholds(
+  admin: SupabaseClient,
+  userId: string,
+  cameraId: string,
+): Promise<{ streak: number; cooldownMin: number }> {
+  const { data } = await admin
+    .from("stream_alert_thresholds")
+    .select("consecutive_threshold, cooldown_minutes, camera_id")
+    .eq("user_id", userId)
+    .or(`camera_id.eq.${cameraId},camera_id.is.null`);
+  const rows = data ?? [];
+  const cam = rows.find((r) => r.camera_id === cameraId);
+  const usr = rows.find((r) => r.camera_id === null);
+  const pick = cam ?? usr;
+  return {
+    streak: pick?.consecutive_threshold ?? DEFAULT_CONSECUTIVE_THRESHOLD,
+    cooldownMin: pick?.cooldown_minutes ?? DEFAULT_COOLDOWN_MIN,
+  };
+}
 
 export interface CriticalAlertInput {
   userId: string;
@@ -25,8 +45,12 @@ export async function maybeAlertCriticalScore(
   input: CriticalAlertInput,
 ): Promise<{ alerted: boolean; reason: string; streak: number }> {
   const { userId, cameraId, score } = input;
+  const { streak: CONSECUTIVE_THRESHOLD, cooldownMin: COOLDOWN_MIN } = await resolveThresholds(
+    admin,
+    userId,
+    cameraId,
+  );
 
-  // Estado atual (se existir)
   const { data: state } = await admin
     .from("camera_health_state")
     .select("consecutive_critical_scores, last_critical_alert_at")
@@ -36,7 +60,6 @@ export async function maybeAlertCriticalScore(
   const prevStreak = state?.consecutive_critical_scores ?? 0;
   const nextStreak = score === "critical" ? prevStreak + 1 : 0;
 
-  // Persistir streak atualizado (upsert leve)
   await admin.from("camera_health_state").upsert({
     camera_id: cameraId,
     user_id: userId,
@@ -51,7 +74,6 @@ export async function maybeAlertCriticalScore(
     return { alerted: false, reason: "streak_below_threshold", streak: nextStreak };
   }
 
-  // Cooldown
   const lastAlertAt = state?.last_critical_alert_at ? new Date(state.last_critical_alert_at).getTime() : 0;
   const ageMin = (Date.now() - lastAlertAt) / 60_000;
   if (lastAlertAt && ageMin < COOLDOWN_MIN) {
