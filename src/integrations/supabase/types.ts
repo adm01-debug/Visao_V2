@@ -356,35 +356,44 @@ export type Database = {
         Row: {
           camera_id: string
           created_at: string
+          dek_wrapped: string | null
           encrypted_password: string | null
           id: string
+          kek_version: number | null
           key_fingerprint: string
           sanitized_url: string
           updated_at: string
           user_id: string
           username: string | null
+          wrapped_at: string | null
         }
         Insert: {
           camera_id: string
           created_at?: string
+          dek_wrapped?: string | null
           encrypted_password?: string | null
           id?: string
+          kek_version?: number | null
           key_fingerprint: string
           sanitized_url: string
           updated_at?: string
           user_id: string
           username?: string | null
+          wrapped_at?: string | null
         }
         Update: {
           camera_id?: string
           created_at?: string
+          dek_wrapped?: string | null
           encrypted_password?: string | null
           id?: string
+          kek_version?: number | null
           key_fingerprint?: string
           sanitized_url?: string
           updated_at?: string
           user_id?: string
           username?: string | null
+          wrapped_at?: string | null
         }
         Relationships: [
           {
@@ -4189,6 +4198,14 @@ export type Database = {
           update_policies: number
         }[]
       }
+      backfill_envelope_encryption: {
+        Args: { p_kek: string; p_kek_version?: number; p_limit?: number }
+        Returns: {
+          failed: number
+          migrated: number
+          remaining: number
+        }[]
+      }
       capture_db_health_snapshot: { Args: never; Returns: string }
       check_csp_anomaly: { Args: never; Returns: Json }
       cleanup_api_usage_logs: { Args: never; Returns: number }
@@ -4204,6 +4221,15 @@ export type Database = {
       ensure_future_partitions: {
         Args: { months_ahead?: number }
         Returns: Json
+      }
+      envelope_encryption_stats: {
+        Args: never
+        Returns: {
+          by_kek_version: Json
+          enveloped: number
+          legacy: number
+          total: number
+        }[]
       }
       evaluate_and_restart_streams: { Args: never; Returns: number }
       execute_camera_schedules: { Args: never; Returns: number }
@@ -4292,6 +4318,10 @@ export type Database = {
       }
       get_camera_stream_url: {
         Args: { _camera_id: string; _key: string }
+        Returns: string
+      }
+      get_camera_stream_url_v2: {
+        Args: { p_camera_id: string; p_kek: string }
         Returns: string
       }
       get_connection_saturation: { Args: never; Returns: Json }
@@ -4759,6 +4789,23 @@ export type Database = {
         }
         Returns: string[]
       }
+      rewrap_camera_vault_kek: {
+        Args: {
+          p_from_version: number
+          p_limit?: number
+          p_new_kek: string
+          p_old_kek: string
+          p_to_version: number
+        }
+        Returns: {
+          remaining: number
+          rewrapped_count: number
+        }[]
+      }
+      rotate_camera_dek: {
+        Args: { p_camera_id: string; p_kek: string; p_kek_version?: number }
+        Returns: boolean
+      }
       rotate_camera_vault_key: {
         Args: { new_key: string; old_key: string }
         Returns: {
@@ -4776,6 +4823,15 @@ export type Database = {
         Args: { _camera_id: string; _key: string; _url: string }
         Returns: string
       }
+      set_camera_credentials_v2: {
+        Args: {
+          p_camera_id: string
+          p_kek: string
+          p_kek_version?: number
+          p_stream_url: string
+        }
+        Returns: string
+      }
       set_media_legal_hold: {
         Args: { _asset_id: string; _legal_hold: boolean; _reason?: string }
         Returns: {
@@ -4790,6 +4846,11 @@ export type Database = {
         Returns: Json
       }
       tick_timelapse_capture: { Args: never; Returns: number }
+      unwrap_dek: {
+        Args: { p_kek: string; p_wrapped: string }
+        Returns: string
+      }
+      wrap_dek: { Args: { p_dek: string; p_kek: string }; Returns: string }
     }
     Enums: {
       alert_type:
