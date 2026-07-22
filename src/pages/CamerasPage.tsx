@@ -241,6 +241,7 @@ export function CamerasPage() {
           )}
         </SheetContent>
       </Sheet>
+      <AddCameraDialog open={addOpen} onOpenChange={setAddOpen} onCreated={() => refetch()} />
     </PageContent>
   );
 }
