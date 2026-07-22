@@ -849,6 +849,13 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
             </p>
           )}
 
+          {firstSnapshot.status === "capturing" && (
+            <p className="flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 p-2 text-xs text-primary">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              Capturando snapshot inicial…
+            </p>
+          )}
+
           <DialogFooter className="gap-2 sm:gap-2">
             <Button
               type="button"
