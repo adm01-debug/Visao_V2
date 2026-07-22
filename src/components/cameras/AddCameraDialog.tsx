@@ -664,7 +664,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
             </Button>
             <Button
               type="submit"
-              disabled={submitting || rtspValidation.loading}
+              disabled={submitting || rtspValidation.loading || substreamValidation.loading}
             >
               {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Cadastrar câmera
