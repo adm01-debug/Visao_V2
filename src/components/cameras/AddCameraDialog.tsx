@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Loader2, ShieldCheck, Activity, Gamepad2, Search } from "lucide-react";
 import { toast } from "sonner";
 import { useRtspValidation } from "@/hooks/useRtspValidation";
+import { useFirstSnapshot } from "@/hooks/useFirstSnapshot";
 import { RtspValidationPanel } from "./RtspValidationPanel";
 
 import { Button } from "@/components/ui/button";
