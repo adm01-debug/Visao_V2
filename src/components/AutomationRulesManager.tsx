@@ -36,7 +36,7 @@ export function AutomationRulesManager() {
     setFormData({
       name: template.name, description: template.description, category: template.category, severity: template.severity,
       conditions: template.conditions.map(c => ({ type: c.type, operator: c.operator, value: String(c.value) })),
-      actions: template.actions, cameras: [], schedule: { enabled: false, days: [1,2,3,4,5], start_time: '08:00', end_time: '18:00' }, is_active: true,
+      actions: template.actions, cameras: [], zone_id: null, schedule: { enabled: false, days: [1,2,3,4,5], start_time: '08:00', end_time: '18:00' }, is_active: true,
     });
     setIsDialogOpen(true);
   };
@@ -48,6 +48,7 @@ export function AutomationRulesManager() {
     setFormData({
       name: rule.name, description: rule.description || '', category: rule.category, severity: rule.severity,
       conditions, actions: rule.actions, cameras: rule.cameras,
+      zone_id: (rule as unknown as { zone_id?: string | null }).zone_id ?? null,
       schedule: schedule || { enabled: false, days: [1,2,3,4,5], start_time: '08:00', end_time: '18:00' },
       is_active: rule.is_active,
     });
