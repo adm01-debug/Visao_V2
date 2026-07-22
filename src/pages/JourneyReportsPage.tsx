@@ -9,7 +9,7 @@ import { PageMeta } from '@/components/PageMeta';
 import { PageContent } from '@/components/layout/MainLayout';
 
 export default function JourneyReportsPage() {
-  const { period, setPeriod, selectedPerson, setSelectedPerson, persons, journeyData, isLoading, refetch, stats, formatMinutes, exportPDF, sendViaTelegram, sending } = useJourneyData();
+  const { period, setPeriod, selectedPerson, setSelectedPerson, selectedZone, setSelectedZone, zonesList, persons, journeyData, isLoading, refetch, stats, formatMinutes, exportPDF, sendViaTelegram, sending } = useJourneyData();
 
   return (
     <PageContent maxWidth="xl">
@@ -33,7 +33,7 @@ export default function JourneyReportsPage() {
       {/* Filters */}
       <div className="flex items-center gap-3 flex-wrap">
         <Select value={period} onValueChange={(v) => setPeriod(v as PeriodFilter)}>
-          <SelectTrigger className="w-44"><SelectValue placeholder="Período" /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-44"><SelectValue placeholder="Período" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="today">Hoje</SelectItem>
             <SelectItem value="yesterday">Ontem</SelectItem>
@@ -42,10 +42,19 @@ export default function JourneyReportsPage() {
           </SelectContent>
         </Select>
         <Select value={selectedPerson} onValueChange={setSelectedPerson}>
-          <SelectTrigger className="w-56"><SelectValue placeholder="Colaborador" /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-56"><SelectValue placeholder="Colaborador" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos os Colaboradores</SelectItem>
             {persons.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Select value={selectedZone} onValueChange={setSelectedZone}>
+          <SelectTrigger className="w-full sm:w-56">
+            <div className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5 text-muted-foreground" /><SelectValue placeholder="Zona" /></div>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas as zonas</SelectItem>
+            {zonesList.map(z => <SelectItem key={z.id} value={z.id}>{z.name}</SelectItem>)}
           </SelectContent>
         </Select>
         <span className="text-xs text-muted-foreground ml-auto">{journeyData.length} registros</span>
