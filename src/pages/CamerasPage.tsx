@@ -11,6 +11,7 @@ import {
 import { useCameras } from '@/hooks/useCameras';
 import { useRules } from '@/hooks/useRules';
 import { CameraCard, CameraDetailView, GRID_CLASSES } from '@/components/cameras';
+import { AddCameraDialog } from '@/components/cameras/AddCameraDialog';
 import type { CameraData, ViewMode } from '@/components/cameras';
 import { EmptyState } from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
@@ -49,6 +50,7 @@ export function CamerasPage() {
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
   const [expandedCamera, setExpandedCamera] = useState<CameraData | null>(null);
   const [settingsCamera, setSettingsCamera] = useState<CameraData | null>(null);
+  const [addOpen, setAddOpen] = useState(false);
 
   const { cameras, loading, refetch } = useCameras();
   const { rules } = useRules();
@@ -109,7 +111,7 @@ export function CamerasPage() {
             <RefreshCw className={cn('w-4 h-4 sm:mr-2', loading && 'animate-spin')} />
             <span className="hidden sm:inline">Atualizar</span>
           </Button>
-          <Button size="sm" disabled={loading} className="text-xs sm:text-sm">
+          <Button size="sm" disabled={loading} onClick={() => setAddOpen(true)} className="text-xs sm:text-sm">
             <Plus className="w-4 h-4 sm:mr-2" />
             <span className="hidden sm:inline">Adicionar</span>
           </Button>
@@ -180,7 +182,7 @@ export function CamerasPage() {
               ? 'Adicione sua primeira câmera para começar o monitoramento em tempo real.'
               : 'Nenhuma câmera corresponde aos filtros aplicados. Tente ajustar sua busca.'}
             actionLabel={cameras.length === 0 ? '+ Adicionar Câmera' : undefined}
-            onAction={cameras.length === 0 ? () => {} : undefined}
+            onAction={cameras.length === 0 ? () => setAddOpen(true) : undefined}
             secondaryActionLabel={cameras.length > 0 ? 'Limpar filtros' : undefined}
             onSecondaryAction={cameras.length > 0 ? clearFilters : undefined}
           />
@@ -239,6 +241,7 @@ export function CamerasPage() {
           )}
         </SheetContent>
       </Sheet>
+      <AddCameraDialog open={addOpen} onOpenChange={setAddOpen} onCreated={() => refetch()} />
     </PageContent>
   );
 }
