@@ -238,41 +238,46 @@ export default function TestModePage() {
   };
 
   /**
-   * Núcleo do replay — reusado por handleReplay (unitário) e handleReplayBatch.
-   * NÃO exibe toast — retorna o resultado tipado para o caller compor UX.
+   * Núcleo do replay — invoca a Edge Function AUTORITATIVA
+   * `replay-rule-execution` (Onda 2), que valida sessão, aplica idempotência
+   * server-side e injeta o testContext canônico.
    */
   const replayOne = async (
     exec: ShadowExecution,
   ): Promise<
-    | { ok: true; matched: number; suppressed: number }
+    | { ok: true; matched: number; suppressed: number; fromCache: boolean }
     | { ok: false; reason: string; skipped?: boolean }
   > => {
+    if (!activeSession) {
+      return { ok: false, reason: 'Sessão de Modo Teste não está ativa' };
+    }
     if (!exec.alert_id) {
       return { ok: false, reason: 'Sem alerta original', skipped: true };
     }
-    const { data: alertRow, error: alertErr } = await supabase
-      .from('alerts')
-      .select('id, type, severity, message, camera_id, camera_name, timestamp, user_id')
-      .eq('id', exec.alert_id)
-      .maybeSingle();
-    if (alertErr || !alertRow) {
-      return { ok: false, reason: alertErr?.message ?? 'Alerta apagado', skipped: true };
-    }
-    const { data, error } = await supabase.functions.invoke('process-automation-rules', {
-      body: {
-        alert: alertRow,
-        testContext: {
-          userId: alertRow.user_id,
-          cameraId: alertRow.camera_id ?? undefined,
-          ruleId: exec.rule_id,
-        },
-      },
+    const { data, error } = await supabase.functions.invoke('replay-rule-execution', {
+      body: { executionId: exec.id, sessionId: activeSession.id },
     });
     if (error) return { ok: false, reason: error.message };
-    const summary = data as { rules_matched?: number; executions?: Array<{ is_test?: boolean }> };
-    const matched = summary?.rules_matched ?? 0;
-    const suppressed = (summary?.executions ?? []).filter((e) => e.is_test).length;
-    return { ok: true, matched, suppressed };
+    const payload = data as {
+      ok?: boolean;
+      skipped?: boolean;
+      reason?: string;
+      matched?: number;
+      suppressed?: number;
+      fromCache?: boolean;
+    };
+    if (payload?.skipped) {
+      return { ok: false, reason: payload.reason ?? 'Ignorado', skipped: true };
+    }
+    if (!payload?.ok) {
+      return { ok: false, reason: payload?.reason ?? 'Falha no replay' };
+    }
+    return {
+      ok: true,
+      matched: payload.matched ?? 0,
+      suppressed: payload.suppressed ?? 0,
+      fromCache: payload.fromCache ?? false,
+    };
   };
 
   const ensureActiveSession = (): boolean => {
@@ -294,12 +299,13 @@ export default function TestModePage() {
       toast.error('Falha no replay', { id: toastId, description: result.reason });
       return;
     }
-    toast.success('Replay concluído', {
+    toast.success(result.fromCache ? 'Replay já executado (cache)' : 'Replay concluído', {
       id: toastId,
       description: `${result.matched} regra(s) reavaliada(s) · ${result.suppressed} em dry-run (sem notificações reais).`,
     });
     await refetch();
   };
+
 
   const [isBatchReplaying, setIsBatchReplaying] = useState(false);
 
