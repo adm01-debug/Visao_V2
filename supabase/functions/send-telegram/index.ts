@@ -25,8 +25,19 @@ serve(async (req) => {
     const validation = validateInput(sendTelegramSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
     
-    const { botToken, chatId, message, parseMode, photo } = validation.data;
+    const { botToken, chatId, message, parseMode, photo, testContext } = validation.data;
     const idempotencyKey = req.headers.get("x-idempotency-key");
+
+    // Short-circuit dry-run: se o escopo estiver em modo teste, não chama a
+    // API do Telegram e devolve resposta sintética marcada como suprimida.
+    if (testContext?.userId && (await isTestModeActive(testContext))) {
+      log.info("Test mode active — suppressing Telegram send", { chatId, scope: testContext });
+      const payload = buildTestModeResponse(testContext, ["telegram"]);
+      return new Response(
+        JSON.stringify({ success: true, messageId: null, ...payload }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json", "x-test-mode": "1" } },
+      );
+    }
 
     const { data: responseData, fromCache } = await withIdempotency(idempotencyKey, async () => {
       log.info("Sending Telegram message", { chatId });
