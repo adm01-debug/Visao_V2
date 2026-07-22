@@ -127,6 +127,8 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
   const { storeCredentials, loading: vaultLoading } = useCameraVault();
   const rtspValidation = useRtspValidation();
   const substreamValidation = useRtspValidation();
+  const firstSnapshot = useFirstSnapshot();
+
 
 
   const form = useForm<AddCameraFormValues>({
