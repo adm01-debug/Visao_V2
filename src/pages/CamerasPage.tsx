@@ -182,7 +182,7 @@ export function CamerasPage() {
               ? 'Adicione sua primeira câmera para começar o monitoramento em tempo real.'
               : 'Nenhuma câmera corresponde aos filtros aplicados. Tente ajustar sua busca.'}
             actionLabel={cameras.length === 0 ? '+ Adicionar Câmera' : undefined}
-            onAction={cameras.length === 0 ? () => {} : undefined}
+            onAction={cameras.length === 0 ? () => setAddOpen(true) : undefined}
             secondaryActionLabel={cameras.length > 0 ? 'Limpar filtros' : undefined}
             onSecondaryAction={cameras.length > 0 ? clearFilters : undefined}
           />
