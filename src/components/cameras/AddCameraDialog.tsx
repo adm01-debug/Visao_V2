@@ -12,8 +12,10 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Loader2, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, Loader2, ShieldCheck, Activity } from "lucide-react";
 import { toast } from "sonner";
+import { useRtspValidation } from "@/hooks/useRtspValidation";
+import { RtspValidationPanel } from "./RtspValidationPanel";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
