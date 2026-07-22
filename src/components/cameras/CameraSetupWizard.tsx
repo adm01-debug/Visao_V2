@@ -75,6 +75,8 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
   const [editingZone, setEditingZone] = useState<DbZone | null>(null);
   const [selectedTemplates, setSelectedTemplates] = useState<Set<string>>(new Set(RECOMMENDED_TEMPLATE_IDS));
   const [applying, setApplying] = useState(false);
+  const [summary, setSummary] = useState<SetupSummary | null>(null);
+  const completedRef = useRef(false);
 
   const recommended = useMemo(
     () => RECOMMENDED_TEMPLATE_IDS
@@ -103,6 +105,7 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
     if (open && camera?.id) {
       setTab('zones');
       setSelectedTemplates(new Set(RECOMMENDED_TEMPLATE_IDS));
+      completedRef.current = false;
       loadZones();
       void trackWizardEvent('started', 'zones', { camera_id: camera.id });
     }
@@ -117,6 +120,12 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
       if (error) throw error;
     }
     await loadZones();
+    if (camera?.id) {
+      void trackWizardEvent('step_completed', 'zones', {
+        camera_id: camera.id,
+        action: editingZone ? 'zone_updated' : 'zone_created',
+      });
+    }
   };
 
   const toggleTemplate = (id: string) => {
@@ -126,6 +135,28 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
       else next.add(id);
       return next;
     });
+  };
+
+  const goToRules = () => {
+    if (camera?.id) {
+      void trackWizardEvent('step_completed', 'zones', {
+        camera_id: camera.id,
+        zones: zones.length,
+        action: 'advanced_to_rules',
+      });
+    }
+    setTab('rules');
+  };
+
+  const handleDialogOpenChange = (next: boolean) => {
+    if (!next && open && !completedRef.current && camera?.id) {
+      void trackWizardEvent('abandoned', tab, {
+        camera_id: camera.id,
+        zones: zones.length,
+        selected_rules: selectedTemplates.size,
+      });
+    }
+    onOpenChange(next);
   };
 
   const handleApplyRules = async () => {
@@ -160,25 +191,24 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
     setApplying(true);
     try {
       const result = await applyCameraSetup(camera.id, [], rulesPayload);
-      if (result.from_cache) {
-        toast.info('Configuração já havia sido aplicada', {
-          description: 'Detectamos um reenvio e reutilizamos o resultado anterior sem duplicar regras.',
-        });
-      } else {
-        toast.success(`${result.rule_ids.length} regra(s) aplicada(s) à câmera ${camera.name}`);
-      }
+      const dryRun = await startPostWizardDryRun(camera.id, result.rule_ids, 15);
+      completedRef.current = true;
       void trackWizardEvent('completed', 'rules', {
         camera_id: camera.id,
         rules: result.rule_ids.length,
         zones: zones.length,
+        from_cache: Boolean(result.from_cache),
+        dry_run: Boolean(dryRun),
       });
-      const dryRun = await startPostWizardDryRun(camera.id, result.rule_ids, 15);
-      if (dryRun) {
-        toast.info('Modo teste iniciado por 15 minutos', {
-          description: 'Detecções serão registradas sem disparar notificações reais.',
-        });
-      }
       resetWizardSession();
+      setSummary({
+        status: 'success',
+        cameraName: camera.name,
+        ruleCount: result.rule_ids.length,
+        zoneCount: zones.length,
+        fromCache: Boolean(result.from_cache),
+        dryRunStarted: Boolean(dryRun),
+      });
       onOpenChange(false);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Falha ao aplicar configuração';
@@ -186,6 +216,16 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
       void trackWizardEvent('abandoned', 'rules', {
         camera_id: camera.id,
         error: message,
+        stage: 'apply_camera_setup',
+      });
+      setSummary({
+        status: 'rollback',
+        cameraName: camera.name,
+        ruleCount: 0,
+        zoneCount: zones.length,
+        fromCache: false,
+        dryRunStarted: false,
+        errorMessage: message,
       });
     } finally {
       setApplying(false);
