@@ -198,6 +198,10 @@ export function CameraDetailView({
                   <PtzControlPanel cameraId={camera.id} cameraName={camera.name} />
                 </TabsContent>
 
+                <TabsContent value="tests" className="m-0">
+                  <CameraTestHistoryCard cameraId={camera.id} />
+                </TabsContent>
+
 
                 <TabsContent value="alerts" className="m-0">
                   <div className="text-center py-8 text-muted-foreground">
