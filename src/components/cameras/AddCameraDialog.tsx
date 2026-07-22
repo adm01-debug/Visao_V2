@@ -449,6 +449,61 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
             </div>
           </div>
 
+          <div className="space-y-2 rounded-md border border-dashed border-primary/40 bg-primary/5 p-3">
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <Search className="h-4 w-4 text-primary" aria-hidden />
+              Descoberta automática ONVIF
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Informe apenas o IP/hostname da câmera + usuário/senha (acima) e nós preenchemos porta, RTSP principal, substream e PTZ automaticamente.
+            </p>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Input
+                aria-label="IP ou hostname da câmera"
+                placeholder="192.168.1.10 ou cam.exemplo.com"
+                autoComplete="off"
+                spellCheck={false}
+                value={autoDiscover.host}
+                onChange={(e) => setAutoDiscover((s) => ({ ...s, host: e.target.value }))}
+                disabled={autoDiscover.loading}
+              />
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={handleAutoDiscover}
+                disabled={autoDiscover.loading}
+                className="sm:w-52"
+              >
+                {autoDiscover.loading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Search className="mr-2 h-4 w-4" />
+                )}
+                Descobrir agora
+              </Button>
+            </div>
+            <label className="flex items-center gap-2 text-[11px] text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={autoDiscover.allowPrivate}
+                onChange={(e) => setAutoDiscover((s) => ({ ...s, allowPrivate: e.target.checked }))}
+                className="h-3 w-3"
+              />
+              Permitir hosts privados/LAN (só funciona se houver rota interna até a câmera)
+            </label>
+            {autoDiscover.ok === true && (
+              <Badge variant="default" className="gap-1">
+                <ShieldCheck className="h-3 w-3" /> {autoDiscover.message}
+              </Badge>
+            )}
+            {autoDiscover.ok === false && (
+              <Badge variant="destructive" className="max-w-full whitespace-normal">
+                {autoDiscover.message}
+              </Badge>
+            )}
+          </div>
+
+
           <div className="space-y-1.5">
             <Label htmlFor="add-cam-rtsp">URL RTSP principal *</Label>
             <Input
