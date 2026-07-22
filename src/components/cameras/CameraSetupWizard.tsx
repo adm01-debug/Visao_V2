@@ -356,7 +356,7 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
           </Tabs>
 
           <DialogFooter className="pt-4 border-t">
-            <Button variant="ghost" onClick={() => onOpenChange(false)}>
+            <Button variant="ghost" onClick={() => handleDialogOpenChange(false)}>
               Fechar
             </Button>
             {tab === 'rules' && (
