@@ -286,13 +286,43 @@ export function CamerasPage() {
               </div>
 
               <div className="pt-4 flex gap-2">
+                <Button
+                  variant="secondary"
+                  className="flex-1"
+                  onClick={() => {
+                    const cam = settingsCamera;
+                    setSettingsCamera(null);
+                    setSetupCamera(cam);
+                  }}
+                >
+                  Zonas & Regras
+                </Button>
                 <Button className="flex-1" onClick={() => setSettingsCamera(null)}>Fechar</Button>
               </div>
             </div>
           )}
         </SheetContent>
       </Sheet>
-      <AddCameraDialog open={addOpen} onOpenChange={setAddOpen} onCreated={() => refetch()} mode={addMode} />
+      <AddCameraDialog
+        open={addOpen}
+        onOpenChange={setAddOpen}
+        mode={addMode}
+        onCreated={async (cameraId) => {
+          const result = await refetch();
+          if (addMode === 'guided' && cameraId) {
+            const list = (result as unknown as { data?: CameraData[] } | undefined)?.data ?? cameras;
+            const created = list.find((c) => c.id === cameraId)
+              ?? cameras.find((c) => c.id === cameraId)
+              ?? null;
+            if (created) setSetupCamera(created);
+          }
+        }}
+      />
+      <CameraSetupWizard
+        camera={setupCamera}
+        open={!!setupCamera}
+        onOpenChange={(o) => { if (!o) setSetupCamera(null); }}
+      />
     </PageContent>
   );
 }
