@@ -213,6 +213,8 @@ export interface DescribeResult {
   codec: string | null;
   resolution: string | null;
   fps: number | null;
+  fpsSource: SdpInfo["fpsSource"];
+  resolutionSource: SdpInfo["resolutionSource"];
   error?: string;
 }
 
