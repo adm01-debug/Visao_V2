@@ -10,6 +10,7 @@ import { maskSecrets } from "../_shared/maskSecrets.ts";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const VAULT_KEY = Deno.env.get("CAMERA_VAULT_KEY") ?? "";
+const KEK_V1 = Deno.env.get("CAMERA_VAULT_KEK_V1") ?? "";
 
 const bodySchema = z.object({
   camera_id: z.string().uuid(),
