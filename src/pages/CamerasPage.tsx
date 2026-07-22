@@ -11,6 +11,7 @@ import {
 import { useCameras } from '@/hooks/useCameras';
 import { useRules } from '@/hooks/useRules';
 import { CameraCard, CameraDetailView, GRID_CLASSES } from '@/components/cameras';
+import { AddCameraDialog } from '@/components/cameras/AddCameraDialog';
 import type { CameraData, ViewMode } from '@/components/cameras';
 import { EmptyState } from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
