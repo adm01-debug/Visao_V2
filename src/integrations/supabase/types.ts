@@ -302,6 +302,56 @@ export type Database = {
         }
         Relationships: []
       }
+      camera_bandwidth_samples: {
+        Row: {
+          bitrate_kbps: number
+          bytes_received: number
+          camera_id: string
+          created_at: string
+          fps: number | null
+          id: string
+          resolution: string | null
+          sampled_at: string
+          stream_type: string
+          user_id: string
+          window_seconds: number
+        }
+        Insert: {
+          bitrate_kbps?: number
+          bytes_received?: number
+          camera_id: string
+          created_at?: string
+          fps?: number | null
+          id?: string
+          resolution?: string | null
+          sampled_at?: string
+          stream_type?: string
+          user_id: string
+          window_seconds?: number
+        }
+        Update: {
+          bitrate_kbps?: number
+          bytes_received?: number
+          camera_id?: string
+          created_at?: string
+          fps?: number | null
+          id?: string
+          resolution?: string | null
+          sampled_at?: string
+          stream_type?: string
+          user_id?: string
+          window_seconds?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_bandwidth_samples_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       camera_detection_rules: {
         Row: {
           active_days: number[]
@@ -4041,7 +4091,26 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      camera_bandwidth_hourly: {
+        Row: {
+          avg_bitrate_kbps: number | null
+          camera_id: string | null
+          hour_bucket: string | null
+          peak_bitrate_kbps: number | null
+          sample_count: number | null
+          total_bytes: number | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_bandwidth_samples_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       acquire_ptz_lock: {
@@ -4114,6 +4183,17 @@ export type Database = {
           threshold_override: number
           total_size_bytes: number
           total_size_pretty: string
+        }[]
+      }
+      get_bandwidth_summary: {
+        Args: { days?: number }
+        Returns: {
+          avg_bitrate_kbps: number
+          camera_id: string
+          camera_name: string
+          peak_bitrate_kbps: number
+          sample_count: number
+          total_gb: number
         }[]
       }
       get_bgwriter_stats: { Args: never; Returns: Json }
@@ -4595,6 +4675,7 @@ export type Database = {
         Args: { _camera_id: string; _x: number; _y: number }
         Returns: boolean
       }
+      purge_bandwidth_samples: { Args: never; Returns: number }
       purge_timelapse_snapshots: { Args: never; Returns: number }
       release_ptz_lock: { Args: { _camera_id: string }; Returns: boolean }
       replace_user_role: {
