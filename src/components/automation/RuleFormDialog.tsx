@@ -1,7 +1,7 @@
 /**
  * VISÃO - Rule Form Dialog
  */
-import { Plus, Save, X, Camera, Clock } from 'lucide-react';
+import { Plus, Save, X, Camera, Clock, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,6 +16,12 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { cn } from '@/lib/utils';
 import { CATEGORIES, SEVERITIES, CONDITION_TYPES, ACTIONS, DAYS_OF_WEEK, type RuleFormData } from './constants';
 
+interface RuleZoneOption {
+  id: string;
+  name: string;
+  camera_id: string | null;
+}
+
 interface RuleFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -24,9 +30,10 @@ interface RuleFormDialogProps {
   isEditing: boolean;
   onSave: () => void;
   cameras: Array<{ id: string; name: string }>;
+  zones?: RuleZoneOption[];
 }
 
-export function RuleFormDialog({ open, onOpenChange, formData, setFormData, isEditing, onSave, cameras }: RuleFormDialogProps) {
+export function RuleFormDialog({ open, onOpenChange, formData, setFormData, isEditing, onSave, cameras, zones = [] }: RuleFormDialogProps) {
   const addCondition = () => {
     setFormData(prev => ({ ...prev, conditions: [...prev.conditions, { type: 'motion_detection', operator: 'equals', value: 'true' }] }));
   };
