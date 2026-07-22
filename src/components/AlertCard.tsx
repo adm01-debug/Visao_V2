@@ -10,6 +10,8 @@ import {
   Info,
   AlertCircle,
   Flame,
+  MapPin,
+  MapPinOff,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
@@ -34,6 +36,13 @@ export interface UIAlert {
   timestamp: Date;
   isRead: boolean;
   thumbnail: string | undefined;
+  /**
+   * Contexto espacial do alerta para justificar regras acionadas.
+   *  - `string` → nome da zona onde a detecção ocorreu (regra com `zone_id`).
+   *  - `null`   → detecção ocorreu FORA da zona configurada na regra.
+   *  - `undefined` → sem contexto de zona (regra sem `zone_id` ou alerta legado).
+   */
+  zoneName?: string | null;
 }
 
 interface AlertCardProps {
@@ -171,14 +180,50 @@ export function AlertCard({ alert, onClick, searchQuery = '', onCameraClick }: A
             <HighlightText text={alert.message} highlight={searchQuery} />
           </p>
 
-          <button
-            onClick={handleCameraClick}
-            className="flex items-center gap-1 text-muted-foreground text-xs hover:text-primary transition-colors"
-            aria-label={`Filtrar alertas da câmera ${alert.cameraName}`}
-          >
-            <Camera className="w-3 h-3" aria-hidden="true" />
-            <HighlightText text={alert.cameraName} highlight={searchQuery} />
-          </button>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <button
+              onClick={handleCameraClick}
+              className="flex items-center gap-1 text-muted-foreground text-xs hover:text-primary transition-colors"
+              aria-label={`Filtrar alertas da câmera ${alert.cameraName}`}
+            >
+              <Camera className="w-3 h-3" aria-hidden="true" />
+              <HighlightText text={alert.cameraName} highlight={searchQuery} />
+            </button>
+
+            {alert.zoneName !== undefined && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span
+                    className={cn(
+                      "flex items-center gap-1 text-[11px] rounded-md px-1.5 py-0.5 border cursor-default",
+                      alert.zoneName === null
+                        ? "text-warning bg-warning/10 border-warning/20"
+                        : "text-primary bg-primary/10 border-primary/20"
+                    )}
+                    aria-label={
+                      alert.zoneName === null
+                        ? 'Detecção ocorreu fora da zona configurada na regra'
+                        : `Detecção ocorreu na zona ${alert.zoneName}`
+                    }
+                  >
+                    {alert.zoneName === null ? (
+                      <MapPinOff className="w-3 h-3" aria-hidden="true" />
+                    ) : (
+                      <MapPin className="w-3 h-3" aria-hidden="true" />
+                    )}
+                    {alert.zoneName === null ? 'Fora da zona' : alert.zoneName}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[260px] text-center">
+                  <p className="text-xs font-medium">
+                    {alert.zoneName === null
+                      ? 'A detecção que acionou esta regra ocorreu FORA da zona configurada.'
+                      : `Regra acionada porque a detecção ocorreu dentro da zona "${alert.zoneName}".`}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+          </div>
         </div>
       </div>
       {!alert.isRead && <span className="sr-only">Não lido</span>}
