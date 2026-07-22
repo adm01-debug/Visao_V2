@@ -2,7 +2,7 @@
  * VISÃO - Rule Card Component
  */
 import { motion } from 'framer-motion';
-import { Trash2, Edit2, Clock, MapPin } from 'lucide-react';
+import { Trash2, Edit2, Clock, MapPin, FlaskConical } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { DbRule } from '@/types/rules';
 import { cn } from '@/lib/utils';
 import { CATEGORIES, SEVERITIES } from './constants';
+import { TestModeDialog } from '@/components/testMode/TestModeDialog';
 
 interface RuleCardProps {
   rule: DbRule;
