@@ -773,6 +773,20 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
             </div>
           )}
 
+          {(substreamValidation.loading || substreamValidation.result || substreamValidation.error) && (
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground">Substream (IA)</p>
+              <RtspValidationPanel
+                result={substreamValidation.result}
+                loading={substreamValidation.loading}
+                error={substreamValidation.error}
+                onRetry={handleTest}
+                compact
+              />
+            </div>
+          )}
+
+
           {guided && rtspValidation.result?.score === "critical" && (
             <label className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/5 p-3 text-xs">
               <input
