@@ -413,7 +413,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
         }
       }
 
-      onCreated?.();
+      onCreated?.(createdId ?? undefined);
       onOpenChange(false);
     } catch (err) {
       // Rollback se INSERT teve sucesso mas alguma etapa falhou
