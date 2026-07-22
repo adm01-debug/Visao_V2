@@ -419,6 +419,13 @@ export function PtzControlPanel({ cameraId, cameraName }: PtzControlPanelProps) 
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <PtzSetupWizard
+        cameraId={cameraId}
+        cameraName={cameraName}
+        open={wizardOpen}
+        onOpenChange={setWizardOpen}
+      />
     </Card>
   );
 }
