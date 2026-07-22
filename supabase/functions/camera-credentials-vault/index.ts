@@ -32,6 +32,43 @@ const log = (level: "info" | "warn" | "error", msg: string, meta: Record<string,
   console.log(JSON.stringify({ level, fn: "camera-credentials-vault", msg, ...meta, ts: new Date().toISOString() }));
 };
 
+// Onda 6 — log imutável em public.camera_vault_audit
+interface VaultAuditInput {
+  admin: ReturnType<typeof createClient>;
+  actor_id: string | null;
+  actor_role: string | null;
+  action: string;
+  camera_id?: string | null;
+  kek_version_from?: number | null;
+  kek_version_to?: number | null;
+  affected_rows?: number | null;
+  success: boolean;
+  error_code?: string | null;
+  ip?: string | null;
+  user_agent?: string | null;
+  metadata?: Record<string, unknown>;
+}
+async function logVaultAudit(input: VaultAuditInput): Promise<void> {
+  try {
+    await input.admin.from("camera_vault_audit").insert({
+      actor_id: input.actor_id,
+      actor_role: input.actor_role,
+      action: input.action,
+      camera_id: input.camera_id ?? null,
+      kek_version_from: input.kek_version_from ?? null,
+      kek_version_to: input.kek_version_to ?? null,
+      affected_rows: input.affected_rows ?? null,
+      success: input.success,
+      error_code: input.error_code ?? null,
+      ip: input.ip ?? null,
+      user_agent: input.user_agent ?? null,
+      metadata: input.metadata ?? {},
+    });
+  } catch (err) {
+    log("error", "vault_audit_insert_failed", { err: (err as Error).message, action: input.action });
+  }
+}
+
 Deno.serve(async (req) => {
   const cors = getCorsHeaders(req);
   const pre = handleCors(req);
