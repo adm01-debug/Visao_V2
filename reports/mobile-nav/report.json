@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-07-21T23:46:06.661Z",
+  "generatedAt": "2026-07-22T11:26:03.547Z",
   "wrapperFile": "src/components/layout/MainLayout.tsx",
   "requiredClass": "mb-mobile-nav",
   "totals": {
-    "total": 50,
-    "ok": 42,
+    "total": 51,
+    "ok": 43,
     "pendente": 0,
     "isenta": 8,
-    "standard": 42,
+    "standard": 43,
     "customWrapper": 0,
     "standalone": 8
   },
@@ -44,6 +44,13 @@
     {
       "file": "AutomationRulesPage.tsx",
       "path": "src/pages/AutomationRulesPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "BandwidthMonitorPage.tsx",
+      "path": "src/pages/BandwidthMonitorPage.tsx",
       "category": "standard",
       "status": "ok",
       "issues": []
