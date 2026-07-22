@@ -89,7 +89,7 @@ export function useJourneyData() {
         }
       }
 
-      if (personJourneys.size === 0 && persons.length > 0) {
+      if (personJourneys.size === 0 && persons.length > 0 && !selectedZoneName) {
         return persons.slice(0, Math.min(8, persons.length)).map((p): JourneyEntry => {
           const baseHour = 7 + Math.floor(Math.random() * 2);
           const baseMin = Math.floor(Math.random() * 30);
