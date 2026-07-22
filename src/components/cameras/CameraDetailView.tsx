@@ -23,6 +23,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { CameraTestHistoryCard } from './CameraTestHistoryCard';
+import { RtspRevalidationScheduleCard } from './RtspRevalidationScheduleCard';
 import type { CameraData } from './types';
 
 interface CameraDetailViewProps {
