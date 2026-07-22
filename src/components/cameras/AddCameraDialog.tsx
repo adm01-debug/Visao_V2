@@ -87,6 +87,15 @@ interface DiscoverState {
   presets?: number;
 }
 
+interface AutoDiscoverState {
+  loading: boolean;
+  ok: boolean | null;
+  message: string | null;
+  host: string;
+  allowPrivate: boolean;
+}
+
+
 /** Mascara qualquer credencial antes de aparecer em toast/log. */
 function safeErrorMessage(err: unknown): string {
   const raw = err instanceof Error ? err.message : "Erro desconhecido";
@@ -97,6 +106,14 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
   const [showPassword, setShowPassword] = useState(false);
   const [showPtzPass, setShowPtzPass] = useState(false);
   const [discover, setDiscover] = useState<DiscoverState>({ loading: false, ok: null, message: null });
+  const [autoDiscover, setAutoDiscover] = useState<AutoDiscoverState>({
+    loading: false,
+    ok: null,
+    message: null,
+    host: "",
+    allowPrivate: false,
+  });
+
   const { createCamera, deleteCamera, refetch } = useCameras();
   const { storeCredentials, loading: vaultLoading } = useCameraVault();
   const rtspValidation = useRtspValidation();
@@ -122,10 +139,12 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
       setShowPassword(false);
       setShowPtzPass(false);
       setDiscover({ loading: false, ok: null, message: null });
+      setAutoDiscover({ loading: false, ok: null, message: null, host: "", allowPrivate: false });
       rtspValidation.reset();
       substreamValidation.reset();
     }
   }, [open, form, rtspValidation, substreamValidation]);
+
 
   // Ajusta porta padrão ao trocar protocolo
   useEffect(() => {
@@ -169,6 +188,70 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
       }
     } else {
       substreamValidation.reset();
+    }
+  };
+
+  /** Descobre automaticamente porta ONVIF, RTSP principal/substream e capability PTZ. */
+  const handleAutoDiscover = async () => {
+    const host = autoDiscover.host.trim();
+    const username = form.getValues("username");
+    const password = form.getValues("password");
+    if (!host) {
+      toast.error("Informe o IP ou hostname da câmera.");
+      return;
+    }
+    if (!username || !password) {
+      toast.error("Preencha usuário e senha antes de descobrir.");
+      return;
+    }
+    setAutoDiscover((s) => ({ ...s, loading: true, ok: null, message: null }));
+    try {
+      const { data, error } = await supabase.functions.invoke("onvif-autodiscover", {
+        body: {
+          host,
+          username,
+          password,
+          allow_private: autoDiscover.allowPrivate,
+        },
+      });
+      if (error) throw new Error(error.message);
+      if (data?.error) {
+        setAutoDiscover((s) => ({
+          ...s,
+          loading: false,
+          ok: false,
+          message: data.hint || data.error,
+        }));
+        return;
+      }
+      // Pré-preenche o formulário. Remove credenciais embutidas — cofre cuida delas.
+      const stripCreds = (url: string) => url.replace(/^(rtsps?:\/\/)[^@\/]+@/i, "$1");
+      if (data.rtsp_primary) {
+        form.setValue("rtspUrl", stripCreds(data.rtsp_primary), { shouldValidate: true });
+      }
+      if (data.rtsp_substream) {
+        form.setValue("substreamUrl", stripCreds(data.rtsp_substream), { shouldValidate: true });
+      }
+      if (data.ptz_capable) {
+        form.setValue("ptzEnabled", true);
+        form.setValue("ptzConfig.endpoint", host);
+        form.setValue("ptzConfig.port", data.onvif?.port ?? 80);
+        form.setValue("ptzConfig.username", username);
+        form.setValue("ptzConfig.password", password);
+      }
+      if (data.device?.model && !form.getValues("name")) {
+        form.setValue("name", `${data.device.manufacturer ?? "Câmera"} ${data.device.model}`.trim());
+      }
+      setAutoDiscover((s) => ({
+        ...s,
+        loading: false,
+        ok: true,
+        message: `${data.device?.manufacturer ?? "Dispositivo"} ${data.device?.model ?? ""} · porta ${data.onvif?.port} · ${data.profiles} perfil(is)${data.ptz_capable ? " · PTZ" : ""}`,
+      }));
+      toast.success("Câmera descoberta! Campos preenchidos automaticamente.");
+    } catch (err) {
+      setAutoDiscover((s) => ({ ...s, loading: false, ok: false, message: safeErrorMessage(err) }));
+      toast.error(`Descoberta falhou: ${safeErrorMessage(err)}`);
     }
   };
 
@@ -365,6 +448,61 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
               </Select>
             </div>
           </div>
+
+          <div className="space-y-2 rounded-md border border-dashed border-primary/40 bg-primary/5 p-3">
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <Search className="h-4 w-4 text-primary" aria-hidden />
+              Descoberta automática ONVIF
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Informe apenas o IP/hostname da câmera + usuário/senha (acima) e nós preenchemos porta, RTSP principal, substream e PTZ automaticamente.
+            </p>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Input
+                aria-label="IP ou hostname da câmera"
+                placeholder="192.168.1.10 ou cam.exemplo.com"
+                autoComplete="off"
+                spellCheck={false}
+                value={autoDiscover.host}
+                onChange={(e) => setAutoDiscover((s) => ({ ...s, host: e.target.value }))}
+                disabled={autoDiscover.loading}
+              />
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={handleAutoDiscover}
+                disabled={autoDiscover.loading}
+                className="sm:w-52"
+              >
+                {autoDiscover.loading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Search className="mr-2 h-4 w-4" />
+                )}
+                Descobrir agora
+              </Button>
+            </div>
+            <label className="flex items-center gap-2 text-[11px] text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={autoDiscover.allowPrivate}
+                onChange={(e) => setAutoDiscover((s) => ({ ...s, allowPrivate: e.target.checked }))}
+                className="h-3 w-3"
+              />
+              Permitir hosts privados/LAN (só funciona se houver rota interna até a câmera)
+            </label>
+            {autoDiscover.ok === true && (
+              <Badge variant="default" className="gap-1">
+                <ShieldCheck className="h-3 w-3" /> {autoDiscover.message}
+              </Badge>
+            )}
+            {autoDiscover.ok === false && (
+              <Badge variant="destructive" className="max-w-full whitespace-normal">
+                {autoDiscover.message}
+              </Badge>
+            )}
+          </div>
+
 
           <div className="space-y-1.5">
             <Label htmlFor="add-cam-rtsp">URL RTSP principal *</Label>
