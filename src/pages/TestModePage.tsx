@@ -237,18 +237,18 @@ export default function TestModePage() {
     await refetch();
   };
 
-  const handleReplay = async (exec: ShadowExecution) => {
-    if (!activeSession) {
-      toast.error('Replay bloqueado', {
-        description: 'Inicie uma sessão de Modo Teste — o replay é sempre executado em dry-run para não notificar externamente.',
-      });
-      return;
-    }
+  /**
+   * Núcleo do replay — reusado por handleReplay (unitário) e handleReplayBatch.
+   * NÃO exibe toast — retorna o resultado tipado para o caller compor UX.
+   */
+  const replayOne = async (
+    exec: ShadowExecution,
+  ): Promise<
+    | { ok: true; matched: number; suppressed: number }
+    | { ok: false; reason: string; skipped?: boolean }
+  > => {
     if (!exec.alert_id) {
-      toast.error('Sem alerta original', {
-        description: 'Esta execução não referencia um alerta reproduzível.',
-      });
-      return;
+      return { ok: false, reason: 'Sem alerta original', skipped: true };
     }
     const { data: alertRow, error: alertErr } = await supabase
       .from('alerts')
@@ -256,10 +256,8 @@ export default function TestModePage() {
       .eq('id', exec.alert_id)
       .maybeSingle();
     if (alertErr || !alertRow) {
-      toast.error('Alerta original não encontrado', { description: alertErr?.message });
-      return;
+      return { ok: false, reason: alertErr?.message ?? 'Alerta apagado', skipped: true };
     }
-    const toastId = toast.loading('Reprocessando evento em dry-run…');
     const { data, error } = await supabase.functions.invoke('process-automation-rules', {
       body: {
         alert: alertRow,
@@ -270,19 +268,116 @@ export default function TestModePage() {
         },
       },
     });
-    if (error) {
-      toast.error('Falha no replay', { id: toastId, description: error.message });
-      return;
-    }
+    if (error) return { ok: false, reason: error.message };
     const summary = data as { rules_matched?: number; executions?: Array<{ is_test?: boolean }> };
     const matched = summary?.rules_matched ?? 0;
     const suppressed = (summary?.executions ?? []).filter((e) => e.is_test).length;
+    return { ok: true, matched, suppressed };
+  };
+
+  const ensureActiveSession = (): boolean => {
+    if (!activeSession) {
+      toast.error('Replay bloqueado', {
+        description:
+          'Inicie uma sessão de Modo Teste — o replay é sempre executado em dry-run para não notificar externamente.',
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const handleReplay = async (exec: ShadowExecution) => {
+    if (!ensureActiveSession()) return;
+    const toastId = toast.loading('Reprocessando evento em dry-run…');
+    const result = await replayOne(exec);
+    if (!result.ok) {
+      toast.error('Falha no replay', { id: toastId, description: result.reason });
+      return;
+    }
     toast.success('Replay concluído', {
       id: toastId,
-      description: `${matched} regra(s) reavaliada(s) · ${suppressed} em dry-run (sem notificações reais).`,
+      description: `${result.matched} regra(s) reavaliada(s) · ${result.suppressed} em dry-run (sem notificações reais).`,
     });
     await refetch();
   };
+
+  const [isBatchReplaying, setIsBatchReplaying] = useState(false);
+
+  const handleReplayBatch = async () => {
+    if (!ensureActiveSession()) return;
+    if (filtered.length === 0) {
+      toast.info('Nada para reprocessar', { description: 'Ajuste os filtros para incluir detecções.' });
+      return;
+    }
+    if (isBatchReplaying) return;
+
+    const sessionIdAtStart = activeSession?.id ?? null;
+    const total = filtered.length;
+    const queue = [...filtered];
+    let done = 0;
+    let ok = 0;
+    let failed = 0;
+    let skipped = 0;
+    let aborted = false;
+    const CONCURRENCY = 3;
+
+    setIsBatchReplaying(true);
+    const toastId = toast.loading(`Replay em lote: 0/${total}`);
+
+    const worker = async () => {
+      while (queue.length > 0) {
+        // Aborta se a sessão expirou/foi trocada durante o lote
+        const { data: sessionCheck } = await supabase
+          .from('test_mode_sessions')
+          .select('id, ended_at, expires_at')
+          .eq('id', sessionIdAtStart ?? '')
+          .maybeSingle();
+        if (
+          !sessionCheck ||
+          sessionCheck.ended_at ||
+          new Date(sessionCheck.expires_at as string).getTime() < Date.now()
+        ) {
+          aborted = true;
+          return;
+        }
+
+        const item = queue.shift();
+        if (!item) return;
+        try {
+          const r = await replayOne(item);
+          if (r.ok) ok++;
+          else if (r.skipped) skipped++;
+          else failed++;
+        } catch {
+          failed++;
+        } finally {
+          done++;
+          toast.loading(`Replay em lote: ${done}/${total}`, { id: toastId });
+        }
+      }
+    };
+
+    await Promise.all(Array.from({ length: Math.min(CONCURRENCY, total) }, () => worker()));
+
+    setIsBatchReplaying(false);
+
+    const parts = [`${ok} ok`];
+    if (failed) parts.push(`${failed} falha(s)`);
+    if (skipped) parts.push(`${skipped} ignorada(s)`);
+    if (aborted) {
+      toast.warning('Replay em lote interrompido', {
+        id: toastId,
+        description: `Sessão de teste encerrou durante o lote · ${parts.join(' · ')}`,
+      });
+    } else if (failed > 0) {
+      toast.warning('Replay em lote concluído com avisos', { id: toastId, description: parts.join(' · ') });
+    } else {
+      toast.success('Replay em lote concluído', { id: toastId, description: parts.join(' · ') });
+    }
+    await refetch();
+  };
+
+
 
 
 
@@ -386,17 +481,34 @@ export default function TestModePage() {
         <CardHeader className="pb-3">
           <CardTitle className="flex flex-wrap items-center justify-between gap-3 text-base">
             <span>Detecções em sombra (últimas 100)</span>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={handleExportCsv}
-              disabled={filtered.length === 0}
-              title="Exportar detecções filtradas em CSV"
-            >
-              <Download className="mr-2 h-4 w-4" />
-              Exportar CSV ({filtered.length})
-            </Button>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={handleReplayBatch}
+                disabled={filtered.length === 0 || isBatchReplaying || !activeSession}
+                title={
+                  activeSession
+                    ? 'Reprocessar todas as detecções filtradas em dry-run (concorrência 3)'
+                    : 'Inicie uma sessão de Modo Teste para usar o replay em lote'
+                }
+              >
+                <Repeat2 className={`mr-2 h-4 w-4 ${isBatchReplaying ? 'animate-spin' : ''}`} />
+                {isBatchReplaying ? 'Reprocessando…' : `Replay filtradas (${filtered.length})`}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleExportCsv}
+                disabled={filtered.length === 0}
+                title="Exportar detecções filtradas em CSV"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Exportar CSV ({filtered.length})
+              </Button>
+            </div>
           </CardTitle>
+
         </CardHeader>
         <CardContent>
           <div className="mb-4 grid gap-3 md:grid-cols-3">
