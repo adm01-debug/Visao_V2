@@ -29,6 +29,34 @@ serve(async (req) => {
     const idempotencyKey = req.headers.get("x-idempotency-key") || notification.alertId;
     const traceId = req.headers.get("x-request-id") || undefined;
 
+    // Short-circuit dry-run: quando modo teste está ativo para o escopo desta
+    // notificação, NÃO invoca Resend/Telegram/WhatsApp/Webhook. Apenas registra
+    // como suprimida para observabilidade.
+    if (notification.testContext?.userId) {
+      const active = await isTestModeActive(notification.testContext);
+      if (active) {
+        log.info("Test mode active — suppressing side-effects", {
+          alertId: notification.alertId,
+          channels: notification.channels,
+          scope: notification.testContext,
+          traceId,
+        });
+        const payload = buildTestModeResponse(notification.testContext, notification.channels);
+        return new Response(
+          JSON.stringify({
+            success: true,
+            alertId: notification.alertId,
+            results: Object.fromEntries(
+              notification.channels.map((c) => [c, { success: true, suppressed: true, reason: "test_mode_active" }]),
+            ),
+            cached: false,
+            ...payload,
+          }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json", "x-test-mode": "1" } },
+        );
+      }
+    }
+
     const { data: finalResult, fromCache } = await withIdempotency(idempotencyKey, async () => {
       const results: Record<string, { success: boolean; error?: string }> = {};
 
