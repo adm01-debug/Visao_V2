@@ -79,8 +79,7 @@ export default function TestModePage() {
       body: payload,
     });
     if (error) {
-      const details = 'context' in error && error.context ? await (error.context as Response).text().catch(() => error.message) : error.message;
-      toast.error('Falha ao promover', { description: details });
+      toast.error('Falha ao promover', { description: error.message });
       return;
     }
     const summary = data as { promoted: number; notified: number; failed: unknown[]; skipped: unknown[] };
