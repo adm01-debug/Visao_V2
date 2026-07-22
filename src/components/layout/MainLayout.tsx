@@ -25,6 +25,8 @@ import { ShortcutsHelpDialog } from '@/components/ShortcutsHelpDialog';
 import { PageTransition } from '@/components/ui/PageTransition';
 import { RouteAnnouncer } from '@/components/ui/RouteAnnouncer';
 import { PWAMigrationBanner } from '@/components/PWAMigrationBanner';
+import { TestModeBanner } from '@/components/testMode/TestModeBanner';
+
 import { useRouteCLS } from '@/hooks/useRouteCLS';
 import { useCLSAlert } from '@/hooks/useCLSAlert';
 import { cn } from '@/lib/utils';
@@ -55,7 +57,9 @@ export function MainLayout({ children }: MainLayoutProps) {
         </SectionErrorBoundary>
         <SwipeableView className="flex-1 overflow-auto" data-app-scroll>
           <PWAMigrationBanner />
+          <TestModeBanner />
           <main id="main-content" className="p-4 md:p-6 mb-mobile-nav min-h-full" role="main" aria-label="Conteúdo principal">
+
             <SectionErrorBoundary section="Conteúdo Principal">
               <PageTransition>
                 {children}
