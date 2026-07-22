@@ -22,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { CameraTestHistoryCard } from './CameraTestHistoryCard';
 import type { CameraData } from './types';
 
 interface CameraDetailViewProps {
