@@ -171,7 +171,16 @@ Deno.serve(async (req) => {
   // DESCRIBE 1x (só se pelo menos um OPTIONS respondeu, para não gastar)
   const describe = anyOk
     ? await describeOnce(p, N + 10)
-    : { ok: false, status: firstFail?.status ?? 0, authMethod: "none" as const, codec: null, resolution: null, fps: null };
+    : {
+        ok: false,
+        status: firstFail?.status ?? 0,
+        authMethod: "none" as const,
+        codec: null,
+        resolution: null,
+        fps: null,
+        fpsSource: null,
+        resolutionSource: null,
+      };
 
   const score = computeScore({
     ok: anyOk,
@@ -189,6 +198,9 @@ Deno.serve(async (req) => {
     lossPct: s.lossPct,
     codec: describe.codec,
     resolution: describe.resolution,
+    fps: describe.fps,
+    fpsSource: describe.fpsSource,
+    resolutionSource: describe.resolutionSource,
     authMethod: describe.authMethod,
     hasSubstream,
     target,
