@@ -880,6 +880,57 @@ export type Database = {
           },
         ]
       }
+      camera_vault_audit: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_role: string | null
+          affected_rows: number | null
+          camera_id: string | null
+          created_at: string
+          error_code: string | null
+          id: string
+          ip: string | null
+          kek_version_from: number | null
+          kek_version_to: number | null
+          metadata: Json
+          success: boolean
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_role?: string | null
+          affected_rows?: number | null
+          camera_id?: string | null
+          created_at?: string
+          error_code?: string | null
+          id?: string
+          ip?: string | null
+          kek_version_from?: number | null
+          kek_version_to?: number | null
+          metadata?: Json
+          success: boolean
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_role?: string | null
+          affected_rows?: number | null
+          camera_id?: string | null
+          created_at?: string
+          error_code?: string | null
+          id?: string
+          ip?: string | null
+          kek_version_from?: number | null
+          kek_version_to?: number | null
+          metadata?: Json
+          success?: boolean
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       cameras: {
         Row: {
           alerts_count: number | null
@@ -4163,6 +4214,16 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      camera_vault_coverage_alerts: {
+        Row: {
+          enveloped: number | null
+          legacy: number | null
+          oldest_wrap: string | null
+          severity: string | null
+          total: number | null
+        }
+        Relationships: []
       }
     }
     Functions: {
