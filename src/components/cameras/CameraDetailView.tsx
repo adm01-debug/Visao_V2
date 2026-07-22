@@ -199,7 +199,8 @@ export function CameraDetailView({
                   <PtzControlPanel cameraId={camera.id} cameraName={camera.name} />
                 </TabsContent>
 
-                <TabsContent value="tests" className="m-0">
+                <TabsContent value="tests" className="m-0 space-y-4">
+                  <RtspRevalidationScheduleCard cameraId={camera.id} />
                   <CameraTestHistoryCard cameraId={camera.id} />
                 </TabsContent>
 
