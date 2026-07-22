@@ -259,7 +259,7 @@ serve(async (req) => {
           recipients: {
             emails: notifCfg?.email_recipients ?? [],
             phones: notifCfg?.phone_recipients ?? [],
-            webhooks: notifCfg?.webhook_urls ?? [],
+            webhookUrls: notifCfg?.webhook_urls ?? [],
           },
           // Sem `testContext` -> a Edge Function NÃO fará short-circuit.
         }),
