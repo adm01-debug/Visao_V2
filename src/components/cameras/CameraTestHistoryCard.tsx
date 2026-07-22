@@ -55,6 +55,27 @@ export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, ca
     refetchInterval: 30_000,
   });
 
+  const { data: healthState, refetch: refetchHealth } = useQuery({
+    queryKey: ['camera-health-state', cameraId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('camera_health_state')
+        .select('consecutive_critical_scores, last_critical_alert_at, state')
+        .eq('camera_id', cameraId)
+        .maybeSingle();
+      if (error) throw error;
+      return data as {
+        consecutive_critical_scores: number | null;
+        last_critical_alert_at: string | null;
+        state: string | null;
+      } | null;
+    },
+    refetchInterval: 30_000,
+  });
+
+  const criticalStreak = healthState?.consecutive_critical_scores ?? 0;
+  const streakReachedAlert = criticalStreak >= CRITICAL_STREAK_ALERT_THRESHOLD;
+
   const runValidation = async (target: 'primary' | 'substream') => {
     try {
       const r = await validate({ mode: 'camera', cameraId, target });
