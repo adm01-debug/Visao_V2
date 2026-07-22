@@ -46,3 +46,7 @@ verify_jwt = false
 
 [functions.vault-coverage-watchdog]
 verify_jwt = false
+
+[functions.wizard-apply-camera-setup]
+verify_jwt = true
+
