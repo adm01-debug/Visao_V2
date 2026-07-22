@@ -50,6 +50,7 @@ export function CamerasPage() {
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
   const [expandedCamera, setExpandedCamera] = useState<CameraData | null>(null);
   const [settingsCamera, setSettingsCamera] = useState<CameraData | null>(null);
+  const [addOpen, setAddOpen] = useState(false);
 
   const { cameras, loading, refetch } = useCameras();
   const { rules } = useRules();
