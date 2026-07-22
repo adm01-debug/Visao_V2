@@ -149,7 +149,13 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
     setApplying(true);
     try {
       const result = await applyCameraSetup(camera.id, [], rulesPayload);
-      toast.success(`${result.rule_ids.length} regra(s) aplicada(s) à câmera ${camera.name}`);
+      if (result.from_cache) {
+        toast.info('Configuração já havia sido aplicada', {
+          description: 'Detectamos um reenvio e reutilizamos o resultado anterior sem duplicar regras.',
+        });
+      } else {
+        toast.success(`${result.rule_ids.length} regra(s) aplicada(s) à câmera ${camera.name}`);
+      }
       void trackWizardEvent('completed', 'rules', {
         camera_id: camera.id,
         rules: result.rule_ids.length,
