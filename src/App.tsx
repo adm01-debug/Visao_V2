@@ -45,6 +45,7 @@ const ApiDocsPage = lazy(() => import("@/pages/ApiDocsPage"));
 const PricingPage = lazy(() => import("@/pages/PricingPage"));
 const DashboardV2 = lazy(() => import("@/pages/DashboardV2"));
 const CamerasPage = lazy(() => import("@/pages/CamerasPage"));
+const CameraStatusPage = lazy(() => import("@/pages/CameraStatusPage"));
 const AlertsPage = lazy(() => import("@/pages/AlertsPage"));
 const ZonesPage = lazy(() => import("@/pages/ZonesPage"));
 const RecordingsPage = lazy(() => import("@/pages/RecordingsPage"));
@@ -162,6 +163,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/pricing" element={<Navigate to="/precos" replace />} />
                     <Route path="/dashboard" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<DashboardV2 />, "Dashboard")}</ProtectedLayoutRoute>} />
                     <Route path="/cameras" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<CamerasPage />, "Câmeras")}</ProtectedLayoutRoute>} />
+                    <Route path="/cameras/:id/status" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<CameraStatusPage />, "Status da Câmera")}</ProtectedLayoutRoute>} />
                     <Route path="/alerts" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<AlertsPage />, "Alertas")}</ProtectedLayoutRoute>} />
                     <Route path="/alerts-timeline" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<AlertsTimelinePage />, "Timeline de Alertas")}</ProtectedLayoutRoute>} />
                     <Route path="/event-alerts" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<EventAlertsDashboardPage />, "Dashboard de Alertas")}</ProtectedLayoutRoute>} />
