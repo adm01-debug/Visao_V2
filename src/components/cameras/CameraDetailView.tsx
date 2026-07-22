@@ -201,7 +201,7 @@ export function CameraDetailView({
 
                 <TabsContent value="tests" className="m-0 space-y-4">
                   <RtspRevalidationScheduleCard cameraId={camera.id} />
-                  <CameraTestHistoryCard cameraId={camera.id} />
+                  <CameraTestHistoryCard cameraId={camera.id} cameraName={camera.name} cameraLocation={camera.location} cameraModel={(camera as { model?: string | null }).model ?? null} />
                 </TabsContent>
 
 
