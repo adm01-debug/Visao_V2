@@ -12,6 +12,9 @@ import { useCameras } from '@/hooks/useCameras';
 import { useRules } from '@/hooks/useRules';
 import { CameraCard, CameraDetailView, GRID_CLASSES } from '@/components/cameras';
 import { AddCameraDialog } from '@/components/cameras/AddCameraDialog';
+import { RtspValidationPanel } from '@/components/cameras/RtspValidationPanel';
+import { useRtspValidation } from '@/hooks/useRtspValidation';
+import { Activity, Loader2 } from 'lucide-react';
 import type { CameraData, ViewMode } from '@/components/cameras';
 import { EmptyState } from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
@@ -51,6 +54,16 @@ export function CamerasPage() {
   const [expandedCamera, setExpandedCamera] = useState<CameraData | null>(null);
   const [settingsCamera, setSettingsCamera] = useState<CameraData | null>(null);
   const [addOpen, setAddOpen] = useState(false);
+  const diag = useRtspValidation();
+
+  const runDiag = async (target: 'primary' | 'substream') => {
+    if (!settingsCamera) return;
+    try {
+      await diag.validate({ mode: 'camera', cameraId: settingsCamera.id, target });
+    } catch {
+      /* erro tratado no hook */
+    }
+  };
 
   const { cameras, loading, refetch } = useCameras();
   const { rules } = useRules();
@@ -213,8 +226,11 @@ export function CamerasPage() {
       />
 
       {/* Settings Sheet */}
-      <Sheet open={!!settingsCamera} onOpenChange={() => setSettingsCamera(null)}>
-        <SheetContent>
+      <Sheet
+        open={!!settingsCamera}
+        onOpenChange={(o) => { if (!o) { setSettingsCamera(null); diag.reset(); } }}
+      >
+        <SheetContent className="overflow-y-auto sm:max-w-md">
           <SheetHeader>
             <SheetTitle>Configurações da Câmera</SheetTitle>
             <SheetDescription>{settingsCamera?.name}</SheetDescription>
@@ -229,13 +245,43 @@ export function CamerasPage() {
                 <Label htmlFor="cam-location">Localização</Label>
                 <Input id="cam-location" defaultValue={settingsCamera.location || ""} />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="cam-stream">URL do Stream</Label>
-                <Input id="cam-stream" defaultValue={settingsCamera.stream_url || ""} />
+
+              <div className="space-y-2 pt-2 border-t">
+                <Label>Diagnóstico do stream</Label>
+                <p className="text-xs text-muted-foreground">
+                  Mede latência, jitter e detecta codec via handshake RTSP.
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm" variant="secondary"
+                    onClick={() => runDiag('primary')}
+                    disabled={diag.loading}
+                  >
+                    {diag.loading
+                      ? <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                      : <Activity className="h-3 w-3 mr-1" />}
+                    Testar principal
+                  </Button>
+                  <Button
+                    size="sm" variant="outline"
+                    onClick={() => runDiag('substream')}
+                    disabled={diag.loading}
+                  >
+                    Testar substream
+                  </Button>
+                </div>
+                {(diag.loading || diag.result || diag.error) && (
+                  <RtspValidationPanel
+                    result={diag.result}
+                    loading={diag.loading}
+                    error={diag.error}
+                    compact
+                  />
+                )}
               </div>
+
               <div className="pt-4 flex gap-2">
-                <Button className="flex-1" onClick={() => setSettingsCamera(null)}>Salvar</Button>
-                <Button variant="outline" onClick={() => setSettingsCamera(null)}>Cancelar</Button>
+                <Button className="flex-1" onClick={() => setSettingsCamera(null)}>Fechar</Button>
               </div>
             </div>
           )}

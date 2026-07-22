@@ -12,8 +12,10 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Loader2, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, Loader2, ShieldCheck, Activity } from "lucide-react";
 import { toast } from "sonner";
+import { useRtspValidation } from "@/hooks/useRtspValidation";
+import { RtspValidationPanel } from "./RtspValidationPanel";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,6 +73,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
   const [showPassword, setShowPassword] = useState(false);
   const { createCamera, deleteCamera, refetch } = useCameras();
   const { storeCredentials, loading: vaultLoading } = useCameraVault();
+  const rtspValidation = useRtspValidation();
 
   const form = useForm<AddCameraFormValues>({
     resolver: zodResolver(addCameraSchema),
@@ -86,8 +89,28 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
     if (!open) {
       form.reset(DEFAULTS);
       setShowPassword(false);
+      rtspValidation.reset();
     }
-  }, [open, form]);
+  }, [open, form, rtspValidation]);
+
+  const handleTest = async () => {
+    const values = form.getValues();
+    const parse = addCameraSchema.safeParse(values);
+    if (!parse.success) {
+      toast.error("Preencha URL RTSP e credenciais antes de testar.");
+      return;
+    }
+    try {
+      await rtspValidation.validate({
+        mode: "inline",
+        rtspUrl: values.rtspUrl,
+        username: embedded ? undefined : values.username || undefined,
+        password: embedded ? undefined : values.password || undefined,
+      });
+    } catch {
+      /* erro já exposto pelo hook */
+    }
+  };
 
   const submitting = form.formState.isSubmitting || vaultLoading;
 
@@ -297,7 +320,18 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
             />
           </div>
 
-          <DialogFooter>
+
+          {(rtspValidation.loading || rtspValidation.result || rtspValidation.error) && (
+            <RtspValidationPanel
+              result={rtspValidation.result}
+              loading={rtspValidation.loading}
+              error={rtspValidation.error}
+              onRetry={handleTest}
+              compact
+            />
+          )}
+
+          <DialogFooter className="gap-2 sm:gap-2">
             <Button
               type="button"
               variant="outline"
@@ -306,7 +340,21 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
             >
               Cancelar
             </Button>
-            <Button type="submit" disabled={submitting}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={handleTest}
+              disabled={submitting || rtspValidation.loading}
+            >
+              {rtspValidation.loading
+                ? <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                : <Activity className="mr-2 h-4 w-4" />}
+              Testar conexão
+            </Button>
+            <Button
+              type="submit"
+              disabled={submitting || rtspValidation.loading}
+            >
               {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Cadastrar câmera
             </Button>
