@@ -251,6 +251,8 @@ Deno.serve(async (req) => {
     codec: describe.codec,
     resolution: describe.resolution,
     fps: describe.fps,
+    fps_source: describe.fpsSource,
+    resolution_source: describe.resolutionSource,
     auth_method: describe.authMethod,
     score,
     suggestions,
