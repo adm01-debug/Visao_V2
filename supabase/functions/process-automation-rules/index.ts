@@ -36,6 +36,7 @@ interface Rule {
   schedule: { days?: number[]; start_time?: string; end_time?: string } | null;
   is_active: boolean;
   user_id: string;
+  zone_id?: string | null;
 }
 
 interface ActionResult {
