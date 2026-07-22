@@ -118,6 +118,38 @@ export function buildSuggestions(i: SuggestionInput): Suggestion[] {
     });
   }
 
+  // ==== Sugestões baseadas em FPS ====
+  if (i.fps !== null && i.fps !== undefined) {
+    if (i.fps > 30 && i.target !== "substream") {
+      out.push({
+        code: "FPS_HIGH",
+        severity: "warn",
+        message: `Framerate alto (${i.fps} fps) — reduza para 15–25 fps para diminuir banda e carga de IA sem perder qualidade forense.`,
+      });
+    } else if (i.fps > 0 && i.fps < 10 && i.target !== "substream") {
+      out.push({
+        code: "FPS_LOW",
+        severity: "warn",
+        message: `Framerate muito baixo (${i.fps} fps) — pode gerar detecções instáveis e artefatos em objetos em movimento.`,
+      });
+    }
+    if (i.target === "substream" && i.fps > 15) {
+      out.push({
+        code: "SUBSTREAM_FPS_HIGH",
+        severity: "info",
+        message: `Substream em ${i.fps} fps é maior que o necessário para IA — 5–10 fps já é suficiente e economiza banda.`,
+      });
+    }
+  } else if (i.ok) {
+    // Câmera respondeu mas SDP não expôs framerate — comum em ONVIF antigo.
+    out.push({
+      code: "FPS_UNKNOWN",
+      severity: "info",
+      message:
+        "Não foi possível deduzir o framerate a partir do SDP (nem via a=framerate, fmtp ou SPS/H.264). Verifique no painel da câmera se o FPS está configurado explicitamente.",
+    });
+  }
+
   if (i.authMethod === "basic") {
     out.push({
       code: "AUTH_BASIC",
