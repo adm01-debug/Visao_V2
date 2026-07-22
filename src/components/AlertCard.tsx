@@ -10,6 +10,8 @@ import {
   Info,
   AlertCircle,
   Flame,
+  MapPin,
+  MapPinOff,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
