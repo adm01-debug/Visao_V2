@@ -7,8 +7,28 @@ import type { Suggestion } from "./suggestions.ts";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-const COOLDOWN_MIN = 30;
-const CONSECUTIVE_THRESHOLD = 2;
+const DEFAULT_COOLDOWN_MIN = 30;
+const DEFAULT_CONSECUTIVE_THRESHOLD = 2;
+
+async function resolveThresholds(
+  admin: SupabaseClient,
+  userId: string,
+  cameraId: string,
+): Promise<{ streak: number; cooldownMin: number }> {
+  const { data } = await admin
+    .from("stream_alert_thresholds")
+    .select("consecutive_threshold, cooldown_minutes, camera_id")
+    .eq("user_id", userId)
+    .or(`camera_id.eq.${cameraId},camera_id.is.null`);
+  const rows = data ?? [];
+  const cam = rows.find((r) => r.camera_id === cameraId);
+  const usr = rows.find((r) => r.camera_id === null);
+  const pick = cam ?? usr;
+  return {
+    streak: pick?.consecutive_threshold ?? DEFAULT_CONSECUTIVE_THRESHOLD,
+    cooldownMin: pick?.cooldown_minutes ?? DEFAULT_COOLDOWN_MIN,
+  };
+}
 
 export interface CriticalAlertInput {
   userId: string;
