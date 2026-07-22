@@ -56,10 +56,40 @@ export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, ca
     try {
       const r = await validate({ mode: 'camera', cameraId, target });
       setValidation(r);
+      if (target === 'primary') setLastPrimary(r);
+      else setLastSubstream(r);
       toast.success(`Validação ${target} concluída: ${r.score.toUpperCase()}`);
       refetch();
     } catch (e) {
       toast.error(`Falha: ${(e as Error).message}`);
+    }
+  };
+
+  const exportPdf = async () => {
+    setExporting(true);
+    try {
+      let primary = lastPrimary;
+      let substream = lastSubstream;
+      if (!primary) {
+        try { primary = await validate({ mode: 'camera', cameraId, target: 'primary' }); setLastPrimary(primary); } catch { /* opcional */ }
+      }
+      if (!substream) {
+        try { substream = await validate({ mode: 'camera', cameraId, target: 'substream' }); setLastSubstream(substream); } catch { /* opcional */ }
+      }
+      if (!primary && !substream) {
+        toast.error('Nenhuma validação disponível para gerar o relatório.');
+        return;
+      }
+      await generateAndDownloadStreamReport({
+        camera: { id: cameraId, name: cameraName ?? 'Câmera', location: cameraLocation ?? null, model: cameraModel ?? null },
+        results: { primary, substream },
+        historyRows: data ?? [],
+      });
+      toast.success('Relatório PDF gerado.');
+    } catch (e) {
+      toast.error(`Falha ao gerar PDF: ${(e as Error).message}`);
+    } finally {
+      setExporting(false);
     }
   };
 
