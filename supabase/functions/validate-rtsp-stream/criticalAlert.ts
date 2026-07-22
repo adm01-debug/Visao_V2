@@ -126,20 +126,15 @@ export async function maybeAlertCriticalScore(
     updated_at: new Date().toISOString(),
   }).eq("camera_id", cameraId);
 
-  // Persistir no histórico de alertas (audit-friendly)
+  // Persistir no histórico de alertas
   await admin.from("alerts").insert({
     user_id: userId,
     camera_id: cameraId,
+    camera_name: cameraName,
     type: "stream_critical",
     severity: "critical",
     message,
-    metadata: {
-      streak: nextStreak,
-      latency_avg: input.latencyAvg,
-      jitter: input.jitter,
-      loss_pct: input.lossPct,
-      channels: allChannels,
-    },
+    timestamp: new Date().toISOString(),
   }).then(() => null, () => null);
 
   return { alerted: true, reason: "sent", streak: nextStreak };
