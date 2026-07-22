@@ -100,6 +100,8 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
   const { createCamera, deleteCamera, refetch } = useCameras();
   const { storeCredentials, loading: vaultLoading } = useCameraVault();
   const rtspValidation = useRtspValidation();
+  const substreamValidation = useRtspValidation();
+
 
   const form = useForm<AddCameraFormValues>({
     resolver: zodResolver(addCameraSchema),
@@ -121,8 +123,9 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
       setShowPtzPass(false);
       setDiscover({ loading: false, ok: null, message: null });
       rtspValidation.reset();
+      substreamValidation.reset();
     }
-  }, [open, form, rtspValidation]);
+  }, [open, form, rtspValidation, substreamValidation]);
 
   // Ajusta porta padrão ao trocar protocolo
   useEffect(() => {
@@ -135,11 +138,11 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
 
   const handleTest = async () => {
     const values = form.getValues();
-    const parse = addCameraSchema.safeParse(values);
-    if (!parse.success) {
+    if (!values.rtspUrl || (!hasEmbeddedCredentials(values.rtspUrl) && (!values.username || !values.password))) {
       toast.error("Preencha URL RTSP e credenciais antes de testar.");
       return;
     }
+    // 1. Testa principal
     try {
       await rtspValidation.validate({
         mode: "inline",
@@ -150,7 +153,25 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
     } catch {
       /* erro já exposto pelo hook */
     }
+    // 2. Testa substream (se preenchido)
+    const sub = values.substreamUrl?.trim();
+    if (sub) {
+      const subEmbedded = hasEmbeddedCredentials(sub);
+      try {
+        await substreamValidation.validate({
+          mode: "inline",
+          rtspUrl: sub,
+          username: subEmbedded ? undefined : values.username || undefined,
+          password: subEmbedded ? undefined : values.password || undefined,
+        });
+      } catch {
+        /* erro já exposto pelo hook */
+      }
+    } else {
+      substreamValidation.reset();
+    }
   };
+
 
   const handleDiscoverPtz = async () => {
     const cfg = form.getValues("ptzConfig");
@@ -593,14 +614,31 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
           )}
 
           {(rtspValidation.loading || rtspValidation.result || rtspValidation.error) && (
-            <RtspValidationPanel
-              result={rtspValidation.result}
-              loading={rtspValidation.loading}
-              error={rtspValidation.error}
-              onRetry={handleTest}
-              compact
-            />
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground">Stream principal</p>
+              <RtspValidationPanel
+                result={rtspValidation.result}
+                loading={rtspValidation.loading}
+                error={rtspValidation.error}
+                onRetry={handleTest}
+                compact
+              />
+            </div>
           )}
+
+          {(substreamValidation.loading || substreamValidation.result || substreamValidation.error) && (
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground">Substream (IA)</p>
+              <RtspValidationPanel
+                result={substreamValidation.result}
+                loading={substreamValidation.loading}
+                error={substreamValidation.error}
+                onRetry={handleTest}
+                compact
+              />
+            </div>
+          )}
+
 
           <DialogFooter className="gap-2 sm:gap-2">
             <Button
@@ -615,16 +653,18 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
               type="button"
               variant="secondary"
               onClick={handleTest}
-              disabled={submitting || rtspValidation.loading}
+              disabled={submitting || rtspValidation.loading || substreamValidation.loading}
+              title="Valida principal e substream via Edge Function (latência, jitter, codec, auth)"
             >
-              {rtspValidation.loading
+              {(rtspValidation.loading || substreamValidation.loading)
+
                 ? <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 : <Activity className="mr-2 h-4 w-4" />}
               Testar conexão
             </Button>
             <Button
               type="submit"
-              disabled={submitting || rtspValidation.loading}
+              disabled={submitting || rtspValidation.loading || substreamValidation.loading}
             >
               {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Cadastrar câmera
