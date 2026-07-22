@@ -115,14 +115,26 @@ export function CameraCard({ camera, onClick, compact = false, searchQuery = '' 
 
       {/* Camera Info */}
       <div className="p-4">
-        <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-          <HighlightText text={camera.name} highlight={searchQuery} />
-        </h3>
-        <div className="flex items-center gap-1.5 mt-1 text-muted-foreground">
-          <MapPin className="w-3 h-3" />
-          <span className="text-sm">
-            <HighlightText text={camera.location} highlight={searchQuery} />
-          </span>
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+              <HighlightText text={camera.name} highlight={searchQuery} />
+            </h3>
+            <div className="flex items-center gap-1.5 mt-1 text-muted-foreground">
+              <MapPin className="w-3 h-3" />
+              <span className="text-sm truncate">
+                <HighlightText text={camera.location} highlight={searchQuery} />
+              </span>
+            </div>
+          </div>
+          <Link
+            to={`/cameras/${camera.id}/status`}
+            onClick={(e) => e.stopPropagation()}
+            className="flex-shrink-0 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
+            aria-label={`Ver status de ${camera.name}`}
+          >
+            <Activity className="w-3 h-3" /> Status
+          </Link>
         </div>
       </div>
     </div>
