@@ -1,6 +1,34 @@
 import { z } from "zod";
 
 const RTSP_REGEX = /^rtsps?:\/\/.+/i;
+const HOST_REGEX = /^[a-zA-Z0-9.\-_:]+$/;
+
+export const PTZ_PROTOCOLS = ["onvif", "hikvision", "dahua", "axis"] as const;
+export type PtzProtocol = (typeof PTZ_PROTOCOLS)[number];
+
+export const DEFAULT_PTZ_PORT: Record<PtzProtocol, number> = {
+  onvif: 80,
+  hikvision: 80,
+  dahua: 80,
+  axis: 80,
+};
+
+export const ptzConfigSchema = z.object({
+  protocol: z.enum(PTZ_PROTOCOLS).default("onvif"),
+  endpoint: z
+    .string()
+    .trim()
+    .min(3, "Endpoint obrigatório (IP ou host)")
+    .max(255)
+    .regex(HOST_REGEX, "Use apenas IP ou hostname, sem barras"),
+  port: z.coerce.number().int().min(1).max(65535).default(80),
+  channel: z.coerce.number().int().min(1).max(64).default(1),
+  username: z.string().trim().min(1, "Usuário PTZ obrigatório").max(128),
+  password: z.string().min(1, "Senha PTZ obrigatória").max(256),
+  default_speed: z.coerce.number().min(0.1).max(1).default(0.5),
+});
+
+export type PtzConfigValues = z.infer<typeof ptzConfigSchema>;
 
 export const addCameraSchema = z
   .object({
@@ -23,6 +51,7 @@ export const addCameraSchema = z
     username: z.string().trim().max(128).optional().or(z.literal("")),
     password: z.string().max(256).optional().or(z.literal("")),
     ptzEnabled: z.boolean().default(false),
+    ptzConfig: ptzConfigSchema.optional(),
   })
   .superRefine((data, ctx) => {
     const embedded = hasEmbeddedCredentials(data.rtspUrl);
@@ -40,6 +69,18 @@ export const addCameraSchema = z
           path: ["password"],
           message: "Senha obrigatória quando não está embutida na URL",
         });
+      }
+    }
+    if (data.ptzEnabled) {
+      const parsed = ptzConfigSchema.safeParse(data.ptzConfig ?? {});
+      if (!parsed.success) {
+        for (const issue of parsed.error.issues) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["ptzConfig", ...issue.path],
+            message: issue.message,
+          });
+        }
       }
     }
   });

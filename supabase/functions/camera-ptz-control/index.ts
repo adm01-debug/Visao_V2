@@ -335,6 +335,22 @@ Deno.serve(async (req) => {
         .eq('camera_id', camera_id)
         .eq('preset_number', params.preset_number);
     }
+    // Incrementa contador de uso para ordenar presets no acesso rápido
+    if (command === 'goto_preset' && params.preset_number && camStatus >= 200 && camStatus < 400) {
+      const { data: cur } = await admin
+        .from('camera_presets')
+        .select('uses')
+        .eq('camera_id', camera_id)
+        .eq('preset_number', params.preset_number)
+        .maybeSingle();
+      if (cur) {
+        await admin
+          .from('camera_presets')
+          .update({ uses: (cur.uses ?? 0) + 1 })
+          .eq('camera_id', camera_id)
+          .eq('preset_number', params.preset_number);
+      }
+    }
 
     // Audit
     await admin.from('audit_logs').insert({
