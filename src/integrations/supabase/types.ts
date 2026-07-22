@@ -352,6 +352,50 @@ export type Database = {
           },
         ]
       }
+      camera_credentials: {
+        Row: {
+          camera_id: string
+          created_at: string
+          encrypted_password: string | null
+          id: string
+          key_fingerprint: string
+          sanitized_url: string
+          updated_at: string
+          user_id: string
+          username: string | null
+        }
+        Insert: {
+          camera_id: string
+          created_at?: string
+          encrypted_password?: string | null
+          id?: string
+          key_fingerprint: string
+          sanitized_url: string
+          updated_at?: string
+          user_id: string
+          username?: string | null
+        }
+        Update: {
+          camera_id?: string
+          created_at?: string
+          encrypted_password?: string | null
+          id?: string
+          key_fingerprint?: string
+          sanitized_url?: string
+          updated_at?: string
+          user_id?: string
+          username?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_credentials_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: true
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       camera_detection_rules: {
         Row: {
           active_days: number[]
@@ -4119,6 +4163,14 @@ export type Database = {
       }
       analyze_table: { Args: { _table_name: string }; Returns: Json }
       array_days_valid: { Args: { days: number[] }; Returns: boolean }
+      audit_cameras_embedded_credentials: {
+        Args: never
+        Returns: {
+          camera_id: string
+          name: string
+          stream_url_masked: string
+        }[]
+      }
       audit_rls_coverage: {
         Args: never
         Returns: {
@@ -4155,6 +4207,14 @@ export type Database = {
       }
       evaluate_and_restart_streams: { Args: never; Returns: number }
       execute_camera_schedules: { Args: never; Returns: number }
+      extract_url_credentials: {
+        Args: { _url: string }
+        Returns: {
+          password: string
+          sanitized: string
+          username: string
+        }[]
+      }
       find_glacier_stuck_pending_alert: {
         Args: { _dedup_window_hours?: number; _hours_threshold?: number }
         Returns: {
@@ -4229,6 +4289,10 @@ export type Database = {
           blocking_statement: string
           blocking_user: string
         }[]
+      }
+      get_camera_stream_url: {
+        Args: { _camera_id: string; _key: string }
+        Returns: string
       }
       get_connection_saturation: { Args: never; Returns: Json }
       get_csp_report_stats: { Args: { _days?: number }; Returns: Json }
@@ -4700,6 +4764,10 @@ export type Database = {
       run_selective_vacuum: {
         Args: { _max_tables?: number; _min_dead_ratio?: number }
         Returns: Json
+      }
+      set_camera_credentials: {
+        Args: { _camera_id: string; _key: string; _url: string }
+        Returns: string
       }
       set_media_legal_hold: {
         Args: { _asset_id: string; _legal_hold: boolean; _reason?: string }
