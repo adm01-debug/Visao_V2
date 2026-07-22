@@ -1,9 +1,8 @@
-// Wave Shinobi 8 — Stream health prober
-// Runs periodically (via pg_cron -> pg_net) and probes camera stream URLs,
-// inserting rows into public.stream_health_checks. Also flips cameras.status
-// to 'offline'/'online' based on recent window.
+// Wave Shinobi 8 + Fortress 3 — Stream health prober
+// Usa resolve-camera-url para obter a URL final rehidratada do cofre.
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
+import { maskSecrets } from '../_shared/maskSecrets.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,6 +11,8 @@ const corsHeaders = {
 
 const PROBE_TIMEOUT_MS = 5000;
 const BATCH_SIZE = 50;
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
 function isProbableStreamUrl(u: string | null | undefined): u is string {
   if (!u) return false;
@@ -38,24 +39,43 @@ async function probe(url: string): Promise<{ ok: boolean; status: number; elapse
   }
 }
 
+async function resolveVaultUrl(camera_id: string): Promise<string | null> {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/resolve-camera-url`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${SERVICE_ROLE}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ camera_id, purpose: 'health' }),
+    });
+    if (!res.ok) return null;
+    const body = await res.json();
+    return typeof body.url === 'string' ? body.url : null;
+  } catch {
+    return null;
+  }
+}
+
+const log = (level: 'info' | 'warn' | 'error', msg: string, meta: Record<string, unknown> = {}) => {
+  console.log(JSON.stringify(maskSecrets({ level, fn: 'stream-health-probe', msg, ...meta, ts: new Date().toISOString() })));
+};
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
-  const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
-  const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
 
   try {
     const { data: cams, error } = await supabase
       .from('cameras')
-      .select('id, user_id, stream_url, substream_url, hls_url')
+      .select('id, user_id, substream_url, hls_url')
       .limit(BATCH_SIZE);
     if (error) throw error;
 
     const list = (cams ?? []) as Array<{
       id: string;
       user_id: string;
-      stream_url: string | null;
       substream_url: string | null;
       hls_url: string | null;
     }>;
@@ -70,7 +90,12 @@ Deno.serve(async (req) => {
     }> = [];
 
     for (const c of list) {
-      const url = [c.hls_url, c.substream_url, c.stream_url].find(isProbableStreamUrl);
+      // Prioridade: hls_url > substream_url > vault (stream_url rehidratada)
+      let url = [c.hls_url, c.substream_url].find(isProbableStreamUrl) ?? null;
+      if (!url) {
+        const revealed = await resolveVaultUrl(c.id);
+        if (isProbableStreamUrl(revealed)) url = revealed;
+      }
       if (!url) {
         rows.push({
           user_id: c.user_id,
@@ -99,11 +124,14 @@ Deno.serve(async (req) => {
       if (insErr) throw insErr;
     }
 
+    const failed = rows.filter((r) => r.status === 'fail').length;
+    log('info', 'probe_batch', { probed: rows.length, failed });
     return new Response(
-      JSON.stringify({ probed: rows.length, failed: rows.filter((r) => r.status === 'fail').length }),
+      JSON.stringify({ probed: rows.length, failed }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     );
   } catch (e) {
+    log('error', 'probe_error', { err: (e as Error).message });
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
