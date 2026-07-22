@@ -382,6 +382,81 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
         zone={editingZone}
         onSave={handleSaveZone}
       />
+
+      <Dialog open={summary !== null} onOpenChange={(o) => !o && setSummary(null)}>
+        <DialogContent className="max-w-md">
+          {summary && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  {summary.status === 'success' ? (
+                    <>
+                      <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                      Câmera pronta para monitorar
+                    </>
+                  ) : (
+                    <>
+                      <XCircle className="h-5 w-5 text-destructive" />
+                      Configuração revertida
+                    </>
+                  )}
+                </DialogTitle>
+                <DialogDescription>
+                  {summary.status === 'success'
+                    ? `Setup aplicado com sucesso para ${summary.cameraName}.`
+                    : `Nenhuma alteração foi persistida — rollback transacional garantiu integridade.`}
+                </DialogDescription>
+              </DialogHeader>
+
+              {summary.status === 'success' ? (
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div className="rounded-md border p-3">
+                      <p className="text-muted-foreground text-xs">Zonas ativas</p>
+                      <p className="text-xl font-semibold">{summary.zoneCount}</p>
+                    </div>
+                    <div className="rounded-md border p-3">
+                      <p className="text-muted-foreground text-xs">Regras aplicadas</p>
+                      <p className="text-xl font-semibold">{summary.ruleCount}</p>
+                    </div>
+                  </div>
+                  {summary.fromCache && (
+                    <div className="flex items-start gap-2 rounded-md border border-dashed p-3 text-xs text-muted-foreground">
+                      <Sparkles className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                      Reenvio detectado — reutilizamos o resultado da submissão anterior via chave de idempotência.
+                    </div>
+                  )}
+                  {summary.dryRunStarted && (
+                    <div className="flex items-start gap-2 rounded-md border p-3 text-xs">
+                      <FlaskConical className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                      <span>
+                        <span className="font-medium">Modo teste ativo por 15 minutos.</span> Detecções serão
+                        registradas sem disparar notificações reais.
+                      </span>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-xs text-destructive-foreground">
+                  <p className="font-medium text-destructive">Motivo da falha</p>
+                  <p className="mt-1 break-words">{summary.errorMessage ?? 'Erro desconhecido'}</p>
+                </div>
+              )}
+
+              <DialogFooter>
+                <Button onClick={() => setSummary(null)} variant="secondary">
+                  Fechar
+                </Button>
+                {summary.status === 'rollback' && (
+                  <Button onClick={() => { setSummary(null); onOpenChange(true); }}>
+                    Tentar novamente
+                  </Button>
+                )}
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
