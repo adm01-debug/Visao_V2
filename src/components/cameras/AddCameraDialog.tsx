@@ -89,8 +89,28 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
     if (!open) {
       form.reset(DEFAULTS);
       setShowPassword(false);
+      rtspValidation.reset();
     }
-  }, [open, form]);
+  }, [open, form, rtspValidation]);
+
+  const handleTest = async () => {
+    const values = form.getValues();
+    const parse = addCameraSchema.safeParse(values);
+    if (!parse.success) {
+      toast.error("Preencha URL RTSP e credenciais antes de testar.");
+      return;
+    }
+    try {
+      await rtspValidation.validate({
+        mode: "inline",
+        rtspUrl: values.rtspUrl,
+        username: embedded ? undefined : values.username || undefined,
+        password: embedded ? undefined : values.password || undefined,
+      });
+    } catch {
+      /* erro já exposto pelo hook */
+    }
+  };
 
   const submitting = form.formState.isSubmitting || vaultLoading;
 
