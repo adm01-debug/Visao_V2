@@ -100,12 +100,19 @@ export const generateFaceEncodingSchema = z.object({
 // send-telegram
 // ==========================================
 
+export const testContextSchema = z.object({
+  userId: z.string().uuid().optional(),
+  cameraId: z.string().uuid().optional(),
+  ruleId: z.string().uuid().optional(),
+}).optional();
+
 export const sendTelegramSchema = z.object({
   botToken: z.string().min(10, "botToken is required"),
   chatId: z.string().min(1, "chatId is required"),
   message: z.string().min(1).max(4096, "Message too long"),
   parseMode: z.enum(["HTML", "Markdown"]).default("HTML"),
   photo: z.string().optional(),
+  testContext: testContextSchema,
 });
 
 // ==========================================
@@ -130,6 +137,7 @@ export const sendAlertNotificationSchema = z.object({
     botToken: z.string().min(10),
     chatId: z.string().min(1),
   }).optional(),
+  testContext: testContextSchema,
 });
 
 // ==========================================
