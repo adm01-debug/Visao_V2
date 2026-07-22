@@ -129,6 +129,46 @@ Deno.serve(async (req) => {
         if (error) throw error;
         return j({ ok: true, stream_url: data }, 200, cors);
       }
+
+      case "stats": {
+        const { data, error } = await admin.rpc("envelope_encryption_stats");
+        if (error) throw error;
+        return j({ ok: true, stats: (data as unknown[])[0] ?? data }, 200, cors);
+      }
+
+      case "rotate_dek": {
+        if (userRole !== "admin") return j({ error: "forbidden_admin_only" }, 403, cors);
+        if (!KEK_V1 || KEK_V1.length < 16) return j({ error: "kek_not_configured" }, 500, cors);
+        const { data, error } = await admin.rpc("rotate_camera_dek", {
+          p_camera_id: body.camera_id, p_kek: KEK_V1, p_kek_version: 1,
+        });
+        if (error) throw error;
+        log("info", "rotate_dek", { actor: userId, camera_id: body.camera_id, rotated: data });
+        return j({ ok: true, rotated: data }, 200, cors);
+      }
+
+      case "rewrap_kek": {
+        if (userRole !== "admin") return j({ error: "forbidden_admin_only" }, 403, cors);
+        if (!KEK_V1 || KEK_V1.length < 16) return j({ error: "kek_not_configured" }, 500, cors);
+        const { data, error } = await admin.rpc("rewrap_camera_vault_kek", {
+          p_old_kek: KEK_V1, p_new_kek: body.new_kek,
+          p_from_version: body.from_version, p_to_version: body.to_version, p_limit: body.limit,
+        });
+        if (error) throw error;
+        log("info", "rewrap_kek", { actor: userId, from: body.from_version, to: body.to_version, result: data });
+        return j({ ok: true, result: data }, 200, cors);
+      }
+
+      case "backfill_envelope": {
+        if (userRole !== "admin") return j({ error: "forbidden_admin_only" }, 403, cors);
+        if (!KEK_V1 || KEK_V1.length < 16) return j({ error: "kek_not_configured" }, 500, cors);
+        const { data, error } = await admin.rpc("backfill_envelope_encryption", {
+          p_kek: KEK_V1, p_kek_version: 1, p_limit: body.limit,
+        });
+        if (error) throw error;
+        log("info", "backfill_envelope", { actor: userId, result: data });
+        return j({ ok: true, result: data }, 200, cors);
+      }
     }
   } catch (err) {
     log("error", "handler_error", { err: (err as Error).message, action: body.action });
