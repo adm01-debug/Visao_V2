@@ -214,10 +214,10 @@ const handler = async (req: Request): Promise<Response> => {
     const rawBody = await req.json();
     const validation = validateInput(processAutomationRulesSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
-    const { alert } = validation.data;
+    const { alert, detection } = validation.data;
     const traceId = req.headers.get("x-request-id") || undefined;
 
-    log.info("Processing automation rules", { alertId: alert.id, userId: alert.user_id, traceId });
+    log.info("Processing automation rules", { alertId: alert.id, userId: alert.user_id, traceId, hasDetection: !!detection });
 
     const { data: rules, error: rulesError } = await supabase.from("rules").select("*").eq("user_id", alert.user_id).eq("is_active", true);
 
@@ -226,13 +226,20 @@ const handler = async (req: Request): Promise<Response> => {
       return new Response(JSON.stringify({ error: rulesError.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Executa regras que casam em paralelo — cada regra é independente,
-    // logRuleExecution já é isolado. Reduz drasticamente a latência quando
-    // um usuário tem muitas regras ativas.
-    const matched = (rules || []).filter((r) => ruleMatchesAlert(r as Rule, alert));
+    // Pré-carrega zonas referenciadas pelas regras para filtro espacial.
+    const zoneIds = (rules || [])
+      .map((r) => (r as Rule).zone_id)
+      .filter((z): z is string => !!z);
+    const zonesById = zoneIds.length > 0
+      ? await fetchZonesById(supabase, alert.user_id, zoneIds)
+      : new Map<string, ZoneRow>();
+
+    const evaluated = (rules || []).map((r) => r as Rule);
+    const matched = evaluated.filter((r) => ruleMatchesAlert(r, alert, detection ?? null, zonesById));
+    const filteredByZone = evaluated.filter((r) => r.zone_id && !matched.includes(r)).length;
+
     const matchedRules = await Promise.all(
-      matched.map(async (rule) => {
-        const r = rule as Rule;
+      matched.map(async (r) => {
         const startTime = Date.now();
         const results = await executeActions(supabase, r, alert);
         // fire-and-forget para não bloquear a resposta; erros já são logados internamente
@@ -242,7 +249,7 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
     done();
-    log.info("Rules processed", { evaluated: rules?.length || 0, matched: matchedRules.length, traceId });
+    log.info("Rules processed", { evaluated: rules?.length || 0, matched: matchedRules.length, filteredByZone, traceId });
 
     return new Response(JSON.stringify({
       success: true, alert_id: alert.id, rules_evaluated: rules?.length || 0, rules_matched: matchedRules.length,
