@@ -20,6 +20,7 @@ export interface CameraData {
   created_at: string;
   updated_at: string;
   user_id: string | null;
+  ptz_capable?: boolean | null;
 }
 
 export interface CameraStats {
