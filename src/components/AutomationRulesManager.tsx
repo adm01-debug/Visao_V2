@@ -81,7 +81,9 @@ export function AutomationRulesManager() {
         cameras: formData.cameras,
         schedule: formData.schedule.enabled ? (formData.schedule as unknown as Json) : null,
         is_active: formData.is_active,
-      };
+        // zone_id column added via migration; types will regenerate after approval
+        zone_id: formData.zone_id,
+      } as unknown as Parameters<typeof createRule>[0];
       if (editingRule) { await updateRule(editingRule.id, payload); } else { await createRule(payload); }
       setIsDialogOpen(false);
     } catch { /* error handled by hook */ }
