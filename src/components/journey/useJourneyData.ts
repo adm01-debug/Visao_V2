@@ -196,5 +196,5 @@ export function useJourneyData() {
     finally { setSending(false); }
   }, [journeyData, getDateRange, stats, formatMinutes]);
 
-  return { period, setPeriod, selectedPerson, setSelectedPerson, persons, journeyData, isLoading, refetch, stats, formatMinutes, exportPDF, sendViaTelegram, sending };
+  return { period, setPeriod, selectedPerson, setSelectedPerson, selectedZone, setSelectedZone, zonesList, persons, journeyData, isLoading, refetch, stats, formatMinutes, exportPDF, sendViaTelegram, sending };
 }
