@@ -63,7 +63,7 @@ export function AutomationRulesManager() {
     setFormData({
       name: rule.name, description: rule.description || '', category: rule.category, severity: rule.severity,
       conditions, actions: rule.actions, cameras: rule.cameras,
-      zone_id: (rule as unknown as { zone_id?: string | null }).zone_id ?? null,
+      zone_id: rule.zone_id ?? null,
       schedule: schedule || { enabled: false, days: [1,2,3,4,5], start_time: '08:00', end_time: '18:00' },
       is_active: rule.is_active,
     });
@@ -81,9 +81,8 @@ export function AutomationRulesManager() {
         cameras: formData.cameras,
         schedule: formData.schedule.enabled ? (formData.schedule as unknown as Json) : null,
         is_active: formData.is_active,
-        // zone_id column added via migration; types will regenerate after approval
         zone_id: formData.zone_id,
-      } as unknown as Parameters<typeof createRule>[0];
+      };
       if (editingRule) { await updateRule(editingRule.id, payload); } else { await createRule(payload); }
       setIsDialogOpen(false);
     } catch { /* error handled by hook */ }
@@ -121,8 +120,7 @@ export function AutomationRulesManager() {
         <div className="grid gap-4">
           <AnimatePresence>
             {rules.map((rule) => {
-              const rZoneId = (rule as unknown as { zone_id?: string | null }).zone_id ?? null;
-              const zoneName = rZoneId ? zoneNameById.get(rZoneId) ?? null : null;
+              const zoneName = rule.zone_id ? zoneNameById.get(rule.zone_id) ?? null : null;
               return (
                 <RuleCard key={rule.id} rule={rule} zoneName={zoneName} onEdit={openEditDialog} onToggle={toggleRule} onDelete={(id) => setDeleteConfirmId(id)} />
               );
