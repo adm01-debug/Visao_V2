@@ -29,7 +29,7 @@ import {
   resetWizardSession,
   type WizardRuleInput,
 } from '@/lib/wizardClient';
-import { useRef } from 'react';
+
 
 type DbZone = Tables<'zones'>;
 
