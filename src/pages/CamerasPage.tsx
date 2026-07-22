@@ -57,6 +57,7 @@ export function CamerasPage() {
   const [settingsCamera, setSettingsCamera] = useState<CameraData | null>(null);
   const [addOpen, setAddOpen] = useState(false);
   const [addMode, setAddMode] = useState<'quick' | 'guided'>('quick');
+  const [setupCamera, setSetupCamera] = useState<CameraData | null>(null);
   const openAdd = (mode: 'quick' | 'guided' = 'quick') => { setAddMode(mode); setAddOpen(true); };
   const diag = useRtspValidation();
 
