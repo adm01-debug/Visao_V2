@@ -75,6 +75,7 @@ export type Database = {
           created_at: string
           id: string
           is_read: boolean
+          is_test: boolean
           message: string
           severity: Database["public"]["Enums"]["rule_severity"]
           thumbnail: string | null
@@ -88,6 +89,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_read?: boolean
+          is_test?: boolean
           message: string
           severity?: Database["public"]["Enums"]["rule_severity"]
           thumbnail?: string | null
@@ -101,6 +103,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_read?: boolean
+          is_test?: boolean
           message?: string
           severity?: Database["public"]["Enums"]["rule_severity"]
           thumbnail?: string | null
@@ -1196,6 +1199,7 @@ export type Database = {
           description: string | null
           event_id: string | null
           id: string
+          is_test: boolean
           metadata: Json
           organization_id: string
           resolved_at: string | null
@@ -1215,6 +1219,7 @@ export type Database = {
           description?: string | null
           event_id?: string | null
           id?: string
+          is_test?: boolean
           metadata?: Json
           organization_id: string
           resolved_at?: string | null
@@ -1234,6 +1239,7 @@ export type Database = {
           description?: string | null
           event_id?: string | null
           id?: string
+          is_test?: boolean
           metadata?: Json
           organization_id?: string
           resolved_at?: string | null
@@ -3521,6 +3527,7 @@ export type Database = {
           error_message: string | null
           execution_time_ms: number | null
           id: string
+          is_test: boolean
           rule_id: string | null
           status: string
           triggered_at: string
@@ -3533,6 +3540,7 @@ export type Database = {
           error_message?: string | null
           execution_time_ms?: number | null
           id?: string
+          is_test?: boolean
           rule_id?: string | null
           status?: string
           triggered_at?: string
@@ -3545,6 +3553,7 @@ export type Database = {
           error_message?: string | null
           execution_time_ms?: number | null
           id?: string
+          is_test?: boolean
           rule_id?: string | null
           status?: string
           triggered_at?: string
@@ -3814,6 +3823,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      test_mode_sessions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          detections_count: number
+          duration_minutes: number
+          ended_at: string | null
+          ended_reason: string | null
+          expires_at: string
+          id: string
+          scope: string
+          scope_ids: string[]
+          started_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          detections_count?: number
+          duration_minutes: number
+          ended_at?: string | null
+          ended_reason?: string | null
+          expires_at: string
+          id?: string
+          scope: string
+          scope_ids?: string[]
+          started_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          detections_count?: number
+          duration_minutes?: number
+          ended_at?: string | null
+          ended_reason?: string | null
+          expires_at?: string
+          id?: string
+          scope?: string
+          scope_ids?: string[]
+          started_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       timelapse_configs: {
         Row: {
@@ -4282,6 +4339,8 @@ export type Database = {
       check_csp_anomaly: { Args: never; Returns: Json }
       cleanup_api_usage_logs: { Args: never; Returns: number }
       cleanup_edge_cache: { Args: never; Returns: number }
+      cleanup_old_test_events: { Args: never; Returns: number }
+      close_expired_test_sessions: { Args: never; Returns: number }
       cron_matches: {
         Args: { expr: string; ts: string; tz?: string }
         Returns: boolean
@@ -4833,6 +4892,10 @@ export type Database = {
         Returns: Json
       }
       is_org_member: { Args: { _org: string; _user: string }; Returns: boolean }
+      is_test_mode_active: {
+        Args: { _camera_id?: string; _rule_id?: string; _user_id: string }
+        Returns: boolean
+      }
       point_in_polygon: {
         Args: { _poly: Json; _x: number; _y: number }
         Returns: boolean
