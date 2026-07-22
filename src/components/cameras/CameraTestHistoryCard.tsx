@@ -109,6 +109,10 @@ export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, ca
             <PlayCircle className="h-3 w-3" />
             <span className="ml-1 text-xs">Sub</span>
           </Button>
+          <Button size="sm" variant="outline" onClick={exportPdf} disabled={exporting || validating} title="Gerar relatório PDF com métricas e sugestões">
+            {exporting ? <Loader2 className="h-3 w-3 animate-spin" /> : <FileDown className="h-3 w-3" />}
+            <span className="ml-1 text-xs">PDF</span>
+          </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
