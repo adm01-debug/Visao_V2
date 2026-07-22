@@ -1,5 +1,6 @@
-// Camera Credentials Vault — Onda Fortress 2
-// Ações: store | reveal | audit | migrate_batch | rotate_key
+// Camera Credentials Vault — Onda Fortress 2 + 5 + 6
+// Ações: store | reveal | audit | migrate_batch | rotate_key | rotate_dek | rewrap_kek | backfill_envelope | stats
+// Toda ação é auditada em public.camera_vault_audit (append-only) — Onda 6.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 import { getCorsHeaders, handleCors } from "../_shared/cors.ts";
