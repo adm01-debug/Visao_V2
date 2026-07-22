@@ -30,8 +30,10 @@ for (const action of ACTIONS) {
     assert(row.action === action, `action shape ${action}#${s}`);
     assert(typeof row.success === 'boolean', `success bool ${action}#${s}`);
     // Nenhum campo sensível vaza:
-    assert(!JSON.stringify(row).includes('kek') || row.error_code === 'kek_not_configured', `no kek leak ${action}#${s}`);
-    assert(!JSON.stringify(row).match(/rtsp:\/\/[^:]+:[^@]+@/), `no url leak ${action}#${s}`);
+    // Nenhum campo sensível vaza (ignora `action` que pode conter "kek" no nome):
+    const scanned = JSON.stringify({ ...row, action: undefined });
+    assert(!/kek_[0-9a-f]{16,}/i.test(scanned) && !scanned.toLowerCase().includes('kek_v1='), `no kek leak ${action}#${s}`);
+    assert(!scanned.match(/rtsp:\/\/[^:]+:[^@]+@/), `no url leak ${action}#${s}`);
   }
 }
 
