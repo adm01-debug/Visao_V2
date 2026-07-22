@@ -414,6 +414,19 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
         </DialogHeader>
 
         <form onSubmit={onSubmit} className="space-y-4" noValidate>
+          {guided && (
+            <div className="flex items-start gap-2 rounded-md border border-primary/30 bg-primary/5 p-3 text-xs">
+              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
+              <div>
+                <p className="font-medium text-foreground">Cadastro guiado da primeira câmera</p>
+                <p className="text-muted-foreground">
+                  Preencha identificação e RTSP, teste a conexão e cadastre. Credenciais são cifradas
+                  no cofre (AES-GCM + KEK) antes de sair do navegador.
+                </p>
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="space-y-1.5 md:col-span-2">
               <Label htmlFor="add-cam-name">Nome *</Label>
