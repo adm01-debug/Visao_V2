@@ -147,7 +147,7 @@ serve(async (req) => {
   // --- Idempotência canônica: (session, execution) ------------------------
   // Colisões (duplo-clique, retry) devolvem o resultado da PRIMEIRA execução
   // dentro da mesma sessão de teste.
-  const idempotencyKey = `replay:${userId}:${sessionId}:${executionId}`;
+  const idempotencyKey = buildIdempotencyKey(userId, sessionId, executionId);
 
   try {
     const { data: result, fromCache } = await withIdempotency(
