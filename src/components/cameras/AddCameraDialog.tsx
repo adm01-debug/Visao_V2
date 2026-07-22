@@ -57,6 +57,12 @@ interface AddCameraDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onCreated?: () => void;
+  /**
+   * `quick` (default) mantém o comportamento clássico.
+   * `guided` bloqueia o submit até que o teste RTSP tenha rodado com sucesso
+   * (score `ok`/`warn`). Score `critical` exige confirmação explícita.
+   */
+  mode?: "quick" | "guided";
 }
 
 const DEFAULTS: AddCameraFormValues = {
