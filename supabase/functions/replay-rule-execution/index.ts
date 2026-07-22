@@ -26,16 +26,14 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { withIdempotency } from "../_shared/idempotency.ts";
 import { createLogger } from "../_shared/logger.ts";
+import {
+  buildIdempotencyKey,
+  evaluateSessionGuard,
+  validateReplayPayload,
+} from "./validation.ts";
 
 const log = createLogger("replay-rule-execution");
 
-const UUID_RE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-interface ReplayBody {
-  executionId?: string;
-  sessionId?: string;
-}
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
