@@ -4,7 +4,7 @@
  * Etapa 2: aplicar regras iniciais de presença e comportamento perigoso.
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog';
@@ -21,7 +21,7 @@ import { ruleTemplates, getSeverityLabel, type RuleTemplate } from '@/data/ruleT
 import type { CameraData } from '@/components/cameras';
 import type { Tables, TablesInsert, TablesUpdate, Json } from '@/integrations/supabase/types';
 import { toast } from 'sonner';
-import { ShieldAlert, Users, Layers3, Sparkles, Plus, Loader2, MapPin } from 'lucide-react';
+import { ShieldAlert, Users, Layers3, Sparkles, Plus, Loader2, MapPin, CheckCircle2, XCircle, FlaskConical } from 'lucide-react';
 import {
   applyCameraSetup,
   trackWizardEvent,
@@ -30,12 +30,23 @@ import {
   type WizardRuleInput,
 } from '@/lib/wizardClient';
 
+
 type DbZone = Tables<'zones'>;
 
 interface CameraSetupWizardProps {
   camera: CameraData | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+}
+
+interface SetupSummary {
+  status: 'success' | 'rollback';
+  cameraName: string;
+  ruleCount: number;
+  zoneCount: number;
+  fromCache: boolean;
+  dryRunStarted: boolean;
+  errorMessage?: string;
 }
 
 /** Templates recomendados para o onboarding — presença + comportamento perigoso. */
@@ -64,6 +75,8 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
   const [editingZone, setEditingZone] = useState<DbZone | null>(null);
   const [selectedTemplates, setSelectedTemplates] = useState<Set<string>>(new Set(RECOMMENDED_TEMPLATE_IDS));
   const [applying, setApplying] = useState(false);
+  const [summary, setSummary] = useState<SetupSummary | null>(null);
+  const completedRef = useRef(false);
 
   const recommended = useMemo(
     () => RECOMMENDED_TEMPLATE_IDS
@@ -92,6 +105,7 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
     if (open && camera?.id) {
       setTab('zones');
       setSelectedTemplates(new Set(RECOMMENDED_TEMPLATE_IDS));
+      completedRef.current = false;
       loadZones();
       void trackWizardEvent('started', 'zones', { camera_id: camera.id });
     }
@@ -106,6 +120,12 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
       if (error) throw error;
     }
     await loadZones();
+    if (camera?.id) {
+      void trackWizardEvent('step_completed', 'zones', {
+        camera_id: camera.id,
+        action: editingZone ? 'zone_updated' : 'zone_created',
+      });
+    }
   };
 
   const toggleTemplate = (id: string) => {
@@ -115,6 +135,28 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
       else next.add(id);
       return next;
     });
+  };
+
+  const goToRules = () => {
+    if (camera?.id) {
+      void trackWizardEvent('step_completed', 'zones', {
+        camera_id: camera.id,
+        zones: zones.length,
+        action: 'advanced_to_rules',
+      });
+    }
+    setTab('rules');
+  };
+
+  const handleDialogOpenChange = (next: boolean) => {
+    if (!next && open && !completedRef.current && camera?.id) {
+      void trackWizardEvent('abandoned', tab, {
+        camera_id: camera.id,
+        zones: zones.length,
+        selected_rules: selectedTemplates.size,
+      });
+    }
+    onOpenChange(next);
   };
 
   const handleApplyRules = async () => {
@@ -149,25 +191,24 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
     setApplying(true);
     try {
       const result = await applyCameraSetup(camera.id, [], rulesPayload);
-      if (result.from_cache) {
-        toast.info('Configuração já havia sido aplicada', {
-          description: 'Detectamos um reenvio e reutilizamos o resultado anterior sem duplicar regras.',
-        });
-      } else {
-        toast.success(`${result.rule_ids.length} regra(s) aplicada(s) à câmera ${camera.name}`);
-      }
+      const dryRun = await startPostWizardDryRun(camera.id, result.rule_ids, 15);
+      completedRef.current = true;
       void trackWizardEvent('completed', 'rules', {
         camera_id: camera.id,
         rules: result.rule_ids.length,
         zones: zones.length,
+        from_cache: Boolean(result.from_cache),
+        dry_run: Boolean(dryRun),
       });
-      const dryRun = await startPostWizardDryRun(camera.id, result.rule_ids, 15);
-      if (dryRun) {
-        toast.info('Modo teste iniciado por 15 minutos', {
-          description: 'Detecções serão registradas sem disparar notificações reais.',
-        });
-      }
       resetWizardSession();
+      setSummary({
+        status: 'success',
+        cameraName: camera.name,
+        ruleCount: result.rule_ids.length,
+        zoneCount: zones.length,
+        fromCache: Boolean(result.from_cache),
+        dryRunStarted: Boolean(dryRun),
+      });
       onOpenChange(false);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Falha ao aplicar configuração';
@@ -175,6 +216,16 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
       void trackWizardEvent('abandoned', 'rules', {
         camera_id: camera.id,
         error: message,
+        stage: 'apply_camera_setup',
+      });
+      setSummary({
+        status: 'rollback',
+        cameraName: camera.name,
+        ruleCount: 0,
+        zoneCount: zones.length,
+        fromCache: false,
+        dryRunStarted: false,
+        errorMessage: message,
       });
     } finally {
       setApplying(false);
@@ -185,7 +236,7 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
 
   return (
     <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog open={open} onOpenChange={handleDialogOpenChange}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -258,7 +309,7 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
                 )}
               </ScrollArea>
               <div className="flex justify-end mt-3">
-                <Button variant="secondary" onClick={() => setTab('rules')}>
+                <Button variant="secondary" onClick={goToRules}>
                   Avançar para regras →
                 </Button>
               </div>
@@ -305,7 +356,7 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
           </Tabs>
 
           <DialogFooter className="pt-4 border-t">
-            <Button variant="ghost" onClick={() => onOpenChange(false)}>
+            <Button variant="ghost" onClick={() => handleDialogOpenChange(false)}>
               Fechar
             </Button>
             {tab === 'rules' && (
@@ -331,6 +382,81 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
         zone={editingZone}
         onSave={handleSaveZone}
       />
+
+      <Dialog open={summary !== null} onOpenChange={(o) => !o && setSummary(null)}>
+        <DialogContent className="max-w-md">
+          {summary && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  {summary.status === 'success' ? (
+                    <>
+                      <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                      Câmera pronta para monitorar
+                    </>
+                  ) : (
+                    <>
+                      <XCircle className="h-5 w-5 text-destructive" />
+                      Configuração revertida
+                    </>
+                  )}
+                </DialogTitle>
+                <DialogDescription>
+                  {summary.status === 'success'
+                    ? `Setup aplicado com sucesso para ${summary.cameraName}.`
+                    : `Nenhuma alteração foi persistida — rollback transacional garantiu integridade.`}
+                </DialogDescription>
+              </DialogHeader>
+
+              {summary.status === 'success' ? (
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div className="rounded-md border p-3">
+                      <p className="text-muted-foreground text-xs">Zonas ativas</p>
+                      <p className="text-xl font-semibold">{summary.zoneCount}</p>
+                    </div>
+                    <div className="rounded-md border p-3">
+                      <p className="text-muted-foreground text-xs">Regras aplicadas</p>
+                      <p className="text-xl font-semibold">{summary.ruleCount}</p>
+                    </div>
+                  </div>
+                  {summary.fromCache && (
+                    <div className="flex items-start gap-2 rounded-md border border-dashed p-3 text-xs text-muted-foreground">
+                      <Sparkles className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                      Reenvio detectado — reutilizamos o resultado da submissão anterior via chave de idempotência.
+                    </div>
+                  )}
+                  {summary.dryRunStarted && (
+                    <div className="flex items-start gap-2 rounded-md border p-3 text-xs">
+                      <FlaskConical className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                      <span>
+                        <span className="font-medium">Modo teste ativo por 15 minutos.</span> Detecções serão
+                        registradas sem disparar notificações reais.
+                      </span>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-xs text-destructive-foreground">
+                  <p className="font-medium text-destructive">Motivo da falha</p>
+                  <p className="mt-1 break-words">{summary.errorMessage ?? 'Erro desconhecido'}</p>
+                </div>
+              )}
+
+              <DialogFooter>
+                <Button onClick={() => setSummary(null)} variant="secondary">
+                  Fechar
+                </Button>
+                {summary.status === 'rollback' && (
+                  <Button onClick={() => { setSummary(null); onOpenChange(true); }}>
+                    Tentar novamente
+                  </Button>
+                )}
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
