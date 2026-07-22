@@ -237,6 +237,54 @@ export default function TestModePage() {
     await refetch();
   };
 
+  const handleReplay = async (exec: ShadowExecution) => {
+    if (!activeSession) {
+      toast.error('Replay bloqueado', {
+        description: 'Inicie uma sessão de Modo Teste — o replay é sempre executado em dry-run para não notificar externamente.',
+      });
+      return;
+    }
+    if (!exec.alert_id) {
+      toast.error('Sem alerta original', {
+        description: 'Esta execução não referencia um alerta reproduzível.',
+      });
+      return;
+    }
+    const { data: alertRow, error: alertErr } = await supabase
+      .from('alerts')
+      .select('id, type, severity, message, camera_id, camera_name, timestamp, user_id')
+      .eq('id', exec.alert_id)
+      .maybeSingle();
+    if (alertErr || !alertRow) {
+      toast.error('Alerta original não encontrado', { description: alertErr?.message });
+      return;
+    }
+    const toastId = toast.loading('Reprocessando evento em dry-run…');
+    const { data, error } = await supabase.functions.invoke('process-automation-rules', {
+      body: {
+        alert: alertRow,
+        testContext: {
+          userId: alertRow.user_id,
+          cameraId: alertRow.camera_id ?? undefined,
+          ruleId: exec.rule_id,
+        },
+      },
+    });
+    if (error) {
+      toast.error('Falha no replay', { id: toastId, description: error.message });
+      return;
+    }
+    const summary = data as { rules_matched?: number; executions?: Array<{ is_test?: boolean }> };
+    const matched = summary?.rules_matched ?? 0;
+    const suppressed = (summary?.executions ?? []).filter((e) => e.is_test).length;
+    toast.success('Replay concluído', {
+      id: toastId,
+      description: `${matched} regra(s) reavaliada(s) · ${suppressed} em dry-run (sem notificações reais).`,
+    });
+    await refetch();
+  };
+
+
 
   return (
     <PageContent>
