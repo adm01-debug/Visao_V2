@@ -25,3 +25,10 @@ type: architecture
 ### Lint / Quality Gate
 - `react-hooks/set-state-in-effect`, `purity`, `immutability`, `refs`, `preserve-manual-memoization` rebaixados para `warn` (regras experimentais do React Compiler, advisory). Manter `rules-of-hooks` como error.
 - Após correções pontuais: **0 erros de lint**, gate destravado.
+
+### Cofre de credenciais RTSP (Ondas Fortress 1 & 2 — 22/07/2026)
+- Tabela `camera_credentials` com `pgp_sym_encrypt`, RLS por `auth.uid()`, coluna `encrypted_password` só `SELECT`-able para `service_role`.
+- Funções: `set_camera_credentials`, `get_camera_stream_url` (service_role only), `audit_cameras_embedded_credentials`, `rotate_camera_vault_key` (service_role only, fail-fast).
+- Secret `CAMERA_VAULT_KEY` (64 chars) — consumida apenas pela edge function `camera-credentials-vault` e workers internos. Nunca exposta ao cliente.
+- Edge function expõe ações `audit | store | migrate_batch | rotate_key` (JWT) e `reveal` (service_role bearer). Rate-limit `sensitive` (20/min/IP), Zod discriminated union, logs estruturados sem echo da chave.
+- UI admin: `CameraVaultAuditCard` na `/operations` para auditar/migrar em batch.

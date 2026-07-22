@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { PageMeta } from '@/components/PageMeta';
 import { Activity, Database, HardDrive, RefreshCw, ShieldAlert, CalendarClock } from 'lucide-react';
 import { SlowQueriesCard } from '@/components/admin/SlowQueriesCard';
+import { CameraVaultAuditCard } from '@/components/security/CameraVaultAuditCard';
 import { DbHealthCard } from '@/components/admin/DbHealthCard';
 import { TableBloatCard } from '@/components/admin/TableBloatCard';
 import { SessionWatchdogCard } from '@/components/admin/SessionWatchdogCard';
@@ -292,6 +293,10 @@ export default function OperationsPage() {
             )}
           </CardContent>
         </Card>
+      </section>
+
+      <section>
+        <CameraVaultAuditCard />
       </section>
 
       <section>
