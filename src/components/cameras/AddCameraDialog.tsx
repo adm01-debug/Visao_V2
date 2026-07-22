@@ -320,7 +320,18 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
             />
           </div>
 
-          <DialogFooter>
+
+          {(rtspValidation.loading || rtspValidation.result || rtspValidation.error) && (
+            <RtspValidationPanel
+              result={rtspValidation.result}
+              loading={rtspValidation.loading}
+              error={rtspValidation.error}
+              onRetry={handleTest}
+              compact
+            />
+          )}
+
+          <DialogFooter className="gap-2 sm:gap-2">
             <Button
               type="button"
               variant="outline"
@@ -329,7 +340,21 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
             >
               Cancelar
             </Button>
-            <Button type="submit" disabled={submitting}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={handleTest}
+              disabled={submitting || rtspValidation.loading}
+            >
+              {rtspValidation.loading
+                ? <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                : <Activity className="mr-2 h-4 w-4" />}
+              Testar conexão
+            </Button>
+            <Button
+              type="submit"
+              disabled={submitting || rtspValidation.loading}
+            >
               {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Cadastrar câmera
             </Button>
