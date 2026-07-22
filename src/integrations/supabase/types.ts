@@ -3801,6 +3801,53 @@ export type Database = {
         }
         Relationships: []
       }
+      stream_alert_thresholds: {
+        Row: {
+          camera_id: string | null
+          consecutive_threshold: number
+          cooldown_minutes: number
+          created_at: string
+          critical_jitter_ms: number
+          critical_latency_ms: number
+          critical_loss_pct: number
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          camera_id?: string | null
+          consecutive_threshold?: number
+          cooldown_minutes?: number
+          created_at?: string
+          critical_jitter_ms?: number
+          critical_latency_ms?: number
+          critical_loss_pct?: number
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string | null
+          consecutive_threshold?: number
+          cooldown_minutes?: number
+          created_at?: string
+          critical_jitter_ms?: number
+          critical_latency_ms?: number
+          critical_loss_pct?: number
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stream_alert_thresholds_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stream_health_checks: {
         Row: {
           camera_id: string
