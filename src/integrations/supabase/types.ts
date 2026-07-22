@@ -4046,6 +4046,51 @@ export type Database = {
         }
         Relationships: []
       }
+      test_mode_suppressions: {
+        Row: {
+          alert_id: string | null
+          camera_id: string | null
+          channels: string[] | null
+          created_at: string
+          id: string
+          payload_summary: Json
+          reason: string
+          rule_id: string | null
+          source_function: string
+          suppressed_at: string
+          trace_id: string | null
+          user_id: string
+        }
+        Insert: {
+          alert_id?: string | null
+          camera_id?: string | null
+          channels?: string[] | null
+          created_at?: string
+          id?: string
+          payload_summary?: Json
+          reason?: string
+          rule_id?: string | null
+          source_function: string
+          suppressed_at?: string
+          trace_id?: string | null
+          user_id: string
+        }
+        Update: {
+          alert_id?: string | null
+          camera_id?: string | null
+          channels?: string[] | null
+          created_at?: string
+          id?: string
+          payload_summary?: Json
+          reason?: string
+          rule_id?: string | null
+          source_function?: string
+          suppressed_at?: string
+          trace_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       timelapse_configs: {
         Row: {
           camera_id: string
