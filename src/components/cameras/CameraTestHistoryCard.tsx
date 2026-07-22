@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronDown, ChevronUp, CheckCircle2, XCircle, PlayCircle, Loader2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, CheckCircle2, XCircle, PlayCircle, Loader2, FileDown } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { supabase } from '@/integrations/supabase/client';
@@ -11,9 +11,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { useRtspValidation, type ValidationResult } from '@/hooks/useRtspValidation';
 import { toast } from 'sonner';
+import { generateAndDownloadStreamReport } from '@/lib/streamQualityReport';
 
 interface Props {
   cameraId: string;
+  cameraName?: string;
+  cameraLocation?: string | null;
+  cameraModel?: string | null;
 }
 
 interface HealthCheck {
@@ -25,9 +29,12 @@ interface HealthCheck {
   created_at: string;
 }
 
-export function CameraTestHistoryCard({ cameraId }: Props) {
+export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, cameraModel }: Props) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [validation, setValidation] = useState<ValidationResult | null>(null);
+  const [lastPrimary, setLastPrimary] = useState<ValidationResult | null>(null);
+  const [lastSubstream, setLastSubstream] = useState<ValidationResult | null>(null);
+  const [exporting, setExporting] = useState(false);
   const { validate, loading: validating } = useRtspValidation();
 
   const { data, isLoading, refetch } = useQuery({
@@ -49,10 +56,40 @@ export function CameraTestHistoryCard({ cameraId }: Props) {
     try {
       const r = await validate({ mode: 'camera', cameraId, target });
       setValidation(r);
+      if (target === 'primary') setLastPrimary(r);
+      else setLastSubstream(r);
       toast.success(`Validação ${target} concluída: ${r.score.toUpperCase()}`);
       refetch();
     } catch (e) {
       toast.error(`Falha: ${(e as Error).message}`);
+    }
+  };
+
+  const exportPdf = async () => {
+    setExporting(true);
+    try {
+      let primary = lastPrimary;
+      let substream = lastSubstream;
+      if (!primary) {
+        try { primary = await validate({ mode: 'camera', cameraId, target: 'primary' }); setLastPrimary(primary); } catch { /* opcional */ }
+      }
+      if (!substream) {
+        try { substream = await validate({ mode: 'camera', cameraId, target: 'substream' }); setLastSubstream(substream); } catch { /* opcional */ }
+      }
+      if (!primary && !substream) {
+        toast.error('Nenhuma validação disponível para gerar o relatório.');
+        return;
+      }
+      await generateAndDownloadStreamReport({
+        camera: { id: cameraId, name: cameraName ?? 'Câmera', location: cameraLocation ?? null, model: cameraModel ?? null },
+        results: { primary, substream },
+        historyRows: data ?? [],
+      });
+      toast.success('Relatório PDF gerado.');
+    } catch (e) {
+      toast.error(`Falha ao gerar PDF: ${(e as Error).message}`);
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -71,6 +108,10 @@ export function CameraTestHistoryCard({ cameraId }: Props) {
           <Button size="sm" variant="outline" onClick={() => runValidation('substream')} disabled={validating}>
             <PlayCircle className="h-3 w-3" />
             <span className="ml-1 text-xs">Sub</span>
+          </Button>
+          <Button size="sm" variant="outline" onClick={exportPdf} disabled={exporting || validating} title="Gerar relatório PDF com métricas e sugestões">
+            {exporting ? <Loader2 className="h-3 w-3 animate-spin" /> : <FileDown className="h-3 w-3" />}
+            <span className="ml-1 text-xs">PDF</span>
           </Button>
         </div>
       </CardHeader>
