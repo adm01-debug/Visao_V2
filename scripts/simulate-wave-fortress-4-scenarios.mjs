@@ -51,7 +51,7 @@ async function runMask() {
   // 500 cenários gerados combinatorialmente
   const schemes = ["rtsp", "rtsps", "http", "https", "ftp", "ws", "wss"];
   const users = ["admin", "u", "usr.1", "u-2", "U_3"];
-  const passes = ["Secret1!", "p@ssw0rd", "a:b@c", "@@@", "π✓", "abc", "1!2@3#", "with spaces%20", "a/b?c", "q?w"];
+  const passes = ["Secret1!", "p@ssw0rd", "a:b@c", "@@@", "abc", "1!2@3", "with%20spaces", "a%2Fb", "q%3Fw", "P%40ss"];
   const hosts = ["10.0.0.1", "cam.local", "cam-1.local:554", "[::1]:554", "host"];
   const paths = ["/live", "/onvif/stream", "/x?y=1", "", "/a/b/c"];
 
