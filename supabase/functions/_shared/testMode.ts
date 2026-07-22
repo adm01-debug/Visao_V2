@@ -78,3 +78,46 @@ export function buildTestModeResponse(
     timestamp: new Date().toISOString(),
   };
 }
+
+export interface RecordTestModeSuppressionInput {
+  ctx: TestModeContext;
+  sourceFunction: string;
+  alertId?: string | null;
+  channels?: string[];
+  reason?: string;
+  traceId?: string | null;
+  payloadSummary?: Record<string, unknown>;
+}
+
+/**
+ * Persiste um registro de auditoria para uma execução suprimida em modo teste.
+ * Fail-safe: qualquer erro é apenas logado — nunca propaga, para não afetar
+ * o fluxo de short-circuit que já retornou resposta ao chamador.
+ */
+export async function recordTestModeSuppression(
+  input: RecordTestModeSuppressionInput,
+): Promise<void> {
+  const client = getServiceClient();
+  if (!client || !input.ctx?.userId) return;
+  try {
+    const row = {
+      user_id: input.ctx.userId,
+      source_function: input.sourceFunction,
+      alert_id: input.alertId ?? null,
+      rule_id: input.ctx.ruleId ?? null,
+      camera_id: input.ctx.cameraId ?? null,
+      channels: input.channels ?? null,
+      reason: input.reason ?? "test_mode_active",
+      trace_id: input.traceId ?? null,
+      payload_summary: input.payloadSummary ?? {},
+    };
+    const { error } = await client.from("test_mode_suppressions").insert(row);
+    if (error) {
+      log.warn("failed to persist test_mode_suppressions row", { error: error.message });
+    }
+  } catch (err) {
+    log.warn("recordTestModeSuppression threw", {
+      error: err instanceof Error ? err.message : String(err),
+    });
+  }
+}

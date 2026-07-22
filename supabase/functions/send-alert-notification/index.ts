@@ -5,7 +5,7 @@ import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { createLogger } from "../_shared/logger.ts";
 import { withIdempotency } from "../_shared/idempotency.ts";
 import { fetchWithTimeout, DEFAULT_TIMEOUTS } from "../_shared/timeout.ts";
-import { isTestModeActive, buildTestModeResponse } from "../_shared/testMode.ts";
+import { isTestModeActive, buildTestModeResponse, recordTestModeSuppression } from "../_shared/testMode.ts";
 
 
 const log = createLogger("send-alert-notification");
@@ -40,6 +40,22 @@ serve(async (req) => {
           channels: notification.channels,
           scope: notification.testContext,
           traceId,
+        });
+        await recordTestModeSuppression({
+          ctx: notification.testContext,
+          sourceFunction: "send-alert-notification",
+          alertId: notification.alertId,
+          channels: notification.channels,
+          traceId,
+          payloadSummary: {
+            severity: notification.severity,
+            title: (notification as { title?: string }).title ?? null,
+            recipientsCount: {
+              emails: notification.recipients?.emails?.length ?? 0,
+              phones: (notification.recipients as { phones?: string[] })?.phones?.length ?? 0,
+              webhooks: (notification.recipients as { webhooks?: string[] })?.webhooks?.length ?? 0,
+            },
+          },
         });
         const payload = buildTestModeResponse(notification.testContext, notification.channels);
         return new Response(

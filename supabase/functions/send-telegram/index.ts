@@ -5,7 +5,7 @@ import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { createLogger } from "../_shared/logger.ts";
 import { withIdempotency } from "../_shared/idempotency.ts";
 import { fetchWithTimeout, DEFAULT_TIMEOUTS } from "../_shared/timeout.ts";
-import { isTestModeActive, buildTestModeResponse } from "../_shared/testMode.ts";
+import { isTestModeActive, buildTestModeResponse, recordTestModeSuppression } from "../_shared/testMode.ts";
 
 
 const log = createLogger("send-telegram");
@@ -32,6 +32,19 @@ serve(async (req) => {
     // API do Telegram e devolve resposta sintética marcada como suprimida.
     if (testContext?.userId && (await isTestModeActive(testContext))) {
       log.info("Test mode active — suppressing Telegram send", { chatId, scope: testContext });
+      await recordTestModeSuppression({
+        ctx: testContext,
+        sourceFunction: "send-telegram",
+        channels: ["telegram"],
+        traceId: req.headers.get("x-request-id"),
+        payloadSummary: {
+          chatId,
+          parseMode,
+          hasPhoto: Boolean(photo),
+          messagePreview: message?.slice(0, 200) ?? null,
+          messageLength: message?.length ?? 0,
+        },
+      });
       const payload = buildTestModeResponse(testContext, ["telegram"]);
       return new Response(
         JSON.stringify({ success: true, messageId: null, ...payload }),
