@@ -81,7 +81,7 @@ export function buildSuggestions(i: SuggestionInput): Suggestion[] {
     });
   }
 
-  if (i.codec && i.codec.toUpperCase().includes("H265")) {
+  if (i.codec && /H\.?265|HEVC/i.test(i.codec)) {
     out.push({
       code: "CODEC_HEVC",
       severity: "warn",
