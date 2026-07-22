@@ -59,6 +59,29 @@ export const zoneTypeConfig: Record<ZoneType, {
   custom: { label: 'Personalizada', icon: Target, color: 'text-muted-foreground', bgColor: 'bg-muted-foreground', description: 'Configuração personalizada' },
 };
 
+/**
+ * Presets de local prontos para cadastro rápido de zonas.
+ * Cada preset define um `name` sugerido e o `ZoneType` mais adequado.
+ */
+export interface LocationPreset {
+  id: string;
+  name: string;
+  type: ZoneType;
+}
+
+export const locationPresets: LocationPreset[] = [
+  { id: 'entrance', name: 'Entrada', type: 'counting' },
+  { id: 'exit', name: 'Saída', type: 'counting' },
+  { id: 'reception', name: 'Recepção', type: 'occupancy' },
+  { id: 'parking', name: 'Estacionamento', type: 'parking' },
+  { id: 'hallway', name: 'Corredor', type: 'tripwire' },
+  { id: 'meeting_room', name: 'Sala de Reunião', type: 'occupancy' },
+  { id: 'cafeteria', name: 'Refeitório', type: 'dwell' },
+  { id: 'vault', name: 'Cofre / Área Sensível', type: 'restricted' },
+  { id: 'loading_dock', name: 'Área de Carga', type: 'safety' },
+  { id: 'perimeter', name: 'Perímetro Externo', type: 'restricted' },
+];
+
 export { ZONE_COLORS as defaultColors } from '@/constants/chartColors';
 
 export function parsePointsData(points: unknown): ZonePointsData | null {
