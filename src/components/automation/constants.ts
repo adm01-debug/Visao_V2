@@ -67,6 +67,7 @@ export interface RuleFormData {
   conditions: Array<{ type: string; operator: string; value: string }>;
   actions: string[];
   cameras: string[];
+  zone_id: string | null;
   schedule: {
     enabled: boolean;
     days: number[];
@@ -84,6 +85,7 @@ export const defaultFormData: RuleFormData = {
   conditions: [],
   actions: ['alert'],
   cameras: [],
+  zone_id: null,
   schedule: {
     enabled: false,
     days: [1, 2, 3, 4, 5],
