@@ -6,7 +6,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { FlaskConical, Camera, Shield, RefreshCw, Trash2, Download, BellOff } from 'lucide-react';
+import { FlaskConical, Camera, Shield, RefreshCw, Trash2, Download, BellOff, Repeat2 } from 'lucide-react';
 import { PageContent } from '@/components/layout/MainLayout';
 import { PageMeta } from '@/components/PageMeta';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
