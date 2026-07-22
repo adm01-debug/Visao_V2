@@ -193,8 +193,19 @@ Deno.serve(async (req) => {
       latency_ms: s.avg,
       http_code: describe.status || firstFail?.status || 0,
       message: anyOk ? null : (firstFail?.timeout ? "timeout" : `handshake_${firstFail?.status ?? 0}`),
+      score,
     };
     await admin.from("stream_health_checks").insert(row).then(() => null, () => null);
+    // Alerta automático via Telegram/Email quando score=critical persiste
+    await maybeAlertCriticalScore(admin, {
+      userId,
+      cameraId,
+      score,
+      latencyAvg: s.avg,
+      jitter: s.jitter,
+      lossPct: s.lossPct,
+      suggestions,
+    }).catch((e) => log("warn", "critical_alert_error", { err: (e as Error).message }));
   }
 
   log("info", "probe_done", {
