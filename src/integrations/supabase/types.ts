@@ -3712,6 +3712,8 @@ export type Database = {
           is_active: boolean
           name: string
           schedule: Json | null
+          schedule_cron: string | null
+          schedule_tz: string
           severity: Database["public"]["Enums"]["rule_severity"]
           updated_at: string
           user_id: string
@@ -3728,6 +3730,8 @@ export type Database = {
           is_active?: boolean
           name: string
           schedule?: Json | null
+          schedule_cron?: string | null
+          schedule_tz?: string
           severity?: Database["public"]["Enums"]["rule_severity"]
           updated_at?: string
           user_id?: string
@@ -3744,6 +3748,8 @@ export type Database = {
           is_active?: boolean
           name?: string
           schedule?: Json | null
+          schedule_cron?: string | null
+          schedule_tz?: string
           severity?: Database["public"]["Enums"]["rule_severity"]
           updated_at?: string
           user_id?: string
