@@ -29,6 +29,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { PtzJoystick } from './PtzJoystick';
+import { PtzSetupWizard } from './PtzSetupWizard';
 import { usePtzControl } from '@/hooks/usePtzControl';
 
 interface PtzControlPanelProps {
@@ -45,6 +46,7 @@ export function PtzControlPanel({ cameraId, cameraName }: PtzControlPanelProps) 
   const [speed, setSpeed] = useState(5);
   const [zoomVal, setZoomVal] = useState(0);
   const [savingPreset, setSavingPreset] = useState<{ n: number; name: string } | null>(null);
+  const [wizardOpen, setWizardOpen] = useState(false);
 
   const nudge = useCallback(
     async (pan: number, tilt: number) => {
