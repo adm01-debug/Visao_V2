@@ -311,9 +311,29 @@ export async function describeOnce(p: ParsedRtsp, cseq: number): Promise<Describ
     }
 
     const ok = res.status >= 200 && res.status < 300;
-    if (!ok) return { ok, status: res.status, authMethod, codec: null, resolution: null, fps: null };
-    const sdp = parseSdp(res.body);
-    return { ok, status: res.status, authMethod, ...sdp };
+    if (!ok) {
+      return {
+        ok,
+        status: res.status,
+        authMethod,
+        codec: null,
+        resolution: null,
+        fps: null,
+        fpsSource: null,
+        resolutionSource: null,
+      };
+    }
+    const sdp = parseSdpRobust(res.body);
+    return {
+      ok,
+      status: res.status,
+      authMethod,
+      codec: sdp.codec,
+      resolution: sdp.resolution,
+      fps: sdp.fps,
+      fpsSource: sdp.fpsSource,
+      resolutionSource: sdp.resolutionSource,
+    };
   } catch (e) {
     return {
       ok: false,
@@ -322,6 +342,8 @@ export async function describeOnce(p: ParsedRtsp, cseq: number): Promise<Describ
       codec: null,
       resolution: null,
       fps: null,
+      fpsSource: null,
+      resolutionSource: null,
       error: (e as Error).message,
     };
   }
