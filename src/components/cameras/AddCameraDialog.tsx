@@ -106,6 +106,14 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
   const [showPassword, setShowPassword] = useState(false);
   const [showPtzPass, setShowPtzPass] = useState(false);
   const [discover, setDiscover] = useState<DiscoverState>({ loading: false, ok: null, message: null });
+  const [autoDiscover, setAutoDiscover] = useState<AutoDiscoverState>({
+    loading: false,
+    ok: null,
+    message: null,
+    host: "",
+    allowPrivate: false,
+  });
+
   const { createCamera, deleteCamera, refetch } = useCameras();
   const { storeCredentials, loading: vaultLoading } = useCameraVault();
   const rtspValidation = useRtspValidation();
