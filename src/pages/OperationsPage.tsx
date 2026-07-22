@@ -306,6 +306,10 @@ export default function OperationsPage() {
       </section>
 
       <section>
+        <VaultAuditTimeline />
+      </section>
+
+      <section>
         <SlowQueriesCard limit={20} />
       </section>
 
