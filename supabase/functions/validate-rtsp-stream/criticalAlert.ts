@@ -45,8 +45,12 @@ export async function maybeAlertCriticalScore(
   input: CriticalAlertInput,
 ): Promise<{ alerted: boolean; reason: string; streak: number }> {
   const { userId, cameraId, score } = input;
+  const { streak: CONSECUTIVE_THRESHOLD, cooldownMin: COOLDOWN_MIN } = await resolveThresholds(
+    admin,
+    userId,
+    cameraId,
+  );
 
-  // Estado atual (se existir)
   const { data: state } = await admin
     .from("camera_health_state")
     .select("consecutive_critical_scores, last_critical_alert_at")
@@ -56,7 +60,6 @@ export async function maybeAlertCriticalScore(
   const prevStreak = state?.consecutive_critical_scores ?? 0;
   const nextStreak = score === "critical" ? prevStreak + 1 : 0;
 
-  // Persistir streak atualizado (upsert leve)
   await admin.from("camera_health_state").upsert({
     camera_id: cameraId,
     user_id: userId,
@@ -71,7 +74,6 @@ export async function maybeAlertCriticalScore(
     return { alerted: false, reason: "streak_below_threshold", streak: nextStreak };
   }
 
-  // Cooldown
   const lastAlertAt = state?.last_critical_alert_at ? new Date(state.last_critical_alert_at).getTime() : 0;
   const ageMin = (Date.now() - lastAlertAt) / 60_000;
   if (lastAlertAt && ageMin < COOLDOWN_MIN) {
