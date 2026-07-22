@@ -3,6 +3,7 @@
 
 import { encodeBase64 } from "https://deno.land/std@0.224.0/encoding/base64.ts";
 import { crypto as stdCrypto } from "https://deno.land/std@0.224.0/crypto/mod.ts";
+import { parseSdp as parseSdpRobust, type SdpInfo } from "./sdp.ts";
 
 export interface ParsedRtsp {
   hostname: string;
@@ -212,6 +213,8 @@ export interface DescribeResult {
   codec: string | null;
   resolution: string | null;
   fps: number | null;
+  fpsSource: SdpInfo["fpsSource"];
+  resolutionSource: SdpInfo["resolutionSource"];
   error?: string;
 }
 
@@ -268,26 +271,8 @@ export async function optionsSample(p: ParsedRtsp, cseq: number): Promise<Sample
   }
 }
 
-function parseSdp(body: string): { codec: string | null; resolution: string | null; fps: number | null } {
-  let codec: string | null = null;
-  let resolution: string | null = null;
-  let fps: number | null = null;
-  for (const line of body.split(/\r?\n/)) {
-    const rt = line.match(/^a=rtpmap:\d+\s+([A-Za-z0-9\-]+)\//);
-    if (rt && !codec) {
-      const c = rt[1].toUpperCase();
-      if (c === "H264") codec = "H.264";
-      else if (c === "H265" || c === "HEVC") codec = "H.265";
-      else codec = c;
-    }
-    const dim = line.match(/a=cliprect:\d+,\d+,(\d+),(\d+)/i)
-      || line.match(/a=x-dimensions[:=]\s*(\d+)[,x](\d+)/i);
-    if (dim && !resolution) resolution = `${dim[1]}x${dim[2]}`;
-    const fr = line.match(/a=framerate:\s*(\d+(?:\.\d+)?)/i);
-    if (fr && !fps) fps = Math.round(Number(fr[1]));
-  }
-  return { codec, resolution, fps };
-}
+// Parser SDP delegado ao módulo dedicado (`sdp.ts`) para robustez.
+
 
 export async function describeOnce(p: ParsedRtsp, cseq: number): Promise<DescribeResult> {
   try {
@@ -326,9 +311,29 @@ export async function describeOnce(p: ParsedRtsp, cseq: number): Promise<Describ
     }
 
     const ok = res.status >= 200 && res.status < 300;
-    if (!ok) return { ok, status: res.status, authMethod, codec: null, resolution: null, fps: null };
-    const sdp = parseSdp(res.body);
-    return { ok, status: res.status, authMethod, ...sdp };
+    if (!ok) {
+      return {
+        ok,
+        status: res.status,
+        authMethod,
+        codec: null,
+        resolution: null,
+        fps: null,
+        fpsSource: null,
+        resolutionSource: null,
+      };
+    }
+    const sdp = parseSdpRobust(res.body);
+    return {
+      ok,
+      status: res.status,
+      authMethod,
+      codec: sdp.codec,
+      resolution: sdp.resolution,
+      fps: sdp.fps,
+      fpsSource: sdp.fpsSource,
+      resolutionSource: sdp.resolutionSource,
+    };
   } catch (e) {
     return {
       ok: false,
@@ -337,6 +342,8 @@ export async function describeOnce(p: ParsedRtsp, cseq: number): Promise<Describ
       codec: null,
       resolution: null,
       fps: null,
+      fpsSource: null,
+      resolutionSource: null,
       error: (e as Error).message,
     };
   }

@@ -61,8 +61,42 @@ Deno.test("suggestions: substream ausente + resolução alta", () => {
 Deno.test("suggestions: tudo perfeito → ALL_GOOD", () => {
   const out = buildSuggestions({
     ok: true, timeout: false, latencyAvg: 50, jitter: 5, lossPct: 0,
-    codec: "H.264", resolution: "1280x720", hasSubstream: true,
+    codec: "H.264", resolution: "1280x720", fps: 25, fpsSource: "framerate",
+    resolutionSource: "cliprect", hasSubstream: true,
     authMethod: "digest", target: "primary",
   });
   assertEquals(out[0].code, "ALL_GOOD");
+});
+
+Deno.test("suggestions: fps alto (>30) gera FPS_HIGH", () => {
+  const out = buildSuggestions({
+    ok: true, timeout: false, latencyAvg: 50, jitter: 5, lossPct: 0,
+    codec: "H.264", resolution: "1920x1080", fps: 60,
+    hasSubstream: true, target: "primary",
+  });
+  assertEquals(out.some((s) => s.code === "FPS_HIGH"), true);
+});
+
+Deno.test("suggestions: fps baixo (<10) gera FPS_LOW", () => {
+  const out = buildSuggestions({
+    ok: true, timeout: false, latencyAvg: 50, jitter: 5, lossPct: 0,
+    fps: 5, hasSubstream: true, target: "primary",
+  });
+  assertEquals(out.some((s) => s.code === "FPS_LOW"), true);
+});
+
+Deno.test("suggestions: substream com fps>15 gera SUBSTREAM_FPS_HIGH", () => {
+  const out = buildSuggestions({
+    ok: true, timeout: false, latencyAvg: 50, jitter: 5, lossPct: 0,
+    fps: 25, hasSubstream: true, target: "substream",
+  });
+  assertEquals(out.some((s) => s.code === "SUBSTREAM_FPS_HIGH"), true);
+});
+
+Deno.test("suggestions: fps ausente (null) gera FPS_UNKNOWN", () => {
+  const out = buildSuggestions({
+    ok: true, timeout: false, latencyAvg: 50, jitter: 5, lossPct: 0,
+    fps: null, hasSubstream: true, target: "primary",
+  });
+  assertEquals(out.some((s) => s.code === "FPS_UNKNOWN"), true);
 });
