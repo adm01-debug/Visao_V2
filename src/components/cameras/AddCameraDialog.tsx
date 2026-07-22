@@ -57,7 +57,7 @@ import {
 interface AddCameraDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onCreated?: () => void;
+  onCreated?: (cameraId?: string) => void;
   /**
    * `quick` (default) mantém o comportamento clássico.
    * `guided` bloqueia o submit até que o teste RTSP tenha rodado com sucesso
