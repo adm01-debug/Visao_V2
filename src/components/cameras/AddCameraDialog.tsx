@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Loader2, ShieldCheck, Activity, Gamepad2, Search } from "lucide-react";
 import { toast } from "sonner";
 import { useRtspValidation } from "@/hooks/useRtspValidation";
+import { useFirstSnapshot } from "@/hooks/useFirstSnapshot";
 import { RtspValidationPanel } from "./RtspValidationPanel";
 
 import { Button } from "@/components/ui/button";
@@ -126,6 +127,8 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
   const { storeCredentials, loading: vaultLoading } = useCameraVault();
   const rtspValidation = useRtspValidation();
   const substreamValidation = useRtspValidation();
+  const firstSnapshot = useFirstSnapshot();
+
 
 
   const form = useForm<AddCameraFormValues>({
@@ -385,6 +388,31 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
 
       toast.success("Câmera cadastrada e credenciais protegidas no cofre");
       await refetch();
+
+      // 5. Primeiro snapshot — best-effort, não bloqueia o fluxo.
+      const shouldCapture =
+        guided && rtspValidation.result && rtspValidation.result.score !== "critical";
+      if (shouldCapture) {
+        const { data: cam } = await supabase
+          .from("cameras")
+          .select("stream_url, substream_url")
+          .eq("id", camera.id)
+          .maybeSingle();
+        const result = await firstSnapshot.capture({
+          cameraId: camera.id,
+          hlsUrl: cam?.substream_url ?? null,
+          fallbackHlsUrl: cam?.stream_url ?? null,
+        });
+        if (result.status === "done") {
+          toast.success("Snapshot inicial capturado");
+          await refetch();
+        } else if (result.status === "pending") {
+          toast.info("Snapshot inicial ficará disponível após o stream público ser ingerido pelo MediaMTX");
+        } else {
+          toast.warning("Não foi possível capturar o snapshot inicial — capture manualmente na tela da câmera");
+        }
+      }
+
       onCreated?.();
       onOpenChange(false);
     } catch (err) {
@@ -818,6 +846,13 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
           {guided && !rtspValidation.result && (
             <p className="rounded-md border border-dashed bg-muted/30 p-2 text-center text-xs text-muted-foreground">
               🔒 No modo guiado é obrigatório <strong>testar a conexão</strong> antes de cadastrar.
+            </p>
+          )}
+
+          {firstSnapshot.status === "capturing" && (
+            <p className="flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 p-2 text-xs text-primary">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              Capturando snapshot inicial…
             </p>
           )}
 
