@@ -8,6 +8,7 @@ import {
   Target, ScanFace, Brain, AlertTriangle, Gamepad2,
 } from 'lucide-react';
 import { PtzControlPanel } from '@/components/ptz/PtzControlPanel';
+import { QuickPtzBar } from '@/components/ptz/QuickPtzBar';
 import { VideoStreamPlayer } from '@/components/VideoStreamPlayer';
 import { ClipRecorderControls } from '@/components/ClipRecorderControls';
 import { FaceRecognitionOverlay } from '@/components/FaceRecognitionOverlay';
@@ -117,6 +118,12 @@ export function CameraDetailView({
                   onClick={onNext} aria-label="Próximo">
                   <ChevronRight className="w-6 h-6" />
                 </Button>
+              )}
+
+              {camera.ptz_capable && (
+                <div className="pointer-events-none absolute right-4 top-20 z-10">
+                  <QuickPtzBar cameraId={camera.id} keyboardEnabled={isOpen} />
+                </div>
               )}
             </div>
 
