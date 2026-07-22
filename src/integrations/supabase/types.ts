@@ -3590,6 +3590,59 @@ export type Database = {
         }
         Relationships: []
       }
+      rtsp_revalidation_schedules: {
+        Row: {
+          camera_id: string
+          created_at: string
+          enabled: boolean
+          id: string
+          interval_minutes: number
+          last_error: string | null
+          last_run_at: string | null
+          last_status: string | null
+          next_run_at: string
+          targets: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          camera_id: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          interval_minutes?: number
+          last_error?: string | null
+          last_run_at?: string | null
+          last_status?: string | null
+          next_run_at?: string
+          targets?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          interval_minutes?: number
+          last_error?: string | null
+          last_run_at?: string | null
+          last_status?: string | null
+          next_run_at?: string
+          targets?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rtsp_revalidation_schedules_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: true
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rule_executions: {
         Row: {
           actions_executed: string[]
