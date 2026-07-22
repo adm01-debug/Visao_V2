@@ -41,6 +41,22 @@ serve(async (req) => {
           scope: notification.testContext,
           traceId,
         });
+        await recordTestModeSuppression({
+          ctx: notification.testContext,
+          sourceFunction: "send-alert-notification",
+          alertId: notification.alertId,
+          channels: notification.channels,
+          traceId,
+          payloadSummary: {
+            severity: notification.severity,
+            title: (notification as { title?: string }).title ?? null,
+            recipientsCount: {
+              emails: notification.recipients?.emails?.length ?? 0,
+              phones: (notification.recipients as { phones?: string[] })?.phones?.length ?? 0,
+              webhooks: (notification.recipients as { webhooks?: string[] })?.webhooks?.length ?? 0,
+            },
+          },
+        });
         const payload = buildTestModeResponse(notification.testContext, notification.channels);
         return new Response(
           JSON.stringify({
