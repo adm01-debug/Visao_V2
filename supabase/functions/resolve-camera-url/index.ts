@@ -82,15 +82,22 @@ Deno.serve(async (req) => {
   }
 
   const admin = createClient(SUPABASE_URL, SERVICE_KEY);
-  const { data, error } = await admin.rpc("get_camera_stream_url", {
-    p_camera_id: camera_id,
-    p_key: VAULT_KEY,
-  });
-  if (error) {
-    log("error", "rpc_failed", { camera_id, purpose, err: error.message });
-    return j({ error: "rpc_failed", detail: error.message }, 500, cors);
+
+  // Envelope Encryption v2 primeiro; fallback para v1 legado.
+  let url = "";
+  if (KEK_V1 && KEK_V1.length >= 16) {
+    const v2 = await admin.rpc("get_camera_stream_url_v2", { p_camera_id: camera_id, p_kek: KEK_V1 });
+    if (!v2.error && typeof v2.data === "string" && v2.data) url = v2.data;
+    else if (v2.error) log("warn", "v2_failed_fallback", { camera_id, err: v2.error.message });
   }
-  const url = (data as string | null) ?? "";
+  if (!url) {
+    const v1 = await admin.rpc("get_camera_stream_url", { p_camera_id: camera_id, p_key: VAULT_KEY });
+    if (v1.error) {
+      log("error", "rpc_failed", { camera_id, purpose, err: v1.error.message });
+      return j({ error: "rpc_failed", detail: v1.error.message }, 500, cors);
+    }
+    url = (v1.data as string | null) ?? "";
+  }
   if (!url) return j({ error: "camera_not_found_or_empty" }, 404, cors);
 
   // Heurística de origem: se contém `user:pass@`, veio do cofre; se não, é público.
