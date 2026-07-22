@@ -55,6 +55,8 @@ export function CamerasPage() {
   const [expandedCamera, setExpandedCamera] = useState<CameraData | null>(null);
   const [settingsCamera, setSettingsCamera] = useState<CameraData | null>(null);
   const [addOpen, setAddOpen] = useState(false);
+  const [addMode, setAddMode] = useState<'quick' | 'guided'>('quick');
+  const openAdd = (mode: 'quick' | 'guided' = 'quick') => { setAddMode(mode); setAddOpen(true); };
   const diag = useRtspValidation();
 
   const runDiag = async (target: 'primary' | 'substream') => {
