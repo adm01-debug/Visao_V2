@@ -25,6 +25,7 @@ export type PeriodFilter = 'today' | 'yesterday' | '7d' | '30d';
 export function useJourneyData() {
   const [period, setPeriod] = useState<PeriodFilter>('today');
   const [selectedPerson, setSelectedPerson] = useState('all');
+  const [selectedZone, setSelectedZone] = useState<string>('all');
   const [sending, setSending] = useState(false);
 
   const getDateRange = useCallback(() => {
@@ -45,12 +46,24 @@ export function useJourneyData() {
     },
   });
 
+  const { data: zonesList = [] } = useQuery({
+    queryKey: ['journey-zones'],
+    queryFn: async () => {
+      const { data } = await supabase.from('zones').select('id, name, type').eq('is_active', true).order('name');
+      // Dedup by name to avoid multiple entries per camera
+      const seen = new Set<string>();
+      return (data || []).filter(z => (seen.has(z.name) ? false : (seen.add(z.name), true)));
+    },
+    staleTime: 60_000,
+  });
+
   const { data: journeyData = [], isLoading, refetch } = useQuery<JourneyEntry[]>({
-    queryKey: ['journey-reports', period, selectedPerson],
+    queryKey: ['journey-reports', period, selectedPerson, selectedZone],
     queryFn: async () => {
       const { start, end } = getDateRange();
       const { data: zones } = await supabase.from('zones').select('id, name, type');
       const zoneMap = new Map((zones || []).map(z => [z.id, z]));
+      const selectedZoneName = selectedZone === 'all' ? null : (zonesList.find(z => z.id === selectedZone)?.name ?? null);
 
       const { data: events } = await supabase.from('zone_events').select('*').gte('timestamp', start.toISOString()).lte('timestamp', end.toISOString()).order('timestamp', { ascending: true });
       const { data: logs } = await supabase.from('recognition_logs').select('*, registered_persons:person_id(id, name, department)').gte('timestamp', start.toISOString()).lte('timestamp', end.toISOString()).eq('recognized', true).order('timestamp', { ascending: true });
@@ -67,6 +80,7 @@ export function useJourneyData() {
       for (const event of (events || [])) {
         const zone = event.zone_id ? zoneMap.get(event.zone_id) : null;
         if (!zone) continue;
+        if (selectedZoneName && zone.name !== selectedZoneName) continue;
         const objects = (event.detected_objects as Array<{ person_id?: string; duration_minutes?: number }>) || [];
         for (const obj of objects) {
           if (!obj?.person_id || (selectedPerson !== 'all' && obj.person_id !== selectedPerson)) continue;
@@ -75,7 +89,7 @@ export function useJourneyData() {
         }
       }
 
-      if (personJourneys.size === 0 && persons.length > 0) {
+      if (personJourneys.size === 0 && persons.length > 0 && !selectedZoneName) {
         return persons.slice(0, Math.min(8, persons.length)).map((p): JourneyEntry => {
           const baseHour = 7 + Math.floor(Math.random() * 2);
           const baseMin = Math.floor(Math.random() * 30);
@@ -182,5 +196,5 @@ export function useJourneyData() {
     finally { setSending(false); }
   }, [journeyData, getDateRange, stats, formatMinutes]);
 
-  return { period, setPeriod, selectedPerson, setSelectedPerson, persons, journeyData, isLoading, refetch, stats, formatMinutes, exportPDF, sendViaTelegram, sending };
+  return { period, setPeriod, selectedPerson, setSelectedPerson, selectedZone, setSelectedZone, zonesList, persons, journeyData, isLoading, refetch, stats, formatMinutes, exportPDF, sendViaTelegram, sending };
 }
