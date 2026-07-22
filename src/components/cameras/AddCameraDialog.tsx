@@ -388,6 +388,31 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
 
       toast.success("Câmera cadastrada e credenciais protegidas no cofre");
       await refetch();
+
+      // 5. Primeiro snapshot — best-effort, não bloqueia o fluxo.
+      const shouldCapture =
+        guided && rtspValidation.result && rtspValidation.result.score !== "critical";
+      if (shouldCapture) {
+        const { data: cam } = await supabase
+          .from("cameras")
+          .select("stream_url, substream_url")
+          .eq("id", camera.id)
+          .maybeSingle();
+        const result = await firstSnapshot.capture({
+          cameraId: camera.id,
+          hlsUrl: cam?.substream_url ?? null,
+          fallbackHlsUrl: cam?.stream_url ?? null,
+        });
+        if (result.status === "done") {
+          toast.success("Snapshot inicial capturado");
+          await refetch();
+        } else if (result.status === "pending") {
+          toast.info("Snapshot inicial ficará disponível após o stream público ser ingerido pelo MediaMTX");
+        } else {
+          toast.warning("Não foi possível capturar o snapshot inicial — capture manualmente na tela da câmera");
+        }
+      }
+
       onCreated?.();
       onOpenChange(false);
     } catch (err) {
