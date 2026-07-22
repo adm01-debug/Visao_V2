@@ -555,6 +555,62 @@ export type Database = {
           },
         ]
       }
+      camera_health_state: {
+        Row: {
+          camera_id: string
+          consecutive_failures: number
+          consecutive_successes: number
+          created_at: string
+          last_alert_at: string | null
+          last_check_at: string | null
+          last_http_code: number | null
+          last_latency_ms: number | null
+          last_message: string | null
+          last_state_change_at: string
+          state: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          camera_id: string
+          consecutive_failures?: number
+          consecutive_successes?: number
+          created_at?: string
+          last_alert_at?: string | null
+          last_check_at?: string | null
+          last_http_code?: number | null
+          last_latency_ms?: number | null
+          last_message?: string | null
+          last_state_change_at?: string
+          state?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string
+          consecutive_failures?: number
+          consecutive_successes?: number
+          created_at?: string
+          last_alert_at?: string | null
+          last_check_at?: string | null
+          last_http_code?: number | null
+          last_latency_ms?: number | null
+          last_message?: string | null
+          last_state_change_at?: string
+          state?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_health_state_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: true
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       camera_patrol_stops: {
         Row: {
           created_at: string
