@@ -57,6 +57,12 @@ interface AddCameraDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onCreated?: () => void;
+  /**
+   * `quick` (default) mantém o comportamento clássico.
+   * `guided` bloqueia o submit até que o teste RTSP tenha rodado com sucesso
+   * (score `ok`/`warn`). Score `critical` exige confirmação explícita.
+   */
+  mode?: "quick" | "guided";
 }
 
 const DEFAULTS: AddCameraFormValues = {
@@ -102,9 +108,11 @@ function safeErrorMessage(err: unknown): string {
   return raw.replace(/rtsps?:\/\/[^\s"']+/gi, "rtsp://[REDACTED]");
 }
 
-export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDialogProps) {
+export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" }: AddCameraDialogProps) {
+  const guided = mode === "guided";
   const [showPassword, setShowPassword] = useState(false);
   const [showPtzPass, setShowPtzPass] = useState(false);
+  const [forceCritical, setForceCritical] = useState(false);
   const [discover, setDiscover] = useState<DiscoverState>({ loading: false, ok: null, message: null });
   const [autoDiscover, setAutoDiscover] = useState<AutoDiscoverState>({
     loading: false,
@@ -138,6 +146,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
       form.reset(DEFAULTS);
       setShowPassword(false);
       setShowPtzPass(false);
+      setForceCritical(false);
       setDiscover({ loading: false, ok: null, message: null });
       setAutoDiscover({ loading: false, ok: null, message: null, host: "", allowPrivate: false });
       rtspValidation.reset();
@@ -405,6 +414,19 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
         </DialogHeader>
 
         <form onSubmit={onSubmit} className="space-y-4" noValidate>
+          {guided && (
+            <div className="flex items-start gap-2 rounded-md border border-primary/30 bg-primary/5 p-3 text-xs">
+              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
+              <div>
+                <p className="font-medium text-foreground">Cadastro guiado da primeira câmera</p>
+                <p className="text-muted-foreground">
+                  Preencha identificação e RTSP, teste a conexão e cadastre. Credenciais são cifradas
+                  no cofre (AES-GCM + KEK) antes de sair do navegador.
+                </p>
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="space-y-1.5 md:col-span-2">
               <Label htmlFor="add-cam-name">Nome *</Label>
@@ -778,6 +800,27 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
           )}
 
 
+          {guided && rtspValidation.result?.score === "critical" && (
+            <label className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/5 p-3 text-xs">
+              <input
+                type="checkbox"
+                checked={forceCritical}
+                onChange={(e) => setForceCritical(e.target.checked)}
+                className="mt-0.5 h-3.5 w-3.5"
+              />
+              <span>
+                O stream está com score <strong>crítico</strong>. Marque esta caixa para salvar
+                mesmo assim — recomendamos ajustar as sugestões acima antes.
+              </span>
+            </label>
+          )}
+
+          {guided && !rtspValidation.result && (
+            <p className="rounded-md border border-dashed bg-muted/30 p-2 text-center text-xs text-muted-foreground">
+              🔒 No modo guiado é obrigatório <strong>testar a conexão</strong> antes de cadastrar.
+            </p>
+          )}
+
           <DialogFooter className="gap-2 sm:gap-2">
             <Button
               type="button"
@@ -802,7 +845,13 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
             </Button>
             <Button
               type="submit"
-              disabled={submitting || rtspValidation.loading || substreamValidation.loading}
+              disabled={
+                submitting ||
+                rtspValidation.loading ||
+                substreamValidation.loading ||
+                (guided && !rtspValidation.result) ||
+                (guided && rtspValidation.result?.score === "critical" && !forceCritical)
+              }
             >
               {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Cadastrar câmera

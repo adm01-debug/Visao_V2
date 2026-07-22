@@ -12,6 +12,7 @@ import { useCameras } from '@/hooks/useCameras';
 import { useRules } from '@/hooks/useRules';
 import { CameraCard, CameraDetailView, GRID_CLASSES } from '@/components/cameras';
 import { AddCameraDialog } from '@/components/cameras/AddCameraDialog';
+import { FirstCameraEmptyState } from '@/components/cameras/FirstCameraEmptyState';
 import { RtspValidationPanel } from '@/components/cameras/RtspValidationPanel';
 import { useRtspValidation } from '@/hooks/useRtspValidation';
 import { Activity, Loader2 } from 'lucide-react';
@@ -54,6 +55,8 @@ export function CamerasPage() {
   const [expandedCamera, setExpandedCamera] = useState<CameraData | null>(null);
   const [settingsCamera, setSettingsCamera] = useState<CameraData | null>(null);
   const [addOpen, setAddOpen] = useState(false);
+  const [addMode, setAddMode] = useState<'quick' | 'guided'>('quick');
+  const openAdd = (mode: 'quick' | 'guided' = 'quick') => { setAddMode(mode); setAddOpen(true); };
   const diag = useRtspValidation();
 
   const runDiag = async (target: 'primary' | 'substream') => {
@@ -124,7 +127,7 @@ export function CamerasPage() {
             <RefreshCw className={cn('w-4 h-4 sm:mr-2', loading && 'animate-spin')} />
             <span className="hidden sm:inline">Atualizar</span>
           </Button>
-          <Button size="sm" disabled={loading} onClick={() => setAddOpen(true)} className="text-xs sm:text-sm">
+          <Button size="sm" disabled={loading} onClick={() => openAdd(cameras.length === 0 ? 'guided' : 'quick')} className="text-xs sm:text-sm">
             <Plus className="w-4 h-4 sm:mr-2" />
             <span className="hidden sm:inline">Adicionar</span>
           </Button>
@@ -188,17 +191,17 @@ export function CamerasPage() {
             <span className="sr-only">Carregando câmeras…</span>
           </div>
         ) : filteredCameras.length === 0 ? (
-          <EmptyState
-            icon={Camera}
-            title={cameras.length === 0 ? 'Nenhuma câmera cadastrada' : 'Nenhuma câmera encontrada'}
-            description={cameras.length === 0
-              ? 'Adicione sua primeira câmera para começar o monitoramento em tempo real.'
-              : 'Nenhuma câmera corresponde aos filtros aplicados. Tente ajustar sua busca.'}
-            actionLabel={cameras.length === 0 ? '+ Adicionar Câmera' : undefined}
-            onAction={cameras.length === 0 ? () => setAddOpen(true) : undefined}
-            secondaryActionLabel={cameras.length > 0 ? 'Limpar filtros' : undefined}
-            onSecondaryAction={cameras.length > 0 ? clearFilters : undefined}
-          />
+          cameras.length === 0 ? (
+            <FirstCameraEmptyState onStart={() => openAdd('guided')} />
+          ) : (
+            <EmptyState
+              icon={Camera}
+              title="Nenhuma câmera encontrada"
+              description="Nenhuma câmera corresponde aos filtros aplicados. Tente ajustar sua busca."
+              secondaryActionLabel="Limpar filtros"
+              onSecondaryAction={clearFilters}
+            />
+          )
         ) : (
           <div className={cn('grid gap-4', GRID_CLASSES[viewMode])}>
             {filteredCameras.map(camera => (
@@ -287,7 +290,7 @@ export function CamerasPage() {
           )}
         </SheetContent>
       </Sheet>
-      <AddCameraDialog open={addOpen} onOpenChange={setAddOpen} onCreated={() => refetch()} />
+      <AddCameraDialog open={addOpen} onOpenChange={setAddOpen} onCreated={() => refetch()} mode={addMode} />
     </PageContent>
   );
 }
