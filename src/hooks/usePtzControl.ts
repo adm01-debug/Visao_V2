@@ -100,8 +100,21 @@ export function usePtzControl({ cameraId, enabled = true }: UsePtzControlOptions
     void supabase.rpc("release_ptz_lock", { _camera_id: cameraId });
   }, [cameraId]);
 
+  const presetsList = (presets.data ?? []) as Array<{
+    id?: string;
+    preset_number: number;
+    name?: string | null;
+    uses?: number | null;
+    is_home?: boolean | null;
+  }>;
+
+  const topPresets = [...presetsList]
+    .sort((a, b) => (b.uses ?? 0) - (a.uses ?? 0) || a.preset_number - b.preset_number)
+    .slice(0, 8);
+
   return {
-    presets: presets.data ?? [],
+    presets: presetsList,
+    topPresets,
     presetsLoading: presets.isLoading,
     lockInfo: lockInfo.data,
     isMoving,
@@ -109,7 +122,11 @@ export function usePtzControl({ cameraId, enabled = true }: UsePtzControlOptions
     send,
     startMove,
     stopMove,
-    gotoPreset: (preset_number: number) => send("goto_preset", { preset_number }),
+    gotoPreset: async (preset_number: number) => {
+      const res = await send("goto_preset", { preset_number });
+      qc.invalidateQueries({ queryKey: ["ptz-presets", cameraId] });
+      return res;
+    },
     savePreset: (preset_number: number, preset_name: string) => send("save_preset", { preset_number, preset_name }),
     deletePreset: (preset_number: number) => send("delete_preset", { preset_number }),
     zoom: (delta: number, speed = 5) => send("zoom", { zoom: delta, speed }),
