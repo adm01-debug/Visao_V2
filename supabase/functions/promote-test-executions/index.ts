@@ -229,10 +229,10 @@ serve(async (req) => {
     const cfgChannels = (notifCfg?.channels ?? []) as string[];
     // Canais efetivos: intersecção entre canais da configuração e ações da regra
     // que representam notificação (email/telegram/webhook/sms/push/whatsapp).
-    const notifyActions = ["email", "telegram", "webhook", "sms", "push", "whatsapp"];
+    const notifyActions = ["email", "telegram", "webhook", "push", "whatsapp"];
     const channels = cfgChannels.filter(
       (c) => notifyActions.includes(c) && (ruleActions.size === 0 || ruleActions.has(c) || ruleActions.has("notify")),
-    );
+    ) as Array<"email" | "telegram" | "whatsapp" | "webhook" | "push">;
     if (channels.length === 0) {
       skipped.push({ id: row.id, reason: "no_channels" });
       continue;
