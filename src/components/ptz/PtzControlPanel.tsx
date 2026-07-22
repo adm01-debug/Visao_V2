@@ -13,6 +13,7 @@ import {
   Star,
   Trash2,
   Play,
+  Wand2,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -28,6 +29,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { PtzJoystick } from './PtzJoystick';
+import { PtzSetupWizard } from './PtzSetupWizard';
 import { usePtzControl } from '@/hooks/usePtzControl';
 
 interface PtzControlPanelProps {
@@ -44,6 +46,7 @@ export function PtzControlPanel({ cameraId, cameraName }: PtzControlPanelProps) 
   const [speed, setSpeed] = useState(5);
   const [zoomVal, setZoomVal] = useState(0);
   const [savingPreset, setSavingPreset] = useState<{ n: number; name: string } | null>(null);
+  const [wizardOpen, setWizardOpen] = useState(false);
 
   const nudge = useCallback(
     async (pan: number, tilt: number) => {
@@ -116,6 +119,10 @@ export function PtzControlPanel({ cameraId, cameraName }: PtzControlPanelProps) 
               Movendo
             </Badge>
           )}
+          <Button variant="outline" size="sm" onClick={() => setWizardOpen(true)}>
+            <Wand2 className="w-4 h-4 mr-1" />
+            Configuração assistida
+          </Button>
           <Button variant="destructive" size="sm" onClick={() => void ptz.stopMove()}>
             <Square className="w-4 h-4 mr-1" />
             Stop
@@ -412,6 +419,13 @@ export function PtzControlPanel({ cameraId, cameraName }: PtzControlPanelProps) 
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <PtzSetupWizard
+        cameraId={cameraId}
+        cameraName={cameraName}
+        open={wizardOpen}
+        onOpenChange={setWizardOpen}
+      />
     </Card>
   );
 }
