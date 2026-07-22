@@ -152,9 +152,21 @@ export default function TestModePage() {
                 <FlaskConical className="h-4 w-4 text-warning" />
                 Sessão ativa
               </span>
-              <Button size="sm" variant="outline" onClick={() => stop()}>
-                Encerrar agora
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="default"
+                  onClick={handlePromoteSession}
+                  disabled={executions.length === 0}
+                  title="Remove is_test e reenvia notificações de todas as detecções da sessão"
+                >
+                  <Camera className="mr-1 h-3.5 w-3.5" />
+                  Promover sessão ({executions.length})
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => stop()}>
+                  Encerrar agora
+                </Button>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent className="grid gap-4 text-sm md:grid-cols-4">
