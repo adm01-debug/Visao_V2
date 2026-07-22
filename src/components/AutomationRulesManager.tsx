@@ -3,11 +3,13 @@
  * Refactored: logic in constants.ts, UI in RuleCard + RuleFormDialog
  */
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence } from 'framer-motion';
 import { Plus, Zap } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { supabase } from '@/integrations/supabase/client';
 import { useRules } from '@/hooks/useRules';
 import { DbRule } from '@/types/rules';
 import type { Json } from '@/integrations/supabase/types';
