@@ -191,17 +191,17 @@ export function CamerasPage() {
             <span className="sr-only">Carregando câmeras…</span>
           </div>
         ) : filteredCameras.length === 0 ? (
-          <EmptyState
-            icon={Camera}
-            title={cameras.length === 0 ? 'Nenhuma câmera cadastrada' : 'Nenhuma câmera encontrada'}
-            description={cameras.length === 0
-              ? 'Adicione sua primeira câmera para começar o monitoramento em tempo real.'
-              : 'Nenhuma câmera corresponde aos filtros aplicados. Tente ajustar sua busca.'}
-            actionLabel={cameras.length === 0 ? '+ Adicionar Câmera' : undefined}
-            onAction={cameras.length === 0 ? () => setAddOpen(true) : undefined}
-            secondaryActionLabel={cameras.length > 0 ? 'Limpar filtros' : undefined}
-            onSecondaryAction={cameras.length > 0 ? clearFilters : undefined}
-          />
+          cameras.length === 0 ? (
+            <FirstCameraEmptyState onStart={() => openAdd('guided')} />
+          ) : (
+            <EmptyState
+              icon={Camera}
+              title="Nenhuma câmera encontrada"
+              description="Nenhuma câmera corresponde aos filtros aplicados. Tente ajustar sua busca."
+              secondaryActionLabel="Limpar filtros"
+              onSecondaryAction={clearFilters}
+            />
+          )
         ) : (
           <div className={cn('grid gap-4', GRID_CLASSES[viewMode])}>
             {filteredCameras.map(camera => (
