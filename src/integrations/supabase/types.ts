@@ -558,11 +558,13 @@ export type Database = {
       camera_health_state: {
         Row: {
           camera_id: string
+          consecutive_critical_scores: number
           consecutive_failures: number
           consecutive_successes: number
           created_at: string
           last_alert_at: string | null
           last_check_at: string | null
+          last_critical_alert_at: string | null
           last_http_code: number | null
           last_latency_ms: number | null
           last_message: string | null
@@ -573,11 +575,13 @@ export type Database = {
         }
         Insert: {
           camera_id: string
+          consecutive_critical_scores?: number
           consecutive_failures?: number
           consecutive_successes?: number
           created_at?: string
           last_alert_at?: string | null
           last_check_at?: string | null
+          last_critical_alert_at?: string | null
           last_http_code?: number | null
           last_latency_ms?: number | null
           last_message?: string | null
@@ -588,11 +592,13 @@ export type Database = {
         }
         Update: {
           camera_id?: string
+          consecutive_critical_scores?: number
           consecutive_failures?: number
           consecutive_successes?: number
           created_at?: string
           last_alert_at?: string | null
           last_check_at?: string | null
+          last_critical_alert_at?: string | null
           last_http_code?: number | null
           last_latency_ms?: number | null
           last_message?: string | null
@@ -3750,6 +3756,7 @@ export type Database = {
           id: string
           latency_ms: number | null
           message: string | null
+          score: string | null
           status: string
           user_id: string
         }
@@ -3760,6 +3767,7 @@ export type Database = {
           id?: string
           latency_ms?: number | null
           message?: string | null
+          score?: string | null
           status: string
           user_id: string
         }
@@ -3770,6 +3778,7 @@ export type Database = {
           id?: string
           latency_ms?: number | null
           message?: string | null
+          score?: string | null
           status?: string
           user_id?: string
         }
