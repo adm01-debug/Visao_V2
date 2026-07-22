@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronDown, ChevronUp, CheckCircle2, XCircle, PlayCircle, Loader2, FileDown } from 'lucide-react';
+import { ChevronDown, ChevronUp, CheckCircle2, XCircle, PlayCircle, Loader2, FileDown, Flame, AlertTriangle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,9 +9,12 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useRtspValidation, type ValidationResult } from '@/hooks/useRtspValidation';
 import { toast } from 'sonner';
 import { generateAndDownloadStreamReport } from '@/lib/streamQualityReport';
+
+const CRITICAL_STREAK_ALERT_THRESHOLD = 2;
 
 interface Props {
   cameraId: string;
@@ -52,6 +55,27 @@ export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, ca
     refetchInterval: 30_000,
   });
 
+  const { data: healthState, refetch: refetchHealth } = useQuery({
+    queryKey: ['camera-health-state', cameraId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('camera_health_state')
+        .select('consecutive_critical_scores, last_critical_alert_at, state')
+        .eq('camera_id', cameraId)
+        .maybeSingle();
+      if (error) throw error;
+      return data as {
+        consecutive_critical_scores: number | null;
+        last_critical_alert_at: string | null;
+        state: string | null;
+      } | null;
+    },
+    refetchInterval: 30_000,
+  });
+
+  const criticalStreak = healthState?.consecutive_critical_scores ?? 0;
+  const streakReachedAlert = criticalStreak >= CRITICAL_STREAK_ALERT_THRESHOLD;
+
   const runValidation = async (target: 'primary' | 'substream') => {
     try {
       const r = await validate({ mode: 'camera', cameraId, target });
@@ -60,6 +84,7 @@ export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, ca
       else setLastSubstream(r);
       toast.success(`Validação ${target} concluída: ${r.score.toUpperCase()}`);
       refetch();
+      refetchHealth();
     } catch (e) {
       toast.error(`Falha: ${(e as Error).message}`);
     }
@@ -98,8 +123,49 @@ export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, ca
 
   return (
     <Card>
-      <CardHeader className="pb-2 flex flex-row items-center justify-between">
-        <CardTitle className="text-sm">Histórico de testes</CardTitle>
+      <CardHeader className="pb-2 flex flex-row items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <CardTitle className="text-sm">Histórico de testes</CardTitle>
+          {criticalStreak > 0 && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Badge
+                    variant="outline"
+                    className={
+                      streakReachedAlert
+                        ? 'gap-1 border-destructive/40 bg-destructive/10 text-destructive text-[10px] h-5 px-1.5'
+                        : 'gap-1 border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] h-5 px-1.5'
+                    }
+                    aria-label={`Streak crítico: ${criticalStreak}`}
+                  >
+                    {streakReachedAlert ? <Flame className="h-3 w-3" /> : <AlertTriangle className="h-3 w-3" />}
+                    Streak crítico: {criticalStreak}/{CRITICAL_STREAK_ALERT_THRESHOLD}
+                  </Badge>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[260px] text-xs">
+                  <p className="font-medium">
+                    {streakReachedAlert
+                      ? 'Alerta crítico já disparado'
+                      : `Faltam ${CRITICAL_STREAK_ALERT_THRESHOLD - criticalStreak} validação(ões) crítica(s) para disparar alerta.`}
+                  </p>
+                  <p className="mt-1 text-muted-foreground">
+                    O contador zera assim que uma validação retorna score <strong>ok</strong> ou <strong>warn</strong>.
+                  </p>
+                  {healthState?.last_critical_alert_at && (
+                    <p className="mt-1 text-muted-foreground">
+                      Último alerta:{' '}
+                      {formatDistanceToNow(new Date(healthState.last_critical_alert_at), {
+                        addSuffix: true,
+                        locale: ptBR,
+                      })}
+                    </p>
+                  )}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
         <div className="flex gap-1">
           <Button size="sm" variant="outline" onClick={() => runValidation('primary')} disabled={validating}>
             {validating ? <Loader2 className="h-3 w-3 animate-spin" /> : <PlayCircle className="h-3 w-3" />}
@@ -116,6 +182,7 @@ export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, ca
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
+
         {isLoading ? (
           <>
             <Skeleton className="h-8 w-full" />
