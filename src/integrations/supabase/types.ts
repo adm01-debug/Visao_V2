@@ -3712,6 +3712,8 @@ export type Database = {
           is_active: boolean
           name: string
           schedule: Json | null
+          schedule_cron: string | null
+          schedule_tz: string
           severity: Database["public"]["Enums"]["rule_severity"]
           updated_at: string
           user_id: string
@@ -3728,6 +3730,8 @@ export type Database = {
           is_active?: boolean
           name: string
           schedule?: Json | null
+          schedule_cron?: string | null
+          schedule_tz?: string
           severity?: Database["public"]["Enums"]["rule_severity"]
           updated_at?: string
           user_id?: string
@@ -3744,6 +3748,8 @@ export type Database = {
           is_active?: boolean
           name?: string
           schedule?: Json | null
+          schedule_cron?: string | null
+          schedule_tz?: string
           severity?: Database["public"]["Enums"]["rule_severity"]
           updated_at?: string
           user_id?: string
@@ -4395,6 +4401,36 @@ export type Database = {
           },
         ]
       }
+      wizard_telemetry: {
+        Row: {
+          created_at: string
+          event: string
+          id: string
+          metadata: Json
+          step: string | null
+          user_id: string
+          wizard_name: string
+        }
+        Insert: {
+          created_at?: string
+          event: string
+          id?: string
+          metadata?: Json
+          step?: string | null
+          user_id: string
+          wizard_name: string
+        }
+        Update: {
+          created_at?: string
+          event?: string
+          id?: string
+          metadata?: Json
+          step?: string | null
+          user_id?: string
+          wizard_name?: string
+        }
+        Relationships: []
+      }
       zone_events: {
         Row: {
           created_at: string
@@ -4519,6 +4555,10 @@ export type Database = {
         Returns: Json
       }
       analyze_table: { Args: { _table_name: string }; Returns: Json }
+      apply_camera_setup: {
+        Args: { _camera_id: string; _rules: Json; _zones: Json }
+        Returns: Json
+      }
       array_days_valid: { Args: { days: number[] }; Returns: boolean }
       audit_cameras_embedded_credentials: {
         Args: never
