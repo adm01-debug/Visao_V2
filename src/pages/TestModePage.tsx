@@ -506,6 +506,22 @@ export default function TestModePage() {
                       <Button
                         size="sm"
                         variant="outline"
+                        onClick={() => handleReplay(exec)}
+                        disabled={!activeSession || !exec.alert_id}
+                        title={
+                          !activeSession
+                            ? 'Inicie uma sessão de Modo Teste para reprocessar em dry-run'
+                            : !exec.alert_id
+                              ? 'Sem alerta original vinculado'
+                              : 'Reprocessa a lógica de detecção sem enviar notificações externas'
+                        }
+                      >
+                        <Repeat2 className="mr-1 h-3.5 w-3.5" />
+                        Replay
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
                         onClick={() => handlePromote(exec.id)}
                         title="Remove a flag de teste e mantém como execução real"
                       >
@@ -521,6 +537,7 @@ export default function TestModePage() {
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </div>
+
                   </li>
                 ))}
               </ul>
