@@ -4759,6 +4759,13 @@ export type Database = {
         }
         Returns: string[]
       }
+      rotate_camera_vault_key: {
+        Args: { new_key: string; old_key: string }
+        Returns: {
+          new_fingerprint: string
+          rotated_count: number
+        }[]
+      }
       run_index_maintenance: { Args: never; Returns: Json }
       run_retention_cleanup: { Args: never; Returns: Json }
       run_selective_vacuum: {
