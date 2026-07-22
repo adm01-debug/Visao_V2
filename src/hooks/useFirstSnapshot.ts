@@ -52,7 +52,7 @@ async function grabFrame(url: string, timeoutMs: number): Promise<Blob> {
   video.style.height = "1px";
   document.body.appendChild(video);
 
-  let hls: { destroy: () => void } | null = null;
+  let hls: { destroy: () => void; loadSource: (u: string) => void; attachMedia: (v: HTMLVideoElement) => void } | null = null;
 
   const cleanup = () => {
     try { hls?.destroy(); } catch { /* noop */ }
