@@ -29,9 +29,12 @@ interface HealthCheck {
   created_at: string;
 }
 
-export function CameraTestHistoryCard({ cameraId }: Props) {
+export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, cameraModel }: Props) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [validation, setValidation] = useState<ValidationResult | null>(null);
+  const [lastPrimary, setLastPrimary] = useState<ValidationResult | null>(null);
+  const [lastSubstream, setLastSubstream] = useState<ValidationResult | null>(null);
+  const [exporting, setExporting] = useState(false);
   const { validate, loading: validating } = useRtspValidation();
 
   const { data, isLoading, refetch } = useQuery({
