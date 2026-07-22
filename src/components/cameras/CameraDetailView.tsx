@@ -158,9 +158,10 @@ export function CameraDetailView({
           {/* Side Panel */}
           <div className="w-80 bg-background border-l flex flex-col">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-              <TabsList className="mx-4 mt-4">
+              <TabsList className="mx-4 mt-4 grid grid-cols-5">
                 <TabsTrigger value="live">Ao Vivo</TabsTrigger>
-                <TabsTrigger value="ptz"><Gamepad2 className="w-3.5 h-3.5 mr-1" />PTZ</TabsTrigger>
+                <TabsTrigger value="ptz"><Gamepad2 className="w-3.5 h-3.5" /></TabsTrigger>
+                <TabsTrigger value="tests">Testes</TabsTrigger>
                 <TabsTrigger value="alerts">Alertas</TabsTrigger>
                 <TabsTrigger value="config">Config</TabsTrigger>
               </TabsList>
