@@ -84,6 +84,7 @@ export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, ca
       else setLastSubstream(r);
       toast.success(`Validação ${target} concluída: ${r.score.toUpperCase()}`);
       refetch();
+      refetchHealth();
     } catch (e) {
       toast.error(`Falha: ${(e as Error).message}`);
     }
