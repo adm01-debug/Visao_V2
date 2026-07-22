@@ -26,16 +26,14 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { withIdempotency } from "../_shared/idempotency.ts";
 import { createLogger } from "../_shared/logger.ts";
+import {
+  buildIdempotencyKey,
+  evaluateSessionGuard,
+  validateReplayPayload,
+} from "./validation.ts";
 
 const log = createLogger("replay-rule-execution");
 
-const UUID_RE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-interface ReplayBody {
-  executionId?: string;
-  sessionId?: string;
-}
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -74,21 +72,17 @@ serve(async (req) => {
   const userId = claimsData.claims.sub as string;
 
   // --- Payload -----------------------------------------------------------
-  let body: ReplayBody;
+  let rawBody: unknown;
   try {
-    body = (await req.json()) as ReplayBody;
+    rawBody = await req.json();
   } catch {
     return json({ error: "Invalid JSON" }, 400, corsHeaders);
   }
-  const executionId = body.executionId?.trim();
-  const sessionId = body.sessionId?.trim();
-
-  if (!executionId || !UUID_RE.test(executionId)) {
-    return json({ error: "executionId inválido" }, 400, corsHeaders);
+  const parsed = validateReplayPayload(rawBody as Record<string, unknown>);
+  if (!parsed.ok) {
+    return json({ error: parsed.error }, parsed.status, corsHeaders);
   }
-  if (!sessionId || !UUID_RE.test(sessionId)) {
-    return json({ error: "sessionId inválido" }, 400, corsHeaders);
-  }
+  const { executionId, sessionId } = parsed.value;
 
   const admin = createClient(supabaseUrl, serviceKey, {
     auth: { persistSession: false, autoRefreshToken: false },
@@ -104,18 +98,11 @@ serve(async (req) => {
     log.error("session_lookup_failed", { error: sessionErr.message });
     return json({ error: "Falha ao verificar sessão" }, 500, corsHeaders);
   }
-  if (!session || session.user_id !== userId) {
-    return json({ error: "Sessão não encontrada" }, 404, corsHeaders);
+  const guard = evaluateSessionGuard(session as never, userId);
+  if (!guard.ok) {
+    return json({ error: guard.error }, guard.status, corsHeaders);
   }
-  if (session.ended_at) {
-    return json({ error: "Sessão de Modo Teste já encerrada" }, 409, corsHeaders);
-  }
-  if (
-    session.expires_at &&
-    new Date(session.expires_at as string).getTime() < Date.now()
-  ) {
-    return json({ error: "Sessão de Modo Teste expirada" }, 409, corsHeaders);
-  }
+
 
   // --- Resolve execução + alerta (verifica ownership do execution) -------
   const { data: exec, error: execErr } = await admin
@@ -160,7 +147,7 @@ serve(async (req) => {
   // --- Idempotência canônica: (session, execution) ------------------------
   // Colisões (duplo-clique, retry) devolvem o resultado da PRIMEIRA execução
   // dentro da mesma sessão de teste.
-  const idempotencyKey = `replay:${userId}:${sessionId}:${executionId}`;
+  const idempotencyKey = buildIdempotencyKey(userId, sessionId, executionId);
 
   try {
     const { data: result, fromCache } = await withIdempotency(
