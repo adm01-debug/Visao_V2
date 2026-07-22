@@ -82,12 +82,21 @@ Deno.serve(async (req) => {
   const authHeader = req.headers.get("Authorization") ?? "";
   if (!authHeader.startsWith("Bearer ")) return json({ error: "unauthorized" }, 401);
 
-  const userClient = createClient(SUPABASE_URL, ANON, {
-    global: { headers: { Authorization: authHeader } },
-  });
-  const { data: userData, error: userErr } = await userClient.auth.getUser();
-  if (userErr || !userData.user) return json({ error: "unauthorized" }, 401);
-  const userId = userData.user.id;
+  // Modo interno (scheduler / cron): confia em SERVICE_ROLE + header x-internal-invoke
+  const isInternal = req.headers.get("x-internal-invoke") === "1"
+    && authHeader === `Bearer ${SERVICE}`;
+  let userId: string;
+  if (isInternal) {
+    userId = req.headers.get("x-internal-user-id") ?? "";
+    if (!userId) return json({ error: "unauthorized" }, 401);
+  } else {
+    const userClient = createClient(SUPABASE_URL, ANON, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    const { data: userData, error: userErr } = await userClient.auth.getUser();
+    if (userErr || !userData.user) return json({ error: "unauthorized" }, 401);
+    userId = userData.user.id;
+  }
 
   let parsed;
   try {
