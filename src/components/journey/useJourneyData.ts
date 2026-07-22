@@ -155,29 +155,56 @@ export function useJourneyData() {
     const { default: jsPDF } = await import('jspdf');
     const doc = new jsPDF();
     const { start } = getDateRange();
+    const zoneActive = selectedZone !== 'all';
+    const zoneName = zoneActive ? (zonesList.find(z => z.id === selectedZone)?.name ?? null) : null;
+    // Minutos por colaborador na zona filtrada (via zoneBreakdown). Fail-safe: 0.
+    const zoneMinutesFor = (j: JourneyEntry) =>
+      zoneName ? (j.zoneBreakdown.find(z => z.zoneName === zoneName)?.minutes ?? 0) : 0;
+
     doc.setFontSize(18);
     doc.text(`Relatório de Jornada - ${format(start, 'dd/MM/yyyy', { locale: ptBR })}`, 14, 20);
     doc.setFontSize(10);
     doc.text(`Gerado em: ${format(new Date(), 'dd/MM/yyyy HH:mm', { locale: ptBR })}`, 14, 28);
     let y = 40;
+    if (zoneActive && zoneName) {
+      doc.setFontSize(10); doc.text(`Zona filtrada: ${zoneName}`, 14, y); y += 8;
+    }
     doc.setFontSize(12); doc.text('Resumo', 14, y); y += 8;
     doc.setFontSize(9);
     doc.text(`Colaboradores: ${journeyData.length}`, 14, y); y += 5;
     doc.text(`Tempo Produtivo Total: ${formatMinutes(stats.totalProd)}`, 14, y); y += 5;
-    doc.text(`Pontuais: ${stats.onTimeCount}/${journeyData.length} (${stats.onTimeRate}%)`, 14, y); y += 10;
+    doc.text(`Pontuais: ${stats.onTimeCount}/${journeyData.length} (${stats.onTimeRate}%)`, 14, y); y += 5;
+    if (zoneActive && zoneName) {
+      const zoneTotal = journeyData.reduce((s, j) => s + zoneMinutesFor(j), 0);
+      doc.text(`Tempo total na zona "${zoneName}": ${formatMinutes(zoneTotal)}`, 14, y); y += 5;
+    }
+    y += 5;
     doc.setFontSize(8); doc.setFont(undefined!, 'bold');
-    const cols = ['Colaborador', 'Dept.', 'Entrada', 'Saída', 'Total', 'Produtivo', 'Ocioso', 'Pausas', 'Pontualidade'];
-    const colX = [14, 50, 78, 96, 114, 132, 152, 170, 182];
+    const cols = zoneActive
+      ? ['Colaborador', 'Dept.', 'Entrada', 'Saída', 'Total', 'Produtivo', 'Ocioso', 'Pausas', 'Pontual.', 'Min. Zona']
+      : ['Colaborador', 'Dept.', 'Entrada', 'Saída', 'Total', 'Produtivo', 'Ocioso', 'Pausas', 'Pontualidade'];
+    const colX = zoneActive
+      ? [14, 48, 74, 90, 106, 122, 140, 158, 170, 186]
+      : [14, 50, 78, 96, 114, 132, 152, 170, 182];
     cols.forEach((c, i) => doc.text(c, colX[i]!, y)); y += 2; doc.line(14, y, 200, y); y += 4;
     doc.setFont(undefined!, 'normal');
     for (const j of journeyData) {
       if (y > 275) { doc.addPage(); y = 20; }
-      const row = [j.personName.substring(0, 18), (j.department || '-').substring(0, 10), j.firstSeen, j.lastSeen, formatMinutes(j.totalMinutes), formatMinutes(j.productiveMinutes), formatMinutes(j.idleMinutes), String(j.breakCount), j.punctuality === 'on_time' ? 'Pontual' : 'Atraso'];
+      const base = [
+        j.personName.substring(0, zoneActive ? 16 : 18),
+        (j.department || '-').substring(0, 10),
+        j.firstSeen, j.lastSeen,
+        formatMinutes(j.totalMinutes), formatMinutes(j.productiveMinutes), formatMinutes(j.idleMinutes),
+        String(j.breakCount),
+        j.punctuality === 'on_time' ? 'Pontual' : 'Atraso',
+      ];
+      const row = zoneActive ? [...base, formatMinutes(zoneMinutesFor(j))] : base;
       row.forEach((val, i) => doc.text(val, colX[i]!, y)); y += 5;
     }
-    doc.save(`relatorio-jornada-${format(start, 'yyyy-MM-dd')}.pdf`);
+    const suffix = zoneActive && zoneName ? `-zona-${zoneName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : '';
+    doc.save(`relatorio-jornada-${format(start, 'yyyy-MM-dd')}${suffix}.pdf`);
     toast.success('PDF exportado com sucesso!');
-  }, [journeyData, getDateRange, stats, formatMinutes]);
+  }, [journeyData, getDateRange, stats, formatMinutes, selectedZone, zonesList]);
 
   const sendViaTelegram = useCallback(async () => {
     if (journeyData.length === 0) { toast.error('Sem dados para enviar'); return; }
