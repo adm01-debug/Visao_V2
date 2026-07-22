@@ -21,7 +21,7 @@ import { ruleTemplates, getSeverityLabel, type RuleTemplate } from '@/data/ruleT
 import type { CameraData } from '@/components/cameras';
 import type { Tables, TablesInsert, TablesUpdate, Json } from '@/integrations/supabase/types';
 import { toast } from 'sonner';
-import { ShieldAlert, Users, Layers3, Sparkles, Plus, Loader2, MapPin } from 'lucide-react';
+import { ShieldAlert, Users, Layers3, Sparkles, Plus, Loader2, MapPin, CheckCircle2, XCircle, FlaskConical } from 'lucide-react';
 import {
   applyCameraSetup,
   trackWizardEvent,
@@ -29,6 +29,7 @@ import {
   resetWizardSession,
   type WizardRuleInput,
 } from '@/lib/wizardClient';
+import { useRef } from 'react';
 
 type DbZone = Tables<'zones'>;
 
@@ -36,6 +37,16 @@ interface CameraSetupWizardProps {
   camera: CameraData | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+}
+
+interface SetupSummary {
+  status: 'success' | 'rollback';
+  cameraName: string;
+  ruleCount: number;
+  zoneCount: number;
+  fromCache: boolean;
+  dryRunStarted: boolean;
+  errorMessage?: string;
 }
 
 /** Templates recomendados para o onboarding — presença + comportamento perigoso. */
