@@ -301,6 +301,10 @@ export default function OperationsPage() {
       </section>
 
       <section>
+        <EnvelopeEncryptionCard />
+      </section>
+
+      <section>
         <SlowQueriesCard limit={20} />
       </section>
 
