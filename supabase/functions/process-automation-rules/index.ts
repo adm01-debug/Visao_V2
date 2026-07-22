@@ -271,10 +271,10 @@ const handler = async (req: Request): Promise<Response> => {
     const rawBody = await req.json();
     const validation = validateInput(processAutomationRulesSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
-    const { alert, detection } = validation.data;
+    const { alert, detection, testContext: incomingTestContext } = validation.data;
     const traceId = req.headers.get("x-request-id") || undefined;
 
-    log.info("Processing automation rules", { alertId: alert.id, userId: alert.user_id, traceId, hasDetection: !!detection });
+    log.info("Processing automation rules", { alertId: alert.id, userId: alert.user_id, traceId, hasDetection: !!detection, hasTestContext: !!incomingTestContext });
 
     const { data: rules, error: rulesError } = await supabase.from("rules").select("*").eq("user_id", alert.user_id).eq("is_active", true);
 
@@ -295,13 +295,21 @@ const handler = async (req: Request): Promise<Response> => {
     const matched = evaluated.filter((r) => ruleMatchesAlert(r, alert, detection ?? null, zonesById));
     const filteredByZone = evaluated.filter((r) => r.zone_id && !matched.includes(r)).length;
 
+    const notifCache = new Map<string, Promise<NotifConfig>>();
     const matchedRules = await Promise.all(
       matched.map(async (r) => {
         const startTime = Date.now();
-        const results = await executeActions(supabase, r, alert);
+        // Resolve testContext efetivo para (usuário, câmera, regra) — herda campos do payload.
+        const effectiveTestContext: TestContext = {
+          userId: incomingTestContext?.userId ?? alert.user_id,
+          cameraId: incomingTestContext?.cameraId ?? alert.camera_id ?? undefined,
+          ruleId: incomingTestContext?.ruleId ?? r.id,
+        };
+        const isTest = await isTestModeActive(effectiveTestContext);
+        const results = await executeActions(supabase, r, alert, notifCache, effectiveTestContext, isTest);
         // fire-and-forget para não bloquear a resposta; erros já são logados internamente
-        void logRuleExecution(supabase, r, alert, results, startTime);
-        return { rule: r, results };
+        void logRuleExecution(supabase, r, alert, results, startTime, isTest);
+        return { rule: r, results, isTest };
       }),
     );
 
