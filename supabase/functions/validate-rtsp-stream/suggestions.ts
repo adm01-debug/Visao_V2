@@ -15,6 +15,15 @@ export interface SuggestionInput {
   lossPct: number;
   codec?: string | null;
   resolution?: string | null;
+  fps?: number | null;
+  fpsSource?: "framerate" | "x-framerate" | "fmtp" | "sps-timing" | null;
+  resolutionSource?:
+    | "cliprect"
+    | "x-dimensions"
+    | "framesize"
+    | "fmtp"
+    | "sps"
+    | null;
   authMethod?: "none" | "basic" | "digest" | null;
   hasSubstream: boolean;
   target: "primary" | "substream" | "inline";
