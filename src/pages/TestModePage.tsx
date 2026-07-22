@@ -6,7 +6,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { FlaskConical, Camera, Shield, RefreshCw, Trash2, Download, BellOff } from 'lucide-react';
+import { FlaskConical, Camera, Shield, RefreshCw, Trash2, Download, BellOff, Repeat2 } from 'lucide-react';
 import { PageContent } from '@/components/layout/MainLayout';
 import { PageMeta } from '@/components/PageMeta';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -237,6 +237,54 @@ export default function TestModePage() {
     await refetch();
   };
 
+  const handleReplay = async (exec: ShadowExecution) => {
+    if (!activeSession) {
+      toast.error('Replay bloqueado', {
+        description: 'Inicie uma sessão de Modo Teste — o replay é sempre executado em dry-run para não notificar externamente.',
+      });
+      return;
+    }
+    if (!exec.alert_id) {
+      toast.error('Sem alerta original', {
+        description: 'Esta execução não referencia um alerta reproduzível.',
+      });
+      return;
+    }
+    const { data: alertRow, error: alertErr } = await supabase
+      .from('alerts')
+      .select('id, type, severity, message, camera_id, camera_name, timestamp, user_id')
+      .eq('id', exec.alert_id)
+      .maybeSingle();
+    if (alertErr || !alertRow) {
+      toast.error('Alerta original não encontrado', { description: alertErr?.message });
+      return;
+    }
+    const toastId = toast.loading('Reprocessando evento em dry-run…');
+    const { data, error } = await supabase.functions.invoke('process-automation-rules', {
+      body: {
+        alert: alertRow,
+        testContext: {
+          userId: alertRow.user_id,
+          cameraId: alertRow.camera_id ?? undefined,
+          ruleId: exec.rule_id,
+        },
+      },
+    });
+    if (error) {
+      toast.error('Falha no replay', { id: toastId, description: error.message });
+      return;
+    }
+    const summary = data as { rules_matched?: number; executions?: Array<{ is_test?: boolean }> };
+    const matched = summary?.rules_matched ?? 0;
+    const suppressed = (summary?.executions ?? []).filter((e) => e.is_test).length;
+    toast.success('Replay concluído', {
+      id: toastId,
+      description: `${matched} regra(s) reavaliada(s) · ${suppressed} em dry-run (sem notificações reais).`,
+    });
+    await refetch();
+  };
+
+
 
   return (
     <PageContent>
@@ -458,6 +506,22 @@ export default function TestModePage() {
                       <Button
                         size="sm"
                         variant="outline"
+                        onClick={() => handleReplay(exec)}
+                        disabled={!activeSession || !exec.alert_id}
+                        title={
+                          !activeSession
+                            ? 'Inicie uma sessão de Modo Teste para reprocessar em dry-run'
+                            : !exec.alert_id
+                              ? 'Sem alerta original vinculado'
+                              : 'Reprocessa a lógica de detecção sem enviar notificações externas'
+                        }
+                      >
+                        <Repeat2 className="mr-1 h-3.5 w-3.5" />
+                        Replay
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
                         onClick={() => handlePromote(exec.id)}
                         title="Remove a flag de teste e mantém como execução real"
                       >
@@ -473,6 +537,7 @@ export default function TestModePage() {
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </div>
+
                   </li>
                 ))}
               </ul>
