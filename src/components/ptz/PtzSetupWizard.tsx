@@ -385,13 +385,13 @@ export function PtzSetupWizard({ cameraId, cameraName, open, onOpenChange }: Ptz
           <Button
             variant="ghost"
             disabled={stepIndex === 0}
-            onClick={() => setStep(STEPS[Math.max(0, stepIndex - 1)].id)}
+            onClick={() => setStep(STEPS[Math.max(0, stepIndex - 1)]!.id)}
           >
             Voltar
           </Button>
           {step !== 'review' ? (
             <Button
-              onClick={() => setStep(STEPS[Math.min(STEPS.length - 1, stepIndex + 1)].id)}
+              onClick={() => setStep(STEPS[Math.min(STEPS.length - 1, stepIndex + 1)]!.id)}
               disabled={!cfg}
             >
               Continuar
