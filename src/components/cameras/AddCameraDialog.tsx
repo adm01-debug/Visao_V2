@@ -87,6 +87,15 @@ interface DiscoverState {
   presets?: number;
 }
 
+interface AutoDiscoverState {
+  loading: boolean;
+  ok: boolean | null;
+  message: string | null;
+  host: string;
+  allowPrivate: boolean;
+}
+
+
 /** Mascara qualquer credencial antes de aparecer em toast/log. */
 function safeErrorMessage(err: unknown): string {
   const raw = err instanceof Error ? err.message : "Erro desconhecido";
