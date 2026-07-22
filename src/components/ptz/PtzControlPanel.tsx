@@ -119,6 +119,10 @@ export function PtzControlPanel({ cameraId, cameraName }: PtzControlPanelProps) 
               Movendo
             </Badge>
           )}
+          <Button variant="outline" size="sm" onClick={() => setWizardOpen(true)}>
+            <Wand2 className="w-4 h-4 mr-1" />
+            Configuração assistida
+          </Button>
           <Button variant="destructive" size="sm" onClick={() => void ptz.stopMove()}>
             <Square className="w-4 h-4 mr-1" />
             Stop
