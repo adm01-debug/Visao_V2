@@ -3582,6 +3582,7 @@ export type Database = {
           severity: Database["public"]["Enums"]["rule_severity"]
           updated_at: string
           user_id: string
+          zone_id: string | null
         }
         Insert: {
           actions?: Database["public"]["Enums"]["rule_action"][]
@@ -3597,6 +3598,7 @@ export type Database = {
           severity?: Database["public"]["Enums"]["rule_severity"]
           updated_at?: string
           user_id?: string
+          zone_id?: string | null
         }
         Update: {
           actions?: Database["public"]["Enums"]["rule_action"][]
@@ -3612,8 +3614,17 @@ export type Database = {
           severity?: Database["public"]["Enums"]["rule_severity"]
           updated_at?: string
           user_id?: string
+          zone_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "rules_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zones"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       storage_tiering_runs: {
         Row: {
