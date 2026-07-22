@@ -120,9 +120,13 @@ export function AutomationRulesManager() {
       ) : (
         <div className="grid gap-4">
           <AnimatePresence>
-            {rules.map((rule) => (
-              <RuleCard key={rule.id} rule={rule} onEdit={openEditDialog} onToggle={toggleRule} onDelete={(id) => setDeleteConfirmId(id)} />
-            ))}
+            {rules.map((rule) => {
+              const rZoneId = (rule as unknown as { zone_id?: string | null }).zone_id ?? null;
+              const zoneName = rZoneId ? zoneNameById.get(rZoneId) ?? null : null;
+              return (
+                <RuleCard key={rule.id} rule={rule} zoneName={zoneName} onEdit={openEditDialog} onToggle={toggleRule} onDelete={(id) => setDeleteConfirmId(id)} />
+              );
+            })}
           </AnimatePresence>
         </div>
       )}
@@ -132,6 +136,7 @@ export function AutomationRulesManager() {
         open={isDialogOpen} onOpenChange={setIsDialogOpen}
         formData={formData} setFormData={setFormData}
         isEditing={!!editingRule} onSave={handleSave} cameras={cameras}
+        zones={zones}
       />
 
       {/* Delete Confirmation */}
