@@ -79,17 +79,24 @@ export default function TestModePage() {
       .from('rule_executions')
       .update({ is_test: false })
       .eq('id', id);
-    if (error) return toast.error('Falha ao promover', { description: error.message });
+    if (error) {
+      toast.error('Falha ao promover', { description: error.message });
+      return;
+    }
     toast.success('Execução promovida para produção');
     await refetch();
   };
 
   const handleDiscard = async (id: string) => {
     const { error } = await supabase.from('rule_executions').delete().eq('id', id);
-    if (error) return toast.error('Falha ao descartar', { description: error.message });
+    if (error) {
+      toast.error('Falha ao descartar', { description: error.message });
+      return;
+    }
     toast.info('Execução descartada');
     await refetch();
   };
+
 
   return (
     <PageContent>
@@ -166,10 +173,13 @@ export default function TestModePage() {
               icon={FlaskConical}
               title="Nenhuma sessão de teste ativa"
               description="Inicie uma janela de dry-run para validar regras e zonas sem disparar notificações."
-              action={<TestModeDialog />}
             />
+            <div className="mt-4 flex justify-center">
+              <TestModeDialog />
+            </div>
           </CardContent>
         </Card>
+
       )}
 
       <Card>

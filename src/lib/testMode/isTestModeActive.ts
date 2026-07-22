@@ -30,9 +30,10 @@ export async function isTestModeActive({ cameraId, ruleId }: TestModeCheck): Pro
 
   const { data, error } = await supabase.rpc('is_test_mode_active', {
     _user_id: userId,
-    _camera_id: cameraId ?? null,
-    _rule_id: ruleId ?? null,
+    _camera_id: cameraId ?? undefined,
+    _rule_id: ruleId ?? undefined,
   });
+
 
   if (error) {
     // Fail-safe: em caso de erro, assumir que NÃO está em modo teste
