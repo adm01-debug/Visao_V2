@@ -271,26 +271,8 @@ export async function optionsSample(p: ParsedRtsp, cseq: number): Promise<Sample
   }
 }
 
-function parseSdp(body: string): { codec: string | null; resolution: string | null; fps: number | null } {
-  let codec: string | null = null;
-  let resolution: string | null = null;
-  let fps: number | null = null;
-  for (const line of body.split(/\r?\n/)) {
-    const rt = line.match(/^a=rtpmap:\d+\s+([A-Za-z0-9\-]+)\//);
-    if (rt && !codec) {
-      const c = rt[1].toUpperCase();
-      if (c === "H264") codec = "H.264";
-      else if (c === "H265" || c === "HEVC") codec = "H.265";
-      else codec = c;
-    }
-    const dim = line.match(/a=cliprect:\d+,\d+,(\d+),(\d+)/i)
-      || line.match(/a=x-dimensions[:=]\s*(\d+)[,x](\d+)/i);
-    if (dim && !resolution) resolution = `${dim[1]}x${dim[2]}`;
-    const fr = line.match(/a=framerate:\s*(\d+(?:\.\d+)?)/i);
-    if (fr && !fps) fps = Math.round(Number(fr[1]));
-  }
-  return { codec, resolution, fps };
-}
+// Parser SDP delegado ao módulo dedicado (`sdp.ts`) para robustez.
+
 
 export async function describeOnce(p: ParsedRtsp, cseq: number): Promise<DescribeResult> {
   try {
