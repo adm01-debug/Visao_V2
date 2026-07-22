@@ -24,6 +24,21 @@ export function AutomationRulesManager() {
   const { rules, loading: isLoading, createRule, updateRule, deleteRule, toggleRule } = useRules();
   const { cameras } = useCameras();
 
+  const { data: zones = [] } = useQuery({
+    queryKey: ['automation-zones'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('zones')
+        .select('id, name, camera_id, type, is_active')
+        .eq('is_active', true)
+        .order('name');
+      return data || [];
+    },
+    staleTime: 30_000,
+  });
+
+  const zoneNameById = new Map(zones.map(z => [z.id, z.name]));
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingRule, setEditingRule] = useState<DbRule | null>(null);
   const [formData, setFormData] = useState<RuleFormData>(defaultFormData);
