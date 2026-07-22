@@ -5,6 +5,13 @@ import { processAutomationRulesSchema, validateInput } from "../_shared/validati
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { createLogger } from "../_shared/logger.ts";
 import { fetchZonesById, matchesRuleZone, type Detection, type ZoneRow } from "../_shared/zoneMatcher.ts";
+import { isTestModeActive } from "../_shared/testMode.ts";
+
+interface TestContext {
+  userId?: string;
+  cameraId?: string;
+  ruleId?: string;
+}
 
 const log = createLogger("process-automation-rules");
 
