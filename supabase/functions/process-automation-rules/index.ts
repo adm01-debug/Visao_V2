@@ -253,6 +253,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     return new Response(JSON.stringify({
       success: true, alert_id: alert.id, rules_evaluated: rules?.length || 0, rules_matched: matchedRules.length,
+      rules_filtered_by_zone: filteredByZone,
       executions: matchedRules.map(({ rule, results }) => ({ rule_id: rule.id, rule_name: rule.name, actions: results })),
     }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
