@@ -45,15 +45,17 @@ export async function applyCameraSetup(
   cameraId: string,
   zones: WizardZoneInput[],
   rules: WizardRuleInput[],
-): Promise<{ ok: boolean; camera_id: string; zone_ids: string[]; rule_ids: string[] }> {
-  const { data, error } = await supabase.rpc('apply_camera_setup', {
-    _camera_id: cameraId,
-    _zones: zones as never,
-    _rules: rules as never,
+): Promise<{ ok: boolean; camera_id: string; zone_ids: string[]; rule_ids: string[]; from_cache?: boolean }> {
+  const idempotencyKey = getWizardSessionKey();
+  const { data, error } = await supabase.functions.invoke('wizard-apply-camera-setup', {
+    body: { camera_id: cameraId, zones, rules },
+    headers: { 'x-idempotency-key': idempotencyKey },
   });
   if (error) throw error;
+  if (data?.error) throw new Error(data.error);
   return data as never;
 }
+
 
 export async function trackWizardEvent(
   event: 'started' | 'step_completed' | 'abandoned' | 'completed',
