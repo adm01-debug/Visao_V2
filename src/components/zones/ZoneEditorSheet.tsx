@@ -117,6 +117,26 @@ export function ZoneEditorSheet({ isOpen, onClose, camera, zone, onSave }: ZoneE
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
+              <Label htmlFor="location-preset">Local (opcional)</Label>
+              <Select
+                value=""
+                onValueChange={(presetId) => {
+                  const preset = locationPresets.find(p => p.id === presetId);
+                  if (preset) setFormData(f => ({ ...f, name: preset.name, type: preset.type }));
+                }}
+              >
+                <SelectTrigger id="location-preset">
+                  <SelectValue placeholder="Escolha um local pronto (ex: Entrada, Estacionamento)…" />
+                </SelectTrigger>
+                <SelectContent>
+                  {locationPresets.map(p => (
+                    <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-1">Preenche automaticamente o nome e o tipo mais adequado.</p>
+            </div>
+            <div className="col-span-2">
               <Label htmlFor="name">Nome da Zona *</Label>
               <Input id="name" value={formData.name} onChange={(e) => setFormData(f => ({ ...f, name: e.target.value }))} placeholder="Ex: Entrada Principal" />
             </div>
