@@ -614,14 +614,31 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
           )}
 
           {(rtspValidation.loading || rtspValidation.result || rtspValidation.error) && (
-            <RtspValidationPanel
-              result={rtspValidation.result}
-              loading={rtspValidation.loading}
-              error={rtspValidation.error}
-              onRetry={handleTest}
-              compact
-            />
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground">Stream principal</p>
+              <RtspValidationPanel
+                result={rtspValidation.result}
+                loading={rtspValidation.loading}
+                error={rtspValidation.error}
+                onRetry={handleTest}
+                compact
+              />
+            </div>
           )}
+
+          {(substreamValidation.loading || substreamValidation.result || substreamValidation.error) && (
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground">Substream (IA)</p>
+              <RtspValidationPanel
+                result={substreamValidation.result}
+                loading={substreamValidation.loading}
+                error={substreamValidation.error}
+                onRetry={handleTest}
+                compact
+              />
+            </div>
+          )}
+
 
           <DialogFooter className="gap-2 sm:gap-2">
             <Button
