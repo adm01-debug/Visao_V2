@@ -52,10 +52,10 @@ async function grabFrame(url: string, timeoutMs: number): Promise<Blob> {
   video.style.height = "1px";
   document.body.appendChild(video);
 
-  let hls: Awaited<ReturnType<typeof getHls>> extends new (...a: unknown[]) => infer I ? I | null : null = null;
+  let hls: { destroy: () => void } | null = null;
 
   const cleanup = () => {
-    try { hls?.destroy?.(); } catch { /* noop */ }
+    try { hls?.destroy(); } catch { /* noop */ }
     try { video.pause(); } catch { /* noop */ }
     video.removeAttribute("src");
     video.load();
