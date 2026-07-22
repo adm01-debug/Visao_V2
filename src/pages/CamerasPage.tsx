@@ -12,6 +12,7 @@ import { useCameras } from '@/hooks/useCameras';
 import { useRules } from '@/hooks/useRules';
 import { CameraCard, CameraDetailView, GRID_CLASSES } from '@/components/cameras';
 import { AddCameraDialog } from '@/components/cameras/AddCameraDialog';
+import { FirstCameraEmptyState } from '@/components/cameras/FirstCameraEmptyState';
 import { RtspValidationPanel } from '@/components/cameras/RtspValidationPanel';
 import { useRtspValidation } from '@/hooks/useRtspValidation';
 import { Activity, Loader2 } from 'lucide-react';
