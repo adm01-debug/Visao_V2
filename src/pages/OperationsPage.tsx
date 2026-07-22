@@ -8,6 +8,7 @@ import { Activity, Database, HardDrive, RefreshCw, ShieldAlert, CalendarClock } 
 import { SlowQueriesCard } from '@/components/admin/SlowQueriesCard';
 import { CameraVaultAuditCard } from '@/components/security/CameraVaultAuditCard';
 import { EnvelopeEncryptionCard } from '@/components/security/EnvelopeEncryptionCard';
+import { VaultAuditTimeline } from '@/components/security/VaultAuditTimeline';
 import { DbHealthCard } from '@/components/admin/DbHealthCard';
 import { TableBloatCard } from '@/components/admin/TableBloatCard';
 import { SessionWatchdogCard } from '@/components/admin/SessionWatchdogCard';
