@@ -86,7 +86,12 @@ function evaluateCondition(condition: RuleCondition, alert: Alert): boolean {
   }
 }
 
-function ruleMatchesAlert(rule: Rule, alert: Alert): boolean {
+function ruleMatchesAlert(
+  rule: Rule,
+  alert: Alert,
+  detection: Detection | null | undefined,
+  zonesById: Map<string, ZoneRow>,
+): boolean {
   if (!rule.is_active) return false;
   if (!isWithinSchedule(rule.schedule)) return false;
   if (rule.cameras.length > 0 && alert.camera_id) {
@@ -96,6 +101,7 @@ function ruleMatchesAlert(rule: Rule, alert: Alert): boolean {
   const ruleSeverityIndex = severityLevels.indexOf(rule.severity);
   const alertSeverityIndex = severityLevels.indexOf(alert.severity);
   if (alertSeverityIndex < ruleSeverityIndex) return false;
+  if (!matchesRuleZone(rule, detection ?? null, zonesById)) return false;
   const conditions = Array.isArray(rule.conditions) ? rule.conditions : [];
   if (conditions.length === 0) return true;
   return conditions.every(condition => evaluateCondition(condition, alert));
