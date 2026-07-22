@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-21T23:46:06.651Z",
+  "generatedAt": "2026-07-22T11:26:03.527Z",
   "pages": [
     {
       "file": "AcessoNegado.tsx",
@@ -35,6 +35,10 @@
     },
     {
       "file": "AutomationRulesPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "BandwidthMonitorPage.tsx",
       "mode": "standard"
     },
     {
