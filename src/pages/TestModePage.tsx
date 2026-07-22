@@ -481,17 +481,34 @@ export default function TestModePage() {
         <CardHeader className="pb-3">
           <CardTitle className="flex flex-wrap items-center justify-between gap-3 text-base">
             <span>Detecções em sombra (últimas 100)</span>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={handleExportCsv}
-              disabled={filtered.length === 0}
-              title="Exportar detecções filtradas em CSV"
-            >
-              <Download className="mr-2 h-4 w-4" />
-              Exportar CSV ({filtered.length})
-            </Button>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={handleReplayBatch}
+                disabled={filtered.length === 0 || isBatchReplaying || !activeSession}
+                title={
+                  activeSession
+                    ? 'Reprocessar todas as detecções filtradas em dry-run (concorrência 3)'
+                    : 'Inicie uma sessão de Modo Teste para usar o replay em lote'
+                }
+              >
+                <Repeat2 className={`mr-2 h-4 w-4 ${isBatchReplaying ? 'animate-spin' : ''}`} />
+                {isBatchReplaying ? 'Reprocessando…' : `Replay filtradas (${filtered.length})`}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleExportCsv}
+                disabled={filtered.length === 0}
+                title="Exportar detecções filtradas em CSV"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Exportar CSV ({filtered.length})
+              </Button>
+            </div>
           </CardTitle>
+
         </CardHeader>
         <CardContent>
           <div className="mb-4 grid gap-3 md:grid-cols-3">
