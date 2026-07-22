@@ -700,9 +700,11 @@ export type Database = {
           default_speed: number
           endpoint: string
           id: string
+          limits: Json
           password_encrypted: string | null
           port: number
           protocol: string
+          setup_completed_at: string | null
           updated_at: string
           user_id: string
           username: string | null
@@ -715,9 +717,11 @@ export type Database = {
           default_speed?: number
           endpoint: string
           id?: string
+          limits?: Json
           password_encrypted?: string | null
           port?: number
           protocol: string
+          setup_completed_at?: string | null
           updated_at?: string
           user_id: string
           username?: string | null
@@ -730,9 +734,11 @@ export type Database = {
           default_speed?: number
           endpoint?: string
           id?: string
+          limits?: Json
           password_encrypted?: string | null
           port?: number
           protocol?: string
+          setup_completed_at?: string | null
           updated_at?: string
           user_id?: string
           username?: string | null
