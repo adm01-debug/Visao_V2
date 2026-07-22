@@ -44,8 +44,7 @@ export function QuickPtzBar({ cameraId, keyboardEnabled = true, className }: Qui
     () =>
       [...(ptz.presets ?? [])]
         .sort(
-          (a: { uses?: number; preset_number: number }, b: { uses?: number; preset_number: number }) =>
-            (b.uses ?? 0) - (a.uses ?? 0) || a.preset_number - b.preset_number,
+          (a, b) => ((b.uses ?? 0) - (a.uses ?? 0)) || (a.preset_number - b.preset_number),
         )
         .slice(0, 8),
     [ptz.presets],
