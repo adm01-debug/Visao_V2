@@ -6,7 +6,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { FlaskConical, Camera, Shield, RefreshCw, Trash2, Download } from 'lucide-react';
+import { FlaskConical, Camera, Shield, RefreshCw, Trash2, Download, BellOff } from 'lucide-react';
 import { PageContent } from '@/components/layout/MainLayout';
 import { PageMeta } from '@/components/PageMeta';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -427,9 +427,21 @@ export default function TestModePage() {
                               {zonesMap[exec.rule.zone_id] ?? 'Zona'}
                             </Badge>
                           )}
-                          <Badge className="bg-warning/20 text-warning-foreground text-xs">
-                            dry-run
-                          </Badge>
+                          {(exec.actions_executed ?? []).some((a) =>
+                            /notify|telegram|email|webhook|sms|whatsapp|push/i.test(a),
+                          ) ? (
+                            <Badge
+                              className="bg-warning/20 text-warning-foreground text-xs flex items-center gap-1"
+                              title="Este disparo estava em modo teste — nenhuma notificação real foi enviada."
+                            >
+                              <BellOff className="h-3 w-3" />
+                              Notificação suprimida (teste)
+                            </Badge>
+                          ) : (
+                            <Badge className="bg-warning/20 text-warning-foreground text-xs">
+                              dry-run
+                            </Badge>
+                          )}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {formatDistanceToNow(new Date(exec.triggered_at), {
