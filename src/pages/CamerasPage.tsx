@@ -54,6 +54,16 @@ export function CamerasPage() {
   const [expandedCamera, setExpandedCamera] = useState<CameraData | null>(null);
   const [settingsCamera, setSettingsCamera] = useState<CameraData | null>(null);
   const [addOpen, setAddOpen] = useState(false);
+  const diag = useRtspValidation();
+
+  const runDiag = async (target: 'primary' | 'substream') => {
+    if (!settingsCamera) return;
+    try {
+      await diag.validate({ mode: 'camera', cameraId: settingsCamera.id, target });
+    } catch {
+      /* erro tratado no hook */
+    }
+  };
 
   const { cameras, loading, refetch } = useCameras();
   const { rules } = useRules();
