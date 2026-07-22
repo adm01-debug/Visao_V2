@@ -132,7 +132,7 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
         (tpl.category === 'security' && ['restricted', 'safety', 'tripwire'].includes(z.type)) ||
         (tpl.category === 'safety' && z.type === 'safety'),
       );
-      return (byCategory ?? zones[0]).id;
+      return (byCategory ?? zones[0])!.id;
     };
 
     const rulesPayload: WizardRuleInput[] = templates.map((tpl) => ({
