@@ -335,21 +335,74 @@ export default function TestModePage() {
       )}
 
       <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Detecções em sombra (últimas 100)</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex flex-wrap items-center justify-between gap-3 text-base">
+            <span>Detecções em sombra (últimas 100)</span>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleExportCsv}
+              disabled={filtered.length === 0}
+              title="Exportar detecções filtradas em CSV"
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Exportar CSV ({filtered.length})
+            </Button>
+          </CardTitle>
         </CardHeader>
         <CardContent>
+          <div className="mb-4 grid gap-3 md:grid-cols-3">
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Câmera</Label>
+              <Select value={cameraFilter} onValueChange={setCameraFilter}>
+                <SelectTrigger><SelectValue placeholder="Todas" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ALL}>Todas</SelectItem>
+                  {cameraOptions.map(([id, name]) => (
+                    <SelectItem key={id} value={id}>{name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Regra</Label>
+              <Select value={ruleFilter} onValueChange={setRuleFilter}>
+                <SelectTrigger><SelectValue placeholder="Todas" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ALL}>Todas</SelectItem>
+                  {ruleOptions.map(([id, name]) => (
+                    <SelectItem key={id} value={id}>{name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Zona</Label>
+              <Select value={zoneFilter} onValueChange={setZoneFilter}>
+                <SelectTrigger><SelectValue placeholder="Todas" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ALL}>Todas</SelectItem>
+                  {zoneOptions.hasNone && <SelectItem value="__none__">Sem zona</SelectItem>}
+                  {zoneOptions.list.map((id) => (
+                    <SelectItem key={id} value={id}>{zonesMap[id] ?? id.slice(0, 8)}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
           {isLoading ? (
             <p className="text-sm text-muted-foreground">Carregando…</p>
-          ) : executions.length === 0 ? (
+          ) : filtered.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              Nenhuma detecção capturada ainda. Assim que uma regra em teste for satisfeita, ela
-              aparecerá aqui.
+              {executions.length === 0
+                ? 'Nenhuma detecção capturada ainda. Assim que uma regra em teste for satisfeita, ela aparecerá aqui.'
+                : 'Nenhuma detecção corresponde aos filtros selecionados.'}
             </p>
           ) : (
             <ScrollArea className="h-[480px] pr-3">
               <ul className="space-y-2">
-                {executions.map((exec) => (
+                {filtered.map((exec) => (
                   <li
                     key={exec.id}
                     className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border/60 bg-card/50 p-3"
@@ -362,6 +415,16 @@ export default function TestModePage() {
                           {exec.rule?.severity && (
                             <Badge variant="outline" className="text-xs">
                               {exec.rule.severity}
+                            </Badge>
+                          )}
+                          {exec.alert?.camera_name && (
+                            <Badge variant="secondary" className="text-xs">
+                              {exec.alert.camera_name}
+                            </Badge>
+                          )}
+                          {exec.rule?.zone_id && (
+                            <Badge variant="outline" className="text-xs">
+                              {zonesMap[exec.rule.zone_id] ?? 'Zona'}
                             </Badge>
                           )}
                           <Badge className="bg-warning/20 text-warning-foreground text-xs">
@@ -405,6 +468,7 @@ export default function TestModePage() {
           )}
         </CardContent>
       </Card>
+
     </PageContent>
   );
 }
