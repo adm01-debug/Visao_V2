@@ -311,6 +311,10 @@ export default function OperationsPage() {
       </section>
 
       <section>
+        <CameraHealthCard />
+      </section>
+
+      <section>
         <SlowQueriesCard limit={20} />
       </section>
 
