@@ -123,8 +123,9 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
       setShowPtzPass(false);
       setDiscover({ loading: false, ok: null, message: null });
       rtspValidation.reset();
+      substreamValidation.reset();
     }
-  }, [open, form, rtspValidation]);
+  }, [open, form, rtspValidation, substreamValidation]);
 
   // Ajusta porta padrão ao trocar protocolo
   useEffect(() => {
@@ -137,11 +138,11 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
 
   const handleTest = async () => {
     const values = form.getValues();
-    const parse = addCameraSchema.safeParse(values);
-    if (!parse.success) {
+    if (!values.rtspUrl || (!hasEmbeddedCredentials(values.rtspUrl) && (!values.username || !values.password))) {
       toast.error("Preencha URL RTSP e credenciais antes de testar.");
       return;
     }
+    // 1. Testa principal
     try {
       await rtspValidation.validate({
         mode: "inline",
@@ -152,7 +153,25 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
     } catch {
       /* erro já exposto pelo hook */
     }
+    // 2. Testa substream (se preenchido)
+    const sub = values.substreamUrl?.trim();
+    if (sub) {
+      const subEmbedded = hasEmbeddedCredentials(sub);
+      try {
+        await substreamValidation.validate({
+          mode: "inline",
+          rtspUrl: sub,
+          username: subEmbedded ? undefined : values.username || undefined,
+          password: subEmbedded ? undefined : values.password || undefined,
+        });
+      } catch {
+        /* erro já exposto pelo hook */
+      }
+    } else {
+      substreamValidation.reset();
+    }
   };
+
 
   const handleDiscoverPtz = async () => {
     const cfg = form.getValues("ptzConfig");
