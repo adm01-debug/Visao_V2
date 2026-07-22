@@ -127,7 +127,7 @@ export function CamerasPage() {
             <RefreshCw className={cn('w-4 h-4 sm:mr-2', loading && 'animate-spin')} />
             <span className="hidden sm:inline">Atualizar</span>
           </Button>
-          <Button size="sm" disabled={loading} onClick={() => setAddOpen(true)} className="text-xs sm:text-sm">
+          <Button size="sm" disabled={loading} onClick={() => openAdd(cameras.length === 0 ? 'guided' : 'quick')} className="text-xs sm:text-sm">
             <Plus className="w-4 h-4 sm:mr-2" />
             <span className="hidden sm:inline">Adicionar</span>
           </Button>
