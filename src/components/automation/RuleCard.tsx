@@ -2,7 +2,7 @@
  * VISÃO - Rule Card Component
  */
 import { motion } from 'framer-motion';
-import { Trash2, Edit2, Clock } from 'lucide-react';
+import { Trash2, Edit2, Clock, MapPin } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -13,12 +13,13 @@ import { CATEGORIES, SEVERITIES } from './constants';
 
 interface RuleCardProps {
   rule: DbRule;
+  zoneName?: string | null;
   onEdit: (rule: DbRule) => void;
   onToggle: (id: string, active: boolean) => void;
   onDelete: (id: string) => void;
 }
 
-export function RuleCard({ rule, onEdit, onToggle, onDelete }: RuleCardProps) {
+export function RuleCard({ rule, zoneName, onEdit, onToggle, onDelete }: RuleCardProps) {
   const CategoryIcon = CATEGORIES.find(c => c.value === rule.category)?.icon || CATEGORIES[0]!.icon;
   const severity = SEVERITIES.find(s => s.value === rule.severity);
 
@@ -42,6 +43,11 @@ export function RuleCard({ rule, onEdit, onToggle, onDelete }: RuleCardProps) {
                     {severity?.label}
                   </Badge>
                   {!rule.is_active && <Badge variant="secondary">Inativo</Badge>}
+                  {zoneName && (
+                    <Badge variant="outline" className="gap-1 text-xs">
+                      <MapPin className="h-3 w-3" /> {zoneName}
+                    </Badge>
+                  )}
                 </div>
                 {rule.description && <p className="text-sm text-muted-foreground line-clamp-2">{rule.description}</p>}
                 <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground flex-wrap">

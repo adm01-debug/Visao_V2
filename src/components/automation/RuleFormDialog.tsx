@@ -1,7 +1,7 @@
 /**
  * VISÃO - Rule Form Dialog
  */
-import { Plus, Save, X, Camera, Clock } from 'lucide-react';
+import { Plus, Save, X, Camera, Clock, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,6 +16,12 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { cn } from '@/lib/utils';
 import { CATEGORIES, SEVERITIES, CONDITION_TYPES, ACTIONS, DAYS_OF_WEEK, type RuleFormData } from './constants';
 
+interface RuleZoneOption {
+  id: string;
+  name: string;
+  camera_id: string | null;
+}
+
 interface RuleFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -24,9 +30,10 @@ interface RuleFormDialogProps {
   isEditing: boolean;
   onSave: () => void;
   cameras: Array<{ id: string; name: string }>;
+  zones?: RuleZoneOption[];
 }
 
-export function RuleFormDialog({ open, onOpenChange, formData, setFormData, isEditing, onSave, cameras }: RuleFormDialogProps) {
+export function RuleFormDialog({ open, onOpenChange, formData, setFormData, isEditing, onSave, cameras, zones = [] }: RuleFormDialogProps) {
   const addCondition = () => {
     setFormData(prev => ({ ...prev, conditions: [...prev.conditions, { type: 'motion_detection', operator: 'equals', value: 'true' }] }));
   };
@@ -158,6 +165,43 @@ export function RuleFormDialog({ open, onOpenChange, formData, setFormData, isEd
                         </div>
                       </>
                     )}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="zone">
+                <AccordionTrigger>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4" />
+                    Zona / Local ({formData.zone_id ? (zones.find(z => z.id === formData.zone_id)?.name ?? '1 selecionada') : 'Toda a imagem'})
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-2 pt-2">
+                    <p className="text-sm text-muted-foreground">
+                      Restrinja a regra a uma zona específica desenhada sobre a câmera (ex: entrada, cofre, estacionamento). Deixe em "Toda a imagem" para aplicar sem recorte espacial.
+                    </p>
+                    {(() => {
+                      const scoped = formData.cameras.length === 0
+                        ? zones
+                        : zones.filter(z => !z.camera_id || formData.cameras.includes(z.camera_id));
+                      return (
+                        <Select
+                          value={formData.zone_id ?? 'none'}
+                          onValueChange={(v) => setFormData(prev => ({ ...prev, zone_id: v === 'none' ? null : v }))}
+                        >
+                          <SelectTrigger><SelectValue placeholder="Selecionar zona" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">Toda a imagem</SelectItem>
+                            {scoped.map(z => (
+                              <SelectItem key={z.id} value={z.id}>{z.name}</SelectItem>
+                            ))}
+                            {scoped.length === 0 && (
+                              <div className="px-2 py-1.5 text-xs text-muted-foreground">Nenhuma zona cadastrada para as câmeras selecionadas.</div>
+                            )}
+                          </SelectContent>
+                        </Select>
+                      );
+                    })()}
                   </div>
                 </AccordionContent>
               </AccordionItem>

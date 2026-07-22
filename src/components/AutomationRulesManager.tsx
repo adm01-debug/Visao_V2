@@ -3,11 +3,13 @@
  * Refactored: logic in constants.ts, UI in RuleCard + RuleFormDialog
  */
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence } from 'framer-motion';
 import { Plus, Zap } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { supabase } from '@/integrations/supabase/client';
 import { useRules } from '@/hooks/useRules';
 import { DbRule } from '@/types/rules';
 import type { Json } from '@/integrations/supabase/types';
@@ -22,6 +24,21 @@ export function AutomationRulesManager() {
   const { rules, loading: isLoading, createRule, updateRule, deleteRule, toggleRule } = useRules();
   const { cameras } = useCameras();
 
+  const { data: zones = [] } = useQuery({
+    queryKey: ['automation-zones'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('zones')
+        .select('id, name, camera_id, type, is_active')
+        .eq('is_active', true)
+        .order('name');
+      return data || [];
+    },
+    staleTime: 30_000,
+  });
+
+  const zoneNameById = new Map(zones.map(z => [z.id, z.name]));
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingRule, setEditingRule] = useState<DbRule | null>(null);
   const [formData, setFormData] = useState<RuleFormData>(defaultFormData);
@@ -34,7 +51,7 @@ export function AutomationRulesManager() {
     setFormData({
       name: template.name, description: template.description, category: template.category, severity: template.severity,
       conditions: template.conditions.map(c => ({ type: c.type, operator: c.operator, value: String(c.value) })),
-      actions: template.actions, cameras: [], schedule: { enabled: false, days: [1,2,3,4,5], start_time: '08:00', end_time: '18:00' }, is_active: true,
+      actions: template.actions, cameras: [], zone_id: null, schedule: { enabled: false, days: [1,2,3,4,5], start_time: '08:00', end_time: '18:00' }, is_active: true,
     });
     setIsDialogOpen(true);
   };
@@ -46,6 +63,7 @@ export function AutomationRulesManager() {
     setFormData({
       name: rule.name, description: rule.description || '', category: rule.category, severity: rule.severity,
       conditions, actions: rule.actions, cameras: rule.cameras,
+      zone_id: (rule as unknown as { zone_id?: string | null }).zone_id ?? null,
       schedule: schedule || { enabled: false, days: [1,2,3,4,5], start_time: '08:00', end_time: '18:00' },
       is_active: rule.is_active,
     });
@@ -63,7 +81,9 @@ export function AutomationRulesManager() {
         cameras: formData.cameras,
         schedule: formData.schedule.enabled ? (formData.schedule as unknown as Json) : null,
         is_active: formData.is_active,
-      };
+        // zone_id column added via migration; types will regenerate after approval
+        zone_id: formData.zone_id,
+      } as unknown as Parameters<typeof createRule>[0];
       if (editingRule) { await updateRule(editingRule.id, payload); } else { await createRule(payload); }
       setIsDialogOpen(false);
     } catch { /* error handled by hook */ }
@@ -100,9 +120,13 @@ export function AutomationRulesManager() {
       ) : (
         <div className="grid gap-4">
           <AnimatePresence>
-            {rules.map((rule) => (
-              <RuleCard key={rule.id} rule={rule} onEdit={openEditDialog} onToggle={toggleRule} onDelete={(id) => setDeleteConfirmId(id)} />
-            ))}
+            {rules.map((rule) => {
+              const rZoneId = (rule as unknown as { zone_id?: string | null }).zone_id ?? null;
+              const zoneName = rZoneId ? zoneNameById.get(rZoneId) ?? null : null;
+              return (
+                <RuleCard key={rule.id} rule={rule} zoneName={zoneName} onEdit={openEditDialog} onToggle={toggleRule} onDelete={(id) => setDeleteConfirmId(id)} />
+              );
+            })}
           </AnimatePresence>
         </div>
       )}
@@ -112,6 +136,7 @@ export function AutomationRulesManager() {
         open={isDialogOpen} onOpenChange={setIsDialogOpen}
         formData={formData} setFormData={setFormData}
         isEditing={!!editingRule} onSave={handleSave} cameras={cameras}
+        zones={zones}
       />
 
       {/* Delete Confirmation */}
