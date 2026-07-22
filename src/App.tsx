@@ -64,6 +64,7 @@ const RecognitionAnalyticsPage = lazy(() => import("@/pages/RecognitionAnalytics
 const StreamSettingsPage = lazy(() => import("@/pages/StreamSettingsPage"));
 const TelegramSettingsPage = lazy(() => import("@/pages/TelegramSettingsPage"));
 const NotificationSettingsPage = lazy(() => import("@/pages/NotificationSettingsPage"));
+const StreamAlertThresholdsPage = lazy(() => import("@/pages/StreamAlertThresholdsPage"));
 const AutomationRulesPage = lazy(() => import("@/pages/AutomationRulesPage"));
 const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
 const HelpPage = lazy(() => import("@/pages/HelpPage"));
