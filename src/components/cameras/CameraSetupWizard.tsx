@@ -309,7 +309,7 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
                 )}
               </ScrollArea>
               <div className="flex justify-end mt-3">
-                <Button variant="secondary" onClick={() => setTab('rules')}>
+                <Button variant="secondary" onClick={goToRules}>
                   Avançar para regras →
                 </Button>
               </div>
