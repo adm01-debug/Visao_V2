@@ -123,8 +123,49 @@ export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, ca
 
   return (
     <Card>
-      <CardHeader className="pb-2 flex flex-row items-center justify-between">
-        <CardTitle className="text-sm">Histórico de testes</CardTitle>
+      <CardHeader className="pb-2 flex flex-row items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <CardTitle className="text-sm">Histórico de testes</CardTitle>
+          {criticalStreak > 0 && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Badge
+                    variant="outline"
+                    className={
+                      streakReachedAlert
+                        ? 'gap-1 border-destructive/40 bg-destructive/10 text-destructive text-[10px] h-5 px-1.5'
+                        : 'gap-1 border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] h-5 px-1.5'
+                    }
+                    aria-label={`Streak crítico: ${criticalStreak}`}
+                  >
+                    {streakReachedAlert ? <Flame className="h-3 w-3" /> : <AlertTriangle className="h-3 w-3" />}
+                    Streak crítico: {criticalStreak}/{CRITICAL_STREAK_ALERT_THRESHOLD}
+                  </Badge>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[260px] text-xs">
+                  <p className="font-medium">
+                    {streakReachedAlert
+                      ? 'Alerta crítico já disparado'
+                      : `Faltam ${CRITICAL_STREAK_ALERT_THRESHOLD - criticalStreak} validação(ões) crítica(s) para disparar alerta.`}
+                  </p>
+                  <p className="mt-1 text-muted-foreground">
+                    O contador zera assim que uma validação retorna score <strong>ok</strong> ou <strong>warn</strong>.
+                  </p>
+                  {healthState?.last_critical_alert_at && (
+                    <p className="mt-1 text-muted-foreground">
+                      Último alerta:{' '}
+                      {formatDistanceToNow(new Date(healthState.last_critical_alert_at), {
+                        addSuffix: true,
+                        locale: ptBR,
+                      })}
+                    </p>
+                  )}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
         <div className="flex gap-1">
           <Button size="sm" variant="outline" onClick={() => runValidation('primary')} disabled={validating}>
             {validating ? <Loader2 className="h-3 w-3 animate-spin" /> : <PlayCircle className="h-3 w-3" />}
@@ -141,6 +182,7 @@ export function CameraTestHistoryCard({ cameraId, cameraName, cameraLocation, ca
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
+
         {isLoading ? (
           <>
             <Skeleton className="h-8 w-full" />
