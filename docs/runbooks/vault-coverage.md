@@ -75,3 +75,25 @@ Use quando `CAMERA_VAULT_KEK_V1` for comprometida:
 - Migração: `supabase/migrations/*camera_vault_audit*`
 - Edge Function: `supabase/functions/camera-credentials-vault/index.ts`
 - UI: `src/components/security/VaultAuditTimeline.tsx`
+
+## Watchdog automático (Onda Fortress 7)
+
+- Edge Function: `vault-coverage-watchdog` (verify_jwt=false, invocada por `pg_cron` a cada 15 min).
+- Dedup: 60 min entre alertas Telegram entregues com sucesso (`VAULT_WATCHDOG_DEDUP_MIN`).
+- Toda execução grava `action='watchdog_tick'` (heartbeat) ou `action='watchdog_alert'` (entrega) em `camera_vault_audit`.
+
+### Health-check manual
+
+```bash
+curl -sS -X POST "$SUPABASE_URL/functions/v1/vault-coverage-watchdog" \
+  -H "Content-Type: application/json" -d '{}'
+```
+
+### Silenciar temporariamente (janela de manutenção)
+
+```sql
+-- Pausa o job
+UPDATE cron.job SET active = false WHERE jobname = 'vault-coverage-watchdog';
+-- Reativa
+UPDATE cron.job SET active = true  WHERE jobname = 'vault-coverage-watchdog';
+```
