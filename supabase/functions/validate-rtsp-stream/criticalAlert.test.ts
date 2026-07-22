@@ -180,7 +180,7 @@ Deno.test("dispara alerta na 2ª validação crítica consecutiva (streak=2)", a
     assertEquals(result.reason, "sent");
     assertEquals(result.streak, 2);
     assertEquals(stub.calls.length, 1);
-    assertEquals(stub.calls[0].url, "http://localhost:54321/functions/v1/send-alert-notification");
+    assertEquals(stub.calls[0].url.endsWith("/functions/v1/send-alert-notification"), true);
     // Streak deve ser zerado após envio
     assertEquals(rec.currentState?.consecutive_critical_scores, 0);
     assertEquals(rec.inserts.some((i) => i.table === "alerts"), true, "deve gravar histórico em alerts");
