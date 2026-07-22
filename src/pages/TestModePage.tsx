@@ -4,15 +4,17 @@
  * durante uma sessão de dry-run.
  */
 
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { FlaskConical, Camera, Shield, RefreshCw, Trash2 } from 'lucide-react';
+import { FlaskConical, Camera, Shield, RefreshCw, Trash2, Download } from 'lucide-react';
 import { PageContent } from '@/components/layout/MainLayout';
 import { PageMeta } from '@/components/PageMeta';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 import { EmptyState } from '@/components/EmptyState';
 import { supabase } from '@/integrations/supabase/client';
 import { useTestMode } from '@/hooks/useTestMode';
@@ -30,7 +32,23 @@ interface ShadowExecution {
   actions_executed: string[] | null;
   error_message: string | null;
   is_test: boolean;
-  rule?: { name: string; category: string; severity: string } | null;
+  alert_id: string | null;
+  rule?: { name: string; category: string; severity: string; zone_id: string | null } | null;
+  alert?: {
+    camera_id: string | null;
+    camera_name: string | null;
+    thumbnail: string | null;
+    message: string | null;
+  } | null;
+}
+
+const ALL = '__all__';
+
+function toCsvCell(value: unknown): string {
+  if (value === null || value === undefined) return '';
+  const s = String(value).replace(/\r?\n/g, ' ').trim();
+  if (/[",;]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+  return s;
 }
 
 export default function TestModePage() {
