@@ -68,7 +68,7 @@ export async function trackWizardEvent(
     wizard_name: 'camera_setup',
     event,
     step: step ?? null,
-    metadata,
+    metadata: metadata as never,
   });
 }
 
