@@ -57,7 +57,7 @@ import {
 interface AddCameraDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onCreated?: () => void;
+  onCreated?: (cameraId?: string) => void;
   /**
    * `quick` (default) mantém o comportamento clássico.
    * `guided` bloqueia o submit até que o teste RTSP tenha rodado com sucesso
@@ -413,7 +413,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
         }
       }
 
-      onCreated?.();
+      onCreated?.(createdId ?? undefined);
       onOpenChange(false);
     } catch (err) {
       // Rollback se INSERT teve sucesso mas alguma etapa falhou

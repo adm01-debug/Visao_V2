@@ -13,6 +13,7 @@ import { useRules } from '@/hooks/useRules';
 import { CameraCard, CameraDetailView, GRID_CLASSES } from '@/components/cameras';
 import { AddCameraDialog } from '@/components/cameras/AddCameraDialog';
 import { FirstCameraEmptyState } from '@/components/cameras/FirstCameraEmptyState';
+import { CameraSetupWizard } from '@/components/cameras/CameraSetupWizard';
 import { RtspValidationPanel } from '@/components/cameras/RtspValidationPanel';
 import { useRtspValidation } from '@/hooks/useRtspValidation';
 import { Activity, Loader2 } from 'lucide-react';
@@ -56,6 +57,7 @@ export function CamerasPage() {
   const [settingsCamera, setSettingsCamera] = useState<CameraData | null>(null);
   const [addOpen, setAddOpen] = useState(false);
   const [addMode, setAddMode] = useState<'quick' | 'guided'>('quick');
+  const [setupCamera, setSetupCamera] = useState<CameraData | null>(null);
   const openAdd = (mode: 'quick' | 'guided' = 'quick') => { setAddMode(mode); setAddOpen(true); };
   const diag = useRtspValidation();
 
@@ -284,13 +286,43 @@ export function CamerasPage() {
               </div>
 
               <div className="pt-4 flex gap-2">
+                <Button
+                  variant="secondary"
+                  className="flex-1"
+                  onClick={() => {
+                    const cam = settingsCamera;
+                    setSettingsCamera(null);
+                    setSetupCamera(cam);
+                  }}
+                >
+                  Zonas & Regras
+                </Button>
                 <Button className="flex-1" onClick={() => setSettingsCamera(null)}>Fechar</Button>
               </div>
             </div>
           )}
         </SheetContent>
       </Sheet>
-      <AddCameraDialog open={addOpen} onOpenChange={setAddOpen} onCreated={() => refetch()} mode={addMode} />
+      <AddCameraDialog
+        open={addOpen}
+        onOpenChange={setAddOpen}
+        mode={addMode}
+        onCreated={async (cameraId) => {
+          const result = await refetch();
+          if (addMode === 'guided' && cameraId) {
+            const list = (result as unknown as { data?: CameraData[] } | undefined)?.data ?? cameras;
+            const created = list.find((c) => c.id === cameraId)
+              ?? cameras.find((c) => c.id === cameraId)
+              ?? null;
+            if (created) setSetupCamera(created);
+          }
+        }}
+      />
+      <CameraSetupWizard
+        camera={setupCamera}
+        open={!!setupCamera}
+        onOpenChange={(o) => { if (!o) setSetupCamera(null); }}
+      />
     </PageContent>
   );
 }
