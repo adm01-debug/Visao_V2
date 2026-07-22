@@ -14,6 +14,7 @@ import {
   stats,
 } from "./rtspClient.ts";
 import { buildSuggestions, computeScore } from "./suggestions.ts";
+import { maybeAlertCriticalScore } from "./criticalAlert.ts";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
