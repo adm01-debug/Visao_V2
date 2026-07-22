@@ -139,10 +139,12 @@ export function AddCameraDialog({ open, onOpenChange, onCreated }: AddCameraDial
       setShowPassword(false);
       setShowPtzPass(false);
       setDiscover({ loading: false, ok: null, message: null });
+      setAutoDiscover({ loading: false, ok: null, message: null, host: "", allowPrivate: false });
       rtspValidation.reset();
       substreamValidation.reset();
     }
   }, [open, form, rtspValidation, substreamValidation]);
+
 
   // Ajusta porta padrão ao trocar protocolo
   useEffect(() => {
