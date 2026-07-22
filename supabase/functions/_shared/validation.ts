@@ -164,6 +164,7 @@ export const processAutomationRulesSchema = z.object({
     bounding_box: boundingBoxSchema.nullish(),
     point: pointSchema.nullish(),
   }).nullish(),
+  testContext: testContextSchema,
 });
 
 // ==========================================

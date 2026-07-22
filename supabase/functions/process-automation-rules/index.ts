@@ -5,6 +5,13 @@ import { processAutomationRulesSchema, validateInput } from "../_shared/validati
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { createLogger } from "../_shared/logger.ts";
 import { fetchZonesById, matchesRuleZone, type Detection, type ZoneRow } from "../_shared/zoneMatcher.ts";
+import { isTestModeActive } from "../_shared/testMode.ts";
+
+interface TestContext {
+  userId?: string;
+  cameraId?: string;
+  ruleId?: string;
+}
 
 const log = createLogger("process-automation-rules");
 
@@ -134,21 +141,70 @@ async function executeActions(
   rule: Rule,
   alert: Alert,
   notifCache: Map<string, Promise<NotifConfig>>,
+  testContext: TestContext | undefined,
+  isTest: boolean,
 ): Promise<ActionResult[]> {
   const results: ActionResult[] = [];
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
   for (const action of rule.actions) {
     try {
       switch (action) {
         case "alert":
-          log.info("Alert action triggered", { ruleName: rule.name, alertId: alert.id });
-          results.push({ action: "alert", success: true, message: `Alert notification created for rule "${rule.name}"` });
+          log.info("Alert action triggered", { ruleName: rule.name, alertId: alert.id, isTest });
+          results.push({ action: "alert", success: true, message: `Alert notification created for rule "${rule.name}"${isTest ? " [test]" : ""}` });
           break;
         case "notify": {
           const notifConfig = await getNotificationConfigCached(supabase, alert.user_id, notifCache);
-          if (notifConfig) {
-            results.push({ action: "notify", success: true, message: `Notification queued via ${((notifConfig.channels as string[]) || []).length} channels` });
-          } else {
+          if (!notifConfig) {
             results.push({ action: "notify", success: false, message: "No notification config found" });
+            break;
+          }
+          const channels = Array.isArray(notifConfig.channels) ? (notifConfig.channels as string[]) : [];
+          if (channels.length === 0) {
+            results.push({ action: "notify", success: false, message: "No channels configured" });
+            break;
+          }
+          // Propaga testContext ponta a ponta para exercitar o short-circuit
+          // em send-alert-notification / send-telegram durante o modo teste.
+          try {
+            const res = await fetch(`${supabaseUrl}/functions/v1/send-alert-notification`, {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${serviceKey}`,
+                "Content-Type": "application/json",
+                "x-idempotency-key": `rule-${rule.id}-alert-${alert.id}`,
+              },
+              body: JSON.stringify({
+                alertId: alert.id,
+                type: alert.type,
+                severity: alert.severity,
+                message: alert.message,
+                cameraName: alert.camera_name,
+                timestamp: alert.timestamp,
+                channels,
+                recipients: {
+                  emails: (notifConfig.email_recipients as string[]) ?? [],
+                  phones: (notifConfig.phone_recipients as string[]) ?? [],
+                  webhookUrls: (notifConfig.webhook_urls as string[]) ?? [],
+                },
+                testContext,
+              }),
+            });
+            const payload = await res.json().catch(() => ({}));
+            const suppressed = payload?.testMode === true;
+            results.push({
+              action: "notify",
+              success: res.ok,
+              message: res.ok
+                ? (suppressed
+                  ? `Notification suppressed by test mode (${channels.length} channels)`
+                  : `Notification dispatched via ${channels.length} channels`)
+                : `Notify failed: HTTP ${res.status}`,
+            });
+          } catch (err) {
+            results.push({ action: "notify", success: false, message: err instanceof Error ? err.message : "notify_error" });
           }
           break;
         }
@@ -178,7 +234,7 @@ async function executeActions(
 }
 
 
-async function logRuleExecution(supabase: SupabaseClient, rule: Rule, alert: Alert, results: ActionResult[], startTime: number): Promise<void> {
+async function logRuleExecution(supabase: SupabaseClient, rule: Rule, alert: Alert, results: ActionResult[], startTime: number, isTest: boolean): Promise<void> {
   try {
     const hasErrors = results.some(r => !r.success);
     const allFailed = results.every(r => !r.success);
@@ -189,6 +245,7 @@ async function logRuleExecution(supabase: SupabaseClient, rule: Rule, alert: Ale
       rule_id: rule.id, user_id: alert.user_id, alert_id: alert.id,
       triggered_at: new Date().toISOString(), actions_executed: results.map(r => r.action),
       status, error_message: errorMessage, execution_time_ms: Date.now() - startTime,
+      is_test: isTest,
     });
 
     if (error) log.error("Failed to log rule execution", { error: error.message });
@@ -214,10 +271,10 @@ const handler = async (req: Request): Promise<Response> => {
     const rawBody = await req.json();
     const validation = validateInput(processAutomationRulesSchema, rawBody, corsHeaders);
     if (!validation.success) return validation.response;
-    const { alert, detection } = validation.data;
+    const { alert, detection, testContext: incomingTestContext } = validation.data;
     const traceId = req.headers.get("x-request-id") || undefined;
 
-    log.info("Processing automation rules", { alertId: alert.id, userId: alert.user_id, traceId, hasDetection: !!detection });
+    log.info("Processing automation rules", { alertId: alert.id, userId: alert.user_id, traceId, hasDetection: !!detection, hasTestContext: !!incomingTestContext });
 
     const { data: rules, error: rulesError } = await supabase.from("rules").select("*").eq("user_id", alert.user_id).eq("is_active", true);
 
@@ -238,13 +295,21 @@ const handler = async (req: Request): Promise<Response> => {
     const matched = evaluated.filter((r) => ruleMatchesAlert(r, alert, detection ?? null, zonesById));
     const filteredByZone = evaluated.filter((r) => r.zone_id && !matched.includes(r)).length;
 
+    const notifCache = new Map<string, Promise<NotifConfig>>();
     const matchedRules = await Promise.all(
       matched.map(async (r) => {
         const startTime = Date.now();
-        const results = await executeActions(supabase, r, alert);
+        // Resolve testContext efetivo para (usuário, câmera, regra) — herda campos do payload.
+        const effectiveTestContext: TestContext = {
+          userId: incomingTestContext?.userId ?? alert.user_id,
+          cameraId: incomingTestContext?.cameraId ?? alert.camera_id ?? undefined,
+          ruleId: incomingTestContext?.ruleId ?? r.id,
+        };
+        const isTest = await isTestModeActive(effectiveTestContext);
+        const results = await executeActions(supabase, r, alert, notifCache, effectiveTestContext, isTest);
         // fire-and-forget para não bloquear a resposta; erros já são logados internamente
-        void logRuleExecution(supabase, r, alert, results, startTime);
-        return { rule: r, results };
+        void logRuleExecution(supabase, r, alert, results, startTime, isTest);
+        return { rule: r, results, isTest };
       }),
     );
 
@@ -254,7 +319,7 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(JSON.stringify({
       success: true, alert_id: alert.id, rules_evaluated: rules?.length || 0, rules_matched: matchedRules.length,
       rules_filtered_by_zone: filteredByZone,
-      executions: matchedRules.map(({ rule, results }) => ({ rule_id: rule.id, rule_name: rule.name, actions: results })),
+      executions: matchedRules.map(({ rule, results, isTest }) => ({ rule_id: rule.id, rule_name: rule.name, is_test: isTest, actions: results })),
     }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     log.error("Unhandled error", { error: error instanceof Error ? error.message : "Unknown" });
