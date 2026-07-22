@@ -62,6 +62,15 @@ export function RuleCard({ rule, zoneName, onEdit, onToggle, onDelete }: RuleCar
             </div>
             <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
               <Switch checked={rule.is_active} onCheckedChange={(checked) => onToggle(rule.id, checked)} />
+              <TestModeDialog
+                fixedScope="rule"
+                fixedScopeIds={[rule.id]}
+                trigger={
+                  <Button variant="ghost" size="icon" title="Modo teste (dry-run) desta regra" aria-label="Ativar modo teste desta regra">
+                    <FlaskConical className="h-4 w-4 text-warning" />
+                  </Button>
+                }
+              />
               <Button variant="ghost" size="icon" onClick={() => onEdit(rule)}><Edit2 className="h-4 w-4" /></Button>
               <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => onDelete(rule.id)}>
                 <Trash2 className="h-4 w-4" />
