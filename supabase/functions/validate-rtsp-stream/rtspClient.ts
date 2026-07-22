@@ -3,6 +3,7 @@
 
 import { encodeBase64 } from "https://deno.land/std@0.224.0/encoding/base64.ts";
 import { crypto as stdCrypto } from "https://deno.land/std@0.224.0/crypto/mod.ts";
+import { parseSdp as parseSdpRobust, type SdpInfo } from "./sdp.ts";
 
 export interface ParsedRtsp {
   hostname: string;
