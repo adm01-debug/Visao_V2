@@ -4,6 +4,7 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 import { processAutomationRulesSchema, validateInput } from "../_shared/validation.ts";
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { createLogger } from "../_shared/logger.ts";
+import { fetchZonesById, matchesRuleZone, type Detection, type ZoneRow } from "../_shared/zoneMatcher.ts";
 
 const log = createLogger("process-automation-rules");
 
