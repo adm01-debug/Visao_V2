@@ -146,6 +146,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       form.reset(DEFAULTS);
       setShowPassword(false);
       setShowPtzPass(false);
+      setForceCritical(false);
       setDiscover({ loading: false, ok: null, message: null });
       setAutoDiscover({ loading: false, ok: null, message: null, host: "", allowPrivate: false });
       rtspValidation.reset();
