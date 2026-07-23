@@ -94,6 +94,9 @@ const TimelapsePage = lazy(() => import("@/pages/TimelapsePage"));
 const MotionMasksPage = lazy(() => import("@/pages/MotionMasksPage"));
 const StreamHealthPage = lazy(() => import("@/pages/StreamHealthPage"));
 const BandwidthMonitorPage = lazy(() => import("@/pages/BandwidthMonitorPage"));
+const LivePreviewHarnessPage = import.meta.env.DEV
+  ? lazy(() => import("@/pages/dev/LivePreviewHarnessPage"))
+  : null;
 
 const queryClient = new QueryClient({
   defaultOptions: {
