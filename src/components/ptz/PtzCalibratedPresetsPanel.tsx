@@ -123,7 +123,7 @@ export function PtzCalibratedPresetsPanel({ ptz, limits, cameraId, protocol, onS
 
       let idx = 0;
       for (const t of selected) {
-        const presetNumber = numbers[idx++];
+        const presetNumber = numbers[idx++]!;
         const pos = project(t);
         setItems((prev) =>
           prev.map((p) => (p.id === t.id ? { ...p, status: 'moving', presetNumber, error: undefined } : p)),
