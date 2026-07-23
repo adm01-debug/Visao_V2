@@ -201,13 +201,20 @@ export function PreviewTelemetryCard({ defaultWindowHours = 24 }: PreviewTelemet
         ) : (
           <>
             <KpiGrid summary={data} />
-            <Tabs defaultValue="codec">
-              <TabsList className="grid w-full grid-cols-4">
+            <Tabs defaultValue="timeline">
+              <TabsList className="grid w-full grid-cols-5">
+                <TabsTrigger value="timeline">Timeline</TabsTrigger>
                 <TabsTrigger value="codec">Codec</TabsTrigger>
                 <TabsTrigger value="resolution">Resolução</TabsTrigger>
                 <TabsTrigger value="browser">Navegador</TabsTrigger>
                 <TabsTrigger value="errors">Erros</TabsTrigger>
               </TabsList>
+              <TabsContent value="timeline" className="pt-3">
+                <PreviewTelemetryTimeline
+                  points={data.timeline ?? []}
+                  windowHours={windowHours}
+                />
+              </TabsContent>
               <TabsContent value="codec" className="pt-3">
                 <BreakdownTable rows={rowsCodec} labelHeader="Codec" />
               </TabsContent>
