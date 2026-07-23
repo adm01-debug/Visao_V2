@@ -18,7 +18,9 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const ONVIF_PORTS_DEFAULT = [80, 8000, 8080, 2020, 8899];
+// Ordem prioriza 8899 (default XiongMai/HZXM/Usecam) para acelerar detecção de NBD80X*.
+const ONVIF_PORTS_DEFAULT = [8899, 80, 8000, 8080, 2020];
+
 const PROBE_TIMEOUT_MS = 5000;
 const RELAY_TASK_TIMEOUT_MS = 25_000;
 const RELAY_POLL_INTERVAL_MS = 400;
