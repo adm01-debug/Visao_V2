@@ -355,6 +355,47 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     }
   };
 
+  /** Aplica a resolução escolhida no assistente de conectividade e re-tenta o autodiscover. */
+  const handleConnectivityResolution = (resolution: PrivateHostResolution) => {
+    if (resolution.mode === "relay") {
+      setAutoDiscover((s) => ({
+        ...s,
+        relayAgentId: resolution.relayAgentId,
+        allowPrivate: false,
+        manualMode: false,
+        ok: null,
+        message: null,
+        errorDetail: null,
+      }));
+      toast.success("Agente Local aplicado. Rodando descoberta novamente…");
+    } else if (resolution.mode === "vpn") {
+      setAutoDiscover((s) => ({
+        ...s,
+        allowPrivate: true,
+        relayAgentId: "",
+        ok: null,
+        message: null,
+        errorDetail: null,
+      }));
+      toast.info("Modo VPN ativado. Tentando alcançar o host privado diretamente…");
+    } else {
+      setAutoDiscover((s) => ({
+        ...s,
+        host: resolution.publicHost,
+        manualMode: true,
+        manualPort: String(resolution.publicPort),
+        allowPrivate: false,
+        relayAgentId: "",
+        ok: null,
+        message: null,
+        errorDetail: null,
+      }));
+      toast.info(`Host substituído por ${resolution.publicHost}:${resolution.publicPort}. Testando…`);
+    }
+    // Re-executa autodiscover no próximo tick para pegar o novo estado.
+    setTimeout(() => { void handleAutoDiscover(); }, 50);
+  };
+
   /** Descobre automaticamente porta ONVIF, RTSP principal/substream e capability PTZ. */
   const handleAutoDiscover = async () => {
     const host = autoDiscover.host.trim();
