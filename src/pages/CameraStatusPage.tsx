@@ -22,6 +22,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { PageMeta } from '@/components/PageMeta';
 import { useStreamHealth, type HealthCheck, type RestartEvent } from '@/hooks/useStreamHealth';
 import { cn } from '@/lib/utils';
+import { PageContent } from '@/components/layout/MainLayout';
 
 interface CameraRow {
   id: string;
@@ -111,7 +112,7 @@ export default function CameraStatusPage() {
   const lastConnectionAt = lastOk?.created_at ?? camera?.last_activity ?? camera?.updated_at ?? null;
 
   return (
-    <div className="space-y-6">
+    <PageContent>
       <PageMeta
         title={camera ? `Status — ${camera.name} · VISÃO` : 'Status da câmera · VISÃO'}
         description="Status detalhado da câmera: última conexão, qualidade do stream e logs de falhas."
@@ -305,6 +306,6 @@ export default function CameraStatusPage() {
           </CardContent>
         </Card>
       ) : null}
-    </div>
+    </PageContent>
   );
 }

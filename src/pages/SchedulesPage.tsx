@@ -12,6 +12,7 @@ import { ScheduleForm } from '@/components/schedules/ScheduleForm';
 import { useCameraSchedules, type CameraSchedule } from '@/hooks/useCameraSchedules';
 import { useCameras } from '@/hooks/useCameras';
 import { useMonitorGroups } from '@/hooks/useMonitorGroups';
+import { PageContent } from '@/components/layout/MainLayout';
 
 function statusIcon(s: CameraSchedule['last_status']) {
   if (s === 'ok') return <CheckCircle2 className="w-3.5 h-3.5 text-success" />;
@@ -44,7 +45,7 @@ export default function SchedulesPage() {
   };
 
   return (
-    <div className="p-4 sm:p-6 space-y-4">
+    <PageContent className="p-4 sm:p-6">
       <PageMeta title="Agendamentos · VISÃO" description="Programe horários para armar e desarmar câmeras automaticamente." />
 
       <div className="flex items-center justify-between">
@@ -134,6 +135,6 @@ export default function SchedulesPage() {
           else await create(input);
         }}
       />
-    </div>
+    </PageContent>
   );
 }

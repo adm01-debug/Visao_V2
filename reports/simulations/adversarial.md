@@ -1,6 +1,6 @@
 # Simulação Adversarial — VISÃO
 
-**Executado:** 2026-07-15T19:02:44.159Z
+**Executado:** 2026-07-23T13:12:09.439Z
 **Cenários:** 400
 **Seguros:** 400 (100.00%)
 **Inseguros:** 0

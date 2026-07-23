@@ -9,12 +9,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useStreamHealth } from '@/hooks/useStreamHealth';
 import { Activity, RotateCcw, Loader2 } from 'lucide-react';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 
 export default function StreamHealthPage() {
   const { summaries, restarts, loading, reload, triggerManualRestart } = useStreamHealth();
 
   return (
-    <div className="space-y-6">
+    <PageContent>
       <PageMeta
         title="Saúde dos Streams — VISÃO"
         description="Monitoramento em janela deslizante dos streams RTSP e auto-restart de câmeras degradadas."
@@ -127,6 +128,6 @@ export default function StreamHealthPage() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </PageContent>
   );
 }

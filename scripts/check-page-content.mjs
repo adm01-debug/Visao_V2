@@ -19,11 +19,13 @@ const STRICT = process.argv.includes('--strict');
 // Páginas standalone (sem MainLayout/BottomNav). Têm chrome próprio.
 const STANDALONE_ALLOWLIST = new Set([
   'AcessoNegado.tsx',
+  'ApiDocsPage.tsx',        // rota pública /docs/api (Swagger UI + chrome próprio)
   'Auth.tsx',
   'AuthCallback.tsx',
   'CoveragePage.tsx',
   'Index.tsx',
   'NotFound.tsx',
+  'PricingPage.tsx',        // rota pública /precos (marketing com header próprio)
   'ResetPasswordPage.tsx',
 ]);
 

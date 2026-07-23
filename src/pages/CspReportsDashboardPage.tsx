@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, ShieldAlert, RefreshCw } from "lucide-react";
+import { PageContent } from '@/components/layout/MainLayout';
 
 interface CspStats {
   window_days: number;
@@ -56,7 +57,7 @@ export default function CspReportsDashboardPage() {
   });
 
   return (
-    <div className="p-6">
+    <PageContent className="p-6">
       <Helmet><title>Relatórios CSP — VISÃO Admin</title></Helmet>
 
       <header className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -241,7 +242,7 @@ export default function CspReportsDashboardPage() {
           </p>
         </>
       )}
-    </div>
+    </PageContent>
   );
 }
 

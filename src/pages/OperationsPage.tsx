@@ -47,6 +47,7 @@ import { BlockingChainsCard } from '@/components/admin/BlockingChainsCard';
 import { RlsCoverageCard } from '@/components/admin/RlsCoverageCard';
 import { AlertmanagerSilencesCard } from '@/components/admin/AlertmanagerSilencesCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
+import { PageContent } from '@/components/layout/MainLayout';
 
 interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
 interface CacheSize { total_rows: number; total_bytes: number; oldest: string | null; newest: string | null }
@@ -80,7 +81,7 @@ export default function OperationsPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-6 space-y-6">
+    <PageContent className="container mx-auto px-4 py-6">
       <PageMeta title="Operações — VISÃO" description="Métricas operacionais do sistema" />
 
       <header className="flex items-center justify-between">
@@ -470,6 +471,6 @@ export default function OperationsPage() {
           Gerado em {new Date(data.generated_at).toLocaleString('pt-BR')} · auto-refresh 30 s
         </p>
       )}
-    </div>
+    </PageContent>
   );
 }

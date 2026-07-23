@@ -25,6 +25,7 @@ import {
 import { RefreshCw, Activity, Gauge, HardDrive } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { PageContent } from '@/components/layout/MainLayout';
 
 function formatBytes(bytes: number): string {
   if (!bytes) return '0 B';
@@ -44,7 +45,7 @@ export default function BandwidthMonitorPage() {
   const peakBitrate = summary.reduce((max, r) => Math.max(max, Number(r.peak_bitrate_kbps || 0)), 0);
 
   return (
-    <div className="space-y-6 p-6">
+    <PageContent className="p-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Consumo de Banda</h1>
@@ -188,6 +189,6 @@ export default function BandwidthMonitorPage() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </PageContent>
   );
 }

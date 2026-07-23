@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle } from "lucide-react";
+import { PageContent } from '@/components/layout/MainLayout';
 
 interface UsageStats {
   window_days: number;
@@ -37,7 +38,7 @@ export default function ApiUsageDashboardPage() {
   });
 
   return (
-    <div className="p-6">
+    <PageContent className="p-6">
       <Helmet><title>API Usage — VISÃO Admin</title></Helmet>
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-foreground">Uso da API REST v1</h1>
@@ -141,7 +142,7 @@ export default function ApiUsageDashboardPage() {
           </p>
         </>
       )}
-    </div>
+    </PageContent>
   );
 }
 
