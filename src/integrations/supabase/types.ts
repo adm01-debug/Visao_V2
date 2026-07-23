@@ -1233,6 +1233,60 @@ export type Database = {
         }
         Relationships: []
       }
+      dry_run_report_snapshots: {
+        Row: {
+          created_at: string
+          id: string
+          report: Json
+          scope: string | null
+          scope_ids: string[] | null
+          session_expires_at: string | null
+          session_id: string | null
+          session_started_at: string | null
+          summary: Json
+          title: string
+          total_events: number
+          total_notifying: number
+          total_suppressed: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          report?: Json
+          scope?: string | null
+          scope_ids?: string[] | null
+          session_expires_at?: string | null
+          session_id?: string | null
+          session_started_at?: string | null
+          summary?: Json
+          title?: string
+          total_events?: number
+          total_notifying?: number
+          total_suppressed?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          report?: Json
+          scope?: string | null
+          scope_ids?: string[] | null
+          session_expires_at?: string | null
+          session_id?: string | null
+          session_started_at?: string | null
+          summary?: Json
+          title?: string
+          total_events?: number
+          total_notifying?: number
+          total_suppressed?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       edge_cache: {
         Row: {
           created_at: string

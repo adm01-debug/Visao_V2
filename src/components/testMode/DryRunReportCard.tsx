@@ -9,10 +9,11 @@
  * queries adicionais. Aceita `filtered` para respeitar filtros ativos.
  */
 
-import { useMemo } from 'react';
-import { BarChart3, BellRing, Download, ShieldAlert, Layers, Camera as CameraIcon } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { BarChart3, BellRing, Download, ShieldAlert, Layers, Camera as CameraIcon, FileText, Save } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
@@ -72,6 +73,137 @@ interface RuleAggregate {
 
 export function DryRunReportCard({ executions, session, zonesMap }: DryRunReportCardProps) {
   const report = useMemo(() => buildReport(executions, zonesMap), [executions, zonesMap]);
+  const [savingSnapshot, setSavingSnapshot] = useState(false);
+  const [exportingPdf, setExportingPdf] = useState(false);
+
+  const buildPayload = () => ({
+    generated_at: new Date().toISOString(),
+    session: session
+      ? {
+          id: session.id,
+          started_at: session.started_at,
+          expires_at: session.expires_at,
+          duration_minutes: session.duration_minutes,
+          scope: session.scope,
+          scope_ids: session.scope_ids,
+        }
+      : null,
+    totals: {
+      events: report.totalEvents,
+      would_notify: report.wouldNotify,
+      suppressed_failures: report.suppressedFailures,
+      rules: report.byRule.length,
+      cameras: report.byCamera.length,
+      zones: report.byZone.length,
+    },
+    by_severity: report.bySeverity,
+    by_action: report.byAction,
+    by_rule: report.byRule,
+    by_camera: report.byCamera,
+    by_zone: report.byZone,
+  });
+
+  const handleSaveSnapshot = async () => {
+    if (report.totalEvents === 0) {
+      toast.info('Sem eventos para salvar');
+      return;
+    }
+    setSavingSnapshot(true);
+    try {
+      const { data: userRes } = await supabase.auth.getUser();
+      const userId = userRes?.user?.id;
+      if (!userId) throw new Error('Usuário não autenticado');
+      const payload = buildPayload();
+      const { error } = await supabase.from('dry_run_report_snapshots').insert({
+        user_id: userId,
+        session_id: session?.id ?? null,
+        session_started_at: session?.started_at ?? null,
+        session_expires_at: session?.expires_at ?? null,
+        scope: session?.scope ?? null,
+        scope_ids: session?.scope_ids ?? null,
+        title: `Dry-Run ${new Date().toLocaleString('pt-BR')}`,
+        total_events: report.totalEvents,
+        total_notifying: report.wouldNotify,
+        total_suppressed: report.suppressedFailures,
+        summary: JSON.parse(JSON.stringify(payload.totals)),
+        report: JSON.parse(JSON.stringify(payload)),
+      });
+      if (error) throw error;
+      toast.success('Snapshot salvo', {
+        description: 'O relatório foi persistido no histórico.',
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Falha ao salvar snapshot';
+      toast.error('Erro ao salvar', { description: msg });
+    } finally {
+      setSavingSnapshot(false);
+    }
+  };
+
+  const handleExportPdf = async () => {
+    if (report.totalEvents === 0) {
+      toast.info('Sem eventos para exportar');
+      return;
+    }
+    setExportingPdf(true);
+    try {
+      const [{ jsPDF }, autoTableModule] = await Promise.all([
+        import('jspdf'),
+        import('jspdf-autotable'),
+      ]);
+      const autoTable = (autoTableModule as { default: (doc: unknown, opts: unknown) => void }).default;
+      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+      const now = new Date();
+      doc.setFontSize(16);
+      doc.text('VISÃO — Relatório Dry-Run', 40, 50);
+      doc.setFontSize(10);
+      doc.setTextColor(120);
+      doc.text(`Gerado em ${now.toLocaleString('pt-BR')}`, 40, 68);
+      if (session) {
+        doc.text(
+          `Sessão: ${session.id.slice(0, 8)} · Escopo: ${session.scope} · Duração: ${session.duration_minutes} min`,
+          40,
+          82,
+        );
+      }
+      doc.setTextColor(0);
+
+      autoTable(doc, {
+        startY: 100,
+        head: [['Métrica', 'Valor']],
+        body: [
+          ['Eventos simulados', String(report.totalEvents)],
+          ['Notificariam em produção', String(report.wouldNotify)],
+          ['Execuções com falha', String(report.suppressedFailures)],
+          ['Regras acionadas', String(report.byRule.length)],
+          ['Câmeras envolvidas', String(report.byCamera.length)],
+          ['Zonas envolvidas', String(report.byZone.length)],
+        ],
+        theme: 'grid',
+        headStyles: { fillColor: [30, 41, 59] },
+      });
+
+      const topRules = report.byRule.slice(0, 15);
+      if (topRules.length > 0) {
+        autoTable(doc, {
+          head: [['Regra', 'Severidade', 'Categoria', 'Total', 'Notificaria']],
+          body: topRules.map((r) => [r.name, r.severity, r.category, String(r.total), String(r.notifying)]),
+          theme: 'striped',
+          headStyles: { fillColor: [30, 41, 59] },
+        });
+      }
+
+      const stamp = now.toISOString().replace(/[:.]/g, '-');
+      doc.save(`dry-run-report-${stamp}.pdf`);
+      toast.success('PDF exportado');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Falha ao gerar PDF';
+      toast.error('Erro ao exportar PDF', { description: msg });
+    } finally {
+      setExportingPdf(false);
+    }
+  };
+
 
   const handleExportJson = () => {
     if (report.totalEvents === 0) {
@@ -150,10 +282,20 @@ export function DryRunReportCard({ executions, session, zonesMap }: DryRunReport
             <BarChart3 className="h-4 w-4 text-primary" />
             Relatório do Dry-Run
           </span>
-          <Button size="sm" variant="outline" onClick={handleExportJson}>
-            <Download className="mr-2 h-4 w-4" />
-            Exportar JSON
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" onClick={handleExportJson}>
+              <Download className="mr-2 h-4 w-4" />
+              JSON
+            </Button>
+            <Button size="sm" variant="outline" onClick={handleExportPdf} disabled={exportingPdf}>
+              <FileText className="mr-2 h-4 w-4" />
+              {exportingPdf ? 'Gerando…' : 'PDF'}
+            </Button>
+            <Button size="sm" variant="default" onClick={handleSaveSnapshot} disabled={savingSnapshot}>
+              <Save className="mr-2 h-4 w-4" />
+              {savingSnapshot ? 'Salvando…' : 'Salvar snapshot'}
+            </Button>
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
