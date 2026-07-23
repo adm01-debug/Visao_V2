@@ -1049,9 +1049,20 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
               </label>
             )}
             {autoDiscover.ok === true && (
-              <Badge variant="default" className="gap-1">
-                <ShieldCheck className="h-3 w-3" /> {autoDiscover.message}
-              </Badge>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="default" className="gap-1">
+                  <ShieldCheck className="h-3 w-3" /> {autoDiscover.message}
+                </Badge>
+                {autoDiscover.profileDisplayName && (
+                  <Badge
+                    variant="outline"
+                    className="gap-1 border-primary/40 text-primary"
+                    title={`Perfil ONVIF/OEM detectado (${autoDiscover.profileId})`}
+                  >
+                    <Sparkles className="h-3 w-3" /> Perfil {autoDiscover.profileDisplayName}
+                  </Badge>
+                )}
+              </div>
             )}
             {autoDiscover.ok === false && (
               <Badge variant="destructive" className="max-w-full whitespace-normal">
