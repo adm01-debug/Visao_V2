@@ -56,7 +56,7 @@ const STEPS = [
 
 type StepId = typeof STEPS[number]['id'];
 
-export function PtzSetupWizard({ cameraId, cameraName, open, onOpenChange }: PtzSetupWizardProps) {
+export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenChange }: PtzSetupWizardProps) {
   const qc = useQueryClient();
   const ptz = usePtzControl({ cameraId, enabled: open });
   const [step, setStep] = useState<StepId>('detect');
@@ -64,6 +64,14 @@ export function PtzSetupWizard({ cameraId, cameraName, open, onOpenChange }: Ptz
   const [presetDraft, setPresetDraft] = useState<{ number: number; name: string }>({
     number: 1, name: 'Home',
   });
+
+  // Perfil OEM: XiongMai (NBD80X/HZXM/Usecam OEM) e similares expõem múltiplos
+  // protocolos PTZ nativos no mesmo firmware; o wizard aplica todos em modo
+  // auto-multi e evita perguntar a marca do dome ao usuário.
+  const profile = useMemo(() => (profileId ? getProfileById(profileId) : null), [profileId]);
+  const autoMultiBackends = useMemo(() => profile?.ptzBackends ?? [], [profile]);
+  const isAutoMulti = autoMultiBackends.length > 0;
+
 
   // Config atual
   const config = useQuery({
