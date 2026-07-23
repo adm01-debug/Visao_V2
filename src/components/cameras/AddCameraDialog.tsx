@@ -127,6 +127,12 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     host: "",
     allowPrivate: false,
   });
+  const [templateCtx, setTemplateCtx] = useState<{
+    templateId: string;
+    host: string;
+    port: string;
+    channel: string;
+  }>({ templateId: "", host: "", port: "", channel: "1" });
 
   const { createCamera, deleteCamera, refetch } = useCameras();
   const { storeCredentials, loading: vaultLoading } = useCameraVault();
