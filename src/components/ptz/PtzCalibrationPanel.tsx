@@ -344,7 +344,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
       size="sm"
       variant="outline"
       className="h-9 w-9 p-0 select-none"
-      disabled={measuringAxis !== null}
+      disabled={measuringAxis !== null || preflightAxis !== null}
       onMouseDown={() => void beginJog(axis, dir)}
       onTouchStart={(e) => { e.preventDefault(); void beginJog(axis, dir); }}
       onMouseUp={() => void endJog()}
