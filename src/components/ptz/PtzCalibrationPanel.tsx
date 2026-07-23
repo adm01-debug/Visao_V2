@@ -1052,6 +1052,19 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
           cameraId={cameraId}
         />
       )}
+
+      <PtzMultiAxisPreflightDialog
+        open={multiPreflightOpen}
+        onOpenChange={setMultiPreflightOpen}
+        axes={['pan', 'tilt', 'zoom']}
+        limitsByAxis={limits}
+        sweepMsByAxis={sweepMsByAxis}
+        statusSupported={statusSupported === true}
+        startPositions={position}
+        ptz={ptz}
+        cameraId={cameraId}
+      />
+
     </div>
   );
 }
