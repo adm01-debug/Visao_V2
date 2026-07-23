@@ -1065,10 +1065,76 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                   ? (<><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Revalidando…</>)
                   : (<><Target className="w-3.5 h-3.5 mr-1" /> Revalidar</>)}
               </Button>
-              <Button size="sm" variant="ghost" onClick={() => resetAxis(axis)} disabled={measuringAxis !== null || preflightAxis !== null}>
+              <Button
+                size="sm"
+                variant={recaptureRequired[axis] ? 'destructive' : 'outline'}
+                onClick={() => setPendingRecaptureAxis(axis)}
+                disabled={
+                  statusSupported !== true ||
+                  measuringAxis !== null ||
+                  preflightAxis !== null ||
+                  revalidatingAxis !== null ||
+                  recapturingAxis !== null
+                }
+                title={
+                  statusSupported !== true
+                    ? 'Driver não expõe ONVIF GetStatus'
+                    : recaptureRequired[axis]
+                      ? `Desvio > ${RECAPTURE_THRESHOLD_PCT}% detectado — recapture obrigatória`
+                      : 'Recaptura guiada: aciona o dome até os fins de curso e captura min/max automaticamente'
+                }
+                data-testid={`ptz-recapture-${axis}`}
+              >
+                {recapturingAxis === axis
+                  ? (<><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Recapturando…</>)
+                  : (<><Wand2 className="w-3.5 h-3.5 mr-1" /> Recapturar guiado</>)}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => resetAxis(axis)} disabled={measuringAxis !== null || preflightAxis !== null || recapturingAxis !== null}>
                 Reset
               </Button>
             </div>
+
+            {recaptureRequired[axis] && (
+              <div
+                className="rounded-md border border-destructive/50 bg-destructive/5 text-destructive p-2 text-[11px] flex items-start gap-2"
+                data-testid={`ptz-recapture-required-${axis}`}
+                role="alert"
+              >
+                <TriangleAlert className="w-3.5 h-3.5 mt-0.5 shrink-0" aria-hidden />
+                <div className="space-y-0.5">
+                  <div className="font-medium">
+                    Desvio de {validation[axis]!.error_pct.toFixed(1)}% (&gt; {RECAPTURE_THRESHOLD_PCT}%) — recaptura obrigatória.
+                  </div>
+                  <div className="opacity-80">
+                    O pré-voo deste eixo (e o de todos os eixos) está bloqueado até você executar
+                    <b> Recapturar guiado</b> e confirmar novos min/max válidos.
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {recapturingAxis === axis && (
+              <div className="rounded-md border p-2 space-y-1" data-testid={`ptz-recapture-progress-${axis}`}>
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="font-medium">
+                    {recaptureStage === 'to-min' ? 'Buscando extremo mínimo…' : recaptureStage === 'to-max' ? 'Buscando extremo máximo…' : 'Concluído'}
+                  </span>
+                  <span className="font-mono opacity-70">{recaptureProgress}%</span>
+                </div>
+                <Progress value={recaptureProgress} className="h-1.5" />
+                <div className="flex justify-end">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => { recaptureAbortRef.current = true; }}
+                    className="h-6 px-2 text-[10px]"
+                  >
+                    Abortar
+                  </Button>
+                </div>
+              </div>
+            )}
+
 
             {(() => {
               const [lo, hi] = AXIS_BOUNDS[axis];
