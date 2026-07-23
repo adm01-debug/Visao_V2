@@ -2,7 +2,7 @@
  * Linha da tabela de jobs de download — busca signed URL sob demanda,
  * permite cancelar (via edge function) e re-tentar.
  */
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -29,6 +29,8 @@ export interface DownloadRow {
   storage_bucket: string;
   storage_path: string | null;
   created_at: string;
+  started_at?: string | null;
+  updated_at?: string | null;
 }
 
 const STATUS: Record<DownloadRow['status'], { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
@@ -52,6 +54,17 @@ function formatBytes(bytes: number | null | undefined): string {
   return `${v.toFixed(v >= 100 ? 0 : 1)} ${units[i]}`;
 }
 
+function formatDuration(seconds: number): string {
+  if (!Number.isFinite(seconds) || seconds <= 0) return '—';
+  const s = Math.round(seconds);
+  if (s < 60) return `${s}s`;
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  if (m < 60) return `${m}m ${r.toString().padStart(2, '0')}s`;
+  const h = Math.floor(m / 60);
+  return `${h}h ${(m % 60).toString().padStart(2, '0')}m`;
+}
+
 interface Props {
   row: DownloadRow;
   onRetry: (row: DownloadRow) => void;
@@ -60,6 +73,34 @@ interface Props {
 
 export function NvrDownloadJobRow({ row, onRetry, onCancel }: Props) {
   const [openingUrl, setOpeningUrl] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
+  const sampleRef = useRef<{ ts: number; bytes: number } | null>(null);
+  const rateRef = useRef<number>(0); // bytes/s (EMA)
+
+  const isDownloading = row.status === 'downloading';
+
+  // Ticker de 1s apenas quando ativo, para atualizar ETA/tempo decorrido.
+  useEffect(() => {
+    if (!isDownloading) return;
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, [isDownloading]);
+
+  // Atualiza taxa (EMA) quando bytes_downloaded muda.
+  useEffect(() => {
+    if (!isDownloading) {
+      sampleRef.current = null;
+      rateRef.current = 0;
+      return;
+    }
+    const nowTs = Date.now();
+    const prev = sampleRef.current;
+    if (prev && nowTs > prev.ts && row.bytes_downloaded >= prev.bytes) {
+      const instant = ((row.bytes_downloaded - prev.bytes) * 1000) / (nowTs - prev.ts);
+      rateRef.current = rateRef.current > 0 ? rateRef.current * 0.6 + instant * 0.4 : instant;
+    }
+    sampleRef.current = { ts: nowTs, bytes: row.bytes_downloaded };
+  }, [row.bytes_downloaded, isDownloading]);
 
   const handleDownload = async () => {
     if (!row.storage_path) return;
@@ -80,6 +121,27 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel }: Props) {
 
   const meta = STATUS[row.status];
   const inFlight = row.status === 'downloading' || row.status === 'listing' || row.status === 'pending';
+
+  // Cálculo de ETA e tempo decorrido.
+  const startedAt = row.started_at ? new Date(row.started_at).getTime() : new Date(row.created_at).getTime();
+  const elapsedSec = Math.max(0, (now - startedAt) / 1000);
+  let etaSec: number | null = null;
+  if (isDownloading) {
+    const remainingBytes =
+      row.total_bytes && row.total_bytes > row.bytes_downloaded
+        ? row.total_bytes - row.bytes_downloaded
+        : null;
+    const rate = rateRef.current;
+    if (remainingBytes && rate > 1024) {
+      etaSec = remainingBytes / rate;
+    } else if (row.progress_percent > 1 && row.progress_percent < 100) {
+      // Fallback proporcional pelo tempo decorrido.
+      etaSec = (elapsedSec * (100 - row.progress_percent)) / row.progress_percent;
+    }
+  }
+  const lastUpdateMs = row.updated_at ? now - new Date(row.updated_at).getTime() : 0;
+  const stalled = isDownloading && lastUpdateMs > 60_000;
+
 
   return (
     <tr className="border-b border-border/60 last:border-0">
@@ -103,7 +165,7 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel }: Props) {
         </div>
       </td>
       <td className="p-3 align-top">
-        <div className="w-40">
+        <div className="w-44">
           <Progress value={Math.round(row.progress_percent)} className="h-2" />
           <div className="mt-1 flex justify-between text-[11px] text-muted-foreground">
             <span>{Math.round(row.progress_percent)}%</span>
@@ -112,6 +174,27 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel }: Props) {
               {row.total_bytes ? ` / ${formatBytes(row.total_bytes)}` : ''}
             </span>
           </div>
+          {isDownloading && (
+            <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-muted-foreground">
+              <span>Decorrido {formatDuration(elapsedSec)}</span>
+              {etaSec !== null && (
+                <span className="text-foreground/80">
+                  · Restante ~{formatDuration(etaSec)}
+                </span>
+              )}
+              {rateRef.current > 0 && (
+                <span>· {formatBytes(rateRef.current)}/s</span>
+              )}
+              {stalled && (
+                <span className="text-amber-600 dark:text-amber-400">· sem atualização há &gt;1min</span>
+              )}
+            </div>
+          )}
+          {row.status === 'completed' && (
+            <div className="mt-1 text-[11px] text-muted-foreground">
+              Concluído em {formatDuration(elapsedSec)}
+            </div>
+          )}
         </div>
         {row.last_error && (
           <div className="mt-1 max-w-[16rem] truncate text-[11px] text-destructive" title={row.last_error}>
@@ -130,7 +213,7 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel }: Props) {
               Baixar
             </Button>
           )}
-          {(row.status === 'failed' || row.status === 'canceled') && (
+          {(row.status === 'failed' || row.status === 'canceled' || stalled) && (
             <Button size="sm" variant="outline" onClick={() => onRetry(row)}>
               <RefreshCw className="mr-1 h-3.5 w-3.5" />
               Tentar novamente
