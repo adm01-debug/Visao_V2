@@ -190,6 +190,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     relayAgentId: "",
   });
   const [relayAgents, setRelayAgents] = useState<RelayAgentOption[]>([]);
+  const [connectivityWizardOpen, setConnectivityWizardOpen] = useState(false);
   const [templateCtx, setTemplateCtx] = useState<{
     templateId: string;
     host: string;
