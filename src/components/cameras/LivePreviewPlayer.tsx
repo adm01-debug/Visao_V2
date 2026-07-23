@@ -12,16 +12,19 @@
  *  - Cleanup síncrono via `sendBeacon` no `beforeunload` como fallback.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Loader2, PlayCircle, RefreshCw, StopCircle, Timer } from "lucide-react";
+import { AlertTriangle, Loader2, PlayCircle, RefreshCw, StopCircle, Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { resolveLivePreviewError, type LivePreviewErrorCode } from "@/lib/livePreviewErrors";
 
 export const LIVE_PREVIEW_DEFAULT_SECONDS = 60;
 export const LIVE_PREVIEW_EXTEND_SECONDS = 60;
 export const LIVE_PREVIEW_MAX_EXTENSIONS = 3;
+/** Prazo máximo (ms) para o vídeo emitir `canplay` após `start` bem-sucedido. */
+export const LIVE_PREVIEW_HLS_TIMEOUT_MS = 10_000;
 
 export interface LivePreviewPlayerProps {
   /** URL RTSP já resolvida (montada com credenciais no client, nunca enviada em texto ao servidor). */
