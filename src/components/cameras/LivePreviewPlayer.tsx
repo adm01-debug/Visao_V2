@@ -12,16 +12,19 @@
  *  - Cleanup síncrono via `sendBeacon` no `beforeunload` como fallback.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Loader2, PlayCircle, RefreshCw, StopCircle, Timer } from "lucide-react";
+import { AlertTriangle, Loader2, PlayCircle, RefreshCw, StopCircle, Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { resolveLivePreviewError, type LivePreviewErrorCode } from "@/lib/livePreviewErrors";
 
 export const LIVE_PREVIEW_DEFAULT_SECONDS = 60;
 export const LIVE_PREVIEW_EXTEND_SECONDS = 60;
 export const LIVE_PREVIEW_MAX_EXTENSIONS = 3;
+/** Prazo máximo (ms) para o vídeo emitir `canplay` após `start` bem-sucedido. */
+export const LIVE_PREVIEW_HLS_TIMEOUT_MS = 10_000;
 
 export interface LivePreviewPlayerProps {
   /** URL RTSP já resolvida (montada com credenciais no client, nunca enviada em texto ao servidor). */
@@ -61,14 +64,23 @@ export function LivePreviewPlayer({
   className,
 }: LivePreviewPlayerProps) {
   const [status, setStatus] = useState<Status>("idle");
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<LivePreviewErrorCode | null>(null);
   const [remaining, setRemaining] = useState(LIVE_PREVIEW_DEFAULT_SECONDS);
   const [extensions, setExtensions] = useState(0);
   const [hlsUrl, setHlsUrl] = useState<string | null>(null);
   const sessionIdRef = useRef<string | null>(null);
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const hlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const canPlayRef = useRef(false);
   const endedRef = useRef(false);
   const invokeFn = invoke ?? defaultInvoke;
+
+  const clearHlsTimeout = () => {
+    if (hlsTimeoutRef.current) {
+      clearTimeout(hlsTimeoutRef.current);
+      hlsTimeoutRef.current = null;
+    }
+  };
 
   const clearTick = () => {
     if (tickRef.current) {
@@ -82,6 +94,7 @@ export function LivePreviewPlayer({
       if (endedRef.current) return;
       endedRef.current = true;
       clearTick();
+      clearHlsTimeout();
       setStatus(reason === "error" ? "error" : "stopping");
       const id = sessionIdRef.current;
       sessionIdRef.current = null;
@@ -98,10 +111,28 @@ export function LivePreviewPlayer({
     [invokeFn, onEnded],
   );
 
+  const failWith = useCallback(
+    (code: LivePreviewErrorCode, opts?: { callStop?: boolean }) => {
+      setErrorCode(code);
+      clearTick();
+      clearHlsTimeout();
+      canPlayRef.current = false;
+      if (opts?.callStop && sessionIdRef.current) {
+        void stop("error");
+      } else {
+        endedRef.current = true;
+        setStatus("error");
+        onEnded?.("error");
+      }
+    },
+    [onEnded, stop],
+  );
+
   const start = useCallback(async () => {
     if (status === "starting" || status === "playing") return;
     endedRef.current = false;
-    setErrorMsg(null);
+    canPlayRef.current = false;
+    setErrorCode(null);
     setStatus("starting");
     setRemaining(LIVE_PREVIEW_DEFAULT_SECONDS);
     setExtensions(0);
@@ -124,12 +155,21 @@ export function LivePreviewPlayer({
           return r - 1;
         });
       }, 1000);
+      // Watchdog: se o <video> não emitir `canplay` dentro do prazo, marca hls_timeout.
+      clearHlsTimeout();
+      hlsTimeoutRef.current = setTimeout(() => {
+        if (!canPlayRef.current && !endedRef.current) {
+          failWith("hls_timeout", { callStop: true });
+        }
+      }, LIVE_PREVIEW_HLS_TIMEOUT_MS);
     } catch (e) {
-      setErrorMsg(e instanceof Error ? e.message : "start_failed");
+      const raw = e instanceof Error ? e.message : "start_failed";
+      setErrorCode(raw as LivePreviewErrorCode);
       setStatus("error");
+      endedRef.current = true;
       onEnded?.("error");
     }
-  }, [invokeFn, onEnded, rtspUrl, status, stop]);
+  }, [failWith, invokeFn, onEnded, rtspUrl, status, stop]);
 
   const extend = useCallback(async () => {
     if (status !== "playing" || extensions >= LIVE_PREVIEW_MAX_EXTENSIONS) return;
@@ -142,16 +182,29 @@ export function LivePreviewPlayer({
       setExtensions((n) => n + 1);
       setRemaining((r) => r + LIVE_PREVIEW_EXTEND_SECONDS);
       setStatus("playing");
+      setErrorCode(null);
     } catch (e) {
-      setErrorMsg(e instanceof Error ? e.message : "extend_failed");
+      const raw = e instanceof Error ? e.message : "extend_failed_client";
+      setErrorCode(raw as LivePreviewErrorCode);
       setStatus("playing");
     }
   }, [extensions, invokeFn, status]);
+
+  const handleVideoError = useCallback(() => {
+    if (endedRef.current) return;
+    failWith("connection_dropped", { callStop: true });
+  }, [failWith]);
+
+  const handleVideoCanPlay = useCallback(() => {
+    canPlayRef.current = true;
+    clearHlsTimeout();
+  }, []);
 
   useEffect(() => {
     if (autoStart) void start();
     return () => {
       clearTick();
+      clearHlsTimeout();
       if (!endedRef.current && sessionIdRef.current) {
         endedRef.current = true;
         const id = sessionIdRef.current;
@@ -225,9 +278,11 @@ export function LivePreviewPlayer({
             autoPlay
             muted
             playsInline
+            onError={handleVideoError}
+            onCanPlay={handleVideoCanPlay}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
+          <div className="flex h-full w-full items-center justify-center px-3 text-center text-xs text-muted-foreground">
             {status === "starting" && (
               <span className="flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> Iniciando prévia…
@@ -235,12 +290,36 @@ export function LivePreviewPlayer({
             )}
             {status === "idle" && "Clique em Iniciar prévia para visualizar 60s do stream."}
             {status === "ended" && "Prévia encerrada."}
-            {status === "error" && (
-              <span className="text-destructive">Falha: {errorMsg ?? "erro desconhecido"}</span>
-            )}
+            {status === "error" && (() => {
+              const { code, info } = resolveLivePreviewError(errorCode);
+              return (
+                <div
+                  role="alert"
+                  className="flex flex-col items-center gap-1 text-destructive"
+                  data-testid="live-preview-error"
+                  data-error-code={code}
+                >
+                  <AlertTriangle className="h-5 w-5" aria-hidden />
+                  <strong className="text-sm">{info.title}</strong>
+                  <span className="text-[11px] leading-snug text-muted-foreground">
+                    {info.suggestion}
+                  </span>
+                </div>
+              );
+            })()}
           </div>
         )}
       </div>
+      {status === "playing" && errorCode && (
+        <div
+          role="status"
+          data-testid="live-preview-warning"
+          data-error-code={errorCode}
+          className="rounded border border-amber-500/40 bg-amber-500/10 px-2 py-1 text-[11px] text-amber-700 dark:text-amber-300"
+        >
+          {resolveLivePreviewError(errorCode).info.title} — {resolveLivePreviewError(errorCode).info.suggestion}
+        </div>
+      )}
 
       <div className="flex flex-wrap items-center justify-end gap-2">
         {status === "idle" || status === "ended" || status === "error" ? (

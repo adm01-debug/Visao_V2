@@ -32,6 +32,8 @@ declare global {
       closeDialog: () => void;
       setNextStartResult: (r: Partial<InvokeResult>) => void;
       setNextExtendResult: (r: Partial<InvokeResult>) => void;
+      /** Dispara `error` no <video>, simulando drop de conexão HLS. */
+      simulateVideoError: () => boolean;
       reset: () => void;
     };
   }
@@ -79,6 +81,12 @@ export default function LivePreviewHarnessPage() {
       },
       setNextExtendResult: (r) => {
         nextExtendRef.current = r;
+      },
+      simulateVideoError: () => {
+        const v = document.querySelector<HTMLVideoElement>('[data-testid="live-preview-video"]');
+        if (!v) return false;
+        v.dispatchEvent(new Event('error'));
+        return true;
       },
       reset: () => {
         invokeLogRef.current.length = 0;
