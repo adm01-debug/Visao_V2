@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ArrowDown, ArrowLeft, ArrowRight, ArrowUp, CheckCircle2, Home,
-  Loader2, Radar, Save, Sparkles, Star, Wand2, ZoomIn, ZoomOut,
+  Loader2, Radar, Save, Sparkles, Star, Wand2, XCircle, Zap, ZoomIn, ZoomOut,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -124,6 +124,37 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
       toast.success(`Detecção concluída · ${data.imported ?? 0} preset(s) importado(s)`);
       qc.invalidateQueries({ queryKey: ['ptz-config', cameraId] });
       qc.invalidateQueries({ queryKey: ['ptz-presets', cameraId] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  // Teste dos backends PTZ nativos (não-destrutivo: envia `stop`).
+  // Retorna sucesso/erro + latência por protocolo antes do usuário salvar.
+  type BackendResult = {
+    backend: string;
+    ok: boolean;
+    reachable: boolean;
+    status: number;
+    latency_ms: number;
+    detail: string;
+  };
+  const [backendResults, setBackendResults] = useState<BackendResult[] | null>(null);
+
+  const testBackends = useMutation({
+    mutationFn: async () => {
+      const backends = isAutoMulti ? autoMultiBackends : (protocol ? [protocol] : []);
+      const { data, error } = await supabase.functions.invoke('ptz-backends-test', {
+        body: { camera_id: cameraId, backends },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.hint ?? data.error);
+      return data as { ok: boolean; results: BackendResult[] };
+    },
+    onSuccess: (data) => {
+      setBackendResults(data.results);
+      const okCount = data.results.filter((r) => r.ok).length;
+      if (okCount > 0) toast.success(`${okCount}/${data.results.length} backend(s) responderam`);
+      else toast.error('Nenhum backend PTZ respondeu');
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -305,6 +336,50 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                   <div>Presets encontrados: {discover.data.presets?.length ?? 0} · Importados: {discover.data.imported}</div>
                 </div>
               )}
+
+              {/* Teste automático dos backends PTZ nativos — não-destrutivo (stop). */}
+              <div className="space-y-2">
+                <Button
+                  variant="outline"
+                  onClick={() => testBackends.mutate()}
+                  disabled={testBackends.isPending}
+                  className="w-full"
+                >
+                  {testBackends.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Zap className="w-4 h-4 mr-2" />}
+                  {isAutoMulti
+                    ? `Testar ${autoMultiBackends.length} backend(s) nativo(s)`
+                    : 'Testar backend PTZ'}
+                </Button>
+
+                {backendResults && backendResults.length > 0 && (
+                  <div className="rounded-md border divide-y">
+                    {backendResults.map((r) => (
+                      <div key={r.backend} className="flex items-center justify-between gap-3 p-2 text-sm">
+                        <div className="flex items-center gap-2 min-w-0">
+                          {r.ok ? (
+                            <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
+                          ) : (
+                            <XCircle className="w-4 h-4 text-destructive shrink-0" />
+                          )}
+                          <span className="font-mono uppercase text-xs">{r.backend}</span>
+                          {!r.ok && r.reachable && (
+                            <Badge variant="outline" className="text-[10px]">alcançável</Badge>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground shrink-0">
+                          <span className="font-mono">HTTP {r.status || '—'}</span>
+                          <span className="font-mono">{r.latency_ms}ms</span>
+                        </div>
+                      </div>
+                    ))}
+                    {backendResults.every((r) => !r.ok) && (
+                      <div className="p-2 text-xs text-destructive">
+                        Nenhum backend respondeu com sucesso. Verifique credenciais, porta e conectividade LAN antes de salvar.
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
