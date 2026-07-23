@@ -14,7 +14,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { CalendarIcon, Download, Layers, PlayCircle, RefreshCw } from 'lucide-react';
+import { CalendarIcon, Download, History as HistoryIcon, Layers, PlayCircle, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import { supabase } from '@/integrations/supabase/client';
