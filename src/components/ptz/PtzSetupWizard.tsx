@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ArrowDown, ArrowLeft, ArrowRight, ArrowUp, CheckCircle2, Home,
-  Loader2, Radar, Save, Sparkles, Star, Wand2, ZoomIn, ZoomOut,
+  Loader2, Radar, Save, Sparkles, Star, Wand2, XCircle, Zap, ZoomIn, ZoomOut,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
