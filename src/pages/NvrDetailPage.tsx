@@ -486,8 +486,9 @@ export default function NvrDetailPage(): JSX.Element {
         const cycleOptions: Array<0 | 5 | 10 | 30> = [0, 5, 10, 30];
         setCycleSeconds((cur) => {
           const idx = cycleOptions.indexOf(cur);
-          return cycleOptions[(idx + 1) % cycleOptions.length];
+          return cycleOptions[(idx + 1) % cycleOptions.length] ?? 0;
         });
+
         e.preventDefault();
         return;
       }
