@@ -10,7 +10,7 @@
  *  6. Nunca loga URL/senha; usa maskSecrets defensivo em erros.
  *  7. Se PTZ habilitado: valida capabilities via ONVIF e persiste `camera_ptz_config`.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Loader2, ShieldCheck, Activity, Gamepad2, Search } from "lucide-react";
@@ -53,6 +53,11 @@ import {
   type AddCameraFormValues,
   type PtzProtocol,
 } from "./addCameraSchema";
+import {
+  getTemplatesForBrand,
+  findTemplate,
+  renderTemplate,
+} from "@/lib/rtspTemplates";
 
 interface AddCameraDialogProps {
   open: boolean;
@@ -122,6 +127,12 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     host: "",
     allowPrivate: false,
   });
+  const [templateCtx, setTemplateCtx] = useState<{
+    templateId: string;
+    host: string;
+    port: string;
+    channel: string;
+  }>({ templateId: "", host: "", port: "", channel: "1" });
 
   const { createCamera, deleteCamera, refetch } = useCameras();
   const { storeCredentials, loading: vaultLoading } = useCameraVault();
@@ -142,6 +153,17 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
   const ptzEnabled = form.watch("ptzEnabled");
   const ptzProtocol = (form.watch("ptzConfig.protocol") ?? "onvif") as PtzProtocol;
   const ptzSpeed = form.watch("ptzConfig.default_speed") ?? 0.5;
+  const brand = form.watch("brand");
+  const brandTemplates = useMemo(() => getTemplatesForBrand(brand), [brand]);
+  const selectedTemplate = useMemo(
+    () => (templateCtx.templateId ? findTemplate(brand, templateCtx.templateId) : undefined),
+    [brand, templateCtx.templateId],
+  );
+
+  // Ao trocar de marca, reseta o template selecionado (mas mantém host/canal digitados).
+  useEffect(() => {
+    setTemplateCtx((prev) => ({ ...prev, templateId: "" }));
+  }, [brand]);
 
   // Limpa estado sensível quando fecha
   useEffect(() => {
@@ -152,10 +174,58 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       setForceCritical(false);
       setDiscover({ loading: false, ok: null, message: null });
       setAutoDiscover({ loading: false, ok: null, message: null, host: "", allowPrivate: false });
+      setTemplateCtx({ templateId: "", host: "", port: "", channel: "1" });
       rtspValidation.reset();
       substreamValidation.reset();
     }
   }, [open, form, rtspValidation, substreamValidation]);
+
+  const handleApplyTemplate = () => {
+    if (!selectedTemplate) {
+      toast.error("Selecione um modelo antes de aplicar.");
+      return;
+    }
+    const host = templateCtx.host.trim();
+    if (!host) {
+      toast.error("Informe o IP/host da câmera para gerar as URLs.");
+      return;
+    }
+    const port = templateCtx.port ? Number(templateCtx.port) : undefined;
+    if (port !== undefined && (!Number.isFinite(port) || port < 1 || port > 65535)) {
+      toast.error("Porta inválida.");
+      return;
+    }
+    const channel = templateCtx.channel ? Number(templateCtx.channel) : 1;
+    if (!Number.isFinite(channel) || channel < 1 || channel > 64) {
+      toast.error("Canal deve estar entre 1 e 64.");
+      return;
+    }
+    const currentPrimary = form.getValues("rtspUrl")?.trim();
+    const currentSub = form.getValues("substreamUrl")?.trim();
+    const willOverwrite = Boolean(currentPrimary) || Boolean(currentSub);
+
+    const apply = () => {
+      const { primary, substream } = renderTemplate(selectedTemplate, { host, port, channel });
+      form.setValue("rtspUrl", primary, { shouldValidate: true, shouldDirty: true });
+      form.setValue("substreamUrl", substream ?? "", { shouldValidate: true, shouldDirty: true });
+      rtspValidation.reset();
+      substreamValidation.reset();
+      toast.success("URLs preenchidas pelo template.", {
+        description: "Ajuste manualmente se sua câmera usa caminho diferente.",
+      });
+    };
+
+    if (willOverwrite) {
+      toast("Sobrescrever URLs atuais?", {
+        description: "Você já tem URLs preenchidas. Isso substituirá os valores.",
+        action: { label: "Sobrescrever", onClick: apply },
+        cancel: { label: "Cancelar", onClick: () => undefined },
+      });
+      return;
+    }
+    apply();
+  };
+
 
 
   // Ajusta porta padrão ao trocar protocolo
@@ -552,6 +622,94 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
               </Badge>
             )}
           </div>
+
+          <div className="space-y-2 rounded-md border border-border/60 bg-muted/40 p-3">
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-sm font-medium">Modelo da câmera (template RTSP)</div>
+              {selectedTemplate && (
+                <Badge variant="outline" className="text-[10px]">
+                  Porta padrão: {selectedTemplate.defaultPort}
+                </Badge>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Selecione o modelo para preencher automaticamente as URLs principal e substream. Ajuste manualmente se sua câmera usa caminho diferente.
+            </p>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <div className="space-y-1">
+                <Label htmlFor="add-cam-template" className="text-xs">Modelo</Label>
+                <Select
+                  value={templateCtx.templateId || "__none__"}
+                  onValueChange={(v) =>
+                    setTemplateCtx((s) => ({ ...s, templateId: v === "__none__" ? "" : v }))
+                  }
+                >
+                  <SelectTrigger id="add-cam-template">
+                    <SelectValue placeholder="Personalizado" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">Personalizado (não usar template)</SelectItem>
+                    {brandTemplates.map((tpl) => (
+                      <SelectItem key={tpl.id} value={tpl.id}>
+                        {tpl.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {selectedTemplate?.description && (
+                  <p className="text-[11px] text-muted-foreground">{selectedTemplate.description}</p>
+                )}
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="add-cam-tpl-host" className="text-xs">Host / IP</Label>
+                <Input
+                  id="add-cam-tpl-host"
+                  autoComplete="off"
+                  spellCheck={false}
+                  placeholder="192.168.1.10"
+                  value={templateCtx.host}
+                  onChange={(e) => setTemplateCtx((s) => ({ ...s, host: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="add-cam-tpl-port" className="text-xs">
+                  Porta {selectedTemplate ? `(padrão ${selectedTemplate.defaultPort})` : ""}
+                </Label>
+                <Input
+                  id="add-cam-tpl-port"
+                  autoComplete="off"
+                  inputMode="numeric"
+                  placeholder={selectedTemplate ? String(selectedTemplate.defaultPort) : "554"}
+                  value={templateCtx.port}
+                  onChange={(e) => setTemplateCtx((s) => ({ ...s, port: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="add-cam-tpl-channel" className="text-xs">Canal</Label>
+                <Input
+                  id="add-cam-tpl-channel"
+                  autoComplete="off"
+                  inputMode="numeric"
+                  placeholder="1"
+                  value={templateCtx.channel}
+                  onChange={(e) => setTemplateCtx((s) => ({ ...s, channel: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                onClick={handleApplyTemplate}
+                disabled={!selectedTemplate || !templateCtx.host.trim()}
+              >
+                Aplicar template
+              </Button>
+            </div>
+          </div>
+
+
 
 
           <div className="space-y-1.5">
