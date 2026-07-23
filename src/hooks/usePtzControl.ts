@@ -18,13 +18,18 @@ export interface PtzParams {
 interface UsePtzControlOptions {
   cameraId: string;
   enabled?: boolean;
+  /**
+   * ID de um Agente Local para rotear os comandos PTZ. Necessário quando a
+   * câmera está em LAN privada e a Edge Function não tem rota direta.
+   */
+  relayAgentId?: string | null;
 }
 
 /**
  * usePtzControl — abstrai chamadas à Edge Function `camera-ptz-control`,
  * mantém lock cooperativo por heartbeat e expõe estado de operação.
  */
-export function usePtzControl({ cameraId, enabled = true }: UsePtzControlOptions) {
+export function usePtzControl({ cameraId, enabled = true, relayAgentId = null }: UsePtzControlOptions) {
   const qc = useQueryClient();
   const [isMoving, setIsMoving] = useState(false);
   const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null);
