@@ -308,6 +308,31 @@ export function PtzMultiAxisPreflightDialog({
     toast.info('Abortando validação…');
   }, [currentAxis, safeStop]);
 
+  const handleDownloadPdf = useCallback(async () => {
+    if (results.length === 0) return;
+    setPdfLoading(true);
+    try {
+      const blob = await generatePtzPreflightPdf({
+        cameraId,
+        cameraLabel,
+        axes,
+        limitsByAxis,
+        startPositions,
+        perAxisTimeoutMs: perAxisTimeout,
+        statusSupported,
+        results,
+        generatedAt: new Date(),
+      });
+      downloadPtzPreflightPdf(blob, cameraLabel ?? cameraId);
+      toast.success('Relatório PDF gerado.');
+    } catch (err) {
+      toast.error('Falha ao gerar PDF', { description: err instanceof Error ? err.message : String(err) });
+    } finally {
+      setPdfLoading(false);
+    }
+  }, [axes, cameraId, cameraLabel, limitsByAxis, perAxisTimeout, results, startPositions, statusSupported]);
+
+
   const outcomeBadge = (o: PhaseOutcome) => {
     if (o === 'ok') return <Badge variant="secondary" className="text-[10px]"><CheckCircle2 className="w-3 h-3 mr-1" />ok</Badge>;
     if (o === 'deviation') return <Badge variant="outline" className="text-[10px]"><AlertTriangle className="w-3 h-3 mr-1" />desvio</Badge>;
