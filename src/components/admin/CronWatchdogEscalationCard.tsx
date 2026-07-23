@@ -27,23 +27,42 @@ interface Escalation {
   acknowledgement_note: string | null;
 }
 
+interface AckMetric {
+  window_label: string;
+  total_escalations: number;
+  acknowledged: number;
+  open: number;
+  ack_rate: number | null;
+  mtta_seconds: number | null;
+  p95_ack_seconds: number | null;
+}
+
 const THRESHOLD = 3;
+
+const fmtDuration = (s: number | null): string => {
+  if (s == null) return '—';
+  if (s < 60) return `${Math.round(s)}s`;
+  if (s < 3600) return `${(s / 60).toFixed(1)}min`;
+  return `${(s / 3600).toFixed(1)}h`;
+};
 
 export function CronWatchdogEscalationCard() {
   const [agg, setAgg] = useState<Aggregate | null>(null);
   const [history, setHistory] = useState<Escalation[]>([]);
+  const [metrics, setMetrics] = useState<AckMetric[]>([]);
   const [loading, setLoading] = useState(true);
   const [escalating, setEscalating] = useState(false);
 
   const load = async () => {
     setLoading(true);
-    const [rpcRes, histRes] = await Promise.all([
+    const [rpcRes, histRes, metricsRes] = await Promise.all([
       supabase.rpc('cron_watchdog_consecutive_problems', { _min_runs: THRESHOLD }),
       supabase
         .from('cron_watchdog_escalations')
         .select('id, escalated_at, jobname, consecutive_failures, last_reason, delivered, delivery_error, acknowledged_at, acknowledgement_note')
         .order('escalated_at', { ascending: false })
         .limit(15),
+      supabase.rpc('cron_watchdog_ack_metrics'),
     ]);
     if (rpcRes.error) toast.error('Falha ao consultar status de escalação');
     else {
@@ -52,8 +71,10 @@ export function CronWatchdogEscalationCard() {
     }
     if (histRes.error) toast.error('Falha ao carregar histórico');
     else setHistory((histRes.data ?? []) as unknown as Escalation[]);
+    if (!metricsRes.error) setMetrics((metricsRes.data ?? []) as unknown as AckMetric[]);
     setLoading(false);
   };
+
 
   useEffect(() => {
     load();
