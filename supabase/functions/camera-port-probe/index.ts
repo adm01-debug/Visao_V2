@@ -12,6 +12,8 @@
 //   - Retorna latência em ms e o motivo do erro (timeout | refused | dns | blocked_private).
 //   - Não é autoritativo sobre ONVIF; só diz "algo respondeu TCP nessa porta".
 
+import { resolveRelayTransport, type Transport } from "../_shared/relayTransport.ts";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-agent-source",
@@ -29,6 +31,7 @@ interface Payload {
   timeout_ms?: number;
   allow_private?: boolean;
   run_from?: "cloud" | "local_agent";
+  relay_agent_id?: string | null;
 }
 
 interface ProbeResult {
