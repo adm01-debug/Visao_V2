@@ -343,7 +343,7 @@ export function PtzMultiAxisPreflightDialog({
       for (const ph of phases) {
         if (abortRef.current) break outer;
         setCurrentPhase(ph.id);
-        const r = await driveToTarget(axis, ph.target, cursor);
+        const r = await driveToTarget(axis, ph.id, ph.target, cursor);
         let outcome: PhaseOutcome;
         let detail: string | undefined;
         if (abortRef.current) {
