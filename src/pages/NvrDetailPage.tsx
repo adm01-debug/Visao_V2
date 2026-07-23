@@ -232,56 +232,144 @@ export default function NvrDetailPage(): JSX.Element {
             </Card>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Radio className="h-5 w-5 text-primary" aria-hidden /> Canais
-              </CardTitle>
-              <CardDescription>
-                Status por canal (atualização automática a cada 30 s).
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {channelsQuery.isLoading && (
-                <p className="text-sm text-muted-foreground">Carregando canais…</p>
-              )}
-              {channelsQuery.data && channelsQuery.data.length === 0 && (
-                <p className="text-sm text-muted-foreground">
-                  Nenhum canal associado. Recadastre o NVR para provisionar os canais.
-                </p>
-              )}
-              {channelsQuery.data && channelsQuery.data.length > 0 && (
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-16 text-center">Canal</TableHead>
-                        <TableHead>Nome</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Ações</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {channelsQuery.data.map((c) => (
-                        <TableRow key={c.id}>
-                          <TableCell className="text-center font-mono">
-                            {c.channel_number ?? "—"}
-                          </TableCell>
-                          <TableCell className="font-medium">{c.name}</TableCell>
-                          <TableCell>{statusBadge(c.status)}</TableCell>
-                          <TableCell className="text-right">
-                            <Button asChild size="sm" variant="outline">
-                              <Link to={`/cameras/${c.id}`}>Abrir</Link>
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <Tabs defaultValue="list" className="space-y-4">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <TabsList>
+                <TabsTrigger value="list" className="gap-1">
+                  <Radio className="h-4 w-4" /> Lista
+                </TabsTrigger>
+                <TabsTrigger value="mosaic" className="gap-1">
+                  <LayoutGrid className="h-4 w-4" /> Mosaico
+                </TabsTrigger>
+              </TabsList>
+              <ToggleGroup
+                type="single"
+                size="sm"
+                value={mosaicCols}
+                onValueChange={(v) => v && setMosaicCols(v as "2" | "3" | "4")}
+                aria-label="Colunas do mosaico"
+              >
+                <ToggleGroupItem value="2">2×</ToggleGroupItem>
+                <ToggleGroupItem value="3">3×</ToggleGroupItem>
+                <ToggleGroupItem value="4">4×</ToggleGroupItem>
+              </ToggleGroup>
+            </div>
+
+            <TabsContent value="list">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Radio className="h-5 w-5 text-primary" aria-hidden /> Canais
+                  </CardTitle>
+                  <CardDescription>
+                    Status por canal (atualização automática a cada 30 s).
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {channelsQuery.isLoading && (
+                    <p className="text-sm text-muted-foreground">Carregando canais…</p>
+                  )}
+                  {channelsQuery.data && channelsQuery.data.length === 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      Nenhum canal associado. Recadastre o NVR para provisionar os canais.
+                    </p>
+                  )}
+                  {channelsQuery.data && channelsQuery.data.length > 0 && (
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="w-16 text-center">Canal</TableHead>
+                            <TableHead>Nome</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead className="text-right">Ações</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {channelsQuery.data.map((c) => (
+                            <TableRow key={c.id}>
+                              <TableCell className="text-center font-mono">
+                                {c.channel_number ?? "—"}
+                              </TableCell>
+                              <TableCell className="font-medium">{c.name}</TableCell>
+                              <TableCell>{statusBadge(c.status)}</TableCell>
+                              <TableCell className="text-right">
+                                <Button asChild size="sm" variant="outline">
+                                  <Link to={`/cameras/${c.id}`}>Abrir</Link>
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="mosaic">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <LayoutGrid className="h-5 w-5 text-primary" aria-hidden /> Mosaico de canais
+                  </CardTitle>
+                  <CardDescription>
+                    Visualização em grade estilo mesa de CFTV. Clique em um tile para abrir o canal.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {channelsQuery.isLoading && (
+                    <p className="text-sm text-muted-foreground">Carregando canais…</p>
+                  )}
+                  {channelsQuery.data && channelsQuery.data.length === 0 && (
+                    <p className="text-sm text-muted-foreground">Nenhum canal disponível.</p>
+                  )}
+                  {channelsQuery.data && channelsQuery.data.length > 0 && (
+                    <div
+                      className={
+                        "grid gap-3 " +
+                        (mosaicCols === "2"
+                          ? "grid-cols-1 sm:grid-cols-2"
+                          : mosaicCols === "3"
+                            ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+                            : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4")
+                      }
+                    >
+                      {channelsQuery.data.map((c) => {
+                        const online = c.status === "online";
+                        return (
+                          <Link
+                            key={c.id}
+                            to={`/cameras/${c.id}`}
+                            className="group relative aspect-video overflow-hidden rounded-lg border bg-muted/40 transition hover:border-primary hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                            aria-label={`Abrir canal ${c.channel_number ?? ""} — ${c.name}`}
+                          >
+                            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-muted/60 to-muted">
+                              {online ? (
+                                <Video className="h-10 w-10 text-muted-foreground/60 group-hover:text-primary transition" aria-hidden />
+                              ) : (
+                                <VideoOff className="h-10 w-10 text-destructive/50" aria-hidden />
+                              )}
+                            </div>
+                            <div className="absolute top-2 left-2">
+                              <Badge variant="secondary" className="font-mono text-xs">
+                                CH {c.channel_number ?? "—"}
+                              </Badge>
+                            </div>
+                            <div className="absolute top-2 right-2">{statusBadge(c.status)}</div>
+                            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-2">
+                              <p className="text-xs font-medium truncate">{c.name}</p>
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </>
       )}
     </div>
