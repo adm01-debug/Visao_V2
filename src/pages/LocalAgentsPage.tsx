@@ -305,6 +305,11 @@ export default function LocalAgentsPage() {
           <RelayPurgeHistoryCard />
         </TabsContent>
 
+        <TabsContent value="camera-test" className="mt-4 space-y-4">
+          <RelayCameraTestCard />
+        </TabsContent>
+
+
         <TabsContent value="install" className="mt-4 space-y-4">
           <Card>
             <CardHeader>
