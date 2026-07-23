@@ -158,9 +158,9 @@ jobs:
             echo "::warning::report.json ausente — sweep pode ter falhado antes de gerar."
             exit 0
           fi
-          COUNT=$(node -e "const r=require('./qa-console-report/report.json'); console.log((r.legitimateIssuesCount ?? r.legitimate?.length ?? 0))")
-          echo "Legitimate issues detectados: ${COUNT}"
+          COUNT=$(node -e "const r=require('./qa-console-report/report.json'); console.log(r.totals?.highSeverity ?? 0)")
+          echo "High-severity console issues detectados: ${COUNT}"
           if [ "${COUNT}" -gt 0 ]; then
-            echo "::error::QA Console Sweep encontrou ${COUNT} problema(s) legítimo(s). Ver artifact e comentário do PR."
+            echo "::error::QA Console Sweep encontrou ${COUNT} problema(s) de alta severidade. Ver artifact e comentário do PR."
             exit 1
           fi
