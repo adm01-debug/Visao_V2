@@ -282,10 +282,20 @@ export function DryRunReportCard({ executions, session, zonesMap }: DryRunReport
             <BarChart3 className="h-4 w-4 text-primary" />
             Relatório do Dry-Run
           </span>
-          <Button size="sm" variant="outline" onClick={handleExportJson}>
-            <Download className="mr-2 h-4 w-4" />
-            Exportar JSON
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" onClick={handleExportJson}>
+              <Download className="mr-2 h-4 w-4" />
+              JSON
+            </Button>
+            <Button size="sm" variant="outline" onClick={handleExportPdf} disabled={exportingPdf}>
+              <FileText className="mr-2 h-4 w-4" />
+              {exportingPdf ? 'Gerando…' : 'PDF'}
+            </Button>
+            <Button size="sm" variant="default" onClick={handleSaveSnapshot} disabled={savingSnapshot}>
+              <Save className="mr-2 h-4 w-4" />
+              {savingSnapshot ? 'Salvando…' : 'Salvar snapshot'}
+            </Button>
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
