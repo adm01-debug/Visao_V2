@@ -13,7 +13,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Loader2, ShieldCheck, Activity, Gamepad2, Search } from "lucide-react";
+import { Eye, EyeOff, Loader2, ShieldCheck, Activity, Gamepad2, Search, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { useRtspValidation } from "@/hooks/useRtspValidation";
 import { useFirstSnapshot } from "@/hooks/useFirstSnapshot";
@@ -100,10 +100,21 @@ interface DiscoverState {
   presets?: number;
 }
 
+interface AutoDiscoverErrorDetail {
+  code: string;
+  title: string;
+  hint: string;
+  steps: string[];
+  isLanHost: boolean;
+  usedRelay: boolean;
+  testedPorts: number[];
+}
+
 interface AutoDiscoverState {
   loading: boolean;
   ok: boolean | null;
   message: string | null;
+  errorDetail: AutoDiscoverErrorDetail | null;
   host: string;
   allowPrivate: boolean;
   manualMode: boolean;
@@ -136,6 +147,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     loading: false,
     ok: null,
     message: null,
+    errorDetail: null,
     host: "",
     allowPrivate: false,
     manualMode: false,
@@ -207,7 +219,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       setShowPtzPass(false);
       setForceCritical(false);
       setDiscover({ loading: false, ok: null, message: null });
-      setAutoDiscover({ loading: false, ok: null, message: null, host: "", allowPrivate: false, manualMode: false, manualPort: "", relayAgentId: "" });
+      setAutoDiscover({ loading: false, ok: null, message: null, errorDetail: null, host: "", allowPrivate: false, manualMode: false, manualPort: "", relayAgentId: "" });
       setTemplateCtx({ templateId: "", host: "", port: "", channel: "1" });
       rtspValidation.reset();
       substreamValidation.reset();
@@ -320,7 +332,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       toast.error("Preencha usuário e senha antes de descobrir.");
       return;
     }
-    setAutoDiscover((s) => ({ ...s, loading: true, ok: null, message: null }));
+    setAutoDiscover((s) => ({ ...s, loading: true, ok: null, message: null, errorDetail: null }));
     try {
       const manualPortNum = autoDiscover.manualMode
         ? Number.parseInt(autoDiscover.manualPort.trim(), 10)
@@ -341,11 +353,24 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       });
       if (error) throw new Error(error.message);
       if (data?.error) {
+        const steps: string[] = Array.isArray(data.steps) ? data.steps.filter((s: unknown): s is string => typeof s === "string") : [];
+        const detail: AutoDiscoverErrorDetail | null = steps.length
+          ? {
+              code: String(data.error_code ?? data.error),
+              title: typeof data.title === "string" ? data.title : "Não foi possível alcançar a câmera",
+              hint: typeof data.hint === "string" ? data.hint : String(data.error),
+              steps,
+              isLanHost: Boolean(data.is_lan_host),
+              usedRelay: Boolean(data.used_relay),
+              testedPorts: Array.isArray(data.tested_ports) ? data.tested_ports : [],
+            }
+          : null;
         setAutoDiscover((s) => ({
           ...s,
           loading: false,
           ok: false,
           message: data.hint || data.error,
+          errorDetail: detail,
         }));
         return;
       }
@@ -371,11 +396,12 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
         ...s,
         loading: false,
         ok: true,
+        errorDetail: null,
         message: `${data.device?.manufacturer ?? "Dispositivo"} ${data.device?.model ?? ""} · porta ${data.onvif?.port} · ${data.profiles} perfil(is)${data.ptz_capable ? " · PTZ" : ""}`,
       }));
       toast.success("Câmera descoberta! Campos preenchidos automaticamente.");
     } catch (err) {
-      setAutoDiscover((s) => ({ ...s, loading: false, ok: false, message: safeErrorMessage(err) }));
+      setAutoDiscover((s) => ({ ...s, loading: false, ok: false, errorDetail: null, message: safeErrorMessage(err) }));
       toast.error(`Descoberta falhou: ${safeErrorMessage(err)}`);
     }
   };
@@ -772,6 +798,69 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
               <Badge variant="destructive" className="max-w-full whitespace-normal">
                 {autoDiscover.message}
               </Badge>
+            )}
+            {autoDiscover.ok === false && autoDiscover.errorDetail && (
+              <div className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-xs">
+                <div className="mb-1 flex items-center gap-2 text-sm font-semibold text-destructive">
+                  <AlertTriangle className="h-4 w-4" />
+                  {autoDiscover.errorDetail.title}
+                </div>
+                <p className="mb-2 text-muted-foreground">{autoDiscover.errorDetail.hint}</p>
+                {autoDiscover.errorDetail.testedPorts.length > 0 && (
+                  <p className="mb-2 font-mono text-[11px] text-muted-foreground">
+                    Portas testadas: {autoDiscover.errorDetail.testedPorts.join(", ")}
+                  </p>
+                )}
+                <div className="mb-3 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                  Como resolver
+                </div>
+                <ol className="ml-4 list-decimal space-y-1.5 text-foreground">
+                  {autoDiscover.errorDetail.steps.map((step, i) => (
+                    <li key={i} className="leading-snug">{step}</li>
+                  ))}
+                </ol>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setAutoDiscover((s) => ({ ...s, manualMode: true }))}
+                    disabled={autoDiscover.manualMode}
+                  >
+                    Ativar configuração manual
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={handleProbePorts}
+                    disabled={portProbe.loading}
+                  >
+                    Testar portas agora
+                  </Button>
+                  {relayAgents.length === 0 ? (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => window.open("/agentes-locais", "_blank", "noopener")}
+                    >
+                      Instalar agente local
+                    </Button>
+                  ) : (
+                    !autoDiscover.relayAgentId && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setAutoDiscover((s) => ({ ...s, relayAgentId: relayAgents[0]?.id ?? "" }))}
+                      >
+                        Usar agente local
+                      </Button>
+                    )
+                  )}
+                </div>
+              </div>
             )}
 
             <div className="mt-2 space-y-2 rounded-md border border-border/40 bg-background/60 p-2">

@@ -236,7 +236,15 @@ Deno.serve(async (req) => {
     if (!allow_private && isPrivateHost(host)) {
       return j({
         error: "private_host_blocked",
-        hint: "Host privado/LAN detectado. Use um agente local via `relay_agent_id`, faça port-forward, ou informe allow_private=true se a Edge Function tiver rota até essa rede.",
+        error_code: "private_host_blocked",
+        title: "Host privado/LAN bloqueado",
+        hint: "A nuvem da VISÃO não alcança IPs de rede local (192.168.x.x, 10.x.x.x, 172.16-31.x.x) diretamente. Escolha um dos caminhos abaixo para permitir a conexão.",
+        steps: [
+          "Opção A — Agente local (recomendado): rode o container do agente na mesma LAN da câmera e selecione-o no campo 'Rotear via Agente Local (relé)'.",
+          "Opção B — Port-forward + DDNS: no roteador, redirecione a porta ONVIF (ex.: 80 ou 8000) para o IP interno da câmera e informe aqui o IP público ou hostname DDNS (ex.: minhacasa.duckdns.org).",
+          "Opção C — Ambiente com rota interna: se este ambiente já tem VPN/túnel até a LAN, marque 'Permitir hosts privados/LAN' abaixo e tente novamente.",
+        ],
+        is_lan_host: true,
       }, 400);
     }
     transport = new DirectTransport();
@@ -251,13 +259,44 @@ Deno.serve(async (req) => {
   const results = await Promise.all(probes);
   const hit = results.find((r) => r !== null) as { url: string; port: number } | undefined;
   if (!hit) {
+    const isLan = isPrivateHost(host);
+    const stepsRelay = [
+      `O agente local rodou o teste, mas nenhuma das portas ONVIF respondeu em ${host} (testadas: ${targets.join(", ")}).`,
+      "Confirme que o agente está na MESMA sub-rede da câmera (mesmo switch/VLAN) e que consegue pingar o IP dela.",
+      "Verifique se o ONVIF está habilitado na câmera (Configurações → Rede → Serviços Avançados → ONVIF) e se as credenciais estão corretas.",
+      "Se você conhece a porta ONVIF exata (ex.: 8000 na Hikvision, 80 na Intelbras), ative 'Configuração manual do endpoint ONVIF' e informe-a.",
+      "Rode 'Testar portas' para ver quais portas estão realmente abertas no host.",
+    ];
+    const stepsDirect = isLan
+      ? [
+          `Nenhuma porta ONVIF respondeu em ${host}. Como é um IP privado/LAN, a nuvem não tem rota até ele.`,
+          "Opção A — Agente local: instale o agente na LAN da câmera e selecione-o em 'Rotear via Agente Local (relé)'.",
+          "Opção B — Port-forward + DDNS: redirecione a porta ONVIF no roteador para o IP interno da câmera e use aqui o IP público ou hostname DDNS.",
+          "Opção C — VPN/túnel dedicado até a LAN (avançado).",
+        ]
+      : [
+          `Nenhuma porta ONVIF respondeu no host público ${host} (testadas: ${targets.join(", ")}).`,
+          "Confirme que a porta correta está aberta no firewall/roteador e apontada para a câmera (port-forward).",
+          "Verifique se o ONVIF está habilitado na câmera e escutando na porta esperada (Hikvision: 8000; Dahua/Intelbras: 80; Axis: 80/443).",
+          "Se você conhece a porta exata, ative 'Configuração manual do endpoint ONVIF' e informe-a.",
+          "Rode 'Testar portas' para diagnosticar quais portas estão realmente acessíveis.",
+        ];
     return j({
       error: "no_onvif_endpoint",
+      error_code: "no_onvif_endpoint",
+      title: usingRelay
+        ? "Agente local não encontrou ONVIF na câmera"
+        : isLan
+          ? "Câmera em rede local — sem rota da nuvem até ela"
+          : "Nenhuma porta ONVIF respondeu no host informado",
       hint: usingRelay
-        ? `O agente local não conseguiu falar com nenhuma porta ONVIF em ${host} (testadas: ${targets.join(", ")}). Verifique se o agente está na mesma rede, firewall e credenciais de LAN.`
-        : `Nenhuma porta ONVIF respondeu em ${host} (testadas: ${targets.join(", ")}). ${isPrivateHost(host) ? "Use um agente local, port-forward ou VPN para alcançar redes privadas." : "Verifique firewall e se ONVIF está habilitado."}`,
+        ? `O agente local não conseguiu falar com nenhuma porta ONVIF em ${host}.`
+        : isLan
+          ? "Host privado/LAN detectado — a nuvem precisa de um caminho até a câmera."
+          : `Nenhuma porta ONVIF respondeu em ${host}. Verifique firewall, port-forward e se ONVIF está habilitado.`,
+      steps: usingRelay ? stepsRelay : stepsDirect,
       tested_ports: targets,
-      is_lan_host: isPrivateHost(host),
+      is_lan_host: isLan,
       used_relay: usingRelay,
     }, 404);
   }
