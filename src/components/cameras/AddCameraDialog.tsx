@@ -196,6 +196,20 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
   });
   const [relayAgents, setRelayAgents] = useState<RelayAgentOption[]>([]);
   const [connectivityWizardOpen, setConnectivityWizardOpen] = useState(false);
+  /** Guarda a última resolução aplicada pelo wizard para completar telemetria (start + outcome). */
+  const pendingResolutionRef = useRef<
+    | {
+        errorCode: string;
+        chosenPath: ConnectivityChosenPath;
+        relayAgentId: string | null;
+        publicHost: string | null;
+        publicPort: number | null;
+        originalHost: string | null;
+        originalPort: number | null;
+        startedAt: number;
+      }
+    | null
+  >(null);
   const [templateCtx, setTemplateCtx] = useState<{
     templateId: string;
     host: string;
