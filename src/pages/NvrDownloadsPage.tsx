@@ -356,7 +356,7 @@ export default function NvrDownloadsPage() {
               </Button>
               <Button variant="outline" asChild size="sm">
                 <Link to="/playback/downloads/history">
-                  <History className="mr-2 h-4 w-4" />
+                  <HistoryIcon className="mr-2 h-4 w-4" />
                   Histórico
                 </Link>
               </Button>
