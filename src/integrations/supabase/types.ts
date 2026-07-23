@@ -2681,6 +2681,86 @@ export type Database = {
         }
         Relationships: []
       }
+      nvr_recording_downloads: {
+        Row: {
+          attempts: number
+          bytes_downloaded: number
+          channel: number
+          completed_at: string | null
+          created_at: string
+          end_time: string
+          id: string
+          last_error: string | null
+          max_attempts: number
+          nvr_id: string
+          progress_percent: number
+          remote_file_path: string | null
+          start_time: string
+          started_at: string | null
+          status: string
+          storage_bucket: string
+          storage_path: string | null
+          stream_type: string
+          total_bytes: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attempts?: number
+          bytes_downloaded?: number
+          channel: number
+          completed_at?: string | null
+          created_at?: string
+          end_time: string
+          id?: string
+          last_error?: string | null
+          max_attempts?: number
+          nvr_id: string
+          progress_percent?: number
+          remote_file_path?: string | null
+          start_time: string
+          started_at?: string | null
+          status?: string
+          storage_bucket?: string
+          storage_path?: string | null
+          stream_type?: string
+          total_bytes?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attempts?: number
+          bytes_downloaded?: number
+          channel?: number
+          completed_at?: string | null
+          created_at?: string
+          end_time?: string
+          id?: string
+          last_error?: string | null
+          max_attempts?: number
+          nvr_id?: string
+          progress_percent?: number
+          remote_file_path?: string | null
+          start_time?: string
+          started_at?: string | null
+          status?: string
+          storage_bucket?: string
+          storage_path?: string | null
+          stream_type?: string
+          total_bytes?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nvr_recording_downloads_nvr_id_fkey"
+            columns: ["nvr_id"]
+            isOneToOne: false
+            referencedRelation: "nvrs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       nvrs: {
         Row: {
           agent_id: string | null
