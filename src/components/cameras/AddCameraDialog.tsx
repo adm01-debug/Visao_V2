@@ -332,7 +332,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       toast.error("Preencha usuário e senha antes de descobrir.");
       return;
     }
-    setAutoDiscover((s) => ({ ...s, loading: true, ok: null, message: null }));
+    setAutoDiscover((s) => ({ ...s, loading: true, ok: null, message: null, errorDetail: null }));
     try {
       const manualPortNum = autoDiscover.manualMode
         ? Number.parseInt(autoDiscover.manualPort.trim(), 10)
