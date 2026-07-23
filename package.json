@@ -17,7 +17,7 @@
     "simulate:wave-fortress-4": "node scripts/simulate-wave-fortress-4-scenarios.mjs",
     "simulate:wave-fortress-6": "node scripts/simulate-wave-fortress-6-scenarios.mjs",
     "simulate:wave-fortress-7": "node scripts/simulate-wave-fortress-7-scenarios.mjs",
-    "validate:fortress-shinobi": "node scripts/simulate-wave-fortress-4-scenarios.mjs && node scripts/simulate-wave-fortress-6-scenarios.mjs && node scripts/simulate-wave-fortress-7-scenarios.mjs && node scripts/check-no-plain-rtsp.mjs && node scripts/check-vault-audit-coverage.mjs && node scripts/check-env-contract.mjs && node scripts/simulate-env-contract-scenarios.mjs",
+    "validate:fortress-shinobi": "node scripts/simulate-wave-fortress-4-scenarios.mjs && node scripts/simulate-wave-fortress-6-scenarios.mjs && node scripts/simulate-wave-fortress-7-scenarios.mjs && node scripts/check-no-plain-rtsp.mjs && node scripts/check-vault-audit-coverage.mjs && node scripts/check-env-contract.mjs && node scripts/simulate-env-contract-scenarios.mjs && node scripts/simulate-mediamtxpath-scenarios.mjs",
     "build": "npm run check:mobile-nav:auto && npm run check:page-content && npm run check:single && npm run check:skeletons -- --skip-build && npm run gen:audit-pdf && vite build && npm run check:critical-path && npm run check:tailwind-animations",
     "gen:audit-pdf": "node scripts/generate-audit-pdf.mjs",
     "check:tailwind-animations": "node scripts/check-tailwind-animations.mjs",
@@ -129,7 +129,8 @@
     "chunks:report:warn": "node scripts/chunk-size-report.mjs --warn-only",
     "build:chunks-report": "vite build && node scripts/chunk-size-report.mjs --warn-only",
     "check:critical-path": "node scripts/check-critical-path.mjs",
-    "lint:advisory": "LINT_ADVISORY=1 eslint ."
+    "lint:advisory": "LINT_ADVISORY=1 eslint .",
+    "simulate:mediamtxpath": "node scripts/simulate-mediamtxpath-scenarios.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
