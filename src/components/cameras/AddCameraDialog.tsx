@@ -53,6 +53,11 @@ import {
   type AddCameraFormValues,
   type PtzProtocol,
 } from "./addCameraSchema";
+import {
+  getTemplatesForBrand,
+  findTemplate,
+  renderTemplate,
+} from "@/lib/rtspTemplates";
 
 interface AddCameraDialogProps {
   open: boolean;
