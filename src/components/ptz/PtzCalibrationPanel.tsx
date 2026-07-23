@@ -102,6 +102,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
     zoom: { min: false, max: false },
   });
   const [preflightAxis, setPreflightAxis] = useState<PtzAxis | null>(null);
+  const [preflightHistoryKey, setPreflightHistoryKey] = useState<number>(0);
   const [multiPreflightOpen, setMultiPreflightOpen] = useState(false);
 
   // Revalidação: comando tempo-baseado → posição reportada. Erro estimado por eixo.
