@@ -100,6 +100,7 @@ export default function NvrDetailPage(): JSX.Element {
   const { user } = useAuth();
   const { toast } = useToast();
   const [bulkBusy, setBulkBusy] = useState<null | "arm" | "disarm">(null);
+  const [mosaicCols, setMosaicCols] = useState<"2" | "3" | "4">("3");
 
   async function bulkAction(action: "arm" | "disarm"): Promise<void> {
     const channels = channelsQuery.data ?? [];
