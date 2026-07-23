@@ -125,12 +125,6 @@ async function probeCamera(
   });
 }
 
-export async function discoverOnce(opts: {
-  username?: string;
-  password?: string;
-  probeTimeoutMs?: number;
-  discoveryTimeoutMs?: number;
-}): Promise<DiscoveredDevice[]> {
 const WS_DISCOVERY_ADDR = "239.255.255.250";
 const WS_DISCOVERY_PORT = 3702;
 
