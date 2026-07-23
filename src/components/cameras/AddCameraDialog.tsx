@@ -78,7 +78,7 @@ import { FirmwareAutodetectCard, type FirmwareAutodetectSuggestion } from "./Fir
 interface AddCameraDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onCreated?: (cameraId?: string) => void;
+  onCreated?: (cameraId?: string, meta?: { profileId?: string | null }) => void;
   /**
    * `quick` (default) mantém o comportamento clássico.
    * `guided` bloqueia o submit até que o teste RTSP tenha rodado com sucesso
