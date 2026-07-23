@@ -473,7 +473,21 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       toast.error("Informe o IP/hostname da câmera antes de testar portas.");
       return;
     }
+    // Pré-flight LAN: mesma proteção do autodiscover para o probe de portas.
+    if (
+      isPrivateIP(host) &&
+      !autoDiscover.relayAgentId &&
+      !autoDiscover.allowPrivate &&
+      !autoDiscover.manualMode
+    ) {
+      const detail = buildPrivateHostBlockedDetail(host);
+      setAutoDiscover((s) => ({ ...s, ok: false, message: detail.hint, errorDetail: detail }));
+      setPortProbe({ loading: false, results: [], summary: null, nextStep: null, error: detail.hint });
+      toast.warning("IP em rede local — sondagem precisa de Agente Local ou host público.");
+      return;
+    }
     setPortProbe({ loading: true, results: [], summary: null, nextStep: null, error: null });
+
     try {
       const { data, error } = await supabase.functions.invoke("camera-port-probe", {
         body: {
