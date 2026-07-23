@@ -396,11 +396,12 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
         ...s,
         loading: false,
         ok: true,
+        errorDetail: null,
         message: `${data.device?.manufacturer ?? "Dispositivo"} ${data.device?.model ?? ""} · porta ${data.onvif?.port} · ${data.profiles} perfil(is)${data.ptz_capable ? " · PTZ" : ""}`,
       }));
       toast.success("Câmera descoberta! Campos preenchidos automaticamente.");
     } catch (err) {
-      setAutoDiscover((s) => ({ ...s, loading: false, ok: false, message: safeErrorMessage(err) }));
+      setAutoDiscover((s) => ({ ...s, loading: false, ok: false, errorDetail: null, message: safeErrorMessage(err) }));
       toast.error(`Descoberta falhou: ${safeErrorMessage(err)}`);
     }
   };
