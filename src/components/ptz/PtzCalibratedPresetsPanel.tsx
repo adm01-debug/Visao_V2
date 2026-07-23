@@ -58,7 +58,7 @@ interface Props {
  * ONVIF AbsoluteMove (sem cálculo tempo→posição). Após atingir a posição
  * (confirmada por GetStatus IDLE), salva o preset nativamente no dome.
  */
-export function PtzCalibratedPresetsPanel({ ptz, limits, cameraId, protocol, onSaved }: Props) {
+export function PtzCalibratedPresetsPanel({ ptz, limits, cameraId: _cameraId, protocol, onSaved }: Props) {
   const isOnvif = protocol === 'onvif';
 
   // Menor preset livre entre 1..255 dado os já cadastrados.
