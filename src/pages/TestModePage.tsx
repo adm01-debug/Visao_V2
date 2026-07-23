@@ -20,6 +20,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useTestMode } from '@/hooks/useTestMode';
 import { TestModeDialog } from '@/components/testMode/TestModeDialog';
 import { TestModeCountdown } from '@/components/testMode/TestModeCountdown';
+import { DryRunReportCard } from '@/components/testMode/DryRunReportCard';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
