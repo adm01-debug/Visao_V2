@@ -23,6 +23,9 @@ verify_jwt = true
 [functions.ptz-presets-import]
 verify_jwt = true
 
+[functions.nvr-recording-download]
+verify_jwt = true
+
 
 
 [functions.upload-media]
