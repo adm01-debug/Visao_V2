@@ -387,7 +387,7 @@ export function PtzMultiAxisPreflightDialog({
         });
       }
       if (rows.length === 0) return;
-      await supabase.from('ptz_preflight_runs').insert(rows);
+      await supabase.from('ptz_preflight_runs').insert(rows as never);
     } catch { /* best-effort */ }
   }, [ackClear, ackSeeing, ackConfirmedAt, axes, cameraId, limitsByAxis, statusSupported]);
 
