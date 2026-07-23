@@ -29,6 +29,7 @@ import {
   resetWizardSession,
   type WizardRuleInput,
 } from '@/lib/wizardClient';
+import { getProfileById } from '@/lib/onvifProfiles';
 
 
 type DbZone = Tables<'zones'>;
