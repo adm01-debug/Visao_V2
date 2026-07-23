@@ -111,7 +111,7 @@ export default function CameraStatusPage() {
   const lastConnectionAt = lastOk?.created_at ?? camera?.last_activity ?? camera?.updated_at ?? null;
 
   return (
-    <div className="space-y-6">
+    <PageContent>
       <PageMeta
         title={camera ? `Status — ${camera.name} · VISÃO` : 'Status da câmera · VISÃO'}
         description="Status detalhado da câmera: última conexão, qualidade do stream e logs de falhas."
@@ -305,6 +305,6 @@ export default function CameraStatusPage() {
           </CardContent>
         </Card>
       ) : null}
-    </div>
+    </PageContent>
   );
 }

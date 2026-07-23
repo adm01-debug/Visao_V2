@@ -56,7 +56,7 @@ export default function CspReportsDashboardPage() {
   });
 
   return (
-    <div className="p-6">
+    <PageContent className="p-6">
       <Helmet><title>Relatórios CSP — VISÃO Admin</title></Helmet>
 
       <header className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">

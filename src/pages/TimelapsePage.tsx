@@ -62,7 +62,7 @@ export default function TimelapsePage() {
   };
 
   return (
-    <div className="p-4 sm:p-6 space-y-4">
+    <PageContent className="p-4 sm:p-6">
       <PageMeta title="Timelapse · VISÃO" description="Configure a captura automática de snapshots e monte vídeos timelapse diários por câmera." />
 
       <div className="flex items-center justify-between">
@@ -249,6 +249,6 @@ export default function TimelapsePage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </PageContent>
   );
 }

@@ -23,7 +23,7 @@ export default function MotionMasksPage() {
   const activeCamera = useMemo(() => cameras.find((c) => c.id === activeId), [cameras, activeId]);
 
   return (
-    <div className="p-4 sm:p-6 space-y-4">
+    <PageContent className="p-4 sm:p-6">
       <PageMeta
         title="Máscaras de Movimento · VISÃO"
         description="Desenhe regiões poligonais para incluir ou excluir áreas da detecção de movimento em cada câmera."
@@ -126,6 +126,6 @@ export default function MotionMasksPage() {
           </Card>
         </>
       )}
-    </div>
+    </PageContent>
   );
 }

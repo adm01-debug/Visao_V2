@@ -44,7 +44,7 @@ export default function SchedulesPage() {
   };
 
   return (
-    <div className="p-4 sm:p-6 space-y-4">
+    <PageContent className="p-4 sm:p-6">
       <PageMeta title="Agendamentos · VISÃO" description="Programe horários para armar e desarmar câmeras automaticamente." />
 
       <div className="flex items-center justify-between">
@@ -134,6 +134,6 @@ export default function SchedulesPage() {
           else await create(input);
         }}
       />
-    </div>
+    </PageContent>
   );
 }

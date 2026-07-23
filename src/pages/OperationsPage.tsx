@@ -80,7 +80,7 @@ export default function OperationsPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-6 space-y-6">
+    <PageContent className="container mx-auto px-4 py-6">
       <PageMeta title="Operações — VISÃO" description="Métricas operacionais do sistema" />
 
       <header className="flex items-center justify-between">
@@ -470,6 +470,6 @@ export default function OperationsPage() {
           Gerado em {new Date(data.generated_at).toLocaleString('pt-BR')} · auto-refresh 30 s
         </p>
       )}
-    </div>
+    </PageContent>
   );
 }
