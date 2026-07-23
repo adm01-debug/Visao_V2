@@ -151,6 +151,11 @@ const scenarios = [
           'VITE_MEDIAMTX_RTSP_URL=rtsp://localhost:8554\nVITE_ENABLE_DEVTOOLS=true\nVITE_LOG_LEVEL=debug\nVITE_ENABLE_MOCK_DATA=true',
       }),
   },
+  {
+    name: 'sem src/ completo → passa (regressao fix dbd1538a0: gate nao relata orfao quando src/ ausente)',
+    expect: 0,
+    build: () => makeWorkspace({}, ['src/hooks/useMediaMTX.ts', 'src/lib/supa.ts']),
+  },
 ];
 
 // ── Execução ─────────────────────────────────────────────────────────────
