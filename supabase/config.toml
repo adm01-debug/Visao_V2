@@ -56,3 +56,6 @@ verify_jwt = true
 
 [functions.preview-telemetry-alert]
 verify_jwt = false
+
+[functions.watchdog-ack-sla-alert]
+verify_jwt = false
