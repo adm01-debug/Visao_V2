@@ -218,7 +218,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       setShowPtzPass(false);
       setForceCritical(false);
       setDiscover({ loading: false, ok: null, message: null });
-      setAutoDiscover({ loading: false, ok: null, message: null, host: "", allowPrivate: false, manualMode: false, manualPort: "", relayAgentId: "" });
+      setAutoDiscover({ loading: false, ok: null, message: null, errorDetail: null, host: "", allowPrivate: false, manualMode: false, manualPort: "", relayAgentId: "" });
       setTemplateCtx({ templateId: "", host: "", port: "", channel: "1" });
       rtspValidation.reset();
       substreamValidation.reset();
