@@ -431,6 +431,74 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                   </div>
                 )}
               </div>
+
+              {/* Prioridade dos backends nativos (auto-multi). O firmware tentará
+                  na ordem definida — mova os com maior chance para o topo. */}
+              {isAutoMulti && orderedBackends.length > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm">Prioridade dos backends</Label>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={sortByBenchmark}
+                      disabled={!backendResults || backendResults.length === 0}
+                      title={!backendResults ? 'Rode o teste antes' : 'Ordenar pelos resultados do teste'}
+                    >
+                      <Sparkles className="w-3.5 h-3.5 mr-1" />
+                      Auto-ordenar por benchmark
+                    </Button>
+                  </div>
+                  <div className="rounded-md border divide-y">
+                    {orderedBackends.map((backend, index) => {
+                      const r = backendResults?.find((x) => x.backend === backend);
+                      return (
+                        <div key={backend} className="flex items-center justify-between gap-2 p-2 text-sm">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="w-5 text-xs font-mono text-muted-foreground text-right">
+                              {index + 1}.
+                            </span>
+                            <span className="font-mono uppercase text-xs">{backend}</span>
+                            {r?.ok && <Badge variant="outline" className="text-[10px] border-success/40 text-success">ok</Badge>}
+                            {r && !r.ok && r.reachable && (
+                              <Badge variant="outline" className="text-[10px]">alcançável</Badge>
+                            )}
+                            {r && !r.reachable && (
+                              <Badge variant="outline" className="text-[10px] border-destructive/40 text-destructive">falhou</Badge>
+                            )}
+                            {r && (
+                              <span className="text-[10px] text-muted-foreground font-mono">
+                                {r.latency_ms}ms
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1 shrink-0">
+                            <Button
+                              variant="ghost" size="icon" className="h-7 w-7"
+                              onClick={() => moveBackend(index, -1)}
+                              disabled={index === 0}
+                              aria-label={`Subir ${backend}`}
+                            >
+                              <ChevronUp className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost" size="icon" className="h-7 w-7"
+                              onClick={() => moveBackend(index, 1)}
+                              disabled={index === orderedBackends.length - 1}
+                              aria-label={`Descer ${backend}`}
+                            >
+                              <ChevronDown className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    A ordem é salva junto com a configuração e usada como sequência de tentativa em modo auto-multi.
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
