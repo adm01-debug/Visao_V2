@@ -192,6 +192,20 @@ export default function NvrDetailPage(): JSX.Element {
   const [cycleSeconds, setCycleSeconds] = useState<0 | 5 | 10 | 30>(0);
   const [cyclePaused, setCyclePaused] = useState<boolean>(false);
   const [cycleProgress, setCycleProgress] = useState<number>(0);
+  const [autoRefreshSeconds, setAutoRefreshSeconds] = useState<0 | 10 | 30 | 60>(() => {
+    if (typeof window === "undefined" || !prefsKey) return 0;
+    try {
+      const raw = window.localStorage.getItem(prefsKey);
+      if (!raw) return 0;
+      const parsed = JSON.parse(raw) as { autoRefreshSeconds?: number };
+      const v = parsed.autoRefreshSeconds;
+      return v === 10 || v === 30 || v === 60 ? v : 0;
+    } catch {
+      return 0;
+    }
+  });
+  const [autoRefreshPaused, setAutoRefreshPaused] = useState<boolean>(false);
+
 
 
   useEffect(() => {
