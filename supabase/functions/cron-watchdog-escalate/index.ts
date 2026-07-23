@@ -24,8 +24,17 @@ Deno.serve(async (req) => {
   const TELEGRAM_CHAT_ID = Deno.env.get("TELEGRAM_CHAT_ID");
 
   const url = new URL(req.url);
-  const minRuns = Math.max(2, Math.min(20, Number(url.searchParams.get("min") ?? "3")));
-  const force = url.searchParams.get("force") === "1";
+  let bodyForce = false;
+  let bodyMin: number | null = null;
+  if (req.method === "POST") {
+    try {
+      const b = await req.json();
+      bodyForce = Boolean(b?.force);
+      if (typeof b?.min_runs === "number") bodyMin = b.min_runs;
+    } catch { /* ignore */ }
+  }
+  const minRuns = Math.max(2, Math.min(20, bodyMin ?? Number(url.searchParams.get("min") ?? "3")));
+  const force = bodyForce || url.searchParams.get("force") === "1";
 
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
 
@@ -39,6 +48,7 @@ Deno.serve(async (req) => {
     const consecutive = Number(row?.consecutive_problem_runs ?? 0);
     const jobnames = (row?.jobnames ?? []) as string[];
     const totalProblems = Number(row?.total_problems ?? 0);
+    const lastRunAt = row?.last_run_at ?? null;
 
     if (consecutive < minRuns) {
       return json({ ok: true, escalated: false, consecutive, min_runs: minRuns });
@@ -77,9 +87,27 @@ Deno.serve(async (req) => {
       );
       delivered = resp.ok;
       if (!resp.ok) deliveryError = `telegram_${resp.status}`;
+    } else {
+      deliveryError = "telegram_not_configured";
     }
 
     lastEscalationAt = now;
+
+    // Persistir auditoria — uma linha por job afetado (ou uma agregada quando sem jobs)
+    const dedupKey = `${new Date(now).toISOString().slice(0, 13)}:${consecutive}`;
+    const audit = (jobnames.length > 0 ? jobnames : ["<agregado>"]).map((j) => ({
+      jobname: j,
+      consecutive_failures: consecutive,
+      last_reason: totalProblems > 0 ? `${totalProblems} problema(s) em ${consecutive} execuções` : null,
+      delivered,
+      delivery_error: deliveryError,
+      dedup_key: dedupKey,
+      details: { total_problems: totalProblems, last_run_at: lastRunAt, force },
+    }));
+    const { error: insErr } = await supabase.from("cron_watchdog_escalations").insert(audit);
+    if (insErr) {
+      console.error(JSON.stringify({ level: "error", fn: "cron-watchdog-escalate", msg: "audit_insert_failed", err: insErr.message }));
+    }
 
     console.log(
       JSON.stringify({
