@@ -1,13 +1,14 @@
 // onvif-autodiscover — Descoberta ONVIF automática para pré-preencher cadastro.
-// Recebe host (IP/hostname) + credenciais e retorna: porta ONVIF, RTSP principal/substream,
-// modelo, fabricante e capability PTZ. Faz varredura de portas ONVIF comuns e SOAP calls
-// (GetDeviceInformation, GetProfiles, GetStreamUri) com WS-UsernameToken PasswordDigest.
+// Suporta dois transportes:
+//   1) Direto: Edge Function fala com a câmera (host precisa ser público ou allow_private=true com rota).
+//   2) Relé via Agente Local: `relay_agent_id` roteia cada chamada HTTP através do agente que roda na LAN.
 //
 // Segurança:
 //   - Requer JWT autenticado (verify_jwt=true no config.toml).
-//   - Bloqueia IPs privados/loopback quando `allow_private=false` (default false) para evitar SSRF.
+//   - Bloqueia IPs privados/loopback quando `allow_private=false` E não há `relay_agent_id`.
+//   - `relay_agent_id` só é aceito se pertencer ao user autenticado (validado via RLS).
 //   - Nunca loga senha; mascara credenciais em qualquer erro.
-//   - Timeout curto (5s por probe) para evitar prender worker.
+import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -15,8 +16,11 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const ONVIF_PORTS_DEFAULT = [80, 8000, 8080, 2020, 8899, 8899];
+const ONVIF_PORTS_DEFAULT = [80, 8000, 8080, 2020, 8899];
 const PROBE_TIMEOUT_MS = 5000;
+const RELAY_TASK_TIMEOUT_MS = 25_000;
+const RELAY_POLL_INTERVAL_MS = 400;
+const RELAY_TASK_TTL_SEC = 45;
 
 interface Payload {
   host: string;
@@ -24,6 +28,7 @@ interface Payload {
   username: string;
   password: string;
   allow_private?: boolean;
+  relay_agent_id?: string | null;
 }
 
 const j = (payload: unknown, status = 200) =>
@@ -36,14 +41,6 @@ function escapeXml(s: string): string {
   return s.replace(/[<>&"']/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;" }[c]!));
 }
 
-function maskCreds(s: string, user: string, pass: string): string {
-  return s
-    .replaceAll(user, "[USER]")
-    .replaceAll(pass, "[REDACTED]")
-    .replace(/rtsps?:\/\/[^@\s]+@/gi, "rtsp://[REDACTED]@");
-}
-
-// Bloqueia RFC1918/loopback/link-local/CGNAT para evitar SSRF.
 function isPrivateHost(host: string): boolean {
   const h = host.toLowerCase();
   if (h === "localhost" || h.endsWith(".local") || h.endsWith(".internal")) return true;
@@ -54,7 +51,7 @@ function isPrivateHost(host: string): boolean {
   if (a === 169 && b === 254) return true;
   if (a === 172 && b >= 16 && b <= 31) return true;
   if (a === 192 && b === 168) return true;
-  if (a === 100 && b >= 64 && b <= 127) return true; // CGNAT
+  if (a === 100 && b >= 64 && b <= 127) return true;
   if (a === 0) return true;
   return false;
 }
@@ -82,51 +79,116 @@ async function wsseHeader(username: string, password: string): Promise<string> {
   </s:Header>`;
 }
 
-async function soap(
-  url: string,
-  headerXml: string,
-  bodyXml: string,
-  timeoutMs = PROBE_TIMEOUT_MS,
-): Promise<{ ok: boolean; status: number; text: string }> {
-  const controller = new AbortController();
-  const t = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/soap+xml; charset=utf-8" },
-      body: `<?xml version="1.0" encoding="UTF-8"?>
+function buildEnvelope(headerXml: string, bodyXml: string): string {
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope"
   xmlns:tt="http://www.onvif.org/ver10/schema"
   xmlns:tds="http://www.onvif.org/ver10/device/wsdl"
   xmlns:trt="http://www.onvif.org/ver10/media/wsdl">
   ${headerXml}
   <s:Body>${bodyXml}</s:Body>
-</s:Envelope>`,
-      signal: controller.signal,
-    });
-    return { ok: res.ok, status: res.status, text: await res.text() };
-  } catch (e) {
-    return { ok: false, status: 0, text: (e as Error).message };
-  } finally {
-    clearTimeout(t);
+</s:Envelope>`;
+}
+
+type SoapResult = { ok: boolean; status: number; text: string };
+
+interface Transport {
+  post(url: string, envelope: string, timeoutMs: number): Promise<SoapResult>;
+}
+
+// Transporte direto: fetch da própria Edge Function.
+class DirectTransport implements Transport {
+  async post(url: string, envelope: string, timeoutMs: number): Promise<SoapResult> {
+    const controller = new AbortController();
+    const t = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/soap+xml; charset=utf-8" },
+        body: envelope,
+        signal: controller.signal,
+      });
+      return { ok: res.ok, status: res.status, text: await res.text() };
+    } catch (e) {
+      return { ok: false, status: 0, text: (e as Error).message };
+    } finally {
+      clearTimeout(t);
+    }
   }
+}
+
+// Transporte via relé: enfileira tarefa e faz polling da resposta.
+class RelayTransport implements Transport {
+  constructor(
+    private admin: ReturnType<typeof createClient>,
+    private agentId: string,
+    private userId: string,
+  ) {}
+
+  async post(url: string, envelope: string, timeoutMs: number): Promise<SoapResult> {
+    const bodyB64 = btoa(unescape(encodeURIComponent(envelope)));
+    const expiresAt = new Date(Date.now() + RELAY_TASK_TTL_SEC * 1000).toISOString();
+    const { data: inserted, error: insErr } = await this.admin
+      .from("agent_relay_tasks")
+      .insert({
+        agent_id: this.agentId,
+        user_id: this.userId,
+        kind: "http_request",
+        request: {
+          url,
+          method: "POST",
+          headers: { "Content-Type": "application/soap+xml; charset=utf-8" },
+          body_b64: bodyB64,
+          timeout_ms: timeoutMs,
+        },
+        expires_at: expiresAt,
+      })
+      .select("id")
+      .single();
+    if (insErr || !inserted) return { ok: false, status: 0, text: `relay_enqueue_failed:${insErr?.message ?? "unknown"}` };
+    const taskId = inserted.id as string;
+
+    const deadline = Date.now() + RELAY_TASK_TIMEOUT_MS;
+    while (Date.now() < deadline) {
+      await new Promise((r) => setTimeout(r, RELAY_POLL_INTERVAL_MS));
+      const { data: task } = await this.admin
+        .from("agent_relay_tasks")
+        .select("status, response, error")
+        .eq("id", taskId)
+        .maybeSingle();
+      if (!task) continue;
+      if (task.status === "done" && task.response) {
+        const r = task.response as { status: number; body_b64: string };
+        const text = decodeURIComponent(escape(atob(r.body_b64 ?? "")));
+        return { ok: r.status >= 200 && r.status < 300, status: r.status, text };
+      }
+      if (task.status === "failed" || task.status === "expired") {
+        return { ok: false, status: 0, text: `relay_${task.status}:${task.error ?? ""}` };
+      }
+    }
+    // Timeout no lado do backend — marca tarefa para não ficar zumbi.
+    await this.admin
+      .from("agent_relay_tasks")
+      .update({ status: "expired", error: "backend_timeout", completed_at: new Date().toISOString() })
+      .eq("id", taskId)
+      .in("status", ["pending", "in_progress"]);
+    return { ok: false, status: 0, text: "relay_backend_timeout" };
+  }
+}
+
+async function soap(tx: Transport, url: string, headerXml: string, bodyXml: string, timeoutMs = PROBE_TIMEOUT_MS) {
+  return tx.post(url, buildEnvelope(headerXml, bodyXml), timeoutMs);
 }
 
 function pick(xml: string, tag: string): string | null {
   const re = new RegExp(`<(?:\\w+:)?${tag}[^>]*>([^<]+)</(?:\\w+:)?${tag}>`, "i");
   return xml.match(re)?.[1]?.trim() ?? null;
 }
-function pickAll(xml: string, tag: string): string[] {
-  const re = new RegExp(`<(?:\\w+:)?${tag}[^>]*>([^<]+)</(?:\\w+:)?${tag}>`, "gi");
-  return [...xml.matchAll(re)].map((m) => m[1].trim());
-}
 
-async function probePort(host: string, port: number): Promise<string | null> {
+async function probePort(tx: Transport, host: string, port: number): Promise<string | null> {
   const url = `http://${host}:${port}/onvif/device_service`;
-  const res = await soap(url, "", `<tds:GetSystemDateAndTime/>`, 3000);
-  if (res.text.includes("GetSystemDateAndTimeResponse") || res.text.includes("SystemDateAndTime")) {
-    return url;
-  }
+  const res = await soap(tx, url, "", `<tds:GetSystemDateAndTime/>`, 3500);
+  if (res.text.includes("GetSystemDateAndTimeResponse") || res.text.includes("SystemDateAndTime")) return url;
   return null;
 }
 
@@ -140,69 +202,83 @@ Deno.serve(async (req) => {
     return j({ error: "invalid_json" }, 400);
   }
 
-  const { host, username, password, ports, allow_private = false } = payload;
+  const { host, username, password, ports, allow_private = false, relay_agent_id } = payload;
   if (!host || !username || !password) return j({ error: "missing_fields" }, 400);
-  if (!allow_private && isPrivateHost(host)) {
-    return j({
-      error: "private_host_blocked",
-      hint: "Host privado/LAN detectado. Use um agente local ou informe allow_private=true se a Edge Function tiver rota até essa rede.",
-    }, 400);
+
+  // Prepara transporte.
+  let transport: Transport;
+  let usingRelay = false;
+  if (relay_agent_id) {
+    // Autentica o chamador para garantir posse do agente.
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const jwt = authHeader.replace(/^Bearer\s+/i, "");
+    if (!jwt) return j({ error: "unauthenticated" }, 401);
+    const anon = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    const { data: userData, error: userErr } = await anon.auth.getUser();
+    if (userErr || !userData?.user) return j({ error: "unauthenticated" }, 401);
+    const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const { data: agent, error: agentErr } = await admin
+      .from("local_agents")
+      .select("id, user_id, last_seen_at")
+      .eq("id", relay_agent_id)
+      .eq("user_id", userData.user.id)
+      .maybeSingle();
+    if (agentErr || !agent) return j({ error: "relay_agent_not_found" }, 404);
+    const lastSeen = agent.last_seen_at ? new Date(agent.last_seen_at).getTime() : 0;
+    if (Date.now() - lastSeen > 120_000) {
+      return j({ error: "relay_agent_offline", hint: "O agente selecionado não faz heartbeat há mais de 2 minutos." }, 409);
+    }
+    transport = new RelayTransport(admin, agent.id, userData.user.id);
+    usingRelay = true;
+  } else {
+    if (!allow_private && isPrivateHost(host)) {
+      return j({
+        error: "private_host_blocked",
+        hint: "Host privado/LAN detectado. Use um agente local via `relay_agent_id`, faça port-forward, ou informe allow_private=true se a Edge Function tiver rota até essa rede.",
+      }, 400);
+    }
+    transport = new DirectTransport();
   }
 
   const targets = ports?.length ? ports : ONVIF_PORTS_DEFAULT;
-  let deviceUrl: string | null = null;
-  let discoveredPort = 0;
 
   // 1. Descoberta de porta ONVIF (paralela, primeiro que responder)
   const probes = targets.map((p) =>
-    probePort(host, p).then((url) => (url ? { url, port: p } : null)),
+    probePort(transport, host, p).then((url) => (url ? { url, port: p } : null)),
   );
   const results = await Promise.all(probes);
   const hit = results.find((r) => r !== null) as { url: string; port: number } | undefined;
   if (!hit) {
-    const lanHint = isPrivateHost(host)
-      ? ` IMPORTANTE: ${host} é um IP de LAN (rede local). A Edge Function roda na nuvem e não tem rota até sua rede interna — nenhum pacote chega até a câmera. Soluções: (1) faça port-forward no roteador expondo a porta ONVIF via IP público/DDNS, (2) use um túnel/VPN entre a nuvem e sua LAN, ou (3) rode um agente local dentro da rede da câmera que faça o discover e envie o resultado ao backend.`
-      : ` Verifique firewall, se ONVIF está habilitado ou se a porta é diferente.`;
     return j({
       error: "no_onvif_endpoint",
-      hint: `Nenhuma porta ONVIF respondeu em ${host} (testadas: ${targets.join(", ")}).${lanHint}`,
+      hint: usingRelay
+        ? `O agente local não conseguiu falar com nenhuma porta ONVIF em ${host} (testadas: ${targets.join(", ")}). Verifique se o agente está na mesma rede, firewall e credenciais de LAN.`
+        : `Nenhuma porta ONVIF respondeu em ${host} (testadas: ${targets.join(", ")}). ${isPrivateHost(host) ? "Use um agente local, port-forward ou VPN para alcançar redes privadas." : "Verifique firewall e se ONVIF está habilitado."}`,
       tested_ports: targets,
       is_lan_host: isPrivateHost(host),
+      used_relay: usingRelay,
     }, 404);
   }
-  deviceUrl = hit.url;
-  discoveredPort = hit.port;
+  const deviceUrl = hit.url;
+  const discoveredPort = hit.port;
 
   const header = await wsseHeader(username, password);
 
-  // 2. Informações do dispositivo
-  const infoRes = await soap(deviceUrl, header, `<tds:GetDeviceInformation/>`);
-  if (!infoRes.ok && infoRes.status === 401) {
-    return j({ error: "auth_failed", hint: "Credenciais ONVIF inválidas." }, 401);
-  }
+  const infoRes = await soap(transport, deviceUrl, header, `<tds:GetDeviceInformation/>`);
+  if (!infoRes.ok && infoRes.status === 401) return j({ error: "auth_failed", hint: "Credenciais ONVIF inválidas." }, 401);
   const manufacturer = pick(infoRes.text, "Manufacturer");
   const model = pick(infoRes.text, "Model");
   const firmware = pick(infoRes.text, "FirmwareVersion");
 
-  // 3. Media service — endereço pode variar; tenta GetProfiles no próprio device_service (roteia)
-  const profRes = await soap(deviceUrl, header, `<trt:GetProfiles/>`);
-  const profileTokens = pickAll(profRes.text, "Profiles")
-    .map((_, i) => {
-      const re = new RegExp(`<(?:\\w+:)?Profiles[^>]*token="([^"]+)"`, "gi");
-      const all = [...profRes.text.matchAll(re)];
-      return all[i]?.[1] ?? null;
-    })
-    .filter(Boolean) as string[];
+  const profRes = await soap(transport, deviceUrl, header, `<trt:GetProfiles/>`);
+  const tokens = [...profRes.text.matchAll(/token="([^"]+)"/g)].map((m) => m[1]);
 
-  // Fallback: extrai tokens direto por regex se o parse acima falhar
-  let tokens = profileTokens;
-  if (tokens.length === 0) {
-    tokens = [...profRes.text.matchAll(/token="([^"]+)"/g)].map((m) => m[1]);
-  }
-
-  const streams: Array<{ token: string; rtsp: string; resolution?: string }> = [];
+  const streams: Array<{ token: string; rtsp: string }> = [];
   for (const token of tokens.slice(0, 4)) {
     const streamRes = await soap(
+      transport,
       deviceUrl,
       header,
       `<trt:GetStreamUri>
@@ -217,11 +293,9 @@ Deno.serve(async (req) => {
     if (uri) streams.push({ token, rtsp: uri });
   }
 
-  // 4. Capability PTZ (heurística: presença de nó PTZ em capabilities)
-  const capRes = await soap(deviceUrl, header, `<tds:GetCapabilities><tds:Category>All</tds:Category></tds:GetCapabilities>`);
+  const capRes = await soap(transport, deviceUrl, header, `<tds:GetCapabilities><tds:Category>All</tds:Category></tds:GetCapabilities>`);
   const ptzCapable = /<(?:\w+:)?PTZ[\s>]/i.test(capRes.text);
 
-  // Ordena streams: maior resolução (heurística por posição do profile) fica como principal
   const primary = streams[0];
   const substream = streams[1];
 
@@ -233,5 +307,6 @@ Deno.serve(async (req) => {
     profiles: streams.length,
     rtsp_primary: primary?.rtsp ?? null,
     rtsp_substream: substream?.rtsp ?? null,
+    used_relay: usingRelay,
   });
 });
