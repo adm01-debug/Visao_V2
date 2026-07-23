@@ -298,13 +298,48 @@ export function PtzLimitPreflightDialog({
 
     setCurrentPhase(null);
     setRunning(false);
+
+    // Persistência auditável do run (checklist + resultado consolidado).
+    if (cameraId) {
+      try {
+        const { data: authData } = await supabase.auth.getUser();
+        const userId = authData.user?.id;
+        if (userId) {
+          let outcome: 'ok' | 'deviation' | 'fail' | 'aborted' | 'no-telemetry';
+          if (abortRef.current && collected.length < 3) outcome = 'aborted';
+          else if (collected.some((r) => r.outcome === 'fail')) outcome = 'fail';
+          else if (collected.some((r) => r.outcome === 'deviation')) outcome = 'deviation';
+          else if (collected.every((r) => r.outcome === 'no-telemetry')) outcome = 'no-telemetry';
+          else outcome = 'ok';
+          const row = {
+            user_id: userId,
+            camera_id: cameraId,
+            axis,
+            ack_area_clear: ackClear,
+            ack_watching_live: ackSeeing,
+            ack_confirmed_at: ackConfirmedAt,
+            outcome,
+            aborted: abortRef.current,
+            status_supported: statusSupported,
+            phases: collected.map((p) => ({
+              id: p.id, target: p.target, observed: p.observed,
+              delta: p.delta, latency_ms: p.latency_ms,
+              outcome: p.outcome, detail: p.detail ?? null,
+            })),
+            limits_snapshot: limits,
+          };
+          await supabase.from('ptz_preflight_runs').insert(row as never);
+        }
+      } catch { /* best-effort */ }
+    }
+
     onComplete?.(collected);
 
     const ok = collected.every((r) => r.outcome === 'ok');
     if (abortRef.current) toast.warning('Pré-voo abortado. Dome parado.');
     else if (ok) toast.success('Pré-voo concluído sem desvios.');
     else toast.warning('Pré-voo concluído com observações. Revise os resultados.');
-  }, [canRun, driveToTarget, limits, logAttempt, onComplete, range, startPosition]);
+  }, [canRun, driveToTarget, limits, logAttempt, onComplete, range, startPosition, ackClear, ackSeeing, ackConfirmedAt, axis, cameraId, statusSupported]);
 
   const handleAbort = useCallback(async () => {
     abortRef.current = true;
