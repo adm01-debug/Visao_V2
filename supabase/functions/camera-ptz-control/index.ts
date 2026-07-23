@@ -202,6 +202,21 @@ async function driverOnvif(tx: Transport, cfg: any, cmd: PtzCommand, p: any): Pr
       </tptz:Velocity></tptz:ContinuousMove>`;
   } else if (cmd === 'stop') {
     body = `<tptz:Stop><tptz:ProfileToken>${profile}</tptz:ProfileToken><tptz:PanTilt>true</tptz:PanTilt><tptz:Zoom>true</tptz:Zoom></tptz:Stop>`;
+  } else if (cmd === 'absolute_move') {
+    // Movimento para posição normalizada (bypass tempo→posição).
+    // Speed em fração 0..1 conforme ONVIF PTZSpeed.
+    const px = typeof p.pan === 'number' ? p.pan : 0;
+    const py = typeof p.tilt === 'number' ? p.tilt : 0;
+    const pz = typeof p.zoom === 'number' ? p.zoom : 0;
+    body = `<tptz:AbsoluteMove><tptz:ProfileToken>${profile}</tptz:ProfileToken>
+      <tptz:Position>
+        <tt:PanTilt x="${px}" y="${py}"/>
+        <tt:Zoom x="${pz}"/>
+      </tptz:Position>
+      <tptz:Speed>
+        <tt:PanTilt x="${speed}" y="${speed}"/>
+        <tt:Zoom x="${speed}"/>
+      </tptz:Speed></tptz:AbsoluteMove>`;
   } else if (cmd === 'goto_preset') {
     body = `<tptz:GotoPreset><tptz:ProfileToken>${profile}</tptz:ProfileToken><tptz:PresetToken>${p.preset_number}</tptz:PresetToken></tptz:GotoPreset>`;
   } else if (cmd === 'save_preset') {
