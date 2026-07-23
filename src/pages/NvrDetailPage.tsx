@@ -443,6 +443,13 @@ export default function NvrDetailPage(): JSX.Element {
         setFullscreenId(null);
         return;
       }
+      if (e.key === "p" || e.key === "P") {
+        if (cycleSeconds > 0) {
+          setCyclePaused((p) => !p);
+          e.preventDefault();
+        }
+        return;
+      }
       if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
       const list = filteredChannels.length > 0 ? filteredChannels : (channelsQuery.data ?? []);
       if (list.length === 0) return;
@@ -455,7 +462,7 @@ export default function NvrDetailPage(): JSX.Element {
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [fullscreenId, filteredChannels, channelsQuery.data]);
+  }, [fullscreenId, cycleSeconds, filteredChannels, channelsQuery.data]);
 
   useEffect(() => {
     setCycleProgress(0);
@@ -1105,6 +1112,19 @@ export default function NvrDetailPage(): JSX.Element {
                         <ToggleGroupItem value="30">30s</ToggleGroupItem>
                       </ToggleGroup>
                     )}
+                    {total > 1 && cycleSeconds > 0 && (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => setCyclePaused((p) => !p)}
+                        aria-label={cyclePaused ? "Retomar modo patrulha" : "Pausar modo patrulha"}
+                        title={cyclePaused ? "Retomar patrulha (P)" : "Pausar patrulha (P)"}
+                        className="gap-1"
+                      >
+                        {cyclePaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+                        <span className="hidden sm:inline">{cyclePaused ? "Retomar" : "Pausar"}</span>
+                      </Button>
+                    )}
                     <Button asChild size="sm" variant="secondary">
                       <Link to={`/cameras/${fullscreenChannel.id}`}>Abrir canal</Link>
                     </Button>
@@ -1135,7 +1155,7 @@ export default function NvrDetailPage(): JSX.Element {
                   <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-4 flex items-end justify-between gap-2">
                     <p className="text-base font-medium truncate">{fullscreenChannel.name}</p>
                     <p className="text-xs text-muted-foreground hidden sm:block">
-                      ← / → navegar · Esc fechar{cycleSeconds > 0 ? (cyclePaused ? " · ciclo pausado" : " · passe o mouse para pausar") : ""}
+                      ← / → navegar · Esc fechar{cycleSeconds > 0 ? (cyclePaused ? " · ciclo pausado (P retomar)" : " · P pausar · passe o mouse para pausar") : ""}
                     </p>
                   </div>
                   {cycleSeconds > 0 && total > 1 && (
