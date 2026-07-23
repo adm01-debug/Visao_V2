@@ -38,7 +38,7 @@ export function CronWatchdogRunsCard() {
     if (error) {
       toast.error('Falha ao carregar execuções do watchdog');
     } else {
-      setRuns((data ?? []) as WatchdogRun[]);
+      setRuns((data ?? []) as unknown as WatchdogRun[]);
     }
     setLoading(false);
   };
