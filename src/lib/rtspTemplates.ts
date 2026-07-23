@@ -95,6 +95,32 @@ export const RTSP_TEMPLATES: Record<RtspBrand, RtspTemplate[]> = {
       defaultPort: 554,
     },
   ],
+  usecam: [
+    {
+      id: "usecam-nvr-dahua-like",
+      label: "Usecam NVR (padrão Dahua/realmonitor)",
+      description: "Firmwares Usecam mais recentes — /cam/realmonitor?channel=N&subtype=0.",
+      primary: "rtsp://{host}:{port}/cam/realmonitor?channel={channel}&subtype=0",
+      substream: "rtsp://{host}:{port}/cam/realmonitor?channel={channel}&subtype=1",
+      defaultPort: 554,
+    },
+    {
+      id: "usecam-xmeye-legacy",
+      label: "Usecam / XMEye legado (stream=0.sdp)",
+      description: "Firmwares antigos baseados em XMEye — /user=..&channel=N&stream=0.sdp.",
+      primary: "rtsp://{host}:{port}/user=admin&password=&channel={channel}&stream=0.sdp",
+      substream: "rtsp://{host}:{port}/user=admin&password=&channel={channel}&stream=1.sdp",
+      defaultPort: 554,
+    },
+    {
+      id: "usecam-hik-like",
+      label: "Usecam NVR (padrão Hikvision/Streaming)",
+      description: "Alguns OEMs Usecam adotam o padrão Hikvision — /Streaming/Channels/N01.",
+      primary: "rtsp://{host}:{port}/Streaming/Channels/{channel}01",
+      substream: "rtsp://{host}:{port}/Streaming/Channels/{channel}02",
+      defaultPort: 554,
+    },
+  ],
   generica: [
     {
       id: "onvif-standard",
