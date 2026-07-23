@@ -14,6 +14,7 @@ import { Copy, Trash2, Plus, ShieldCheck, Server, Radar } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { PageMeta } from "@/components/PageMeta";
+import { RelayReliabilityCard } from "@/components/local-agents/RelayReliabilityCard";
 
 interface LocalAgent {
   id: string;
