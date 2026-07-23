@@ -11,6 +11,7 @@ import { PreviewTelemetryCard } from '@/components/admin/PreviewTelemetryCard';
 import { EdgeErrorsAuditCard } from '@/components/admin/EdgeErrorsAuditCard';
 import { ConnectivityResolutionCard } from '@/components/admin/ConnectivityResolutionCard';
 import { CronJobRunsCard } from '@/components/admin/CronJobRunsCard';
+import { CronWatchdogRunsCard } from '@/components/admin/CronWatchdogRunsCard';
 
 import { PreviewAlertStatusCard } from '@/components/admin/PreviewAlertStatusCard';
 import { CameraHealthCard } from '@/components/admin/CameraHealthCard';
@@ -348,6 +349,10 @@ export default function OperationsPage() {
 
       <section>
         <CronJobRunsCard />
+      </section>
+
+      <section>
+        <CronWatchdogRunsCard />
       </section>
 
 

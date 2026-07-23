@@ -116,6 +116,36 @@ Deno.serve(async (req) => {
       if (!resp.ok) deliveryError = `telegram_${resp.status}`;
     }
 
+    const details = problems.map((p) => ({
+      jobname: p.job.jobname,
+      reason: p.reason,
+      last_status: p.job.last_status,
+      failure_count_24h: p.job.failure_count_24h,
+    }));
+
+    try {
+      await supabase.from("cron_watchdog_runs").insert({
+        jobs_total: jobs.length,
+        problems: problems.length,
+        alerts_sent: alerts.length,
+        dedup_skipped: dedupSkipped,
+        delivered,
+        delivery_error: deliveryError,
+        min_failures: minFailures,
+        stale_minutes: staleMinutes,
+        details,
+      });
+    } catch (persistErr) {
+      console.error(
+        JSON.stringify({
+          level: "warn",
+          fn: "cron-watchdog",
+          msg: "persist_failed",
+          error: persistErr instanceof Error ? persistErr.message : String(persistErr),
+        }),
+      );
+    }
+
     console.log(
       JSON.stringify({
         level: "info",
@@ -138,12 +168,7 @@ Deno.serve(async (req) => {
       dedup_skipped: dedupSkipped,
       delivered,
       delivery_error: deliveryError,
-      details: problems.map((p) => ({
-        jobname: p.job.jobname,
-        reason: p.reason,
-        last_status: p.job.last_status,
-        failure_count_24h: p.job.failure_count_24h,
-      })),
+      details,
     });
   } catch (e) {
     console.error(

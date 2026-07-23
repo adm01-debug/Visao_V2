@@ -1369,6 +1369,51 @@ export type Database = {
           },
         ]
       }
+      cron_watchdog_runs: {
+        Row: {
+          alerts_sent: number
+          created_at: string
+          dedup_skipped: number
+          delivered: boolean
+          delivery_error: string | null
+          details: Json
+          id: string
+          jobs_total: number
+          min_failures: number
+          problems: number
+          ran_at: string
+          stale_minutes: number
+        }
+        Insert: {
+          alerts_sent?: number
+          created_at?: string
+          dedup_skipped?: number
+          delivered?: boolean
+          delivery_error?: string | null
+          details?: Json
+          id?: string
+          jobs_total?: number
+          min_failures: number
+          problems?: number
+          ran_at?: string
+          stale_minutes: number
+        }
+        Update: {
+          alerts_sent?: number
+          created_at?: string
+          dedup_skipped?: number
+          delivered?: boolean
+          delivery_error?: string | null
+          details?: Json
+          id?: string
+          jobs_total?: number
+          min_failures?: number
+          problems?: number
+          ran_at?: string
+          stale_minutes?: number
+        }
+        Relationships: []
+      }
       csp_violation_reports: {
         Row: {
           blocked_uri: string | null
@@ -5832,6 +5877,7 @@ export type Database = {
         Args: never
         Returns: undefined
       }
+      prune_cron_watchdog_runs: { Args: never; Returns: undefined }
       prune_edge_function_error_audit: { Args: never; Returns: number }
       prune_preview_telemetry_events: {
         Args: never
