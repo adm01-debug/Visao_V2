@@ -121,11 +121,17 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
     (async () => {
       const { data } = await supabase
         .from('camera_ptz_config')
-        .select('calibration')
+        .select('calibration, limits_version, limits_history')
         .eq('camera_id', cameraId)
         .maybeSingle();
-      if (cancelled || !data?.calibration || typeof data.calibration !== 'object') return;
-      const cal = data.calibration as CalibrationMap;
+      if (cancelled || !data) return;
+      const row = data as { calibration: Json | null; limits_version: string | null; limits_history: Json | null };
+      if (row.limits_version) setLimitsVersion(row.limits_version);
+      if (Array.isArray(row.limits_history)) {
+        setLimitsHistory(row.limits_history as unknown as LimitsHistoryItem[]);
+      }
+      if (!row.calibration || typeof row.calibration !== 'object') return;
+      const cal = row.calibration as CalibrationMap;
       setCalibration(cal);
       const next: Partial<Record<PtzAxis, number>> = {};
       for (const axis of ['pan', 'tilt', 'zoom'] as PtzAxis[]) {
