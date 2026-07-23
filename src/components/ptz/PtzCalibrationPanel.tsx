@@ -14,6 +14,7 @@ import type { usePtzControl } from '@/hooks/usePtzControl';
 import { PtzLimitPreflightDialog } from './PtzLimitPreflightDialog';
 import { PtzAxisRangeVisualizer } from './PtzAxisRangeVisualizer';
 import { formatHistorySummary, type LimitsHistoryItem } from './lib/limitsHistory';
+import { PtzLiveStatusPanel } from './PtzLiveStatusPanel';
 
 /**
  * Curso total (ms) assumido como *fallback* quando o dome não expõe ONVIF
