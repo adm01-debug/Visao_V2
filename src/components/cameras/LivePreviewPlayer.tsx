@@ -94,6 +94,7 @@ export function LivePreviewPlayer({
       if (endedRef.current) return;
       endedRef.current = true;
       clearTick();
+      clearHlsTimeout();
       setStatus(reason === "error" ? "error" : "stopping");
       const id = sessionIdRef.current;
       sessionIdRef.current = null;
