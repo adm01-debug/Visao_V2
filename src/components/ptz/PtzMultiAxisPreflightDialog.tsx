@@ -98,6 +98,7 @@ export function PtzMultiAxisPreflightDialog({
 }: MultiAxisPreflightProps) {
   const [ackClear, setAckClear] = useState(false);
   const [ackSeeing, setAckSeeing] = useState(false);
+  const [ackConfirmedAt, setAckConfirmedAt] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
   const [currentAxis, setCurrentAxis] = useState<PreflightAxis | null>(null);
   const [currentPhase, setCurrentPhase] = useState<PhaseId | null>(null);
