@@ -3434,6 +3434,72 @@ export type Database = {
         }
         Relationships: []
       }
+      ptz_connection_attempts: {
+        Row: {
+          backend: string
+          camera_id: string
+          created_at: string
+          error_detail: string | null
+          http_status: number
+          id: string
+          latency_ms: number
+          ok: boolean
+          profile_id: string | null
+          reachable: boolean
+          relay_agent_id: string | null
+          source: string
+          used_relay: boolean
+          user_id: string
+        }
+        Insert: {
+          backend: string
+          camera_id: string
+          created_at?: string
+          error_detail?: string | null
+          http_status?: number
+          id?: string
+          latency_ms?: number
+          ok?: boolean
+          profile_id?: string | null
+          reachable?: boolean
+          relay_agent_id?: string | null
+          source?: string
+          used_relay?: boolean
+          user_id: string
+        }
+        Update: {
+          backend?: string
+          camera_id?: string
+          created_at?: string
+          error_detail?: string | null
+          http_status?: number
+          id?: string
+          latency_ms?: number
+          ok?: boolean
+          profile_id?: string | null
+          reachable?: boolean
+          relay_agent_id?: string | null
+          source?: string
+          used_relay?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ptz_connection_attempts_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ptz_connection_attempts_relay_agent_id_fkey"
+            columns: ["relay_agent_id"]
+            isOneToOne: false
+            referencedRelation: "local_agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       query_telemetry: {
         Row: {
           count_mode: string | null

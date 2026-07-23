@@ -18,6 +18,7 @@ import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { usePtzControl } from '@/hooks/usePtzControl';
 import { getProfileById } from '@/lib/onvifProfiles';
+import { PtzConnectionHistoryCard } from './PtzConnectionHistoryCard';
 
 interface PtzSetupWizardProps {
   cameraId: string;
@@ -195,7 +196,7 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
         ? (orderedBackends.length ? orderedBackends : autoMultiBackends)
         : (protocol ? [protocol] : []);
       const { data, error } = await supabase.functions.invoke('ptz-backends-test', {
-        body: { camera_id: cameraId, backends },
+        body: { camera_id: cameraId, backends, profile_id: profileId ?? null, source: 'wizard' },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.hint ?? data.error);
@@ -647,9 +648,12 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                   <li>Zoom: {limits.zoom.min.toFixed(2)} → {limits.zoom.max.toFixed(2)}</li>
                 </ul>
               </div>
+
+              <PtzConnectionHistoryCard cameraId={cameraId} profileId={profileId ?? null} limit={30} />
             </div>
           )}
         </div>
+
 
         <DialogFooter className="gap-2">
           <Button
