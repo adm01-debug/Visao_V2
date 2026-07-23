@@ -984,6 +984,7 @@ export type Database = {
       }
       camera_ptz_config: {
         Row: {
+          calibration: Json
           camera_id: string
           capabilities: Json
           channel: number
@@ -1003,6 +1004,7 @@ export type Database = {
           username: string | null
         }
         Insert: {
+          calibration?: Json
           camera_id: string
           capabilities?: Json
           channel?: number
@@ -1022,6 +1024,7 @@ export type Database = {
           username?: string | null
         }
         Update: {
+          calibration?: Json
           camera_id?: string
           capabilities?: Json
           channel?: number
