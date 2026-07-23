@@ -39,8 +39,16 @@ const STALL_EPSILON = 0.005;
 /** Amostras consecutivas abaixo do épsilon para confirmar parada por limite. */
 const STALL_CONFIRM_SAMPLES = 3;
 
+/**
+ * Desvio (em % do range) reportado pela revalidação a partir do qual as
+ * capturas de min/max daquele eixo são invalidadas automaticamente e o
+ * operador é obrigado a executar a recaptura guiada antes de prosseguir.
+ */
+const RECAPTURE_THRESHOLD_PCT = 10;
+
 export type PtzAxis = 'pan' | 'tilt' | 'zoom';
 export type PtzLimits = Record<PtzAxis, { min: number; max: number }>;
+
 
 interface CalibrationEntry {
   sweep_ms: number;
