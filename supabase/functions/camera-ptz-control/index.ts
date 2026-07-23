@@ -340,7 +340,7 @@ Deno.serve(async (req) => {
       entity_type: 'camera',
       entity_id: camera_id,
       severity: 'low',
-      new_values: { command, params, driver: cfg.protocol, cam_status: camStatus, used_relay: resolution.usingRelay },
+      new_values: { command, params, driver: cfg.protocol, cam_status: camStatus, used_relay: resolution.usingRelay, clamped: adjusted },
     });
 
     return new Response(JSON.stringify({
@@ -348,6 +348,7 @@ Deno.serve(async (req) => {
       cam_status: camStatus,
       driver: cfg.protocol,
       used_relay: resolution.usingRelay,
+      clamped: adjusted,
       response: camBody,
     }), {
       status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
