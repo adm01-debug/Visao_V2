@@ -101,10 +101,45 @@ export default function NvrDetailPage(): JSX.Element {
   const { user } = useAuth();
   const { toast } = useToast();
   const [bulkBusy, setBulkBusy] = useState<null | "arm" | "disarm">(null);
-  const [mosaicCols, setMosaicCols] = useState<"2" | "3" | "4">("3");
+  const prefsKey = id ? `visao:nvr-mosaic-prefs:${id}` : null;
+  const [mosaicCols, setMosaicCols] = useState<"2" | "3" | "4">(() => {
+    if (typeof window === "undefined" || !prefsKey) return "3";
+    try {
+      const raw = window.localStorage.getItem(prefsKey);
+      if (!raw) return "3";
+      const parsed = JSON.parse(raw) as { cols?: string };
+      return parsed.cols === "2" || parsed.cols === "3" || parsed.cols === "4" ? parsed.cols : "3";
+    } catch {
+      return "3";
+    }
+  });
   const [search, setSearch] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "online" | "offline">("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "online" | "offline">(() => {
+    if (typeof window === "undefined" || !prefsKey) return "all";
+    try {
+      const raw = window.localStorage.getItem(prefsKey);
+      if (!raw) return "all";
+      const parsed = JSON.parse(raw) as { statusFilter?: string };
+      return parsed.statusFilter === "online" || parsed.statusFilter === "offline"
+        ? parsed.statusFilter
+        : "all";
+    } catch {
+      return "all";
+    }
+  });
   const [fullscreenId, setFullscreenId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!prefsKey || typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(
+        prefsKey,
+        JSON.stringify({ cols: mosaicCols, statusFilter }),
+      );
+    } catch {
+      // storage disabled/full — ignore silently
+    }
+  }, [prefsKey, mosaicCols, statusFilter]);
 
   const filteredChannels = useMemo(() => {
     const rows = channelsQuery.data ?? [];
