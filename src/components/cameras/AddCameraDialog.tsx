@@ -153,6 +153,17 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
   const ptzEnabled = form.watch("ptzEnabled");
   const ptzProtocol = (form.watch("ptzConfig.protocol") ?? "onvif") as PtzProtocol;
   const ptzSpeed = form.watch("ptzConfig.default_speed") ?? 0.5;
+  const brand = form.watch("brand");
+  const brandTemplates = useMemo(() => getTemplatesForBrand(brand), [brand]);
+  const selectedTemplate = useMemo(
+    () => (templateCtx.templateId ? findTemplate(brand, templateCtx.templateId) : undefined),
+    [brand, templateCtx.templateId],
+  );
+
+  // Ao trocar de marca, reseta o template selecionado (mas mantém host/canal digitados).
+  useEffect(() => {
+    setTemplateCtx((prev) => ({ ...prev, templateId: "" }));
+  }, [brand]);
 
   // Limpa estado sensível quando fecha
   useEffect(() => {
@@ -163,10 +174,58 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       setForceCritical(false);
       setDiscover({ loading: false, ok: null, message: null });
       setAutoDiscover({ loading: false, ok: null, message: null, host: "", allowPrivate: false });
+      setTemplateCtx({ templateId: "", host: "", port: "", channel: "1" });
       rtspValidation.reset();
       substreamValidation.reset();
     }
   }, [open, form, rtspValidation, substreamValidation]);
+
+  const handleApplyTemplate = () => {
+    if (!selectedTemplate) {
+      toast.error("Selecione um modelo antes de aplicar.");
+      return;
+    }
+    const host = templateCtx.host.trim();
+    if (!host) {
+      toast.error("Informe o IP/host da câmera para gerar as URLs.");
+      return;
+    }
+    const port = templateCtx.port ? Number(templateCtx.port) : undefined;
+    if (port !== undefined && (!Number.isFinite(port) || port < 1 || port > 65535)) {
+      toast.error("Porta inválida.");
+      return;
+    }
+    const channel = templateCtx.channel ? Number(templateCtx.channel) : 1;
+    if (!Number.isFinite(channel) || channel < 1 || channel > 64) {
+      toast.error("Canal deve estar entre 1 e 64.");
+      return;
+    }
+    const currentPrimary = form.getValues("rtspUrl")?.trim();
+    const currentSub = form.getValues("substreamUrl")?.trim();
+    const willOverwrite = Boolean(currentPrimary) || Boolean(currentSub);
+
+    const apply = () => {
+      const { primary, substream } = renderTemplate(selectedTemplate, { host, port, channel });
+      form.setValue("rtspUrl", primary, { shouldValidate: true, shouldDirty: true });
+      form.setValue("substreamUrl", substream ?? "", { shouldValidate: true, shouldDirty: true });
+      rtspValidation.reset();
+      substreamValidation.reset();
+      toast.success("URLs preenchidas pelo template.", {
+        description: "Ajuste manualmente se sua câmera usa caminho diferente.",
+      });
+    };
+
+    if (willOverwrite) {
+      toast("Sobrescrever URLs atuais?", {
+        description: "Você já tem URLs preenchidas. Isso substituirá os valores.",
+        action: { label: "Sobrescrever", onClick: apply },
+        cancel: { label: "Cancelar", onClick: () => undefined },
+      });
+      return;
+    }
+    apply();
+  };
+
 
 
   // Ajusta porta padrão ao trocar protocolo
