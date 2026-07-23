@@ -219,7 +219,7 @@ export default function NvrDetailPage(): JSX.Element {
     } catch {
       // storage disabled/full — ignore silently
     }
-  }, [prefsKey, mosaicCols, statusFilter, sortMode]);
+  }, [prefsKey, mosaicCols, statusFilter, sortMode, autoRefreshSeconds]);
 
 
   const filteredChannels = useMemo(() => {
