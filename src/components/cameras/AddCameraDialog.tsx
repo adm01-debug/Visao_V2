@@ -871,7 +871,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
         }
       }
 
-      onCreated?.(createdId ?? undefined);
+      onCreated?.(createdId ?? undefined, { profileId: autoDiscover.profileId });
       onOpenChange(false);
     } catch (err) {
       // Rollback se INSERT teve sucesso mas alguma etapa falhou
