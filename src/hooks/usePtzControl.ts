@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { humanizeFunctionError } from "@/lib/edgeFunctionErrors";
+
 
 export type PtzCommand =
   | "move" | "stop" | "zoom" | "focus" | "iris"
@@ -74,7 +76,14 @@ export function usePtzControl({ cameraId, enabled = true, relayAgentId = null }:
           ...(relayAgentId ? { relay_agent_id: relayAgentId } : {}),
         },
       });
-      if (error) throw error;
+      if (error) {
+        const { message, payload } = await humanizeFunctionError(error, "Falha ao enviar comando PTZ");
+        const code = payload?.error_code ?? payload?.error;
+        if (code === "private_host_blocked") {
+          throw new Error("Câmera em rede local — selecione um Agente Local para rotear o comando PTZ.");
+        }
+        throw new Error(message);
+      }
       if (data?.error) throw new Error(data.error === "camera_em_uso"
         ? `Câmera em uso por ${data.locked_by ?? "outro operador"}`
         : data.error);
@@ -87,6 +96,7 @@ export function usePtzControl({ cameraId, enabled = true, relayAgentId = null }:
       }
     },
   });
+
 
   const send = useCallback((command: PtzCommand, params?: PtzParams) =>
     sendMutation.mutateAsync({ command, params }), [sendMutation]);
