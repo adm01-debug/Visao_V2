@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AlertTriangle, CheckCircle2, Loader2, Octagon, ShieldCheck, XCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, FileDown, Loader2, Octagon, ShieldCheck, XCircle } from 'lucide-react';
+import { downloadPtzPreflightPdf, generatePtzPreflightPdf } from './ptzPreflightPdf';
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog';
