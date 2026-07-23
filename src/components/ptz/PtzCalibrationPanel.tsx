@@ -1272,6 +1272,12 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                 onChange({ ...limits, [axis]: { min: min ?? lo, max: max ?? hi } })
               }
             />
+
+            <PtzPreflightHistory
+              cameraId={cameraId}
+              axis={axis}
+              refreshKey={preflightHistoryKey}
+            />
           </div>
         );
       })}
