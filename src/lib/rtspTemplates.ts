@@ -145,8 +145,59 @@ export const RTSP_TEMPLATES: Record<RtspBrand, RtspTemplate[]> = {
       defaultPort: 554,
     },
   ],
+  xiongmai: [
+    {
+      id: "xm-xmeye-legacy",
+      label: "XiongMai NBD80X / XMEye legado (stream=0.sdp)",
+      description: "Padrão canônico Sofia (XM/HZXM) — recomendado para NBD80X08S-QWG-V3 e famílias irmãs.",
+      primary: "rtsp://{host}:{port}/user=admin&password=&channel={channel}&stream=0.sdp",
+      substream: "rtsp://{host}:{port}/user=admin&password=&channel={channel}&stream=1.sdp",
+      defaultPort: 554,
+    },
+    {
+      id: "xm-live-chnn",
+      label: "XiongMai (live/chNN)",
+      description: "Firmware Sofia — /live/ch{NN}_0 (main) / _1 (sub).",
+      primary: "rtsp://{host}:{port}/live/ch{channel:02}_0",
+      substream: "rtsp://{host}:{port}/live/ch{channel:02}_1",
+      defaultPort: 554,
+    },
+    {
+      id: "xm-h264-ch",
+      label: "XiongMai (H264/chN/main/av_stream)",
+      description: "Path H.264 canônico ONVIF Profile S exposto pelo Sofia.",
+      primary: "rtsp://{host}:{port}/H264/ch{channel}/main/av_stream",
+      substream: "rtsp://{host}:{port}/H264/ch{channel}/sub/av_stream",
+      defaultPort: 554,
+    },
+    {
+      id: "xm-mpeg4-ch",
+      label: "XiongMai (mpeg4/chN/main/av_stream)",
+      description: "Fallback MPEG-4 para hardware XM antigo.",
+      primary: "rtsp://{host}:{port}/mpeg4/ch{channel}/main/av_stream",
+      substream: "rtsp://{host}:{port}/mpeg4/ch{channel}/sub/av_stream",
+      defaultPort: 554,
+    },
+    {
+      id: "xm-dahua-compat",
+      label: "XiongMai — modo compat Dahua",
+      description: "Firmwares Sofia recentes aceitam o padrão Dahua /cam/realmonitor.",
+      primary: "rtsp://{host}:{port}/cam/realmonitor?channel={channel}&subtype=0",
+      substream: "rtsp://{host}:{port}/cam/realmonitor?channel={channel}&subtype=1",
+      defaultPort: 554,
+    },
+    {
+      id: "xm-hik-compat",
+      label: "XiongMai — modo compat Hikvision",
+      description: "Firmwares Sofia recentes aceitam o padrão Hikvision /Streaming/Channels.",
+      primary: "rtsp://{host}:{port}/Streaming/Channels/{channel}01",
+      substream: "rtsp://{host}:{port}/Streaming/Channels/{channel}02",
+      defaultPort: 554,
+    },
+  ],
 
   generica: [
+
     {
       id: "onvif-standard",
       label: "ONVIF Profile S padrão",
