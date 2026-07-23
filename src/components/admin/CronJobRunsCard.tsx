@@ -53,9 +53,10 @@ export function CronJobRunsCard() {
     setLoadingJobs(true);
     const { data, error } = await supabase.rpc('list_cron_jobs');
     if (!error && data) {
-      setJobs(data as CronJob[]);
-      if (!(data as CronJob[]).some((j) => j.jobname === jobName) && data.length > 0) {
-        setJobName((data as CronJob[])[0].jobname);
+      const list = data as CronJob[];
+      setJobs(list);
+      if (list.length > 0 && !list.some((j) => j.jobname === jobName)) {
+        setJobName(list[0]!.jobname);
       }
     }
     setLoadingJobs(false);
