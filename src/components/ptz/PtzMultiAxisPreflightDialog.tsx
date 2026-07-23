@@ -63,6 +63,7 @@ export interface MultiAxisPreflightProps {
   startPositions: Record<PreflightAxis, number>;
   ptz: ReturnType<typeof usePtzControl>;
   cameraId?: string;
+  cameraLabel?: string;
   onComplete?: (results: PhaseResult[]) => void;
 }
 
