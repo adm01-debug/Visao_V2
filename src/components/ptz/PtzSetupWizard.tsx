@@ -628,6 +628,15 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                     <span className="text-muted-foreground">
                       {autoMultiBackends.length} backends nativos ({profile?.displayName})
                     </span>
+                    {orderedBackends.length > 0 && (
+                      <div className="mt-1 flex flex-wrap gap-1">
+                        {orderedBackends.map((b, i) => (
+                          <Badge key={b} variant="outline" className="font-mono text-[10px]">
+                            {i + 1}. {b}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 
