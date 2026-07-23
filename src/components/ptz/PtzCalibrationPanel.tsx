@@ -382,7 +382,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
             )}
           </div>
         </div>
-        <Button size="sm" variant="secondary" onClick={() => void resetOrigin()} disabled={measuringAxis !== null}>
+        <Button size="sm" variant="secondary" onClick={() => void resetOrigin()} disabled={measuringAxis !== null || preflightAxis !== null}>
           <Home className="w-3.5 h-3.5 mr-1" /> Origem
         </Button>
       </div>
