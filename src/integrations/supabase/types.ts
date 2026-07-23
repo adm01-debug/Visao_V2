@@ -79,6 +79,59 @@ export type Database = {
           },
         ]
       }
+      agent_relay_tasks: {
+        Row: {
+          agent_id: string
+          claimed_at: string | null
+          completed_at: string | null
+          created_at: string
+          error: string | null
+          expires_at: string
+          id: string
+          kind: string
+          request: Json
+          response: Json | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          agent_id: string
+          claimed_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          error?: string | null
+          expires_at?: string
+          id?: string
+          kind: string
+          request: Json
+          response?: Json | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          agent_id?: string
+          claimed_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          error?: string | null
+          expires_at?: string
+          id?: string
+          kind?: string
+          request?: Json
+          response?: Json | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_relay_tasks_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "local_agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       alertmanager_silences_audit: {
         Row: {
           action: string
@@ -4856,6 +4909,29 @@ export type Database = {
       }
       capture_db_health_snapshot: { Args: never; Returns: string }
       check_csp_anomaly: { Args: never; Returns: Json }
+      claim_agent_relay_tasks: {
+        Args: { _agent_id: string; _max?: number }
+        Returns: {
+          agent_id: string
+          claimed_at: string | null
+          completed_at: string | null
+          created_at: string
+          error: string | null
+          expires_at: string
+          id: string
+          kind: string
+          request: Json
+          response: Json | null
+          status: string
+          user_id: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "agent_relay_tasks"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       cleanup_api_usage_logs: { Args: never; Returns: number }
       cleanup_edge_cache: { Args: never; Returns: number }
       cleanup_old_test_events: { Args: never; Returns: number }
@@ -4883,6 +4959,7 @@ export type Database = {
       }
       evaluate_and_restart_streams: { Args: never; Returns: number }
       execute_camera_schedules: { Args: never; Returns: number }
+      expire_agent_relay_tasks: { Args: never; Returns: number }
       extract_url_credentials: {
         Args: { _url: string }
         Returns: {

@@ -108,7 +108,16 @@ interface AutoDiscoverState {
   allowPrivate: boolean;
   manualMode: boolean;
   manualPort: string;
+  relayAgentId: string;
 }
+
+interface RelayAgentOption {
+  id: string;
+  name: string;
+  last_seen_at: string | null;
+  network_cidr: string | null;
+}
+
 
 
 /** Mascara qualquer credencial antes de aparecer em toast/log. */
@@ -131,13 +140,33 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     allowPrivate: false,
     manualMode: false,
     manualPort: "",
+    relayAgentId: "",
   });
+  const [relayAgents, setRelayAgents] = useState<RelayAgentOption[]>([]);
   const [templateCtx, setTemplateCtx] = useState<{
     templateId: string;
     host: string;
     port: string;
     channel: string;
   }>({ templateId: "", host: "", port: "", channel: "1" });
+
+  // Carrega agentes locais online (heartbeat < 2 min) para oferecer como relé.
+  useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+    (async () => {
+      const cutoff = new Date(Date.now() - 120_000).toISOString();
+      const { data } = await supabase
+        .from("local_agents")
+        .select("id, name, last_seen_at, network_cidr")
+        .gte("last_seen_at", cutoff)
+        .order("last_seen_at", { ascending: false })
+        .limit(20);
+      if (!cancelled && data) setRelayAgents(data as RelayAgentOption[]);
+    })();
+    return () => { cancelled = true; };
+  }, [open]);
+
 
   const { createCamera, deleteCamera, refetch } = useCameras();
   const { storeCredentials, loading: vaultLoading } = useCameraVault();
@@ -178,7 +207,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       setShowPtzPass(false);
       setForceCritical(false);
       setDiscover({ loading: false, ok: null, message: null });
-      setAutoDiscover({ loading: false, ok: null, message: null, host: "", allowPrivate: false, manualMode: false, manualPort: "" });
+      setAutoDiscover({ loading: false, ok: null, message: null, host: "", allowPrivate: false, manualMode: false, manualPort: "", relayAgentId: "" });
       setTemplateCtx({ templateId: "", host: "", port: "", channel: "1" });
       rtspValidation.reset();
       substreamValidation.reset();
@@ -307,6 +336,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
           password,
           allow_private: autoDiscover.manualMode ? true : autoDiscover.allowPrivate,
           ...(autoDiscover.manualMode ? { ports: [manualPortNum] } : {}),
+          ...(autoDiscover.relayAgentId ? { relay_agent_id: autoDiscover.relayAgentId } : {}),
         },
       });
       if (error) throw new Error(error.message);
@@ -696,6 +726,32 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                 </p>
               </div>
             )}
+            <div className="flex flex-col gap-1 rounded-md border border-border/60 bg-background/60 p-2">
+              <Label htmlFor="add-cam-relay" className="text-[11px]">
+                Rotear via Agente Local (relé)
+              </Label>
+              <Select
+                value={autoDiscover.relayAgentId || "__direct__"}
+                onValueChange={(v) => setAutoDiscover((s) => ({ ...s, relayAgentId: v === "__direct__" ? "" : v }))}
+              >
+                <SelectTrigger id="add-cam-relay" className="h-8 text-xs">
+                  <SelectValue placeholder="Conexão direta (sem relé)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__direct__">Conexão direta (Edge Function → câmera)</SelectItem>
+                  {relayAgents.map((a) => (
+                    <SelectItem key={a.id} value={a.id}>
+                      {a.name} {a.network_cidr ? `· ${a.network_cidr}` : ""}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-[11px] text-muted-foreground">
+                {relayAgents.length === 0
+                  ? "Nenhum agente online. Cadastre em Agentes Locais para relayar chamadas da nuvem até câmeras na sua LAN."
+                  : "Use o relé quando a câmera está em rede privada sem port-forward ou VPN. O agente executa a chamada localmente e devolve a resposta."}
+              </p>
+            </div>
             {!autoDiscover.manualMode && (
               <label className="flex items-center gap-2 text-[11px] text-muted-foreground">
                 <input
