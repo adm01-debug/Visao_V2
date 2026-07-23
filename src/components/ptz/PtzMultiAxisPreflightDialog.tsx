@@ -172,6 +172,19 @@ export function PtzMultiAxisPreflightDialog({
     return typeof v === 'number' && Number.isFinite(v) ? v : null;
   }, [ptz, statusSupported]);
 
+  /** Retorna posição + flag de movimento para o eixo (ou null se sem telemetria). */
+  const readStatusAxis = useCallback(async (
+    axis: PreflightAxis,
+  ): Promise<{ pos: number | null; moving: boolean | null } | null> => {
+    if (!statusSupported) return null;
+    const st = await ptz.getStatus();
+    if (!st) return null;
+    const v = st.position[axis];
+    const pos = typeof v === 'number' && Number.isFinite(v) ? v : null;
+    const moving = axis === 'zoom' ? st.moving.zoom : st.moving.pan_tilt;
+    return { pos, moving: typeof moving === 'boolean' ? moving : null };
+  }, [ptz, statusSupported]);
+
   const logAttempt = useCallback(async (r: PhaseResult) => {
     if (!cameraId) return;
     try {
