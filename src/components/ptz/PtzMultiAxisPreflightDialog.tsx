@@ -334,6 +334,57 @@ export function PtzMultiAxisPreflightDialog({
   }, [perAxisTimeout, ptz, readStatusAxis, safeStop, statusSupported, sweepMsByAxis]);
 
 
+  /**
+   * Grava 1 registro por eixo em `ptz_preflight_runs`, incluindo o carimbo
+   * das confirmações do checklist de segurança. Isto alimenta o histórico
+   * exibido no card de cada eixo para fins de auditoria.
+   */
+  const persistRuns = useCallback(async (all: PhaseResult[], wasAborted: boolean) => {
+    if (!cameraId) return;
+    try {
+      const { data: authData } = await supabase.auth.getUser();
+      const userId = authData.user?.id;
+      if (!userId) return;
+      const byAxis = new Map<PreflightAxis, PhaseResult[]>();
+      for (const r of all) {
+        if (!byAxis.has(r.axis)) byAxis.set(r.axis, []);
+        byAxis.get(r.axis)!.push(r);
+      }
+      const rows: Array<Record<string, unknown>> = [];
+      for (const axis of axes) {
+        const phases = byAxis.get(axis) ?? [];
+        let outcome: 'ok' | 'deviation' | 'fail' | 'aborted' | 'no-telemetry';
+        if (wasAborted && phases.length < 3) outcome = 'aborted';
+        else if (phases.some((p) => p.outcome === 'fail')) outcome = 'fail';
+        else if (phases.some((p) => p.outcome === 'deviation')) outcome = 'deviation';
+        else if (phases.every((p) => p.outcome === 'no-telemetry')) outcome = 'no-telemetry';
+        else if (phases.length === 0) continue;
+        else outcome = 'ok';
+
+        rows.push({
+          user_id: userId,
+          camera_id: cameraId,
+          axis,
+          ack_area_clear: ackClear,
+          ack_watching_live: ackSeeing,
+          ack_confirmed_at: ackConfirmedAt,
+          outcome,
+          aborted: wasAborted,
+          status_supported: statusSupported,
+          phases: phases.map((p) => ({
+            id: p.id, target: p.target, observed: p.observed,
+            delta: p.delta, latency_ms: p.latency_ms,
+            outcome: p.outcome, detail: p.detail ?? null,
+          })),
+          limits_snapshot: limitsByAxis[axis] ?? null,
+        });
+      }
+      if (rows.length === 0) return;
+      await supabase.from('ptz_preflight_runs').insert(rows);
+    } catch { /* best-effort */ }
+  }, [ackClear, ackSeeing, ackConfirmedAt, axes, cameraId, limitsByAxis, statusSupported]);
+
+
   const runAll = useCallback(async () => {
     if (!canRun) return;
     setRunning(true);
