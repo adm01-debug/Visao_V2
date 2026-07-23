@@ -1300,6 +1300,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
           startPosition={position[preflightAxis]}
           ptz={ptz}
           cameraId={cameraId}
+          onComplete={() => setPreflightHistoryKey((k) => k + 1)}
         />
       )}
 
