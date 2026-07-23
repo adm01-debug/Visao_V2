@@ -76,7 +76,7 @@ export default function NvrDetailPage(): JSX.Element {
   const channelsQuery = useQuery({
     queryKey: ["nvr-channels", id],
     enabled: !!id,
-    refetchInterval: 30_000,
+    refetchInterval: () => (realtimeStatus === "live" ? 120_000 : 30_000),
     queryFn: async (): Promise<ChannelRow[]> => {
       const { data, error } = await supabase
         .from("cameras")
@@ -87,6 +87,7 @@ export default function NvrDetailPage(): JSX.Element {
       return (data ?? []) as ChannelRow[];
     },
   });
+
 
   const stats = useMemo(() => {
     const rows = channelsQuery.data ?? [];
