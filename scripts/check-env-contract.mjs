@@ -108,15 +108,19 @@ for (const c of CONTRACT) {
   }
 }
 
-// A) Paridade estrita de nomes governados entre os arquivos do grupo:
-// nenhum arquivo do grupo pode declarar uma var do prefixo fora do contrato.
-for (const c of CONTRACT) {
-  for (const file of c.requiredIn) {
-    for (const key of declared[file]) {
+// A) Correção de nomes em TODOS os .env* do repo (não só os exigidos pelo contrato):
+// qualquer arquivo que declare uma var de um prefixo governado tem de usar só nomes do
+// contrato. Trava drift em exemplos/test (ex.: VITE_MEDIAMTX_URL no lugar do trio real,
+// ou VITE_SUPABASE_ANON_KEY legado).
+const envFiles = readdirSync('.').filter((f) => /^\.env(\.|$)/.test(f));
+for (const file of envFiles) {
+  const keys = declared[file] ?? declaredKeys(file) ?? new Set();
+  for (const c of CONTRACT) {
+    for (const key of keys) {
       if (c.prefix.test(key) && !c.vars.includes(key)) {
         errors.push(
           `[${c.group}] ${file} declara ${key}, fora do contrato ${c.group}. ` +
-            `Atualize o contrato em scripts/check-env-contract.mjs ou remova a var.`
+            `Use apenas: ${c.vars.join(', ')} (ou atualize o contrato em scripts/check-env-contract.mjs).`
         );
       }
     }
