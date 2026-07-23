@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { PageMeta } from '@/components/PageMeta';
 import { Activity, Database, HardDrive, RefreshCw, ShieldAlert, CalendarClock } from 'lucide-react';
 import { SlowQueriesCard } from '@/components/admin/SlowQueriesCard';
+import { PreviewTelemetryCard } from '@/components/admin/PreviewTelemetryCard';
 import { CameraHealthCard } from '@/components/admin/CameraHealthCard';
 import { CameraVaultAuditCard } from '@/components/security/CameraVaultAuditCard';
 import { EnvelopeEncryptionCard } from '@/components/security/EnvelopeEncryptionCard';
@@ -318,6 +319,11 @@ export default function OperationsPage() {
       <section>
         <SlowQueriesCard limit={20} />
       </section>
+
+      <section>
+        <PreviewTelemetryCard defaultWindowHours={24} />
+      </section>
+
 
       <section>
         <DbHealthCard />

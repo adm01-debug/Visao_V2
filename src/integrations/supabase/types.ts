@@ -2733,6 +2733,75 @@ export type Database = {
         }
         Relationships: []
       }
+      preview_telemetry_events: {
+        Row: {
+          browser: string | null
+          browser_version: string | null
+          camera_id: string | null
+          codec: string | null
+          created_at: string
+          duration_ms: number | null
+          error_code: string | null
+          event_type: string
+          extensions: number | null
+          height: number | null
+          id: string
+          latency_ms: number | null
+          metadata: Json
+          network_type: string | null
+          os: string | null
+          reason: string | null
+          resolution: string | null
+          session_id: string | null
+          user_id: string
+          width: number | null
+        }
+        Insert: {
+          browser?: string | null
+          browser_version?: string | null
+          camera_id?: string | null
+          codec?: string | null
+          created_at?: string
+          duration_ms?: number | null
+          error_code?: string | null
+          event_type: string
+          extensions?: number | null
+          height?: number | null
+          id?: string
+          latency_ms?: number | null
+          metadata?: Json
+          network_type?: string | null
+          os?: string | null
+          reason?: string | null
+          resolution?: string | null
+          session_id?: string | null
+          user_id?: string
+          width?: number | null
+        }
+        Update: {
+          browser?: string | null
+          browser_version?: string | null
+          camera_id?: string | null
+          codec?: string | null
+          created_at?: string
+          duration_ms?: number | null
+          error_code?: string | null
+          event_type?: string
+          extensions?: number | null
+          height?: number | null
+          id?: string
+          latency_ms?: number | null
+          metadata?: Json
+          network_type?: string | null
+          os?: string | null
+          reason?: string | null
+          resolution?: string | null
+          session_id?: string | null
+          user_id?: string
+          width?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -4966,6 +5035,10 @@ export type Database = {
           tablename: string
           with_check: string
         }[]
+      }
+      get_preview_telemetry_summary: {
+        Args: { window_hours?: number }
+        Returns: Json
       }
       get_replication_slot_status: {
         Args: never
