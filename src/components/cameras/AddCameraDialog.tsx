@@ -50,6 +50,11 @@ import { useCameraVault } from "@/hooks/useCameraVault";
 import { supabase } from "@/integrations/supabase/client";
 import { readFunctionErrorBody } from "@/lib/edgeFunctionErrors";
 import { isPrivateIP } from "@/lib/ipUtils";
+import {
+  recordConnectivityResolution,
+  resolutionToTelemetry,
+  type ConnectivityChosenPath,
+} from "@/lib/connectivityTelemetry";
 
 
 import {
