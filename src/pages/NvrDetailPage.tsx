@@ -127,6 +127,19 @@ export default function NvrDetailPage(): JSX.Element {
       return "all";
     }
   });
+  const [sortMode, setSortMode] = useState<"channel-asc" | "channel-desc" | "name-asc">(() => {
+    if (typeof window === "undefined" || !prefsKey) return "channel-asc";
+    try {
+      const raw = window.localStorage.getItem(prefsKey);
+      if (!raw) return "channel-asc";
+      const parsed = JSON.parse(raw) as { sortMode?: string };
+      return parsed.sortMode === "channel-desc" || parsed.sortMode === "name-asc"
+        ? parsed.sortMode
+        : "channel-asc";
+    } catch {
+      return "channel-asc";
+    }
+  });
   const [fullscreenId, setFullscreenId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -134,12 +147,13 @@ export default function NvrDetailPage(): JSX.Element {
     try {
       window.localStorage.setItem(
         prefsKey,
-        JSON.stringify({ cols: mosaicCols, statusFilter }),
+        JSON.stringify({ cols: mosaicCols, statusFilter, sortMode }),
       );
     } catch {
       // storage disabled/full — ignore silently
     }
-  }, [prefsKey, mosaicCols, statusFilter]);
+  }, [prefsKey, mosaicCols, statusFilter, sortMode]);
+
 
   const filteredChannels = useMemo(() => {
     const rows = channelsQuery.data ?? [];
