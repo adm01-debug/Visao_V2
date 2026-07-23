@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
 import type { usePtzControl } from '@/hooks/usePtzControl';
 import { PtzLimitPreflightDialog } from './PtzLimitPreflightDialog';
+import { PtzAxisRangeVisualizer } from './PtzAxisRangeVisualizer';
 
 /**
  * Curso total (ms) assumido como *fallback* quando o dome não expõe ONVIF
