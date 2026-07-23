@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { PageMeta } from '@/components/PageMeta';
 import { Activity, Database, HardDrive, RefreshCw, ShieldAlert, CalendarClock } from 'lucide-react';
 import { SlowQueriesCard } from '@/components/admin/SlowQueriesCard';
+import { RetentionOverviewCard } from '@/components/admin/RetentionOverviewCard';
 import { PreviewTelemetryCard } from '@/components/admin/PreviewTelemetryCard';
 import { PreviewAlertStatusCard } from '@/components/admin/PreviewAlertStatusCard';
 import { CameraHealthCard } from '@/components/admin/CameraHealthCard';
@@ -319,6 +320,10 @@ export default function OperationsPage() {
 
       <section>
         <SlowQueriesCard limit={20} />
+      </section>
+
+      <section>
+        <RetentionOverviewCard />
       </section>
 
       <section>
