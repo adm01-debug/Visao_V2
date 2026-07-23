@@ -100,10 +100,21 @@ interface DiscoverState {
   presets?: number;
 }
 
+interface AutoDiscoverErrorDetail {
+  code: string;
+  title: string;
+  hint: string;
+  steps: string[];
+  isLanHost: boolean;
+  usedRelay: boolean;
+  testedPorts: number[];
+}
+
 interface AutoDiscoverState {
   loading: boolean;
   ok: boolean | null;
   message: string | null;
+  errorDetail: AutoDiscoverErrorDetail | null;
   host: string;
   allowPrivate: boolean;
   manualMode: boolean;
