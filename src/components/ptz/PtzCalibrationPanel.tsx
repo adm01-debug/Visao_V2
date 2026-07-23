@@ -697,21 +697,34 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
       return pF ?? pLast;
     };
 
+    const startedAt = performance.now();
+    let outcome: 'ok' | 'aborted' | 'invalid' | 'no_reading' = 'ok';
+    let capturedMin: number | null = null;
+    let capturedMax: number | null = null;
+    let errorDetail: string | null = null;
     try {
       const pMin = await driveToStall(-1);
+      capturedMin = pMin;
       if (recaptureAbortRef.current || pMin == null) {
-        toast.error('Recaptura de mínimo abortada ou sem leitura.');
+        outcome = recaptureAbortRef.current ? 'aborted' : 'no_reading';
+        errorDetail = 'Recaptura de mínimo abortada ou sem leitura.';
+        toast.error(errorDetail);
         return;
       }
       setRecaptureStage('to-max');
       setRecaptureProgress(0);
       const pMax = await driveToStall(1);
+      capturedMax = pMax;
       if (recaptureAbortRef.current || pMax == null) {
-        toast.error('Recaptura de máximo abortada ou sem leitura.');
+        outcome = recaptureAbortRef.current ? 'aborted' : 'no_reading';
+        errorDetail = 'Recaptura de máximo abortada ou sem leitura.';
+        toast.error(errorDetail);
         return;
       }
       if (pMin >= pMax) {
-        toast.error(`Recaptura inválida: min (${pMin.toFixed(2)}) ≥ max (${pMax.toFixed(2)}).`);
+        outcome = 'invalid';
+        errorDetail = `Recaptura inválida: min (${pMin.toFixed(2)}) ≥ max (${pMax.toFixed(2)}).`;
+        toast.error(errorDetail);
         return;
       }
       const nextLimits: PtzLimits = {
@@ -733,6 +746,37 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
         `Clique em Salvar para persistir.`,
       );
     } finally {
+      // Auditoria: persistir toda recaptura (sucesso ou falha) em ptz_connection_attempts.
+      if (cameraId) {
+        const duration = Math.round(performance.now() - startedAt);
+        try {
+          const { data: authData } = await supabase.auth.getUser();
+          const uid = authData.user?.id;
+          if (uid) {
+            const payload = JSON.stringify({
+              axis,
+              outcome,
+              min_reported: capturedMin,
+              max_reported: capturedMax,
+              stage: recaptureStage,
+              aborted: recaptureAbortRef.current,
+              error: errorDetail,
+            });
+            await supabase.from('ptz_connection_attempts').insert({
+              user_id: uid,
+              camera_id: cameraId,
+              backend: `recapture:${axis}`,
+              ok: outcome === 'ok',
+              reachable: statusSupported === true,
+              http_status: 0,
+              latency_ms: duration,
+              error_detail: payload,
+              used_relay: false,
+              source: 'recapture',
+            } as never);
+          }
+        } catch { /* best-effort audit */ }
+      }
       setRecapturingAxis(null);
       // Deixa o "done" visível por um instante e reseta.
       setTimeout(() => {
@@ -740,7 +784,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
         setRecaptureProgress(0);
       }, 1200);
     }
-  }, [statusSupported, measuringAxis, revalidatingAxis, recapturingAxis, ptz, clamp, limits, onChange]);
+  }, [statusSupported, measuringAxis, revalidatingAxis, recapturingAxis, ptz, clamp, limits, onChange, cameraId, recaptureStage]);
 
 
   /**
