@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Crosshair, Gauge, History, Home, Loader2, RotateCcw, Save, ShieldCheck, Signal, Target, TriangleAlert, ZoomIn, ZoomOut,
+  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Crosshair, Download, Gauge, History, Home, Loader2, RotateCcw, Save, ShieldCheck, Signal, Target, TriangleAlert, Upload, ZoomIn, ZoomOut,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -111,6 +111,103 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
   // Versionamento — carregado do banco.
   const [limitsVersion, setLimitsVersion] = useState<string | null>(null);
   const [limitsHistory, setLimitsHistory] = useState<LimitsHistoryItem[]>([]);
+
+  // Export/Import da calibração como JSON (reuso entre câmeras similares).
+  const importInputRef = useRef<HTMLInputElement | null>(null);
+  const [importingCalibration, setImportingCalibration] = useState(false);
+
+  const CALIBRATION_EXPORT_VERSION = 1;
+
+  const handleExportCalibration = useCallback(() => {
+    if (Object.keys(calibration).length === 0) {
+      toast.error('Nenhuma calibração para exportar.');
+      return;
+    }
+    const payload = {
+      kind: 'visao.ptz.calibration',
+      version: CALIBRATION_EXPORT_VERSION,
+      exported_at: new Date().toISOString(),
+      camera_id: cameraId ?? null,
+      limits,
+      calibration,
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ptz-calibration-${cameraId ?? 'camera'}-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast.success('Calibração exportada como JSON.');
+  }, [calibration, cameraId, limits]);
+
+  const isValidCalibrationEntry = (e: unknown): e is CalibrationEntry => {
+    if (!e || typeof e !== 'object') return false;
+    const o = e as Record<string, unknown>;
+    return (
+      typeof o.sweep_ms === 'number' && Number.isFinite(o.sweep_ms) && o.sweep_ms > 0 &&
+      typeof o.min_reported === 'number' && Number.isFinite(o.min_reported) &&
+      typeof o.max_reported === 'number' && Number.isFinite(o.max_reported) &&
+      typeof o.measured_at === 'string'
+    );
+  };
+
+  const handleImportCalibration = useCallback(async (file: File) => {
+    if (!cameraId) {
+      toast.error('Câmera sem ID — impossível importar.');
+      return;
+    }
+    setImportingCalibration(true);
+    try {
+      const text = await file.text();
+      let parsed: unknown;
+      try { parsed = JSON.parse(text); } catch {
+        toast.error('Arquivo inválido: JSON malformado.');
+        return;
+      }
+      const obj = parsed as Record<string, unknown>;
+      if (obj?.kind !== 'visao.ptz.calibration') {
+        toast.error('Arquivo não parece ser uma calibração PTZ exportada.');
+        return;
+      }
+      const cal = obj.calibration as Record<string, unknown> | undefined;
+      if (!cal || typeof cal !== 'object') {
+        toast.error('Campo "calibration" ausente ou inválido.');
+        return;
+      }
+      const next: CalibrationMap = {};
+      const nextSweep: Partial<Record<PtzAxis, number>> = {};
+      for (const axis of ['pan', 'tilt', 'zoom'] as PtzAxis[]) {
+        const entry = cal[axis];
+        if (entry === undefined) continue;
+        if (!isValidCalibrationEntry(entry)) {
+          toast.error(`Entrada inválida para o eixo ${AXIS_LABEL[axis]}.`);
+          return;
+        }
+        next[axis] = entry;
+        nextSweep[axis] = entry.sweep_ms;
+      }
+      if (Object.keys(next).length === 0) {
+        toast.error('Nenhum eixo válido no arquivo importado.');
+        return;
+      }
+      const { error } = await supabase
+        .from('camera_ptz_config')
+        .update({ calibration: next as unknown as Json })
+        .eq('camera_id', cameraId);
+      if (error) {
+        toast.error(`Falha ao salvar calibração importada: ${error.message}`);
+        return;
+      }
+      setCalibration(next);
+      setSweepMsByAxis(nextSweep);
+      toast.success(`Calibração importada (${Object.keys(next).length} eixo(s)).`);
+    } finally {
+      setImportingCalibration(false);
+    }
+  }, [cameraId]);
 
   const clamp = useCallback((axis: PtzAxis, v: number) => {
     const [lo, hi] = AXIS_BOUNDS[axis];
@@ -626,6 +723,43 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        <div className="flex items-center gap-2">
+          <input
+            ref={importInputRef}
+            type="file"
+            accept="application/json,.json"
+            className="hidden"
+            data-testid="calibration-import-input"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              e.target.value = '';
+              if (file) void handleImportCalibration(file);
+            }}
+          />
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleExportCalibration}
+            disabled={Object.keys(calibration).length === 0}
+            data-testid="calibration-export-btn"
+            title="Baixar calibração como JSON"
+          >
+            <Download className="w-3.5 h-3.5 mr-1" /> Exportar
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => importInputRef.current?.click()}
+            disabled={!cameraId || importingCalibration}
+            data-testid="calibration-import-btn"
+            title="Importar calibração de outra câmera similar"
+          >
+            {importingCalibration
+              ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" />
+              : <Upload className="w-3.5 h-3.5 mr-1" />}
+            Importar
+          </Button>
+        </div>
       </div>
 
       <PtzLiveStatusPanel
