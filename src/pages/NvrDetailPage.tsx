@@ -1155,7 +1155,7 @@ export default function NvrDetailPage(): JSX.Element {
                   <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-4 flex items-end justify-between gap-2">
                     <p className="text-base font-medium truncate">{fullscreenChannel.name}</p>
                     <p className="text-xs text-muted-foreground hidden sm:block">
-                      ← / → navegar · Esc fechar{cycleSeconds > 0 ? (cyclePaused ? " · ciclo pausado" : " · passe o mouse para pausar") : ""}
+                      ← / → navegar · Esc fechar{cycleSeconds > 0 ? (cyclePaused ? " · ciclo pausado (P retomar)" : " · P pausar · passe o mouse para pausar") : ""}
                     </p>
                   </div>
                   {cycleSeconds > 0 && total > 1 && (
