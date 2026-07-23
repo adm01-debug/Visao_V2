@@ -7,7 +7,8 @@ import { humanizeFunctionError } from "@/lib/edgeFunctionErrors";
 
 export type PtzCommand =
   | "move" | "stop" | "zoom" | "focus" | "iris"
-  | "goto_preset" | "save_preset" | "delete_preset" | "home" | "test" | "get_status";
+  | "goto_preset" | "save_preset" | "delete_preset" | "home" | "test" | "get_status"
+  | "absolute_move";
 
 export interface PtzStatusPayload {
   supported: true;
