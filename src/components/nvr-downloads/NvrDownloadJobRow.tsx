@@ -110,8 +110,9 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel, onConvert }: Props) 
     sampleRef.current = { ts: nowTs, bytes: row.bytes_downloaded };
   }, [row.bytes_downloaded, isDownloading]);
 
-  const handleDownload = async () => {
-    if (!row.storage_path) return;
+  const handleDownload = async (path?: string | null) => {
+    const target = path ?? row.storage_path;
+    if (!target) return;
     setOpeningUrl(true);
     try {
       const { data, error } = await supabase.storage
