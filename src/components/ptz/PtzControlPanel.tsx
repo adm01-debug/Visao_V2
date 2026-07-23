@@ -141,6 +141,12 @@ export function PtzControlPanel({ cameraId, cameraName }: PtzControlPanelProps) 
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
+        <div className="rounded-md border border-border/60 bg-muted/30 p-3">
+          <RelayAgentSelector value={relayAgentId} onChange={setRelayAgentId} />
+          <p className="text-[11px] text-muted-foreground mt-1.5">
+            Câmera em rede privada? Selecione um Agente Local para rotear os comandos PTZ sem VPN.
+          </p>
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6">
           {/* Joystick + botões direcionais */}
           <div className="flex flex-col items-center gap-3">
