@@ -3607,6 +3607,54 @@ export type Database = {
           },
         ]
       }
+      ptz_preflight_runs: {
+        Row: {
+          aborted: boolean
+          ack_area_clear: boolean
+          ack_confirmed_at: string | null
+          ack_watching_live: boolean
+          axis: string
+          camera_id: string
+          created_at: string
+          id: string
+          limits_snapshot: Json | null
+          outcome: string
+          phases: Json
+          status_supported: boolean
+          user_id: string
+        }
+        Insert: {
+          aborted?: boolean
+          ack_area_clear?: boolean
+          ack_confirmed_at?: string | null
+          ack_watching_live?: boolean
+          axis: string
+          camera_id: string
+          created_at?: string
+          id?: string
+          limits_snapshot?: Json | null
+          outcome: string
+          phases?: Json
+          status_supported?: boolean
+          user_id: string
+        }
+        Update: {
+          aborted?: boolean
+          ack_area_clear?: boolean
+          ack_confirmed_at?: string | null
+          ack_watching_live?: boolean
+          axis?: string
+          camera_id?: string
+          created_at?: string
+          id?: string
+          limits_snapshot?: Json | null
+          outcome?: string
+          phases?: Json
+          status_supported?: boolean
+          user_id?: string
+        }
+        Relationships: []
+      }
       query_telemetry: {
         Row: {
           count_mode: string | null
