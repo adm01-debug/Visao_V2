@@ -3590,6 +3590,36 @@ export type Database = {
         }
         Relationships: []
       }
+      rtsp_preview_sessions: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          path_name: string
+          rtsp_url_hash: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          path_name: string
+          rtsp_url_hash: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          path_name?: string
+          rtsp_url_hash?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       rtsp_revalidation_schedules: {
         Row: {
           camera_id: string
