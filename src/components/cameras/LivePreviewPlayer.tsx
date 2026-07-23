@@ -110,10 +110,28 @@ export function LivePreviewPlayer({
     [invokeFn, onEnded],
   );
 
+  const failWith = useCallback(
+    (code: LivePreviewErrorCode, opts?: { callStop?: boolean }) => {
+      setErrorCode(code);
+      clearTick();
+      clearHlsTimeout();
+      canPlayRef.current = false;
+      if (opts?.callStop && sessionIdRef.current) {
+        void stop("error");
+      } else {
+        endedRef.current = true;
+        setStatus("error");
+        onEnded?.("error");
+      }
+    },
+    [onEnded, stop],
+  );
+
   const start = useCallback(async () => {
     if (status === "starting" || status === "playing") return;
     endedRef.current = false;
-    setErrorMsg(null);
+    canPlayRef.current = false;
+    setErrorCode(null);
     setStatus("starting");
     setRemaining(LIVE_PREVIEW_DEFAULT_SECONDS);
     setExtensions(0);
@@ -136,12 +154,21 @@ export function LivePreviewPlayer({
           return r - 1;
         });
       }, 1000);
+      // Watchdog: se o <video> não emitir `canplay` dentro do prazo, marca hls_timeout.
+      clearHlsTimeout();
+      hlsTimeoutRef.current = setTimeout(() => {
+        if (!canPlayRef.current && !endedRef.current) {
+          failWith("hls_timeout", { callStop: true });
+        }
+      }, LIVE_PREVIEW_HLS_TIMEOUT_MS);
     } catch (e) {
-      setErrorMsg(e instanceof Error ? e.message : "start_failed");
+      const raw = e instanceof Error ? e.message : "start_failed";
+      setErrorCode(raw as LivePreviewErrorCode);
       setStatus("error");
+      endedRef.current = true;
       onEnded?.("error");
     }
-  }, [invokeFn, onEnded, rtspUrl, status, stop]);
+  }, [failWith, invokeFn, onEnded, rtspUrl, status, stop]);
 
   const extend = useCallback(async () => {
     if (status !== "playing" || extensions >= LIVE_PREVIEW_MAX_EXTENSIONS) return;
@@ -154,11 +181,23 @@ export function LivePreviewPlayer({
       setExtensions((n) => n + 1);
       setRemaining((r) => r + LIVE_PREVIEW_EXTEND_SECONDS);
       setStatus("playing");
+      setErrorCode(null);
     } catch (e) {
-      setErrorMsg(e instanceof Error ? e.message : "extend_failed");
+      const raw = e instanceof Error ? e.message : "extend_failed_client";
+      setErrorCode(raw as LivePreviewErrorCode);
       setStatus("playing");
     }
   }, [extensions, invokeFn, status]);
+
+  const handleVideoError = useCallback(() => {
+    if (endedRef.current) return;
+    failWith("connection_dropped", { callStop: true });
+  }, [failWith]);
+
+  const handleVideoCanPlay = useCallback(() => {
+    canPlayRef.current = true;
+    clearHlsTimeout();
+  }, []);
 
   useEffect(() => {
     if (autoStart) void start();
