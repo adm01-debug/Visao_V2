@@ -53,6 +53,8 @@ import { isPrivateIP } from "@/lib/ipUtils";
 import {
   recordConnectivityResolution,
   resolutionToTelemetry,
+  saveCameraConnectivityPreference,
+  type CameraConnectivityPath,
   type ConnectivityChosenPath,
 } from "@/lib/connectivityTelemetry";
 
