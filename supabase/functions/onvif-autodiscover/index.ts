@@ -234,6 +234,15 @@ Deno.serve(async (req) => {
     usingRelay = true;
   } else {
     if (!allow_private && isPrivateHost(host)) {
+      await recordEdgeError({
+        function_name: "onvif-autodiscover",
+        error_code: "private_host_blocked",
+        http_status: 400,
+        target_host: host,
+        run_from: "cloud",
+        message: "Host privado bloqueado sem relay",
+        context: { allow_private, ports: ports ?? null },
+      });
       return j({
         error: "private_host_blocked",
         error_code: "private_host_blocked",
@@ -247,6 +256,7 @@ Deno.serve(async (req) => {
         is_lan_host: true,
       }, 400);
     }
+
     transport = new DirectTransport();
   }
 
@@ -289,6 +299,26 @@ Deno.serve(async (req) => {
         : isLan
           ? "Câmera em rede local — sem rota da nuvem até ela"
           : "Nenhuma porta ONVIF respondeu no host informado",
+    await recordEdgeError({
+      function_name: "onvif-autodiscover",
+      error_code: "no_onvif_endpoint",
+      http_status: 404,
+      target_host: host,
+      run_from: usingRelay ? "relay" : "cloud",
+      relay_agent_id: relay_agent_id ?? null,
+      message: usingRelay
+        ? "Agente local não encontrou ONVIF"
+        : "Nenhuma porta ONVIF respondeu",
+      context: { tested_ports: targets, is_lan_host: isLan },
+    });
+    return j({
+      error: "no_onvif_endpoint",
+      error_code: "no_onvif_endpoint",
+      title: usingRelay
+        ? "Agente local não encontrou ONVIF na câmera"
+        : isLan
+          ? "Câmera em rede local — sem rota da nuvem até ela"
+          : "Nenhuma porta ONVIF respondeu no host informado",
       hint: usingRelay
         ? `O agente local não conseguiu falar com nenhuma porta ONVIF em ${host}.`
         : isLan
@@ -300,14 +330,7 @@ Deno.serve(async (req) => {
       used_relay: usingRelay,
     }, 404);
   }
-  const deviceUrl = hit.url;
-  const discoveredPort = hit.port;
 
-  const header = await wsseHeader(username, password);
-
-  const infoRes = await soap(transport, deviceUrl, header, `<tds:GetDeviceInformation/>`);
-  if (!infoRes.ok && infoRes.status === 401) return j({ error: "auth_failed", hint: "Credenciais ONVIF inválidas." }, 401);
-  const manufacturer = pick(infoRes.text, "Manufacturer");
   const model = pick(infoRes.text, "Model");
   const firmware = pick(infoRes.text, "FirmwareVersion");
 
