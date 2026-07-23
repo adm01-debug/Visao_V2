@@ -213,17 +213,28 @@ export default function NvrDetailPage(): JSX.Element {
   }, [fullscreenId, filteredChannels, channelsQuery.data]);
 
   useEffect(() => {
-    if (!fullscreenId || cycleSeconds === 0) return;
+    setCycleProgress(0);
+    if (!fullscreenId || cycleSeconds === 0 || cyclePaused) return;
     const list = filteredChannels.length > 0 ? filteredChannels : (channelsQuery.data ?? []);
     if (list.length < 2) return;
-    const timer = window.setInterval(() => {
+    const totalMs = cycleSeconds * 1000;
+    const startedAt = Date.now();
+    const tick = window.setInterval(() => {
+      const elapsed = Date.now() - startedAt;
+      setCycleProgress(Math.min(1, elapsed / totalMs));
+    }, 100);
+    const timer = window.setTimeout(() => {
       const idx = list.findIndex((c) => c.id === fullscreenId);
       if (idx < 0) return;
       const next = list[(idx + 1) % list.length];
       if (next) setFullscreenId(next.id);
-    }, cycleSeconds * 1000);
-    return () => window.clearInterval(timer);
-  }, [fullscreenId, cycleSeconds, filteredChannels, channelsQuery.data]);
+    }, totalMs);
+    return () => {
+      window.clearInterval(tick);
+      window.clearTimeout(timer);
+    };
+  }, [fullscreenId, cycleSeconds, cyclePaused, filteredChannels, channelsQuery.data]);
+
 
   async function bulkAction(action: "arm" | "disarm"): Promise<void> {
     const channels = channelsQuery.data ?? [];
