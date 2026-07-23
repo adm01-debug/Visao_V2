@@ -168,12 +168,7 @@ Deno.serve(async (req) => {
       dedup_skipped: dedupSkipped,
       delivered,
       delivery_error: deliveryError,
-      details: problems.map((p) => ({
-        jobname: p.job.jobname,
-        reason: p.reason,
-        last_status: p.job.last_status,
-        failure_count_24h: p.job.failure_count_24h,
-      })),
+      details,
     });
   } catch (e) {
     console.error(
