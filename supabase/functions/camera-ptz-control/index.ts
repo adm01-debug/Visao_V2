@@ -90,7 +90,7 @@ function applyLimits(
   limits: Limits,
 ): { params: NonNullable<PtzPayload['params']>; adjusted: AdjustedMap } {
   const adjusted: AdjustedMap = {};
-  if (command !== 'move' && command !== 'zoom') {
+  if (command !== 'move' && command !== 'zoom' && command !== 'absolute_move') {
     return { params, adjusted };
   }
   const next = { ...params };
