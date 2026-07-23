@@ -323,6 +323,10 @@ export default function OperationsPage() {
       </section>
 
       <section>
+        <RetentionOverviewCard />
+      </section>
+
+      <section>
         <PreviewTelemetryCard defaultWindowHours={24} />
       </section>
 
