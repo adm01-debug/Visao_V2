@@ -85,10 +85,12 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { camera_id, backends, relay_agent_id = null } = await req.json() as {
+    const { camera_id, backends, relay_agent_id = null, profile_id = null, source = 'backends_test' } = await req.json() as {
       camera_id: string;
       backends?: Backend[];
       relay_agent_id?: string | null;
+      profile_id?: string | null;
+      source?: 'backends_test' | 'runtime' | 'wizard';
     };
     if (!camera_id) {
       return new Response(JSON.stringify({ error: 'camera_id_obrigatorio' }), {
