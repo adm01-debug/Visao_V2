@@ -1,13 +1,15 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PageMeta } from "@/components/PageMeta";
-import { ArrowLeft, Server, Radio, Wifi, WifiOff, HelpCircle } from "lucide-react";
+import { ArrowLeft, Server, Radio, Wifi, WifiOff, HelpCircle, Lock, Unlock, Loader2 } from "lucide-react";
 
 interface NvrRow {
   id: string;
@@ -93,6 +95,48 @@ export default function NvrDetailPage(): JSX.Element {
   }, [channelsQuery.data]);
 
   const nvr = nvrQuery.data;
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [bulkBusy, setBulkBusy] = useState<null | "arm" | "disarm">(null);
+
+  async function bulkAction(action: "arm" | "disarm"): Promise<void> {
+    const channels = channelsQuery.data ?? [];
+    if (!user || channels.length === 0) return;
+    setBulkBusy(action);
+    try {
+      if (action === "arm") {
+        const payload = channels.map((c) => ({
+          user_id: user.id,
+          camera_id: c.id,
+          state: "armed" as const,
+          armed_by_email: user.email ?? null,
+          armed_at: new Date().toISOString(),
+          disarm_at: null,
+        }));
+        const { error } = await supabase.from("arm_disarm_states").upsert(payload, { onConflict: "camera_id" });
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("arm_disarm_states")
+          .update({ state: "disarmed", updated_at: new Date().toISOString() })
+          .in("camera_id", channels.map((c) => c.id))
+          .eq("user_id", user.id);
+        if (error) throw error;
+      }
+      toast({
+        title: action === "arm" ? "🔒 Canais armados" : "🔓 Canais desarmados",
+        description: `${channels.length} canais do NVR ${nvr?.name ?? ""}.`,
+      });
+    } catch (e) {
+      toast({
+        title: "Falha na operação em lote",
+        description: (e as Error).message,
+        variant: "destructive",
+      });
+    } finally {
+      setBulkBusy(null);
+    }
+  }
 
   return (
     <div className="container mx-auto py-6 space-y-6 mb-mobile-nav">
@@ -122,14 +166,46 @@ export default function NvrDetailPage(): JSX.Element {
       {nvr && (
         <>
           <header className="space-y-1">
-            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-              <Server className="h-7 w-7 text-primary" aria-hidden />
-              {nvr.name}
-            </h1>
-            <p className="text-muted-foreground">
-              {nvr.brand.toUpperCase()} · <span className="font-mono">{nvr.host}:{nvr.rtsp_port}</span>
-              {nvr.location && <> · {nvr.location}</>}
-            </p>
+            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+                  <Server className="h-7 w-7 text-primary" aria-hidden />
+                  {nvr.name}
+                </h1>
+                <p className="text-muted-foreground">
+                  {nvr.brand.toUpperCase()} · <span className="font-mono">{nvr.host}:{nvr.rtsp_port}</span>
+                  {nvr.location && <> · {nvr.location}</>}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={bulkBusy !== null || (channelsQuery.data?.length ?? 0) === 0}
+                  onClick={() => bulkAction("arm")}
+                >
+                  {bulkBusy === "arm" ? (
+                    <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                  ) : (
+                    <Lock className="h-4 w-4 mr-1" />
+                  )}
+                  Armar todos
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={bulkBusy !== null || (channelsQuery.data?.length ?? 0) === 0}
+                  onClick={() => bulkAction("disarm")}
+                >
+                  {bulkBusy === "disarm" ? (
+                    <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                  ) : (
+                    <Unlock className="h-4 w-4 mr-1" />
+                  )}
+                  Desarmar todos
+                </Button>
+              </div>
+            </div>
           </header>
 
           <div className="grid gap-4 md:grid-cols-3">
