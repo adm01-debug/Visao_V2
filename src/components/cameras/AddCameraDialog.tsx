@@ -200,6 +200,8 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     manualMode: false,
     manualPort: "",
     relayAgentId: "",
+    profileId: null,
+    profileDisplayName: null,
   });
   const [relayAgents, setRelayAgents] = useState<RelayAgentOption[]>([]);
   const [connectivityWizardOpen, setConnectivityWizardOpen] = useState(false);
