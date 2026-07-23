@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
 import type { usePtzControl } from '@/hooks/usePtzControl';
 import { PtzLimitPreflightDialog } from './PtzLimitPreflightDialog';
+import { PtzMultiAxisPreflightDialog } from './PtzMultiAxisPreflightDialog';
 import { PtzAxisRangeVisualizer } from './PtzAxisRangeVisualizer';
 import { formatHistorySummary, type LimitsHistoryItem } from './lib/limitsHistory';
 import { PtzLiveStatusPanel } from './PtzLiveStatusPanel';
@@ -88,6 +89,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
     zoom: { min: false, max: false },
   });
   const [preflightAxis, setPreflightAxis] = useState<PtzAxis | null>(null);
+  const [multiPreflightOpen, setMultiPreflightOpen] = useState(false);
 
   // Revalidação: comando tempo-baseado → posição reportada. Erro estimado por eixo.
   interface RevalidationResult {
@@ -759,6 +761,16 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
               : <Upload className="w-3.5 h-3.5 mr-1" />}
             Importar
           </Button>
+          <Button
+            size="sm"
+            variant="default"
+            onClick={() => setMultiPreflightOpen(true)}
+            disabled={measuringAxis !== null || revalidatingAxis !== null || preflightAxis !== null}
+            data-testid="multi-preflight-open"
+            title="Validar limites em sequência para todos os eixos"
+          >
+            <ShieldCheck className="w-3.5 h-3.5 mr-1" /> Validar todos
+          </Button>
         </div>
       </div>
 
@@ -1040,6 +1052,19 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
           cameraId={cameraId}
         />
       )}
+
+      <PtzMultiAxisPreflightDialog
+        open={multiPreflightOpen}
+        onOpenChange={setMultiPreflightOpen}
+        axes={['pan', 'tilt', 'zoom']}
+        limitsByAxis={limits}
+        sweepMsByAxis={sweepMsByAxis}
+        statusSupported={statusSupported === true}
+        startPositions={position}
+        ptz={ptz}
+        cameraId={cameraId}
+      />
+
     </div>
   );
 }
