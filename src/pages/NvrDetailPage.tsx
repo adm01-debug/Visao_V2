@@ -561,15 +561,42 @@ export default function NvrDetailPage(): JSX.Element {
                         <ToggleGroupItem value="channel-desc" aria-label="Canal decrescente">CH ↓</ToggleGroupItem>
                         <ToggleGroupItem value="name-asc" aria-label="Nome A-Z">A-Z</ToggleGroupItem>
                       </ToggleGroup>
+                      <ToggleGroup
+                        type="single"
+                        size="sm"
+                        value={String(autoRefreshSeconds)}
+                        onValueChange={(v) => {
+                          if (!v) return;
+                          const n = Number(v);
+                          if (n === 0 || n === 10 || n === 30 || n === 60) setAutoRefreshSeconds(n);
+                        }}
+                        aria-label="Intervalo de auto-refresh"
+                      >
+                        <ToggleGroupItem value="0" aria-label="Auto-refresh desligado">Off</ToggleGroupItem>
+                        <ToggleGroupItem value="10">10s</ToggleGroupItem>
+                        <ToggleGroupItem value="30">30s</ToggleGroupItem>
+                        <ToggleGroupItem value="60">60s</ToggleGroupItem>
+                      </ToggleGroup>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setAutoRefreshPaused((p) => !p)}
+                        disabled={autoRefreshSeconds === 0}
+                        aria-label={autoRefreshPaused ? "Retomar auto-refresh" : "Pausar auto-refresh"}
+                        title={autoRefreshPaused ? "Retomar" : "Pausar"}
+                      >
+                        {autoRefreshPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+                      </Button>
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => void channelsQuery.refetch()}
                         disabled={channelsQuery.isFetching}
-                        aria-label="Atualizar canais"
+                        aria-label="Atualizar canais agora"
                       >
                         <RefreshCw className={"h-4 w-4 " + (channelsQuery.isFetching ? "animate-spin" : "")} />
                       </Button>
+
                     </div>
                   </div>
 
