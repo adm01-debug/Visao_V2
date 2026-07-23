@@ -465,21 +465,23 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
           ...(autoDiscover.relayAgentId ? { relay_agent_id: autoDiscover.relayAgentId } : {}),
         },
       });
-      if (error) throw new Error(error.message);
-      if (data?.error) {
-        setPortProbe((s) => ({ ...s, loading: false, error: data.hint || data.error }));
+      const payload = (data as Record<string, any> | null) ?? (error ? await readFunctionErrorBody(error) : null);
+      if (!payload && error) throw new Error(error.message);
+      if (payload?.error) {
+        setPortProbe((s) => ({ ...s, loading: false, error: (payload.hint as string) || (payload.error as string) }));
         return;
       }
+      const result = (payload ?? {}) as Record<string, any>;
       setPortProbe({
         loading: false,
-        results: data.results ?? [],
-        summary: data.summary ?? null,
-        nextStep: data.next_step ?? null,
+        results: result.results ?? [],
+        summary: result.summary ?? null,
+        nextStep: result.next_step ?? null,
         error: null,
       });
       // Se o modo manual estiver ativo e o probe sugerir uma porta ONVIF, pré-preenche.
-      if (autoDiscover.manualMode && !autoDiscover.manualPort && data?.summary?.suggested_onvif?.[0]) {
-        setAutoDiscover((s) => ({ ...s, manualPort: String(data.summary.suggested_onvif[0]) }));
+      if (autoDiscover.manualMode && !autoDiscover.manualPort && result?.summary?.suggested_onvif?.[0]) {
+        setAutoDiscover((s) => ({ ...s, manualPort: String(result.summary.suggested_onvif[0]) }));
       }
     } catch (err) {
       setPortProbe({ loading: false, results: [], summary: null, nextStep: null, error: safeErrorMessage(err) });
