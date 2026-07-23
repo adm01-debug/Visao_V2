@@ -1336,6 +1336,27 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
             </div>
           </div>
 
+          <RtspVariantBenchmarkCard
+            variants={benchmarkVariants}
+            ctx={{
+              host: templateCtx.host,
+              port: templateCtx.port ? Number(templateCtx.port) : undefined,
+              channel: templateCtx.channel ? Number(templateCtx.channel) : 1,
+              username: form.watch("username") || undefined,
+              password: form.watch("password") || undefined,
+            }}
+            disabledReason={
+              !templateCtx.host.trim()
+                ? "Informe o IP/host para habilitar o benchmark."
+                : benchmarkVariants.length === 0
+                ? "Selecione uma marca com templates cadastrados."
+                : null
+            }
+            onApplyBest={handleApplyBenchmarkBest}
+          />
+
+
+
 
 
 
