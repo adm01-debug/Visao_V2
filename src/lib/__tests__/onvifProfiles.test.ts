@@ -5,7 +5,8 @@ import {
   resolveProfileByHardwareId,
   resolveProfileByManufacturer,
 } from "../onvifProfiles";
-import { findTemplate, renderTemplate } from "../rtspTemplates";
+import { RTSP_TEMPLATES, findTemplate, renderTemplate } from "../rtspTemplates";
+
 
 describe("onvifProfiles catalog", () => {
   it("expõe o perfil XiongMai NBD80X", () => {
