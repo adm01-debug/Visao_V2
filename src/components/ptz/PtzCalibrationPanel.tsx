@@ -436,7 +436,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                 size="sm"
                 variant="outline"
                 onClick={() => void measureSweep(axis)}
-                disabled={statusSupported !== true || measuringAxis !== null}
+                disabled={statusSupported !== true || measuringAxis !== null || preflightAxis !== null}
                 title={statusSupported === false
                   ? 'Driver não expõe ONVIF GetStatus'
                   : 'Aciona o dome e mede o tempo real de varredura'}
@@ -445,13 +445,31 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                   ? (<><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Medindo…</>)
                   : (<><Gauge className="w-3.5 h-3.5 mr-1" /> {statusSupported === false ? 'Medição indisponível' : 'Medir sweep real'}</>)}
               </Button>
-              <Button size="sm" variant="outline" onClick={() => capture(axis, 'min')} disabled={measuringAxis !== null}>
+              <Button size="sm" variant="outline" onClick={() => capture(axis, 'min')} disabled={measuringAxis !== null || preflightAxis !== null}>
                 Marcar mínimo
               </Button>
-              <Button size="sm" variant="outline" onClick={() => capture(axis, 'max')} disabled={measuringAxis !== null}>
+              <Button size="sm" variant="outline" onClick={() => capture(axis, 'max')} disabled={measuringAxis !== null || preflightAxis !== null}>
                 Marcar máximo
               </Button>
-              <Button size="sm" variant="ghost" onClick={() => resetAxis(axis)} disabled={measuringAxis !== null}>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setPreflightAxis(axis)}
+                disabled={
+                  measuringAxis !== null ||
+                  preflightAxis !== null ||
+                  !freshCaptures[axis].min ||
+                  !freshCaptures[axis].max
+                }
+                title={
+                  !freshCaptures[axis].min || !freshCaptures[axis].max
+                    ? 'Capture mínimo e máximo nesta sessão antes de validar'
+                    : 'Executa pré-voo até os limites com confirmação'
+                }
+              >
+                <ShieldCheck className="w-3.5 h-3.5 mr-1" /> Validar limites
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => resetAxis(axis)} disabled={measuringAxis !== null || preflightAxis !== null}>
                 Reset
               </Button>
             </div>
