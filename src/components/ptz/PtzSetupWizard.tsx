@@ -195,7 +195,7 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
         ? (orderedBackends.length ? orderedBackends : autoMultiBackends)
         : (protocol ? [protocol] : []);
       const { data, error } = await supabase.functions.invoke('ptz-backends-test', {
-        body: { camera_id: cameraId, backends },
+        body: { camera_id: cameraId, backends, profile_id: profileId ?? null, source: 'wizard' },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.hint ?? data.error);
