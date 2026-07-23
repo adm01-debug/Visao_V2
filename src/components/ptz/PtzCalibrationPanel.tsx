@@ -932,12 +932,21 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
             size="sm"
             variant="default"
             onClick={() => setMultiPreflightOpen(true)}
-            disabled={measuringAxis !== null || revalidatingAxis !== null || preflightAxis !== null}
+            disabled={
+              measuringAxis !== null ||
+              revalidatingAxis !== null ||
+              preflightAxis !== null ||
+              recapturingAxis !== null ||
+              hasRecaptureRequired
+            }
             data-testid="multi-preflight-open"
-            title="Validar limites em sequência para todos os eixos"
+            title={hasRecaptureRequired
+              ? 'Recapture min/max dos eixos com desvio antes de validar todos'
+              : 'Validar limites em sequência para todos os eixos'}
           >
             <ShieldCheck className="w-3.5 h-3.5 mr-1" /> Validar todos
           </Button>
+
         </div>
       </div>
 
