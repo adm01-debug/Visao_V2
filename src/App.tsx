@@ -52,6 +52,7 @@ const AlertsPage = lazy(() => import("@/pages/AlertsPage"));
 const ZonesPage = lazy(() => import("@/pages/ZonesPage"));
 const RecordingsPage = lazy(() => import("@/pages/RecordingsPage"));
 const SyncPlaybackPage = lazy(() => import("@/pages/SyncPlaybackPage"));
+const NvrDownloadsPage = lazy(() => import("@/pages/NvrDownloadsPage"));
 const AnalyticsPage = lazy(() => import("@/pages/AnalyticsPage"));
 const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
 const SecurityPage = lazy(() => import("@/pages/SecurityPage"));
