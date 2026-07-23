@@ -165,7 +165,7 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel }: Props) {
         </div>
       </td>
       <td className="p-3 align-top">
-        <div className="w-40">
+        <div className="w-44">
           <Progress value={Math.round(row.progress_percent)} className="h-2" />
           <div className="mt-1 flex justify-between text-[11px] text-muted-foreground">
             <span>{Math.round(row.progress_percent)}%</span>
@@ -174,6 +174,27 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel }: Props) {
               {row.total_bytes ? ` / ${formatBytes(row.total_bytes)}` : ''}
             </span>
           </div>
+          {isDownloading && (
+            <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-muted-foreground">
+              <span>Decorrido {formatDuration(elapsedSec)}</span>
+              {etaSec !== null && (
+                <span className="text-foreground/80">
+                  · Restante ~{formatDuration(etaSec)}
+                </span>
+              )}
+              {rateRef.current > 0 && (
+                <span>· {formatBytes(rateRef.current)}/s</span>
+              )}
+              {stalled && (
+                <span className="text-amber-600 dark:text-amber-400">· sem atualização há &gt;1min</span>
+              )}
+            </div>
+          )}
+          {row.status === 'completed' && (
+            <div className="mt-1 text-[11px] text-muted-foreground">
+              Concluído em {formatDuration(elapsedSec)}
+            </div>
+          )}
         </div>
         {row.last_error && (
           <div className="mt-1 max-w-[16rem] truncate text-[11px] text-destructive" title={row.last_error}>
@@ -192,7 +213,7 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel }: Props) {
               Baixar
             </Button>
           )}
-          {(row.status === 'failed' || row.status === 'canceled') && (
+          {(row.status === 'failed' || row.status === 'canceled' || stalled) && (
             <Button size="sm" variant="outline" onClick={() => onRetry(row)}>
               <RefreshCw className="mr-1 h-3.5 w-3.5" />
               Tentar novamente
