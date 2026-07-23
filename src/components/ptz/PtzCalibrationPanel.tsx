@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Crosshair, Gauge, History, Home, Loader2, RotateCcw, ShieldCheck, Signal, ZoomIn, ZoomOut,
+  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Crosshair, Gauge, History, Home, Loader2, RotateCcw, ShieldCheck, Signal, Target, ZoomIn, ZoomOut,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
