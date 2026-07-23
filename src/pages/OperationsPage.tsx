@@ -9,6 +9,7 @@ import { SlowQueriesCard } from '@/components/admin/SlowQueriesCard';
 import { RetentionOverviewCard } from '@/components/admin/RetentionOverviewCard';
 import { PreviewTelemetryCard } from '@/components/admin/PreviewTelemetryCard';
 import { EdgeErrorsAuditCard } from '@/components/admin/EdgeErrorsAuditCard';
+import { ConnectivityResolutionCard } from '@/components/admin/ConnectivityResolutionCard';
 
 import { PreviewAlertStatusCard } from '@/components/admin/PreviewAlertStatusCard';
 import { CameraHealthCard } from '@/components/admin/CameraHealthCard';
