@@ -241,7 +241,7 @@ export default function CspReportsDashboardPage() {
           </p>
         </>
       )}
-    </div>
+    </PageContent>
   );
 }
 

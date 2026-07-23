@@ -141,7 +141,7 @@ export default function ApiUsageDashboardPage() {
           </p>
         </>
       )}
-    </div>
+    </PageContent>
   );
 }
 
