@@ -117,7 +117,7 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel, onConvert }: Props) 
     try {
       const { data, error } = await supabase.storage
         .from(row.storage_bucket)
-        .createSignedUrl(row.storage_path, 60 * 10);
+        .createSignedUrl(target, 60 * 10);
       if (error || !data?.signedUrl) throw error ?? new Error('URL indisponível');
       window.open(data.signedUrl, '_blank', 'noopener,noreferrer');
     } catch (e) {
