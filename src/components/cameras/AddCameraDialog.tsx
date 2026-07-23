@@ -353,11 +353,24 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       });
       if (error) throw new Error(error.message);
       if (data?.error) {
+        const steps: string[] = Array.isArray(data.steps) ? data.steps.filter((s: unknown): s is string => typeof s === "string") : [];
+        const detail: AutoDiscoverErrorDetail | null = steps.length
+          ? {
+              code: String(data.error_code ?? data.error),
+              title: typeof data.title === "string" ? data.title : "Não foi possível alcançar a câmera",
+              hint: typeof data.hint === "string" ? data.hint : String(data.error),
+              steps,
+              isLanHost: Boolean(data.is_lan_host),
+              usedRelay: Boolean(data.used_relay),
+              testedPorts: Array.isArray(data.tested_ports) ? data.tested_ports : [],
+            }
+          : null;
         setAutoDiscover((s) => ({
           ...s,
           loading: false,
           ok: false,
           message: data.hint || data.error,
+          errorDetail: detail,
         }));
         return;
       }
