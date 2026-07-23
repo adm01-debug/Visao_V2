@@ -75,6 +75,8 @@ import {
 } from "@/lib/rtspTemplates";
 import { FirmwareAutodetectCard, type FirmwareAutodetectSuggestion } from "./FirmwareAutodetectCard";
 import { getProfileById } from "@/lib/onvifProfiles";
+import { RtspVariantBenchmarkCard } from "./RtspVariantBenchmarkCard";
+import type { BenchmarkVariantInput, BenchmarkVariantResult } from "@/lib/rtspVariantBenchmark";
 
 interface AddCameraDialogProps {
   open: boolean;
@@ -280,6 +282,34 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     () => (templateCtx.templateId ? findTemplate(brand, templateCtx.templateId) : undefined),
     [brand, templateCtx.templateId],
   );
+
+  /**
+   * Variantes a testar no benchmark:
+   *  - Se um perfil ONVIF foi detectado, usa `profile.rtspVariants` (respeita marca OEM real).
+   *  - Caso contrário, usa todos os templates da marca escolhida.
+   */
+  const benchmarkVariants: BenchmarkVariantInput[] = useMemo(() => {
+    const profile = autoDiscover.profileId ? getProfileById(autoDiscover.profileId) : null;
+    if (profile) {
+      const items: BenchmarkVariantInput[] = [];
+      for (const v of profile.rtspVariants) {
+        const tpl = findTemplate(v.brand, v.templateId);
+        if (tpl) items.push({ brand: v.brand, template: tpl, recommended: Boolean(v.recommended) });
+      }
+      return items;
+    }
+    return brandTemplates.map((tpl) => ({ brand, template: tpl } satisfies BenchmarkVariantInput));
+  }, [autoDiscover.profileId, brand, brandTemplates]);
+
+  const handleApplyBenchmarkBest = (best: BenchmarkVariantResult) => {
+    form.setValue("brand", best.brand as AddCameraFormValues["brand"], { shouldDirty: true });
+    form.setValue("rtspUrl", best.primaryUrl, { shouldValidate: true, shouldDirty: true });
+    if (best.substreamUrl) {
+      form.setValue("substreamUrl", best.substreamUrl, { shouldValidate: true, shouldDirty: true });
+    }
+    setTemplateCtx((prev) => ({ ...prev, templateId: best.templateId }));
+    toast.success(`URL da variante "${best.templateLabel}" aplicada.`);
+  };
 
   // Ao trocar de marca, reseta o template selecionado (mas mantém host/canal digitados).
   useEffect(() => {
@@ -1305,6 +1335,27 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
               </Button>
             </div>
           </div>
+
+          <RtspVariantBenchmarkCard
+            variants={benchmarkVariants}
+            ctx={{
+              host: templateCtx.host,
+              port: templateCtx.port ? Number(templateCtx.port) : undefined,
+              channel: templateCtx.channel ? Number(templateCtx.channel) : 1,
+              username: form.watch("username") || undefined,
+              password: form.watch("password") || undefined,
+            }}
+            disabledReason={
+              !templateCtx.host.trim()
+                ? "Informe o IP/host para habilitar o benchmark."
+                : benchmarkVariants.length === 0
+                ? "Selecione uma marca com templates cadastrados."
+                : null
+            }
+            onApplyBest={handleApplyBenchmarkBest}
+          />
+
+
 
 
 
