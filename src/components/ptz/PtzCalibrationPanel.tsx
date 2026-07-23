@@ -76,6 +76,14 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
   const [measuringAxis, setMeasuringAxis] = useState<PtzAxis | null>(null);
   const measureAbortRef = useRef<boolean>(false);
 
+  // Rastreia quais eixos tiveram min/max capturados NESTA sessão (habilita pré-voo).
+  const [freshCaptures, setFreshCaptures] = useState<Record<PtzAxis, { min: boolean; max: boolean }>>({
+    pan: { min: false, max: false },
+    tilt: { min: false, max: false },
+    zoom: { min: false, max: false },
+  });
+  const [preflightAxis, setPreflightAxis] = useState<PtzAxis | null>(null);
+
   const clamp = useCallback((axis: PtzAxis, v: number) => {
     const [lo, hi] = AXIS_BOUNDS[axis];
     return Math.max(lo, Math.min(hi, v));
