@@ -655,6 +655,30 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
               >
                 <ShieldCheck className="w-3.5 h-3.5 mr-1" /> Validar limites
               </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => void revalidateCalibration(axis)}
+                disabled={
+                  statusSupported !== true ||
+                  measuringAxis !== null ||
+                  preflightAxis !== null ||
+                  revalidatingAxis !== null ||
+                  sweepMsByAxis[axis] == null
+                }
+                title={
+                  statusSupported !== true
+                    ? 'Driver não expõe ONVIF GetStatus'
+                    : sweepMsByAxis[axis] == null
+                      ? 'Meça o sweep real antes de revalidar'
+                      : 'Compara Δ predito (tempo→posição) com Δ real reportado pelo dome'
+                }
+                data-testid={`ptz-revalidate-${axis}`}
+              >
+                {revalidatingAxis === axis
+                  ? (<><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Revalidando…</>)
+                  : (<><Target className="w-3.5 h-3.5 mr-1" /> Revalidar</>)}
+              </Button>
               <Button size="sm" variant="ghost" onClick={() => resetAxis(axis)} disabled={measuringAxis !== null || preflightAxis !== null}>
                 Reset
               </Button>
@@ -667,6 +691,30 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                 {new Date(cal.measured_at).toLocaleString()}
               </div>
             )}
+
+            {validation[axis] && (() => {
+              const v = validation[axis]!;
+              const severity = v.error_pct <= 5 ? 'ok' : v.error_pct <= 15 ? 'warn' : 'bad';
+              const cls = severity === 'ok'
+                ? 'border-emerald-500/40 bg-emerald-500/5 text-emerald-700 dark:text-emerald-300'
+                : severity === 'warn'
+                  ? 'border-amber-500/40 bg-amber-500/5 text-amber-700 dark:text-amber-300'
+                  : 'border-destructive/50 bg-destructive/5 text-destructive';
+              return (
+                <div
+                  className={`rounded-md border p-2 text-[11px] font-mono flex flex-wrap gap-x-3 gap-y-1 ${cls}`}
+                  data-testid={`ptz-revalidate-result-${axis}`}
+                >
+                  <span><b>Erro estimado:</b> {v.error_pct.toFixed(1)}% (|Δ|={v.error_abs.toFixed(3)})</span>
+                  <span>predito {v.predicted_delta >= 0 ? '+' : ''}{v.predicted_delta.toFixed(3)}</span>
+                  <span>real {v.actual_delta >= 0 ? '+' : ''}{v.actual_delta.toFixed(3)}</span>
+                  <span>[{v.p0.toFixed(2)} → {v.p1.toFixed(2)}]</span>
+                  <span>dir {v.direction > 0 ? '+' : '−'} · {v.duration_ms}ms</span>
+                  <span className="opacity-70">{new Date(v.at).toLocaleTimeString()}</span>
+                </div>
+              );
+            })()}
+
 
             <PtzAxisRangeVisualizer
               axis={axis}
