@@ -484,6 +484,12 @@ export default function TestModePage() {
 
       )}
 
+      <DryRunReportCard
+        executions={filtered}
+        session={activeSession ?? null}
+        zonesMap={zonesMap}
+      />
+
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex flex-wrap items-center justify-between gap-3 text-base">
