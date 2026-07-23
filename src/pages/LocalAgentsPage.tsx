@@ -15,6 +15,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { PageMeta } from "@/components/PageMeta";
 import { RelayReliabilityCard } from "@/components/local-agents/RelayReliabilityCard";
+import { RelayPurgeHistoryCard } from "@/components/local-agents/RelayPurgeHistoryCard";
 
 interface LocalAgent {
   id: string;
@@ -297,8 +298,9 @@ export default function LocalAgentsPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="reliability" className="mt-4">
+        <TabsContent value="reliability" className="mt-4 space-y-4">
           <RelayReliabilityCard hours={24} />
+          <RelayPurgeHistoryCard />
         </TabsContent>
 
         <TabsContent value="install" className="mt-4 space-y-4">
