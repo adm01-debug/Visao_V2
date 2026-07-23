@@ -95,6 +95,48 @@ export default function NvrDetailPage(): JSX.Element {
   }, [channelsQuery.data]);
 
   const nvr = nvrQuery.data;
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [bulkBusy, setBulkBusy] = useState<null | "arm" | "disarm">(null);
+
+  async function bulkAction(action: "arm" | "disarm"): Promise<void> {
+    const channels = channelsQuery.data ?? [];
+    if (!user || channels.length === 0) return;
+    setBulkBusy(action);
+    try {
+      if (action === "arm") {
+        const payload = channels.map((c) => ({
+          user_id: user.id,
+          camera_id: c.id,
+          state: "armed" as const,
+          armed_by_email: user.email ?? null,
+          armed_at: new Date().toISOString(),
+          disarm_at: null,
+        }));
+        const { error } = await supabase.from("arm_disarm_states").upsert(payload, { onConflict: "camera_id" });
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("arm_disarm_states")
+          .update({ state: "disarmed", updated_at: new Date().toISOString() })
+          .in("camera_id", channels.map((c) => c.id))
+          .eq("user_id", user.id);
+        if (error) throw error;
+      }
+      toast({
+        title: action === "arm" ? "🔒 Canais armados" : "🔓 Canais desarmados",
+        description: `${channels.length} canais do NVR ${nvr?.name ?? ""}.`,
+      });
+    } catch (e) {
+      toast({
+        title: "Falha na operação em lote",
+        description: (e as Error).message,
+        variant: "destructive",
+      });
+    } finally {
+      setBulkBusy(null);
+    }
+  }
 
   return (
     <div className="container mx-auto py-6 space-y-6 mb-mobile-nav">
