@@ -48,6 +48,8 @@ import { useCameras } from "@/hooks/useCameras";
 import { useCameraVault } from "@/hooks/useCameraVault";
 import { supabase } from "@/integrations/supabase/client";
 import { readFunctionErrorBody } from "@/lib/edgeFunctionErrors";
+import { isPrivateIP } from "@/lib/ipUtils";
+
 
 import {
   addCameraSchema,
@@ -142,6 +144,31 @@ function safeErrorMessage(err: unknown): string {
 }
 
 // readFunctionErrorBody importado de @/lib/edgeFunctionErrors
+
+/**
+ * Pré-flight LAN: se o host informado for um IP privado (192.168.x.x,
+ * 10.x.x.x, 172.16-31.x.x) e o usuário NÃO selecionou um Agente Local,
+ * a Edge Function na nuvem certamente falhará com `private_host_blocked`.
+ * Retornamos o mesmo shape de erro estruturado que a função retornaria,
+ * evitando o round-trip e mostrando a orientação imediatamente.
+ */
+function buildPrivateHostBlockedDetail(host: string): AutoDiscoverErrorDetail {
+  return {
+    code: "private_host_blocked",
+    title: "Host privado/LAN bloqueado",
+    hint: `${host} está em rede local — a nuvem VISÃO não alcança IPs privados diretamente. Escolha um caminho abaixo para conectar.`,
+    steps: [
+      "Opção A (recomendada) — Selecione um Agente Local ativo no seletor acima. Ele executa a descoberta a partir da mesma rede da câmera.",
+      "Opção B — Configure port-forwarding no roteador (portas 80/554/8000) e informe o IP público/DDNS em vez do IP interno.",
+      "Opção C — Conecte-se via VPN à rede da câmera antes de rodar a descoberta.",
+      "Se souber que a câmera está exposta legitimamente, ative 'Permitir host privado' para forçar a tentativa.",
+    ],
+    isLanHost: true,
+    usedRelay: false,
+    testedPorts: [],
+  };
+}
+
 
 
 export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" }: AddCameraDialogProps) {
@@ -339,7 +366,20 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       toast.error("Preencha usuário e senha antes de descobrir.");
       return;
     }
+    // Pré-flight LAN: evita chamada certa de falhar quando IP é privado e não há relay.
+    if (
+      isPrivateIP(host) &&
+      !autoDiscover.relayAgentId &&
+      !autoDiscover.allowPrivate &&
+      !autoDiscover.manualMode
+    ) {
+      const detail = buildPrivateHostBlockedDetail(host);
+      setAutoDiscover((s) => ({ ...s, loading: false, ok: false, message: detail.hint, errorDetail: detail }));
+      toast.warning("IP em rede local detectado — selecione um Agente Local ou ajuste a configuração.");
+      return;
+    }
     setAutoDiscover((s) => ({ ...s, loading: true, ok: null, message: null, errorDetail: null }));
+
     try {
       const manualPortNum = autoDiscover.manualMode
         ? Number.parseInt(autoDiscover.manualPort.trim(), 10)
@@ -433,7 +473,21 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       toast.error("Informe o IP/hostname da câmera antes de testar portas.");
       return;
     }
+    // Pré-flight LAN: mesma proteção do autodiscover para o probe de portas.
+    if (
+      isPrivateIP(host) &&
+      !autoDiscover.relayAgentId &&
+      !autoDiscover.allowPrivate &&
+      !autoDiscover.manualMode
+    ) {
+      const detail = buildPrivateHostBlockedDetail(host);
+      setAutoDiscover((s) => ({ ...s, ok: false, message: detail.hint, errorDetail: detail }));
+      setPortProbe({ loading: false, results: [], summary: null, nextStep: null, error: detail.hint });
+      toast.warning("IP em rede local — sondagem precisa de Agente Local ou host público.");
+      return;
+    }
     setPortProbe({ loading: true, results: [], summary: null, nextStep: null, error: null });
+
     try {
       const { data, error } = await supabase.functions.invoke("camera-port-probe", {
         body: {
