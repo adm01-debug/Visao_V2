@@ -66,7 +66,7 @@ export async function logPreviewEvent(input: PreviewEventInput): Promise<void> {
       duration_ms: Number.isFinite(input.durationMs) ? Number(input.durationMs) : null,
       latency_ms: Number.isFinite(input.latencyMs) ? Number(input.latencyMs) : null,
       extensions: Number.isFinite(input.extensions) ? Number(input.extensions) : null,
-      metadata: input.metadata ?? {},
+      metadata: (input.metadata ?? {}) as unknown as import("@/integrations/supabase/types").Json,
     };
 
     const { error } = await supabase
