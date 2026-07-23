@@ -29,6 +29,7 @@ import {
   resetWizardSession,
   type WizardRuleInput,
 } from '@/lib/wizardClient';
+import { getProfileById } from '@/lib/onvifProfiles';
 
 
 type DbZone = Tables<'zones'>;
@@ -37,6 +38,8 @@ interface CameraSetupWizardProps {
   camera: CameraData | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Perfil ONVIF/OEM detectado no autodiscover (ex.: `xiongmai-nbd80x`). */
+  profileId?: string | null;
 }
 
 interface SetupSummary {
@@ -66,7 +69,7 @@ const DEFAULT_SCHEDULE = {
   days: [0, 1, 2, 3, 4, 5, 6],
 };
 
-export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWizardProps) {
+export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: CameraSetupWizardProps) {
   const { user } = useAuth();
   const [tab, setTab] = useState<'zones' | 'rules'>('zones');
   const [zones, setZones] = useState<DbZone[]>([]);
@@ -243,6 +246,17 @@ export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWiz
               <Sparkles className="h-5 w-5 text-primary" />
               Configuração inicial — {camera.name}
             </DialogTitle>
+            {profileId && (() => {
+              const profile = getProfileById(profileId);
+              if (!profile) return null;
+              return (
+                <div className="mt-1">
+                  <Badge variant="outline" className="gap-1 border-primary/40 text-primary">
+                    <Sparkles className="h-3 w-3" /> Perfil {profile.displayName} detectado
+                  </Badge>
+                </div>
+              );
+            })()}
             <DialogDescription>
               Defina locais/zonas dentro da imagem e aplique regras de monitoramento de presença e
               comportamento perigoso em poucos cliques.

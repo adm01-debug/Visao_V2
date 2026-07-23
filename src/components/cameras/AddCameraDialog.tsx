@@ -13,7 +13,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Loader2, ShieldCheck, Activity, Gamepad2, Search, AlertTriangle } from "lucide-react";
+import { Eye, EyeOff, Loader2, ShieldCheck, Activity, Gamepad2, Search, AlertTriangle, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useRtspValidation } from "@/hooks/useRtspValidation";
 import { useFirstSnapshot } from "@/hooks/useFirstSnapshot";
@@ -74,11 +74,12 @@ import {
   renderTemplate,
 } from "@/lib/rtspTemplates";
 import { FirmwareAutodetectCard, type FirmwareAutodetectSuggestion } from "./FirmwareAutodetectCard";
+import { getProfileById } from "@/lib/onvifProfiles";
 
 interface AddCameraDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onCreated?: (cameraId?: string) => void;
+  onCreated?: (cameraId?: string, meta?: { profileId?: string | null }) => void;
   /**
    * `quick` (default) mantém o comportamento clássico.
    * `guided` bloqueia o submit até que o teste RTSP tenha rodado com sucesso
@@ -135,6 +136,10 @@ interface AutoDiscoverState {
   manualMode: boolean;
   manualPort: string;
   relayAgentId: string;
+  /** Perfil ONVIF/OEM resolvido pelo edge (`onvif-autodiscover`). */
+  profileId: string | null;
+  /** Nome amigável (ex.: "XiongMai NVR NBD80X (Usecam OEM)"). */
+  profileDisplayName: string | null;
 }
 
 interface RelayAgentOption {
@@ -196,6 +201,8 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     manualMode: false,
     manualPort: "",
     relayAgentId: "",
+    profileId: null,
+    profileDisplayName: null,
   });
   const [relayAgents, setRelayAgents] = useState<RelayAgentOption[]>([]);
   const [connectivityWizardOpen, setConnectivityWizardOpen] = useState(false);
@@ -287,7 +294,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       setShowPtzPass(false);
       setForceCritical(false);
       setDiscover({ loading: false, ok: null, message: null });
-      setAutoDiscover({ loading: false, ok: null, message: null, errorDetail: null, host: "", allowPrivate: false, manualMode: false, manualPort: "", relayAgentId: "" });
+      setAutoDiscover({ loading: false, ok: null, message: null, errorDetail: null, host: "", allowPrivate: false, manualMode: false, manualPort: "", relayAgentId: "", profileId: null, profileDisplayName: null });
       setTemplateCtx({ templateId: "", host: "", port: "", channel: "1" });
       rtspValidation.reset();
       substreamValidation.reset();
@@ -592,14 +599,38 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       if (result?.device?.model && !form.getValues("name")) {
         form.setValue("name", `${result.device.manufacturer ?? "Câmera"} ${result.device.model}`.trim());
       }
+      // Resolve perfil ONVIF/OEM retornado pelo edge (`onvif-autodiscover`)
+      // e pré-seleciona a variante RTSP recomendada quando disponível.
+      const resolvedProfileId = typeof result?.profile_id === "string" ? result.profile_id : null;
+      const resolvedProfile = resolvedProfileId ? getProfileById(resolvedProfileId) : null;
+      if (resolvedProfile) {
+        const recommended =
+          resolvedProfile.rtspVariants.find((v) => v.recommended) ??
+          resolvedProfile.rtspVariants[0] ??
+          null;
+        if (recommended) {
+          form.setValue("brand", recommended.brand as AddCameraFormValues["brand"], { shouldDirty: true });
+          setTemplateCtx((prev) => ({
+            ...prev,
+            templateId: recommended.templateId,
+            port: String(resolvedProfile.onvifPort ?? prev.port ?? ""),
+          }));
+        }
+      }
       setAutoDiscover((s) => ({
         ...s,
         loading: false,
         ok: true,
         errorDetail: null,
+        profileId: resolvedProfileId,
+        profileDisplayName: resolvedProfile?.displayName ?? null,
         message: `${result?.device?.manufacturer ?? "Dispositivo"} ${result?.device?.model ?? ""} · porta ${result?.onvif?.port} · ${result?.profiles} perfil(is)${result?.ptz_capable ? " · PTZ" : ""}`,
       }));
-      toast.success("Câmera descoberta! Campos preenchidos automaticamente.");
+      toast.success(
+        resolvedProfile
+          ? `Câmera descoberta! Perfil ${resolvedProfile.displayName} aplicado.`
+          : "Câmera descoberta! Campos preenchidos automaticamente.",
+      );
       flushConnectivityTelemetry({ succeeded: true });
     } catch (err) {
       setAutoDiscover((s) => ({ ...s, loading: false, ok: false, errorDetail: null, message: safeErrorMessage(err) }));
@@ -840,7 +871,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
         }
       }
 
-      onCreated?.(createdId ?? undefined);
+      onCreated?.(createdId ?? undefined, { profileId: autoDiscover.profileId });
       onOpenChange(false);
     } catch (err) {
       // Rollback se INSERT teve sucesso mas alguma etapa falhou
@@ -1018,9 +1049,20 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
               </label>
             )}
             {autoDiscover.ok === true && (
-              <Badge variant="default" className="gap-1">
-                <ShieldCheck className="h-3 w-3" /> {autoDiscover.message}
-              </Badge>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="default" className="gap-1">
+                  <ShieldCheck className="h-3 w-3" /> {autoDiscover.message}
+                </Badge>
+                {autoDiscover.profileDisplayName && (
+                  <Badge
+                    variant="outline"
+                    className="gap-1 border-primary/40 text-primary"
+                    title={`Perfil ONVIF/OEM detectado (${autoDiscover.profileId})`}
+                  >
+                    <Sparkles className="h-3 w-3" /> Perfil {autoDiscover.profileDisplayName}
+                  </Badge>
+                )}
+              </div>
             )}
             {autoDiscover.ok === false && (
               <Badge variant="destructive" className="max-w-full whitespace-normal">
