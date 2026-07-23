@@ -21,6 +21,7 @@ import { getProfileById } from '@/lib/onvifProfiles';
 import { PtzConnectionHistoryCard } from './PtzConnectionHistoryCard';
 import { PtzPresetImportPanel } from './PtzPresetImportPanel';
 import { PtzCalibrationPanel } from './PtzCalibrationPanel';
+import { PtzCalibratedPresetsPanel } from './PtzCalibratedPresetsPanel';
 
 interface PtzSetupWizardProps {
   cameraId: string;
