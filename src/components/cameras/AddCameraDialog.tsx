@@ -1501,6 +1501,13 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
           </DialogFooter>
         </form>
       </DialogContent>
+      <PrivateHostBlockedWizard
+        open={connectivityWizardOpen}
+        onOpenChange={setConnectivityWizardOpen}
+        host={autoDiscover.host}
+        agents={relayAgents}
+        onApply={handleConnectivityResolution}
+      />
     </Dialog>
   );
 }
