@@ -18,6 +18,7 @@ import type { Json } from '@/integrations/supabase/types';
 import type { usePtzControl } from '@/hooks/usePtzControl';
 import { PtzLimitPreflightDialog } from './PtzLimitPreflightDialog';
 import { PtzMultiAxisPreflightDialog } from './PtzMultiAxisPreflightDialog';
+import { PtzPreflightHistory } from './PtzPreflightHistory';
 import { PtzAxisRangeVisualizer } from './PtzAxisRangeVisualizer';
 import { formatHistorySummary, type LimitsHistoryItem } from './lib/limitsHistory';
 import { PtzLiveStatusPanel } from './PtzLiveStatusPanel';
