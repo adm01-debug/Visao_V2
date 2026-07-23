@@ -5316,6 +5316,18 @@ export type Database = {
           slot_type: string
         }[]
       }
+      get_retention_overview: {
+        Args: never
+        Returns: {
+          deleted_last_30d: number
+          health: string
+          hours_since_last: number
+          job_name: string
+          last_run: string
+          retention_days: number
+          runs_last_30d: number
+        }[]
+      }
       get_seq_scan_hotspots: {
         Args: { _min_seq_scans?: number; _min_size_mb?: number }
         Returns: {
