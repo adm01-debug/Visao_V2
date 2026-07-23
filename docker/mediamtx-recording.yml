@@ -1,6 +1,13 @@
-# MediaMTX config para gravação contínua HLS (Etapa 4 - Cloud Storage)
-# Cada câmera gera segmentos de 10s em /recordings/{camera_id}/*.ts
-# O worker external monitora a pasta e sobe cada segmento fechado.
+# VISÃO — MediaMTX: gravação contínua para object storage (melhoria 7)
+# Modelo de retenção: o disco local é um BUFFER TRANSITÓRIO.
+#   1) MediaMTX grava segmentos fechados em /recordings/{camera}/*.mp4
+#   2) O sidecar "recorder-uploader" (rclone) sobe cada segmento fechado p/ R2/MinIO,
+#      verifica o tamanho e só então apaga o arquivo local.
+#   3) recordDeleteAfter abaixo é apenas um BACKSTOP: se o sidecar morrer, o MediaMTX
+#      limpa sozinho para o disco não encher e derrubar TODA a gravação.
+#
+# v1.18.x: os parâmetros de gravação vivem em pathDefaults (não mais no top-level).
+# Validado contra o binário bluenviron/mediamtx v1.18.2 -> 0 warnings, 0 erros.
 
 logLevel: info
 logDestinations: [stdout]
@@ -11,20 +18,29 @@ hlsSegmentDuration: 2s
 hlsPartDuration: 200ms
 hlsSegmentCount: 7
 
-# WebRTC opcional (preview PTZ)
+# WebRTC (preview PTZ)
 webrtcAddress: :8889
 
-# Gravação: pasta compartilhada com o worker
-recordPath: /recordings/%path/%Y-%m-%d_%H-%M-%S-%f
-recordFormat: fmp4         # frag-mp4 é mais interoperável que .ts para upload
-recordPartDuration: 10s    # segmentos de 10s (~2.5 MB @ 2Mbps)
-recordSegmentDuration: 10s
-recordDeleteAfter: 24h     # segurança: worker deve ter subido antes disso
+pathDefaults:
+  # Gravação: pasta compartilhada com o sidecar uploader.
+  recordPath: /recordings/%path/%Y-%m-%d_%H-%M-%S-%f
+  # fMP4 é mais interoperável que MPEG-TS para upload/reprodução em nuvem.
+  recordFormat: fmp4
+  # Duração de cada "part" do fMP4 = RPO (quanto se perde num crash). 10s é aceitável p/ CFTV.
+  recordPartDuration: 10s
+  # Teto de RAM por part (proteção contra estouro de memória).
+  recordMaxPartSize: 50M
+  # Duração de cada SEGMENTO (arquivo). Curto = upload quase-tempo-real + menor janela de perda.
+  # Trade-off: menor = mais arquivos = mais operações Class A no R2. Ajuste conforme custo.
+  recordSegmentDuration: 10s
+  # BACKSTOP de disco. O sidecar é o mecanismo primário; isto só age se ele cair.
+  # ~5,4 GB/h com 6 câmeras -> 1h cabe folgado no disco da VPS e evita disk-full.
+  recordDeleteAfter: 1h
 
 paths:
-  # Padrão para todas as câmeras (auto-descoberta via RTSP)
+  # Auto-descoberta de câmeras via RTSP (publisher). Grava todas.
+  # OBS: o disparo de upload é feito pelo sidecar que observa a pasta — NÃO por
+  # runOnRecordSegmentComplete (a imagem oficial é FROM scratch, sem shell/script).
   "~^cam_[0-9a-f-]+$":
     source: publisher
     record: yes
-    runOnRecordSegmentComplete: >
-      /usr/local/bin/notify-worker.sh $MTX_PATH $MTX_SEGMENT_PATH
