@@ -5288,6 +5288,21 @@ export type Database = {
         Returns: string
       }
       get_connection_saturation: { Args: never; Returns: Json }
+      get_cron_job_runs: {
+        Args: { p_job_name: string; p_limit?: number }
+        Returns: {
+          command: string
+          database: string
+          end_time: string
+          job_pid: number
+          jobid: number
+          return_message: string
+          runid: number
+          start_time: string
+          status: string
+          username: string
+        }[]
+      }
       get_csp_report_stats: { Args: { _days?: number }; Returns: Json }
       get_definer_functions_without_search_path: {
         Args: never
