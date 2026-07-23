@@ -52,6 +52,7 @@ const AlertsPage = lazy(() => import("@/pages/AlertsPage"));
 const ZonesPage = lazy(() => import("@/pages/ZonesPage"));
 const RecordingsPage = lazy(() => import("@/pages/RecordingsPage"));
 const SyncPlaybackPage = lazy(() => import("@/pages/SyncPlaybackPage"));
+const NvrDownloadsPage = lazy(() => import("@/pages/NvrDownloadsPage"));
 const AnalyticsPage = lazy(() => import("@/pages/AnalyticsPage"));
 const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
 const SecurityPage = lazy(() => import("@/pages/SecurityPage"));
@@ -179,6 +180,8 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/zones" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<ZonesPage />, "Zonas")}</ProtectedLayoutRoute>} />
                     <Route path="/recordings" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<RecordingsPage />, "Gravações")}</ProtectedLayoutRoute>} />
                     <Route path="/playback" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<SyncPlaybackPage />, "Playback Sincronizado")}</ProtectedLayoutRoute>} />
+                    <Route path="/playback/downloads" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<NvrDownloadsPage />, "Downloads de Gravações")}</ProtectedLayoutRoute>} />
+                    <Route path="/nvr-downloads" element={<Navigate to="/playback/downloads" replace />} />
                     <Route path="/analytics" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<AnalyticsPage />, "Analytics")}</ProtectedLayoutRoute>} />
                     <Route path="/settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<SettingsPage />, "Configurações")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/security" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<SecurityPage />, "Segurança")}</ProtectedRoute></ProtectedLayoutRoute>} />

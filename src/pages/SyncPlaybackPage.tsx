@@ -10,7 +10,8 @@
  * Edge Function DVR-IP/CGI.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Layers, Camera, RefreshCw } from 'lucide-react';
+import { Layers, Camera, RefreshCw, Download } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useCameras } from '@/hooks/useCameras';
 import { Button } from '@/components/ui/button';
@@ -131,6 +132,12 @@ export default function SyncPlaybackPage() {
               <Badge variant="outline">
                 {selectedIds.length}/{MAX_CAMERAS} câmeras
               </Badge>
+              <Button size="sm" variant="outline" asChild>
+                <Link to="/playback/downloads">
+                  <Download className="mr-2 h-4 w-4" />
+                  Baixar do NVR
+                </Link>
+              </Button>
               <Button
                 size="sm"
                 variant="outline"
