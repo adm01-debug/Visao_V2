@@ -9,10 +9,11 @@
  * queries adicionais. Aceita `filtered` para respeitar filtros ativos.
  */
 
-import { useMemo } from 'react';
-import { BarChart3, BellRing, Download, ShieldAlert, Layers, Camera as CameraIcon } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { BarChart3, BellRing, Download, ShieldAlert, Layers, Camera as CameraIcon, FileText, Save } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
