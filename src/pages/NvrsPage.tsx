@@ -93,7 +93,9 @@ export default function NvrsPage(): JSX.Element {
                   {nvrs.map((nvr) => (
                     <TableRow key={nvr.id}>
                       <TableCell className="font-medium">
-                        {nvr.name}
+                        <Link to={`/nvrs/${nvr.id}`} className="hover:underline text-primary">
+                          {nvr.name}
+                        </Link>
                         {nvr.location && (
                           <p className="text-xs text-muted-foreground">{nvr.location}</p>
                         )}
