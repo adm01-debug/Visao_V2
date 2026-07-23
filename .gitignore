@@ -18,8 +18,8 @@ build
 .env
 .env.local
 .env.*.local
-.env.development
-.env.production
+# .env.development e .env.production sao rastreados intencionalmente
+# (contêm apenas valores nao-secretos para facilitar onboarding)
 !.env.example
 
 # Logs
@@ -79,3 +79,6 @@ temp
 *.pem
 *.key
 secrets.json
+
+# Deno
+deno.lock

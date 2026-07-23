@@ -1,0 +1,29 @@
+# Config de PILOTO — valida RTSP->HLS/WebRTC com fonte sintética (sem hardware).
+# Espelha os protocolos do config endurecido do repo (v1.18.2), sem secrets externos.
+logLevel: info
+logDestinations: [stdout]
+
+api: yes
+apiAddress: 127.0.0.1:9997
+
+# RTSP ingest
+rtsp: yes
+rtspAddress: :8554
+rtspTransports: [tcp]
+
+# HLS output (low-latency off p/ compatibilidade ampla de player/ffprobe)
+hls: yes
+hlsAddress: :8888
+hlsVariant: mpegts
+hlsSegmentCount: 7
+hlsSegmentDuration: 1s
+hlsAlwaysRemux: yes
+
+# WebRTC output (WHEP)
+webrtc: yes
+webrtcAddress: :8889
+webrtcLocalUDPAddress: :8189
+
+paths:
+  cam1:
+    source: publisher

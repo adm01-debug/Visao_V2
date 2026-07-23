@@ -1,143 +1,156 @@
 # =============================================================================
-# VISÃO - MediaMTX Configuration
-# Servidor de streaming RTSP → HLS/WebRTC
+# VISÃO — MediaMTX
+# Schema validado contra MediaMTX v1.18.2 (binário oficial, 2026-07-23)
+#
+# SEGREDOS: nenhum neste arquivo. Sobrescritos em runtime por variáveis MTX_*.
+#   MTX_AUTHINTERNALUSERS_0_PASS   senha do leitor  (app VISÃO)
+#   MTX_AUTHINTERNALUSERS_1_PASS   senha do publisher (agentes edge)
+#   MTX_AUTHINTERNALUSERS_2_PASS   senha da Control API (edge function Supabase)
+#   MTX_HLSALLOWORIGINS            origem do front (ex.: https://visao.dominio.com.br)
+#   MTX_WEBRTCALLOWORIGINS         idem
+#
+# TOPOLOGIA: agnóstica. Não há câmera fixa aqui.
+#   - modo EDGE (on-prem): paths criados via Control API a partir do Supabase
+#   - modo PUSH (VPS):     agentes publicam em edge/<nome> com credencial
 # =============================================================================
 
-# -----------------------------------------------------------------------------
-# General Settings
-# -----------------------------------------------------------------------------
+###############################################
+# Global
+
 logLevel: info
 logDestinations: [stdout]
-logFile: ""
 
-# Read timeout
 readTimeout: 10s
 writeTimeout: 10s
-readBufferCount: 512
+writeQueueSize: 512          # era readBufferCount (renomeado em v1.0.0)
 udpMaxPayloadSize: 1472
 
-# -----------------------------------------------------------------------------
-# API (for management)
-# -----------------------------------------------------------------------------
+###############################################
+# Control API — NUNCA exposta à internet.
+# Só o loopback / rede interna do Docker. O browser fala com o Supabase,
+# o Supabase fala com esta API. Ver supabase/functions/mediamtx-proxy.
 api: yes
-apiAddress: :9997
+apiAddress: 127.0.0.1:9997
 
-# Metrics (Prometheus)
+# Métricas Prometheus — também interna.
 metrics: yes
-metricsAddress: :9998
+metricsAddress: 127.0.0.1:9998
 
-# PPROF (debugging)
 pprof: no
-pprofAddress: :9999
 
-# -----------------------------------------------------------------------------
-# RTSP Server
-# -----------------------------------------------------------------------------
+runOnConnect: ""
+runOnConnectRestart: false
+
+###############################################
+# Autenticação
+#
+# Três papéis, privilégio mínimo:
+#   visao_leitor    -> só read/playback (o player do front)
+#   visao_publisher -> só publish, e só sob edge/*  (agentes on-prem)
+#   visao_api       -> só api/metrics, e só de dentro da rede Docker
+#
+# NÃO existe usuário "any". O default do MediaMTX é aberto; isto o fecha.
+authMethod: internal
+authInternalUsers:
+  - user: visao_leitor
+    pass: TROCAR_VIA_MTX_AUTHINTERNALUSERS_0_PASS
+    ips: []
+    permissions:
+      - action: read
+      - action: playback
+
+  - user: visao_publisher
+    pass: TROCAR_VIA_MTX_AUTHINTERNALUSERS_1_PASS
+    ips: []
+    permissions:
+      - action: publish
+        path: ~^edge/.*$
+
+  - user: visao_api
+    pass: TROCAR_VIA_MTX_AUTHINTERNALUSERS_2_PASS
+    ips: ["127.0.0.1", "::1", "172.16.0.0/12", "10.0.0.0/8"]
+    permissions:
+      - action: api
+      - action: metrics
+
+###############################################
+# RTSP — ingest de câmeras (modo EDGE) e republicação
 rtsp: yes
-protocols: [tcp, udp]
-encryption: "no"
+rtspTransports: [tcp]        # era 'protocols'. TCP-only: UDP/RTP não sobrevive a NAT de VPS
+rtspEncryption: "no"         # era 'encryption'. TLS termina no Traefik/rede interna
 rtspAddress: :8554
 rtspsAddress: :8322
 rtpAddress: :8000
 rtcpAddress: :8001
-multicastIPRange: 224.1.0.0/16
-multicastRTPPort: 8002
-multicastRTCPPort: 8003
 
-# -----------------------------------------------------------------------------
-# RTMP Server
-# -----------------------------------------------------------------------------
+###############################################
+# RTMP — canal de PUSH dos agentes edge (atravessa NAT sem dor)
 rtmp: yes
 rtmpAddress: :1935
 rtmpEncryption: "no"
 rtmpsAddress: :1936
 
-# -----------------------------------------------------------------------------
-# HLS Server (Browser playback)
-# -----------------------------------------------------------------------------
+###############################################
+# HLS — o que o browser consome
 hls: yes
 hlsAddress: :8888
 hlsEncryption: no
-hlsServerKey: ""
-hlsServerCert: ""
-hlsAlwaysRemux: yes
+hlsAlwaysRemux: no           # 'yes' mantém encoder ligado 24/7 e queima CPU/banda à toa
 hlsVariant: lowLatency
 hlsSegmentCount: 7
 hlsSegmentDuration: 1s
 hlsPartDuration: 200ms
 hlsSegmentMaxSize: 50M
-hlsAllowOrigin: '*'
-hlsTrustedProxies: []
-hlsDirectory: ""
+hlsAllowOrigins: []          # era hlsAllowOrigin:'*' — agora lista, preenchida por MTX_*
+hlsTrustedProxies: ["172.16.0.0/12", "10.0.0.0/8"]
 
-# -----------------------------------------------------------------------------
-# WebRTC Server (Low latency)
-# -----------------------------------------------------------------------------
+###############################################
+# WebRTC — baixa latência
 webrtc: yes
 webrtcAddress: :8889
 webrtcEncryption: no
-webrtcServerKey: ""
-webrtcServerCert: ""
-webrtcAllowOrigin: '*'
-webrtcTrustedProxies: []
-webrtcLocalUDPAddress: :8890
-webrtcLocalTCPAddress: ""
+webrtcAllowOrigins: []       # era webrtcAllowOrigin:'*'
+webrtcTrustedProxies: ["172.16.0.0/12", "10.0.0.0/8"]
+webrtcLocalUDPAddress: :8189   # default do projeto; NÃO usar 8890 (colide com SRT)
+webrtcLocalTCPAddress: :8190   # fallback TCP obrigatório: firewall UDP da VPS é histórico de dor
 webrtcIPsFromInterfaces: yes
 webrtcIPsFromInterfacesList: []
 webrtcAdditionalHosts: []
 webrtcICEServers2:
   - url: stun:stun.l.google.com:19302
 
-# -----------------------------------------------------------------------------
-# SRT Server
-# -----------------------------------------------------------------------------
+###############################################
+# SRT — desligado. Se ligar, lembrar que :8890 é dele.
 srt: no
 srtAddress: :8890
 
-# -----------------------------------------------------------------------------
-# Recording (optional)
-# -----------------------------------------------------------------------------
-record: no
-recordPath: ./recordings/%path/%Y-%m-%d_%H-%M-%S-%f
-recordFormat: fmp4
-recordPartDuration: 100ms
-recordSegmentDuration: 1h
-recordDeleteAfter: 24h
-
-# -----------------------------------------------------------------------------
-# Paths (Camera Streams)
-# -----------------------------------------------------------------------------
+###############################################
+# Padrões de path
 pathDefaults:
-  # Source settings
-  source: publisher
-  sourceFingerprint: ""
-  sourceOnDemand: no
-  sourceOnDemandStartTimeout: 10s
-  sourceOnDemandCloseAfter: 10s
-  maxReaders: 0
-  srtReadPassphrase: ""
-  
-  # Recording
+  # Sem 'source' aqui: cada path declara o seu.
+  # sourceOnDemand só vale para paths de PULL (rtsp://). O binário rejeita a
+  # combinação sourceOnDemand + source:publisher, então ela fica por path.
+  maxReaders: 20
+
+  # GRAVAÇÃO DESLIGADA POR PADRÃO.
+  # Simulação: 6 câmeras a 2 Mbps gravando 24h = ~130 GB/dia contra 52 GB livres.
+  # Gravação vai para objeto (R2/MinIO) via worker, nunca disco local.
   record: no
-  
-  # Authentication (empty = no auth)
-  publishUser: ""
-  publishPass: ""
-  publishIPs: []
-  readUser: ""
-  readPass: ""
-  readIPs: []
-  
-  # Fallback
-  fallback: ""
-  
-  # Hooks
+  recordPath: /recordings/%path/%Y-%m-%d_%H-%M-%S-%f
+  recordFormat: fmp4
+  recordPartDuration: 1s
+  recordSegmentDuration: 10m
+  recordDeleteAfter: 6h
+
+  # Hooks. ATENÇÃO: o branch main do MediaMTX renomeia runOnReady->runOnOnline,
+  # mas o v1.18.2 LANÇADO ainda usa runOnReady. Validado no binário, não na doc.
+  # Por isso a imagem está PINADA em 1.18.2 no stack — 'latest' quebraria isto.
   runOnInit: ""
   runOnInitRestart: no
   runOnDemand: ""
   runOnDemandRestart: no
   runOnDemandStartTimeout: 10s
-  runOnDemandCloseAfter: 10s
+  runOnDemandCloseAfter: 30s
   runOnUnDemand: ""
   runOnReady: ""
   runOnReadyRestart: no
@@ -148,69 +161,21 @@ pathDefaults:
   runOnRecordSegmentCreate: ""
   runOnRecordSegmentComplete: ""
 
+###############################################
+# Paths
+#
+# Nenhuma câmera hardcoded — foram removidas as 6 com credencial em texto claro.
+# Câmeras são registradas dinamicamente pela edge function a partir do Supabase.
+#
+# Regex: o til é PREFIXO do nome inteiro. "live/~^.*$" era inválido.
 paths:
-  # ===========================================================================
-  # CÂMERAS DE EXEMPLO - SUBSTITUIR PELOS SEUS DADOS REAIS
-  # ===========================================================================
-  
-  # Câmera 1 - Entrada Principal
-  cam-entrada:
-    source: rtsp://admin:admin123@192.168.1.100:554/stream1
-    sourceOnDemand: yes
-    sourceOnDemandStartTimeout: 10s
-    sourceOnDemandCloseAfter: 30s
-    # Autenticação para visualização (opcional)
-    # readUser: visao
-    # readPass: senha123
-
-  # Câmera 2 - Estacionamento
-  cam-estacionamento:
-    source: rtsp://admin:admin123@192.168.1.101:554/stream1
-    sourceOnDemand: yes
-    sourceOnDemandCloseAfter: 30s
-
-  # Câmera 3 - Recepção
-  cam-recepcao:
-    source: rtsp://admin:admin123@192.168.1.102:554/stream1
-    sourceOnDemand: yes
-    sourceOnDemandCloseAfter: 30s
-
-  # Câmera 4 - Corredor
-  cam-corredor:
-    source: rtsp://admin:admin123@192.168.1.103:554/stream1
-    sourceOnDemand: yes
-    sourceOnDemandCloseAfter: 30s
-
-  # Câmera 5 - Depósito
-  cam-deposito:
-    source: rtsp://admin:admin123@192.168.1.104:554/stream1
-    sourceOnDemand: yes
-    sourceOnDemandCloseAfter: 30s
-
-  # Câmera 6 - Área Externa
-  cam-externa:
-    source: rtsp://admin:admin123@192.168.1.105:554/stream1
-    sourceOnDemand: yes
-    sourceOnDemandCloseAfter: 30s
-
-  # ===========================================================================
-  # STREAM DE TESTE (Demo)
-  # ===========================================================================
-  
-  # Stream de teste público (Big Buck Bunny)
-  demo:
-    source: rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mp4
-    sourceOnDemand: yes
-    sourceOnDemandCloseAfter: 60s
-
-  # ===========================================================================
-  # STREAM GENÉRICO (aceita publicações externas)
-  # ===========================================================================
-  
-  # Aceita qualquer publicação em /live/*
-  "live/~^.*$":
+  # Canal de publicação dos agentes edge. Exige credencial visao_publisher.
+  "~^edge/[A-Za-z0-9_-]+$":
     source: publisher
 
-  # Path genérico para todas as câmeras dinâmicas
-  "dynamic/~^.*$":
+  # Câmeras em modo PULL (on-prem) são criadas via Control API com:
+  #   {"source":"rtsp://...","sourceOnDemand":true,"sourceOnDemandCloseAfter":"30s"}
+
+  # Stream sintético para healthcheck — não depende de câmera nenhuma.
+  _health:
     source: publisher

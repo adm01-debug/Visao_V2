@@ -1,5 +1,10 @@
 project_id = "fsisdfdwlbfeadwfqpir"
 
+[functions.mediamtx-proxy]
+# Proxy autenticado para a Control API do MediaMTX (plano de controle).
+# verify_jwt=true: a plataforma valida a ASSINATURA do JWT antes da função rodar.
+verify_jwt = true
+
 [functions.health]
 verify_jwt = false
 
