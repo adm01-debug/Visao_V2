@@ -12,7 +12,8 @@ import { PageMeta } from "@/components/PageMeta";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Server, Radio, Wifi, WifiOff, HelpCircle, Lock, Unlock, Loader2, LayoutGrid, VideoOff, Video, Search, Maximize2, RefreshCw, ArrowUpDown, ChevronLeft, ChevronRight, Pause, Play, Bookmark, RotateCcw, AlertTriangle, X } from "lucide-react";
+import { ArrowLeft, Server, Radio, Wifi, WifiOff, HelpCircle, Lock, Unlock, Loader2, LayoutGrid, VideoOff, Video, Search, Maximize2, RefreshCw, ArrowUpDown, ChevronLeft, ChevronRight, Pause, Play, Bookmark, RotateCcw, AlertTriangle, X, FileText, FileDown } from "lucide-react";
+import { exportToCSV, exportToPDF } from "@/lib/exportUtils";
 
 interface NvrRow {
   id: string;
@@ -325,6 +326,79 @@ export default function NvrDetailPage(): JSX.Element {
 
   const errorCount = Object.keys(channelErrors).length;
   const hasAnyError = channelsQuery.isError || errorCount > 0;
+
+  const buildExportRows = () => {
+    const all = channelsQuery.data ?? [];
+    const shown = filteredChannels;
+    const total = all.length;
+    const online = all.filter((c) => c.status === "online").length;
+    const offline = all.filter((c) => c.status === "offline").length;
+    const unknown = total - online - offline;
+    const availability = total > 0 ? (online / total) * 100 : 0;
+    const nowLabel = new Date().toLocaleString("pt-BR");
+    const rows = shown.map((c) => ({
+      channel_number: c.channel_number ?? "-",
+      name: c.name,
+      status: c.status ?? "desconhecido",
+      error: channelErrors[c.id] ?? "",
+      generated_at: nowLabel,
+    }));
+    return { rows, total, online, offline, unknown, availability, nowLabel, shown: shown.length };
+  };
+
+  const exportFilename = () => {
+    const slug = (nvr?.name ?? "nvr").toLowerCase().replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, "") || "nvr";
+    const ts = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+    return `status-canais_${slug}_${ts}`;
+  };
+
+  const handleExportCSV = () => {
+    const { rows, total, online, offline, unknown, availability, nowLabel, shown } = buildExportRows();
+    if (rows.length === 0) {
+      toast({ title: "Nada para exportar", description: "Nenhum canal visível com os filtros atuais.", variant: "destructive" });
+      return;
+    }
+    const summary = [
+      { channel_number: "#", name: `NVR: ${nvr?.name ?? "-"}`, status: `Gerado em ${nowLabel}`, error: "", generated_at: "" },
+      { channel_number: "", name: `Exibindo ${shown} de ${total} canais`, status: `Online ${online} · Offline ${offline} · Outros ${unknown}`, error: `Disponibilidade ${availability.toFixed(1)}%`, generated_at: "" },
+      { channel_number: "", name: "", status: "", error: "", generated_at: "" },
+    ];
+    exportToCSV(
+      [...summary, ...rows],
+      exportFilename(),
+      [
+        { key: "channel_number", label: "Canal" },
+        { key: "name", label: "Nome" },
+        { key: "status", label: "Status" },
+        { key: "error", label: "Erro" },
+        { key: "generated_at", label: "Coletado em" },
+      ],
+    );
+    toast({ title: "CSV gerado", description: `${rows.length} canais exportados.` });
+  };
+
+  const handleExportPDF = () => {
+    const { rows, total, online, offline, unknown, availability, nowLabel, shown } = buildExportRows();
+    if (rows.length === 0) {
+      toast({ title: "Nada para exportar", description: "Nenhum canal visível com os filtros atuais.", variant: "destructive" });
+      return;
+    }
+    const title = `Status dos Canais — ${nvr?.name ?? "NVR"} — ${shown}/${total} · ${availability.toFixed(1)}% online (On ${online} · Off ${offline} · ? ${unknown}) — ${nowLabel}`;
+    exportToPDF(
+      rows,
+      exportFilename(),
+      title,
+      [
+        { key: "channel_number", label: "Canal" },
+        { key: "name", label: "Nome" },
+        { key: "status", label: "Status" },
+        { key: "error", label: "Erro" },
+      ],
+    );
+    toast({ title: "PDF em preparação", description: "Uma nova janela abrirá com o relatório." });
+  };
+
+
 
 
 
@@ -779,8 +853,28 @@ export default function NvrDetailPage(): JSX.Element {
                       >
                         <RotateCcw className="h-4 w-4" />
                       </Button>
-
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleExportCSV}
+                        disabled={!channelsQuery.data || channelsQuery.data.length === 0}
+                        aria-label="Exportar status dos canais em CSV"
+                        title="Exportar CSV com status dos canais"
+                      >
+                        <FileText className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleExportPDF}
+                        disabled={!channelsQuery.data || channelsQuery.data.length === 0}
+                        aria-label="Exportar status dos canais em PDF"
+                        title="Exportar PDF com status dos canais"
+                      >
+                        <FileDown className="h-4 w-4" />
+                      </Button>
                     </div>
+
                   </div>
 
                   {channelsQuery.data && channelsQuery.data.length > 0 && (
