@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AlertTriangle, CheckCircle2, Loader2, Octagon, ShieldCheck, XCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, FileDown, Loader2, Octagon, ShieldCheck, XCircle } from 'lucide-react';
+import { downloadPtzPreflightPdf, generatePtzPreflightPdf } from './ptzPreflightPdf';
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog';
@@ -62,6 +63,7 @@ export interface MultiAxisPreflightProps {
   startPositions: Record<PreflightAxis, number>;
   ptz: ReturnType<typeof usePtzControl>;
   cameraId?: string;
+  cameraLabel?: string;
   onComplete?: (results: PhaseResult[]) => void;
 }
 
@@ -75,6 +77,7 @@ export function PtzMultiAxisPreflightDialog({
   startPositions,
   ptz,
   cameraId,
+  cameraLabel,
   onComplete,
 }: MultiAxisPreflightProps) {
   const [ackClear, setAckClear] = useState(false);
@@ -83,6 +86,7 @@ export function PtzMultiAxisPreflightDialog({
   const [currentAxis, setCurrentAxis] = useState<PreflightAxis | null>(null);
   const [currentPhase, setCurrentPhase] = useState<PhaseId | null>(null);
   const [results, setResults] = useState<PhaseResult[]>([]);
+  const [pdfLoading, setPdfLoading] = useState(false);
   const abortRef = useRef(false);
 
   const totalPhases = axes.length * 3;
@@ -304,6 +308,31 @@ export function PtzMultiAxisPreflightDialog({
     toast.info('Abortando validação…');
   }, [currentAxis, safeStop]);
 
+  const handleDownloadPdf = useCallback(async () => {
+    if (results.length === 0) return;
+    setPdfLoading(true);
+    try {
+      const blob = await generatePtzPreflightPdf({
+        cameraId,
+        cameraLabel,
+        axes,
+        limitsByAxis,
+        startPositions,
+        perAxisTimeoutMs: perAxisTimeout,
+        statusSupported,
+        results,
+        generatedAt: new Date(),
+      });
+      downloadPtzPreflightPdf(blob, cameraLabel ?? cameraId);
+      toast.success('Relatório PDF gerado.');
+    } catch (err) {
+      toast.error('Falha ao gerar PDF', { description: err instanceof Error ? err.message : String(err) });
+    } finally {
+      setPdfLoading(false);
+    }
+  }, [axes, cameraId, cameraLabel, limitsByAxis, perAxisTimeout, results, startPositions, statusSupported]);
+
+
   const outcomeBadge = (o: PhaseOutcome) => {
     if (o === 'ok') return <Badge variant="secondary" className="text-[10px]"><CheckCircle2 className="w-3 h-3 mr-1" />ok</Badge>;
     if (o === 'deviation') return <Badge variant="outline" className="text-[10px]"><AlertTriangle className="w-3 h-3 mr-1" />desvio</Badge>;
@@ -413,6 +442,19 @@ export function PtzMultiAxisPreflightDialog({
           ) : (
             <>
               <Button variant="ghost" onClick={() => onOpenChange(false)}>Fechar</Button>
+              {results.length > 0 && (
+                <Button
+                  variant="outline"
+                  onClick={() => void handleDownloadPdf()}
+                  disabled={pdfLoading}
+                  data-testid="multi-preflight-download-pdf"
+                >
+                  {pdfLoading
+                    ? <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                    : <FileDown className="w-4 h-4 mr-1" />}
+                  Baixar relatório PDF
+                </Button>
+              )}
               <Button onClick={() => void runAll()} disabled={!canRun} data-testid="multi-preflight-run">
                 <ShieldCheck className="w-4 h-4 mr-1" /> Executar validação
               </Button>
