@@ -209,6 +209,19 @@ export default function NvrDetailPage(): JSX.Element {
     return () => window.removeEventListener("keydown", handler);
   }, [fullscreenId, filteredChannels, channelsQuery.data]);
 
+  useEffect(() => {
+    if (!fullscreenId || cycleSeconds === 0) return;
+    const list = filteredChannels.length > 0 ? filteredChannels : (channelsQuery.data ?? []);
+    if (list.length < 2) return;
+    const timer = window.setInterval(() => {
+      const idx = list.findIndex((c) => c.id === fullscreenId);
+      if (idx < 0) return;
+      const next = list[(idx + 1) % list.length];
+      if (next) setFullscreenId(next.id);
+    }, cycleSeconds * 1000);
+    return () => window.clearInterval(timer);
+  }, [fullscreenId, cycleSeconds, filteredChannels, channelsQuery.data]);
+
   async function bulkAction(action: "arm" | "disarm"): Promise<void> {
     const channels = channelsQuery.data ?? [];
     if (!user || channels.length === 0) return;
