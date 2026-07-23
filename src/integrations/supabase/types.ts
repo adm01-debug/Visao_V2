@@ -4939,6 +4939,7 @@ export type Database = {
       }
       capture_db_health_snapshot: { Args: never; Returns: string }
       check_csp_anomaly: { Args: never; Returns: Json }
+      check_relay_purge_watchdog: { Args: never; Returns: undefined }
       check_relay_reliability_and_alert: { Args: never; Returns: number }
       claim_agent_relay_tasks: {
         Args: { _agent_id: string; _max?: number }
