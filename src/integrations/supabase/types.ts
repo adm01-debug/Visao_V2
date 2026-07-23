@@ -79,6 +79,36 @@ export type Database = {
           },
         ]
       }
+      agent_relay_purge_runs: {
+        Row: {
+          created_at: string
+          deleted_count: number
+          duration_ms: number
+          executed_at: string
+          expired_count: number
+          id: string
+          retention_days: number
+        }
+        Insert: {
+          created_at?: string
+          deleted_count?: number
+          duration_ms?: number
+          executed_at?: string
+          expired_count?: number
+          id?: string
+          retention_days: number
+        }
+        Update: {
+          created_at?: string
+          deleted_count?: number
+          duration_ms?: number
+          executed_at?: string
+          expired_count?: number
+          id?: string
+          retention_days?: number
+        }
+        Relationships: []
+      }
       agent_relay_tasks: {
         Row: {
           agent_id: string
