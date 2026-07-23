@@ -31,6 +31,7 @@ import {
 import { PtzJoystick } from './PtzJoystick';
 import { PtzSetupWizard } from './PtzSetupWizard';
 import { RelayAgentSelector } from './RelayAgentSelector';
+import { RelayHealthWatchdog } from './RelayHealthWatchdog';
 import { usePtzControl } from '@/hooks/usePtzControl';
 import {
   loadPersistedRelayAgent,
@@ -141,11 +142,15 @@ export function PtzControlPanel({ cameraId, cameraName }: PtzControlPanelProps) 
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="rounded-md border border-border/60 bg-muted/30 p-3">
+        <div className="rounded-md border border-border/60 bg-muted/30 p-3 space-y-2">
           <RelayAgentSelector value={relayAgentId} onChange={setRelayAgentId} />
-          <p className="text-[11px] text-muted-foreground mt-1.5">
+          <p className="text-[11px] text-muted-foreground">
             Câmera em rede privada? Selecione um Agente Local para rotear os comandos PTZ sem VPN.
           </p>
+          <RelayHealthWatchdog
+            agentId={relayAgentId}
+            onFallbackDirect={() => setRelayAgentId(null)}
+          />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6">
           {/* Joystick + botões direcionais */}
