@@ -51,6 +51,7 @@ const CameraStatusPage = lazy(() => import("@/pages/CameraStatusPage"));
 const AlertsPage = lazy(() => import("@/pages/AlertsPage"));
 const ZonesPage = lazy(() => import("@/pages/ZonesPage"));
 const RecordingsPage = lazy(() => import("@/pages/RecordingsPage"));
+const SyncPlaybackPage = lazy(() => import("@/pages/SyncPlaybackPage"));
 const AnalyticsPage = lazy(() => import("@/pages/AnalyticsPage"));
 const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
 const SecurityPage = lazy(() => import("@/pages/SecurityPage"));
@@ -177,6 +178,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/evaluation" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<EvaluationPage />, "Avaliação de Detecções")}</ProtectedLayoutRoute>} />
                     <Route path="/zones" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<ZonesPage />, "Zonas")}</ProtectedLayoutRoute>} />
                     <Route path="/recordings" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<RecordingsPage />, "Gravações")}</ProtectedLayoutRoute>} />
+                    <Route path="/playback" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<SyncPlaybackPage />, "Playback Sincronizado")}</ProtectedLayoutRoute>} />
                     <Route path="/analytics" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<AnalyticsPage />, "Analytics")}</ProtectedLayoutRoute>} />
                     <Route path="/settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<SettingsPage />, "Configurações")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/security" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<SecurityPage />, "Segurança")}</ProtectedRoute></ProtectedLayoutRoute>} />
