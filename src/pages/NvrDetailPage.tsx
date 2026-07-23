@@ -75,7 +75,7 @@ export default function NvrDetailPage(): JSX.Element {
     queryFn: async (): Promise<ChannelRow[]> => {
       const { data, error } = await supabase
         .from("cameras")
-        .select("id, name, status, channel_number, last_seen_at, fps, resolution")
+        .select("id, name, status, channel_number")
         .eq("nvr_id", id!)
         .order("channel_number", { ascending: true, nullsFirst: false });
       if (error) throw error;
