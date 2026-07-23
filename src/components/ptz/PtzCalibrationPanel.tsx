@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Crosshair, Download, Gauge, History, Home, Loader2, RotateCcw, Save, ShieldCheck, Signal, Target, TriangleAlert, Upload, ZoomIn, ZoomOut,
+  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Crosshair, Download, Gauge, History, Home, Loader2, RotateCcw, Save, ShieldCheck, Signal, Target, TriangleAlert, Upload, Wand2, ZoomIn, ZoomOut,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -8,6 +8,10 @@ import { Slider } from '@/components/ui/slider';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
@@ -17,6 +21,7 @@ import { PtzMultiAxisPreflightDialog } from './PtzMultiAxisPreflightDialog';
 import { PtzAxisRangeVisualizer } from './PtzAxisRangeVisualizer';
 import { formatHistorySummary, type LimitsHistoryItem } from './lib/limitsHistory';
 import { PtzLiveStatusPanel } from './PtzLiveStatusPanel';
+
 
 /**
  * Curso total (ms) assumido como *fallback* quando o dome não expõe ONVIF
@@ -34,8 +39,16 @@ const STALL_EPSILON = 0.005;
 /** Amostras consecutivas abaixo do épsilon para confirmar parada por limite. */
 const STALL_CONFIRM_SAMPLES = 3;
 
+/**
+ * Desvio (em % do range) reportado pela revalidação a partir do qual as
+ * capturas de min/max daquele eixo são invalidadas automaticamente e o
+ * operador é obrigado a executar a recaptura guiada antes de prosseguir.
+ */
+const RECAPTURE_THRESHOLD_PCT = 10;
+
 export type PtzAxis = 'pan' | 'tilt' | 'zoom';
 export type PtzLimits = Record<PtzAxis, { min: number; max: number }>;
+
 
 interface CalibrationEntry {
   sweep_ms: number;
@@ -105,6 +118,14 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
   }
   const [validation, setValidation] = useState<Partial<Record<PtzAxis, RevalidationResult>>>({});
   const [revalidatingAxis, setRevalidatingAxis] = useState<PtzAxis | null>(null);
+
+  // Recaptura guiada — disparada quando a revalidação apontar desvio > threshold.
+  const [pendingRecaptureAxis, setPendingRecaptureAxis] = useState<PtzAxis | null>(null);
+  const [recapturingAxis, setRecapturingAxis] = useState<PtzAxis | null>(null);
+  const [recaptureStage, setRecaptureStage] = useState<'idle' | 'to-min' | 'to-max' | 'done'>('idle');
+  const [recaptureProgress, setRecaptureProgress] = useState(0);
+  const recaptureAbortRef = useRef<boolean>(false);
+
 
   // Edição manual do observado (min_reported/max_reported) por eixo.
   const [observedDraft, setObservedDraft] = useState<Partial<Record<PtzAxis, { min: string; max: string }>>>({});
@@ -575,6 +596,152 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
   }, [statusSupported, sweepMsByAxis, measuringAxis, revalidatingAxis, ptz, clamp, limits]);
 
   /**
+   * Eixos que apresentaram desvio > RECAPTURE_THRESHOLD_PCT na última
+   * revalidação. Enquanto esse conjunto for não-vazio, os avanços
+   * (pré-voo individual e multi-eixos) ficam bloqueados até nova captura.
+   */
+  const recaptureRequired = useMemo<Record<PtzAxis, boolean>>(() => {
+    const pick = (a: PtzAxis) => {
+      const v = validation[a];
+      return !!v && v.error_pct > RECAPTURE_THRESHOLD_PCT;
+    };
+    return { pan: pick('pan'), tilt: pick('tilt'), zoom: pick('zoom') };
+  }, [validation]);
+
+  const hasRecaptureRequired = recaptureRequired.pan || recaptureRequired.tilt || recaptureRequired.zoom;
+
+  // Ao detectar desvio acima do limiar, invalida as capturas frescas do eixo
+  // — o pré-voo passa a exigir novo min/max antes de qualquer avanço.
+  useEffect(() => {
+    (['pan', 'tilt', 'zoom'] as const).forEach((a) => {
+      if (recaptureRequired[a]) {
+        setFreshCaptures((prev) =>
+          prev[a].min || prev[a].max ? { ...prev, [a]: { min: false, max: false } } : prev,
+        );
+      }
+    });
+  }, [recaptureRequired]);
+
+  /**
+   * Recaptura guiada de min/max: aciona o dome em direção negativa até a
+   * estagnação (limite físico), captura o mínimo, faz o mesmo no sentido
+   * positivo e captura o máximo. Persiste ambos como fresh e limpa a
+   * revalidação anterior. Cancelável e usa o mesmo mecanismo de detecção
+   * de parada da rotina de sweep.
+   */
+  const guidedRecapture = useCallback(async (axis: PtzAxis) => {
+    if (!statusSupported) {
+      toast.error('Recaptura guiada indisponível (driver não expõe GetStatus).');
+      return;
+    }
+    if (measuringAxis || revalidatingAxis || recapturingAxis || jogStartRef.current) return;
+    setRecapturingAxis(axis);
+    setRecaptureStage('to-min');
+    setRecaptureProgress(0);
+    recaptureAbortRef.current = false;
+
+    const range = AXIS_BOUNDS[axis][1] - AXIS_BOUNDS[axis][0];
+
+    const readAxis = (st: Awaited<ReturnType<typeof ptz.getStatus>>): number | null => {
+      if (!st) return null;
+      const v = st.position[axis];
+      return typeof v === 'number' && Number.isFinite(v) ? clamp(axis, v) : null;
+    };
+    const isMoving = (st: Awaited<ReturnType<typeof ptz.getStatus>>): boolean | null => {
+      if (!st) return null;
+      return axis === 'zoom' ? st.moving.zoom : st.moving.pan_tilt;
+    };
+
+    const driveToStall = async (dir: -1 | 1): Promise<number | null> => {
+      const st0 = await ptz.getStatus();
+      let p0 = readAxis(st0);
+      if (p0 == null) return null;
+      if (axis === 'zoom') await ptz.zoom(dir * 0.6, 4);
+      else {
+        const params = axis === 'pan' ? { pan: dir * 0.6, tilt: 0 } : { pan: 0, tilt: dir * 0.6 };
+        await ptz.startMove({ ...params, speed: 4 });
+      }
+      const started = performance.now();
+      let pLast = p0;
+      let stall = 0;
+      try {
+        while (performance.now() - started < MEASURE_TIMEOUT_MS) {
+          if (recaptureAbortRef.current) break;
+          await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
+          const st = await ptz.getStatus();
+          const p = readAxis(st);
+          const mv = isMoving(st);
+          if (p != null) {
+            setPosition((prev) => ({ ...prev, [axis]: p }));
+            const dP = Math.abs(p - pLast);
+            if (dP < STALL_EPSILON * range) stall += 1; else stall = 0;
+            pLast = p;
+          }
+          const elapsed = performance.now() - started;
+          setRecaptureProgress(Math.min(95, Math.round((elapsed / MEASURE_TIMEOUT_MS) * 100)));
+          if (mv === false && Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5) break;
+          if (stall >= STALL_CONFIRM_SAMPLES) break;
+        }
+      } finally {
+        try {
+          if (axis === 'zoom') await ptz.send('stop');
+          else await ptz.stopMove();
+        } catch { /* noop */ }
+      }
+      // Estabiliza e re-lê para captura autoritativa.
+      await new Promise((r) => setTimeout(r, 250));
+      const stF = await ptz.getStatus();
+      const pF = readAxis(stF);
+      return pF ?? pLast;
+    };
+
+    try {
+      const pMin = await driveToStall(-1);
+      if (recaptureAbortRef.current || pMin == null) {
+        toast.error('Recaptura de mínimo abortada ou sem leitura.');
+        return;
+      }
+      setRecaptureStage('to-max');
+      setRecaptureProgress(0);
+      const pMax = await driveToStall(1);
+      if (recaptureAbortRef.current || pMax == null) {
+        toast.error('Recaptura de máximo abortada ou sem leitura.');
+        return;
+      }
+      if (pMin >= pMax) {
+        toast.error(`Recaptura inválida: min (${pMin.toFixed(2)}) ≥ max (${pMax.toFixed(2)}).`);
+        return;
+      }
+      const nextLimits: PtzLimits = {
+        ...limits,
+        [axis]: { min: Number(pMin.toFixed(3)), max: Number(pMax.toFixed(3)) },
+      };
+      onChange(nextLimits);
+      setFreshCaptures((prev) => ({ ...prev, [axis]: { min: true, max: true } }));
+      setValidation((prev) => {
+        const next = { ...prev };
+        delete next[axis];
+        return next;
+      });
+      setPosition((prev) => ({ ...prev, [axis]: pMax }));
+      setRecaptureStage('done');
+      setRecaptureProgress(100);
+      toast.success(
+        `${AXIS_LABEL[axis]}: recaptura concluída [${pMin.toFixed(2)} → ${pMax.toFixed(2)}]. ` +
+        `Clique em Salvar para persistir.`,
+      );
+    } finally {
+      setRecapturingAxis(null);
+      // Deixa o "done" visível por um instante e reseta.
+      setTimeout(() => {
+        setRecaptureStage('idle');
+        setRecaptureProgress(0);
+      }, 1200);
+    }
+  }, [statusSupported, measuringAxis, revalidatingAxis, recapturingAxis, ptz, clamp, limits, onChange]);
+
+
+  /**
    * Persiste ajuste manual dos valores observados (`min_reported`/`max_reported`)
    * quando a medição automática saturou no fim de curso do dome e o operador
    * quer registrar o range verdadeiro conhecido.
@@ -765,12 +932,21 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
             size="sm"
             variant="default"
             onClick={() => setMultiPreflightOpen(true)}
-            disabled={measuringAxis !== null || revalidatingAxis !== null || preflightAxis !== null}
+            disabled={
+              measuringAxis !== null ||
+              revalidatingAxis !== null ||
+              preflightAxis !== null ||
+              recapturingAxis !== null ||
+              hasRecaptureRequired
+            }
             data-testid="multi-preflight-open"
-            title="Validar limites em sequência para todos os eixos"
+            title={hasRecaptureRequired
+              ? 'Recapture min/max dos eixos com desvio antes de validar todos'
+              : 'Validar limites em sequência para todos os eixos'}
           >
             <ShieldCheck className="w-3.5 h-3.5 mr-1" /> Validar todos
           </Button>
+
         </div>
       </div>
 
@@ -889,10 +1065,76 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                   ? (<><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Revalidando…</>)
                   : (<><Target className="w-3.5 h-3.5 mr-1" /> Revalidar</>)}
               </Button>
-              <Button size="sm" variant="ghost" onClick={() => resetAxis(axis)} disabled={measuringAxis !== null || preflightAxis !== null}>
+              <Button
+                size="sm"
+                variant={recaptureRequired[axis] ? 'destructive' : 'outline'}
+                onClick={() => setPendingRecaptureAxis(axis)}
+                disabled={
+                  statusSupported !== true ||
+                  measuringAxis !== null ||
+                  preflightAxis !== null ||
+                  revalidatingAxis !== null ||
+                  recapturingAxis !== null
+                }
+                title={
+                  statusSupported !== true
+                    ? 'Driver não expõe ONVIF GetStatus'
+                    : recaptureRequired[axis]
+                      ? `Desvio > ${RECAPTURE_THRESHOLD_PCT}% detectado — recapture obrigatória`
+                      : 'Recaptura guiada: aciona o dome até os fins de curso e captura min/max automaticamente'
+                }
+                data-testid={`ptz-recapture-${axis}`}
+              >
+                {recapturingAxis === axis
+                  ? (<><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Recapturando…</>)
+                  : (<><Wand2 className="w-3.5 h-3.5 mr-1" /> Recapturar guiado</>)}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => resetAxis(axis)} disabled={measuringAxis !== null || preflightAxis !== null || recapturingAxis !== null}>
                 Reset
               </Button>
             </div>
+
+            {recaptureRequired[axis] && (
+              <div
+                className="rounded-md border border-destructive/50 bg-destructive/5 text-destructive p-2 text-[11px] flex items-start gap-2"
+                data-testid={`ptz-recapture-required-${axis}`}
+                role="alert"
+              >
+                <TriangleAlert className="w-3.5 h-3.5 mt-0.5 shrink-0" aria-hidden />
+                <div className="space-y-0.5">
+                  <div className="font-medium">
+                    Desvio de {validation[axis]!.error_pct.toFixed(1)}% (&gt; {RECAPTURE_THRESHOLD_PCT}%) — recaptura obrigatória.
+                  </div>
+                  <div className="opacity-80">
+                    O pré-voo deste eixo (e o de todos os eixos) está bloqueado até você executar
+                    <b> Recapturar guiado</b> e confirmar novos min/max válidos.
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {recapturingAxis === axis && (
+              <div className="rounded-md border p-2 space-y-1" data-testid={`ptz-recapture-progress-${axis}`}>
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="font-medium">
+                    {recaptureStage === 'to-min' ? 'Buscando extremo mínimo…' : recaptureStage === 'to-max' ? 'Buscando extremo máximo…' : 'Concluído'}
+                  </span>
+                  <span className="font-mono opacity-70">{recaptureProgress}%</span>
+                </div>
+                <Progress value={recaptureProgress} className="h-1.5" />
+                <div className="flex justify-end">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => { recaptureAbortRef.current = true; }}
+                    className="h-6 px-2 text-[10px]"
+                  >
+                    Abortar
+                  </Button>
+                </div>
+              </div>
+            )}
+
 
             {(() => {
               const [lo, hi] = AXIS_BOUNDS[axis];
@@ -1065,6 +1307,51 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
         cameraId={cameraId}
       />
 
+      <AlertDialog
+        open={pendingRecaptureAxis !== null}
+        onOpenChange={(v) => { if (!v) setPendingRecaptureAxis(null); }}
+      >
+        <AlertDialogContent data-testid="ptz-recapture-confirm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Recaptura guiada · {pendingRecaptureAxis ? AXIS_LABEL[pendingRecaptureAxis] : ''}
+            </AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-2 text-sm">
+                <p>
+                  O dome será acionado até os <b>fins de curso</b> em ambos os sentidos para capturar
+                  novos <b>min</b> e <b>max</b> automaticamente. Certifique-se de que o campo de visão
+                  está desobstruído.
+                </p>
+                {pendingRecaptureAxis && recaptureRequired[pendingRecaptureAxis] && validation[pendingRecaptureAxis] && (
+                  <p className="rounded-md border border-destructive/40 bg-destructive/5 p-2 text-destructive text-xs">
+                    Desvio detectado: <b>{validation[pendingRecaptureAxis]!.error_pct.toFixed(1)}%</b>{' '}
+                    (limiar {RECAPTURE_THRESHOLD_PCT}%). O pré-voo permanece bloqueado até o término.
+                  </p>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Você poderá abortar a qualquer momento durante o processo.
+                </p>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel data-testid="ptz-recapture-cancel">Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              data-testid="ptz-recapture-confirm-btn"
+              onClick={() => {
+                const axis = pendingRecaptureAxis;
+                setPendingRecaptureAxis(null);
+                if (axis) void guidedRecapture(axis);
+              }}
+            >
+              Confirmar e iniciar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
     </div>
+
   );
 }
