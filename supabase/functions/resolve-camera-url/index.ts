@@ -6,6 +6,8 @@ import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 import { getCorsHeaders, handleCors } from "../_shared/cors.ts";
 import { checkRateLimit, type RateLimitConfig } from "../_shared/rateLimiter.ts";
 import { maskSecrets } from "../_shared/maskSecrets.ts";
+import { recordEdgeError } from "../_shared/errorAudit.ts";
+
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -94,9 +96,19 @@ Deno.serve(async (req) => {
     const v1 = await admin.rpc("get_camera_stream_url", { p_camera_id: camera_id, p_key: VAULT_KEY });
     if (v1.error) {
       log("error", "rpc_failed", { camera_id, purpose, err: v1.error.message });
+      await recordEdgeError({
+        function_name: "resolve-camera-url",
+        error_code: "rpc_failed",
+        http_status: 500,
+        camera_id,
+        run_from: "cloud",
+        message: v1.error.message,
+        context: { purpose, rpc: "get_camera_stream_url" },
+      });
       return j({ error: "rpc_failed", detail: v1.error.message }, 500, cors);
     }
     url = (v1.data as string | null) ?? "";
+
   }
   if (!url) return j({ error: "camera_not_found_or_empty" }, 404, cors);
 

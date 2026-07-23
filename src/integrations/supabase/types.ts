@@ -1489,6 +1489,60 @@ export type Database = {
         }
         Relationships: []
       }
+      edge_function_error_audit: {
+        Row: {
+          camera_id: string | null
+          context: Json
+          created_at: string
+          error_code: string
+          function_name: string
+          hint: string | null
+          http_status: number | null
+          id: string
+          message: string | null
+          relay_agent_id: string | null
+          request_id: string | null
+          run_from: string
+          target_host: string | null
+          target_ip: string | null
+          user_id: string | null
+        }
+        Insert: {
+          camera_id?: string | null
+          context?: Json
+          created_at?: string
+          error_code: string
+          function_name: string
+          hint?: string | null
+          http_status?: number | null
+          id?: string
+          message?: string | null
+          relay_agent_id?: string | null
+          request_id?: string | null
+          run_from?: string
+          target_host?: string | null
+          target_ip?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          camera_id?: string | null
+          context?: Json
+          created_at?: string
+          error_code?: string
+          function_name?: string
+          hint?: string | null
+          http_status?: number | null
+          id?: string
+          message?: string | null
+          relay_agent_id?: string | null
+          request_id?: string | null
+          run_from?: string
+          target_host?: string | null
+          target_ip?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       event_alerts: {
         Row: {
           acknowledged_at: string | null
@@ -5608,6 +5662,7 @@ export type Database = {
           window_hours: number
         }[]
       }
+      prune_edge_function_error_audit: { Args: never; Returns: number }
       prune_preview_telemetry_events: {
         Args: never
         Returns: {

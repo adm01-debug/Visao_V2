@@ -8,6 +8,8 @@ import { Activity, Database, HardDrive, RefreshCw, ShieldAlert, CalendarClock } 
 import { SlowQueriesCard } from '@/components/admin/SlowQueriesCard';
 import { RetentionOverviewCard } from '@/components/admin/RetentionOverviewCard';
 import { PreviewTelemetryCard } from '@/components/admin/PreviewTelemetryCard';
+import { EdgeErrorsAuditCard } from '@/components/admin/EdgeErrorsAuditCard';
+
 import { PreviewAlertStatusCard } from '@/components/admin/PreviewAlertStatusCard';
 import { CameraHealthCard } from '@/components/admin/CameraHealthCard';
 import { CameraVaultAuditCard } from '@/components/security/CameraVaultAuditCard';
@@ -333,6 +335,11 @@ export default function OperationsPage() {
       <section>
         <PreviewAlertStatusCard />
       </section>
+
+      <section>
+        <EdgeErrorsAuditCard />
+      </section>
+
 
 
       <section>
