@@ -129,6 +129,8 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     message: null,
     host: "",
     allowPrivate: false,
+    manualMode: false,
+    manualPort: "",
   });
   const [templateCtx, setTemplateCtx] = useState<{
     templateId: string;
