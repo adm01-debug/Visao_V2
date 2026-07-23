@@ -12,6 +12,7 @@ import { ScheduleForm } from '@/components/schedules/ScheduleForm';
 import { useCameraSchedules, type CameraSchedule } from '@/hooks/useCameraSchedules';
 import { useCameras } from '@/hooks/useCameras';
 import { useMonitorGroups } from '@/hooks/useMonitorGroups';
+import { PageContent } from '@/components/layout/MainLayout';
 
 function statusIcon(s: CameraSchedule['last_status']) {
   if (s === 'ok') return <CheckCircle2 className="w-3.5 h-3.5 text-success" />;

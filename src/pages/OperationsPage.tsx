@@ -47,6 +47,7 @@ import { BlockingChainsCard } from '@/components/admin/BlockingChainsCard';
 import { RlsCoverageCard } from '@/components/admin/RlsCoverageCard';
 import { AlertmanagerSilencesCard } from '@/components/admin/AlertmanagerSilencesCard';
 import { assessCronFreshness } from '@/lib/cronSchedule';
+import { PageContent } from '@/components/layout/MainLayout';
 
 interface CacheStat { namespace: string; hits: number; misses: number; hit_ratio_pct: number | null }
 interface CacheSize { total_rows: number; total_bytes: number; oldest: string | null; newest: string | null }

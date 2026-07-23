@@ -25,6 +25,7 @@ import {
 import { RefreshCw, Activity, Gauge, HardDrive } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { PageContent } from '@/components/layout/MainLayout';
 
 function formatBytes(bytes: number): string {
   if (!bytes) return '0 B';

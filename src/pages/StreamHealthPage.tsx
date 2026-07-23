@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useStreamHealth } from '@/hooks/useStreamHealth';
 import { Activity, RotateCcw, Loader2 } from 'lucide-react';
 import { PageMeta } from '@/components/PageMeta';
+import { PageContent } from '@/components/layout/MainLayout';
 
 export default function StreamHealthPage() {
   const { summaries, restarts, loading, reload, triggerManualRestart } = useStreamHealth();

@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { PageMeta } from '@/components/PageMeta';
 import { useTimelapse, type TimelapseConfigInput, type TimelapseVideo } from '@/hooks/useTimelapse';
 import { useCameras } from '@/hooks/useCameras';
+import { PageContent } from '@/components/layout/MainLayout';
 
 const DEFAULT_INPUT: TimelapseConfigInput = {
   camera_id: '',

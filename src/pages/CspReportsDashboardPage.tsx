@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, ShieldAlert, RefreshCw } from "lucide-react";
+import { PageContent } from '@/components/layout/MainLayout';
 
 interface CspStats {
   window_days: number;

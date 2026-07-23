@@ -22,6 +22,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { PageMeta } from '@/components/PageMeta';
 import { useStreamHealth, type HealthCheck, type RestartEvent } from '@/hooks/useStreamHealth';
 import { cn } from '@/lib/utils';
+import { PageContent } from '@/components/layout/MainLayout';
 
 interface CameraRow {
   id: string;

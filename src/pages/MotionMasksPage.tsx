@@ -13,6 +13,7 @@ import { PageMeta } from '@/components/PageMeta';
 import { MotionMaskEditor } from '@/components/motion/MotionMaskEditor';
 import { useMotionMasks } from '@/hooks/useMotionMasks';
 import { useCameras } from '@/hooks/useCameras';
+import { PageContent } from '@/components/layout/MainLayout';
 
 export default function MotionMasksPage() {
   const { cameras } = useCameras();
