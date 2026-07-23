@@ -14,6 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
+      agent_discoveries: {
+        Row: {
+          agent_id: string
+          created_at: string
+          discovered_at: string
+          firmware: string | null
+          host: string
+          id: string
+          manufacturer: string | null
+          model: string | null
+          onvif_endpoint: string | null
+          port: number
+          ptz_capable: boolean
+          raw: Json | null
+          rtsp_primary: string | null
+          rtsp_substream: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agent_id: string
+          created_at?: string
+          discovered_at?: string
+          firmware?: string | null
+          host: string
+          id?: string
+          manufacturer?: string | null
+          model?: string | null
+          onvif_endpoint?: string | null
+          port: number
+          ptz_capable?: boolean
+          raw?: Json | null
+          rtsp_primary?: string | null
+          rtsp_substream?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agent_id?: string
+          created_at?: string
+          discovered_at?: string
+          firmware?: string | null
+          host?: string
+          id?: string
+          manufacturer?: string | null
+          model?: string | null
+          onvif_endpoint?: string | null
+          port?: number
+          ptz_capable?: boolean
+          raw?: Json | null
+          rtsp_primary?: string | null
+          rtsp_substream?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_discoveries_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "local_agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       alertmanager_silences_audit: {
         Row: {
           action: string
@@ -1768,6 +1833,48 @@ export type Database = {
           created_at?: string
           key?: string
           response?: Json
+        }
+        Relationships: []
+      }
+      local_agents: {
+        Row: {
+          created_at: string
+          id: string
+          last_ip: unknown
+          last_seen_at: string | null
+          name: string
+          network_cidr: string | null
+          status: string
+          token_hash: string
+          updated_at: string
+          user_id: string
+          version: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_ip?: unknown
+          last_seen_at?: string | null
+          name: string
+          network_cidr?: string | null
+          status?: string
+          token_hash: string
+          updated_at?: string
+          user_id: string
+          version?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_ip?: unknown
+          last_seen_at?: string | null
+          name?: string
+          network_cidr?: string | null
+          status?: string
+          token_hash?: string
+          updated_at?: string
+          user_id?: string
+          version?: string | null
         }
         Relationships: []
       }
@@ -5423,6 +5530,13 @@ export type Database = {
       unwrap_dek: {
         Args: { p_kek: string; p_wrapped: string }
         Returns: string
+      }
+      verify_agent_token: {
+        Args: { _token: string }
+        Returns: {
+          agent_id: string
+          agent_user_id: string
+        }[]
       }
       wrap_dek: { Args: { p_dek: string; p_kek: string }; Returns: string }
     }
