@@ -350,7 +350,14 @@ export function PtzMultiAxisPreflightDialog({
         if (!byAxis.has(r.axis)) byAxis.set(r.axis, []);
         byAxis.get(r.axis)!.push(r);
       }
-      const rows: Array<Record<string, unknown>> = [];
+      type PreflightRunRow = {
+        user_id: string; camera_id: string; axis: string;
+        ack_area_clear: boolean; ack_watching_live: boolean;
+        ack_confirmed_at: string | null;
+        outcome: string; aborted: boolean; status_supported: boolean;
+        phases: unknown; limits_snapshot: unknown;
+      };
+      const rows: PreflightRunRow[] = [];
       for (const axis of axes) {
         const phases = byAxis.get(axis) ?? [];
         let outcome: 'ok' | 'deviation' | 'fail' | 'aborted' | 'no-telemetry';
