@@ -104,6 +104,50 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
     }
   }, [config.data]);
 
+  // Hidrata ordem dos backends: usa a ordem persistida (se existir e for
+  // consistente com o perfil OEM), senão cai na ordem canônica do perfil.
+  useEffect(() => {
+    if (!isAutoMulti) return;
+    const persisted = (config.data as { ptz_backends?: string[] } | null)?.ptz_backends ?? [];
+    const known = new Set(autoMultiBackends);
+    const filtered = persisted.filter((b) => known.has(b));
+    const missing = autoMultiBackends.filter((b) => !filtered.includes(b));
+    setOrderedBackends([...filtered, ...missing]);
+  }, [config.data, autoMultiBackends, isAutoMulti]);
+
+  const moveBackend = (index: number, delta: -1 | 1) => {
+    setOrderedBackends((prev) => {
+      const next = [...prev];
+      const target = index + delta;
+      if (target < 0 || target >= next.length) return prev;
+      [next[index], next[target]] = [next[target]!, next[index]!];
+      return next;
+    });
+  };
+
+  const sortByBenchmark = () => {
+    if (!backendResults || backendResults.length === 0) return;
+    const rank = new Map<string, { ok: boolean; reachable: boolean; latency: number }>();
+    for (const r of backendResults) {
+      rank.set(r.backend, { ok: r.ok, reachable: r.reachable, latency: r.latency_ms });
+    }
+    setOrderedBackends((prev) => [...prev].sort((a, b) => {
+      const ra = rank.get(a); const rb = rank.get(b);
+      // Não testados vão para o fim
+      if (!ra && !rb) return 0;
+      if (!ra) return 1;
+      if (!rb) return -1;
+      // OK antes de não-OK
+      if (ra.ok !== rb.ok) return ra.ok ? -1 : 1;
+      // Alcançáveis antes de inalcançáveis (para não-OK)
+      if (ra.reachable !== rb.reachable) return ra.reachable ? -1 : 1;
+      // Menor latência primeiro
+      return ra.latency - rb.latency;
+    }));
+    toast.success('Ordem reorganizada pelo benchmark');
+  };
+
+
   // Descoberta ONVIF (também valida credenciais)
   const discover = useMutation({
     mutationFn: async () => {
