@@ -108,7 +108,16 @@ interface AutoDiscoverState {
   allowPrivate: boolean;
   manualMode: boolean;
   manualPort: string;
+  relayAgentId: string;
 }
+
+interface RelayAgentOption {
+  id: string;
+  name: string;
+  last_seen_at: string | null;
+  network_cidr: string | null;
+}
+
 
 
 /** Mascara qualquer credencial antes de aparecer em toast/log. */
@@ -131,13 +140,33 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     allowPrivate: false,
     manualMode: false,
     manualPort: "",
+    relayAgentId: "",
   });
+  const [relayAgents, setRelayAgents] = useState<RelayAgentOption[]>([]);
   const [templateCtx, setTemplateCtx] = useState<{
     templateId: string;
     host: string;
     port: string;
     channel: string;
   }>({ templateId: "", host: "", port: "", channel: "1" });
+
+  // Carrega agentes locais online (heartbeat < 2 min) para oferecer como relé.
+  useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+    (async () => {
+      const cutoff = new Date(Date.now() - 120_000).toISOString();
+      const { data } = await supabase
+        .from("local_agents")
+        .select("id, name, last_seen_at, network_cidr")
+        .gte("last_seen_at", cutoff)
+        .order("last_seen_at", { ascending: false })
+        .limit(20);
+      if (!cancelled && data) setRelayAgents(data as RelayAgentOption[]);
+    })();
+    return () => { cancelled = true; };
+  }, [open]);
+
 
   const { createCamera, deleteCamera, refetch } = useCameras();
   const { storeCredentials, loading: vaultLoading } = useCameraVault();
