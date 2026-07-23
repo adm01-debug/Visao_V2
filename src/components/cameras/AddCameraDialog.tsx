@@ -717,7 +717,82 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                 {autoDiscover.message}
               </Badge>
             )}
+
+            <div className="mt-2 space-y-2 rounded-md border border-border/40 bg-background/60 p-2">
+              <div className="flex items-center justify-between gap-2">
+                <div className="text-xs font-medium">Diagnóstico de portas (pré-teste)</div>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={handleProbePorts}
+                  disabled={portProbe.loading || !autoDiscover.host.trim()}
+                >
+                  {portProbe.loading ? (
+                    <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                  ) : (
+                    <Search className="mr-2 h-3 w-3" />
+                  )}
+                  Testar portas
+                </Button>
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                Verifica quais portas ONVIF/RTSP/HTTP respondem no host informado, a partir do mesmo ambiente que rodará o autodiscover. Útil para diagnosticar firewall e escolher a porta correta antes de tentar descobrir.
+              </p>
+              {portProbe.error && (
+                <Badge variant="destructive" className="max-w-full whitespace-normal">
+                  {portProbe.error}
+                </Badge>
+              )}
+              {portProbe.results.length > 0 && (
+                <div className="space-y-1">
+                  <div className="grid grid-cols-2 gap-1 sm:grid-cols-4">
+                    {portProbe.results.map((r) => (
+                      <div
+                        key={r.port}
+                        className={`flex items-center justify-between rounded border px-2 py-1 text-[11px] ${
+                          r.reachable
+                            ? "border-emerald-500/40 bg-emerald-500/5 text-emerald-700 dark:text-emerald-300"
+                            : "border-border/60 bg-muted/30 text-muted-foreground"
+                        }`}
+                        title={r.reason ? `motivo: ${r.reason}` : ""}
+                      >
+                        <span className="font-mono">:{r.port}</span>
+                        <span>
+                          {r.reachable
+                            ? r.http_status
+                              ? `HTTP ${r.http_status}`
+                              : `${r.latency_ms}ms`
+                            : r.reason ?? "fechado"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  {portProbe.summary && portProbe.summary.suggested_onvif.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-1 text-[11px]">
+                      <span className="text-muted-foreground">Candidatos ONVIF:</span>
+                      {portProbe.summary.suggested_onvif.map((p) => (
+                        <Badge
+                          key={p}
+                          variant="secondary"
+                          className="cursor-pointer"
+                          onClick={() =>
+                            setAutoDiscover((s) => ({ ...s, manualMode: true, manualPort: String(p) }))
+                          }
+                        >
+                          usar :{p}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                  {portProbe.nextStep && (
+                    <p className="text-[11px] text-muted-foreground">{portProbe.nextStep}</p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
+
 
           <div className="space-y-2 rounded-md border border-border/60 bg-muted/40 p-3">
             <div className="flex items-center justify-between gap-2">
