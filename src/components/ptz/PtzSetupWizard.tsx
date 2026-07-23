@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, CheckCircle2, Home,
+  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, ChevronDown, ChevronUp, CheckCircle2, Home,
   Loader2, Radar, Save, Sparkles, Star, Wand2, XCircle, Zap, ZoomIn, ZoomOut,
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -72,6 +72,11 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
   const autoMultiBackends = useMemo(() => profile?.ptzBackends ?? [], [profile]);
   const isAutoMulti = autoMultiBackends.length > 0;
 
+  // Ordem de prioridade dos backends nativos (modo auto-multi). O firmware
+  // tentará na sequência definida — priorizar os com maior chance encurta o
+  // tempo até primeira resposta útil.
+  const [orderedBackends, setOrderedBackends] = useState<string[]>([]);
+
 
   // Config atual
   const config = useQuery({
@@ -98,6 +103,50 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
       });
     }
   }, [config.data]);
+
+  // Hidrata ordem dos backends: usa a ordem persistida (se existir e for
+  // consistente com o perfil OEM), senão cai na ordem canônica do perfil.
+  useEffect(() => {
+    if (!isAutoMulti) return;
+    const persisted = (config.data as { ptz_backends?: string[] } | null)?.ptz_backends ?? [];
+    const known = new Set(autoMultiBackends);
+    const filtered = persisted.filter((b) => known.has(b));
+    const missing = autoMultiBackends.filter((b) => !filtered.includes(b));
+    setOrderedBackends([...filtered, ...missing]);
+  }, [config.data, autoMultiBackends, isAutoMulti]);
+
+  const moveBackend = (index: number, delta: -1 | 1) => {
+    setOrderedBackends((prev) => {
+      const next = [...prev];
+      const target = index + delta;
+      if (target < 0 || target >= next.length) return prev;
+      [next[index], next[target]] = [next[target]!, next[index]!];
+      return next;
+    });
+  };
+
+  const sortByBenchmark = () => {
+    if (!backendResults || backendResults.length === 0) return;
+    const rank = new Map<string, { ok: boolean; reachable: boolean; latency: number }>();
+    for (const r of backendResults) {
+      rank.set(r.backend, { ok: r.ok, reachable: r.reachable, latency: r.latency_ms });
+    }
+    setOrderedBackends((prev) => [...prev].sort((a, b) => {
+      const ra = rank.get(a); const rb = rank.get(b);
+      // Não testados vão para o fim
+      if (!ra && !rb) return 0;
+      if (!ra) return 1;
+      if (!rb) return -1;
+      // OK antes de não-OK
+      if (ra.ok !== rb.ok) return ra.ok ? -1 : 1;
+      // Alcançáveis antes de inalcançáveis (para não-OK)
+      if (ra.reachable !== rb.reachable) return ra.reachable ? -1 : 1;
+      // Menor latência primeiro
+      return ra.latency - rb.latency;
+    }));
+    toast.success('Ordem reorganizada pelo benchmark');
+  };
+
 
   // Descoberta ONVIF (também valida credenciais)
   const discover = useMutation({
@@ -142,7 +191,9 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
 
   const testBackends = useMutation({
     mutationFn: async () => {
-      const backends = isAutoMulti ? autoMultiBackends : (protocol ? [protocol] : []);
+      const backends = isAutoMulti
+        ? (orderedBackends.length ? orderedBackends : autoMultiBackends)
+        : (protocol ? [protocol] : []);
       const { data, error } = await supabase.functions.invoke('ptz-backends-test', {
         body: { camera_id: cameraId, backends },
       });
@@ -168,7 +219,7 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
         setup_completed_at: new Date().toISOString(),
       };
       if (isAutoMulti) {
-        payload.ptz_backends = autoMultiBackends;
+        payload.ptz_backends = orderedBackends.length ? orderedBackends : autoMultiBackends;
         payload.ptz_backends_mode = 'auto-multi';
       }
       const { error } = await supabase
@@ -380,6 +431,74 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                   </div>
                 )}
               </div>
+
+              {/* Prioridade dos backends nativos (auto-multi). O firmware tentará
+                  na ordem definida — mova os com maior chance para o topo. */}
+              {isAutoMulti && orderedBackends.length > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm">Prioridade dos backends</Label>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={sortByBenchmark}
+                      disabled={!backendResults || backendResults.length === 0}
+                      title={!backendResults ? 'Rode o teste antes' : 'Ordenar pelos resultados do teste'}
+                    >
+                      <Sparkles className="w-3.5 h-3.5 mr-1" />
+                      Auto-ordenar por benchmark
+                    </Button>
+                  </div>
+                  <div className="rounded-md border divide-y">
+                    {orderedBackends.map((backend, index) => {
+                      const r = backendResults?.find((x) => x.backend === backend);
+                      return (
+                        <div key={backend} className="flex items-center justify-between gap-2 p-2 text-sm">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="w-5 text-xs font-mono text-muted-foreground text-right">
+                              {index + 1}.
+                            </span>
+                            <span className="font-mono uppercase text-xs">{backend}</span>
+                            {r?.ok && <Badge variant="outline" className="text-[10px] border-success/40 text-success">ok</Badge>}
+                            {r && !r.ok && r.reachable && (
+                              <Badge variant="outline" className="text-[10px]">alcançável</Badge>
+                            )}
+                            {r && !r.reachable && (
+                              <Badge variant="outline" className="text-[10px] border-destructive/40 text-destructive">falhou</Badge>
+                            )}
+                            {r && (
+                              <span className="text-[10px] text-muted-foreground font-mono">
+                                {r.latency_ms}ms
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1 shrink-0">
+                            <Button
+                              variant="ghost" size="icon" className="h-7 w-7"
+                              onClick={() => moveBackend(index, -1)}
+                              disabled={index === 0}
+                              aria-label={`Subir ${backend}`}
+                            >
+                              <ChevronUp className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost" size="icon" className="h-7 w-7"
+                              onClick={() => moveBackend(index, 1)}
+                              disabled={index === orderedBackends.length - 1}
+                              aria-label={`Descer ${backend}`}
+                            >
+                              <ChevronDown className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    A ordem é salva junto com a configuração e usada como sequência de tentativa em modo auto-multi.
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
@@ -509,6 +628,15 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                     <span className="text-muted-foreground">
                       {autoMultiBackends.length} backends nativos ({profile?.displayName})
                     </span>
+                    {orderedBackends.length > 0 && (
+                      <div className="mt-1 flex flex-wrap gap-1">
+                        {orderedBackends.map((b, i) => (
+                          <Badge key={b} variant="outline" className="font-mono text-[10px]">
+                            {i + 1}. {b}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 
