@@ -158,7 +158,7 @@ export default function NvrDetailPage(): JSX.Element {
   const filteredChannels = useMemo(() => {
     const rows = channelsQuery.data ?? [];
     const q = search.trim().toLowerCase();
-    return rows.filter((r) => {
+    const filtered = rows.filter((r) => {
       if (statusFilter === "online" && r.status !== "online") return false;
       if (statusFilter === "offline" && r.status !== "offline") return false;
       if (!q) return true;
@@ -167,7 +167,20 @@ export default function NvrDetailPage(): JSX.Element {
         String(r.channel_number ?? "").includes(q)
       );
     });
-  }, [channelsQuery.data, search, statusFilter]);
+    const sorted = [...filtered];
+    if (sortMode === "name-asc") {
+      sorted.sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+    } else {
+      const dir = sortMode === "channel-desc" ? -1 : 1;
+      sorted.sort((a, b) => {
+        const ca = a.channel_number ?? Number.POSITIVE_INFINITY;
+        const cb = b.channel_number ?? Number.POSITIVE_INFINITY;
+        return (ca - cb) * dir;
+      });
+    }
+    return sorted;
+  }, [channelsQuery.data, search, statusFilter, sortMode]);
+
 
   const fullscreenChannel = useMemo(
     () => (channelsQuery.data ?? []).find((c) => c.id === fullscreenId) ?? null,
