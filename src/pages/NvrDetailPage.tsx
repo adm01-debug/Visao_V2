@@ -12,7 +12,7 @@ import { PageMeta } from "@/components/PageMeta";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Server, Radio, Wifi, WifiOff, HelpCircle, Lock, Unlock, Loader2, LayoutGrid, VideoOff, Video, Search, Maximize2, RefreshCw } from "lucide-react";
+import { ArrowLeft, Server, Radio, Wifi, WifiOff, HelpCircle, Lock, Unlock, Loader2, LayoutGrid, VideoOff, Video, Search, Maximize2, RefreshCw, ArrowUpDown } from "lucide-react";
 
 interface NvrRow {
   id: string;
@@ -127,6 +127,19 @@ export default function NvrDetailPage(): JSX.Element {
       return "all";
     }
   });
+  const [sortMode, setSortMode] = useState<"channel-asc" | "channel-desc" | "name-asc">(() => {
+    if (typeof window === "undefined" || !prefsKey) return "channel-asc";
+    try {
+      const raw = window.localStorage.getItem(prefsKey);
+      if (!raw) return "channel-asc";
+      const parsed = JSON.parse(raw) as { sortMode?: string };
+      return parsed.sortMode === "channel-desc" || parsed.sortMode === "name-asc"
+        ? parsed.sortMode
+        : "channel-asc";
+    } catch {
+      return "channel-asc";
+    }
+  });
   const [fullscreenId, setFullscreenId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -134,17 +147,18 @@ export default function NvrDetailPage(): JSX.Element {
     try {
       window.localStorage.setItem(
         prefsKey,
-        JSON.stringify({ cols: mosaicCols, statusFilter }),
+        JSON.stringify({ cols: mosaicCols, statusFilter, sortMode }),
       );
     } catch {
       // storage disabled/full — ignore silently
     }
-  }, [prefsKey, mosaicCols, statusFilter]);
+  }, [prefsKey, mosaicCols, statusFilter, sortMode]);
+
 
   const filteredChannels = useMemo(() => {
     const rows = channelsQuery.data ?? [];
     const q = search.trim().toLowerCase();
-    return rows.filter((r) => {
+    const filtered = rows.filter((r) => {
       if (statusFilter === "online" && r.status !== "online") return false;
       if (statusFilter === "offline" && r.status !== "offline") return false;
       if (!q) return true;
@@ -153,7 +167,20 @@ export default function NvrDetailPage(): JSX.Element {
         String(r.channel_number ?? "").includes(q)
       );
     });
-  }, [channelsQuery.data, search, statusFilter]);
+    const sorted = [...filtered];
+    if (sortMode === "name-asc") {
+      sorted.sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+    } else {
+      const dir = sortMode === "channel-desc" ? -1 : 1;
+      sorted.sort((a, b) => {
+        const ca = a.channel_number ?? Number.POSITIVE_INFINITY;
+        const cb = b.channel_number ?? Number.POSITIVE_INFINITY;
+        return (ca - cb) * dir;
+      });
+    }
+    return sorted;
+  }, [channelsQuery.data, search, statusFilter, sortMode]);
+
 
   const fullscreenChannel = useMemo(
     () => (channelsQuery.data ?? []).find((c) => c.id === fullscreenId) ?? null,
@@ -424,6 +451,19 @@ export default function NvrDetailPage(): JSX.Element {
                         <ToggleGroupItem value="offline" className="gap-1">
                           <WifiOff className="h-3 w-3" /> Offline
                         </ToggleGroupItem>
+                      </ToggleGroup>
+                      <ToggleGroup
+                        type="single"
+                        size="sm"
+                        value={sortMode}
+                        onValueChange={(v) => v && setSortMode(v as typeof sortMode)}
+                        aria-label="Ordenação dos canais"
+                      >
+                        <ToggleGroupItem value="channel-asc" aria-label="Canal crescente">
+                          <ArrowUpDown className="h-3 w-3 mr-1" /> CH ↑
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="channel-desc" aria-label="Canal decrescente">CH ↓</ToggleGroupItem>
+                        <ToggleGroupItem value="name-asc" aria-label="Nome A-Z">A-Z</ToggleGroupItem>
                       </ToggleGroup>
                       <Button
                         size="sm"
