@@ -135,6 +135,10 @@ interface AutoDiscoverState {
   manualMode: boolean;
   manualPort: string;
   relayAgentId: string;
+  /** Perfil ONVIF/OEM resolvido pelo edge (`onvif-autodiscover`). */
+  profileId: string | null;
+  /** Nome amigável (ex.: "XiongMai NVR NBD80X (Usecam OEM)"). */
+  profileDisplayName: string | null;
 }
 
 interface RelayAgentOption {
