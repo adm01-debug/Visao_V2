@@ -115,6 +115,22 @@ export function ConnectivityResolutionCard({ windowHours = 168 }: Props) {
           </p>
         ) : (
           <div className="space-y-4">
+            {stats.total >= 10 && stats.successRate < 60 && (
+              <div
+                role="alert"
+                aria-live="polite"
+                className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive"
+              >
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+                <div>
+                  <p className="font-medium">Saúde crítica do assistente</p>
+                  <p className="text-xs text-destructive/80">
+                    Taxa de sucesso {stats.successRate}% em {stats.total} tentativas nas últimas{" "}
+                    {windowHours}h. Verifique agentes locais, VPNs e regras de port-forward.
+                  </p>
+                </div>
+              </div>
+            )}
             <div className="grid grid-cols-3 gap-3">
               <Metric label="Total" value={stats.total.toString()} />
               <Metric
