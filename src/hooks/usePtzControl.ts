@@ -67,7 +67,12 @@ export function usePtzControl({ cameraId, enabled = true, relayAgentId = null }:
   const sendMutation = useMutation({
     mutationFn: async ({ command, params }: { command: PtzCommand; params?: PtzParams }) => {
       const { data, error } = await supabase.functions.invoke("camera-ptz-control", {
-        body: { camera_id: cameraId, command, params: params ?? {} },
+        body: {
+          camera_id: cameraId,
+          command,
+          params: params ?? {},
+          ...(relayAgentId ? { relay_agent_id: relayAgentId } : {}),
+        },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error === "camera_em_uso"
