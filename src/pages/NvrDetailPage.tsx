@@ -102,6 +102,28 @@ export default function NvrDetailPage(): JSX.Element {
   const { toast } = useToast();
   const [bulkBusy, setBulkBusy] = useState<null | "arm" | "disarm">(null);
   const [mosaicCols, setMosaicCols] = useState<"2" | "3" | "4">("3");
+  const [search, setSearch] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "online" | "offline">("all");
+  const [fullscreenId, setFullscreenId] = useState<string | null>(null);
+
+  const filteredChannels = useMemo(() => {
+    const rows = channelsQuery.data ?? [];
+    const q = search.trim().toLowerCase();
+    return rows.filter((r) => {
+      if (statusFilter === "online" && r.status !== "online") return false;
+      if (statusFilter === "offline" && r.status !== "offline") return false;
+      if (!q) return true;
+      return (
+        r.name.toLowerCase().includes(q) ||
+        String(r.channel_number ?? "").includes(q)
+      );
+    });
+  }, [channelsQuery.data, search, statusFilter]);
+
+  const fullscreenChannel = useMemo(
+    () => (channelsQuery.data ?? []).find((c) => c.id === fullscreenId) ?? null,
+    [channelsQuery.data, fullscreenId],
+  );
 
   async function bulkAction(action: "arm" | "disarm"): Promise<void> {
     const channels = channelsQuery.data ?? [];
