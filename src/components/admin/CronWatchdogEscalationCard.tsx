@@ -24,7 +24,7 @@ export function CronWatchdogEscalationCard() {
   const load = async () => {
     setLoading(true);
     const { data, error } = await supabase.rpc('cron_watchdog_consecutive_problems', {
-      min_runs: THRESHOLD,
+      _min_runs: THRESHOLD,
     });
     if (error) {
       toast.error('Falha ao carregar status de escalação');
