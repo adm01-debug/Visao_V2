@@ -139,6 +139,29 @@ function safeErrorMessage(err: unknown): string {
   return raw.replace(/rtsps?:\/\/[^\s"']+/gi, "rtsp://[REDACTED]");
 }
 
+/**
+ * supabase.functions.invoke trata HTTP não-2xx como erro genérico ("returned 400"),
+ * descartando o corpo estruturado. Este helper reabre o Response para extrair o
+ * payload JSON (com `error_code`, `hint`, `steps`, etc.) que a Edge Function envia.
+ */
+async function readFunctionErrorBody(err: unknown): Promise<Record<string, unknown> | null> {
+  const ctx = (err as { context?: { json?: () => Promise<unknown>; clone?: () => Response } })?.context;
+  if (!ctx) return null;
+  try {
+    if (typeof ctx.json === "function") {
+      const parsed = await ctx.json();
+      return parsed && typeof parsed === "object" ? (parsed as Record<string, unknown>) : null;
+    }
+    if (typeof ctx.clone === "function") {
+      const parsed = await ctx.clone().json();
+      return parsed && typeof parsed === "object" ? (parsed as Record<string, unknown>) : null;
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
 export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" }: AddCameraDialogProps) {
   const guided = mode === "guided";
   const [showPassword, setShowPassword] = useState(false);
@@ -353,53 +376,59 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
           ...(autoDiscover.relayAgentId ? { relay_agent_id: autoDiscover.relayAgentId } : {}),
         },
       });
-      if (error) throw new Error(error.message);
-      if (data?.error) {
-        const steps: string[] = Array.isArray(data.steps) ? data.steps.filter((s: unknown): s is string => typeof s === "string") : [];
+      // Se a Edge Function respondeu com HTTP não-2xx (ex.: 400 private_host_blocked),
+      // o supabase-js gera FunctionsHttpError e `data` fica null. Recuperamos o corpo.
+      const payload = (data as Record<string, unknown> | null) ?? (error ? await readFunctionErrorBody(error) : null);
+      if (!payload && error) throw new Error(error.message);
+      if (payload?.error) {
+        const steps: string[] = Array.isArray(payload.steps) ? (payload.steps as unknown[]).filter((s): s is string => typeof s === "string") : [];
         const detail: AutoDiscoverErrorDetail | null = steps.length
           ? {
-              code: String(data.error_code ?? data.error),
-              title: typeof data.title === "string" ? data.title : "Não foi possível alcançar a câmera",
-              hint: typeof data.hint === "string" ? data.hint : String(data.error),
+              code: String(payload.error_code ?? payload.error),
+              title: typeof payload.title === "string" ? payload.title : "Não foi possível alcançar a câmera",
+              hint: typeof payload.hint === "string" ? payload.hint : String(payload.error),
               steps,
-              isLanHost: Boolean(data.is_lan_host),
-              usedRelay: Boolean(data.used_relay),
-              testedPorts: Array.isArray(data.tested_ports) ? data.tested_ports : [],
+              isLanHost: Boolean(payload.is_lan_host),
+              usedRelay: Boolean(payload.used_relay),
+              testedPorts: Array.isArray(payload.tested_ports)
+                ? (payload.tested_ports as unknown[]).filter((p): p is number => typeof p === "number")
+                : [],
             }
           : null;
         setAutoDiscover((s) => ({
           ...s,
           loading: false,
           ok: false,
-          message: data.hint || data.error,
+          message: (payload.hint as string) || (payload.error as string),
           errorDetail: detail,
         }));
         return;
       }
+      const result = (payload ?? {}) as Record<string, any>;
       // Pré-preenche o formulário. Remove credenciais embutidas — cofre cuida delas.
       const stripCreds = (url: string) => url.replace(/^(rtsps?:\/\/)[^@\/]+@/i, "$1");
-      if (data.rtsp_primary) {
-        form.setValue("rtspUrl", stripCreds(data.rtsp_primary), { shouldValidate: true });
+      if (result?.rtsp_primary) {
+        form.setValue("rtspUrl", stripCreds(result.rtsp_primary), { shouldValidate: true });
       }
-      if (data.rtsp_substream) {
-        form.setValue("substreamUrl", stripCreds(data.rtsp_substream), { shouldValidate: true });
+      if (result?.rtsp_substream) {
+        form.setValue("substreamUrl", stripCreds(result.rtsp_substream), { shouldValidate: true });
       }
-      if (data.ptz_capable) {
+      if (result?.ptz_capable) {
         form.setValue("ptzEnabled", true);
         form.setValue("ptzConfig.endpoint", host);
-        form.setValue("ptzConfig.port", data.onvif?.port ?? 80);
+        form.setValue("ptzConfig.port", result.onvif?.port ?? 80);
         form.setValue("ptzConfig.username", username);
         form.setValue("ptzConfig.password", password);
       }
-      if (data.device?.model && !form.getValues("name")) {
-        form.setValue("name", `${data.device.manufacturer ?? "Câmera"} ${data.device.model}`.trim());
+      if (result?.device?.model && !form.getValues("name")) {
+        form.setValue("name", `${result.device.manufacturer ?? "Câmera"} ${result.device.model}`.trim());
       }
       setAutoDiscover((s) => ({
         ...s,
         loading: false,
         ok: true,
         errorDetail: null,
-        message: `${data.device?.manufacturer ?? "Dispositivo"} ${data.device?.model ?? ""} · porta ${data.onvif?.port} · ${data.profiles} perfil(is)${data.ptz_capable ? " · PTZ" : ""}`,
+        message: `${result?.device?.manufacturer ?? "Dispositivo"} ${result?.device?.model ?? ""} · porta ${result?.onvif?.port} · ${result?.profiles} perfil(is)${result?.ptz_capable ? " · PTZ" : ""}`,
       }));
       toast.success("Câmera descoberta! Campos preenchidos automaticamente.");
     } catch (err) {
@@ -436,21 +465,23 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
           ...(autoDiscover.relayAgentId ? { relay_agent_id: autoDiscover.relayAgentId } : {}),
         },
       });
-      if (error) throw new Error(error.message);
-      if (data?.error) {
-        setPortProbe((s) => ({ ...s, loading: false, error: data.hint || data.error }));
+      const payload = (data as Record<string, any> | null) ?? (error ? await readFunctionErrorBody(error) : null);
+      if (!payload && error) throw new Error(error.message);
+      if (payload?.error) {
+        setPortProbe((s) => ({ ...s, loading: false, error: (payload.hint as string) || (payload.error as string) }));
         return;
       }
+      const result = (payload ?? {}) as Record<string, any>;
       setPortProbe({
         loading: false,
-        results: data.results ?? [],
-        summary: data.summary ?? null,
-        nextStep: data.next_step ?? null,
+        results: result.results ?? [],
+        summary: result.summary ?? null,
+        nextStep: result.next_step ?? null,
         error: null,
       });
       // Se o modo manual estiver ativo e o probe sugerir uma porta ONVIF, pré-preenche.
-      if (autoDiscover.manualMode && !autoDiscover.manualPort && data?.summary?.suggested_onvif?.[0]) {
-        setAutoDiscover((s) => ({ ...s, manualPort: String(data.summary.suggested_onvif[0]) }));
+      if (autoDiscover.manualMode && !autoDiscover.manualPort && result?.summary?.suggested_onvif?.[0]) {
+        setAutoDiscover((s) => ({ ...s, manualPort: String(result.summary.suggested_onvif[0]) }));
       }
     } catch (err) {
       setPortProbe({ loading: false, results: [], summary: null, nextStep: null, error: safeErrorMessage(err) });
