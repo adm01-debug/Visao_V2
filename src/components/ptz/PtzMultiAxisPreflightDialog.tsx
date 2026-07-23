@@ -142,6 +142,7 @@ export function PtzMultiAxisPreflightDialog({
       setResults([]);
       setCurrentAxis(null);
       setCurrentPhase(null);
+      setLiveSample(null);
       abortRef.current = false;
     }
   }, [open]);
