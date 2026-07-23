@@ -65,6 +65,7 @@ export function PtzAxisRangeVisualizer({
   } calibrado ${calibratedMin.toFixed(2)} a ${calibratedMax.toFixed(2)}`;
 
   return (
+    <div className="w-full">
     <div
       role="img"
       aria-label={label}
@@ -179,6 +180,18 @@ export function PtzAxisRangeVisualizer({
         {axis !== 'zoom' && lo < 0 && hi > 0 ? <span>0</span> : null}
         <span>{hi.toFixed(2)}</span>
       </div>
+    </div>
+
+      {outOfRange ? (
+        <p
+          role="alert"
+          data-testid="out-of-range-warning"
+          className="mt-1 text-[11px] font-medium text-destructive"
+        >
+          Posição {position.toFixed(2)} fora do intervalo calibrado (
+          {calibratedMin.toFixed(2)} a {calibratedMax.toFixed(2)}).
+        </p>
+      ) : null}
     </div>
   );
 }
