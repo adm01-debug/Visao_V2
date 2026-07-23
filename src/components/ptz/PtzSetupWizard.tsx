@@ -191,7 +191,9 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
 
   const testBackends = useMutation({
     mutationFn: async () => {
-      const backends = isAutoMulti ? autoMultiBackends : (protocol ? [protocol] : []);
+      const backends = isAutoMulti
+        ? (orderedBackends.length ? orderedBackends : autoMultiBackends)
+        : (protocol ? [protocol] : []);
       const { data, error } = await supabase.functions.invoke('ptz-backends-test', {
         body: { camera_id: cameraId, backends },
       });
