@@ -482,6 +482,15 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
               </div>
             )}
 
+            <PtzAxisRangeVisualizer
+              axis={axis}
+              bounds={AXIS_BOUNDS[axis]}
+              calibrated={l}
+              observed={cal ? { min: cal.min_reported, max: cal.max_reported } : undefined}
+              position={position[axis]}
+              moving={axis === 'zoom' ? statusMoving.zoom ?? false : statusMoving.pan_tilt ?? false}
+            />
+
             <Slider
               value={[l.min, l.max]}
               min={lo}
