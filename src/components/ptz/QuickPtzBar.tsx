@@ -126,6 +126,14 @@ export function QuickPtzBar({ cameraId, keyboardEnabled = true, className, showR
       role="toolbar"
       aria-label="Controles PTZ rápidos"
     >
+      {showRelaySelector && (
+        <>
+          <div className="w-40">
+            <RelayAgentSelector value={relayAgentId} onChange={setRelayAgentId} compact />
+          </div>
+          <div className="mx-1 h-8 w-px bg-border/60" aria-hidden />
+        </>
+      )}
       <div className="grid grid-cols-3 gap-0.5">
         <span />
         <Button size="icon" variant="ghost" className="h-8 w-8" {...btnProps(0, SPEED, "Cima")}>
