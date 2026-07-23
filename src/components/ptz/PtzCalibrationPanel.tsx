@@ -202,6 +202,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
       return;
     }
     onChange({ ...limits, [axis]: { ...limits[axis], [edge]: Number(cur.toFixed(3)) } });
+    setFreshCaptures((prev) => ({ ...prev, [axis]: { ...prev[axis], [edge]: true } }));
     toast.success(`${AXIS_LABEL[axis]} · limite ${edge === 'min' ? 'mínimo' : 'máximo'} capturado em ${cur.toFixed(2)}`);
   }, [position, limits, onChange]);
 
@@ -213,6 +214,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
 
   const resetAxis = useCallback((axis: PtzAxis) => {
     onChange({ ...limits, [axis]: { min: AXIS_BOUNDS[axis][0], max: AXIS_BOUNDS[axis][1] } });
+    setFreshCaptures((prev) => ({ ...prev, [axis]: { min: false, max: false } }));
   }, [limits, onChange]);
 
   /**
