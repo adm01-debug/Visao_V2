@@ -632,7 +632,26 @@ export default function NvrDetailPage(): JSX.Element {
                       </Badge>
                     )}
                   </div>
-                  <div className="absolute top-3 right-3 flex gap-2">
+                  <div className="absolute top-3 right-3 flex gap-2 items-center">
+                    {total > 1 && (
+                      <ToggleGroup
+                        type="single"
+                        size="sm"
+                        value={String(cycleSeconds)}
+                        onValueChange={(v) => {
+                          if (!v) return;
+                          const n = Number(v);
+                          if (n === 0 || n === 5 || n === 10 || n === 30) setCycleSeconds(n);
+                        }}
+                        aria-label="Auto-ciclo de canais"
+                        className="bg-background/80 rounded-md"
+                      >
+                        <ToggleGroupItem value="0" aria-label="Sem ciclo">Off</ToggleGroupItem>
+                        <ToggleGroupItem value="5">5s</ToggleGroupItem>
+                        <ToggleGroupItem value="10">10s</ToggleGroupItem>
+                        <ToggleGroupItem value="30">30s</ToggleGroupItem>
+                      </ToggleGroup>
+                    )}
                     <Button asChild size="sm" variant="secondary">
                       <Link to={`/cameras/${fullscreenChannel.id}`}>Abrir canal</Link>
                     </Button>
