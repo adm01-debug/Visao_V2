@@ -27,9 +27,6 @@ interface ChannelRow {
   name: string;
   status: string | null;
   channel_number: number | null;
-  last_seen_at: string | null;
-  fps: number | null;
-  resolution: string | null;
 }
 
 function statusBadge(status: string | null): JSX.Element {
