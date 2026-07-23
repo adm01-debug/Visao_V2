@@ -79,6 +79,7 @@ const UserManagementPage = lazy(() => import("@/pages/UserManagementPage"));
 const CoveragePage = lazy(() => import("@/pages/CoveragePage"));
 const OperationsPage = lazy(() => import("@/pages/OperationsPage"));
 const TestModePage = lazy(() => import("@/pages/TestModePage"));
+const LocalAgentsPage = lazy(() => import("@/pages/LocalAgentsPage"));
 
 const CLSReportPage = lazy(() => import("@/pages/CLSReportPage"));
 const LoadingStatesChecklistPage = lazy(() => import("@/pages/LoadingStatesChecklistPage"));
