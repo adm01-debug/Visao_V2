@@ -65,6 +65,7 @@ export function PtzAxisRangeVisualizer({
   } calibrado ${calibratedMin.toFixed(2)} a ${calibratedMax.toFixed(2)}`;
 
   return (
+    <div className="w-full">
     <div
       role="img"
       aria-label={label}
