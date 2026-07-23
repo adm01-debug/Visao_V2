@@ -341,6 +341,11 @@ export default function OperationsPage() {
         <EdgeErrorsAuditCard />
       </section>
 
+      <section>
+        <ConnectivityResolutionCard defaultWindowHours={168} />
+      </section>
+
+
 
 
       <section>
