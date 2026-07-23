@@ -627,7 +627,10 @@ export default function NvrDetailPage(): JSX.Element {
                 <div
                   className="relative w-full max-w-6xl aspect-video overflow-hidden rounded-xl border bg-muted shadow-2xl"
                   onClick={(e) => e.stopPropagation()}
+                  onMouseEnter={() => setCyclePaused(true)}
+                  onMouseLeave={() => setCyclePaused(false)}
                 >
+
                   <div className="absolute inset-0 flex items-center justify-center">
                     {fullscreenChannel.status === "online" ? (
                       <Video className="h-20 w-20 text-muted-foreground/60" aria-hidden />
