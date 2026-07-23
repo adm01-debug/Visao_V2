@@ -179,8 +179,6 @@ export default function NvrDetailPage(): JSX.Element {
                         <TableHead className="w-16 text-center">Canal</TableHead>
                         <TableHead>Nome</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead>Resolução</TableHead>
-                        <TableHead className="text-center">FPS</TableHead>
                         <TableHead className="text-right">Ações</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -192,10 +190,6 @@ export default function NvrDetailPage(): JSX.Element {
                           </TableCell>
                           <TableCell className="font-medium">{c.name}</TableCell>
                           <TableCell>{statusBadge(c.status)}</TableCell>
-                          <TableCell className="font-mono text-xs">
-                            {c.resolution ?? "—"}
-                          </TableCell>
-                          <TableCell className="text-center">{c.fps ?? "—"}</TableCell>
                           <TableCell className="text-right">
                             <Button asChild size="sm" variant="outline">
                               <Link to={`/cameras/${c.id}`}>Abrir</Link>
