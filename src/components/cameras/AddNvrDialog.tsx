@@ -31,16 +31,12 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   RTSP_TEMPLATES,
-  buildRtspUrl,
   getTemplatesForBrand,
   renderTemplate,
   type RtspBrand,
   type RtspTemplate,
 } from "@/lib/rtspTemplates";
-import { buildRtspUrl as _reuseBuild } from "@/components/cameras/addCameraSchema";
-// Nota: reaproveitamos `buildRtspUrl` do schema para injetar credenciais escapadas.
-
-void _reuseBuild;
+import { buildRtspUrl } from "@/components/cameras/addCameraSchema";
 
 const nvrFormSchema = z.object({
   name: z.string().trim().min(2, "Nome obrigatório").max(80),
