@@ -117,11 +117,17 @@ export function PtzLimitPreflightDialog({
     if (open) {
       setAckClear(false);
       setAckSeeing(false);
+      setAckConfirmedAt(null);
       setResults([]);
       setCurrentPhase(null);
       abortRef.current = false;
     }
   }, [open]);
+
+  useEffect(() => {
+    if (ackClear && ackSeeing && !ackConfirmedAt) setAckConfirmedAt(new Date().toISOString());
+    else if ((!ackClear || !ackSeeing) && ackConfirmedAt) setAckConfirmedAt(null);
+  }, [ackClear, ackSeeing, ackConfirmedAt]);
 
   // Aborta se o usuário fechar a janela do navegador durante a execução.
   useEffect(() => {
