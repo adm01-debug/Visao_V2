@@ -761,6 +761,16 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
               : <Upload className="w-3.5 h-3.5 mr-1" />}
             Importar
           </Button>
+          <Button
+            size="sm"
+            variant="default"
+            onClick={() => setMultiPreflightOpen(true)}
+            disabled={measuringAxis !== null || revalidatingAxis !== null || preflightAxis !== null}
+            data-testid="multi-preflight-open"
+            title="Validar limites em sequência para todos os eixos"
+          >
+            <ShieldCheck className="w-3.5 h-3.5 mr-1" /> Validar todos
+          </Button>
         </div>
       </div>
 
