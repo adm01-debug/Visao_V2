@@ -799,6 +799,69 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                 {autoDiscover.message}
               </Badge>
             )}
+            {autoDiscover.ok === false && autoDiscover.errorDetail && (
+              <div className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-xs">
+                <div className="mb-1 flex items-center gap-2 text-sm font-semibold text-destructive">
+                  <AlertTriangle className="h-4 w-4" />
+                  {autoDiscover.errorDetail.title}
+                </div>
+                <p className="mb-2 text-muted-foreground">{autoDiscover.errorDetail.hint}</p>
+                {autoDiscover.errorDetail.testedPorts.length > 0 && (
+                  <p className="mb-2 font-mono text-[11px] text-muted-foreground">
+                    Portas testadas: {autoDiscover.errorDetail.testedPorts.join(", ")}
+                  </p>
+                )}
+                <div className="mb-3 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                  Como resolver
+                </div>
+                <ol className="ml-4 list-decimal space-y-1.5 text-foreground">
+                  {autoDiscover.errorDetail.steps.map((step, i) => (
+                    <li key={i} className="leading-snug">{step}</li>
+                  ))}
+                </ol>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setAutoDiscover((s) => ({ ...s, manualMode: true }))}
+                    disabled={autoDiscover.manualMode}
+                  >
+                    Ativar configuração manual
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={handleProbePorts}
+                    disabled={portProbe.loading}
+                  >
+                    Testar portas agora
+                  </Button>
+                  {relayAgents.length === 0 ? (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => window.open("/agentes-locais", "_blank", "noopener")}
+                    >
+                      Instalar agente local
+                    </Button>
+                  ) : (
+                    !autoDiscover.relayAgentId && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setAutoDiscover((s) => ({ ...s, relayAgentId: relayAgents[0].id }))}
+                      >
+                        Usar agente local
+                      </Button>
+                    )
+                  )}
+                </div>
+              </div>
+            )}
 
             <div className="mt-2 space-y-2 rounded-md border border-border/40 bg-background/60 p-2">
               <div className="flex items-center justify-between gap-2">
