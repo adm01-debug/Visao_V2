@@ -5544,6 +5544,13 @@ export type Database = {
           deleted_rows: number
         }[]
       }
+      purge_agent_relay_tasks: {
+        Args: { _retention_days?: number }
+        Returns: {
+          deleted: number
+          expired: number
+        }[]
+      }
       purge_bandwidth_samples: { Args: never; Returns: number }
       purge_timelapse_snapshots: { Args: never; Returns: number }
       release_ptz_lock: { Args: { _camera_id: string }; Returns: boolean }
