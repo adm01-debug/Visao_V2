@@ -500,6 +500,20 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
         de enviar ao firmware — valores fora do intervalo são rejeitados e registrados em
         <code className="font-mono"> ptz_connection_attempts</code>. Cada medição de sweep também é auditada.
       </div>
+
+      {preflightAxis && (
+        <PtzLimitPreflightDialog
+          open={preflightAxis !== null}
+          onOpenChange={(v) => { if (!v) setPreflightAxis(null); }}
+          axis={preflightAxis}
+          limits={limits[preflightAxis]}
+          sweepMs={sweepMsByAxis[preflightAxis]}
+          statusSupported={statusSupported === true}
+          startPosition={position[preflightAxis]}
+          ptz={ptz}
+          cameraId={cameraId}
+        />
+      )}
     </div>
   );
 }
