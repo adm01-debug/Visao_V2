@@ -959,7 +959,29 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
 
 
 
-
+      <div
+        className="rounded-md border bg-muted/20 p-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground"
+        data-testid="ptz-range-legend"
+        aria-label="Legenda das cores da régua de calibração"
+      >
+        <span className="font-medium text-foreground">Legenda:</span>
+        <span className="inline-flex items-center gap-1.5">
+          <span aria-hidden className="inline-block h-2 w-4 rounded-sm bg-muted border border-border" />
+          Eixo físico (range do hardware)
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span aria-hidden className="inline-block h-2.5 w-4 rounded-sm bg-primary/25 border border-primary" />
+          Intervalo calibrado (limites aplicados)
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span aria-hidden className="inline-block h-3 w-0.5 bg-muted-foreground/60" />
+          Intervalo observado (min/max medidos)
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-full bg-primary" />
+          Posição atual
+        </span>
+      </div>
 
       {(['pan', 'tilt', 'zoom'] as const).map((axis) => {
         const l = limits[axis];
