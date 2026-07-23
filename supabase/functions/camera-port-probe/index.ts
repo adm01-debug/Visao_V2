@@ -181,6 +181,7 @@ Deno.serve(async (req) => {
     ok: true,
     host,
     run_from: runFrom,
+    used_relay: resolution.usingRelay,
     tested_ports: ports,
     timeout_ms: timeoutMs,
     elapsed_ms: elapsed,
