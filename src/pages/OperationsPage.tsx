@@ -321,6 +321,11 @@ export default function OperationsPage() {
       </section>
 
       <section>
+        <PreviewTelemetryCard defaultWindowHours={24} />
+      </section>
+
+
+      <section>
         <DbHealthCard />
       </section>
 
