@@ -599,14 +599,38 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       if (result?.device?.model && !form.getValues("name")) {
         form.setValue("name", `${result.device.manufacturer ?? "Câmera"} ${result.device.model}`.trim());
       }
+      // Resolve perfil ONVIF/OEM retornado pelo edge (`onvif-autodiscover`)
+      // e pré-seleciona a variante RTSP recomendada quando disponível.
+      const resolvedProfileId = typeof result?.profile_id === "string" ? result.profile_id : null;
+      const resolvedProfile = resolvedProfileId ? getProfileById(resolvedProfileId) : null;
+      if (resolvedProfile) {
+        const recommended =
+          resolvedProfile.rtspVariants.find((v) => v.recommended) ??
+          resolvedProfile.rtspVariants[0] ??
+          null;
+        if (recommended) {
+          form.setValue("brand", recommended.brand as AddCameraFormValues["brand"], { shouldDirty: true });
+          setTemplateCtx((prev) => ({
+            ...prev,
+            templateId: recommended.templateId,
+            port: String(resolvedProfile.onvifPort ?? prev.port ?? ""),
+          }));
+        }
+      }
       setAutoDiscover((s) => ({
         ...s,
         loading: false,
         ok: true,
         errorDetail: null,
+        profileId: resolvedProfileId,
+        profileDisplayName: resolvedProfile?.displayName ?? null,
         message: `${result?.device?.manufacturer ?? "Dispositivo"} ${result?.device?.model ?? ""} · porta ${result?.onvif?.port} · ${result?.profiles} perfil(is)${result?.ptz_capable ? " · PTZ" : ""}`,
       }));
-      toast.success("Câmera descoberta! Campos preenchidos automaticamente.");
+      toast.success(
+        resolvedProfile
+          ? `Câmera descoberta! Perfil ${resolvedProfile.displayName} aplicado.`
+          : "Câmera descoberta! Campos preenchidos automaticamente.",
+      );
       flushConnectivityTelemetry({ succeeded: true });
     } catch (err) {
       setAutoDiscover((s) => ({ ...s, loading: false, ok: false, errorDetail: null, message: safeErrorMessage(err) }));
