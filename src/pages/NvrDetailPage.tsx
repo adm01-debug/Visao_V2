@@ -166,14 +166,46 @@ export default function NvrDetailPage(): JSX.Element {
       {nvr && (
         <>
           <header className="space-y-1">
-            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-              <Server className="h-7 w-7 text-primary" aria-hidden />
-              {nvr.name}
-            </h1>
-            <p className="text-muted-foreground">
-              {nvr.brand.toUpperCase()} · <span className="font-mono">{nvr.host}:{nvr.rtsp_port}</span>
-              {nvr.location && <> · {nvr.location}</>}
-            </p>
+            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+                  <Server className="h-7 w-7 text-primary" aria-hidden />
+                  {nvr.name}
+                </h1>
+                <p className="text-muted-foreground">
+                  {nvr.brand.toUpperCase()} · <span className="font-mono">{nvr.host}:{nvr.rtsp_port}</span>
+                  {nvr.location && <> · {nvr.location}</>}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={bulkBusy !== null || (channelsQuery.data?.length ?? 0) === 0}
+                  onClick={() => bulkAction("arm")}
+                >
+                  {bulkBusy === "arm" ? (
+                    <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                  ) : (
+                    <Lock className="h-4 w-4 mr-1" />
+                  )}
+                  Armar todos
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={bulkBusy !== null || (channelsQuery.data?.length ?? 0) === 0}
+                  onClick={() => bulkAction("disarm")}
+                >
+                  {bulkBusy === "disarm" ? (
+                    <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                  ) : (
+                    <Unlock className="h-4 w-4 mr-1" />
+                  )}
+                  Desarmar todos
+                </Button>
+              </div>
+            </div>
           </header>
 
           <div className="grid gap-4 md:grid-cols-3">
