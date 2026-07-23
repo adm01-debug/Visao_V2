@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T11:26:03.527Z",
+  "generatedAt": "2026-07-23T13:12:33.875Z",
   "pages": [
     {
       "file": "AcessoNegado.tsx",
@@ -182,6 +182,10 @@
       "mode": "standard"
     },
     {
+      "file": "StreamAlertThresholdsPage.tsx",
+      "mode": "standard"
+    },
+    {
       "file": "StreamHealthPage.tsx",
       "mode": "standard"
     },
@@ -192,6 +196,10 @@
     {
       "file": "TelegramSettingsPage.tsx",
       "mode": "customWrapper"
+    },
+    {
+      "file": "TestModePage.tsx",
+      "mode": "standard"
     },
     {
       "file": "TimelapsePage.tsx",
