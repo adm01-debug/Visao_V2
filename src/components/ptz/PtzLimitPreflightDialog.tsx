@@ -92,6 +92,7 @@ export function PtzLimitPreflightDialog({
 }: PtzLimitPreflightDialogProps) {
   const [ackClear, setAckClear] = useState(false);
   const [ackSeeing, setAckSeeing] = useState(false);
+  const [ackConfirmedAt, setAckConfirmedAt] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
   const [currentPhase, setCurrentPhase] = useState<PhaseId | null>(null);
   const [results, setResults] = useState<PhaseResult[]>([]);
