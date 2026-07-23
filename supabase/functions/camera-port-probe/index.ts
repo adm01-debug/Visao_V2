@@ -12,6 +12,8 @@
 //   - Retorna latência em ms e o motivo do erro (timeout | refused | dns | blocked_private).
 //   - Não é autoritativo sobre ONVIF; só diz "algo respondeu TCP nessa porta".
 
+import { resolveRelayTransport, type Transport } from "../_shared/relayTransport.ts";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-agent-source",
@@ -29,6 +31,7 @@ interface Payload {
   timeout_ms?: number;
   allow_private?: boolean;
   run_from?: "cloud" | "local_agent";
+  relay_agent_id?: string | null;
 }
 
 interface ProbeResult {
@@ -71,21 +74,14 @@ function classifyError(msg: string): ProbeResult["reason"] {
   return "network";
 }
 
-async function probePort(host: string, port: number, timeoutMs: number): Promise<ProbeResult> {
-  // Estratégia: tentar HTTP(S) OPTIONS/GET curto — se o TCP abrir, mesmo que responda 400/404/401,
-  // consideramos a porta acessível. RTSP (554/8554) provavelmente devolverá "network" mesmo aberto;
-  // por isso classificamos "refused"/"dns" como fechado e demais como "possivelmente aberto".
+async function probePort(transport: Transport, host: string, port: number, timeoutMs: number): Promise<ProbeResult> {
   const scheme: "http" | "https" = port === 443 ? "https" : "http";
   const url = `${scheme}://${host}:${port}/`;
-  const controller = new AbortController();
-  const t = setTimeout(() => controller.abort(), timeoutMs);
   const start = performance.now();
-  try {
-    const res = await fetch(url, { method: "GET", signal: controller.signal, redirect: "manual" });
-    const latency = Math.round(performance.now() - start);
-    // Consome corpo para liberar recursos, mas ignora conteúdo.
-    try { await res.arrayBuffer(); } catch { /* ignore */ }
-    const server = res.headers.get("server");
+  const res = await transport.request({ url, method: "GET", timeoutMs });
+  const latency = Math.round(performance.now() - start);
+  if (res.status > 0) {
+    const server = res.headers?.["server"] ?? null;
     return {
       port,
       reachable: true,
@@ -95,24 +91,20 @@ async function probePort(host: string, port: number, timeoutMs: number): Promise
       reason: null,
       server_hint: server,
     };
-  } catch (e) {
-    const latency = Math.round(performance.now() - start);
-    const reason = classifyError((e as Error).message);
-    // Portas RTSP costumam falhar no handshake HTTP mesmo abertas — reportamos como não
-    // determinístico com `reason=network` e `latency_ms` alto (indica que o socket abriu).
-    const reachable = reason === "network" && latency >= timeoutMs / 4;
-    return {
-      port,
-      reachable,
-      latency_ms: latency,
-      scheme,
-      http_status: null,
-      reason,
-      server_hint: null,
-    };
-  } finally {
-    clearTimeout(t);
   }
+  const reason = classifyError(res.text);
+  // Portas RTSP costumam falhar no handshake HTTP mesmo abertas — se o socket
+  // ficou aberto por tempo relevante, marca como possivelmente aberta.
+  const reachable = reason === "network" && latency >= timeoutMs / 4;
+  return {
+    port,
+    reachable,
+    latency_ms: latency,
+    scheme,
+    http_status: null,
+    reason,
+    server_hint: null,
+  };
 }
 
 function summarize(results: ProbeResult[]): {
@@ -145,19 +137,26 @@ Deno.serve(async (req) => {
   }
 
   const host = (payload.host ?? "").trim();
-  const runFrom = payload.run_from === "local_agent" ? "local_agent" : "cloud";
-  const allowPrivate = payload.allow_private === true || runFrom === "local_agent";
+  const relayAgentId = payload.relay_agent_id ?? null;
+  const runFrom = relayAgentId ? "local_agent" : (payload.run_from === "local_agent" ? "local_agent" : "cloud");
+  const allowPrivate = payload.allow_private === true || runFrom === "local_agent" || !!relayAgentId;
 
   if (!host) return j({ error: "missing_host" }, 400);
   if (host.length > 255) return j({ error: "host_too_long" }, 400);
+
+  // Resolve transporte (direto ou via Agente Local). Via relé, IPs privados são
+  // permitidos porque o próprio agente está dentro da LAN da câmera.
+  const resolution = await resolveRelayTransport(req, relayAgentId);
+  if (resolution.error) {
+    return j({ error: resolution.error.code, hint: resolution.error.message }, resolution.error.status);
+  }
 
   if (!allowPrivate && isPrivateHost(host)) {
     return j({
       error: "private_host_blocked",
       hint:
         "Host privado/LAN detectado. Esta rota rodou na nuvem e não tem rota até essa rede. " +
-        "Configure port-forwarding no roteador, use VPN/túnel, ou rode a sonda via agente local " +
-        "encaminhando com run_from=\"local_agent\".",
+        "Configure port-forwarding no roteador, use VPN/túnel, ou selecione um Agente Local (relay_agent_id).",
       run_from: runFrom,
     }, 400);
   }
@@ -175,13 +174,14 @@ Deno.serve(async (req) => {
   );
 
   const started = Date.now();
-  const results = await Promise.all(ports.map((p) => probePort(host, p, timeoutMs)));
+  const results = await Promise.all(ports.map((p) => probePort(resolution.transport, host, p, timeoutMs)));
   const elapsed = Date.now() - started;
 
   return j({
     ok: true,
     host,
     run_from: runFrom,
+    used_relay: resolution.usingRelay,
     tested_ports: ports,
     timeout_ms: timeoutMs,
     elapsed_ms: elapsed,
