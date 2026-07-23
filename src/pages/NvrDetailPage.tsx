@@ -462,8 +462,17 @@ export default function NvrDetailPage(): JSX.Element {
   useEffect(() => {
     if (!fullscreenId) return;
     const handler = (e: KeyboardEvent): void => {
+      const target = e.target as HTMLElement | null;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
       if (e.key === "Escape") {
         setFullscreenId(null);
+        return;
+      }
+      if (e.key === " " || e.code === "Space") {
+        if (cycleSeconds > 0) {
+          setCyclePaused((p) => !p);
+          e.preventDefault();
+        }
         return;
       }
       if (e.key === "p" || e.key === "P") {
@@ -471,6 +480,16 @@ export default function NvrDetailPage(): JSX.Element {
           setCyclePaused((p) => !p);
           e.preventDefault();
         }
+        return;
+      }
+      if (e.key === "c" || e.key === "C") {
+        const cycleOptions: Array<0 | 5 | 10 | 30> = [0, 5, 10, 30];
+        setCycleSeconds((cur) => {
+          const idx = cycleOptions.indexOf(cur);
+          return cycleOptions[(idx + 1) % cycleOptions.length] ?? 0;
+        });
+
+        e.preventDefault();
         return;
       }
       if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
@@ -486,6 +505,7 @@ export default function NvrDetailPage(): JSX.Element {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [fullscreenId, cycleSeconds, filteredChannels, channelsQuery.data]);
+
 
   useEffect(() => {
     setCycleProgress(0);
@@ -1190,7 +1210,7 @@ export default function NvrDetailPage(): JSX.Element {
                   <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-4 flex items-end justify-between gap-2">
                     <p className="text-base font-medium truncate">{fullscreenChannel.name}</p>
                     <p className="text-xs text-muted-foreground hidden sm:block">
-                      ← / → navegar · Esc fechar{cycleSeconds > 0 ? (cyclePaused ? " · ciclo pausado (P retomar)" : " · P pausar · passe o mouse para pausar") : ""}
+                      ← / → navegar · Esc fechar · C alternar intervalo{cycleSeconds > 0 ? (cyclePaused ? " · ciclo pausado (Espaço/P retomar)" : " · Espaço/P pausar · passe o mouse para pausar") : ""}
                     </p>
                   </div>
                   {cycleSeconds > 0 && total > 1 && (
