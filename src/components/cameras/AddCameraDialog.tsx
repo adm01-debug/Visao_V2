@@ -291,14 +291,14 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
   const benchmarkVariants: BenchmarkVariantInput[] = useMemo(() => {
     const profile = autoDiscover.profileId ? getProfileById(autoDiscover.profileId) : null;
     if (profile) {
-      return profile.rtspVariants
-        .map((v) => {
-          const tpl = findTemplate(v.brand, v.templateId);
-          return tpl ? { brand: v.brand, template: tpl, recommended: v.recommended } : null;
-        })
-        .filter((v): v is BenchmarkVariantInput => v !== null);
+      const items: BenchmarkVariantInput[] = [];
+      for (const v of profile.rtspVariants) {
+        const tpl = findTemplate(v.brand, v.templateId);
+        if (tpl) items.push({ brand: v.brand, template: tpl, recommended: Boolean(v.recommended) });
+      }
+      return items;
     }
-    return brandTemplates.map((tpl) => ({ brand, template: tpl }));
+    return brandTemplates.map((tpl) => ({ brand, template: tpl } satisfies BenchmarkVariantInput));
   }, [autoDiscover.profileId, brand, brandTemplates]);
 
   const handleApplyBenchmarkBest = (best: BenchmarkVariantResult) => {
