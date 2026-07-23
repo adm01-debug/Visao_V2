@@ -442,6 +442,19 @@ export function PtzMultiAxisPreflightDialog({
           ) : (
             <>
               <Button variant="ghost" onClick={() => onOpenChange(false)}>Fechar</Button>
+              {results.length > 0 && (
+                <Button
+                  variant="outline"
+                  onClick={() => void handleDownloadPdf()}
+                  disabled={pdfLoading}
+                  data-testid="multi-preflight-download-pdf"
+                >
+                  {pdfLoading
+                    ? <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                    : <FileDown className="w-4 h-4 mr-1" />}
+                  Baixar relatório PDF
+                </Button>
+              )}
               <Button onClick={() => void runAll()} disabled={!canRun} data-testid="multi-preflight-run">
                 <ShieldCheck className="w-4 h-4 mr-1" /> Executar validação
               </Button>
