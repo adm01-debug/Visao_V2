@@ -54,7 +54,6 @@ const OUTCOME_RGB: Record<PreflightOutcome, [number, number, number]> = {
 };
 
 const phaseTargetLabel = (
-  axis: PreflightAxisLike,
   id: PreflightPhaseId,
   limits: { min: number; max: number },
   origin: number,
@@ -113,7 +112,7 @@ export async function generatePtzPreflightPdf(input: PreflightPdfInput): Promise
   for (const axis of input.axes) {
     const rows = (['A', 'B', 'C'] as PreflightPhaseId[]).map((phaseId) => {
       const r = input.results.find((x) => x.axis === axis && x.id === phaseId);
-      const target = phaseTargetLabel(axis, phaseId, input.limitsByAxis[axis], input.startPositions[axis] ?? 0);
+      const target = phaseTargetLabel(phaseId, input.limitsByAxis[axis], input.startPositions[axis] ?? 0);
       if (!r) {
         return [`Fase ${phaseId}`, target, '—', '—', '—', 'AGUARDANDO', ''];
       }

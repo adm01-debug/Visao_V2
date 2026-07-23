@@ -52,6 +52,22 @@ interface PhaseResult {
   detail?: string;
 }
 
+/**
+ * Amostra ao vivo capturada durante o polling — alimenta a mini-tabela em
+ * tempo real, atualizada a cada ciclo de GetStatus.
+ */
+interface LiveSample {
+  axis: PreflightAxis;
+  phase: PhaseId;
+  target: number;
+  observed: number | null;
+  delta: number | null;
+  movingFlag: 'moving' | 'idle' | 'unknown';
+  elapsedMs: number;
+  timeoutMs: number;
+  phaseState: 'running' | 'settled' | 'timeout';
+}
+
 export interface MultiAxisPreflightProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -87,6 +103,7 @@ export function PtzMultiAxisPreflightDialog({
   const [currentPhase, setCurrentPhase] = useState<PhaseId | null>(null);
   const [results, setResults] = useState<PhaseResult[]>([]);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [liveSample, setLiveSample] = useState<LiveSample | null>(null);
   const abortRef = useRef(false);
 
   const totalPhases = axes.length * 3;
@@ -125,6 +142,7 @@ export function PtzMultiAxisPreflightDialog({
       setResults([]);
       setCurrentAxis(null);
       setCurrentPhase(null);
+      setLiveSample(null);
       abortRef.current = false;
     }
   }, [open]);
@@ -152,6 +170,19 @@ export function PtzMultiAxisPreflightDialog({
     if (!st) return null;
     const v = st.position[axis];
     return typeof v === 'number' && Number.isFinite(v) ? v : null;
+  }, [ptz, statusSupported]);
+
+  /** Retorna posição + flag de movimento para o eixo (ou null se sem telemetria). */
+  const readStatusAxis = useCallback(async (
+    axis: PreflightAxis,
+  ): Promise<{ pos: number | null; moving: boolean | null } | null> => {
+    if (!statusSupported) return null;
+    const st = await ptz.getStatus();
+    if (!st) return null;
+    const v = st.position[axis];
+    const pos = typeof v === 'number' && Number.isFinite(v) ? v : null;
+    const moving = axis === 'zoom' ? st.moving.zoom : st.moving.pan_tilt;
+    return { pos, moving: typeof moving === 'boolean' ? moving : null };
   }, [ptz, statusSupported]);
 
   const logAttempt = useCallback(async (r: PhaseResult) => {
@@ -184,6 +215,7 @@ export function PtzMultiAxisPreflightDialog({
 
   const driveToTarget = useCallback(async (
     axis: PreflightAxis,
+    phase: PhaseId,
     target: number,
     fromHint: number,
   ): Promise<{ observed: number | null; delta: number | null; latency_ms: number; timedOut: boolean }> => {
@@ -191,7 +223,19 @@ export function PtzMultiAxisPreflightDialog({
     const range = AXIS_BOUNDS[axis][1] - AXIS_BOUNDS[axis][0];
     const timeout = perAxisTimeout[axis];
     const sweepMs = sweepMsByAxis[axis];
-    const from = (await readAxis(axis)) ?? fromHint;
+    const initial = await readStatusAxis(axis);
+    const from = initial?.pos ?? fromHint;
+
+    // Amostra inicial da mini-tabela
+    setLiveSample({
+      axis, phase, target,
+      observed: initial?.pos ?? null,
+      delta: initial?.pos != null ? initial.pos - target : null,
+      movingFlag: initial?.moving == null ? 'unknown' : initial.moving ? 'moving' : 'idle',
+      elapsedMs: 0,
+      timeoutMs: timeout,
+      phaseState: 'running',
+    });
 
     const dir = target > from ? 1 : -1;
     try {
@@ -213,8 +257,19 @@ export function PtzMultiAxisPreflightDialog({
         if (abortRef.current) break;
         await new Promise((r) => setTimeout(r, step));
         waited += step;
+        setLiveSample({
+          axis, phase, target,
+          observed: null, delta: null,
+          movingFlag: 'unknown',
+          elapsedMs: Math.round(performance.now() - started),
+          timeoutMs: timeout,
+          phaseState: 'running',
+        });
       }
       await safeStop(axis);
+      setLiveSample((prev) => prev && prev.axis === axis && prev.phase === phase
+        ? { ...prev, phaseState: 'settled', elapsedMs: Math.round(performance.now() - started) }
+        : prev);
       return { observed: null, delta: null, latency_ms: Math.round(performance.now() - started), timedOut: false };
     }
 
@@ -223,9 +278,21 @@ export function PtzMultiAxisPreflightDialog({
     while (performance.now() - started < timeout) {
       if (abortRef.current) { timedOut = false; break; }
       await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
-      const p = await readAxis(axis);
+      const s = await readStatusAxis(axis);
+      const p = s?.pos ?? null;
       if (p != null) {
         last = p;
+      }
+      setLiveSample({
+        axis, phase, target,
+        observed: p,
+        delta: p != null ? p - target : null,
+        movingFlag: s?.moving == null ? 'unknown' : s.moving ? 'moving' : 'idle',
+        elapsedMs: Math.round(performance.now() - started),
+        timeoutMs: timeout,
+        phaseState: 'running',
+      });
+      if (p != null) {
         if ((dir > 0 && p >= target - TARGET_TOLERANCE * range) ||
             (dir < 0 && p <= target + TARGET_TOLERANCE * range)) {
           timedOut = false;
@@ -235,14 +302,25 @@ export function PtzMultiAxisPreflightDialog({
     }
     await safeStop(axis);
     await new Promise((r) => setTimeout(r, 250));
-    const finalPos = (await readAxis(axis)) ?? last;
+    const finalStat = await readStatusAxis(axis);
+    const finalPos = finalStat?.pos ?? last;
+    setLiveSample({
+      axis, phase, target,
+      observed: finalPos,
+      delta: finalPos - target,
+      movingFlag: finalStat?.moving == null ? 'unknown' : finalStat.moving ? 'moving' : 'idle',
+      elapsedMs: Math.round(performance.now() - started),
+      timeoutMs: timeout,
+      phaseState: timedOut ? 'timeout' : 'settled',
+    });
     return {
       observed: finalPos,
       delta: finalPos - target,
       latency_ms: Math.round(performance.now() - started),
       timedOut,
     };
-  }, [perAxisTimeout, ptz, readAxis, safeStop, statusSupported, sweepMsByAxis]);
+  }, [perAxisTimeout, ptz, readStatusAxis, safeStop, statusSupported, sweepMsByAxis]);
+
 
   const runAll = useCallback(async () => {
     if (!canRun) return;
@@ -265,7 +343,7 @@ export function PtzMultiAxisPreflightDialog({
       for (const ph of phases) {
         if (abortRef.current) break outer;
         setCurrentPhase(ph.id);
-        const r = await driveToTarget(axis, ph.target, cursor);
+        const r = await driveToTarget(axis, ph.id, ph.target, cursor);
         let outcome: PhaseOutcome;
         let detail: string | undefined;
         if (abortRef.current) {
@@ -402,6 +480,64 @@ export function PtzMultiAxisPreflightDialog({
               <span className="font-mono text-muted-foreground">{progressPct}%</span>
             </div>
             <Progress value={progressPct} className="h-2" data-testid="multi-preflight-progress" />
+
+            {running && liveSample && (
+              <div
+                className="rounded-md border bg-muted/20 p-2 text-[11px] font-mono"
+                data-testid="multi-preflight-live-table"
+                aria-live="polite"
+              >
+                <div className="grid grid-cols-6 gap-2 pb-1 border-b border-border/60 text-muted-foreground uppercase tracking-wide">
+                  <span>Eixo</span>
+                  <span>Fase</span>
+                  <span className="text-right">Alvo</span>
+                  <span className="text-right">Reportado</span>
+                  <span className="text-right">Δ</span>
+                  <span className="text-right">Status</span>
+                </div>
+                <div className="grid grid-cols-6 gap-2 pt-1 items-center">
+                  <span>{liveSample.axis}</span>
+                  <span>{liveSample.phase}</span>
+                  <span className="text-right">{liveSample.target.toFixed(3)}</span>
+                  <span className="text-right">
+                    {liveSample.observed != null ? liveSample.observed.toFixed(3) : '—'}
+                  </span>
+                  <span
+                    className={
+                      'text-right ' +
+                      (liveSample.delta == null
+                        ? 'text-muted-foreground'
+                        : Math.abs(liveSample.delta) > 0.1
+                          ? 'text-destructive'
+                          : Math.abs(liveSample.delta) > 0.02
+                            ? 'text-yellow-600 dark:text-yellow-500'
+                            : 'text-emerald-600 dark:text-emerald-500')
+                    }
+                  >
+                    {liveSample.delta != null ? liveSample.delta.toFixed(3) : '—'}
+                  </span>
+                  <span className="text-right">
+                    {liveSample.phaseState === 'timeout' ? (
+                      <Badge variant="destructive" className="text-[10px]">timeout</Badge>
+                    ) : liveSample.phaseState === 'settled' ? (
+                      <Badge variant="secondary" className="text-[10px]">IDLE</Badge>
+                    ) : liveSample.movingFlag === 'moving' ? (
+                      <Badge variant="outline" className="text-[10px]">
+                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />movendo
+                      </Badge>
+                    ) : liveSample.movingFlag === 'idle' ? (
+                      <Badge variant="secondary" className="text-[10px]">IDLE</Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-[10px]">sem status</Badge>
+                    )}
+                  </span>
+                </div>
+                <div className="pt-1 text-[10px] text-muted-foreground">
+                  {(liveSample.elapsedMs / 1000).toFixed(1)}s / {(liveSample.timeoutMs / 1000).toFixed(1)}s
+                </div>
+              </div>
+            )}
+
 
             <div className="rounded-md border p-3 space-y-2 text-xs max-h-64 overflow-auto">
               {axes.map((axis) => (
