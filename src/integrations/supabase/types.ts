@@ -995,6 +995,8 @@ export type Database = {
           password_encrypted: string | null
           port: number
           protocol: string
+          ptz_backends: string[]
+          ptz_backends_mode: string
           setup_completed_at: string | null
           updated_at: string
           user_id: string
@@ -1012,6 +1014,8 @@ export type Database = {
           password_encrypted?: string | null
           port?: number
           protocol: string
+          ptz_backends?: string[]
+          ptz_backends_mode?: string
           setup_completed_at?: string | null
           updated_at?: string
           user_id: string
@@ -1029,6 +1033,8 @@ export type Database = {
           password_encrypted?: string | null
           port?: number
           protocol?: string
+          ptz_backends?: string[]
+          ptz_backends_mode?: string
           setup_completed_at?: string | null
           updated_at?: string
           user_id?: string
