@@ -42,30 +42,57 @@ describe("onvifProfiles catalog", () => {
     }
   });
 
-  it("variantes XiongMai renderizam URLs exatas extraídas do firmware (channel=3)", () => {
+  it("marca canônica 'xiongmai' expõe exatamente 6 templates confirmados pelo firmware", () => {
+    const templates = RTSP_TEMPLATES.xiongmai;
+    expect(templates.map((t) => t.id).sort()).toEqual(
+      ["xm-dahua-compat", "xm-h264-ch", "xm-hik-compat", "xm-live-chnn", "xm-mpeg4-ch", "xm-xmeye-legacy"].sort(),
+    );
+    expect(templates.every((t) => t.defaultPort === 554)).toBe(true);
+  });
+
+  it("templates 'xiongmai' renderizam URLs exatas extraídas do firmware Sofia (channel=3)", () => {
     const ctx = { host: "192.168.1.50", port: 554, channel: 3 };
 
-    const live = findTemplate("usecam", "xiongmai-live-chnn")!;
+    const legacy = findTemplate("xiongmai", "xm-xmeye-legacy")!;
+    expect(renderTemplate(legacy, ctx)).toEqual({
+      primary: "rtsp://192.168.1.50/user=admin&password=&channel=3&stream=0.sdp",
+      substream: "rtsp://192.168.1.50/user=admin&password=&channel=3&stream=1.sdp",
+    });
+
+    const live = findTemplate("xiongmai", "xm-live-chnn")!;
     expect(renderTemplate(live, ctx)).toEqual({
       primary: "rtsp://192.168.1.50/live/ch03_0",
       substream: "rtsp://192.168.1.50/live/ch03_1",
     });
 
-    const h264 = findTemplate("usecam", "xiongmai-h264-ch")!;
+    const h264 = findTemplate("xiongmai", "xm-h264-ch")!;
     expect(renderTemplate(h264, ctx)).toEqual({
       primary: "rtsp://192.168.1.50/H264/ch3/main/av_stream",
       substream: "rtsp://192.168.1.50/H264/ch3/sub/av_stream",
     });
 
-    const mpeg4 = findTemplate("usecam", "xiongmai-mpeg4-ch")!;
+    const mpeg4 = findTemplate("xiongmai", "xm-mpeg4-ch")!;
     expect(renderTemplate(mpeg4, ctx)).toEqual({
       primary: "rtsp://192.168.1.50/mpeg4/ch3/main/av_stream",
       substream: "rtsp://192.168.1.50/mpeg4/ch3/sub/av_stream",
     });
 
-    const legacy = findTemplate("usecam", "usecam-xmeye-legacy")!;
-    expect(renderTemplate(legacy, ctx).primary).toBe(
-      "rtsp://192.168.1.50/user=admin&password=&channel=3&stream=0.sdp",
+    const dahua = findTemplate("xiongmai", "xm-dahua-compat")!;
+    expect(renderTemplate(dahua, ctx).primary).toBe(
+      "rtsp://192.168.1.50/cam/realmonitor?channel=3&subtype=0",
+    );
+
+    const hik = findTemplate("xiongmai", "xm-hik-compat")!;
+    expect(renderTemplate(hik, ctx).primary).toBe(
+      "rtsp://192.168.1.50/Streaming/Channels/301",
     );
   });
+
+  it("perfil xiongmai-nbd80x aponta variante recomendada para a marca canônica", () => {
+    const p = getProfileById("xiongmai-nbd80x")!;
+    const recommended = p.rtspVariants.find((v) => v.recommended)!;
+    expect(recommended.brand).toBe("xiongmai");
+    expect(recommended.templateId).toBe("xm-xmeye-legacy");
+  });
+
 });
