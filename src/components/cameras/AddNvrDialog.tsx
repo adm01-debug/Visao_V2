@@ -143,7 +143,7 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
     try {
       const { data, error } = await supabase.rpc("create_nvr_with_channels", {
         p_name: parsed.data.name,
-        p_location: parsed.data.location || null,
+        p_location: parsed.data.location || "",
         p_brand: parsed.data.brand,
         p_host: parsed.data.host,
         p_port: parsed.data.port,
