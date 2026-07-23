@@ -128,12 +128,21 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
     onError: (e: Error) => toast.error(e.message),
   });
 
-  // Salvar configuração final
+  // Salvar configuração final — inclui backends nativos quando o perfil OEM
+  // (ex.: XiongMai) fornece uma lista pré-validada.
   const saveConfig = useMutation({
     mutationFn: async () => {
+      const payload: Record<string, unknown> = {
+        limits,
+        setup_completed_at: new Date().toISOString(),
+      };
+      if (isAutoMulti) {
+        payload.ptz_backends = autoMultiBackends;
+        payload.ptz_backends_mode = 'auto-multi';
+      }
       const { error } = await supabase
         .from('camera_ptz_config')
-        .update({ limits: limits as unknown as never, setup_completed_at: new Date().toISOString() })
+        .update(payload as never)
         .eq('camera_id', cameraId);
       if (error) throw error;
     },
@@ -144,6 +153,7 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
 
   const cfg = config.data;
   const protocol = cfg?.protocol as string | undefined;
