@@ -409,22 +409,48 @@ export default function NvrDetailPage(): JSX.Element {
                         aria-label="Buscar canal"
                       />
                     </div>
-                    <ToggleGroup
-                      type="single"
-                      size="sm"
-                      value={statusFilter}
-                      onValueChange={(v) => v && setStatusFilter(v as typeof statusFilter)}
-                      aria-label="Filtrar por status"
-                    >
-                      <ToggleGroupItem value="all">Todos</ToggleGroupItem>
-                      <ToggleGroupItem value="online" className="gap-1">
-                        <Wifi className="h-3 w-3" /> Online
-                      </ToggleGroupItem>
-                      <ToggleGroupItem value="offline" className="gap-1">
-                        <WifiOff className="h-3 w-3" /> Offline
-                      </ToggleGroupItem>
-                    </ToggleGroup>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <ToggleGroup
+                        type="single"
+                        size="sm"
+                        value={statusFilter}
+                        onValueChange={(v) => v && setStatusFilter(v as typeof statusFilter)}
+                        aria-label="Filtrar por status"
+                      >
+                        <ToggleGroupItem value="all">Todos</ToggleGroupItem>
+                        <ToggleGroupItem value="online" className="gap-1">
+                          <Wifi className="h-3 w-3" /> Online
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="offline" className="gap-1">
+                          <WifiOff className="h-3 w-3" /> Offline
+                        </ToggleGroupItem>
+                      </ToggleGroup>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => void channelsQuery.refetch()}
+                        disabled={channelsQuery.isFetching}
+                        aria-label="Atualizar canais"
+                      >
+                        <RefreshCw className={"h-4 w-4 " + (channelsQuery.isFetching ? "animate-spin" : "")} />
+                      </Button>
+                    </div>
                   </div>
+
+                  {channelsQuery.data && channelsQuery.data.length > 0 && (
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <span>
+                        Exibindo <strong className="text-foreground">{filteredChannels.length}</strong> de{" "}
+                        <strong className="text-foreground">{channelsQuery.data.length}</strong> canais
+                      </span>
+                      {channelsQuery.dataUpdatedAt > 0 && (
+                        <span aria-live="polite">
+                          Atualizado às {new Date(channelsQuery.dataUpdatedAt).toLocaleTimeString("pt-BR")}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
 
                   {channelsQuery.isLoading && (
                     <p className="text-sm text-muted-foreground">Carregando canais…</p>
