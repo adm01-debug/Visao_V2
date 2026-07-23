@@ -360,6 +360,7 @@ export function LivePreviewPlayer({
       <div className="relative aspect-video overflow-hidden rounded-md border bg-black/80">
         {hlsUrl && status === "playing" ? (
           <video
+            ref={videoRef}
             data-testid="live-preview-video"
             src={hlsUrl}
             className="h-full w-full object-contain"
