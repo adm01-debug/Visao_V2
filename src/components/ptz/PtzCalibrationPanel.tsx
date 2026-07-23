@@ -87,6 +87,10 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
   });
   const [preflightAxis, setPreflightAxis] = useState<PtzAxis | null>(null);
 
+  // Versionamento — carregado do banco.
+  const [limitsVersion, setLimitsVersion] = useState<string | null>(null);
+  const [limitsHistory, setLimitsHistory] = useState<LimitsHistoryItem[]>([]);
+
   const clamp = useCallback((axis: PtzAxis, v: number) => {
     const [lo, hi] = AXIS_BOUNDS[axis];
     return Math.max(lo, Math.min(hi, v));
