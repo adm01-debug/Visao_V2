@@ -187,6 +187,13 @@ export function usePtzControl({ cameraId, enabled = true, relayAgentId = null }:
     zoom: (delta: number, speed = 5) => send("zoom", { zoom: delta, speed }),
     focus: (delta: number) => send("focus", { focus: delta }),
     home: () => send("home"),
+    /**
+     * Movimento absoluto ONVIF: posiciona diretamente em (pan, tilt, zoom)
+     * normalizados (-1..1 para pan/tilt, 0..1 para zoom) sem depender do
+     * cálculo tempo→posição. Requer driver ONVIF com suporte a AbsoluteMove.
+     */
+    absoluteMove: (pos: { pan?: number; tilt?: number; zoom?: number; speed?: number }) =>
+      send("absolute_move", pos),
     testMovement: () => send("move", { pan: 0.2, tilt: 0, speed: 3 }).then(() => setTimeout(() => send("stop"), 500)),
   };
 }
