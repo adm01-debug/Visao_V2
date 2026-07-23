@@ -23,6 +23,8 @@ interface Escalation {
   last_reason: string | null;
   delivered: boolean;
   delivery_error: string | null;
+  acknowledged_at: string | null;
+  acknowledgement_note: string | null;
 }
 
 const THRESHOLD = 3;
@@ -39,7 +41,7 @@ export function CronWatchdogEscalationCard() {
       supabase.rpc('cron_watchdog_consecutive_problems', { _min_runs: THRESHOLD }),
       supabase
         .from('cron_watchdog_escalations')
-        .select('id, escalated_at, jobname, consecutive_failures, last_reason, delivered, delivery_error')
+        .select('id, escalated_at, jobname, consecutive_failures, last_reason, delivered, delivery_error, acknowledged_at, acknowledgement_note')
         .order('escalated_at', { ascending: false })
         .limit(15),
     ]);
@@ -148,19 +150,45 @@ export function CronWatchdogEscalationCard() {
                 <ScrollArea className="h-48">
                   <div className="space-y-1">
                     {history.map((h) => (
-                      <div key={h.id} className="flex items-center justify-between rounded border p-2 text-xs">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono">{h.jobname}</span>
-                          <Badge variant={h.delivered ? 'default' : 'destructive'} className="text-[10px]">
-                            {h.consecutive_failures}x
-                          </Badge>
+                      <div key={h.id} className={`rounded border p-2 text-xs ${h.acknowledged_at ? 'opacity-60' : ''}`}>
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono">{h.jobname}</span>
+                            <Badge variant={h.delivered ? 'default' : 'destructive'} className="text-[10px]">
+                              {h.consecutive_failures}x
+                            </Badge>
+                            {h.acknowledged_at && (
+                              <Badge variant="outline" className="text-[10px]">ACK</Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 text-muted-foreground">
+                            <span>{new Date(h.escalated_at).toLocaleString('pt-BR')}</span>
+                            {!h.delivered && h.delivery_error && (
+                              <span className="text-destructive">({h.delivery_error})</span>
+                            )}
+                            {!h.acknowledged_at && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-6 px-2 text-[10px]"
+                                onClick={async () => {
+                                  const note = window.prompt('Nota do ACK (opcional):') ?? '';
+                                  const { error } = await supabase
+                                    .from('cron_watchdog_escalations')
+                                    .update({ acknowledged_at: new Date().toISOString(), acknowledgement_note: note || null })
+                                    .eq('id', h.id);
+                                  if (error) toast.error('Falha ao registrar ACK');
+                                  else { toast.success('Escalação reconhecida'); load(); }
+                                }}
+                              >
+                                ACK
+                              </Button>
+                            )}
+                          </div>
                         </div>
-                        <div className="text-muted-foreground">
-                          {new Date(h.escalated_at).toLocaleString('pt-BR')}
-                          {!h.delivered && h.delivery_error && (
-                            <span className="ml-2 text-destructive">({h.delivery_error})</span>
-                          )}
-                        </div>
+                        {h.acknowledgement_note && (
+                          <p className="mt-1 text-[11px] text-muted-foreground italic">"{h.acknowledgement_note}"</p>
+                        )}
                       </div>
                     ))}
                   </div>

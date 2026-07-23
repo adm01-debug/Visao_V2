@@ -1371,6 +1371,9 @@ export type Database = {
       }
       cron_watchdog_escalations: {
         Row: {
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          acknowledgement_note: string | null
           consecutive_failures: number
           created_at: string
           dedup_key: string | null
@@ -1383,6 +1386,9 @@ export type Database = {
           last_reason: string | null
         }
         Insert: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          acknowledgement_note?: string | null
           consecutive_failures: number
           created_at?: string
           dedup_key?: string | null
@@ -1395,6 +1401,9 @@ export type Database = {
           last_reason?: string | null
         }
         Update: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          acknowledgement_note?: string | null
           consecutive_failures?: number
           created_at?: string
           dedup_key?: string | null
