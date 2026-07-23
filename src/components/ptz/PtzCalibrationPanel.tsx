@@ -314,7 +314,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
     if (cameraId) {
       const { error } = await supabase
         .from('camera_ptz_config')
-        .update({ calibration: nextCalibration })
+        .update({ calibration: nextCalibration as unknown as Record<string, unknown> })
         .eq('camera_id', cameraId);
       if (error) {
         toast.warning(`Sweep de ${AXIS_LABEL[axis]}: ${sweep_ms} ms medidos, mas não persistidos (${error.message}).`);
