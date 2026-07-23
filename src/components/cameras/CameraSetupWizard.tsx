@@ -37,6 +37,8 @@ interface CameraSetupWizardProps {
   camera: CameraData | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Perfil ONVIF/OEM detectado no autodiscover (ex.: `xiongmai-nbd80x`). */
+  profileId?: string | null;
 }
 
 interface SetupSummary {
