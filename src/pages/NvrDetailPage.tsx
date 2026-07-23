@@ -12,7 +12,7 @@ import { PageMeta } from "@/components/PageMeta";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Server, Radio, Wifi, WifiOff, HelpCircle, Lock, Unlock, Loader2, LayoutGrid, VideoOff, Video, Search, Maximize2, RefreshCw, ArrowUpDown, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { ArrowLeft, Server, Radio, Wifi, WifiOff, HelpCircle, Lock, Unlock, Loader2, LayoutGrid, VideoOff, Video, Search, Maximize2, RefreshCw, ArrowUpDown, ChevronLeft, ChevronRight, Pause, Play, Bookmark, RotateCcw } from "lucide-react";
 
 interface NvrRow {
   id: string;
@@ -225,6 +225,47 @@ export default function NvrDetailPage(): JSX.Element {
       // storage disabled/full — ignore silently
     }
   }, [prefsKey, mosaicCols, statusFilter, sortMode, autoRefreshSeconds]);
+
+  const defaultKey = id ? `visao:nvr-mosaic-default:${id}` : null;
+  const [hasDefault, setHasDefault] = useState<boolean>(() => {
+    if (typeof window === "undefined" || !defaultKey) return false;
+    try { return !!window.localStorage.getItem(defaultKey); } catch { return false; }
+  });
+
+  const saveAsDefault = () => {
+    if (!defaultKey || typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(
+        defaultKey,
+        JSON.stringify({ cols: mosaicCols, statusFilter, sortMode, autoRefreshSeconds, savedAt: new Date().toISOString() }),
+      );
+      setHasDefault(true);
+      toast({ title: "Padrão salvo", description: "Layout e filtros atuais definidos como padrão deste NVR." });
+    } catch {
+      toast({ title: "Não foi possível salvar", description: "Armazenamento local indisponível.", variant: "destructive" });
+    }
+  };
+
+  const restoreDefault = () => {
+    if (!defaultKey || typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem(defaultKey);
+      if (!raw) {
+        toast({ title: "Sem padrão salvo", description: "Salve o layout atual como padrão primeiro." });
+        return;
+      }
+      const parsed = JSON.parse(raw) as { cols?: string; statusFilter?: string; sortMode?: string; autoRefreshSeconds?: number };
+      if (parsed.cols === "2" || parsed.cols === "3" || parsed.cols === "4") setMosaicCols(parsed.cols);
+      if (parsed.statusFilter === "all" || parsed.statusFilter === "online" || parsed.statusFilter === "offline") setStatusFilter(parsed.statusFilter);
+      if (parsed.sortMode === "channel-asc" || parsed.sortMode === "channel-desc" || parsed.sortMode === "name-asc") setSortMode(parsed.sortMode);
+      const v = parsed.autoRefreshSeconds;
+      if (v === 0 || v === 10 || v === 30 || v === 60) setAutoRefreshSeconds(v);
+      setSearch("");
+      toast({ title: "Padrão restaurado", description: "Layout e filtros voltaram ao padrão deste NVR." });
+    } catch {
+      toast({ title: "Falha ao restaurar", description: "Padrão corrompido no armazenamento local.", variant: "destructive" });
+    }
+  };
 
 
   const filteredChannels = useMemo(() => {
@@ -595,6 +636,25 @@ export default function NvrDetailPage(): JSX.Element {
                         aria-label="Atualizar canais agora"
                       >
                         <RefreshCw className={"h-4 w-4 " + (channelsQuery.isFetching ? "animate-spin" : "")} />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={saveAsDefault}
+                        aria-label="Salvar layout e filtros atuais como padrão"
+                        title="Salvar como padrão deste NVR"
+                      >
+                        <Bookmark className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={restoreDefault}
+                        disabled={!hasDefault}
+                        aria-label="Restaurar layout e filtros padrão"
+                        title={hasDefault ? "Restaurar padrão salvo" : "Nenhum padrão salvo"}
+                      >
+                        <RotateCcw className="h-4 w-4" />
                       </Button>
 
                     </div>
