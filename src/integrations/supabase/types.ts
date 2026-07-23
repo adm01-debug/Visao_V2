@@ -5320,6 +5320,23 @@ export type Database = {
         Args: { _camera_id: string; _x: number; _y: number }
         Returns: boolean
       }
+      preview_success_alert: {
+        Args: {
+          p_min_events?: number
+          p_threshold?: number
+          p_window_hours?: number
+        }
+        Returns: {
+          generated_at: string
+          should_alert: boolean
+          success_rate: number
+          threshold_used: number
+          total_failed: number
+          total_relevant: number
+          total_started: number
+          window_hours: number
+        }[]
+      }
       prune_preview_telemetry_events: {
         Args: never
         Returns: {
