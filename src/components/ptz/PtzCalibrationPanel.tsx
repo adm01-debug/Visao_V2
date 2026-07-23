@@ -367,6 +367,108 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
     );
   }, [statusSupported, measuringAxis, ptz, clamp, calibration, cameraId]);
 
+  /**
+   * Revalida a calibração: envia um comando por tempo baseado no `sweep_ms`
+   * atualmente calibrado e compara o Δ predito com o Δ real reportado pelo
+   * GetStatus ao fim do movimento. Retorna erro absoluto e percentual do range.
+   * Escolhe automaticamente a direção com maior folga em relação aos limites
+   * calibrados para evitar bater no fim de curso durante o teste.
+   */
+  const revalidateCalibration = useCallback(async (axis: PtzAxis) => {
+    if (!statusSupported) {
+      toast.error('Revalidação indisponível (driver não expõe GetStatus)');
+      return;
+    }
+    const sweep = sweepMsByAxis[axis];
+    if (!sweep || sweep <= 0) {
+      toast.error(`Meça o sweep real de ${AXIS_LABEL[axis]} antes de revalidar.`);
+      return;
+    }
+    if (measuringAxis || revalidatingAxis || jogStartRef.current) return;
+
+    setRevalidatingAxis(axis);
+    const range = AXIS_BOUNDS[axis][1] - AXIS_BOUNDS[axis][0];
+    try {
+      const st0 = await ptz.getStatus();
+      const p0raw = st0?.position[axis];
+      if (typeof p0raw !== 'number' || !Number.isFinite(p0raw)) {
+        toast.error(`GetStatus não reportou posição inicial em ${AXIS_LABEL[axis]}.`);
+        return;
+      }
+      const p0 = clamp(axis, p0raw);
+      // Escolhe direção com maior folga dentro do range calibrado.
+      const l = limits[axis];
+      const marginPos = Math.max(0, l.max - p0);
+      const marginNeg = Math.max(0, p0 - l.min);
+      const direction: -1 | 1 = marginPos >= marginNeg ? 1 : -1;
+      // Usa 30% do range disponível na direção escolhida (mín 0.10, máx 0.40).
+      const available = direction === 1 ? marginPos : marginNeg;
+      const targetDelta = Math.max(0.10, Math.min(0.40, available * 0.30));
+      if (targetDelta < 0.05) {
+        toast.error(`Sem folga suficiente para revalidar em ${AXIS_LABEL[axis]}.`);
+        return;
+      }
+      const duration_ms = Math.round((targetDelta / range) * sweep);
+      const predicted_delta = targetDelta * direction;
+
+      // Aciona o movimento por `duration_ms`.
+      if (axis === 'zoom') {
+        await ptz.zoom(direction * 0.6, 4);
+      } else {
+        const params = axis === 'pan'
+          ? { pan: direction * 0.6, tilt: 0 }
+          : { pan: 0, tilt: direction * 0.6 };
+        await ptz.startMove({ ...params, speed: 4 });
+      }
+      await new Promise((r) => setTimeout(r, duration_ms));
+      try {
+        if (axis === 'zoom') await ptz.send('stop');
+        else await ptz.stopMove();
+      } catch { /* noop */ }
+      // Pequena espera para o dome estabilizar antes de ler.
+      await new Promise((r) => setTimeout(r, 250));
+
+      const st1 = await ptz.getStatus();
+      const p1raw = st1?.position[axis];
+      if (typeof p1raw !== 'number' || !Number.isFinite(p1raw)) {
+        toast.error(`GetStatus não reportou posição final em ${AXIS_LABEL[axis]}.`);
+        return;
+      }
+      const p1 = clamp(axis, p1raw);
+      setPosition((prev) => ({ ...prev, [axis]: p1 }));
+
+      const actual_delta = p1 - p0;
+      const error_abs = Math.abs(actual_delta - predicted_delta);
+      const error_pct = (error_abs / range) * 100;
+      const result: RevalidationResult = {
+        predicted_delta: Number(predicted_delta.toFixed(3)),
+        actual_delta: Number(actual_delta.toFixed(3)),
+        error_abs: Number(error_abs.toFixed(3)),
+        error_pct: Number(error_pct.toFixed(2)),
+        direction,
+        duration_ms,
+        p0: Number(p0.toFixed(3)),
+        p1: Number(p1.toFixed(3)),
+        at: new Date().toISOString(),
+      };
+      setValidation((prev) => ({ ...prev, [axis]: result }));
+
+      const severity = error_pct <= 5 ? 'success' : error_pct <= 15 ? 'warning' : 'error';
+      const msg =
+        `${AXIS_LABEL[axis]}: erro ${error_pct.toFixed(1)}% ` +
+        `(predito ${predicted_delta.toFixed(2)}, real ${actual_delta.toFixed(2)})`;
+      if (severity === 'success') toast.success(msg);
+      else if (severity === 'warning') toast.warning(`${msg} — considere recalibrar`);
+      else toast.error(`${msg} — recalibração recomendada`);
+    } finally {
+      try {
+        if (axis === 'zoom') await ptz.send('stop');
+        else await ptz.stopMove();
+      } catch { /* noop */ }
+      setRevalidatingAxis(null);
+    }
+  }, [statusSupported, sweepMsByAxis, measuringAxis, revalidatingAxis, ptz, clamp, limits]);
+
   const JogButton = ({ axis, dir, icon }: { axis: PtzAxis; dir: -1 | 1; icon: React.ReactNode }) => (
     <Button
       size="sm"
