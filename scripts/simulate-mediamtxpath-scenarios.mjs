@@ -110,9 +110,18 @@ for (const js of ['{"__proto__":{"admin":true}}','{"constructor":{"prototype":{"
 if(({}).admin!==true) ok(); else bad('Object.prototype intacto','CRITICO: poluido');
 
 // H: SSRF
-for (const s of ['file:///etc/passwd','FILE:///etc/shadow',
+for (const s2 of ['file:///etc/passwd','FILE:///etc/shadow',
   'file://169.254.169.254/latest/meta-data/','file://localhost/etc/hosts',
-  'http://169.254.169.254/latest/meta-data/iam/','https://169.254.169.254/']) bfl(`SSRF "${s}"`,{source:s});
+  'http://169.254.169.254/latest/meta-data/iam/','https://169.254.169.254/',
+  'File:///proc/self/environ','FILE://169.254.169.254/',
+  'file:///var/run/secrets/kubernetes.io/serviceaccount/token']) bfl(`SSRF "${s2}"`,{source:s2});
+// Tipos invalidos como body (cenarios extras)
+bfl('body boolean',true,'body-not-object');
+bfl('body array',[],'body-not-object');
+bfl('body string','rtsp://cam','body-not-object');
+// Double-slash extras
+rej('rejeita a//b extra','a//b','empty-segment');
+rej('rejeita //cam extra','//cam','edge-slash');
 
 // I: body invalido
 for (const [b2,e] of [[{cmd:'rm -rf /'},'unknown-field:cmd'],[{shell:'/bin/bash'},'unknown-field:shell'],
@@ -136,6 +145,12 @@ try {
   if(!ts.includes('RUN_ON = /^runOn/i')) bad('sync RUN_ON','pattern mismatch'); else ok();
   for(const f of ALLOWED) if(!ts.includes(`"${f}"`)){bad(`sync ALLOWED:${f}`,'ausente no .ts');} else ok();
   for(const k of DANGER) if(!ts.includes(`"${k}"`)){bad(`sync DANGER:${k}`,'ausente no .ts');} else ok();
+
+  // SSRF — verifica que .ts ainda bloqueia file:// e 169.254 (cloud metadata)
+  if (!ts.includes('/^file:/i')) bad('sync SSRF:file://','mediamtxPath.ts perdeu bloqueio de file:// (SSRF via source)'); else ok();
+  if (!ts.includes('cloud-metadata')) bad('sync SSRF:cloud-metadata','mediamtxPath.ts perdeu reason cloud-metadata (169.254 SSRF)'); else ok();
+  if (!ts.includes('source-file-scheme')) bad('sync reason:source-file-scheme','reason ausente — file:// SSRF sem identificador'); else ok();
+  if (!ts.includes('169')) bad('sync SSRF:169.254','IP 169.254 ausente no .ts — cloud metadata SSRF possivel'); else ok();
 } catch(e){bad('leitura mediamtxPath.ts',e.message);}
 
 const total=P+F;
