@@ -147,6 +147,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     loading: false,
     ok: null,
     message: null,
+    errorDetail: null,
     host: "",
     allowPrivate: false,
     manualMode: false,
