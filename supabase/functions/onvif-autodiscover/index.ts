@@ -9,6 +9,8 @@
 //   - `relay_agent_id` só é aceito se pertencer ao user autenticado (validado via RLS).
 //   - Nunca loga senha; mascara credenciais em qualquer erro.
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { recordEdgeError } from "../_shared/errorAudit.ts";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -330,6 +332,15 @@ Deno.serve(async (req) => {
       used_relay: usingRelay,
     }, 404);
   }
+  const deviceUrl = hit.url;
+  const discoveredPort = hit.port;
+
+  const header = await wsseHeader(username, password);
+
+  const infoRes = await soap(transport, deviceUrl, header, `<tds:GetDeviceInformation/>`);
+  if (!infoRes.ok && infoRes.status === 401) return j({ error: "auth_failed", hint: "Credenciais ONVIF inválidas." }, 401);
+  const manufacturer = pick(infoRes.text, "Manufacturer");
+
 
   const model = pick(infoRes.text, "Model");
   const firmware = pick(infoRes.text, "FirmwareVersion");
