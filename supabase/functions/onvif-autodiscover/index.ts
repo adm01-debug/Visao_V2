@@ -295,15 +295,8 @@ Deno.serve(async (req) => {
           "Se você conhece a porta exata, ative 'Configuração manual do endpoint ONVIF' e informe-a.",
           "Rode 'Testar portas' para diagnosticar quais portas estão realmente acessíveis.",
         ];
-    return j({
-      error: "no_onvif_endpoint",
-      error_code: "no_onvif_endpoint",
-      title: usingRelay
-        ? "Agente local não encontrou ONVIF na câmera"
-        : isLan
-          ? "Câmera em rede local — sem rota da nuvem até ela"
-          : "Nenhuma porta ONVIF respondeu no host informado",
     await recordEdgeError({
+
       function_name: "onvif-autodiscover",
       error_code: "no_onvif_endpoint",
       http_status: 404,
