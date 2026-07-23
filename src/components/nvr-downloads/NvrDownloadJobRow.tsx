@@ -31,6 +31,12 @@ export interface DownloadRow {
   created_at: string;
   started_at?: string | null;
   updated_at?: string | null;
+  source_format?: string | null;
+  conversion_status?: 'pending' | 'converting' | 'completed' | 'failed' | 'skipped' | null;
+  converted_storage_path?: string | null;
+  converted_bytes?: number | null;
+  converted_at?: string | null;
+  conversion_error?: string | null;
 }
 
 const STATUS: Record<DownloadRow['status'], { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
