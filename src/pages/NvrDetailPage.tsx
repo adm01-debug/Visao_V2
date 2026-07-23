@@ -248,7 +248,7 @@ export default function NvrDetailPage(): JSX.Element {
     } catch {
       // storage disabled/full — ignore silently
     }
-  }, [prefsKey, mosaicCols, statusFilter, sortMode, autoRefreshSeconds]);
+  }, [prefsKey, mosaicCols, statusFilter, sortMode, autoRefreshSeconds, cycleSeconds, cyclePaused]);
 
   const defaultKey = id ? `visao:nvr-mosaic-default:${id}` : null;
   const [hasDefault, setHasDefault] = useState<boolean>(() => {
