@@ -12,7 +12,8 @@ import { PageMeta } from "@/components/PageMeta";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Server, Radio, Wifi, WifiOff, HelpCircle, Lock, Unlock, Loader2, LayoutGrid, VideoOff, Video, Search, Maximize2, RefreshCw, ArrowUpDown, ChevronLeft, ChevronRight, Pause, Play, Bookmark, RotateCcw, AlertTriangle, X } from "lucide-react";
+import { ArrowLeft, Server, Radio, Wifi, WifiOff, HelpCircle, Lock, Unlock, Loader2, LayoutGrid, VideoOff, Video, Search, Maximize2, RefreshCw, ArrowUpDown, ChevronLeft, ChevronRight, Pause, Play, Bookmark, RotateCcw, AlertTriangle, X, FileText, FileDown } from "lucide-react";
+import { exportToCSV, exportToPDF } from "@/lib/exportUtils";
 
 interface NvrRow {
   id: string;
