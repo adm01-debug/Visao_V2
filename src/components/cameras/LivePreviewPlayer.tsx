@@ -65,6 +65,8 @@ export function LivePreviewPlayer({
   rtspUrl,
   autoStart = false,
   onEnded,
+  cameraId = null,
+  codecHint = null,
   invoke,
   className,
 }: LivePreviewPlayerProps) {
@@ -78,6 +80,10 @@ export function LivePreviewPlayer({
   const hlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const canPlayRef = useRef(false);
   const endedRef = useRef(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const startTimestampRef = useRef<number | null>(null);
+  const dimsRef = useRef<{ width: number | null; height: number | null }>({ width: null, height: null });
+  const extensionsRef = useRef(0);
   const invokeFn = invoke ?? defaultInvoke;
 
   const clearHlsTimeout = () => {
@@ -103,6 +109,24 @@ export function LivePreviewPlayer({
       setStatus(reason === "error" ? "error" : "stopping");
       const id = sessionIdRef.current;
       sessionIdRef.current = null;
+      const durationMs = startTimestampRef.current
+        ? Date.now() - startTimestampRef.current
+        : null;
+      // Telemetria: só emitimos `stopped` quando NÃO estamos vindo de um erro
+      // (o `failed` já foi/será emitido pelo caller).
+      if (reason !== "error") {
+        void logPreviewEvent({
+          eventType: "stopped",
+          sessionId: id,
+          cameraId,
+          reason,
+          codec: codecHint,
+          width: dimsRef.current.width,
+          height: dimsRef.current.height,
+          durationMs,
+          extensions: extensionsRef.current,
+        });
+      }
       if (id) {
         try {
           await invokeFn("stop", { sessionId: id });
@@ -113,7 +137,7 @@ export function LivePreviewPlayer({
       setStatus(reason === "error" ? "error" : "ended");
       onEnded?.(reason);
     },
-    [invokeFn, onEnded],
+    [cameraId, codecHint, invokeFn, onEnded],
   );
 
   const failWith = useCallback(
@@ -122,6 +146,20 @@ export function LivePreviewPlayer({
       clearTick();
       clearHlsTimeout();
       canPlayRef.current = false;
+      const durationMs = startTimestampRef.current
+        ? Date.now() - startTimestampRef.current
+        : null;
+      void logPreviewEvent({
+        eventType: "failed",
+        sessionId: sessionIdRef.current,
+        cameraId,
+        errorCode: code,
+        codec: codecHint,
+        width: dimsRef.current.width,
+        height: dimsRef.current.height,
+        durationMs,
+        extensions: extensionsRef.current,
+      });
       if (opts?.callStop && sessionIdRef.current) {
         void stop("error");
       } else {
@@ -130,17 +168,21 @@ export function LivePreviewPlayer({
         onEnded?.("error");
       }
     },
-    [onEnded, stop],
+    [cameraId, codecHint, onEnded, stop],
   );
 
   const start = useCallback(async () => {
     if (status === "starting" || status === "playing") return;
     endedRef.current = false;
     canPlayRef.current = false;
+    dimsRef.current = { width: null, height: null };
+    extensionsRef.current = 0;
     setErrorCode(null);
     setStatus("starting");
     setRemaining(LIVE_PREVIEW_DEFAULT_SECONDS);
     setExtensions(0);
+    const t0 = Date.now();
+    startTimestampRef.current = t0;
     try {
       const res = await invokeFn("start", { rtspUrl });
       if (res.error || !res.sessionId || !res.hlsUrl) {
@@ -160,7 +202,6 @@ export function LivePreviewPlayer({
           return r - 1;
         });
       }, 1000);
-      // Watchdog: se o <video> não emitir `canplay` dentro do prazo, marca hls_timeout.
       clearHlsTimeout();
       hlsTimeoutRef.current = setTimeout(() => {
         if (!canPlayRef.current && !endedRef.current) {
@@ -172,9 +213,17 @@ export function LivePreviewPlayer({
       setErrorCode(raw as LivePreviewErrorCode);
       setStatus("error");
       endedRef.current = true;
+      void logPreviewEvent({
+        eventType: "failed",
+        sessionId: null,
+        cameraId,
+        errorCode: raw,
+        codec: codecHint,
+        durationMs: Date.now() - t0,
+      });
       onEnded?.("error");
     }
-  }, [failWith, invokeFn, onEnded, rtspUrl, status, stop]);
+  }, [cameraId, codecHint, failWith, invokeFn, onEnded, rtspUrl, status, stop]);
 
   const extend = useCallback(async () => {
     if (status !== "playing" || extensions >= LIVE_PREVIEW_MAX_EXTENSIONS) return;
@@ -184,16 +233,36 @@ export function LivePreviewPlayer({
     try {
       const res = await invokeFn("extend", { sessionId: id, seconds: LIVE_PREVIEW_EXTEND_SECONDS });
       if (res.error) throw new Error(res.error);
-      setExtensions((n) => n + 1);
+      const next = extensions + 1;
+      extensionsRef.current = next;
+      setExtensions(next);
       setRemaining((r) => r + LIVE_PREVIEW_EXTEND_SECONDS);
       setStatus("playing");
       setErrorCode(null);
+      void logPreviewEvent({
+        eventType: "extended",
+        sessionId: id,
+        cameraId,
+        codec: codecHint,
+        width: dimsRef.current.width,
+        height: dimsRef.current.height,
+        extensions: next,
+      });
     } catch (e) {
       const raw = e instanceof Error ? e.message : "extend_failed_client";
       setErrorCode(raw as LivePreviewErrorCode);
       setStatus("playing");
+      void logPreviewEvent({
+        eventType: "failed",
+        sessionId: id,
+        cameraId,
+        errorCode: raw,
+        codec: codecHint,
+        extensions: extensionsRef.current,
+        metadata: { phase: "extend" },
+      });
     }
-  }, [extensions, invokeFn, status]);
+  }, [cameraId, codecHint, extensions, invokeFn, status]);
 
   const handleVideoError = useCallback(() => {
     if (endedRef.current) return;
@@ -203,7 +272,21 @@ export function LivePreviewPlayer({
   const handleVideoCanPlay = useCallback(() => {
     canPlayRef.current = true;
     clearHlsTimeout();
-  }, []);
+    const v = videoRef.current;
+    const width = v?.videoWidth ?? null;
+    const height = v?.videoHeight ?? null;
+    dimsRef.current = { width, height };
+    const t0 = startTimestampRef.current;
+    void logPreviewEvent({
+      eventType: "started",
+      sessionId: sessionIdRef.current,
+      cameraId,
+      codec: codecHint,
+      width,
+      height,
+      latencyMs: t0 ? Date.now() - t0 : null,
+    });
+  }, [cameraId, codecHint]);
 
   useEffect(() => {
     if (autoStart) void start();
