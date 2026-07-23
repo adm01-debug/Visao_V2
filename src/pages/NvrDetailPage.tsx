@@ -1105,6 +1105,19 @@ export default function NvrDetailPage(): JSX.Element {
                         <ToggleGroupItem value="30">30s</ToggleGroupItem>
                       </ToggleGroup>
                     )}
+                    {total > 1 && cycleSeconds > 0 && (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => setCyclePaused((p) => !p)}
+                        aria-label={cyclePaused ? "Retomar modo patrulha" : "Pausar modo patrulha"}
+                        title={cyclePaused ? "Retomar patrulha (P)" : "Pausar patrulha (P)"}
+                        className="gap-1"
+                      >
+                        {cyclePaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+                        <span className="hidden sm:inline">{cyclePaused ? "Retomar" : "Pausar"}</span>
+                      </Button>
+                    )}
                     <Button asChild size="sm" variant="secondary">
                       <Link to={`/cameras/${fullscreenChannel.id}`}>Abrir canal</Link>
                     </Button>
