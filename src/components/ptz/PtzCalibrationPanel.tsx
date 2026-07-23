@@ -475,6 +475,57 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
     }
   }, [statusSupported, sweepMsByAxis, measuringAxis, revalidatingAxis, ptz, clamp, limits]);
 
+  /**
+   * Persiste ajuste manual dos valores observados (`min_reported`/`max_reported`)
+   * quando a medição automática saturou no fim de curso do dome e o operador
+   * quer registrar o range verdadeiro conhecido.
+   */
+  const saveObservedRange = useCallback(async (axis: PtzAxis) => {
+    const draft = observedDraft[axis];
+    if (!draft) return;
+    const [lo, hi] = AXIS_BOUNDS[axis];
+    const minN = Number(draft.min);
+    const maxN = Number(draft.max);
+    if (!Number.isFinite(minN) || !Number.isFinite(maxN)) {
+      toast.error('Valores inválidos: use números decimais.');
+      return;
+    }
+    if (minN < lo || maxN > hi) {
+      toast.error(`Fora do intervalo permitido [${lo}, ${hi}].`);
+      return;
+    }
+    if (minN >= maxN) {
+      toast.error('Mínimo precisa ser menor que o máximo.');
+      return;
+    }
+    const existing = calibration[axis];
+    const entry: CalibrationEntry = {
+      sweep_ms: existing?.sweep_ms ?? 0,
+      min_reported: Number(minN.toFixed(3)),
+      max_reported: Number(maxN.toFixed(3)),
+      measured_at: new Date().toISOString(),
+    };
+    const nextCalibration = { ...calibration, [axis]: entry };
+
+    if (cameraId) {
+      setSavingObservedAxis(axis);
+      const { error } = await supabase
+        .from('camera_ptz_config')
+        .update({ calibration: nextCalibration as unknown as Json })
+        .eq('camera_id', cameraId);
+      setSavingObservedAxis(null);
+      if (error) {
+        toast.error(`Falha ao salvar observado: ${error.message}`);
+        return;
+      }
+    }
+    setCalibration(nextCalibration);
+    setObservedDraft((prev) => ({ ...prev, [axis]: undefined }));
+    toast.success(`${AXIS_LABEL[axis]}: observado atualizado para [${minN.toFixed(2)} → ${maxN.toFixed(2)}]`);
+  }, [observedDraft, calibration, cameraId]);
+
+
+
   const JogButton = ({ axis, dir, icon }: { axis: PtzAxis; dir: -1 | 1; icon: React.ReactNode }) => (
     <Button
       size="sm"
