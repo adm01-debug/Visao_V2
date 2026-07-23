@@ -1,6 +1,13 @@
 // discover.ts — Descoberta ONVIF via WS-Discovery multicast + probe SOAP.
+// Dual-probe: envia DUAS mensagens Probe em paralelo com Types distintos
+// (`dn:NetworkVideoTransmitter` e `tds:Device`) porque câmeras XiongMai/HZXM
+// (NBD80X*, Usecam OEM) frequentemente ignoram o Types padrão do lib `onvif`
+// e só respondem a um ou outro filtro. Faz merge dedup por EndpointReference.
 import { Discovery, Cam } from "onvif";
+import dgram from "node:dgram";
+import { randomUUID } from "node:crypto";
 import pino from "pino";
+
 
 const log = pino({ name: "visao-agent:discover" });
 
