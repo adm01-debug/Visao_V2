@@ -41,7 +41,7 @@ import { buildRtspUrl } from "@/components/cameras/addCameraSchema";
 const nvrFormSchema = z.object({
   name: z.string().trim().min(2, "Nome obrigatório").max(80),
   location: z.string().trim().max(120).optional().or(z.literal("")),
-  brand: z.enum(["usecam", "hikvision", "dahua", "intelbras", "generica"]),
+  brand: z.enum(["usecam", "hikvision", "dahua", "intelbras", "xiongmai", "generica"]),
   templateId: z.string().min(1, "Escolha um template"),
   host: z.string().trim().min(3, "IP/host obrigatório").max(253),
   port: z.coerce.number().int().min(1).max(65535),
