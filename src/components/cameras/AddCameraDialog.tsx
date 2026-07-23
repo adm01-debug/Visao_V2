@@ -623,6 +623,94 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
             )}
           </div>
 
+          <div className="space-y-2 rounded-md border border-border/60 bg-muted/40 p-3">
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-sm font-medium">Modelo da câmera (template RTSP)</div>
+              {selectedTemplate && (
+                <Badge variant="outline" className="text-[10px]">
+                  Porta padrão: {selectedTemplate.defaultPort}
+                </Badge>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Selecione o modelo para preencher automaticamente as URLs principal e substream. Ajuste manualmente se sua câmera usa caminho diferente.
+            </p>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <div className="space-y-1">
+                <Label htmlFor="add-cam-template" className="text-xs">Modelo</Label>
+                <Select
+                  value={templateCtx.templateId || "__none__"}
+                  onValueChange={(v) =>
+                    setTemplateCtx((s) => ({ ...s, templateId: v === "__none__" ? "" : v }))
+                  }
+                >
+                  <SelectTrigger id="add-cam-template">
+                    <SelectValue placeholder="Personalizado" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">Personalizado (não usar template)</SelectItem>
+                    {brandTemplates.map((tpl) => (
+                      <SelectItem key={tpl.id} value={tpl.id}>
+                        {tpl.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {selectedTemplate?.description && (
+                  <p className="text-[11px] text-muted-foreground">{selectedTemplate.description}</p>
+                )}
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="add-cam-tpl-host" className="text-xs">Host / IP</Label>
+                <Input
+                  id="add-cam-tpl-host"
+                  autoComplete="off"
+                  spellCheck={false}
+                  placeholder="192.168.1.10"
+                  value={templateCtx.host}
+                  onChange={(e) => setTemplateCtx((s) => ({ ...s, host: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="add-cam-tpl-port" className="text-xs">
+                  Porta {selectedTemplate ? `(padrão ${selectedTemplate.defaultPort})` : ""}
+                </Label>
+                <Input
+                  id="add-cam-tpl-port"
+                  autoComplete="off"
+                  inputMode="numeric"
+                  placeholder={selectedTemplate ? String(selectedTemplate.defaultPort) : "554"}
+                  value={templateCtx.port}
+                  onChange={(e) => setTemplateCtx((s) => ({ ...s, port: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="add-cam-tpl-channel" className="text-xs">Canal</Label>
+                <Input
+                  id="add-cam-tpl-channel"
+                  autoComplete="off"
+                  inputMode="numeric"
+                  placeholder="1"
+                  value={templateCtx.channel}
+                  onChange={(e) => setTemplateCtx((s) => ({ ...s, channel: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                onClick={handleApplyTemplate}
+                disabled={!selectedTemplate || !templateCtx.host.trim()}
+              >
+                Aplicar template
+              </Button>
+            </div>
+          </div>
+
+
+
 
           <div className="space-y-1.5">
             <Label htmlFor="add-cam-rtsp">URL RTSP principal *</Label>
