@@ -217,8 +217,34 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
   // (ex.: XiongMai) fornece uma lista pré-validada.
   const saveConfig = useMutation({
     mutationFn: async () => {
+      // Snapshot do limits atual salvo em banco para o histórico.
+      const { data: current } = await supabase
+        .from('camera_ptz_config')
+        .select('limits, limits_version, limits_history')
+        .eq('camera_id', cameraId)
+        .maybeSingle();
+
+      const { pushHistory, limitsEqual } = await import('./lib/limitsHistory');
+      type LimitsShape = typeof limits;
+      const prevHistory = Array.isArray(current?.limits_history)
+        ? (current!.limits_history as unknown as Array<{ limits: LimitsShape; saved_at: string; source: string }>)
+        : [];
+      const prevLimits = (current?.limits ?? null) as LimitsShape | null;
+      const prevVersion = current?.limits_version ?? null;
+
+      let nextHistory = prevHistory;
+      if (prevLimits && prevVersion && !limitsEqual(prevLimits, limits)) {
+        nextHistory = pushHistory(prevHistory, {
+          limits: prevLimits,
+          saved_at: prevVersion,
+          source: 'wizard',
+        });
+      }
+
       const payload: Record<string, unknown> = {
         limits,
+        limits_version: new Date().toISOString(),
+        limits_history: nextHistory,
         setup_completed_at: new Date().toISOString(),
       };
       if (isAutoMulti) {
@@ -230,9 +256,10 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
         .update(payload as never)
         .eq('camera_id', cameraId);
       if (error) throw error;
+      return { snapshots: nextHistory.length };
     },
-    onSuccess: () => {
-      toast.success('Configuração PTZ concluída');
+    onSuccess: (r) => {
+      toast.success(`Configuração PTZ concluída · ${r.snapshots} snapshot${r.snapshots === 1 ? '' : 's'} no histórico`);
       qc.invalidateQueries({ queryKey: ['ptz-config', cameraId] });
       onOpenChange(false);
     },

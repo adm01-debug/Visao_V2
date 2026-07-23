@@ -993,6 +993,8 @@ export type Database = {
           endpoint: string
           id: string
           limits: Json
+          limits_history: Json
+          limits_version: string | null
           password_encrypted: string | null
           port: number
           protocol: string
@@ -1013,6 +1015,8 @@ export type Database = {
           endpoint: string
           id?: string
           limits?: Json
+          limits_history?: Json
+          limits_version?: string | null
           password_encrypted?: string | null
           port?: number
           protocol: string
@@ -1033,6 +1037,8 @@ export type Database = {
           endpoint?: string
           id?: string
           limits?: Json
+          limits_history?: Json
+          limits_version?: string | null
           password_encrypted?: string | null
           port?: number
           protocol?: string

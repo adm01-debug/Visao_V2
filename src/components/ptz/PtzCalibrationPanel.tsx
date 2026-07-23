@@ -1,17 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Crosshair, Gauge, Home, Loader2, ShieldCheck, Signal, ZoomIn, ZoomOut,
+  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Crosshair, Gauge, History, Home, Loader2, RotateCcw, ShieldCheck, Signal, ZoomIn, ZoomOut,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
 import type { usePtzControl } from '@/hooks/usePtzControl';
 import { PtzLimitPreflightDialog } from './PtzLimitPreflightDialog';
 import { PtzAxisRangeVisualizer } from './PtzAxisRangeVisualizer';
+import { formatHistorySummary, type LimitsHistoryItem } from './lib/limitsHistory';
 
 /**
  * Curso total (ms) assumido como *fallback* quando o dome não expõe ONVIF
@@ -85,6 +87,10 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
   });
   const [preflightAxis, setPreflightAxis] = useState<PtzAxis | null>(null);
 
+  // Versionamento — carregado do banco.
+  const [limitsVersion, setLimitsVersion] = useState<string | null>(null);
+  const [limitsHistory, setLimitsHistory] = useState<LimitsHistoryItem[]>([]);
+
   const clamp = useCallback((axis: PtzAxis, v: number) => {
     const [lo, hi] = AXIS_BOUNDS[axis];
     return Math.max(lo, Math.min(hi, v));
@@ -115,11 +121,17 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
     (async () => {
       const { data } = await supabase
         .from('camera_ptz_config')
-        .select('calibration')
+        .select('calibration, limits_version, limits_history')
         .eq('camera_id', cameraId)
         .maybeSingle();
-      if (cancelled || !data?.calibration || typeof data.calibration !== 'object') return;
-      const cal = data.calibration as CalibrationMap;
+      if (cancelled || !data) return;
+      const row = data as { calibration: Json | null; limits_version: string | null; limits_history: Json | null };
+      if (row.limits_version) setLimitsVersion(row.limits_version);
+      if (Array.isArray(row.limits_history)) {
+        setLimitsHistory(row.limits_history as unknown as LimitsHistoryItem[]);
+      }
+      if (!row.calibration || typeof row.calibration !== 'object') return;
+      const cal = row.calibration as CalibrationMap;
       setCalibration(cal);
       const next: Partial<Record<PtzAxis, number>> = {};
       for (const axis of ['pan', 'tilt', 'zoom'] as PtzAxis[]) {
@@ -387,6 +399,62 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
           <Home className="w-3.5 h-3.5 mr-1" /> Origem
         </Button>
       </div>
+
+      <div className="rounded-md border p-3 flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap text-xs">
+          <History className="w-3.5 h-3.5 text-muted-foreground" aria-hidden />
+          {limitsVersion ? (
+            <Badge variant="secondary" className="font-mono text-[10px]" data-testid="limits-version-badge">
+              v · {new Date(limitsVersion).toLocaleString()}
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="text-[10px]" data-testid="limits-version-badge">
+              sem versão salva
+            </Badge>
+          )}
+          <span className="text-muted-foreground">
+            {limitsHistory.length} snapshot{limitsHistory.length === 1 ? '' : 's'} disponíve{limitsHistory.length === 1 ? 'l' : 'is'}
+          </span>
+        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={limitsHistory.length === 0 || measuringAxis !== null || preflightAxis !== null}
+              data-testid="limits-rollback-trigger"
+            >
+              <RotateCcw className="w-3.5 h-3.5 mr-1" /> Reverter
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[420px]">
+            <DropdownMenuLabel className="text-xs">Últimos limites salvos</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {limitsHistory.map((item, idx) => (
+              <DropdownMenuItem
+                key={`${item.saved_at}-${idx}`}
+                className="flex flex-col items-start gap-0.5 py-2"
+                data-testid="limits-rollback-item"
+                onSelect={() => {
+                  onChange(item.limits);
+                  toast.info(
+                    `Limites revertidos para snapshot de ${new Date(item.saved_at).toLocaleString()}. Clique em Salvar para persistir.`,
+                  );
+                }}
+              >
+                <span className="text-xs font-medium">
+                  {new Date(item.saved_at).toLocaleString()} · {item.source}
+                </span>
+                <span className="text-[10px] font-mono text-muted-foreground">
+                  {formatHistorySummary(item)}
+                </span>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+
 
       {(['pan', 'tilt', 'zoom'] as const).map((axis) => {
         const l = limits[axis];
