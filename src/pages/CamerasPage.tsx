@@ -335,14 +335,17 @@ export function CamerasPage() {
         open={addOpen}
         onOpenChange={setAddOpen}
         mode={addMode}
-        onCreated={async (cameraId) => {
+        onCreated={async (cameraId, meta) => {
           const result = await refetch();
           if (addMode === 'guided' && cameraId) {
             const list = (result as unknown as { data?: CameraData[] } | undefined)?.data ?? cameras;
             const created = list.find((c) => c.id === cameraId)
               ?? cameras.find((c) => c.id === cameraId)
               ?? null;
-            if (created) setSetupCamera(created);
+            if (created) {
+              setSetupProfileId(meta?.profileId ?? null);
+              setSetupCamera(created);
+            }
           }
         }}
       />
@@ -354,7 +357,8 @@ export function CamerasPage() {
       <CameraSetupWizard
         camera={setupCamera}
         open={!!setupCamera}
-        onOpenChange={(o) => { if (!o) setSetupCamera(null); }}
+        profileId={setupProfileId}
+        onOpenChange={(o) => { if (!o) { setSetupCamera(null); setSetupProfileId(null); } }}
       />
     </PageContent>
   );
