@@ -144,7 +144,8 @@ for (const [v, file] of used) {
 }
 
 // Streaming: cada var do contrato tem de ser efetivamente consumida (sem órfão).
-for (const c of CONTRACT) {
+// Só verifica órfãos se src/ existe (sem src/ nao ha como saber se a var e consumida).
+if (existsSync(SRC)) for (const c of CONTRACT) {
   if (!c.mustBeUsed) continue;
   for (const v of c.vars) {
     if (!used.has(v)) {
