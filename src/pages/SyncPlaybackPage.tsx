@@ -10,7 +10,8 @@
  * Edge Function DVR-IP/CGI.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Layers, Camera, RefreshCw } from 'lucide-react';
+import { Layers, Camera, RefreshCw, Download } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useCameras } from '@/hooks/useCameras';
 import { Button } from '@/components/ui/button';
