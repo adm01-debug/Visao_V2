@@ -5,7 +5,7 @@
 
 // Supabase configuration
 export const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-export const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+export const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
 
 // API configuration
 export const apiUrl = import.meta.env.VITE_API_URL || '/api';
@@ -23,7 +23,7 @@ export const isProduction = import.meta.env.PROD;
 // Required environment variables
 const requiredEnvVars = [
   'VITE_SUPABASE_URL',
-  'VITE_SUPABASE_ANON_KEY',
+  'VITE_SUPABASE_PUBLISHABLE_KEY',
 ];
 
 // Validate environment
