@@ -253,6 +253,35 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                 </AlertDescription>
               </Alert>
 
+              {isAutoMulti && profile && (
+                <Alert className="border-primary/40">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                  <AlertTitle className="flex items-center gap-2">
+                    Perfil {profile.displayName} detectado
+                    <Badge variant="secondary" className="font-mono text-[10px]">auto-multi</Badge>
+                  </AlertTitle>
+                  <AlertDescription className="space-y-2">
+                    <p>
+                      Este OEM encapsula domes de múltiplos fabricantes no mesmo firmware.
+                      Vamos tentar automaticamente os {autoMultiBackends.length} protocolos
+                      nativos suportados sem perguntar a marca do dome — o próprio DVR/NVR
+                      negocia qual responde.
+                    </p>
+                    <div className="flex flex-wrap gap-1">
+                      {autoMultiBackends.slice(0, 10).map((b) => (
+                        <Badge key={b} variant="outline" className="font-mono text-[10px]">{b}</Badge>
+                      ))}
+                      {autoMultiBackends.length > 10 && (
+                        <Badge variant="outline" className="font-mono text-[10px]">
+                          +{autoMultiBackends.length - 10}
+                        </Badge>
+                      )}
+                    </div>
+                  </AlertDescription>
+                </Alert>
+              )}
+
+
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div><span className="text-muted-foreground">Endpoint:</span> <span className="font-mono">{cfg.endpoint}:{cfg.port}</span></div>
                 <div><span className="text-muted-foreground">Canal:</span> {cfg.channel}</div>
