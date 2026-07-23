@@ -385,12 +385,17 @@ export function PtzMultiAxisPreflightDialog({
     setCurrentPhase(null);
     setCurrentAxis(null);
     setRunning(false);
+
+    // Persiste 1 registro por eixo, incluindo carimbos das confirmações
+    // do checklist de segurança — histórico auditável no card do eixo.
+    await persistRuns(collected, abortRef.current);
+
     onComplete?.(collected);
 
     if (abortRef.current) toast.warning('Validação abortada. Dome parado.');
     else if (collected.every((r) => r.outcome === 'ok')) toast.success('Todos os eixos validados sem desvios.');
     else toast.warning('Validação concluída com observações. Revise os resultados.');
-  }, [canRun, axes, limitsByAxis, startPositions, driveToTarget, logAttempt, onComplete]);
+  }, [canRun, axes, limitsByAxis, startPositions, driveToTarget, logAttempt, onComplete, persistRuns]);
 
   const handleAbort = useCallback(async () => {
     abortRef.current = true;
