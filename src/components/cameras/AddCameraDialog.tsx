@@ -283,6 +283,34 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     [brand, templateCtx.templateId],
   );
 
+  /**
+   * Variantes a testar no benchmark:
+   *  - Se um perfil ONVIF foi detectado, usa `profile.rtspVariants` (respeita marca OEM real).
+   *  - Caso contrário, usa todos os templates da marca escolhida.
+   */
+  const benchmarkVariants: BenchmarkVariantInput[] = useMemo(() => {
+    const profile = autoDiscover.profileId ? getProfileById(autoDiscover.profileId) : null;
+    if (profile) {
+      return profile.rtspVariants
+        .map((v) => {
+          const tpl = findTemplate(v.brand, v.templateId);
+          return tpl ? { brand: v.brand, template: tpl, recommended: v.recommended } : null;
+        })
+        .filter((v): v is BenchmarkVariantInput => v !== null);
+    }
+    return brandTemplates.map((tpl) => ({ brand, template: tpl }));
+  }, [autoDiscover.profileId, brand, brandTemplates]);
+
+  const handleApplyBenchmarkBest = (best: BenchmarkVariantResult) => {
+    form.setValue("brand", best.brand as AddCameraFormValues["brand"], { shouldDirty: true });
+    form.setValue("rtspUrl", best.primaryUrl, { shouldValidate: true, shouldDirty: true });
+    if (best.substreamUrl) {
+      form.setValue("substreamUrl", best.substreamUrl, { shouldValidate: true, shouldDirty: true });
+    }
+    setTemplateCtx((prev) => ({ ...prev, templateId: best.templateId }));
+    toast.success(`URL da variante "${best.templateLabel}" aplicada.`);
+  };
+
   // Ao trocar de marca, reseta o template selecionado (mas mantém host/canal digitados).
   useEffect(() => {
     setTemplateCtx((prev) => ({ ...prev, templateId: "" }));
