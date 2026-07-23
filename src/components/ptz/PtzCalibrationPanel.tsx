@@ -18,6 +18,7 @@ import type { Json } from '@/integrations/supabase/types';
 import type { usePtzControl } from '@/hooks/usePtzControl';
 import { PtzLimitPreflightDialog } from './PtzLimitPreflightDialog';
 import { PtzMultiAxisPreflightDialog } from './PtzMultiAxisPreflightDialog';
+import { PtzPreflightHistory } from './PtzPreflightHistory';
 import { PtzAxisRangeVisualizer } from './PtzAxisRangeVisualizer';
 import { formatHistorySummary, type LimitsHistoryItem } from './lib/limitsHistory';
 import { PtzLiveStatusPanel } from './PtzLiveStatusPanel';
@@ -102,6 +103,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
     zoom: { min: false, max: false },
   });
   const [preflightAxis, setPreflightAxis] = useState<PtzAxis | null>(null);
+  const [preflightHistoryKey, setPreflightHistoryKey] = useState<number>(0);
   const [multiPreflightOpen, setMultiPreflightOpen] = useState(false);
 
   // Revalidação: comando tempo-baseado → posição reportada. Erro estimado por eixo.
@@ -1271,6 +1273,12 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                 onChange({ ...limits, [axis]: { min: min ?? lo, max: max ?? hi } })
               }
             />
+
+            <PtzPreflightHistory
+              cameraId={cameraId}
+              axis={axis}
+              refreshKey={preflightHistoryKey}
+            />
           </div>
         );
       })}
@@ -1292,6 +1300,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
           startPosition={position[preflightAxis]}
           ptz={ptz}
           cameraId={cameraId}
+          onComplete={() => setPreflightHistoryKey((k) => k + 1)}
         />
       )}
 
@@ -1305,7 +1314,9 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
         startPositions={position}
         ptz={ptz}
         cameraId={cameraId}
+        onComplete={() => setPreflightHistoryKey((k) => k + 1)}
       />
+
 
       <AlertDialog
         open={pendingRecaptureAxis !== null}

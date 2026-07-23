@@ -98,6 +98,7 @@ export function PtzMultiAxisPreflightDialog({
 }: MultiAxisPreflightProps) {
   const [ackClear, setAckClear] = useState(false);
   const [ackSeeing, setAckSeeing] = useState(false);
+  const [ackConfirmedAt, setAckConfirmedAt] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
   const [currentAxis, setCurrentAxis] = useState<PreflightAxis | null>(null);
   const [currentPhase, setCurrentPhase] = useState<PhaseId | null>(null);
@@ -139,6 +140,7 @@ export function PtzMultiAxisPreflightDialog({
     if (open) {
       setAckClear(false);
       setAckSeeing(false);
+      setAckConfirmedAt(null);
       setResults([]);
       setCurrentAxis(null);
       setCurrentPhase(null);
@@ -146,6 +148,16 @@ export function PtzMultiAxisPreflightDialog({
       abortRef.current = false;
     }
   }, [open]);
+
+  // Registra o timestamp exato do momento em que AMBAS as confirmações
+  // foram marcadas — usado depois como carimbo de auditoria.
+  useEffect(() => {
+    if (ackClear && ackSeeing && !ackConfirmedAt) {
+      setAckConfirmedAt(new Date().toISOString());
+    } else if ((!ackClear || !ackSeeing) && ackConfirmedAt) {
+      setAckConfirmedAt(null);
+    }
+  }, [ackClear, ackSeeing, ackConfirmedAt]);
 
   const safeStop = useCallback(async (axis: PreflightAxis) => {
     try {
@@ -322,6 +334,64 @@ export function PtzMultiAxisPreflightDialog({
   }, [perAxisTimeout, ptz, readStatusAxis, safeStop, statusSupported, sweepMsByAxis]);
 
 
+  /**
+   * Grava 1 registro por eixo em `ptz_preflight_runs`, incluindo o carimbo
+   * das confirmações do checklist de segurança. Isto alimenta o histórico
+   * exibido no card de cada eixo para fins de auditoria.
+   */
+  const persistRuns = useCallback(async (all: PhaseResult[], wasAborted: boolean) => {
+    if (!cameraId) return;
+    try {
+      const { data: authData } = await supabase.auth.getUser();
+      const userId = authData.user?.id;
+      if (!userId) return;
+      const byAxis = new Map<PreflightAxis, PhaseResult[]>();
+      for (const r of all) {
+        if (!byAxis.has(r.axis)) byAxis.set(r.axis, []);
+        byAxis.get(r.axis)!.push(r);
+      }
+      type PreflightRunRow = {
+        user_id: string; camera_id: string; axis: string;
+        ack_area_clear: boolean; ack_watching_live: boolean;
+        ack_confirmed_at: string | null;
+        outcome: string; aborted: boolean; status_supported: boolean;
+        phases: unknown; limits_snapshot: unknown;
+      };
+      const rows: PreflightRunRow[] = [];
+      for (const axis of axes) {
+        const phases = byAxis.get(axis) ?? [];
+        let outcome: 'ok' | 'deviation' | 'fail' | 'aborted' | 'no-telemetry';
+        if (wasAborted && phases.length < 3) outcome = 'aborted';
+        else if (phases.some((p) => p.outcome === 'fail')) outcome = 'fail';
+        else if (phases.some((p) => p.outcome === 'deviation')) outcome = 'deviation';
+        else if (phases.every((p) => p.outcome === 'no-telemetry')) outcome = 'no-telemetry';
+        else if (phases.length === 0) continue;
+        else outcome = 'ok';
+
+        rows.push({
+          user_id: userId,
+          camera_id: cameraId,
+          axis,
+          ack_area_clear: ackClear,
+          ack_watching_live: ackSeeing,
+          ack_confirmed_at: ackConfirmedAt,
+          outcome,
+          aborted: wasAborted,
+          status_supported: statusSupported,
+          phases: phases.map((p) => ({
+            id: p.id, target: p.target, observed: p.observed,
+            delta: p.delta, latency_ms: p.latency_ms,
+            outcome: p.outcome, detail: p.detail ?? null,
+          })),
+          limits_snapshot: limitsByAxis[axis] ?? null,
+        });
+      }
+      if (rows.length === 0) return;
+      await supabase.from('ptz_preflight_runs').insert(rows as never);
+    } catch { /* best-effort */ }
+  }, [ackClear, ackSeeing, ackConfirmedAt, axes, cameraId, limitsByAxis, statusSupported]);
+
+
   const runAll = useCallback(async () => {
     if (!canRun) return;
     setRunning(true);
@@ -373,12 +443,17 @@ export function PtzMultiAxisPreflightDialog({
     setCurrentPhase(null);
     setCurrentAxis(null);
     setRunning(false);
+
+    // Persiste 1 registro por eixo, incluindo carimbos das confirmações
+    // do checklist de segurança — histórico auditável no card do eixo.
+    await persistRuns(collected, abortRef.current);
+
     onComplete?.(collected);
 
     if (abortRef.current) toast.warning('Validação abortada. Dome parado.');
     else if (collected.every((r) => r.outcome === 'ok')) toast.success('Todos os eixos validados sem desvios.');
     else toast.warning('Validação concluída com observações. Revise os resultados.');
-  }, [canRun, axes, limitsByAxis, startPositions, driveToTarget, logAttempt, onComplete]);
+  }, [canRun, axes, limitsByAxis, startPositions, driveToTarget, logAttempt, onComplete, persistRuns]);
 
   const handleAbort = useCallback(async () => {
     abortRef.current = true;
