@@ -106,9 +106,8 @@ export default function NvrDetailPage(): JSX.Element {
   const { user } = useAuth();
   const { toast } = useToast();
   const [bulkBusy, setBulkBusy] = useState<null | "arm" | "disarm">(null);
-  const [realtimeStatus, setRealtimeStatus] = useState<"connecting" | "live" | "polling">("connecting");
-  const [lastRealtimeAt, setLastRealtimeAt] = useState<Date | null>(null);
   const queryClient = useQueryClient();
+
 
   useEffect(() => {
     if (!id) return;
