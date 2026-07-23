@@ -285,6 +285,9 @@ async function driverOnvifGetStatus(tx: Transport, cfg: any): Promise<{
 }
 
 async function dispatch(tx: Transport, cfg: any, cmd: PtzCommand, params: any): Promise<HttpResult> {
+  if (cmd === 'absolute_move' && cfg.protocol !== 'onvif') {
+    return { ok: false, status: 0, text: 'absolute_move_unsupported_by_driver' };
+  }
   switch (cfg.protocol) {
     case 'hikvision': return driverHikvision(tx, cfg, cmd, params);
     case 'dahua': return driverDahua(tx, cfg, cmd, params);
