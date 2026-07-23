@@ -102,13 +102,16 @@ const XIONGMAI_NBD80X: OnvifProfile = {
     "accesscontrol",
   ],
   rtspVariants: [
-    { brand: "usecam", templateId: "usecam-xmeye-legacy", recommended: true },
-    { brand: "usecam", templateId: "usecam-nvr-dahua-like" },
-    { brand: "usecam", templateId: "usecam-hik-like" },
-    { brand: "usecam", templateId: "xiongmai-live-chnn" },
-    { brand: "usecam", templateId: "xiongmai-h264-ch" },
-    { brand: "usecam", templateId: "xiongmai-mpeg4-ch" },
+    { brand: "xiongmai", templateId: "xm-xmeye-legacy", recommended: true },
+    { brand: "xiongmai", templateId: "xm-live-chnn" },
+    { brand: "xiongmai", templateId: "xm-h264-ch" },
+    { brand: "xiongmai", templateId: "xm-mpeg4-ch" },
+    { brand: "xiongmai", templateId: "xm-dahua-compat" },
+    { brand: "xiongmai", templateId: "xm-hik-compat" },
+    // Fallback histórico — câmeras cadastradas antes da marca canônica.
+    { brand: "usecam", templateId: "usecam-xmeye-legacy" },
   ],
+
   discoveryHints: {
     // Firmwares XM antigos só respondem `tds:Device`; os mais novos respondem
     // aos dois — enviamos ambos em paralelo para maximizar a taxa de detecção.
