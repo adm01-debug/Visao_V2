@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ArrowDown, ArrowLeft, ArrowRight, ArrowUp, CheckCircle2, Home,
-  Loader2, Radar, Save, Star, Wand2, ZoomIn, ZoomOut,
+  Loader2, Radar, Save, Sparkles, Star, Wand2, ZoomIn, ZoomOut,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -17,13 +17,23 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { usePtzControl } from '@/hooks/usePtzControl';
+import { getProfileById } from '@/lib/onvifProfiles';
 
 interface PtzSetupWizardProps {
   cameraId: string;
   cameraName?: string;
+  /**
+   * Perfil OEM detectado (ex.: `xiongmai-nbd80x`). Quando informado, o wizard
+   * pré-aplica os `ptzBackends` do perfil em modo `auto-multi` — dispensando
+   * a pergunta sobre marca do dome, já que a XiongMai encapsula domes de
+   * múltiplos fabricantes (PELCO-D, DaHua-SD, Hikvision, etc.) e o firmware
+   * negocia o protocolo internamente.
+   */
+  profileId?: string | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
+
 
 type PtzLimits = {
   pan: { min: number; max: number };
@@ -46,7 +56,7 @@ const STEPS = [
 
 type StepId = typeof STEPS[number]['id'];
 
-export function PtzSetupWizard({ cameraId, cameraName, open, onOpenChange }: PtzSetupWizardProps) {
+export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenChange }: PtzSetupWizardProps) {
   const qc = useQueryClient();
   const ptz = usePtzControl({ cameraId, enabled: open });
   const [step, setStep] = useState<StepId>('detect');
@@ -54,6 +64,14 @@ export function PtzSetupWizard({ cameraId, cameraName, open, onOpenChange }: Ptz
   const [presetDraft, setPresetDraft] = useState<{ number: number; name: string }>({
     number: 1, name: 'Home',
   });
+
+  // Perfil OEM: XiongMai (NBD80X/HZXM/Usecam OEM) e similares expõem múltiplos
+  // protocolos PTZ nativos no mesmo firmware; o wizard aplica todos em modo
+  // auto-multi e evita perguntar a marca do dome ao usuário.
+  const profile = useMemo(() => (profileId ? getProfileById(profileId) : null), [profileId]);
+  const autoMultiBackends = useMemo(() => profile?.ptzBackends ?? [], [profile]);
+  const isAutoMulti = autoMultiBackends.length > 0;
+
 
   // Config atual
   const config = useQuery({
@@ -110,12 +128,21 @@ export function PtzSetupWizard({ cameraId, cameraName, open, onOpenChange }: Ptz
     onError: (e: Error) => toast.error(e.message),
   });
 
-  // Salvar configuração final
+  // Salvar configuração final — inclui backends nativos quando o perfil OEM
+  // (ex.: XiongMai) fornece uma lista pré-validada.
   const saveConfig = useMutation({
     mutationFn: async () => {
+      const payload: Record<string, unknown> = {
+        limits,
+        setup_completed_at: new Date().toISOString(),
+      };
+      if (isAutoMulti) {
+        payload.ptz_backends = autoMultiBackends;
+        payload.ptz_backends_mode = 'auto-multi';
+      }
       const { error } = await supabase
         .from('camera_ptz_config')
-        .update({ limits: limits as unknown as never, setup_completed_at: new Date().toISOString() })
+        .update(payload as never)
         .eq('camera_id', cameraId);
       if (error) throw error;
     },
@@ -126,6 +153,7 @@ export function PtzSetupWizard({ cameraId, cameraName, open, onOpenChange }: Ptz
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
 
   const cfg = config.data;
   const protocol = cfg?.protocol as string | undefined;
@@ -224,6 +252,35 @@ export function PtzSetupWizard({ cameraId, cameraName, open, onOpenChange }: Ptz
                     : 'Vamos validar a comunicação com o endpoint ISAPI/CGI. Presets existentes podem ser importados manualmente na etapa seguinte.'}
                 </AlertDescription>
               </Alert>
+
+              {isAutoMulti && profile && (
+                <Alert className="border-primary/40">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                  <AlertTitle className="flex items-center gap-2">
+                    Perfil {profile.displayName} detectado
+                    <Badge variant="secondary" className="font-mono text-[10px]">auto-multi</Badge>
+                  </AlertTitle>
+                  <AlertDescription className="space-y-2">
+                    <p>
+                      Este OEM encapsula domes de múltiplos fabricantes no mesmo firmware.
+                      Vamos tentar automaticamente os {autoMultiBackends.length} protocolos
+                      nativos suportados sem perguntar a marca do dome — o próprio DVR/NVR
+                      negocia qual responde.
+                    </p>
+                    <div className="flex flex-wrap gap-1">
+                      {autoMultiBackends.slice(0, 10).map((b) => (
+                        <Badge key={b} variant="outline" className="font-mono text-[10px]">{b}</Badge>
+                      ))}
+                      {autoMultiBackends.length > 10 && (
+                        <Badge variant="outline" className="font-mono text-[10px]">
+                          +{autoMultiBackends.length - 10}
+                        </Badge>
+                      )}
+                    </div>
+                  </AlertDescription>
+                </Alert>
+              )}
+
 
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div><span className="text-muted-foreground">Endpoint:</span> <span className="font-mono">{cfg.endpoint}:{cfg.port}</span></div>
@@ -370,6 +427,16 @@ export function PtzSetupWizard({ cameraId, cameraName, open, onOpenChange }: Ptz
                 <div><b>Protocolo:</b> {protocol}</div>
                 <div><b>Endpoint:</b> {cfg.endpoint}:{cfg.port}</div>
                 <div><b>Presets:</b> {ptz.presets.length}</div>
+                {isAutoMulti && (
+                  <div>
+                    <b>Protocolos PTZ:</b>{' '}
+                    <Badge variant="secondary" className="font-mono text-[10px] mr-1">auto-multi</Badge>
+                    <span className="text-muted-foreground">
+                      {autoMultiBackends.length} backends nativos ({profile?.displayName})
+                    </span>
+                  </div>
+                )}
+
                 <div><b>Limites:</b></div>
                 <ul className="ml-4 list-disc text-muted-foreground">
                   <li>Pan: {limits.pan.min.toFixed(2)} → {limits.pan.max.toFixed(2)}</li>
