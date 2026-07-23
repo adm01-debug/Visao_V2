@@ -5320,6 +5320,12 @@ export type Database = {
         Args: { _camera_id: string; _x: number; _y: number }
         Returns: boolean
       }
+      prune_preview_telemetry_events: {
+        Args: never
+        Returns: {
+          deleted_rows: number
+        }[]
+      }
       purge_bandwidth_samples: { Args: never; Returns: number }
       purge_timelapse_snapshots: { Args: never; Returns: number }
       release_ptz_lock: { Args: { _camera_id: string }; Returns: boolean }
