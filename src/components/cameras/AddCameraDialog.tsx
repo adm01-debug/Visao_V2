@@ -376,36 +376,40 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
           ...(autoDiscover.relayAgentId ? { relay_agent_id: autoDiscover.relayAgentId } : {}),
         },
       });
-      if (error) throw new Error(error.message);
-      if (data?.error) {
-        const steps: string[] = Array.isArray(data.steps) ? data.steps.filter((s: unknown): s is string => typeof s === "string") : [];
+      // Se a Edge Function respondeu com HTTP não-2xx (ex.: 400 private_host_blocked),
+      // o supabase-js gera FunctionsHttpError e `data` fica null. Recuperamos o corpo.
+      const payload = (data as Record<string, unknown> | null) ?? (error ? await readFunctionErrorBody(error) : null);
+      if (!payload && error) throw new Error(error.message);
+      if (payload?.error) {
+        const steps: string[] = Array.isArray(payload.steps) ? (payload.steps as unknown[]).filter((s): s is string => typeof s === "string") : [];
         const detail: AutoDiscoverErrorDetail | null = steps.length
           ? {
-              code: String(data.error_code ?? data.error),
-              title: typeof data.title === "string" ? data.title : "Não foi possível alcançar a câmera",
-              hint: typeof data.hint === "string" ? data.hint : String(data.error),
+              code: String(payload.error_code ?? payload.error),
+              title: typeof payload.title === "string" ? payload.title : "Não foi possível alcançar a câmera",
+              hint: typeof payload.hint === "string" ? payload.hint : String(payload.error),
               steps,
-              isLanHost: Boolean(data.is_lan_host),
-              usedRelay: Boolean(data.used_relay),
-              testedPorts: Array.isArray(data.tested_ports) ? data.tested_ports : [],
+              isLanHost: Boolean(payload.is_lan_host),
+              usedRelay: Boolean(payload.used_relay),
+              testedPorts: Array.isArray(payload.tested_ports) ? (payload.tested_ports as unknown[]) : [],
             }
           : null;
         setAutoDiscover((s) => ({
           ...s,
           loading: false,
           ok: false,
-          message: data.hint || data.error,
+          message: (payload.hint as string) || (payload.error as string),
           errorDetail: detail,
         }));
         return;
       }
+      const result = payload as Record<string, any>;
       // Pré-preenche o formulário. Remove credenciais embutidas — cofre cuida delas.
       const stripCreds = (url: string) => url.replace(/^(rtsps?:\/\/)[^@\/]+@/i, "$1");
-      if (data.rtsp_primary) {
-        form.setValue("rtspUrl", stripCreds(data.rtsp_primary), { shouldValidate: true });
+      if (result?.rtsp_primary) {
+        form.setValue("rtspUrl", stripCreds(result.rtsp_primary), { shouldValidate: true });
       }
-      if (data.rtsp_substream) {
-        form.setValue("substreamUrl", stripCreds(data.rtsp_substream), { shouldValidate: true });
+      if (result?.rtsp_substream) {
+        form.setValue("substreamUrl", stripCreds(result.rtsp_substream), { shouldValidate: true });
       }
       if (data.ptz_capable) {
         form.setValue("ptzEnabled", true);
