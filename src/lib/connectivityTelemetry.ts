@@ -105,7 +105,7 @@ export async function saveCameraConnectivityPreference(
         public_host: input.publicHost ?? null,
         public_port: input.publicPort ?? null,
         last_success_at: new Date().toISOString(),
-        metadata: input.metadata ?? {},
+        metadata: (input.metadata ?? {}) as never,
       },
       { onConflict: "camera_id" },
     );
