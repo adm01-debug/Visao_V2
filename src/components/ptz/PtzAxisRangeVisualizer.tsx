@@ -180,6 +180,7 @@ export function PtzAxisRangeVisualizer({
         {axis !== 'zoom' && lo < 0 && hi > 0 ? <span>0</span> : null}
         <span>{hi.toFixed(2)}</span>
       </div>
+    </div>
 
       {outOfRange ? (
         <p
