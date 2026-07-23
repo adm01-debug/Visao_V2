@@ -128,6 +128,37 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
     onError: (e: Error) => toast.error(e.message),
   });
 
+  // Teste dos backends PTZ nativos (não-destrutivo: envia `stop`).
+  // Retorna sucesso/erro + latência por protocolo antes do usuário salvar.
+  type BackendResult = {
+    backend: string;
+    ok: boolean;
+    reachable: boolean;
+    status: number;
+    latency_ms: number;
+    detail: string;
+  };
+  const [backendResults, setBackendResults] = useState<BackendResult[] | null>(null);
+
+  const testBackends = useMutation({
+    mutationFn: async () => {
+      const backends = isAutoMulti ? autoMultiBackends : (protocol ? [protocol] : []);
+      const { data, error } = await supabase.functions.invoke('ptz-backends-test', {
+        body: { camera_id: cameraId, backends },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.hint ?? data.error);
+      return data as { ok: boolean; results: BackendResult[] };
+    },
+    onSuccess: (data) => {
+      setBackendResults(data.results);
+      const okCount = data.results.filter((r) => r.ok).length;
+      if (okCount > 0) toast.success(`${okCount}/${data.results.length} backend(s) responderam`);
+      else toast.error('Nenhum backend PTZ respondeu');
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   // Salvar configuração final — inclui backends nativos quando o perfil OEM
   // (ex.: XiongMai) fornece uma lista pré-validada.
   const saveConfig = useMutation({
