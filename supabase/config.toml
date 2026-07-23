@@ -53,3 +53,6 @@ verify_jwt = true
 
 [functions.rtsp-preview]
 verify_jwt = true
+
+[functions.preview-telemetry-alert]
+verify_jwt = false
