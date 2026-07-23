@@ -15,6 +15,11 @@ verify_jwt = true
 [functions.ptz-backends-test]
 verify_jwt = true
 
+[functions.ptz-presets-import]
+verify_jwt = true
+
+
+
 [functions.upload-media]
 verify_jwt = true
 

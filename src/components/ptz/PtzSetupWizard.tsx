@@ -19,6 +19,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { usePtzControl } from '@/hooks/usePtzControl';
 import { getProfileById } from '@/lib/onvifProfiles';
 import { PtzConnectionHistoryCard } from './PtzConnectionHistoryCard';
+import { PtzPresetImportPanel } from './PtzPresetImportPanel';
 
 interface PtzSetupWizardProps {
   cameraId: string;
@@ -567,8 +568,14 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                   </div>
                 </div>
               </div>
+
+              <PtzPresetImportPanel
+                cameraId={cameraId}
+                onImported={() => qc.invalidateQueries({ queryKey: ['ptz-presets', cameraId] })}
+              />
             </div>
           )}
+
 
           {cfg && step === 'limits' && (
             <div className="space-y-5">
