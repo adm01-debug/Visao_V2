@@ -58,6 +58,10 @@ function statusBadge(status: string | null): JSX.Element {
 
 export default function NvrDetailPage(): JSX.Element {
   const { id } = useParams<{ id: string }>();
+  const [realtimeStatus, setRealtimeStatus] = useState<"connecting" | "live" | "polling">("connecting");
+  const [lastRealtimeAt, setLastRealtimeAt] = useState<Date | null>(null);
+
+
 
   const nvrQuery = useQuery({
     queryKey: ["nvr", id],
