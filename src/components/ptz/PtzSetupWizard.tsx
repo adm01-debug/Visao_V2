@@ -72,6 +72,11 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
   const autoMultiBackends = useMemo(() => profile?.ptzBackends ?? [], [profile]);
   const isAutoMulti = autoMultiBackends.length > 0;
 
+  // Ordem de prioridade dos backends nativos (modo auto-multi). O firmware
+  // tentará na sequência definida — priorizar os com maior chance encurta o
+  // tempo até primeira resposta útil.
+  const [orderedBackends, setOrderedBackends] = useState<string[]>([]);
+
 
   // Config atual
   const config = useQuery({
