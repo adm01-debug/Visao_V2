@@ -232,7 +232,7 @@ export default function NvrDownloadHistoryPage() {
       result.push({
         cameraId: cam?.id ?? null,
         cameraName: cam?.name ?? `Canal ${channel}`,
-        nvrName: nvrById.get(nvrId) ?? 'NVR desconhecido',
+        nvrName: nvrById.get(nvrId ?? '') ?? 'NVR desconhecido',
         channel,
         jobs: list,
         total: list.length,
