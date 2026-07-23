@@ -64,14 +64,23 @@ export function LivePreviewPlayer({
   className,
 }: LivePreviewPlayerProps) {
   const [status, setStatus] = useState<Status>("idle");
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<LivePreviewErrorCode | null>(null);
   const [remaining, setRemaining] = useState(LIVE_PREVIEW_DEFAULT_SECONDS);
   const [extensions, setExtensions] = useState(0);
   const [hlsUrl, setHlsUrl] = useState<string | null>(null);
   const sessionIdRef = useRef<string | null>(null);
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const hlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const canPlayRef = useRef(false);
   const endedRef = useRef(false);
   const invokeFn = invoke ?? defaultInvoke;
+
+  const clearHlsTimeout = () => {
+    if (hlsTimeoutRef.current) {
+      clearTimeout(hlsTimeoutRef.current);
+      hlsTimeoutRef.current = null;
+    }
+  };
 
   const clearTick = () => {
     if (tickRef.current) {
