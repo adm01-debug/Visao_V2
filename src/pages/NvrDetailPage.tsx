@@ -139,7 +139,7 @@ export default function NvrDetailPage(): JSX.Element {
       if (idx < 0) return;
       const delta = e.key === "ArrowRight" ? 1 : -1;
       const next = list[(idx + delta + list.length) % list.length];
-      setFullscreenId(next.id);
+      if (next) setFullscreenId(next.id);
       e.preventDefault();
     };
     window.addEventListener("keydown", handler);
