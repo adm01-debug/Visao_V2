@@ -241,8 +241,9 @@ export default function NvrDetailPage(): JSX.Element {
     try {
       window.localStorage.setItem(
         prefsKey,
-        JSON.stringify({ cols: mosaicCols, statusFilter, sortMode, autoRefreshSeconds }),
+        JSON.stringify({ cols: mosaicCols, statusFilter, sortMode, autoRefreshSeconds, cycleSeconds, cyclePaused }),
       );
+
 
     } catch {
       // storage disabled/full — ignore silently
