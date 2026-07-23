@@ -210,6 +210,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/operations" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<OperationsPage />, "Operações")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/test-mode" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<TestModePage />, "Modo Teste")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/agentes-locais" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<LocalAgentsPage />, "Agentes Locais")}</ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/nvrs" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<NvrsPage />, "NVRs")}</ProtectedRoute></ProtectedLayoutRoute>} />
 
                     <Route path="/admin/api-usage" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<ApiUsageDashboardPage />, "Uso da API")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/admin/csp-reports" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<CspReportsDashboardPage />, "Relatórios CSP")}</ProtectedRoute></ProtectedLayoutRoute>} />
