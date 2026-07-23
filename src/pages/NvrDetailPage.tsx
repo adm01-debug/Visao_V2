@@ -572,11 +572,42 @@ export default function NvrDetailPage(): JSX.Element {
                           </button>
                         )}
                       </span>
-                      {channelsQuery.dataUpdatedAt > 0 && (
-                        <span aria-live="polite">
-                          Atualizado às {new Date(channelsQuery.dataUpdatedAt).toLocaleTimeString("pt-BR")}
+                      <span className="flex items-center gap-3">
+                        <span
+                          className="inline-flex items-center gap-1.5"
+                          title={
+                            realtimeStatus === "live"
+                              ? "Atualizações ao vivo via WebSocket"
+                              : realtimeStatus === "polling"
+                                ? "WebSocket indisponível — usando polling a cada 30s"
+                                : "Conectando ao canal em tempo real…"
+                          }
+                        >
+                          <span
+                            className={
+                              "h-2 w-2 rounded-full " +
+                              (realtimeStatus === "live"
+                                ? "bg-emerald-500 animate-pulse"
+                                : realtimeStatus === "polling"
+                                  ? "bg-amber-500"
+                                  : "bg-muted-foreground/50")
+                            }
+                            aria-hidden
+                          />
+                          {realtimeStatus === "live" ? "Ao vivo" : realtimeStatus === "polling" ? "Polling" : "Conectando"}
                         </span>
-                      )}
+                        {lastRealtimeAt && realtimeStatus === "live" && (
+                          <span className="text-muted-foreground/70">
+                            evento {lastRealtimeAt.toLocaleTimeString("pt-BR")}
+                          </span>
+                        )}
+                        {channelsQuery.dataUpdatedAt > 0 && (
+                          <span aria-live="polite">
+                            Atualizado {new Date(channelsQuery.dataUpdatedAt).toLocaleTimeString("pt-BR")}
+                          </span>
+                        )}
+                      </span>
+
                     </div>
                   )}
 
