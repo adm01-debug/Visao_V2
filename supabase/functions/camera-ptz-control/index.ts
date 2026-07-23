@@ -336,6 +336,64 @@ Deno.serve(async (req) => {
       );
     }
 
+    // ------------------------------------------------------------------
+    // Comando read-only `get_status`: bypass lock/clamp, apenas amostra
+    // a posição normalizada reportada pelo dome via ONVIF GetStatus.
+    // Drivers proprietários ainda não expõem GetStatus — retornam
+    // { supported: false } para o cliente cair no fallback jog+tempo.
+    // ------------------------------------------------------------------
+    if (command === 'get_status') {
+      if (cfg.protocol !== 'onvif') {
+        await admin.from('ptz_connection_attempts').insert({
+          user_id: user.id, camera_id, profile_id: cfg.profile_id ?? null,
+          backend: `${cfg.protocol}:get_status`,
+          ok: false, reachable: false, http_status: 0, latency_ms: 0,
+          error_detail: 'driver_no_getstatus',
+          used_relay: resolution.usingRelay, relay_agent_id, source: 'get_status',
+        });
+        return new Response(
+          JSON.stringify({ supported: false, reason: 'driver_no_getstatus', driver: cfg.protocol }),
+          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        );
+      }
+      try {
+        const st = await driverOnvifGetStatus(resolution.transport, cfg);
+        const ok = st.status >= 200 && st.status < 400;
+        await admin.from('ptz_connection_attempts').insert({
+          user_id: user.id, camera_id, profile_id: cfg.profile_id ?? null,
+          backend: 'onvif:get_status',
+          ok, reachable: ok, http_status: st.status, latency_ms: st.latency_ms,
+          error_detail: ok ? null : st.raw.slice(0, 240),
+          used_relay: resolution.usingRelay, relay_agent_id, source: 'get_status',
+        });
+        return new Response(JSON.stringify({
+          supported: true,
+          ok,
+          driver: 'onvif',
+          used_relay: resolution.usingRelay,
+          cam_status: st.status,
+          latency_ms: st.latency_ms,
+          position: st.position,
+          moving: st.moving,
+          utc: st.utc,
+        }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      } catch (e) {
+        await admin.from('ptz_connection_attempts').insert({
+          user_id: user.id, camera_id, profile_id: cfg.profile_id ?? null,
+          backend: 'onvif:get_status',
+          ok: false, reachable: false, http_status: 0, latency_ms: 0,
+          error_detail: String(e).slice(0, 240),
+          used_relay: resolution.usingRelay, relay_agent_id, source: 'get_status',
+        });
+        return new Response(
+          JSON.stringify({ supported: true, ok: false, error: 'get_status_failed', detail: String(e).slice(0, 240) }),
+          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        );
+      }
+    }
+
+
+
     // Cooperative lock
     const { data: lockRes, error: lockErr } = await userClient.rpc('acquire_ptz_lock', {
       _camera_id: camera_id, _ttl_seconds: 10,
