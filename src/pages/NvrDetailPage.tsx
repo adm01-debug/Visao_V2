@@ -125,6 +125,27 @@ export default function NvrDetailPage(): JSX.Element {
     [channelsQuery.data, fullscreenId],
   );
 
+  useEffect(() => {
+    if (!fullscreenId) return;
+    const handler = (e: KeyboardEvent): void => {
+      if (e.key === "Escape") {
+        setFullscreenId(null);
+        return;
+      }
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      const list = filteredChannels.length > 0 ? filteredChannels : (channelsQuery.data ?? []);
+      if (list.length === 0) return;
+      const idx = list.findIndex((c) => c.id === fullscreenId);
+      if (idx < 0) return;
+      const delta = e.key === "ArrowRight" ? 1 : -1;
+      const next = list[(idx + delta + list.length) % list.length];
+      setFullscreenId(next.id);
+      e.preventDefault();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [fullscreenId, filteredChannels, channelsQuery.data]);
+
   async function bulkAction(action: "arm" | "disarm"): Promise<void> {
     const channels = channelsQuery.data ?? [];
     if (!user || channels.length === 0) return;
