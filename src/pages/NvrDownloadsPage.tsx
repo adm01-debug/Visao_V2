@@ -354,6 +354,12 @@ export default function NvrDownloadsPage() {
                   Playback ao vivo
                 </Link>
               </Button>
+              <Button variant="outline" asChild size="sm">
+                <Link to="/playback/downloads/history">
+                  <History className="mr-2 h-4 w-4" />
+                  Histórico
+                </Link>
+              </Button>
               <Button variant="outline" size="sm" onClick={() => void loadJobs()} disabled={refreshing}>
                 <RefreshCw className={cn('mr-2 h-4 w-4', refreshing && 'animate-spin')} />
                 Atualizar
