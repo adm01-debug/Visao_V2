@@ -212,6 +212,9 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/admin/csp-reports" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<CspReportsDashboardPage />, "Relatórios CSP")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/cls-report" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<CLSReportPage />, "Relatório CLS")}</ProtectedLayoutRoute>} />
                     <Route path="/dev/loading-states" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<LoadingStatesChecklistPage />, "Loading States Checklist")}</ProtectedLayoutRoute>} />
+                    {LivePreviewHarnessPage && (
+                      <Route path="/__test/live-preview" element={withRouteErrorBoundary(<LivePreviewHarnessPage />, "Live Preview Harness")} />
+                    )}
                     <Route path="/acesso-negado" element={withRouteErrorBoundary(<AcessoNegado />, "Acesso Negado")} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
