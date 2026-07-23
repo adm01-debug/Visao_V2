@@ -10,7 +10,7 @@
  *  6. Nunca loga URL/senha; usa maskSecrets defensivo em erros.
  *  7. Se PTZ habilitado: valida capabilities via ONVIF e persiste `camera_ptz_config`.
  */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Loader2, ShieldCheck, Activity, Gamepad2, Search, AlertTriangle } from "lucide-react";
@@ -50,6 +50,13 @@ import { useCameraVault } from "@/hooks/useCameraVault";
 import { supabase } from "@/integrations/supabase/client";
 import { readFunctionErrorBody } from "@/lib/edgeFunctionErrors";
 import { isPrivateIP } from "@/lib/ipUtils";
+import {
+  recordConnectivityResolution,
+  resolutionToTelemetry,
+  saveCameraConnectivityPreference,
+  type CameraConnectivityPath,
+  type ConnectivityChosenPath,
+} from "@/lib/connectivityTelemetry";
 
 
 import {
@@ -191,6 +198,30 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
   });
   const [relayAgents, setRelayAgents] = useState<RelayAgentOption[]>([]);
   const [connectivityWizardOpen, setConnectivityWizardOpen] = useState(false);
+  /** Guarda a última resolução aplicada pelo wizard para completar telemetria (start + outcome). */
+  const pendingResolutionRef = useRef<
+    | {
+        errorCode: string;
+        chosenPath: ConnectivityChosenPath;
+        relayAgentId: string | null;
+        publicHost: string | null;
+        publicPort: number | null;
+        originalHost: string | null;
+        originalPort: number | null;
+        startedAt: number;
+      }
+    | null
+  >(null);
+  /** Última resolução com sucesso — usada para persistir a preferência ao criar a câmera. */
+  const lastSuccessfulResolutionRef = useRef<
+    | {
+        chosenPath: Exclude<ConnectivityChosenPath, "cancelled">;
+        relayAgentId: string | null;
+        publicHost: string | null;
+        publicPort: number | null;
+      }
+    | null
+  >(null);
   const [templateCtx, setTemplateCtx] = useState<{
     templateId: string;
     host: string;
@@ -357,6 +388,24 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
 
   /** Aplica a resolução escolhida no assistente de conectividade e re-tenta o autodiscover. */
   const handleConnectivityResolution = (resolution: PrivateHostResolution) => {
+    const originalHost = autoDiscover.host.trim() || null;
+    const originalPort = autoDiscover.manualMode
+      ? Number.parseInt(autoDiscover.manualPort, 10) || null
+      : null;
+    const errorCode = autoDiscover.errorDetail?.code ?? "private_host_blocked";
+    const tel = resolutionToTelemetry(resolution, originalHost, originalPort);
+    // Marca a resolução pendente — o outcome (ok/erro) é gravado ao final do handleAutoDiscover.
+    pendingResolutionRef.current = {
+      errorCode,
+      chosenPath: tel.chosenPath,
+      relayAgentId: tel.relayAgentId ?? null,
+      publicHost: tel.publicHost ?? null,
+      publicPort: tel.publicPort ?? null,
+      originalHost,
+      originalPort,
+      startedAt: Date.now(),
+    };
+
     if (resolution.mode === "relay") {
       setAutoDiscover((s) => ({
         ...s,
@@ -396,6 +445,37 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     setTimeout(() => { void handleAutoDiscover(); }, 50);
   };
 
+  /** Consome a resolução pendente e grava o outcome final na telemetria. */
+  const flushConnectivityTelemetry = (outcome: {
+    succeeded: boolean;
+    retryErrorCode?: string | null;
+  }) => {
+    const pending = pendingResolutionRef.current;
+    if (!pending) return;
+    pendingResolutionRef.current = null;
+    if (outcome.succeeded && pending.chosenPath !== "cancelled") {
+      lastSuccessfulResolutionRef.current = {
+        chosenPath: pending.chosenPath,
+        relayAgentId: pending.relayAgentId,
+        publicHost: pending.publicHost,
+        publicPort: pending.publicPort,
+      };
+    }
+    void recordConnectivityResolution({
+      errorCode: pending.errorCode,
+      chosenPath: pending.chosenPath,
+      relayAgentId: pending.relayAgentId,
+      publicHost: pending.publicHost,
+      publicPort: pending.publicPort,
+      originalHost: pending.originalHost,
+      originalPort: pending.originalPort,
+      succeeded: outcome.succeeded,
+      retryErrorCode: outcome.retryErrorCode ?? null,
+      durationMs: Date.now() - pending.startedAt,
+    });
+  };
+
+
   /** Descobre automaticamente porta ONVIF, RTSP principal/substream e capability PTZ. */
   const handleAutoDiscover = async () => {
     const host = autoDiscover.host.trim();
@@ -429,6 +509,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
         : NaN;
       if (autoDiscover.manualMode && (!Number.isFinite(manualPortNum) || manualPortNum < 1 || manualPortNum > 65535)) {
         setAutoDiscover((s) => ({ ...s, loading: false, ok: false, message: "Porta ONVIF inválida (use 1–65535)." }));
+        flushConnectivityTelemetry({ succeeded: false, retryErrorCode: "invalid_manual_port" });
         return;
       }
       const { data, error } = await supabase.functions.invoke("onvif-autodiscover", {
@@ -467,6 +548,10 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
           message: (payload.hint as string) || (payload.error as string),
           errorDetail: detail,
         }));
+        flushConnectivityTelemetry({
+          succeeded: false,
+          retryErrorCode: String(payload.error_code ?? payload.error ?? "unknown"),
+        });
         return;
       }
       const result = (payload ?? {}) as Record<string, any>;
@@ -496,9 +581,11 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
         message: `${result?.device?.manufacturer ?? "Dispositivo"} ${result?.device?.model ?? ""} · porta ${result?.onvif?.port} · ${result?.profiles} perfil(is)${result?.ptz_capable ? " · PTZ" : ""}`,
       }));
       toast.success("Câmera descoberta! Campos preenchidos automaticamente.");
+      flushConnectivityTelemetry({ succeeded: true });
     } catch (err) {
       setAutoDiscover((s) => ({ ...s, loading: false, ok: false, errorDetail: null, message: safeErrorMessage(err) }));
       toast.error(`Descoberta falhou: ${safeErrorMessage(err)}`);
+      flushConnectivityTelemetry({ succeeded: false, retryErrorCode: "exception" });
     }
   };
 
@@ -690,6 +777,24 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       }
 
       toast.success("Câmera cadastrada e credenciais protegidas no cofre");
+
+      // Persiste preferência de conectividade se o wizard foi usado com sucesso.
+      const resolved = lastSuccessfulResolutionRef.current;
+      if (resolved) {
+        const pathMap: Record<Exclude<ConnectivityChosenPath, "cancelled">, CameraConnectivityPath> = {
+          relay: "relay",
+          vpn: "vpn",
+          port_forward: "port_forward",
+        };
+        void saveCameraConnectivityPreference({
+          cameraId: camera.id,
+          preferredPath: pathMap[resolved.chosenPath],
+          relayAgentId: resolved.relayAgentId,
+          publicHost: resolved.publicHost,
+          publicPort: resolved.publicPort,
+        });
+        lastSuccessfulResolutionRef.current = null;
+      }
       await refetch();
 
       // 5. Primeiro snapshot — best-effort, não bloqueia o fluxo.
@@ -1503,7 +1608,17 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       </DialogContent>
       <PrivateHostBlockedWizard
         open={connectivityWizardOpen}
-        onOpenChange={setConnectivityWizardOpen}
+        onOpenChange={(open) => {
+          // Ao fechar sem aplicar (nenhuma resolução pendente após o clique), registra cancelamento.
+          if (!open && !pendingResolutionRef.current && autoDiscover.errorDetail?.code) {
+            void recordConnectivityResolution({
+              errorCode: autoDiscover.errorDetail.code,
+              chosenPath: "cancelled",
+              originalHost: autoDiscover.host.trim() || null,
+            });
+          }
+          setConnectivityWizardOpen(open);
+        }}
         host={autoDiscover.host}
         agents={relayAgents}
         onApply={handleConnectivityResolution}
