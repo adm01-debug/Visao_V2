@@ -615,6 +615,13 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                 </AlertDescription>
               </Alert>
               <PtzCalibrationPanel ptz={ptz} limits={limits} onChange={setLimits} cameraId={cameraId} />
+              <PtzCalibratedPresetsPanel
+                ptz={ptz}
+                limits={limits}
+                cameraId={cameraId}
+                protocol={protocol ?? 'onvif'}
+                onSaved={() => qc.invalidateQueries({ queryKey: ['ptz-presets', cameraId] })}
+              />
             </div>
           )}
 
