@@ -429,6 +429,9 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
           ...(autoDiscover.manualMode && autoDiscover.manualPort
             ? { ports: [Number.parseInt(autoDiscover.manualPort, 10)] }
             : {}),
+          // Se um Agente Local estiver selecionado, roteia a sondagem por ele
+          // (evita bloqueio de host privado e alcança câmeras em LAN).
+          ...(autoDiscover.relayAgentId ? { relay_agent_id: autoDiscover.relayAgentId } : {}),
         },
       });
       if (error) throw new Error(error.message);
