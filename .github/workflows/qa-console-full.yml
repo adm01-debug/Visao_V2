@@ -1,0 +1,166 @@
+name: QA Console Full Sweep
+
+# Varre TODAS as rotas autenticadas em desktop (1280×720) e mobile (iPhone 12),
+# capturando console.error, pageerror e HTTP 4xx/5xx. Consolida em relatório
+# Markdown filtrado (scripts/build-qa-console-report.mjs).
+#
+# Executa em PRs (após E2E principal) e diariamente às 04:00 UTC.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'tests/e2e/**'
+      - 'scripts/build-qa-console-report.mjs'
+      - '.github/workflows/qa-console-full.yml'
+      - 'package.json'
+  schedule:
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: qa-console-full-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qa-console-full:
+    name: QA Console Sweep (desktop + mobile)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    env:
+      CI: 'true'
+      NODE_OPTIONS: --max-old-space-size=4096
+      E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
+      E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.1.34'
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache Bun store
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-1.1.34-${{ hashFiles('bun.lock', 'bun.lockb', 'package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-1.1.34-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Resolve Playwright version
+        id: pw
+        run: |
+          VERSION=$(node -p "require('./package.json').devDependencies?.['@playwright/test'] || require('./package.json').dependencies?.['@playwright/test'] || ''")
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.pw.outputs.version }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers (chromium + deps)
+        run: bunx playwright install --with-deps chromium
+
+      - name: Build app
+        run: bun run build
+
+      - name: Guard required secrets
+        run: |
+          missing=()
+          [ -z "${E2E_TEST_EMAIL:-}" ] && missing+=("E2E_TEST_EMAIL")
+          [ -z "${E2E_TEST_PASSWORD:-}" ] && missing+=("E2E_TEST_PASSWORD")
+          [ -z "${SUPABASE_URL:-}" ] && missing+=("SUPABASE_URL")
+          [ -z "${SUPABASE_SERVICE_ROLE_KEY:-}" ] && missing+=("SUPABASE_SERVICE_ROLE_KEY")
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "::warning::Secrets ausentes: ${missing[*]}. Sweep será pulado (skip controlado)."
+          fi
+
+      - name: Run QA console sweep (desktop + mobile) + build report
+        id: qa
+        run: npm run qa:console-full
+        continue-on-error: true
+
+      - name: Upload raw events + Markdown report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-console-report-${{ github.run_id }}
+          path: qa-console-report/**
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Append report to Job Summary
+        if: always()
+        run: |
+          if [ -f qa-console-report/report.md ]; then
+            {
+              echo "# 🕵️ QA Console Sweep — Desktop + Mobile"
+              echo ""
+              cat qa-console-report/report.md
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "⚠️ qa-console-report/report.md não gerado (verifique logs do sweep)." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Comment PR with QA console summary
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = 'qa-console-report/report.md';
+            if (!fs.existsSync(path)) {
+              core.warning('Sem report.md para comentar.');
+              return;
+            }
+            const raw = fs.readFileSync(path, 'utf8');
+            const MAX = 60_000;
+            const body = raw.length > MAX
+              ? raw.slice(0, MAX) + `\n\n_…truncado (${raw.length} chars). Ver artifact \`qa-console-report-${{ github.run_id }}\`._`
+              : raw;
+            const marker = '<!-- qa-console-full-report -->';
+            const header = `${marker}\n### 🕵️ QA Console Sweep (desktop + mobile) — commit \`${{ github.sha }}\`\n`;
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body && c.body.includes(marker));
+            const payload = { owner: context.repo.owner, repo: context.repo.repo, body: header + body };
+            if (existing) {
+              await github.rest.issues.updateComment({ ...payload, comment_id: existing.id });
+            } else {
+              await github.rest.issues.createComment({ ...payload, issue_number: context.issue.number });
+            }
+
+      - name: Fail if legitimate issues found
+        if: always()
+        run: |
+          if [ ! -f qa-console-report/report.json ]; then
+            echo "::warning::report.json ausente — sweep pode ter falhado antes de gerar."
+            exit 0
+          fi
+          COUNT=$(node -e "const r=require('./qa-console-report/report.json'); console.log(r.totals?.highSeverity ?? 0)")
+          echo "High-severity console issues detectados: ${COUNT}"
+          if [ "${COUNT}" -gt 0 ]; then
+            echo "::error::QA Console Sweep encontrou ${COUNT} problema(s) de alta severidade. Ver artifact e comentário do PR."
+            exit 1
+          fi
