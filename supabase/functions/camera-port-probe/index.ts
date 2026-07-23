@@ -13,6 +13,8 @@
 //   - Não é autoritativo sobre ONVIF; só diz "algo respondeu TCP nessa porta".
 
 import { resolveRelayTransport, type Transport } from "../_shared/relayTransport.ts";
+import { recordEdgeError } from "../_shared/errorAudit.ts";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -152,6 +154,15 @@ Deno.serve(async (req) => {
   }
 
   if (!allowPrivate && isPrivateHost(host)) {
+    await recordEdgeError({
+      function_name: "camera-port-probe",
+      error_code: "private_host_blocked",
+      http_status: 400,
+      target_host: host,
+      run_from: "cloud",
+      message: "Host privado bloqueado sem relay",
+      context: { requested_ports: payload.ports ?? null },
+    });
     return j({
       error: "private_host_blocked",
       hint:
@@ -160,6 +171,7 @@ Deno.serve(async (req) => {
       run_from: runFrom,
     }, 400);
   }
+
 
   const requestedPorts = (payload.ports?.length ? payload.ports : DEFAULT_PORTS)
     .map((p) => Number(p))
