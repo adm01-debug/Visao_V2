@@ -427,6 +427,16 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                 <div><b>Protocolo:</b> {protocol}</div>
                 <div><b>Endpoint:</b> {cfg.endpoint}:{cfg.port}</div>
                 <div><b>Presets:</b> {ptz.presets.length}</div>
+                {isAutoMulti && (
+                  <div>
+                    <b>Protocolos PTZ:</b>{' '}
+                    <Badge variant="secondary" className="font-mono text-[10px] mr-1">auto-multi</Badge>
+                    <span className="text-muted-foreground">
+                      {autoMultiBackends.length} backends nativos ({profile?.displayName})
+                    </span>
+                  </div>
+                )}
+
                 <div><b>Limites:</b></div>
                 <ul className="ml-4 list-disc text-muted-foreground">
                   <li>Pan: {limits.pan.min.toFixed(2)} → {limits.pan.max.toFixed(2)}</li>
