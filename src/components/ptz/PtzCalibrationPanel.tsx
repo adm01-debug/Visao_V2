@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Crosshair, Gauge, History, Home, Loader2, RotateCcw, ShieldCheck, Signal, Target, ZoomIn, ZoomOut,
+  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Crosshair, Gauge, History, Home, Loader2, RotateCcw, Save, ShieldCheck, Signal, Target, TriangleAlert, ZoomIn, ZoomOut,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
@@ -102,6 +103,10 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
   }
   const [validation, setValidation] = useState<Partial<Record<PtzAxis, RevalidationResult>>>({});
   const [revalidatingAxis, setRevalidatingAxis] = useState<PtzAxis | null>(null);
+
+  // Edição manual do observado (min_reported/max_reported) por eixo.
+  const [observedDraft, setObservedDraft] = useState<Partial<Record<PtzAxis, { min: string; max: string }>>>({});
+  const [savingObservedAxis, setSavingObservedAxis] = useState<PtzAxis | null>(null);
 
   // Versionamento — carregado do banco.
   const [limitsVersion, setLimitsVersion] = useState<string | null>(null);
@@ -470,6 +475,57 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
     }
   }, [statusSupported, sweepMsByAxis, measuringAxis, revalidatingAxis, ptz, clamp, limits]);
 
+  /**
+   * Persiste ajuste manual dos valores observados (`min_reported`/`max_reported`)
+   * quando a medição automática saturou no fim de curso do dome e o operador
+   * quer registrar o range verdadeiro conhecido.
+   */
+  const saveObservedRange = useCallback(async (axis: PtzAxis) => {
+    const draft = observedDraft[axis];
+    if (!draft) return;
+    const [lo, hi] = AXIS_BOUNDS[axis];
+    const minN = Number(draft.min);
+    const maxN = Number(draft.max);
+    if (!Number.isFinite(minN) || !Number.isFinite(maxN)) {
+      toast.error('Valores inválidos: use números decimais.');
+      return;
+    }
+    if (minN < lo || maxN > hi) {
+      toast.error(`Fora do intervalo permitido [${lo}, ${hi}].`);
+      return;
+    }
+    if (minN >= maxN) {
+      toast.error('Mínimo precisa ser menor que o máximo.');
+      return;
+    }
+    const existing = calibration[axis];
+    const entry: CalibrationEntry = {
+      sweep_ms: existing?.sweep_ms ?? 0,
+      min_reported: Number(minN.toFixed(3)),
+      max_reported: Number(maxN.toFixed(3)),
+      measured_at: new Date().toISOString(),
+    };
+    const nextCalibration = { ...calibration, [axis]: entry };
+
+    if (cameraId) {
+      setSavingObservedAxis(axis);
+      const { error } = await supabase
+        .from('camera_ptz_config')
+        .update({ calibration: nextCalibration as unknown as Json })
+        .eq('camera_id', cameraId);
+      setSavingObservedAxis(null);
+      if (error) {
+        toast.error(`Falha ao salvar observado: ${error.message}`);
+        return;
+      }
+    }
+    setCalibration(nextCalibration);
+    setObservedDraft((prev) => ({ ...prev, [axis]: undefined }));
+    toast.success(`${AXIS_LABEL[axis]}: observado atualizado para [${minN.toFixed(2)} → ${maxN.toFixed(2)}]`);
+  }, [observedDraft, calibration, cameraId]);
+
+
+
   const JogButton = ({ axis, dir, icon }: { axis: PtzAxis; dir: -1 | 1; icon: React.ReactNode }) => (
     <Button
       size="sm"
@@ -692,13 +748,98 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
               </Button>
             </div>
 
-            {cal && (
-              <div className="text-[11px] text-muted-foreground font-mono">
-                Última medição: {(cal.sweep_ms / 1000).toFixed(2)}s ·
-                observado [{cal.min_reported.toFixed(2)} → {cal.max_reported.toFixed(2)}] ·
-                {new Date(cal.measured_at).toLocaleString()}
-              </div>
-            )}
+            {(() => {
+              const [lo, hi] = AXIS_BOUNDS[axis];
+              const SAT_EPS = (hi - lo) * 0.01; // 1% do range
+              const saturatedMin = cal ? cal.min_reported <= lo + SAT_EPS : false;
+              const saturatedMax = cal ? cal.max_reported >= hi - SAT_EPS : false;
+              const draft = observedDraft[axis] ?? {
+                min: cal ? cal.min_reported.toFixed(3) : '',
+                max: cal ? cal.max_reported.toFixed(3) : '',
+              };
+              const isDirty = !!observedDraft[axis];
+              const isSaving = savingObservedAxis === axis;
+              return (
+                <div
+                  className="rounded-md border p-2 space-y-2 bg-muted/20"
+                  data-testid={`ptz-observed-editor-${axis}`}
+                >
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <span className="text-[11px] font-medium">Observado durante a calibração</span>
+                    {cal ? (
+                      <span className="text-[10px] text-muted-foreground font-mono">
+                        sweep {(cal.sweep_ms / 1000).toFixed(2)}s ·
+                        {' '}{new Date(cal.measured_at).toLocaleString()}
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-muted-foreground">
+                        nenhuma medição registrada — informe manualmente se necessário
+                      </span>
+                    )}
+                  </div>
+                  {(saturatedMin || saturatedMax) && (
+                    <div className="text-[10px] flex items-center gap-1 text-amber-700 dark:text-amber-300">
+                      <TriangleAlert className="w-3 h-3" aria-hidden />
+                      Possível saturação no{' '}
+                      {saturatedMin && saturatedMax
+                        ? 'mínimo e no máximo'
+                        : saturatedMin ? 'mínimo' : 'máximo'}{' '}
+                      — ajuste manualmente com o range real do dome.
+                    </div>
+                  )}
+                  <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-2 items-end">
+                    <div className="space-y-1">
+                      <Label className="text-[10px] text-muted-foreground" htmlFor={`obs-min-${axis}`}>
+                        min_reported ({lo})
+                      </Label>
+                      <Input
+                        id={`obs-min-${axis}`}
+                        type="number"
+                        step="0.001"
+                        min={lo}
+                        max={hi}
+                        className="h-8 font-mono text-xs"
+                        value={draft.min}
+                        onChange={(e) =>
+                          setObservedDraft((prev) => ({ ...prev, [axis]: { ...draft, min: e.target.value } }))
+                        }
+                        disabled={isSaving}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-[10px] text-muted-foreground" htmlFor={`obs-max-${axis}`}>
+                        max_reported ({hi})
+                      </Label>
+                      <Input
+                        id={`obs-max-${axis}`}
+                        type="number"
+                        step="0.001"
+                        min={lo}
+                        max={hi}
+                        className="h-8 font-mono text-xs"
+                        value={draft.max}
+                        onChange={(e) =>
+                          setObservedDraft((prev) => ({ ...prev, [axis]: { ...draft, max: e.target.value } }))
+                        }
+                        disabled={isSaving}
+                      />
+                    </div>
+                    <Button
+                      size="sm"
+                      variant={isDirty ? 'default' : 'outline'}
+                      onClick={() => void saveObservedRange(axis)}
+                      disabled={!isDirty || isSaving}
+                      data-testid={`ptz-observed-save-${axis}`}
+                    >
+                      {isSaving
+                        ? (<><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Salvando…</>)
+                        : (<><Save className="w-3.5 h-3.5 mr-1" /> Salvar observado</>)}
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+
 
             {validation[axis] && (() => {
               const v = validation[axis]!;
