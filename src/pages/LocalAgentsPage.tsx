@@ -15,6 +15,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { PageMeta } from "@/components/PageMeta";
 import { RelayReliabilityCard } from "@/components/local-agents/RelayReliabilityCard";
+import { RelayPurgeHistoryCard } from "@/components/local-agents/RelayPurgeHistoryCard";
 
 interface LocalAgent {
   id: string;
