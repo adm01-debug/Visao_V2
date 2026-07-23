@@ -32,6 +32,8 @@ declare global {
       closeDialog: () => void;
       setNextStartResult: (r: Partial<InvokeResult>) => void;
       setNextExtendResult: (r: Partial<InvokeResult>) => void;
+      /** Dispara `error` no <video>, simulando drop de conexão HLS. */
+      simulateVideoError: () => boolean;
       reset: () => void;
     };
   }
