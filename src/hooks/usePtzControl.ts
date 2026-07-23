@@ -7,7 +7,19 @@ import { humanizeFunctionError } from "@/lib/edgeFunctionErrors";
 
 export type PtzCommand =
   | "move" | "stop" | "zoom" | "focus" | "iris"
-  | "goto_preset" | "save_preset" | "delete_preset" | "home" | "test";
+  | "goto_preset" | "save_preset" | "delete_preset" | "home" | "test" | "get_status";
+
+export interface PtzStatusPayload {
+  supported: true;
+  ok: boolean;
+  driver: string;
+  used_relay: boolean;
+  cam_status: number;
+  latency_ms: number;
+  position: { pan: number | null; tilt: number | null; zoom: number | null };
+  moving: { pan_tilt: boolean | null; zoom: boolean | null };
+  utc: string | null;
+}
 
 export interface PtzParams {
   pan?: number; tilt?: number; zoom?: number;
