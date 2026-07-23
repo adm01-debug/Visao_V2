@@ -267,6 +267,68 @@ export default function NvrDetailPage(): JSX.Element {
     }
   };
 
+  // Per-channel refresh error tracking + retry
+  const [channelErrors, setChannelErrors] = useState<Record<string, string>>({});
+  const [channelRetrying, setChannelRetrying] = useState<Record<string, boolean>>({});
+
+  const dismissChannelError = (channelId: string): void => {
+    setChannelErrors((prev) => {
+      if (!(channelId in prev)) return prev;
+      const next = { ...prev };
+      delete next[channelId];
+      return next;
+    });
+  };
+
+  const refreshChannel = async (channelId: string): Promise<boolean> => {
+    setChannelRetrying((p) => ({ ...p, [channelId]: true }));
+    try {
+      const { data, error } = await supabase
+        .from("cameras")
+        .select("id, name, status, channel_number")
+        .eq("id", channelId)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("Canal não encontrado.");
+      queryClient.setQueryData<ChannelRow[]>(["nvr-channels", id], (prev) =>
+        (prev ?? []).map((c) => (c.id === channelId ? { ...c, ...data } : c)),
+      );
+      dismissChannelError(channelId);
+      return true;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Falha ao atualizar canal.";
+      setChannelErrors((p) => ({ ...p, [channelId]: msg }));
+      return false;
+    } finally {
+      setChannelRetrying((p) => {
+        const next = { ...p };
+        delete next[channelId];
+        return next;
+      });
+    }
+  };
+
+  const retryAllFailures = async (): Promise<void> => {
+    const failed = Object.keys(channelErrors);
+    if (channelsQuery.isError) {
+      await channelsQuery.refetch();
+    }
+    if (failed.length === 0) return;
+    const results = await Promise.all(failed.map((cid) => refreshChannel(cid)));
+    const ok = results.filter(Boolean).length;
+    toast({
+      title: "Retentativa concluída",
+      description: `${ok}/${failed.length} canais atualizados com sucesso.`,
+      variant: ok === failed.length ? "default" : "destructive",
+    });
+  };
+
+  const errorCount = Object.keys(channelErrors).length;
+  const hasAnyError = channelsQuery.isError || errorCount > 0;
+
+
+
+
 
   const filteredChannels = useMemo(() => {
     const rows = channelsQuery.data ?? [];
