@@ -204,6 +204,7 @@ export function LivePreviewPlayer({
     if (autoStart) void start();
     return () => {
       clearTick();
+      clearHlsTimeout();
       if (!endedRef.current && sessionIdRef.current) {
         endedRef.current = true;
         const id = sessionIdRef.current;
