@@ -530,6 +530,60 @@ export type Database = {
           },
         ]
       }
+      camera_connectivity_preferences: {
+        Row: {
+          camera_id: string
+          created_at: string
+          last_success_at: string | null
+          metadata: Json
+          preferred_path: string
+          public_host: string | null
+          public_port: number | null
+          relay_agent_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          camera_id: string
+          created_at?: string
+          last_success_at?: string | null
+          metadata?: Json
+          preferred_path: string
+          public_host?: string | null
+          public_port?: number | null
+          relay_agent_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string
+          created_at?: string
+          last_success_at?: string | null
+          metadata?: Json
+          preferred_path?: string
+          public_host?: string | null
+          public_port?: number | null
+          relay_agent_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_connectivity_preferences_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: true
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "camera_connectivity_preferences_relay_agent_id_fkey"
+            columns: ["relay_agent_id"]
+            isOneToOne: false
+            referencedRelation: "local_agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       camera_credentials: {
         Row: {
           camera_id: string
@@ -1245,6 +1299,75 @@ export type Database = {
           version?: number
         }
         Relationships: []
+      }
+      connectivity_resolution_telemetry: {
+        Row: {
+          camera_id: string | null
+          chosen_path: string
+          created_at: string
+          duration_ms: number | null
+          error_code: string
+          id: string
+          metadata: Json
+          original_host: string | null
+          original_port: number | null
+          public_host: string | null
+          public_port: number | null
+          relay_agent_id: string | null
+          retry_error_code: string | null
+          succeeded: boolean | null
+          user_id: string
+        }
+        Insert: {
+          camera_id?: string | null
+          chosen_path: string
+          created_at?: string
+          duration_ms?: number | null
+          error_code: string
+          id?: string
+          metadata?: Json
+          original_host?: string | null
+          original_port?: number | null
+          public_host?: string | null
+          public_port?: number | null
+          relay_agent_id?: string | null
+          retry_error_code?: string | null
+          succeeded?: boolean | null
+          user_id: string
+        }
+        Update: {
+          camera_id?: string | null
+          chosen_path?: string
+          created_at?: string
+          duration_ms?: number | null
+          error_code?: string
+          id?: string
+          metadata?: Json
+          original_host?: string | null
+          original_port?: number | null
+          public_host?: string | null
+          public_port?: number | null
+          relay_agent_id?: string | null
+          retry_error_code?: string | null
+          succeeded?: boolean | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connectivity_resolution_telemetry_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connectivity_resolution_telemetry_relay_agent_id_fkey"
+            columns: ["relay_agent_id"]
+            isOneToOne: false
+            referencedRelation: "local_agents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       csp_violation_reports: {
         Row: {
@@ -5661,6 +5784,10 @@ export type Database = {
           total_started: number
           window_hours: number
         }[]
+      }
+      prune_connectivity_resolution_telemetry: {
+        Args: never
+        Returns: undefined
       }
       prune_edge_function_error_audit: { Args: never; Returns: number }
       prune_preview_telemetry_events: {
