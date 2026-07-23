@@ -560,7 +560,34 @@ export default function NvrDetailPage(): JSX.Element {
               </ToggleGroup>
             </div>
 
+            {hasAnyError && (
+              <div
+                role="alert"
+                className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm"
+              >
+                <div className="flex items-center gap-2 text-destructive">
+                  <AlertTriangle className="h-4 w-4" aria-hidden />
+                  <span>
+                    {channelsQuery.isError
+                      ? `Falha ao atualizar a lista de canais${(channelsQuery.error as Error | null)?.message ? `: ${(channelsQuery.error as Error).message}` : "."}`
+                      : `${errorCount} canal(is) com falha na última atualização.`}
+                  </span>
+                </div>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => void retryAllFailures()}
+                  disabled={channelsQuery.isFetching || Object.keys(channelRetrying).length > 0}
+                  className="gap-1"
+                >
+                  <RefreshCw className={"h-3.5 w-3.5 " + (channelsQuery.isFetching ? "animate-spin" : "")} />
+                  Tentar tudo novamente
+                </Button>
+              </div>
+            )}
+
             <TabsContent value="list">
+
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
