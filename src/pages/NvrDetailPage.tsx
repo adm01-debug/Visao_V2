@@ -12,7 +12,7 @@ import { PageMeta } from "@/components/PageMeta";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Server, Radio, Wifi, WifiOff, HelpCircle, Lock, Unlock, Loader2, LayoutGrid, VideoOff, Video, Search, Maximize2, RefreshCw, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, Server, Radio, Wifi, WifiOff, HelpCircle, Lock, Unlock, Loader2, LayoutGrid, VideoOff, Video, Search, Maximize2, RefreshCw, ArrowUpDown, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 
 interface NvrRow {
   id: string;
@@ -80,7 +80,12 @@ export default function NvrDetailPage(): JSX.Element {
   const channelsQuery = useQuery({
     queryKey: ["nvr-channels", id],
     enabled: !!id,
-    refetchInterval: () => (realtimeStatus === "live" ? 120_000 : 30_000),
+    refetchInterval: () => {
+      if (autoRefreshPaused) return false;
+      if (autoRefreshSeconds > 0) return autoRefreshSeconds * 1000;
+      return realtimeStatus === "live" ? 120_000 : 30_000;
+    },
+
     queryFn: async (): Promise<ChannelRow[]> => {
       const { data, error } = await supabase
         .from("cameras")
@@ -192,6 +197,20 @@ export default function NvrDetailPage(): JSX.Element {
   const [cycleSeconds, setCycleSeconds] = useState<0 | 5 | 10 | 30>(0);
   const [cyclePaused, setCyclePaused] = useState<boolean>(false);
   const [cycleProgress, setCycleProgress] = useState<number>(0);
+  const [autoRefreshSeconds, setAutoRefreshSeconds] = useState<0 | 10 | 30 | 60>(() => {
+    if (typeof window === "undefined" || !prefsKey) return 0;
+    try {
+      const raw = window.localStorage.getItem(prefsKey);
+      if (!raw) return 0;
+      const parsed = JSON.parse(raw) as { autoRefreshSeconds?: number };
+      const v = parsed.autoRefreshSeconds;
+      return v === 10 || v === 30 || v === 60 ? v : 0;
+    } catch {
+      return 0;
+    }
+  });
+  const [autoRefreshPaused, setAutoRefreshPaused] = useState<boolean>(false);
+
 
 
   useEffect(() => {
@@ -199,12 +218,13 @@ export default function NvrDetailPage(): JSX.Element {
     try {
       window.localStorage.setItem(
         prefsKey,
-        JSON.stringify({ cols: mosaicCols, statusFilter, sortMode }),
+        JSON.stringify({ cols: mosaicCols, statusFilter, sortMode, autoRefreshSeconds }),
       );
+
     } catch {
       // storage disabled/full — ignore silently
     }
-  }, [prefsKey, mosaicCols, statusFilter, sortMode]);
+  }, [prefsKey, mosaicCols, statusFilter, sortMode, autoRefreshSeconds]);
 
 
   const filteredChannels = useMemo(() => {
@@ -541,15 +561,42 @@ export default function NvrDetailPage(): JSX.Element {
                         <ToggleGroupItem value="channel-desc" aria-label="Canal decrescente">CH ↓</ToggleGroupItem>
                         <ToggleGroupItem value="name-asc" aria-label="Nome A-Z">A-Z</ToggleGroupItem>
                       </ToggleGroup>
+                      <ToggleGroup
+                        type="single"
+                        size="sm"
+                        value={String(autoRefreshSeconds)}
+                        onValueChange={(v) => {
+                          if (!v) return;
+                          const n = Number(v);
+                          if (n === 0 || n === 10 || n === 30 || n === 60) setAutoRefreshSeconds(n);
+                        }}
+                        aria-label="Intervalo de auto-refresh"
+                      >
+                        <ToggleGroupItem value="0" aria-label="Auto-refresh desligado">Off</ToggleGroupItem>
+                        <ToggleGroupItem value="10">10s</ToggleGroupItem>
+                        <ToggleGroupItem value="30">30s</ToggleGroupItem>
+                        <ToggleGroupItem value="60">60s</ToggleGroupItem>
+                      </ToggleGroup>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setAutoRefreshPaused((p) => !p)}
+                        disabled={autoRefreshSeconds === 0}
+                        aria-label={autoRefreshPaused ? "Retomar auto-refresh" : "Pausar auto-refresh"}
+                        title={autoRefreshPaused ? "Retomar" : "Pausar"}
+                      >
+                        {autoRefreshPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+                      </Button>
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => void channelsQuery.refetch()}
                         disabled={channelsQuery.isFetching}
-                        aria-label="Atualizar canais"
+                        aria-label="Atualizar canais agora"
                       >
                         <RefreshCw className={"h-4 w-4 " + (channelsQuery.isFetching ? "animate-spin" : "")} />
                       </Button>
+
                     </div>
                   </div>
 
