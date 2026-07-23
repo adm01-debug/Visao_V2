@@ -376,6 +376,24 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
 
   /** Aplica a resolução escolhida no assistente de conectividade e re-tenta o autodiscover. */
   const handleConnectivityResolution = (resolution: PrivateHostResolution) => {
+    const originalHost = autoDiscover.host.trim() || null;
+    const originalPort = autoDiscover.manualMode
+      ? Number.parseInt(autoDiscover.manualPort, 10) || null
+      : null;
+    const errorCode = autoDiscover.errorDetail?.code ?? "private_host_blocked";
+    const tel = resolutionToTelemetry(resolution, originalHost, originalPort);
+    // Marca a resolução pendente — o outcome (ok/erro) é gravado ao final do handleAutoDiscover.
+    pendingResolutionRef.current = {
+      errorCode,
+      chosenPath: tel.chosenPath,
+      relayAgentId: tel.relayAgentId ?? null,
+      publicHost: tel.publicHost ?? null,
+      publicPort: tel.publicPort ?? null,
+      originalHost,
+      originalPort,
+      startedAt: Date.now(),
+    };
+
     if (resolution.mode === "relay") {
       setAutoDiscover((s) => ({
         ...s,
@@ -414,6 +432,29 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     // Re-executa autodiscover no próximo tick para pegar o novo estado.
     setTimeout(() => { void handleAutoDiscover(); }, 50);
   };
+
+  /** Consome a resolução pendente e grava o outcome final na telemetria. */
+  const flushConnectivityTelemetry = (outcome: {
+    succeeded: boolean;
+    retryErrorCode?: string | null;
+  }) => {
+    const pending = pendingResolutionRef.current;
+    if (!pending) return;
+    pendingResolutionRef.current = null;
+    void recordConnectivityResolution({
+      errorCode: pending.errorCode,
+      chosenPath: pending.chosenPath,
+      relayAgentId: pending.relayAgentId,
+      publicHost: pending.publicHost,
+      publicPort: pending.publicPort,
+      originalHost: pending.originalHost,
+      originalPort: pending.originalPort,
+      succeeded: outcome.succeeded,
+      retryErrorCode: outcome.retryErrorCode ?? null,
+      durationMs: Date.now() - pending.startedAt,
+    });
+  };
+
 
   /** Descobre automaticamente porta ONVIF, RTSP principal/substream e capability PTZ. */
   const handleAutoDiscover = async () => {
