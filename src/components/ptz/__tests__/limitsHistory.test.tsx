@@ -3,6 +3,15 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { PtzLimits } from '../PtzCalibrationPanel';
 
+// Polyfills p/ Radix (jsdom)
+class RO { observe() {} unobserve() {} disconnect() {} }
+(globalThis as unknown as { ResizeObserver: typeof RO }).ResizeObserver = RO;
+if (!(Element.prototype as unknown as { hasPointerCapture?: () => boolean }).hasPointerCapture) {
+  (Element.prototype as unknown as { hasPointerCapture: () => boolean }).hasPointerCapture = () => false;
+  (Element.prototype as unknown as { releasePointerCapture: () => void }).releasePointerCapture = () => {};
+  (Element.prototype as unknown as { scrollIntoView: () => void }).scrollIntoView = () => {};
+}
+
 // Mock supabase antes de importar o painel
 type Row = { calibration: unknown; limits_version: string | null; limits_history: unknown };
 let row: Row = { calibration: null, limits_version: null, limits_history: [] };
