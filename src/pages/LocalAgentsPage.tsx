@@ -159,6 +159,7 @@ export default function LocalAgentsPage() {
           <TabsTrigger value="agents">Agentes ({agentsQuery.data?.length ?? 0})</TabsTrigger>
           <TabsTrigger value="discoveries">Descobertas ({discoveriesQuery.data?.length ?? 0})</TabsTrigger>
           <TabsTrigger value="reliability">Confiabilidade</TabsTrigger>
+          <TabsTrigger value="camera-test">Teste por câmera</TabsTrigger>
           <TabsTrigger value="install">Como instalar</TabsTrigger>
         </TabsList>
 
