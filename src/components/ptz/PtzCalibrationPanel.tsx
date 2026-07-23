@@ -104,6 +104,10 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
   const [validation, setValidation] = useState<Partial<Record<PtzAxis, RevalidationResult>>>({});
   const [revalidatingAxis, setRevalidatingAxis] = useState<PtzAxis | null>(null);
 
+  // Edição manual do observado (min_reported/max_reported) por eixo.
+  const [observedDraft, setObservedDraft] = useState<Partial<Record<PtzAxis, { min: string; max: string }>>>({});
+  const [savingObservedAxis, setSavingObservedAxis] = useState<PtzAxis | null>(null);
+
   // Versionamento — carregado do banco.
   const [limitsVersion, setLimitsVersion] = useState<string | null>(null);
   const [limitsHistory, setLimitsHistory] = useState<LimitsHistoryItem[]>([]);
