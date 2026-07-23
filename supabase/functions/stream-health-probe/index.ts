@@ -69,7 +69,7 @@ Deno.serve(async (req) => {
   try {
     const { data: cams, error } = await supabase
       .from('cameras')
-      .select('id, user_id, substream_url, hls_url')
+      .select('id, user_id, substream_url, stream_url')
       .limit(BATCH_SIZE);
     if (error) throw error;
 
@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
       id: string;
       user_id: string;
       substream_url: string | null;
-      hls_url: string | null;
+      stream_url: string | null;
     }>;
 
     const rows: Array<{
@@ -90,8 +90,8 @@ Deno.serve(async (req) => {
     }> = [];
 
     for (const c of list) {
-      // Prioridade: hls_url > substream_url > vault (stream_url rehidratada)
-      let url = [c.hls_url, c.substream_url].find(isProbableStreamUrl) ?? null;
+      // Prioridade: substream_url (HLS/HTTP) > stream_url (se HTTP) > vault (rehidratada)
+      let url = [c.substream_url, c.stream_url].find(isProbableStreamUrl) ?? null;
       if (!url) {
         const revealed = await resolveVaultUrl(c.id);
         if (isProbableStreamUrl(revealed)) url = revealed;
