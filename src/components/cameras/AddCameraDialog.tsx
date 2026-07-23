@@ -366,7 +366,20 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       toast.error("Preencha usuário e senha antes de descobrir.");
       return;
     }
+    // Pré-flight LAN: evita chamada certa de falhar quando IP é privado e não há relay.
+    if (
+      isPrivateIP(host) &&
+      !autoDiscover.relayAgentId &&
+      !autoDiscover.allowPrivate &&
+      !autoDiscover.manualMode
+    ) {
+      const detail = buildPrivateHostBlockedDetail(host);
+      setAutoDiscover((s) => ({ ...s, loading: false, ok: false, message: detail.hint, errorDetail: detail }));
+      toast.warning("IP em rede local detectado — selecione um Agente Local ou ajuste a configuração.");
+      return;
+    }
     setAutoDiscover((s) => ({ ...s, loading: true, ok: null, message: null, errorDetail: null }));
+
     try {
       const manualPortNum = autoDiscover.manualMode
         ? Number.parseInt(autoDiscover.manualPort.trim(), 10)
