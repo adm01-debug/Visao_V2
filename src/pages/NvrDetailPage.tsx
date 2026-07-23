@@ -462,7 +462,7 @@ export default function NvrDetailPage(): JSX.Element {
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [fullscreenId, filteredChannels, channelsQuery.data]);
+  }, [fullscreenId, cycleSeconds, filteredChannels, channelsQuery.data]);
 
   useEffect(() => {
     setCycleProgress(0);
