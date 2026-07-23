@@ -7,12 +7,13 @@ import { useSearchParams } from 'react-router-dom';
 import { useManagedFilters } from '@/hooks/useManagedFilters';
 import {
   Camera, Maximize2, Grid3X3, LayoutGrid, List, RefreshCw,
-  Search, Plus, X,
+  Search, Plus, X, HardDrive,
 } from 'lucide-react';
 import { useCameras } from '@/hooks/useCameras';
 import { useRules } from '@/hooks/useRules';
 import { CameraCard, CameraDetailView, GRID_CLASSES } from '@/components/cameras';
 import { AddCameraDialog } from '@/components/cameras/AddCameraDialog';
+import { AddNvrDialog } from '@/components/cameras/AddNvrDialog';
 import { FirstCameraEmptyState } from '@/components/cameras/FirstCameraEmptyState';
 import { CameraSetupWizard } from '@/components/cameras/CameraSetupWizard';
 import { RtspValidationPanel } from '@/components/cameras/RtspValidationPanel';
@@ -58,6 +59,7 @@ export function CamerasPage() {
   const [settingsCamera, setSettingsCamera] = useState<CameraData | null>(null);
   const [addOpen, setAddOpen] = useState(false);
   const [addMode, setAddMode] = useState<'quick' | 'guided'>('quick');
+  const [addNvrOpen, setAddNvrOpen] = useState(false);
   const [setupCamera, setSetupCamera] = useState<CameraData | null>(null);
   const openAdd = (mode: 'quick' | 'guided' = 'quick') => { setAddMode(mode); setAddOpen(true); };
   const diag = useRtspValidation();
@@ -143,6 +145,10 @@ export function CamerasPage() {
           <Button variant="outline" size="sm" onClick={() => refetch()} disabled={loading} className="text-xs sm:text-sm">
             <RefreshCw className={cn('w-4 h-4 sm:mr-2', loading && 'animate-spin')} />
             <span className="hidden sm:inline">Atualizar</span>
+          </Button>
+          <Button variant="outline" size="sm" disabled={loading} onClick={() => setAddNvrOpen(true)} className="text-xs sm:text-sm">
+            <HardDrive className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Cadastrar NVR</span>
           </Button>
           <Button size="sm" disabled={loading} onClick={() => openAdd(cameras.length === 0 ? 'guided' : 'quick')} className="text-xs sm:text-sm">
             <Plus className="w-4 h-4 sm:mr-2" />
@@ -332,6 +338,11 @@ export function CamerasPage() {
             if (created) setSetupCamera(created);
           }
         }}
+      />
+      <AddNvrDialog
+        open={addNvrOpen}
+        onOpenChange={setAddNvrOpen}
+        onCreated={() => { void refetch(); }}
       />
       <CameraSetupWizard
         camera={setupCamera}
