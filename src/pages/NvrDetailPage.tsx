@@ -443,6 +443,13 @@ export default function NvrDetailPage(): JSX.Element {
         setFullscreenId(null);
         return;
       }
+      if (e.key === "p" || e.key === "P") {
+        if (cycleSeconds > 0) {
+          setCyclePaused((p) => !p);
+          e.preventDefault();
+        }
+        return;
+      }
       if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
       const list = filteredChannels.length > 0 ? filteredChannels : (channelsQuery.data ?? []);
       if (list.length === 0) return;
