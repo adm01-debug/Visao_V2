@@ -866,10 +866,15 @@ export default function NvrDetailPage(): JSX.Element {
                     >
                       {filteredChannels.map((c) => {
                         const online = c.status === "online";
+                        const err = channelErrors[c.id];
+                        const retrying = channelRetrying[c.id] === true;
                         return (
                           <div
                             key={c.id}
-                            className="group relative aspect-video overflow-hidden rounded-lg border bg-muted/40 transition hover:border-primary hover:shadow-md"
+                            className={
+                              "group relative aspect-video overflow-hidden rounded-lg border bg-muted/40 transition hover:border-primary hover:shadow-md " +
+                              (err ? "border-destructive/60" : "")
+                            }
                           >
                             <Link
                               to={`/cameras/${c.id}`}
@@ -884,27 +889,55 @@ export default function NvrDetailPage(): JSX.Element {
                                 )}
                               </div>
                             </Link>
-                            <div className="absolute top-2 left-2 pointer-events-none">
+                            <div className="absolute top-2 left-2 pointer-events-none flex items-center gap-1">
                               <Badge variant="secondary" className="font-mono text-xs">
                                 CH {c.channel_number ?? "—"}
                               </Badge>
+                              {err && (
+                                <Badge variant="destructive" className="gap-1 text-xs">
+                                  <AlertTriangle className="h-3 w-3" aria-hidden /> Erro
+                                </Badge>
+                              )}
                             </div>
                             <div className="absolute top-2 right-2 pointer-events-none">
                               {statusBadge(c.status)}
                             </div>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setFullscreenId(c.id);
-                              }}
-                              className="absolute bottom-2 right-2 z-10 rounded-md bg-background/80 p-1.5 opacity-0 transition group-hover:opacity-100 hover:bg-background focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                              aria-label={`Tela cheia canal ${c.channel_number ?? ""}`}
-                            >
-                              <Maximize2 className="h-3.5 w-3.5" aria-hidden />
-                            </button>
-                            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-2 pointer-events-none">
+                            <div className="absolute bottom-2 right-2 z-10 flex gap-1 opacity-0 transition group-hover:opacity-100 focus-within:opacity-100">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  void refreshChannel(c.id);
+                                }}
+                                disabled={retrying}
+                                className={
+                                  "rounded-md p-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring " +
+                                  (err ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : "bg-background/80 hover:bg-background")
+                                }
+                                aria-label={err ? `Tentar novamente canal ${c.channel_number ?? ""}` : `Atualizar canal ${c.channel_number ?? ""}`}
+                                title={err ? "Tentar novamente" : "Atualizar canal"}
+                              >
+                                <RefreshCw className={"h-3.5 w-3.5 " + (retrying ? "animate-spin" : "")} aria-hidden />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setFullscreenId(c.id);
+                                }}
+                                className="rounded-md bg-background/80 p-1.5 hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                aria-label={`Tela cheia canal ${c.channel_number ?? ""}`}
+                              >
+                                <Maximize2 className="h-3.5 w-3.5" aria-hidden />
+                              </button>
+                            </div>
+                            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/95 to-transparent p-2 pointer-events-none">
                               <p className="text-xs font-medium truncate">{c.name}</p>
+                              {err && (
+                                <p className="text-[10px] text-destructive truncate" title={err}>
+                                  {err}
+                                </p>
+                              )}
                             </div>
                           </div>
                         );
