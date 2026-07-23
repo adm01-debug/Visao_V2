@@ -249,7 +249,7 @@ export function LivePreviewPlayer({
             size="sm"
             onClick={start}
             data-testid="live-preview-start"
-            disabled={status === "starting"}
+            
           >
             <PlayCircle className="mr-1 h-4 w-4" />
             {status === "ended" || status === "error" ? "Reiniciar prévia" : "Iniciar prévia"}
