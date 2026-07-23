@@ -204,6 +204,33 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel, onConvert }: Props) 
               Concluído em {formatDuration(elapsedSec)}
             </div>
           )}
+          {row.status === 'completed' && row.conversion_status && (
+            <div className="mt-1 text-[11px]">
+              {row.conversion_status === 'pending' && (
+                <span className="text-muted-foreground">Conversão MP4: na fila…</span>
+              )}
+              {row.conversion_status === 'converting' && (
+                <span className="text-foreground/80 inline-flex items-center gap-1">
+                  <Loader2 className="h-3 w-3 animate-spin" /> Convertendo para MP4…
+                </span>
+              )}
+              {row.conversion_status === 'completed' && (
+                <span className="text-emerald-600 dark:text-emerald-400">
+                  MP4 pronto ({formatBytes(row.converted_bytes ?? undefined)})
+                </span>
+              )}
+              {row.conversion_status === 'failed' && (
+                <span className="text-destructive" title={row.conversion_error ?? undefined}>
+                  Falha na conversão MP4
+                </span>
+              )}
+              {row.conversion_status === 'skipped' && (
+                <span className="text-muted-foreground">
+                  Formato já compatível — sem conversão
+                </span>
+              )}
+            </div>
+          )}
         </div>
         {row.last_error && (
           <div className="mt-1 max-w-[16rem] truncate text-[11px] text-destructive" title={row.last_error}>
@@ -216,12 +243,52 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel, onConvert }: Props) 
       </td>
       <td className="p-3 align-top">
         <div className="flex flex-wrap justify-end gap-2">
-          {row.status === 'completed' && row.storage_path && (
-            <Button size="sm" variant="outline" onClick={handleDownload} disabled={openingUrl}>
+          {row.status === 'completed' && row.converted_storage_path && (
+            <Button
+              size="sm"
+              variant="default"
+              onClick={() => handleDownload(row.converted_storage_path)}
+              disabled={openingUrl}
+            >
               {openingUrl ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : <Download className="mr-1 h-3.5 w-3.5" />}
-              Baixar
+              Baixar MP4
             </Button>
           )}
+          {row.status === 'completed' && row.storage_path && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => handleDownload(row.storage_path)}
+              disabled={openingUrl}
+            >
+              {openingUrl ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : <Download className="mr-1 h-3.5 w-3.5" />}
+              Original {row.source_format ? `(.${row.source_format})` : ''}
+            </Button>
+          )}
+          {onConvert &&
+            row.status === 'completed' &&
+            (row.conversion_status === 'failed' || row.conversion_status === 'skipped' || !row.conversion_status) && (
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={convertBusy}
+                onClick={async () => {
+                  setConvertBusy(true);
+                  try {
+                    await onConvert(row);
+                  } finally {
+                    setConvertBusy(false);
+                  }
+                }}
+              >
+                {convertBusy ? (
+                  <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <RefreshCw className="mr-1 h-3.5 w-3.5" />
+                )}
+                {row.conversion_status === 'failed' ? 'Reconverter' : 'Converter para MP4'}
+              </Button>
+            )}
           {(row.status === 'failed' || row.status === 'canceled' || stalled) && (
             <Button size="sm" variant="outline" onClick={() => onRetry(row)}>
               <RefreshCw className="mr-1 h-3.5 w-3.5" />
