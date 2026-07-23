@@ -75,10 +75,12 @@ interface Props {
   row: DownloadRow;
   onRetry: (row: DownloadRow) => void;
   onCancel: (id: string) => void;
+  onConvert?: (row: DownloadRow) => Promise<void> | void;
 }
 
-export function NvrDownloadJobRow({ row, onRetry, onCancel }: Props) {
+export function NvrDownloadJobRow({ row, onRetry, onCancel, onConvert }: Props) {
   const [openingUrl, setOpeningUrl] = useState(false);
+  const [convertBusy, setConvertBusy] = useState(false);
   const [now, setNow] = useState(() => Date.now());
   const sampleRef = useRef<{ ts: number; bytes: number } | null>(null);
   const rateRef = useRef<number>(0); // bytes/s (EMA)
