@@ -18,6 +18,7 @@ import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { usePtzControl } from '@/hooks/usePtzControl';
 import { getProfileById } from '@/lib/onvifProfiles';
+import { PtzConnectionHistoryCard } from './PtzConnectionHistoryCard';
 
 interface PtzSetupWizardProps {
   cameraId: string;
