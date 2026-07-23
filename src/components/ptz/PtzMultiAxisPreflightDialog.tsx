@@ -481,6 +481,64 @@ export function PtzMultiAxisPreflightDialog({
             </div>
             <Progress value={progressPct} className="h-2" data-testid="multi-preflight-progress" />
 
+            {running && liveSample && (
+              <div
+                className="rounded-md border bg-muted/20 p-2 text-[11px] font-mono"
+                data-testid="multi-preflight-live-table"
+                aria-live="polite"
+              >
+                <div className="grid grid-cols-6 gap-2 pb-1 border-b border-border/60 text-muted-foreground uppercase tracking-wide">
+                  <span>Eixo</span>
+                  <span>Fase</span>
+                  <span className="text-right">Alvo</span>
+                  <span className="text-right">Reportado</span>
+                  <span className="text-right">Δ</span>
+                  <span className="text-right">Status</span>
+                </div>
+                <div className="grid grid-cols-6 gap-2 pt-1 items-center">
+                  <span>{liveSample.axis}</span>
+                  <span>{liveSample.phase}</span>
+                  <span className="text-right">{liveSample.target.toFixed(3)}</span>
+                  <span className="text-right">
+                    {liveSample.observed != null ? liveSample.observed.toFixed(3) : '—'}
+                  </span>
+                  <span
+                    className={
+                      'text-right ' +
+                      (liveSample.delta == null
+                        ? 'text-muted-foreground'
+                        : Math.abs(liveSample.delta) > 0.1
+                          ? 'text-destructive'
+                          : Math.abs(liveSample.delta) > 0.02
+                            ? 'text-yellow-600 dark:text-yellow-500'
+                            : 'text-emerald-600 dark:text-emerald-500')
+                    }
+                  >
+                    {liveSample.delta != null ? liveSample.delta.toFixed(3) : '—'}
+                  </span>
+                  <span className="text-right">
+                    {liveSample.phaseState === 'timeout' ? (
+                      <Badge variant="destructive" className="text-[10px]">timeout</Badge>
+                    ) : liveSample.phaseState === 'settled' ? (
+                      <Badge variant="secondary" className="text-[10px]">IDLE</Badge>
+                    ) : liveSample.movingFlag === 'moving' ? (
+                      <Badge variant="outline" className="text-[10px]">
+                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />movendo
+                      </Badge>
+                    ) : liveSample.movingFlag === 'idle' ? (
+                      <Badge variant="secondary" className="text-[10px]">IDLE</Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-[10px]">sem status</Badge>
+                    )}
+                  </span>
+                </div>
+                <div className="pt-1 text-[10px] text-muted-foreground">
+                  {(liveSample.elapsedMs / 1000).toFixed(1)}s / {(liveSample.timeoutMs / 1000).toFixed(1)}s
+                </div>
+              </div>
+            )}
+
+
             <div className="rounded-md border p-3 space-y-2 text-xs max-h-64 overflow-auto">
               {axes.map((axis) => (
                 <div key={axis} className="space-y-1">
