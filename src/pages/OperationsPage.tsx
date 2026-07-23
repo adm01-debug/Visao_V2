@@ -346,6 +346,10 @@ export default function OperationsPage() {
         <ConnectivityResolutionCard windowHours={168} />
       </section>
 
+      <section>
+        <CronJobRunsCard />
+      </section>
+
 
 
 
