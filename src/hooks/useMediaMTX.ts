@@ -1,17 +1,22 @@
-
 /**
  * VISÃO - Sistema de Vigilância Inteligente
  * Hook: useMediaMTX
  *
- * Gerencia conexão com servidor MediaMTX para streaming:
- * - Listagem de streams disponíveis
- * - Status das câmeras
- * - Geração de URLs HLS/WebRTC
- * - Gerenciamento dinâmico de paths
+ * Gerencia conexão com o servidor MediaMTX para streaming:
+ * - Listagem de streams disponíveis / status das câmeras
+ * - Geração de URLs HLS/WebRTC/RTSP (plano de mídia, client-facing)
+ * - Gerenciamento dinâmico de paths (plano de controle)
+ *
+ * SEGURANÇA: o plano de controle (Control API :9997) NUNCA é acessado direto
+ * pelo browser. Todas as operações list/get/add/remove passam pela edge function
+ * `mediamtx-proxy`, que autentica o usuário no Supabase e só então fala com o
+ * MediaMTX pela rede interna (Basic auth injetado no servidor). O browser jamais
+ * conhece o endereço ou as credenciais da Control API.
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 // ============================================
 // TIPOS
@@ -35,11 +40,11 @@ export interface MediaMTXPath {
   }[];
 }
 
+/** Endereços do PLANO DE MÍDIA (client-facing). O plano de controle não aparece aqui. */
 export interface MediaMTXConfig {
   hlsAddress: string;
   webrtcAddress: string;
   rtspAddress: string;
-  apiAddress: string;
 }
 
 export interface StreamInfo {
@@ -70,8 +75,27 @@ const DEFAULT_CONFIG: MediaMTXConfig = {
   hlsAddress: import.meta.env.VITE_MEDIAMTX_HLS_URL || 'http://localhost:8888',
   webrtcAddress: import.meta.env.VITE_MEDIAMTX_WEBRTC_URL || 'http://localhost:8889',
   rtspAddress: import.meta.env.VITE_MEDIAMTX_RTSP_URL || 'rtsp://localhost:8554',
-  apiAddress: import.meta.env.VITE_MEDIAMTX_API_URL || 'http://localhost:9997',
 };
+
+const PROXY_FN = 'mediamtx-proxy';
+
+// ============================================
+// PROXY — plano de controle via edge function autenticada
+// ============================================
+
+interface ProxyPayload {
+  action: 'list' | 'get' | 'add' | 'remove';
+  name?: string;
+  source?: string;
+}
+
+async function invokeProxy<T>(payload: ProxyPayload): Promise<T> {
+  const { data, error } = await supabase.functions.invoke(PROXY_FN, { body: payload });
+  if (error) {
+    throw new Error(error.message || 'Falha no mediamtx-proxy');
+  }
+  return data as T;
+}
 
 // ============================================
 // HOOK PRINCIPAL
@@ -93,12 +117,12 @@ interface UseMediaMTXReturn {
   error: string | null;
   connected: boolean;
 
-  // URLs
+  // URLs (plano de mídia)
   getHlsUrl: (pathName: string) => string;
   getWebRTCUrl: (pathName: string) => string;
   getRtspUrl: (pathName: string) => string;
 
-  // Ações
+  // Ações (plano de controle, via proxy)
   refresh: () => Promise<void>;
   addPath: (name: string, source: string) => Promise<boolean>;
   removePath: (name: string) => Promise<boolean>;
@@ -127,47 +151,17 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
   const [error, setError] = useState<string | null>(null);
   const [connected, setConnected] = useState(false);
 
-  const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
+  const refreshIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const inFlightRef = useRef(false);
 
-  // Buscar lista de paths
-  const fetchPaths = useCallback(async (): Promise<MediaMTXPath[]> => {
-    // Cancelar requisição anterior
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-    abortControllerRef.current = new AbortController();
-
-    try {
-      const response = await fetch(`${config.apiAddress}/v3/paths/list`, {
-        signal: abortControllerRef.current.signal,
-        headers: {
-          'Accept': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data.items || [];
-    } catch (err: unknown) {
-      if ((err as Error).name === 'AbortError') {
-        return paths; // Retorna estado atual se abortado
-      }
-      throw err;
-    }
-  }, [config.apiAddress, paths]);
-
-  // Refresh completo
+  // Refresh completo (list via proxy) — com guarda de concorrência
   const refresh = useCallback(async () => {
+    if (inFlightRef.current) return; // evita empilhar requisições no polling
+    inFlightRef.current = true;
     try {
-      setLoading(true);
       setError(null);
-
-      const fetchedPaths = await fetchPaths();
-      setPaths(fetchedPaths);
+      const data = await invokeProxy<{ items: MediaMTXPath[] }>({ action: 'list' });
+      setPaths(data.items || []);
       setConnected(true);
     } catch (err: unknown) {
       const message = (err as Error).message || 'Erro ao conectar ao MediaMTX';
@@ -176,8 +170,9 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
       onError?.(err instanceof Error ? err : new Error(String(err)));
     } finally {
       setLoading(false);
+      inFlightRef.current = false;
     }
-  }, [fetchPaths, onError]);
+  }, [onError]);
 
   // Auto refresh
   useEffect(() => {
@@ -190,9 +185,6 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
     return () => {
       if (refreshIntervalRef.current) {
         clearInterval(refreshIntervalRef.current);
-      }
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
       }
     };
   }, [autoRefresh, refreshInterval, refresh]);
@@ -215,25 +207,10 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
     return `${config.rtspAddress}/${cleanPath}`;
   }, [config.rtspAddress]);
 
-  // Adicionar novo path
+  // Adicionar novo path (via proxy)
   const addPath = useCallback(async (name: string, source: string): Promise<boolean> => {
     try {
-      const response = await fetch(`${config.apiAddress}/v3/config/paths/add/${name}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          source,
-          sourceOnDemand: true,
-          sourceOnDemandCloseAfter: '30s',
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-
+      await invokeProxy<{ ok: true }>({ action: 'add', name, source });
       toast.success(`Stream "${name}" adicionado`);
       await refresh();
       return true;
@@ -241,19 +218,12 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
       toast.error(`Erro ao adicionar stream: ${(err as Error).message}`);
       return false;
     }
-  }, [config.apiAddress, refresh]);
+  }, [refresh]);
 
-  // Remover path
+  // Remover path (via proxy)
   const removePath = useCallback(async (name: string): Promise<boolean> => {
     try {
-      const response = await fetch(`${config.apiAddress}/v3/config/paths/remove/${name}`, {
-        method: 'POST',
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-
+      await invokeProxy<{ ok: true }>({ action: 'remove', name });
       toast.success(`Stream "${name}" removido`);
       await refresh();
       return true;
@@ -261,22 +231,16 @@ export function useMediaMTX(options: UseMediaMTXOptions = {}): UseMediaMTXReturn
       toast.error(`Erro ao remover stream: ${(err as Error).message}`);
       return false;
     }
-  }, [config.apiAddress, refresh]);
+  }, [refresh]);
 
-  // Buscar info de um path específico
+  // Buscar info de um path específico (via proxy)
   const getPathInfo = useCallback(async (name: string): Promise<MediaMTXPath | null> => {
     try {
-      const response = await fetch(`${config.apiAddress}/v3/paths/get/${name}`);
-
-      if (!response.ok) {
-        return null;
-      }
-
-      return await response.json();
+      return await invokeProxy<MediaMTXPath | null>({ action: 'get', name });
     } catch {
       return null;
     }
-  }, [config.apiAddress]);
+  }, []);
 
   // Atualizar config
   const updateConfig = useCallback((updates: Partial<MediaMTXConfig>) => {
