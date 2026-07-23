@@ -453,6 +453,14 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     const pending = pendingResolutionRef.current;
     if (!pending) return;
     pendingResolutionRef.current = null;
+    if (outcome.succeeded && pending.chosenPath !== "cancelled") {
+      lastSuccessfulResolutionRef.current = {
+        chosenPath: pending.chosenPath,
+        relayAgentId: pending.relayAgentId,
+        publicHost: pending.publicHost,
+        publicPort: pending.publicPort,
+      };
+    }
     void recordConnectivityResolution({
       errorCode: pending.errorCode,
       chosenPath: pending.chosenPath,
