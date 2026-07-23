@@ -132,6 +132,12 @@ export default function SyncPlaybackPage() {
               <Badge variant="outline">
                 {selectedIds.length}/{MAX_CAMERAS} câmeras
               </Badge>
+              <Button size="sm" variant="outline" asChild>
+                <Link to="/playback/downloads">
+                  <Download className="mr-2 h-4 w-4" />
+                  Baixar do NVR
+                </Link>
+              </Button>
               <Button
                 size="sm"
                 variant="outline"
