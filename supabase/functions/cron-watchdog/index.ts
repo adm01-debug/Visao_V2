@@ -47,7 +47,7 @@ Deno.serve(async (req) => {
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
 
   try {
-    const { data, error } = await supabase.rpc("list_cron_jobs");
+    const { data, error } = await supabase.rpc("list_cron_jobs_service");
     if (error) throw error;
 
     const jobs = (data ?? []) as CronJob[];
