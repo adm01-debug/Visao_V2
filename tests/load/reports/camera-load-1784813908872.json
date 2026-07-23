@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "generatedAt": "2026-07-23T13:38:28.872Z",
+    "baseUrl": "https://fsisdfdwlbfeadwfqpir.supabase.co",
+    "scenario": "ramp",
+    "cameras": 60,
+    "concurrency": 15,
+    "dryRun": true,
+    "rtspUrlMasked": "rtsp://demo.local:554/stream",
+    "elapsedMs": 12027
+  },
+  "latencies": {
+    "validate": {
+      "count": 60,
+      "avg": 114.6,
+      "p50": 117.73810630259673,
+      "p95": 192.2278422437481,
+      "p99": 197.66296329390428,
+      "max": 197.66296329390428
+    },
+    "start": {
+      "count": 60,
+      "avg": 112.5,
+      "p50": 111.63819470354579,
+      "p95": 191.71934852923317,
+      "p99": 197.30252307609294,
+      "max": 197.30252307609294
+    },
+    "extend": {
+      "count": 58,
+      "avg": 96.8,
+      "p50": 87.82391535635895,
+      "p95": 190.18203484803269,
+      "p99": 195.3768246137239,
+      "max": 195.3768246137239
+    },
+    "stop": {
+      "count": 58,
+      "avg": 105.9,
+      "p50": 103.6840730347137,
+      "p95": 188.8577768020659,
+      "p99": 194.29034542058054,
+      "max": 194.29034542058054
+    }
+  },
+  "counters": {
+    "total": 236,
+    "ok": 228,
+    "fail": 8,
+    "failRate": 0.0339,
+    "previewStarted": 58,
+    "previewFailed": 2,
+    "networkErrors": 0,
+    "rateLimited": {
+      "validate": 1,
+      "start": 2,
+      "extend": 3,
+      "stop": 2,
+      "total": 8,
+      "ratio": 0.0339
+    },
+    "statusHistogram": {
+      "200": 228,
+      "429": 8
+    }
+  },
+  "gaps": []
+}
