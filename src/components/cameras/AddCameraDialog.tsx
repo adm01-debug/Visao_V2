@@ -293,12 +293,20 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     }
     setAutoDiscover((s) => ({ ...s, loading: true, ok: null, message: null }));
     try {
+      const manualPortNum = autoDiscover.manualMode
+        ? Number.parseInt(autoDiscover.manualPort.trim(), 10)
+        : NaN;
+      if (autoDiscover.manualMode && (!Number.isFinite(manualPortNum) || manualPortNum < 1 || manualPortNum > 65535)) {
+        setAutoDiscover((s) => ({ ...s, loading: false, ok: false, message: "Porta ONVIF inválida (use 1–65535)." }));
+        return;
+      }
       const { data, error } = await supabase.functions.invoke("onvif-autodiscover", {
         body: {
           host,
           username,
           password,
-          allow_private: autoDiscover.allowPrivate,
+          allow_private: autoDiscover.manualMode ? true : autoDiscover.allowPrivate,
+          ...(autoDiscover.manualMode ? { ports: [manualPortNum] } : {}),
         },
       });
       if (error) throw new Error(error.message);
