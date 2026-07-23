@@ -31,6 +31,7 @@ import {
 import { PtzJoystick } from './PtzJoystick';
 import { PtzSetupWizard } from './PtzSetupWizard';
 import { RelayAgentSelector } from './RelayAgentSelector';
+import { RelayHealthWatchdog } from './RelayHealthWatchdog';
 import { usePtzControl } from '@/hooks/usePtzControl';
 import {
   loadPersistedRelayAgent,
