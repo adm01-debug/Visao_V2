@@ -16,18 +16,31 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { usePtzControl } from "@/hooks/usePtzControl";
+import {
+  loadPersistedRelayAgent,
+  persistRelayAgent,
+} from "@/hooks/useActiveRelayAgents";
+import { RelayAgentSelector } from "./RelayAgentSelector";
 import { cn } from "@/lib/utils";
 
 interface QuickPtzBarProps {
   cameraId: string;
   keyboardEnabled?: boolean;
   className?: string;
+  /** Exibe seletor compacto de Agente Local (para live views em LAN). */
+  showRelaySelector?: boolean;
 }
 
 const SPEED = 0.6;
 
-export function QuickPtzBar({ cameraId, keyboardEnabled = true, className }: QuickPtzBarProps) {
-  const ptz = usePtzControl({ cameraId });
+export function QuickPtzBar({ cameraId, keyboardEnabled = true, className, showRelaySelector = false }: QuickPtzBarProps) {
+  const [relayAgentId, setRelayAgentId] = useState<string | null>(() =>
+    loadPersistedRelayAgent(cameraId),
+  );
+  useEffect(() => {
+    persistRelayAgent(cameraId, relayAgentId);
+  }, [cameraId, relayAgentId]);
+  const ptz = usePtzControl({ cameraId, relayAgentId });
   const [activeKey, setActiveKey] = useState<string | null>(null);
 
   const start = useCallback(
