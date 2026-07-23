@@ -527,6 +527,10 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
           message: (payload.hint as string) || (payload.error as string),
           errorDetail: detail,
         }));
+        flushConnectivityTelemetry({
+          succeeded: false,
+          retryErrorCode: String(payload.error_code ?? payload.error ?? "unknown"),
+        });
         return;
       }
       const result = (payload ?? {}) as Record<string, any>;
