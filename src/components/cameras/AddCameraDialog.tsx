@@ -47,6 +47,8 @@ import {
 import { useCameras } from "@/hooks/useCameras";
 import { useCameraVault } from "@/hooks/useCameraVault";
 import { supabase } from "@/integrations/supabase/client";
+import { readFunctionErrorBody } from "@/lib/edgeFunctionErrors";
+
 import {
   addCameraSchema,
   buildRtspUrl,
@@ -139,28 +141,8 @@ function safeErrorMessage(err: unknown): string {
   return raw.replace(/rtsps?:\/\/[^\s"']+/gi, "rtsp://[REDACTED]");
 }
 
-/**
- * supabase.functions.invoke trata HTTP não-2xx como erro genérico ("returned 400"),
- * descartando o corpo estruturado. Este helper reabre o Response para extrair o
- * payload JSON (com `error_code`, `hint`, `steps`, etc.) que a Edge Function envia.
- */
-async function readFunctionErrorBody(err: unknown): Promise<Record<string, unknown> | null> {
-  const ctx = (err as { context?: { json?: () => Promise<unknown>; clone?: () => Response } })?.context;
-  if (!ctx) return null;
-  try {
-    if (typeof ctx.json === "function") {
-      const parsed = await ctx.json();
-      return parsed && typeof parsed === "object" ? (parsed as Record<string, unknown>) : null;
-    }
-    if (typeof ctx.clone === "function") {
-      const parsed = await ctx.clone().json();
-      return parsed && typeof parsed === "object" ? (parsed as Record<string, unknown>) : null;
-    }
-  } catch {
-    return null;
-  }
-  return null;
-}
+// readFunctionErrorBody importado de @/lib/edgeFunctionErrors
+
 
 export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" }: AddCameraDialogProps) {
   const guided = mode === "guided";
