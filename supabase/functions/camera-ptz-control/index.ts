@@ -24,7 +24,8 @@ type PtzCommand =
   | 'delete_preset'
   | 'home'
   | 'test'
-  | 'get_status';
+  | 'get_status'
+  | 'absolute_move';
 
 
 interface PtzPayload {
