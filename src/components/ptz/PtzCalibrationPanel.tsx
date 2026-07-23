@@ -400,6 +400,62 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
         </Button>
       </div>
 
+      <div className="rounded-md border p-3 flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap text-xs">
+          <History className="w-3.5 h-3.5 text-muted-foreground" aria-hidden />
+          {limitsVersion ? (
+            <Badge variant="secondary" className="font-mono text-[10px]" data-testid="limits-version-badge">
+              v · {new Date(limitsVersion).toLocaleString()}
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="text-[10px]" data-testid="limits-version-badge">
+              sem versão salva
+            </Badge>
+          )}
+          <span className="text-muted-foreground">
+            {limitsHistory.length} snapshot{limitsHistory.length === 1 ? '' : 's'} disponíve{limitsHistory.length === 1 ? 'l' : 'is'}
+          </span>
+        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={limitsHistory.length === 0 || measuringAxis !== null || preflightAxis !== null}
+              data-testid="limits-rollback-trigger"
+            >
+              <RotateCcw className="w-3.5 h-3.5 mr-1" /> Reverter
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[420px]">
+            <DropdownMenuLabel className="text-xs">Últimos limites salvos</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {limitsHistory.map((item, idx) => (
+              <DropdownMenuItem
+                key={`${item.saved_at}-${idx}`}
+                className="flex flex-col items-start gap-0.5 py-2"
+                data-testid="limits-rollback-item"
+                onSelect={() => {
+                  onChange(item.limits);
+                  toast.info(
+                    `Limites revertidos para snapshot de ${new Date(item.saved_at).toLocaleString()}. Clique em Salvar para persistir.`,
+                  );
+                }}
+              >
+                <span className="text-xs font-medium">
+                  {new Date(item.saved_at).toLocaleString()} · {item.source}
+                </span>
+                <span className="text-[10px] font-mono text-muted-foreground">
+                  {formatHistorySummary(item)}
+                </span>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+
+
       {(['pan', 'tilt', 'zoom'] as const).map((axis) => {
         const l = limits[axis];
         const [lo, hi] = AXIS_BOUNDS[axis];
