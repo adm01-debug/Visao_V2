@@ -341,14 +341,47 @@ export default function NvrDetailPage(): JSX.Element {
                     Visualização em grade estilo mesa de CFTV. Clique em um tile para abrir o canal.
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-4">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="relative w-full sm:max-w-xs">
+                      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" aria-hidden />
+                      <Input
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder="Buscar canal ou nome…"
+                        className="pl-8"
+                        aria-label="Buscar canal"
+                      />
+                    </div>
+                    <ToggleGroup
+                      type="single"
+                      size="sm"
+                      value={statusFilter}
+                      onValueChange={(v) => v && setStatusFilter(v as typeof statusFilter)}
+                      aria-label="Filtrar por status"
+                    >
+                      <ToggleGroupItem value="all">Todos</ToggleGroupItem>
+                      <ToggleGroupItem value="online" className="gap-1">
+                        <Wifi className="h-3 w-3" /> Online
+                      </ToggleGroupItem>
+                      <ToggleGroupItem value="offline" className="gap-1">
+                        <WifiOff className="h-3 w-3" /> Offline
+                      </ToggleGroupItem>
+                    </ToggleGroup>
+                  </div>
+
                   {channelsQuery.isLoading && (
                     <p className="text-sm text-muted-foreground">Carregando canais…</p>
                   )}
                   {channelsQuery.data && channelsQuery.data.length === 0 && (
                     <p className="text-sm text-muted-foreground">Nenhum canal disponível.</p>
                   )}
-                  {channelsQuery.data && channelsQuery.data.length > 0 && (
+                  {channelsQuery.data && channelsQuery.data.length > 0 && filteredChannels.length === 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      Nenhum canal corresponde ao filtro atual.
+                    </p>
+                  )}
+                  {filteredChannels.length > 0 && (
                     <div
                       className={
                         "grid gap-3 " +
@@ -359,32 +392,49 @@ export default function NvrDetailPage(): JSX.Element {
                             : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4")
                       }
                     >
-                      {channelsQuery.data.map((c) => {
+                      {filteredChannels.map((c) => {
                         const online = c.status === "online";
                         return (
-                          <Link
+                          <div
                             key={c.id}
-                            to={`/cameras/${c.id}`}
-                            className="group relative aspect-video overflow-hidden rounded-lg border bg-muted/40 transition hover:border-primary hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                            aria-label={`Abrir canal ${c.channel_number ?? ""} — ${c.name}`}
+                            className="group relative aspect-video overflow-hidden rounded-lg border bg-muted/40 transition hover:border-primary hover:shadow-md"
                           >
-                            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-muted/60 to-muted">
-                              {online ? (
-                                <Video className="h-10 w-10 text-muted-foreground/60 group-hover:text-primary transition" aria-hidden />
-                              ) : (
-                                <VideoOff className="h-10 w-10 text-destructive/50" aria-hidden />
-                              )}
-                            </div>
-                            <div className="absolute top-2 left-2">
+                            <Link
+                              to={`/cameras/${c.id}`}
+                              className="absolute inset-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                              aria-label={`Abrir canal ${c.channel_number ?? ""} — ${c.name}`}
+                            >
+                              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-muted/60 to-muted">
+                                {online ? (
+                                  <Video className="h-10 w-10 text-muted-foreground/60 group-hover:text-primary transition" aria-hidden />
+                                ) : (
+                                  <VideoOff className="h-10 w-10 text-destructive/50" aria-hidden />
+                                )}
+                              </div>
+                            </Link>
+                            <div className="absolute top-2 left-2 pointer-events-none">
                               <Badge variant="secondary" className="font-mono text-xs">
                                 CH {c.channel_number ?? "—"}
                               </Badge>
                             </div>
-                            <div className="absolute top-2 right-2">{statusBadge(c.status)}</div>
-                            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-2">
+                            <div className="absolute top-2 right-2 pointer-events-none">
+                              {statusBadge(c.status)}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setFullscreenId(c.id);
+                              }}
+                              className="absolute bottom-2 right-2 z-10 rounded-md bg-background/80 p-1.5 opacity-0 transition group-hover:opacity-100 hover:bg-background focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                              aria-label={`Tela cheia canal ${c.channel_number ?? ""}`}
+                            >
+                              <Maximize2 className="h-3.5 w-3.5" aria-hidden />
+                            </button>
+                            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-2 pointer-events-none">
                               <p className="text-xs font-medium truncate">{c.name}</p>
                             </div>
-                          </Link>
+                          </div>
                         );
                       })}
                     </div>
@@ -393,6 +443,46 @@ export default function NvrDetailPage(): JSX.Element {
               </Card>
             </TabsContent>
           </Tabs>
+
+          {fullscreenChannel && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 p-4 backdrop-blur"
+              role="dialog"
+              aria-modal="true"
+              aria-label={`Canal ${fullscreenChannel.channel_number ?? ""} em tela cheia`}
+              onClick={() => setFullscreenId(null)}
+            >
+              <div
+                className="relative w-full max-w-6xl aspect-video overflow-hidden rounded-xl border bg-muted shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="absolute inset-0 flex items-center justify-center">
+                  {fullscreenChannel.status === "online" ? (
+                    <Video className="h-20 w-20 text-muted-foreground/60" aria-hidden />
+                  ) : (
+                    <VideoOff className="h-20 w-20 text-destructive/50" aria-hidden />
+                  )}
+                </div>
+                <div className="absolute top-3 left-3 flex items-center gap-2">
+                  <Badge variant="secondary" className="font-mono">
+                    CH {fullscreenChannel.channel_number ?? "—"}
+                  </Badge>
+                  {statusBadge(fullscreenChannel.status)}
+                </div>
+                <div className="absolute top-3 right-3 flex gap-2">
+                  <Button asChild size="sm" variant="secondary">
+                    <Link to={`/cameras/${fullscreenChannel.id}`}>Abrir canal</Link>
+                  </Button>
+                  <Button size="sm" variant="secondary" onClick={() => setFullscreenId(null)}>
+                    Fechar
+                  </Button>
+                </div>
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-4">
+                  <p className="text-base font-medium">{fullscreenChannel.name}</p>
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>
