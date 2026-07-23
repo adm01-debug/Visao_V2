@@ -245,6 +245,17 @@ export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: Cam
               <Sparkles className="h-5 w-5 text-primary" />
               Configuração inicial — {camera.name}
             </DialogTitle>
+            {profileId && (() => {
+              const profile = getProfileById(profileId);
+              if (!profile) return null;
+              return (
+                <div className="mt-1">
+                  <Badge variant="outline" className="gap-1 border-primary/40 text-primary">
+                    <Sparkles className="h-3 w-3" /> Perfil {profile.displayName} detectado
+                  </Badge>
+                </div>
+              );
+            })()}
             <DialogDescription>
               Defina locais/zonas dentro da imagem e aplique regras de monitoramento de presença e
               comportamento perigoso em poucos cliques.
