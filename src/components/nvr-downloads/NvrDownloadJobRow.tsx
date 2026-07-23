@@ -29,6 +29,8 @@ export interface DownloadRow {
   storage_bucket: string;
   storage_path: string | null;
   created_at: string;
+  started_at?: string | null;
+  updated_at?: string | null;
 }
 
 const STATUS: Record<DownloadRow['status'], { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
