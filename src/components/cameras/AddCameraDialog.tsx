@@ -13,7 +13,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Loader2, ShieldCheck, Activity, Gamepad2, Search, AlertTriangle } from "lucide-react";
+import { Eye, EyeOff, Loader2, ShieldCheck, Activity, Gamepad2, Search, AlertTriangle, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useRtspValidation } from "@/hooks/useRtspValidation";
 import { useFirstSnapshot } from "@/hooks/useFirstSnapshot";
