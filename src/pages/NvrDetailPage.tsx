@@ -80,7 +80,12 @@ export default function NvrDetailPage(): JSX.Element {
   const channelsQuery = useQuery({
     queryKey: ["nvr-channels", id],
     enabled: !!id,
-    refetchInterval: () => (realtimeStatus === "live" ? 120_000 : 30_000),
+    refetchInterval: () => {
+      if (autoRefreshPaused) return false;
+      if (autoRefreshSeconds > 0) return autoRefreshSeconds * 1000;
+      return realtimeStatus === "live" ? 120_000 : 30_000;
+    },
+
     queryFn: async (): Promise<ChannelRow[]> => {
       const { data, error } = await supabase
         .from("cameras")
