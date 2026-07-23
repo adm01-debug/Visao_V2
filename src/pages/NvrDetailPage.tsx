@@ -637,6 +637,25 @@ export default function NvrDetailPage(): JSX.Element {
                       >
                         <RefreshCw className={"h-4 w-4 " + (channelsQuery.isFetching ? "animate-spin" : "")} />
                       </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={saveAsDefault}
+                        aria-label="Salvar layout e filtros atuais como padrão"
+                        title="Salvar como padrão deste NVR"
+                      >
+                        <Bookmark className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={restoreDefault}
+                        disabled={!hasDefault}
+                        aria-label="Restaurar layout e filtros padrão"
+                        title={hasDefault ? "Restaurar padrão salvo" : "Nenhum padrão salvo"}
+                      >
+                        <RotateCcw className="h-4 w-4" />
+                      </Button>
 
                     </div>
                   </div>
