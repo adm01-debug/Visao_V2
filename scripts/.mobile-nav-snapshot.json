@@ -46,11 +46,15 @@
       "mode": "standard"
     },
     {
-      "file": "CamerasPage.tsx",
+      "file": "CLSReportPage.tsx",
       "mode": "standard"
     },
     {
-      "file": "CLSReportPage.tsx",
+      "file": "CameraStatusPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "CamerasPage.tsx",
       "mode": "standard"
     },
     {
@@ -126,16 +130,16 @@
       "mode": "standard"
     },
     {
+      "file": "PPEPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
       "file": "PanicEventsPage.tsx",
       "mode": "standard"
     },
     {
       "file": "PeoplePage.tsx",
       "mode": "standard"
-    },
-    {
-      "file": "PPEPage.tsx",
-      "mode": "customWrapper"
     },
     {
       "file": "PricingPage.tsx",
