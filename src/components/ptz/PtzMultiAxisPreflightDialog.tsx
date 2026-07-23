@@ -86,6 +86,7 @@ export function PtzMultiAxisPreflightDialog({
   const [currentAxis, setCurrentAxis] = useState<PreflightAxis | null>(null);
   const [currentPhase, setCurrentPhase] = useState<PhaseId | null>(null);
   const [results, setResults] = useState<PhaseResult[]>([]);
+  const [pdfLoading, setPdfLoading] = useState(false);
   const abortRef = useRef(false);
 
   const totalPhases = axes.length * 3;
