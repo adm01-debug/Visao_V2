@@ -5789,6 +5789,20 @@ export type Database = {
           success_count_24h: number
         }[]
       }
+      list_cron_jobs_service: {
+        Args: never
+        Returns: {
+          active: boolean
+          failure_count_24h: number
+          jobid: number
+          jobname: string
+          last_message: string
+          last_run: string
+          last_status: string
+          schedule: string
+          success_count_24h: number
+        }[]
+      }
       point_in_polygon: {
         Args: { _poly: Json; _x: number; _y: number }
         Returns: boolean
