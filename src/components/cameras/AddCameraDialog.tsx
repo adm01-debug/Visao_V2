@@ -1570,7 +1570,17 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       </DialogContent>
       <PrivateHostBlockedWizard
         open={connectivityWizardOpen}
-        onOpenChange={setConnectivityWizardOpen}
+        onOpenChange={(open) => {
+          // Ao fechar sem aplicar (nenhuma resolução pendente após o clique), registra cancelamento.
+          if (!open && !pendingResolutionRef.current && autoDiscover.errorDetail?.code) {
+            void recordConnectivityResolution({
+              errorCode: autoDiscover.errorDetail.code,
+              chosenPath: "cancelled",
+              originalHost: autoDiscover.host.trim() || null,
+            });
+          }
+          setConnectivityWizardOpen(open);
+        }}
         host={autoDiscover.host}
         agents={relayAgents}
         onApply={handleConnectivityResolution}
