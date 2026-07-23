@@ -52,6 +52,31 @@ interface PhaseResult {
   detail?: string;
 }
 
+/**
+ * Amostra ao vivo capturada durante o polling — alimenta a mini-tabela em
+ * tempo real, atualizada a cada ciclo de GetStatus.
+ */
+interface LiveSample {
+  axis: PreflightAxis;
+  phase: PhaseId;
+  target: number;
+  observed: number | null;
+  delta: number | null;
+  movingFlag: 'moving' | 'idle' | 'unknown';
+  elapsedMs: number;
+  timeoutMs: number;
+  phaseState: 'running' | 'settled' | 'timeout';
+}
+
+  id: PhaseId;
+  target: number;
+  observed: number | null;
+  delta: number | null;
+  latency_ms: number;
+  outcome: PhaseOutcome;
+  detail?: string;
+}
+
 export interface MultiAxisPreflightProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
