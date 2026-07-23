@@ -140,6 +140,7 @@ export function PtzMultiAxisPreflightDialog({
     if (open) {
       setAckClear(false);
       setAckSeeing(false);
+      setAckConfirmedAt(null);
       setResults([]);
       setCurrentAxis(null);
       setCurrentPhase(null);
@@ -147,6 +148,16 @@ export function PtzMultiAxisPreflightDialog({
       abortRef.current = false;
     }
   }, [open]);
+
+  // Registra o timestamp exato do momento em que AMBAS as confirmações
+  // foram marcadas — usado depois como carimbo de auditoria.
+  useEffect(() => {
+    if (ackClear && ackSeeing && !ackConfirmedAt) {
+      setAckConfirmedAt(new Date().toISOString());
+    } else if ((!ackClear || !ackSeeing) && ackConfirmedAt) {
+      setAckConfirmedAt(null);
+    }
+  }, [ackClear, ackSeeing, ackConfirmedAt]);
 
   const safeStop = useCallback(async (axis: PreflightAxis) => {
     try {
