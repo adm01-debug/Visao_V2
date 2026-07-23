@@ -21,6 +21,7 @@ import { RtspValidationPanel } from "./RtspValidationPanel";
 import { LivePreviewPlayer } from "./LivePreviewPlayer";
 import { RelayAgentSelector } from "@/components/ptz/RelayAgentSelector";
 import { RelayHealthWatchdog } from "@/components/ptz/RelayHealthWatchdog";
+import { PrivateHostBlockedWizard, type PrivateHostResolution } from "./PrivateHostBlockedWizard";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
