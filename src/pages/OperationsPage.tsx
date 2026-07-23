@@ -356,6 +356,11 @@ export default function OperationsPage() {
         <CronWatchdogRunsCard />
       </section>
 
+      <section>
+        <CronWatchdogEscalationCard />
+      </section>
+
+
 
 
 
