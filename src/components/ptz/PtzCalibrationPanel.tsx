@@ -626,6 +626,43 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        <div className="flex items-center gap-2">
+          <input
+            ref={importInputRef}
+            type="file"
+            accept="application/json,.json"
+            className="hidden"
+            data-testid="calibration-import-input"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              e.target.value = '';
+              if (file) void handleImportCalibration(file);
+            }}
+          />
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleExportCalibration}
+            disabled={Object.keys(calibration).length === 0}
+            data-testid="calibration-export-btn"
+            title="Baixar calibração como JSON"
+          >
+            <Download className="w-3.5 h-3.5 mr-1" /> Exportar
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => importInputRef.current?.click()}
+            disabled={!cameraId || importingCalibration}
+            data-testid="calibration-import-btn"
+            title="Importar calibração de outra câmera similar"
+          >
+            {importingCalibration
+              ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" />
+              : <Upload className="w-3.5 h-3.5 mr-1" />}
+            Importar
+          </Button>
+        </div>
       </div>
 
       <PtzLiveStatusPanel
