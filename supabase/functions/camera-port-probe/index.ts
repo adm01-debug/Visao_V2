@@ -74,21 +74,14 @@ function classifyError(msg: string): ProbeResult["reason"] {
   return "network";
 }
 
-async function probePort(host: string, port: number, timeoutMs: number): Promise<ProbeResult> {
-  // Estratégia: tentar HTTP(S) OPTIONS/GET curto — se o TCP abrir, mesmo que responda 400/404/401,
-  // consideramos a porta acessível. RTSP (554/8554) provavelmente devolverá "network" mesmo aberto;
-  // por isso classificamos "refused"/"dns" como fechado e demais como "possivelmente aberto".
+async function probePort(transport: Transport, host: string, port: number, timeoutMs: number): Promise<ProbeResult> {
   const scheme: "http" | "https" = port === 443 ? "https" : "http";
   const url = `${scheme}://${host}:${port}/`;
-  const controller = new AbortController();
-  const t = setTimeout(() => controller.abort(), timeoutMs);
   const start = performance.now();
-  try {
-    const res = await fetch(url, { method: "GET", signal: controller.signal, redirect: "manual" });
-    const latency = Math.round(performance.now() - start);
-    // Consome corpo para liberar recursos, mas ignora conteúdo.
-    try { await res.arrayBuffer(); } catch { /* ignore */ }
-    const server = res.headers.get("server");
+  const res = await transport.request({ url, method: "GET", timeoutMs });
+  const latency = Math.round(performance.now() - start);
+  if (res.status > 0) {
+    const server = res.headers?.["server"] ?? null;
     return {
       port,
       reachable: true,
@@ -98,24 +91,20 @@ async function probePort(host: string, port: number, timeoutMs: number): Promise
       reason: null,
       server_hint: server,
     };
-  } catch (e) {
-    const latency = Math.round(performance.now() - start);
-    const reason = classifyError((e as Error).message);
-    // Portas RTSP costumam falhar no handshake HTTP mesmo abertas — reportamos como não
-    // determinístico com `reason=network` e `latency_ms` alto (indica que o socket abriu).
-    const reachable = reason === "network" && latency >= timeoutMs / 4;
-    return {
-      port,
-      reachable,
-      latency_ms: latency,
-      scheme,
-      http_status: null,
-      reason,
-      server_hint: null,
-    };
-  } finally {
-    clearTimeout(t);
   }
+  const reason = classifyError(res.text);
+  // Portas RTSP costumam falhar no handshake HTTP mesmo abertas — se o socket
+  // ficou aberto por tempo relevante, marca como possivelmente aberta.
+  const reachable = reason === "network" && latency >= timeoutMs / 4;
+  return {
+    port,
+    reachable,
+    latency_ms: latency,
+    scheme,
+    http_status: null,
+    reason,
+    server_hint: null,
+  };
 }
 
 function summarize(results: ProbeResult[]): {
