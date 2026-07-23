@@ -5269,6 +5269,18 @@ export type Database = {
         Args: { expr: string; ts: string; tz?: string }
         Returns: boolean
       }
+      cron_watchdog_ack_metrics: {
+        Args: never
+        Returns: {
+          ack_rate: number
+          acknowledged: number
+          mtta_seconds: number
+          open: number
+          p95_ack_seconds: number
+          total_escalations: number
+          window_label: string
+        }[]
+      }
       cron_watchdog_consecutive_problems: {
         Args: { _min_runs?: number }
         Returns: {
