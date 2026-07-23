@@ -618,20 +618,54 @@ export default function NvrDetailPage(): JSX.Element {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {channelsQuery.data.map((c) => (
-                            <TableRow key={c.id}>
+                          {channelsQuery.data.map((c) => {
+                            const err = channelErrors[c.id];
+                            const retrying = channelRetrying[c.id] === true;
+                            return (
+                            <TableRow key={c.id} className={err ? "bg-destructive/5" : undefined}>
                               <TableCell className="text-center font-mono">
                                 {c.channel_number ?? "—"}
                               </TableCell>
-                              <TableCell className="font-medium">{c.name}</TableCell>
+                              <TableCell className="font-medium">
+                                <div className="flex flex-col gap-0.5">
+                                  <span>{c.name}</span>
+                                  {err && (
+                                    <span className="flex items-center gap-1 text-xs text-destructive" role="alert">
+                                      <AlertTriangle className="h-3 w-3" aria-hidden />
+                                      <span className="truncate max-w-[280px]" title={err}>{err}</span>
+                                      <button
+                                        type="button"
+                                        onClick={() => dismissChannelError(c.id)}
+                                        className="ml-1 rounded hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                        aria-label="Descartar erro"
+                                      >
+                                        <X className="h-3 w-3" aria-hidden />
+                                      </button>
+                                    </span>
+                                  )}
+                                </div>
+                              </TableCell>
                               <TableCell>{statusBadge(c.status)}</TableCell>
                               <TableCell className="text-right">
-                                <Button asChild size="sm" variant="outline">
-                                  <Link to={`/cameras/${c.id}`}>Abrir</Link>
-                                </Button>
+                                <div className="flex justify-end gap-2">
+                                  <Button
+                                    size="sm"
+                                    variant={err ? "destructive" : "outline"}
+                                    onClick={() => void refreshChannel(c.id)}
+                                    disabled={retrying}
+                                    aria-label={`Atualizar canal ${c.channel_number ?? c.name}`}
+                                    title={err ? "Tentar novamente" : "Atualizar canal"}
+                                  >
+                                    <RefreshCw className={"h-3.5 w-3.5 " + (retrying ? "animate-spin" : "")} />
+                                  </Button>
+                                  <Button asChild size="sm" variant="outline">
+                                    <Link to={`/cameras/${c.id}`}>Abrir</Link>
+                                  </Button>
+                                </div>
                               </TableCell>
                             </TableRow>
-                          ))}
+                            );
+                          })}
                         </TableBody>
                       </Table>
                     </div>
