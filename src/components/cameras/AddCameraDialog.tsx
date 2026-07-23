@@ -390,7 +390,9 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
               steps,
               isLanHost: Boolean(payload.is_lan_host),
               usedRelay: Boolean(payload.used_relay),
-              testedPorts: Array.isArray(payload.tested_ports) ? (payload.tested_ports as unknown[]) : [],
+              testedPorts: Array.isArray(payload.tested_ports)
+                ? (payload.tested_ports as unknown[]).filter((p): p is number => typeof p === "number")
+                : [],
             }
           : null;
         setAutoDiscover((s) => ({
@@ -402,7 +404,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
         }));
         return;
       }
-      const result = payload as Record<string, any>;
+      const result = (payload ?? {}) as Record<string, any>;
       // Pré-preenche o formulário. Remove credenciais embutidas — cofre cuida delas.
       const stripCreds = (url: string) => url.replace(/^(rtsps?:\/\/)[^@\/]+@/i, "$1");
       if (result?.rtsp_primary) {
@@ -411,22 +413,22 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       if (result?.rtsp_substream) {
         form.setValue("substreamUrl", stripCreds(result.rtsp_substream), { shouldValidate: true });
       }
-      if (data.ptz_capable) {
+      if (result?.ptz_capable) {
         form.setValue("ptzEnabled", true);
         form.setValue("ptzConfig.endpoint", host);
-        form.setValue("ptzConfig.port", data.onvif?.port ?? 80);
+        form.setValue("ptzConfig.port", result.onvif?.port ?? 80);
         form.setValue("ptzConfig.username", username);
         form.setValue("ptzConfig.password", password);
       }
-      if (data.device?.model && !form.getValues("name")) {
-        form.setValue("name", `${data.device.manufacturer ?? "Câmera"} ${data.device.model}`.trim());
+      if (result?.device?.model && !form.getValues("name")) {
+        form.setValue("name", `${result.device.manufacturer ?? "Câmera"} ${result.device.model}`.trim());
       }
       setAutoDiscover((s) => ({
         ...s,
         loading: false,
         ok: true,
         errorDetail: null,
-        message: `${data.device?.manufacturer ?? "Dispositivo"} ${data.device?.model ?? ""} · porta ${data.onvif?.port} · ${data.profiles} perfil(is)${data.ptz_capable ? " · PTZ" : ""}`,
+        message: `${result?.device?.manufacturer ?? "Dispositivo"} ${result?.device?.model ?? ""} · porta ${result?.onvif?.port} · ${result?.profiles} perfil(is)${result?.ptz_capable ? " · PTZ" : ""}`,
       }));
       toast.success("Câmera descoberta! Campos preenchidos automaticamente.");
     } catch (err) {
