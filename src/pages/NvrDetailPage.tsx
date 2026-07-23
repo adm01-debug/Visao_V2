@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -124,6 +124,27 @@ export default function NvrDetailPage(): JSX.Element {
     () => (channelsQuery.data ?? []).find((c) => c.id === fullscreenId) ?? null,
     [channelsQuery.data, fullscreenId],
   );
+
+  useEffect(() => {
+    if (!fullscreenId) return;
+    const handler = (e: KeyboardEvent): void => {
+      if (e.key === "Escape") {
+        setFullscreenId(null);
+        return;
+      }
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      const list = filteredChannels.length > 0 ? filteredChannels : (channelsQuery.data ?? []);
+      if (list.length === 0) return;
+      const idx = list.findIndex((c) => c.id === fullscreenId);
+      if (idx < 0) return;
+      const delta = e.key === "ArrowRight" ? 1 : -1;
+      const next = list[(idx + delta + list.length) % list.length];
+      if (next) setFullscreenId(next.id);
+      e.preventDefault();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [fullscreenId, filteredChannels, channelsQuery.data]);
 
   async function bulkAction(action: "arm" | "disarm"): Promise<void> {
     const channels = channelsQuery.data ?? [];
@@ -477,8 +498,11 @@ export default function NvrDetailPage(): JSX.Element {
                     Fechar
                   </Button>
                 </div>
-                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-4">
-                  <p className="text-base font-medium">{fullscreenChannel.name}</p>
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-4 flex items-end justify-between gap-2">
+                  <p className="text-base font-medium truncate">{fullscreenChannel.name}</p>
+                  <p className="text-xs text-muted-foreground hidden sm:block">
+                    ← / → navegar · Esc fechar
+                  </p>
                 </div>
               </div>
             </div>
