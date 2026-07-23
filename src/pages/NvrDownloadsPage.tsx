@@ -14,7 +14,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { CalendarIcon, Download, Layers, PlayCircle, RefreshCw } from 'lucide-react';
+import { CalendarIcon, Download, History as HistoryIcon, Layers, PlayCircle, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import { supabase } from '@/integrations/supabase/client';
@@ -352,6 +352,12 @@ export default function NvrDownloadsPage() {
                 <Link to="/playback">
                   <PlayCircle className="mr-2 h-4 w-4" />
                   Playback ao vivo
+                </Link>
+              </Button>
+              <Button variant="outline" asChild size="sm">
+                <Link to="/playback/downloads/history">
+                  <HistoryIcon className="mr-2 h-4 w-4" />
+                  Histórico
                 </Link>
               </Button>
               <Button variant="outline" size="sm" onClick={() => void loadJobs()} disabled={refreshing}>
