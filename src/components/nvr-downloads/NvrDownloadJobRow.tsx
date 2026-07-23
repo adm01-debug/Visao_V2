@@ -73,6 +73,34 @@ interface Props {
 
 export function NvrDownloadJobRow({ row, onRetry, onCancel }: Props) {
   const [openingUrl, setOpeningUrl] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
+  const sampleRef = useRef<{ ts: number; bytes: number } | null>(null);
+  const rateRef = useRef<number>(0); // bytes/s (EMA)
+
+  const isDownloading = row.status === 'downloading';
+
+  // Ticker de 1s apenas quando ativo, para atualizar ETA/tempo decorrido.
+  useEffect(() => {
+    if (!isDownloading) return;
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, [isDownloading]);
+
+  // Atualiza taxa (EMA) quando bytes_downloaded muda.
+  useEffect(() => {
+    if (!isDownloading) {
+      sampleRef.current = null;
+      rateRef.current = 0;
+      return;
+    }
+    const nowTs = Date.now();
+    const prev = sampleRef.current;
+    if (prev && nowTs > prev.ts && row.bytes_downloaded >= prev.bytes) {
+      const instant = ((row.bytes_downloaded - prev.bytes) * 1000) / (nowTs - prev.ts);
+      rateRef.current = rateRef.current > 0 ? rateRef.current * 0.6 + instant * 0.4 : instant;
+    }
+    sampleRef.current = { ts: nowTs, bytes: row.bytes_downloaded };
+  }, [row.bytes_downloaded, isDownloading]);
 
   const handleDownload = async () => {
     if (!row.storage_path) return;
@@ -93,6 +121,27 @@ export function NvrDownloadJobRow({ row, onRetry, onCancel }: Props) {
 
   const meta = STATUS[row.status];
   const inFlight = row.status === 'downloading' || row.status === 'listing' || row.status === 'pending';
+
+  // Cálculo de ETA e tempo decorrido.
+  const startedAt = row.started_at ? new Date(row.started_at).getTime() : new Date(row.created_at).getTime();
+  const elapsedSec = Math.max(0, (now - startedAt) / 1000);
+  let etaSec: number | null = null;
+  if (isDownloading) {
+    const remainingBytes =
+      row.total_bytes && row.total_bytes > row.bytes_downloaded
+        ? row.total_bytes - row.bytes_downloaded
+        : null;
+    const rate = rateRef.current;
+    if (remainingBytes && rate > 1024) {
+      etaSec = remainingBytes / rate;
+    } else if (row.progress_percent > 1 && row.progress_percent < 100) {
+      // Fallback proporcional pelo tempo decorrido.
+      etaSec = (elapsedSec * (100 - row.progress_percent)) / row.progress_percent;
+    }
+  }
+  const lastUpdateMs = row.updated_at ? now - new Date(row.updated_at).getTime() : 0;
+  const stalled = isDownloading && lastUpdateMs > 60_000;
+
 
   return (
     <tr className="border-b border-border/60 last:border-0">
