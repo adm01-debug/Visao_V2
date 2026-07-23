@@ -79,6 +79,33 @@ export type Database = {
           },
         ]
       }
+      agent_discoveries_purge_runs: {
+        Row: {
+          created_at: string
+          deleted_count: number
+          duration_ms: number
+          executed_at: string
+          id: string
+          retention_days: number
+        }
+        Insert: {
+          created_at?: string
+          deleted_count?: number
+          duration_ms?: number
+          executed_at?: string
+          id?: string
+          retention_days: number
+        }
+        Update: {
+          created_at?: string
+          deleted_count?: number
+          duration_ms?: number
+          executed_at?: string
+          id?: string
+          retention_days?: number
+        }
+        Relationships: []
+      }
       agent_relay_purge_runs: {
         Row: {
           created_at: string
@@ -5574,6 +5601,10 @@ export type Database = {
         Returns: {
           deleted_rows: number
         }[]
+      }
+      purge_agent_discoveries: {
+        Args: { _retention_days?: number }
+        Returns: number
       }
       purge_agent_relay_tasks: {
         Args: { _retention_days?: number }
