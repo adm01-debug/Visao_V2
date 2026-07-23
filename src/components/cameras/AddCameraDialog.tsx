@@ -853,7 +853,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                         type="button"
                         size="sm"
                         variant="outline"
-                        onClick={() => setAutoDiscover((s) => ({ ...s, relayAgentId: relayAgents[0].id }))}
+                        onClick={() => setAutoDiscover((s) => ({ ...s, relayAgentId: relayAgents[0]?.id ?? "" }))}
                       >
                         Usar agente local
                       </Button>
