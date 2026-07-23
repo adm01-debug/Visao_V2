@@ -35,10 +35,10 @@ describe("browserInfo", () => {
       expect(info.browser).toBe("Edge");
     });
 
-    it("retorna Unknown em UA vazio sem crashar", () => {
+    it("retorna unknown em UA vazio sem crashar", () => {
       const info = detectBrowser("");
-      expect(info.browser).toBe("Unknown");
-      expect(info.os).toBe("Unknown");
+      expect(info.browser).toBe("unknown");
+      expect(info.os).toBe("unknown");
     });
   });
 
@@ -49,18 +49,21 @@ describe("browserInfo", () => {
       [1920, 1080, "1080p"],
       [1280, 720, "720p"],
       [854, 480, "480p"],
-      [640, 360, "other"],
     ])("largura %d x altura %d → %s", (w, h, expected) => {
       expect(resolutionBucket(w, h)).toBe(expected);
     });
 
-    it("aceita null/undefined", () => {
-      expect(resolutionBucket(null, null)).toBe("other");
-      expect(resolutionBucket(undefined, undefined)).toBe("other");
+    it("360p cai no fallback WxH", () => {
+      expect(resolutionBucket(640, 360)).toBe("640x360");
     });
 
-    it("aceita 0 sem erro", () => {
-      expect(resolutionBucket(0, 0)).toBe("other");
+    it("aceita null/undefined → unknown", () => {
+      expect(resolutionBucket(null, null)).toBe("unknown");
+      expect(resolutionBucket(undefined, undefined)).toBe("unknown");
+    });
+
+    it("altura 0 → unknown", () => {
+      expect(resolutionBucket(0, 0)).toBe("unknown");
     });
   });
 });
