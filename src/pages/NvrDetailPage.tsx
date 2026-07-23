@@ -498,8 +498,11 @@ export default function NvrDetailPage(): JSX.Element {
                     Fechar
                   </Button>
                 </div>
-                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-4">
-                  <p className="text-base font-medium">{fullscreenChannel.name}</p>
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-4 flex items-end justify-between gap-2">
+                  <p className="text-base font-medium truncate">{fullscreenChannel.name}</p>
+                  <p className="text-xs text-muted-foreground hidden sm:block">
+                    ← / → navegar · Esc fechar
+                  </p>
                 </div>
               </div>
             </div>
