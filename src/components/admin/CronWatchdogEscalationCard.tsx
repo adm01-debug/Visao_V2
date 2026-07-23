@@ -23,6 +23,8 @@ interface Escalation {
   last_reason: string | null;
   delivered: boolean;
   delivery_error: string | null;
+  acknowledged_at: string | null;
+  acknowledgement_note: string | null;
 }
 
 const THRESHOLD = 3;
