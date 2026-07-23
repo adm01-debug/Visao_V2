@@ -298,8 +298,9 @@ export default function LocalAgentsPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="reliability" className="mt-4">
+        <TabsContent value="reliability" className="mt-4 space-y-4">
           <RelayReliabilityCard hours={24} />
+          <RelayPurgeHistoryCard />
         </TabsContent>
 
         <TabsContent value="install" className="mt-4 space-y-4">
