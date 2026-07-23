@@ -212,6 +212,16 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       }
     | null
   >(null);
+  /** Última resolução com sucesso — usada para persistir a preferência ao criar a câmera. */
+  const lastSuccessfulResolutionRef = useRef<
+    | {
+        chosenPath: Exclude<ConnectivityChosenPath, "cancelled">;
+        relayAgentId: string | null;
+        publicHost: string | null;
+        publicPort: number | null;
+      }
+    | null
+  >(null);
   const [templateCtx, setTemplateCtx] = useState<{
     templateId: string;
     host: string;
