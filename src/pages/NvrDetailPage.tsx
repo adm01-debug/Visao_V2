@@ -141,6 +141,7 @@ export default function NvrDetailPage(): JSX.Element {
     }
   });
   const [fullscreenId, setFullscreenId] = useState<string | null>(null);
+  const [cycleSeconds, setCycleSeconds] = useState<0 | 5 | 10 | 30>(0);
 
   useEffect(() => {
     if (!prefsKey || typeof window === "undefined") return;
