@@ -125,8 +125,8 @@ export function DryRunReportCard({ executions, session, zonesMap }: DryRunReport
         total_events: report.totalEvents,
         total_notifying: report.wouldNotify,
         total_suppressed: report.suppressedFailures,
-        summary: payload.totals as unknown as Record<string, unknown>,
-        report: payload as unknown as Record<string, unknown>,
+        summary: JSON.parse(JSON.stringify(payload.totals)),
+        report: JSON.parse(JSON.stringify(payload)),
       });
       if (error) throw error;
       toast.success('Snapshot salvo', {
