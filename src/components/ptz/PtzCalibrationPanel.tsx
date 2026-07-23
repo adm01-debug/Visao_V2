@@ -748,13 +748,98 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
               </Button>
             </div>
 
-            {cal && (
-              <div className="text-[11px] text-muted-foreground font-mono">
-                Última medição: {(cal.sweep_ms / 1000).toFixed(2)}s ·
-                observado [{cal.min_reported.toFixed(2)} → {cal.max_reported.toFixed(2)}] ·
-                {new Date(cal.measured_at).toLocaleString()}
-              </div>
-            )}
+            {(() => {
+              const [lo, hi] = AXIS_BOUNDS[axis];
+              const SAT_EPS = (hi - lo) * 0.01; // 1% do range
+              const saturatedMin = cal ? cal.min_reported <= lo + SAT_EPS : false;
+              const saturatedMax = cal ? cal.max_reported >= hi - SAT_EPS : false;
+              const draft = observedDraft[axis] ?? {
+                min: cal ? cal.min_reported.toFixed(3) : '',
+                max: cal ? cal.max_reported.toFixed(3) : '',
+              };
+              const isDirty = !!observedDraft[axis];
+              const isSaving = savingObservedAxis === axis;
+              return (
+                <div
+                  className="rounded-md border p-2 space-y-2 bg-muted/20"
+                  data-testid={`ptz-observed-editor-${axis}`}
+                >
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <span className="text-[11px] font-medium">Observado durante a calibração</span>
+                    {cal ? (
+                      <span className="text-[10px] text-muted-foreground font-mono">
+                        sweep {(cal.sweep_ms / 1000).toFixed(2)}s ·
+                        {' '}{new Date(cal.measured_at).toLocaleString()}
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-muted-foreground">
+                        nenhuma medição registrada — informe manualmente se necessário
+                      </span>
+                    )}
+                  </div>
+                  {(saturatedMin || saturatedMax) && (
+                    <div className="text-[10px] flex items-center gap-1 text-amber-700 dark:text-amber-300">
+                      <TriangleAlert className="w-3 h-3" aria-hidden />
+                      Possível saturação no{' '}
+                      {saturatedMin && saturatedMax
+                        ? 'mínimo e no máximo'
+                        : saturatedMin ? 'mínimo' : 'máximo'}{' '}
+                      — ajuste manualmente com o range real do dome.
+                    </div>
+                  )}
+                  <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-2 items-end">
+                    <div className="space-y-1">
+                      <Label className="text-[10px] text-muted-foreground" htmlFor={`obs-min-${axis}`}>
+                        min_reported ({lo})
+                      </Label>
+                      <Input
+                        id={`obs-min-${axis}`}
+                        type="number"
+                        step="0.001"
+                        min={lo}
+                        max={hi}
+                        className="h-8 font-mono text-xs"
+                        value={draft.min}
+                        onChange={(e) =>
+                          setObservedDraft((prev) => ({ ...prev, [axis]: { ...draft, min: e.target.value } }))
+                        }
+                        disabled={isSaving}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-[10px] text-muted-foreground" htmlFor={`obs-max-${axis}`}>
+                        max_reported ({hi})
+                      </Label>
+                      <Input
+                        id={`obs-max-${axis}`}
+                        type="number"
+                        step="0.001"
+                        min={lo}
+                        max={hi}
+                        className="h-8 font-mono text-xs"
+                        value={draft.max}
+                        onChange={(e) =>
+                          setObservedDraft((prev) => ({ ...prev, [axis]: { ...draft, max: e.target.value } }))
+                        }
+                        disabled={isSaving}
+                      />
+                    </div>
+                    <Button
+                      size="sm"
+                      variant={isDirty ? 'default' : 'outline'}
+                      onClick={() => void saveObservedRange(axis)}
+                      disabled={!isDirty || isSaving}
+                      data-testid={`ptz-observed-save-${axis}`}
+                    >
+                      {isSaving
+                        ? (<><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Salvando…</>)
+                        : (<><Save className="w-3.5 h-3.5 mr-1" /> Salvar observado</>)}
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+
 
             {validation[axis] && (() => {
               const v = validation[axis]!;
