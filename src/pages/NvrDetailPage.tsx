@@ -853,8 +853,28 @@ export default function NvrDetailPage(): JSX.Element {
                       >
                         <RotateCcw className="h-4 w-4" />
                       </Button>
-
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleExportCSV}
+                        disabled={!channelsQuery.data || channelsQuery.data.length === 0}
+                        aria-label="Exportar status dos canais em CSV"
+                        title="Exportar CSV com status dos canais"
+                      >
+                        <FileText className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleExportPDF}
+                        disabled={!channelsQuery.data || channelsQuery.data.length === 0}
+                        aria-label="Exportar status dos canais em PDF"
+                        title="Exportar PDF com status dos canais"
+                      >
+                        <FileDown className="h-4 w-4" />
+                      </Button>
                     </div>
+
                   </div>
 
                   {channelsQuery.data && channelsQuery.data.length > 0 && (
