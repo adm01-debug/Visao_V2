@@ -1,6 +1,6 @@
-// agent-ingest — Recebe heartbeat e descobertas ONVIF do Agente Local.
+// agent-ingest — Recebe heartbeat, descobertas ONVIF e opera o relé HTTP do Agente Local.
 // Autenticação por header X-Agent-Token (token opaco emitido pelo agent-pair).
-// Rotas: POST /heartbeat, POST /discoveries.
+// Rotas: POST /heartbeat, POST /discoveries, POST /relay-poll, POST /relay-complete.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -15,8 +15,10 @@ const j = (body: unknown, status = 200) =>
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
 
-const MAX_BODY_BYTES = 512 * 1024;
+const MAX_BODY_BYTES = 2 * 1024 * 1024; // relé pode carregar payloads maiores
 const MAX_DISCOVERIES = 128;
+const RELAY_LONG_POLL_MS = 15_000;
+const RELAY_POLL_INTERVAL_MS = 500;
 
 interface DiscoveryPayload {
   host: string;
@@ -68,7 +70,7 @@ Deno.serve(async (req) => {
 
   let payload: Record<string, unknown>;
   try {
-    payload = JSON.parse(body);
+    payload = body ? JSON.parse(body) : {};
   } catch {
     return j({ error: "invalid_json" }, 400);
   }
@@ -122,6 +124,52 @@ Deno.serve(async (req) => {
       .eq("id", agentId);
 
     return j({ ok: true, upserted: rows.length });
+  }
+
+  // Relé — agente faz long-poll por tarefas HTTP pendentes.
+  if (route === "relay-poll") {
+    await admin.rpc("expire_agent_relay_tasks");
+    await admin.from("local_agents")
+      .update({ last_seen_at: new Date().toISOString(), last_ip: clientIp })
+      .eq("id", agentId);
+
+    const maxTasks = Math.min(Math.max(Number(payload.max) || 4, 1), 8);
+    const deadline = Date.now() + RELAY_LONG_POLL_MS;
+    while (true) {
+      const { data, error } = await admin.rpc("claim_agent_relay_tasks", {
+        _agent_id: agentId,
+        _max: maxTasks,
+      });
+      if (error) return j({ error: "claim_failed", detail: error.message }, 500);
+      if (data && data.length > 0) return j({ tasks: data });
+      if (Date.now() >= deadline) return j({ tasks: [] });
+      await new Promise((r) => setTimeout(r, RELAY_POLL_INTERVAL_MS));
+    }
+  }
+
+  // Relé — agente devolve o resultado da execução local.
+  if (route === "relay-complete") {
+    const taskId = String(payload.task_id ?? "");
+    if (!taskId) return j({ error: "missing_task_id" }, 400);
+    const status = payload.error ? "failed" : "done";
+    const response = payload.response ?? null;
+    const errMsg = typeof payload.error === "string" ? payload.error.slice(0, 500) : null;
+
+    const { data: updated, error } = await admin
+      .from("agent_relay_tasks")
+      .update({
+        status,
+        response,
+        error: errMsg,
+        completed_at: new Date().toISOString(),
+      })
+      .eq("id", taskId)
+      .eq("agent_id", agentId)
+      .in("status", ["in_progress", "pending"])
+      .select("id");
+    if (error) return j({ error: "update_failed", detail: error.message }, 500);
+    if (!updated || updated.length === 0) return j({ error: "task_not_found_or_completed" }, 404);
+    return j({ ok: true });
   }
 
   return j({ error: "unknown_route" }, 404);

@@ -3,6 +3,8 @@ import "dotenv/config";
 import pino from "pino";
 import { discoverOnce } from "./discover.js";
 import { Sender } from "./sender.js";
+import { RelayWorker } from "./relay.js";
+
 
 const AGENT_VERSION = "1.0.0";
 const log = pino({
@@ -30,8 +32,11 @@ async function main() {
   const cidr = process.env.NETWORK_CIDR;
 
   const sender = new Sender(backend, token, AGENT_VERSION);
+  const relayEnabled = (process.env.RELAY_ENABLED ?? "true").toLowerCase() !== "false";
+  const relayMax = parseInt(process.env.RELAY_MAX_CONCURRENT ?? "4", 10);
+  const relay = relayEnabled ? new RelayWorker(backend, token, relayMax) : null;
 
-  log.info({ backend, heartbeatSec, discoverySec }, "agent_started");
+  log.info({ backend, heartbeatSec, discoverySec, relayEnabled }, "agent_started");
 
   const runDiscovery = async () => {
     try {
@@ -57,9 +62,11 @@ async function main() {
   await runDiscovery();
   setInterval(runHeartbeat, heartbeatSec * 1000);
   setInterval(runDiscovery, discoverySec * 1000);
+  if (relay) void relay.start();
 
   const shutdown = (signal: string) => {
     log.info({ signal }, "shutting_down");
+    relay?.stop();
     process.exit(0);
   };
   process.on("SIGINT", () => shutdown("SIGINT"));
