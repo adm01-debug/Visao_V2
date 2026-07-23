@@ -5775,6 +5775,20 @@ export type Database = {
         Args: { _camera_id?: string; _rule_id?: string; _user_id: string }
         Returns: boolean
       }
+      list_cron_jobs: {
+        Args: never
+        Returns: {
+          active: boolean
+          failure_count_24h: number
+          jobid: number
+          jobname: string
+          last_message: string
+          last_run: string
+          last_status: string
+          schedule: string
+          success_count_24h: number
+        }[]
+      }
       point_in_polygon: {
         Args: { _poly: Json; _x: number; _y: number }
         Returns: boolean
