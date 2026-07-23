@@ -18,7 +18,9 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const ONVIF_PORTS_DEFAULT = [80, 8000, 8080, 2020, 8899];
+// Ordem prioriza 8899 (default XiongMai/HZXM/Usecam) para acelerar detecção de NBD80X*.
+const ONVIF_PORTS_DEFAULT = [8899, 80, 8000, 8080, 2020];
+
 const PROBE_TIMEOUT_MS = 5000;
 const RELAY_TASK_TIMEOUT_MS = 25_000;
 const RELAY_POLL_INTERVAL_MS = 400;
@@ -293,15 +295,8 @@ Deno.serve(async (req) => {
           "Se você conhece a porta exata, ative 'Configuração manual do endpoint ONVIF' e informe-a.",
           "Rode 'Testar portas' para diagnosticar quais portas estão realmente acessíveis.",
         ];
-    return j({
-      error: "no_onvif_endpoint",
-      error_code: "no_onvif_endpoint",
-      title: usingRelay
-        ? "Agente local não encontrou ONVIF na câmera"
-        : isLan
-          ? "Câmera em rede local — sem rota da nuvem até ela"
-          : "Nenhuma porta ONVIF respondeu no host informado",
     await recordEdgeError({
+
       function_name: "onvif-autodiscover",
       error_code: "no_onvif_endpoint",
       http_status: 404,
@@ -372,6 +367,24 @@ Deno.serve(async (req) => {
   const primary = streams[0];
   const substream = streams[1];
 
+  // Resolve o perfil OEM (ex.: XiongMai NBD80X) para o wizard pré-selecionar
+  // porta ONVIF e variantes RTSP recomendadas. Heurística tolerante:
+  // 1) tenta match por Model (hardwareIds com prefixo `*`);
+  // 2) fallback por Manufacturer contendo XM/Xiongmai/HZXM.
+  let profileId: string | null = null;
+  const mfrLower = (manufacturer ?? "").toLowerCase();
+  const modelUpper = (model ?? "").toUpperCase();
+  if (modelUpper.startsWith("NBD80X")) {
+    profileId = "xiongmai-nbd80x";
+  } else if (
+    mfrLower.includes("xiongmai") ||
+    mfrLower.includes("hzxm") ||
+    mfrLower === "xm" ||
+    mfrLower.startsWith("xm ")
+  ) {
+    profileId = "xiongmai-nbd80x";
+  }
+
   return j({
     ok: true,
     device: { manufacturer, model, firmware },
@@ -381,5 +394,7 @@ Deno.serve(async (req) => {
     rtsp_primary: primary?.rtsp ?? null,
     rtsp_substream: substream?.rtsp ?? null,
     used_relay: usingRelay,
+    profile_id: profileId,
   });
+
 });

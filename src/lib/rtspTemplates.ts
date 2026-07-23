@@ -120,7 +120,32 @@ export const RTSP_TEMPLATES: Record<RtspBrand, RtspTemplate[]> = {
       substream: "rtsp://{host}:{port}/Streaming/Channels/{channel}02",
       defaultPort: 554,
     },
+    {
+      id: "xiongmai-live-chnn",
+      label: "XiongMai/Usecam (live/chNN)",
+      description: "Firmware XM Sofia — /live/ch{NN}_0 (main) / _1 (sub).",
+      primary: "rtsp://{host}:{port}/live/ch{channel:02}_0",
+      substream: "rtsp://{host}:{port}/live/ch{channel:02}_1",
+      defaultPort: 554,
+    },
+    {
+      id: "xiongmai-h264-ch",
+      label: "XiongMai/Usecam (H264/chN/main/av_stream)",
+      description: "Firmware XM Sofia — path H.264 canônico ONVIF Profile S.",
+      primary: "rtsp://{host}:{port}/H264/ch{channel}/main/av_stream",
+      substream: "rtsp://{host}:{port}/H264/ch{channel}/sub/av_stream",
+      defaultPort: 554,
+    },
+    {
+      id: "xiongmai-mpeg4-ch",
+      label: "XiongMai/Usecam (mpeg4/chN/main/av_stream)",
+      description: "Firmware XM Sofia — fallback MPEG-4 para hardware antigo.",
+      primary: "rtsp://{host}:{port}/mpeg4/ch{channel}/main/av_stream",
+      substream: "rtsp://{host}:{port}/mpeg4/ch{channel}/sub/av_stream",
+      defaultPort: 554,
+    },
   ],
+
   generica: [
     {
       id: "onvif-standard",
