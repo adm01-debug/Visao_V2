@@ -40,15 +40,17 @@ export interface LivePreviewPlayerProps {
 
 type Status = "idle" | "starting" | "playing" | "extending" | "stopping" | "ended" | "error";
 
+type InvokeResult = { sessionId?: string; hlsUrl?: string; expiresAt?: string; error?: string };
+
 async function defaultInvoke(
   action: "start" | "extend" | "stop",
   payload: Record<string, unknown>,
-) {
+): Promise<InvokeResult> {
   const { data, error } = await supabase.functions.invoke("rtsp-preview", {
     body: { action, ...payload },
   });
   if (error) return { error: error.message };
-  return (data ?? {}) as { sessionId?: string; hlsUrl?: string; expiresAt?: string };
+  return (data ?? {}) as InvokeResult;
 }
 
 export function LivePreviewPlayer({
