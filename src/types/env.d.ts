@@ -4,6 +4,16 @@
 // Mantido em sincronia com o uso real em src/ e com os .env* pelo gate
 // scripts/check-env-contract.mjs (streaming MediaMTX + Supabase).
 interface ImportMetaEnv {
+  // Builtins do Vite (re-declarados para o tsc funcionar sem o pacote vite instalado)
+  // Ref: https://vitejs.dev/guide/env-and-mode.html#env-variables
+  readonly DEV: boolean;
+  readonly PROD: boolean;
+  readonly MODE: string;
+  readonly BASE_URL: string;
+  readonly SSR: boolean;
+  // Index signature (permite import.meta.env[varName] com tipagem segura)
+  readonly [key: string]: string | boolean | undefined;
+
   // Supabase (contrato de runtime)
   readonly VITE_SUPABASE_URL: string;
   readonly VITE_SUPABASE_PUBLISHABLE_KEY: string;
