@@ -1,0 +1,2 @@
+ALTER TABLE public.ptz_connection_attempts DROP CONSTRAINT IF EXISTS ptz_connection_attempts_source_check;
+ALTER TABLE public.ptz_connection_attempts ADD CONSTRAINT ptz_connection_attempts_source_check CHECK (source = ANY (ARRAY['backends_test'::text, 'runtime'::text, 'wizard'::text, 'recapture'::text]));
