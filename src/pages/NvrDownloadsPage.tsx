@@ -480,7 +480,7 @@ export default function NvrDownloadsPage() {
                       </tr>
                     ) : (
                       jobsWithCameraName.map((row) => (
-                        <NvrDownloadJobRow key={row.id} row={row} onRetry={handleRetry} onCancel={handleCancel} />
+                        <NvrDownloadJobRow key={row.id} row={row} onRetry={handleRetry} onCancel={handleCancel} onConvert={handleConvert} />
                       ))
                     )}
                   </tbody>
