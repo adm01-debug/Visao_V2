@@ -54,7 +54,6 @@ const OUTCOME_RGB: Record<PreflightOutcome, [number, number, number]> = {
 };
 
 const phaseTargetLabel = (
-  axis: PreflightAxisLike,
   id: PreflightPhaseId,
   limits: { min: number; max: number },
   origin: number,
