@@ -43,6 +43,67 @@ interface PtzPayload {
 
 const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
 
+type Axis = 'pan' | 'tilt' | 'zoom';
+type Limits = Record<Axis, { min: number; max: number }>;
+
+const DEFAULT_LIMITS: Limits = {
+  pan: { min: -1, max: 1 },
+  tilt: { min: -1, max: 1 },
+  zoom: { min: 0, max: 1 },
+};
+
+const PHYSICAL_BOUNDS: Record<Axis, [number, number]> = {
+  pan: [-1, 1],
+  tilt: [-1, 1],
+  zoom: [0, 1],
+};
+
+function parseLimits(raw: unknown): Limits {
+  const out: Limits = {
+    pan: { ...DEFAULT_LIMITS.pan },
+    tilt: { ...DEFAULT_LIMITS.tilt },
+    zoom: { ...DEFAULT_LIMITS.zoom },
+  };
+  if (!raw || typeof raw !== 'object') return out;
+  const obj = raw as Record<string, unknown>;
+  for (const axis of ['pan', 'tilt', 'zoom'] as Axis[]) {
+    const v = obj[axis];
+    if (!v || typeof v !== 'object') continue;
+    const rec = v as Record<string, unknown>;
+    const min = typeof rec.min === 'number' && Number.isFinite(rec.min) ? rec.min : null;
+    const max = typeof rec.max === 'number' && Number.isFinite(rec.max) ? rec.max : null;
+    if (min === null || max === null || min >= max) continue;
+    const [lo, hi] = PHYSICAL_BOUNDS[axis];
+    out[axis] = { min: clamp(min, lo, hi), max: clamp(max, lo, hi) };
+  }
+  return out;
+}
+
+type AdjustedMap = Partial<Record<Axis, { from: number; to: number }>>;
+
+function applyLimits(
+  command: PtzCommand,
+  params: NonNullable<PtzPayload['params']>,
+  limits: Limits,
+): { params: NonNullable<PtzPayload['params']>; adjusted: AdjustedMap } {
+  const adjusted: AdjustedMap = {};
+  if (command !== 'move' && command !== 'zoom') {
+    return { params, adjusted };
+  }
+  const next = { ...params };
+  for (const axis of ['pan', 'tilt', 'zoom'] as Axis[]) {
+    const v = next[axis];
+    if (typeof v !== 'number' || !Number.isFinite(v)) continue;
+    const { min, max } = limits[axis];
+    const clamped = clamp(v, min, max);
+    if (clamped !== v) {
+      adjusted[axis] = { from: v, to: clamped };
+      next[axis] = clamped;
+    }
+  }
+  return { params: next, adjusted };
+}
+
 function b64(str: string) {
   return btoa(unescape(encodeURIComponent(str)));
 }
