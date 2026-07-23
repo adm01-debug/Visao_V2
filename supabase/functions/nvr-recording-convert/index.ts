@@ -190,12 +190,19 @@ Deno.serve(async (req) => {
       { auth: { persistSession: false } },
     );
 
-    // Valida usuário (JWT).
+    // Valida usuário — aceita JWT normal OU chamada interna (service role + header).
     const authHeader = req.headers.get("Authorization") ?? "";
     const jwt = authHeader.replace(/^Bearer\s+/i, "");
-    const { data: userData, error: userErr } = await supabaseAdmin.auth.getUser(jwt);
-    if (userErr || !userData?.user) return json({ error: "unauthorized" }, 401);
-    const userId = userData.user.id;
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+    const internalUserId = req.headers.get("x-internal-user-id");
+    let userId: string;
+    if (jwt && jwt === serviceKey && internalUserId) {
+      userId = internalUserId;
+    } else {
+      const { data: userData, error: userErr } = await supabaseAdmin.auth.getUser(jwt);
+      if (userErr || !userData?.user) return json({ error: "unauthorized" }, 401);
+      userId = userData.user.id;
+    }
 
     const body = await req.json();
     const action = body?.action as string;
@@ -212,6 +219,7 @@ Deno.serve(async (req) => {
       .maybeSingle();
     if (rowErr || !row) return json({ error: "download não encontrado" }, 404);
     if (row.user_id !== userId) return json({ error: "forbidden" }, 403);
+
 
     if (action === "status") {
       return json({
