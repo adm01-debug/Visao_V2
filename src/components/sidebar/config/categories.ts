@@ -48,6 +48,7 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         path: "/cameras",
         badge: status.totalCameras > 0 ? `${status.onlineCameras}/${status.totalCameras}` : undefined
       },
+      { id: "nvrs", label: "NVRs", icon: Video, path: "/nvrs" },
       { id: "recordings", label: "Gravações", icon: Video, path: "/recordings" },
     ],
     getStatus: () => {
