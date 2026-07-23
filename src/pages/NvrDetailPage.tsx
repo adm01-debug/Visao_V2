@@ -1113,18 +1113,30 @@ export default function NvrDetailPage(): JSX.Element {
                       </ToggleGroup>
                     )}
                     {total > 1 && cycleSeconds > 0 && (
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => setCyclePaused((p) => !p)}
-                        aria-label={cyclePaused ? "Retomar modo patrulha" : "Pausar modo patrulha"}
-                        title={cyclePaused ? "Retomar patrulha (P)" : "Pausar patrulha (P)"}
-                        className="gap-1"
-                      >
-                        {cyclePaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
-                        <span className="hidden sm:inline">{cyclePaused ? "Retomar" : "Pausar"}</span>
-                      </Button>
+                      <>
+                        <span
+                          className="inline-flex items-center rounded-md bg-background/80 px-2 py-1 text-xs font-mono tabular-nums text-foreground"
+                          aria-live="polite"
+                          title={cyclePaused ? "Patrulha pausada" : "Tempo restante até o próximo canal"}
+                        >
+                          {cyclePaused
+                            ? "⏸ pausado"
+                            : `${Math.max(1, Math.ceil(cycleSeconds * (1 - cycleProgress)))}s`}
+                        </span>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => setCyclePaused((p) => !p)}
+                          aria-label={cyclePaused ? "Retomar modo patrulha" : "Pausar modo patrulha"}
+                          title={cyclePaused ? "Retomar patrulha (P)" : "Pausar patrulha (P)"}
+                          className="gap-1"
+                        >
+                          {cyclePaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+                          <span className="hidden sm:inline">{cyclePaused ? "Retomar" : "Pausar"}</span>
+                        </Button>
+                      </>
                     )}
+
                     <Button asChild size="sm" variant="secondary">
                       <Link to={`/cameras/${fullscreenChannel.id}`}>Abrir canal</Link>
                     </Button>
