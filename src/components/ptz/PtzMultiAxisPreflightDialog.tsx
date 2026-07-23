@@ -68,15 +68,6 @@ interface LiveSample {
   phaseState: 'running' | 'settled' | 'timeout';
 }
 
-  id: PhaseId;
-  target: number;
-  observed: number | null;
-  delta: number | null;
-  latency_ms: number;
-  outcome: PhaseOutcome;
-  detail?: string;
-}
-
 export interface MultiAxisPreflightProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
