@@ -995,11 +995,11 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                 </p>
                 <LivePreviewPlayer
                   key={form.getValues("rtspUrl")}
-                  rtspUrl={buildRtspUrl({
-                    rtspUrl: form.getValues("rtspUrl"),
-                    username: form.getValues("username"),
-                    password: form.getValues("password"),
-                  })}
+                  rtspUrl={buildRtspUrl(
+                    form.getValues("rtspUrl"),
+                    form.getValues("username") || undefined,
+                    form.getValues("password") || undefined,
+                  )}
                 />
               </div>
             )}
