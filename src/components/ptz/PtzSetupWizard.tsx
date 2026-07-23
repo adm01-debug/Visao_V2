@@ -647,9 +647,12 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                   <li>Zoom: {limits.zoom.min.toFixed(2)} → {limits.zoom.max.toFixed(2)}</li>
                 </ul>
               </div>
+
+              <PtzConnectionHistoryCard cameraId={cameraId} profileId={profileId ?? null} limit={30} />
             </div>
           )}
         </div>
+
 
         <DialogFooter className="gap-2">
           <Button
