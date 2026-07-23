@@ -40,9 +40,7 @@ const CONTRACT = [
     vars: ['VITE_SUPABASE_URL', 'VITE_SUPABASE_PUBLISHABLE_KEY', 'VITE_SUPABASE_PROJECT_ID'],
     requiredIn: ['.env.example', '.env.production'],
     mustBeUsed: false, // client Supabase pode ler via wrapper; não força uso direto
-    // presença-apenas: não governa leituras de código do prefixo (há nomes legados como
-    // VITE_SUPABASE_ANON_KEY em src/config/env.ts que não fazem parte deste contrato).
-    governCode: false,
+    governCode: true, // após remover o legado VITE_SUPABASE_ANON_KEY, src só lê nomes do contrato
   },
 ];
 
