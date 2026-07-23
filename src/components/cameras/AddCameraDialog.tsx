@@ -75,6 +75,8 @@ import {
 } from "@/lib/rtspTemplates";
 import { FirmwareAutodetectCard, type FirmwareAutodetectSuggestion } from "./FirmwareAutodetectCard";
 import { getProfileById } from "@/lib/onvifProfiles";
+import { RtspVariantBenchmarkCard } from "./RtspVariantBenchmarkCard";
+import type { BenchmarkVariantInput, BenchmarkVariantResult } from "@/lib/rtspVariantBenchmark";
 
 interface AddCameraDialogProps {
   open: boolean;
