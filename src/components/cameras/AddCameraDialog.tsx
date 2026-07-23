@@ -350,6 +350,55 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
     }
   };
 
+  const [portProbe, setPortProbe] = useState<{
+    loading: boolean;
+    results: Array<{ port: number; reachable: boolean; latency_ms: number | null; http_status: number | null; reason: string | null }>;
+    summary: { open: number[]; suggested_onvif: number[]; suggested_rtsp: number[] } | null;
+    nextStep: string | null;
+    error: string | null;
+  }>({ loading: false, results: [], summary: null, nextStep: null, error: null });
+
+  const handleProbePorts = async () => {
+    const host = autoDiscover.host.trim();
+    if (!host) {
+      toast.error("Informe o IP/hostname da câmera antes de testar portas.");
+      return;
+    }
+    setPortProbe({ loading: true, results: [], summary: null, nextStep: null, error: null });
+    try {
+      const { data, error } = await supabase.functions.invoke("camera-port-probe", {
+        body: {
+          host,
+          allow_private: autoDiscover.manualMode || autoDiscover.allowPrivate,
+          ...(autoDiscover.manualMode && autoDiscover.manualPort
+            ? { ports: [Number.parseInt(autoDiscover.manualPort, 10)] }
+            : {}),
+        },
+      });
+      if (error) throw new Error(error.message);
+      if (data?.error) {
+        setPortProbe((s) => ({ ...s, loading: false, error: data.hint || data.error }));
+        return;
+      }
+      setPortProbe({
+        loading: false,
+        results: data.results ?? [],
+        summary: data.summary ?? null,
+        nextStep: data.next_step ?? null,
+        error: null,
+      });
+      // Se o modo manual estiver ativo e o probe sugerir uma porta ONVIF, pré-preenche.
+      if (autoDiscover.manualMode && !autoDiscover.manualPort && data?.summary?.suggested_onvif?.[0]) {
+        setAutoDiscover((s) => ({ ...s, manualPort: String(data.summary.suggested_onvif[0]) }));
+      }
+    } catch (err) {
+      setPortProbe({ loading: false, results: [], summary: null, nextStep: null, error: safeErrorMessage(err) });
+      toast.error(`Teste de portas falhou: ${safeErrorMessage(err)}`);
+    }
+  };
+
+
+
 
   const handleDiscoverPtz = async () => {
     const cfg = form.getValues("ptzConfig");
