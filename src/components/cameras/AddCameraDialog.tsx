@@ -47,6 +47,8 @@ import {
 import { useCameras } from "@/hooks/useCameras";
 import { useCameraVault } from "@/hooks/useCameraVault";
 import { supabase } from "@/integrations/supabase/client";
+import { readFunctionErrorBody } from "@/lib/edgeFunctionErrors";
+
 import {
   addCameraSchema,
   buildRtspUrl,
