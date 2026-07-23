@@ -14,6 +14,7 @@ import { Copy, Trash2, Plus, ShieldCheck, Server, Radar } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { PageMeta } from "@/components/PageMeta";
+import { RelayReliabilityCard } from "@/components/local-agents/RelayReliabilityCard";
 
 interface LocalAgent {
   id: string;
@@ -155,6 +156,7 @@ export default function LocalAgentsPage() {
         <TabsList>
           <TabsTrigger value="agents">Agentes ({agentsQuery.data?.length ?? 0})</TabsTrigger>
           <TabsTrigger value="discoveries">Descobertas ({discoveriesQuery.data?.length ?? 0})</TabsTrigger>
+          <TabsTrigger value="reliability">Confiabilidade</TabsTrigger>
           <TabsTrigger value="install">Como instalar</TabsTrigger>
         </TabsList>
 
@@ -293,6 +295,10 @@ export default function LocalAgentsPage() {
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="reliability" className="mt-4">
+          <RelayReliabilityCard hours={24} />
         </TabsContent>
 
         <TabsContent value="install" className="mt-4 space-y-4">

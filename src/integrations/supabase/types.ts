@@ -5224,6 +5224,22 @@ export type Database = {
         Args: { window_hours?: number }
         Returns: Json
       }
+      get_relay_agent_reliability: {
+        Args: { _hours?: number }
+        Returns: {
+          agent_id: string
+          agent_name: string
+          avg_latency_ms: number
+          completed: number
+          expired: number
+          failed: number
+          last_activity: string
+          p95_latency_ms: number
+          pending: number
+          success_rate: number
+          total: number
+        }[]
+      }
       get_replication_slot_status: {
         Args: never
         Returns: {
