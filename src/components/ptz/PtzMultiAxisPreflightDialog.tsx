@@ -215,6 +215,7 @@ export function PtzMultiAxisPreflightDialog({
 
   const driveToTarget = useCallback(async (
     axis: PreflightAxis,
+    phase: PhaseId,
     target: number,
     fromHint: number,
   ): Promise<{ observed: number | null; delta: number | null; latency_ms: number; timedOut: boolean }> => {
@@ -222,7 +223,19 @@ export function PtzMultiAxisPreflightDialog({
     const range = AXIS_BOUNDS[axis][1] - AXIS_BOUNDS[axis][0];
     const timeout = perAxisTimeout[axis];
     const sweepMs = sweepMsByAxis[axis];
-    const from = (await readAxis(axis)) ?? fromHint;
+    const initial = await readStatusAxis(axis);
+    const from = initial?.pos ?? fromHint;
+
+    // Amostra inicial da mini-tabela
+    setLiveSample({
+      axis, phase, target,
+      observed: initial?.pos ?? null,
+      delta: initial?.pos != null ? initial.pos - target : null,
+      movingFlag: initial?.moving == null ? 'unknown' : initial.moving ? 'moving' : 'idle',
+      elapsedMs: 0,
+      timeoutMs: timeout,
+      phaseState: 'running',
+    });
 
     const dir = target > from ? 1 : -1;
     try {
@@ -244,8 +257,19 @@ export function PtzMultiAxisPreflightDialog({
         if (abortRef.current) break;
         await new Promise((r) => setTimeout(r, step));
         waited += step;
+        setLiveSample({
+          axis, phase, target,
+          observed: null, delta: null,
+          movingFlag: 'unknown',
+          elapsedMs: Math.round(performance.now() - started),
+          timeoutMs: timeout,
+          phaseState: 'running',
+        });
       }
       await safeStop(axis);
+      setLiveSample((prev) => prev && prev.axis === axis && prev.phase === phase
+        ? { ...prev, phaseState: 'settled', elapsedMs: Math.round(performance.now() - started) }
+        : prev);
       return { observed: null, delta: null, latency_ms: Math.round(performance.now() - started), timedOut: false };
     }
 
@@ -254,9 +278,21 @@ export function PtzMultiAxisPreflightDialog({
     while (performance.now() - started < timeout) {
       if (abortRef.current) { timedOut = false; break; }
       await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
-      const p = await readAxis(axis);
+      const s = await readStatusAxis(axis);
+      const p = s?.pos ?? null;
       if (p != null) {
         last = p;
+      }
+      setLiveSample({
+        axis, phase, target,
+        observed: p,
+        delta: p != null ? p - target : null,
+        movingFlag: s?.moving == null ? 'unknown' : s.moving ? 'moving' : 'idle',
+        elapsedMs: Math.round(performance.now() - started),
+        timeoutMs: timeout,
+        phaseState: 'running',
+      });
+      if (p != null) {
         if ((dir > 0 && p >= target - TARGET_TOLERANCE * range) ||
             (dir < 0 && p <= target + TARGET_TOLERANCE * range)) {
           timedOut = false;
@@ -266,14 +302,25 @@ export function PtzMultiAxisPreflightDialog({
     }
     await safeStop(axis);
     await new Promise((r) => setTimeout(r, 250));
-    const finalPos = (await readAxis(axis)) ?? last;
+    const finalStat = await readStatusAxis(axis);
+    const finalPos = finalStat?.pos ?? last;
+    setLiveSample({
+      axis, phase, target,
+      observed: finalPos,
+      delta: finalPos - target,
+      movingFlag: finalStat?.moving == null ? 'unknown' : finalStat.moving ? 'moving' : 'idle',
+      elapsedMs: Math.round(performance.now() - started),
+      timeoutMs: timeout,
+      phaseState: timedOut ? 'timeout' : 'settled',
+    });
     return {
       observed: finalPos,
       delta: finalPos - target,
       latency_ms: Math.round(performance.now() - started),
       timedOut,
     };
-  }, [perAxisTimeout, ptz, readAxis, safeStop, statusSupported, sweepMsByAxis]);
+  }, [perAxisTimeout, ptz, readStatusAxis, safeStop, statusSupported, sweepMsByAxis]);
+
 
   const runAll = useCallback(async () => {
     if (!canRun) return;
