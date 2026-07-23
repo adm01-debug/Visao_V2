@@ -160,10 +160,14 @@ Deno.serve(async (req) => {
   const results = await Promise.all(probes);
   const hit = results.find((r) => r !== null) as { url: string; port: number } | undefined;
   if (!hit) {
+    const lanHint = isPrivateHost(host)
+      ? ` IMPORTANTE: ${host} é um IP de LAN (rede local). A Edge Function roda na nuvem e não tem rota até sua rede interna — nenhum pacote chega até a câmera. Soluções: (1) faça port-forward no roteador expondo a porta ONVIF via IP público/DDNS, (2) use um túnel/VPN entre a nuvem e sua LAN, ou (3) rode um agente local dentro da rede da câmera que faça o discover e envie o resultado ao backend.`
+      : ` Verifique firewall, se ONVIF está habilitado ou se a porta é diferente.`;
     return j({
       error: "no_onvif_endpoint",
-      hint: `Nenhuma porta ONVIF respondeu em ${host} (testadas: ${targets.join(", ")}). Verifique firewall, se ONVIF está habilitado ou se a porta é diferente.`,
+      hint: `Nenhuma porta ONVIF respondeu em ${host} (testadas: ${targets.join(", ")}).${lanHint}`,
       tested_ports: targets,
+      is_lan_host: isPrivateHost(host),
     }, 404);
   }
   deviceUrl = hit.url;
