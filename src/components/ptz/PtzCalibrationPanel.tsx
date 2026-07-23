@@ -87,6 +87,21 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
   });
   const [preflightAxis, setPreflightAxis] = useState<PtzAxis | null>(null);
 
+  // Revalidação: comando tempo-baseado → posição reportada. Erro estimado por eixo.
+  interface RevalidationResult {
+    predicted_delta: number;
+    actual_delta: number;
+    error_abs: number;
+    error_pct: number; // |erro| / range em %
+    direction: -1 | 1;
+    duration_ms: number;
+    p0: number;
+    p1: number;
+    at: string;
+  }
+  const [validation, setValidation] = useState<Partial<Record<PtzAxis, RevalidationResult>>>({});
+  const [revalidatingAxis, setRevalidatingAxis] = useState<PtzAxis | null>(null);
+
   // Versionamento — carregado do banco.
   const [limitsVersion, setLimitsVersion] = useState<string | null>(null);
   const [limitsHistory, setLimitsHistory] = useState<LimitsHistoryItem[]>([]);
