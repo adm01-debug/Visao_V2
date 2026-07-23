@@ -155,6 +155,24 @@ Deno.serve(async (req) => {
       }
     }));
 
+    // Persist history for debugging recurring failures
+    if (results.length) {
+      await admin.from('ptz_connection_attempts').insert(results.map((r) => ({
+        user_id: user.id,
+        camera_id,
+        profile_id,
+        backend: r.backend,
+        ok: r.ok,
+        reachable: r.reachable,
+        http_status: r.status,
+        latency_ms: r.latency_ms,
+        error_detail: r.ok ? null : (r.detail ?? null),
+        used_relay: resolution.usingRelay,
+        relay_agent_id,
+        source,
+      })));
+    }
+
     // Audit (informativo, não bloqueia)
     await admin.from('audit_logs').insert({
       user_id: user.id,
@@ -165,6 +183,8 @@ Deno.serve(async (req) => {
       new_values: {
         tested: unique,
         used_relay: resolution.usingRelay,
+        profile_id,
+        source,
         results: results.map((r) => ({ backend: r.backend, ok: r.ok, status: r.status, latency_ms: r.latency_ms })),
       },
     });
