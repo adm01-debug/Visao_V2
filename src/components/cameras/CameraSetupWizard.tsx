@@ -68,7 +68,7 @@ const DEFAULT_SCHEDULE = {
   days: [0, 1, 2, 3, 4, 5, 6],
 };
 
-export function CameraSetupWizard({ camera, open, onOpenChange }: CameraSetupWizardProps) {
+export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: CameraSetupWizardProps) {
   const { user } = useAuth();
   const [tab, setTab] = useState<'zones' | 'rules'>('zones');
   const [zones, setZones] = useState<DbZone[]>([]);
