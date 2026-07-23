@@ -1,13 +1,17 @@
 // Edge Function: camera-ptz-control
 // Multi-driver PTZ control (ONVIF/Hikvision/Dahua/Axis) with role check,
-// cooperative lock validation and audit logging.
+// cooperative lock validation, audit logging e transporte plugável (direto ou
+// via Agente Local para câmeras em LAN privada).
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { resolveRelayTransport, type Transport, type HttpResult } from '../_shared/relayTransport.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
+
+const PTZ_TIMEOUT_MS = 6000;
 
 type PtzCommand =
   | 'move'
@@ -25,15 +29,16 @@ interface PtzPayload {
   camera_id: string;
   command: PtzCommand;
   params?: {
-    pan?: number; // -1..1
-    tilt?: number; // -1..1
-    zoom?: number; // -1..1
-    focus?: number; // -1..1
-    iris?: number; // -1..1
-    speed?: number; // 1..10
+    pan?: number;
+    tilt?: number;
+    zoom?: number;
+    focus?: number;
+    iris?: number;
+    speed?: number;
     preset_number?: number;
     preset_name?: string;
   };
+  relay_agent_id?: string | null;
 }
 
 const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
@@ -42,153 +47,84 @@ function b64(str: string) {
   return btoa(unescape(encodeURIComponent(str)));
 }
 
-async function driverHikvision(cfg: any, cmd: PtzCommand, p: any): Promise<Response> {
+function authHeader(cfg: any): Record<string, string> {
+  if (!cfg.username) return {};
+  return { Authorization: `Basic ${b64(`${cfg.username}:${cfg.password_encrypted ?? ''}`)}` };
+}
+
+async function driverHikvision(tx: Transport, cfg: any, cmd: PtzCommand, p: any): Promise<HttpResult> {
   const base = `http://${cfg.endpoint}:${cfg.port}/ISAPI/PTZCtrl/channels/${cfg.channel}`;
-  const auth = cfg.username
-    ? `Basic ${b64(`${cfg.username}:${cfg.password_encrypted ?? ''}`)}`
-    : '';
-  const _speedPct = Math.round((p.speed ?? cfg.default_speed ?? 5) * 10); // 1..100
+  const headers = { ...authHeader(cfg), 'Content-Type': 'application/xml' };
 
   if (cmd === 'move' || cmd === 'zoom') {
     const pan = clamp(Math.round((p.pan ?? 0) * 100), -100, 100);
     const tilt = clamp(Math.round((p.tilt ?? 0) * 100), -100, 100);
     const zoom = clamp(Math.round((p.zoom ?? 0) * 100), -100, 100);
     const body = `<?xml version="1.0"?><PTZData><pan>${pan}</pan><tilt>${tilt}</tilt><zoom>${zoom}</zoom></PTZData>`;
-    return fetch(`${base}/continuous`, {
-      method: 'PUT',
-      headers: { Authorization: auth, 'Content-Type': 'application/xml' },
-      body,
-    });
+    return tx.request({ url: `${base}/continuous`, method: 'PUT', headers, body, timeoutMs: PTZ_TIMEOUT_MS });
   }
   if (cmd === 'stop') {
     const body = `<?xml version="1.0"?><PTZData><pan>0</pan><tilt>0</tilt><zoom>0</zoom></PTZData>`;
-    return fetch(`${base}/continuous`, {
-      method: 'PUT',
-      headers: { Authorization: auth, 'Content-Type': 'application/xml' },
-      body,
-    });
+    return tx.request({ url: `${base}/continuous`, method: 'PUT', headers, body, timeoutMs: PTZ_TIMEOUT_MS });
   }
   if (cmd === 'goto_preset') {
-    return fetch(`${base}/presets/${p.preset_number}/goto`, {
-      method: 'PUT',
-      headers: { Authorization: auth },
-    });
+    return tx.request({ url: `${base}/presets/${p.preset_number}/goto`, method: 'PUT', headers: authHeader(cfg), timeoutMs: PTZ_TIMEOUT_MS });
   }
   if (cmd === 'save_preset') {
     const body = `<?xml version="1.0"?><PTZPreset><id>${p.preset_number}</id><presetName>${p.preset_name ?? 'Preset'}</presetName></PTZPreset>`;
-    return fetch(`${base}/presets/${p.preset_number}`, {
-      method: 'PUT',
-      headers: { Authorization: auth, 'Content-Type': 'application/xml' },
-      body,
-    });
+    return tx.request({ url: `${base}/presets/${p.preset_number}`, method: 'PUT', headers, body, timeoutMs: PTZ_TIMEOUT_MS });
   }
   if (cmd === 'focus') {
     const focus = clamp(Math.round((p.focus ?? 0) * 100), -100, 100);
-    return fetch(`${base}/continuous`, {
-      method: 'PUT',
-      headers: { Authorization: auth, 'Content-Type': 'application/xml' },
-      body: `<?xml version="1.0"?><PTZData><focus>${focus}</focus></PTZData>`,
+    return tx.request({
+      url: `${base}/continuous`, method: 'PUT', headers,
+      body: `<?xml version="1.0"?><PTZData><focus>${focus}</focus></PTZData>`, timeoutMs: PTZ_TIMEOUT_MS,
     });
   }
-  return new Response('noop', { status: 200 });
+  return { ok: true, status: 200, text: 'noop' };
 }
 
-async function driverDahua(cfg: any, cmd: PtzCommand, p: any): Promise<Response> {
-  const auth = cfg.username
-    ? `Basic ${b64(`${cfg.username}:${cfg.password_encrypted ?? ''}`)}`
-    : '';
-  const url = (qs: string) =>
-    `http://${cfg.endpoint}:${cfg.port}/cgi-bin/ptz.cgi?${qs}&channel=${cfg.channel - 1}`;
+async function driverDahua(tx: Transport, cfg: any, cmd: PtzCommand, p: any): Promise<HttpResult> {
+  const headers = authHeader(cfg);
+  const url = (qs: string) => `http://${cfg.endpoint}:${cfg.port}/cgi-bin/ptz.cgi?${qs}&channel=${cfg.channel - 1}`;
   const speed = clamp(p.speed ?? cfg.default_speed ?? 5, 1, 8);
 
   if (cmd === 'move') {
-    const pan = p.pan ?? 0,
-      tilt = p.tilt ?? 0;
+    const pan = p.pan ?? 0, tilt = p.tilt ?? 0;
     const dir =
-      pan > 0.1
-        ? tilt > 0.1
-          ? 'RightUp'
-          : tilt < -0.1
-            ? 'RightDown'
-            : 'Right'
-        : pan < -0.1
-          ? tilt > 0.1
-            ? 'LeftUp'
-            : tilt < -0.1
-              ? 'LeftDown'
-              : 'Left'
-          : tilt > 0.1
-            ? 'Up'
-            : tilt < -0.1
-              ? 'Down'
-              : '';
-    if (!dir)
-      return fetch(url(`action=stop&code=${dir || 'Up'}&arg1=0&arg2=${speed}&arg3=0`), {
-        headers: { Authorization: auth },
-      });
-    return fetch(url(`action=start&code=${dir}&arg1=0&arg2=${speed}&arg3=0`), {
-      headers: { Authorization: auth },
-    });
+      pan > 0.1 ? (tilt > 0.1 ? 'RightUp' : tilt < -0.1 ? 'RightDown' : 'Right')
+      : pan < -0.1 ? (tilt > 0.1 ? 'LeftUp' : tilt < -0.1 ? 'LeftDown' : 'Left')
+      : tilt > 0.1 ? 'Up' : tilt < -0.1 ? 'Down' : '';
+    if (!dir) return tx.request({ url: url(`action=stop&code=Up&arg1=0&arg2=${speed}&arg3=0`), headers, timeoutMs: PTZ_TIMEOUT_MS });
+    return tx.request({ url: url(`action=start&code=${dir}&arg1=0&arg2=${speed}&arg3=0`), headers, timeoutMs: PTZ_TIMEOUT_MS });
   }
   if (cmd === 'zoom') {
     const dir = (p.zoom ?? 0) > 0 ? 'ZoomTele' : 'ZoomWide';
-    return fetch(url(`action=start&code=${dir}&arg1=0&arg2=${speed}&arg3=0`), {
-      headers: { Authorization: auth },
-    });
+    return tx.request({ url: url(`action=start&code=${dir}&arg1=0&arg2=${speed}&arg3=0`), headers, timeoutMs: PTZ_TIMEOUT_MS });
   }
-  if (cmd === 'stop')
-    return fetch(url(`action=stop&code=Left&arg1=0&arg2=0&arg3=0`), {
-      headers: { Authorization: auth },
-    });
-  if (cmd === 'goto_preset')
-    return fetch(url(`action=start&code=GotoPreset&arg1=0&arg2=${p.preset_number}&arg3=0`), {
-      headers: { Authorization: auth },
-    });
-  if (cmd === 'save_preset')
-    return fetch(url(`action=start&code=SetPreset&arg1=0&arg2=${p.preset_number}&arg3=0`), {
-      headers: { Authorization: auth },
-    });
-  return new Response('noop', { status: 200 });
+  if (cmd === 'stop') return tx.request({ url: url(`action=stop&code=Left&arg1=0&arg2=0&arg3=0`), headers, timeoutMs: PTZ_TIMEOUT_MS });
+  if (cmd === 'goto_preset') return tx.request({ url: url(`action=start&code=GotoPreset&arg1=0&arg2=${p.preset_number}&arg3=0`), headers, timeoutMs: PTZ_TIMEOUT_MS });
+  if (cmd === 'save_preset') return tx.request({ url: url(`action=start&code=SetPreset&arg1=0&arg2=${p.preset_number}&arg3=0`), headers, timeoutMs: PTZ_TIMEOUT_MS });
+  return { ok: true, status: 200, text: 'noop' };
 }
 
-async function driverAxis(cfg: any, cmd: PtzCommand, p: any): Promise<Response> {
-  const auth = cfg.username
-    ? `Basic ${b64(`${cfg.username}:${cfg.password_encrypted ?? ''}`)}`
-    : '';
+async function driverAxis(tx: Transport, cfg: any, cmd: PtzCommand, p: any): Promise<HttpResult> {
+  const headers = authHeader(cfg);
   const base = `http://${cfg.endpoint}:${cfg.port}/axis-cgi/com/ptz.cgi?camera=${cfg.channel}`;
   const speed = clamp(p.speed ?? cfg.default_speed ?? 5, 1, 10) * 10;
 
-  if (cmd === 'move')
-    return fetch(
-      `${base}&continuouspantiltmove=${Math.round((p.pan ?? 0) * speed)},${Math.round((p.tilt ?? 0) * speed)}`,
-      { headers: { Authorization: auth } }
-    );
-  if (cmd === 'zoom')
-    return fetch(`${base}&continuouszoommove=${Math.round((p.zoom ?? 0) * speed)}`, {
-      headers: { Authorization: auth },
-    });
-  if (cmd === 'stop')
-    return fetch(`${base}&continuouspantiltmove=0,0&continuouszoommove=0`, {
-      headers: { Authorization: auth },
-    });
-  if (cmd === 'goto_preset')
-    return fetch(`${base}&gotoserverpresetno=${p.preset_number}`, {
-      headers: { Authorization: auth },
-    });
-  if (cmd === 'save_preset')
-    return fetch(
-      `${base}&setserverpresetname=${encodeURIComponent(p.preset_name ?? `Preset ${p.preset_number}`)}`,
-      { headers: { Authorization: auth } }
-    );
-  return new Response('noop', { status: 200 });
+  if (cmd === 'move') return tx.request({ url: `${base}&continuouspantiltmove=${Math.round((p.pan ?? 0) * speed)},${Math.round((p.tilt ?? 0) * speed)}`, headers, timeoutMs: PTZ_TIMEOUT_MS });
+  if (cmd === 'zoom') return tx.request({ url: `${base}&continuouszoommove=${Math.round((p.zoom ?? 0) * speed)}`, headers, timeoutMs: PTZ_TIMEOUT_MS });
+  if (cmd === 'stop') return tx.request({ url: `${base}&continuouspantiltmove=0,0&continuouszoommove=0`, headers, timeoutMs: PTZ_TIMEOUT_MS });
+  if (cmd === 'goto_preset') return tx.request({ url: `${base}&gotoserverpresetno=${p.preset_number}`, headers, timeoutMs: PTZ_TIMEOUT_MS });
+  if (cmd === 'save_preset') return tx.request({ url: `${base}&setserverpresetname=${encodeURIComponent(p.preset_name ?? `Preset ${p.preset_number}`)}`, headers, timeoutMs: PTZ_TIMEOUT_MS });
+  return { ok: true, status: 200, text: 'noop' };
 }
 
-async function driverOnvif(cfg: any, cmd: PtzCommand, p: any): Promise<Response> {
-  // Simplified ONVIF PTZ over SOAP. Real deployments should use WS-Security.
+async function driverOnvif(tx: Transport, cfg: any, cmd: PtzCommand, p: any): Promise<HttpResult> {
   const url = `http://${cfg.endpoint}:${cfg.port}/onvif/ptz_service`;
   const speed = clamp(p.speed ?? cfg.default_speed ?? 5, 1, 10) / 10;
   const profile = `Profile_${cfg.channel}`;
-
   const envelope = (body: string) => `<?xml version="1.0"?>
   <s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:tptz="http://www.onvif.org/ver20/ptz/wsdl">
     <s:Body>${body}</s:Body></s:Envelope>`;
@@ -207,27 +143,21 @@ async function driverOnvif(cfg: any, cmd: PtzCommand, p: any): Promise<Response>
   } else if (cmd === 'save_preset') {
     body = `<tptz:SetPreset><tptz:ProfileToken>${profile}</tptz:ProfileToken><tptz:PresetName>${p.preset_name ?? 'Preset'}</tptz:PresetName><tptz:PresetToken>${p.preset_number}</tptz:PresetToken></tptz:SetPreset>`;
   }
-  const auth = cfg.username
-    ? `Basic ${b64(`${cfg.username}:${cfg.password_encrypted ?? ''}`)}`
-    : '';
-  return fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/soap+xml', Authorization: auth },
+  return tx.request({
+    url, method: 'POST',
+    headers: { 'Content-Type': 'application/soap+xml', ...authHeader(cfg) },
     body: envelope(body),
+    timeoutMs: PTZ_TIMEOUT_MS,
   });
 }
 
-async function dispatch(cfg: any, cmd: PtzCommand, params: any) {
+async function dispatch(tx: Transport, cfg: any, cmd: PtzCommand, params: any): Promise<HttpResult> {
   switch (cfg.protocol) {
-    case 'hikvision':
-      return driverHikvision(cfg, cmd, params);
-    case 'dahua':
-      return driverDahua(cfg, cmd, params);
-    case 'axis':
-      return driverAxis(cfg, cmd, params);
+    case 'hikvision': return driverHikvision(tx, cfg, cmd, params);
+    case 'dahua': return driverDahua(tx, cfg, cmd, params);
+    case 'axis': return driverAxis(tx, cfg, cmd, params);
     case 'onvif':
-    default:
-      return driverOnvif(cfg, cmd, params);
+    default: return driverOnvif(tx, cfg, cmd, params);
   }
 }
 
@@ -235,120 +165,106 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   try {
-    const authHeader = req.headers.get('Authorization') ?? '';
+    const authorization = req.headers.get('Authorization') ?? '';
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
 
     const userClient = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
+      global: { headers: { Authorization: authorization } },
     });
     const admin = createClient(supabaseUrl, serviceKey);
 
-    const {
-      data: { user },
-      error: userErr,
-    } = await userClient.auth.getUser();
-    if (userErr || !user)
+    const { data: { user }, error: userErr } = await userClient.auth.getUser();
+    if (userErr || !user) {
       return new Response(JSON.stringify({ error: 'unauthenticated' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
+    }
 
     const payload = (await req.json()) as PtzPayload;
-    const { camera_id, command, params = {} } = payload;
-    if (!camera_id || !command)
+    const { camera_id, command, params = {}, relay_agent_id = null } = payload;
+    if (!camera_id || !command) {
       return new Response(JSON.stringify({ error: 'camera_id e command são obrigatórios' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
+    }
 
     // Role check
     const { data: roles } = await admin.from('user_roles').select('role').eq('user_id', user.id);
     const roleSet = new Set((roles ?? []).map((r: any) => r.role));
     const canOperate = roleSet.has('admin') || roleSet.has('manager') || roleSet.has('operator');
-    if (!canOperate)
+    if (!canOperate) {
       return new Response(JSON.stringify({ error: 'papel_insuficiente' }), {
-        status: 403,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
+    }
 
     // Load config
     const { data: cfg, error: cfgErr } = await admin
-      .from('camera_ptz_config')
-      .select('*')
-      .eq('camera_id', camera_id)
-      .maybeSingle();
-    if (cfgErr || !cfg)
+      .from('camera_ptz_config').select('*').eq('camera_id', camera_id).maybeSingle();
+    if (cfgErr || !cfg) {
       return new Response(JSON.stringify({ error: 'ptz_nao_configurado' }), {
-        status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
+    }
 
-    // Acquire lock (via SECURITY DEFINER rpc using user's context)
-    const { data: lockRes, error: lockErr } = await userClient.rpc('acquire_ptz_lock', {
-      _camera_id: camera_id,
-      _ttl_seconds: 10,
-    });
-    if (lockErr)
-      return new Response(JSON.stringify({ error: 'lock_error', detail: lockErr.message }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    if (lockRes && lockRes.acquired === false) {
+    // Resolve transporte (direto ou via Agente Local)
+    const resolution = await resolveRelayTransport(req, relay_agent_id);
+    if (resolution.error) {
       return new Response(
-        JSON.stringify({ error: 'camera_em_uso', locked_by: lockRes.locked_by }),
-        { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: resolution.error.code, hint: resolution.error.message }),
+        { status: resolution.error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
     }
 
-    // Dispatch to driver
-    let camResp: Response | null = null;
-    let camStatus = 0,
-      camBody = '';
+    // Cooperative lock
+    const { data: lockRes, error: lockErr } = await userClient.rpc('acquire_ptz_lock', {
+      _camera_id: camera_id, _ttl_seconds: 10,
+    });
+    if (lockErr) {
+      return new Response(JSON.stringify({ error: 'lock_error', detail: lockErr.message }), {
+        status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    if (lockRes && lockRes.acquired === false) {
+      return new Response(JSON.stringify({ error: 'camera_em_uso', locked_by: lockRes.locked_by }), {
+        status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Dispatch
+    let camStatus = 0, camBody = '';
     try {
-      camResp = await dispatch(cfg, command, params);
+      const camResp = await dispatch(resolution.transport, cfg, command, params);
       camStatus = camResp.status;
-      camBody = (await camResp.text()).slice(0, 500);
+      camBody = (camResp.text ?? '').slice(0, 500);
     } catch (e) {
       camStatus = 0;
       camBody = String(e).slice(0, 500);
     }
 
-    // Persist preset metadata on save
+    // Persist preset metadata
     if (command === 'save_preset' && params.preset_number) {
-      await admin.from('camera_presets').upsert(
-        {
-          camera_id,
-          user_id: cfg.user_id,
-          preset_number: params.preset_number,
-          name: params.preset_name ?? `Preset ${params.preset_number}`,
-          ptz_position: params,
-        },
-        { onConflict: 'camera_id,preset_number' }
-      );
+      await admin.from('camera_presets').upsert({
+        camera_id, user_id: cfg.user_id,
+        preset_number: params.preset_number,
+        name: params.preset_name ?? `Preset ${params.preset_number}`,
+        ptz_position: params,
+      }, { onConflict: 'camera_id,preset_number' });
     }
     if (command === 'delete_preset' && params.preset_number) {
-      await admin
-        .from('camera_presets')
-        .delete()
-        .eq('camera_id', camera_id)
-        .eq('preset_number', params.preset_number);
+      await admin.from('camera_presets').delete()
+        .eq('camera_id', camera_id).eq('preset_number', params.preset_number);
     }
-    // Incrementa contador de uso para ordenar presets no acesso rápido
     if (command === 'goto_preset' && params.preset_number && camStatus >= 200 && camStatus < 400) {
       const { data: cur } = await admin
-        .from('camera_presets')
-        .select('uses')
-        .eq('camera_id', camera_id)
-        .eq('preset_number', params.preset_number)
-        .maybeSingle();
+        .from('camera_presets').select('uses')
+        .eq('camera_id', camera_id).eq('preset_number', params.preset_number).maybeSingle();
       if (cur) {
-        await admin
-          .from('camera_presets')
+        await admin.from('camera_presets')
           .update({ uses: (cur.uses ?? 0) + 1 })
-          .eq('camera_id', camera_id)
-          .eq('preset_number', params.preset_number);
+          .eq('camera_id', camera_id).eq('preset_number', params.preset_number);
       }
     }
 
@@ -359,25 +275,21 @@ Deno.serve(async (req) => {
       entity_type: 'camera',
       entity_id: camera_id,
       severity: 'low',
-      new_values: { command, params, driver: cfg.protocol, cam_status: camStatus },
+      new_values: { command, params, driver: cfg.protocol, cam_status: camStatus, used_relay: resolution.usingRelay },
     });
 
-    return new Response(
-      JSON.stringify({
-        ok: camStatus >= 200 && camStatus < 400,
-        cam_status: camStatus,
-        driver: cfg.protocol,
-        response: camBody,
-      }),
-      {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    );
+    return new Response(JSON.stringify({
+      ok: camStatus >= 200 && camStatus < 400,
+      cam_status: camStatus,
+      driver: cfg.protocol,
+      used_relay: resolution.usingRelay,
+      response: camBody,
+    }), {
+      status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   } catch (e) {
     return new Response(JSON.stringify({ error: 'internal', detail: String(e) }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 });
