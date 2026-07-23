@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { resolveLivePreviewError, type LivePreviewErrorCode } from "@/lib/livePreviewErrors";
+import { logPreviewEvent } from "@/lib/previewTelemetry";
 
 export const LIVE_PREVIEW_DEFAULT_SECONDS = 60;
 export const LIVE_PREVIEW_EXTEND_SECONDS = 60;
