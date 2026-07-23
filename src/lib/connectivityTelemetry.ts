@@ -68,7 +68,7 @@ export async function recordConnectivityResolution(
       succeeded: input.succeeded ?? null,
       retry_error_code: input.retryErrorCode ?? null,
       duration_ms: input.durationMs ?? null,
-      metadata: input.metadata ?? {},
+      metadata: (input.metadata ?? {}) as never,
     });
   } catch (err) {
     if (import.meta.env.DEV) {
