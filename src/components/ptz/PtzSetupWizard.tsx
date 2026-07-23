@@ -578,45 +578,18 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
 
 
           {cfg && step === 'limits' && (
-            <div className="space-y-5">
+            <div className="space-y-4">
               <Alert>
-                <AlertTitle>Limites operacionais</AlertTitle>
+                <AlertTitle>Calibração dos limites operacionais</AlertTitle>
                 <AlertDescription>
-                  Restringe a amplitude máxima de pan/tilt/zoom para impedir que a câmera aponte para áreas privadas ou saia do enquadramento útil. Valores em -1 a 1 (proporção do curso total).
+                  Posicione o dome nos extremos suportados e capture cada limite. Valores fora do intervalo
+                  serão bloqueados em runtime, protegendo o motor e áreas privadas do enquadramento.
                 </AlertDescription>
               </Alert>
-
-              {(['pan', 'tilt', 'zoom'] as const).map((axis) => {
-                const bounds = axis === 'zoom' ? [0, 1] : [-1, 1];
-                const l = limits[axis];
-                return (
-                  <div key={axis} className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <Label className="capitalize">{axis === 'pan' ? 'Horizontal (pan)' : axis === 'tilt' ? 'Vertical (tilt)' : 'Zoom'}</Label>
-                      <span className="font-mono text-xs text-muted-foreground">
-                        {l.min.toFixed(2)} → {l.max.toFixed(2)}
-                      </span>
-                    </div>
-                    <Slider
-                      value={[l.min, l.max]}
-                      min={bounds[0]} max={bounds[1]} step={0.05}
-                      onValueChange={([min, max]) =>
-                        setLimits((prev) => ({ ...prev, [axis]: { min: min ?? bounds[0], max: max ?? bounds[1] } }))
-                      }
-                    />
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline" onClick={() => void testLimit(axis, 'min')}>
-                        Testar mínimo
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={() => void testLimit(axis, 'max')}>
-                        Testar máximo
-                      </Button>
-                    </div>
-                  </div>
-                );
-              })}
+              <PtzCalibrationPanel ptz={ptz} limits={limits} onChange={setLimits} />
             </div>
           )}
+
 
           {cfg && step === 'review' && (
             <div className="space-y-3 text-sm">
