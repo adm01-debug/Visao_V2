@@ -399,6 +399,8 @@ async function downloadStream(
         });
       if (upErr) throw upErr;
 
+      const sourceFormat = "dav";
+      const proprietary = true; // .dav sempre exige conversão para MP4 padrão
       await supabaseAdmin
         .from("nvr_recording_downloads")
         .update({
@@ -407,11 +409,35 @@ async function downloadStream(
           total_bytes: total ?? received,
           progress_percent: 100,
           storage_path: storagePath,
+          source_format: sourceFormat,
+          conversion_status: proprietary ? "pending" : "skipped",
           completed_at: new Date().toISOString(),
         })
         .eq("id", downloadId);
 
+      // Auto-dispara conversão para MP4 padrão (fire-and-forget).
+      if (proprietary) {
+        try {
+          const convertUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/nvr-recording-convert`;
+          // @ts-ignore EdgeRuntime provisto pelo runtime Supabase
+          EdgeRuntime.waitUntil(
+            fetch(convertUrl, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+                "x-internal-user-id": userId,
+              },
+              body: JSON.stringify({ action: "convert", download_id: downloadId }),
+            }).catch((e) => console.warn("[convert dispatch] falhou", e)),
+          );
+        } catch (e) {
+          console.warn("[convert dispatch] erro", e);
+        }
+      }
+
       return { storage_path: storagePath, bytes: received };
+
     } catch (err) {
       lastErr = err;
       const msg = err instanceof Error ? err.message : String(err);
