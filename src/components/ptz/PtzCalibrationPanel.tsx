@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
 import type { usePtzControl } from '@/hooks/usePtzControl';
 import { PtzLimitPreflightDialog } from './PtzLimitPreflightDialog';
+import { PtzAxisRangeVisualizer } from './PtzAxisRangeVisualizer';
 
 /**
  * Curso total (ms) assumido como *fallback* quando o dome não expõe ONVIF
@@ -481,6 +482,15 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                 {new Date(cal.measured_at).toLocaleString()}
               </div>
             )}
+
+            <PtzAxisRangeVisualizer
+              axis={axis}
+              bounds={AXIS_BOUNDS[axis]}
+              calibrated={l}
+              observed={cal ? { min: cal.min_reported, max: cal.max_reported } : undefined}
+              position={position[axis]}
+              moving={axis === 'zoom' ? statusMoving.zoom ?? false : statusMoving.pan_tilt ?? false}
+            />
 
             <Slider
               value={[l.min, l.max]}
