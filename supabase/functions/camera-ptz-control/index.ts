@@ -294,10 +294,14 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Clamp per-axis contra limites calibrados (camera_ptz_config.limits)
+    const limits = parseLimits((cfg as { limits?: unknown }).limits);
+    const { params: clampedParams, adjusted } = applyLimits(command, params, limits);
+
     // Dispatch
     let camStatus = 0, camBody = '';
     try {
-      const camResp = await dispatch(resolution.transport, cfg, command, params);
+      const camResp = await dispatch(resolution.transport, cfg, command, clampedParams);
       camStatus = camResp.status;
       camBody = (camResp.text ?? '').slice(0, 500);
     } catch (e) {
