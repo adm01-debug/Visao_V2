@@ -2,7 +2,8 @@
  * VISÃO - Página de Câmeras (Refatorada)
  */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useManagedFilters } from '@/hooks/useManagedFilters';
 import {
   Camera, Maximize2, Grid3X3, LayoutGrid, List, RefreshCw,
@@ -60,6 +61,20 @@ export function CamerasPage() {
   const [setupCamera, setSetupCamera] = useState<CameraData | null>(null);
   const openAdd = (mode: 'quick' | 'guided' = 'quick') => { setAddMode(mode); setAddOpen(true); };
   const diag = useRtspValidation();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const autoOpenedRef = useRef(false);
+  useEffect(() => {
+    if (autoOpenedRef.current) return;
+    const flag = searchParams.get('novo');
+    if (flag === '1' || flag === 'guided') {
+      autoOpenedRef.current = true;
+      openAdd('guided');
+      const next = new URLSearchParams(searchParams);
+      next.delete('novo');
+      setSearchParams(next, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const runDiag = async (target: 'primary' | 'substream') => {
     if (!settingsCamera) return;
