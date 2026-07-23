@@ -19,6 +19,8 @@ import { useRtspValidation } from "@/hooks/useRtspValidation";
 import { useFirstSnapshot } from "@/hooks/useFirstSnapshot";
 import { RtspValidationPanel } from "./RtspValidationPanel";
 import { LivePreviewPlayer } from "./LivePreviewPlayer";
+import { RelayAgentSelector } from "@/components/ptz/RelayAgentSelector";
+import { RelayHealthWatchdog } from "@/components/ptz/RelayHealthWatchdog";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
