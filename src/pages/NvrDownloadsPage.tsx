@@ -38,7 +38,9 @@ import { toast } from 'sonner';
 type NvrLite = { id: string; name: string; host: string };
 
 function combineDateTime(date: Date, time: string): Date {
-  const [h, m] = time.split(':').map(Number);
+  const parts = time.split(':').map((n) => Number(n));
+  const h = parts[0] ?? 0;
+  const m = parts[1] ?? 0;
   const d = new Date(date);
   d.setHours(Number.isFinite(h) ? h : 0, Number.isFinite(m) ? m : 0, 0, 0);
   return d;
