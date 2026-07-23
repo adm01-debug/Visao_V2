@@ -336,6 +336,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
           password,
           allow_private: autoDiscover.manualMode ? true : autoDiscover.allowPrivate,
           ...(autoDiscover.manualMode ? { ports: [manualPortNum] } : {}),
+          ...(autoDiscover.relayAgentId ? { relay_agent_id: autoDiscover.relayAgentId } : {}),
         },
       });
       if (error) throw new Error(error.message);
