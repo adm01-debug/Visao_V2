@@ -226,6 +226,47 @@ export default function NvrDetailPage(): JSX.Element {
     }
   }, [prefsKey, mosaicCols, statusFilter, sortMode, autoRefreshSeconds]);
 
+  const defaultKey = id ? `visao:nvr-mosaic-default:${id}` : null;
+  const [hasDefault, setHasDefault] = useState<boolean>(() => {
+    if (typeof window === "undefined" || !defaultKey) return false;
+    try { return !!window.localStorage.getItem(defaultKey); } catch { return false; }
+  });
+
+  const saveAsDefault = () => {
+    if (!defaultKey || typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(
+        defaultKey,
+        JSON.stringify({ cols: mosaicCols, statusFilter, sortMode, autoRefreshSeconds, savedAt: new Date().toISOString() }),
+      );
+      setHasDefault(true);
+      toast({ title: "Padrão salvo", description: "Layout e filtros atuais definidos como padrão deste NVR." });
+    } catch {
+      toast({ title: "Não foi possível salvar", description: "Armazenamento local indisponível.", variant: "destructive" });
+    }
+  };
+
+  const restoreDefault = () => {
+    if (!defaultKey || typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem(defaultKey);
+      if (!raw) {
+        toast({ title: "Sem padrão salvo", description: "Salve o layout atual como padrão primeiro." });
+        return;
+      }
+      const parsed = JSON.parse(raw) as { cols?: string; statusFilter?: string; sortMode?: string; autoRefreshSeconds?: number };
+      if (parsed.cols === "2" || parsed.cols === "3" || parsed.cols === "4") setMosaicCols(parsed.cols);
+      if (parsed.statusFilter === "all" || parsed.statusFilter === "online" || parsed.statusFilter === "offline") setStatusFilter(parsed.statusFilter);
+      if (parsed.sortMode === "channel-asc" || parsed.sortMode === "channel-desc" || parsed.sortMode === "name-asc") setSortMode(parsed.sortMode);
+      const v = parsed.autoRefreshSeconds;
+      if (v === 0 || v === 10 || v === 30 || v === 60) setAutoRefreshSeconds(v);
+      setSearch("");
+      toast({ title: "Padrão restaurado", description: "Layout e filtros voltaram ao padrão deste NVR." });
+    } catch {
+      toast({ title: "Falha ao restaurar", description: "Padrão corrompido no armazenamento local.", variant: "destructive" });
+    }
+  };
+
 
   const filteredChannels = useMemo(() => {
     const rows = channelsQuery.data ?? [];
