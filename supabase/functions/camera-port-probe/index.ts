@@ -137,19 +137,26 @@ Deno.serve(async (req) => {
   }
 
   const host = (payload.host ?? "").trim();
-  const runFrom = payload.run_from === "local_agent" ? "local_agent" : "cloud";
-  const allowPrivate = payload.allow_private === true || runFrom === "local_agent";
+  const relayAgentId = payload.relay_agent_id ?? null;
+  const runFrom = relayAgentId ? "local_agent" : (payload.run_from === "local_agent" ? "local_agent" : "cloud");
+  const allowPrivate = payload.allow_private === true || runFrom === "local_agent" || !!relayAgentId;
 
   if (!host) return j({ error: "missing_host" }, 400);
   if (host.length > 255) return j({ error: "host_too_long" }, 400);
+
+  // Resolve transporte (direto ou via Agente Local). Via relé, IPs privados são
+  // permitidos porque o próprio agente está dentro da LAN da câmera.
+  const resolution = await resolveRelayTransport(req, relayAgentId);
+  if (resolution.error) {
+    return j({ error: resolution.error.code, hint: resolution.error.message }, resolution.error.status);
+  }
 
   if (!allowPrivate && isPrivateHost(host)) {
     return j({
       error: "private_host_blocked",
       hint:
         "Host privado/LAN detectado. Esta rota rodou na nuvem e não tem rota até essa rede. " +
-        "Configure port-forwarding no roteador, use VPN/túnel, ou rode a sonda via agente local " +
-        "encaminhando com run_from=\"local_agent\".",
+        "Configure port-forwarding no roteador, use VPN/túnel, ou selecione um Agente Local (relay_agent_id).",
       run_from: runFrom,
     }, 400);
   }
@@ -167,7 +174,7 @@ Deno.serve(async (req) => {
   );
 
   const started = Date.now();
-  const results = await Promise.all(ports.map((p) => probePort(host, p, timeoutMs)));
+  const results = await Promise.all(ports.map((p) => probePort(resolution.transport, host, p, timeoutMs)));
   const elapsed = Date.now() - started;
 
   return j({
