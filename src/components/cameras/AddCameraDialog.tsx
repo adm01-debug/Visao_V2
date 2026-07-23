@@ -106,6 +106,8 @@ interface AutoDiscoverState {
   message: string | null;
   host: string;
   allowPrivate: boolean;
+  manualMode: boolean;
+  manualPort: string;
 }
 
 
