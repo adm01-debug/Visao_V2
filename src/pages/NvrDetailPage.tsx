@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -58,6 +58,10 @@ function statusBadge(status: string | null): JSX.Element {
 
 export default function NvrDetailPage(): JSX.Element {
   const { id } = useParams<{ id: string }>();
+  const [realtimeStatus, setRealtimeStatus] = useState<"connecting" | "live" | "polling">("connecting");
+  const [lastRealtimeAt, setLastRealtimeAt] = useState<Date | null>(null);
+
+
 
   const nvrQuery = useQuery({
     queryKey: ["nvr", id],
@@ -76,7 +80,7 @@ export default function NvrDetailPage(): JSX.Element {
   const channelsQuery = useQuery({
     queryKey: ["nvr-channels", id],
     enabled: !!id,
-    refetchInterval: 30_000,
+    refetchInterval: () => (realtimeStatus === "live" ? 120_000 : 30_000),
     queryFn: async (): Promise<ChannelRow[]> => {
       const { data, error } = await supabase
         .from("cameras")
@@ -87,6 +91,7 @@ export default function NvrDetailPage(): JSX.Element {
       return (data ?? []) as ChannelRow[];
     },
   });
+
 
   const stats = useMemo(() => {
     const rows = channelsQuery.data ?? [];
@@ -101,6 +106,49 @@ export default function NvrDetailPage(): JSX.Element {
   const { user } = useAuth();
   const { toast } = useToast();
   const [bulkBusy, setBulkBusy] = useState<null | "arm" | "disarm">(null);
+  const queryClient = useQueryClient();
+
+
+  useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+    const channel = supabase
+      .channel(`nvr-mosaic-${id}-${Date.now()}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "cameras", filter: `nvr_id=eq.${id}` },
+        () => {
+          if (cancelled) return;
+          setLastRealtimeAt(new Date());
+          queryClient.invalidateQueries({ queryKey: ["nvr-channels", id] });
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "camera_events" },
+        (payload) => {
+          if (cancelled) return;
+          const camId = (payload.new as { camera_id?: string } | null)?.camera_id;
+          const list = queryClient.getQueryData<ChannelRow[]>(["nvr-channels", id]) ?? [];
+          if (camId && list.some((c) => c.id === camId)) {
+            setLastRealtimeAt(new Date());
+            queryClient.invalidateQueries({ queryKey: ["nvr-channels", id] });
+          }
+        },
+      )
+      .subscribe((status) => {
+        if (cancelled) return;
+        if (status === "SUBSCRIBED") setRealtimeStatus("live");
+        else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+          setRealtimeStatus("polling");
+        }
+      });
+    return () => {
+      cancelled = true;
+      supabase.removeChannel(channel);
+    };
+  }, [id, queryClient]);
+
   const prefsKey = id ? `visao:nvr-mosaic-prefs:${id}` : null;
   const [mosaicCols, setMosaicCols] = useState<"2" | "3" | "4">(() => {
     if (typeof window === "undefined" || !prefsKey) return "3";
@@ -524,11 +572,42 @@ export default function NvrDetailPage(): JSX.Element {
                           </button>
                         )}
                       </span>
-                      {channelsQuery.dataUpdatedAt > 0 && (
-                        <span aria-live="polite">
-                          Atualizado às {new Date(channelsQuery.dataUpdatedAt).toLocaleTimeString("pt-BR")}
+                      <span className="flex items-center gap-3">
+                        <span
+                          className="inline-flex items-center gap-1.5"
+                          title={
+                            realtimeStatus === "live"
+                              ? "Atualizações ao vivo via WebSocket"
+                              : realtimeStatus === "polling"
+                                ? "WebSocket indisponível — usando polling a cada 30s"
+                                : "Conectando ao canal em tempo real…"
+                          }
+                        >
+                          <span
+                            className={
+                              "h-2 w-2 rounded-full " +
+                              (realtimeStatus === "live"
+                                ? "bg-emerald-500 animate-pulse"
+                                : realtimeStatus === "polling"
+                                  ? "bg-amber-500"
+                                  : "bg-muted-foreground/50")
+                            }
+                            aria-hidden
+                          />
+                          {realtimeStatus === "live" ? "Ao vivo" : realtimeStatus === "polling" ? "Polling" : "Conectando"}
                         </span>
-                      )}
+                        {lastRealtimeAt && realtimeStatus === "live" && (
+                          <span className="text-muted-foreground/70">
+                            evento {lastRealtimeAt.toLocaleTimeString("pt-BR")}
+                          </span>
+                        )}
+                        {channelsQuery.dataUpdatedAt > 0 && (
+                          <span aria-live="polite">
+                            Atualizado {new Date(channelsQuery.dataUpdatedAt).toLocaleTimeString("pt-BR")}
+                          </span>
+                        )}
+                      </span>
+
                     </div>
                   )}
 
