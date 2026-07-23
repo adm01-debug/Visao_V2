@@ -78,7 +78,7 @@ function DateTimeField({
               mode="single"
               selected={date}
               onSelect={onDateChange}
-              initialFocus
+              autoFocus
               className={cn('p-3 pointer-events-auto')}
             />
           </PopoverContent>
