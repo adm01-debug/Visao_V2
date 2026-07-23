@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ArrowDown, ArrowLeft, ArrowRight, ArrowUp, CheckCircle2, Home,
-  Loader2, Radar, Save, Star, Wand2, ZoomIn, ZoomOut,
+  Loader2, Radar, Save, Sparkles, Star, Wand2, ZoomIn, ZoomOut,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -17,13 +17,23 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { usePtzControl } from '@/hooks/usePtzControl';
+import { getProfileById } from '@/lib/onvifProfiles';
 
 interface PtzSetupWizardProps {
   cameraId: string;
   cameraName?: string;
+  /**
+   * Perfil OEM detectado (ex.: `xiongmai-nbd80x`). Quando informado, o wizard
+   * pré-aplica os `ptzBackends` do perfil em modo `auto-multi` — dispensando
+   * a pergunta sobre marca do dome, já que a XiongMai encapsula domes de
+   * múltiplos fabricantes (PELCO-D, DaHua-SD, Hikvision, etc.) e o firmware
+   * negocia o protocolo internamente.
+   */
+  profileId?: string | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
+
 
 type PtzLimits = {
   pan: { min: number; max: number };
