@@ -342,7 +342,7 @@ export default function OperationsPage() {
       </section>
 
       <section>
-        <ConnectivityResolutionCard defaultWindowHours={168} />
+        <ConnectivityResolutionCard windowHours={168} />
       </section>
 
 
