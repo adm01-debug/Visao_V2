@@ -142,6 +142,9 @@ export default function NvrDetailPage(): JSX.Element {
   });
   const [fullscreenId, setFullscreenId] = useState<string | null>(null);
   const [cycleSeconds, setCycleSeconds] = useState<0 | 5 | 10 | 30>(0);
+  const [cyclePaused, setCyclePaused] = useState<boolean>(false);
+  const [cycleProgress, setCycleProgress] = useState<number>(0);
+
 
   useEffect(() => {
     if (!prefsKey || typeof window === "undefined") return;
@@ -210,17 +213,28 @@ export default function NvrDetailPage(): JSX.Element {
   }, [fullscreenId, filteredChannels, channelsQuery.data]);
 
   useEffect(() => {
-    if (!fullscreenId || cycleSeconds === 0) return;
+    setCycleProgress(0);
+    if (!fullscreenId || cycleSeconds === 0 || cyclePaused) return;
     const list = filteredChannels.length > 0 ? filteredChannels : (channelsQuery.data ?? []);
     if (list.length < 2) return;
-    const timer = window.setInterval(() => {
+    const totalMs = cycleSeconds * 1000;
+    const startedAt = Date.now();
+    const tick = window.setInterval(() => {
+      const elapsed = Date.now() - startedAt;
+      setCycleProgress(Math.min(1, elapsed / totalMs));
+    }, 100);
+    const timer = window.setTimeout(() => {
       const idx = list.findIndex((c) => c.id === fullscreenId);
       if (idx < 0) return;
       const next = list[(idx + 1) % list.length];
       if (next) setFullscreenId(next.id);
-    }, cycleSeconds * 1000);
-    return () => window.clearInterval(timer);
-  }, [fullscreenId, cycleSeconds, filteredChannels, channelsQuery.data]);
+    }, totalMs);
+    return () => {
+      window.clearInterval(tick);
+      window.clearTimeout(timer);
+    };
+  }, [fullscreenId, cycleSeconds, cyclePaused, filteredChannels, channelsQuery.data]);
+
 
   async function bulkAction(action: "arm" | "disarm"): Promise<void> {
     const channels = channelsQuery.data ?? [];
@@ -613,7 +627,10 @@ export default function NvrDetailPage(): JSX.Element {
                 <div
                   className="relative w-full max-w-6xl aspect-video overflow-hidden rounded-xl border bg-muted shadow-2xl"
                   onClick={(e) => e.stopPropagation()}
+                  onMouseEnter={() => setCyclePaused(true)}
+                  onMouseLeave={() => setCyclePaused(false)}
                 >
+
                   <div className="absolute inset-0 flex items-center justify-center">
                     {fullscreenChannel.status === "online" ? (
                       <Video className="h-20 w-20 text-muted-foreground/60" aria-hidden />
@@ -682,9 +699,17 @@ export default function NvrDetailPage(): JSX.Element {
                   <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-4 flex items-end justify-between gap-2">
                     <p className="text-base font-medium truncate">{fullscreenChannel.name}</p>
                     <p className="text-xs text-muted-foreground hidden sm:block">
-                      ← / → navegar · Esc fechar
+                      ← / → navegar · Esc fechar{cycleSeconds > 0 ? (cyclePaused ? " · ciclo pausado" : " · passe o mouse para pausar") : ""}
                     </p>
                   </div>
+                  {cycleSeconds > 0 && total > 1 && (
+                    <div
+                      className="absolute bottom-0 inset-x-0 h-1 bg-primary/80 transition-[width] duration-100 ease-linear"
+                      style={{ width: `${Math.round((cyclePaused ? 0 : cycleProgress) * 100)}%` }}
+                      aria-hidden
+                    />
+                  )}
+
                 </div>
               </div>
             );
