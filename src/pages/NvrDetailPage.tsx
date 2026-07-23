@@ -101,6 +101,50 @@ export default function NvrDetailPage(): JSX.Element {
   const { user } = useAuth();
   const { toast } = useToast();
   const [bulkBusy, setBulkBusy] = useState<null | "arm" | "disarm">(null);
+  const [realtimeStatus, setRealtimeStatus] = useState<"connecting" | "live" | "polling">("connecting");
+  const [lastRealtimeAt, setLastRealtimeAt] = useState<Date | null>(null);
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+    const channel = supabase
+      .channel(`nvr-mosaic-${id}-${Date.now()}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "cameras", filter: `nvr_id=eq.${id}` },
+        () => {
+          if (cancelled) return;
+          setLastRealtimeAt(new Date());
+          queryClient.invalidateQueries({ queryKey: ["nvr-channels", id] });
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "camera_events" },
+        (payload) => {
+          if (cancelled) return;
+          const camId = (payload.new as { camera_id?: string } | null)?.camera_id;
+          const list = queryClient.getQueryData<ChannelRow[]>(["nvr-channels", id]) ?? [];
+          if (camId && list.some((c) => c.id === camId)) {
+            setLastRealtimeAt(new Date());
+            queryClient.invalidateQueries({ queryKey: ["nvr-channels", id] });
+          }
+        },
+      )
+      .subscribe((status) => {
+        if (cancelled) return;
+        if (status === "SUBSCRIBED") setRealtimeStatus("live");
+        else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+          setRealtimeStatus("polling");
+        }
+      });
+    return () => {
+      cancelled = true;
+      supabase.removeChannel(channel);
+    };
+  }, [id, queryClient]);
+
   const prefsKey = id ? `visao:nvr-mosaic-prefs:${id}` : null;
   const [mosaicCols, setMosaicCols] = useState<"2" | "3" | "4">(() => {
     if (typeof window === "undefined" || !prefsKey) return "3";
