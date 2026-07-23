@@ -2115,6 +2115,48 @@ export type Database = {
           },
         ]
       }
+      firmware_fingerprint_events: {
+        Row: {
+          created_at: string
+          evidence: Json
+          id: string
+          matched_count: number
+          sha256: string
+          size_bytes: number | null
+          source: string
+          top_brand: string | null
+          top_profile_id: string | null
+          top_score: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          evidence?: Json
+          id?: string
+          matched_count?: number
+          sha256: string
+          size_bytes?: number | null
+          source: string
+          top_brand?: string | null
+          top_profile_id?: string | null
+          top_score?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          evidence?: Json
+          id?: string
+          matched_count?: number
+          sha256?: string
+          size_bytes?: number | null
+          source?: string
+          top_brand?: string | null
+          top_profile_id?: string | null
+          top_score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       glacier_stuck_alerts: {
         Row: {
           alerted_at: string

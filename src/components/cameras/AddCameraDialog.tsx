@@ -73,6 +73,7 @@ import {
   findTemplate,
   renderTemplate,
 } from "@/lib/rtspTemplates";
+import { FirmwareAutodetectCard, type FirmwareAutodetectSuggestion } from "./FirmwareAutodetectCard";
 
 interface AddCameraDialogProps {
   open: boolean;
@@ -337,6 +338,24 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       return;
     }
     apply();
+  };
+
+  /**
+   * Aplica sugestão do FirmwareAutodetectCard: define marca, template preferido
+   * e porta RTSP padrão. Mantém o host/canal já digitados pelo usuário.
+   */
+  const handleApplyAutodetect = (s: FirmwareAutodetectSuggestion) => {
+    form.setValue("brand", s.brandId as AddCameraFormValues["brand"], {
+      shouldDirty: true,
+    });
+    setTemplateCtx((prev) => ({
+      ...prev,
+      templateId: s.templateId ?? "",
+      port: s.defaultPorts.rtsp ? String(s.defaultPorts.rtsp) : prev.port,
+    }));
+    toast.success(`Marca definida: ${s.displayName}`, {
+      description: s.templateId ? `Template sugerido: ${s.templateId}` : undefined,
+    });
   };
 
 
@@ -1156,6 +1175,8 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
             </div>
           </div>
 
+
+          <FirmwareAutodetectCard onApply={handleApplyAutodetect} />
 
           <div className="space-y-2 rounded-md border border-border/60 bg-muted/40 p-3">
             <div className="flex items-center justify-between gap-2">

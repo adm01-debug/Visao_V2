@@ -36,6 +36,7 @@ import {
   type RtspBrand,
   type RtspTemplate,
 } from "@/lib/rtspTemplates";
+import { FirmwareAutodetectCard, type FirmwareAutodetectSuggestion } from "./FirmwareAutodetectCard";
 import { buildRtspUrl } from "@/components/cameras/addCameraSchema";
 
 const nvrFormSchema = z.object({
@@ -96,6 +97,25 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
       return next;
     });
     setErrors((prev) => ({ ...prev, [key]: undefined }));
+  };
+
+  const handleApplyAutodetect = (s: FirmwareAutodetectSuggestion) => {
+    setValues((prev) => {
+      const brand = s.brandId as RtspBrand;
+      const templates = getTemplatesForBrand(brand);
+      const templateId =
+        (s.templateId && templates.find((t) => t.id === s.templateId)?.id) ||
+        templates[0]?.id ||
+        prev.templateId;
+      const template = templates.find((t) => t.id === templateId);
+      return {
+        ...prev,
+        brand,
+        templateId,
+        port: template?.defaultPort ?? s.defaultPorts.rtsp ?? prev.port,
+      };
+    });
+    setErrors({});
   };
 
   const previewUrls = useMemo(() => {
@@ -188,6 +208,7 @@ export function AddNvrDialog({ open, onOpenChange, onCreated }: AddNvrDialogProp
         </DialogHeader>
 
         <div className="space-y-4">
+          <FirmwareAutodetectCard onApply={handleApplyAutodetect} />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="nvr-name">Nome do NVR</Label>
