@@ -30,7 +30,12 @@ import {
 } from '@/components/ui/dialog';
 import { PtzJoystick } from './PtzJoystick';
 import { PtzSetupWizard } from './PtzSetupWizard';
+import { RelayAgentSelector } from './RelayAgentSelector';
 import { usePtzControl } from '@/hooks/usePtzControl';
+import {
+  loadPersistedRelayAgent,
+  persistRelayAgent,
+} from '@/hooks/useActiveRelayAgents';
 
 interface PtzControlPanelProps {
   cameraId: string;
@@ -42,7 +47,13 @@ interface PtzControlPanelProps {
  * zoom/foco/íris, presets e patrulhas. Integra atalhos de teclado.
  */
 export function PtzControlPanel({ cameraId, cameraName }: PtzControlPanelProps) {
-  const ptz = usePtzControl({ cameraId });
+  const [relayAgentId, setRelayAgentId] = useState<string | null>(() =>
+    loadPersistedRelayAgent(cameraId)
+  );
+  useEffect(() => {
+    persistRelayAgent(cameraId, relayAgentId);
+  }, [cameraId, relayAgentId]);
+  const ptz = usePtzControl({ cameraId, relayAgentId });
   const [speed, setSpeed] = useState(5);
   const [zoomVal, setZoomVal] = useState(0);
   const [savingPreset, setSavingPreset] = useState<{ n: number; name: string } | null>(null);
