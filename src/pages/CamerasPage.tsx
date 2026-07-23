@@ -75,6 +75,12 @@ export function CamerasPage() {
       const next = new URLSearchParams(searchParams);
       next.delete('novo');
       setSearchParams(next, { replace: true });
+    } else if (flag === 'nvr') {
+      autoOpenedRef.current = true;
+      setAddNvrOpen(true);
+      const next = new URLSearchParams(searchParams);
+      next.delete('novo');
+      setSearchParams(next, { replace: true });
     }
   }, [searchParams, setSearchParams]);
 
