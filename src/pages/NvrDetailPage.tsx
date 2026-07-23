@@ -452,6 +452,19 @@ export default function NvrDetailPage(): JSX.Element {
                           <WifiOff className="h-3 w-3" /> Offline
                         </ToggleGroupItem>
                       </ToggleGroup>
+                      <ToggleGroup
+                        type="single"
+                        size="sm"
+                        value={sortMode}
+                        onValueChange={(v) => v && setSortMode(v as typeof sortMode)}
+                        aria-label="Ordenação dos canais"
+                      >
+                        <ToggleGroupItem value="channel-asc" aria-label="Canal crescente">
+                          <ArrowUpDown className="h-3 w-3 mr-1" /> CH ↑
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="channel-desc" aria-label="Canal decrescente">CH ↓</ToggleGroupItem>
+                        <ToggleGroupItem value="name-asc" aria-label="Nome A-Z">A-Z</ToggleGroupItem>
+                      </ToggleGroup>
                       <Button
                         size="sm"
                         variant="outline"
