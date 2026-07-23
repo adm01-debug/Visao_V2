@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Crosshair, Gauge, Home, Loader2, Signal, ZoomIn, ZoomOut,
+  ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Crosshair, Gauge, Home, Loader2, ShieldCheck, Signal, ZoomIn, ZoomOut,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
 import type { usePtzControl } from '@/hooks/usePtzControl';
+import { PtzLimitPreflightDialog } from './PtzLimitPreflightDialog';
 
 /**
  * Curso total (ms) assumido como *fallback* quando o dome não expõe ONVIF
@@ -74,6 +75,14 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
   const [calibration, setCalibration] = useState<CalibrationMap>({});
   const [measuringAxis, setMeasuringAxis] = useState<PtzAxis | null>(null);
   const measureAbortRef = useRef<boolean>(false);
+
+  // Rastreia quais eixos tiveram min/max capturados NESTA sessão (habilita pré-voo).
+  const [freshCaptures, setFreshCaptures] = useState<Record<PtzAxis, { min: boolean; max: boolean }>>({
+    pan: { min: false, max: false },
+    tilt: { min: false, max: false },
+    zoom: { min: false, max: false },
+  });
+  const [preflightAxis, setPreflightAxis] = useState<PtzAxis | null>(null);
 
   const clamp = useCallback((axis: PtzAxis, v: number) => {
     const [lo, hi] = AXIS_BOUNDS[axis];
@@ -193,6 +202,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
       return;
     }
     onChange({ ...limits, [axis]: { ...limits[axis], [edge]: Number(cur.toFixed(3)) } });
+    setFreshCaptures((prev) => ({ ...prev, [axis]: { ...prev[axis], [edge]: true } }));
     toast.success(`${AXIS_LABEL[axis]} · limite ${edge === 'min' ? 'mínimo' : 'máximo'} capturado em ${cur.toFixed(2)}`);
   }, [position, limits, onChange]);
 
@@ -204,6 +214,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
 
   const resetAxis = useCallback((axis: PtzAxis) => {
     onChange({ ...limits, [axis]: { min: AXIS_BOUNDS[axis][0], max: AXIS_BOUNDS[axis][1] } });
+    setFreshCaptures((prev) => ({ ...prev, [axis]: { min: false, max: false } }));
   }, [limits, onChange]);
 
   /**
@@ -333,7 +344,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
       size="sm"
       variant="outline"
       className="h-9 w-9 p-0 select-none"
-      disabled={measuringAxis !== null}
+      disabled={measuringAxis !== null || preflightAxis !== null}
       onMouseDown={() => void beginJog(axis, dir)}
       onTouchStart={(e) => { e.preventDefault(); void beginJog(axis, dir); }}
       onMouseUp={() => void endJog()}
@@ -371,7 +382,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
             )}
           </div>
         </div>
-        <Button size="sm" variant="secondary" onClick={() => void resetOrigin()} disabled={measuringAxis !== null}>
+        <Button size="sm" variant="secondary" onClick={() => void resetOrigin()} disabled={measuringAxis !== null || preflightAxis !== null}>
           <Home className="w-3.5 h-3.5 mr-1" /> Origem
         </Button>
       </div>
@@ -425,7 +436,7 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                 size="sm"
                 variant="outline"
                 onClick={() => void measureSweep(axis)}
-                disabled={statusSupported !== true || measuringAxis !== null}
+                disabled={statusSupported !== true || measuringAxis !== null || preflightAxis !== null}
                 title={statusSupported === false
                   ? 'Driver não expõe ONVIF GetStatus'
                   : 'Aciona o dome e mede o tempo real de varredura'}
@@ -434,13 +445,31 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
                   ? (<><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Medindo…</>)
                   : (<><Gauge className="w-3.5 h-3.5 mr-1" /> {statusSupported === false ? 'Medição indisponível' : 'Medir sweep real'}</>)}
               </Button>
-              <Button size="sm" variant="outline" onClick={() => capture(axis, 'min')} disabled={measuringAxis !== null}>
+              <Button size="sm" variant="outline" onClick={() => capture(axis, 'min')} disabled={measuringAxis !== null || preflightAxis !== null}>
                 Marcar mínimo
               </Button>
-              <Button size="sm" variant="outline" onClick={() => capture(axis, 'max')} disabled={measuringAxis !== null}>
+              <Button size="sm" variant="outline" onClick={() => capture(axis, 'max')} disabled={measuringAxis !== null || preflightAxis !== null}>
                 Marcar máximo
               </Button>
-              <Button size="sm" variant="ghost" onClick={() => resetAxis(axis)} disabled={measuringAxis !== null}>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setPreflightAxis(axis)}
+                disabled={
+                  measuringAxis !== null ||
+                  preflightAxis !== null ||
+                  !freshCaptures[axis].min ||
+                  !freshCaptures[axis].max
+                }
+                title={
+                  !freshCaptures[axis].min || !freshCaptures[axis].max
+                    ? 'Capture mínimo e máximo nesta sessão antes de validar'
+                    : 'Executa pré-voo até os limites com confirmação'
+                }
+              >
+                <ShieldCheck className="w-3.5 h-3.5 mr-1" /> Validar limites
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => resetAxis(axis)} disabled={measuringAxis !== null || preflightAxis !== null}>
                 Reset
               </Button>
             </div>
@@ -471,6 +500,20 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
         de enviar ao firmware — valores fora do intervalo são rejeitados e registrados em
         <code className="font-mono"> ptz_connection_attempts</code>. Cada medição de sweep também é auditada.
       </div>
+
+      {preflightAxis && (
+        <PtzLimitPreflightDialog
+          open={preflightAxis !== null}
+          onOpenChange={(v) => { if (!v) setPreflightAxis(null); }}
+          axis={preflightAxis}
+          limits={limits[preflightAxis]}
+          sweepMs={sweepMsByAxis[preflightAxis]}
+          statusSupported={statusSupported === true}
+          startPosition={position[preflightAxis]}
+          ptz={ptz}
+          cameraId={cameraId}
+        />
+      )}
     </div>
   );
 }
