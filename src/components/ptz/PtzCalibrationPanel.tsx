@@ -596,6 +596,152 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
   }, [statusSupported, sweepMsByAxis, measuringAxis, revalidatingAxis, ptz, clamp, limits]);
 
   /**
+   * Eixos que apresentaram desvio > RECAPTURE_THRESHOLD_PCT na última
+   * revalidação. Enquanto esse conjunto for não-vazio, os avanços
+   * (pré-voo individual e multi-eixos) ficam bloqueados até nova captura.
+   */
+  const recaptureRequired = useMemo<Record<PtzAxis, boolean>>(() => {
+    const pick = (a: PtzAxis) => {
+      const v = validation[a];
+      return !!v && v.error_pct > RECAPTURE_THRESHOLD_PCT;
+    };
+    return { pan: pick('pan'), tilt: pick('tilt'), zoom: pick('zoom') };
+  }, [validation]);
+
+  const hasRecaptureRequired = recaptureRequired.pan || recaptureRequired.tilt || recaptureRequired.zoom;
+
+  // Ao detectar desvio acima do limiar, invalida as capturas frescas do eixo
+  // — o pré-voo passa a exigir novo min/max antes de qualquer avanço.
+  useEffect(() => {
+    (['pan', 'tilt', 'zoom'] as const).forEach((a) => {
+      if (recaptureRequired[a]) {
+        setFreshCaptures((prev) =>
+          prev[a].min || prev[a].max ? { ...prev, [a]: { min: false, max: false } } : prev,
+        );
+      }
+    });
+  }, [recaptureRequired]);
+
+  /**
+   * Recaptura guiada de min/max: aciona o dome em direção negativa até a
+   * estagnação (limite físico), captura o mínimo, faz o mesmo no sentido
+   * positivo e captura o máximo. Persiste ambos como fresh e limpa a
+   * revalidação anterior. Cancelável e usa o mesmo mecanismo de detecção
+   * de parada da rotina de sweep.
+   */
+  const guidedRecapture = useCallback(async (axis: PtzAxis) => {
+    if (!statusSupported) {
+      toast.error('Recaptura guiada indisponível (driver não expõe GetStatus).');
+      return;
+    }
+    if (measuringAxis || revalidatingAxis || recapturingAxis || jogStartRef.current) return;
+    setRecapturingAxis(axis);
+    setRecaptureStage('to-min');
+    setRecaptureProgress(0);
+    recaptureAbortRef.current = false;
+
+    const range = AXIS_BOUNDS[axis][1] - AXIS_BOUNDS[axis][0];
+
+    const readAxis = (st: Awaited<ReturnType<typeof ptz.getStatus>>): number | null => {
+      if (!st) return null;
+      const v = st.position[axis];
+      return typeof v === 'number' && Number.isFinite(v) ? clamp(axis, v) : null;
+    };
+    const isMoving = (st: Awaited<ReturnType<typeof ptz.getStatus>>): boolean | null => {
+      if (!st) return null;
+      return axis === 'zoom' ? st.moving.zoom : st.moving.pan_tilt;
+    };
+
+    const driveToStall = async (dir: -1 | 1): Promise<number | null> => {
+      const st0 = await ptz.getStatus();
+      let p0 = readAxis(st0);
+      if (p0 == null) return null;
+      if (axis === 'zoom') await ptz.zoom(dir * 0.6, 4);
+      else {
+        const params = axis === 'pan' ? { pan: dir * 0.6, tilt: 0 } : { pan: 0, tilt: dir * 0.6 };
+        await ptz.startMove({ ...params, speed: 4 });
+      }
+      const started = performance.now();
+      let pLast = p0;
+      let stall = 0;
+      try {
+        while (performance.now() - started < MEASURE_TIMEOUT_MS) {
+          if (recaptureAbortRef.current) break;
+          await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
+          const st = await ptz.getStatus();
+          const p = readAxis(st);
+          const mv = isMoving(st);
+          if (p != null) {
+            setPosition((prev) => ({ ...prev, [axis]: p }));
+            const dP = Math.abs(p - pLast);
+            if (dP < STALL_EPSILON * range) stall += 1; else stall = 0;
+            pLast = p;
+          }
+          const elapsed = performance.now() - started;
+          setRecaptureProgress(Math.min(95, Math.round((elapsed / MEASURE_TIMEOUT_MS) * 100)));
+          if (mv === false && Math.abs(pLast - p0) > STALL_EPSILON * range * 0.5) break;
+          if (stall >= STALL_CONFIRM_SAMPLES) break;
+        }
+      } finally {
+        try {
+          if (axis === 'zoom') await ptz.send('stop');
+          else await ptz.stopMove();
+        } catch { /* noop */ }
+      }
+      // Estabiliza e re-lê para captura autoritativa.
+      await new Promise((r) => setTimeout(r, 250));
+      const stF = await ptz.getStatus();
+      const pF = readAxis(stF);
+      return pF ?? pLast;
+    };
+
+    try {
+      const pMin = await driveToStall(-1);
+      if (recaptureAbortRef.current || pMin == null) {
+        toast.error('Recaptura de mínimo abortada ou sem leitura.');
+        return;
+      }
+      setRecaptureStage('to-max');
+      setRecaptureProgress(0);
+      const pMax = await driveToStall(1);
+      if (recaptureAbortRef.current || pMax == null) {
+        toast.error('Recaptura de máximo abortada ou sem leitura.');
+        return;
+      }
+      if (pMin >= pMax) {
+        toast.error(`Recaptura inválida: min (${pMin.toFixed(2)}) ≥ max (${pMax.toFixed(2)}).`);
+        return;
+      }
+      const nextLimits: PtzLimits = {
+        ...limits,
+        [axis]: { min: Number(pMin.toFixed(3)), max: Number(pMax.toFixed(3)) },
+      };
+      onChange(nextLimits);
+      setFreshCaptures((prev) => ({ ...prev, [axis]: { min: true, max: true } }));
+      setValidation((prev) => {
+        const next = { ...prev };
+        delete next[axis];
+        return next;
+      });
+      setPosition((prev) => ({ ...prev, [axis]: pMax }));
+      setRecaptureStage('done');
+      setRecaptureProgress(100);
+      toast.success(
+        `${AXIS_LABEL[axis]}: recaptura concluída [${pMin.toFixed(2)} → ${pMax.toFixed(2)}]. ` +
+        `Clique em Salvar para persistir.`,
+      );
+    } finally {
+      setRecapturingAxis(null);
+      // Deixa o "done" visível por um instante e reseta.
+      setTimeout(() => {
+        setRecaptureStage('idle');
+        setRecaptureProgress(0);
+      }, 1200);
+    }
+  }, [statusSupported, measuringAxis, revalidatingAxis, recapturingAxis, ptz, clamp, limits, onChange]);
+
+
+  /**
    * Persiste ajuste manual dos valores observados (`min_reported`/`max_reported`)
    * quando a medição automática saturou no fim de curso do dome e o operador
    * quer registrar o range verdadeiro conhecido.
