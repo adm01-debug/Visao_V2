@@ -612,7 +612,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                 ) : (
                   <Search className="mr-2 h-4 w-4" />
                 )}
-                Descobrir agora
+                {autoDiscover.manualMode ? "Conectar ao endpoint" : "Descobrir agora"}
               </Button>
             </div>
             <label className="flex items-center gap-2 text-[11px] text-muted-foreground">
