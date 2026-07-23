@@ -41,7 +41,7 @@ export function CronWatchdogEscalationCard() {
       supabase.rpc('cron_watchdog_consecutive_problems', { _min_runs: THRESHOLD }),
       supabase
         .from('cron_watchdog_escalations')
-        .select('id, escalated_at, jobname, consecutive_failures, last_reason, delivered, delivery_error')
+        .select('id, escalated_at, jobname, consecutive_failures, last_reason, delivered, delivery_error, acknowledged_at, acknowledgement_note')
         .order('escalated_at', { ascending: false })
         .limit(15),
     ]);
