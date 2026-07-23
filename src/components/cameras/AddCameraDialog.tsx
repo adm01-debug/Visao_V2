@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { useRtspValidation } from "@/hooks/useRtspValidation";
 import { useFirstSnapshot } from "@/hooks/useFirstSnapshot";
 import { RtspValidationPanel } from "./RtspValidationPanel";
+import { LivePreviewPlayer } from "./LivePreviewPlayer";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -984,6 +985,26 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
               />
             </div>
           )}
+
+          {rtspValidation.result &&
+            rtspValidation.result.score !== "critical" &&
+            form.getValues("rtspUrl") && (
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-muted-foreground">
+                  Prévia ao vivo (60s)
+                </p>
+                <LivePreviewPlayer
+                  key={form.getValues("rtspUrl")}
+                  rtspUrl={buildRtspUrl(
+                    form.getValues("rtspUrl"),
+                    form.getValues("username") || undefined,
+                    form.getValues("password") || undefined,
+                  )}
+                />
+              </div>
+            )}
+
+
 
 
           {guided && rtspValidation.result?.score === "critical" && (
