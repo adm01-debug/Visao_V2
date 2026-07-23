@@ -12,7 +12,7 @@ import { PageMeta } from "@/components/PageMeta";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Server, Radio, Wifi, WifiOff, HelpCircle, Lock, Unlock, Loader2, LayoutGrid, VideoOff, Video, Search, Maximize2, RefreshCw, ArrowUpDown } from "lucide-react";
+import { ArrowLeft, Server, Radio, Wifi, WifiOff, HelpCircle, Lock, Unlock, Loader2, LayoutGrid, VideoOff, Video, Search, Maximize2, RefreshCw, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface NvrRow {
   id: string;
@@ -579,48 +579,83 @@ export default function NvrDetailPage(): JSX.Element {
             </TabsContent>
           </Tabs>
 
-          {fullscreenChannel && (
-            <div
-              className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 p-4 backdrop-blur"
-              role="dialog"
-              aria-modal="true"
-              aria-label={`Canal ${fullscreenChannel.channel_number ?? ""} em tela cheia`}
-              onClick={() => setFullscreenId(null)}
-            >
+          {fullscreenChannel && (() => {
+            const navList = filteredChannels.length > 0 ? filteredChannels : (channelsQuery.data ?? []);
+            const curIdx = navList.findIndex((c) => c.id === fullscreenChannel.id);
+            const total = navList.length;
+            const goDelta = (delta: number): void => {
+              if (total === 0 || curIdx < 0) return;
+              const next = navList[(curIdx + delta + total) % total];
+              if (next) setFullscreenId(next.id);
+            };
+            return (
               <div
-                className="relative w-full max-w-6xl aspect-video overflow-hidden rounded-xl border bg-muted shadow-2xl"
-                onClick={(e) => e.stopPropagation()}
+                className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 p-4 backdrop-blur"
+                role="dialog"
+                aria-modal="true"
+                aria-label={`Canal ${fullscreenChannel.channel_number ?? ""} em tela cheia`}
+                onClick={() => setFullscreenId(null)}
               >
-                <div className="absolute inset-0 flex items-center justify-center">
-                  {fullscreenChannel.status === "online" ? (
-                    <Video className="h-20 w-20 text-muted-foreground/60" aria-hidden />
-                  ) : (
-                    <VideoOff className="h-20 w-20 text-destructive/50" aria-hidden />
+                <div
+                  className="relative w-full max-w-6xl aspect-video overflow-hidden rounded-xl border bg-muted shadow-2xl"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    {fullscreenChannel.status === "online" ? (
+                      <Video className="h-20 w-20 text-muted-foreground/60" aria-hidden />
+                    ) : (
+                      <VideoOff className="h-20 w-20 text-destructive/50" aria-hidden />
+                    )}
+                  </div>
+                  <div className="absolute top-3 left-3 flex items-center gap-2">
+                    <Badge variant="secondary" className="font-mono">
+                      CH {fullscreenChannel.channel_number ?? "—"}
+                    </Badge>
+                    {statusBadge(fullscreenChannel.status)}
+                    {total > 1 && (
+                      <Badge variant="outline" className="font-mono text-xs">
+                        {curIdx + 1}/{total}
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="absolute top-3 right-3 flex gap-2">
+                    <Button asChild size="sm" variant="secondary">
+                      <Link to={`/cameras/${fullscreenChannel.id}`}>Abrir canal</Link>
+                    </Button>
+                    <Button size="sm" variant="secondary" onClick={() => setFullscreenId(null)}>
+                      Fechar
+                    </Button>
+                  </div>
+                  {total > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => goDelta(-1)}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        aria-label="Canal anterior"
+                      >
+                        <ChevronLeft className="h-6 w-6" aria-hidden />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => goDelta(1)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        aria-label="Próximo canal"
+                      >
+                        <ChevronRight className="h-6 w-6" aria-hidden />
+                      </button>
+                    </>
                   )}
-                </div>
-                <div className="absolute top-3 left-3 flex items-center gap-2">
-                  <Badge variant="secondary" className="font-mono">
-                    CH {fullscreenChannel.channel_number ?? "—"}
-                  </Badge>
-                  {statusBadge(fullscreenChannel.status)}
-                </div>
-                <div className="absolute top-3 right-3 flex gap-2">
-                  <Button asChild size="sm" variant="secondary">
-                    <Link to={`/cameras/${fullscreenChannel.id}`}>Abrir canal</Link>
-                  </Button>
-                  <Button size="sm" variant="secondary" onClick={() => setFullscreenId(null)}>
-                    Fechar
-                  </Button>
-                </div>
-                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-4 flex items-end justify-between gap-2">
-                  <p className="text-base font-medium truncate">{fullscreenChannel.name}</p>
-                  <p className="text-xs text-muted-foreground hidden sm:block">
-                    ← / → navegar · Esc fechar
-                  </p>
+                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-4 flex items-end justify-between gap-2">
+                    <p className="text-base font-medium truncate">{fullscreenChannel.name}</p>
+                    <p className="text-xs text-muted-foreground hidden sm:block">
+                      ← / → navegar · Esc fechar
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
         </>
       )}
     </div>
