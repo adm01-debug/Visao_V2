@@ -2687,6 +2687,11 @@ export type Database = {
           bytes_downloaded: number
           channel: number
           completed_at: string | null
+          conversion_error: string | null
+          conversion_status: string | null
+          converted_at: string | null
+          converted_bytes: number | null
+          converted_storage_path: string | null
           created_at: string
           end_time: string
           id: string
@@ -2695,6 +2700,7 @@ export type Database = {
           nvr_id: string
           progress_percent: number
           remote_file_path: string | null
+          source_format: string | null
           start_time: string
           started_at: string | null
           status: string
@@ -2710,6 +2716,11 @@ export type Database = {
           bytes_downloaded?: number
           channel: number
           completed_at?: string | null
+          conversion_error?: string | null
+          conversion_status?: string | null
+          converted_at?: string | null
+          converted_bytes?: number | null
+          converted_storage_path?: string | null
           created_at?: string
           end_time: string
           id?: string
@@ -2718,6 +2729,7 @@ export type Database = {
           nvr_id: string
           progress_percent?: number
           remote_file_path?: string | null
+          source_format?: string | null
           start_time: string
           started_at?: string | null
           status?: string
@@ -2733,6 +2745,11 @@ export type Database = {
           bytes_downloaded?: number
           channel?: number
           completed_at?: string | null
+          conversion_error?: string | null
+          conversion_status?: string | null
+          converted_at?: string | null
+          converted_bytes?: number | null
+          converted_storage_path?: string | null
           created_at?: string
           end_time?: string
           id?: string
@@ -2741,6 +2758,7 @@ export type Database = {
           nvr_id?: string
           progress_percent?: number
           remote_file_path?: string | null
+          source_format?: string | null
           start_time?: string
           started_at?: string | null
           status?: string

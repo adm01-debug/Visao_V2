@@ -315,6 +315,19 @@ export default function NvrDownloadsPage() {
     else toast.success('Download cancelado.');
   };
 
+  const handleConvert = async (row: DownloadRow) => {
+    const { error } = await supabase.functions.invoke('nvr-recording-convert', {
+      body: { action: 'convert', download_id: row.id, force: true },
+    });
+    if (error) {
+      toast.error('Não foi possível iniciar a conversão.');
+      if (import.meta.env.DEV) console.error(error);
+    } else {
+      toast.success('Conversão para MP4 iniciada em segundo plano.');
+    }
+  };
+
+
   return (
     <>
       <PageMeta
@@ -467,7 +480,7 @@ export default function NvrDownloadsPage() {
                       </tr>
                     ) : (
                       jobsWithCameraName.map((row) => (
-                        <NvrDownloadJobRow key={row.id} row={row} onRetry={handleRetry} onCancel={handleCancel} />
+                        <NvrDownloadJobRow key={row.id} row={row} onRetry={handleRetry} onCancel={handleCancel} onConvert={handleConvert} />
                       ))
                     )}
                   </tbody>

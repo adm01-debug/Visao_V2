@@ -26,6 +26,11 @@ verify_jwt = true
 [functions.nvr-recording-download]
 verify_jwt = true
 
+[functions.nvr-recording-convert]
+verify_jwt = true
+
+
+
 
 
 [functions.upload-media]
