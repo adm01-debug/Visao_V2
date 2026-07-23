@@ -1369,6 +1369,45 @@ export type Database = {
           },
         ]
       }
+      cron_watchdog_escalations: {
+        Row: {
+          consecutive_failures: number
+          created_at: string
+          dedup_key: string | null
+          delivered: boolean
+          delivery_error: string | null
+          details: Json
+          escalated_at: string
+          id: string
+          jobname: string
+          last_reason: string | null
+        }
+        Insert: {
+          consecutive_failures: number
+          created_at?: string
+          dedup_key?: string | null
+          delivered?: boolean
+          delivery_error?: string | null
+          details?: Json
+          escalated_at?: string
+          id?: string
+          jobname: string
+          last_reason?: string | null
+        }
+        Update: {
+          consecutive_failures?: number
+          created_at?: string
+          dedup_key?: string | null
+          delivered?: boolean
+          delivery_error?: string | null
+          details?: Json
+          escalated_at?: string
+          id?: string
+          jobname?: string
+          last_reason?: string | null
+        }
+        Relationships: []
+      }
       cron_watchdog_runs: {
         Row: {
           alerts_sent: number
@@ -5887,6 +5926,7 @@ export type Database = {
         Args: never
         Returns: undefined
       }
+      prune_cron_watchdog_escalations: { Args: never; Returns: undefined }
       prune_cron_watchdog_runs: { Args: never; Returns: undefined }
       prune_edge_function_error_audit: { Args: never; Returns: number }
       prune_preview_telemetry_events: {
