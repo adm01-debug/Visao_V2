@@ -213,8 +213,8 @@ export default function NvrDownloadHistoryPage() {
           if (d > 0 && d < 24 * 3600) durations.push(d);
         }
         if (j.last_error) {
-          const key = j.last_error.slice(0, 160);
-          errorTally.set(key, (errorTally.get(key) ?? 0) + 1);
+          const errKey = j.last_error.slice(0, 160);
+          errorTally.set(errKey, (errorTally.get(errKey) ?? 0) + 1);
         }
         if (!lastAt || new Date(j.created_at) > new Date(lastAt)) lastAt = j.created_at;
       }
