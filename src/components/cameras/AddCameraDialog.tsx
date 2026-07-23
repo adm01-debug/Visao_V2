@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { useRtspValidation } from "@/hooks/useRtspValidation";
 import { useFirstSnapshot } from "@/hooks/useFirstSnapshot";
 import { RtspValidationPanel } from "./RtspValidationPanel";
+import { LivePreviewPlayer } from "./LivePreviewPlayer";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
