@@ -45,6 +45,7 @@ const ApiDocsPage = lazy(() => import("@/pages/ApiDocsPage"));
 const PricingPage = lazy(() => import("@/pages/PricingPage"));
 const DashboardV2 = lazy(() => import("@/pages/DashboardV2"));
 const CamerasPage = lazy(() => import("@/pages/CamerasPage"));
+const NvrsPage = lazy(() => import("@/pages/NvrsPage"));
 const CameraStatusPage = lazy(() => import("@/pages/CameraStatusPage"));
 const AlertsPage = lazy(() => import("@/pages/AlertsPage"));
 const ZonesPage = lazy(() => import("@/pages/ZonesPage"));
