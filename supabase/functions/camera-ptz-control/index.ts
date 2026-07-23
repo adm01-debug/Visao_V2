@@ -23,7 +23,9 @@ type PtzCommand =
   | 'save_preset'
   | 'delete_preset'
   | 'home'
-  | 'test';
+  | 'test'
+  | 'get_status';
+
 
 interface PtzPayload {
   camera_id: string;
