@@ -152,6 +152,28 @@ export function usePtzControl({ cameraId, enabled = true, relayAgentId = null }:
     isMoving,
     isSending: sendMutation.isPending,
     send,
+    /**
+     * Consulta ONVIF GetStatus para amostrar a posição normalizada
+     * reportada pelo dome. Retorna `null` quando o driver não expõe
+     * GetStatus (Hikvision/Dahua/Axis) ou quando ocorre falha de rede.
+     */
+    getStatus: async (): Promise<PtzStatusPayload | null> => {
+      try {
+        const { data, error } = await supabase.functions.invoke("camera-ptz-control", {
+          body: {
+            camera_id: cameraId,
+            command: "get_status",
+            params: {},
+            ...(relayAgentId ? { relay_agent_id: relayAgentId } : {}),
+          },
+        });
+        if (error) return null;
+        if (!data || (data as { supported?: boolean }).supported !== true) return null;
+        return data as PtzStatusPayload;
+      } catch {
+        return null;
+      }
+    },
     startMove,
     stopMove,
     gotoPreset: async (preset_number: number) => {
