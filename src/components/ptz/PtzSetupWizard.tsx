@@ -567,8 +567,14 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                   </div>
                 </div>
               </div>
+
+              <PtzPresetImportPanel
+                cameraId={cameraId}
+                onImported={() => qc.invalidateQueries({ queryKey: ['ptz-presets', cameraId] })}
+              />
             </div>
           )}
+
 
           {cfg && step === 'limits' && (
             <div className="space-y-5">
