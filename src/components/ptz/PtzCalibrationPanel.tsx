@@ -1307,6 +1307,51 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
         cameraId={cameraId}
       />
 
+      <AlertDialog
+        open={pendingRecaptureAxis !== null}
+        onOpenChange={(v) => { if (!v) setPendingRecaptureAxis(null); }}
+      >
+        <AlertDialogContent data-testid="ptz-recapture-confirm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Recaptura guiada · {pendingRecaptureAxis ? AXIS_LABEL[pendingRecaptureAxis] : ''}
+            </AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-2 text-sm">
+                <p>
+                  O dome será acionado até os <b>fins de curso</b> em ambos os sentidos para capturar
+                  novos <b>min</b> e <b>max</b> automaticamente. Certifique-se de que o campo de visão
+                  está desobstruído.
+                </p>
+                {pendingRecaptureAxis && recaptureRequired[pendingRecaptureAxis] && validation[pendingRecaptureAxis] && (
+                  <p className="rounded-md border border-destructive/40 bg-destructive/5 p-2 text-destructive text-xs">
+                    Desvio detectado: <b>{validation[pendingRecaptureAxis]!.error_pct.toFixed(1)}%</b>{' '}
+                    (limiar {RECAPTURE_THRESHOLD_PCT}%). O pré-voo permanece bloqueado até o término.
+                  </p>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Você poderá abortar a qualquer momento durante o processo.
+                </p>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel data-testid="ptz-recapture-cancel">Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              data-testid="ptz-recapture-confirm-btn"
+              onClick={() => {
+                const axis = pendingRecaptureAxis;
+                setPendingRecaptureAxis(null);
+                if (axis) void guidedRecapture(axis);
+              }}
+            >
+              Confirmar e iniciar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
     </div>
+
   );
 }
