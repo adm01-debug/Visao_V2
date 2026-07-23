@@ -618,12 +618,46 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
             <label className="flex items-center gap-2 text-[11px] text-muted-foreground">
               <input
                 type="checkbox"
-                checked={autoDiscover.allowPrivate}
-                onChange={(e) => setAutoDiscover((s) => ({ ...s, allowPrivate: e.target.checked }))}
+                checked={autoDiscover.manualMode}
+                onChange={(e) => setAutoDiscover((s) => ({ ...s, manualMode: e.target.checked }))}
                 className="h-3 w-3"
               />
-              Permitir hosts privados/LAN (só funciona se houver rota interna até a câmera)
+              Configuração manual do endpoint ONVIF (pular varredura e usar porta específica)
             </label>
+            {autoDiscover.manualMode && (
+              <div className="flex flex-col gap-2 rounded-md border border-border/60 bg-background/60 p-2 sm:flex-row sm:items-end">
+                <div className="flex-1 space-y-1">
+                  <Label htmlFor="add-cam-onvif-port" className="text-[11px]">
+                    Porta ONVIF (ex.: 80, 8000, 2020)
+                  </Label>
+                  <Input
+                    id="add-cam-onvif-port"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    placeholder="8000"
+                    value={autoDiscover.manualPort}
+                    onChange={(e) =>
+                      setAutoDiscover((s) => ({ ...s, manualPort: e.target.value.replace(/\D/g, "").slice(0, 5) }))
+                    }
+                    disabled={autoDiscover.loading}
+                  />
+                </div>
+                <p className="text-[11px] text-muted-foreground sm:max-w-[55%]">
+                  Use quando a câmera responde ONVIF em uma porta customizada ou quando a varredura automática não encontrou endpoint. A opção "hosts privados/LAN" é habilitada automaticamente nesse modo.
+                </p>
+              </div>
+            )}
+            {!autoDiscover.manualMode && (
+              <label className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                <input
+                  type="checkbox"
+                  checked={autoDiscover.allowPrivate}
+                  onChange={(e) => setAutoDiscover((s) => ({ ...s, allowPrivate: e.target.checked }))}
+                  className="h-3 w-3"
+                />
+                Permitir hosts privados/LAN (só funciona se houver rota interna até a câmera)
+              </label>
+            )}
             {autoDiscover.ok === true && (
               <Badge variant="default" className="gap-1">
                 <ShieldCheck className="h-3 w-3" /> {autoDiscover.message}
