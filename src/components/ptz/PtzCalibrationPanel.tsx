@@ -119,6 +119,14 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
   const [validation, setValidation] = useState<Partial<Record<PtzAxis, RevalidationResult>>>({});
   const [revalidatingAxis, setRevalidatingAxis] = useState<PtzAxis | null>(null);
 
+  // Recaptura guiada — disparada quando a revalidação apontar desvio > threshold.
+  const [pendingRecaptureAxis, setPendingRecaptureAxis] = useState<PtzAxis | null>(null);
+  const [recapturingAxis, setRecapturingAxis] = useState<PtzAxis | null>(null);
+  const [recaptureStage, setRecaptureStage] = useState<'idle' | 'to-min' | 'to-max' | 'done'>('idle');
+  const [recaptureProgress, setRecaptureProgress] = useState(0);
+  const recaptureAbortRef = useRef<boolean>(false);
+
+
   // Edição manual do observado (min_reported/max_reported) por eixo.
   const [observedDraft, setObservedDraft] = useState<Partial<Record<PtzAxis, { min: string; max: string }>>>({});
   const [savingObservedAxis, setSavingObservedAxis] = useState<PtzAxis | null>(null);
