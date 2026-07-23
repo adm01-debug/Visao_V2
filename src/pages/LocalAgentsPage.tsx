@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { Copy, Trash2, Plus, ShieldCheck, Server, Radar } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import PageMeta from "@/components/seo/PageMeta";
+import { PageMeta } from "@/components/PageMeta";
 
 interface LocalAgent {
   id: string;
