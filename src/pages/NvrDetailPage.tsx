@@ -12,7 +12,7 @@ import { PageMeta } from "@/components/PageMeta";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Server, Radio, Wifi, WifiOff, HelpCircle, Lock, Unlock, Loader2, LayoutGrid, VideoOff, Video, Search, Maximize2, RefreshCw, ArrowUpDown, ChevronLeft, ChevronRight, Pause, Play, Bookmark, RotateCcw } from "lucide-react";
+import { ArrowLeft, Server, Radio, Wifi, WifiOff, HelpCircle, Lock, Unlock, Loader2, LayoutGrid, VideoOff, Video, Search, Maximize2, RefreshCw, ArrowUpDown, ChevronLeft, ChevronRight, Pause, Play, Bookmark, RotateCcw, AlertTriangle, X } from "lucide-react";
 
 interface NvrRow {
   id: string;
@@ -267,6 +267,68 @@ export default function NvrDetailPage(): JSX.Element {
     }
   };
 
+  // Per-channel refresh error tracking + retry
+  const [channelErrors, setChannelErrors] = useState<Record<string, string>>({});
+  const [channelRetrying, setChannelRetrying] = useState<Record<string, boolean>>({});
+
+  const dismissChannelError = (channelId: string): void => {
+    setChannelErrors((prev) => {
+      if (!(channelId in prev)) return prev;
+      const next = { ...prev };
+      delete next[channelId];
+      return next;
+    });
+  };
+
+  const refreshChannel = async (channelId: string): Promise<boolean> => {
+    setChannelRetrying((p) => ({ ...p, [channelId]: true }));
+    try {
+      const { data, error } = await supabase
+        .from("cameras")
+        .select("id, name, status, channel_number")
+        .eq("id", channelId)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("Canal não encontrado.");
+      queryClient.setQueryData<ChannelRow[]>(["nvr-channels", id], (prev) =>
+        (prev ?? []).map((c) => (c.id === channelId ? { ...c, ...data } : c)),
+      );
+      dismissChannelError(channelId);
+      return true;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Falha ao atualizar canal.";
+      setChannelErrors((p) => ({ ...p, [channelId]: msg }));
+      return false;
+    } finally {
+      setChannelRetrying((p) => {
+        const next = { ...p };
+        delete next[channelId];
+        return next;
+      });
+    }
+  };
+
+  const retryAllFailures = async (): Promise<void> => {
+    const failed = Object.keys(channelErrors);
+    if (channelsQuery.isError) {
+      await channelsQuery.refetch();
+    }
+    if (failed.length === 0) return;
+    const results = await Promise.all(failed.map((cid) => refreshChannel(cid)));
+    const ok = results.filter(Boolean).length;
+    toast({
+      title: "Retentativa concluída",
+      description: `${ok}/${failed.length} canais atualizados com sucesso.`,
+      variant: ok === failed.length ? "default" : "destructive",
+    });
+  };
+
+  const errorCount = Object.keys(channelErrors).length;
+  const hasAnyError = channelsQuery.isError || errorCount > 0;
+
+
+
+
 
   const filteredChannels = useMemo(() => {
     const rows = channelsQuery.data ?? [];
@@ -498,7 +560,34 @@ export default function NvrDetailPage(): JSX.Element {
               </ToggleGroup>
             </div>
 
+            {hasAnyError && (
+              <div
+                role="alert"
+                className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm"
+              >
+                <div className="flex items-center gap-2 text-destructive">
+                  <AlertTriangle className="h-4 w-4" aria-hidden />
+                  <span>
+                    {channelsQuery.isError
+                      ? `Falha ao atualizar a lista de canais${(channelsQuery.error as Error | null)?.message ? `: ${(channelsQuery.error as Error).message}` : "."}`
+                      : `${errorCount} canal(is) com falha na última atualização.`}
+                  </span>
+                </div>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => void retryAllFailures()}
+                  disabled={channelsQuery.isFetching || Object.keys(channelRetrying).length > 0}
+                  className="gap-1"
+                >
+                  <RefreshCw className={"h-3.5 w-3.5 " + (channelsQuery.isFetching ? "animate-spin" : "")} />
+                  Tentar tudo novamente
+                </Button>
+              </div>
+            )}
+
             <TabsContent value="list">
+
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -529,20 +618,54 @@ export default function NvrDetailPage(): JSX.Element {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {channelsQuery.data.map((c) => (
-                            <TableRow key={c.id}>
+                          {channelsQuery.data.map((c) => {
+                            const err = channelErrors[c.id];
+                            const retrying = channelRetrying[c.id] === true;
+                            return (
+                            <TableRow key={c.id} className={err ? "bg-destructive/5" : undefined}>
                               <TableCell className="text-center font-mono">
                                 {c.channel_number ?? "—"}
                               </TableCell>
-                              <TableCell className="font-medium">{c.name}</TableCell>
+                              <TableCell className="font-medium">
+                                <div className="flex flex-col gap-0.5">
+                                  <span>{c.name}</span>
+                                  {err && (
+                                    <span className="flex items-center gap-1 text-xs text-destructive" role="alert">
+                                      <AlertTriangle className="h-3 w-3" aria-hidden />
+                                      <span className="truncate max-w-[280px]" title={err}>{err}</span>
+                                      <button
+                                        type="button"
+                                        onClick={() => dismissChannelError(c.id)}
+                                        className="ml-1 rounded hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                        aria-label="Descartar erro"
+                                      >
+                                        <X className="h-3 w-3" aria-hidden />
+                                      </button>
+                                    </span>
+                                  )}
+                                </div>
+                              </TableCell>
                               <TableCell>{statusBadge(c.status)}</TableCell>
                               <TableCell className="text-right">
-                                <Button asChild size="sm" variant="outline">
-                                  <Link to={`/cameras/${c.id}`}>Abrir</Link>
-                                </Button>
+                                <div className="flex justify-end gap-2">
+                                  <Button
+                                    size="sm"
+                                    variant={err ? "destructive" : "outline"}
+                                    onClick={() => void refreshChannel(c.id)}
+                                    disabled={retrying}
+                                    aria-label={`Atualizar canal ${c.channel_number ?? c.name}`}
+                                    title={err ? "Tentar novamente" : "Atualizar canal"}
+                                  >
+                                    <RefreshCw className={"h-3.5 w-3.5 " + (retrying ? "animate-spin" : "")} />
+                                  </Button>
+                                  <Button asChild size="sm" variant="outline">
+                                    <Link to={`/cameras/${c.id}`}>Abrir</Link>
+                                  </Button>
+                                </div>
                               </TableCell>
                             </TableRow>
-                          ))}
+                            );
+                          })}
                         </TableBody>
                       </Table>
                     </div>
@@ -743,10 +866,15 @@ export default function NvrDetailPage(): JSX.Element {
                     >
                       {filteredChannels.map((c) => {
                         const online = c.status === "online";
+                        const err = channelErrors[c.id];
+                        const retrying = channelRetrying[c.id] === true;
                         return (
                           <div
                             key={c.id}
-                            className="group relative aspect-video overflow-hidden rounded-lg border bg-muted/40 transition hover:border-primary hover:shadow-md"
+                            className={
+                              "group relative aspect-video overflow-hidden rounded-lg border bg-muted/40 transition hover:border-primary hover:shadow-md " +
+                              (err ? "border-destructive/60" : "")
+                            }
                           >
                             <Link
                               to={`/cameras/${c.id}`}
@@ -761,27 +889,55 @@ export default function NvrDetailPage(): JSX.Element {
                                 )}
                               </div>
                             </Link>
-                            <div className="absolute top-2 left-2 pointer-events-none">
+                            <div className="absolute top-2 left-2 pointer-events-none flex items-center gap-1">
                               <Badge variant="secondary" className="font-mono text-xs">
                                 CH {c.channel_number ?? "—"}
                               </Badge>
+                              {err && (
+                                <Badge variant="destructive" className="gap-1 text-xs">
+                                  <AlertTriangle className="h-3 w-3" aria-hidden /> Erro
+                                </Badge>
+                              )}
                             </div>
                             <div className="absolute top-2 right-2 pointer-events-none">
                               {statusBadge(c.status)}
                             </div>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setFullscreenId(c.id);
-                              }}
-                              className="absolute bottom-2 right-2 z-10 rounded-md bg-background/80 p-1.5 opacity-0 transition group-hover:opacity-100 hover:bg-background focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                              aria-label={`Tela cheia canal ${c.channel_number ?? ""}`}
-                            >
-                              <Maximize2 className="h-3.5 w-3.5" aria-hidden />
-                            </button>
-                            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-2 pointer-events-none">
+                            <div className="absolute bottom-2 right-2 z-10 flex gap-1 opacity-0 transition group-hover:opacity-100 focus-within:opacity-100">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  void refreshChannel(c.id);
+                                }}
+                                disabled={retrying}
+                                className={
+                                  "rounded-md p-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring " +
+                                  (err ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : "bg-background/80 hover:bg-background")
+                                }
+                                aria-label={err ? `Tentar novamente canal ${c.channel_number ?? ""}` : `Atualizar canal ${c.channel_number ?? ""}`}
+                                title={err ? "Tentar novamente" : "Atualizar canal"}
+                              >
+                                <RefreshCw className={"h-3.5 w-3.5 " + (retrying ? "animate-spin" : "")} aria-hidden />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setFullscreenId(c.id);
+                                }}
+                                className="rounded-md bg-background/80 p-1.5 hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                aria-label={`Tela cheia canal ${c.channel_number ?? ""}`}
+                              >
+                                <Maximize2 className="h-3.5 w-3.5" aria-hidden />
+                              </button>
+                            </div>
+                            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/95 to-transparent p-2 pointer-events-none">
                               <p className="text-xs font-medium truncate">{c.name}</p>
+                              {err && (
+                                <p className="text-[10px] text-destructive truncate" title={err}>
+                                  {err}
+                                </p>
+                              )}
                             </div>
                           </div>
                         );
