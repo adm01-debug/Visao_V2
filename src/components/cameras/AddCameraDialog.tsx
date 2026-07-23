@@ -986,6 +986,26 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
             </div>
           )}
 
+          {rtspValidation.result &&
+            rtspValidation.result.score !== "critical" &&
+            form.getValues("rtspUrl") && (
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-muted-foreground">
+                  Prévia ao vivo (60s)
+                </p>
+                <LivePreviewPlayer
+                  key={form.getValues("rtspUrl")}
+                  rtspUrl={buildRtspUrl({
+                    rtspUrl: form.getValues("rtspUrl"),
+                    username: form.getValues("username"),
+                    password: form.getValues("password"),
+                  })}
+                />
+              </div>
+            )}
+
+
+
 
           {guided && rtspValidation.result?.score === "critical" && (
             <label className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/5 p-3 text-xs">
