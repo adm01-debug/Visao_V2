@@ -195,8 +195,30 @@ export default function NvrDetailPage(): JSX.Element {
     }
   });
   const [fullscreenId, setFullscreenId] = useState<string | null>(null);
-  const [cycleSeconds, setCycleSeconds] = useState<0 | 5 | 10 | 30>(0);
-  const [cyclePaused, setCyclePaused] = useState<boolean>(false);
+  const [cycleSeconds, setCycleSeconds] = useState<0 | 5 | 10 | 30>(() => {
+    if (typeof window === "undefined" || !prefsKey) return 0;
+    try {
+      const raw = window.localStorage.getItem(prefsKey);
+      if (!raw) return 0;
+      const parsed = JSON.parse(raw) as { cycleSeconds?: number };
+      const v = parsed.cycleSeconds;
+      return v === 5 || v === 10 || v === 30 ? v : 0;
+    } catch {
+      return 0;
+    }
+  });
+  const [cyclePaused, setCyclePaused] = useState<boolean>(() => {
+    if (typeof window === "undefined" || !prefsKey) return false;
+    try {
+      const raw = window.localStorage.getItem(prefsKey);
+      if (!raw) return false;
+      const parsed = JSON.parse(raw) as { cyclePaused?: boolean };
+      return parsed.cyclePaused === true;
+    } catch {
+      return false;
+    }
+  });
+
   const [cycleProgress, setCycleProgress] = useState<number>(0);
   const [autoRefreshSeconds, setAutoRefreshSeconds] = useState<0 | 10 | 30 | 60>(() => {
     if (typeof window === "undefined" || !prefsKey) return 0;
