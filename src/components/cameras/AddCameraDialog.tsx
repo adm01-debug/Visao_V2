@@ -777,6 +777,24 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
       }
 
       toast.success("Câmera cadastrada e credenciais protegidas no cofre");
+
+      // Persiste preferência de conectividade se o wizard foi usado com sucesso.
+      const resolved = lastSuccessfulResolutionRef.current;
+      if (resolved) {
+        const pathMap: Record<Exclude<ConnectivityChosenPath, "cancelled">, CameraConnectivityPath> = {
+          relay: "relay",
+          vpn: "vpn",
+          port_forward: "port_forward",
+        };
+        void saveCameraConnectivityPreference({
+          cameraId: camera.id,
+          preferredPath: pathMap[resolved.chosenPath],
+          relayAgentId: resolved.relayAgentId,
+          publicHost: resolved.publicHost,
+          publicPort: resolved.publicPort,
+        });
+        lastSuccessfulResolutionRef.current = null;
+      }
       await refetch();
 
       // 5. Primeiro snapshot — best-effort, não bloqueia o fluxo.
