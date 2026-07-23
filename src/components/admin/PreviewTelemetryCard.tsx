@@ -22,6 +22,7 @@ import {
   type PreviewTelemetrySummary,
 } from "@/hooks/usePreviewTelemetrySummary";
 import { useState } from "react";
+import { PreviewTelemetryTimeline } from "./PreviewTelemetryTimeline";
 
 const WINDOWS: Array<{ value: string; label: string; hours: number }> = [
   { value: "1",   label: "Última 1h",   hours: 1 },
