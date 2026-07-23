@@ -34,6 +34,10 @@ export interface LivePreviewPlayerProps {
   autoStart?: boolean;
   /** Callback ao encerrar (por timer, botão ou unmount). */
   onEnded?: (reason: "timer" | "manual" | "unmount" | "error") => void;
+  /** ID da câmera, quando disponível — enviado à telemetria (nunca gravado em logs). */
+  cameraId?: string | null;
+  /** Codec conhecido (heurística/servidor). Envia à telemetria como rótulo de agrupamento. */
+  codecHint?: string | null;
   /** Injeção para testes — substitui a chamada à Edge Function. */
   invoke?: (
     action: "start" | "extend" | "stop",
