@@ -147,11 +147,42 @@ export function CronWatchdogEscalationCard() {
               </div>
             </div>
 
+            {metrics.length > 0 && (
+              <div className="grid gap-3 md:grid-cols-2">
+                {metrics.map((m) => (
+                  <div key={m.window_label} className="rounded-md border p-3">
+                    <p className="text-xs font-medium text-muted-foreground mb-2">
+                      Métricas de ACK — janela {m.window_label}
+                    </p>
+                    <div className="grid grid-cols-4 gap-2 text-center">
+                      <div>
+                        <p className="text-[10px] text-muted-foreground">Total</p>
+                        <p className="text-sm font-semibold">{m.total_escalations ?? 0}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-muted-foreground">Taxa ACK</p>
+                        <p className="text-sm font-semibold">{m.ack_rate != null ? `${m.ack_rate}%` : '—'}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-muted-foreground">MTTA</p>
+                        <p className="text-sm font-semibold">{fmtDuration(m.mtta_seconds)}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-muted-foreground">p95</p>
+                        <p className="text-sm font-semibold">{fmtDuration(m.p95_ack_seconds)}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
             {(agg?.jobnames?.length ?? 0) > 0 && (
               <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3">
                 <p className="text-xs font-medium text-destructive mb-2 flex items-center gap-1">
                   <AlertTriangle className="h-3 w-3" /> Jobs em estado crítico
                 </p>
+
                 <div className="flex flex-wrap gap-1">
                   {agg!.jobnames.map((j) => (
                     <Badge key={j} variant="destructive" className="font-mono text-xs">{j}</Badge>
