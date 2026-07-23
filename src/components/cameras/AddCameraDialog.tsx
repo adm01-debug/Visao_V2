@@ -924,6 +924,15 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                   ))}
                 </ol>
                 <div className="mt-3 flex flex-wrap gap-2">
+                  {autoDiscover.errorDetail.code === "private_host_blocked" && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => setConnectivityWizardOpen(true)}
+                    >
+                      Abrir assistente de conectividade
+                    </Button>
+                  )}
                   <Button
                     type="button"
                     size="sm"
