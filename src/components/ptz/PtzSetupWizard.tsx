@@ -219,7 +219,7 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
         setup_completed_at: new Date().toISOString(),
       };
       if (isAutoMulti) {
-        payload.ptz_backends = autoMultiBackends;
+        payload.ptz_backends = orderedBackends.length ? orderedBackends : autoMultiBackends;
         payload.ptz_backends_mode = 'auto-multi';
       }
       const { error } = await supabase
