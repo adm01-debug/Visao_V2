@@ -170,6 +170,7 @@ export async function benchmarkVariants(
     if (idx >= variants.length) return;
     const variant = variants[idx];
     if (!variant) return;
+    const rendered = renderTemplate(variant.template, {
       host,
       port: ctx.port,
       channel: ctx.channel,
