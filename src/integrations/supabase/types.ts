@@ -1237,6 +1237,7 @@ export type Database = {
       cameras: {
         Row: {
           alerts_count: number | null
+          channel_number: number | null
           created_at: string
           detected_people: number | null
           id: string
@@ -1245,6 +1246,7 @@ export type Database = {
           location: string
           longitude: number | null
           name: string
+          nvr_id: string | null
           ptz_capable: boolean
           status: Database["public"]["Enums"]["camera_status"]
           stream_url: string | null
@@ -1258,6 +1260,7 @@ export type Database = {
         }
         Insert: {
           alerts_count?: number | null
+          channel_number?: number | null
           created_at?: string
           detected_people?: number | null
           id?: string
@@ -1266,6 +1269,7 @@ export type Database = {
           location: string
           longitude?: number | null
           name: string
+          nvr_id?: string | null
           ptz_capable?: boolean
           status?: Database["public"]["Enums"]["camera_status"]
           stream_url?: string | null
@@ -1279,6 +1283,7 @@ export type Database = {
         }
         Update: {
           alerts_count?: number | null
+          channel_number?: number | null
           created_at?: string
           detected_people?: number | null
           id?: string
@@ -1287,6 +1292,7 @@ export type Database = {
           location?: string
           longitude?: number | null
           name?: string
+          nvr_id?: string | null
           ptz_capable?: boolean
           status?: Database["public"]["Enums"]["camera_status"]
           stream_url?: string | null
@@ -1298,7 +1304,15 @@ export type Database = {
           user_id?: string
           version?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "cameras_nvr_id_fkey"
+            columns: ["nvr_id"]
+            isOneToOne: false
+            referencedRelation: "nvrs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       connectivity_resolution_telemetry: {
         Row: {
@@ -2609,6 +2623,62 @@ export type Database = {
           webhook_urls?: string[]
         }
         Relationships: []
+      }
+      nvrs: {
+        Row: {
+          agent_id: string | null
+          brand: string
+          channel_count: number
+          created_at: string
+          host: string
+          id: string
+          location: string | null
+          name: string
+          notes: string | null
+          rtsp_port: number
+          template_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agent_id?: string | null
+          brand?: string
+          channel_count?: number
+          created_at?: string
+          host: string
+          id?: string
+          location?: string | null
+          name: string
+          notes?: string | null
+          rtsp_port?: number
+          template_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agent_id?: string | null
+          brand?: string
+          channel_count?: number
+          created_at?: string
+          host?: string
+          id?: string
+          location?: string | null
+          name?: string
+          notes?: string | null
+          rtsp_port?: number
+          template_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nvrs_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "local_agents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       organization_members: {
         Row: {
@@ -5265,6 +5335,19 @@ export type Database = {
       cleanup_edge_cache: { Args: never; Returns: number }
       cleanup_old_test_events: { Args: never; Returns: number }
       close_expired_test_sessions: { Args: never; Returns: number }
+      create_nvr_with_channels: {
+        Args: {
+          p_brand: string
+          p_channel_urls: Json
+          p_channels: number
+          p_host: string
+          p_location: string
+          p_name: string
+          p_port: number
+          p_template_id: string
+        }
+        Returns: string
+      }
       cron_matches: {
         Args: { expr: string; ts: string; tz?: string }
         Returns: boolean
