@@ -367,6 +367,24 @@ Deno.serve(async (req) => {
   const primary = streams[0];
   const substream = streams[1];
 
+  // Resolve o perfil OEM (ex.: XiongMai NBD80X) para o wizard pré-selecionar
+  // porta ONVIF e variantes RTSP recomendadas. Heurística tolerante:
+  // 1) tenta match por Model (hardwareIds com prefixo `*`);
+  // 2) fallback por Manufacturer contendo XM/Xiongmai/HZXM.
+  let profileId: string | null = null;
+  const mfrLower = (manufacturer ?? "").toLowerCase();
+  const modelUpper = (model ?? "").toUpperCase();
+  if (modelUpper.startsWith("NBD80X")) {
+    profileId = "xiongmai-nbd80x";
+  } else if (
+    mfrLower.includes("xiongmai") ||
+    mfrLower.includes("hzxm") ||
+    mfrLower === "xm" ||
+    mfrLower.startsWith("xm ")
+  ) {
+    profileId = "xiongmai-nbd80x";
+  }
+
   return j({
     ok: true,
     device: { manufacturer, model, firmware },
@@ -376,5 +394,7 @@ Deno.serve(async (req) => {
     rtsp_primary: primary?.rtsp ?? null,
     rtsp_substream: substream?.rtsp ?? null,
     used_relay: usingRelay,
+    profile_id: profileId,
   });
+
 });
