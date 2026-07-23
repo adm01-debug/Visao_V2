@@ -16,6 +16,7 @@ import { ptBR } from "date-fns/locale";
 import { PageMeta } from "@/components/PageMeta";
 import { RelayReliabilityCard } from "@/components/local-agents/RelayReliabilityCard";
 import { RelayPurgeHistoryCard } from "@/components/local-agents/RelayPurgeHistoryCard";
+import { RelayCameraTestCard } from "@/components/local-agents/RelayCameraTestCard";
 
 interface LocalAgent {
   id: string;
@@ -158,6 +159,7 @@ export default function LocalAgentsPage() {
           <TabsTrigger value="agents">Agentes ({agentsQuery.data?.length ?? 0})</TabsTrigger>
           <TabsTrigger value="discoveries">Descobertas ({discoveriesQuery.data?.length ?? 0})</TabsTrigger>
           <TabsTrigger value="reliability">Confiabilidade</TabsTrigger>
+          <TabsTrigger value="camera-test">Teste por câmera</TabsTrigger>
           <TabsTrigger value="install">Como instalar</TabsTrigger>
         </TabsList>
 
@@ -302,6 +304,11 @@ export default function LocalAgentsPage() {
           <RelayReliabilityCard hours={24} />
           <RelayPurgeHistoryCard />
         </TabsContent>
+
+        <TabsContent value="camera-test" className="mt-4 space-y-4">
+          <RelayCameraTestCard />
+        </TabsContent>
+
 
         <TabsContent value="install" className="mt-4 space-y-4">
           <Card>
