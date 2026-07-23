@@ -61,6 +61,7 @@ export function CamerasPage() {
   const [addMode, setAddMode] = useState<'quick' | 'guided'>('quick');
   const [addNvrOpen, setAddNvrOpen] = useState(false);
   const [setupCamera, setSetupCamera] = useState<CameraData | null>(null);
+  const [setupProfileId, setSetupProfileId] = useState<string | null>(null);
   const openAdd = (mode: 'quick' | 'guided' = 'quick') => { setAddMode(mode); setAddOpen(true); };
   const diag = useRtspValidation();
 
