@@ -77,6 +77,7 @@ export function PtzMultiAxisPreflightDialog({
   startPositions,
   ptz,
   cameraId,
+  cameraLabel,
   onComplete,
 }: MultiAxisPreflightProps) {
   const [ackClear, setAckClear] = useState(false);
