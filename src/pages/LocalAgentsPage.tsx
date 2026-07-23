@@ -155,6 +155,7 @@ export default function LocalAgentsPage() {
         <TabsList>
           <TabsTrigger value="agents">Agentes ({agentsQuery.data?.length ?? 0})</TabsTrigger>
           <TabsTrigger value="discoveries">Descobertas ({discoveriesQuery.data?.length ?? 0})</TabsTrigger>
+          <TabsTrigger value="reliability">Confiabilidade</TabsTrigger>
           <TabsTrigger value="install">Como instalar</TabsTrigger>
         </TabsList>
 
