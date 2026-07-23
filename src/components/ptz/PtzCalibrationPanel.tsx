@@ -572,6 +572,13 @@ export function PtzCalibrationPanel({ ptz, limits, onChange, cameraId }: PtzCali
         </DropdownMenu>
       </div>
 
+      <PtzLiveStatusPanel
+        ptz={ptz}
+        paused={measuringAxis !== null || revalidatingAxis !== null || preflightAxis !== null}
+      />
+
+
+
 
 
       {(['pan', 'tilt', 'zoom'] as const).map((axis) => {
