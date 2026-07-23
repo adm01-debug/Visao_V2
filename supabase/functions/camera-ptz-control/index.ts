@@ -23,7 +23,9 @@ type PtzCommand =
   | 'save_preset'
   | 'delete_preset'
   | 'home'
-  | 'test';
+  | 'test'
+  | 'get_status';
+
 
 interface PtzPayload {
   camera_id: string;
@@ -212,6 +214,60 @@ async function driverOnvif(tx: Transport, cfg: any, cmd: PtzCommand, p: any): Pr
   });
 }
 
+/**
+ * Parse minimalista de `tt:PTZStatus` retornado por `tptz:GetStatus`.
+ * Usa regex tolerante (sem dependência XML) para extrair posição normalizada
+ * PanTilt/Zoom e o `MoveStatus`. Retorna `null` para campos ausentes.
+ */
+export function parsePtzStatus(xml: string): {
+  position: { pan: number | null; tilt: number | null; zoom: number | null };
+  moving: { pan_tilt: boolean | null; zoom: boolean | null };
+  utc: string | null;
+} {
+  const pt = xml.match(/<tt:PanTilt\b[^/>]*\bx="([-\d.]+)"[^/>]*\by="([-\d.]+)"/);
+  const zm = xml.match(/<tt:Zoom\b[^/>]*\bx="([-\d.]+)"/);
+  const mvPt = xml.match(/<tt:MoveStatus>[\s\S]*?<tt:PanTilt>\s*(IDLE|MOVING|UNKNOWN)\s*<\/tt:PanTilt>/i);
+  const mvZm = xml.match(/<tt:MoveStatus>[\s\S]*?<tt:Zoom>\s*(IDLE|MOVING|UNKNOWN)\s*<\/tt:Zoom>/i);
+  const utcMatch = xml.match(/<tt:UtcTime>\s*([^<]+?)\s*<\/tt:UtcTime>/);
+  const toBool = (m: RegExpMatchArray | null) =>
+    m ? (m[1].toUpperCase() === 'MOVING' ? true : m[1].toUpperCase() === 'IDLE' ? false : null) : null;
+  return {
+    position: {
+      pan: pt ? Number(pt[1]) : null,
+      tilt: pt ? Number(pt[2]) : null,
+      zoom: zm ? Number(zm[1]) : null,
+    },
+    moving: { pan_tilt: toBool(mvPt), zoom: toBool(mvZm) },
+    utc: utcMatch ? utcMatch[1] : null,
+  };
+}
+
+async function driverOnvifGetStatus(tx: Transport, cfg: any): Promise<{
+  supported: true;
+  status: number;
+  latency_ms: number;
+  position: { pan: number | null; tilt: number | null; zoom: number | null };
+  moving: { pan_tilt: boolean | null; zoom: boolean | null };
+  utc: string | null;
+  raw: string;
+}> {
+  const url = `http://${cfg.endpoint}:${cfg.port}/onvif/ptz_service`;
+  const profile = `Profile_${cfg.channel}`;
+  const envelope = `<?xml version="1.0"?>
+  <s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:tptz="http://www.onvif.org/ver20/ptz/wsdl">
+    <s:Body><tptz:GetStatus><tptz:ProfileToken>${profile}</tptz:ProfileToken></tptz:GetStatus></s:Body></s:Envelope>`;
+  const started = performance.now();
+  const resp = await tx.request({
+    url, method: 'POST',
+    headers: { 'Content-Type': 'application/soap+xml', ...authHeader(cfg) },
+    body: envelope,
+    timeoutMs: PTZ_TIMEOUT_MS,
+  });
+  const latency_ms = Math.round(performance.now() - started);
+  const parsed = parsePtzStatus(resp.text ?? '');
+  return { supported: true, status: resp.status, latency_ms, ...parsed, raw: (resp.text ?? '').slice(0, 500) };
+}
+
 async function dispatch(tx: Transport, cfg: any, cmd: PtzCommand, params: any): Promise<HttpResult> {
   switch (cfg.protocol) {
     case 'hikvision': return driverHikvision(tx, cfg, cmd, params);
@@ -221,6 +277,7 @@ async function dispatch(tx: Transport, cfg: any, cmd: PtzCommand, params: any): 
     default: return driverOnvif(tx, cfg, cmd, params);
   }
 }
+
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
@@ -278,6 +335,64 @@ Deno.serve(async (req) => {
         { status: resolution.error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
     }
+
+    // ------------------------------------------------------------------
+    // Comando read-only `get_status`: bypass lock/clamp, apenas amostra
+    // a posição normalizada reportada pelo dome via ONVIF GetStatus.
+    // Drivers proprietários ainda não expõem GetStatus — retornam
+    // { supported: false } para o cliente cair no fallback jog+tempo.
+    // ------------------------------------------------------------------
+    if (command === 'get_status') {
+      if (cfg.protocol !== 'onvif') {
+        await admin.from('ptz_connection_attempts').insert({
+          user_id: user.id, camera_id, profile_id: cfg.profile_id ?? null,
+          backend: `${cfg.protocol}:get_status`,
+          ok: false, reachable: false, http_status: 0, latency_ms: 0,
+          error_detail: 'driver_no_getstatus',
+          used_relay: resolution.usingRelay, relay_agent_id, source: 'get_status',
+        });
+        return new Response(
+          JSON.stringify({ supported: false, reason: 'driver_no_getstatus', driver: cfg.protocol }),
+          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        );
+      }
+      try {
+        const st = await driverOnvifGetStatus(resolution.transport, cfg);
+        const ok = st.status >= 200 && st.status < 400;
+        await admin.from('ptz_connection_attempts').insert({
+          user_id: user.id, camera_id, profile_id: cfg.profile_id ?? null,
+          backend: 'onvif:get_status',
+          ok, reachable: ok, http_status: st.status, latency_ms: st.latency_ms,
+          error_detail: ok ? null : st.raw.slice(0, 240),
+          used_relay: resolution.usingRelay, relay_agent_id, source: 'get_status',
+        });
+        return new Response(JSON.stringify({
+          supported: true,
+          ok,
+          driver: 'onvif',
+          used_relay: resolution.usingRelay,
+          cam_status: st.status,
+          latency_ms: st.latency_ms,
+          position: st.position,
+          moving: st.moving,
+          utc: st.utc,
+        }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      } catch (e) {
+        await admin.from('ptz_connection_attempts').insert({
+          user_id: user.id, camera_id, profile_id: cfg.profile_id ?? null,
+          backend: 'onvif:get_status',
+          ok: false, reachable: false, http_status: 0, latency_ms: 0,
+          error_detail: String(e).slice(0, 240),
+          used_relay: resolution.usingRelay, relay_agent_id, source: 'get_status',
+        });
+        return new Response(
+          JSON.stringify({ supported: true, ok: false, error: 'get_status_failed', detail: String(e).slice(0, 240) }),
+          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        );
+      }
+    }
+
+
 
     // Cooperative lock
     const { data: lockRes, error: lockErr } = await userClient.rpc('acquire_ptz_lock', {

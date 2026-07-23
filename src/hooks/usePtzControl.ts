@@ -7,7 +7,19 @@ import { humanizeFunctionError } from "@/lib/edgeFunctionErrors";
 
 export type PtzCommand =
   | "move" | "stop" | "zoom" | "focus" | "iris"
-  | "goto_preset" | "save_preset" | "delete_preset" | "home" | "test";
+  | "goto_preset" | "save_preset" | "delete_preset" | "home" | "test" | "get_status";
+
+export interface PtzStatusPayload {
+  supported: true;
+  ok: boolean;
+  driver: string;
+  used_relay: boolean;
+  cam_status: number;
+  latency_ms: number;
+  position: { pan: number | null; tilt: number | null; zoom: number | null };
+  moving: { pan_tilt: boolean | null; zoom: boolean | null };
+  utc: string | null;
+}
 
 export interface PtzParams {
   pan?: number; tilt?: number; zoom?: number;
@@ -140,6 +152,28 @@ export function usePtzControl({ cameraId, enabled = true, relayAgentId = null }:
     isMoving,
     isSending: sendMutation.isPending,
     send,
+    /**
+     * Consulta ONVIF GetStatus para amostrar a posição normalizada
+     * reportada pelo dome. Retorna `null` quando o driver não expõe
+     * GetStatus (Hikvision/Dahua/Axis) ou quando ocorre falha de rede.
+     */
+    getStatus: async (): Promise<PtzStatusPayload | null> => {
+      try {
+        const { data, error } = await supabase.functions.invoke("camera-ptz-control", {
+          body: {
+            camera_id: cameraId,
+            command: "get_status",
+            params: {},
+            ...(relayAgentId ? { relay_agent_id: relayAgentId } : {}),
+          },
+        });
+        if (error) return null;
+        if (!data || (data as { supported?: boolean }).supported !== true) return null;
+        return data as PtzStatusPayload;
+      } catch {
+        return null;
+      }
+    },
     startMove,
     stopMove,
     gotoPreset: async (preset_number: number) => {

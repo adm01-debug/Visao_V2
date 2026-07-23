@@ -587,7 +587,7 @@ export function PtzSetupWizard({ cameraId, cameraName, profileId, open, onOpenCh
                   serão bloqueados em runtime, protegendo o motor e áreas privadas do enquadramento.
                 </AlertDescription>
               </Alert>
-              <PtzCalibrationPanel ptz={ptz} limits={limits} onChange={setLimits} />
+              <PtzCalibrationPanel ptz={ptz} limits={limits} onChange={setLimits} cameraId={cameraId} />
             </div>
           )}
 
