@@ -9,7 +9,7 @@
  * A biblioteca é 100% client-side (estática, sem fetch) e não altera schema/DB.
  */
 
-export type RtspBrand = "hikvision" | "dahua" | "intelbras" | "usecam" | "generica";
+export type RtspBrand = "hikvision" | "dahua" | "intelbras" | "usecam" | "xiongmai" | "generica";
 
 export interface RtspTemplate {
   /** Identificador estável (não traduzido). */
