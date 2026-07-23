@@ -755,30 +755,19 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
                 </p>
               </div>
             )}
-            <div className="flex flex-col gap-1 rounded-md border border-border/60 bg-background/60 p-2">
-              <Label htmlFor="add-cam-relay" className="text-[11px]">
-                Rotear via Agente Local (relé)
-              </Label>
-              <Select
-                value={autoDiscover.relayAgentId || "__direct__"}
-                onValueChange={(v) => setAutoDiscover((s) => ({ ...s, relayAgentId: v === "__direct__" ? "" : v }))}
-              >
-                <SelectTrigger id="add-cam-relay" className="h-8 text-xs">
-                  <SelectValue placeholder="Conexão direta (sem relé)" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__direct__">Conexão direta (Edge Function → câmera)</SelectItem>
-                  {relayAgents.map((a) => (
-                    <SelectItem key={a.id} value={a.id}>
-                      {a.name} {a.network_cidr ? `· ${a.network_cidr}` : ""}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="flex flex-col gap-2 rounded-md border border-border/60 bg-background/60 p-2">
+              <Label className="text-[11px]">Rotear via Agente Local (relé)</Label>
+              <RelayAgentSelector
+                value={autoDiscover.relayAgentId || null}
+                onChange={(id) => setAutoDiscover((s) => ({ ...s, relayAgentId: id ?? "" }))}
+                compact
+              />
+              <RelayHealthWatchdog
+                agentId={autoDiscover.relayAgentId || null}
+                onFallbackDirect={() => setAutoDiscover((s) => ({ ...s, relayAgentId: "" }))}
+              />
               <p className="text-[11px] text-muted-foreground">
-                {relayAgents.length === 0
-                  ? "Nenhum agente online. Cadastre em Agentes Locais para relayar chamadas da nuvem até câmeras na sua LAN."
-                  : "Use o relé quando a câmera está em rede privada sem port-forward ou VPN. O agente executa a chamada localmente e devolve a resposta."}
+                Use o relé quando a câmera está em rede privada sem port-forward ou VPN. O agente executa a chamada localmente e devolve a resposta.
               </p>
             </div>
             {!autoDiscover.manualMode && (
