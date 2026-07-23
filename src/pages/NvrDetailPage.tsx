@@ -478,10 +478,23 @@ export default function NvrDetailPage(): JSX.Element {
                   </div>
 
                   {channelsQuery.data && channelsQuery.data.length > 0 && (
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <span>
+                    <div className="flex items-center justify-between text-xs text-muted-foreground gap-2 flex-wrap">
+                      <span className="flex items-center gap-2">
                         Exibindo <strong className="text-foreground">{filteredChannels.length}</strong> de{" "}
                         <strong className="text-foreground">{channelsQuery.data.length}</strong> canais
+                        {(search || statusFilter !== "all" || sortMode !== "channel-asc") && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSearch("");
+                              setStatusFilter("all");
+                              setSortMode("channel-asc");
+                            }}
+                            className="underline underline-offset-2 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+                          >
+                            Limpar filtros
+                          </button>
+                        )}
                       </span>
                       {channelsQuery.dataUpdatedAt > 0 && (
                         <span aria-live="polite">
