@@ -276,9 +276,11 @@ export function LivePreviewPlayer({
             autoPlay
             muted
             playsInline
+            onError={handleVideoError}
+            onCanPlay={handleVideoCanPlay}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
+          <div className="flex h-full w-full items-center justify-center px-3 text-center text-xs text-muted-foreground">
             {status === "starting" && (
               <span className="flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> Iniciando prévia…
@@ -286,12 +288,36 @@ export function LivePreviewPlayer({
             )}
             {status === "idle" && "Clique em Iniciar prévia para visualizar 60s do stream."}
             {status === "ended" && "Prévia encerrada."}
-            {status === "error" && (
-              <span className="text-destructive">Falha: {errorMsg ?? "erro desconhecido"}</span>
-            )}
+            {status === "error" && (() => {
+              const { code, info } = resolveLivePreviewError(errorCode);
+              return (
+                <div
+                  role="alert"
+                  className="flex flex-col items-center gap-1 text-destructive"
+                  data-testid="live-preview-error"
+                  data-error-code={code}
+                >
+                  <AlertTriangle className="h-5 w-5" aria-hidden />
+                  <strong className="text-sm">{info.title}</strong>
+                  <span className="text-[11px] leading-snug text-muted-foreground">
+                    {info.suggestion}
+                  </span>
+                </div>
+              );
+            })()}
           </div>
         )}
       </div>
+      {status === "playing" && errorCode && (
+        <div
+          role="status"
+          data-testid="live-preview-warning"
+          data-error-code={errorCode}
+          className="rounded border border-amber-500/40 bg-amber-500/10 px-2 py-1 text-[11px] text-amber-700 dark:text-amber-300"
+        >
+          {resolveLivePreviewError(errorCode).info.title} — {resolveLivePreviewError(errorCode).info.suggestion}
+        </div>
+      )}
 
       <div className="flex flex-wrap items-center justify-end gap-2">
         {status === "idle" || status === "ended" || status === "error" ? (
