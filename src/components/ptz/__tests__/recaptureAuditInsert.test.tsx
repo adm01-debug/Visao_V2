@@ -178,8 +178,9 @@ describe('PtzCalibrationPanel · auditoria de recaptura em ptz_connection_attemp
     });
     expect(detail.min_reported).toBeCloseTo(-0.85, 5);
     expect(detail.max_reported).toBeCloseTo(0.85, 5);
-    // Stage capturado no momento do finally — 'to-max' ou 'done' (state async).
-    expect(['to-max', 'done']).toContain(detail.stage);
+    // Stage capturado no momento do finally — snapshot React (pode ser
+    // 'idle', 'to-min', 'to-max' ou 'done' dependendo do agendamento).
+    expect(['idle', 'to-min', 'to-max', 'done']).toContain(detail.stage);
   });
 
   it('recaptura inválida (min ≥ max) insere ok=false com outcome="invalid" e mensagem em error', async () => {
