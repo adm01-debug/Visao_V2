@@ -4,14 +4,54 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
+      day: "monday"
+      time: "08:00"
+      timezone: "America/Sao_Paulo"
+    open-pull-requests-limit: 20
+    assignees:
+      - "adm01-debug"
+    labels:
+      - "dependencies"
+      - "automerge"
     groups:
-      production-dependencies:
+      react:
         patterns:
           - "react*"
+          - "@types/react*"
+          - "react-dom*"
+      tanstack:
+        patterns:
           - "@tanstack/*"
-      development-dependencies:
+      radix:
+        patterns:
+          - "@radix-ui/*"
+      eslint:
+        patterns:
+          - "eslint*"
+          - "@eslint/*"
+          - "typescript-eslint*"
+      types:
         patterns:
           - "@types/*"
+      testing:
+        patterns:
           - "vitest*"
-          - "typescript*"
+          - "@testing-library/*"
+          - "playwright*"
+          - "cypress*"
+      storybook:
+        patterns:
+          - "@storybook/*"
+      build:
+        patterns:
+          - "vite*"
+          - "@vitejs/*"
+          - "postcss*"
+          - "tailwindcss*"
+          - "autoprefixer*"
+    ignore:
+      - dependency-name: "bundlesize"
+      - dependency-name: "iltorb"
+      - dependency-name: "typescript"
+        versions: [">=7.0.0"]
+        # Typescript-eslint ainda sem suporte estável a TS 7
