@@ -5,42 +5,48 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
+// Register push-only SW and start build version watcher
+import { startBuildVersionWatcher } from '@/lib/buildVersion';
+
 // ============================================
-// LIMPEZA DE SERVICE WORKERS LEGADOS
+// SERVICE WORKER — PUSH-ONLY (NO CACHE)
 // ============================================
-// PWA foi removido. Desregistra qualquer SW previamente instalado
-// para evitar cache stale em navegadores de usuários existentes.
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations()
-    .then((registrations) => {
-      registrations.forEach((r) => r.unregister());
-      if (import.meta.env.DEV && registrations.length > 0) {
-        console.log('[PWA cleanup] Unregistered', registrations.length, 'service worker(s)');
+  navigator.serviceWorker.register('/sw.js', {
+    scope: '/',
+    updateViaCache: 'none',
+  }).then((registration) => {
+    console.log('[SW] Registered:', registration.scope);
+    registration.addEventListener('updatefound', () => {
+      const newWorker = registration.installing;
+      if (newWorker) {
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            document.dispatchEvent(new CustomEvent('sw-update-available'));
+          }
+        });
       }
-    })
-    .catch(() => {
-      // Silencioso: não há SW para limpar
     });
+    // Handle SW_UPDATED messages
+    navigator.serviceWorker.addEventListener('message', (event) => {
+      if (event.data?.type === 'SW_UPDATED') {
+        const swBuildId = typeof event.data.buildId === 'string' ? event.data.buildId : undefined;
+        if (swBuildId && swBuildId !== 'unknown') {
+          import('@/lib/buildVersion').then(({ getCurrentBuildId, forceBundleRefresh }) => {
+            const current = getCurrentBuildId();
+            if (swBuildId !== current) {
+              forceBundleRefresh(`sw-updated:${swBuildId}`);
+            }
+          });
+        }
+      }
+    });
+  }).catch((err) => {
+    console.warn('[SW] Registration failed:', err);
+  });
 }
 
-// Limpeza de caches legados do Workbox/PWA
-if ('caches' in window) {
-  caches.keys()
-    .then((keys) => {
-      const stale = keys.filter((k) =>
-        k.startsWith('workbox-') || k.startsWith('visao-') || k.startsWith('precache-')
-      );
-      return Promise.all(stale.map((k) => caches.delete(k))).then(() => stale);
-    })
-    .then((stale) => {
-      if (import.meta.env.DEV && stale.length > 0) {
-        console.log('[PWA cleanup] Deleted stale caches:', stale);
-      }
-    })
-    .catch(() => {
-      // Silencioso
-    });
-}
+startBuildVersionWatcher();
 
 // ============================================
 // SOLICITAR PERMISSÃO DE NOTIFICAÇÕES

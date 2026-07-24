@@ -4,8 +4,20 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 import { visualizer } from "rollup-plugin-visualizer";
 
+// Build ID — injected at compile time for version mismatch detection
+import { createHash } from 'node:crypto';
+const BUILD_ID = createHash('sha256')
+  .update(`${Date.now()}-${process.env.CI_JOB_ID || Math.random().toString(36)}`)
+  .digest('hex')
+  .slice(0, 12);
+const BUILD_ID_TIMESTAMP = Date.now().toString();
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  define: {
+    __APP_BUILD_ID__: JSON.stringify(BUILD_ID),
+    __BUILD_TIME__: BUILD_ID_TIMESTAMP,
+  },
   server: {
     host: "::",
     port: 8080,
