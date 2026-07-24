@@ -133,11 +133,7 @@ describe('PtzCalibrationPanel · fluxo de recaptura (integração)', () => {
 
   it('não exibe recaptureRequired quando o desvio está dentro do threshold', async () => {
     // p1 = 0.28 (real quase igual ao predito 0.3) → error_pct = 1% < 10%.
-    const ptz = makePtzStub([
-      { position: { pan: 0, tilt: 0, zoom: 0 }, moving: { pan_tilt: false, zoom: false } },
-      { position: { pan: 0, tilt: 0, zoom: 0 }, moving: { pan_tilt: false, zoom: false } },
-      { position: { pan: 0.28, tilt: 0, zoom: 0 }, moving: { pan_tilt: false, zoom: false } },
-    ]);
+    const ptz = makePtzStub(0, 0.28);
     const user = userEvent.setup();
     await renderPanel(ptz);
 
