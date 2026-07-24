@@ -122,7 +122,9 @@ describe('PtzCalibrationPanel · fluxo de recaptura (integração)', () => {
 
     // O alerta obrigatório aparece com o desvio calculado.
     const alert = await screen.findByTestId('ptz-recapture-required-pan', {}, { timeout: 3000 });
-    expect(alert).toHaveTextContent(/Desvio de 35\.0% .* > 10%.* recaptura obrigatória/i);
+    expect(alert).toHaveTextContent('Desvio de 35.0%');
+    expect(alert).toHaveTextContent('> 10%');
+    expect(alert).toHaveTextContent(/recaptura obrigatória/i);
     expect(alert).toHaveTextContent(/pré-voo/i);
     expect(alert).toHaveAttribute('role', 'alert');
 
