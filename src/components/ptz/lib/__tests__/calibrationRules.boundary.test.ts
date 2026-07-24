@@ -15,24 +15,24 @@ import {
   validateObservedRange,
 } from '../calibrationRules';
 
-const ulpAbove = (x: number): number => {
-  // Menor valor representável estritamente maior que x em float64.
+// Math.nextUp/nextDown em float64. Para positivos, o próximo double é
+// obtido incrementando o bit pattern; para negativos, decrementando (bits
+// caminham em direção ao zero conforme o valor cresce). Zeros ficam em
+// ±MIN_VALUE.
+const bumpBits = (x: number, dir: 1n | -1n): number => {
+  if (Number.isNaN(x)) return NaN;
+  if (x === 0) return dir === 1n ? Number.MIN_VALUE : -Number.MIN_VALUE;
   const buf = new ArrayBuffer(8);
   const f = new Float64Array(buf);
   const u = new BigUint64Array(buf);
   f[0] = x;
-  u[0] = u[0] + 1n;
+  // Bits do sinal positivo crescem com valor; do sinal negativo decrescem.
+  const bitDir = x > 0 ? dir : -dir;
+  u[0] = u[0] + bitDir;
   return f[0];
 };
-
-const ulpBelow = (x: number): number => {
-  const buf = new ArrayBuffer(8);
-  const f = new Float64Array(buf);
-  const u = new BigUint64Array(buf);
-  f[0] = x;
-  u[0] = u[0] - 1n;
-  return f[0];
-};
+const ulpAbove = (x: number): number => bumpBits(x, 1n);
+const ulpBelow = (x: number): number => bumpBits(x, -1n);
 
 describe('computeRecaptureRequired — fronteira do limiar (default 10%)', () => {
   it('não marca no valor exato do limiar (10.0)', () => {
