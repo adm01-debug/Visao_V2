@@ -71,7 +71,7 @@ const detectFaces = async (imageBase64: string, minConfidence: number, maxFaces:
 
     return {
       success: true,
-      faces: faces.slice(0, maxFaces).filter((f: any) => f.confidence >= minConfidence),
+      faces: faces.slice(0, maxFaces).filter((f: DetectedFace) => f.confidence >= minConfidence),
       count: faces.length,
       processingTime: Date.now() - startTime,
     };
