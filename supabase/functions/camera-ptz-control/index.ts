@@ -4,12 +4,7 @@
 // via Agente Local para câmeras em LAN privada).
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { resolveRelayTransport, type Transport, type HttpResult } from '../_shared/relayTransport.ts';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
+import { getCorsHeaders } from '../_shared/cors.ts';
 
 const PTZ_TIMEOUT_MS = 6000;
 
@@ -299,7 +294,8 @@ async function dispatch(tx: Transport, cfg: any, cmd: PtzCommand, params: any): 
 
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  const cors = getCorsHeaders(req);
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
 
   try {
     const authorization = req.headers.get('Authorization') ?? '';
@@ -315,7 +311,7 @@ Deno.serve(async (req) => {
     const { data: { user }, error: userErr } = await userClient.auth.getUser();
     if (userErr || !user) {
       return new Response(JSON.stringify({ error: 'unauthenticated' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401, headers: { ...cors, 'Content-Type': 'application/json' },
       });
     }
 
@@ -323,7 +319,7 @@ Deno.serve(async (req) => {
     const { camera_id, command, params = {}, relay_agent_id = null } = payload;
     if (!camera_id || !command) {
       return new Response(JSON.stringify({ error: 'camera_id e command são obrigatórios' }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400, headers: { ...cors, 'Content-Type': 'application/json' },
       });
     }
 
@@ -333,7 +329,7 @@ Deno.serve(async (req) => {
     const canOperate = roleSet.has('admin') || roleSet.has('manager') || roleSet.has('operator');
     if (!canOperate) {
       return new Response(JSON.stringify({ error: 'papel_insuficiente' }), {
-        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 403, headers: { ...cors, 'Content-Type': 'application/json' },
       });
     }
 
@@ -342,7 +338,7 @@ Deno.serve(async (req) => {
       .from('camera_ptz_config').select('*').eq('camera_id', camera_id).maybeSingle();
     if (cfgErr || !cfg) {
       return new Response(JSON.stringify({ error: 'ptz_nao_configurado' }), {
-        status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 404, headers: { ...cors, 'Content-Type': 'application/json' },
       });
     }
 
@@ -351,7 +347,7 @@ Deno.serve(async (req) => {
     if (resolution.error) {
       return new Response(
         JSON.stringify({ error: resolution.error.code, hint: resolution.error.message }),
-        { status: resolution.error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        { status: resolution.error.status, headers: { ...cors, 'Content-Type': 'application/json' } },
       );
     }
 
@@ -372,7 +368,7 @@ Deno.serve(async (req) => {
         });
         return new Response(
           JSON.stringify({ supported: false, reason: 'driver_no_getstatus', driver: cfg.protocol }),
-          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+          { status: 200, headers: { ...cors, 'Content-Type': 'application/json' } },
         );
       }
       try {
@@ -395,7 +391,7 @@ Deno.serve(async (req) => {
           position: st.position,
           moving: st.moving,
           utc: st.utc,
-        }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+        }), { status: 200, headers: { ...cors, 'Content-Type': 'application/json' } });
       } catch (e) {
         await admin.from('ptz_connection_attempts').insert({
           user_id: user.id, camera_id, profile_id: cfg.profile_id ?? null,
@@ -406,7 +402,7 @@ Deno.serve(async (req) => {
         });
         return new Response(
           JSON.stringify({ supported: true, ok: false, error: 'get_status_failed', detail: String(e).slice(0, 240) }),
-          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+          { status: 200, headers: { ...cors, 'Content-Type': 'application/json' } },
         );
       }
     }
@@ -419,12 +415,12 @@ Deno.serve(async (req) => {
     });
     if (lockErr) {
       return new Response(JSON.stringify({ error: 'lock_error', detail: lockErr.message }), {
-        status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500, headers: { ...cors, 'Content-Type': 'application/json' },
       });
     }
     if (lockRes && lockRes.acquired === false) {
       return new Response(JSON.stringify({ error: 'camera_em_uso', locked_by: lockRes.locked_by }), {
-        status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 409, headers: { ...cors, 'Content-Type': 'application/json' },
       });
     }
 
@@ -485,11 +481,11 @@ Deno.serve(async (req) => {
       clamped: adjusted,
       response: camBody,
     }), {
-      status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200, headers: { ...cors, 'Content-Type': 'application/json' },
     });
   } catch (e) {
     return new Response(JSON.stringify({ error: 'internal', detail: String(e) }), {
-      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500, headers: { ...cors, 'Content-Type': 'application/json' },
     });
   }
 });
