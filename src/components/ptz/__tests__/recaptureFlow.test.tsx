@@ -149,11 +149,7 @@ describe('PtzCalibrationPanel · fluxo de recaptura (integração)', () => {
   });
 
   it('abre o diálogo de confirmação de recaptura mostrando o desvio detectado', async () => {
-    const ptz = makePtzStub([
-      { position: { pan: 0, tilt: 0, zoom: 0 }, moving: { pan_tilt: false, zoom: false } },
-      { position: { pan: 0, tilt: 0, zoom: 0 }, moving: { pan_tilt: false, zoom: false } },
-      { position: { pan: -0.4, tilt: 0, zoom: 0 }, moving: { pan_tilt: false, zoom: false } },
-    ]);
+    const ptz = makePtzStub(0, -0.4);
     const user = userEvent.setup();
     await renderPanel(ptz);
 
