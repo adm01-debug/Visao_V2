@@ -19,9 +19,9 @@ jobs:
       
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
       
-      - run: npm install --legacy-peer-deps || npm install --force || true
+      - run: npm install --ignore-scripts || npm install --force || true
         continue-on-error: true
       
       - run: npm audit --audit-level=none || true
