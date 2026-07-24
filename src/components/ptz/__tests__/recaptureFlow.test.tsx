@@ -58,24 +58,21 @@ vi.mock('sonner', () => ({
 }));
 
 // ---------- PTZ stub configurável ----------
-type Status = {
-  position: { pan?: number; tilt?: number; zoom?: number };
-  moving: { pan_tilt: boolean | null; zoom: boolean | null };
-};
-
-function makePtzStub(statuses: Status[]) {
-  let i = 0;
-  const getStatus = vi.fn(async () => {
-    const s = statuses[Math.min(i, statuses.length - 1)];
-    i += 1;
-    return s;
+// Usa `stopMove`/`send('stop')` como trigger para alternar da posição p0 → p1,
+// independendo de quantas chamadas colaterais o painel faça a getStatus
+// (mount effect, PtzLiveStatusPanel polling, etc).
+function makePtzStub(p0: number, p1: number) {
+  let phase: 'p0' | 'p1' = 'p0';
+  const status = () => ({
+    position: { pan: phase === 'p0' ? p0 : p1, tilt: 0, zoom: 0 },
+    moving: { pan_tilt: false as const, zoom: false as const },
   });
   return {
-    getStatus,
+    getStatus: vi.fn(async () => status()),
     startMove: vi.fn(async () => {}),
-    stopMove: vi.fn(async () => {}),
+    stopMove: vi.fn(async () => { phase = 'p1'; }),
     zoom: vi.fn(async () => {}),
-    send: vi.fn(async () => {}),
+    send: vi.fn(async () => { phase = 'p1'; }),
     home: vi.fn(async () => {}),
     savePreset: vi.fn(async () => {}),
   } as unknown as Parameters<typeof import('../PtzCalibrationPanel').PtzCalibrationPanel>[0]['ptz'];
