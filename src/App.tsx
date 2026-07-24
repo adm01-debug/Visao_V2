@@ -103,6 +103,9 @@ const BandwidthMonitorPage = lazy(() => import("@/pages/BandwidthMonitorPage"));
 const LivePreviewHarnessPage = import.meta.env.DEV
   ? lazy(() => import("@/pages/dev/LivePreviewHarnessPage"))
   : null;
+const PtzCalibrationHarnessPage = import.meta.env.DEV
+  ? lazy(() => import("@/pages/dev/PtzCalibrationHarnessPage"))
+  : null;
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -227,6 +230,9 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/dev/loading-states" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<LoadingStatesChecklistPage />, "Loading States Checklist")}</ProtectedLayoutRoute>} />
                     {LivePreviewHarnessPage && (
                       <Route path="/__test/live-preview" element={withRouteErrorBoundary(<LivePreviewHarnessPage />, "Live Preview Harness")} />
+                    )}
+                    {PtzCalibrationHarnessPage && (
+                      <Route path="/__test/ptz-calibration" element={withRouteErrorBoundary(<PtzCalibrationHarnessPage />, "PTZ Calibration Harness")} />
                     )}
                     <Route path="/acesso-negado" element={withRouteErrorBoundary(<AcessoNegado />, "Acesso Negado")} />
                     <Route path="*" element={<NotFound />} />
