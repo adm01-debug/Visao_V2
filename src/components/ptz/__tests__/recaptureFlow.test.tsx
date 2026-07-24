@@ -110,11 +110,7 @@ describe('PtzCalibrationPanel · fluxo de recaptura (integração)', () => {
   it('dispara recaptureRequired e exibe mensagem de erro quando revalidação acusa desvio > 10%', async () => {
     // p0 = 0 (posição inicial na revalidação); p1 = -0.4 (real muito distante
     // do predito +0.3) → error_pct = |−0.4 − 0.3| / 2 * 100 = 35% > 10%.
-    const ptz = makePtzStub([
-      { position: { pan: 0, tilt: 0, zoom: 0 }, moving: { pan_tilt: false, zoom: false } }, // mount
-      { position: { pan: 0, tilt: 0, zoom: 0 }, moving: { pan_tilt: false, zoom: false } }, // p0
-      { position: { pan: -0.4, tilt: 0, zoom: 0 }, moving: { pan_tilt: false, zoom: false } }, // p1
-    ]);
+    const ptz = makePtzStub(0, -0.4);
     const user = userEvent.setup();
     await renderPanel(ptz);
 
