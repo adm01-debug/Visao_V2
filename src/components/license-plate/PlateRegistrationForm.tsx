@@ -38,9 +38,9 @@ export const PlateRegistrationForm = memo(function PlateRegistrationForm({
     const result = plateRegistrationSchema.safeParse(newPlate);
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
-      result.error.errors.forEach(e => { fieldErrors[e.path[0] as string] = e.message; });
+      result.error.issues.forEach((e) => { fieldErrors[e.path[0] as string] = e.message; });
       setErrors(fieldErrors);
-      toast.error(result.error.errors[0]?.message || 'Dados inválidos');
+      toast.error(result.error.issues[0]?.message || 'Dados inválidos');
       return;
     }
     setErrors({});

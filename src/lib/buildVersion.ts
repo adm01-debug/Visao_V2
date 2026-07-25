@@ -32,7 +32,7 @@ async function purgeCaches(): Promise<void> {
   } catch { /* noop */ }
 }
 
-async function forceBundleRefresh(reason: string): Promise<void> {
+export async function forceBundleRefresh(reason: string): Promise<void> {
   const alreadyReloaded = sessionStorage.getItem(RELOAD_FLAG) === '1';
   await purgeCaches();
   if (alreadyReloaded) {
