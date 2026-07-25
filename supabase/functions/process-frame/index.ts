@@ -368,6 +368,7 @@ serve(async (req) => {
         detectionCount: detections.length,
         rulesEvaluated: rules?.length ?? 0,
         alertsCreated,
+        outOfAreaOccurrences: outOfAreaOccurrences.length,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
