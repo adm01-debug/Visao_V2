@@ -48,6 +48,7 @@ const CamerasPage = lazy(() => import("@/pages/CamerasPage"));
 const NvrsPage = lazy(() => import("@/pages/NvrsPage"));
 const NvrDetailPage = lazy(() => import("@/pages/NvrDetailPage"));
 const CameraStatusPage = lazy(() => import("@/pages/CameraStatusPage"));
+const CameraFleetHealthPage = lazy(() => import("@/pages/CameraFleetHealthPage"));
 const AlertsPage = lazy(() => import("@/pages/AlertsPage"));
 const ZonesPage = lazy(() => import("@/pages/ZonesPage"));
 const RecordingsPage = lazy(() => import("@/pages/RecordingsPage"));
