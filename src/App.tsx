@@ -188,6 +188,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/event-alerts" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<EventAlertsDashboardPage />, "Dashboard de Alertas")}</ProtectedLayoutRoute>} />
                     <Route path="/eventos/fora-de-area" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<OutOfAreaEventsPage />, "Fora da Área Permitida")}</ProtectedLayoutRoute>} />
                     <Route path="/eventos/noturnos" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<NightSuspiciousEventsPage />, "Alertas Noturnos")}</ProtectedLayoutRoute>} />
+                    <Route path="/notificacoes" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<IncidentNotificationsPage />, "Notificações de Incidentes")}</ProtectedLayoutRoute>} />
                     <Route path="/evaluation" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<EvaluationPage />, "Avaliação de Detecções")}</ProtectedLayoutRoute>} />
                     <Route path="/zones" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<ZonesPage />, "Zonas")}</ProtectedLayoutRoute>} />
                     <Route path="/recordings" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<RecordingsPage />, "Gravações")}</ProtectedLayoutRoute>} />
