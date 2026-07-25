@@ -220,6 +220,85 @@ serve(async (req) => {
       );
     }
 
+    // 3.1) Detecção de pessoas FORA das áreas permitidas (zonas type='safe')
+    //      Gera zone_events (event_type='person_out_of_allowed_area') + event_alerts com dedup.
+    const outOfAreaOccurrences: Array<{ label: string; confidence: number; bbox: NonNullable<Detection["bbox"]> }> = [];
+    try {
+      const { data: cameraOwner } = await admin
+        .from("cameras")
+        .select("user_id")
+        .eq("id", cameraId)
+        .maybeSingle();
+      const ownerId = cameraOwner?.user_id as string | undefined;
+
+      const { data: allowedZonesRaw } = await admin
+        .from("zones")
+        .select("id, name, is_active, points, type")
+        .eq("camera_id", cameraId)
+        .eq("is_active", true)
+        .in("type", ["safe"]);
+
+      const allowedZones = (allowedZonesRaw ?? [])
+        .map((z) => ({ ...z, geometry: normalizeGeometry(z.points) }))
+        .filter((z) => z.geometry && (z.geometry.shape === "polygon" || z.geometry.shape === "rectangle" || z.geometry.shape === "circle"));
+
+      if (ownerId && allowedZones.length > 0) {
+        const personDets = detections.filter(
+          (d) => !!d.bbox && (d.label.toLowerCase() === "person" || d.category?.toLowerCase() === "person"),
+        );
+        for (const d of personDets) {
+          const inside = allowedZones.some((z) => isBoxInZone(d.bbox!, z.geometry!));
+          if (!inside) outOfAreaOccurrences.push({ label: d.label, confidence: d.confidence, bbox: d.bbox! });
+        }
+
+        if (outOfAreaOccurrences.length > 0) {
+          await admin.from("zone_events").insert(
+            outOfAreaOccurrences.map((occ) => ({
+              zone_id: null,
+              user_id: ownerId,
+              event_type: "person_out_of_allowed_area",
+              detected_objects: [{
+                label: occ.label,
+                confidence: occ.confidence,
+                bbox: occ.bbox,
+                camera_id: cameraId,
+                event_id: eventId,
+              }],
+              timestamp: at.toISOString(),
+            })),
+          );
+
+          // Alerta agregado por câmera com cooldown de 60s
+          const bucket = Math.floor(at.getTime() / 1000 / 60);
+          const dedupKey = `out_of_area:${cameraId}:${bucket}`;
+          const top = outOfAreaOccurrences.reduce((a, b) => (a.confidence >= b.confidence ? a : b));
+          await admin.from("event_alerts").upsert(
+            {
+              organization_id: organizationId,
+              event_id: eventId,
+              camera_id: cameraId,
+              title: `Pessoa fora da área permitida`,
+              description: `${outOfAreaOccurrences.length} pessoa(s) detectada(s) fora das ${allowedZones.length} zona(s) permitida(s) da câmera (confiança máx. ${(top.confidence * 100).toFixed(1)}%).`,
+              severity: "high" as const,
+              status: "open",
+              triggered_at: at.toISOString(),
+              dedup_key: dedupKey,
+              metadata: {
+                kind: "person_out_of_allowed_area",
+                occurrences: outOfAreaOccurrences.length,
+                allowed_zone_ids: allowedZones.map((z) => z.id),
+              },
+            },
+            { onConflict: "organization_id,dedup_key", ignoreDuplicates: true },
+          );
+        }
+      }
+    } catch (err) {
+      log.warn("out_of_area_detection_failed", { err: err instanceof Error ? err.message : String(err) });
+    }
+
+
+
     // 4) Carregar câmera + regras ativas
     const [{ data: camera }, { data: rules }] = await Promise.all([
       admin.from("cameras").select("name").eq("id", cameraId).maybeSingle(),
