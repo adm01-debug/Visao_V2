@@ -82,6 +82,24 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         path: "/panic-events",
       },
       {
+        id: "incident-notifications",
+        label: "Notificações",
+        icon: Bell,
+        path: "/notificacoes",
+      },
+      {
+        id: "night-events",
+        label: "Alertas Noturnos",
+        icon: ShieldAlert,
+        path: "/eventos/noturnos",
+      },
+      {
+        id: "out-of-area",
+        label: "Fora da Área",
+        icon: Target,
+        path: "/eventos/fora-de-area",
+      },
+      {
         id: "security-rules",
         label: "Regras",
         icon: Shield,
