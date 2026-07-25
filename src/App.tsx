@@ -95,6 +95,7 @@ const EventAlertsDashboardPage = lazy(() => import("@/pages/EventAlertsDashboard
 const OutOfAreaEventsPage = lazy(() => import("@/pages/OutOfAreaEventsPage"));
 const NightSuspiciousEventsPage = lazy(() => import("@/pages/NightSuspiciousEventsPage"));
 const IncidentNotificationsPage = lazy(() => import("@/pages/IncidentNotificationsPage"));
+const WeeklyReportPage = lazy(() => import("@/pages/WeeklyReportPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const AcessoNegado = lazy(() => import("@/pages/AcessoNegado"));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
@@ -189,6 +190,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/eventos/fora-de-area" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<OutOfAreaEventsPage />, "Fora da Área Permitida")}</ProtectedLayoutRoute>} />
                     <Route path="/eventos/noturnos" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<NightSuspiciousEventsPage />, "Alertas Noturnos")}</ProtectedLayoutRoute>} />
                     <Route path="/notificacoes" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<IncidentNotificationsPage />, "Notificações de Incidentes")}</ProtectedLayoutRoute>} />
+                    <Route path="/relatorio-semanal" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<WeeklyReportPage />, "Relatório Semanal")}</ProtectedLayoutRoute>} />
                     <Route path="/evaluation" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<EvaluationPage />, "Avaliação de Detecções")}</ProtectedLayoutRoute>} />
                     <Route path="/zones" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<ZonesPage />, "Zonas")}</ProtectedLayoutRoute>} />
                     <Route path="/recordings" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<RecordingsPage />, "Gravações")}</ProtectedLayoutRoute>} />
