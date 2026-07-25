@@ -2681,6 +2681,120 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_dispatches: {
+        Row: {
+          alert_id: string
+          camera_id: string | null
+          camera_name: string | null
+          channel: Database["public"]["Enums"]["notification_channel"]
+          created_at: string
+          destination: string
+          error: string | null
+          id: string
+          message: string
+          recipient_id: string
+          sent_at: string | null
+          sent_by: string | null
+          severity: Database["public"]["Enums"]["event_alert_severity"]
+          status: Database["public"]["Enums"]["notification_dispatch_status"]
+          subject: string
+          user_id: string
+          wa_link: string | null
+        }
+        Insert: {
+          alert_id: string
+          camera_id?: string | null
+          camera_name?: string | null
+          channel: Database["public"]["Enums"]["notification_channel"]
+          created_at?: string
+          destination: string
+          error?: string | null
+          id?: string
+          message: string
+          recipient_id: string
+          sent_at?: string | null
+          sent_by?: string | null
+          severity: Database["public"]["Enums"]["event_alert_severity"]
+          status?: Database["public"]["Enums"]["notification_dispatch_status"]
+          subject: string
+          user_id: string
+          wa_link?: string | null
+        }
+        Update: {
+          alert_id?: string
+          camera_id?: string | null
+          camera_name?: string | null
+          channel?: Database["public"]["Enums"]["notification_channel"]
+          created_at?: string
+          destination?: string
+          error?: string | null
+          id?: string
+          message?: string
+          recipient_id?: string
+          sent_at?: string | null
+          sent_by?: string | null
+          severity?: Database["public"]["Enums"]["event_alert_severity"]
+          status?: Database["public"]["Enums"]["notification_dispatch_status"]
+          subject?: string
+          user_id?: string
+          wa_link?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_dispatches_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "event_alerts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_dispatches_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "notification_recipients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_recipients: {
+        Row: {
+          active: boolean
+          channels: Database["public"]["Enums"]["notification_channel"][]
+          created_at: string
+          email: string | null
+          id: string
+          min_severity: Database["public"]["Enums"]["event_alert_severity"]
+          name: string
+          updated_at: string
+          user_id: string
+          whatsapp_phone: string | null
+        }
+        Insert: {
+          active?: boolean
+          channels?: Database["public"]["Enums"]["notification_channel"][]
+          created_at?: string
+          email?: string | null
+          id?: string
+          min_severity?: Database["public"]["Enums"]["event_alert_severity"]
+          name: string
+          updated_at?: string
+          user_id: string
+          whatsapp_phone?: string | null
+        }
+        Update: {
+          active?: boolean
+          channels?: Database["public"]["Enums"]["notification_channel"][]
+          created_at?: string
+          email?: string | null
+          id?: string
+          min_severity?: Database["public"]["Enums"]["event_alert_severity"]
+          name?: string
+          updated_at?: string
+          user_id?: string
+          whatsapp_phone?: string | null
+        }
+        Relationships: []
+      }
       nvr_recording_downloads: {
         Row: {
           attempts: number
@@ -6476,6 +6590,8 @@ export type Database = {
         | "false_negative"
         | "uncertain"
       media_type: "snapshot" | "clip" | "continuous"
+      notification_channel: "email" | "whatsapp"
+      notification_dispatch_status: "pending" | "sent" | "skipped" | "failed"
       org_role: "owner" | "admin" | "member" | "viewer"
       restore_status: "none" | "in_progress" | "available" | "expired"
       retention_class: "standard" | "extended" | "forensic"
@@ -6694,6 +6810,8 @@ export const Constants = {
         "uncertain",
       ],
       media_type: ["snapshot", "clip", "continuous"],
+      notification_channel: ["email", "whatsapp"],
+      notification_dispatch_status: ["pending", "sent", "skipped", "failed"],
       org_role: ["owner", "admin", "member", "viewer"],
       restore_status: ["none", "in_progress", "available", "expired"],
       retention_class: ["standard", "extended", "forensic"],
