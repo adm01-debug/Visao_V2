@@ -502,6 +502,7 @@ serve(async (req) => {
         rulesEvaluated: rules?.length ?? 0,
         alertsCreated,
         outOfAreaOccurrences: outOfAreaOccurrences.length,
+        nightAlerts: nightAlerts.map((n) => n.kind),
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
