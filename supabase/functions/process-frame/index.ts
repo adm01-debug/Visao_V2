@@ -22,6 +22,7 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rateLimiter.ts";
 import { createLogger } from "../_shared/logger.ts";
 import { fetchWithRetry } from "../_shared/retry.ts";
+import { isBoxInZone, normalizeGeometry } from "../_shared/zoneMatcher.ts";
 
 const log = createLogger("process-frame");
 
