@@ -298,7 +298,140 @@ serve(async (req) => {
       log.warn("out_of_area_detection_failed", { err: err instanceof Error ? err.message : String(err) });
     }
 
+    // 3.2) Alertas noturnos: atividade suspeita e risco de arrombamento
+    //      Janela noturna padrão (America/Sao_Paulo): 19:00–06:00.
+    //      Heurísticas:
+    //        (a) Pessoa detectada à noite → suspicious_night_activity (medium)
+    //        (b) Objetos de arrombamento (pé-de-cabra, escada, máscara, capuz,
+    //            martelo, alicate, lanterna, etc.) OU pessoa em zona
+    //            restricted/danger → break_in_risk (critical)
+    //        (c) ≥3 eventos de pessoa nos últimos 10 min → loitering_at_night (high)
+    const nightAlerts: Array<{
+      kind: string;
+      severity: "medium" | "high" | "critical";
+      title: string;
+      description: string;
+      extra?: Record<string, unknown>;
+    }> = [];
+    try {
+      // 4) Carregar câmera + regras ativas (movido acima do bloco noturno para usar cameraName)
+      const spHour = Number(
+        new Intl.DateTimeFormat("en-US", {
+          timeZone: "America/Sao_Paulo",
+          hour: "2-digit",
+          hour12: false,
+        }).format(at),
+      );
+      const isNight = spHour >= 19 || spHour < 6;
 
+      if (isNight) {
+        const { data: cameraForNight } = await admin
+          .from("cameras")
+          .select("name")
+          .eq("id", cameraId)
+          .maybeSingle();
+        const camName = cameraForNight?.name ?? "câmera";
+
+        const personDets = detections.filter(
+          (d) => d.label.toLowerCase() === "person" || d.category?.toLowerCase() === "person",
+        );
+        const BURGLARY_KEYWORDS = [
+          "crowbar", "pé-de-cabra", "pe-de-cabra", "ladder", "escada",
+          "mask", "máscara", "mascara", "balaclava", "hoodie", "capuz",
+          "hammer", "martelo", "bolt cutter", "alicate", "climbing",
+          "escalada", "escalando", "breaking", "arrombamento",
+          "flashlight", "lanterna", "knife", "faca", "weapon", "arma",
+        ];
+        const suspiciousObjectDets = detections.filter((d) => {
+          const label = d.label.toLowerCase();
+          return d.confidence >= 0.4 && BURGLARY_KEYWORDS.some((k) => label.includes(k));
+        });
+
+        const { data: restrictedZonesRaw } = await admin
+          .from("zones")
+          .select("id, name, is_active, points, type")
+          .eq("camera_id", cameraId)
+          .eq("is_active", true)
+          .in("type", ["restricted", "danger"]);
+        const restrictedZones = (restrictedZonesRaw ?? [])
+          .map((z) => ({ ...z, geometry: normalizeGeometry(z.points) }))
+          .filter((z) => !!z.geometry);
+        const personInRestricted = personDets.some(
+          (d) => !!d.bbox && restrictedZones.some((z) => isBoxInZone(d.bbox!, z.geometry!)),
+        );
+
+        if (personDets.length > 0) {
+          const top = personDets.reduce((a, b) => (a.confidence >= b.confidence ? a : b));
+          nightAlerts.push({
+            kind: "suspicious_night_activity",
+            severity: "medium",
+            title: `Atividade noturna suspeita em ${camName}`,
+            description: `${personDets.length} pessoa(s) detectada(s) durante o período noturno (${spHour}h — confiança máx. ${(top.confidence * 100).toFixed(1)}%).`,
+            extra: { person_count: personDets.length, hour_local: spHour },
+          });
+        }
+
+        if (suspiciousObjectDets.length > 0 || (personDets.length > 0 && personInRestricted)) {
+          const reasons: string[] = [];
+          if (suspiciousObjectDets.length > 0) {
+            reasons.push(`objeto(s) suspeito(s): ${suspiciousObjectDets.map((d) => d.label).join(", ")}`);
+          }
+          if (personInRestricted) reasons.push("pessoa em zona restrita/perigosa");
+          nightAlerts.push({
+            kind: "break_in_risk",
+            severity: "critical",
+            title: `⚠️ Risco de arrombamento em ${camName}`,
+            description: `Padrão de invasão detectado à noite (${spHour}h): ${reasons.join("; ")}.`,
+            extra: {
+              suspicious_objects: suspiciousObjectDets.map((d) => ({ label: d.label, confidence: d.confidence })),
+              person_in_restricted: personInRestricted,
+              hour_local: spHour,
+            },
+          });
+        }
+
+        if (personDets.length > 0) {
+          const since = new Date(at.getTime() - 10 * 60 * 1000).toISOString();
+          const { count: recentCount } = await admin
+            .from("camera_events")
+            .select("id", { count: "exact", head: true })
+            .eq("camera_id", cameraId)
+            .gte("occurred_at", since);
+          if ((recentCount ?? 0) >= 3) {
+            nightAlerts.push({
+              kind: "loitering_at_night",
+              severity: "high",
+              title: `Permanência prolongada à noite em ${camName}`,
+              description: `${recentCount} evento(s) de pessoa nos últimos 10 minutos durante o período noturno.`,
+              extra: { recent_events: recentCount, window_minutes: 10, hour_local: spHour },
+            });
+          }
+        }
+
+        for (const na of nightAlerts) {
+          const cooldownSec = na.severity === "critical" ? 120 : na.severity === "high" ? 300 : 600;
+          const bucket = Math.floor(at.getTime() / 1000 / cooldownSec);
+          const dedupKey = `${na.kind}:${cameraId}:${bucket}`;
+          await admin.from("event_alerts").upsert(
+            {
+              organization_id: organizationId,
+              event_id: eventId,
+              camera_id: cameraId,
+              title: na.title,
+              description: na.description,
+              severity: na.severity,
+              status: "open",
+              triggered_at: at.toISOString(),
+              dedup_key: dedupKey,
+              metadata: { kind: na.kind, ...(na.extra ?? {}) },
+            },
+            { onConflict: "organization_id,dedup_key", ignoreDuplicates: true },
+          );
+        }
+      }
+    } catch (err) {
+      log.warn("night_alerts_failed", { err: err instanceof Error ? err.message : String(err) });
+    }
 
     // 4) Carregar câmera + regras ativas
     const [{ data: camera }, { data: rules }] = await Promise.all([
