@@ -92,6 +92,7 @@ const LoadingStatesChecklistPage = lazy(() => import("@/pages/LoadingStatesCheck
 const AlertsTimelinePage = lazy(() => import("@/pages/AlertsTimelinePage"));
 const EvaluationPage = lazy(() => import("@/pages/EvaluationPage"));
 const EventAlertsDashboardPage = lazy(() => import("@/pages/EventAlertsDashboardPage"));
+const OutOfAreaEventsPage = lazy(() => import("@/pages/OutOfAreaEventsPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const AcessoNegado = lazy(() => import("@/pages/AcessoNegado"));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
@@ -183,6 +184,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/alerts" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<AlertsPage />, "Alertas")}</ProtectedLayoutRoute>} />
                     <Route path="/alerts-timeline" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<AlertsTimelinePage />, "Timeline de Alertas")}</ProtectedLayoutRoute>} />
                     <Route path="/event-alerts" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<EventAlertsDashboardPage />, "Dashboard de Alertas")}</ProtectedLayoutRoute>} />
+                    <Route path="/eventos/fora-de-area" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<OutOfAreaEventsPage />, "Fora da Área Permitida")}</ProtectedLayoutRoute>} />
                     <Route path="/evaluation" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<EvaluationPage />, "Avaliação de Detecções")}</ProtectedLayoutRoute>} />
                     <Route path="/zones" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<ZonesPage />, "Zonas")}</ProtectedLayoutRoute>} />
                     <Route path="/recordings" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<RecordingsPage />, "Gravações")}</ProtectedLayoutRoute>} />
