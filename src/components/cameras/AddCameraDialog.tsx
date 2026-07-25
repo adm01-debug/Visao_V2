@@ -265,7 +265,7 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
 
 
 
-  const form = useForm<AddCameraFormValues>({
+  const form = useForm<z.input<typeof addCameraSchema>, unknown, AddCameraFormValues>({
     resolver: zodResolver(addCameraSchema),
     defaultValues: DEFAULTS,
     mode: "onBlur",
