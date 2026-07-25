@@ -225,7 +225,7 @@
     "workbox-precaching": "^7.0.0",
     "workbox-routing": "^7.0.0",
     "xss": "^1.0.14",
-    "zod": "^3.25.76",
+    "zod": "^4.4.3",
     "zustand": "^4.4.0"
   },
   "devDependencies": {
