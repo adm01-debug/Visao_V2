@@ -137,6 +137,7 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
       { id: "vehicles", label: "Veículos", icon: Car, path: "/vehicles" },
       { id: "heatmap", label: "Mapa de Calor", icon: Flame, path: "/heatmap" },
       { id: "reports", label: "Relatórios", icon: FileText, path: "/reports" },
+      { id: "weekly-report", label: "Relatório Semanal", icon: FileText, path: "/relatorio-semanal" },
     ],
     getStatus: () => ({
       type: status.activeRules > 0 ? "info" : "neutral",
