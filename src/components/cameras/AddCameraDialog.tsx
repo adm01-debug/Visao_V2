@@ -13,7 +13,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { z } from "zod";
+import type { Resolver } from "react-hook-form";
 import { Eye, EyeOff, Loader2, ShieldCheck, Activity, Gamepad2, Search, AlertTriangle, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useRtspValidation } from "@/hooks/useRtspValidation";
@@ -266,8 +266,8 @@ export function AddCameraDialog({ open, onOpenChange, onCreated, mode = "quick" 
 
 
 
-  const form = useForm<z.input<typeof addCameraSchema>, unknown, AddCameraFormValues>({
-    resolver: zodResolver(addCameraSchema),
+  const form = useForm<AddCameraFormValues>({
+    resolver: zodResolver(addCameraSchema) as unknown as Resolver<AddCameraFormValues>,
     defaultValues: DEFAULTS,
     mode: "onBlur",
   });
