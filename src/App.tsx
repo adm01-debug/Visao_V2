@@ -93,6 +93,7 @@ const AlertsTimelinePage = lazy(() => import("@/pages/AlertsTimelinePage"));
 const EvaluationPage = lazy(() => import("@/pages/EvaluationPage"));
 const EventAlertsDashboardPage = lazy(() => import("@/pages/EventAlertsDashboardPage"));
 const OutOfAreaEventsPage = lazy(() => import("@/pages/OutOfAreaEventsPage"));
+const NightSuspiciousEventsPage = lazy(() => import("@/pages/NightSuspiciousEventsPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const AcessoNegado = lazy(() => import("@/pages/AcessoNegado"));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
