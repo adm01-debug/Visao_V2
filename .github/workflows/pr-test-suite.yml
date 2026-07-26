@@ -302,7 +302,10 @@ jobs:
       # dentro de uma transação que termina em ROLLBACK.
       - name: Seed do usuário de CI de auto-cura
         id: healing-seed
-        if: steps.creds.outputs.available == 'true' && env.SUPABASE_SERVICE_ROLE_KEY != ''
+        if: steps.creds.outputs.available == 'true'
+        # Sem a chave de serviço não há como criar o usuário dedicado. Isso é
+        # ausência de credencial, não regressão de código: avisa e segue.
+        continue-on-error: true
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
