@@ -2,3 +2,4 @@
 - [RTMP Push Ingest](mem://features/rtmp-push-ingest) — Onda 124: `camera_ingest_endpoints`, edge `ingest-auth` (segredo `INGEST_WEBHOOK_SECRET`), detector de silêncio a cada 5min, gate `db:check:ingest-endpoints`
 - [Dwell & Veículo Recorrente](mem://features/dwell-and-vehicle-recurrence) — Onda 125: `dwell_sessions` com histerese, `evaluate_dwell_alerts`, `evaluate_vehicle_recurrence`; paridade com `dwellTracker.ts`, gate `db:check:dwell-analytics`
 - [Centrais de Monitoramento](mem://features/monitoring-center-connectors) — Onda 126: SIA DC-09/Contact ID para Sigma/Moni/Commbox, fila com lease e dedupe, gate `db:check:monitoring-centers`
+- [Rede Colaborativa de Placas](mem://features/collab-plate-network) — Onda 127: HMAC por rede (placa nunca em claro), reciprocidade, TTL/revogação, cooldown; gate `db:check:collab-network`
