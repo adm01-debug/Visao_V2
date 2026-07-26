@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { useMaintenanceAlertBadge } from "@/hooks/useMaintenanceAlertBadge";
+import { useCollabUnreadBadge } from "@/hooks/useCollabUnreadBadge";
 
 export interface SidebarStatus {
   unreadAlerts: number;
@@ -16,8 +17,14 @@ export interface SidebarStatus {
   openMaintenanceAlerts: number;
   openMaintenanceCritical: number;
   maintenanceAtCeiling: number;
+  /** Onda 139 — avisos visíveis da rede colaborativa (silenciados excluídos). */
+  collabUnread: number;
+  collabActionable: number;
+  collabCritical: number;
+  collabOldestAgeHours: number | null;
   isLoading: boolean;
 }
+
 
 export function useSidebarStatus(): SidebarStatus {
   const queryClient = useQueryClient();
