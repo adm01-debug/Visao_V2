@@ -343,7 +343,7 @@ BEGIN
     RAISE EXCEPTION 'FALHA: hash nulo para placa válida';
   END IF;
 
-  RAISE NOTICE 'GATE_OK';
+  RAISE WARNING 'GATE_OK';
 END;
 $gate$;
 ROLLBACK;
