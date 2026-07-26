@@ -59,7 +59,13 @@ export interface BottomNavStatusInput {
   readonly openMaintenanceAlerts: number;
   readonly openMaintenanceCritical: number;
   readonly maintenanceAtCeiling: number;
+  /** Onda 139 — avisos visíveis da rede colaborativa (silenciados fora). */
+  readonly collabUnread?: number;
+  readonly collabActionable?: number;
+  readonly collabCritical?: number;
+  readonly collabOldestAgeHours?: number | null;
 }
+
 
 const EMPTY: BottomNavBadgeDescriptor = {
   text: null,
