@@ -46,9 +46,12 @@ const warnings = [];
 
 // -------------------------------------------------------- 1) blindagem da função
 const fn = query(`
+  -- Booleanos em vez do corpo inteiro: pg_get_functiondef é multi-linha e
+  -- quebraria o parser linha-a-linha desta ferramenta.
   SELECT p.prosecdef,
          has_function_privilege('anon', p.oid, 'EXECUTE'),
-         pg_get_functiondef(p.oid)
+         pg_get_functiondef(p.oid) LIKE '%camera_clock_skew%',
+         pg_get_functiondef(p.oid) LIKE '%partition_backlog_trend%'
   FROM pg_proc p
   JOIN pg_namespace n ON n.oid = p.pronamespace
   WHERE n.nspname = 'public' AND p.proname = 'evaluate_maintenance_alerts'
@@ -57,14 +60,14 @@ const fn = query(`
 if (fn.length === 0) {
   errors.push('public.evaluate_maintenance_alerts não existe — o barramento de alertas sumiu.');
 } else {
-  const [secdef, anonExec, def] = fn[0];
+  const [secdef, anonExec, hasSkew, hasBacklog] = fn[0];
   if (secdef !== 't') errors.push('evaluate_maintenance_alerts deixou de ser SECURITY DEFINER.');
   if (anonExec === 't') errors.push('evaluate_maintenance_alerts é executável por anon.');
-
-  for (const routine of ['camera_clock_skew', 'partition_backlog_trend']) {
-    if (!def.includes(routine)) {
-      errors.push(`Rotina '${routine}' não está cadastrada no avaliador — detector órfão.`);
-    }
+  if (hasSkew !== 't') {
+    errors.push("Rotina 'camera_clock_skew' não está cadastrada no avaliador — detector órfão.");
+  }
+  if (hasBacklog !== 't') {
+    errors.push("Rotina 'partition_backlog_trend' não está cadastrada no avaliador — detector órfão.");
   }
 }
 
