@@ -1,8 +1,9 @@
 import {
   Camera, Shield, Brain, Users, Settings, LayoutDashboard, Bell, Video,
   HardHat, BarChart3, ScanFace, Car, Flame, Target, Sliders, MessageSquare,
-  ShieldAlert, Zap, FileText, PieChart, type LucideIcon,
+  ShieldAlert, Zap, FileText, PieChart, Wrench, Network, type LucideIcon,
 } from "lucide-react";
+
 import type { AppRole } from "@/hooks/useUserRole";
 
 export interface NavItem {
