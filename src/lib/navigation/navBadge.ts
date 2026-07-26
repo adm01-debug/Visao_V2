@@ -54,8 +54,9 @@ export function shouldRenderNavBadge(badge: NavBadgeValue): boolean {
  * que um uso indevido apareça como vazio e não como `"NaN"` ou `"undefined"`.
  */
 export function formatNavBadge(badge: NavBadgeValue, max: number = NAV_BADGE_MAX): string {
-  if (!shouldRenderNavBadge(badge)) return '';
+  if (badge === undefined || badge === null) return '';
   if (typeof badge === 'number') {
+    if (!Number.isFinite(badge) || badge <= 0) return '';
     const cap = Number.isFinite(max) && max > 0 ? Math.floor(max) : NAV_BADGE_MAX;
     return badge > cap ? `${cap}+` : String(Math.floor(badge));
   }
