@@ -139,12 +139,16 @@ function median(values: readonly number[]): number {
 export function theilSenSlopePerHour(samples: readonly BacklogSample[]): number | null {
   const slopes: number[] = [];
   for (let i = 0; i < samples.length; i += 1) {
+    const a = samples[i];
+    if (!a) continue;
     for (let j = i + 1; j < samples.length; j += 1) {
-      const deltaHours = (samples[j].sampledAtMs - samples[i].sampledAtMs) / HOUR_MS;
+      const b = samples[j];
+      if (!b) continue;
+      const deltaHours = (b.sampledAtMs - a.sampledAtMs) / HOUR_MS;
       // Amostras com o mesmo carimbo (coletor reexecutado no mesmo instante)
       // gerariam divisão por zero: são descartadas, não tratadas como infinito.
       if (deltaHours === 0) continue;
-      slopes.push((samples[j].rowCount - samples[i].rowCount) / deltaHours);
+      slopes.push((b.rowCount - a.rowCount) / deltaHours);
     }
   }
   return slopes.length === 0 ? null : median(slopes);
