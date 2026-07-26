@@ -1,125 +1,140 @@
 /**
- * Configuração das métricas de produtividade do relatório semanal.
+ * VISÃO — Critérios de métricas de produtividade
  *
- * Define QUAIS eventos contam para a produtividade do time e EM QUE janelas de
- * tempo eles são considerados (faixa horária + dias da semana). Persistido em
- * localStorage por usuário do navegador — é uma preferência de visualização,
- * não um dado de negócio.
+ * Define os tipos, defaults e helpers puros usados pelo Relatório Semanal
+ * para decidir quais eventos entram no cálculo das métricas do time.
+ * A persistência é feita por usuário no backend (tabela
+ * `productivity_metric_preferences`), permitindo uso entre dispositivos.
  */
 
-export type ProductivityEventKind =
-  | "recognitions"
-  | "acknowledged_alerts"
-  | "resolved_alerts"
-  | "panic_events";
+export const PRODUCTIVITY_EVENT_TYPES = ["alerts", "panic", "recognitions"] as const;
+export type ProductivityEventType = (typeof PRODUCTIVITY_EVENT_TYPES)[number];
+
+export const PRODUCTIVITY_SEVERITIES = ["low", "medium", "high", "critical"] as const;
+export type ProductivitySeverity = (typeof PRODUCTIVITY_SEVERITIES)[number];
 
 export interface ProductivityConfig {
-  /** Tipos de evento incluídos no cálculo. */
-  events: ProductivityEventKind[];
-  /** Hora inicial (0-23) da janela considerada. */
-  startHour: number;
-  /** Hora final exclusiva (1-24). Se menor que startHour, a janela cruza a meia-noite. */
-  endHour: number;
+  /** Tipos de evento considerados nas métricas. */
+  eventTypes: ProductivityEventType[];
+  /** Início da janela de trabalho (HH:mm). */
+  windowStart: string;
+  /** Fim da janela de trabalho (HH:mm). Pode cruzar a meia-noite. */
+  windowEnd: string;
   /** Dias da semana considerados (0 = domingo ... 6 = sábado). */
   weekdays: number[];
+  /** Severidades de alerta incluídas. */
+  severities: ProductivitySeverity[];
 }
-
-export const PRODUCTIVITY_EVENT_LABELS: Record<ProductivityEventKind, string> = {
-  recognitions: "Reconhecimentos faciais",
-  acknowledged_alerts: "Alertas reconhecidos",
-  resolved_alerts: "Alertas resolvidos",
-  panic_events: "Eventos de pânico",
-};
-
-export const WEEKDAY_LABELS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"] as const;
 
 export const DEFAULT_PRODUCTIVITY_CONFIG: ProductivityConfig = {
-  events: ["recognitions", "acknowledged_alerts", "resolved_alerts", "panic_events"],
-  startHour: 0,
-  endHour: 24,
+  eventTypes: [...PRODUCTIVITY_EVENT_TYPES],
+  windowStart: "00:00",
+  windowEnd: "23:59",
   weekdays: [0, 1, 2, 3, 4, 5, 6],
+  severities: [...PRODUCTIVITY_SEVERITIES],
 };
 
-const STORAGE_KEY = "visao:weekly-report:productivity-config";
-
-const clampHour = (value: unknown, fallback: number, max: number): number => {
-  const n = typeof value === "number" ? Math.trunc(value) : NaN;
-  if (!Number.isFinite(n) || n < 0 || n > max) return fallback;
-  return n;
+export const EVENT_TYPE_LABEL: Record<ProductivityEventType, string> = {
+  alerts: "Alertas / incidentes",
+  panic: "Eventos de pânico",
+  recognitions: "Reconhecimentos",
 };
 
-/** Normaliza qualquer entrada (inclusive dados corrompidos no storage) numa config válida. */
-export function normalizeProductivityConfig(input: unknown): ProductivityConfig {
-  if (!input || typeof input !== "object") return DEFAULT_PRODUCTIVITY_CONFIG;
-  const raw = input as Partial<ProductivityConfig>;
+export const SEVERITY_LABEL: Record<ProductivitySeverity, string> = {
+  low: "Baixa",
+  medium: "Média",
+  high: "Alta",
+  critical: "Crítica",
+};
 
-  const validEvents = Object.keys(PRODUCTIVITY_EVENT_LABELS) as ProductivityEventKind[];
-  const events = Array.isArray(raw.events)
-    ? Array.from(new Set(raw.events.filter((e): e is ProductivityEventKind => validEvents.includes(e as ProductivityEventKind))))
-    : DEFAULT_PRODUCTIVITY_CONFIG.events;
+export const WEEKDAY_LABEL = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"] as const;
 
-  const weekdays = Array.isArray(raw.weekdays)
-    ? Array.from(new Set(raw.weekdays.filter((d) => Number.isInteger(d) && d >= 0 && d <= 6))).sort()
-    : DEFAULT_PRODUCTIVITY_CONFIG.weekdays;
-
-  const startHour = clampHour(raw.startHour, DEFAULT_PRODUCTIVITY_CONFIG.startHour, 23);
-  const endHour = clampHour(raw.endHour, DEFAULT_PRODUCTIVITY_CONFIG.endHour, 24);
-
-  return {
-    events: events.length ? events : DEFAULT_PRODUCTIVITY_CONFIG.events,
-    startHour,
-    endHour: endHour === startHour ? DEFAULT_PRODUCTIVITY_CONFIG.endHour : endHour,
-    weekdays: weekdays.length ? weekdays : DEFAULT_PRODUCTIVITY_CONFIG.weekdays,
-  };
+/** Converte "HH:mm[:ss]" em minutos desde a meia-noite. Retorna null se inválido. */
+export function timeToMinutes(value: string): number | null {
+  const match = /^(\d{1,2}):(\d{2})(?::\d{2})?$/.exec(value.trim());
+  if (!match) return null;
+  const hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  if (hours > 23 || minutes > 59) return null;
+  return hours * 60 + minutes;
 }
 
-export function loadProductivityConfig(): ProductivityConfig {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return DEFAULT_PRODUCTIVITY_CONFIG;
-    return normalizeProductivityConfig(JSON.parse(raw));
-  } catch {
-    return DEFAULT_PRODUCTIVITY_CONFIG;
-  }
-}
-
-export function saveProductivityConfig(config: ProductivityConfig): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-  } catch {
-    /* storage indisponível (modo privado): a config vale só para a sessão */
-  }
+/** Normaliza "HH:mm:ss" (formato do Postgres `time`) para "HH:mm". */
+export function normalizeTime(value: string, fallback: string): string {
+  const minutes = timeToMinutes(value);
+  if (minutes === null) return fallback;
+  const h = String(Math.floor(minutes / 60)).padStart(2, "0");
+  const m = String(minutes % 60).padStart(2, "0");
+  return `${h}:${m}`;
 }
 
 /**
- * Verifica se um instante está dentro da janela configurada.
- * Suporta janelas que cruzam a meia-noite (ex.: 22h → 6h).
+ * Indica se a data cai dentro da janela configurada.
+ * Suporta turnos que cruzam a meia-noite (ex.: 19:00 → 06:00).
  */
-export function isWithinWindow(date: Date | string, config: ProductivityConfig): boolean {
-  const d = typeof date === "string" ? new Date(date) : date;
-  if (Number.isNaN(d.getTime())) return false;
-  if (!config.weekdays.includes(d.getDay())) return false;
+export function isWithinWindow(date: Date, config: ProductivityConfig): boolean {
+  if (!config.weekdays.includes(date.getDay())) return false;
 
-  const hour = d.getHours();
-  const { startHour, endHour } = config;
-  if (startHour < endHour) return hour >= startHour && hour < endHour;
-  // Janela noturna cruzando a meia-noite.
-  return hour >= startHour || hour < endHour;
+  const start = timeToMinutes(config.windowStart);
+  const end = timeToMinutes(config.windowEnd);
+  if (start === null || end === null) return true; // configuração inválida → não filtra
+
+  const current = date.getHours() * 60 + date.getMinutes();
+  if (start <= end) return current >= start && current <= end;
+  // Janela noturna: vale do início até 23:59 e de 00:00 até o fim.
+  return current >= start || current <= end;
 }
 
-export function isEventEnabled(config: ProductivityConfig, kind: ProductivityEventKind): boolean {
-  return config.events.includes(kind);
+/** Verifica se um tipo de evento entra no cálculo. */
+export function includesEventType(config: ProductivityConfig, type: ProductivityEventType): boolean {
+  return config.eventTypes.includes(type);
 }
 
-/** Resumo textual usado em badges e no cabeçalho do PDF. */
-export function describeProductivityConfig(config: ProductivityConfig): string {
-  const hours =
-    config.startHour === 0 && config.endHour === 24
-      ? "24h"
-      : `${String(config.startHour).padStart(2, "0")}h–${String(config.endHour % 24).padStart(2, "0")}h`;
+/** Verifica se uma severidade entra no cálculo. */
+export function includesSeverity(config: ProductivityConfig, severity: string): boolean {
+  return config.severities.includes(severity as ProductivitySeverity);
+}
+
+/** Resumo textual dos critérios ativos, usado na UI e no PDF. */
+export function describeConfig(config: ProductivityConfig): string {
+  const types = config.eventTypes.length
+    ? config.eventTypes.map((t) => EVENT_TYPE_LABEL[t]).join(", ")
+    : "nenhum tipo selecionado";
   const days =
     config.weekdays.length === 7
       ? "todos os dias"
-      : config.weekdays.map((d) => WEEKDAY_LABELS[d]).join(", ");
-  return `${hours} · ${days} · ${config.events.length}/4 tipos de evento`;
+      : config.weekdays.length === 0
+        ? "nenhum dia"
+        : config.weekdays
+            .slice()
+            .sort((a, b) => a - b)
+            .map((d) => WEEKDAY_LABEL[d])
+            .join("/");
+  const severities =
+    config.severities.length === PRODUCTIVITY_SEVERITIES.length
+      ? "todas as severidades"
+      : config.severities.map((s) => SEVERITY_LABEL[s]).join(", ") || "nenhuma severidade";
+
+  return `${types} · ${config.windowStart}–${config.windowEnd} · ${days} · ${severities}`;
+}
+
+/** Converte uma linha do banco em configuração tipada, com fallback seguro. */
+export function fromRow(row: {
+  event_types: string[] | null;
+  window_start: string | null;
+  window_end: string | null;
+  weekdays: number[] | null;
+  severities: string[] | null;
+}): ProductivityConfig {
+  return {
+    eventTypes: (row.event_types ?? DEFAULT_PRODUCTIVITY_CONFIG.eventTypes).filter((t): t is ProductivityEventType =>
+      (PRODUCTIVITY_EVENT_TYPES as readonly string[]).includes(t)
+    ),
+    windowStart: normalizeTime(row.window_start ?? "", DEFAULT_PRODUCTIVITY_CONFIG.windowStart),
+    windowEnd: normalizeTime(row.window_end ?? "", DEFAULT_PRODUCTIVITY_CONFIG.windowEnd),
+    weekdays: (row.weekdays ?? DEFAULT_PRODUCTIVITY_CONFIG.weekdays).filter((d) => d >= 0 && d <= 6),
+    severities: (row.severities ?? DEFAULT_PRODUCTIVITY_CONFIG.severities).filter((s): s is ProductivitySeverity =>
+      (PRODUCTIVITY_SEVERITIES as readonly string[]).includes(s)
+    ),
+  };
 }

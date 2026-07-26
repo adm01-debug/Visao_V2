@@ -24,18 +24,13 @@ import {
   Legend,
 } from "recharts";
 import { toast } from "sonner";
-import {
-  WeeklyIncidentDrilldown,
-  type DrilldownSelection,
-} from "@/components/reports/WeeklyIncidentDrilldown";
+import { useProductivityConfig } from "@/hooks/useProductivityConfig";
 import { ProductivityConfigPanel } from "@/components/reports/ProductivityConfigPanel";
 import {
-  describeProductivityConfig,
-  isEventEnabled,
+  describeConfig,
+  includesEventType,
+  includesSeverity,
   isWithinWindow,
-  loadProductivityConfig,
-  saveProductivityConfig,
-  type ProductivityConfig,
 } from "@/lib/productivityConfig";
 
 type Range = 7 | 14 | 30;
@@ -76,13 +71,15 @@ interface RecognitionLog {
 export default function WeeklyReportPage() {
   const [range, setRange] = useState<Range>(7);
   const [exporting, setExporting] = useState(false);
-  const [selection, setSelection] = useState<DrilldownSelection | null>(null);
-  const [prodConfig, setProdConfig] = useState<ProductivityConfig>(() => loadProductivityConfig());
-
-  const updateProdConfig = (next: ProductivityConfig) => {
-    setProdConfig(next);
-    saveProductivityConfig(next);
-  };
+  const {
+    config,
+    draft,
+    setDraft,
+    resetDraft,
+    save: saveConfig,
+    isSaving,
+    isAuthenticated,
+  } = useProductivityConfig();
 
   const { start, end } = useMemo(() => {
     const e = endOfDay(new Date());
@@ -91,7 +88,7 @@ export default function WeeklyReportPage() {
   }, [range]);
 
   // ------- Alerts
-  const { data: alerts, isLoading: loadingAlerts } = useQuery({
+  const { data: rawAlerts, isLoading: loadingAlerts } = useQuery({
     queryKey: ["report-alerts", start.toISOString(), end.toISOString()],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -106,24 +103,22 @@ export default function WeeklyReportPage() {
     },
   });
 
-  // ------- Panic events (timestamps para aplicar a janela de produtividade)
-  const { data: panicEvents } = useQuery({
+  // ------- Panic events
+  const { data: panics } = useQuery({
     queryKey: ["report-panics", start.toISOString(), end.toISOString()],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { count, error } = await supabase
         .from("panic_events")
-        .select("id, created_at")
+        .select("*", { count: "exact", head: true })
         .gte("created_at", start.toISOString())
-        .lte("created_at", end.toISOString())
-        .limit(5000);
+        .lte("created_at", end.toISOString());
       if (error) throw error;
-      return (data ?? []) as Array<{ id: string; created_at: string }>;
+      return count ?? 0;
     },
   });
 
-
   // ------- Recognition (productivity)
-  const { data: recognitions, isLoading: loadingReco } = useQuery({
+  const { data: rawRecognitions, isLoading: loadingReco } = useQuery({
     queryKey: ["report-recognitions", start.toISOString(), end.toISOString()],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -147,8 +142,24 @@ export default function WeeklyReportPage() {
     },
   });
 
+  // ------- Critérios de produtividade aplicados aos dados brutos
+  const alerts = useMemo<Alert[]>(() => {
+    if (!rawAlerts || !includesEventType(config, "alerts")) return [];
+    return rawAlerts.filter(
+      (a) => includesSeverity(config, a.severity) && isWithinWindow(new Date(a.triggered_at), config)
+    );
+  }, [rawAlerts, config]);
+
+  const recognitions = useMemo<RecognitionLog[]>(() => {
+    if (!rawRecognitions || !includesEventType(config, "recognitions")) return [];
+    return rawRecognitions.filter((r) => isWithinWindow(new Date(r.timestamp), config));
+  }, [rawRecognitions, config]);
+
+  const panicCount = includesEventType(config, "panic") ? (panics ?? 0) : 0;
+
   const cameraName = (id: string | null) =>
     (id && cameras?.find((c) => c.id === id)?.name) || "Câmera desconhecida";
+
 
   // ------- Aggregations
   const bySeverity = useMemo(() => {
@@ -181,52 +192,28 @@ export default function WeeklyReportPage() {
       acc.set(a.camera_id, (acc.get(a.camera_id) ?? 0) + 1);
     });
     return Array.from(acc.entries())
-      .map(([id, count]) => ({ id, camera: cameraName(id), count }))
+      .map(([id, count]) => ({ camera: cameraName(id), count }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
   }, [alerts, cameras]);
 
   const totalAlerts = alerts?.length ?? 0;
-
-  // ------- Produtividade (respeita eventos e janela de tempo configurados)
-  const inWindow = (ts: string | null) => Boolean(ts) && isWithinWindow(ts as string, prodConfig);
-
-  const resolvedAlerts = useMemo(() => {
-    if (!isEventEnabled(prodConfig, "resolved_alerts")) return 0;
-    return alerts?.filter((a) => inWindow(a.resolved_at)).length ?? 0;
-  }, [alerts, prodConfig]);
-
-  const ackedForMetrics = useMemo(() => {
-    if (!isEventEnabled(prodConfig, "acknowledged_alerts")) return [];
-    return alerts?.filter((a) => inWindow(a.acknowledged_at)) ?? [];
-  }, [alerts, prodConfig]);
-
-  const ackAlerts = ackedForMetrics.length;
-
+  const resolvedAlerts = alerts?.filter((a) => a.resolved_at).length ?? 0;
+  const ackAlerts = alerts?.filter((a) => a.acknowledged_at).length ?? 0;
   const avgMTTA = useMemo(() => {
-    if (ackedForMetrics.length === 0) return 0;
-    const totalMs = ackedForMetrics.reduce(
+    const acks = alerts?.filter((a) => a.acknowledged_at) ?? [];
+    if (acks.length === 0) return 0;
+    const totalMs = acks.reduce(
       (sum, a) => sum + (new Date(a.acknowledged_at!).getTime() - new Date(a.triggered_at).getTime()),
       0
     );
-    return Math.round(totalMs / ackedForMetrics.length / 60000);
-  }, [ackedForMetrics]);
+    return Math.round(totalMs / acks.length / 60000);
+  }, [alerts]);
 
-  const panics = useMemo(() => {
-    if (!isEventEnabled(prodConfig, "panic_events")) return 0;
-    return panicEvents?.filter((p) => inWindow(p.created_at)).length ?? 0;
-  }, [panicEvents, prodConfig]);
-
-  const recoInScope = useMemo(() => {
-    if (!isEventEnabled(prodConfig, "recognitions")) return [];
-    return recognitions?.filter((r) => inWindow(r.timestamp)) ?? [];
-  }, [recognitions, prodConfig]);
-
-  const totalReco = recoInScope.length;
-  const recognizedCount = recoInScope.filter((r) => r.recognized).length;
-  const uniquePersons = new Set(recoInScope.filter((r) => r.person_id).map((r) => r.person_id)).size;
+  const totalReco = recognitions?.length ?? 0;
+  const recognizedCount = recognitions?.filter((r) => r.recognized).length ?? 0;
+  const uniquePersons = new Set(recognitions?.filter((r) => r.person_id).map((r) => r.person_id)).size;
   const recognitionRate = totalReco > 0 ? Math.round((recognizedCount / totalReco) * 100) : 0;
-
 
   const pieData = (Object.keys(bySeverity) as Severity[])
     .map((s) => ({ name: severityLabel[s], value: bySeverity[s], key: s }))
@@ -238,7 +225,7 @@ export default function WeeklyReportPage() {
       const { generatePDFReport } = await import("@/lib/pdfGenerator");
       const doc = await generatePDFReport({
         title: "Relatório Semanal de Segurança e Produtividade",
-        subtitle: `Últimos ${range} dias · VISÃO`,
+        subtitle: `Últimos ${range} dias · VISÃO · Critérios: ${describeConfig(config)}`,
         dateRange: { start, end },
         generatedAt: new Date(),
         sections: [
@@ -248,13 +235,12 @@ export default function WeeklyReportPage() {
             data: [
               { label: "Incidentes", value: totalAlerts },
               { label: "Críticos + Alta", value: bySeverity.critical + bySeverity.high },
-              { label: "Pânico", value: panics ?? 0 },
+              { label: "Pânico", value: panicCount },
               { label: "MTTA (min)", value: avgMTTA },
               { label: "Reconhecimentos", value: recognizedCount },
               { label: "Pessoas Únicas", value: uniquePersons },
               { label: "Taxa Reconhec.", value: `${recognitionRate}%` },
               { label: "Alertas Resolvidos", value: resolvedAlerts },
-              { label: "Critérios", value: describeProductivityConfig(prodConfig) },
             ],
           },
           {
@@ -313,10 +299,18 @@ export default function WeeklyReportPage() {
             <strong>{format(end, "dd 'de' MMM yyyy", { locale: ptBR })}</strong>.
           </p>
           <p className="text-xs text-muted-foreground mt-1">
-            Critérios de produtividade: {describeProductivityConfig(prodConfig)}
+            Critérios ativos: {describeConfig(config)}
           </p>
         </div>
         <div className="flex gap-2">
+          <ProductivityConfigPanel
+            draft={draft}
+            onDraftChange={setDraft}
+            onReset={resetDraft}
+            onSave={saveConfig}
+            isSaving={isSaving}
+            isAuthenticated={isAuthenticated}
+          />
           <Select value={String(range)} onValueChange={(v) => setRange(Number(v) as Range)}>
             <SelectTrigger className="w-[160px]">
               <SelectValue />
@@ -327,7 +321,7 @@ export default function WeeklyReportPage() {
               <SelectItem value="30">Últimos 30 dias</SelectItem>
             </SelectContent>
           </Select>
-          <ProductivityConfigPanel config={prodConfig} onChange={updateProdConfig} />
+
           <Button onClick={exportPdf} disabled={exporting || loading}>
             {exporting ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -351,7 +345,7 @@ export default function WeeklyReportPage() {
         <KpiCard
           icon={<ShieldAlert className="h-5 w-5 text-destructive" />}
           label="Eventos de pânico"
-          value={panics ?? 0}
+          value={panicCount}
           hint="Botão de pânico acionado"
           loading={loading}
         />
@@ -376,7 +370,7 @@ export default function WeeklyReportPage() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Incidentes e Produtividade por Dia</CardTitle>
-            <CardDescription>Clique em uma barra para detalhar os incidentes do dia</CardDescription>
+            <CardDescription>Correlação entre alertas e reconhecimentos por dia</CardDescription>
           </CardHeader>
           <CardContent className="h-[320px]">
             {loading ? (
@@ -395,22 +389,8 @@ export default function WeeklyReportPage() {
                     }}
                   />
                   <Legend />
-                  <Bar
-                    dataKey="incidentes"
-                    name="Incidentes"
-                    fill="hsl(var(--warning))"
-                    cursor="pointer"
-                    onClick={(d: { dia?: string }) => d?.dia && setSelection({ day: d.dia })}
-                  />
-                  <Bar
-                    dataKey="criticos"
-                    name="Críticos/Alta"
-                    fill="hsl(var(--destructive))"
-                    cursor="pointer"
-                    onClick={(d: { dia?: string }) =>
-                      d?.dia && setSelection({ day: d.dia, criticalOnly: true })
-                    }
-                  />
+                  <Bar dataKey="incidentes" name="Incidentes" fill="hsl(var(--warning))" />
+                  <Bar dataKey="criticos" name="Críticos/Alta" fill="hsl(var(--destructive))" />
                   <Bar dataKey="reconhecimentos" name="Reconhecimentos" fill="hsl(var(--primary))" />
                 </BarChart>
               </ResponsiveContainer>
@@ -421,7 +401,7 @@ export default function WeeklyReportPage() {
         <Card>
           <CardHeader>
             <CardTitle>Severidade</CardTitle>
-            <CardDescription>Clique em uma fatia para detalhar</CardDescription>
+            <CardDescription>Distribuição dos incidentes</CardDescription>
           </CardHeader>
           <CardContent className="h-[320px]">
             {loading ? (
@@ -431,15 +411,7 @@ export default function WeeklyReportPage() {
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie
-                    data={pieData}
-                    dataKey="value"
-                    nameKey="name"
-                    outerRadius={90}
-                    label
-                    cursor="pointer"
-                    onClick={(d: { key?: Severity }) => d?.key && setSelection({ severity: d.key })}
-                  >
+                  <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={90} label>
                     {pieData.map((d) => (
                       <Cell key={d.key} fill={severityColor[d.key]} />
                     ))}
@@ -457,14 +429,6 @@ export default function WeeklyReportPage() {
         </Card>
       </div>
 
-      {/* Drill-down */}
-      <WeeklyIncidentDrilldown
-        alerts={alerts ?? []}
-        cameras={cameras ?? []}
-        selection={selection}
-        onClear={() => setSelection(null)}
-      />
-
       {/* Top câmeras */}
       <Card>
         <CardHeader>
@@ -472,7 +436,7 @@ export default function WeeklyReportPage() {
             <Camera className="h-5 w-5" />
             Top Câmeras com Incidentes
           </CardTitle>
-          <CardDescription>Clique em uma câmera para listar seus incidentes</CardDescription>
+          <CardDescription>Ranking das câmeras que mais geraram alertas no período</CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -486,12 +450,7 @@ export default function WeeklyReportPage() {
           ) : (
             <div className="space-y-2">
               {byCamera.map((c, idx) => (
-                <button
-                  type="button"
-                  key={c.camera}
-                  onClick={() => setSelection({ cameraId: c.id })}
-                  className="w-full flex items-center justify-between p-3 border rounded-lg bg-card text-left transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
+                <div key={c.camera} className="flex items-center justify-between p-3 border rounded-lg bg-card">
                   <div className="flex items-center gap-3">
                     <Badge variant="outline" className="w-8 justify-center">
                       {idx + 1}
@@ -499,13 +458,12 @@ export default function WeeklyReportPage() {
                     <span className="font-medium">{c.camera}</span>
                   </div>
                   <Badge variant={idx === 0 ? "destructive" : "secondary"}>{c.count} alertas</Badge>
-                </button>
+                </div>
               ))}
             </div>
           )}
         </CardContent>
       </Card>
-
     </div>
   );
 }
