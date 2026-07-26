@@ -2611,11 +2611,62 @@ export type Database = {
           },
         ]
       }
-      maintenance_alert_events: {
+      maintenance_alert_escalations: {
         Row: {
+          age_minutes: number
+          alert_id: string
           created_at: string
           detail: Json
+          emitted_alert: boolean
+          from_level: number
           id: string
+          reason: string
+          to_level: number
+          updated_at: string
+        }
+        Insert: {
+          age_minutes: number
+          alert_id: string
+          created_at?: string
+          detail?: Json
+          emitted_alert?: boolean
+          from_level: number
+          id?: string
+          reason: string
+          to_level: number
+          updated_at?: string
+        }
+        Update: {
+          age_minutes?: number
+          alert_id?: string
+          created_at?: string
+          detail?: Json
+          emitted_alert?: boolean
+          from_level?: number
+          id?: string
+          reason?: string
+          to_level?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_alert_escalations_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_alert_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      maintenance_alert_events: {
+        Row: {
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          created_at: string
+          detail: Json
+          escalation_level: number
+          id: string
+          last_escalated_at: string | null
           observed_at: string | null
           reason: string
           routine: string
@@ -2623,9 +2674,13 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
           created_at?: string
           detail?: Json
+          escalation_level?: number
           id?: string
+          last_escalated_at?: string | null
           observed_at?: string | null
           reason: string
           routine: string
@@ -2633,9 +2688,13 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
           created_at?: string
           detail?: Json
+          escalation_level?: number
           id?: string
+          last_escalated_at?: string | null
           observed_at?: string | null
           reason?: string
           routine?: string
@@ -6333,6 +6392,10 @@ export type Database = {
       }
     }
     Functions: {
+      acknowledge_maintenance_alert: {
+        Args: { _alert_id: string }
+        Returns: string
+      }
       acquire_ptz_lock: {
         Args: { _camera_id: string; _ttl_seconds?: number }
         Returns: Json
@@ -6475,6 +6538,15 @@ export type Database = {
           enveloped: number
           legacy: number
           total: number
+        }[]
+      }
+      escalate_stale_maintenance_alerts: {
+        Args: never
+        Returns: {
+          age_minutes: number
+          alert_id: string
+          from_level: number
+          to_level: number
         }[]
       }
       evaluate_and_restart_streams: { Args: never; Returns: number }
