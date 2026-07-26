@@ -46,7 +46,11 @@
       "mode": "standard"
     },
     {
-      "file": "CamerasPage.tsx",
+      "file": "CLSReportPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "CameraFleetHealthPage.tsx",
       "mode": "standard"
     },
     {
@@ -54,7 +58,7 @@
       "mode": "standard"
     },
     {
-      "file": "CLSReportPage.tsx",
+      "file": "CamerasPage.tsx",
       "mode": "standard"
     },
     {
@@ -102,6 +106,10 @@
       "mode": "standard"
     },
     {
+      "file": "IncidentNotificationsPage.tsx",
+      "mode": "standard"
+    },
+    {
       "file": "Index.tsx",
       "mode": "standalone"
     },
@@ -138,6 +146,10 @@
       "mode": "customWrapper"
     },
     {
+      "file": "NvrDetailPage.tsx",
+      "mode": "standard"
+    },
+    {
       "file": "NvrDownloadHistoryPage.tsx",
       "mode": "standard"
     },
@@ -158,16 +170,16 @@
       "mode": "standard"
     },
     {
+      "file": "PPEPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
       "file": "PanicEventsPage.tsx",
       "mode": "standard"
     },
     {
       "file": "PeoplePage.tsx",
       "mode": "standard"
-    },
-    {
-      "file": "PPEPage.tsx",
-      "mode": "customWrapper"
     },
     {
       "file": "PricingPage.tsx",
