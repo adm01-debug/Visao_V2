@@ -162,7 +162,7 @@ try {
   `);
   if (runs.length === 0) {
     warnings.push('`partition_maintenance_runs` vazia — a rotina ainda não rodou neste banco.');
-  } else if (runs[0][0] !== 't') {
+  } else if (!isTrue(runs[0][0])) {
     errors.push(`Última manutenção de partições falhou em ${runs[0][2]}: ${runs[0][1]}`);
   }
 } catch {
@@ -176,7 +176,7 @@ try {
     FROM cron.job
     WHERE command ILIKE '%ensure_future_partitions%';
   `);
-  const active = jobs.filter((j) => j[2] === 't');
+  const active = jobs.filter((j) => isTrue(j[2]));
   if (active.length === 0) {
     errors.push(
       'Nenhum job pg_cron ativo chamando `ensure_future_partitions` — a cobertura vai expirar silenciosamente.',
