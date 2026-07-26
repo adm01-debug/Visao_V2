@@ -57,7 +57,7 @@ export function CollabNotificationsCard({ networkId, orgNameById }: CollabNotifi
   // Silenciar é por organização: o controle só aparece quando a caixa tem uma
   // única organização em cena, para não silenciar em nome de outra sem querer.
   const orgIds = useMemo(() => [...new Set(items.map((i) => i.organization_id))], [items]);
-  const silenceOrgId = orgIds.length === 1 ? orgIds[0] : null;
+  const silenceOrgId: string | null = orgIds.length === 1 ? (orgIds[0] ?? null) : null;
   const { preference } = useCollabSilence(silenceOrgId);
 
   const unreadIds = useMemo(() => items.filter((i) => !i.read).map((i) => i.id), [items]);
