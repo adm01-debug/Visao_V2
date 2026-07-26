@@ -63,6 +63,15 @@ interface RecognitionLog {
 export default function WeeklyReportPage() {
   const [range, setRange] = useState<Range>(7);
   const [exporting, setExporting] = useState(false);
+  const {
+    config,
+    draft,
+    setDraft,
+    resetDraft,
+    save: saveConfig,
+    isSaving,
+    isAuthenticated,
+  } = useProductivityConfig();
 
   const { start, end } = useMemo(() => {
     const e = endOfDay(new Date());
@@ -71,7 +80,7 @@ export default function WeeklyReportPage() {
   }, [range]);
 
   // ------- Alerts
-  const { data: alerts, isLoading: loadingAlerts } = useQuery({
+  const { data: rawAlerts, isLoading: loadingAlerts } = useQuery({
     queryKey: ["report-alerts", start.toISOString(), end.toISOString()],
     queryFn: async () => {
       const { data, error } = await supabase
