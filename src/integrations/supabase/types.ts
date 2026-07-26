@@ -1719,6 +1719,121 @@ export type Database = {
           },
         ]
       }
+      collab_governance_audit: {
+        Row: {
+          action: string
+          actor_org_id: string | null
+          actor_user_id: string | null
+          created_at: string
+          detail: Json
+          id: string
+          invitation_id: string | null
+          network_id: string
+          organization_id: string
+        }
+        Insert: {
+          action: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          detail?: Json
+          id?: string
+          invitation_id?: string | null
+          network_id: string
+          organization_id: string
+        }
+        Update: {
+          action?: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          detail?: Json
+          id?: string
+          invitation_id?: string | null
+          network_id?: string
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collab_governance_audit_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "collab_invitations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collab_governance_audit_network_id_fkey"
+            columns: ["network_id"]
+            isOneToOne: false
+            referencedRelation: "collab_networks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collab_governance_audit_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collab_invitations: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          invited_by: string | null
+          invited_org_id: string
+          network_id: string
+          note: string | null
+          responded_at: string | null
+          status: string
+          ttl_days: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          invited_by?: string | null
+          invited_org_id: string
+          network_id: string
+          note?: string | null
+          responded_at?: string | null
+          status?: string
+          ttl_days: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string | null
+          invited_org_id?: string
+          network_id?: string
+          note?: string | null
+          responded_at?: string | null
+          status?: string
+          ttl_days?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collab_invitations_invited_org_id_fkey"
+            columns: ["invited_org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collab_invitations_network_id_fkey"
+            columns: ["network_id"]
+            isOneToOne: false
+            referencedRelation: "collab_networks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       collab_matches: {
         Row: {
           camera_id: string | null
@@ -7039,6 +7154,22 @@ export type Database = {
       cleanup_old_test_events: { Args: never; Returns: number }
       close_expired_test_sessions: { Args: never; Returns: number }
       close_stale_dwell_sessions: { Args: never; Returns: Json }
+      collab_effective_invite_status: {
+        Args: { p_expires_at: string; p_now?: string; p_status: string }
+        Returns: string
+      }
+      collab_expire_invitations: { Args: { p_now?: string }; Returns: number }
+      collab_governance_policy: { Args: never; Returns: Json }
+      collab_invite_org: {
+        Args: {
+          p_invited_org_id: string
+          p_network_id: string
+          p_note?: string
+          p_now?: string
+          p_ttl_days?: number
+        }
+        Returns: string
+      }
       collab_member_status: {
         Args: { _network_id: string; _org_id: string }
         Returns: string
@@ -7048,6 +7179,26 @@ export type Database = {
         Returns: string
       }
       collab_policy: { Args: never; Returns: Json }
+      collab_remove_membership: {
+        Args: { p_network_id: string; p_organization_id: string }
+        Returns: number
+      }
+      collab_respond_invite: {
+        Args: { p_accept: boolean; p_invitation_id: string; p_now?: string }
+        Returns: string
+      }
+      collab_revoke_invite: {
+        Args: { p_invitation_id: string; p_now?: string }
+        Returns: undefined
+      }
+      collab_set_membership_status: {
+        Args: {
+          p_network_id: string
+          p_organization_id: string
+          p_status: string
+        }
+        Returns: string
+      }
       collab_user_orgs: { Args: { _user_id: string }; Returns: string[] }
       contact_id_for_event: {
         Args: { _kind: string }
