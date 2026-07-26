@@ -337,6 +337,15 @@ jobs:
             failed=1
           fi
 
+          # Guardrails de banco: bloqueiam o merge em failure/cancelled. O job
+          # emite warning (e termina em success) quando SUPABASE_DB_URL não está
+          # configurado — forks não têm acesso a secrets.
+          if [ "$DB_RESULT" != "success" ]; then
+            echo "::error::Guardrails de banco terminaram como '$DB_RESULT' — merge bloqueado."
+            failed=1
+          fi
+
+
           if [ "$failed" -ne 0 ]; then
             {
               echo "## ❌ Suíte bloqueada"
