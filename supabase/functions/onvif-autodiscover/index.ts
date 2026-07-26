@@ -10,7 +10,7 @@
 //   - Nunca loga senha; mascara credenciais em qualquer erro.
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { recordEdgeError } from "../_shared/errorAudit.ts";
-import { RELAY_BACKEND_ABANDONED, conformantTtlSeconds, relayExpiresAt } from "../_shared/relayWindow.ts";
+import { RELAY_BACKEND_ABANDONED, relayExpiresAt } from "../_shared/relayWindow.ts";
 
 
 const corsHeaders = {
@@ -25,8 +25,6 @@ const ONVIF_PORTS_DEFAULT = [8899, 80, 8000, 8080, 2020];
 const PROBE_TIMEOUT_MS = 5000;
 const RELAY_TASK_TIMEOUT_MS = 25_000;
 const RELAY_POLL_INTERVAL_MS = 400;
-// Onda 120: TTL derivado da espera real, nunca abaixo da janela justa de 60s.
-const RELAY_TASK_TTL_SEC = conformantTtlSeconds(RELAY_TASK_TIMEOUT_MS);
 
 interface Payload {
   host: string;
