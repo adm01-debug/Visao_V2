@@ -212,9 +212,11 @@ function evaluateBacklog(
   if (criticals.length > 0) {
     // Pior = satura antes. `null` (sem projeção) vai para o fim da fila, pois
     // "crítico por volume" é menos urgente que "crítico por saturação iminente".
-    const worst = [...criticals].sort(
-      (a, b) => (a.hoursToSaturation ?? Number.POSITIVE_INFINITY) - (b.hoursToSaturation ?? Number.POSITIVE_INFINITY),
-    )[0];
+    const worst = criticals.reduce((acc, v) =>
+      (v.hoursToSaturation ?? Number.POSITIVE_INFINITY) < (acc.hoursToSaturation ?? Number.POSITIVE_INFINITY)
+        ? v
+        : acc,
+    );
     const eta =
       worst.hoursToSaturation !== null && worst.hoursToSaturation <= thresholds.saturationCriticalHours
         ? `, satura em ~${roundHours(worst.hoursToSaturation)}h`
@@ -235,7 +237,7 @@ function evaluateBacklog(
 
   const warnings = verdicts.filter((v) => v.severity === 'warning');
   if (warnings.length > 0) {
-    const worst = warnings[0];
+    const worst = warnings.reduce((acc, v) => (v.currentRows > acc.currentRows ? v : acc));
     return {
       routine,
       severity: 'warning',
