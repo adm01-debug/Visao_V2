@@ -2,6 +2,9 @@ import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
+/** No CI queremos saída legível + JUnit para o GitHub Actions publicar. */
+const isCI = process.env.CI === "true" || process.env.CI === "1";
+
 export default defineConfig({
   plugins: [react()],
   test: {
@@ -9,9 +12,13 @@ export default defineConfig({
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
+    reporters: isCI ? ["default", "junit"] : ["default"],
+    outputFile: { junit: "./test-results/vitest-junit.xml" },
     coverage: {
       provider: "v8",
-      reporter: ["text", "html", "json", "json-summary"],
+      // lcov é consumido por ferramentas externas; json-summary alimenta o gate de regressão.
+      reporter: ["text", "html", "json", "json-summary", "lcov"],
+
       reportsDirectory: "./coverage",
       all: true, // inclui arquivos sem testes (cobertura real do src/)
       include: ["src/**/*.{ts,tsx}"],

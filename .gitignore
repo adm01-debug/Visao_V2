@@ -86,3 +86,4 @@ deno.lock
 # npm/bun cache
 .npm-cache/
 .git/objects/pack/
+/test-results

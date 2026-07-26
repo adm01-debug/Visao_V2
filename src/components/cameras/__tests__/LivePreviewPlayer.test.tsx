@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, act, cleanup } from "@testing-library/react";
+import { render, screen, act, cleanup, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
   LivePreviewPlayer,
@@ -26,6 +26,19 @@ function makeInvoke(overrides: Partial<Record<InvokeAction, () => Promise<any>>>
 }
 
 const RTSP = "rtsp://user:pass@10.0.0.1:554/stream";
+
+/**
+ * jsdom não decodifica HLS: sem um `canplay` sintético o componente dispara o
+ * guarda de `hls_timeout` (10s) assim que os fake timers avançam. Emitimos o
+ * evento manualmente para simular o stream pronto.
+ */
+async function signalVideoReady() {
+  const video = await screen.findByTestId("live-preview-video");
+  await act(async () => {
+    fireEvent.canPlay(video);
+    await Promise.resolve();
+  });
+}
 
 describe("LivePreviewPlayer", () => {
   beforeEach(() => {
@@ -57,6 +70,7 @@ describe("LivePreviewPlayer", () => {
 
     // Aguarda start assíncrono resolver
     await act(async () => { await Promise.resolve(); });
+    await signalVideoReady();
     await screen.findByTestId("live-preview-extend");
 
     // Consome 10s do timer
@@ -98,6 +112,7 @@ describe("LivePreviewPlayer", () => {
     const { fn, calls } = makeInvoke();
     render(<LivePreviewPlayer rtspUrl={RTSP} autoStart invoke={fn} onEnded={onEnded} />);
     await act(async () => { await Promise.resolve(); });
+    await signalVideoReady();
 
     await act(async () => { vi.advanceTimersByTime((LIVE_PREVIEW_DEFAULT_SECONDS + 1) * 1000); });
     await act(async () => { await Promise.resolve(); });
@@ -147,6 +162,8 @@ describe("LivePreviewPlayer", () => {
     await act(async () => { await Promise.resolve(); });
 
     expect(screen.getByTestId("live-preview-player").getAttribute("data-status")).toBe("error");
-    expect(screen.getByText(/Falha:/i)).toBeInTheDocument();
+    const errorBox = screen.getByTestId("live-preview-error");
+    expect(errorBox).toBeInTheDocument();
+    expect(errorBox.getAttribute("role")).toBe("alert");
   });
 });

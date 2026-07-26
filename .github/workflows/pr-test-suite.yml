@@ -1,0 +1,187 @@
+name: PR Test Suite
+
+# Suíte completa de testes executada em TODO pull request.
+# Falha o PR em caso de regressão (teste quebrado, tipagem, cobertura em queda)
+# e publica relatórios de cobertura como artefatos + comentário no PR.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+concurrency:
+  group: pr-test-suite-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+env:
+  NODE_VERSION: '22'
+  # Tolerância de queda de cobertura (pontos percentuais) antes de falhar o PR.
+  COVERAGE_TOLERANCE_PP: ${{ vars.COVERAGE_TOLERANCE_PP || '0.5' }}
+
+jobs:
+  static-analysis:
+    name: Tipagem & formatação
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: TypeScript strict
+        run: npm run type-check:strict
+      - name: Prettier
+        run: npm run format:check
+      - name: Lint de migrations (RLS + GRANT + search_path)
+        run: npm run check:migrations
+
+  unit-tests:
+    name: Testes unitários + cobertura
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci --ignore-scripts
+
+      # Falha imediatamente se qualquer teste da suíte quebrar (regressão funcional).
+      - name: Vitest (suíte completa, com cobertura)
+        run: npm run coverage:ci
+        env:
+          CI: true
+
+      # Falha se a cobertura cair além da tolerância ou abaixo do piso absoluto.
+      - name: Gate de regressão de cobertura
+        run: npm run coverage:check
+        env:
+          COVERAGE_TOLERANCE_PP: ${{ env.COVERAGE_TOLERANCE_PP }}
+
+      - name: Resumo de cobertura no job summary
+        if: always()
+        run: |
+          node <<'EOF'
+          const fs = require('node:fs');
+          const summaryPath = 'coverage/coverage-summary.json';
+          const baselinePath = 'coverage-baseline.json';
+          if (!fs.existsSync(summaryPath)) {
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '## ⚠️ Cobertura\n\nRelatório não gerado (a suíte falhou antes da cobertura).\n');
+            process.exit(0);
+          }
+          const total = JSON.parse(fs.readFileSync(summaryPath, 'utf8')).total;
+          const base = fs.existsSync(baselinePath)
+            ? (JSON.parse(fs.readFileSync(baselinePath, 'utf8')).metrics ?? {})
+            : {};
+          const lines = [];
+          lines.push('## 🧪 Suíte de testes — cobertura');
+          lines.push('');
+          lines.push('| Métrica | Atual | Baseline | Δ |');
+          lines.push('|---------|------:|---------:|--:|');
+          for (const key of ['statements', 'branches', 'functions', 'lines']) {
+            const now = total[key].pct;
+            const before = typeof base[key] === 'number' ? base[key] : null;
+            const delta = before === null ? null : now - before;
+            const deltaTxt = delta === null
+              ? '—'
+              : `${delta >= 0 ? '+' : ''}${delta.toFixed(2)} pp ${delta < 0 ? '📉' : '📈'}`;
+            lines.push(`| ${key} | **${now.toFixed(2)}%** | ${before === null ? '—' : before.toFixed(2) + '%'} | ${deltaTxt} |`);
+          }
+          lines.push('');
+          lines.push(`Tolerância de queda configurada: **${process.env.COVERAGE_TOLERANCE_PP} pp**.`);
+          const out = lines.join('\n');
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, out + '\n');
+          fs.writeFileSync('pr-coverage-comment.md', out);
+          EOF
+        env:
+          COVERAGE_TOLERANCE_PP: ${{ env.COVERAGE_TOLERANCE_PP }}
+
+      - name: Comentar cobertura no PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            if (!fs.existsSync('pr-coverage-comment.md')) return;
+            const marker = '<!-- pr-test-suite-coverage -->';
+            const body = `${marker}\n${fs.readFileSync('pr-coverage-comment.md', 'utf8')}`;
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.rest.issues.listComments({ owner, repo, issue_number });
+            const prev = comments.data.find(c => c.body && c.body.includes(marker));
+            if (prev) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: prev.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+
+      - name: Upload relatórios (cobertura + JUnit)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-test-reports
+          path: |
+            coverage/
+            test-results/vitest-junit.xml
+          retention-days: 14
+          if-no-files-found: warn
+
+  e2e-tests:
+    name: E2E (Playwright)
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    needs: static-analysis
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Instalar navegadores
+        run: npx playwright install --with-deps chromium
+      - name: Build de produção
+        run: npm run build
+        env:
+          CI: true
+      - name: Smoke das páginas principais
+        run: npm run test:smoke -- --project=chromium --workers=4
+        env:
+          CI: true
+      - name: Upload artefatos E2E
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-e2e-artifacts
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 14
+          if-no-files-found: warn
+
+  suite-gate:
+    name: Suíte completa aprovada
+    if: always()
+    runs-on: ubuntu-latest
+    needs: [static-analysis, unit-tests, e2e-tests]
+    steps:
+      - name: Verificar resultado dos jobs
+        run: |
+          echo "static-analysis: ${{ needs.static-analysis.result }}"
+          echo "unit-tests:      ${{ needs.unit-tests.result }}"
+          echo "e2e-tests:       ${{ needs.e2e-tests.result }}"
+          for result in "${{ needs.static-analysis.result }}" "${{ needs.unit-tests.result }}" "${{ needs.e2e-tests.result }}"; do
+            if [ "$result" != "success" ] && [ "$result" != "skipped" ]; then
+              echo "::error::Regressão detectada na suíte de testes — PR bloqueado."
+              exit 1
+            fi
+          done
+          echo "✅ Suíte completa aprovada." >> $GITHUB_STEP_SUMMARY
