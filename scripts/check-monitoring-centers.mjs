@@ -161,8 +161,8 @@ DECLARE
   d   uuid;
   n   int;
 BEGIN
-  SELECT id INTO u FROM auth.users LIMIT 1;
-  IF u IS NULL THEN RAISE NOTICE 'SKIP'; RETURN; END IF;
+  -- Sem FK para auth.users: o dono é sintético e a transação é revertida.
+  u := gen_random_uuid();
 
   INSERT INTO public.monitoring_center_accounts
     (user_id, provider, label, account_code, endpoint_url, event_kinds)
