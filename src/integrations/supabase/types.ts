@@ -3262,6 +3262,39 @@ export type Database = {
         }
         Relationships: []
       }
+      partition_backlog_samples: {
+        Row: {
+          created_at: string
+          default_partition: string
+          duration_ms: number
+          id: string
+          parent_table: string
+          row_count: number
+          sampled_at: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          default_partition: string
+          duration_ms?: number
+          id?: string
+          parent_table: string
+          row_count?: number
+          sampled_at?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          default_partition?: string
+          duration_ms?: number
+          id?: string
+          parent_table?: string
+          row_count?: number
+          sampled_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       partition_drain_runs: {
         Row: {
           batch_size: number | null
@@ -7041,6 +7074,14 @@ export type Database = {
       run_selective_vacuum: {
         Args: { _max_tables?: number; _min_dead_ratio?: number }
         Returns: Json
+      }
+      sample_partition_backlog: {
+        Args: { retention_days?: number }
+        Returns: {
+          default_partition: string
+          parent_table: string
+          row_count: number
+        }[]
       }
       set_camera_credentials: {
         Args: { _camera_id: string; _key: string; _url: string }
