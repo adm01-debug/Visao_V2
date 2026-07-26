@@ -154,13 +154,29 @@ WHERE a.id IN (
 
 -- ---------------------------------------------------------------------------
 -- 3) PASSE 2 — mesma frota, agora com causa raiz externa crítica em aberto.
---    A causa externa é GLOBAL: por isso o passe 2 usa S6 (gêmeo intocado de
---    S3), e não S3, que já gastou tentativa e entraria em cooldown.
+--    S6 nasce agora, já silencioso e já com uma tentativa gasta: sem o veto
+--    ele seria `restart` (exatamente o que S3 fez no passe 1). Qualquer coisa
+--    diferente de `restart` aqui só pode vir do árbitro.
 -- ---------------------------------------------------------------------------
+INSERT INTO public.local_agents (id, user_id, name, token_hash, status, last_seen_at, created_at)
+VALUES ('c1000000-0000-4000-8000-000000000006', :'uid'::uuid, 'ci-healing-veto',
+        'ci-healing-token-06', 'active', now() - interval '45 minutes', now() - interval '30 days');
+
+INSERT INTO public.agent_healing_actions
+  (agent_id, user_id, action, severity, reason, attempts, created_at)
+VALUES ('c1000000-0000-4000-8000-000000000006', :'uid'::uuid, 'nudge', 'critical',
+        'fixture de CI: tentativa anterior fora do cooldown', 1, now() - interval '20 minutes');
+
 INSERT INTO public.maintenance_alert_events (routine, severity, reason, detail, observed_at)
 VALUES ('root_cause_correlation', 'critical',
         'exercício de CI: causa raiz externa em aberto',
         jsonb_build_object('source', 'ci-healing-loop'), now() - interval '1 minute');
+
+-- Reabastece o congelamento: tudo que existe ATÉ AQUI é passado, inclusive as
+-- ações do passe 1 e o fixture de S6.
+INSERT INTO ci_seen (id)
+SELECT x.id FROM public.agent_healing_actions x
+WHERE NOT EXISTS (SELECT 1 FROM ci_seen s WHERE s.id = x.id);
 
 DO $$
 DECLARE
@@ -176,7 +192,8 @@ FROM public.local_agents a
 LEFT JOIN LATERAL (
   SELECT x.action, x.severity, x.reason
   FROM public.agent_healing_actions x
-  WHERE x.agent_id = a.id AND x.created_at >= now() - interval '10 seconds'
+  WHERE x.agent_id = a.id
+    AND NOT EXISTS (SELECT 1 FROM ci_seen s WHERE s.id = x.id)
   ORDER BY x.created_at DESC
   LIMIT 1
 ) h ON true
