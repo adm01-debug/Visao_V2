@@ -108,6 +108,16 @@ check(
   `collab_expire_invitations alcançável por ${cronAcl}: a limpeza é do cron, não do usuário`,
 );
 
+const immutableTrigger = query(`
+  SELECT count(*) FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid
+   WHERE c.relname='collab_governance_audit' AND NOT t.tgisinternal
+     AND t.tgname='trg_collab_governance_audit_immutable'`);
+check(
+  'TRILHA',
+  immutableTrigger === '1',
+  'gatilho de imutabilidade ausente: sem ele, o dono da tabela reescreveria o passado',
+);
+
 // --- 4) search_path fixo e cron ----------------------------------------------
 const looseDefiner = query(`
   SELECT COALESCE(string_agg(p.proname, ','), '')
