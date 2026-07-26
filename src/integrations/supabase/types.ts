@@ -1665,6 +1665,231 @@ export type Database = {
           },
         ]
       }
+      collab_entries: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          network_id: string
+          owner_org_id: string
+          plate_hash: string
+          reason: string
+          revoked_at: string | null
+          severity: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          network_id: string
+          owner_org_id: string
+          plate_hash: string
+          reason: string
+          revoked_at?: string | null
+          severity: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          network_id?: string
+          owner_org_id?: string
+          plate_hash?: string
+          reason?: string
+          revoked_at?: string | null
+          severity?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collab_entries_network_id_fkey"
+            columns: ["network_id"]
+            isOneToOne: false
+            referencedRelation: "collab_networks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collab_entries_owner_org_id_fkey"
+            columns: ["owner_org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collab_matches: {
+        Row: {
+          camera_id: string | null
+          confidence: number
+          entry_id: string
+          id: string
+          matched_at: string
+          network_id: string
+          reader_org_id: string
+          severity: number
+        }
+        Insert: {
+          camera_id?: string | null
+          confidence: number
+          entry_id: string
+          id?: string
+          matched_at?: string
+          network_id: string
+          reader_org_id: string
+          severity: number
+        }
+        Update: {
+          camera_id?: string | null
+          confidence?: number
+          entry_id?: string
+          id?: string
+          matched_at?: string
+          network_id?: string
+          reader_org_id?: string
+          severity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collab_matches_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collab_matches_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "collab_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collab_matches_network_id_fkey"
+            columns: ["network_id"]
+            isOneToOne: false
+            referencedRelation: "collab_networks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collab_matches_reader_org_id_fkey"
+            columns: ["reader_org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collab_memberships: {
+        Row: {
+          created_at: string
+          id: string
+          network_id: string
+          organization_id: string
+          shares_data: boolean
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          network_id: string
+          organization_id: string
+          shares_data?: boolean
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          network_id?: string
+          organization_id?: string
+          shares_data?: boolean
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collab_memberships_network_id_fkey"
+            columns: ["network_id"]
+            isOneToOne: false
+            referencedRelation: "collab_networks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collab_memberships_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collab_network_secrets: {
+        Row: {
+          created_at: string
+          hmac_key: string
+          network_id: string
+        }
+        Insert: {
+          created_at?: string
+          hmac_key?: string
+          network_id: string
+        }
+        Update: {
+          created_at?: string
+          hmac_key?: string
+          network_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collab_network_secrets_network_id_fkey"
+            columns: ["network_id"]
+            isOneToOne: true
+            referencedRelation: "collab_networks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collab_networks: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          owner_org_id: string
+          reciprocity_required: boolean
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          owner_org_id: string
+          reciprocity_required?: boolean
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          owner_org_id?: string
+          reciprocity_required?: boolean
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collab_networks_owner_org_id_fkey"
+            columns: ["owner_org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       connectivity_resolution_telemetry: {
         Row: {
           camera_id: string | null
@@ -6746,6 +6971,7 @@ export type Database = {
           remaining: number
         }[]
       }
+      canonical_plate: { Args: { _raw: string }; Returns: string }
       capture_db_health_snapshot: { Args: never; Returns: string }
       check_csp_anomaly: { Args: never; Returns: Json }
       check_relay_purge_watchdog: { Args: never; Returns: undefined }
@@ -6813,6 +7039,16 @@ export type Database = {
       cleanup_old_test_events: { Args: never; Returns: number }
       close_expired_test_sessions: { Args: never; Returns: number }
       close_stale_dwell_sessions: { Args: never; Returns: Json }
+      collab_member_status: {
+        Args: { _network_id: string; _org_id: string }
+        Returns: string
+      }
+      collab_plate_hash: {
+        Args: { _network_id: string; _plate: string }
+        Returns: string
+      }
+      collab_policy: { Args: never; Returns: Json }
+      collab_user_orgs: { Args: { _user_id: string }; Returns: string[] }
       contact_id_for_event: {
         Args: { _kind: string }
         Returns: {
@@ -7600,6 +7836,22 @@ export type Database = {
         }[]
       }
       mark_ingest_unpublish: { Args: { _stream_key: string }; Returns: Json }
+      match_collab_plate: {
+        Args: {
+          _at?: string
+          _camera_id?: string
+          _confidence: number
+          _network_id: string
+          _plate: string
+          _reader_org: string
+        }
+        Returns: {
+          alerted: boolean
+          entry_id: string
+          rejection: string
+          severity: number
+        }[]
+      }
       monitoring_center_backoff_seconds: {
         Args: { _attempts: number }
         Returns: number
@@ -7716,6 +7968,10 @@ export type Database = {
         }
         Returns: string[]
       }
+      revoke_collab_entry: {
+        Args: { _entry_id: string; _org_id: string }
+        Returns: boolean
+      }
       rewrap_camera_vault_kek: {
         Args: {
           p_from_version: number
@@ -7783,6 +8039,21 @@ export type Database = {
           _ok: boolean
         }
         Returns: Json
+      }
+      share_collab_plate: {
+        Args: {
+          _network_id: string
+          _org_id: string
+          _plate: string
+          _reason: string
+          _severity: number
+          _ttl_days?: number
+        }
+        Returns: {
+          accepted: boolean
+          entry_id: string
+          rejection: string
+        }[]
       }
       stable_hash32: { Args: { _input: string }; Returns: number }
       system_health: { Args: never; Returns: Json }
