@@ -11,6 +11,10 @@ export interface SidebarStatus {
   totalRules: number;
   registeredPersons: number;
   activeZones: number;
+  /** Onda 137 — incidentes de manutenção abertos (0 para quem não é admin). */
+  openMaintenanceAlerts: number;
+  openMaintenanceCritical: number;
+  maintenanceAtCeiling: number;
   isLoading: boolean;
 }
 
