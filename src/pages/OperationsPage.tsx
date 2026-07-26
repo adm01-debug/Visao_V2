@@ -358,6 +358,11 @@ export default function OperationsPage() {
       </section>
 
       <section>
+        <PartitionDrainCard />
+      </section>
+
+
+      <section>
         <CronWatchdogEscalationCard />
       </section>
 
