@@ -1,13 +1,17 @@
 #!/usr/bin/env node
 /**
- * Onda 105 — Gate de regressão: exposição via políticas RLS e rotinas DBA.
+ * Ondas 105/106 — Gate de regressão: exposição via políticas RLS, rotinas DBA
+ * e blindagem de partições.
  *
  * Falha (exit 1) quando:
  *   a) existe política RLS no schema `public` com expressão irrestrita
  *      (USING (true) / WITH CHECK (true)) para papéis diferentes de service_role;
  *   b) existe política ainda ligada ao papel PUBLIC/anon (deve ser `TO authenticated`);
  *   c) uma rotina sensível de DBA (encerrar sessão, matar query, etc.) executável
- *      por `authenticated` não possui guard `has_role(..., 'admin')`.
+ *      por `authenticated` não possui guard `has_role(..., 'admin')`;
+ *   d) [Onda 106] uma partição do schema `public` está sem RLS habilitada ou sem
+ *      policy própria — a RLS do pai NÃO cobre `SELECT` direto na partição.
+
  *
  * Uso: PGHOST/PGUSER/... definidos no ambiente → `npm run db:check:rls`
  */
