@@ -106,6 +106,115 @@ export type Database = {
         }
         Relationships: []
       }
+      agent_healing_actions: {
+        Row: {
+          action: string
+          agent_id: string
+          attempts: number
+          created_at: string
+          deaf_ratio: number | null
+          id: string
+          reason: string
+          run_id: string | null
+          severity: string
+          silent_minutes: number | null
+          task_id: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          agent_id: string
+          attempts?: number
+          created_at?: string
+          deaf_ratio?: number | null
+          id?: string
+          reason: string
+          run_id?: string | null
+          severity: string
+          silent_minutes?: number | null
+          task_id?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          agent_id?: string
+          attempts?: number
+          created_at?: string
+          deaf_ratio?: number | null
+          id?: string
+          reason?: string
+          run_id?: string | null
+          severity?: string
+          silent_minutes?: number | null
+          task_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_healing_actions_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "local_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_healing_actions_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "agent_healing_runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_healing_actions_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "agent_relay_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agent_healing_runs: {
+        Row: {
+          actions_enqueued: number
+          agents_critical: number
+          agents_escalated: number
+          agents_total: number
+          agents_warning: number
+          created_at: string
+          duration_ms: number
+          error_detail: string | null
+          id: string
+          ok: boolean
+          ran_at: string
+        }
+        Insert: {
+          actions_enqueued?: number
+          agents_critical?: number
+          agents_escalated?: number
+          agents_total?: number
+          agents_warning?: number
+          created_at?: string
+          duration_ms?: number
+          error_detail?: string | null
+          id?: string
+          ok?: boolean
+          ran_at?: string
+        }
+        Update: {
+          actions_enqueued?: number
+          agents_critical?: number
+          agents_escalated?: number
+          agents_total?: number
+          agents_warning?: number
+          created_at?: string
+          duration_ms?: number
+          error_detail?: string | null
+          id?: string
+          ok?: boolean
+          ran_at?: string
+        }
+        Relationships: []
+      }
       agent_relay_purge_runs: {
         Row: {
           created_at: string
@@ -6938,6 +7047,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      heal_local_agents: { Args: never; Returns: Json }
       import_settings_backup: {
         Args: { _payload: Json; _strategy?: string }
         Returns: Json
