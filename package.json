@@ -152,8 +152,10 @@
     "simulate:wave110": "node scripts/simulate-wave110-scenarios.mjs",
     "simulate:wave111": "node scripts/simulate-wave111-scenarios.mjs",
     "simulate:wave112": "node scripts/simulate-wave112-scenarios.mjs",
+    "simulate:wave113": "node scripts/simulate-wave113-scenarios.mjs",
     "db:check:clock-skew": "node scripts/check-camera-clock-skew.mjs",
-    "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew"
+    "db:check:backlog-trend": "node scripts/check-partition-backlog-trend.mjs",
+    "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend"
 
 
   },
