@@ -28,6 +28,15 @@ import {
   WeeklyIncidentDrilldown,
   type DrilldownSelection,
 } from "@/components/reports/WeeklyIncidentDrilldown";
+import { ProductivityConfigPanel } from "@/components/reports/ProductivityConfigPanel";
+import {
+  describeProductivityConfig,
+  isEventEnabled,
+  isWithinWindow,
+  loadProductivityConfig,
+  saveProductivityConfig,
+  type ProductivityConfig,
+} from "@/lib/productivityConfig";
 
 type Range = 7 | 14 | 30;
 type Severity = "low" | "medium" | "high" | "critical";
@@ -68,6 +77,12 @@ export default function WeeklyReportPage() {
   const [range, setRange] = useState<Range>(7);
   const [exporting, setExporting] = useState(false);
   const [selection, setSelection] = useState<DrilldownSelection | null>(null);
+  const [prodConfig, setProdConfig] = useState<ProductivityConfig>(() => loadProductivityConfig());
+
+  const updateProdConfig = (next: ProductivityConfig) => {
+    setProdConfig(next);
+    saveProductivityConfig(next);
+  };
 
   const { start, end } = useMemo(() => {
     const e = endOfDay(new Date());
@@ -239,6 +254,7 @@ export default function WeeklyReportPage() {
               { label: "Pessoas Únicas", value: uniquePersons },
               { label: "Taxa Reconhec.", value: `${recognitionRate}%` },
               { label: "Alertas Resolvidos", value: resolvedAlerts },
+              { label: "Critérios", value: describeProductivityConfig(prodConfig) },
             ],
           },
           {
@@ -308,6 +324,7 @@ export default function WeeklyReportPage() {
               <SelectItem value="30">Últimos 30 dias</SelectItem>
             </SelectContent>
           </Select>
+          <ProductivityConfigPanel config={prodConfig} onChange={updateProdConfig} />
           <Button onClick={exportPdf} disabled={exporting || loading}>
             {exporting ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
