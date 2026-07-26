@@ -355,6 +355,7 @@ jobs:
               echo "| static-analysis | $STATIC_RESULT |"
               echo "| unit-tests | $UNIT_RESULT |"
               echo "| e2e-tests (smoke Playwright) | $E2E_RESULT |"
+              echo "| db-guardrails (definer + RLS) | $DB_RESULT |"
             } >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
