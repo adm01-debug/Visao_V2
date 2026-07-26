@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { RealtimeChannel } from "@supabase/supabase-js";
+import { useMaintenanceAlertBadge } from "@/hooks/useMaintenanceAlertBadge";
 
 export interface SidebarStatus {
   unreadAlerts: number;
@@ -11,6 +12,10 @@ export interface SidebarStatus {
   totalRules: number;
   registeredPersons: number;
   activeZones: number;
+  /** Onda 137 — incidentes de manutenção abertos (0 para quem não é admin). */
+  openMaintenanceAlerts: number;
+  openMaintenanceCritical: number;
+  maintenanceAtCeiling: number;
   isLoading: boolean;
 }
 
@@ -116,6 +121,9 @@ export function useSidebarStatus(): SidebarStatus {
     staleTime: 60000,
   });
 
+  // Onda 137 — contagem de incidentes de manutenção (só carrega para admin).
+  const { counts: maintenance } = useMaintenanceAlertBadge();
+
   return {
     unreadAlerts: alertsData || 0,
     onlineCameras: camerasData?.online || 0,
@@ -124,6 +132,9 @@ export function useSidebarStatus(): SidebarStatus {
     totalRules: rulesData?.total || 0,
     registeredPersons: personsCount || 0,
     activeZones: zonesCount || 0,
+    openMaintenanceAlerts: maintenance.open,
+    openMaintenanceCritical: maintenance.openCritical,
+    maintenanceAtCeiling: maintenance.atCeiling,
     isLoading: alertsLoading || camerasLoading || rulesLoading || personsLoading || zonesLoading,
   };
 }

@@ -11,7 +11,16 @@ export interface NavItem {
   icon: LucideIcon;
   path: string;
   badge?: number | string;
-  badgeVariant?: "default" | "secondary" | "destructive" | "outline";
+  /**
+   * Onda 137: as variantes precisam ser as que `getBadgeClasses` realmente
+   * entende. O contrato anterior ("secondary"/"outline") não existia no
+   * renderizador e caía silenciosamente no estilo padrão.
+   */
+  badgeVariant?: "default" | "destructive" | "warning" | "success";
+  /** Onda 137: destaca o contador quando não haverá mais aviso automático. */
+  badgePulse?: boolean;
+  /** Texto acessível do contador; cai no label quando ausente. */
+  badgeSrLabel?: string;
   /** Role mínima para ver este item */
   minRole?: AppRole;
 }

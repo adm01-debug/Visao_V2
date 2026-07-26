@@ -51,6 +51,9 @@ export function useSidebarState() {
       totalRules: 0,
       registeredPersons: 0,
       activeZones: 0,
+      openMaintenanceAlerts: 0,
+      openMaintenanceCritical: 0,
+      maintenanceAtCeiling: 0,
       isLoading: true,
     };
     const cats = createSidebarCategories(defaultStatus);

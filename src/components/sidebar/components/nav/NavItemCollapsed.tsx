@@ -2,6 +2,7 @@ import React, { memo, useCallback, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { formatNavBadge, shouldRenderNavBadge } from "@/lib/navigation/navBadge";
 import {
   Tooltip,
   TooltipContent,
@@ -96,12 +97,12 @@ export const NavItemCollapsed = memo(React.forwardRef(function NavItemCollapsed(
       </TooltipTrigger>
       <TooltipContent side="right" className="flex items-center gap-2">
         {item.label}
-        {item.badge !== undefined && Number(item.badge) > 0 && (
+        {shouldRenderNavBadge(item.badge) && (
           <span className={cn(
             "text-[10px] font-semibold px-1.5 py-0.5 rounded-full",
             getBadgeClasses(item.badgeVariant)
           )}>
-            {item.badge}
+            {formatNavBadge(item.badge)}
           </span>
         )}
       </TooltipContent>

@@ -30,6 +30,8 @@ import {
   Route,
   UserCog,
   TestTube2,
+  Wrench,
+  Network,
 } from "lucide-react";
 import type { NavCategory } from "../types";
 import type { SidebarStatus } from "@/hooks/useSidebarStatus";
@@ -198,6 +200,13 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         path: "/goals-alerts",
       },
       {
+        id: "collab-network",
+        label: "Rede Colaborativa",
+        icon: Network,
+        path: "/rede-colaborativa",
+        minRole: "manager",
+      },
+      {
         id: "users",
         label: "Usuários",
         icon: UserCog,
@@ -228,8 +237,31 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
       { id: "notifications", label: "Notificações", icon: Bell, path: "/notification-settings" },
       { id: "streams", label: "Streams", icon: Sliders, path: "/stream-settings" },
       { id: "telegram", label: "Telegram", icon: MessageSquare, path: "/telegram-settings" },
+      {
+        // Onda 137: o console da Onda 136 só era alcançável digitando a URL.
+        id: "maintenance-console",
+        label: "Manutenção",
+        icon: Wrench,
+        path: "/manutencao",
+        minRole: "admin",
+        badge: status.openMaintenanceAlerts > 0 ? status.openMaintenanceAlerts : undefined,
+        badgeVariant: status.openMaintenanceCritical > 0 ? ("destructive" as const) : ("warning" as const),
+        badgePulse: status.maintenanceAtCeiling > 0,
+        badgeSrLabel:
+          status.openMaintenanceAlerts > 0
+            ? `${status.openMaintenanceAlerts} incidente(s) de manutenção sem reconhecimento`
+            : undefined,
+      },
     ],
-    getStatus: () => ({
+    getStatus: () =>
+      status.openMaintenanceAlerts > 0
+        ? {
+            type: status.openMaintenanceCritical > 0 ? ("danger" as const) : ("warning" as const),
+            label: "Manutenção",
+            count: status.openMaintenanceAlerts,
+            pulse: status.maintenanceAtCeiling > 0,
+          }
+        : ({
       type: "success" as const,
       label: "OK",
     }),
