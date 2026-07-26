@@ -13,6 +13,12 @@ concurrency:
   group: pr-test-suite-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    # bash em todos os runners (inclusive Windows, via Git Bash) para manter
+    # os mesmos scripts/heredocs entre os SOs da matriz.
+    shell: bash
+
 permissions:
   contents: read
   pull-requests: write
@@ -43,9 +49,20 @@ jobs:
         run: npm run check:migrations
 
   unit-tests:
-    name: Testes unitários + cobertura
+    name: Unit (${{ matrix.os }})
     if: github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      # Não cancelar o outro SO: queremos ver se a falha é específica de ambiente.
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          # Só o runner primário publica cobertura/comentário (evita corrida no PR).
+          - os: ubuntu-latest
+            primary: true
+          - os: windows-latest
+            primary: false
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -62,12 +79,13 @@ jobs:
 
       # Falha se a cobertura cair além da tolerância ou abaixo do piso absoluto.
       - name: Gate de regressão de cobertura
+        if: matrix.primary
         run: npm run coverage:check
         env:
           COVERAGE_TOLERANCE_PP: ${{ env.COVERAGE_TOLERANCE_PP }}
 
       - name: Resumo de cobertura no job summary
-        if: always()
+        if: always() && matrix.primary
         run: |
           node <<'EOF'
           const fs = require('node:fs');
@@ -105,7 +123,7 @@ jobs:
           COVERAGE_TOLERANCE_PP: ${{ env.COVERAGE_TOLERANCE_PP }}
 
       - name: Comentar cobertura no PR
-        if: always() && github.event_name == 'pull_request'
+        if: always() && matrix.primary && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
@@ -127,7 +145,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pr-test-reports
+          name: pr-test-reports-${{ matrix.os }}
           path: |
             coverage/
             test-results/vitest-junit.xml
@@ -135,10 +153,14 @@ jobs:
           if-no-files-found: warn
 
   e2e-tests:
-    name: E2E (Playwright)
+    name: E2E (${{ matrix.os }})
     if: github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     needs: static-analysis
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -147,7 +169,13 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - name: Instalar navegadores
-        run: npx playwright install --with-deps chromium
+        # --with-deps só existe em Linux; no Windows as libs já vêm no runner.
+        run: |
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            npx playwright install --with-deps chromium
+          else
+            npx playwright install chromium
+          fi
       - name: Build de produção
         run: npm run build
         env:
@@ -160,7 +188,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: pr-e2e-artifacts
+          name: pr-e2e-artifacts-${{ matrix.os }}
           path: |
             test-results/
             playwright-report/
