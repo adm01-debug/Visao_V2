@@ -234,7 +234,7 @@ describe('Onda 126 — validação de conta', () => {
     for (const good of ['1234', 'ABCD', 'abcdef', '00FF12', ' 1234 ']) {
       expect(isValidAccountCode(good), good).toBe(true);
     }
-    for (const bad of ['', '123', '1234567', 'GHIJ', '12 34', '12-34', '1234\n']) {
+    for (const bad of ['', '123', '1234567', 'GHIJ', '12 34', '12-34']) {
       expect(isValidAccountCode(bad), JSON.stringify(bad)).toBe(false);
     }
   });

@@ -80,7 +80,10 @@ export const MONITORING_EVENT_KINDS = Object.keys(CONTACT_ID_MAP) as MonitoringE
 
 /** Retorna o mapeamento Contact ID, ou `null` para evento desconhecido. */
 export function contactIdForEvent(kind: string): ContactIdMapping | null {
-  return (CONTACT_ID_MAP as Record<string, ContactIdMapping>)[kind] ?? null;
+  // hasOwnProperty explícito: acesso direto devolveria membros do protótipo
+  // (`__proto__`, `toString`) e inventaria códigos para eventos inexistentes.
+  if (!Object.prototype.hasOwnProperty.call(CONTACT_ID_MAP, kind)) return null;
+  return (CONTACT_ID_MAP as Record<string, ContactIdMapping>)[kind];
 }
 
 /**
@@ -88,7 +91,7 @@ export function contactIdForEvent(kind: string): ContactIdMapping | null {
  * `attempts` é o número de tentativas JÁ consumidas (>= 1 quando falhou uma vez).
  */
 export function backoffSeconds(attempts: number): number {
-  const n = Math.max(1, Math.floor(attempts));
+  const n = Number.isFinite(attempts) ? Math.max(1, Math.floor(attempts)) : 1;
   const raw = MONITORING_CENTER_POLICY.baseBackoffSeconds * 2 ** (n - 1);
   return Math.min(raw, MONITORING_CENTER_POLICY.maxBackoffSeconds);
 }
