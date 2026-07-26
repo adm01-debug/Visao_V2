@@ -155,9 +155,11 @@
     "simulate:wave112": "node scripts/simulate-wave112-scenarios.mjs",
     "simulate:wave113": "node scripts/simulate-wave113-scenarios.mjs",
     "simulate:wave114": "node scripts/simulate-wave114-scenarios.mjs",
+    "simulate:wave115": "node scripts/simulate-agent-healing.mjs",
     "db:check:clock-skew": "node scripts/check-camera-clock-skew.mjs",
     "db:check:backlog-trend": "node scripts/check-partition-backlog-trend.mjs",
-    "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources"
+    "db:check:agent-healing": "node scripts/check-agent-healing.mjs",
+    "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing"
 
 
   },
