@@ -79,6 +79,24 @@ try {
 // roda dentro de uma transação revertida com um relógio injetado (p_now).
 for (const routine of RETENTION_ROUTINES) {
   const cadence = routine.cadenceMinutes;
+
+  // Sem nenhuma execução gravada, `max(executed_at)` é NULL e o relógio
+  // injetado perde a referência: o SQL responde (corretamente) 'never'. Esse
+  // estado é verificado à parte; os cenários de silêncio exigem uma âncora.
+  const [[anchored]] = query(
+    `SELECT (max(executed_at) IS NOT NULL)::text FROM public.${routine.sourceTable}`,
+  );
+  if (anchored !== 'true') {
+    const [alert] = evaluateRetentionAlerts([{ jobName: routine.jobName, minutesSinceLastRun: null }], [routine]);
+    check(
+      'NUNCA-EXECUTOU',
+      alert?.severity === 'critical',
+      `${routine.jobName}: rotina sem execuções deveria virar alerta crítico`,
+    );
+    console.warn(`⚠️  ${routine.jobName}: sem execuções registradas — cenários de silêncio pulados.`);
+    continue;
+  }
+
   const scenarios = [
     { minutes: 0, name: 'saudável' },
     { minutes: 2 * cadence + 20, name: 'atrasada' },
@@ -104,16 +122,11 @@ for (const routine of RETENTION_ROUTINES) {
         'missing');
       ROLLBACK;`)
       .map((r) => r[0])
-      .filter((v) => v !== '' && v !== 'set_config' && v !== 'DELETE 0' && !/^DELETE \d+$/.test(v));
+      .filter((v) => v !== '' && v !== 'set_config');
 
     const sqlSeverity = rows[rows.length - 1];
     const tsSeverity = expected ? expected.severity : 'none';
 
-    // Sem execuções registradas na tabela, o SQL não tem relógio de referência:
-    // `max(executed_at)` é NULL e o cenário perde o sentido. O estado 'never' é
-    // coberto pela verificação de cobertura logo abaixo.
-    if (sqlSeverity === 'missing' || sqlSeverity === undefined) continue;
-    if (sqlSeverity === 'critical' && tsSeverity !== 'critical' && scenario.minutes === 0) continue;
 
     check(
       'PARIDADE',
