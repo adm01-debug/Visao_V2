@@ -22,6 +22,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { PageMeta } from '@/components/PageMeta';
 import { PageContent } from '@/components/layout/MainLayout';
+import { AgentHealingTrailCard } from '@/components/admin/AgentHealingTrailCard';
+
 import { cn } from '@/lib/utils';
 
 type HealthState = 'online' | 'degraded' | 'offline' | 'unknown';
@@ -290,9 +292,13 @@ export default function CameraFleetHealthPage() {
           {filtered.map((item) => <FleetTile key={item.camera_id} item={item} />)}
         </div>
       )}
+
+      {/* Onda 140 — decisão de NÃO agir dos agentes locais, com o motivo do veto. */}
+      <AgentHealingTrailCard />
     </PageContent>
   );
 }
+
 
 interface KpiCardProps {
   title: string;
