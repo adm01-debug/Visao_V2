@@ -364,7 +364,9 @@ export default function OperationsPage() {
         <PartitionDrainCard />
         <PartitionQuarantineCard />
         <MaintenanceAlertsCard />
+        <MaintenanceDispatchCard />
       </section>
+
 
 
       <section>
