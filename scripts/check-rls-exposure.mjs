@@ -100,6 +100,7 @@ function query(sql) {
 const unrestricted = query(SQL_UNRESTRICTED);
 const publicRole = query(SQL_PUBLIC_ROLE);
 const dbaUnguarded = query(SQL_DBA_UNGUARDED);
+const unprotectedPartitions = query(SQL_PARTITIONS_UNPROTECTED);
 
 if (unrestricted.length) {
   console.error(`❌ ${unrestricted.length} política(s) RLS irrestrita(s) fora de service_role:`);
@@ -113,6 +114,16 @@ if (dbaUnguarded.length) {
   console.error(`❌ ${dbaUnguarded.length} rotina(s) DBA sem guard de admin executável(is) por authenticated:`);
   dbaUnguarded.forEach((row) => console.error(`   - ${row}`));
 }
+if (unprotectedPartitions.length) {
+  console.error(`❌ ${unprotectedPartitions.length} partição(ões) sem RLS própria (a RLS do pai não cobre acesso direto):`);
+  unprotectedPartitions.forEach((row) => console.error(`   - ${row}`));
+  console.error('   Corrija com: SELECT public.ensure_future_partitions(6);');
+}
 
-if (unrestricted.length || publicRole.length || dbaUnguarded.length) process.exit(1);
-console.log('✅ RLS sem políticas irrestritas/PUBLIC e rotinas DBA restritas a administradores.');
+if (unrestricted.length || publicRole.length || dbaUnguarded.length || unprotectedPartitions.length) {
+  process.exit(1);
+}
+console.log(
+  '✅ RLS sem políticas irrestritas/PUBLIC, rotinas DBA restritas a admin e todas as partições blindadas.',
+);
+
