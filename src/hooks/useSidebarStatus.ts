@@ -120,6 +120,9 @@ export function useSidebarStatus(): SidebarStatus {
     staleTime: 60000,
   });
 
+  // Onda 137 — contagem de incidentes de manutenção (só carrega para admin).
+  const { counts: maintenance } = useMaintenanceAlertBadge();
+
   return {
     unreadAlerts: alertsData || 0,
     onlineCameras: camerasData?.online || 0,
@@ -128,6 +131,9 @@ export function useSidebarStatus(): SidebarStatus {
     totalRules: rulesData?.total || 0,
     registeredPersons: personsCount || 0,
     activeZones: zonesCount || 0,
+    openMaintenanceAlerts: maintenance.open,
+    openMaintenanceCritical: maintenance.openCritical,
+    maintenanceAtCeiling: maintenance.atCeiling,
     isLoading: alertsLoading || camerasLoading || rulesLoading || personsLoading || zonesLoading,
   };
 }
