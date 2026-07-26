@@ -33,9 +33,9 @@ const source = readFileSync(LIB, 'utf8');
 
 const TABLES = ['collab_invitations', 'collab_governance_audit'];
 const USER_FUNCTIONS = [
-  ['collab_invite_org', 'uuid, uuid, integer, text'],
-  ['collab_respond_invite', 'uuid, boolean'],
-  ['collab_revoke_invite', 'uuid'],
+  ['collab_invite_org', 'uuid, uuid, integer, text, timestamp with time zone'],
+  ['collab_respond_invite', 'uuid, boolean, timestamp with time zone'],
+  ['collab_revoke_invite', 'uuid, timestamp with time zone'],
   ['collab_set_membership_status', 'uuid, uuid, text'],
   ['collab_remove_membership', 'uuid, uuid'],
 ];
@@ -299,12 +299,13 @@ BEGIN
 
   -- (h) convite vencido não admite ninguém, mesmo antes do cron
   v_inv := collab_invite_org(v_net, v_third_org, 1);
-  UPDATE collab_invitations SET expires_at = now() - interval '1 second' WHERE id = v_inv;
   PERFORM set_config('request.jwt.claims', json_build_object('sub', v_owner_user)::text, true);
   INSERT INTO organization_members (organization_id, user_id, role)
   VALUES (v_third_org, v_owner_user, 'admin') ON CONFLICT DO NOTHING;
+  -- 1 dia + 1 segundo depois: o convite morreu, mesmo sem o cron ter passado.
   PERFORM pg_temp.expect_error('aceite de convite vencido',
-    format('SELECT collab_respond_invite(%L,true)', v_inv), 'invite_expired');
+    format('SELECT collab_respond_invite(%L,true,%L::timestamptz)', v_inv,
+           now() + interval '1 day 1 second'), 'invite_expired');
   PERFORM pg_temp.expect('vencido materializado',
     (SELECT status FROM collab_invitations WHERE id=v_inv) = 'expired', 'estado não atualizado');
   PERFORM pg_temp.expect('sem participação por convite vencido',
@@ -312,15 +313,15 @@ BEGIN
                  WHERE network_id=v_net AND organization_id=v_third_org), 'admitiu indevidamente');
 
   -- (i) recusa cria carência de reconvite
-  DELETE FROM collab_invitations WHERE network_id=v_net AND invited_org_id=v_third_org;
-  v_inv := collab_invite_org(v_net, v_third_org, 5);
+  v_inv := collab_invite_org(v_net, v_third_org, 5, NULL, now() + interval '2 days');
   PERFORM pg_temp.expect('recusa',
-    collab_respond_invite(v_inv, false) = 'declined', 'não recusou');
+    collab_respond_invite(v_inv, false, now() + interval '2 days') = 'declined', 'não recusou');
   PERFORM pg_temp.expect_error('reconvite dentro da carência',
-    format('SELECT collab_invite_org(%L,%L)', v_net, v_third_org), 'reinvite_cooldown');
-  UPDATE collab_invitations SET responded_at = now() - interval '25 hours' WHERE id = v_inv;
+    format('SELECT collab_invite_org(%L,%L,5,NULL,%L::timestamptz)', v_net, v_third_org,
+           now() + interval '2 days 23 hours'), 'reinvite_cooldown');
   PERFORM pg_temp.expect('reconvite após a carência',
-    collab_invite_org(v_net, v_third_org, 5) IS NOT NULL, 'bloqueou indevidamente');
+    collab_invite_org(v_net, v_third_org, 5, NULL, now() + interval '3 days 1 hour') IS NOT NULL,
+    'bloqueou indevidamente');
 
   -- (j) trilha é imutável
   PERFORM pg_temp.expect_error('editar trilha',
@@ -331,10 +332,10 @@ BEGIN
     'collab_governance_audit is append-only (attempted DELETE)');
 
   -- (k) cron materializa o que o relógio já decidiu
-  UPDATE collab_invitations SET status='pending', responded_at=NULL,
-         expires_at = now() - interval '1 hour'
-   WHERE network_id=v_net AND invited_org_id=v_third_org;
-  PERFORM pg_temp.expect('cron expira', collab_expire_invitations() >= 1, 'nada expirado');
+  PERFORM pg_temp.expect('cron expira',
+    collab_expire_invitations(now() + interval '90 days') >= 1, 'nada expirado');
+  PERFORM pg_temp.expect('cron é idempotente',
+    collab_expire_invitations(now() + interval '90 days') = 0, 'expirou duas vezes o mesmo convite');
 END;
 $body$;
 
