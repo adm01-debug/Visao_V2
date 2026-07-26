@@ -1123,6 +1123,65 @@ export type Database = {
           },
         ]
       }
+      camera_ingest_endpoints: {
+        Row: {
+          camera_id: string
+          created_at: string
+          id: string
+          last_publish_at: string | null
+          last_publish_ip: string | null
+          last_unpublish_at: string | null
+          protocol: string
+          publish_count: number
+          rotated_at: string | null
+          stale_after_seconds: number
+          status: string
+          stream_key: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          camera_id: string
+          created_at?: string
+          id?: string
+          last_publish_at?: string | null
+          last_publish_ip?: string | null
+          last_unpublish_at?: string | null
+          protocol?: string
+          publish_count?: number
+          rotated_at?: string | null
+          stale_after_seconds?: number
+          status?: string
+          stream_key: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string
+          created_at?: string
+          id?: string
+          last_publish_at?: string | null
+          last_publish_ip?: string | null
+          last_unpublish_at?: string | null
+          protocol?: string
+          publish_count?: number
+          rotated_at?: string | null
+          stale_after_seconds?: number
+          status?: string
+          stream_key?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_ingest_endpoints_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       camera_patrol_stops: {
         Row: {
           created_at: string
@@ -1983,6 +2042,69 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      dwell_sessions: {
+        Row: {
+          alerted_at: string | null
+          camera_id: string
+          created_at: string
+          detections: number
+          ended_at: string | null
+          id: string
+          last_seen_at: string
+          peak_confidence: number
+          started_at: string
+          track_key: string
+          updated_at: string
+          user_id: string
+          zone_id: string | null
+        }
+        Insert: {
+          alerted_at?: string | null
+          camera_id: string
+          created_at?: string
+          detections?: number
+          ended_at?: string | null
+          id?: string
+          last_seen_at?: string
+          peak_confidence?: number
+          started_at?: string
+          track_key: string
+          updated_at?: string
+          user_id: string
+          zone_id?: string | null
+        }
+        Update: {
+          alerted_at?: string | null
+          camera_id?: string
+          created_at?: string
+          detections?: number
+          ended_at?: string | null
+          id?: string
+          last_seen_at?: string
+          peak_confidence?: number
+          started_at?: string
+          track_key?: string
+          updated_at?: string
+          user_id?: string
+          zone_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dwell_sessions_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dwell_sessions_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zones"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       edge_cache: {
         Row: {
@@ -6484,6 +6606,10 @@ export type Database = {
           update_policies: number
         }[]
       }
+      authorize_ingest_publish: {
+        Args: { _client_ip?: string; _protocol?: string; _stream_key: string }
+        Returns: Json
+      }
       backfill_envelope_encryption: {
         Args: { p_kek: string; p_kek_version?: number; p_limit?: number }
         Returns: {
@@ -6527,6 +6653,7 @@ export type Database = {
       cleanup_edge_cache: { Args: never; Returns: number }
       cleanup_old_test_events: { Args: never; Returns: number }
       close_expired_test_sessions: { Args: never; Returns: number }
+      close_stale_dwell_sessions: { Args: never; Returns: Json }
       correlate_backlog_root_cause: {
         Args: { p_window_hours?: number }
         Returns: string
@@ -6583,6 +6710,18 @@ export type Database = {
         }
         Returns: Json
       }
+      detect_stale_ingest_publishers: { Args: never; Returns: Json }
+      dwell_policy: {
+        Args: never
+        Returns: {
+          alert_cooldown_seconds: number
+          gap_seconds: number
+          max_open_seconds: number
+          min_confidence: number
+          min_detections: number
+          min_dwell_seconds: number
+        }[]
+      }
       ensure_future_partitions: {
         Args: { months_ahead?: number }
         Returns: Json
@@ -6606,6 +6745,10 @@ export type Database = {
         }[]
       }
       evaluate_and_restart_streams: { Args: never; Returns: number }
+      evaluate_dwell_alerts: {
+        Args: { _threshold_seconds?: number }
+        Returns: Json
+      }
       evaluate_maintenance_alerts: { Args: never; Returns: Json }
       evaluate_relay_redelivery: {
         Args: {
@@ -6616,6 +6759,10 @@ export type Database = {
           warn_rate?: number
           window_hours?: number
         }
+        Returns: Json
+      }
+      evaluate_vehicle_recurrence: {
+        Args: { _min_passes?: number; _window_minutes?: number }
         Returns: Json
       }
       execute_camera_schedules: { Args: never; Returns: number }
@@ -6637,6 +6784,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      generate_ingest_stream_key: { Args: never; Returns: string }
       get_api_usage_stats: { Args: { _days?: number }; Returns: Json }
       get_autovacuum_overrides: {
         Args: never
@@ -7273,6 +7421,7 @@ export type Database = {
           success_count_24h: number
         }[]
       }
+      mark_ingest_unpublish: { Args: { _stream_key: string }; Returns: Json }
       partition_maintenance_lock_key: { Args: never; Returns: number }
       point_in_polygon: {
         Args: { _poly: Json; _x: number; _y: number }
@@ -7331,6 +7480,17 @@ export type Database = {
           expired: number
           requeued: number
         }[]
+      }
+      record_dwell_observation: {
+        Args: {
+          _camera_id: string
+          _confidence?: number
+          _observed_at?: string
+          _track_key: string
+          _user_id: string
+          _zone_id: string
+        }
+        Returns: Json
       }
       relay_lease_policy: {
         Args: never
@@ -7434,6 +7594,16 @@ export type Database = {
       unwrap_dek: {
         Args: { p_kek: string; p_wrapped: string }
         Returns: string
+      }
+      vehicle_recurrence_policy: {
+        Args: never
+        Returns: {
+          alert_cooldown_minutes: number
+          min_confidence: number
+          min_passes: number
+          same_pass_seconds: number
+          window_minutes: number
+        }[]
       }
       verify_agent_token: {
         Args: { _token: string }

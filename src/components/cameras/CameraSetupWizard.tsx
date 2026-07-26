@@ -21,7 +21,7 @@ import { ruleTemplates, getSeverityLabel, type RuleTemplate } from '@/data/ruleT
 import type { CameraData } from '@/components/cameras';
 import type { Tables, TablesInsert, TablesUpdate, Json } from '@/integrations/supabase/types';
 import { toast } from 'sonner';
-import { ShieldAlert, Users, Layers3, Sparkles, Plus, Loader2, MapPin, CheckCircle2, XCircle, FlaskConical } from 'lucide-react';
+import { ShieldAlert, Users, Layers3, Sparkles, Plus, Loader2, MapPin, CheckCircle2, XCircle, FlaskConical, Radio } from 'lucide-react';
 import {
   applyCameraSetup,
   trackWizardEvent,
@@ -30,6 +30,7 @@ import {
   type WizardRuleInput,
 } from '@/lib/wizardClient';
 import { getProfileById } from '@/lib/onvifProfiles';
+import { CameraIngestPushCard } from '@/components/cameras/CameraIngestPushCard';
 
 
 type DbZone = Tables<'zones'>;
@@ -71,7 +72,7 @@ const DEFAULT_SCHEDULE = {
 
 export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: CameraSetupWizardProps) {
   const { user } = useAuth();
-  const [tab, setTab] = useState<'zones' | 'rules'>('zones');
+  const [tab, setTab] = useState<'zones' | 'rules' | 'ingest'>('zones');
   const [zones, setZones] = useState<DbZone[]>([]);
   const [loadingZones, setLoadingZones] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
@@ -263,15 +264,23 @@ export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: Cam
             </DialogDescription>
           </DialogHeader>
 
-          <Tabs value={tab} onValueChange={(v) => setTab(v as 'zones' | 'rules')} className="flex-1 flex flex-col overflow-hidden">
-            <TabsList className="grid grid-cols-2 w-full">
+          <Tabs value={tab} onValueChange={(v) => setTab(v as 'zones' | 'rules' | 'ingest')} className="flex-1 flex flex-col overflow-hidden">
+            <TabsList className="grid grid-cols-3 w-full">
               <TabsTrigger value="zones" className="gap-2">
                 <MapPin className="h-4 w-4" /> 1. Zonas ({zones.length})
               </TabsTrigger>
               <TabsTrigger value="rules" className="gap-2">
                 <ShieldAlert className="h-4 w-4" /> 2. Regras iniciais
               </TabsTrigger>
+              <TabsTrigger value="ingest" className="gap-2">
+                <Radio className="h-4 w-4" /> 3. Envio da câmera
+              </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="ingest" className="flex-1 overflow-y-auto mt-4">
+              <CameraIngestPushCard cameraId={camera?.id ?? null} />
+            </TabsContent>
+
 
             <TabsContent value="zones" className="flex-1 overflow-hidden mt-4">
               <div className="flex items-center justify-between mb-3">
