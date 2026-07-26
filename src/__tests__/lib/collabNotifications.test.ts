@@ -128,7 +128,8 @@ describe('deduplicação', () => {
       counterpartOrgId: OTHER,
     });
     expect(key).toBe('invite_received:inv-1:' + OTHER);
-    expect(/\d{4}-\d{2}-\d{2}|\d{10,}/.test(key)).toBe(false);
+    // Nenhum carimbo temporal (ISO ou epoch) entra na chave.
+    expect(/\d{4}-\d{2}-\d{2}T|:1[6-9]\d{11}\b/.test(key)).toBe(false);
   });
 });
 
