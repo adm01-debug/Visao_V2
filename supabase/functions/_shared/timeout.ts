@@ -1,6 +1,10 @@
 // Shared timeout utilities for Edge Functions
 // Prevents runaway external calls from consuming the full function budget.
 
+import { classifyNetworkError, toNetworkError } from "./networkError.ts";
+
+
+
 export class TimeoutError extends Error {
   constructor(message = "Operation timed out") {
     super(message);
