@@ -205,7 +205,7 @@ export function formatContactIdFrame(input: ContactIdFrameInput): string {
   const q = input.qualifier === 'R' ? '3' : '1';
   const payload =
     `[#${acct}|${q}${pad(input.code, 3)} ${pad(input.partitionCode, 2)} ${pad(input.zoneCode, 3)}]`;
-  const stamp = `_${input.at.toISOString().slice(11, 19)},${input.at.toISOString().slice(0, 10).replace(/-/g, '-')}`;
+  const stamp = `_${input.at.toISOString().slice(11, 19)},${input.at.toISOString().slice(0, 10)}`;
   const body =
     `"ADM-CID"${pad(input.sequence, 4)}R${pad(input.receiverNumber, 6)}` +
     `L${pad(input.linePrefix, 6)}#${acct}${payload}${stamp}`;

@@ -46,6 +46,22 @@ const tsMap = [...mapBlock.matchAll(/^\s{2}(\w+):\s*\{\s*code:\s*'(\d{3})',\s*qu
   .map((m) => `${m[1]}|${m[2]}|${m[3]}|${m[4]}`);
 check('MAPA', tsMap.length >= 16, `CONTACT_ID_MAP com apenas ${tsMap.length} entradas`);
 
+// --- 0) Identidade literal entre o codificador do front e o do edge runtime ----
+const edge = readFileSync(new URL('../supabase/functions/_shared/contactId.ts', import.meta.url), 'utf8');
+const bodyOf = (src, name) => {
+  const start = src.indexOf(`export function ${name}(`);
+  if (start < 0) return null;
+  const end = src.indexOf('\n}', start);
+  // Normaliza aspas e espaços: a diferença que importa é a lógica, não o estilo.
+  return src.slice(start, end).replace(/["']/g, '"').replace(/\s+/g, ' ');
+};
+for (const fn of ['crc16Arc', 'formatContactIdFrame']) {
+  const a = bodyOf(lib, fn);
+  const b = bodyOf(edge, fn);
+  check('DUPLICAÇÃO', a !== null && b !== null, `${fn} ausente em um dos módulos`);
+  check('DUPLICAÇÃO', a === b, `${fn} divergiu entre src/lib e supabase/functions/_shared`);
+}
+
 // --- 1) RLS e privilégios -----------------------------------------------------
 for (const table of ['monitoring_center_accounts', 'monitoring_center_dispatches']) {
   const rls = query(`SELECT c.relrowsecurity FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
