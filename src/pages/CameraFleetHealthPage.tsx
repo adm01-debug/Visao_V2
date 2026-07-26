@@ -22,6 +22,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { PageMeta } from '@/components/PageMeta';
 import { PageContent } from '@/components/layout/MainLayout';
+import { AgentHealingTrailCard } from '@/components/admin/AgentHealingTrailCard';
+
 import { cn } from '@/lib/utils';
 
 type HealthState = 'online' | 'degraded' | 'offline' | 'unknown';
