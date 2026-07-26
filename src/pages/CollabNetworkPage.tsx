@@ -42,6 +42,15 @@ export default function CollabNetworkPage() {
   const viewerIsNetworkOwner =
     selectedNetwork !== null && viewerOrgIds.includes(selectedNetwork.owner_org_id);
 
+  // Nome legível por id: a caixa de entrada guarda apenas o id da organização
+  // de origem, e traduzir na tela evita expor id cru ao operador.
+  const orgNameById = useMemo(
+    () =>
+      new Map((governance.organizations.data ?? []).map((org) => [org.id, org.name] as const)),
+    [governance.organizations.data],
+  );
+
+
   const isBusy =
     governance.invite.isPending ||
     governance.respond.isPending ||
