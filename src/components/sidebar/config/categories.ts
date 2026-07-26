@@ -205,7 +205,15 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         icon: Network,
         path: "/rede-colaborativa",
         minRole: "manager",
+        // Onda 139: convite recebido tem prazo — o contador é o que impede que
+        // ele vença por falta de alguém abrir a página.
+        badge: status.collabUnread > 0 ? status.collabUnread : undefined,
+        badgeVariant: status.collabCritical > 0 ? ("destructive" as const) : ("warning" as const),
+        badgePulse:
+          status.collabActionable > 0 &&
+          (status.collabOldestAgeHours ?? 0) >= COLLAB_STALE_ACTIONABLE_HOURS,
       },
+
       {
         id: "users",
         label: "Usuários",
