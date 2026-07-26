@@ -130,6 +130,8 @@ export function useSidebarStatus(): SidebarStatus {
 
   // Onda 137 — contagem de incidentes de manutenção (só carrega para admin).
   const { counts: maintenance } = useMaintenanceAlertBadge();
+  // Onda 139 — avisos da rede colaborativa já agregados pelo banco.
+  const { summary: collab } = useCollabUnreadBadge();
 
   return {
     unreadAlerts: alertsData || 0,
@@ -142,6 +144,12 @@ export function useSidebarStatus(): SidebarStatus {
     openMaintenanceAlerts: maintenance.open,
     openMaintenanceCritical: maintenance.openCritical,
     maintenanceAtCeiling: maintenance.atCeiling,
+    collabUnread: collab.unread,
+    collabActionable: collab.actionable,
+    collabCritical: collab.critical,
+    collabOldestAgeHours: collab.oldestAgeHours,
     isLoading: alertsLoading || camerasLoading || rulesLoading || personsLoading || zonesLoading,
+  };
+
   };
 }
