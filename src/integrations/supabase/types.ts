@@ -7158,13 +7158,14 @@ export type Database = {
         Args: { p_expires_at: string; p_now?: string; p_status: string }
         Returns: string
       }
-      collab_expire_invitations: { Args: never; Returns: number }
+      collab_expire_invitations: { Args: { p_now?: string }; Returns: number }
       collab_governance_policy: { Args: never; Returns: Json }
       collab_invite_org: {
         Args: {
           p_invited_org_id: string
           p_network_id: string
           p_note?: string
+          p_now?: string
           p_ttl_days?: number
         }
         Returns: string
@@ -7183,11 +7184,11 @@ export type Database = {
         Returns: number
       }
       collab_respond_invite: {
-        Args: { p_accept: boolean; p_invitation_id: string }
+        Args: { p_accept: boolean; p_invitation_id: string; p_now?: string }
         Returns: string
       }
       collab_revoke_invite: {
-        Args: { p_invitation_id: string }
+        Args: { p_invitation_id: string; p_now?: string }
         Returns: undefined
       }
       collab_set_membership_status: {
