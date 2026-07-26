@@ -15,6 +15,7 @@ import { CronWatchdogRunsCard } from '@/components/admin/CronWatchdogRunsCard';
 import { PartitionDrainCard } from '@/components/admin/PartitionDrainCard';
 import { PartitionQuarantineCard } from '@/components/admin/PartitionQuarantineCard';
 import { MaintenanceAlertsCard } from '@/components/admin/MaintenanceAlertsCard';
+import { MaintenanceDispatchCard } from '@/components/admin/MaintenanceDispatchCard';
 import { CronWatchdogEscalationCard } from '@/components/admin/CronWatchdogEscalationCard';
 
 import { PreviewAlertStatusCard } from '@/components/admin/PreviewAlertStatusCard';
