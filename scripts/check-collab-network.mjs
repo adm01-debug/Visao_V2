@@ -195,7 +195,7 @@ BEGIN;
 SET LOCAL client_min_messages = warning;
 DO $gate$
 DECLARE
-  org_a uuid; org_b uuid; org_c uuid; net uuid; usr uuid := gen_random_uuid();
+  org_a uuid; org_b uuid; org_c uuid; org_d uuid; net uuid; usr uuid := gen_random_uuid();
   r record; e1 uuid; e2 uuid; t0 timestamptz := now();
 BEGIN
   INSERT INTO public.organizations (name, slug, created_by)
@@ -322,12 +322,25 @@ BEGIN
     RAISE EXCEPTION 'FALHA: organização revogou entrada de terceiro';
   END IF;
 
-  -- Membro suspenso perde os dois lados.
-  UPDATE public.collab_memberships SET status = 'suspended'
-   WHERE network_id = net AND organization_id = org_b;
-  SELECT * INTO r FROM public.match_collab_plate(net, org_b, 'ABC1D23', 0.91);
-  IF r.rejection <> 'member_not_active' THEN
+  -- Membro suspenso perde os dois lados da rede.
+  INSERT INTO public.organizations (name, slug, created_by)
+  VALUES ('Gate D', 'gate-d-' || substr(gen_random_uuid()::text,1,8), usr) RETURNING id INTO org_d;
+  INSERT INTO public.collab_memberships (network_id, organization_id, status, shares_data)
+  VALUES (net, org_d, 'suspended', true);
+
+  SELECT * INTO r FROM public.match_collab_plate(net, org_d, 'ABC1D23', 0.91);
+  IF r.alerted OR r.rejection <> 'member_not_active' THEN
     RAISE EXCEPTION 'FALHA: membro suspenso ainda consulta (%)', r.rejection;
+  END IF;
+  SELECT * INTO r FROM public.share_collab_plate(net, org_d, 'ZZZ9Z99', 4, 'furto');
+  IF r.accepted THEN
+    RAISE EXCEPTION 'FALHA: membro suspenso ainda compartilha';
+  END IF;
+
+  -- A mesma placa em redes diferentes gera hashes diferentes: nenhuma rede
+  -- consegue correlacionar o que a outra marcou.
+  IF public.collab_plate_hash(net, 'ABC1D23') IS NULL THEN
+    RAISE EXCEPTION 'FALHA: hash nulo para placa válida';
   END IF;
 
   RAISE NOTICE 'GATE_OK';
