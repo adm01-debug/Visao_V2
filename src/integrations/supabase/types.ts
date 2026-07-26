@@ -7366,6 +7366,10 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      classify_retention_health: {
+        Args: { p_cadence_minutes: number; p_minutes_since: number }
+        Returns: string
+      }
       cleanup_api_usage_logs: { Args: never; Returns: number }
       cleanup_edge_cache: { Args: never; Returns: number }
       cleanup_old_test_events: { Args: never; Returns: number }
@@ -7970,13 +7974,16 @@ export type Database = {
         }[]
       }
       get_retention_overview: {
-        Args: never
+        Args: { p_now?: string }
         Returns: {
+          cadence_minutes: number
           deleted_last_30d: number
           health: string
           hours_since_last: number
           job_name: string
+          label: string
           last_run: string
+          minutes_since_last: number
           retention_days: number
           runs_last_30d: number
         }[]
@@ -8397,6 +8404,23 @@ export type Database = {
           _user_id: string
         }
         Returns: string[]
+      }
+      retention_health_thresholds: {
+        Args: never
+        Returns: {
+          grace_minutes: number
+          stalled_factor: number
+          warn_factor: number
+        }[]
+      }
+      retention_routine_registry: {
+        Args: never
+        Returns: {
+          cadence_minutes: number
+          job_name: string
+          label: string
+          source_table: string
+        }[]
       }
       revoke_collab_entry: {
         Args: { _entry_id: string; _org_id: string }
