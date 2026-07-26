@@ -2034,6 +2034,41 @@ export type Database = {
           },
         ]
       }
+      collab_notification_silences: {
+        Row: {
+          created_at: string
+          organization_id: string
+          silenced_kinds: string[]
+          silenced_until: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          organization_id: string
+          silenced_kinds: string[]
+          silenced_until: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          organization_id?: string
+          silenced_kinds?: string[]
+          silenced_until?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collab_notification_silences_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       collab_notifications: {
         Row: {
           actor_org_id: string | null
@@ -7254,6 +7289,10 @@ export type Database = {
       cleanup_old_test_events: { Args: never; Returns: number }
       close_expired_test_sessions: { Args: never; Returns: number }
       close_stale_dwell_sessions: { Args: never; Returns: Json }
+      collab_clear_notification_silence: {
+        Args: { p_organization_id: string }
+        Returns: number
+      }
       collab_effective_invite_status: {
         Args: { p_expires_at: string; p_now?: string; p_status: string }
         Returns: string
@@ -7278,6 +7317,10 @@ export type Database = {
         Args: { _network_id: string; _org_id: string }
         Returns: string
       }
+      collab_normalize_silenced_kinds: {
+        Args: { p_kinds: string[] }
+        Returns: string[]
+      }
       collab_notification_audiences: {
         Args: { p_action: string }
         Returns: string[]
@@ -7297,6 +7340,10 @@ export type Database = {
       collab_notification_severity: {
         Args: { p_kind: string }
         Returns: string
+      }
+      collab_notification_silenceable: {
+        Args: { p_kind: string }
+        Returns: boolean
       }
       collab_plate_hash: {
         Args: { _network_id: string; _plate: string }
@@ -7324,10 +7371,21 @@ export type Database = {
         }
         Returns: string
       }
+      collab_set_notification_silence: {
+        Args: {
+          p_kinds: string[]
+          p_now?: string
+          p_organization_id: string
+          p_until: string
+        }
+        Returns: Json
+      }
+      collab_silence_policy: { Args: never; Returns: Json }
       collab_unread_counts: {
-        Args: never
+        Args: { p_now?: string }
         Returns: {
           organization_id: string
+          silenced: number
           unread: number
         }[]
       }
