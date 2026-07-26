@@ -68,6 +68,13 @@ jobs:
       # blackhole TCP, retry/backoff e vazamento de socket no cliente.
       - name: Simulação de falhas de rede e timeouts reais
         run: npm run simulate:network-chaos
+      # Regra única de classificação de erro de rede das Edge Functions.
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      - name: Testes Deno dos utilitários compartilhados
+        run: deno test --allow-all supabase/functions/_shared/__tests__/
+
 
 
   unit-tests:
