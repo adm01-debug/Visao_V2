@@ -134,6 +134,8 @@ function classify(err) {
 // Servidores de caos (patologias reais)
 // ---------------------------------------------------------------------------
 const openSockets = new Set();
+let peakSockets = 0;
+
 let flakyState = new Map();
 
 function makeChaosServer() {
