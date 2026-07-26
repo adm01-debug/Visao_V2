@@ -109,11 +109,13 @@ export type Database = {
       agent_healing_actions: {
         Row: {
           action: string
+          admission_rank: number | null
           agent_id: string
           attempts: number
           created_at: string
           deaf_ratio: number | null
           id: string
+          jitter_seconds: number
           reason: string
           run_id: string | null
           severity: string
@@ -123,11 +125,13 @@ export type Database = {
         }
         Insert: {
           action: string
+          admission_rank?: number | null
           agent_id: string
           attempts?: number
           created_at?: string
           deaf_ratio?: number | null
           id?: string
+          jitter_seconds?: number
           reason: string
           run_id?: string | null
           severity: string
@@ -137,11 +141,13 @@ export type Database = {
         }
         Update: {
           action?: string
+          admission_rank?: number | null
           agent_id?: string
           attempts?: number
           created_at?: string
           deaf_ratio?: number | null
           id?: string
+          jitter_seconds?: number
           reason?: string
           run_id?: string | null
           severity?: string
@@ -180,12 +186,19 @@ export type Database = {
           agents_escalated: number
           agents_total: number
           agents_warning: number
+          breaker_reason: string | null
+          breaker_tripped: boolean
           created_at: string
           duration_ms: number
+          effective_budget: number
           error_detail: string | null
           id: string
           ok: boolean
           ran_at: string
+          restarts_admitted: number
+          restarts_deferred: number
+          restarts_requested: number
+          restarts_suppressed: number
         }
         Insert: {
           actions_enqueued?: number
@@ -193,12 +206,19 @@ export type Database = {
           agents_escalated?: number
           agents_total?: number
           agents_warning?: number
+          breaker_reason?: string | null
+          breaker_tripped?: boolean
           created_at?: string
           duration_ms?: number
+          effective_budget?: number
           error_detail?: string | null
           id?: string
           ok?: boolean
           ran_at?: string
+          restarts_admitted?: number
+          restarts_deferred?: number
+          restarts_requested?: number
+          restarts_suppressed?: number
         }
         Update: {
           actions_enqueued?: number
@@ -206,12 +226,19 @@ export type Database = {
           agents_escalated?: number
           agents_total?: number
           agents_warning?: number
+          breaker_reason?: string | null
+          breaker_tripped?: boolean
           created_at?: string
           duration_ms?: number
+          effective_budget?: number
           error_detail?: string | null
           id?: string
           ok?: boolean
           ran_at?: string
+          restarts_admitted?: number
+          restarts_deferred?: number
+          restarts_requested?: number
+          restarts_suppressed?: number
         }
         Relationships: []
       }
@@ -257,6 +284,7 @@ export type Database = {
           kind: string
           request: Json
           response: Json | null
+          scheduled_at: string
           status: string
           user_id: string
         }
@@ -271,6 +299,7 @@ export type Database = {
           kind: string
           request: Json
           response?: Json | null
+          scheduled_at?: string
           status?: string
           user_id: string
         }
@@ -285,6 +314,7 @@ export type Database = {
           kind?: string
           request?: Json
           response?: Json | null
+          scheduled_at?: string
           status?: string
           user_id?: string
         }
@@ -6457,6 +6487,7 @@ export type Database = {
           kind: string
           request: Json
           response: Json | null
+          scheduled_at: string
           status: string
           user_id: string
         }[]
@@ -7335,6 +7366,7 @@ export type Database = {
           legal_hold: boolean
         }[]
       }
+      stable_hash32: { Args: { _input: string }; Returns: number }
       system_health: { Args: never; Returns: Json }
       terminate_db_session: {
         Args: { _force?: boolean; _pid: number; _reason?: string }

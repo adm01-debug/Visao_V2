@@ -159,11 +159,13 @@
     "db:check:clock-skew": "node scripts/check-camera-clock-skew.mjs",
     "db:check:backlog-trend": "node scripts/check-partition-backlog-trend.mjs",
     "db:check:agent-healing": "node scripts/check-agent-healing.mjs",
-    "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation",
+    "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget",
     "simulate:wave116": "node scripts/simulate-wave116-scenarios.mjs",
     "simulate:wave117": "node scripts/simulate-wave117-scenarios.mjs",
     "db:check:root-cause": "node scripts/check-root-cause-correlation.mjs",
-    "db:check:escalation": "node scripts/check-maintenance-escalation.mjs"
+    "db:check:escalation": "node scripts/check-maintenance-escalation.mjs",
+    "simulate:wave118": "node scripts/simulate-wave118-scenarios.mjs",
+    "db:check:restart-budget": "node scripts/check-agent-restart-budget.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",

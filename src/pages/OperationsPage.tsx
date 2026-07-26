@@ -19,6 +19,7 @@ import { MaintenanceDispatchCard } from '@/components/admin/MaintenanceDispatchC
 import { CameraClockSkewCard } from '@/components/admin/CameraClockSkewCard';
 import { PartitionBacklogTrendCard } from '@/components/admin/PartitionBacklogTrendCard';
 import { AgentHealingCard } from '@/components/admin/AgentHealingCard';
+import { AgentRestartBudgetCard } from '@/components/admin/AgentRestartBudgetCard';
 import { RootCauseCorrelationCard } from '@/components/admin/RootCauseCorrelationCard';
 import { MaintenanceEscalationCard } from '@/components/admin/MaintenanceEscalationCard';
 import { CronWatchdogEscalationCard } from '@/components/admin/CronWatchdogEscalationCard';
@@ -374,6 +375,7 @@ export default function OperationsPage() {
         <MaintenanceDispatchCard />
         <CameraClockSkewCard />
         <AgentHealingCard />
+        <AgentRestartBudgetCard />
         <RootCauseCorrelationCard />
 
         <MaintenanceEscalationCard />

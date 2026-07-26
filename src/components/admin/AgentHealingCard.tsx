@@ -86,6 +86,9 @@ export function AgentHealingCard() {
     const { data, error: queryError } = await supabase
       .from('agent_healing_actions')
       .select('id, agent_id, action, severity, reason, silent_minutes, attempts, created_at')
+      // 'defer'/'suppress' são decisões de admissão (Onda 118) e têm card próprio;
+      // exibi-las aqui produziria rótulo vazio e confundiria a escada de cura.
+      .in('action', ['nudge', 'restart', 'escalate'])
       .order('created_at', { ascending: false })
       .limit(10);
 
