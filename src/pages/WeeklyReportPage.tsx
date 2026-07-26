@@ -24,6 +24,10 @@ import {
   Legend,
 } from "recharts";
 import { toast } from "sonner";
+import {
+  WeeklyIncidentDrilldown,
+  type DrilldownSelection,
+} from "@/components/reports/WeeklyIncidentDrilldown";
 
 type Range = 7 | 14 | 30;
 type Severity = "low" | "medium" | "high" | "critical";
@@ -63,6 +67,7 @@ interface RecognitionLog {
 export default function WeeklyReportPage() {
   const [range, setRange] = useState<Range>(7);
   const [exporting, setExporting] = useState(false);
+  const [selection, setSelection] = useState<DrilldownSelection | null>(null);
 
   const { start, end } = useMemo(() => {
     const e = endOfDay(new Date());
@@ -159,7 +164,7 @@ export default function WeeklyReportPage() {
       acc.set(a.camera_id, (acc.get(a.camera_id) ?? 0) + 1);
     });
     return Array.from(acc.entries())
-      .map(([id, count]) => ({ camera: cameraName(id), count }))
+      .map(([id, count]) => ({ id, camera: cameraName(id), count }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
   }, [alerts, cameras]);
