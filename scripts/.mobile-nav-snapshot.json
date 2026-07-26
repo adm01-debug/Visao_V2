@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T21:05:39.771Z",
+  "generatedAt": "2026-07-26T22:01:40.249Z",
   "pages": [
     {
       "file": "AcessoNegado.tsx",
@@ -46,11 +46,11 @@
       "mode": "standard"
     },
     {
-      "file": "CLSReportPage.tsx",
+      "file": "CameraFleetHealthPage.tsx",
       "mode": "standard"
     },
     {
-      "file": "CameraFleetHealthPage.tsx",
+      "file": "CamerasPage.tsx",
       "mode": "standard"
     },
     {
@@ -58,7 +58,7 @@
       "mode": "standard"
     },
     {
-      "file": "CamerasPage.tsx",
+      "file": "CLSReportPage.tsx",
       "mode": "standard"
     },
     {
@@ -130,6 +130,10 @@
       "mode": "standard"
     },
     {
+      "file": "MaintenanceConsolePage.tsx",
+      "mode": "standard"
+    },
+    {
       "file": "MotionMasksPage.tsx",
       "mode": "standard"
     },
@@ -170,16 +174,16 @@
       "mode": "standard"
     },
     {
-      "file": "PPEPage.tsx",
-      "mode": "customWrapper"
-    },
-    {
       "file": "PanicEventsPage.tsx",
       "mode": "standard"
     },
     {
       "file": "PeoplePage.tsx",
       "mode": "standard"
+    },
+    {
+      "file": "PPEPage.tsx",
+      "mode": "customWrapper"
     },
     {
       "file": "PricingPage.tsx",
