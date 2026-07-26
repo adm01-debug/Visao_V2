@@ -290,9 +290,13 @@ export default function CameraFleetHealthPage() {
           {filtered.map((item) => <FleetTile key={item.camera_id} item={item} />)}
         </div>
       )}
+
+      {/* Onda 140 — decisão de NÃO agir dos agentes locais, com o motivo do veto. */}
+      <AgentHealingTrailCard />
     </PageContent>
   );
 }
+
 
 interface KpiCardProps {
   title: string;
