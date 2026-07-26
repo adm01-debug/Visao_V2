@@ -1,6 +1,10 @@
 // Shared timeout utilities for Edge Functions
 // Prevents runaway external calls from consuming the full function budget.
 
+import { classifyNetworkError, toNetworkError } from "./networkError.ts";
+
+
+
 export class TimeoutError extends Error {
   constructor(message = "Operation timed out") {
     super(message);
@@ -42,7 +46,22 @@ export async function fetchWithTimeout(
   ms = 15000,
 ): Promise<Response> {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), ms);
+  // `deadlineExpired` é a única forma de distinguir o nosso relógio do abort
+  // do chamador: ambos chegam como AbortError.
+  let deadlineExpired = false;
+  const timer = setTimeout(() => {
+    deadlineExpired = true;
+    controller.abort();
+  }, ms);
+
+  // Gap corrigido na Onda 145: antes o `signal` do chamador era sobrescrito,
+  // então cancelar a operação de fora não cancelava o fetch de verdade.
+  const callerSignal = init.signal ?? null;
+  const forwardAbort = () => controller.abort();
+  if (callerSignal) {
+    if (callerSignal.aborted) controller.abort();
+    else callerSignal.addEventListener("abort", forwardAbort, { once: true });
+  }
 
   try {
     const response = await fetch(input, {
@@ -51,14 +70,17 @@ export async function fetchWithTimeout(
     });
     return response;
   } catch (err) {
-    if (err instanceof DOMException && err.name === "AbortError") {
+    const kind = classifyNetworkError(err, { deadlineExpired });
+    if (kind === "timeout") {
       throw new TimeoutError(`fetch ${String(input)} aborted after ${ms}ms`);
     }
-    throw err;
+    throw toNetworkError(err, { deadlineExpired });
   } finally {
     clearTimeout(timer);
+    callerSignal?.removeEventListener("abort", forwardAbort);
   }
 }
+
 
 /**
  * Default timeouts (ms) tuned for edge function budgets. Adjust per-call
