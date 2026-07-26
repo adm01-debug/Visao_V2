@@ -118,6 +118,70 @@ describe('bottomNavBadge — manutenção (B5, B6)', () => {
   });
 });
 
+describe('bottomNavBadge — rede colaborativa (B9, Onda 139)', () => {
+  it('B9 contador da aba soma manutenção e rede, sem esconder nenhuma das duas', () => {
+    let checked = 0;
+    for (let maint = 0; maint <= 6; maint++) {
+      for (let collab = 0; collab <= 6; collab++) {
+        const d = buildBottomNavBadge(
+          'settings',
+          { ...base, openMaintenanceAlerts: maint, collabUnread: collab },
+          true,
+        );
+        const total = maint + collab;
+        expect(d.text).toBe(total === 0 ? null : String(total));
+        if (maint > 0) expect(d.srLabel).toMatch(/manuten|incidente/i);
+        if (collab > 0) expect(d.srLabel.length).toBeGreaterThan(0);
+        checked++;
+      }
+    }
+    expect(checked).toBe(49);
+  });
+
+  it('criticidade de qualquer uma das fontes pinta danger', () => {
+    const byMaintenance = buildBottomNavBadge(
+      'settings',
+      { ...base, openMaintenanceAlerts: 2, openMaintenanceCritical: 1 },
+      true,
+    );
+    const byCollab = buildBottomNavBadge(
+      'settings',
+      { ...base, collabUnread: 2, collabCritical: 1 },
+      true,
+    );
+    expect(byMaintenance.tone).toBe('danger');
+    expect(byCollab.tone).toBe('danger');
+  });
+
+  it('acionável parado há mais de 24h pulsa; recente não', () => {
+    const stale = buildBottomNavBadge(
+      'settings',
+      { ...base, collabUnread: 1, collabActionable: 1, collabOldestAgeHours: 48 },
+      true,
+    );
+    const fresh = buildBottomNavBadge(
+      'settings',
+      { ...base, collabUnread: 1, collabActionable: 1, collabOldestAgeHours: 2 },
+      true,
+    );
+    expect(stale.pulse).toBe(true);
+    expect(fresh.pulse).toBe(false);
+  });
+
+  it('valores ausentes ou inválidos da rede não quebram a aba', () => {
+    for (const age of [undefined, null, Number.NaN, Number.POSITIVE_INFINITY]) {
+      const d = buildBottomNavBadge(
+        'settings',
+        { ...base, collabUnread: 3, collabOldestAgeHours: age as number | null },
+        true,
+      );
+      expect(d.text).toBe('3');
+      expect(d.pulse).toBe(false);
+    }
+  });
+});
+
+
 describe('bottomNavBadge — invariantes gerais (B7, B8)', () => {
   const values = [0, 1, 6, 100, -1, Number.NaN, Number.POSITIVE_INFINITY, 2.7];
 

@@ -7477,6 +7477,9 @@ export type Database = {
       collab_unread_counts: {
         Args: { p_now?: string }
         Returns: {
+          actionable: number
+          critical: number
+          oldest_unread_at: string
           organization_id: string
           silenced: number
           unread: number
