@@ -59,7 +59,8 @@ describe('CollabInvitesCard', () => {
         now={NOW}
       />,
     );
-    expect(screen.getByText('Comércio Beta')).toBeInTheDocument();
+    // A organização aparece na lista e no seletor de convite: basta existir.
+    expect(screen.getAllByText('Comércio Beta').length).toBeGreaterThan(0);
     expect(screen.getByText('vence em 1 dia')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /revogar/i })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /aceitar/i })).not.toBeInTheDocument();
