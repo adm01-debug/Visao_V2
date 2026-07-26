@@ -358,8 +358,9 @@ export default function OperationsPage() {
         <CronWatchdogRunsCard />
       </section>
 
-      <section>
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <PartitionDrainCard />
+        <PartitionQuarantineCard />
       </section>
 
 
