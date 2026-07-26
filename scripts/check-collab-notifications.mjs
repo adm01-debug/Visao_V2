@@ -171,19 +171,43 @@ for (const kind of KINDS) {
   }
 }
 
-// Chave de deduplicação: comparação literal contra o formato do TypeScript.
+// Chave de deduplicação: a SQL é executada de verdade e comparada com a fórmula
+// declarada no TypeScript (que também é conferida literalmente, para que uma
+// mudança de formato de um lado não passe silenciosa pelo outro).
 const KEY_CASES = [
-  ['invite_received', 'org-a', 'net-1', 'inv-1', 'org-b', 'invite_received:inv-1:org-a'],
-  ['membership_removed', 'org-b', 'net-1', null, 'org-b', 'membership_removed:net-1:org-b:org-b'],
+  {
+    kind: 'invite_received',
+    org: '00000000-0000-0000-0000-0000000000a1',
+    net: '00000000-0000-0000-0000-0000000000n1'.replace(/n/g, 'b'),
+    inv: '00000000-0000-0000-0000-0000000000c1',
+    counterpart: '00000000-0000-0000-0000-0000000000d1',
+    anchorIsInvitation: true,
+  },
+  {
+    kind: 'membership_removed',
+    org: '00000000-0000-0000-0000-0000000000a2',
+    net: '00000000-0000-0000-0000-0000000000b2',
+    inv: null,
+    counterpart: '00000000-0000-0000-0000-0000000000d2',
+    anchorIsInvitation: false,
+  },
 ];
-for (const [kind, org, net, inv, counterpart, expected] of KEY_CASES) {
-  const sqlKey = query(`
-    SELECT public.collab_notification_dedup_key(
-      '${kind}', '${org}'::text::uuid_or_text_stub, NULL, NULL, NULL)`.replace(/\n\s*/g, ' '))
-    .toString();
-  void sqlKey;
-  void [net, inv, counterpart, expected];
+for (const c of KEY_CASES) {
+  const invArg = c.inv ? `'${c.inv}'::uuid` : 'NULL::uuid';
+  const sqlKey = query(
+    `SELECT public.collab_notification_dedup_key('${c.kind}', '${c.org}'::uuid, '${c.net}'::uuid, ${invArg}, '${c.counterpart}'::uuid)`,
+  );
+  const anchor = c.anchorIsInvitation ? c.inv : `${c.net}:${c.counterpart}`;
+  check('PARIDADE', sqlKey === `${c.kind}:${anchor}:${c.org}`, `chave SQL inesperada: ${sqlKey}`);
 }
+check(
+  'PARIDADE',
+  source.includes('`${input.kind}:${anchor}:${input.organizationId}`') &&
+    source.includes('input.invitationId ?? `${input.networkId}:${input.counterpartOrgId}`'),
+  'fórmula da chave de deduplicação no TypeScript divergiu do formato SQL',
+);
+check('PARIDADE', !/Date\.now\(\)|new Date\(/.test(source), 'chave/roteamento usando relógio: reprocessar duplicaria avisos');
+
 
 // --- 6) Bateria funcional (BEGIN ... ROLLBACK) --------------------------------
 const functional = query(`
