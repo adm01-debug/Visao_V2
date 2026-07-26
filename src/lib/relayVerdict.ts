@@ -119,15 +119,17 @@ export function classifyOutcome(
  */
 export function classifyEvidence(outcome: RelayOutcome): EvidenceClass {
   switch (outcome) {
+    // Contato consumado nos dois sentidos: o agente ouviu e respondeu.
     case 'done':
     case 'failed':
-    case 'expired_no_response':
-      // 'expired_no_response' prova contato (houve claim), mas o agente travou
-      // no meio — é o único caso em que reiniciar tem chance real de resolver,
-      // então entra como surdez apesar do claim.
-      return outcome === 'expired_no_response' ? 'deaf' : 'alive';
+      return 'alive';
+    // Nunca foi reivindicada tendo tido janela justa: o agente não ouviu.
     case 'expired_unclaimed':
+    // Reivindicada e abandonada no meio: o agente ouviu mas travou. É o único
+    // caso em que reiniciar tem chance real de resolver, então pesa como surdez.
+    case 'expired_no_response':
       return 'deaf';
+    // Causas nossas ou tarefa ainda em voo: não dizem nada sobre o agente.
     case 'expired_unfair_window':
     case 'backend_abandoned':
     case 'pending':
