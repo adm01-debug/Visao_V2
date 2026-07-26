@@ -338,7 +338,17 @@ function correlateParent(
         ? 'partial'
         : 'unexplained';
 
-  const top = culprits[0];
+  // `culprits[0]` existe: o caso vazio já retornou acima. O fallback mantém a
+  // função total sob `noUncheckedIndexedAccess` sem recorrer a asserções.
+  const top: CulpritAttribution = culprits[0] ?? {
+    cameraId: 'desconhecida',
+    cameraName: null,
+    weight: 0,
+    contributionRatio: 0,
+    estimatedRows: 0,
+    confidence: 'low',
+    reasons: [],
+  };
   const label = top.cameraName ? `${top.cameraName}` : `câmera ${top.cameraId.slice(0, 8)}`;
   const pct = (ratio: number) => `${Math.round(ratio * 100)}%`;
 
