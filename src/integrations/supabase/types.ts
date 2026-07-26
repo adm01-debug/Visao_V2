@@ -1719,6 +1719,36 @@ export type Database = {
           },
         ]
       }
+      collab_entry_purge_runs: {
+        Row: {
+          created_at: string
+          deleted_entries: number
+          deleted_matches: number
+          executed_at: string
+          id: string
+          policy: Json
+          truncated: boolean
+        }
+        Insert: {
+          created_at?: string
+          deleted_entries?: number
+          deleted_matches?: number
+          executed_at?: string
+          id?: string
+          policy: Json
+          truncated?: boolean
+        }
+        Update: {
+          created_at?: string
+          deleted_entries?: number
+          deleted_matches?: number
+          executed_at?: string
+          id?: string
+          policy?: Json
+          truncated?: boolean
+        }
+        Relationships: []
+      }
       collab_governance_audit: {
         Row: {
           action: string
@@ -1838,30 +1868,39 @@ export type Database = {
         Row: {
           camera_id: string | null
           confidence: number
-          entry_id: string
+          entry_id: string | null
+          entry_reason: string | null
           id: string
           matched_at: string
           network_id: string
+          owner_org_id: string | null
+          plate_hash: string | null
           reader_org_id: string
           severity: number
         }
         Insert: {
           camera_id?: string | null
           confidence: number
-          entry_id: string
+          entry_id?: string | null
+          entry_reason?: string | null
           id?: string
           matched_at?: string
           network_id: string
+          owner_org_id?: string | null
+          plate_hash?: string | null
           reader_org_id: string
           severity: number
         }
         Update: {
           camera_id?: string | null
           confidence?: number
-          entry_id?: string
+          entry_id?: string | null
+          entry_reason?: string | null
           id?: string
           matched_at?: string
           network_id?: string
+          owner_org_id?: string | null
+          plate_hash?: string | null
           reader_org_id?: string
           severity?: number
         }
@@ -1885,6 +1924,13 @@ export type Database = {
             columns: ["network_id"]
             isOneToOne: false
             referencedRelation: "collab_networks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collab_matches_owner_org_id_fkey"
+            columns: ["owner_org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
           {
@@ -7337,6 +7383,7 @@ export type Database = {
         Args: { p_has_read: boolean; p_kind: string }
         Returns: number
       }
+      collab_entry_lifecycle_policy: { Args: never; Returns: Json }
       collab_expire_invitations: { Args: { p_now?: string }; Returns: number }
       collab_governance_policy: { Args: never; Returns: Json }
       collab_invite_org: {
@@ -7390,6 +7437,7 @@ export type Database = {
         Returns: string
       }
       collab_policy: { Args: never; Returns: Json }
+      collab_purge_entries: { Args: { p_now?: string }; Returns: Json }
       collab_purge_notifications: { Args: { p_now?: string }; Returns: Json }
       collab_remove_membership: {
         Args: { p_network_id: string; p_organization_id: string }
