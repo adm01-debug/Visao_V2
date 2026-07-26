@@ -225,7 +225,7 @@ export default function WeeklyReportPage() {
       const { generatePDFReport } = await import("@/lib/pdfGenerator");
       const doc = await generatePDFReport({
         title: "Relatório Semanal de Segurança e Produtividade",
-        subtitle: `Últimos ${range} dias · VISÃO`,
+        subtitle: `Últimos ${range} dias · VISÃO · Critérios: ${describeConfig(config)}`,
         dateRange: { start, end },
         generatedAt: new Date(),
         sections: [
