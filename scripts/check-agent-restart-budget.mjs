@@ -69,8 +69,9 @@ const warnings = [];
 
 // 2) O consumidor da fila precisa honrar a liberação escalonada.
 {
+  // Newlines viram linhas separadas no output do psql -tA; achata antes.
   const [row] = query(`
-    SELECT pg_get_functiondef(p.oid)
+    SELECT replace(pg_get_functiondef(p.oid), E'\n', ' ')
     FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
     WHERE n.nspname = 'public' AND p.proname = 'claim_agent_relay_tasks'
   `);
@@ -84,7 +85,7 @@ const warnings = [];
 // 3) Paridade das constantes de política entre PL/pgSQL e TypeScript.
 {
   const [row] = query(`
-    SELECT pg_get_functiondef(p.oid)
+    SELECT replace(pg_get_functiondef(p.oid), E'\n', ' ')
     FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
     WHERE n.nspname = 'public' AND p.proname = 'heal_local_agents'
   `);
