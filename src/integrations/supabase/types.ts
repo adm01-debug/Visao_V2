@@ -6594,6 +6594,17 @@ export type Database = {
       }
       evaluate_and_restart_streams: { Args: never; Returns: number }
       evaluate_maintenance_alerts: { Args: never; Returns: Json }
+      evaluate_relay_redelivery: {
+        Args: {
+          cooldown_hours?: number
+          critical_rate?: number
+          hysteresis?: number
+          min_samples?: number
+          warn_rate?: number
+          window_hours?: number
+        }
+        Returns: Json
+      }
       execute_camera_schedules: { Args: never; Returns: number }
       expire_agent_relay_tasks: { Args: never; Returns: number }
       extract_url_credentials: {
@@ -7417,6 +7428,10 @@ export type Database = {
           agent_id: string
           agent_user_id: string
         }[]
+      }
+      wilson_lower_bound: {
+        Args: { successes: number; total: number }
+        Returns: number
       }
       wrap_dek: { Args: { p_dek: string; p_kek: string }; Returns: string }
     }
