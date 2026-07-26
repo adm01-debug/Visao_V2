@@ -21,7 +21,7 @@ import { ruleTemplates, getSeverityLabel, type RuleTemplate } from '@/data/ruleT
 import type { CameraData } from '@/components/cameras';
 import type { Tables, TablesInsert, TablesUpdate, Json } from '@/integrations/supabase/types';
 import { toast } from 'sonner';
-import { ShieldAlert, Users, Layers3, Sparkles, Plus, Loader2, MapPin, CheckCircle2, XCircle, FlaskConical } from 'lucide-react';
+import { ShieldAlert, Users, Layers3, Sparkles, Plus, Loader2, MapPin, CheckCircle2, XCircle, FlaskConical, Radio } from 'lucide-react';
 import {
   applyCameraSetup,
   trackWizardEvent,
@@ -30,6 +30,7 @@ import {
   type WizardRuleInput,
 } from '@/lib/wizardClient';
 import { getProfileById } from '@/lib/onvifProfiles';
+import { CameraIngestPushCard } from '@/components/cameras/CameraIngestPushCard';
 
 
 type DbZone = Tables<'zones'>;
@@ -71,7 +72,7 @@ const DEFAULT_SCHEDULE = {
 
 export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: CameraSetupWizardProps) {
   const { user } = useAuth();
-  const [tab, setTab] = useState<'zones' | 'rules'>('zones');
+  const [tab, setTab] = useState<'zones' | 'rules' | 'ingest'>('zones');
   const [zones, setZones] = useState<DbZone[]>([]);
   const [loadingZones, setLoadingZones] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
