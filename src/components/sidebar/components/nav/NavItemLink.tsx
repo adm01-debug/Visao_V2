@@ -2,6 +2,7 @@ import React, { memo, useCallback, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { formatNavBadge, shouldRenderNavBadge } from "@/lib/navigation/navBadge";
 import { prefetchRoute } from "@/lib/routePrefetch";
 import type { NavItem } from "../../types";
 import { getBadgeClasses } from "./getBadgeClasses";
@@ -88,7 +89,7 @@ export const NavItemLink = memo(React.forwardRef(function NavItemLink({
         isActive ? "text-primary" : "text-muted-foreground/60 group-hover:text-sidebar-foreground/80"
       )} />
       <span className="flex-1 truncate">{item.label}</span>
-      {item.badge !== undefined && Number(item.badge) > 0 && (
+      {shouldRenderNavBadge(item.badge) && (
         <motion.span
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -97,10 +98,13 @@ export const NavItemLink = memo(React.forwardRef(function NavItemLink({
           className={cn(
             "ml-auto text-[10px] font-semibold h-5 min-w-[20px] px-1.5 flex items-center justify-center rounded-full",
             "transition-shadow duration-300",
-            getBadgeClasses(item.badgeVariant)
+            getBadgeClasses(item.badgeVariant),
+            item.badgePulse && "animate-pulse"
           )}
+          aria-label={item.badgeSrLabel}
+          title={item.badgeSrLabel}
         >
-          {typeof item.badge === "number" && item.badge > 99 ? "99+" : item.badge}
+          {formatNavBadge(item.badge)}
         </motion.span>
       )}
     </NavLink>
