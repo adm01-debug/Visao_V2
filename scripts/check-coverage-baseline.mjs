@@ -73,6 +73,31 @@ function readCurrent() {
   return out;
 }
 
+/**
+ * Cobertura de linhas por arquivo (caminho relativo → pct), usada para o
+ * detalhamento "arquivos que mais mudaram" no comentário do PR.
+ * @returns {Record<string, number>}
+ */
+function readCurrentFiles() {
+  /** @type {Record<string, number>} */
+  const out = {};
+  let raw;
+  try {
+    raw = JSON.parse(fs.readFileSync(SUMMARY_PATH, "utf8"));
+  } catch {
+    return out;
+  }
+  for (const [key, value] of Object.entries(raw ?? {})) {
+    if (key === "total") continue;
+    const pct = value?.lines?.pct;
+    if (typeof pct !== "number" || !Number.isFinite(pct)) continue;
+    // Caminhos absolutos do v8 → relativos ao repo, com separador POSIX.
+    const rel = path.relative(ROOT, key).split(path.sep).join("/");
+    out[rel || key] = pct;
+  }
+  return out;
+}
+
 function writeBaseline(metrics, floors) {
   const payload = {
     $comment:
@@ -81,9 +106,12 @@ function writeBaseline(metrics, floors) {
     tolerancePp: TOLERANCE_PP,
     metrics,
     ...(floors ? { floors } : {}),
+    // Snapshot por arquivo (cobertura de linhas) para o diff no comentário do PR.
+    files: readCurrentFiles(),
   };
   fs.writeFileSync(BASELINE_PATH, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
 }
+
 
 const current = readCurrent();
 const fmt = (n) => `${n.toFixed(2)}%`;
