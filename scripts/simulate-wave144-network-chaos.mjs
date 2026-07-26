@@ -228,6 +228,16 @@ function listen(server) {
 function close(server) {
   return new Promise((resolve) => server.close(() => resolve()));
 }
+/** Espera os sockets do servidor drenarem (keep-alive + handlers pendentes). */
+async function drainSockets(maxWaitMs) {
+  const deadline = Date.now() + maxWaitMs;
+  while (Date.now() < deadline) {
+    if (openSockets.size === 0) return true;
+    await sleep(100);
+  }
+  return openSockets.size === 0;
+}
+
 
 // ---------------------------------------------------------------------------
 // Execução
