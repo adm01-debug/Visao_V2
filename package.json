@@ -139,7 +139,9 @@
     "coverage:check": "node scripts/check-coverage-baseline.mjs",
     "coverage:baseline": "node scripts/check-coverage-baseline.mjs --update",
     "coverage:comment": "node scripts/build-coverage-comment.mjs",
+    "test:ci:flaky-retry": "node scripts/vitest-flaky-retry.mjs",
     "test:suite:ci": "npm run coverage:ci && npm run coverage:check"
+
 
   },
   "dependencies": {
