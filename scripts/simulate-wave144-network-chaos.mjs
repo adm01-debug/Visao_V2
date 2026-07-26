@@ -519,18 +519,22 @@ async function main() {
   }
 
 
-  // ---- 11. Sem vazamento de socket após fechar o pool ----------------------
-  // Abort fecha o lado do cliente, mas o socket do servidor só cai quando o
-  // handler pendente termina + keep-alive expira. O que NÃO pode existir é
-  // socket que sobrevive ao fechamento do pool HTTP — isso seria vazamento.
-  console.log('\n[11] Drenagem de sockets após fechar o pool HTTP');
+  // ---- 11. Sem vazamento de socket no LADO CLIENTE -------------------------
+  // O que importa para o edge/agente é o socket do cliente: abortar por
+  // deadline precisa devolver o socket, senão o pool satura com peers mudos.
+  // (Sockets do lado servidor deste teste ficam presos de propósito — o
+  // blackhole nunca lê nem encerra — e por isso não entram na medição.)
+  console.log('\n[11] Vazamento de socket no lado cliente após abortos');
   {
     const peak = Math.max(peakSockets, openSockets.size);
     await closeHttpPool();
-    const drained = await drainSockets(15000);
-    check('todo socket drena após o pool fechar', drained, `pico=${peak} restantes=${openSockets.size}`);
+    await sleep(1500);
+    const sockets = process._getActiveHandles().filter((h) => h?.constructor?.name === 'Socket');
+    const clientSockets = sockets.filter((h) => h.remotePort === chaosPort || h.remotePort === holePort).length;
+    check('nenhum socket de cliente sobrevive ao fechamento do pool', clientSockets === 0, `restantes=${clientSockets}`);
     check('a carga realmente abriu conexões (teste não é vazio)', peak > 10, `pico=${peak}`);
   }
+
 
   await close(chaos);
   await close(blackhole);
