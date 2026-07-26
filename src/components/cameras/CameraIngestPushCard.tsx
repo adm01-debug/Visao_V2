@@ -39,7 +39,8 @@ export function CameraIngestPushCard({ cameraId, mediaHost }: CameraIngestPushCa
   const { endpoint, loading, error, enablePush, rotateKey, revoke } = useCameraIngest(cameraId);
   const [revealed, setRevealed] = useState(false);
 
-  const host = mediaHost ?? import.meta.env.VITE_MEDIA_INGEST_HOST ?? 'ingest.visao.local';
+  const envHost = import.meta.env.VITE_MEDIA_INGEST_HOST;
+  const host = mediaHost ?? (typeof envHost === 'string' && envHost ? envHost : 'ingest.visao.local');
 
   const publish = useMemo(() => {
     if (!endpoint) return null;
