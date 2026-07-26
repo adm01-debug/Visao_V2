@@ -24,8 +24,13 @@ describe('wilsonLowerBound', () => {
   });
 
   it('converge para a proporção com amostra grande', () => {
-    expect(wilsonLowerBound(200_000, 1_000_000)).toBeCloseTo(0.2, 3);
+    // O piso permanece estritamente abaixo de p (é um limite inferior), mas a
+    // distância encolhe com sqrt(n): ~0.08 p.p. em um milhão de amostras.
+    const lb = wilsonLowerBound(200_000, 1_000_000);
+    expect(lb).toBeLessThan(0.2);
+    expect(0.2 - lb).toBeLessThan(0.001);
   });
+
 
   it('mantém o resultado dentro de [0,1] mesmo com entrada inválida', () => {
     expect(wilsonLowerBound(-5, 10)).toBe(0);
