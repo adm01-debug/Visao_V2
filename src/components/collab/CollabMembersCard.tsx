@@ -194,7 +194,6 @@ export function CollabMembersCard({
               Remover em definitivo
             </AlertDialogAction>
           </AlertDialogFooter>
-        </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </Card>
