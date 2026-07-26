@@ -8,14 +8,10 @@
  *
  * Rode com: npm run simulate:wave114
  */
-import { register } from 'node:module';
-import { pathToFileURL } from 'node:url';
-
-register('./scripts/ts-loader.mjs', pathToFileURL('./'));
-
-const { evaluateMaintenanceSources, DEFAULT_MAINTENANCE_SOURCE_THRESHOLDS } = await import(
-  '../src/lib/maintenanceSourceAlerts.ts'
-);
+import {
+  evaluateMaintenanceSources,
+  DEFAULT_MAINTENANCE_SOURCE_THRESHOLDS,
+} from '../src/lib/maintenanceSourceAlerts.ts';
 
 const NOW = Date.UTC(2026, 6, 26, 12, 0, 0);
 const H = 3_600_000;
