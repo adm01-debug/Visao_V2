@@ -285,13 +285,16 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends postgresql-client
 
       # Falha o PR se surgir função SECURITY DEFINER exposta a anon/sem guard,
-      # política RLS irrestrita, política ligada a PUBLIC ou rotina DBA
-      # (ex.: terminate_db_session) acessível fora do perfil admin.
-      - name: Gates de exposição (definer + RLS)
+      # política RLS irrestrita, política ligada a PUBLIC, rotina DBA
+      # (ex.: terminate_db_session) acessível fora do perfil admin, ou
+      # cobertura de partições futuras abaixo do mínimo / sem DEFAULT / sem cron.
+      - name: Gates de exposição (definer + RLS + DBA + partições)
         if: steps.creds.outputs.available == 'true'
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          PARTITION_MIN_MONTHS: '3'
         run: npm run db:check:all
+
 
   suite-gate:
     name: Suíte completa aprovada

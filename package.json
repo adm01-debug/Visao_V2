@@ -144,7 +144,9 @@
     "db:check:definer": "node scripts/check-definer-exposure.mjs",
     "db:check:rls": "node scripts/check-rls-exposure.mjs",
     "db:check:dba": "node scripts/check-dba-privileges.mjs",
-    "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba"
+    "db:check:partitions": "node scripts/check-partition-coverage.mjs",
+    "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions"
+
 
   },
   "dependencies": {
