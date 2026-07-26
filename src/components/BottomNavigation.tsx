@@ -10,6 +10,7 @@ import { useSidebarStatus } from "@/hooks/useSidebarStatus";
 import { useUserRole } from "@/hooks/useUserRole";
 import { allCategories, type NavCategory } from "./navigation/bottomNavData";
 import { triggerHaptic } from "@/lib/haptics";
+import { buildBottomNavBadge } from "@/lib/navigation/bottomNavBadge";
 
 export function BottomNavigation() {
   const location = useLocation();
@@ -33,21 +34,16 @@ export function BottomNavigation() {
     return "monitoring";
   }, [categories, location.pathname]);
 
-  const getBadge = (id: string): number | null => {
-    if (id === "security" && status.unreadAlerts > 0) return status.unreadAlerts;
-    if (id === "monitoring" && status.totalCameras > 0) return status.onlineCameras;
-    if (id === "management" && status.registeredPersons > 0) return status.registeredPersons;
-    return null;
-  };
-
-  const getStatus = (id: string): "success" | "warning" | "danger" | null => {
-    if (id === "security") return status.unreadAlerts > 5 ? "danger" : status.unreadAlerts > 0 ? "warning" : "success";
-    if (id === "monitoring") {
-      const r = status.totalCameras > 0 ? status.onlineCameras / status.totalCameras : 0;
-      return r >= 0.8 ? "success" : r >= 0.5 ? "warning" : status.totalCameras > 0 ? "danger" : null;
+  // Onda 138 — a decisão de contagem vive em `bottomNavBadge`; aqui só se pinta.
+  const isAdmin = hasMinRole("admin");
+  const badges = useMemo(() => {
+    const map: Record<string, ReturnType<typeof buildBottomNavBadge>> = {};
+    for (const cat of allCategories) {
+      map[cat.id] = buildBottomNavBadge(cat.id, status, isAdmin);
     }
-    return null;
-  };
+    return map;
+  }, [status, isAdmin]);
+
 
   const handleCategoryClick = (cat: NavCategory) => {
     triggerHaptic('light');
