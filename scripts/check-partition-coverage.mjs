@@ -46,8 +46,6 @@ const warnings = [];
 const coverage = query(`
   WITH parts AS (
     SELECT p.relname AS parent,
-           c.relname AS part,
-           c.relrowsecurity,
            pg_get_expr(c.relpartbound, c.oid) AS bound
     FROM pg_inherits i
     JOIN pg_class p ON p.oid = i.inhparent
@@ -60,26 +58,41 @@ const coverage = query(`
         WHERE a.attrelid = p.oid AND a.attname = 'user_id'
           AND a.attnum > 0 AND NOT a.attisdropped
       )
+  ),
+  bounds AS (
+    SELECT parent,
+           bound = 'DEFAULT' AS is_default,
+           CASE WHEN bound = 'DEFAULT' THEN NULL
+                ELSE (substring(bound from 'TO \\(''([0-9-]{10})'))::date
+           END AS upper_bound
+    FROM parts
+  ),
+  agg AS (
+    SELECT parent,
+           bool_or(is_default) AS has_default,
+           MAX(upper_bound)    AS last_bound
+    FROM bounds
+    GROUP BY parent
   )
   SELECT parent,
-         COALESCE(MAX(
-           CASE WHEN bound LIKE '%DEFAULT%' THEN NULL
-                ELSE (substring(bound from 'TO \\(''([0-9-]{10})'))::date END
-         )::text, ''),
-         bool_or(bound LIKE '%DEFAULT%')::text,
-         GREATEST(0, (
-           SELECT COALESCE(
-             (EXTRACT(YEAR FROM age(MAX(CASE WHEN bound LIKE '%DEFAULT%' THEN NULL
-                     ELSE (substring(bound from 'TO \\(''([0-9-]{10})'))::date END),
-                     date_trunc('month', now())::date)) * 12
-            + EXTRACT(MONTH FROM age(MAX(CASE WHEN bound LIKE '%DEFAULT%' THEN NULL
-                     ELSE (substring(bound from 'TO \\(''([0-9-]{10})'))::date END),
-                     date_trunc('month', now())::date)))::int - 1, 0)
-         ))::text
-  FROM parts
-  GROUP BY parent
+         COALESCE(last_bound::text, ''),
+         has_default::text,
+         -- Meses inteiros de cobertura à frente do mês corrente. O limite
+         -- superior é exclusivo, por isso o -1.
+         GREATEST(
+           0,
+           COALESCE(
+             ((EXTRACT(YEAR  FROM age(last_bound, date_trunc('month', now())::date)) * 12)
+            + (EXTRACT(MONTH FROM age(last_bound, date_trunc('month', now())::date))))::int - 1,
+             0
+           )
+         )::text
+  FROM agg
   ORDER BY parent;
 `);
+
+/** psql serializa boolean como 'true'/'false' em -tA (não 't'/'f'). */
+const isTrue = (v) => v === 't' || v === 'true';
 
 if (coverage.length === 0) {
   errors.push(
@@ -97,7 +110,8 @@ for (const [parent, lastBound, hasDefault, monthsAhead] of coverage) {
         'Rode `SELECT public.ensure_future_partitions(6);` e confira o job pg_cron.',
     );
   }
-  if (hasDefault !== 't') {
+  if (!isTrue(hasDefault)) {
+
     errors.push(
       `\`${parent}\`: sem partição DEFAULT. Timestamps fora do range abortam o INSERT (23514).`,
     );
