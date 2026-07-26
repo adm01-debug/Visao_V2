@@ -18,6 +18,12 @@ import { readFileSync } from 'node:fs';
 
 const failures = [];
 const query = (sql) => execFileSync('psql', ['-tA', '-c', sql], { encoding: 'utf8' }).trim();
+const queryTx = (sql) =>
+  query(sql)
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line && line !== 'BEGIN' && line !== 'ROLLBACK')
+    .join('');
 const check = (label, condition, detail) => {
   if (!condition) failures.push(`${label}: ${detail}`);
 };
@@ -82,7 +88,7 @@ const definerGuard = query(`
 check('EXPOSIÇÃO', /has_role\(auth\.uid\(\),\s*'admin'/.test(definerGuard), 'get_retention_overview não exige papel admin');
 
 // --- 4) Bateria funcional (transação revertida) --------------------------------
-const functional = query(`
+const functional = queryTx(`
 BEGIN;
 SELECT
      public.classify_retention_health(NULL, 60)
@@ -100,7 +106,7 @@ check(
   `classificação inesperada nas fronteiras: '${functional}'`,
 );
 
-const shape = query(`
+const shape = queryTx(`
 BEGIN;
 SELECT count(*) FROM (
   SELECT job_name, label, cadence_minutes, last_run, minutes_since_last, hours_since_last,
