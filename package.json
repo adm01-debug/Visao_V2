@@ -145,7 +145,8 @@
     "db:check:rls": "node scripts/check-rls-exposure.mjs",
     "db:check:dba": "node scripts/check-dba-privileges.mjs",
     "db:check:partitions": "node scripts/check-partition-coverage.mjs",
-    "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions"
+    "db:check:drain": "node scripts/check-partition-drain.mjs",
+    "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain"
 
 
   },
