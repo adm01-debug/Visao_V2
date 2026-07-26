@@ -110,7 +110,7 @@ export default function WeeklyReportPage() {
   });
 
   // ------- Recognition (productivity)
-  const { data: recognitions, isLoading: loadingReco } = useQuery({
+  const { data: rawRecognitions, isLoading: loadingReco } = useQuery({
     queryKey: ["report-recognitions", start.toISOString(), end.toISOString()],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -134,8 +134,24 @@ export default function WeeklyReportPage() {
     },
   });
 
+  // ------- Critérios de produtividade aplicados aos dados brutos
+  const alerts = useMemo<Alert[]>(() => {
+    if (!rawAlerts || !includesEventType(config, "alerts")) return [];
+    return rawAlerts.filter(
+      (a) => includesSeverity(config, a.severity) && isWithinWindow(new Date(a.triggered_at), config)
+    );
+  }, [rawAlerts, config]);
+
+  const recognitions = useMemo<RecognitionLog[]>(() => {
+    if (!rawRecognitions || !includesEventType(config, "recognitions")) return [];
+    return rawRecognitions.filter((r) => isWithinWindow(new Date(r.timestamp), config));
+  }, [rawRecognitions, config]);
+
+  const panicCount = includesEventType(config, "panic") ? (panics ?? 0) : 0;
+
   const cameraName = (id: string | null) =>
     (id && cameras?.find((c) => c.id === id)?.name) || "Câmera desconhecida";
+
 
   // ------- Aggregations
   const bySeverity = useMemo(() => {
