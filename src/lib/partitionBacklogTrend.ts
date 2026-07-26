@@ -223,7 +223,9 @@ export function evaluateBacklogSeries(
     };
   }
 
-  const latest = samples[samples.length - 1];
+  // O early-return acima garante samples.length > 0; o fallback existe apenas
+  // para satisfazer `noUncheckedIndexedAccess` sem recorrer a asserções.
+  const latest = samples[samples.length - 1] ?? { sampledAtMs: nowMs, rowCount: 0 };
   const currentRows = latest.rowCount;
   const sampleAgeHours = Math.max(0, (nowMs - latest.sampledAtMs) / HOUR_MS);
   const stale = sampleAgeHours > thresholds.maxSampleAgeHours;
