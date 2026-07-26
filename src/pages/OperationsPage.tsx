@@ -365,6 +365,7 @@ export default function OperationsPage() {
         <PartitionQuarantineCard />
         <MaintenanceAlertsCard />
         <MaintenanceDispatchCard />
+        <CameraClockSkewCard />
       </section>
 
 
