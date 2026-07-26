@@ -295,6 +295,33 @@ jobs:
           PARTITION_MIN_MONTHS: '3'
         run: npm run db:check:all
 
+      # Onda 141 — exercício DINÂMICO do laço de auto-cura. Os gates acima são
+      # estáticos: conferem assinatura, privilégio e constante, mas nunca
+      # executam a rotina. Foi assim que `heal_local_agents()` passou várias
+      # ondas abortando em silêncio. Este passo executa o laço de verdade,
+      # dentro de uma transação que termina em ROLLBACK.
+      - name: Seed do usuário de CI de auto-cura
+        id: healing-seed
+        if: steps.creds.outputs.available == 'true'
+        # Sem a chave de serviço não há como criar o usuário dedicado. Isso é
+        # ausência de credencial, não regressão de código: avisa e segue.
+        continue-on-error: true
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          HEALING_CI_PASSWORD: ${{ secrets.HEALING_CI_PASSWORD }}
+        run: npm run seed:healing-ci-user:ci
+
+      - name: Exercitar o laço de heal_local_agents (transação revertida)
+        if: steps.healing-seed.outcome == 'success'
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: npm run db:exercise:healing-loop
+
+
+
 
   suite-gate:
     name: Suíte completa aprovada
