@@ -109,8 +109,6 @@ INSERT INTO public.agent_healing_actions
 VALUES
   ('c1000000-0000-4000-8000-000000000003', :'uid'::uuid, 'nudge', 'critical',
    'fixture de CI: tentativa anterior fora do cooldown', 1, now() - interval '20 minutes'),
-  ('c1000000-0000-4000-8000-000000000006', :'uid'::uuid, 'nudge', 'critical',
-   'fixture de CI: tentativa anterior fora do cooldown', 1, now() - interval '20 minutes'),
   ('c1000000-0000-4000-8000-000000000004', :'uid'::uuid, 'nudge', 'critical',
    'fixture de CI: tentativa 1', 1, now() - interval '50 minutes'),
   ('c1000000-0000-4000-8000-000000000004', :'uid'::uuid, 'restart', 'critical',
