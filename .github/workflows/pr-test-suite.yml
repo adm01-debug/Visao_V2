@@ -115,44 +115,20 @@ jobs:
         env:
           COVERAGE_TOLERANCE_PP: ${{ env.COVERAGE_TOLERANCE_PP }}
 
-      - name: Resumo de cobertura no job summary
+      - name: Resumo de cobertura (totais + arquivos que mais mudaram)
         if: always() && matrix.primary
         run: |
-          node <<'EOF'
-          const fs = require('node:fs');
-          const summaryPath = 'coverage/coverage-summary.json';
-          const baselinePath = 'coverage-baseline.json';
-          if (!fs.existsSync(summaryPath)) {
-            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '## ⚠️ Cobertura\n\nRelatório não gerado (a suíte falhou antes da cobertura).\n');
-            process.exit(0);
-          }
-          const total = JSON.parse(fs.readFileSync(summaryPath, 'utf8')).total;
-          const base = fs.existsSync(baselinePath)
-            ? (JSON.parse(fs.readFileSync(baselinePath, 'utf8')).metrics ?? {})
-            : {};
-          const lines = [];
-          lines.push('## 🧪 Suíte de testes — cobertura');
-          lines.push('');
-          lines.push('| Métrica | Atual | Baseline | Δ |');
-          lines.push('|---------|------:|---------:|--:|');
-          for (const key of ['statements', 'branches', 'functions', 'lines']) {
-            const now = total[key].pct;
-            const before = typeof base[key] === 'number' ? base[key] : null;
-            const delta = before === null ? null : now - before;
-            const deltaTxt = delta === null
-              ? '—'
-              : `${delta >= 0 ? '+' : ''}${delta.toFixed(2)} pp ${delta < 0 ? '📉' : '📈'}`;
-            lines.push(`| ${key} | **${now.toFixed(2)}%** | ${before === null ? '—' : before.toFixed(2) + '%'} | ${deltaTxt} |`);
-          }
-          lines.push('');
-          lines.push(`Tolerância de queda configurada: **${process.env.COVERAGE_TOLERANCE_PP} pp**.`);
-          const out = lines.join('\n');
-          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, out + '\n');
-          fs.writeFileSync('pr-coverage-comment.md', out);
-          EOF
+          if [ ! -f coverage/coverage-summary.json ]; then
+            echo '## ⚠️ Cobertura' >> "$GITHUB_STEP_SUMMARY"
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Relatório não gerado (a suíte falhou antes da cobertura).' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          node scripts/build-coverage-comment.mjs --out pr-coverage-comment.md --top 15 > /dev/null
         env:
           COVERAGE_TOLERANCE_PP: ${{ env.COVERAGE_TOLERANCE_PP }}
 
+      # Comentário idempotente: procura o marcador e atualiza em vez de duplicar.
       - name: Comentar cobertura no PR
         if: always() && matrix.primary && github.event_name == 'pull_request'
         uses: actions/github-script@v7
@@ -160,17 +136,24 @@ jobs:
           script: |
             const fs = require('fs');
             if (!fs.existsSync('pr-coverage-comment.md')) return;
-            const marker = '<!-- pr-test-suite-coverage -->';
-            const body = `${marker}\n${fs.readFileSync('pr-coverage-comment.md', 'utf8')}`;
+            const marker = '<!-- lovable:coverage-report -->';
+            const legacyMarker = '<!-- pr-test-suite-coverage -->';
+            let body = fs.readFileSync('pr-coverage-comment.md', 'utf8');
+            if (!body.includes(marker)) body = `${marker}\n${body}`;
             const { owner, repo } = context.repo;
             const issue_number = context.issue.number;
-            const comments = await github.rest.issues.listComments({ owner, repo, issue_number });
-            const prev = comments.data.find(c => c.body && c.body.includes(marker));
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number, per_page: 100,
+            });
+            const prev = comments.find(
+              (c) => c.body && (c.body.includes(marker) || c.body.includes(legacyMarker)),
+            );
             if (prev) {
               await github.rest.issues.updateComment({ owner, repo, comment_id: prev.id, body });
             } else {
               await github.rest.issues.createComment({ owner, repo, issue_number, body });
             }
+
 
       - name: Upload relatórios (cobertura + JUnit)
         if: always()
