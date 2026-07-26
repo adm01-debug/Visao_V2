@@ -370,6 +370,8 @@ export default function OperationsPage() {
         <MaintenanceAlertsCard />
         <MaintenanceDispatchCard />
         <CameraClockSkewCard />
+        <AgentHealingCard />
+
       </section>
 
 
