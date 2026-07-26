@@ -155,6 +155,12 @@ describe('simulação exaustiva — invariantes da tela de governança', () => {
   });
 
   it('mantém as invariantes sob 120.000 cenários aleatórios', () => {
+    // Falhas são acumuladas e só viram asserção no fim: 120k `expect` custam
+    // segundos de overhead e nada acrescentam ao poder do teste.
+    const violations: string[] = [];
+    const invariant = (ok: boolean, name: string) => {
+      if (!ok && violations.length < 5) violations.push(name);
+    };
     let seed = 0x9e3779b9;
     const rand = () => {
       seed ^= seed << 13;
@@ -179,12 +185,15 @@ describe('simulação exaustiva — invariantes da tela de governança', () => {
         now,
       });
 
-      expect(view.canAccept && view.canRevoke).toBe(false);
-      expect(view.canAccept).toBe(view.canDecline);
+      invariant(!(view.canAccept && view.canRevoke), 'aceitar-e-revogar');
+      invariant(view.canAccept === view.canDecline, 'aceitar-sem-recusar');
       if (view.effectiveStatus !== 'pending') {
-        expect([view.canAccept, view.canRevoke, view.secondsRemaining]).toEqual([false, false, null]);
+        invariant(
+          !view.canAccept && !view.canRevoke && view.secondsRemaining === null,
+          'acao-em-convite-terminal',
+        );
       }
-      if (view.secondsRemaining !== null) expect(view.secondsRemaining).toBeGreaterThanOrEqual(0);
+      invariant(view.secondsRemaining === null || view.secondsRemaining >= 0, 'prazo-negativo');
 
       const membership = deriveMembershipView({
         viewerIsNetworkOwner: rand() < 0.5,
@@ -192,9 +201,11 @@ describe('simulação exaustiva — invariantes da tela de governança', () => {
         status: pick(MEMBERSHIP_STATUSES),
       });
       // Suspender e reativar são mutuamente exclusivos por construção.
-      expect(membership.canSuspend && membership.canReinstate).toBe(false);
+      invariant(!(membership.canSuspend && membership.canReinstate), 'suspender-e-reativar');
       // Quem pode suspender pode remover; o inverso não é garantido.
-      if (membership.canSuspend) expect(membership.canRemove).toBe(true);
+      invariant(!membership.canSuspend || membership.canRemove, 'suspende-mas-nao-remove');
     }
-  });
+
+    expect(violations).toEqual([]);
+  }, 60_000);
 });
