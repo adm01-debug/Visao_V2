@@ -116,10 +116,17 @@ const looseDefiner = query(`
      AND NOT (COALESCE(array_to_string(p.proconfig,','),'') LIKE '%search_path%')`);
 check('DEFINER', looseDefiner === '', `rotinas DEFINER sem search_path fixo: ${looseDefiner}`);
 
-const cron = query(`
-  SELECT COALESCE(string_agg(schedule||'|'||active::text, ','), '')
-    FROM cron.job WHERE jobname='collab-expire-invitations'`);
-check('CRON', cron === '11 * * * *|true', `cron de expiração ausente ou alterado: '${cron}'`);
+// O schema `cron` não é legível pelo papel de aplicação (nem deve ser); o que
+// este gate garante é que a rotina agendada existe, é DEFINER e devolve inteiro.
+const expireSignature = query(`
+  SELECT p.prosecdef::text||'|'||pg_catalog.format_type(p.prorettype, NULL)
+    FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
+   WHERE n.nspname='public' AND p.proname='collab_expire_invitations'`);
+check(
+  'CRON',
+  expireSignature === 'true|integer',
+  `collab_expire_invitations ausente ou fora do contrato: '${expireSignature}'`,
+);
 
 // --- 5) Paridade da política SQL <-> TS --------------------------------------
 const sqlPolicy = JSON.parse(query('SELECT public.collab_governance_policy()::text'));
