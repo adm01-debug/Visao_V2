@@ -3161,6 +3161,57 @@ export type Database = {
         }
         Relationships: []
       }
+      partition_quarantine_runs: {
+        Row: {
+          buckets: Json
+          created_at: string
+          duration_ms: number
+          error_detail: string | null
+          id: string
+          locked_out: boolean
+          months_ahead: number
+          months_back: number
+          ok: boolean
+          parents: string[]
+          ran_at: string
+          total_drainable: number
+          total_quarantined: number
+          updated_at: string
+        }
+        Insert: {
+          buckets?: Json
+          created_at?: string
+          duration_ms?: number
+          error_detail?: string | null
+          id?: string
+          locked_out?: boolean
+          months_ahead?: number
+          months_back?: number
+          ok?: boolean
+          parents?: string[]
+          ran_at?: string
+          total_drainable?: number
+          total_quarantined?: number
+          updated_at?: string
+        }
+        Update: {
+          buckets?: Json
+          created_at?: string
+          duration_ms?: number
+          error_detail?: string | null
+          id?: string
+          locked_out?: boolean
+          months_ahead?: number
+          months_back?: number
+          ok?: boolean
+          parents?: string[]
+          ran_at?: string
+          total_drainable?: number
+          total_quarantined?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       plate_detections: {
         Row: {
           camera_id: string | null
@@ -6304,6 +6355,22 @@ export type Database = {
           row_estimate: number
         }[]
       }
+      get_partition_quarantine_summary: {
+        Args: never
+        Returns: {
+          default_part: string
+          drainable: number
+          far_future: number
+          far_past: number
+          key_column: string
+          null_key: number
+          orphan_owner: number
+          parent: string
+          pre_2000: number
+          sentinel: number
+          total_quarantined: number
+        }[]
+      }
       get_permissive_rls_policies: {
         Args: never
         Returns: {
@@ -6777,6 +6844,10 @@ export type Database = {
         Returns: Json
       }
       tick_timelapse_capture: { Args: never; Returns: number }
+      triage_default_quarantine: {
+        Args: { months_ahead?: number; months_back?: number }
+        Returns: Json
+      }
       unwrap_dek: {
         Args: { p_kek: string; p_wrapped: string }
         Returns: string

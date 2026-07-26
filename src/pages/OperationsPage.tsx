@@ -13,6 +13,7 @@ import { ConnectivityResolutionCard } from '@/components/admin/ConnectivityResol
 import { CronJobRunsCard } from '@/components/admin/CronJobRunsCard';
 import { CronWatchdogRunsCard } from '@/components/admin/CronWatchdogRunsCard';
 import { PartitionDrainCard } from '@/components/admin/PartitionDrainCard';
+import { PartitionQuarantineCard } from '@/components/admin/PartitionQuarantineCard';
 import { CronWatchdogEscalationCard } from '@/components/admin/CronWatchdogEscalationCard';
 
 import { PreviewAlertStatusCard } from '@/components/admin/PreviewAlertStatusCard';
@@ -357,8 +358,9 @@ export default function OperationsPage() {
         <CronWatchdogRunsCard />
       </section>
 
-      <section>
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <PartitionDrainCard />
+        <PartitionQuarantineCard />
       </section>
 
 
