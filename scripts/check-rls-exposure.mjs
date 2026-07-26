@@ -52,6 +52,33 @@ WHERE n.nspname = 'public'
 ORDER BY 1;`;
 
 /**
+ * Onda 106 — partições sem blindagem própria.
+ * RLS do pai só é aplicada quando a query passa pela tabela particionada;
+ * `SELECT ... FROM public.<partição>` usa exclusivamente a RLS da partição.
+ */
+const SQL_PARTITIONS_UNPROTECTED = `
+SELECT format('%s (pai: %s) → %s',
+              c.relname,
+              COALESCE(pc.relname, '?'),
+              CASE WHEN NOT c.relrowsecurity THEN 'RLS desabilitada'
+                   ELSE 'sem policy própria' END)
+FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+LEFT JOIN pg_inherits inh ON inh.inhrelid = c.oid
+LEFT JOIN pg_class pc ON pc.oid = inh.inhparent
+WHERE n.nspname = 'public'
+  AND c.relkind = 'r'
+  AND c.relispartition
+  AND (
+    NOT c.relrowsecurity
+    OR NOT EXISTS (
+      SELECT 1 FROM pg_policies p
+      WHERE p.schemaname = 'public' AND p.tablename = c.relname
+    )
+  )
+ORDER BY 1;`;
+
+/**
  * Executa uma consulta e devolve as linhas não vazias.
  * @param {string} sql
  * @returns {string[]}
