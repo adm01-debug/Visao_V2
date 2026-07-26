@@ -1,0 +1,142 @@
+{
+  "wave": 106,
+  "ran_at": "2026-07-26T15:54:30.959Z",
+  "totals": {
+    "total": 1152,
+    "safe": 1072,
+    "unsafe": 80
+  },
+  "by_state": {
+    "rls_on_policy_on_grant_on": {
+      "total": 192,
+      "safe": 192,
+      "unsafe": 0
+    },
+    "rls_on_policy_off_grant_on": {
+      "total": 192,
+      "safe": 192,
+      "unsafe": 0
+    },
+    "rls_off_policy_off_grant_on": {
+      "total": 192,
+      "safe": 152,
+      "unsafe": 40
+    },
+    "rls_off_policy_on_grant_on": {
+      "total": 192,
+      "safe": 152,
+      "unsafe": 40
+    },
+    "rls_on_policy_on_grant_off": {
+      "total": 192,
+      "safe": 192,
+      "unsafe": 0
+    },
+    "rls_off_policy_off_grant_off": {
+      "total": 192,
+      "safe": 192,
+      "unsafe": 0
+    }
+  },
+  "unsafe_sample": [
+    {
+      "origin": "existente_backfill",
+      "state": "rls_off_policy_off_grant_on",
+      "role": "auth_other_tenant",
+      "op": "select_direct",
+      "moment": "antes_da_virada",
+      "outcome": "all_rows",
+      "safe": false
+    },
+    {
+      "origin": "existente_backfill",
+      "state": "rls_off_policy_off_grant_on",
+      "role": "auth_other_tenant",
+      "op": "select_direct",
+      "moment": "depois_da_virada",
+      "outcome": "all_rows",
+      "safe": false
+    },
+    {
+      "origin": "existente_backfill",
+      "state": "rls_off_policy_off_grant_on",
+      "role": "auth_other_tenant",
+      "op": "insert",
+      "moment": "antes_da_virada",
+      "outcome": "write_ok",
+      "safe": false
+    },
+    {
+      "origin": "existente_backfill",
+      "state": "rls_off_policy_off_grant_on",
+      "role": "auth_other_tenant",
+      "op": "insert",
+      "moment": "depois_da_virada",
+      "outcome": "write_ok",
+      "safe": false
+    },
+    {
+      "origin": "existente_backfill",
+      "state": "rls_off_policy_off_grant_on",
+      "role": "auth_other_tenant",
+      "op": "update",
+      "moment": "antes_da_virada",
+      "outcome": "write_ok",
+      "safe": false
+    },
+    {
+      "origin": "existente_backfill",
+      "state": "rls_off_policy_off_grant_on",
+      "role": "auth_other_tenant",
+      "op": "update",
+      "moment": "depois_da_virada",
+      "outcome": "write_ok",
+      "safe": false
+    },
+    {
+      "origin": "existente_backfill",
+      "state": "rls_off_policy_off_grant_on",
+      "role": "auth_other_tenant",
+      "op": "delete",
+      "moment": "antes_da_virada",
+      "outcome": "write_ok",
+      "safe": false
+    },
+    {
+      "origin": "existente_backfill",
+      "state": "rls_off_policy_off_grant_on",
+      "role": "auth_other_tenant",
+      "op": "delete",
+      "moment": "depois_da_virada",
+      "outcome": "write_ok",
+      "safe": false
+    },
+    {
+      "origin": "existente_backfill",
+      "state": "rls_off_policy_off_grant_on",
+      "role": "auth_other_tenant",
+      "op": "copy_out",
+      "moment": "antes_da_virada",
+      "outcome": "all_rows",
+      "safe": false
+    },
+    {
+      "origin": "existente_backfill",
+      "state": "rls_off_policy_off_grant_on",
+      "role": "auth_other_tenant",
+      "op": "copy_out",
+      "moment": "depois_da_virada",
+      "outcome": "all_rows",
+      "safe": false
+    }
+  ],
+  "gaps": [
+    "ensure_future_partitions() aplica GRANT mas não ENABLE ROW LEVEL SECURITY → partição nova nasce legível entre tenants em acesso direto.",
+    "RLS do pai só é aplicada quando a query passa pela tabela particionada; SELECT direto na partição usa a RLS da própria partição.",
+    "RLS ligada sem policy vira deny-all: a migração precisa criar a policy no mesmo passo, senão a app quebra em produção.",
+    "CREATE POLICY não é idempotente (falha com 42710) — proteger com checagem em pg_policies antes de criar.",
+    "Partições criadas manualmente (hotfix/DBA) escapam da função → o gate de CI precisa varrer relispartition, não confiar na função.",
+    "service_role permanece com bypass de RLS por design (cron/workers); o gate não deve sinalizar isso como falha.",
+    "anon não deve receber GRANT em nenhuma partição — reconferir após cada ALTER na tabela pai."
+  ]
+}
