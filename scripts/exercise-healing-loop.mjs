@@ -120,6 +120,14 @@ if (results.size === 0) {
   process.exit(1);
 }
 
+// A rotina engole exceções e devolve `ok:false` — foi exatamente assim que ela
+// ficou inerte por várias ondas sem que nenhum gate estático percebesse.
+for (const run of runs) {
+  if (run.summary.ok === false) {
+    errors.push(`varredura ${run.pass} abortou (ok=false): ${run.summary.error ?? 'sem detalhe'}`);
+  }
+}
+
 const get = (pass, scenario) => results.get(`${pass}:${scenario}`);
 
 /** @param {string} key @param {string[]} allowed */
