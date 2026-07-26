@@ -39,7 +39,7 @@
  */
 
 import type { CollabNotificationKind, CollabNotificationSeverity } from './collabNotifications';
-import { getNotificationSpec } from './collabNotifications';
+import { isActionableKind, severityForKind } from './collabNotifications';
 
 /** Política de retenção — espelho de `public.collab_retention_policy()`. */
 export const COLLAB_RETENTION_POLICY = {
@@ -78,8 +78,7 @@ export function effectiveRetentionDays(kind: CollabNotificationKind, hasRead: bo
   const p = COLLAB_RETENTION_POLICY;
   if (hasRead) return p.baseDays;
 
-  const spec = getNotificationSpec(kind);
-  const grace = graceForUnread(spec.actionable, spec.severity);
+  const grace = graceForUnread(isActionableKind(kind), severityForKind(kind));
   return Math.min(Math.max(p.baseDays, grace), p.hardCeilingDays);
 }
 
