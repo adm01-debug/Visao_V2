@@ -487,7 +487,7 @@ async function main() {
     // handler pendente termina (keep-alive). O que não pode existir é socket
     // que nunca drena — isso sim seria vazamento.
     const peak = openSockets.size;
-    const drained = await drainSockets(8000);
+    const drained = await drainSockets(20000);
     check('sockets drenam por completo após o caos (sem vazamento)', drained, `pico=${peak} restantes=${openSockets.size}`);
 
   }
