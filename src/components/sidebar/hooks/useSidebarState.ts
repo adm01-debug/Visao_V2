@@ -54,7 +54,12 @@ export function useSidebarState() {
       openMaintenanceAlerts: 0,
       openMaintenanceCritical: 0,
       maintenanceAtCeiling: 0,
+      collabUnread: 0,
+      collabActionable: 0,
+      collabCritical: 0,
+      collabOldestAgeHours: null,
       isLoading: true,
+
     };
     const cats = createSidebarCategories(defaultStatus);
     const activeCategory = cats.find((cat) =>
