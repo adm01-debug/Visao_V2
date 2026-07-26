@@ -150,6 +150,5 @@ export function useSidebarStatus(): SidebarStatus {
     collabOldestAgeHours: collab.oldestAgeHours,
     isLoading: alertsLoading || camerasLoading || rulesLoading || personsLoading || zonesLoading,
   };
-
-  };
 }
+
