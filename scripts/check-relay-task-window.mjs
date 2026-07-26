@@ -41,7 +41,7 @@ check('POLÍTICA', minWindow !== null && fairWindow !== null && maxWindow !== nu
 
 // --- 1) Trigger --------------------------------------------------------------
 const trg = query(`
-  SELECT tgenabled || '|' || tgtype::int
+  SELECT tgenabled::text || '|' || tgtype::int
     FROM pg_trigger
    WHERE tgname = 'trg_normalize_agent_relay_task_window'
      AND tgrelid = 'public.agent_relay_tasks'::regclass`);
