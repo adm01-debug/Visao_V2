@@ -37,6 +37,8 @@
 
 import { shouldRenderNavBadge, formatNavBadge, type NavBadgeValue } from './navBadge';
 import { buildMaintenanceNavBadge } from '@/lib/maintenance/maintenanceNavBadge';
+import { buildCollabNavBadge } from '@/lib/collab/collabNavBadge';
+
 
 export type BottomNavTone = 'neutral' | 'success' | 'warning' | 'danger';
 
