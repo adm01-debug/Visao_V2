@@ -153,14 +153,43 @@ export function buildBottomNavBadge(
         },
         isAdmin,
       );
-      if (maintenance.badge === undefined) return EMPTY;
+
+      // Onda 139 — a mesma aba abriga manutenção e rede colaborativa. Somar os
+      // dois produziria um número que não corresponde a nenhuma lista aberta
+      // (B9), então o contador soma, sim, mas o rótulo diz de onde vem cada
+      // parcela e o tom segue o pior dos dois. O operador precisa saber que há
+      // "algo ali"; o detalhe está a um toque de distância.
+      const collab = buildCollabNavBadge({
+        unread: count(status.collabUnread),
+        silenced: 0,
+        actionable: count(status.collabActionable),
+        critical: count(status.collabCritical),
+        oldestAgeHours:
+          typeof status.collabOldestAgeHours === 'number' &&
+          Number.isFinite(status.collabOldestAgeHours)
+            ? status.collabOldestAgeHours
+            : null,
+        organizations: 0,
+      });
+
+      const maintenanceOpen = maintenance.badge ?? 0;
+      const collabOpen = collab.badge ?? 0;
+      const total = maintenanceOpen + collabOpen;
+      if (total === 0) return EMPTY;
+
+      const danger = maintenance.variant === 'destructive' || collab.tone === 'destructive';
+      const labels: string[] = [];
+      if (maintenanceOpen > 0) labels.push(maintenance.srLabel);
+      if (collabOpen > 0) labels.push(collab.srLabel);
+
       return make(
-        maintenance.badge,
-        maintenance.variant === 'destructive' ? 'danger' : 'warning',
-        maintenance.srLabel,
-        maintenance.pulse,
+        total,
+        danger ? 'danger' : 'warning',
+        labels.join('. '),
+        maintenance.pulse || collab.pulse,
       );
     }
+
 
     default:
       return EMPTY;
