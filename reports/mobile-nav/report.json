@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-26T21:05:23.086Z",
+  "generatedAt": "2026-07-26T21:05:33.802Z",
   "wrapperFile": "src/components/layout/MainLayout.tsx",
   "requiredClass": "mb-mobile-nav",
   "totals": {
     "total": 66,
-    "ok": 55,
-    "pendente": 3,
+    "ok": 58,
+    "pendente": 0,
     "isenta": 8,
     "standard": 58,
     "customWrapper": 0,
@@ -13,33 +13,6 @@
   },
   "failed": true,
   "rows": [
-    {
-      "file": "LocalAgentsPage.tsx",
-      "path": "src/pages/LocalAgentsPage.tsx",
-      "category": "standard",
-      "status": "pendente",
-      "issues": [
-        "Redeclara `mb-mobile-nav` (remover)"
-      ]
-    },
-    {
-      "file": "NvrDetailPage.tsx",
-      "path": "src/pages/NvrDetailPage.tsx",
-      "category": "standard",
-      "status": "pendente",
-      "issues": [
-        "Redeclara `mb-mobile-nav` (remover)"
-      ]
-    },
-    {
-      "file": "NvrsPage.tsx",
-      "path": "src/pages/NvrsPage.tsx",
-      "category": "standard",
-      "status": "pendente",
-      "issues": [
-        "Redeclara `mb-mobile-nav` (remover)"
-      ]
-    },
     {
       "file": "AlertsPage.tsx",
       "path": "src/pages/AlertsPage.tsx",
@@ -223,6 +196,13 @@
       "issues": []
     },
     {
+      "file": "LocalAgentsPage.tsx",
+      "path": "src/pages/LocalAgentsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
       "file": "MotionMasksPage.tsx",
       "path": "src/pages/MotionMasksPage.tsx",
       "category": "standard",
@@ -244,6 +224,13 @@
       "issues": []
     },
     {
+      "file": "NvrDetailPage.tsx",
+      "path": "src/pages/NvrDetailPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
       "file": "NvrDownloadHistoryPage.tsx",
       "path": "src/pages/NvrDownloadHistoryPage.tsx",
       "category": "standard",
@@ -253,6 +240,13 @@
     {
       "file": "NvrDownloadsPage.tsx",
       "path": "src/pages/NvrDownloadsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "NvrsPage.tsx",
+      "path": "src/pages/NvrsPage.tsx",
       "category": "standard",
       "status": "ok",
       "issues": []

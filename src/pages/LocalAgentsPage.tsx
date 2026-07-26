@@ -137,7 +137,7 @@ export default function LocalAgentsPage() {
   };
 
   return (
-    <div className="container mx-auto py-6 space-y-6 mb-mobile-nav">
+    <div className="container mx-auto py-6 space-y-6">
       <PageMeta title="Agentes Locais — VISÃO" description="Agentes locais que descobrem câmeras ONVIF na LAN e reportam ao backend." />
 
       <header className="flex items-center justify-between gap-4 flex-wrap">
