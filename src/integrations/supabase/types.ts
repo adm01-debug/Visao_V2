@@ -2329,6 +2329,39 @@ export type Database = {
         }
         Relationships: []
       }
+      maintenance_alert_events: {
+        Row: {
+          created_at: string
+          detail: Json
+          id: string
+          observed_at: string | null
+          reason: string
+          routine: string
+          severity: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          detail?: Json
+          id?: string
+          observed_at?: string | null
+          reason: string
+          routine: string
+          severity: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          detail?: Json
+          id?: string
+          observed_at?: string | null
+          reason?: string
+          routine?: string
+          severity?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       media_assets: {
         Row: {
           archived_at: string | null
@@ -6072,6 +6105,7 @@ export type Database = {
         }[]
       }
       evaluate_and_restart_streams: { Args: never; Returns: number }
+      evaluate_maintenance_alerts: { Args: never; Returns: Json }
       execute_camera_schedules: { Args: never; Returns: number }
       expire_agent_relay_tasks: { Args: never; Returns: number }
       extract_url_credentials: {
@@ -6266,6 +6300,15 @@ export type Database = {
           usename: string
           wait_event: string
           wait_event_type: string
+        }[]
+      }
+      get_maintenance_alert_status: {
+        Args: never
+        Returns: {
+          ran_at: string
+          reason: string
+          routine: string
+          severity: string
         }[]
       }
       get_maintenance_progress: { Args: never; Returns: Json }

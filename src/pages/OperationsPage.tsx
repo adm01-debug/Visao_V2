@@ -14,6 +14,7 @@ import { CronJobRunsCard } from '@/components/admin/CronJobRunsCard';
 import { CronWatchdogRunsCard } from '@/components/admin/CronWatchdogRunsCard';
 import { PartitionDrainCard } from '@/components/admin/PartitionDrainCard';
 import { PartitionQuarantineCard } from '@/components/admin/PartitionQuarantineCard';
+import { MaintenanceAlertsCard } from '@/components/admin/MaintenanceAlertsCard';
 import { CronWatchdogEscalationCard } from '@/components/admin/CronWatchdogEscalationCard';
 
 import { PreviewAlertStatusCard } from '@/components/admin/PreviewAlertStatusCard';
@@ -361,6 +362,7 @@ export default function OperationsPage() {
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <PartitionDrainCard />
         <PartitionQuarantineCard />
+        <MaintenanceAlertsCard />
       </section>
 
 
