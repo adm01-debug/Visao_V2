@@ -235,7 +235,7 @@ export default function WeeklyReportPage() {
             data: [
               { label: "Incidentes", value: totalAlerts },
               { label: "Críticos + Alta", value: bySeverity.critical + bySeverity.high },
-              { label: "Pânico", value: panics ?? 0 },
+              { label: "Pânico", value: panicCount },
               { label: "MTTA (min)", value: avgMTTA },
               { label: "Reconhecimentos", value: recognizedCount },
               { label: "Pessoas Únicas", value: uniquePersons },
@@ -345,7 +345,7 @@ export default function WeeklyReportPage() {
         <KpiCard
           icon={<ShieldAlert className="h-5 w-5 text-destructive" />}
           label="Eventos de pânico"
-          value={panics ?? 0}
+          value={panicCount}
           hint="Botão de pânico acionado"
           loading={loading}
         />
