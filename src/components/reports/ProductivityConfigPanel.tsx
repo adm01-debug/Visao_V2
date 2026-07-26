@@ -44,6 +44,9 @@ export function ProductivityConfigPanel({
   isSaving,
   isAuthenticated,
 }: ProductivityConfigPanelProps) {
+  const activePreset = matchPreset(draft);
+
+
   const toggleEventType = (type: ProductivityEventType, checked: boolean) => {
     onDraftChange({
       ...draft,
