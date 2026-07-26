@@ -362,6 +362,7 @@ export default function OperationsPage() {
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <PartitionDrainCard />
         <PartitionQuarantineCard />
+        <MaintenanceAlertsCard />
       </section>
 
 
