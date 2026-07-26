@@ -210,8 +210,12 @@ check('PARIDADE', !/Date\.now\(\)|new Date\(/.test(source), 'chave/roteamento us
 
 
 // --- 6) Bateria funcional (BEGIN ... ROLLBACK) --------------------------------
-const functional = query(`
+// Migração aplicar sem erro não prova que o gatilho roteia certo: a bateria
+// abaixo exercita o caminho real e é revertida ao fim, sem deixar resíduo.
+const FUNCTIONAL_SQL = `
+BEGIN;
 DO $gate$
+
 DECLARE
   o1 uuid := gen_random_uuid();
   o2 uuid := gen_random_uuid();
