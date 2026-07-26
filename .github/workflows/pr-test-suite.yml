@@ -202,14 +202,53 @@ jobs:
     needs: [static-analysis, unit-tests, e2e-tests]
     steps:
       - name: Verificar resultado dos jobs
+        env:
+          STATIC_RESULT: ${{ needs.static-analysis.result }}
+          UNIT_RESULT: ${{ needs.unit-tests.result }}
+          E2E_RESULT: ${{ needs.e2e-tests.result }}
+          IS_DRAFT: ${{ github.event.pull_request.draft }}
         run: |
-          echo "static-analysis: ${{ needs.static-analysis.result }}"
-          echo "unit-tests:      ${{ needs.unit-tests.result }}"
-          echo "e2e-tests:       ${{ needs.e2e-tests.result }}"
-          for result in "${{ needs.static-analysis.result }}" "${{ needs.unit-tests.result }}" "${{ needs.e2e-tests.result }}"; do
-            if [ "$result" != "success" ] && [ "$result" != "skipped" ]; then
-              echo "::error::Regressão detectada na suíte de testes — PR bloqueado."
-              exit 1
+          set -euo pipefail
+          echo "static-analysis: $STATIC_RESULT"
+          echo "unit-tests:      $UNIT_RESULT"
+          echo "e2e-tests:       $E2E_RESULT"
+
+          failed=0
+
+          # PR em rascunho: toda a suíte é intencionalmente pulada.
+          if [ "$IS_DRAFT" = "true" ]; then
+            echo "ℹ️ PR em rascunho — suíte pulada intencionalmente." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          for job in "static-analysis:$STATIC_RESULT" "unit-tests:$UNIT_RESULT"; do
+            name="${job%%:*}"; result="${job##*:}"
+            if [ "$result" != "success" ]; then
+              echo "::error::Job '$name' terminou como '$result' — PR bloqueado."
+              failed=1
             fi
           done
-          echo "✅ Suíte completa aprovada." >> $GITHUB_STEP_SUMMARY
+
+          # E2E é gate obrigatório: qualquer resultado diferente de success
+          # (failure, cancelled ou skipped) bloqueia o merge. "skipped" também
+          # falha para impedir que um smoke desligado por engano libere o merge.
+          if [ "$E2E_RESULT" != "success" ]; then
+            echo "::error::Smoke E2E (Playwright) terminou como '$E2E_RESULT' — merge bloqueado."
+            failed=1
+          fi
+
+          if [ "$failed" -ne 0 ]; then
+            {
+              echo "## ❌ Suíte bloqueada"
+              echo ""
+              echo "| Job | Resultado |"
+              echo "|-----|-----------|"
+              echo "| static-analysis | $STATIC_RESULT |"
+              echo "| unit-tests | $UNIT_RESULT |"
+              echo "| e2e-tests (smoke Playwright) | $E2E_RESULT |"
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          echo "✅ Suíte completa aprovada (incluindo smoke E2E em toda a matriz)." >> "$GITHUB_STEP_SUMMARY"
+
