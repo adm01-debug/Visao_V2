@@ -56,15 +56,16 @@ check('RLS', !/\banon\b|\{public\}/.test(policies), `policy exposta a anon/PUBLI
 
 // --- 2) Privilégios ----------------------------------------------------------
 const anonPriv = query(`
-  SELECT count(*) FROM information_schema.role_table_grants
-   WHERE table_schema='public' AND table_name='camera_ingest_endpoints'
-     AND grantee IN ('anon','PUBLIC')`);
+  SELECT count(*) FROM pg_class c, aclexplode(c.relacl) a
+   WHERE c.oid='public.camera_ingest_endpoints'::regclass
+     AND a.grantee::regrole::text IN ('anon','public')`);
 check('GRANT', anonPriv === '0', `anon/PUBLIC ainda tem ${anonPriv} privilégio(s) na tabela`);
 
 const authPriv = query(`
-  SELECT string_agg(DISTINCT privilege_type, ',' ORDER BY privilege_type)
-    FROM information_schema.role_table_grants
-   WHERE table_schema='public' AND table_name='camera_ingest_endpoints' AND grantee='authenticated'`);
+  SELECT string_agg(DISTINCT a.privilege_type, ',' ORDER BY a.privilege_type)
+    FROM pg_class c, aclexplode(c.relacl) a
+   WHERE c.oid='public.camera_ingest_endpoints'::regclass
+     AND a.grantee::regrole::text='authenticated'`);
 check('GRANT', authPriv === 'DELETE,INSERT,SELECT,UPDATE', `grants de authenticated inesperados (${authPriv})`);
 
 // --- 3) Unicidade ------------------------------------------------------------
@@ -124,11 +125,20 @@ for (const fn of ['authorize_ingest_publish', 'mark_ingest_unpublish', 'detect_s
   check('ROTINA', secdef === 't', `${fn} não é SECURITY DEFINER`);
   check('ROTINA', /search_path=public/.test(config), `${fn} sem SET search_path fixo (${config})`);
 
-  const grantees = query(`
-    SELECT COALESCE(string_agg(DISTINCT grantee, ',' ORDER BY grantee), '')
-      FROM information_schema.routine_privileges
-     WHERE routine_schema='public' AND routine_name='${fn}' AND privilege_type='EXECUTE'`);
-  check('ROTINA', grantees === 'service_role', `${fn} executável por ${grantees || 'ninguém'} (esperado service_role)`);
+  // Papéis expostos pela API (anon/authenticated) jamais podem executar as rotinas
+  // de decisão. O dono da migração e o service_role, sim.
+  const exposed = query(`
+    SELECT COALESCE(string_agg(DISTINCT a.grantee::regrole::text, ',' ORDER BY a.grantee::regrole::text), '')
+      FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace, aclexplode(p.proacl) a
+     WHERE n.nspname='public' AND p.proname='${fn}' AND a.privilege_type='EXECUTE'
+       AND a.grantee::regrole::text IN ('anon','authenticated','public')`);
+  check('ROTINA', exposed === '', `${fn} executável por ${exposed} (esperado apenas service_role)`);
+
+  const svc = query(`
+    SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace, aclexplode(p.proacl) a
+     WHERE n.nspname='public' AND p.proname='${fn}' AND a.privilege_type='EXECUTE'
+       AND a.grantee::regrole::text='service_role'`);
+  check('ROTINA', svc === '1', `${fn} sem EXECUTE para service_role`);
 }
 
 // --- 6) Teste funcional em transação revertida --------------------------------
