@@ -184,6 +184,7 @@ export type Database = {
           actions_enqueued: number
           agents_critical: number
           agents_escalated: number
+          agents_observed: number
           agents_total: number
           agents_warning: number
           breaker_reason: string | null
@@ -204,6 +205,7 @@ export type Database = {
           actions_enqueued?: number
           agents_critical?: number
           agents_escalated?: number
+          agents_observed?: number
           agents_total?: number
           agents_warning?: number
           breaker_reason?: string | null
@@ -224,6 +226,7 @@ export type Database = {
           actions_enqueued?: number
           agents_critical?: number
           agents_escalated?: number
+          agents_observed?: number
           agents_total?: number
           agents_warning?: number
           breaker_reason?: string | null
@@ -6442,6 +6445,16 @@ export type Database = {
       analyze_table: { Args: { _table_name: string }; Returns: Json }
       apply_camera_setup: {
         Args: { _camera_id: string; _rules: Json; _zones: Json }
+        Returns: Json
+      }
+      arbitrate_agent_healing: {
+        Args: {
+          deliveries: number
+          external_root_cause: boolean
+          healing_action: string
+          healing_severity: string
+          redelivery_severity: string
+        }
         Returns: Json
       }
       array_days_valid: { Args: { days: number[] }; Returns: boolean }
