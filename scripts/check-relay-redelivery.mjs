@@ -110,4 +110,5 @@ if (failures.length) {
   for (const f of failures) console.error(`  - ${f}`);
   process.exit(1);
 }
+for (const w of warnings) console.warn(`⚠️  ${w}`);
 console.log('✅ Saúde de reentrega íntegra (paridade, imputação justa, Wilson e agenda).');
