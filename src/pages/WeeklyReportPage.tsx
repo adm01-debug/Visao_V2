@@ -24,6 +24,14 @@ import {
   Legend,
 } from "recharts";
 import { toast } from "sonner";
+import { useProductivityConfig } from "@/hooks/useProductivityConfig";
+import { ProductivityConfigPanel } from "@/components/reports/ProductivityConfigPanel";
+import {
+  describeConfig,
+  includesEventType,
+  includesSeverity,
+  isWithinWindow,
+} from "@/lib/productivityConfig";
 
 type Range = 7 | 14 | 30;
 type Severity = "low" | "medium" | "high" | "critical";
