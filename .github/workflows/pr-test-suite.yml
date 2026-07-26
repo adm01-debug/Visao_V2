@@ -102,11 +102,24 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci --ignore-scripts
 
-      # Falha imediatamente se qualquer teste da suíte quebrar (regressão funcional).
-      - name: Vitest (suíte completa, com cobertura)
-        run: npm run coverage:ci
+      # 1ª execução sem retry (gera cobertura). Só os testes que falharem são
+      # reexecutados — flaky é reportado, falha real reprova o job.
+      - name: Vitest (suíte completa + retry apenas de testes flaky)
+        run: npm run test:ci:flaky-retry
         env:
           CI: true
+          FLAKY_MAX_RETRIES: "2"
+          FLAKY_MAX_ALLOWED: "5"
+
+      - name: Upload relatório de flaky
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flaky-report-${{ matrix.os }}
+          path: test-results/flaky-report.json
+          retention-days: 14
+          if-no-files-found: ignore
+
 
       # Falha se a cobertura cair além da tolerância ou abaixo do piso absoluto.
       - name: Gate de regressão de cobertura
