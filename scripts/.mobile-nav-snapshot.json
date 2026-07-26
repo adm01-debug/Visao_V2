@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-23T13:12:33.875Z",
+  "generatedAt": "2026-07-26T21:05:39.771Z",
   "pages": [
     {
       "file": "AcessoNegado.tsx",
@@ -46,7 +46,7 @@
       "mode": "standard"
     },
     {
-      "file": "CLSReportPage.tsx",
+      "file": "CamerasPage.tsx",
       "mode": "standard"
     },
     {
@@ -54,7 +54,11 @@
       "mode": "standard"
     },
     {
-      "file": "CamerasPage.tsx",
+      "file": "CLSReportPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "CollabNetworkPage.tsx",
       "mode": "standard"
     },
     {
@@ -114,7 +118,15 @@
       "mode": "standard"
     },
     {
+      "file": "LocalAgentsPage.tsx",
+      "mode": "standard"
+    },
+    {
       "file": "MotionMasksPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "NightSuspiciousEventsPage.tsx",
       "mode": "standard"
     },
     {
@@ -126,12 +138,24 @@
       "mode": "customWrapper"
     },
     {
+      "file": "NvrDownloadHistoryPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "NvrDownloadsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "NvrsPage.tsx",
+      "mode": "standard"
+    },
+    {
       "file": "OperationsPage.tsx",
       "mode": "standard"
     },
     {
-      "file": "PPEPage.tsx",
-      "mode": "customWrapper"
+      "file": "OutOfAreaEventsPage.tsx",
+      "mode": "standard"
     },
     {
       "file": "PanicEventsPage.tsx",
@@ -140,6 +164,10 @@
     {
       "file": "PeoplePage.tsx",
       "mode": "standard"
+    },
+    {
+      "file": "PPEPage.tsx",
+      "mode": "customWrapper"
     },
     {
       "file": "PricingPage.tsx",
@@ -198,6 +226,10 @@
       "mode": "customWrapper"
     },
     {
+      "file": "SyncPlaybackPage.tsx",
+      "mode": "standard"
+    },
+    {
       "file": "TelegramSettingsPage.tsx",
       "mode": "customWrapper"
     },
@@ -211,6 +243,10 @@
     },
     {
       "file": "UserManagementPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "WeeklyReportPage.tsx",
       "mode": "standard"
     },
     {
