@@ -35,7 +35,7 @@ import {
   classifyRetentionHealth,
   type RetentionHealth,
   type RetentionRoutine,
-} from './retentionRegistry';
+} from './retentionRegistry.ts';
 
 /** Severidades aceitas pelo barramento (`maintenance_alert_events`). */
 export type MaintenanceSeverity = 'warning' | 'critical';
