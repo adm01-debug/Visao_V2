@@ -32,13 +32,12 @@ SET LOCAL idle_in_transaction_session_timeout = '120s';
 -- ---------------------------------------------------------------------------
 -- 0) Pré-condição: o usuário dedicado precisa existir. Sem ele, os fixtures
 --    cairiam sob outro dono e o rastro ficaria indistinguível de dado real.
+--    A verificação é feita pelo `scripts/exercise-healing-loop.mjs` via Admin
+--    API — o papel de banco usado em CI não enxerga o schema `auth`, e ler
+--    `auth.users` aqui abortaria o exercício por falta de privilégio, não por
+--    falha real. Deixamos a garantia onde ela pode, de fato, ser aplicada.
 -- ---------------------------------------------------------------------------
-DO $$
-BEGIN
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE id = :'uid'::uuid) THEN
-    RAISE EXCEPTION 'usuário de CI % não existe — rode `npm run seed:healing-ci-user` antes', :'uid';
-  END IF;
-END $$;
+
 
 CREATE TEMP TABLE ci_result (
   pass      int  NOT NULL,
