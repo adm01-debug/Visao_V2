@@ -15,6 +15,8 @@ import { Network, ShieldCheck } from 'lucide-react';
 import { useCollabGovernance } from '@/hooks/useCollabGovernance';
 import { CollabInvitesCard } from '@/components/collab/CollabInvitesCard';
 import { CollabMembersCard } from '@/components/collab/CollabMembersCard';
+import { CollabNotificationsCard } from '@/components/collab/CollabNotificationsCard';
+
 
 /**
  * Onda 129 — Operação da rede colaborativa de placas.
@@ -39,6 +41,15 @@ export default function CollabNetworkPage() {
   const selectedNetwork = networks.find((network) => network.id === networkId) ?? null;
   const viewerIsNetworkOwner =
     selectedNetwork !== null && viewerOrgIds.includes(selectedNetwork.owner_org_id);
+
+  // Nome legível por id: a caixa de entrada guarda apenas o id da organização
+  // de origem, e traduzir na tela evita expor id cru ao operador.
+  const orgNameById = useMemo(
+    () =>
+      new Map((governance.organizations.data ?? []).map((org) => [org.id, org.name] as const)),
+    [governance.organizations.data],
+  );
+
 
   const isBusy =
     governance.invite.isPending ||
@@ -136,6 +147,9 @@ export default function CollabNetworkPage() {
             onRemove={(organizationId) => governance.removeMembership.mutate(organizationId)}
             isBusy={isBusy}
           />
+
+          <CollabNotificationsCard networkId={networkId} orgNameById={orgNameById} />
+
         </>
       )}
     </div>
