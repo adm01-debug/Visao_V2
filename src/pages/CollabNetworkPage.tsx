@@ -15,6 +15,8 @@ import { Network, ShieldCheck } from 'lucide-react';
 import { useCollabGovernance } from '@/hooks/useCollabGovernance';
 import { CollabInvitesCard } from '@/components/collab/CollabInvitesCard';
 import { CollabMembersCard } from '@/components/collab/CollabMembersCard';
+import { CollabNotificationsCard } from '@/components/collab/CollabNotificationsCard';
+
 
 /**
  * Onda 129 — Operação da rede colaborativa de placas.
