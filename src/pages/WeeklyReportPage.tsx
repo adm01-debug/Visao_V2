@@ -365,6 +365,11 @@ export default function WeeklyReportPage() {
         />
       </div>
 
+      {/* Metodologia dos KPIs */}
+      <KpiMethodologyCard config={config} rangeDays={Number(range)} />
+
+
+
       {/* Charts */}
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
