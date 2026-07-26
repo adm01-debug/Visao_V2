@@ -23,7 +23,12 @@ const check = (label, condition, detail) => {
 
 // --- Constantes declaradas no TypeScript -------------------------------------
 const lib = readFileSync(new URL('../src/lib/analytics/dwellTracker.ts', import.meta.url), 'utf8');
-const num = (name) => Number(lib.match(new RegExp(`${name}:\\s*([\\d_.]+)`))?.[1]?.replace(/_/g, ''));
+// As duas políticas têm chaves homônimas (minConfidence): recorto cada bloco.
+const dwellBlock = lib.slice(lib.indexOf('DWELL_POLICY ='), lib.indexOf('VEHICLE_RECURRENCE_POLICY ='));
+const vehBlock = lib.slice(lib.indexOf('VEHICLE_RECURRENCE_POLICY ='));
+const pick = (block, name) =>
+  Number(block.match(new RegExp(`${name}:\\s*([\\d_.]+)`))?.[1]?.replace(/_/g, ''));
+const num = (name) => pick(dwellBlock, name);
 const ts = {
   gapSeconds: num('gapSeconds'),
   minDwellSeconds: num('minDwellSeconds'),
@@ -31,10 +36,11 @@ const ts = {
   minDetections: num('minDetections'),
   minConfidence: num('minConfidence'),
   alertCooldownSeconds: num('alertCooldownSeconds'),
-  windowMinutes: num('windowMinutes'),
-  minPasses: num('minPasses'),
-  samePassSeconds: num('samePassSeconds'),
-  alertCooldownMinutes: num('alertCooldownMinutes'),
+  windowMinutes: pick(vehBlock, 'windowMinutes'),
+  minPasses: pick(vehBlock, 'minPasses'),
+  samePassSeconds: pick(vehBlock, 'samePassSeconds'),
+  alertCooldownMinutes: pick(vehBlock, 'alertCooldownMinutes'),
+  vehicleMinConfidence: pick(vehBlock, 'minConfidence'),
 };
 check(
   'POLÍTICA',
@@ -94,7 +100,7 @@ const vehPol = query(`SELECT window_minutes||'|'||min_passes||'|'||same_pass_sec
 check(
   'PARIDADE',
   vehPol ===
-    `${ts.windowMinutes}|${ts.minPasses}|${ts.samePassSeconds}|${ts.alertCooldownMinutes}|${ts.minConfidence2 ?? '0.6000'}`,
+    `${ts.windowMinutes}|${ts.minPasses}|${ts.samePassSeconds}|${ts.alertCooldownMinutes}|${ts.vehicleMinConfidence.toFixed(4)}`,
   `vehicle_recurrence_policy() = ${vehPol}`,
 );
 
