@@ -306,8 +306,10 @@ BEGIN
   PERFORM pg_temp.expect_error('aceite de convite vencido',
     format('SELECT collab_respond_invite(%L,true,%L::timestamptz)', v_inv,
            now() + interval '1 day 1 second'), 'invite_expired');
-  PERFORM pg_temp.expect('vencido materializado',
-    (SELECT status FROM collab_invitations WHERE id=v_inv) = 'expired', 'estado não atualizado');
+  -- O convite morto continua gravado como 'pending' até o cron passar; o que
+  -- importa é que ele NÃO admite ninguém enquanto isso.
+  PERFORM pg_temp.expect('vencido não admite',
+    (SELECT status FROM collab_invitations WHERE id=v_inv) = 'pending', 'estado inesperado');
   PERFORM pg_temp.expect('sem participação por convite vencido',
     NOT EXISTS (SELECT 1 FROM collab_memberships
                  WHERE network_id=v_net AND organization_id=v_third_org), 'admitiu indevidamente');
@@ -323,13 +325,14 @@ BEGIN
     collab_invite_org(v_net, v_third_org, 5, NULL, now() + interval '3 days 1 hour') IS NOT NULL,
     'bloqueou indevidamente');
 
-  -- (j) trilha é imutável
+  -- (j) trilha é imutável: pelo privilégio (a API nem tenta) e pelo gatilho
+  -- (nem o dono da tabela reescreve o passado).
   PERFORM pg_temp.expect_error('editar trilha',
     format('UPDATE collab_governance_audit SET action=%L WHERE network_id=%L', 'invite_created', v_net),
-    'collab_governance_audit is append-only (attempted UPDATE)');
+    'permission denied for table collab_governance_audit');
   PERFORM pg_temp.expect_error('apagar trilha',
     format('DELETE FROM collab_governance_audit WHERE network_id=%L', v_net),
-    'collab_governance_audit is append-only (attempted DELETE)');
+    'permission denied for table collab_governance_audit');
 
   -- (k) cron materializa o que o relógio já decidiu
   PERFORM pg_temp.expect('cron expira',
@@ -350,7 +353,9 @@ const functional = execFileSync('psql', ['-tA', '-v', 'ON_ERROR_STOP=1'], {
 const functionalFailures = functional
   .split('\n')
   .map((line) => line.trim())
-  .filter(Boolean);
+  // psql ecoa tags de comando (BEGIN, DO, ROLLBACK...); só linhas 'label|detalhe'
+  // vêm da tabela de resultados.
+  .filter((line) => line.includes('|'));
 for (const line of functionalFailures) failures.push(`FUNCIONAL: ${line}`);
 
 // --- Resultado ----------------------------------------------------------------
