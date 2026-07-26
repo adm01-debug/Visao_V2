@@ -120,7 +120,10 @@ async function triggerRecapture(user: ReturnType<typeof userEvent.setup>) {
 
 /** Helper: extrai e parseia o `error_detail` da última chamada de insert. */
 function lastInsertPayload(): InsertPayload {
-  const call = insertSpy.mock.calls.at(-1);
+  // Indexação explícita em vez de `.at(-1)`: a lib de tipos deste tsconfig é
+  // anterior a ES2022 e não declara Array.prototype.at.
+  const calls = insertSpy.mock.calls;
+  const call = calls.length > 0 ? calls[calls.length - 1] : undefined;
   if (!call) throw new Error('insertSpy não recebeu chamadas');
   return call[0] as InsertPayload;
 }
