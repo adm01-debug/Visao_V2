@@ -135,7 +135,7 @@ for (const fn of routines) {
   const meta = query(`SELECT p.prosecdef||'|'||COALESCE(array_to_string(p.proconfig, ','), '')
       FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
      WHERE n.nspname='public' AND p.proname='${fn}'`);
-  check('ROTINA', meta.startsWith('t|'), `${fn} não é SECURITY DEFINER (${meta})`);
+  check('ROTINA', /^(t|true)\|/.test(meta), `${fn} não é SECURITY DEFINER (${meta})`);
   check('ROTINA', /search_path=public/.test(meta), `${fn} sem search_path fixo (${meta})`);
 
   const exposed = query(`SELECT COALESCE(string_agg(DISTINCT a.grantee::regrole::text, ','), '')
@@ -151,6 +151,7 @@ const functional = execFileSync(
   ['-v', 'ON_ERROR_STOP=1', '-tA', '-f', '-'],
   {
     encoding: 'utf8',
+    stdio: ['pipe', 'pipe', 'pipe'],
     input: `
 BEGIN;
 DO $$
@@ -251,7 +252,13 @@ ROLLBACK;
   },
 );
 
-check('FUNCIONAL', /OK|SKIP/.test(functional) || functional === '', `bateria funcional falhou: ${functional}`);
+// psql envia o RAISE NOTICE para stderr; o sucesso aqui é a ausência de ERROR
+// (ON_ERROR_STOP faz a chamada lançar) somada ao COMMIT lógico revertido.
+check(
+  'FUNCIONAL',
+  /ROLLBACK/.test(functional) && !/ERROR/.test(functional),
+  `bateria funcional falhou: ${functional}`,
+);
 
 if (failures.length > 0) {
   console.error('\n❌ Gate de centrais de monitoramento (Onda 126) reprovado:');
