@@ -1,1 +1,2 @@
 - [Healing Arbiter](mem://architecture/healing-arbiter) — Onda 123: árbitro entre escada de cura (115) e reentrega (122), ação `observe`, veto por causa externa; gate `db:check:healing-arbiter`
+- [RTMP Push Ingest](mem://features/rtmp-push-ingest) — Onda 124: `camera_ingest_endpoints`, edge `ingest-auth` (segredo `INGEST_WEBHOOK_SECRET`), detector de silêncio a cada 5min, gate `db:check:ingest-endpoints`
