@@ -5298,6 +5298,51 @@ export type Database = {
         }
         Relationships: []
       }
+      root_cause_correlation_runs: {
+        Row: {
+          cameras_considered: number
+          created_at: string
+          duration_ms: number | null
+          error_detail: string | null
+          growth: Json
+          id: string
+          ok: boolean
+          parents_analyzed: number
+          ran_at: string
+          skew_findings: Json
+          updated_at: string
+          window_hours: number
+        }
+        Insert: {
+          cameras_considered?: number
+          created_at?: string
+          duration_ms?: number | null
+          error_detail?: string | null
+          growth?: Json
+          id?: string
+          ok?: boolean
+          parents_analyzed?: number
+          ran_at?: string
+          skew_findings?: Json
+          updated_at?: string
+          window_hours: number
+        }
+        Update: {
+          cameras_considered?: number
+          created_at?: string
+          duration_ms?: number | null
+          error_detail?: string | null
+          growth?: Json
+          id?: string
+          ok?: boolean
+          parents_analyzed?: number
+          ran_at?: string
+          skew_findings?: Json
+          updated_at?: string
+          window_hours?: number
+        }
+        Relationships: []
+      }
       rtsp_preview_sessions: {
         Row: {
           created_at: string
@@ -6363,6 +6408,10 @@ export type Database = {
       cleanup_edge_cache: { Args: never; Returns: number }
       cleanup_old_test_events: { Args: never; Returns: number }
       close_expired_test_sessions: { Args: never; Returns: number }
+      correlate_backlog_root_cause: {
+        Args: { p_window_hours?: number }
+        Returns: string
+      }
       create_nvr_with_channels: {
         Args: {
           p_brand: string
