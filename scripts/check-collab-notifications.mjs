@@ -269,11 +269,13 @@ BEGIN
   SELECT public.collab_purge_notifications(now() + interval '91 days') INTO n;
   IF n < 4 THEN RAISE EXCEPTION 'limpeza não removeu avisos fora da retenção (%)', n; END IF;
 
-  RAISE NOTICE 'GATE_OK';
+  RAISE NOTICE 'bateria concluída';
 END
 $gate$;
+SELECT 'GATE_OK';
 ROLLBACK;
 `;
+
 
 try {
   const out = execFileSync('psql', ['-v', 'ON_ERROR_STOP=1', '-f', '-'], {
