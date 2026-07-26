@@ -312,6 +312,9 @@ export default function WeeklyReportPage() {
             <strong>{format(start, "dd 'de' MMM", { locale: ptBR })}</strong> e{" "}
             <strong>{format(end, "dd 'de' MMM yyyy", { locale: ptBR })}</strong>.
           </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Critérios de produtividade: {describeProductivityConfig(prodConfig)}
+          </p>
         </div>
         <div className="flex gap-2">
           <Select value={String(range)} onValueChange={(v) => setRange(Number(v) as Range)}>
