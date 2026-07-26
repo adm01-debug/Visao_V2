@@ -283,7 +283,7 @@ BEGIN
 
   -- (g) remoção revoga o que a organização compartilhou
   INSERT INTO collab_entries (network_id, owner_org_id, plate_hash, severity, reason, expires_at)
-  VALUES (v_net, v_guest_org, digest('ABC1D23','sha256'), 3, 'gate', now() + interval '10 days')
+  VALUES (v_net, v_guest_org, sha256('ABC1D23'::bytea), 3, 'gate', now() + interval '10 days')
   RETURNING id INTO v_entry;
   v_revoked := collab_remove_membership(v_net, v_guest_org);
   PERFORM pg_temp.expect('remoção revoga entradas', v_revoked = 1, 'revogadas: '||v_revoked);
