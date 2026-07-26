@@ -3112,6 +3112,134 @@ export type Database = {
         }
         Relationships: []
       }
+      monitoring_center_accounts: {
+        Row: {
+          account_code: string
+          created_at: string
+          enabled: boolean
+          endpoint_url: string
+          event_kinds: string[]
+          id: string
+          label: string
+          last_heartbeat_at: string | null
+          line_prefix: string
+          partition_code: string
+          provider: string
+          receiver_number: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_code: string
+          created_at?: string
+          enabled?: boolean
+          endpoint_url: string
+          event_kinds?: string[]
+          id?: string
+          label: string
+          last_heartbeat_at?: string | null
+          line_prefix?: string
+          partition_code?: string
+          provider: string
+          receiver_number?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_code?: string
+          created_at?: string
+          enabled?: boolean
+          endpoint_url?: string
+          event_kinds?: string[]
+          id?: string
+          label?: string
+          last_heartbeat_at?: string | null
+          line_prefix?: string
+          partition_code?: string
+          provider?: string
+          receiver_number?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      monitoring_center_dispatches: {
+        Row: {
+          account_id: string
+          attempts: number
+          camera_id: string | null
+          claimed_by: string | null
+          contact_code: string
+          created_at: string
+          dedupe_key: string
+          delivered_at: string | null
+          event_kind: string
+          id: string
+          last_error: string | null
+          lease_expires_at: string | null
+          next_attempt_at: string
+          payload: Json
+          priority: number
+          qualifier: string
+          status: string
+          updated_at: string
+          user_id: string
+          zone_code: string
+        }
+        Insert: {
+          account_id: string
+          attempts?: number
+          camera_id?: string | null
+          claimed_by?: string | null
+          contact_code: string
+          created_at?: string
+          dedupe_key: string
+          delivered_at?: string | null
+          event_kind: string
+          id?: string
+          last_error?: string | null
+          lease_expires_at?: string | null
+          next_attempt_at?: string
+          payload?: Json
+          priority?: number
+          qualifier: string
+          status?: string
+          updated_at?: string
+          user_id: string
+          zone_code?: string
+        }
+        Update: {
+          account_id?: string
+          attempts?: number
+          camera_id?: string | null
+          claimed_by?: string | null
+          contact_code?: string
+          created_at?: string
+          dedupe_key?: string
+          delivered_at?: string | null
+          event_kind?: string
+          id?: string
+          last_error?: string | null
+          lease_expires_at?: string | null
+          next_attempt_at?: string
+          payload?: Json
+          priority?: number
+          qualifier?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+          zone_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "monitoring_center_dispatches_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "monitoring_center_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       motion_masks: {
         Row: {
           camera_id: string
@@ -6649,11 +6777,50 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      claim_monitoring_center_dispatches: {
+        Args: { _limit?: number; _worker: string }
+        Returns: {
+          account_id: string
+          attempts: number
+          camera_id: string | null
+          claimed_by: string | null
+          contact_code: string
+          created_at: string
+          dedupe_key: string
+          delivered_at: string | null
+          event_kind: string
+          id: string
+          last_error: string | null
+          lease_expires_at: string | null
+          next_attempt_at: string
+          payload: Json
+          priority: number
+          qualifier: string
+          status: string
+          updated_at: string
+          user_id: string
+          zone_code: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "monitoring_center_dispatches"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       cleanup_api_usage_logs: { Args: never; Returns: number }
       cleanup_edge_cache: { Args: never; Returns: number }
       cleanup_old_test_events: { Args: never; Returns: number }
       close_expired_test_sessions: { Args: never; Returns: number }
       close_stale_dwell_sessions: { Args: never; Returns: Json }
+      contact_id_for_event: {
+        Args: { _kind: string }
+        Returns: {
+          code: string
+          priority: number
+          qualifier: string
+        }[]
+      }
       correlate_backlog_root_cause: {
         Args: { p_window_hours?: number }
         Returns: string
@@ -6721,6 +6888,17 @@ export type Database = {
           min_detections: number
           min_dwell_seconds: number
         }[]
+      }
+      enqueue_monitoring_center_event: {
+        Args: {
+          _account_id: string
+          _at?: string
+          _camera_id?: string
+          _event_kind: string
+          _payload?: Json
+          _zone_code?: string
+        }
+        Returns: Json
       }
       ensure_future_partitions: {
         Args: { months_ahead?: number }
@@ -7422,6 +7600,22 @@ export type Database = {
         }[]
       }
       mark_ingest_unpublish: { Args: { _stream_key: string }; Returns: Json }
+      monitoring_center_backoff_seconds: {
+        Args: { _attempts: number }
+        Returns: number
+      }
+      monitoring_center_policy: {
+        Args: never
+        Returns: {
+          base_backoff_seconds: number
+          deadline_seconds: number
+          dedupe_window_seconds: number
+          heartbeat_seconds: number
+          lease_seconds: number
+          max_attempts: number
+          max_backoff_seconds: number
+        }[]
+      }
       partition_maintenance_lock_key: { Args: never; Returns: number }
       point_in_polygon: {
         Args: { _poly: Json; _x: number; _y: number }
@@ -7481,6 +7675,7 @@ export type Database = {
           requeued: number
         }[]
       }
+      reap_monitoring_center_leases: { Args: { _at?: string }; Returns: Json }
       record_dwell_observation: {
         Args: {
           _camera_id: string
@@ -7579,6 +7774,15 @@ export type Database = {
           changed: boolean
           legal_hold: boolean
         }[]
+      }
+      settle_monitoring_center_dispatch: {
+        Args: {
+          _at?: string
+          _dispatch_id: string
+          _error?: string
+          _ok: boolean
+        }
+        Returns: Json
       }
       stable_hash32: { Args: { _input: string }; Returns: number }
       system_health: { Args: never; Returns: Json }
