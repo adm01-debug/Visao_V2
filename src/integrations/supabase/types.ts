@@ -3056,6 +3056,63 @@ export type Database = {
         }
         Relationships: []
       }
+      partition_drain_runs: {
+        Row: {
+          batch_size: number | null
+          created_at: string
+          details: Json
+          duration_ms: number | null
+          error_detail: string | null
+          id: string
+          locked_out: boolean
+          max_batches: number | null
+          months_ahead: number | null
+          months_back: number | null
+          moved_rows: number
+          ok: boolean
+          parents: string[]
+          quarantined: number
+          ran_at: string
+          updated_at: string
+        }
+        Insert: {
+          batch_size?: number | null
+          created_at?: string
+          details?: Json
+          duration_ms?: number | null
+          error_detail?: string | null
+          id?: string
+          locked_out?: boolean
+          max_batches?: number | null
+          months_ahead?: number | null
+          months_back?: number | null
+          moved_rows?: number
+          ok?: boolean
+          parents?: string[]
+          quarantined?: number
+          ran_at?: string
+          updated_at?: string
+        }
+        Update: {
+          batch_size?: number | null
+          created_at?: string
+          details?: Json
+          duration_ms?: number | null
+          error_detail?: string | null
+          id?: string
+          locked_out?: boolean
+          max_batches?: number | null
+          months_ahead?: number | null
+          months_back?: number | null
+          moved_rows?: number
+          ok?: boolean
+          parents?: string[]
+          quarantined?: number
+          ran_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       partition_maintenance_runs: {
         Row: {
           created_at: string
@@ -6239,6 +6296,14 @@ export type Database = {
           unprotected_count: number
         }[]
       }
+      get_partition_default_backlog: {
+        Args: never
+        Returns: {
+          default_partition: string
+          parent: string
+          row_estimate: number
+        }[]
+      }
       get_permissive_rls_policies: {
         Args: never
         Returns: {
@@ -6585,6 +6650,7 @@ export type Database = {
           success_count_24h: number
         }[]
       }
+      partition_maintenance_lock_key: { Args: never; Returns: number }
       point_in_polygon: {
         Args: { _poly: Json; _x: number; _y: number }
         Returns: boolean
