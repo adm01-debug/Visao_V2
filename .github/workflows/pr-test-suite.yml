@@ -311,6 +311,7 @@ jobs:
           echo "static-analysis: $STATIC_RESULT"
           echo "unit-tests:      $UNIT_RESULT"
           echo "e2e-tests:       $E2E_RESULT"
+          echo "db-guardrails:   $DB_RESULT"
 
           failed=0
 
