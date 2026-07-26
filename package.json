@@ -161,7 +161,7 @@
     "db:check:clock-skew": "node scripts/check-camera-clock-skew.mjs",
     "db:check:backlog-trend": "node scripts/check-partition-backlog-trend.mjs",
     "db:check:agent-healing": "node scripts/check-agent-healing.mjs",
-    "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget && npm run db:check:relay-window && npm run db:check:relay-verdict && npm run db:check:relay-lease && npm run db:check:relay-redelivery && npm run db:check:healing-arbiter && npm run db:check:ingest-endpoints && npm run db:check:dwell-analytics && npm run db:check:monitoring-centers && npm run db:check:collab-network && npm run db:check:collab-governance && npm run db:check:collab-notifications && npm run db:check:collab-silence && npm run db:check:collab-retention && npm run db:check:collab-entry-lifecycle",
+    "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch && npm run db:check:clock-skew && npm run db:check:backlog-trend && npm run db:check:maintenance-sources && npm run db:check:agent-healing && npm run db:check:root-cause && npm run db:check:escalation && npm run db:check:restart-budget && npm run db:check:relay-window && npm run db:check:relay-verdict && npm run db:check:relay-lease && npm run db:check:relay-redelivery && npm run db:check:healing-arbiter && npm run db:check:ingest-endpoints && npm run db:check:dwell-analytics && npm run db:check:monitoring-centers && npm run db:check:collab-network && npm run db:check:collab-governance && npm run db:check:collab-notifications && npm run db:check:collab-silence && npm run db:check:collab-retention && npm run db:check:collab-entry-lifecycle && npm run db:check:retention-registry",
     "simulate:wave116": "node scripts/simulate-wave116-scenarios.mjs",
     "simulate:wave117": "node scripts/simulate-wave117-scenarios.mjs",
     "db:check:root-cause": "node scripts/check-root-cause-correlation.mjs",
@@ -181,6 +181,7 @@
     "db:check:collab-notifications": "node scripts/check-collab-notifications.mjs",
     "db:check:collab-silence": "node scripts/check-collab-notification-silence.mjs",
     "db:check:collab-retention": "node scripts/check-collab-retention.mjs",
+    "db:check:retention-registry": "node scripts/check-retention-registry.mjs",
     "db:check:collab-entry-lifecycle": "node scripts/check-collab-entry-lifecycle.mjs",
     "simulate:collab-network": "vitest run src/__tests__/lib/collabNetwork.test.ts"
   },
