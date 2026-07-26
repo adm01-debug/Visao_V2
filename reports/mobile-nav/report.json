@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-07-26T21:05:54.142Z",
+  "generatedAt": "2026-07-26T22:01:36.184Z",
   "wrapperFile": "src/components/layout/MainLayout.tsx",
   "requiredClass": "mb-mobile-nav",
   "totals": {
-    "total": 66,
-    "ok": 58,
+    "total": 67,
+    "ok": 59,
     "pendente": 0,
     "isenta": 8,
-    "standard": 58,
+    "standard": 59,
     "customWrapper": 0,
     "standalone": 8
   },
-  "failed": false,
+  "failed": true,
   "rows": [
     {
       "file": "AlertsPage.tsx",
@@ -198,6 +198,13 @@
     {
       "file": "LocalAgentsPage.tsx",
       "path": "src/pages/LocalAgentsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "MaintenanceConsolePage.tsx",
+      "path": "src/pages/MaintenanceConsolePage.tsx",
       "category": "standard",
       "status": "ok",
       "issues": []
