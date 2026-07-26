@@ -11,14 +11,17 @@ import {
   DEFAULT_PRODUCTIVITY_CONFIG,
   EVENT_TYPE_LABEL,
   PRODUCTIVITY_EVENT_TYPES,
+  PRODUCTIVITY_PRESETS,
   PRODUCTIVITY_SEVERITIES,
   SEVERITY_LABEL,
   WEEKDAY_LABEL,
+  matchPreset,
   timeToMinutes,
   type ProductivityConfig,
   type ProductivityEventType,
   type ProductivitySeverity,
 } from "@/lib/productivityConfig";
+
 
 export interface ProductivityConfigPanelProps {
   draft: ProductivityConfig;
