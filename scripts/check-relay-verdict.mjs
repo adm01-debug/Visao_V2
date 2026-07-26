@@ -62,7 +62,11 @@ if (heal) {
     + 'quebrada ainda pode ser reiniciado');
 
   // 2) O abandono do backend não pode alimentar o numerador de surdez.
-  const numerador = heal.slice(heal.indexOf('AS expired') - 1200, heal.indexOf('AS expired'));
+  // A string "AS expired" aparece duas vezes (agregado externo e subquery de
+  // contagem). O numerador real é o último — usar indexOf pegaria o alias de
+  // fora e o gate passaria sem olhar a regra que importa.
+  const fimNumerador = heal.lastIndexOf('AS expired');
+  const numerador = heal.slice(Math.max(0, fimNumerador - 1200), fimNumerador);
   check('CURA', numerador.includes(ABANDONED),
     `numerador de surdez não exclui "${ABANDONED}" — a desistência do backend `
     + 'continua sendo cobrada do agente');
