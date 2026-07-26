@@ -71,15 +71,24 @@ check('PARIDADE', normDef.includes(`'${maxWindow} seconds'`),
 check('PARIDADE', /SET search_path/i.test(normDef), 'normalizador sem search_path fixo');
 
 // --- 4) Classificação da expiração ------------------------------------------
+// Onda 121: o encerramento passou a ser dividido entre `expire_agent_relay_tasks`
+// (tarefas nunca reivindicadas) e `reap_agent_relay_leases` (leases vencidos).
+// A cobertura dos motivos é avaliada sobre a união das duas rotinas.
 const expDef = query(`
-  SELECT replace(pg_get_functiondef(p.oid), E'\\n', ' ')
+  SELECT replace(string_agg(pg_get_functiondef(p.oid), ' '), E'\\n', ' ')
     FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-   WHERE n.nspname = 'public' AND p.proname = 'expire_agent_relay_tasks'`);
-for (const reason of ['task_expired_unfair_window', 'task_expired_unclaimed', 'task_expired_no_response']) {
+   WHERE n.nspname = 'public'
+     AND p.proname IN ('expire_agent_relay_tasks', 'reap_agent_relay_leases')`);
+for (const reason of [
+  'task_expired_unfair_window',
+  'task_expired_unclaimed',
+  'task_expired_attempts_exhausted',
+]) {
   check('EXPIRAÇÃO', expDef.includes(reason), `motivo ${reason} não é emitido`);
 }
 check('EXPIRAÇÃO', /SECURITY DEFINER/i.test(expDef) && /SET search_path/i.test(expDef),
   'expire_agent_relay_tasks sem blindagem');
+
 
 // --- 5) Justiça do diagnóstico ----------------------------------------------
 const healDef = query(`
