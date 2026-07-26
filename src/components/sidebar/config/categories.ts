@@ -3,6 +3,8 @@
  * Sidebar Categories Configuration with Dynamic Status
  */
 
+import { STALE_ACTIONABLE_HOURS as COLLAB_STALE_ACTIONABLE_HOURS } from "@/lib/collab/collabNavBadge";
+
 import {
   LayoutDashboard,
   Camera,
