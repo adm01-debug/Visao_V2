@@ -8,16 +8,11 @@
  *
  * Uso: npm run simulate:wave113
  */
-import { pathToFileURL } from 'node:url';
-import { register } from 'node:module';
-
-register('ts-node/esm', pathToFileURL('./'));
-
-const {
+import {
   evaluateBacklogSeries,
   theilSenSlopePerHour,
-  DEFAULT_BACKLOG_TREND_THRESHOLDS: T,
-} = await import('../src/lib/partitionBacklogTrend.ts');
+  DEFAULT_BACKLOG_TREND_THRESHOLDS as T,
+} from '../src/lib/partitionBacklogTrend.ts';
 
 const HOUR = 3_600_000;
 const NOW = Date.parse('2026-07-26T12:00:00.000Z');
