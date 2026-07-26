@@ -291,25 +291,34 @@ BEGIN
   END IF;
 
   -- Desempate: entrada mais severa de outra org vence.
-  SELECT * INTO r FROM public.share_collab_plate(net, org_c, 'ABC1D23', 2, 'suspeita');
+  SELECT * INTO r FROM public.share_collab_plate(net, org_c, 'ABC1D23', 5, 'roubo');
+  IF NOT r.accepted THEN RAISE EXCEPTION 'FALHA: org_c não conseguiu compartilhar (%)', r.rejection; END IF;
   e2 := r.entry_id;
-  UPDATE public.collab_entries SET severity = 5 WHERE id = e2;
-  UPDATE public.collab_entries SET severity = 3 WHERE id = e1;
+  SELECT * INTO r FROM public.share_collab_plate(net, org_a, 'ABC1D23', 3, 'suspeita');
+  IF r.entry_id <> e1 THEN RAISE EXCEPTION 'FALHA: rebaixamento criou entrada nova'; END IF;
   SELECT * INTO r FROM public.match_collab_plate(net, org_b, 'ABC1D23', 0.91, NULL, t0 + interval '2 hours');
-  IF NOT r.alerted OR r.entry_id <> e2 THEN
-    RAISE EXCEPTION 'FALHA: desempate não escolheu a entrada mais severa';
+  IF NOT r.alerted OR r.entry_id <> e2 OR r.severity <> 5 THEN
+    RAISE EXCEPTION 'FALHA: desempate não escolheu a entrada mais severa (%)', r.entry_id;
   END IF;
 
-  -- Expiração e revogação removem a entrada do jogo.
-  UPDATE public.collab_entries SET expires_at = t0 - interval '1 day' WHERE id = e2;
-  PERFORM public.revoke_collab_entry(e1, org_a);
+  -- Passado o TTL padrão de 30 dias, nada mais alerta: um compartilhamento
+  -- esquecido não pode perseguir um veículo para sempre.
+  SELECT * INTO r FROM public.match_collab_plate(net, org_b, 'ABC1D23', 0.91, NULL, t0 + interval '31 days');
+  IF r.alerted OR r.rejection <> 'entry_expired' THEN
+    RAISE EXCEPTION 'FALHA: entrada vencida ainda alerta (%)', r.rejection;
+  END IF;
+
+  -- Revogação tira do jogo antes do vencimento.
+  IF NOT public.revoke_collab_entry(e2, org_c) THEN
+    RAISE EXCEPTION 'FALHA: dona não conseguiu revogar a própria entrada';
+  END IF;
   SELECT * INTO r FROM public.match_collab_plate(net, org_b, 'ABC1D23', 0.91, NULL, t0 + interval '3 hours');
-  IF r.alerted OR r.rejection NOT IN ('entry_expired','entry_revoked') THEN
-    RAISE EXCEPTION 'FALHA: entrada morta ainda alerta (%)', r.rejection;
+  IF NOT r.alerted OR r.entry_id <> e1 THEN
+    RAISE EXCEPTION 'FALHA: após revogar a mais severa, a remanescente deveria alertar (%)', r.rejection;
   END IF;
 
   -- Revogação alheia não funciona.
-  IF public.revoke_collab_entry(e2, org_b) THEN
+  IF public.revoke_collab_entry(e1, org_b) THEN
     RAISE EXCEPTION 'FALHA: organização revogou entrada de terceiro';
   END IF;
 
