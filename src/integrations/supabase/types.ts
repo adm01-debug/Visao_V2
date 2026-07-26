@@ -2005,6 +2005,106 @@ export type Database = {
           },
         ]
       }
+      collab_notification_reads: {
+        Row: {
+          created_at: string
+          notification_id: string
+          read_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          notification_id: string
+          read_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          notification_id?: string
+          read_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collab_notification_reads_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "collab_notifications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collab_notifications: {
+        Row: {
+          actor_org_id: string | null
+          created_at: string
+          dedup_key: string
+          detail: Json
+          id: string
+          invitation_id: string | null
+          kind: string
+          network_id: string
+          organization_id: string
+          severity: string
+          updated_at: string
+        }
+        Insert: {
+          actor_org_id?: string | null
+          created_at?: string
+          dedup_key: string
+          detail?: Json
+          id?: string
+          invitation_id?: string | null
+          kind: string
+          network_id: string
+          organization_id: string
+          severity: string
+          updated_at?: string
+        }
+        Update: {
+          actor_org_id?: string | null
+          created_at?: string
+          dedup_key?: string
+          detail?: Json
+          id?: string
+          invitation_id?: string | null
+          kind?: string
+          network_id?: string
+          organization_id?: string
+          severity?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collab_notifications_actor_org_id_fkey"
+            columns: ["actor_org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collab_notifications_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "collab_invitations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collab_notifications_network_id_fkey"
+            columns: ["network_id"]
+            isOneToOne: false
+            referencedRelation: "collab_networks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collab_notifications_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       connectivity_resolution_telemetry: {
         Row: {
           camera_id: string | null
@@ -7170,8 +7270,32 @@ export type Database = {
         }
         Returns: string
       }
+      collab_mark_notifications_read: {
+        Args: { p_ids: string[]; p_now?: string }
+        Returns: number
+      }
       collab_member_status: {
         Args: { _network_id: string; _org_id: string }
+        Returns: string
+      }
+      collab_notification_audiences: {
+        Args: { p_action: string }
+        Returns: string[]
+      }
+      collab_notification_dedup_key: {
+        Args: {
+          p_counterpart_org_id: string
+          p_invitation_id: string
+          p_kind: string
+          p_network_id: string
+          p_organization_id: string
+        }
+        Returns: string
+      }
+      collab_notification_kind: { Args: { p_action: string }; Returns: string }
+      collab_notification_policy: { Args: never; Returns: Json }
+      collab_notification_severity: {
+        Args: { p_kind: string }
         Returns: string
       }
       collab_plate_hash: {
@@ -7179,6 +7303,7 @@ export type Database = {
         Returns: string
       }
       collab_policy: { Args: never; Returns: Json }
+      collab_purge_notifications: { Args: { p_now?: string }; Returns: number }
       collab_remove_membership: {
         Args: { p_network_id: string; p_organization_id: string }
         Returns: number
@@ -7198,6 +7323,13 @@ export type Database = {
           p_status: string
         }
         Returns: string
+      }
+      collab_unread_counts: {
+        Args: never
+        Returns: {
+          organization_id: string
+          unread: number
+        }[]
       }
       collab_user_orgs: { Args: { _user_id: string }; Returns: string[] }
       contact_id_for_event: {
