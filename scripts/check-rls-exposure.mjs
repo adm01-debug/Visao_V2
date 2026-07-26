@@ -34,6 +34,8 @@ SELECT format('%s.%s :: %s (%s) roles=%s', schemaname, tablename, policyname, cm
 FROM pg_policies
 WHERE schemaname = 'public'
   AND ('public' = ANY(roles) OR 'anon' = ANY(roles))
+  -- Políticas deny-all (USING false) são intencionais: bloqueiam o cliente por completo.
+  AND COALESCE(qual, '') <> 'false'
 ORDER BY 1;`;
 
 const SQL_DBA_UNGUARDED = `
