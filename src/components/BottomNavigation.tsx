@@ -10,6 +10,7 @@ import { useSidebarStatus } from "@/hooks/useSidebarStatus";
 import { useUserRole } from "@/hooks/useUserRole";
 import { allCategories, type NavCategory } from "./navigation/bottomNavData";
 import { triggerHaptic } from "@/lib/haptics";
+import { buildBottomNavBadge } from "@/lib/navigation/bottomNavBadge";
 
 export function BottomNavigation() {
   const location = useLocation();
@@ -33,21 +34,16 @@ export function BottomNavigation() {
     return "monitoring";
   }, [categories, location.pathname]);
 
-  const getBadge = (id: string): number | null => {
-    if (id === "security" && status.unreadAlerts > 0) return status.unreadAlerts;
-    if (id === "monitoring" && status.totalCameras > 0) return status.onlineCameras;
-    if (id === "management" && status.registeredPersons > 0) return status.registeredPersons;
-    return null;
-  };
-
-  const getStatus = (id: string): "success" | "warning" | "danger" | null => {
-    if (id === "security") return status.unreadAlerts > 5 ? "danger" : status.unreadAlerts > 0 ? "warning" : "success";
-    if (id === "monitoring") {
-      const r = status.totalCameras > 0 ? status.onlineCameras / status.totalCameras : 0;
-      return r >= 0.8 ? "success" : r >= 0.5 ? "warning" : status.totalCameras > 0 ? "danger" : null;
+  // Onda 138 — a decisão de contagem vive em `bottomNavBadge`; aqui só se pinta.
+  const isAdmin = hasMinRole("admin");
+  const badges = useMemo(() => {
+    const map: Record<string, ReturnType<typeof buildBottomNavBadge>> = {};
+    for (const cat of allCategories) {
+      map[cat.id] = buildBottomNavBadge(cat.id, status, isAdmin);
     }
-    return null;
-  };
+    return map;
+  }, [status, isAdmin]);
+
 
   const handleCategoryClick = (cat: NavCategory) => {
     triggerHaptic('light');
@@ -108,11 +104,11 @@ export function BottomNavigation() {
             const Icon = cat.icon;
             const isActive = activeCategory === cat.id;
             const isExpanded = expandedCategory === cat.id;
-            const badge = getBadge(cat.id);
-            const statusColor = getStatus(cat.id);
+            const badge = badges[cat.id];
             return (
               <motion.button key={cat.id} whileTap={{ scale: 0.9 }} onClick={() => handleCategoryClick(cat)}
-                aria-label={`${cat.label}${badge ? ` (${badge})` : ''}`} aria-current={isActive ? 'page' : undefined}
+                aria-label={badge?.srLabel ? `${cat.label} — ${badge.srLabel}` : cat.label}
+                aria-current={isActive ? 'page' : undefined}
                 className={cn(
                   "relative flex flex-col items-center justify-center gap-0.5 px-3 py-1.5 rounded-xl transition-colors min-w-[56px]",
                   isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
@@ -121,21 +117,24 @@ export function BottomNavigation() {
                   <motion.div animate={{ scale: isActive ? 1.1 : 1, y: isActive ? -1 : 0 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
                     <Icon className={cn("h-5 w-5", isActive && "stroke-[2.5px]")} />
                   </motion.div>
-                  {badge !== null && badge > 0 && (
+                  {badge?.text && (
                     <motion.span aria-live="polite" initial={{ scale: 0 }} animate={{ scale: 1 }}
-                      className={cn("absolute -top-1.5 -right-2.5 min-w-[16px] h-[16px] flex items-center justify-center text-[9px] font-bold rounded-full",
-                        statusColor === "danger" && "bg-destructive text-destructive-foreground",
-                        statusColor === "warning" && "bg-warning text-warning-foreground",
-                        (statusColor === "success" || !statusColor) && "bg-primary text-primary-foreground")}>
-                      {badge > 99 ? "99+" : badge}
+                      className={cn("absolute -top-1.5 -right-2.5 min-w-[16px] h-[16px] px-1 flex items-center justify-center text-[9px] font-bold rounded-full tabular-nums",
+                        badge.tone === "danger" && "bg-destructive text-destructive-foreground",
+                        badge.tone === "warning" && "bg-warning text-warning-foreground",
+                        badge.tone === "success" && "bg-success text-success-foreground",
+                        badge.tone === "neutral" && "bg-primary text-primary-foreground",
+                        badge.pulse && "animate-pulse")}>
+                      {badge.text}
                     </motion.span>
                   )}
-                  {statusColor && !badge && (
+                  {badge?.dot && (
                     <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }}
                       className={cn("absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full border-2 border-card",
-                        statusColor === "danger" && "bg-destructive", statusColor === "warning" && "bg-warning", statusColor === "success" && "bg-success")} />
+                        badge.dot === "danger" && "bg-destructive", badge.dot === "warning" && "bg-warning", badge.dot === "success" && "bg-success")} />
                   )}
                 </div>
+
                 <span className={cn("text-[10px] font-medium truncate max-w-full", isActive && "font-semibold")}>{cat.label}</span>
                 {isActive && <motion.div layoutId="activeIndicator" className="absolute -bottom-1 w-6 h-0.5 bg-primary rounded-full" transition={{ type: "spring", stiffness: 400, damping: 30 }} />}
                 <AnimatePresence>{isActive && !isExpanded && (
