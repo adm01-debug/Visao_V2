@@ -21,6 +21,9 @@ import {
   useCollabNotifications,
   type CollabNotificationItem,
 } from '@/hooks/useCollabNotifications';
+import { CollabSilenceControl } from '@/components/collab/CollabSilenceControl';
+import { useCollabSilence } from '@/hooks/useCollabSilence';
+import { countUnread } from '@/lib/collab/collabNotificationSilencing';
 
 const KIND_LABEL: Record<CollabNotificationKind, string> = {
   invite_received: 'Convite recebido',
@@ -51,7 +54,17 @@ export function CollabNotificationsCard({ networkId, orgNameById }: CollabNotifi
     () => notifications.data ?? [],
     [notifications.data],
   );
+  // Silenciar é por organização: o controle só aparece quando a caixa tem uma
+  // única organização em cena, para não silenciar em nome de outra sem querer.
+  const orgIds = useMemo(() => [...new Set(items.map((i) => i.organization_id))], [items]);
+  const silenceOrgId = orgIds.length === 1 ? orgIds[0] : null;
+  const { preference } = useCollabSilence(silenceOrgId);
+
   const unreadIds = useMemo(() => items.filter((i) => !i.read).map((i) => i.id), [items]);
+  const counts = useMemo(
+    () => countUnread(items, preference.data ?? null, new Date()),
+    [items, preference.data],
+  );
 
   return (
     <Card>
@@ -60,9 +73,14 @@ export function CollabNotificationsCard({ networkId, orgNameById }: CollabNotifi
           <CardTitle className="flex items-center gap-2 text-base">
             <Inbox className="h-4 w-4" aria-hidden="true" />
             Avisos da rede
-            {unreadIds.length > 0 && (
-              <Badge variant="secondary" aria-label={`${unreadIds.length} avisos não lidos`}>
-                {formatUnreadBadge(unreadIds.length)}
+            {counts.total > 0 && (
+              <Badge variant="secondary" aria-label={`${counts.total} avisos não lidos`}>
+                {formatUnreadBadge(counts.total)}
+              </Badge>
+            )}
+            {counts.silenced > 0 && (
+              <Badge variant="outline" aria-label={`${counts.silenced} avisos silenciados`}>
+                {counts.silenced} silenciado{counts.silenced > 1 ? 's' : ''}
               </Badge>
             )}
           </CardTitle>
@@ -70,6 +88,8 @@ export function CollabNotificationsCard({ networkId, orgNameById }: CollabNotifi
             Somente as organizações envolvidas em cada fato recebem o aviso correspondente.
           </CardDescription>
         </div>
+        <div className="flex shrink-0 items-center gap-1">
+          <CollabSilenceControl organizationId={silenceOrgId} kindLabel={KIND_LABEL} />
         <Button
           size="sm"
           variant="outline"
@@ -78,6 +98,7 @@ export function CollabNotificationsCard({ networkId, orgNameById }: CollabNotifi
         >
           Marcar tudo como lido
         </Button>
+        </div>
       </CardHeader>
 
       <CardContent>
