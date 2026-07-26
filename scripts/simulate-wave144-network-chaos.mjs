@@ -503,9 +503,24 @@ async function main() {
     check(`corpo truncado #${i + 1} falha em vez de mentir`, parsedSilently === false);
   }
 
+
+  // ---- 11. Sem vazamento de socket após fechar o pool ----------------------
+  // Abort fecha o lado do cliente, mas o socket do servidor só cai quando o
+  // handler pendente termina + keep-alive expira. O que NÃO pode existir é
+  // socket que sobrevive ao fechamento do pool HTTP — isso seria vazamento.
+  console.log('\n[11] Drenagem de sockets após fechar o pool HTTP');
+  {
+    const peak = Math.max(peakSockets, openSockets.size);
+    await closeHttpPool();
+    const drained = await drainSockets(15000);
+    check('todo socket drena após o pool fechar', drained, `pico=${peak} restantes=${openSockets.size}`);
+    check('a carga realmente abriu conexões (teste não é vazio)', peak > 10, `pico=${peak}`);
+  }
+
   await close(chaos);
   await close(blackhole);
   for (const s of openSockets) s.destroy();
+
 
   const total = ok + fail;
   console.log(`\n${'─'.repeat(60)}`);
