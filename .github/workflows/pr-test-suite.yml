@@ -28,6 +28,9 @@ env:
   NODE_VERSION: '22'
   # Tolerância de queda de cobertura (pontos percentuais) antes de falhar o PR.
   COVERAGE_TOLERANCE_PP: ${{ vars.COVERAGE_TOLERANCE_PP || '0.5' }}
+  # Navegadores do Playwright dentro do workspace para poderem ser cacheados
+  # com o mesmo caminho em ubuntu e windows.
+  PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.pw-browsers
 
 jobs:
   static-analysis:
@@ -39,8 +42,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
+          # Cache do tarball store do npm (~/.npm): acelera o `npm ci` de fallback.
           cache: npm
-      - run: npm ci --ignore-scripts
+
+      # Cache do node_modules já resolvido — evita rodar `npm ci` quando o
+      # lockfile não mudou. A chave inclui SO + versão do Node porque binários
+      # nativos (esbuild/swc/rollup) não são portáveis entre ambientes.
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-node${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar dependências
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci --ignore-scripts
       - name: TypeScript strict
         run: npm run type-check:strict
       - name: Prettier
@@ -68,8 +85,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
+          # Cache do tarball store do npm (~/.npm): acelera o `npm ci` de fallback.
           cache: npm
-      - run: npm ci --ignore-scripts
+
+      # Cache do node_modules já resolvido — evita rodar `npm ci` quando o
+      # lockfile não mudou. A chave inclui SO + versão do Node porque binários
+      # nativos (esbuild/swc/rollup) não são portáveis entre ambientes.
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-node${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar dependências
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci --ignore-scripts
 
       # Falha imediatamente se qualquer teste da suíte quebrar (regressão funcional).
       - name: Vitest (suíte completa, com cobertura)
@@ -166,12 +197,48 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
+          # Cache do tarball store do npm (~/.npm): acelera o `npm ci` de fallback.
           cache: npm
-      - run: npm ci --ignore-scripts
-      - name: Instalar navegadores
-        # --with-deps só existe em Linux; no Windows as libs já vêm no runner.
+
+      # Cache do node_modules já resolvido — evita rodar `npm ci` quando o
+      # lockfile não mudou. A chave inclui SO + versão do Node porque binários
+      # nativos (esbuild/swc/rollup) não são portáveis entre ambientes.
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-node${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar dependências
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci --ignore-scripts
+      # Browsers em caminho dentro do workspace: mesmo path nos dois SOs,
+      # o que simplifica a chave/caminho do cache.
+      - name: Resolver versão do Playwright
+        id: pw
         run: |
-          if [ "$RUNNER_OS" = "Linux" ]; then
+          version=$(node -p "require('@playwright/test/package.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Cache dos navegadores Playwright
+        id: cache-playwright
+        uses: actions/cache@v4
+        with:
+          path: .pw-browsers
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}-chromium
+
+      - name: Instalar navegadores
+        # Com cache hit só reinstalamos as libs de sistema (Linux); o binário
+        # do Chromium vem do cache. `--with-deps` não existe no Windows.
+        run: |
+          if [ "${{ steps.cache-playwright.outputs.cache-hit }}" = "true" ]; then
+            if [ "$RUNNER_OS" = "Linux" ]; then
+              npx playwright install-deps chromium
+            else
+              echo "Chromium restaurado do cache."
+            fi
+          elif [ "$RUNNER_OS" = "Linux" ]; then
             npx playwright install --with-deps chromium
           else
             npx playwright install chromium

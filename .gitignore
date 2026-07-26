@@ -87,3 +87,6 @@ deno.lock
 .npm-cache/
 .git/objects/pack/
 /test-results
+
+# Playwright browsers cacheados no CI
+.pw-browsers/
