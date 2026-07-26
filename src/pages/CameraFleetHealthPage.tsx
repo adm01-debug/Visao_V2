@@ -23,6 +23,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { PageMeta } from '@/components/PageMeta';
 import { PageContent } from '@/components/layout/MainLayout';
 import { AgentHealingTrailCard } from '@/components/admin/AgentHealingTrailCard';
+import { ArbiterInvariantsCard } from '@/components/admin/ArbiterInvariantsCard';
 
 import { cn } from '@/lib/utils';
 
@@ -295,6 +296,9 @@ export default function CameraFleetHealthPage() {
 
       {/* Onda 140 — decisão de NÃO agir dos agentes locais, com o motivo do veto. */}
       <AgentHealingTrailCard />
+
+      {/* Onda 142 — as 4 invariantes estruturais do árbitro, verificadas em produção. */}
+      <ArbiterInvariantsCard />
     </PageContent>
   );
 }
