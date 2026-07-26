@@ -172,22 +172,46 @@ export default function WeeklyReportPage() {
   }, [alerts, cameras]);
 
   const totalAlerts = alerts?.length ?? 0;
-  const resolvedAlerts = alerts?.filter((a) => a.resolved_at).length ?? 0;
-  const ackAlerts = alerts?.filter((a) => a.acknowledged_at).length ?? 0;
+
+  // ------- Produtividade (respeita eventos e janela de tempo configurados)
+  const inWindow = (ts: string | null) => Boolean(ts) && isWithinWindow(ts as string, prodConfig);
+
+  const resolvedAlerts = useMemo(() => {
+    if (!isEventEnabled(prodConfig, "resolved_alerts")) return 0;
+    return alerts?.filter((a) => inWindow(a.resolved_at)).length ?? 0;
+  }, [alerts, prodConfig]);
+
+  const ackedForMetrics = useMemo(() => {
+    if (!isEventEnabled(prodConfig, "acknowledged_alerts")) return [];
+    return alerts?.filter((a) => inWindow(a.acknowledged_at)) ?? [];
+  }, [alerts, prodConfig]);
+
+  const ackAlerts = ackedForMetrics.length;
+
   const avgMTTA = useMemo(() => {
-    const acks = alerts?.filter((a) => a.acknowledged_at) ?? [];
-    if (acks.length === 0) return 0;
-    const totalMs = acks.reduce(
+    if (ackedForMetrics.length === 0) return 0;
+    const totalMs = ackedForMetrics.reduce(
       (sum, a) => sum + (new Date(a.acknowledged_at!).getTime() - new Date(a.triggered_at).getTime()),
       0
     );
-    return Math.round(totalMs / acks.length / 60000);
-  }, [alerts]);
+    return Math.round(totalMs / ackedForMetrics.length / 60000);
+  }, [ackedForMetrics]);
 
-  const totalReco = recognitions?.length ?? 0;
-  const recognizedCount = recognitions?.filter((r) => r.recognized).length ?? 0;
-  const uniquePersons = new Set(recognitions?.filter((r) => r.person_id).map((r) => r.person_id)).size;
+  const panics = useMemo(() => {
+    if (!isEventEnabled(prodConfig, "panic_events")) return 0;
+    return panicEvents?.filter((p) => inWindow(p.created_at)).length ?? 0;
+  }, [panicEvents, prodConfig]);
+
+  const recoInScope = useMemo(() => {
+    if (!isEventEnabled(prodConfig, "recognitions")) return [];
+    return recognitions?.filter((r) => inWindow(r.timestamp)) ?? [];
+  }, [recognitions, prodConfig]);
+
+  const totalReco = recoInScope.length;
+  const recognizedCount = recoInScope.filter((r) => r.recognized).length;
+  const uniquePersons = new Set(recoInScope.filter((r) => r.person_id).map((r) => r.person_id)).size;
   const recognitionRate = totalReco > 0 ? Math.round((recognizedCount / totalReco) * 100) : 0;
+
 
   const pieData = (Object.keys(bySeverity) as Severity[])
     .map((s) => ({ name: severityLabel[s], value: bySeverity[s], key: s }))
