@@ -193,6 +193,7 @@ check(
 const functional = `
 BEGIN;
 SET LOCAL client_min_messages = warning;
+CREATE TEMP TABLE gate_result(v text) ON COMMIT DROP;
 DO $gate$
 DECLARE
   org_a uuid; org_b uuid; org_c uuid; org_d uuid; net uuid; usr uuid := gen_random_uuid();
@@ -343,9 +344,10 @@ BEGIN
     RAISE EXCEPTION 'FALHA: hash nulo para placa válida';
   END IF;
 
-  RAISE WARNING 'GATE_OK';
+  INSERT INTO gate_result(v) VALUES ('GATE_OK');
 END;
 $gate$;
+SELECT v FROM gate_result;
 ROLLBACK;
 `;
 
