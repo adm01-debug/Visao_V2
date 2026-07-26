@@ -148,8 +148,8 @@ DECLARE
   v_kinds text[];
   v_until timestamptz;
 BEGIN
-  INSERT INTO public.organizations (name, owner_id)
-  VALUES ('gate-131', v_user) RETURNING id INTO v_org;
+  INSERT INTO public.organizations (name, slug, created_by)
+  VALUES ('gate-131', 'gate-131-' || gen_random_uuid()::text, v_user) RETURNING id INTO v_org;
 
   -- Tipo proibido é descartado pela normalização do gatilho.
   INSERT INTO public.collab_notification_silences (user_id, organization_id, silenced_kinds, silenced_until)
