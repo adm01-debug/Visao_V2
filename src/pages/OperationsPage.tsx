@@ -12,6 +12,7 @@ import { EdgeErrorsAuditCard } from '@/components/admin/EdgeErrorsAuditCard';
 import { ConnectivityResolutionCard } from '@/components/admin/ConnectivityResolutionCard';
 import { CronJobRunsCard } from '@/components/admin/CronJobRunsCard';
 import { CronWatchdogRunsCard } from '@/components/admin/CronWatchdogRunsCard';
+import { PartitionDrainCard } from '@/components/admin/PartitionDrainCard';
 import { CronWatchdogEscalationCard } from '@/components/admin/CronWatchdogEscalationCard';
 
 import { PreviewAlertStatusCard } from '@/components/admin/PreviewAlertStatusCard';
