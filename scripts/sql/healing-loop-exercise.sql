@@ -118,7 +118,15 @@ VALUES
 
 -- ---------------------------------------------------------------------------
 -- 2) PASSE 1 — escada sem causa raiz externa.
+--
+--    `ci_seen` congela as ações pré-existentes. Filtrar por janela de tempo
+--    (`created_at >= now() - 10s`) NÃO funcionaria: dentro de uma transação
+--    `now()` é o instante de abertura, então as ações dos dois passes caem na
+--    mesma janela e o passe 2 leria a decisão do passe 1.
 -- ---------------------------------------------------------------------------
+CREATE TEMP TABLE ci_seen ON COMMIT DROP AS
+SELECT id FROM public.agent_healing_actions;
+
 DO $$
 DECLARE
   summary jsonb;
@@ -133,7 +141,8 @@ FROM public.local_agents a
 LEFT JOIN LATERAL (
   SELECT x.action, x.severity, x.reason
   FROM public.agent_healing_actions x
-  WHERE x.agent_id = a.id AND x.created_at >= now() - interval '10 seconds'
+  WHERE x.agent_id = a.id
+    AND NOT EXISTS (SELECT 1 FROM ci_seen s WHERE s.id = x.id)
   ORDER BY x.created_at DESC
   LIMIT 1
 ) h ON true
