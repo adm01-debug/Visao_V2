@@ -130,8 +130,8 @@ export function canonicalPlate(raw: unknown): PlateResult {
 
   let out = '';
   for (let i = 0; i < COLLAB_POLICY.plateLength; i += 1) {
-    const ch = stripped[i];
-    const slot = PLATE_MASK[i];
+    const ch = stripped[i] ?? '';
+    const slot = PLATE_MASK[i] ?? 'X';
 
     if (slot === 'A') {
       const fixed = ch >= 'A' && ch <= 'Z' ? ch : TO_LETTER[ch];
@@ -336,6 +336,7 @@ export function decideMatch(input: MatchInput): MatchDecision {
   });
 
   const winner = sorted[0];
+  if (winner === undefined) return NO_MATCH('no_match');
   const cooldownMs = COLLAB_POLICY.matchCooldownSeconds * 1_000;
   if (winner.lastAlertedAt !== null && input.now - winner.lastAlertedAt < cooldownMs) {
     return NO_MATCH('cooldown');
