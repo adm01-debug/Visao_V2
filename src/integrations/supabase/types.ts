@@ -1123,6 +1123,65 @@ export type Database = {
           },
         ]
       }
+      camera_ingest_endpoints: {
+        Row: {
+          camera_id: string
+          created_at: string
+          id: string
+          last_publish_at: string | null
+          last_publish_ip: string | null
+          last_unpublish_at: string | null
+          protocol: string
+          publish_count: number
+          rotated_at: string | null
+          stale_after_seconds: number
+          status: string
+          stream_key: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          camera_id: string
+          created_at?: string
+          id?: string
+          last_publish_at?: string | null
+          last_publish_ip?: string | null
+          last_unpublish_at?: string | null
+          protocol?: string
+          publish_count?: number
+          rotated_at?: string | null
+          stale_after_seconds?: number
+          status?: string
+          stream_key: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string
+          created_at?: string
+          id?: string
+          last_publish_at?: string | null
+          last_publish_ip?: string | null
+          last_unpublish_at?: string | null
+          protocol?: string
+          publish_count?: number
+          rotated_at?: string | null
+          stale_after_seconds?: number
+          status?: string
+          stream_key?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_ingest_endpoints_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       camera_patrol_stops: {
         Row: {
           created_at: string
@@ -6484,6 +6543,10 @@ export type Database = {
           update_policies: number
         }[]
       }
+      authorize_ingest_publish: {
+        Args: { _client_ip?: string; _protocol?: string; _stream_key: string }
+        Returns: Json
+      }
       backfill_envelope_encryption: {
         Args: { p_kek: string; p_kek_version?: number; p_limit?: number }
         Returns: {
@@ -6583,6 +6646,7 @@ export type Database = {
         }
         Returns: Json
       }
+      detect_stale_ingest_publishers: { Args: never; Returns: Json }
       ensure_future_partitions: {
         Args: { months_ahead?: number }
         Returns: Json
@@ -6637,6 +6701,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      generate_ingest_stream_key: { Args: never; Returns: string }
       get_api_usage_stats: { Args: { _days?: number }; Returns: Json }
       get_autovacuum_overrides: {
         Args: never
@@ -7273,6 +7338,7 @@ export type Database = {
           success_count_24h: number
         }[]
       }
+      mark_ingest_unpublish: { Args: { _stream_key: string }; Returns: Json }
       partition_maintenance_lock_key: { Args: never; Returns: number }
       point_in_polygon: {
         Args: { _poly: Json; _x: number; _y: number }
