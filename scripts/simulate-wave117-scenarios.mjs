@@ -134,7 +134,11 @@ const pool = [];
 for (const severity of SEVERITIES) {
   for (const ageMin of [10, 45, 200, 700, 2000]) {
     for (const dispatch of DISPATCHES) {
-      pool.push(snapshot({ severity, ageMin, level: 0, lastStepAgeMin: null, dispatch, ack: null }));
+      pool.push({
+        ...snapshot({ severity, ageMin, level: 0, lastStepAgeMin: null, dispatch, ack: null }),
+        // IDs precisam ser únicos: a comparação por ordem normaliza por alertId.
+        id: `pool-${String(pool.length).padStart(3, '0')}`,
+      });
     }
   }
 }
