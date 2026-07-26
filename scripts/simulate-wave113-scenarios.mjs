@@ -79,8 +79,13 @@ for (const count of counts) {
           if (v.stale) {
             check('I3', RANK[v.severity] >= 1, `stale age=${v.sampleAgeHours} sev=${v.severity}`);
           }
-          check('I3b', v.stale === (v.sampleAgeHours > T.maxSampleAgeHours),
-            `stale=${v.stale} age=${v.sampleAgeHours}`);
+          // Série vazia é um caso legítimo sem idade mensurável: `stale` é
+          // verdadeiro por ausência de coleta, não por comparação de idade.
+          check('I3b',
+            v.sampleAgeHours === null
+              ? v.stale === true && v.sampleCount === 0
+              : v.stale === (v.sampleAgeHours > T.maxSampleAgeHours),
+            `stale=${v.stale} age=${v.sampleAgeHours} n=${v.sampleCount}`);
 
           // I4 — sem crescimento não há projeção de saturação (salvo já saturado).
           if (v.trend !== 'growing' && v.currentRows < T.saturationRows) {
