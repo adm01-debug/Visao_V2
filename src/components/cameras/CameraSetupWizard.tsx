@@ -263,15 +263,23 @@ export function CameraSetupWizard({ camera, open, onOpenChange, profileId }: Cam
             </DialogDescription>
           </DialogHeader>
 
-          <Tabs value={tab} onValueChange={(v) => setTab(v as 'zones' | 'rules')} className="flex-1 flex flex-col overflow-hidden">
-            <TabsList className="grid grid-cols-2 w-full">
+          <Tabs value={tab} onValueChange={(v) => setTab(v as 'zones' | 'rules' | 'ingest')} className="flex-1 flex flex-col overflow-hidden">
+            <TabsList className="grid grid-cols-3 w-full">
               <TabsTrigger value="zones" className="gap-2">
                 <MapPin className="h-4 w-4" /> 1. Zonas ({zones.length})
               </TabsTrigger>
               <TabsTrigger value="rules" className="gap-2">
                 <ShieldAlert className="h-4 w-4" /> 2. Regras iniciais
               </TabsTrigger>
+              <TabsTrigger value="ingest" className="gap-2">
+                <Radio className="h-4 w-4" /> 3. Envio da câmera
+              </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="ingest" className="flex-1 overflow-y-auto mt-4">
+              <CameraIngestPushCard cameraId={camera?.id ?? null} />
+            </TabsContent>
+
 
             <TabsContent value="zones" className="flex-1 overflow-hidden mt-4">
               <div className="flex items-center justify-between mb-3">
