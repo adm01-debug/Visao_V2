@@ -11,14 +11,17 @@ import {
   DEFAULT_PRODUCTIVITY_CONFIG,
   EVENT_TYPE_LABEL,
   PRODUCTIVITY_EVENT_TYPES,
+  PRODUCTIVITY_PRESETS,
   PRODUCTIVITY_SEVERITIES,
   SEVERITY_LABEL,
   WEEKDAY_LABEL,
+  matchPreset,
   timeToMinutes,
   type ProductivityConfig,
   type ProductivityEventType,
   type ProductivitySeverity,
 } from "@/lib/productivityConfig";
+
 
 export interface ProductivityConfigPanelProps {
   draft: ProductivityConfig;
@@ -41,6 +44,9 @@ export function ProductivityConfigPanel({
   isSaving,
   isAuthenticated,
 }: ProductivityConfigPanelProps) {
+  const activePreset = matchPreset(draft);
+
+
   const toggleEventType = (type: ProductivityEventType, checked: boolean) => {
     onDraftChange({
       ...draft,
@@ -104,6 +110,31 @@ export function ProductivityConfigPanel({
         </div>
 
         <div className="space-y-2">
+          <Label className="text-xs uppercase text-muted-foreground">Presets</Label>
+          <div className="flex flex-wrap gap-1">
+            {PRODUCTIVITY_PRESETS.map((preset) => (
+              <Button
+                key={preset.id}
+                type="button"
+                size="sm"
+                variant={activePreset?.id === preset.id ? "default" : "outline"}
+                className="h-7 text-xs"
+                title={preset.description}
+                onClick={() => onDraftChange({ ...preset.config })}
+              >
+                {preset.label}
+              </Button>
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {activePreset ? activePreset.description : "Configuração personalizada"}
+          </p>
+        </div>
+
+        <Separator />
+
+        <div className="space-y-2">
+
           <Label className="text-xs uppercase text-muted-foreground">Tipos de evento</Label>
           {PRODUCTIVITY_EVENT_TYPES.map((type) => (
             <div key={type} className="flex items-center gap-2">
