@@ -172,6 +172,8 @@
     "simulate:wave118": "node scripts/simulate-wave118-scenarios.mjs",
     "db:check:restart-budget": "node scripts/check-agent-restart-budget.mjs",
     "simulate:wave119": "node scripts/simulate-wave119-scenarios.mjs",
+    "simulate:network-chaos": "node scripts/simulate-wave144-network-chaos.mjs",
+
     "db:check:relay-window": "node scripts/check-relay-task-window.mjs",
     "db:check:relay-verdict": "node scripts/check-relay-verdict.mjs",
     "db:check:relay-lease": "node scripts/check-relay-lease.mjs",

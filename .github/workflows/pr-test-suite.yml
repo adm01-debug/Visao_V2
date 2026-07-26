@@ -64,6 +64,11 @@ jobs:
         run: npm run format:check
       - name: Lint de migrations (RLS + GRANT + search_path)
         run: npm run check:migrations
+      # Caos de rede real (servidores locais): timeouts, RST, corpo truncado,
+      # blackhole TCP, retry/backoff e vazamento de socket no cliente.
+      - name: Simulação de falhas de rede e timeouts reais
+        run: npm run simulate:network-chaos
+
 
   unit-tests:
     name: Unit (${{ matrix.os }})
