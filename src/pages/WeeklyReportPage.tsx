@@ -298,8 +298,19 @@ export default function WeeklyReportPage() {
             <strong>{format(start, "dd 'de' MMM", { locale: ptBR })}</strong> e{" "}
             <strong>{format(end, "dd 'de' MMM yyyy", { locale: ptBR })}</strong>.
           </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Critérios ativos: {describeConfig(config)}
+          </p>
         </div>
         <div className="flex gap-2">
+          <ProductivityConfigPanel
+            draft={draft}
+            onDraftChange={setDraft}
+            onReset={resetDraft}
+            onSave={saveConfig}
+            isSaving={isSaving}
+            isAuthenticated={isAuthenticated}
+          />
           <Select value={String(range)} onValueChange={(v) => setRange(Number(v) as Range)}>
             <SelectTrigger className="w-[160px]">
               <SelectValue />
@@ -310,6 +321,7 @@ export default function WeeklyReportPage() {
               <SelectItem value="30">Últimos 30 dias</SelectItem>
             </SelectContent>
           </Select>
+
           <Button onClick={exportPdf} disabled={exporting || loading}>
             {exporting ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
