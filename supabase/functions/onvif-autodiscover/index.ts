@@ -10,6 +10,7 @@
 //   - Nunca loga senha; mascara credenciais em qualquer erro.
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { recordEdgeError } from "../_shared/errorAudit.ts";
+import { RELAY_BACKEND_ABANDONED, conformantTtlSeconds, relayExpiresAt } from "../_shared/relayWindow.ts";
 
 
 const corsHeaders = {
@@ -24,7 +25,8 @@ const ONVIF_PORTS_DEFAULT = [8899, 80, 8000, 8080, 2020];
 const PROBE_TIMEOUT_MS = 5000;
 const RELAY_TASK_TIMEOUT_MS = 25_000;
 const RELAY_POLL_INTERVAL_MS = 400;
-const RELAY_TASK_TTL_SEC = 45;
+// Onda 120: TTL derivado da espera real, nunca abaixo da janela justa de 60s.
+const RELAY_TASK_TTL_SEC = conformantTtlSeconds(RELAY_TASK_TIMEOUT_MS);
 
 interface Payload {
   host: string;
@@ -131,7 +133,7 @@ class RelayTransport implements Transport {
 
   async post(url: string, envelope: string, timeoutMs: number): Promise<SoapResult> {
     const bodyB64 = btoa(unescape(encodeURIComponent(envelope)));
-    const expiresAt = new Date(Date.now() + RELAY_TASK_TTL_SEC * 1000).toISOString();
+    const expiresAt = relayExpiresAt(RELAY_TASK_TIMEOUT_MS);
     const { data: inserted, error: insErr } = await this.admin
       .from("agent_relay_tasks")
       .insert({
@@ -173,7 +175,8 @@ class RelayTransport implements Transport {
     // Timeout no lado do backend — marca tarefa para não ficar zumbi.
     await this.admin
       .from("agent_relay_tasks")
-      .update({ status: "expired", error: "backend_timeout", completed_at: new Date().toISOString() })
+      // Onda 120: desistência nossa — motivo distinto do silêncio do agente.
+      .update({ status: "expired", error: RELAY_BACKEND_ABANDONED, completed_at: new Date().toISOString() })
       .eq("id", taskId)
       .in("status", ["pending", "in_progress"]);
     return { ok: false, status: 0, text: "relay_backend_timeout" };

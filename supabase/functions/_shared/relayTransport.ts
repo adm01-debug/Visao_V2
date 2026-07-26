@@ -8,10 +8,17 @@
 //   - Nunca aceita `relay_agent_id` sem autenticação.
 //   - Corpos binários são transportados em base64; texto UTF-8 preservado.
 import { createClient, SupabaseClient } from "npm:@supabase/supabase-js@2";
+import { RELAY_BACKEND_ABANDONED, conformantTtlSeconds, relayExpiresAt } from "./relayWindow.ts";
 
 export const RELAY_TASK_TIMEOUT_MS = 25_000;
 export const RELAY_POLL_INTERVAL_MS = 400;
-export const RELAY_TASK_TTL_SEC = 45;
+/**
+ * Onda 120: o TTL deixa de ser um número solto. Ele é derivado do tempo que
+ * esta função realmente espera e nunca cai abaixo da janela justa de 60s —
+ * abaixo disso a tarefa vira uma linha que o diagnóstico de surdez precisa
+ * descartar, cegando a rotina de cura.
+ */
+export const RELAY_TASK_TTL_SEC = conformantTtlSeconds(RELAY_TASK_TIMEOUT_MS);
 const AGENT_STALE_MS = 120_000;
 
 export interface HttpResult {
@@ -69,7 +76,7 @@ export class RelayTransport implements Transport {
     timeoutMs: number;
   }): Promise<HttpResult> {
     const bodyB64 = body ? btoa(unescape(encodeURIComponent(body))) : null;
-    const expiresAt = new Date(Date.now() + RELAY_TASK_TTL_SEC * 1000).toISOString();
+    const expiresAt = relayExpiresAt(RELAY_TASK_TIMEOUT_MS);
     const { data: inserted, error: insErr } = await this.admin
       .from("agent_relay_tasks")
       .insert({
@@ -111,7 +118,9 @@ export class RelayTransport implements Transport {
     }
     await this.admin
       .from("agent_relay_tasks")
-      .update({ status: "expired", error: "backend_timeout", completed_at: new Date().toISOString() })
+      // Onda 120: quem desistiu fomos nós, não o agente. O motivo precisa ser
+      // distinguível para que `heal_local_agents` não conte isto como surdez.
+      .update({ status: "expired", error: RELAY_BACKEND_ABANDONED, completed_at: new Date().toISOString() })
       .eq("id", taskId)
       .in("status", ["pending", "in_progress"]);
     return { ok: false, status: 0, text: "relay_backend_timeout" };
