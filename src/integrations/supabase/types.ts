@@ -7609,6 +7609,7 @@ export type Database = {
         }
         Returns: Json
       }
+      evaluate_retention_alerts: { Args: { p_now?: string }; Returns: Json }
       evaluate_vehicle_recurrence: {
         Args: { _min_passes?: number; _window_minutes?: number }
         Returns: Json
