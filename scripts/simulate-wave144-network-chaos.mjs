@@ -228,6 +228,18 @@ function listen(server) {
 function close(server) {
   return new Promise((resolve) => server.close(() => resolve()));
 }
+/** Fecha o pool keep-alive interno do `fetch` (undici) para provar a drenagem. */
+async function closeHttpPool() {
+  const sym = Object.getOwnPropertySymbols(globalThis).find((s) => String(s).includes('undici.globalDispatcher'));
+  const dispatcher = sym ? globalThis[sym] : null;
+  if (dispatcher && typeof dispatcher.close === 'function') {
+    try {
+      await dispatcher.close();
+    } catch {
+      if (typeof dispatcher.destroy === 'function') await dispatcher.destroy();
+    }
+  }
+}
 /** Espera os sockets do servidor drenarem (keep-alive + handlers pendentes). */
 async function drainSockets(maxWaitMs) {
   const deadline = Date.now() + maxWaitMs;
@@ -237,6 +249,7 @@ async function drainSockets(maxWaitMs) {
   }
   return openSockets.size === 0;
 }
+
 
 
 // ---------------------------------------------------------------------------
