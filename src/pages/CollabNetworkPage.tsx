@@ -136,6 +136,9 @@ export default function CollabNetworkPage() {
             onRemove={(organizationId) => governance.removeMembership.mutate(organizationId)}
             isBusy={isBusy}
           />
+
+          <CollabNotificationsCard networkId={networkId} orgNameById={orgNameById} />
+
         </>
       )}
     </div>
