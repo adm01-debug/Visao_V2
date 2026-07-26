@@ -83,7 +83,7 @@ export function contactIdForEvent(kind: string): ContactIdMapping | null {
   // hasOwnProperty explícito: acesso direto devolveria membros do protótipo
   // (`__proto__`, `toString`) e inventaria códigos para eventos inexistentes.
   if (!Object.prototype.hasOwnProperty.call(CONTACT_ID_MAP, kind)) return null;
-  return (CONTACT_ID_MAP as Record<string, ContactIdMapping>)[kind];
+  return (CONTACT_ID_MAP as Record<string, ContactIdMapping>)[kind] ?? null;
 }
 
 /**
