@@ -1,0 +1,1 @@
+- [Healing Arbiter](mem://architecture/healing-arbiter) — Onda 123: árbitro entre escada de cura (115) e reentrega (122), ação `observe`, veto por causa externa; gate `db:check:healing-arbiter`
