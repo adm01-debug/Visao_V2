@@ -269,12 +269,24 @@ BEGIN
   SELECT public.collab_purge_notifications(now() + interval '91 days') INTO n;
   IF n < 4 THEN RAISE EXCEPTION 'limpeza não removeu avisos fora da retenção (%)', n; END IF;
 
-  RAISE EXCEPTION 'GATE_OK';
+  RAISE NOTICE 'GATE_OK';
 END
 $gate$;
-`.replace(/'/g, "'"))
-  .toString();
-void functional;
+ROLLBACK;
+`;
+
+try {
+  const out = execFileSync('psql', ['-v', 'ON_ERROR_STOP=1', '-f', '-'], {
+    input: FUNCTIONAL_SQL,
+    encoding: 'utf8',
+    stdio: ['pipe', 'pipe', 'pipe'],
+  });
+  check('FUNCIONAL', /GATE_OK/.test(out), `bateria funcional não chegou ao fim:\n${out}`);
+} catch (error) {
+  const detail = `${error.stdout ?? ''}${error.stderr ?? ''}`.trim() || String(error);
+  check('FUNCIONAL', false, detail);
+}
+
 
 if (failures.length > 0) {
   console.error('\n❌ Gate de notificações colaborativas falhou:\n');
