@@ -8250,6 +8250,14 @@ export type Database = {
         Returns: boolean
       }
       heal_local_agents: { Args: never; Returns: Json }
+      healing_arbiter_invariants: {
+        Args: never
+        Returns: {
+          detail: string
+          invariant_key: string
+          ok: boolean
+        }[]
+      }
       import_settings_backup: {
         Args: { _payload: Json; _strategy?: string }
         Returns: Json
