@@ -571,7 +571,7 @@ export default function NvrDetailPage(): JSX.Element {
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6 mb-mobile-nav">
+    <div className="container mx-auto py-6 space-y-6">
       <PageMeta
         title={nvr ? `${nvr.name} — NVR — VISÃO` : "NVR — VISÃO"}
         description="Detalhes do gravador e status por canal RTSP."

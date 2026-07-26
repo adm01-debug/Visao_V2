@@ -30,7 +30,7 @@ export default function NvrsPage(): JSX.Element {
   const { data: nvrs, isLoading, error } = useNvrs();
 
   return (
-    <div className="container mx-auto py-6 space-y-6 mb-mobile-nav">
+    <div className="container mx-auto py-6 space-y-6">
       <PageMeta
         title="NVRs — VISÃO"
         description="Gerencie gravadores de vídeo em rede (NVR) e monitore a saúde do bridge de canais RTSP."
