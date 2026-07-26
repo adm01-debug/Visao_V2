@@ -3628,6 +3628,42 @@ export type Database = {
         }
         Relationships: []
       }
+      productivity_metric_preferences: {
+        Row: {
+          created_at: string
+          event_types: string[]
+          id: string
+          severities: string[]
+          updated_at: string
+          user_id: string
+          weekdays: number[]
+          window_end: string
+          window_start: string
+        }
+        Insert: {
+          created_at?: string
+          event_types?: string[]
+          id?: string
+          severities?: string[]
+          updated_at?: string
+          user_id: string
+          weekdays?: number[]
+          window_end?: string
+          window_start?: string
+        }
+        Update: {
+          created_at?: string
+          event_types?: string[]
+          id?: string
+          severities?: string[]
+          updated_at?: string
+          user_id?: string
+          weekdays?: number[]
+          window_end?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
