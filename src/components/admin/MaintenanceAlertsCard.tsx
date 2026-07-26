@@ -34,6 +34,8 @@ const ROUTINE_LABELS: Record<string, string> = {
   partition_maintenance: 'Cobertura de partições',
   partition_drain: 'Drenagem da DEFAULT',
   partition_quarantine: 'Triagem da quarentena',
+  // Onda 114: detectores especializados encaminhados ao mesmo barramento.
+  ...MAINTENANCE_SOURCE_LABELS,
 };
 
 const SEVERITY_VARIANT: Record<MaintenanceSeverity, 'outline' | 'secondary' | 'destructive'> = {
