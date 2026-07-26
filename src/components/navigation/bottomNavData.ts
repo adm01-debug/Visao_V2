@@ -64,9 +64,12 @@ export const allCategories: NavCategory[] = [
     id: "settings", label: "Config", icon: Settings, defaultPath: "/settings", minRole: "manager",
     items: [
       { id: "general", label: "Geral", icon: Settings, path: "/settings" },
+      { id: "maintenance", label: "Manut.", icon: Wrench, path: "/manutencao", minRole: "admin" },
+      { id: "collab", label: "Rede", icon: Network, path: "/rede-colaborativa", minRole: "manager" },
       { id: "notifications", label: "Notif.", icon: Bell, path: "/notification-settings" },
       { id: "streams", label: "Streams", icon: Sliders, path: "/stream-settings" },
       { id: "telegram", label: "Telegram", icon: MessageSquare, path: "/telegram-settings" },
     ],
   },
+
 ];
