@@ -81,11 +81,13 @@ VALUES
   -- S5: heartbeat perfeito, mas com alerta de reentrega ⇒ invisível à escada,
   -- capturado pelo árbitro (R3) como `observe`.
   ('c1000000-0000-4000-8000-000000000005', :'uid'::uuid, 'ci-healing-observe',
-   'ci-healing-token-05', 'active', now() - interval '1 minute', now() - interval '30 days'),
+   'ci-healing-token-05', 'active', now() - interval '1 minute', now() - interval '30 days');
 
-  -- S6: gêmeo de S3, reservado ao passe 2 (veto por causa raiz externa).
-  ('c1000000-0000-4000-8000-000000000006', :'uid'::uuid, 'ci-healing-veto',
-   'ci-healing-token-06', 'active', now() - interval '45 minutes', now() - interval '30 days');
+-- S6 (gêmeo de S3, para o veto do passe 2) NÃO entra aqui de propósito: se
+-- existisse durante o passe 1, seria reiniciado ali e, no passe 2, o cooldown
+-- de 15min o silenciaria — o exercício mediria o cooldown achando que mede o
+-- veto. Ele é criado só na seção 3.
+
 
 -- Enchimento saudável: sem ele, os 5 agentes doentes seriam a frota inteira e o
 -- disjuntor de falha correlacionada (≥40% afetados) abortaria o passe 1 — o
