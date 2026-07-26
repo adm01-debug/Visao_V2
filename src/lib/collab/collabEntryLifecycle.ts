@@ -75,11 +75,10 @@ export interface CollabEntrySubject {
 export function isEntryPurgeable(subject: CollabEntrySubject): boolean {
   const p = COLLAB_ENTRY_LIFECYCLE_POLICY;
 
+  // Idade não-finita (dado corrompido) nunca *autoriza* apagar, mas também não
+  // bloqueia o outro caminho: um vencimento legítimo continua valendo.
   const revoked = subject.revokedAgeDays;
-  if (revoked !== null) {
-    if (!Number.isFinite(revoked)) return false;
-    if (revoked > p.revokedGraceDays) return true;
-  }
+  if (revoked !== null && Number.isFinite(revoked) && revoked > p.revokedGraceDays) return true;
 
   if (!Number.isFinite(subject.expiredAgeDays)) return false;
   return subject.expiredAgeDays > p.expiredGraceDays;
