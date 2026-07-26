@@ -55,7 +55,14 @@ export type EvidenceClass =
   | 'inconclusive';
 
 /** Erros gravados por decisão do backend, nunca por silêncio do agente. */
-export const BACKEND_ABANDON_ERRORS: readonly string[] = ['relay_backend_abandoned', 'backend_timeout'];
+export const BACKEND_ABANDON_ERRORS: readonly string[] = [
+  'relay_backend_abandoned',
+  'backend_timeout',
+  // Onda 121: prazo final absoluto da tarefa — encerramento administrativo
+  // nosso, não silêncio do agente.
+  'task_expired_deadline',
+];
+
 
 export interface RelayTaskFacts {
   readonly status: 'pending' | 'in_progress' | 'done' | 'failed' | 'expired';
