@@ -530,6 +530,132 @@ export type Database = {
           },
         ]
       }
+      camera_clock_skew_findings: {
+        Row: {
+          camera_id: string | null
+          created_at: string
+          detected_at: string
+          direction: string
+          id: string
+          max_abs_skew_seconds: number
+          median_skew_seconds: number
+          reason: string
+          run_id: string
+          sample_count: number
+          sentinel_rows: number
+          severity: string
+          source_table: string
+          suppressed: boolean
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          camera_id?: string | null
+          created_at?: string
+          detected_at?: string
+          direction?: string
+          id?: string
+          max_abs_skew_seconds?: number
+          median_skew_seconds?: number
+          reason?: string
+          run_id: string
+          sample_count?: number
+          sentinel_rows?: number
+          severity: string
+          source_table: string
+          suppressed?: boolean
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          camera_id?: string | null
+          created_at?: string
+          detected_at?: string
+          direction?: string
+          id?: string
+          max_abs_skew_seconds?: number
+          median_skew_seconds?: number
+          reason?: string
+          run_id?: string
+          sample_count?: number
+          sentinel_rows?: number
+          severity?: string
+          source_table?: string
+          suppressed?: boolean
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_clock_skew_findings_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "camera_clock_skew_findings_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "camera_clock_skew_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      camera_clock_skew_runs: {
+        Row: {
+          cameras_analyzed: number
+          cameras_critical: number
+          cameras_warning: number
+          created_at: string
+          critical_seconds: number
+          duration_ms: number
+          error_detail: string | null
+          id: string
+          lookback_hours: number
+          min_samples: number
+          ok: boolean
+          ran_at: string
+          sources: string[]
+          updated_at: string
+          warn_seconds: number
+        }
+        Insert: {
+          cameras_analyzed?: number
+          cameras_critical?: number
+          cameras_warning?: number
+          created_at?: string
+          critical_seconds?: number
+          duration_ms?: number
+          error_detail?: string | null
+          id?: string
+          lookback_hours?: number
+          min_samples?: number
+          ok?: boolean
+          ran_at?: string
+          sources?: string[]
+          updated_at?: string
+          warn_seconds?: number
+        }
+        Update: {
+          cameras_analyzed?: number
+          cameras_critical?: number
+          cameras_warning?: number
+          created_at?: string
+          critical_seconds?: number
+          duration_ms?: number
+          error_detail?: string | null
+          id?: string
+          lookback_hours?: number
+          min_samples?: number
+          ok?: boolean
+          ran_at?: string
+          sources?: string[]
+          updated_at?: string
+          warn_seconds?: number
+        }
+        Relationships: []
+      }
       camera_connectivity_preferences: {
         Row: {
           camera_id: string
@@ -6137,6 +6263,15 @@ export type Database = {
       delete_user_data: {
         Args: { _target_user_id: string }
         Returns: undefined
+      }
+      detect_camera_clock_skew: {
+        Args: {
+          critical_seconds?: number
+          lookback_hours?: number
+          min_samples?: number
+          warn_seconds?: number
+        }
+        Returns: Json
       }
       ensure_future_partitions: {
         Args: { months_ahead?: number }
