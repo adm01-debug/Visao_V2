@@ -275,6 +275,7 @@ export type Database = {
       agent_relay_tasks: {
         Row: {
           agent_id: string
+          attempts: number
           claimed_at: string | null
           completed_at: string | null
           created_at: string
@@ -282,6 +283,8 @@ export type Database = {
           expires_at: string
           id: string
           kind: string
+          last_error: string | null
+          lease_expires_at: string | null
           request: Json
           response: Json | null
           scheduled_at: string
@@ -290,6 +293,7 @@ export type Database = {
         }
         Insert: {
           agent_id: string
+          attempts?: number
           claimed_at?: string | null
           completed_at?: string | null
           created_at?: string
@@ -297,6 +301,8 @@ export type Database = {
           expires_at?: string
           id?: string
           kind: string
+          last_error?: string | null
+          lease_expires_at?: string | null
           request: Json
           response?: Json | null
           scheduled_at?: string
@@ -305,6 +311,7 @@ export type Database = {
         }
         Update: {
           agent_id?: string
+          attempts?: number
           claimed_at?: string | null
           completed_at?: string | null
           created_at?: string
@@ -312,6 +319,8 @@ export type Database = {
           expires_at?: string
           id?: string
           kind?: string
+          last_error?: string | null
+          lease_expires_at?: string | null
           request?: Json
           response?: Json | null
           scheduled_at?: string
@@ -6478,6 +6487,7 @@ export type Database = {
         Args: { _agent_id: string; _max?: number }
         Returns: {
           agent_id: string
+          attempts: number
           claimed_at: string | null
           completed_at: string | null
           created_at: string
@@ -6485,6 +6495,8 @@ export type Database = {
           expires_at: string
           id: string
           kind: string
+          last_error: string | null
+          lease_expires_at: string | null
           request: Json
           response: Json | null
           scheduled_at: string
@@ -7289,6 +7301,24 @@ export type Database = {
       }
       purge_bandwidth_samples: { Args: never; Returns: number }
       purge_timelapse_snapshots: { Args: never; Returns: number }
+      reap_agent_relay_leases: {
+        Args: never
+        Returns: {
+          expired: number
+          requeued: number
+        }[]
+      }
+      relay_lease_policy: {
+        Args: never
+        Returns: {
+          backoff_base_seconds: number
+          backoff_max_seconds: number
+          hard_deadline_seconds: number
+          lease_seconds: number
+          max_attempts: number
+          min_window_seconds: number
+        }[]
+      }
       release_ptz_lock: { Args: { _camera_id: string }; Returns: boolean }
       replace_user_role: {
         Args: {
