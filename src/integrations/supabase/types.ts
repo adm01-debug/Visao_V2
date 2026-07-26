@@ -2005,6 +2005,42 @@ export type Database = {
           },
         ]
       }
+      collab_notification_purge_runs: {
+        Row: {
+          base_days: number
+          created_at: string
+          deleted_notifications: number
+          deleted_silences: number
+          duration_ms: number
+          executed_at: string
+          hard_ceiling_days: number
+          id: string
+          truncated: boolean
+        }
+        Insert: {
+          base_days: number
+          created_at?: string
+          deleted_notifications?: number
+          deleted_silences?: number
+          duration_ms?: number
+          executed_at?: string
+          hard_ceiling_days: number
+          id?: string
+          truncated?: boolean
+        }
+        Update: {
+          base_days?: number
+          created_at?: string
+          deleted_notifications?: number
+          deleted_silences?: number
+          duration_ms?: number
+          executed_at?: string
+          hard_ceiling_days?: number
+          id?: string
+          truncated?: boolean
+        }
+        Relationships: []
+      }
       collab_notification_reads: {
         Row: {
           created_at: string
@@ -7297,6 +7333,10 @@ export type Database = {
         Args: { p_expires_at: string; p_now?: string; p_status: string }
         Returns: string
       }
+      collab_effective_retention_days: {
+        Args: { p_has_read: boolean; p_kind: string }
+        Returns: number
+      }
       collab_expire_invitations: { Args: { p_now?: string }; Returns: number }
       collab_governance_policy: { Args: never; Returns: Json }
       collab_invite_org: {
@@ -7350,7 +7390,7 @@ export type Database = {
         Returns: string
       }
       collab_policy: { Args: never; Returns: Json }
-      collab_purge_notifications: { Args: { p_now?: string }; Returns: number }
+      collab_purge_notifications: { Args: { p_now?: string }; Returns: Json }
       collab_remove_membership: {
         Args: { p_network_id: string; p_organization_id: string }
         Returns: number
@@ -7359,6 +7399,7 @@ export type Database = {
         Args: { p_accept: boolean; p_invitation_id: string; p_now?: string }
         Returns: string
       }
+      collab_retention_policy: { Args: never; Returns: Json }
       collab_revoke_invite: {
         Args: { p_invitation_id: string; p_now?: string }
         Returns: undefined
