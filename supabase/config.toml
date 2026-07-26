@@ -80,3 +80,6 @@ verify_jwt = false
 
 [functions.watchdog-ack-sla-alert]
 verify_jwt = false
+
+[functions.maintenance-alerts-dispatch]
+verify_jwt = false
