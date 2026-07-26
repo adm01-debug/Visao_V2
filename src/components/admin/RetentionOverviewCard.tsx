@@ -8,13 +8,25 @@ import { Database, AlertTriangle, CheckCircle2, Clock } from "lucide-react";
 
 interface RetentionRow {
   job_name: string;
+  label: string | null;
+  cadence_minutes: number | null;
   last_run: string | null;
+  minutes_since_last: number | null;
   hours_since_last: number | null;
   health: "ok" | "warn" | "stalled" | "never";
   runs_last_30d: number;
   deleted_last_30d: number;
   retention_days: number | null;
 }
+
+/** Cadência em texto curto ("1h", "24h") para a coluna de frequência. */
+function formatCadence(minutes: number | null): string {
+  if (minutes === null || minutes <= 0) return "—";
+  if (minutes % 1440 === 0) return `${minutes / 1440}d`;
+  if (minutes % 60 === 0) return `${minutes / 60}h`;
+  return `${minutes}min`;
+}
+
 
 const HEALTH_META: Record<RetentionRow["health"], { label: string; variant: "default" | "secondary" | "destructive" | "outline"; icon: typeof CheckCircle2 }> = {
   ok: { label: "Saudável", variant: "default", icon: CheckCircle2 },
