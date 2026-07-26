@@ -237,7 +237,10 @@ BEGIN
   ASSERT (SELECT status='pending' AND claimed_by IS NULL FROM public.monitoring_center_dispatches WHERE id = d);
 
   -- Conta desativada para de gerar tráfego para a central.
-  UPDATE public.monitoring_center_accounts SET enabled = false WHERE id = acc;
+  INSERT INTO public.monitoring_center_accounts
+    (user_id, provider, label, account_code, endpoint_url, enabled)
+  VALUES (u, 'moni', 'Central desativada', 'CD34', 'https://receptora.example/dc09', false)
+  RETURNING id INTO acc;
   r := public.enqueue_monitoring_center_event(acc, 'panic', '002', NULL, '{}'::jsonb, now() + interval '900 s');
   ASSERT r->>'reason' = 'account_disabled', r::text;
 
