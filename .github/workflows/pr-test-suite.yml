@@ -258,17 +258,53 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
+  db-guardrails:
+    name: Guardrails de banco (SECURITY DEFINER + RLS)
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Verificar credenciais do banco
+        id: creds
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -n "${SUPABASE_DB_URL:-}" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::SUPABASE_DB_URL ausente — guardrails de banco não executados."
+          fi
+
+      - name: Instalar cliente psql
+        if: steps.creds.outputs.available == 'true'
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends postgresql-client
+
+      # Falha o PR se surgir função SECURITY DEFINER exposta a anon/sem guard,
+      # política RLS irrestrita, política ligada a PUBLIC ou rotina DBA
+      # (ex.: terminate_db_session) acessível fora do perfil admin.
+      - name: Gates de exposição (definer + RLS)
+        if: steps.creds.outputs.available == 'true'
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: npm run db:check:all
+
   suite-gate:
     name: Suíte completa aprovada
     if: always()
     runs-on: ubuntu-latest
-    needs: [static-analysis, unit-tests, e2e-tests]
+    needs: [static-analysis, unit-tests, e2e-tests, db-guardrails]
     steps:
       - name: Verificar resultado dos jobs
         env:
           STATIC_RESULT: ${{ needs.static-analysis.result }}
           UNIT_RESULT: ${{ needs.unit-tests.result }}
           E2E_RESULT: ${{ needs.e2e-tests.result }}
+          DB_RESULT: ${{ needs.db-guardrails.result }}
           IS_DRAFT: ${{ github.event.pull_request.draft }}
         run: |
           set -euo pipefail
