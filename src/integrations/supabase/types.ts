@@ -7254,16 +7254,27 @@ export type Database = {
         Args: { _camera_id: string; _rules: Json; _zones: Json }
         Returns: Json
       }
-      arbitrate_agent_healing: {
-        Args: {
-          deliveries: number
-          external_root_cause: boolean
-          healing_action: string
-          healing_severity: string
-          redelivery_severity: string
-        }
-        Returns: Json
-      }
+      arbitrate_agent_healing:
+        | {
+            Args: {
+              deliveries: number
+              external_root_cause: boolean
+              healing_action: string
+              healing_severity: string
+              redelivery_severity: string
+            }
+            Returns: Json
+          }
+        | {
+            Args: {
+              deliveries: number
+              external_root_cause: boolean
+              healing_action: string
+              healing_severity: string
+              redelivery_severity: string
+            }
+            Returns: Json
+          }
       array_days_valid: { Args: { days: number[] }; Returns: boolean }
       audit_cameras_embedded_credentials: {
         Args: never
