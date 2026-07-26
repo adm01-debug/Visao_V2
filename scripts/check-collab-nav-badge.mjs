@@ -48,7 +48,9 @@ check('ROTINA', proInfo !== '', 'collab_unread_counts não existe no schema publ
 
 if (proInfo !== '') {
   const [secdef, result] = proInfo.split('|');
-  check('ROTINA', secdef === 't', 'collab_unread_counts não é SECURITY DEFINER');
+  // `boolean || text` rende 'true'/'false', não 't'/'f'.
+  check('ROTINA', secdef === 'true', 'collab_unread_counts não é SECURITY DEFINER');
+
   for (const column of REQUIRED_COLUMNS) {
     check('CONTRATO', new RegExp(`\\b${column}\\b`).test(result), `coluna "${column}" ausente no retorno (${result})`);
     check('CONTRATO', source.includes(column), `TypeScript não lê a coluna "${column}"`);
