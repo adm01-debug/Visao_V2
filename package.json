@@ -140,9 +140,8 @@
     "coverage:baseline": "node scripts/check-coverage-baseline.mjs --update",
     "coverage:comment": "node scripts/build-coverage-comment.mjs",
     "test:ci:flaky-retry": "node scripts/vitest-flaky-retry.mjs",
-    "test:suite:ci": "npm run coverage:ci && npm run coverage:check"
-
-
+    "test:suite:ci": "npm run coverage:ci && npm run coverage:check",
+    "db:check:definer": "node scripts/check-definer-exposure.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
