@@ -26,6 +26,8 @@ import {
 import { toast } from "sonner";
 import { useProductivityConfig } from "@/hooks/useProductivityConfig";
 import { ProductivityConfigPanel } from "@/components/reports/ProductivityConfigPanel";
+import { KpiMethodologyCard } from "@/components/reports/KpiMethodologyCard";
+
 import {
   describeConfig,
   includesEventType,
