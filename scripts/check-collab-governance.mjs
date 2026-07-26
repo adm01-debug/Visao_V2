@@ -216,7 +216,8 @@ BEGIN
   RETURNING id INTO v_third_org;
 
   INSERT INTO organization_members (organization_id, user_id, role)
-  VALUES (v_owner_org, v_owner_user, 'admin'), (v_guest_org, v_guest_user, 'admin');
+  VALUES (v_owner_org, v_owner_user, 'admin'), (v_guest_org, v_guest_user, 'admin')
+  ON CONFLICT DO NOTHING;
 
   PERFORM set_config('request.jwt.claims', json_build_object('sub', v_owner_user)::text, true);
 
@@ -301,7 +302,7 @@ BEGIN
   UPDATE collab_invitations SET expires_at = now() - interval '1 second' WHERE id = v_inv;
   PERFORM set_config('request.jwt.claims', json_build_object('sub', v_owner_user)::text, true);
   INSERT INTO organization_members (organization_id, user_id, role)
-  VALUES (v_third_org, v_owner_user, 'admin');
+  VALUES (v_third_org, v_owner_user, 'admin') ON CONFLICT DO NOTHING;
   PERFORM pg_temp.expect_error('aceite de convite vencido',
     format('SELECT collab_respond_invite(%L,true)', v_inv), 'invite_expired');
   PERFORM pg_temp.expect('vencido materializado',
