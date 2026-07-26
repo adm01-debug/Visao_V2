@@ -11,6 +11,11 @@ verify_jwt = false
 [functions.admin-slow-queries]
 verify_jwt = true
 
+[functions.fleet-health]
+# Consulta somente leitura da frota: assinatura do JWT validada pela plataforma,
+# papel e recorte de dados validados dentro da função (RLS do chamador).
+verify_jwt = true
+
 [functions.csp-anomaly-notify]
 verify_jwt = false
 
