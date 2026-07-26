@@ -71,8 +71,9 @@ export function RetentionOverviewCard() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Job</TableHead>
+                  <TableHead>Rotina</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Frequência</TableHead>
                   <TableHead className="text-right">Última execução</TableHead>
                   <TableHead className="text-right">Execuções (30d)</TableHead>
                   <TableHead className="text-right">Registros apagados (30d)</TableHead>
@@ -85,12 +86,18 @@ export function RetentionOverviewCard() {
                   const Icon = meta.icon;
                   return (
                     <TableRow key={row.job_name}>
-                      <TableCell className="font-mono text-xs">{row.job_name}</TableCell>
+                      <TableCell>
+                        <span className="block text-sm">{row.label ?? row.job_name}</span>
+                        <span className="block font-mono text-xs text-muted-foreground">{row.job_name}</span>
+                      </TableCell>
                       <TableCell>
                         <Badge variant={meta.variant} className="gap-1">
                           <Icon className="h-3 w-3" />
                           {meta.label}
                         </Badge>
+                      </TableCell>
+                      <TableCell className="text-right text-muted-foreground">
+                        {formatCadence(row.cadence_minutes)}
                       </TableCell>
                       <TableCell className="text-right text-muted-foreground">
                         {row.hours_since_last !== null
