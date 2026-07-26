@@ -147,12 +147,17 @@ BEGIN
     RAISE EXCEPTION 'gate:cópia mínima não foi congelada no avistamento';
   END IF;
 
-  -- imutabilidade da prova
-  UPDATE public.collab_matches SET owner_org_id = v_reader, entry_reason = 'adulterado' WHERE id = v_match_new;
-  IF (SELECT owner_org_id FROM public.collab_matches WHERE id = v_match_new) IS DISTINCT FROM v_owner
-     OR (SELECT entry_reason FROM public.collab_matches WHERE id = v_match_new) <> 'vencida' THEN
-    RAISE EXCEPTION 'gate:cópia mínima do avistamento é reescrevível';
-  END IF;
+  -- imutabilidade da prova: ou o papel nem tem UPDATE (defesa em profundidade),
+  -- ou o gatilho descarta a reescrita. Qualquer um dos dois é aceitável.
+  BEGIN
+    UPDATE public.collab_matches SET owner_org_id = v_reader, entry_reason = 'adulterado' WHERE id = v_match_new;
+    IF (SELECT owner_org_id FROM public.collab_matches WHERE id = v_match_new) IS DISTINCT FROM v_owner
+       OR (SELECT entry_reason FROM public.collab_matches WHERE id = v_match_new) <> 'vencida' THEN
+      RAISE EXCEPTION 'gate:cópia mínima do avistamento é reescrevível';
+    END IF;
+  EXCEPTION WHEN insufficient_privilege THEN
+    NULL;
+  END;
 
   v_result := public.collab_purge_entries(v_now);
 
