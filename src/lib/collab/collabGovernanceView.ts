@@ -65,7 +65,13 @@ function toTime(value: Date | string | null): number | null {
 export function deriveInviteView(input: InviteViewInput): InviteView {
   const { viewerIsNetworkOwner, viewerOrgId, invitedOrgId, storedStatus, expiresAt, now } = input;
 
-  const effectiveStatus = effectiveInviteStatus(storedStatus, expiresAt, now);
+  /*
+   * Sem prazo não há como vencer: um convite sem `expires_at` (registro legado
+   * ou defeituoso) permanece com o status gravado em vez de virar "vencido" por
+   * omissão — inventar um vencimento aqui negaria uma resposta legítima.
+   */
+  const effectiveStatus =
+    expiresAt === null ? storedStatus : effectiveInviteStatus(storedStatus, expiresAt, now);
   const presentation = INVITE_LABEL[effectiveStatus] ?? INVITE_LABEL.pending;
   const isLive = effectiveStatus === 'pending';
 
