@@ -6543,10 +6543,10 @@ export type Database = {
       escalate_stale_maintenance_alerts: {
         Args: never
         Returns: {
-          age_minutes: number
-          alert_id: string
-          from_level: number
-          to_level: number
+          age_min: number
+          escalated_alert_id: string
+          new_level: number
+          previous_level: number
         }[]
       }
       evaluate_and_restart_streams: { Args: never; Returns: number }
