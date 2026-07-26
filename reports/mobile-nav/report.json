@@ -1,18 +1,45 @@
 {
-  "generatedAt": "2026-07-23T13:14:32.973Z",
+  "generatedAt": "2026-07-26T21:05:18.915Z",
   "wrapperFile": "src/components/layout/MainLayout.tsx",
   "requiredClass": "mb-mobile-nav",
   "totals": {
-    "total": 54,
-    "ok": 46,
-    "pendente": 0,
+    "total": 66,
+    "ok": 55,
+    "pendente": 3,
     "isenta": 8,
-    "standard": 46,
+    "standard": 58,
     "customWrapper": 0,
     "standalone": 8
   },
-  "failed": false,
+  "failed": true,
   "rows": [
+    {
+      "file": "LocalAgentsPage.tsx",
+      "path": "src/pages/LocalAgentsPage.tsx",
+      "category": "standard",
+      "status": "pendente",
+      "issues": [
+        "Redeclara `mb-mobile-nav` (remover)"
+      ]
+    },
+    {
+      "file": "NvrDetailPage.tsx",
+      "path": "src/pages/NvrDetailPage.tsx",
+      "category": "standard",
+      "status": "pendente",
+      "issues": [
+        "Redeclara `mb-mobile-nav` (remover)"
+      ]
+    },
+    {
+      "file": "NvrsPage.tsx",
+      "path": "src/pages/NvrsPage.tsx",
+      "category": "standard",
+      "status": "pendente",
+      "issues": [
+        "Redeclara `mb-mobile-nav` (remover)"
+      ]
+    },
     {
       "file": "AlertsPage.tsx",
       "path": "src/pages/AlertsPage.tsx",
@@ -63,6 +90,13 @@
       "issues": []
     },
     {
+      "file": "CameraFleetHealthPage.tsx",
+      "path": "src/pages/CameraFleetHealthPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
       "file": "CamerasPage.tsx",
       "path": "src/pages/CamerasPage.tsx",
       "category": "standard",
@@ -79,6 +113,13 @@
     {
       "file": "CLSReportPage.tsx",
       "path": "src/pages/CLSReportPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "CollabNetworkPage.tsx",
+      "path": "src/pages/CollabNetworkPage.tsx",
       "category": "standard",
       "status": "ok",
       "issues": []
@@ -154,6 +195,13 @@
       "issues": []
     },
     {
+      "file": "IncidentNotificationsPage.tsx",
+      "path": "src/pages/IncidentNotificationsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
       "file": "JourneyReportsPage.tsx",
       "path": "src/pages/JourneyReportsPage.tsx",
       "category": "standard",
@@ -182,6 +230,13 @@
       "issues": []
     },
     {
+      "file": "NightSuspiciousEventsPage.tsx",
+      "path": "src/pages/NightSuspiciousEventsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
       "file": "NotificationSettingsPage.tsx",
       "path": "src/pages/NotificationSettingsPage.tsx",
       "category": "standard",
@@ -189,8 +244,29 @@
       "issues": []
     },
     {
+      "file": "NvrDownloadHistoryPage.tsx",
+      "path": "src/pages/NvrDownloadHistoryPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "NvrDownloadsPage.tsx",
+      "path": "src/pages/NvrDownloadsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
       "file": "OperationsPage.tsx",
       "path": "src/pages/OperationsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "OutOfAreaEventsPage.tsx",
+      "path": "src/pages/OutOfAreaEventsPage.tsx",
       "category": "standard",
       "status": "ok",
       "issues": []
@@ -301,6 +377,13 @@
       "issues": []
     },
     {
+      "file": "SyncPlaybackPage.tsx",
+      "path": "src/pages/SyncPlaybackPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
       "file": "TelegramSettingsPage.tsx",
       "path": "src/pages/TelegramSettingsPage.tsx",
       "category": "standard",
@@ -324,6 +407,13 @@
     {
       "file": "UserManagementPage.tsx",
       "path": "src/pages/UserManagementPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "WeeklyReportPage.tsx",
+      "path": "src/pages/WeeklyReportPage.tsx",
       "category": "standard",
       "status": "ok",
       "issues": []
