@@ -325,7 +325,7 @@ export default function WeeklyReportPage() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Incidentes e Produtividade por Dia</CardTitle>
-            <CardDescription>Correlação entre alertas e reconhecimentos por dia</CardDescription>
+            <CardDescription>Clique em uma barra para detalhar os incidentes do dia</CardDescription>
           </CardHeader>
           <CardContent className="h-[320px]">
             {loading ? (
@@ -344,8 +344,22 @@ export default function WeeklyReportPage() {
                     }}
                   />
                   <Legend />
-                  <Bar dataKey="incidentes" name="Incidentes" fill="hsl(var(--warning))" />
-                  <Bar dataKey="criticos" name="Críticos/Alta" fill="hsl(var(--destructive))" />
+                  <Bar
+                    dataKey="incidentes"
+                    name="Incidentes"
+                    fill="hsl(var(--warning))"
+                    cursor="pointer"
+                    onClick={(d: { dia?: string }) => d?.dia && setSelection({ day: d.dia })}
+                  />
+                  <Bar
+                    dataKey="criticos"
+                    name="Críticos/Alta"
+                    fill="hsl(var(--destructive))"
+                    cursor="pointer"
+                    onClick={(d: { dia?: string }) =>
+                      d?.dia && setSelection({ day: d.dia, criticalOnly: true })
+                    }
+                  />
                   <Bar dataKey="reconhecimentos" name="Reconhecimentos" fill="hsl(var(--primary))" />
                 </BarChart>
               </ResponsiveContainer>
@@ -356,7 +370,7 @@ export default function WeeklyReportPage() {
         <Card>
           <CardHeader>
             <CardTitle>Severidade</CardTitle>
-            <CardDescription>Distribuição dos incidentes</CardDescription>
+            <CardDescription>Clique em uma fatia para detalhar</CardDescription>
           </CardHeader>
           <CardContent className="h-[320px]">
             {loading ? (
@@ -366,7 +380,15 @@ export default function WeeklyReportPage() {
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={90} label>
+                  <Pie
+                    data={pieData}
+                    dataKey="value"
+                    nameKey="name"
+                    outerRadius={90}
+                    label
+                    cursor="pointer"
+                    onClick={(d: { key?: Severity }) => d?.key && setSelection({ severity: d.key })}
+                  >
                     {pieData.map((d) => (
                       <Cell key={d.key} fill={severityColor[d.key]} />
                     ))}
@@ -384,6 +406,14 @@ export default function WeeklyReportPage() {
         </Card>
       </div>
 
+      {/* Drill-down */}
+      <WeeklyIncidentDrilldown
+        alerts={alerts ?? []}
+        cameras={cameras ?? []}
+        selection={selection}
+        onClear={() => setSelection(null)}
+      />
+
       {/* Top câmeras */}
       <Card>
         <CardHeader>
@@ -391,7 +421,7 @@ export default function WeeklyReportPage() {
             <Camera className="h-5 w-5" />
             Top Câmeras com Incidentes
           </CardTitle>
-          <CardDescription>Ranking das câmeras que mais geraram alertas no período</CardDescription>
+          <CardDescription>Clique em uma câmera para listar seus incidentes</CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -405,7 +435,12 @@ export default function WeeklyReportPage() {
           ) : (
             <div className="space-y-2">
               {byCamera.map((c, idx) => (
-                <div key={c.camera} className="flex items-center justify-between p-3 border rounded-lg bg-card">
+                <button
+                  type="button"
+                  key={c.camera}
+                  onClick={() => setSelection({ cameraId: c.id })}
+                  className="w-full flex items-center justify-between p-3 border rounded-lg bg-card text-left transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
                   <div className="flex items-center gap-3">
                     <Badge variant="outline" className="w-8 justify-center">
                       {idx + 1}
@@ -413,12 +448,13 @@ export default function WeeklyReportPage() {
                     <span className="font-medium">{c.camera}</span>
                   </div>
                   <Badge variant={idx === 0 ? "destructive" : "secondary"}>{c.count} alertas</Badge>
-                </div>
+                </button>
               ))}
             </div>
           )}
         </CardContent>
       </Card>
+
     </div>
   );
 }
