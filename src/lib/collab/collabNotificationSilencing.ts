@@ -208,3 +208,6 @@ export function countUnread(
   }
   return { total, silenced };
 }
+
+/** Rótulos legíveis para os tipos silenciáveis (a UI não inventa a lista). */
+export type CollabSilenceKindLabel = Readonly<Record<CollabNotificationKind, string>>;
