@@ -20,6 +20,7 @@ import {
 const HOUR = 3_600_000;
 const NOW = Date.UTC(2026, 6, 26, 3, 0, 0);
 const PARENT = 'plate_detections';
+const EMPTY = { pre2000: 0, future: 0, recentGap: 0, unknown: 0 };
 
 const failures = [];
 let scenarios = 0;
@@ -255,8 +256,6 @@ for (const n of [0, 1, 3]) {
     );
   }
 }
-
-const EMPTY = { pre2000: 0, future: 0, recentGap: 0, unknown: 0 };
 
 console.log(`Onda 116 — cenários simulados: ${scenarios.toLocaleString('pt-BR')}`);
 console.log(`Invariantes verificadas: ${assertions.toLocaleString('pt-BR')}`);
