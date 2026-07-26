@@ -7675,7 +7675,7 @@ export type Database = {
           requeued: number
         }[]
       }
-      reap_monitoring_center_leases: { Args: never; Returns: Json }
+      reap_monitoring_center_leases: { Args: { _at?: string }; Returns: Json }
       record_dwell_observation: {
         Args: {
           _camera_id: string
