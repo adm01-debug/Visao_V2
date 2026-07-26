@@ -194,7 +194,8 @@ export function countPlatePasses(
       plate,
       passes,
       cameras: cameras.size,
-      lastSeenAt: sorted[sorted.length - 1].seenAt,
+      // `previous` guarda a última leitura do laço acima; o bucket nunca é vazio.
+      lastSeenAt: previous ?? 0,
       recurrent: passes >= minPasses,
     });
   }
