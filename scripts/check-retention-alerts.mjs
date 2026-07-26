@@ -94,7 +94,6 @@ for (const routine of RETENTION_ROUTINES) {
     const rows = query(`
       BEGIN;
       SELECT set_config('search_path', 'public', true);
-      DELETE FROM public.maintenance_alert_events WHERE routine LIKE 'retention:%';
       SELECT coalesce(
         (SELECT x->>'severity' FROM jsonb_array_elements(
            (public.evaluate_retention_alerts(
