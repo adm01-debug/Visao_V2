@@ -42,7 +42,7 @@ FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
 WHERE n.nspname = 'public'
   AND p.proname = ANY(ARRAY[${DBA_FUNCTIONS.map((f) => `'${f}'`).join(',')}])
   AND has_function_privilege('authenticated', p.oid, 'EXECUTE')
-  AND p.prosrc !~* 'has_role\\\\s*\\\\([^)]*admin'
+  AND p.prosrc !~* 'has_role[^;]{0,80}admin'
 ORDER BY 1;`;
 
 /**
