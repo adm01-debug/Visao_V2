@@ -32,7 +32,8 @@ export default function CollabNetworkPage() {
 
   // Uma rede só: selecionar sozinho poupa um clique sem esconder a escolha.
   useEffect(() => {
-    if (networkId === null && networks.length > 0) setNetworkId(networks[0].id);
+    const first = networks[0];
+    if (networkId === null && first) setNetworkId(first.id);
   }, [networkId, networks]);
 
   const selectedNetwork = networks.find((network) => network.id === networkId) ?? null;
