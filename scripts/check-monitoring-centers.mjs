@@ -232,8 +232,7 @@ BEGIN
   r := public.enqueue_monitoring_center_event(acc, 'intrusion', '099', NULL, '{}'::jsonb, now() + interval '500 s');
   d := (r->>'dispatch_id')::uuid;
   PERFORM public.claim_monitoring_center_dispatches('w3', 10);
-  UPDATE public.monitoring_center_dispatches SET lease_expires_at = now() - interval '1 s' WHERE id = d;
-  r := public.reap_monitoring_center_leases();
+  r := public.reap_monitoring_center_leases(now() + interval '10 min');
   ASSERT (r->>'released')::int >= 1, r::text;
   ASSERT (SELECT status='pending' AND claimed_by IS NULL FROM public.monitoring_center_dispatches WHERE id = d);
 
