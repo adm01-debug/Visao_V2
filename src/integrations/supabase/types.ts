@@ -2329,6 +2329,53 @@ export type Database = {
         }
         Relationships: []
       }
+      maintenance_alert_dispatches: {
+        Row: {
+          alert_id: string
+          attempts: number
+          channel: string
+          created_at: string
+          detail: Json
+          id: string
+          last_attempt_at: string
+          last_error: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          alert_id: string
+          attempts?: number
+          channel: string
+          created_at?: string
+          detail?: Json
+          id?: string
+          last_attempt_at?: string
+          last_error?: string | null
+          status: string
+          updated_at?: string
+        }
+        Update: {
+          alert_id?: string
+          attempts?: number
+          channel?: string
+          created_at?: string
+          detail?: Json
+          id?: string
+          last_attempt_at?: string
+          last_error?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_alert_dispatches_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_alert_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       maintenance_alert_events: {
         Row: {
           created_at: string
