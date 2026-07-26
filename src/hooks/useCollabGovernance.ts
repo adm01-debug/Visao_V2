@@ -152,8 +152,9 @@ export function useCollabGovernance(networkId: string | null) {
       const { error } = await supabase.rpc('collab_invite_org', {
         p_network_id: networkId as string,
         p_invited_org_id: input.invitedOrgId,
-        p_ttl_days: input.ttlDays,
-        p_note: input.note,
+        // Omitir é o que aciona o padrão do banco; enviar null seria pedir "sem valor".
+        p_ttl_days: input.ttlDays ?? undefined,
+        p_note: input.note ?? undefined,
       });
       if (error) throw error;
     },
