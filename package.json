@@ -148,8 +148,10 @@
     "db:check:drain": "node scripts/check-partition-drain.mjs",
     "db:check:quarantine": "node scripts/check-partition-quarantine.mjs",
     "db:check:maintenance-alerts": "node scripts/check-maintenance-alerts.mjs",
+    "db:check:maintenance-dispatch": "node scripts/check-maintenance-dispatch.mjs",
     "simulate:wave110": "node scripts/simulate-wave110-scenarios.mjs",
-    "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts"
+    "simulate:wave111": "node scripts/simulate-wave111-scenarios.mjs",
+    "db:check:all": "npm run db:check:definer && npm run db:check:rls && npm run db:check:dba && npm run db:check:partitions && npm run db:check:drain && npm run db:check:quarantine && npm run db:check:maintenance-alerts && npm run db:check:maintenance-dispatch"
 
 
   },
