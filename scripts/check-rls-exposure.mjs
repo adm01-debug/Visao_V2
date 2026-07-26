@@ -54,7 +54,9 @@ ORDER BY 1;`;
  */
 function query(sql) {
   try {
-    return execFileSync('psql', ['-tA', '-c', sql], { encoding: 'utf8' })
+    const conn = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL;
+    const args = conn ? [conn, '-tA', '-c', sql] : ['-tA', '-c', sql];
+    return execFileSync('psql', args, { encoding: 'utf8' })
       .split('\n')
       .map((line) => line.trim())
       .filter(Boolean);
