@@ -49,6 +49,105 @@ export const SEVERITY_LABEL: Record<ProductivitySeverity, string> = {
 
 export const WEEKDAY_LABEL = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"] as const;
 
+/** Preset pronto de critérios, para configuração rápida. */
+export interface ProductivityPreset {
+  id: string;
+  label: string;
+  description: string;
+  config: ProductivityConfig;
+}
+
+export const PRODUCTIVITY_PRESETS: ProductivityPreset[] = [
+  {
+    id: "full",
+    label: "Tudo (padrão)",
+    description: "Todos os eventos, 24h, todos os dias",
+    config: DEFAULT_PRODUCTIVITY_CONFIG,
+  },
+  {
+    id: "business-hours",
+    label: "Horário comercial",
+    description: "Seg–Sex, 08:00–18:00, todos os eventos",
+    config: {
+      eventTypes: [...PRODUCTIVITY_EVENT_TYPES],
+      windowStart: "08:00",
+      windowEnd: "18:00",
+      weekdays: [1, 2, 3, 4, 5],
+      severities: [...PRODUCTIVITY_SEVERITIES],
+    },
+  },
+  {
+    id: "night-shift",
+    label: "Turno da noite",
+    description: "19:00–06:00, todos os dias, severidade média+",
+    config: {
+      eventTypes: [...PRODUCTIVITY_EVENT_TYPES],
+      windowStart: "19:00",
+      windowEnd: "06:00",
+      weekdays: [0, 1, 2, 3, 4, 5, 6],
+      severities: ["medium", "high", "critical"],
+    },
+  },
+  {
+    id: "weekend",
+    label: "Fim de semana",
+    description: "Sáb e Dom, 24h, todos os eventos",
+    config: {
+      eventTypes: [...PRODUCTIVITY_EVENT_TYPES],
+      windowStart: "00:00",
+      windowEnd: "23:59",
+      weekdays: [0, 6],
+      severities: [...PRODUCTIVITY_SEVERITIES],
+    },
+  },
+  {
+    id: "panic-only",
+    label: "Somente pânico",
+    description: "Apenas eventos de pânico, 24h",
+    config: {
+      eventTypes: ["panic"],
+      windowStart: "00:00",
+      windowEnd: "23:59",
+      weekdays: [0, 1, 2, 3, 4, 5, 6],
+      severities: [...PRODUCTIVITY_SEVERITIES],
+    },
+  },
+  {
+    id: "critical-only",
+    label: "Só críticos",
+    description: "Alertas e pânico com severidade alta/crítica",
+    config: {
+      eventTypes: ["alerts", "panic"],
+      windowStart: "00:00",
+      windowEnd: "23:59",
+      weekdays: [0, 1, 2, 3, 4, 5, 6],
+      severities: ["high", "critical"],
+    },
+  },
+];
+
+/** Compara dois conjuntos ignorando a ordem dos elementos. */
+function sameSet<T>(a: readonly T[], b: readonly T[]): boolean {
+  if (a.length !== b.length) return false;
+  const setB = new Set(b);
+  return a.every((item) => setB.has(item));
+}
+
+/** Retorna o preset equivalente à configuração atual, ou null se for personalizada. */
+export function matchPreset(config: ProductivityConfig): ProductivityPreset | null {
+  return (
+    PRODUCTIVITY_PRESETS.find(
+      (preset) =>
+        preset.config.windowStart === config.windowStart &&
+        preset.config.windowEnd === config.windowEnd &&
+        sameSet(preset.config.eventTypes, config.eventTypes) &&
+        sameSet(preset.config.weekdays, config.weekdays) &&
+        sameSet(preset.config.severities, config.severities)
+    ) ?? null
+  );
+}
+
+
 /** Converte "HH:mm[:ss]" em minutos desde a meia-noite. Retorna null se inválido. */
 export function timeToMinutes(value: string): number | null {
   const match = /^(\d{1,2}):(\d{2})(?::\d{2})?$/.exec(value.trim());
