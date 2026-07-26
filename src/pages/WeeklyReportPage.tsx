@@ -26,6 +26,8 @@ import {
 import { toast } from "sonner";
 import { useProductivityConfig } from "@/hooks/useProductivityConfig";
 import { ProductivityConfigPanel } from "@/components/reports/ProductivityConfigPanel";
+import { KpiMethodologyCard } from "@/components/reports/KpiMethodologyCard";
+
 import {
   describeConfig,
   includesEventType,
@@ -364,6 +366,11 @@ export default function WeeklyReportPage() {
           loading={loading}
         />
       </div>
+
+      {/* Metodologia dos KPIs */}
+      <KpiMethodologyCard config={config} rangeDays={Number(range)} />
+
+
 
       {/* Charts */}
       <div className="grid gap-4 lg:grid-cols-3">
