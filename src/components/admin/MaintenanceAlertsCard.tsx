@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle, BellRing, RefreshCw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { MAINTENANCE_SOURCE_LABELS } from '@/lib/maintenanceSourceAlerts';
 
 /** Severidades possíveis retornadas pelo avaliador. */
 type MaintenanceSeverity = 'none' | 'warning' | 'critical';
