@@ -37,7 +37,7 @@
     "check:csp": "node scripts/check-csp-allowlist.mjs",
     "clean": "rm -rf dist node_modules/.cache",
     "coverage": "vitest run --coverage && node scripts/build-coverage-report.mjs",
-    "coverage:ci": "vitest run --coverage --reporter=lcov",
+    "coverage:ci": "vitest run --coverage --passWithNoTests",
     "coverage:html": "vitest run --coverage --reporter=html",
     "cypress": "cypress open",
     "cypress:open": "cypress open",
@@ -134,7 +134,11 @@
     "check:critical-path": "node scripts/check-critical-path.mjs",
     "lint:advisory": "LINT_ADVISORY=1 eslint .",
     "simulate:mediamtxpath": "node scripts/simulate-mediamtxpath-scenarios.mjs",
-    "check:mediamtx-path-contract": "node scripts/check-mediamtx-path-contract.mjs"
+    "check:mediamtx-path-contract": "node scripts/check-mediamtx-path-contract.mjs",
+    "test:ci": "vitest run --passWithNoTests",
+    "coverage:check": "node scripts/check-coverage-baseline.mjs",
+    "coverage:baseline": "node scripts/check-coverage-baseline.mjs --update",
+    "test:suite:ci": "npm run coverage:ci && npm run coverage:check"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
