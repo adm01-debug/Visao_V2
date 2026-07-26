@@ -91,19 +91,21 @@ export default function WeeklyReportPage() {
     },
   });
 
-  // ------- Panic events
-  const { data: panics } = useQuery({
+  // ------- Panic events (timestamps para aplicar a janela de produtividade)
+  const { data: panicEvents } = useQuery({
     queryKey: ["report-panics", start.toISOString(), end.toISOString()],
     queryFn: async () => {
-      const { count, error } = await supabase
+      const { data, error } = await supabase
         .from("panic_events")
-        .select("*", { count: "exact", head: true })
+        .select("id, created_at")
         .gte("created_at", start.toISOString())
-        .lte("created_at", end.toISOString());
+        .lte("created_at", end.toISOString())
+        .limit(5000);
       if (error) throw error;
-      return count ?? 0;
+      return (data ?? []) as Array<{ id: string; created_at: string }>;
     },
   });
+
 
   // ------- Recognition (productivity)
   const { data: recognitions, isLoading: loadingReco } = useQuery({
