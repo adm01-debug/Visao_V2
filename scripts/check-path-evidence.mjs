@@ -31,10 +31,11 @@ const TS_CONST = {
 function listFrom(source, startMarker) {
   const start = source.indexOf(startMarker);
   if (start === -1) return null;
-  const open = source.indexOf('[', start);
+  // `readonly string[]` também tem colchetes: ancorar no `= [` da atribuição.
+  const open = source.indexOf('= [', start);
   const close = source.indexOf(']', open);
   if (open === -1 || close === -1) return null;
-  return [...source.slice(open + 1, close).matchAll(/'([a-z_]+)'/g)].map((m) => m[1]);
+  return [...source.slice(open + 2, close).matchAll(/'([a-z_]+)'/g)].map((m) => m[1]);
 }
 
 // A função SQL vive na migração mais recente que a define.
