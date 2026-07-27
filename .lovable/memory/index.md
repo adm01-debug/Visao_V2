@@ -10,3 +10,4 @@
 - [Centrais de Monitoramento](mem://features/monitoring-center-connectors) — Onda 126: SIA DC-09/Contact ID para Sigma/Moni/Commbox, fila com lease e dedupe, gate `db:check:monitoring-centers`
 - [Rede Colaborativa de Placas](mem://features/collab-plate-network) — Onda 127: HMAC por rede (placa nunca em claro), reciprocidade, TTL/revogação, cooldown; gate `db:check:collab-network`
 - [Owner SLA Aging](mem://features/owner-sla-aging) — Onda 149: dívida de atendimento por responsável, prazo por par (dono, severidade), estado do pior alerta aberto, `sim:wave149`
+- [E-Map avisos silenciados](mem://features/emap-suppressed-notices) — Onda 165: livro auditável do anti-ruído; só supressão de agravamento entra, expira por relógio, painel some quando vazio, `simulate:wave165`
