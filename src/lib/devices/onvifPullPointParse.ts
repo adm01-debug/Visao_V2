@@ -48,12 +48,12 @@ function localTagRegex(name: string, flags = 'gi'): RegExp {
 
 function firstTagContent(xml: string, name: string): string | null {
   const m = localTagRegex(name, 'i').exec(xml);
-  return m ? m[1].trim() : null;
+  return m ? (m[1] ?? '').trim() : null;
 }
 
 function attr(tag: string, name: string): string | null {
   const m = new RegExp(`${name}\\s*=\\s*"([^"]*)"`, 'i').exec(tag);
-  return m ? m[1] : null;
+  return m ? (m[1] ?? null) : null;
 }
 
 function decodeEntities(value: string): string {
@@ -72,8 +72,9 @@ function simpleItems(block: string | null): Record<string, string> {
   const re = /<(?:[A-Za-z0-9_.-]+:)?SimpleItem\b([^>]*)\/?>/gi;
   let m: RegExpExecArray | null;
   while ((m = re.exec(block)) !== null) {
-    const name = attr(m[1], 'Name');
-    const value = attr(m[1], 'Value');
+    const tag = m[1] ?? '';
+    const name = attr(tag, 'Name');
+    const value = attr(tag, 'Value');
     if (name !== null) out[decodeEntities(name)] = decodeEntities(value ?? '');
   }
   return out;
@@ -130,7 +131,7 @@ export function parsePullMessages(xml: string): ParsedOnvifEvent[] {
   let m: RegExpExecArray | null;
 
   while ((m = re.exec(xml)) !== null) {
-    const block = m[1];
+    const block = m[1] ?? '';
     const topicRaw = firstTagContent(block, 'Topic');
     if (!topicRaw) continue;
     // O tópico costuma vir com o dialeto ConcreteSet e prefixo tns1.
@@ -138,11 +139,11 @@ export function parsePullMessages(xml: string): ParsedOnvifEvent[] {
     if (topic.length === 0) continue;
 
     const messageTag = /<(?:[A-Za-z0-9_.-]+:)?Message\b([^>]*)>/i.exec(block);
-    const utcTime = messageTag ? attr(messageTag[1], 'UtcTime') : null;
+    const utcTime = messageTag ? attr(messageTag[1] ?? '', 'UtcTime') : null;
     // Q3 — sem instante do equipamento não há chave estável de duplicidade.
     if (!utcTime) continue;
 
-    const rawOp = messageTag ? attr(messageTag[1], 'PropertyOperation') : null;
+    const rawOp = messageTag ? attr(messageTag[1] ?? '', 'PropertyOperation') : null;
     const propertyOperation =
       rawOp === 'Initialized' || rawOp === 'Changed' || rawOp === 'Deleted' ? rawOp : null;
 
