@@ -19,6 +19,11 @@ export interface FloorPlanCanvasProps {
   selectedId: string | null;
   onSelect: (placementId: string | null) => void;
   onMove: (placementId: string, position: NormalizedPoint) => void;
+  /**
+   * Onda 164: câmeras que acabaram de piorar. O halo é redundante com a cor
+   * (movimento + cor), porque cor sozinha não alcança quem não a distingue.
+   */
+  pulsingCameraIds?: ReadonlySet<string>;
   className?: string;
 }
 
@@ -67,6 +72,7 @@ export function FloorPlanCanvas({
   selectedId,
   onSelect,
   onMove,
+  pulsingCameraIds,
   className,
 }: FloorPlanCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -166,8 +172,23 @@ export function FloorPlanCanvas({
             const grouped = cluster.members.length > 1;
             const center = toContainerPixels(grouped ? cluster.center : anchor.position, rect);
             const selected = cluster.members.some((member) => member.id === selectedId);
+            const pulsing = pulsingCameraIds
+              ? cluster.members.some((member) => pulsingCameraIds.has(member.cameraId))
+              : false;
 
             return (
+              <Fragment key={cluster.key}>
+                {pulsing && (
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      'pointer-events-none absolute h-7 w-7 rounded-full ring-2',
+                      'motion-safe:animate-marker-pulse',
+                      STATUS_CLASS[cluster.status],
+                    )}
+                    style={{ left: center.x, top: center.y }}
+                  />
+                )}
               <button
                 key={cluster.key}
                 type="button"
