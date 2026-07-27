@@ -155,6 +155,14 @@ export default function SitePlanPage() {
               }}
             />
 
+            <SuppressedNoticesPanel
+              summary={suppressionSummary}
+              nameOf={nameOf}
+              onDismiss={dismissSuppressions}
+            />
+
+
+
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">Câmeras fora da planta</CardTitle>
