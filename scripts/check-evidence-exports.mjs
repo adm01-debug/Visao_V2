@@ -103,7 +103,12 @@ if (!hasPsql) {
     },
   ];
 
-  const { buildCustodyChain } = await import('../src/lib/evidence/custodyManifest.ts');
+  // A regra vive em TypeScript; `jiti` a carrega sem passo de build, para o
+  // gate comparar exatamente o mesmo código que a aplicação executa.
+  const { createJiti } = await import('jiti');
+  const { buildCustodyChain } = await createJiti(import.meta.url).import(
+    '../src/lib/evidence/custodyManifest.ts',
+  );
   const expected = await buildCustodyChain(SEGMENTS);
 
   const literal = (value) => `$vec$${JSON.stringify(value)}$vec$::jsonb`;
@@ -224,7 +229,7 @@ BEGIN;
   DECLARE blocked boolean := false;
   BEGIN
     BEGIN
-      ${insert(manifest({ chain: tampered, exportId: 'gate-157-t' }), 'gate-157-t').replace(/'/g, "''")}
+      ${insert(manifest({ chain: tampered, exportId: 'gate-157-t' }), 'gate-157-t')}
     EXCEPTION WHEN others THEN blocked := true;
     END;
     IF NOT blocked THEN RAISE EXCEPTION 'corrente adulterada foi selada'; END IF;
