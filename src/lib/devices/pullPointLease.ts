@@ -103,8 +103,15 @@ export interface PullPointSubscription {
   readonly status: PullPointStatus;
   /** Instante de vencimento do empréstimo, em ms. `null` = nunca criada. */
   readonly terminationAtMs: number | null;
-  /** Duração nominal do empréstimo concedido pelo equipamento, em ms. */
+  /**
+   * Instante em que o empréstimo corrente começou (resposta do `Subscribe` ou
+   * do `Renew`), em ms pelo NOSSO relógio. Junto com `terminationAtMs` dá o
+   * empréstimo **observado**, que é o único confiável — ver P8.
+   */
+  readonly leaseStartedAtMs: number | null;
+  /** Duração nominal do empréstimo pedido ao equipamento, em ms. */
   readonly leaseDurationMs: number;
+
   readonly consecutiveFailures: number;
   readonly lastFailureKind: PullPointFailureKind;
   /** Instante da última tentativa (sucesso ou falha), em ms. */
