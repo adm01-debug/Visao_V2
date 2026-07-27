@@ -41,6 +41,10 @@ import {
   clearCameraSuppressions,
   type SuppressionLedger,
 } from '@/lib/emap/suppressionLedger';
+import {
+  buildPlanNavigation,
+  type PlanRoster,
+} from '@/lib/emap/planNavigator';
 
 
 export interface SitePlan {
@@ -97,6 +101,9 @@ export function useSitePlans() {
   );
 
   const [cameras, setCameras] = useState<PlanCamera[]>([]);
+  // Onda 166: quais câmeras vivem em cada planta. Só ids — é o bastante para
+  // rotular o andar sem baixar geometria de plantas que ninguém está vendo.
+  const [planRoster, setPlanRoster] = useState<PlanRoster>({});
   const [planImageUrl, setPlanImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -139,6 +146,22 @@ export function useSitePlans() {
         (cameraRows ?? []).map((row) => ({ id: row.id, name: row.name, status: row.status })),
       );
       setStatusLedger(ledgerFromSnapshot(cameraRows ?? [], Date.now()));
+
+      const { data: rosterRows, error: rosterError } = await supabase
+        .from('site_plan_placements')
+        .select('plan_id, camera_id');
+      if (rosterError) {
+        // O roster é enfeite do seletor: falhar aqui não pode derrubar o mapa.
+        logger.warn('Falha ao carregar o resumo de câmeras por planta', rosterError);
+        setPlanRoster({});
+      } else {
+        const roster: Record<string, string[]> = {};
+        for (const row of rosterRows ?? []) {
+          (roster[row.plan_id] ??= []).push(row.camera_id);
+        }
+        setPlanRoster(roster);
+      }
+
       setActivePlanId((current) => current ?? mapped[0]?.id ?? null);
     } catch (cause) {
       logger.error('Falha ao carregar plantas baixas', cause);
@@ -482,6 +505,21 @@ export function useSitePlans() {
     [],
   );
 
+  /**
+   * Onda 166 — navegação entre andares. O rótulo de cada planta usa o livro de
+   * estados ao vivo, então trocar de andar já mostra a situação atualizada.
+   */
+  const planNavigation = useMemo(
+    () =>
+      buildPlanNavigation({
+        plans,
+        roster: planRoster,
+        statusOf: (cameraId) => statusLedger[cameraId]?.status,
+        activePlanId,
+      }),
+    [plans, planRoster, statusLedger, activePlanId],
+  );
+
   const unplacedCameras = useMemo(() => {
     const placed = new Set(placements.map((placement) => placement.cameraId));
     return cameras.filter((camera) => !placed.has(camera.id));
@@ -489,6 +527,7 @@ export function useSitePlans() {
 
   return {
     plans,
+    planNavigation,
     activePlan,
     activePlanId,
     setActivePlanId,

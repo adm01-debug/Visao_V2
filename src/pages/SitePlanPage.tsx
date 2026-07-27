@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Map as MapIcon, MapPin } from 'lucide-react';
 import { PageMeta } from '@/components/PageMeta';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,6 +16,8 @@ import { FloorPlanCanvas } from '@/components/emap/FloorPlanCanvas';
 import { UploadPlanDialog } from '@/components/emap/UploadPlanDialog';
 import { PlacementInspector } from '@/components/emap/PlacementInspector';
 import { SuppressedNoticesPanel } from '@/components/emap/SuppressedNoticesPanel';
+import { PlanSwitcher } from '@/components/emap/PlanSwitcher';
+import { isEditableTarget, resolveShortcutTarget, stepPlan } from '@/lib/emap/planNavigator';
 
 import { useSitePlans } from '@/hooks/useSitePlans';
 import { summarizePlan, type MapMarkerStatus } from '@/lib/emap/floorPlanGeometry';
@@ -31,6 +33,7 @@ const SUMMARY_LABEL: Record<MapMarkerStatus, string> = {
 export default function SitePlanPage() {
   const {
     plans,
+    planNavigation,
     activePlan,
     activePlanId,
     setActivePlanId,
@@ -62,6 +65,37 @@ export default function SitePlanPage() {
     (cameraId: string) => cameras.find((camera) => camera.id === cameraId)?.name ?? 'Câmera',
     [cameras],
   );
+
+  /**
+   * Onda 166 — atalhos de andar. Teclas 1..9 saltam direto; setas ←/→ varrem
+   * em círculo. Nada dispara enquanto o foco está num campo de texto: roubar
+   * o dígito de quem digita o nome da planta seria pior que não ter atalho.
+   */
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (isEditableTarget(event.target)) return;
+
+      const direct = resolveShortcutTarget(planNavigation.items, event.key);
+      if (direct) {
+        event.preventDefault();
+        setActivePlanId(direct);
+        return;
+      }
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      const target = stepPlan(
+        planNavigation.items,
+        planNavigation.resolvedActiveId,
+        event.key === 'ArrowLeft' ? 'previous' : 'next',
+      );
+      if (target) {
+        event.preventDefault();
+        setActivePlanId(target);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [planNavigation, setActivePlanId]);
 
 
   return (
@@ -100,6 +134,8 @@ export default function SitePlanPage() {
           <UploadPlanDialog saving={saving} onCreate={createPlan} />
         </div>
       </header>
+
+      <PlanSwitcher items={planNavigation.items} onSelect={setActivePlanId} />
 
       {error && (
         <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive" role="alert">
