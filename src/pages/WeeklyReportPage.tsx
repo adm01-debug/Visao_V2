@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { PageContent } from '@/components/layout/MainLayout';
 import { PageMeta } from "@/components/PageMeta";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -283,7 +284,7 @@ export default function WeeklyReportPage() {
   const loading = loadingAlerts || loadingReco;
 
   return (
-    <div className="container mx-auto px-4 py-6 space-y-6">
+    <PageContent className="container mx-auto px-4 py-6">
       <PageMeta
         title="Relatório Semanal"
         description="Incidentes detectados e métricas de produtividade do time nos últimos dias."
@@ -471,7 +472,7 @@ export default function WeeklyReportPage() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </PageContent>
   );
 }
 

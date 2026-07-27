@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { PageContent } from '@/components/layout/MainLayout';
 import { Link, useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -571,7 +572,7 @@ export default function NvrDetailPage(): JSX.Element {
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <PageContent className="container mx-auto py-6">
       <PageMeta
         title={nvr ? `${nvr.name} — NVR — VISÃO` : "NVR — VISÃO"}
         description="Detalhes do gravador e status por canal RTSP."
@@ -1227,6 +1228,6 @@ export default function NvrDetailPage(): JSX.Element {
           })()}
         </>
       )}
-    </div>
+    </PageContent>
   );
 }

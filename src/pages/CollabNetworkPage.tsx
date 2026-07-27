@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { PageContent } from '@/components/layout/MainLayout';
 import { PageMeta } from '@/components/PageMeta';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -61,7 +62,7 @@ export default function CollabNetworkPage() {
   const loadingShell = governance.networks.isLoading || governance.organizations.isLoading;
 
   return (
-    <div className="container mx-auto space-y-6 p-4 md:p-6">
+    <PageContent className="container mx-auto p-4 md:p-6">
       <PageMeta
         title="Rede colaborativa | VISÃO"
         description="Gerencie convites, participantes e governança da rede colaborativa de placas entre organizações."
@@ -152,6 +153,6 @@ export default function CollabNetworkPage() {
 
         </>
       )}
-    </div>
+    </PageContent>
   );
 }

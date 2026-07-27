@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { PageContent } from '@/components/layout/MainLayout';
 import { PageMeta } from '@/components/PageMeta';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Wrench } from 'lucide-react';
@@ -45,7 +46,7 @@ export default function MaintenanceConsolePage() {
   const loadError = alerts.error ?? retention.error;
 
   return (
-    <div className="container mx-auto space-y-6 p-4 md:p-6">
+    <PageContent className="container mx-auto p-4 md:p-6">
       <PageMeta
         title="Console de manutenção | VISÃO"
         description="Acompanhe incidentes das rotinas internas, reconheça alertas e supervisione o expurgo programado de dados."
@@ -79,6 +80,6 @@ export default function MaintenanceConsolePage() {
       />
 
       <RetentionOverviewCard rows={retention.data ?? []} isLoading={retention.isLoading} />
-    </div>
+    </PageContent>
   );
 }

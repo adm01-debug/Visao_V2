@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { PageContent } from '@/components/layout/MainLayout';
 import { PageMeta } from "@/components/PageMeta";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -179,7 +180,7 @@ export default function IncidentNotificationsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6 space-y-6">
+    <PageContent className="container mx-auto px-4 py-6">
       <PageMeta
         title="Notificações de Incidentes"
         description="Envie alertas de incidentes das câmeras por email e WhatsApp com horário e detalhes."
@@ -441,6 +442,6 @@ export default function IncidentNotificationsPage() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </PageContent>
   );
 }
