@@ -7,7 +7,6 @@
 
 BEGIN;
 
-SET LOCAL role TO postgres;
 
 DO $exercise$
 DECLARE
