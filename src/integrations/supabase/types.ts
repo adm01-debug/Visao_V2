@@ -8740,6 +8740,16 @@ export type Database = {
           rotated_count: number
         }[]
       }
+      rule_eligible_io_port: {
+        Args: { p_camera_id: string; p_now?: string; p_user_id: string }
+        Returns: {
+          cooldown_remaining_ms: number
+          min_interval_ms: number
+          port_id: string
+          port_token: string
+          pulse_ms: number
+        }[]
+      }
       run_index_maintenance: { Args: never; Returns: Json }
       run_retention_cleanup: { Args: never; Returns: Json }
       run_selective_vacuum: {
@@ -8918,6 +8928,7 @@ export type Database = {
         | "arm"
         | "disarm"
         | "panic"
+        | "trigger_output"
       rule_category:
         | "security"
         | "safety"
@@ -9138,6 +9149,7 @@ export const Constants = {
         "arm",
         "disarm",
         "panic",
+        "trigger_output",
       ],
       rule_category: [
         "security",
