@@ -62,7 +62,7 @@ function rng(seed) {
 }
 
 const STATUSES = ['alert', 'offline', 'warning', 'online', 'unknown'];
-const SEVERITY = { alert: 0, offline: 1, warning: 2, online: 3, unknown: 4 };
+const SEVERITY = { alert: 0, offline: 1, warning: 2, unknown: 3, online: 4 };
 
 // ---------------------------------------------------------------- casos fixos
 {
