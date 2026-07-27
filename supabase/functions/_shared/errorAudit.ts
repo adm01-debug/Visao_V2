@@ -106,7 +106,10 @@ export async function recordEdgeError(input: EdgeErrorAuditInput): Promise<void>
     if (!client) return;
     const target_ip = input.target_ip ?? extractIp(input.target_host ?? null);
     const { network_kind, blame, blame_rule } = classifyAuditInput(input);
-    await client.from("edge_function_error_audit").insert({
+    // O cliente é criado sem os tipos gerados do banco, então o `insert()`
+    // infere `never[]`. Montamos a linha explicitamente e passamos por um
+    // alias amplo — a validação real de vocabulário está nos CHECKs da tabela.
+    const row: Record<string, unknown> = {
       function_name: input.function_name,
       error_code: input.error_code,
       http_status: input.http_status ?? null,
@@ -123,7 +126,11 @@ export async function recordEdgeError(input: EdgeErrorAuditInput): Promise<void>
       network_kind,
       blame,
       blame_rule,
-    });
+    };
+    await (client.from("edge_function_error_audit") as unknown as {
+      insert: (values: Record<string, unknown>) => Promise<{ error: unknown }>;
+    }).insert(row);
+
   } catch (err) {
 
     console.error(JSON.stringify({
