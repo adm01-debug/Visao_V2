@@ -206,7 +206,9 @@ export function diffLedgers(
 ): StatusTransition[] {
   const transitions: StatusTransition[] = [];
   for (const cameraId of Object.keys(next).sort()) {
-    const to = next[cameraId].status;
+    const entry = next[cameraId];
+    if (!entry) continue;
+    const to = entry.status;
     const from = previous[cameraId]?.status ?? 'unknown';
     if (from === to) continue;
     transitions.push({ cameraId, from, to, worsened: severityRank(to) < severityRank(from) });
