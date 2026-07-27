@@ -116,7 +116,7 @@ export function useCameraIo(cameraId: string | undefined) {
             port_id: row.id,
             command: kind,
             duration_ms: durationMs ?? null,
-            origin: 'manual',
+            origin: 'human',
           },
         });
         if (fnError) {

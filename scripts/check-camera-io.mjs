@@ -108,7 +108,7 @@ BEGIN;
   VALUES
     ('00000000-0000-4000-8000-000000000154',
      '00000000-0000-4000-8000-000000000155',
-     'RelayToken_1', 'manual', 'pulse', 'ok');
+     'RelayToken_1', 'human', 'pulse', 'completed');
 
   DO $$
   DECLARE blocked_update boolean := false; blocked_delete boolean := false;

@@ -97,7 +97,7 @@ interface Payload {
   port_id?: string;
   command?: "pulse" | "set_active" | "set_inactive";
   duration_ms?: number | null;
-  origin?: "manual" | "rule" | "schedule";
+  origin?: "human" | "rule" | "event" | "schedule" | "test";
   origin_ref?: string | null;
 }
 
@@ -256,7 +256,7 @@ Deno.serve(async (req) => {
       camera_id: camera.id,
       port_id: portRow?.id ?? null,
       port_token: portRow?.port_token ?? null,
-      origin: payload.origin ?? "manual",
+      origin: payload.origin ?? "human",
       origin_ref: payload.origin_ref ?? null,
       actor_user_id: user?.id ?? null,
       command: payload.command ?? "pulse",
@@ -266,7 +266,7 @@ Deno.serve(async (req) => {
     if (!decision.allowed) {
       await admin.from("io_actuation_log").insert({
         ...logBase,
-        outcome: "refused",
+        outcome: "rejected",
         reason_code: decision.reason,
         latency_ms: Date.now() - startedAt,
       });
@@ -326,7 +326,7 @@ Deno.serve(async (req) => {
 
     await admin.from("io_actuation_log").insert({
       ...logBase,
-      outcome: released ? "ok" : "partial",
+      outcome: released ? "completed" : "failed",
       reason_code: released ? null : "release_failed",
       latency_ms: Date.now() - startedAt,
     });
