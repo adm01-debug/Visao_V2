@@ -223,6 +223,47 @@ async function executeActions(
         case "dispatch":
           results.push({ action: "dispatch", success: true, message: `Dispatch request sent for ${alert.camera_name}` });
           break;
+        case "trigger_output": {
+          // Onda 154 — a regra NÃO fala com o equipamento. Ela apenas registra
+          // a intenção na trilha e delega ao mesmo caminho de acionamento usado
+          // pela mesa de operação. Se a regra tocasse o relé por conta própria,
+          // teríamos dois lugares aplicando (ou esquecendo) o intervalo mínimo.
+          if (isTest) {
+            results.push({ action: "trigger_output", success: true, message: "Acionamento simulado [teste] — hardware não tocado" });
+            break;
+          }
+          const { data: eligible } = await supabase.rpc("rule_eligible_io_port", {
+            p_camera_id: alert.camera_id,
+            p_user_id: alert.user_id,
+          });
+          const port = Array.isArray(eligible) ? eligible[0] : null;
+          if (!port) {
+            results.push({ action: "trigger_output", success: false, message: "Nenhuma saída de alarme habilitada nesta câmera" });
+            break;
+          }
+          if ((port.cooldown_remaining_ms ?? 0) > 0) {
+            // Recusa por cooldown é resultado legítimo, não erro: evita sirene
+            // pipocando a cada frame durante um evento contínuo.
+            results.push({ action: "trigger_output", success: false, message: `Em intervalo mínimo (${port.cooldown_remaining_ms} ms restantes)` });
+            break;
+          }
+          const { error: ioError } = await supabase.functions.invoke("camera-io-control", {
+            body: {
+              action: "actuate",
+              camera_id: alert.camera_id,
+              port_id: port.port_id,
+              command: "pulse",
+              origin: "rule",
+              origin_ref: rule.id,
+            },
+          });
+          results.push({
+            action: "trigger_output",
+            success: !ioError,
+            message: ioError ? ioError.message : `Saída ${port.port_token} pulsada por ${port.pulse_ms} ms`,
+          });
+          break;
+        }
         default:
           results.push({ action, success: false, message: `Unknown action: ${action}` });
       }
