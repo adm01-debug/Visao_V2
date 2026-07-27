@@ -88,3 +88,6 @@ verify_jwt = false
 
 [functions.maintenance-alerts-dispatch]
 verify_jwt = false
+
+[functions.migrate-helper]
+verify_jwt = false
