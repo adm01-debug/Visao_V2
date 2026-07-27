@@ -161,6 +161,8 @@ Deno.serve(async (req) => {
       target_host: host,
       run_from: "cloud",
       message: "Host privado bloqueado sem relay",
+      // Bloqueio deliberado nosso: é cadastro/topologia, não defeito de campo.
+      blame: "config",
       context: { requested_ports: payload.ports ?? null },
     });
     return j({

@@ -246,6 +246,8 @@ Deno.serve(async (req) => {
         target_host: host,
         run_from: "cloud",
         message: "Host privado bloqueado sem relay",
+        // Bloqueio deliberado nosso: é cadastro/topologia, não defeito de campo.
+        blame: "config",
         context: { allow_private, ports: ports ?? null },
       });
       return j({
@@ -307,6 +309,9 @@ Deno.serve(async (req) => {
       message: usingRelay
         ? "Agente local não encontrou ONVIF"
         : "Nenhuma porta ONVIF respondeu",
+      // Nenhuma porta respondeu = silêncio. A culpa depende de onde rodamos:
+      // pelo agente (LAN) sobra o equipamento; da nuvem, o caminho é opaco.
+      network_kind: "timeout",
       context: { tested_ports: targets, is_lan_host: isLan },
     });
     return j({

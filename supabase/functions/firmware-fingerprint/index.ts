@@ -321,6 +321,9 @@ Deno.serve(async (req) => {
       http_status: 500,
       user_id: userId,
       message: msg,
+      // Deixa a taxonomia classificar: erro de rede vira classe, erro de
+      // lógica permanece sem classe (e sem acusar equipamento algum).
+      error: err,
     }).catch(() => { /* ignore */ });
     return json({ error: "internal_error", details: msg }, 500);
   }
