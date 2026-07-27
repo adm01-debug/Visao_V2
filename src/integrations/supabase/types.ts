@@ -6964,6 +6964,45 @@ export type Database = {
           },
         ]
       }
+      user_capability_grants: {
+        Row: {
+          capability: string
+          created_at: string
+          effect: string
+          expires_at: string | null
+          granted_by: string | null
+          id: string
+          reason: string | null
+          revoked_at: string | null
+          revoked_by: string | null
+          user_id: string
+        }
+        Insert: {
+          capability: string
+          created_at?: string
+          effect: string
+          expires_at?: string | null
+          granted_by?: string | null
+          id?: string
+          reason?: string | null
+          revoked_at?: string | null
+          revoked_by?: string | null
+          user_id: string
+        }
+        Update: {
+          capability?: string
+          created_at?: string
+          effect?: string
+          expires_at?: string | null
+          granted_by?: string | null
+          id?: string
+          reason?: string | null
+          revoked_at?: string | null
+          revoked_by?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_filter_preferences: {
         Row: {
           created_at: string
@@ -7337,6 +7376,7 @@ export type Database = {
       }
       blame_owner: { Args: { p_blame: string }; Returns: string }
       canonical_plate: { Args: { _raw: string }; Returns: string }
+      capability_catalog: { Args: never; Returns: string[] }
       capture_db_health_snapshot: { Args: never; Returns: string }
       check_csp_anomaly: { Args: never; Returns: Json }
       check_relay_purge_watchdog: { Args: never; Returns: undefined }
@@ -7594,6 +7634,14 @@ export type Database = {
           min_detections: number
           min_dwell_seconds: number
         }[]
+      }
+      effective_app_role: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
+      effective_capabilities: {
+        Args: { _now?: string; _user_id: string }
+        Returns: string[]
       }
       enqueue_monitoring_center_event: {
         Args: {
@@ -8257,6 +8305,10 @@ export type Database = {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
       }
+      has_capability: {
+        Args: { _capability: string; _now?: string; _user_id: string }
+        Returns: boolean
+      }
       has_org_role: {
         Args: {
           _org: string
@@ -8351,6 +8403,7 @@ export type Database = {
           max_backoff_seconds: number
         }[]
       }
+      my_capabilities: { Args: never; Returns: string[] }
       partition_maintenance_lock_key: { Args: never; Returns: number }
       point_in_polygon: {
         Args: { _poly: Json; _x: number; _y: number }
@@ -8484,6 +8537,10 @@ export type Database = {
           remaining: number
           rewrapped_count: number
         }[]
+      }
+      role_baseline_capabilities: {
+        Args: { _role: Database["public"]["Enums"]["app_role"] }
+        Returns: string[]
       }
       rotate_camera_dek: {
         Args: { p_camera_id: string; p_kek: string; p_kek_version?: number }
