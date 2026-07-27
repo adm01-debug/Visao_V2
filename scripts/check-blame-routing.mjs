@@ -18,6 +18,14 @@ const psql = (sql) =>
 
 const uuid = (n) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
 
+/**
+ * Isolamento sem DELETE. O papel do gate tem apenas SELECT/INSERT — e isso é
+ * saudável: um script de checagem não deve poder apagar auditoria. Em vez de
+ * limpar a tabela, deslocamos o RELÓGIO para uma janela histórica vazia e
+ * inserimos as fixtures dentro dela. Tudo dentro de transação revertida.
+ */
+const CLOCK = `now() - interval '90 days'`;
+
 /** Cenários nomeados: cada um existe porque já quebrou algum sistema real. */
 const SCENARIOS = [
   {
@@ -96,19 +104,17 @@ function runScenario(scenario) {
     .map(
       (r) =>
         `('gate','GATE_ERR','cloud',${literal(r.camera_id)},${literal(r.relay_agent_id)},` +
-        `'${r.blame}','${RULE[r.blame]}', now() - interval '5 minutes')`,
+        `'${r.blame}','${RULE[r.blame]}', ${CLOCK} - interval '5 minutes')`,
     )
     .join(',');
 
   const sql = `
 BEGIN;
 SET LOCAL lock_timeout = '5s';
-DELETE FROM public.edge_function_error_audit;
-DELETE FROM public.maintenance_alert_events;
 ${values ? `INSERT INTO public.edge_function_error_audit
   (function_name, error_code, run_from, camera_id, relay_agent_id, blame, blame_rule, created_at)
 VALUES ${values};` : ''}
-SELECT public.evaluate_blame_alerts(now())::text;
+SELECT public.evaluate_blame_alerts(${CLOCK})::text;
 ROLLBACK;`;
 
   const out = execFileSync('psql', ['-tAX', '-v', 'ON_ERROR_STOP=1', '-c', sql], { encoding: 'utf8' })
@@ -176,17 +182,18 @@ for (const scenario of SCENARIOS) {
 
 // --- 3. Cooldown: segunda execução na mesma janela não repete --------------
 {
-  const values = Array.from({ length: 25 }, () => `('gate','E','cloud',${literal(uuid(1))},NULL,'config','R3_name_resolution', now() - interval '5 minutes')`).join(',');
+  const values = Array.from(
+    { length: 25 },
+    () => `('gate','E','cloud',${literal(uuid(1))},NULL,'config','R3_name_resolution', ${CLOCK} - interval '5 minutes')`,
+  ).join(',');
   const sql = `
 BEGIN;
-DELETE FROM public.edge_function_error_audit;
-DELETE FROM public.maintenance_alert_events;
 INSERT INTO public.edge_function_error_audit
   (function_name, error_code, run_from, camera_id, relay_agent_id, blame, blame_rule, created_at)
 VALUES ${values};
-SELECT public.evaluate_blame_alerts(now())::text;
-SELECT public.evaluate_blame_alerts(now())::text;
-SELECT count(*)::text FROM public.maintenance_alert_events;
+SELECT public.evaluate_blame_alerts(${CLOCK})::text;
+SELECT public.evaluate_blame_alerts(${CLOCK})::text;
+SELECT count(*)::text FROM public.maintenance_alert_events WHERE routine LIKE 'blame:%' AND created_at <= ${CLOCK};
 ROLLBACK;`;
   const lines = execFileSync('psql', ['-tAX', '-v', 'ON_ERROR_STOP=1', '-c', sql], { encoding: 'utf8' })
     .split('\n')
