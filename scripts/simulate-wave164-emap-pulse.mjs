@@ -106,7 +106,9 @@ function rng(seed) {
   const l = registerPulses(emptyPulseLedger(), bad, Number.NaN);
   ok(!('' in l), 'id vazio é descartado');
   ok(isPulsing(l, 'x', 0), 'estado de origem inválido vira unknown e ainda agrava');
-  ok(!isPulsing(l, 'y', 0), 'destino inválido (unknown) não agrava a partir de online');
+  // 'unknown' é mais grave que 'online': ignorância sobre a câmera é piora real.
+  ok(isPulsing(l, 'y', 0), 'destino inválido vira unknown e agrava a partir de online');
+  ok(l.y.status === 'unknown', 'destino inválido é normalizado para unknown');
   ok(l.w.expiresAt === DEFAULT_PULSE_CONFIG.ttlMs, 'relógio NaN vira 0, prazo é finito');
   ok(expirePulses(l, DEFAULT_PULSE_CONFIG.ttlMs).w === undefined, 'pulso de relógio inválido vence');
   const zeroTtl = registerPulses(emptyPulseLedger(), [bad[3]], 100, { ttlMs: 0 });
