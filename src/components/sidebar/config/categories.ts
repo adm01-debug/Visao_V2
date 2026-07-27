@@ -34,6 +34,7 @@ import {
   TestTube2,
   Wrench,
   Network,
+  FileCheck2,
 } from "lucide-react";
 import type { NavCategory } from "../types";
 import type { SidebarStatus } from "@/hooks/useSidebarStatus";
