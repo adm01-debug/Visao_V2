@@ -297,7 +297,7 @@ for (const sc of scenarios) {
   if (sc.pixels && !sc.withTransform) {
     expect(manifest.assessment.level === 'broken', 'pixel alterado sem declaração = broken');
   }
-  if (sc.gapMs > 1_000) {
+  if (sc.gapMs > 1_000 && sc.n > 1) {
     expect(manifest.assessment.gaps.length > 0, 'lacuna real é enumerada');
   }
 
