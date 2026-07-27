@@ -37,6 +37,9 @@ export default function SitePlanPage() {
     planImageUrl,
     placements,
     pulsingCameraIds,
+    suppressionSummary,
+    dismissSuppressions,
+    cameras,
     unplacedCameras,
     loading,
     saving,
@@ -55,6 +58,11 @@ export default function SitePlanPage() {
     [placements, selectedId],
   );
   const summary = useMemo(() => summarizePlan(placements), [placements]);
+  const nameOf = useCallback(
+    (cameraId: string) => cameras.find((camera) => camera.id === cameraId)?.name ?? 'Câmera',
+    [cameras],
+  );
+
 
   return (
     <div className="space-y-6 p-4 md:p-6">
