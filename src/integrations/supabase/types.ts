@@ -3320,6 +3320,24 @@ export type Database = {
         }
         Relationships: []
       }
+      internal_cron_secrets: {
+        Row: {
+          created_at: string
+          name: string
+          secret: string
+        }
+        Insert: {
+          created_at?: string
+          name: string
+          secret: string
+        }
+        Update: {
+          created_at?: string
+          name?: string
+          secret?: string
+        }
+        Relationships: []
+      }
       io_actuation_log: {
         Row: {
           actor_user_id: string | null
@@ -8645,6 +8663,7 @@ export type Database = {
         Args: { _payload: Json; _strategy?: string }
         Returns: Json
       }
+      invoke_onvif_event_puller: { Args: never; Returns: undefined }
       is_org_member: { Args: { _org: string; _user: string }; Returns: boolean }
       is_test_mode_active: {
         Args: { _camera_id?: string; _rule_id?: string; _user_id: string }
