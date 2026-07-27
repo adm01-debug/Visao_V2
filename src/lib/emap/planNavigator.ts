@@ -139,12 +139,13 @@ export function stepPlan(
   direction: PlanStep,
 ): string | null {
   const list = items ?? [];
-  if (list.length === 0) return null;
+  const first = list[0];
+  if (!first) return null;
   const current = list.findIndex((item) => item.planId === activePlanId);
-  if (current < 0) return list[0].planId;
+  if (current < 0) return first.planId;
   const delta = direction === 'previous' ? -1 : 1;
   const next = (current + delta + list.length) % list.length;
-  return list[next].planId;
+  return list[next]?.planId ?? first.planId;
 }
 
 /**
