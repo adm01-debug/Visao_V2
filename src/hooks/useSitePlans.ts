@@ -322,6 +322,17 @@ export function useSitePlans() {
 
   const pulsingCameraIds = useMemo(() => pulsingIdsOf(pulseLedger, Date.now()), [pulseLedger]);
 
+  /** Resumo do que a política calou — pronto para o painel de transparência. */
+  const suppressionSummary = useMemo(
+    () => summarizeSuppressions(suppressionLedger, Date.now()),
+    [suppressionLedger],
+  );
+
+  const dismissSuppressions = useCallback((cameraId: string) => {
+    setSuppressionLedger((current) => clearCameraSuppressions(current, cameraId));
+  }, []);
+
+
   // Projeção: geometria (banco) + estado ao vivo (livro). Nunca o contrário.
   const placements = useMemo(
     () => reconcilePlacements(rawPlacements, statusLedger),
