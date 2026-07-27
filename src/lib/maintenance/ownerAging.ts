@@ -106,6 +106,14 @@ function bucketKeyOf(row: MaintenanceAlertView): OwnerFilterKey {
   return row.routing === null ? 'unrouted' : row.routing.owner;
 }
 
+/** Arredonda para 1 casa sem cruzar o zero (preserva o sinal da folga). */
+function roundKeepingSign(value: number): number {
+  const rounded = Math.round(value * 10) / 10;
+  if (value > 0 && rounded <= 0) return 0.1;
+  if (value <= 0 && rounded > 0) return 0;
+  return rounded;
+}
+
 const STATE_RANK: Readonly<Record<OwnerSlaState, number>> = {
   idle: 0,
   on_track: 1,
