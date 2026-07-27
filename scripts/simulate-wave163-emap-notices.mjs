@@ -8,13 +8,13 @@
  *
  * Roda sem dependências: o TypeScript é transpilado por remoção de tipos.
  */
-import { readFileSync } from 'node:fs';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { createJiti } from 'jiti';
+import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { transformSync } from 'node:child_process';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
+const jiti = createJiti(import.meta.url, { alias: { '@': resolve(root, 'src') } });
 
 let passed = 0;
 const failures = [];
@@ -35,14 +35,13 @@ function makeRandom(seed) {
 const SEVERITY = ['alert', 'offline', 'warning', 'unknown', 'online'];
 const rank = (status) => SEVERITY.indexOf(status);
 
-const mod = await import(pathToFileURL(resolve(root, '.wave163/statusAlertPolicy.mjs')).href);
 const {
   DEFAULT_ALERT_POLICY,
   emptyNoticeState,
   primeNoticeState,
   evaluateNotices,
   describeNotice,
-} = mod;
+} = await jiti.import(resolve(root, 'src/lib/emap/statusAlertPolicy.ts'));
 
 const transition = (cameraId, from, to) => ({
   cameraId,
