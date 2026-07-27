@@ -18,6 +18,7 @@ import { PlacementInspector } from '@/components/emap/PlacementInspector';
 import { SuppressedNoticesPanel } from '@/components/emap/SuppressedNoticesPanel';
 import { PlanSwitcher } from '@/components/emap/PlanSwitcher';
 import { CrossFloorAttentionBanner } from '@/components/emap/CrossFloorAttentionBanner';
+import { AttentionClockPanel } from '@/components/emap/AttentionClockPanel';
 import { isEditableTarget, resolveShortcutTarget, stepPlan, type PlanNavItem } from '@/lib/emap/planNavigator';
 import {
   adviseCrossFloorAttention,
@@ -25,6 +26,13 @@ import {
   recordDismissal,
   type DismissalLedger,
 } from '@/lib/emap/attentionRouter';
+import {
+  clearAttention,
+  emptyAttentionLedger,
+  observeAttention,
+  pruneAttention,
+  type AttentionLedger,
+} from '@/lib/emap/attentionClock';
 
 import { useSitePlans } from '@/hooks/useSitePlans';
 import { summarizePlan, type MapMarkerStatus } from '@/lib/emap/floorPlanGeometry';
