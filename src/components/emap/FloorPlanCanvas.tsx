@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import {
   clusterMarkers,
@@ -190,7 +190,6 @@ export function FloorPlanCanvas({
                   />
                 )}
               <button
-                key={cluster.key}
                 type="button"
                 aria-label={
                   grouped
@@ -235,6 +234,7 @@ export function FloorPlanCanvas({
               >
                 {grouped ? cluster.members.length : ''}
               </button>
+              </Fragment>
             );
           })}
         </>
