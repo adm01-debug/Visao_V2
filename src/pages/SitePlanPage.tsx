@@ -66,6 +66,37 @@ export default function SitePlanPage() {
     [cameras],
   );
 
+  /**
+   * Onda 166 — atalhos de andar. Teclas 1..9 saltam direto; setas ←/→ varrem
+   * em círculo. Nada dispara enquanto o foco está num campo de texto: roubar
+   * o dígito de quem digita o nome da planta seria pior que não ter atalho.
+   */
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (isEditableTarget(event.target)) return;
+
+      const direct = resolveShortcutTarget(planNavigation.items, event.key);
+      if (direct) {
+        event.preventDefault();
+        setActivePlanId(direct);
+        return;
+      }
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      const target = stepPlan(
+        planNavigation.items,
+        planNavigation.resolvedActiveId,
+        event.key === 'ArrowLeft' ? 'previous' : 'next',
+      );
+      if (target) {
+        event.preventDefault();
+        setActivePlanId(target);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [planNavigation, setActivePlanId]);
+
 
   return (
     <div className="space-y-6 p-4 md:p-6">
