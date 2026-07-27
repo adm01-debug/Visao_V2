@@ -14,7 +14,24 @@
  *  I7. Ordenação determinística e monotônica nas faixas.
  */
 
-import {
+import { build } from 'esbuild';
+import { resolve } from 'node:path';
+
+const entry = resolve(process.cwd(), 'src/lib/emap/attentionClock.ts');
+const bundled = await build({
+  entryPoints: [entry],
+  bundle: true,
+  write: false,
+  format: 'esm',
+  platform: 'neutral',
+  logLevel: 'silent',
+});
+const mod = await import(
+  'data:text/javascript;base64,' +
+    Buffer.from(bundled.outputFiles[0].text).toString('base64')
+);
+
+const {
   attentionAge,
   bandOf,
   clearAttention,
@@ -26,7 +43,7 @@ import {
   rankAttention,
   statusAge,
   summarizeAttention,
-} from '../src/lib/emap/attentionClock.ts';
+} = mod;
 
 let assertions = 0;
 let failures = 0;
