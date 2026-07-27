@@ -12,6 +12,13 @@ export default defineConfig({
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
+    // O padrão de 5s é medido em teste isolado. Com ~100 arquivos concorrendo,
+    // testes de render legítimos estouravam o prazo e — pior — o teste abortado
+    // deixava o DOM montado, contaminando o seguinte com "found multiple
+    // elements". O sintoma parecia defeito de componente; era só o relógio.
+    testTimeout: 30_000,
+    hookTimeout: 30_000,
+
     reporters: isCI ? ["default", "junit"] : ["default"],
     outputFile: { junit: "./test-results/vitest-junit.xml" },
     coverage: {
