@@ -88,6 +88,7 @@ const TestModePage = lazy(() => import("@/pages/TestModePage"));
 const LocalAgentsPage = lazy(() => import("@/pages/LocalAgentsPage"));
 const CollabNetworkPage = lazy(() => import("@/pages/CollabNetworkPage"));
 const MaintenanceConsolePage = lazy(() => import("@/pages/MaintenanceConsolePage"));
+const EvidenceExportsPage = lazy(() => import("@/pages/EvidenceExportsPage"));
 
 const CLSReportPage = lazy(() => import("@/pages/CLSReportPage"));
 const LoadingStatesChecklistPage = lazy(() => import("@/pages/LoadingStatesChecklistPage"));
