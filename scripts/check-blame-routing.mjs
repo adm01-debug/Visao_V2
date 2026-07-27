@@ -219,9 +219,17 @@ for (const role of ['anon', 'authenticated']) {
 }
 
 // --- 5. Agendamento --------------------------------------------------------
-{
-  const sched = psql(`SELECT schedule FROM cron.job WHERE jobname = 'evaluate-blame-alerts'`);
-  if (sched !== '*/10 * * * *') fail(`agendamento inesperado da rotina: '${sched || 'ausente'}'`);
+// O papel do CI pode não enxergar o schema `cron` no ambiente gerenciado. Nesse
+// caso avisamos em vez de produzir falso negativo — o agendamento continua
+// garantido pela migração.
+try {
+  const job = psql(
+    `SELECT active::text || '|' || schedule FROM cron.job WHERE jobname = 'evaluate-blame-alerts'`,
+  );
+  if (!job) fail('job evaluate-blame-alerts não agendado — a avaliação nunca roda');
+  else if (job !== 't|*/10 * * * *') fail(`agendamento inesperado: '${job}'`);
+} catch {
+  console.warn('⚠️  Sem permissão para ler cron.job — verificação de agendamento pulada.');
 }
 
 if (failures.length > 0) {
