@@ -5,6 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CheckCircle2, ShieldAlert } from 'lucide-react';
 import type { MaintenanceConsoleModel } from '@/lib/maintenance/maintenanceConsoleView';
+import { scopeLabel } from '@/lib/maintenance/maintenanceOwner';
 
 interface MaintenanceAlertsCardProps {
   readonly model: MaintenanceConsoleModel;
@@ -83,6 +84,16 @@ export function MaintenanceAlertsCard({
                       </Badge>
                       <span className="truncate font-medium">{row.routine}</span>
                       <Badge variant="outline">{row.levelLabel}</Badge>
+                      {row.routing && (
+                        <Badge variant="outline" className="border-primary/40 text-primary">
+                          {row.routing.label}
+                        </Badge>
+                      )}
+                      {row.routing && scopeLabel(row.routing) && (
+                        <Badge variant="outline" className="text-muted-foreground">
+                          {scopeLabel(row.routing)}
+                        </Badge>
+                      )}
                       {row.status === 'acknowledged' && (
                         <Badge variant="outline" className="text-muted-foreground">
                           reconhecido
@@ -90,6 +101,9 @@ export function MaintenanceAlertsCard({
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground">{row.reason}</p>
+                    {row.routing && (
+                      <p className="text-xs font-medium text-foreground">{row.routing.action}</p>
+                    )}
                     <p className="text-xs text-muted-foreground">
                       Aberto há {formatMinutes(row.ageMinutes)}
                       {row.minutesToNextLevel !== null

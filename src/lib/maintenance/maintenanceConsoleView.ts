@@ -50,6 +50,7 @@ import {
   type EscalationThresholds,
   type MaintenanceSeverity,
 } from '@/lib/maintenanceEscalation';
+import { readOwnerRouting, type OwnerRouting } from '@/lib/maintenance/maintenanceOwner';
 
 const MINUTE_MS = 60_000;
 
@@ -85,6 +86,11 @@ export interface MaintenanceAlertView {
   /** Só alertas abertos podem ser reconhecidos. */
   readonly canAcknowledge: boolean;
   readonly acknowledgedAtMs: number | null;
+  /**
+   * Onda 147 — responsável derivado de `detail.owner`. `null` para as rotinas
+   * anteriores ao roteamento por culpa, que continuam válidas sem endereço.
+   */
+  readonly routing: OwnerRouting | null;
 }
 
 export interface MaintenanceConsoleSummary {
@@ -198,6 +204,7 @@ export function buildMaintenanceConsole(
             ),
       canAcknowledge: status === 'open',
       acknowledgedAtMs,
+      routing: readOwnerRouting(row.detail),
     };
   });
 
