@@ -255,7 +255,7 @@ export function decidePullPoint(
     return { action: 'recreate', reason: 'lease_expired', delayMs: 0, terminal: false };
   }
 
-  if (remaining <= renewThresholdMs(sub.leaseDurationMs)) {
+  if (remaining <= renewThresholdMs(observedLeaseMs(sub))) {
     return { action: 'renew', reason: 'lease_near_expiry', delayMs: 0, terminal: false };
   }
 
