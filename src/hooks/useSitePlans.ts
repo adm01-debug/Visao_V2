@@ -495,6 +495,9 @@ export function useSitePlans() {
     planImageUrl,
     placements,
     pulsingCameraIds,
+    suppressionSummary,
+    dismissSuppressions,
+
     cameras,
     unplacedCameras,
     loading,
