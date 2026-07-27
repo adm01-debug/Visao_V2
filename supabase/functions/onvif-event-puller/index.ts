@@ -81,22 +81,31 @@ Deno.serve(async (req) => {
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const service = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-  const bearer = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "").trim();
-  // Dois portadores legítimos e nenhum outro: a chave de serviço (invocação
-  // administrativa) e o segredo do agendador (o cron do banco não tem como
-  // portar a chave de serviço). Usuário final não entra aqui por desenho —
-  // "puxar eventos manualmente" não é operação de ninguém, e abrir esse
-  // caminho só daria um martelo para bater em câmera alheia.
-  const cronSecret = Deno.env.get("INTERNAL_CRON_SECRET") ?? "";
-  const presentedSecret = (req.headers.get("x-internal-secret") ?? "").trim();
-  const authorized =
-    (bearer !== "" && bearer === service) ||
-    (cronSecret !== "" && presentedSecret === cronSecret);
-  if (!authorized) return j({ error: "forbidden" }, 403);
-
-
   const admin = createClient(supabaseUrl, service);
   const started = Date.now();
+
+  const bearer = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "").trim();
+  // Dois portadores legítimos e nenhum outro: a chave de serviço (invocação
+  // administrativa) e o segredo do agendador, guardado em
+  // `internal_cron_secrets` porque o cron do banco não tem como portar a chave
+  // de serviço. Usuário final não entra aqui por desenho — "puxar eventos
+  // manualmente" não é operação de ninguém, e abrir esse caminho só daria um
+  // martelo para bater em câmera alheia.
+  let authorized = bearer !== "" && bearer === service;
+  if (!authorized) {
+    const presented = (req.headers.get("x-internal-secret") ?? "").trim();
+    if (presented !== "") {
+      const { data: secretRow } = await admin
+        .from("internal_cron_secrets")
+        .select("secret")
+        .eq("name", "onvif_event_puller")
+        .maybeSingle();
+      const expected = String(secretRow?.secret ?? "");
+      authorized = expected !== "" && presented === expected;
+    }
+  }
+  if (!authorized) return j({ error: "forbidden" }, 403);
+
 
   let body: { camera_id?: string; limit?: number } = {};
   try {
