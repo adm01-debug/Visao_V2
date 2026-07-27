@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Map as MapIcon, MapPin } from 'lucide-react';
 import { PageMeta } from '@/components/PageMeta';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,6 +15,8 @@ import {
 import { FloorPlanCanvas } from '@/components/emap/FloorPlanCanvas';
 import { UploadPlanDialog } from '@/components/emap/UploadPlanDialog';
 import { PlacementInspector } from '@/components/emap/PlacementInspector';
+import { SuppressedNoticesPanel } from '@/components/emap/SuppressedNoticesPanel';
+
 import { useSitePlans } from '@/hooks/useSitePlans';
 import { summarizePlan, type MapMarkerStatus } from '@/lib/emap/floorPlanGeometry';
 
@@ -35,6 +37,9 @@ export default function SitePlanPage() {
     planImageUrl,
     placements,
     pulsingCameraIds,
+    suppressionSummary,
+    dismissSuppressions,
+    cameras,
     unplacedCameras,
     loading,
     saving,
@@ -53,6 +58,11 @@ export default function SitePlanPage() {
     [placements, selectedId],
   );
   const summary = useMemo(() => summarizePlan(placements), [placements]);
+  const nameOf = useCallback(
+    (cameraId: string) => cameras.find((camera) => camera.id === cameraId)?.name ?? 'Câmera',
+    [cameras],
+  );
+
 
   return (
     <div className="space-y-6 p-4 md:p-6">
@@ -154,6 +164,14 @@ export default function SitePlanPage() {
                 setSelectedId(null);
               }}
             />
+
+            <SuppressedNoticesPanel
+              summary={suppressionSummary}
+              nameOf={nameOf}
+              onDismiss={dismissSuppressions}
+            />
+
+
 
             <Card>
               <CardHeader className="pb-3">

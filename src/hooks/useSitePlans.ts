@@ -34,6 +34,14 @@ import {
   primeNoticeState,
   type NoticeState,
 } from '@/lib/emap/statusAlertPolicy';
+import {
+  emptySuppressionLedger,
+  recordSuppressions,
+  summarizeSuppressions,
+  clearCameraSuppressions,
+  type SuppressionLedger,
+} from '@/lib/emap/suppressionLedger';
+
 
 export interface SitePlan {
   id: string;
@@ -83,6 +91,11 @@ export function useSitePlans() {
   // Onda 164: destaque temporário de quem piorou. Vive em estado (a tela
   // precisa repintar), mas expira por relógio, nunca por render.
   const [pulseLedger, setPulseLedger] = useState<PulseLedger>(emptyPulseLedger);
+  // Onda 165: livro dos avisos retidos — transparência do anti-ruído.
+  const [suppressionLedger, setSuppressionLedger] = useState<SuppressionLedger>(
+    emptySuppressionLedger,
+  );
+
   const [cameras, setCameras] = useState<PlanCamera[]>([]);
   const [planImageUrl, setPlanImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -270,8 +283,17 @@ export function useSitePlans() {
     }
     if (transitions.length === 0) return;
 
-    const { state, notices } = evaluateNotices(noticeStateRef.current, transitions, Date.now());
+    const now = Date.now();
+    const { state, notices, suppressed } = evaluateNotices(
+      noticeStateRef.current,
+      transitions,
+      now,
+    );
     noticeStateRef.current = state;
+
+    // Onda 165: tudo que foi calado vira registro auditável. Mecanismo que
+    // silencia sem prestar contas é ponto cego, não proteção.
+    setSuppressionLedger((current) => recordSuppressions(current, suppressed, now));
 
     const nameOf = (cameraId: string) =>
       cameras.find((camera) => camera.id === cameraId)?.name ?? 'Câmera';
@@ -282,6 +304,7 @@ export function useSitePlans() {
       else toast.warning(message);
     }
   }, [statusLedger, cameras]);
+
 
   /**
    * Um único timer para todo o mapa: agenda-se o próximo vencimento em vez de
@@ -298,6 +321,17 @@ export function useSitePlans() {
   }, [pulseLedger]);
 
   const pulsingCameraIds = useMemo(() => pulsingIdsOf(pulseLedger, Date.now()), [pulseLedger]);
+
+  /** Resumo do que a política calou — pronto para o painel de transparência. */
+  const suppressionSummary = useMemo(
+    () => summarizeSuppressions(suppressionLedger, Date.now()),
+    [suppressionLedger],
+  );
+
+  const dismissSuppressions = useCallback((cameraId: string) => {
+    setSuppressionLedger((current) => clearCameraSuppressions(current, cameraId));
+  }, []);
+
 
   // Projeção: geometria (banco) + estado ao vivo (livro). Nunca o contrário.
   const placements = useMemo(
@@ -461,6 +495,9 @@ export function useSitePlans() {
     planImageUrl,
     placements,
     pulsingCameraIds,
+    suppressionSummary,
+    dismissSuppressions,
+
     cameras,
     unplacedCameras,
     loading,
