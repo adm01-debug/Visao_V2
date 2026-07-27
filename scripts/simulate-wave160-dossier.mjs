@@ -28,7 +28,7 @@ const {
   dossierFileName,
   DOSSIER_FORMAT,
 } = jiti('../src/lib/evidence/custodyDossier.ts');
-const { buildManifest, CUSTODY_GENESIS } = jiti('../src/lib/evidence/custodyManifest.ts');
+const { buildManifest, computeRootHash, CUSTODY_GENESIS } = jiti('../src/lib/evidence/custodyManifest.ts');
 
 let checks = 0;
 let failures = 0;
@@ -213,12 +213,20 @@ async function main() {
 
   const forged = clone(badManifest);
   forged.assessment.level = 'admissible';
+  forged.assessment.reasons = [];
+  // Resselar é o que um falsificador competente faria: a corrente e o selo
+  // ficam coerentes entre si. Só a reavaliação do conteúdo o desmascara.
+  forged.rootHash = await computeRootHash(forged);
   const forgedDossier = buildDossier(forged, ISSUANCE);
   const forgedParsed = parseDossier(serializeDossier(forgedDossier));
   assert(forgedParsed.ok, 'dossiê forjado deve ser legível (o ponto é o veredito)');
   if (forgedParsed.ok) {
     const v = await verifyDossier(forgedParsed.dossier);
-    assert(v.integrity !== 'intact', 'I2: veredito mentiroso não pode ser aceito como íntegro');
+    assert(
+      v.integrity === 'inconsistent_verdict',
+      `I2: veredito mentiroso com selo coerente devia ser "incoerente", veio "${v.integrity}"`,
+    );
+    assert(v.chain.intact, 'I2: pré-condição — a corrente do forjado está de pé');
     assert(v.declaredLevel === 'admissible', 'I2: deve relatar o que o arquivo declara');
     assert(v.recomputedLevel !== 'admissible', 'I2: deve relatar o que o conteúdo sustenta');
   }
