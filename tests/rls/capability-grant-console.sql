@@ -18,9 +18,9 @@ DECLARE
   v_ok     boolean;
   v_count  int;
 BEGIN
-  DELETE FROM public.user_roles WHERE user_id IN (v_admin, v_admin2, v_viewer);
   INSERT INTO public.user_roles (user_id, role) VALUES
-    (v_admin, 'admin'), (v_admin2, 'admin'), (v_viewer, 'viewer');
+    (v_admin, 'admin'), (v_admin2, 'admin'), (v_viewer, 'viewer')
+  ON CONFLICT (user_id, role) DO NOTHING;
 
   -- ator = admin
   PERFORM set_config('request.jwt.claims', json_build_object('sub', v_admin)::text, true);
