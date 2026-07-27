@@ -100,7 +100,11 @@ const NAMED = [
   ['ator sem permissão de conceder', base({ actorRole: 'operator' }), 'actor_missing_capability'],
   [
     'manager tentando conceder o que não tem',
-    base({ actorRole: 'manager', capability: 'recordings.delete' }),
+    base({
+      actorRole: 'manager',
+      actorGrants: [{ capability: 'users.grant_capability', effect: 'grant', expiresAtMs: NOW + 10 * DAY }],
+      capability: 'recordings.delete',
+    }),
     'escalation',
   ],
   [
