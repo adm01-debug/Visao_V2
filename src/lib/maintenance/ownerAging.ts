@@ -153,7 +153,9 @@ export function computeOwnerAging(
   return {
     key,
     oldestOpenMinutes: Math.round(oldest * 10) / 10,
-    minutesRemaining: Math.round(tightest * 10) / 10,
+    // Arredondamento que NÃO cruza o zero: uma folga positiva de 0,04 min não
+    // pode virar "0" e passar a mentir que o prazo estourou (A3).
+    minutesRemaining: roundKeepingSign(tightest),
     state: worst,
     breached,
     atRisk,
