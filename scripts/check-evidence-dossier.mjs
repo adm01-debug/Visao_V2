@@ -41,7 +41,7 @@ check('G1 regra pura', dirty.length === 0, `tokens proibidos: ${dirty.join(', ')
 // G2 — emissão fora do selo
 check(
   'G2 selo sem emissão',
-  /sealed:\s*manifest,/.test(rule) && !/sealed:\s*\{[\s\S]*issued/i.test(rule),
+  /sealed:\s*manifest,/.test(rule) && !/\bsealed:\s*\{/.test(rule),
   'o manifesto precisa entrar verbatim em `sealed`',
 );
 check(
