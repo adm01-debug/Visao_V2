@@ -103,6 +103,8 @@ Deno.serve(async (req) => {
         camera_id,
         run_from: "cloud",
         message: v1.error.message,
+        // Falha de RPC é dependência da nuvem: nenhuma câmera deve ser acusada.
+        cloud_dependency: true,
         context: { purpose, rpc: "get_camera_stream_url" },
       });
       return j({ error: "rpc_failed", detail: v1.error.message }, 500, cors);

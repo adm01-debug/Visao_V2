@@ -2692,6 +2692,8 @@ export type Database = {
       }
       edge_function_error_audit: {
         Row: {
+          blame: string | null
+          blame_rule: string | null
           camera_id: string | null
           context: Json
           created_at: string
@@ -2701,6 +2703,7 @@ export type Database = {
           http_status: number | null
           id: string
           message: string | null
+          network_kind: string | null
           relay_agent_id: string | null
           request_id: string | null
           run_from: string
@@ -2709,6 +2712,8 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          blame?: string | null
+          blame_rule?: string | null
           camera_id?: string | null
           context?: Json
           created_at?: string
@@ -2718,6 +2723,7 @@ export type Database = {
           http_status?: number | null
           id?: string
           message?: string | null
+          network_kind?: string | null
           relay_agent_id?: string | null
           request_id?: string | null
           run_from?: string
@@ -2726,6 +2732,8 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          blame?: string | null
+          blame_rule?: string | null
           camera_id?: string | null
           context?: Json
           created_at?: string
@@ -2735,6 +2743,7 @@ export type Database = {
           http_status?: number | null
           id?: string
           message?: string | null
+          network_kind?: string | null
           relay_agent_id?: string | null
           request_id?: string | null
           run_from?: string
