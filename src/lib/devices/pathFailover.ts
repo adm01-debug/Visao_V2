@@ -211,7 +211,8 @@ export function planFailover(input: FailoverInput, nowMs: number): FailoverPlan 
   // produzir ordem com repetição (F1).
   const configured = CONNECTIVITY_PATHS.filter((p) => input.configuredPaths.includes(p));
 
-  if (configured.length === 0) {
+  const [firstConfigured] = configured;
+  if (firstConfigured === undefined) {
     return { order: [], decisions: [], reason: 'no_path_configured' };
   }
 
