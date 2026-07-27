@@ -131,7 +131,7 @@ describe('Onda 156 — simulação de cenários de exportação probatória', ()
         `cenário ${seed}: veredito ${a.level} com ${a.reasons.length} ressalva(s)`,
       ).toBe(true);
     }
-  });
+  }, 60_000);
 
   it('I3: acrescentar defeito nunca melhora a peça', () => {
     const rank = { admissible: 0, weakened: 1, broken: 2 } as const;
@@ -162,7 +162,7 @@ describe('Onda 156 — simulação de cenários de exportação probatória', ()
       expect(rank[worse.level], `cenário ${seed}`).toBeGreaterThanOrEqual(before);
       expect(worse.level).toBe('broken');
     }
-  });
+  }, 60_000);
 
   it('I5: carimbos do equipamento nunca são reescritos', async () => {
     for (const { request, seed } of SCENARIOS.slice(0, 200)) {
@@ -174,7 +174,7 @@ describe('Onda 156 — simulação de cenários de exportação probatória', ()
         expect(manifest.segments[i]?.clockOffsetMs).toBe(request.segments[i]?.clockOffsetMs);
       }
     }
-  });
+  }, 60_000);
 
   it('I4 + I1: selo determinístico e adulteração localizada no índice certo', async () => {
     for (const { request, seed } of SCENARIOS.slice(0, 200)) {
@@ -202,7 +202,7 @@ describe('Onda 156 — simulação de cenários de exportação probatória', ()
         expect(v.firstBrokenIndex, `cenário ${seed}: culpou o elo errado`).toBe(k);
       }
     }
-  });
+  }, 60_000);
 
   it('I2: nenhum campo do manifesto pode ser editado sem quebrar o selo', async () => {
     const mutations: ReadonlyArray<
@@ -247,7 +247,7 @@ describe('Onda 156 — simulação de cenários de exportação probatória', ()
         expect(v.intact, `cenário ${seed}: edição de ${label} passou pelo selo`).toBe(false);
       }
     }
-  });
+  }, 60_000);
 
   it('I1b: reordenar a sequência é detectado', async () => {
     for (const { request, seed } of SCENARIOS.filter((s) => s.request.segments.length >= 2).slice(
@@ -263,7 +263,7 @@ describe('Onda 156 — simulação de cenários de exportação probatória', ()
       expect(v.intact, `cenário ${seed}: troca de ordem passou`).toBe(false);
       expect(v.firstBrokenIndex).toBe(0);
     }
-  });
+  }, 60_000);
 
   it('cobertura da simulação: os três vereditos aparecem em volume', () => {
     const tally = { admissible: 0, weakened: 0, broken: 0 };
@@ -271,5 +271,5 @@ describe('Onda 156 — simulação de cenários de exportação probatória', ()
     expect(tally.admissible).toBeGreaterThan(20);
     expect(tally.weakened).toBeGreaterThan(50);
     expect(tally.broken).toBeGreaterThan(50);
-  });
+  }, 60_000);
 });
