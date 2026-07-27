@@ -47,6 +47,9 @@ export function MaintenanceAlertsCard({
   const buckets = useMemo(() => buildOwnerBuckets(rows), [rows]);
   const activeKey = resolveOwnerFilter(buckets, selected);
   const visibleRows = useMemo(() => applyOwnerFilter(rows, activeKey), [rows, activeKey]);
+  // Onda 149 — dívida de atendimento por responsável, derivada das mesmas
+  // linhas (a idade já vem do relógio único do console).
+  const agingMap = useMemo(() => buildOwnerAgingMap(rows), [rows]);
 
   return (
     <Card>
