@@ -81,7 +81,7 @@ if (!hasPsql) {
 } else {
   // 4a. cameras.control_io no catálogo do banco e no piso de manager
   const inCatalog = psql(
-    `SELECT EXISTS (SELECT 1 FROM public.capability_catalog() c WHERE c = 'cameras.control_io')`,
+    `SELECT 'cameras.control_io' = ANY(public.capability_catalog())`,
   );
   if (inCatalog !== 't') fail('capability_catalog() do banco não contém cameras.control_io');
 
