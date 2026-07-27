@@ -6,6 +6,7 @@ export default {
   safelist: [
     "animate-shimmer",
     "animate-pulse-glow",
+    "animate-marker-pulse",
     "animate-sheen",
     "animate-accordion-down",
     "animate-accordion-up",
@@ -131,6 +132,11 @@ export default {
         "shimmer": {
           "100%": { transform: "translateX(100%)" },
         },
+        "marker-pulse": {
+          "0%": { transform: "translate(-50%, -50%) scale(0.9)", opacity: "0.75" },
+          "70%": { transform: "translate(-50%, -50%) scale(2.1)", opacity: "0" },
+          "100%": { transform: "translate(-50%, -50%) scale(2.1)", opacity: "0" },
+        },
         "skeleton-brand-pulse": {
           "0%, 100%": { opacity: "0.06", transform: "translate(-50%, -50%) scale(1)" },
           "50%": { opacity: "0.1", transform: "translate(-50%, -50%) scale(1.03)" },
@@ -146,6 +152,7 @@ export default {
         "card-enter": "card-enter 0.4s ease-out both",
         "sheen": "sheen 0.7s ease-out",
         "shimmer": "shimmer 2s infinite",
+        "marker-pulse": "marker-pulse 1.6s ease-out infinite",
         "skeleton-brand-pulse": "skeleton-brand-pulse 3s ease-in-out infinite",
       },
     },
