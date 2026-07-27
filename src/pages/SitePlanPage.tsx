@@ -108,6 +108,33 @@ export default function SitePlanPage() {
     });
   }, [planNavigation.items]);
 
+  /**
+   * Onda 168 — relógio de atenção. Cada rodada de observação alimenta o livro;
+   * confirmar o mesmo estado não reinicia a contagem, e só voltar a operar
+   * apaga a entrada. Câmera que sumiu da lista mantém o relógio correndo:
+   * ausência de observação nunca é prova de melhora.
+   */
+  const [attentionClock, setAttentionClock] = useState<AttentionLedger>(emptyAttentionLedger);
+  useEffect(() => {
+    if (placements.length === 0) return;
+    const now = Date.now();
+    const observations = placements.map((placement) => ({
+      cameraId: placement.cameraId,
+      status: placement.status,
+    }));
+    setAttentionClock((previous) => observeAttention(previous, observations, now));
+  }, [placements]);
+  useEffect(() => {
+    const knownIds = new Set(cameras.map((camera) => camera.id));
+    if (knownIds.size === 0) return;
+    setAttentionClock((previous) => pruneAttention(previous, knownIds));
+  }, [cameras]);
+  const acknowledgeAttention = useCallback((cameraId: string) => {
+    setAttentionClock((previous) => clearAttention(previous, cameraId));
+  }, []);
+
+
+
 
   /**
    * Onda 166 — atalhos de andar. Teclas 1..9 saltam direto; setas ←/→ varrem
