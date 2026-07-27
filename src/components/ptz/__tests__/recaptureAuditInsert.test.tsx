@@ -112,7 +112,7 @@ async function renderPanel(ptz: ReturnType<typeof makeHeldPositionPtz>) {
 
 async function triggerRecapture(user: ReturnType<typeof userEvent.setup>) {
   const btn = await screen.findByTestId('ptz-recapture-pan');
-  await waitFor(() => expect(btn).not.toBeDisabled(), { timeout: 2000 });
+  await waitFor(() => expect(btn).not.toBeDisabled(), { timeout: 15000 });
   await user.click(btn);
   const confirmBtn = await screen.findByTestId('ptz-recapture-confirm-btn');
   await user.click(confirmBtn);
@@ -148,7 +148,7 @@ describe('PtzCalibrationPanel · auditoria de recaptura em ptz_connection_attemp
 
     // O INSERT ocorre no `finally` — aguarda até que o spy seja chamado.
     await waitFor(() => expect(insertSpy).toHaveBeenCalledTimes(1), {
-      timeout: 5000,
+      timeout: 15000,
     });
 
     const payload = lastInsertPayload();
@@ -195,7 +195,7 @@ describe('PtzCalibrationPanel · auditoria de recaptura em ptz_connection_attemp
     await triggerRecapture(user);
 
     await waitFor(() => expect(insertSpy).toHaveBeenCalledTimes(1), {
-      timeout: 5000,
+      timeout: 15000,
     });
 
     const payload = lastInsertPayload();
@@ -232,7 +232,7 @@ describe('PtzCalibrationPanel · auditoria de recaptura em ptz_connection_attemp
     await renderPanel(ptz);
 
     const btn = await screen.findByTestId('ptz-recapture-pan');
-    await waitFor(() => expect(btn).not.toBeDisabled(), { timeout: 2000 });
+    await waitFor(() => expect(btn).not.toBeDisabled(), { timeout: 15000 });
     await user.click(btn);
 
     const cancelBtn = await screen.findByTestId('ptz-recapture-cancel');

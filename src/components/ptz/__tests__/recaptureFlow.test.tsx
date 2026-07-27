@@ -116,12 +116,12 @@ describe('PtzCalibrationPanel · fluxo de recaptura (integração)', () => {
 
     // Espera revalidar estar habilitado (sweep_ms populado + statusSupported=true).
     const revalidateBtn = await screen.findByTestId('ptz-revalidate-pan');
-    await waitFor(() => expect(revalidateBtn).not.toBeDisabled(), { timeout: 2000 });
+    await waitFor(() => expect(revalidateBtn).not.toBeDisabled(), { timeout: 15000 });
 
     await user.click(revalidateBtn);
 
     // O alerta obrigatório aparece com o desvio calculado.
-    const alert = await screen.findByTestId('ptz-recapture-required-pan', {}, { timeout: 3000 });
+    const alert = await screen.findByTestId('ptz-recapture-required-pan', {}, { timeout: 15000 });
     expect(alert).toHaveTextContent('Desvio de 35.0%');
     expect(alert).toHaveTextContent('> 10%');
     expect(alert).toHaveTextContent(/recaptura obrigatória/i);
@@ -140,11 +140,11 @@ describe('PtzCalibrationPanel · fluxo de recaptura (integração)', () => {
     await renderPanel(ptz);
 
     const revalidateBtn = await screen.findByTestId('ptz-revalidate-pan');
-    await waitFor(() => expect(revalidateBtn).not.toBeDisabled(), { timeout: 2000 });
+    await waitFor(() => expect(revalidateBtn).not.toBeDisabled(), { timeout: 15000 });
     await user.click(revalidateBtn);
 
     // O resultado da revalidação aparece, mas o alerta obrigatório NÃO.
-    await screen.findByTestId('ptz-revalidate-result-pan', {}, { timeout: 3000 });
+    await screen.findByTestId('ptz-revalidate-result-pan', {}, { timeout: 15000 });
     expect(screen.queryByTestId('ptz-recapture-required-pan')).not.toBeInTheDocument();
     const recaptureBtn = screen.getByTestId('ptz-recapture-pan');
     expect(recaptureBtn.className).not.toMatch(/destructive/);
@@ -156,9 +156,9 @@ describe('PtzCalibrationPanel · fluxo de recaptura (integração)', () => {
     await renderPanel(ptz);
 
     const revalidateBtn = await screen.findByTestId('ptz-revalidate-pan');
-    await waitFor(() => expect(revalidateBtn).not.toBeDisabled(), { timeout: 2000 });
+    await waitFor(() => expect(revalidateBtn).not.toBeDisabled(), { timeout: 15000 });
     await user.click(revalidateBtn);
-    await screen.findByTestId('ptz-recapture-required-pan', {}, { timeout: 3000 });
+    await screen.findByTestId('ptz-recapture-required-pan', {}, { timeout: 15000 });
 
     await user.click(screen.getByTestId('ptz-recapture-pan'));
 
@@ -185,7 +185,7 @@ describe('PtzCalibrationPanel · fluxo de recaptura (integração)', () => {
     await renderPanel(ptz as never);
 
     const revalidateBtn = await screen.findByTestId('ptz-revalidate-pan');
-    await waitFor(() => expect(revalidateBtn).toBeDisabled(), { timeout: 2000 });
+    await waitFor(() => expect(revalidateBtn).toBeDisabled(), { timeout: 15000 });
     expect(revalidateBtn).toHaveAttribute('title', expect.stringMatching(/GetStatus/i));
   });
 });

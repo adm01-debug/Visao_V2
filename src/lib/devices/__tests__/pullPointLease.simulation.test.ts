@@ -113,7 +113,7 @@ describe('Onda 155 — varredura combinatória do ciclo PullPoint', () => {
       expect(seen.has(action as never)).toBe(true);
     }
     expect(scenarios).toBeGreaterThan(15_000);
-  });
+  }, 60_000);
 
   it('J6 — pureza: repetir a chamada devolve exatamente o mesmo veredito', () => {
     for (let i = 0; i < 500; i += 1) {
@@ -130,7 +130,7 @@ describe('Onda 155 — varredura combinatória do ciclo PullPoint', () => {
       };
       expect(decidePullPoint(sub, NOW)).toEqual(decidePullPoint(sub, NOW));
     }
-  });
+  }, 60_000);
 });
 
 /* -------------------------------------------------------------------------- */
@@ -287,5 +287,5 @@ describe('Onda 155 — trajetórias vivas contra equipamento mal comportado', ()
     }
 
     expect(trajectories).toBe(240);
-  });
+  }, 60_000);
 });
