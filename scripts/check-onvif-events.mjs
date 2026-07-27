@@ -125,7 +125,7 @@ if (!hasPsql) {
       fail(`${fn}: rotina interna executável por anon/authenticated`);
     }
     const def = psql(
-      `SELECT pg_get_functiondef(oid) FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+      `SELECT pg_get_functiondef(p.oid) FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
         WHERE n.nspname='public' AND p.proname = '${fn}' LIMIT 1`,
     );
     if (!/SET search_path/i.test(def)) fail(`${fn}: sem search_path fixo`);
