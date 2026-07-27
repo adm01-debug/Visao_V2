@@ -227,7 +227,15 @@ describe('Onda 156 — simulação de cenários de exportação probatória', ()
       ],
       [
         'assessment',
-        (m) => ({ ...m, assessment: { ...m.assessment, level: 'admissible' as const } }),
+        // Trocar por um veredito DIFERENTE do atual: "promover" uma peça que
+        // já era íntegra não seria edição nenhuma, e o teste passaria de graça.
+        (m) => ({
+          ...m,
+          assessment: {
+            ...m.assessment,
+            level: m.assessment.level === 'admissible' ? ('broken' as const) : ('admissible' as const),
+          },
+        }),
       ],
     ];
 
