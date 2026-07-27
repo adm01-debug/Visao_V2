@@ -278,6 +278,12 @@ export default function SitePlanPage() {
               }}
             />
 
+            <AttentionClockPanel
+              ledger={attentionClock}
+              nameOf={nameOf}
+              onAcknowledge={acknowledgeAttention}
+            />
+
             <SuppressedNoticesPanel
               summary={suppressionSummary}
               nameOf={nameOf}
