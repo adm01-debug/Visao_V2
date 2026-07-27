@@ -98,6 +98,8 @@ export function MaintenanceAlertsCard({
               >
                 {buckets.map((bucket) => {
                   const isActive = bucket.key === activeKey;
+                  const aging = agingMap.get(bucket.key);
+                  const debt = aging ? agingLabel(aging) : null;
                   return (
                     <Button
                       key={bucket.key}
@@ -105,20 +107,27 @@ export function MaintenanceAlertsCard({
                       size="sm"
                       variant={isActive ? 'default' : 'outline'}
                       aria-pressed={isActive}
-                      className="h-8 gap-2 rounded-full px-3 text-xs"
+                      className={cn(
+                        'h-8 gap-2 rounded-full px-3 text-xs',
+                        aging?.state === 'breached' && !isActive && 'border-destructive/60',
+                      )}
                       onClick={() => setSelected(bucket.key)}
+                      title={debt ?? undefined}
                     >
                       <span>{bucket.label}</span>
                       <span
                         className={cn(
                           'rounded-full px-1.5 text-[0.65rem] font-semibold',
-                          bucket.critical > 0
+                          bucket.critical > 0 || aging?.state === 'breached'
                             ? 'bg-destructive text-destructive-foreground'
-                            : 'bg-muted text-muted-foreground',
+                            : aging?.state === 'at_risk'
+                              ? 'bg-warning text-warning-foreground'
+                              : 'bg-muted text-muted-foreground',
                         )}
                       >
                         {bucket.open}
                       </span>
+                      {debt && <span className="sr-only">{debt}</span>}
                     </Button>
                   );
                 })}
