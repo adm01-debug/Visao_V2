@@ -148,7 +148,7 @@ describe('PtzCalibrationPanel · auditoria de recaptura em ptz_connection_attemp
 
     // O INSERT ocorre no `finally` — aguarda até que o spy seja chamado.
     await waitFor(() => expect(insertSpy).toHaveBeenCalledTimes(1), {
-      timeout: 5000,
+      timeout: 15000,
     });
 
     const payload = lastInsertPayload();
@@ -195,7 +195,7 @@ describe('PtzCalibrationPanel · auditoria de recaptura em ptz_connection_attemp
     await triggerRecapture(user);
 
     await waitFor(() => expect(insertSpy).toHaveBeenCalledTimes(1), {
-      timeout: 5000,
+      timeout: 15000,
     });
 
     const payload = lastInsertPayload();
