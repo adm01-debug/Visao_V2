@@ -132,7 +132,12 @@ async function main() {
   }
 
   /* ---------- I1 — mutação de campo selado ---------- */
-  const { manifest: baseManifest, dossier: baseDossier } = goldens[2];
+  // Base deliberadamente imperfeita: mutar um campo que já vale o valor
+  // "mutado" seria um não-teste — foi assim que a primeira rodada passou.
+  const baseManifest = await buildManifest(request(12, { skewMs: 9_000 }));
+  const baseDossier = buildDossier(baseManifest, ISSUANCE);
+  assert(baseManifest.assessment.level !== 'admissible', 'pré-condição: base deve ter ressalva');
+  assert(baseManifest.assessment.reasons.length > 0, 'pré-condição: base deve ter motivos');
   const sealedMutations = [
     ['exportId', (d) => { d.sealed.exportId = 'exp-9999'; }],
     ['cameraId', (d) => { d.sealed.cameraId = '22222222-2222-2222-2222-222222222222'; }],
@@ -143,9 +148,24 @@ async function main() {
     ['systemVersion', (d) => { d.sealed.systemVersion = 'visao/000'; }],
     ['pixelsAltered', (d) => { d.sealed.pixelsAltered = !d.sealed.pixelsAltered; }],
     ['rootHash', (d) => { d.sealed.rootHash = 'f'.repeat(64); }],
-    ['assessment.level', (d) => { d.sealed.assessment.level = 'admissible'; }],
-    ['assessment.coverageRatio', (d) => { d.sealed.assessment.coverageRatio = 1; }],
-    ['assessment.reasons', (d) => { d.sealed.assessment.reasons = []; }],
+    ['assessment.level', (d) => {
+      d.sealed.assessment.level = d.sealed.assessment.level === 'admissible' ? 'broken' : 'admissible';
+    }],
+    ['assessment.coverageRatio', (d) => {
+      d.sealed.assessment.coverageRatio = d.sealed.assessment.coverageRatio === 1 ? 0.5 : 1;
+    }],
+    ['assessment.reasons', (d) => {
+      d.sealed.assessment.reasons = d.sealed.assessment.reasons.length === 0
+        ? [{ code: 'timeline_gap', segmentIndex: 0, detail: 'inventado' }]
+        : [];
+    }],
+    ['assessment.gaps', (d) => {
+      d.sealed.assessment.gaps = d.sealed.assessment.gaps.length === 0
+        ? [{ afterIndex: 0, gapMs: 5_000 }]
+        : [];
+    }],
+    ['assessment.coveredMs', (d) => { d.sealed.assessment.coveredMs += 1_000; }],
+    ['assessment.requestedMs', (d) => { d.sealed.assessment.requestedMs += 1_000; }],
     ['chain[0]', (d) => { d.sealed.chain[0] = '0'.repeat(64); }],
     ['chain.pop', (d) => { d.sealed.chain.pop(); }],
     ['chain.push', (d) => { d.sealed.chain.push('a'.repeat(64)); }],
