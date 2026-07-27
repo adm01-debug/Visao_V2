@@ -307,6 +307,15 @@ jobs:
           PARTITION_MIN_MONTHS: '3'
         run: npm run db:check:all
 
+      # Onda 147 — a simulação do roteamento por responsável não toca no banco:
+      # é o modelo de referência contra o qual o gate compara o SQL. Roda mesmo
+      # sem credenciais, porque uma regressão na especificação precisa aparecer
+      # em qualquer PR.
+      - name: Simulação do roteamento por responsável (Onda 147)
+        run: npm run sim:wave147
+
+
+
       # Onda 141 — exercício DINÂMICO do laço de auto-cura. Os gates acima são
       # estáticos: conferem assinatura, privilégio e constante, mas nunca
       # executam a rotina. Foi assim que `heal_local_agents()` passou várias
