@@ -367,6 +367,8 @@ export function assessCustody(request: ExportRequest): CustodyAssessment {
 
   for (let i = 0; i < segments.length; i += 1) {
     const s = segments[i];
+    if (s === undefined) continue;
+
 
     if (s.sha256.trim() === '') {
       push('broken', 'unhashed_segment', i, 'segmento sem impressão digital');
