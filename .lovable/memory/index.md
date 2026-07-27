@@ -1,3 +1,4 @@
+- [Failure Blame Attribution](mem://architecture/failure-blame-attribution) — Onda 146: regra única de culpa (device/transport/config/caller/cloud) + `network_kind`/`blame`/`blame_rule` em `edge_function_error_audit`, gate `db:check:error-blame`
 - [Healing Arbiter](mem://architecture/healing-arbiter) — Onda 123: árbitro entre escada de cura (115) e reentrega (122), ação `observe`, veto por causa externa; gate `db:check:healing-arbiter`
 - [RTMP Push Ingest](mem://features/rtmp-push-ingest) — Onda 124: `camera_ingest_endpoints`, edge `ingest-auth` (segredo `INGEST_WEBHOOK_SECRET`), detector de silêncio a cada 5min, gate `db:check:ingest-endpoints`
 - [Dwell & Veículo Recorrente](mem://features/dwell-and-vehicle-recurrence) — Onda 125: `dwell_sessions` com histerese, `evaluate_dwell_alerts`, `evaluate_vehicle_recurrence`; paridade com `dwellTracker.ts`, gate `db:check:dwell-analytics`
