@@ -172,7 +172,34 @@ export function clampLeaseMs(requestedMs: number): number {
  * Nunca ultrapassa metade do empréstimo: renovar antes da metade seria
  * transformar renovação em recriação disfarçada.
  */
+/**
+ * P8 — **O empréstimo que vale é o observado, não o pedido.**
+ *
+ * Descoberto pela simulação da etapa 15: uma câmera com o relógio 4 min
+ * adiantado devolve um `TerminationTime` que, no nosso relógio, vale bem menos
+ * que os 5 min pedidos. Calculando a antecipação sobre o valor *pedido*, o
+ * limiar (90 s) ficava maior que a folga real (60 s) e a assinatura entrava em
+ * renovação perpétua — viva, saudável na tela, e sem entregar **um único
+ * evento**. É o pior modo de falha possível: silencioso e disfarçado de saúde.
+ *
+ * Medimos, então, o intervalo que de fato observamos entre o início do
+ * empréstimo e o vencimento declarado. O mesmo cálculo cobre o equipamento que
+ * concede menos do que foi pedido — comportamento legal no padrão ONVIF e
+ * ignorado por quase toda integração.
+ */
+export function observedLeaseMs(sub: PullPointSubscription): number {
+  if (
+    isFiniteNumber(sub.leaseStartedAtMs) &&
+    isFiniteNumber(sub.terminationAtMs) &&
+    sub.terminationAtMs > sub.leaseStartedAtMs
+  ) {
+    return clampLeaseMs(sub.terminationAtMs - sub.leaseStartedAtMs);
+  }
+  return clampLeaseMs(sub.leaseDurationMs);
+}
+
 export function renewThresholdMs(leaseDurationMs: number): number {
+
   const lease = clampLeaseMs(leaseDurationMs);
   const fractional = Math.round(lease * RENEW_FRACTION);
   return Math.min(Math.round(lease / 2), Math.max(RENEW_FLOOR_MS, fractional));
