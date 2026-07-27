@@ -14,6 +14,8 @@ import { FileCheck2, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEvidenceExports } from '@/hooks/useEvidenceExports';
 import { EvidenceExportsTable } from '@/components/evidence/EvidenceExportsTable';
+import { DossierVerifierCard } from '@/components/evidence/DossierVerifierCard';
+import { toast } from '@/hooks/use-toast';
 import type { Tone } from '@/lib/evidence/exportRegistryView';
 
 const HEADLINE_CLASS: Record<Tone, string> = {
@@ -24,8 +26,19 @@ const HEADLINE_CLASS: Record<Tone, string> = {
 };
 
 export default function EvidenceExportsPage() {
-  const { views, summary, isLoading, error, refetch, verify, verifyAll, isVerifyingAll } =
-    useEvidenceExports();
+  const {
+    views,
+    summary,
+    isLoading,
+    error,
+    refetch,
+    verify,
+    verifyAll,
+    isVerifyingAll,
+    downloadDossier,
+    downloadingId,
+  } = useEvidenceExports();
+
 
   return (
     <PageContent className="container mx-auto space-y-6 p-4 md:p-6">
@@ -92,7 +105,24 @@ export default function EvidenceExportsPage() {
         </CardContent>
       </Card>
 
-      <EvidenceExportsTable views={views} isLoading={isLoading} onVerify={(id) => void verify(id)} />
+      <EvidenceExportsTable
+        views={views}
+        isLoading={isLoading}
+        onVerify={(id) => void verify(id)}
+        downloadingId={downloadingId}
+        onDownloadDossier={(id) => {
+          void downloadDossier(id).then((r) => {
+            toast({
+              title: r.ok ? 'Dossiê emitido' : 'Falha ao emitir dossiê',
+              description: r.message,
+              variant: r.ok ? 'default' : 'destructive',
+            });
+          });
+        }}
+      />
+
+      <DossierVerifierCard />
+
     </PageContent>
   );
 }
