@@ -15,6 +15,8 @@ import {
 import { FloorPlanCanvas } from '@/components/emap/FloorPlanCanvas';
 import { UploadPlanDialog } from '@/components/emap/UploadPlanDialog';
 import { PlacementInspector } from '@/components/emap/PlacementInspector';
+import { SuppressedNoticesPanel } from '@/components/emap/SuppressedNoticesPanel';
+
 import { useSitePlans } from '@/hooks/useSitePlans';
 import { summarizePlan, type MapMarkerStatus } from '@/lib/emap/floorPlanGeometry';
 
