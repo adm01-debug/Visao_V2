@@ -217,7 +217,8 @@
     "simulate:wave161": "node scripts/simulate-wave161-emap.mjs",
     "simulate:wave162": "node scripts/simulate-wave162-emap-realtime.mjs",
     "simulate:wave163": "node scripts/simulate-wave163-emap-notices.mjs",
-    "simulate:wave164": "node scripts/simulate-wave164-emap-pulse.mjs"
+    "simulate:wave164": "node scripts/simulate-wave164-emap-pulse.mjs",
+    "simulate:wave165": "node scripts/simulate-wave165-emap-suppressions.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
