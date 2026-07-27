@@ -25,6 +25,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { CameraTestHistoryCard } from './CameraTestHistoryCard';
 import { RtspRevalidationScheduleCard } from './RtspRevalidationScheduleCard';
 import { CameraPathPlanCard } from './CameraPathPlanCard';
+import { CameraIoPanel } from './CameraIoPanel';
 import type { CameraData } from './types';
 
 interface CameraDetailViewProps {
