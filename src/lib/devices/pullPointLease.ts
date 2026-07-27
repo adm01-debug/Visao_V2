@@ -56,6 +56,11 @@
  *  P7 — **Função total.** Toda combinação de entradas produz um veredito do
  *  vocabulário fechado. Não existe `throw` aqui.
  *
+ *  P8 — **A antecipação se calcula sobre o empréstimo observado**, nunca sobre
+ *  o pedido. Ver `observedLeaseMs`: foi a simulação que provou que o cálculo
+ *  ingênuo produz assinatura eternamente saudável e eternamente muda.
+ *
+
  * Invariantes varridas pela simulação da etapa 15:
  *   J1 empréstimo vencido jamais produz `renew`
  *   J2 assinatura de câmera desabilitada sempre produz `retire`
