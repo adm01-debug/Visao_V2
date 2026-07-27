@@ -146,7 +146,10 @@ export function pruneAttention(
   const survivors = ids.filter((id) => known.has(id));
   if (survivors.length === ids.length) return ledger;
   const next: Record<string, AttentionEntry> = {};
-  for (const id of survivors) next[id] = ledger[id];
+  for (const id of survivors) {
+    const entry = ledger[id];
+    if (entry) next[id] = entry;
+  }
   return next;
 }
 
