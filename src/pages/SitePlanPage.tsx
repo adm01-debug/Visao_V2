@@ -75,6 +75,33 @@ export default function SitePlanPage() {
   );
 
   /**
+   * Onda 167 — convite para o andar mais grave. A dispensa é por estado
+   * observado: se o andar piorar (ou ganhar mais câmeras em atenção), o
+   * convite reaparece sozinho.
+   */
+  const [dismissals, setDismissals] = useState<DismissalLedger>([]);
+  const attentionAdvice = useMemo(
+    () =>
+      adviseCrossFloorAttention({
+        items: planNavigation.items,
+        activePlanId: planNavigation.resolvedActiveId,
+        dismissals,
+      }),
+    [planNavigation.items, planNavigation.resolvedActiveId, dismissals],
+  );
+  const dismissAttention = useCallback((item: PlanNavItem) => {
+    setDismissals((previous) => recordDismissal(previous, item));
+  }, []);
+  // Planta apagada não pode deixar dispensa órfã acumulando na memória.
+  useEffect(() => {
+    setDismissals((previous) => {
+      const next = pruneDismissals(previous, planNavigation.items);
+      return next.length === previous.length ? previous : next;
+    });
+  }, [planNavigation.items]);
+
+
+  /**
    * Onda 166 — atalhos de andar. Teclas 1..9 saltam direto; setas ←/→ varrem
    * em círculo. Nada dispara enquanto o foco está num campo de texto: roubar
    * o dígito de quem digita o nome da planta seria pior que não ter atalho.
