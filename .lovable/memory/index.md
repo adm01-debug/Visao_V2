@@ -5,3 +5,4 @@
 - [Dwell & Veículo Recorrente](mem://features/dwell-and-vehicle-recurrence) — Onda 125: `dwell_sessions` com histerese, `evaluate_dwell_alerts`, `evaluate_vehicle_recurrence`; paridade com `dwellTracker.ts`, gate `db:check:dwell-analytics`
 - [Centrais de Monitoramento](mem://features/monitoring-center-connectors) — Onda 126: SIA DC-09/Contact ID para Sigma/Moni/Commbox, fila com lease e dedupe, gate `db:check:monitoring-centers`
 - [Rede Colaborativa de Placas](mem://features/collab-plate-network) — Onda 127: HMAC por rede (placa nunca em claro), reciprocidade, TTL/revogação, cooldown; gate `db:check:collab-network`
+- [Owner SLA Aging](mem://features/owner-sla-aging) — Onda 149: dívida de atendimento por responsável, prazo por par (dono, severidade), estado do pior alerta aberto, `sim:wave149`
