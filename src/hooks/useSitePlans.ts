@@ -91,6 +91,11 @@ export function useSitePlans() {
   // Onda 164: destaque temporário de quem piorou. Vive em estado (a tela
   // precisa repintar), mas expira por relógio, nunca por render.
   const [pulseLedger, setPulseLedger] = useState<PulseLedger>(emptyPulseLedger);
+  // Onda 165: livro dos avisos retidos — transparência do anti-ruído.
+  const [suppressionLedger, setSuppressionLedger] = useState<SuppressionLedger>(
+    emptySuppressionLedger,
+  );
+
   const [cameras, setCameras] = useState<PlanCamera[]>([]);
   const [planImageUrl, setPlanImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
