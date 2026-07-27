@@ -25,6 +25,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { CameraTestHistoryCard } from './CameraTestHistoryCard';
 import { RtspRevalidationScheduleCard } from './RtspRevalidationScheduleCard';
 import { CameraPathPlanCard } from './CameraPathPlanCard';
+import { CameraIoPanel } from './CameraIoPanel';
 import type { CameraData } from './types';
 
 interface CameraDetailViewProps {
@@ -198,6 +199,7 @@ export function CameraDetailView({
 
                 <TabsContent value="ptz" className="m-0">
                   <PtzControlPanel cameraId={camera.id} cameraName={camera.name} />
+                  <CameraIoPanel cameraId={camera.id} className="mt-4" />
                 </TabsContent>
 
                 <TabsContent value="tests" className="m-0 space-y-4">

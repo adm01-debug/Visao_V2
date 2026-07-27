@@ -1182,6 +1182,74 @@ export type Database = {
           },
         ]
       }
+      camera_io_ports: {
+        Row: {
+          camera_id: string
+          created_at: string
+          direction: string
+          enabled: boolean
+          id: string
+          idle_state: string
+          label: string
+          last_actuated_at: string | null
+          last_state: string | null
+          last_state_at: string | null
+          metadata: Json
+          min_interval_ms: number
+          output_mode: string
+          port_token: string
+          pulse_ms: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          camera_id: string
+          created_at?: string
+          direction: string
+          enabled?: boolean
+          id?: string
+          idle_state?: string
+          label?: string
+          last_actuated_at?: string | null
+          last_state?: string | null
+          last_state_at?: string | null
+          metadata?: Json
+          min_interval_ms?: number
+          output_mode?: string
+          port_token: string
+          pulse_ms?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string
+          created_at?: string
+          direction?: string
+          enabled?: boolean
+          id?: string
+          idle_state?: string
+          label?: string
+          last_actuated_at?: string | null
+          last_state?: string | null
+          last_state_at?: string | null
+          metadata?: Json
+          min_interval_ms?: number
+          output_mode?: string
+          port_token?: string
+          pulse_ms?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "camera_io_ports_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       camera_patrol_stops: {
         Row: {
           created_at: string
@@ -3249,6 +3317,60 @@ export type Database = {
           created_at?: string
           key?: string
           response?: Json
+        }
+        Relationships: []
+      }
+      io_actuation_log: {
+        Row: {
+          actor_user_id: string | null
+          camera_id: string
+          chosen_path: string | null
+          command: string
+          created_at: string
+          id: string
+          latency_ms: number | null
+          origin: string
+          origin_ref: string | null
+          outcome: string
+          port_id: string | null
+          port_token: string
+          reason_code: string | null
+          requested_ms: number | null
+          user_id: string
+        }
+        Insert: {
+          actor_user_id?: string | null
+          camera_id: string
+          chosen_path?: string | null
+          command: string
+          created_at?: string
+          id?: string
+          latency_ms?: number | null
+          origin: string
+          origin_ref?: string | null
+          outcome: string
+          port_id?: string | null
+          port_token: string
+          reason_code?: string | null
+          requested_ms?: number | null
+          user_id: string
+        }
+        Update: {
+          actor_user_id?: string | null
+          camera_id?: string
+          chosen_path?: string | null
+          command?: string
+          created_at?: string
+          id?: string
+          latency_ms?: number | null
+          origin?: string
+          origin_ref?: string | null
+          outcome?: string
+          port_id?: string | null
+          port_token?: string
+          reason_code?: string | null
+          requested_ms?: number | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -8618,6 +8740,16 @@ export type Database = {
           rotated_count: number
         }[]
       }
+      rule_eligible_io_port: {
+        Args: { p_camera_id: string; p_now?: string; p_user_id: string }
+        Returns: {
+          cooldown_remaining_ms: number
+          min_interval_ms: number
+          port_id: string
+          port_token: string
+          pulse_ms: number
+        }[]
+      }
       run_index_maintenance: { Args: never; Returns: Json }
       run_retention_cleanup: { Args: never; Returns: Json }
       run_selective_vacuum: {
@@ -8796,6 +8928,7 @@ export type Database = {
         | "arm"
         | "disarm"
         | "panic"
+        | "trigger_output"
       rule_category:
         | "security"
         | "safety"
@@ -9016,6 +9149,7 @@ export const Constants = {
         "arm",
         "disarm",
         "panic",
+        "trigger_output",
       ],
       rule_category: [
         "security",

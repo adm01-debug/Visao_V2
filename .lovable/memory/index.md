@@ -1,3 +1,4 @@
+- [Camera IO Alarm](mem://features/camera-io-alarm) — Onda 154: I/O de alarme físico ONVIF, `ioSafety.ts` espelhado byte a byte na borda, soltar relé sempre passa, ação `trigger_output`, gate `db:check:camera-io`
 - [Path Failover](mem://features/connectivity-path-failover) — Onda 152: ordem de tentativa direct/port_forward/vpn/relay, quarentena rebaixa (nunca exclui), só falha de transporte culpa a rota, gate `db:check:path-failover`
 - [Path Evidence](mem://features/connectivity-path-evidence) — Onda 153: evidência por caminho agregada no banco (`connectivity_path_evidence`, SECURITY INVOKER), taxonomia única `connectivityFailureKind.ts` (desconhecido = neutro), gate `db:check:path-evidence`
 - [Grant Console](mem://features/capability-grant-console) — Onda 151: admissão de concessões finas (prazo ≤90d obrigatório, anti-escalada, anti-auto-concessão), trilha imutável, gate `db:check:grant-console`
