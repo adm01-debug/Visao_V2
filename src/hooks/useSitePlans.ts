@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { RealtimeChannel } from '@supabase/supabase-js';
+import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import {
@@ -11,11 +12,19 @@ import {
 } from '@/lib/emap/floorPlanGeometry';
 import {
   applyStatusEvent,
+  diffLedgers,
   ledgerFromSnapshot,
   reconcilePlacements,
   toMarkerStatus,
   type StatusLedger,
 } from '@/lib/emap/markerStatusStream';
+import {
+  describeNotice,
+  emptyNoticeState,
+  evaluateNotices,
+  primeNoticeState,
+  type NoticeState,
+} from '@/lib/emap/statusAlertPolicy';
 
 export interface SitePlan {
   id: string;
@@ -58,6 +67,10 @@ export function useSitePlans() {
   // pode repintar o estado.
   const [statusLedger, setStatusLedger] = useState<StatusLedger>({});
   const channelRef = useRef<RealtimeChannel | null>(null);
+  // Onda 163: a política de aviso vive em ref porque é histórico, não é tela —
+  // mudá-la não deve provocar novo render.
+  const noticeStateRef = useRef<NoticeState>(emptyNoticeState());
+  const previousLedgerRef = useRef<StatusLedger>({});
   const [cameras, setCameras] = useState<PlanCamera[]>([]);
   const [planImageUrl, setPlanImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -219,6 +232,39 @@ export function useSitePlans() {
       channelRef.current = null;
     };
   }, []);
+
+  /**
+   * Onda 163 — avisa o operador apenas do que piorou.
+   *
+   * A primeira carga só semeia o histórico: abrir a página com câmeras já em
+   * alarme não é novidade, e disparar esse coro a cada F5 treinaria a pessoa a
+   * ignorar o aviso seguinte — que pode ser o de verdade.
+   */
+  useEffect(() => {
+    const transitions = diffLedgers(previousLedgerRef.current, statusLedger);
+    previousLedgerRef.current = statusLedger;
+
+    if (!noticeStateRef.current.primed) {
+      noticeStateRef.current = primeNoticeState(
+        noticeStateRef.current,
+        Object.keys(statusLedger),
+      );
+      return;
+    }
+    if (transitions.length === 0) return;
+
+    const { state, notices } = evaluateNotices(noticeStateRef.current, transitions, Date.now());
+    noticeStateRef.current = state;
+
+    const nameOf = (cameraId: string) =>
+      cameras.find((camera) => camera.id === cameraId)?.name ?? 'Câmera';
+
+    for (const notice of notices) {
+      const message = describeNotice(notice, nameOf);
+      if (notice.status === 'alert' || notice.status === 'offline') toast.error(message);
+      else toast.warning(message);
+    }
+  }, [statusLedger, cameras]);
 
   // Projeção: geometria (banco) + estado ao vivo (livro). Nunca o contrário.
   const placements = useMemo(
