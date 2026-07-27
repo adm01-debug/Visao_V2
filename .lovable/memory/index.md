@@ -1,3 +1,4 @@
+- [Grant Console](mem://features/capability-grant-console) — Onda 151: admissão de concessões finas (prazo ≤90d obrigatório, anti-escalada, anti-auto-concessão), trilha imutável, gate `db:check:grant-console`
 - [Blame Routing](mem://architecture/blame-routing) — Onda 147: `evaluate_blame_alerts` endereça o alerta ao responsável, causa comum por agente, gate `db:check:blame-routing`
 - [Failure Blame Attribution](mem://architecture/failure-blame-attribution) — Onda 146: regra única de culpa (device/transport/config/caller/cloud) + `network_kind`/`blame`/`blame_rule` em `edge_function_error_audit`, gate `db:check:error-blame`
 - [Healing Arbiter](mem://architecture/healing-arbiter) — Onda 123: árbitro entre escada de cura (115) e reentrega (122), ação `observe`, veto por causa externa; gate `db:check:healing-arbiter`
