@@ -156,8 +156,9 @@ export function pulsingCameraIds(ledger: PulseLedger, now: number): ReadonlySet<
 /** Consulta pontual, sem alocar conjunto. */
 export function isPulsing(ledger: PulseLedger, cameraId: string, now: number): boolean {
   const pulse = ledger[cameraId];
-  return Boolean(pulse) && pulse.expiresAt > sanitizeNow(now);
+  return pulse !== undefined && pulse.expiresAt > sanitizeNow(now);
 }
+
 
 /** Próximo vencimento — permite agendar um único timer em vez de N. */
 export function nextExpiry(ledger: PulseLedger, now: number): number | null {
