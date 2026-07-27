@@ -3033,6 +3033,48 @@ export type Database = {
           },
         ]
       }
+      evidence_exports: {
+        Row: {
+          camera_id: string
+          coverage_ratio: number
+          export_id: string
+          gap_count: number
+          id: string
+          manifest: Json
+          root_hash: string
+          sealed_at: string
+          segment_count: number
+          user_id: string
+          verdict: string
+        }
+        Insert: {
+          camera_id: string
+          coverage_ratio: number
+          export_id: string
+          gap_count: number
+          id?: string
+          manifest: Json
+          root_hash: string
+          sealed_at?: string
+          segment_count: number
+          user_id: string
+          verdict: string
+        }
+        Update: {
+          camera_id?: string
+          coverage_ratio?: number
+          export_id?: string
+          gap_count?: number
+          id?: string
+          manifest?: Json
+          root_hash?: string
+          sealed_at?: string
+          segment_count?: number
+          user_id?: string
+          verdict?: string
+        }
+        Relationships: []
+      }
       face_embeddings: {
         Row: {
           created_at: string
@@ -8015,6 +8057,9 @@ export type Database = {
         Args: { _min_passes?: number; _window_minutes?: number }
         Returns: Json
       }
+      evidence_canonical_segment: { Args: { p_segment: Json }; Returns: string }
+      evidence_chain: { Args: { p_segments: Json }; Returns: string[] }
+      evidence_current_subject: { Args: never; Returns: string }
       execute_camera_schedules: { Args: never; Returns: number }
       expire_agent_relay_tasks: { Args: never; Returns: number }
       extract_url_credentials: {
