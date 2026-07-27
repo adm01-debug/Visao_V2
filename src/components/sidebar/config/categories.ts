@@ -35,6 +35,7 @@ import {
   Wrench,
   Network,
   FileCheck2,
+  Map as MapIcon,
 } from "lucide-react";
 import type { NavCategory } from "../types";
 import type { SidebarStatus } from "@/hooks/useSidebarStatus";
@@ -220,6 +221,15 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
       {
         // Onda 159: a Onda 158 selava a prova no servidor, mas ninguém
         // conseguia conferir o selo depois — existia e era invisível.
+        // Onda 161: mapa de situação — a frota tinha estado, mas ninguém via
+        // ONDE cada câmera está quando o alarme dispara.
+        id: "site-plan",
+        label: "Planta Baixa",
+        icon: MapIcon,
+        path: "/planta-baixa",
+        minRole: "operator",
+      },
+      {
         id: "evidence-exports",
         label: "Registro Probatório",
         icon: FileCheck2,

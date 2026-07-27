@@ -1,0 +1,355 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
+import {
+  clampToPlan,
+  normalizeAngle,
+  normalizeFov,
+  type MapMarkerStatus,
+  type MapPlacement,
+  type NormalizedPoint,
+} from '@/lib/emap/floorPlanGeometry';
+
+export interface SitePlan {
+  id: string;
+  name: string;
+  description: string | null;
+  imagePath: string;
+  imageWidth: number;
+  imageHeight: number;
+  isDefault: boolean;
+}
+
+export interface PlanCamera {
+  id: string;
+  name: string;
+  status: string | null;
+}
+
+const BUCKET = 'site-plans';
+
+/**
+ * Traduz o estado bruto da câmera para o vocabulário do mapa.
+ *
+ * Um estado desconhecido NUNCA é traduzido para `online`: no mapa de situação,
+ * "não sei" tem que ser visualmente diferente de "está tudo bem".
+ */
+function toMarkerStatus(raw: string | null | undefined): MapMarkerStatus {
+  switch (raw) {
+    case 'online':
+      return 'online';
+    case 'offline':
+      return 'offline';
+    case 'alert':
+      return 'alert';
+    case 'warning':
+      return 'warning';
+    default:
+      return 'unknown';
+  }
+}
+
+interface PlacementRow {
+  id: string;
+  plan_id: string;
+  camera_id: string;
+  x: number | string;
+  y: number | string;
+  heading_deg: number | string;
+  fov_deg: number | string;
+  label: string | null;
+}
+
+const num = (value: number | string): number =>
+  typeof value === 'number' ? value : Number.parseFloat(value);
+
+export function useSitePlans() {
+  const [plans, setPlans] = useState<SitePlan[]>([]);
+  const [activePlanId, setActivePlanId] = useState<string | null>(null);
+  const [placements, setPlacements] = useState<MapPlacement[]>([]);
+  const [cameras, setCameras] = useState<PlanCamera[]>([]);
+  const [planImageUrl, setPlanImageUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const activePlan = useMemo(
+    () => plans.find((plan) => plan.id === activePlanId) ?? null,
+    [plans, activePlanId],
+  );
+
+  const loadPlans = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const [{ data: planRows, error: planError }, { data: cameraRows, error: cameraError }] =
+        await Promise.all([
+          supabase
+            .from('site_plans')
+            .select('id, name, description, image_path, image_width, image_height, is_default')
+            .order('is_default', { ascending: false })
+            .order('created_at', { ascending: false }),
+          supabase.from('cameras').select('id, name, status').order('name'),
+        ]);
+
+      if (planError) throw planError;
+      if (cameraError) throw cameraError;
+
+      const mapped: SitePlan[] = (planRows ?? []).map((row) => ({
+        id: row.id,
+        name: row.name,
+        description: row.description,
+        imagePath: row.image_path,
+        imageWidth: row.image_width,
+        imageHeight: row.image_height,
+        isDefault: row.is_default,
+      }));
+
+      setPlans(mapped);
+      setCameras(
+        (cameraRows ?? []).map((row) => ({ id: row.id, name: row.name, status: row.status })),
+      );
+      setActivePlanId((current) => current ?? mapped[0]?.id ?? null);
+    } catch (cause) {
+      logger.error('Falha ao carregar plantas baixas', cause);
+      setError('Não foi possível carregar as plantas.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadPlans();
+  }, [loadPlans]);
+
+  /** Baixa uma URL assinada temporária — o balde é privado por decisão de projeto. */
+  useEffect(() => {
+    let cancelled = false;
+    if (!activePlan) {
+      setPlanImageUrl(null);
+      return;
+    }
+    void (async () => {
+      const { data, error: signError } = await supabase.storage
+        .from(BUCKET)
+        .createSignedUrl(activePlan.imagePath, 3600);
+      if (cancelled) return;
+      if (signError) {
+        logger.error('Falha ao assinar URL da planta', signError);
+        setPlanImageUrl(null);
+        setError('Não foi possível abrir a imagem da planta.');
+        return;
+      }
+      setPlanImageUrl(data?.signedUrl ?? null);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [activePlan]);
+
+  const loadPlacements = useCallback(
+    async (planId: string) => {
+      const { data, error: placementError } = await supabase
+        .from('site_plan_placements')
+        .select('id, plan_id, camera_id, x, y, heading_deg, fov_deg, label')
+        .eq('plan_id', planId);
+
+      if (placementError) {
+        logger.error('Falha ao carregar marcadores da planta', placementError);
+        setError('Não foi possível carregar os marcadores.');
+        return;
+      }
+
+      const cameraById = new Map(cameras.map((camera) => [camera.id, camera]));
+      setPlacements(
+        (data ?? []).map((row: PlacementRow) => {
+          const camera = cameraById.get(row.camera_id);
+          return {
+            id: row.id,
+            cameraId: row.camera_id,
+            label: row.label ?? camera?.name ?? 'Câmera',
+            position: clampToPlan({ x: num(row.x), y: num(row.y) }).point,
+            headingDeg: normalizeAngle(num(row.heading_deg)),
+            fovDeg: normalizeFov(num(row.fov_deg)),
+            status: toMarkerStatus(camera?.status),
+          };
+        }),
+      );
+    },
+    [cameras],
+  );
+
+  useEffect(() => {
+    if (activePlanId) void loadPlacements(activePlanId);
+    else setPlacements([]);
+  }, [activePlanId, loadPlacements]);
+
+  /** Envia a imagem da planta e cadastra o registro com as dimensões reais. */
+  const createPlan = useCallback(
+    async (file: File, name: string, dimensions: { width: number; height: number }) => {
+      setSaving(true);
+      setError(null);
+      try {
+        const { data: session } = await supabase.auth.getUser();
+        const userId = session.user?.id;
+        if (!userId) throw new Error('sessão ausente');
+
+        const extension = file.name.split('.').pop()?.toLowerCase() ?? 'png';
+        // O primeiro nível da pasta é o dono: é assim que a política do
+        // armazenamento isola as plantas de cada pessoa.
+        const path = `${userId}/${crypto.randomUUID()}.${extension}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from(BUCKET)
+          .upload(path, file, { contentType: file.type, upsert: false });
+        if (uploadError) throw uploadError;
+
+        const { data, error: insertError } = await supabase
+          .from('site_plans')
+          .insert({
+            user_id: userId,
+            name: name.trim(),
+            image_path: path,
+            image_width: Math.round(dimensions.width),
+            image_height: Math.round(dimensions.height),
+            is_default: plans.length === 0,
+          })
+          .select('id')
+          .single();
+        if (insertError) throw insertError;
+
+        await loadPlans();
+        setActivePlanId(data.id);
+        return true;
+      } catch (cause) {
+        logger.error('Falha ao criar planta baixa', cause);
+        setError('Não foi possível salvar a planta.');
+        return false;
+      } finally {
+        setSaving(false);
+      }
+    },
+    [loadPlans, plans.length],
+  );
+
+  const addPlacement = useCallback(
+    async (cameraId: string, position: NormalizedPoint) => {
+      if (!activePlanId) return false;
+      const safe = clampToPlan(position).point;
+      const { error: insertError } = await supabase.from('site_plan_placements').insert({
+        plan_id: activePlanId,
+        camera_id: cameraId,
+        x: safe.x,
+        y: safe.y,
+        heading_deg: 0,
+        fov_deg: 90,
+      });
+      if (insertError) {
+        logger.error('Falha ao posicionar câmera na planta', insertError);
+        setError(
+          insertError.code === '23505'
+            ? 'Esta câmera já está posicionada nesta planta.'
+            : 'Não foi possível posicionar a câmera.',
+        );
+        return false;
+      }
+      await loadPlacements(activePlanId);
+      return true;
+    },
+    [activePlanId, loadPlacements],
+  );
+
+  /**
+   * Move um marcador. Atualiza a tela primeiro e reverte se o banco recusar:
+   * arrastar precisa ser fluido, mas nunca pode deixar a tela mentindo sobre
+   * o que foi realmente salvo.
+   */
+  const movePlacement = useCallback(
+    async (placementId: string, position: NormalizedPoint) => {
+      const safe = clampToPlan(position).point;
+      const previous = placements;
+      setPlacements((current) =>
+        current.map((item) => (item.id === placementId ? { ...item, position: safe } : item)),
+      );
+      const { error: updateError } = await supabase
+        .from('site_plan_placements')
+        .update({ x: safe.x, y: safe.y })
+        .eq('id', placementId);
+      if (updateError) {
+        logger.error('Falha ao mover marcador', updateError);
+        setPlacements(previous);
+        setError('Não foi possível salvar a nova posição.');
+        return false;
+      }
+      return true;
+    },
+    [placements],
+  );
+
+  const updateAim = useCallback(
+    async (placementId: string, headingDeg: number, fovDeg: number) => {
+      const heading = normalizeAngle(headingDeg);
+      const fov = normalizeFov(fovDeg);
+      setPlacements((current) =>
+        current.map((item) =>
+          item.id === placementId ? { ...item, headingDeg: heading, fovDeg: fov } : item,
+        ),
+      );
+      const { error: updateError } = await supabase
+        .from('site_plan_placements')
+        .update({ heading_deg: heading, fov_deg: fov })
+        .eq('id', placementId);
+      if (updateError) {
+        logger.error('Falha ao salvar mira do marcador', updateError);
+        setError('Não foi possível salvar a direção da câmera.');
+        if (activePlanId) await loadPlacements(activePlanId);
+        return false;
+      }
+      return true;
+    },
+    [activePlanId, loadPlacements],
+  );
+
+  const removePlacement = useCallback(
+    async (placementId: string) => {
+      const { error: deleteError } = await supabase
+        .from('site_plan_placements')
+        .delete()
+        .eq('id', placementId);
+      if (deleteError) {
+        logger.error('Falha ao remover marcador', deleteError);
+        setError('Não foi possível remover o marcador.');
+        return false;
+      }
+      setPlacements((current) => current.filter((item) => item.id !== placementId));
+      return true;
+    },
+    [],
+  );
+
+  const unplacedCameras = useMemo(() => {
+    const placed = new Set(placements.map((placement) => placement.cameraId));
+    return cameras.filter((camera) => !placed.has(camera.id));
+  }, [cameras, placements]);
+
+  return {
+    plans,
+    activePlan,
+    activePlanId,
+    setActivePlanId,
+    planImageUrl,
+    placements,
+    cameras,
+    unplacedCameras,
+    loading,
+    saving,
+    error,
+    clearError: () => setError(null),
+    createPlan,
+    addPlacement,
+    movePlacement,
+    updateAim,
+    removePlacement,
+    reload: loadPlans,
+  };
+}

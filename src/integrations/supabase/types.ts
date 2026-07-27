@@ -6772,6 +6772,102 @@ export type Database = {
           },
         ]
       }
+      site_plan_placements: {
+        Row: {
+          camera_id: string
+          created_at: string
+          fov_deg: number
+          heading_deg: number
+          id: string
+          label: string | null
+          plan_id: string
+          updated_at: string
+          user_id: string
+          x: number
+          y: number
+        }
+        Insert: {
+          camera_id: string
+          created_at?: string
+          fov_deg?: number
+          heading_deg?: number
+          id?: string
+          label?: string | null
+          plan_id: string
+          updated_at?: string
+          user_id?: string
+          x: number
+          y: number
+        }
+        Update: {
+          camera_id?: string
+          created_at?: string
+          fov_deg?: number
+          heading_deg?: number
+          id?: string
+          label?: string | null
+          plan_id?: string
+          updated_at?: string
+          user_id?: string
+          x?: number
+          y?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_plan_placements_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "site_plan_placements_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "site_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      site_plans: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_height: number
+          image_path: string
+          image_width: number
+          is_default: boolean
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_height: number
+          image_path: string
+          image_width: number
+          is_default?: boolean
+          name: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_height?: number
+          image_path?: string
+          image_width?: number
+          is_default?: boolean
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       storage_tiering_runs: {
         Row: {
           created_at: string
@@ -8776,6 +8872,10 @@ export type Database = {
         }[]
       }
       my_capabilities: { Args: never; Returns: string[] }
+      owns_plan_and_camera: {
+        Args: { _camera_id: string; _plan_id: string }
+        Returns: boolean
+      }
       partition_maintenance_lock_key: { Args: never; Returns: number }
       point_in_polygon: {
         Args: { _poly: Json; _x: number; _y: number }
