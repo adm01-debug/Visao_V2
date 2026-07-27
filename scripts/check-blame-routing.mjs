@@ -200,7 +200,7 @@ ROLLBACK;`;
     .map((l) => l.trim())
     .filter(Boolean);
   const runs = lines.filter((l) => l.startsWith('{')).map((l) => JSON.parse(l));
-  const total = Number(lines[lines.length - 1]);
+  const total = Number(lines.filter((l) => /^\d+$/.test(l)).pop());
   if (runs.length !== 2) fail('rotina não é reentrante na mesma transação');
   else {
     if (runs[0].emitted !== 1) fail('primeira execução não emitiu o alerta esperado');
