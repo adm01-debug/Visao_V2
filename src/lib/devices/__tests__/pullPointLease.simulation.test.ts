@@ -19,6 +19,7 @@ import {
   backoffDelayMs,
   decidePullPoint,
   isPermanentFailure,
+  observedLeaseMs,
   renewThresholdMs,
   type PullPointFailureKind,
   type PullPointStatus,
@@ -53,6 +54,7 @@ describe('Onda 155 — varredura combinatória do ciclo PullPoint', () => {
                       id: `sim-${scenarios}`,
                       status,
                       terminationAtMs: nullTermination ? null : NOW + remaining,
+                      leaseStartedAtMs: NOW - lease + remaining,
                       leaseDurationMs: lease,
                       consecutiveFailures: failures,
                       lastFailureKind: kind,
@@ -94,7 +96,7 @@ describe('Onda 155 — varredura combinatória do ciclo PullPoint', () => {
                     // J5 — pull exige folga real acima do limiar de renovação.
                     if (d.action === 'pull') {
                       expect(nullTermination).toBe(false);
-                      expect(remaining).toBeGreaterThan(renewThresholdMs(lease));
+                      expect(remaining).toBeGreaterThan(renewThresholdMs(observedLeaseMs(sub)));
                     }
                   }
                 }
@@ -119,6 +121,7 @@ describe('Onda 155 — varredura combinatória do ciclo PullPoint', () => {
         id: `pure-${i}`,
         status: STATUSES[i % STATUSES.length],
         terminationAtMs: i % 7 === 0 ? null : NOW + ((i * 7919) % 600_000) - 300_000,
+        leaseStartedAtMs: i % 3 === 0 ? null : NOW - ((i * 3571) % 300_000),
         leaseDurationMs: LEASES[i % LEASES.length],
         consecutiveFailures: i % 9,
         lastFailureKind: KINDS[i % KINDS.length],
@@ -188,6 +191,7 @@ describe('Onda 155 — trajetórias vivas contra equipamento mal comportado', ()
           id: `traj-${mood}-${seed}`,
           status: 'pending',
           terminationAtMs: null,
+          leaseStartedAtMs: null,
           leaseDurationMs: 300_000,
           consecutiveFailures: 0,
           lastFailureKind: 'none',
@@ -236,6 +240,7 @@ describe('Onda 155 — trajetórias vivas contra equipamento mal comportado', ()
               leaseDurationMs: lease,
               // O nosso relógio é a referência; o desvio da câmera é
               // deliberadamente descontado para simular a leitura ingênua.
+              leaseStartedAtMs: now,
               terminationAtMs: now + lease - r.clockSkewMs,
               consecutiveFailures: 0,
               lastFailureKind: 'none',

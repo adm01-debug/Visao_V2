@@ -19,6 +19,7 @@ function sub(patch: Partial<PullPointSubscription> = {}): PullPointSubscription 
     id: 'sub-155',
     status: 'active',
     terminationAtMs: NOW + 300_000,
+    leaseStartedAtMs: NOW,
     leaseDurationMs: 300_000,
     consecutiveFailures: 0,
     lastFailureKind: 'none',
@@ -40,7 +41,7 @@ describe('pullPointLease — empréstimo', () => {
   });
 
   it('perto do vencimento renova antes de morrer', () => {
-    const d = decidePullPoint(sub({ terminationAtMs: NOW + 20_000 }), NOW);
+    const d = decidePullPoint(sub({ terminationAtMs: NOW + 20_000, leaseStartedAtMs: null }), NOW);
     expect(d.action).toBe('renew');
   });
 
