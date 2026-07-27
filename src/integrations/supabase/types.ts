@@ -7598,6 +7598,18 @@ export type Database = {
         }[]
       }
       collab_user_orgs: { Args: { _user_id: string }; Returns: string[] }
+      connectivity_failure_kind: { Args: { p_code: string }; Returns: string }
+      connectivity_path_evidence: {
+        Args: { p_camera_id: string; p_now?: string; p_window_minutes?: number }
+        Returns: {
+          attempts: number
+          consecutive_transport_failures: number
+          last_failure_kind: string
+          last_transport_failure_at: string
+          path: string
+          successes: number
+        }[]
+      }
       contact_id_for_event: {
         Args: { _kind: string }
         Returns: {
