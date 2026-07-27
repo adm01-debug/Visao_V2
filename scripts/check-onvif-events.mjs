@@ -87,8 +87,27 @@ if (!edgeFn.includes('pullPointEventKey(')) {
 
 /* -------- 4/5. banco -------------------------------------------------- */
 
-const psql = (sql) =>
-  execFileSync('psql', ['-tAX', '-v', 'ON_ERROR_STOP=1', '-c', sql], { encoding: 'utf8' }).trim();
+// O pooler ocasionalmente derruba a primeira conexão ("auth_query secret check
+// timed out"). Isso é ruído de infraestrutura, não defeito do código sob teste:
+// reexecutamos algumas vezes antes de acusar falha, para o gate não virar fonte
+// de alarme falso — gate instável é gate que o time aprende a ignorar.
+const psql = (sql, attempts = 3) => {
+  let last;
+  for (let i = 0; i < attempts; i += 1) {
+    try {
+      return execFileSync('psql', ['-tAX', '-v', 'ON_ERROR_STOP=1', '-c', sql], {
+        encoding: 'utf8',
+      }).trim();
+    } catch (error) {
+      last = error;
+      const text = String(error.stderr ?? '');
+      // Erro de SQL é determinístico: repetir só atrasaria o diagnóstico.
+      if (!/timed out|connection|server closed/i.test(text)) throw error;
+    }
+  }
+  throw last;
+};
+
 
 const hasPsql = (() => {
   try {
