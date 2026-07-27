@@ -7323,6 +7323,19 @@ export type Database = {
           remaining: number
         }[]
       }
+      blame_alert_thresholds: {
+        Args: never
+        Returns: {
+          cooldown_critical_minutes: number
+          cooldown_warning_minutes: number
+          critical_rows: number
+          max_alerts_per_run: number
+          min_rows: number
+          widespread_cameras: number
+          window_minutes: number
+        }[]
+      }
+      blame_owner: { Args: { p_blame: string }; Returns: string }
       canonical_plate: { Args: { _raw: string }; Returns: string }
       capture_db_health_snapshot: { Args: never; Returns: string }
       check_csp_anomaly: { Args: never; Returns: Json }
@@ -7616,6 +7629,7 @@ export type Database = {
         }[]
       }
       evaluate_and_restart_streams: { Args: never; Returns: number }
+      evaluate_blame_alerts: { Args: { p_now?: string }; Returns: Json }
       evaluate_dwell_alerts: {
         Args: { _threshold_seconds?: number }
         Returns: Json
