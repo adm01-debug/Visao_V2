@@ -4,6 +4,8 @@
 //   { action: "seal",   camera_id, requested_from_utc, requested_to_utc,
 //                       segments[], transformations[], pixels_altered }
 //   { action: "verify", export_id }
+//   { action: "dossier", export_id }   (Onda 160 — cópia portátil para terceiros)
+
 //
 // Ordem das checagens (nunca inverter):
 //   1. JWT válido                                            → 401
@@ -98,6 +100,46 @@ Deno.serve(async (req) => {
         root_matches: verification.rootMatches && storedMatches,
       });
     }
+
+    /* ---------------- dossier (Onda 160) ----------------
+     * Entrega o manifesto selado + os fatos da emissão. Autoria e relógio da
+     * emissão vêm daqui, nunca do corpo da requisição: um dossiê cuja
+     * procedência o próprio cliente escreve não prova procedência nenhuma.
+     */
+    if (action === "dossier") {
+      const exportId = (body as { export_id?: unknown }).export_id;
+      if (typeof exportId !== "string" || exportId === "") {
+        return j({ error: "invalid_export_id" }, 400);
+      }
+      const { data: row } = await userClient
+        .from("evidence_exports")
+        .select("export_id, root_hash, sealed_at, manifest")
+        .eq("export_id", exportId)
+        .maybeSingle();
+      if (!row) return j({ error: "export_not_found" }, 404);
+
+      const manifest = row.manifest as unknown as CustodyManifest;
+      // Recusa emitir cópia portátil de algo que já não confere internamente:
+      // seria distribuir uma prova quebrada com aparência de documento oficial.
+      const verification = await verifyManifest(manifest);
+      if (!verification.intact || manifest.rootHash !== row.root_hash) {
+        return j({
+          error: "seal_broken",
+          detail: "A exportação guardada não confere com o próprio selo.",
+          first_broken_index: verification.firstBrokenIndex,
+        }, 409);
+      }
+
+      return j({
+        export_id: row.export_id,
+        sealed_at: row.sealed_at,
+        manifest,
+        issued_at_utc: new Date().toISOString(),
+        issued_by: user.email ?? user.id,
+        source_system: SYSTEM_VERSION,
+      });
+    }
+
 
     if (action !== "seal") return j({ error: "unknown_action" }, 400);
 

@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
-import { RefreshCw, ShieldCheck } from 'lucide-react';
+import { Download, RefreshCw, ShieldCheck } from 'lucide-react';
 import type { EvidenceExportView, Tone } from '@/lib/evidence/exportRegistryView';
 
 const TONE_CLASS: Record<Tone, string> = {
@@ -25,6 +25,8 @@ export interface EvidenceExportsTableProps {
   readonly views: readonly EvidenceExportView[];
   readonly isLoading: boolean;
   readonly onVerify: (exportId: string) => void;
+  readonly onDownloadDossier: (exportId: string) => void;
+  readonly downloadingId: string | null;
 }
 
 function formatSealedAt(ms: number | null): string {
@@ -32,7 +34,14 @@ function formatSealedAt(ms: number | null): string {
   return new Date(ms).toLocaleString('pt-BR');
 }
 
-export function EvidenceExportsTable({ views, isLoading, onVerify }: EvidenceExportsTableProps) {
+export function EvidenceExportsTable({
+  views,
+  isLoading,
+  onVerify,
+  onDownloadDossier,
+  downloadingId,
+}: EvidenceExportsTableProps) {
+
   return (
     <Card>
       <CardHeader>
@@ -101,19 +110,32 @@ export function EvidenceExportsTable({ views, isLoading, onVerify }: EvidenceExp
                       </p>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        disabled={view.integrity.state === 'checking'}
-                        onClick={() => onVerify(view.exportId)}
-                      >
-                        <RefreshCw
-                          className={cn('mr-1 h-3.5 w-3.5', view.integrity.state === 'checking' && 'animate-spin')}
-                          aria-hidden="true"
-                        />
-                        Conferir
-                      </Button>
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={view.integrity.state === 'checking'}
+                          onClick={() => onVerify(view.exportId)}
+                        >
+                          <RefreshCw
+                            className={cn('mr-1 h-3.5 w-3.5', view.integrity.state === 'checking' && 'animate-spin')}
+                            aria-hidden="true"
+                          />
+                          Conferir
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          disabled={downloadingId === view.exportId}
+                          onClick={() => onDownloadDossier(view.exportId)}
+                          title="Baixar dossiê portátil para entrega a terceiros"
+                        >
+                          <Download className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
+                          Dossiê
+                        </Button>
+                      </div>
                     </TableCell>
+
                   </TableRow>
                 ))}
               </TableBody>

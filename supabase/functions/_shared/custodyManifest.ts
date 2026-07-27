@@ -551,22 +551,11 @@ export async function buildManifest(
  * Reporta apenas o **primeiro** elo divergente (C3) — os seguintes são
  * consequência aritmética, não pistas independentes.
  */
-export async function verifyManifest(
+export async function computeRootHash(
   manifest: CustodyManifest,
   hashFn: HashFn = sha256Hex,
-): Promise<ChainVerification> {
-  const expectedChain = await buildCustodyChain(manifest.segments, hashFn);
-
-  let firstBrokenIndex: number | null = null;
-  const limit = Math.max(expectedChain.length, manifest.chain.length);
-  for (let i = 0; i < limit; i += 1) {
-    if (expectedChain[i] !== manifest.chain[i]) {
-      firstBrokenIndex = i;
-      break;
-    }
-  }
-
-  const expectedRoot = await hashText(
+): Promise<string> {
+  return hashText(
     manifestBody(
       {
         exportId: manifest.exportId,
@@ -585,6 +574,24 @@ export async function verifyManifest(
     ),
     hashFn,
   );
+}
+
+export async function verifyManifest(
+  manifest: CustodyManifest,
+  hashFn: HashFn = sha256Hex,
+): Promise<ChainVerification> {
+  const expectedChain = await buildCustodyChain(manifest.segments, hashFn);
+
+  let firstBrokenIndex: number | null = null;
+  const limit = Math.max(expectedChain.length, manifest.chain.length);
+  for (let i = 0; i < limit; i += 1) {
+    if (expectedChain[i] !== manifest.chain[i]) {
+      firstBrokenIndex = i;
+      break;
+    }
+  }
+
+  const expectedRoot = await computeRootHash(manifest, hashFn);
 
   const rootMatches = expectedRoot === manifest.rootHash;
 
