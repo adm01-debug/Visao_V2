@@ -17,10 +17,18 @@ import { UploadPlanDialog } from '@/components/emap/UploadPlanDialog';
 import { PlacementInspector } from '@/components/emap/PlacementInspector';
 import { SuppressedNoticesPanel } from '@/components/emap/SuppressedNoticesPanel';
 import { PlanSwitcher } from '@/components/emap/PlanSwitcher';
-import { isEditableTarget, resolveShortcutTarget, stepPlan } from '@/lib/emap/planNavigator';
+import { CrossFloorAttentionBanner } from '@/components/emap/CrossFloorAttentionBanner';
+import { isEditableTarget, resolveShortcutTarget, stepPlan, type PlanNavItem } from '@/lib/emap/planNavigator';
+import {
+  adviseCrossFloorAttention,
+  pruneDismissals,
+  recordDismissal,
+  type DismissalLedger,
+} from '@/lib/emap/attentionRouter';
 
 import { useSitePlans } from '@/hooks/useSitePlans';
 import { summarizePlan, type MapMarkerStatus } from '@/lib/emap/floorPlanGeometry';
+
 
 const SUMMARY_LABEL: Record<MapMarkerStatus, string> = {
   alert: 'em alerta',
