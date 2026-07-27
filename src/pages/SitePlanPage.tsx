@@ -17,10 +17,18 @@ import { UploadPlanDialog } from '@/components/emap/UploadPlanDialog';
 import { PlacementInspector } from '@/components/emap/PlacementInspector';
 import { SuppressedNoticesPanel } from '@/components/emap/SuppressedNoticesPanel';
 import { PlanSwitcher } from '@/components/emap/PlanSwitcher';
-import { isEditableTarget, resolveShortcutTarget, stepPlan } from '@/lib/emap/planNavigator';
+import { CrossFloorAttentionBanner } from '@/components/emap/CrossFloorAttentionBanner';
+import { isEditableTarget, resolveShortcutTarget, stepPlan, type PlanNavItem } from '@/lib/emap/planNavigator';
+import {
+  adviseCrossFloorAttention,
+  pruneDismissals,
+  recordDismissal,
+  type DismissalLedger,
+} from '@/lib/emap/attentionRouter';
 
 import { useSitePlans } from '@/hooks/useSitePlans';
 import { summarizePlan, type MapMarkerStatus } from '@/lib/emap/floorPlanGeometry';
+
 
 const SUMMARY_LABEL: Record<MapMarkerStatus, string> = {
   alert: 'em alerta',
@@ -65,6 +73,33 @@ export default function SitePlanPage() {
     (cameraId: string) => cameras.find((camera) => camera.id === cameraId)?.name ?? 'Câmera',
     [cameras],
   );
+
+  /**
+   * Onda 167 — convite para o andar mais grave. A dispensa é por estado
+   * observado: se o andar piorar (ou ganhar mais câmeras em atenção), o
+   * convite reaparece sozinho.
+   */
+  const [dismissals, setDismissals] = useState<DismissalLedger>([]);
+  const attentionAdvice = useMemo(
+    () =>
+      adviseCrossFloorAttention({
+        items: planNavigation.items,
+        activePlanId: planNavigation.resolvedActiveId,
+        dismissals,
+      }),
+    [planNavigation.items, planNavigation.resolvedActiveId, dismissals],
+  );
+  const dismissAttention = useCallback((item: PlanNavItem) => {
+    setDismissals((previous) => recordDismissal(previous, item));
+  }, []);
+  // Planta apagada não pode deixar dispensa órfã acumulando na memória.
+  useEffect(() => {
+    setDismissals((previous) => {
+      const next = pruneDismissals(previous, planNavigation.items);
+      return next.length === previous.length ? previous : next;
+    });
+  }, [planNavigation.items]);
+
 
   /**
    * Onda 166 — atalhos de andar. Teclas 1..9 saltam direto; setas ←/→ varrem
@@ -136,6 +171,13 @@ export default function SitePlanPage() {
       </header>
 
       <PlanSwitcher items={planNavigation.items} onSelect={setActivePlanId} />
+
+      <CrossFloorAttentionBanner
+        advice={attentionAdvice}
+        onGo={setActivePlanId}
+        onDismiss={dismissAttention}
+      />
+
 
       {error && (
         <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive" role="alert">

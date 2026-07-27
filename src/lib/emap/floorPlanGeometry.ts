@@ -37,10 +37,15 @@ const STATUS_SEVERITY: readonly MapMarkerStatus[] = [
   'online',
 ] as const;
 
-const severityRank = (status: MapMarkerStatus): number => {
+export const severityRank = (status: MapMarkerStatus): number => {
   const index = STATUS_SEVERITY.indexOf(status);
   return index === -1 ? STATUS_SEVERITY.indexOf('unknown') : index;
 };
+
+/** `true` quando `a` é estritamente mais grave que `b`. */
+export const isWorseThan = (a: MapMarkerStatus, b: MapMarkerStatus): boolean =>
+  severityRank(a) < severityRank(b);
+
 
 /** Ponto normalizado dentro da planta. */
 export interface NormalizedPoint {
