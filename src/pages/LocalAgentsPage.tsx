@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PageContent } from '@/components/layout/MainLayout';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -137,7 +138,7 @@ export default function LocalAgentsPage() {
   };
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <PageContent className="container mx-auto py-6">
       <PageMeta title="Agentes Locais — VISÃO" description="Agentes locais que descobrem câmeras ONVIF na LAN e reportam ao backend." />
 
       <header className="flex items-center justify-between gap-4 flex-wrap">
@@ -392,6 +393,6 @@ node dist/index.js`}
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </PageContent>
   );
 }

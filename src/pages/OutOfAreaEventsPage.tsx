@@ -5,6 +5,7 @@
  * detectadas fora de todas as zonas permitidas (type='safe') da câmera.
  */
 import { useEffect, useMemo, useState } from "react";
+import { PageContent } from '@/components/layout/MainLayout';
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -105,7 +106,7 @@ export default function OutOfAreaEventsPage() {
   }, [enriched]);
 
   return (
-    <div className="container mx-auto space-y-6 p-6">
+    <PageContent className="container mx-auto p-6">
       <Helmet>
         <title>Pessoas Fora da Área Permitida — VISÃO</title>
         <meta name="description" content="Ocorrências de pessoas detectadas fora das zonas permitidas por câmera." />
@@ -179,6 +180,6 @@ export default function OutOfAreaEventsPage() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </PageContent>
   );
 }

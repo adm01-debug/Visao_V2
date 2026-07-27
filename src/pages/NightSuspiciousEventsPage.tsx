@@ -8,6 +8,7 @@
  *   - loitering_at_night (high)
  */
 import { useEffect, useMemo, useState } from "react";
+import { PageContent } from '@/components/layout/MainLayout';
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -110,7 +111,7 @@ export default function NightSuspiciousEventsPage() {
   }, [rows]);
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <PageContent className="p-4 md:p-6">
       <Helmet>
         <title>Alertas Noturnos — VISÃO</title>
         <meta name="description" content="Alertas de atividade suspeita e risco de arrombamento no período noturno." />
@@ -207,6 +208,6 @@ export default function NightSuspiciousEventsPage() {
           })}
         </CardContent>
       </Card>
-    </div>
+    </PageContent>
   );
 }

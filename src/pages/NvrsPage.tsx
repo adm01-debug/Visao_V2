@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { PageContent } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +31,7 @@ export default function NvrsPage(): JSX.Element {
   const { data: nvrs, isLoading, error } = useNvrs();
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <PageContent className="container mx-auto py-6">
       <PageMeta
         title="NVRs — VISÃO"
         description="Gerencie gravadores de vídeo em rede (NVR) e monitore a saúde do bridge de canais RTSP."
@@ -128,6 +129,6 @@ export default function NvrsPage(): JSX.Element {
           )}
         </CardContent>
       </Card>
-    </div>
+    </PageContent>
   );
 }
