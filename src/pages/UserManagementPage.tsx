@@ -35,6 +35,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { PageMeta } from '@/components/PageMeta';
 import { PageContent } from '@/components/layout/MainLayout';
+import { CapabilityGrantsCard } from '@/components/permissions/CapabilityGrantsCard';
 
 interface ManagedUser {
   id: string;
@@ -63,7 +64,7 @@ const ROLE_COLORS: Record<AppRole, string> = {
 
 const UserManagementPage: React.FC = () => {
   const { user } = useAuth();
-  const { isAdmin, loading: roleLoading } = useUserRole();
+  const { isAdmin, role: currentRole, loading: roleLoading } = useUserRole();
   const [users, setUsers] = useState<ManagedUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingUserId, setUpdatingUserId] = useState<string | null>(null);
@@ -295,6 +296,14 @@ const UserManagementPage: React.FC = () => {
           )}
         </CardContent>
       </Card>
+
+      {user?.id && (
+        <CapabilityGrantsCard
+          users={users.map((u) => ({ id: u.id, email: u.email, role: u.role }))}
+          actorId={user.id}
+          actorRole={currentRole}
+        />
+      )}
     </PageContent>
   );
 };

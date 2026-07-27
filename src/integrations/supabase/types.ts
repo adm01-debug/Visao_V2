@@ -6964,6 +6964,45 @@ export type Database = {
           },
         ]
       }
+      user_capability_grant_audit: {
+        Row: {
+          action: string
+          actor_id: string | null
+          capability: string
+          created_at: string
+          effect: string
+          expires_at: string | null
+          grant_id: string
+          id: string
+          reason: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          capability: string
+          created_at?: string
+          effect: string
+          expires_at?: string | null
+          grant_id: string
+          id?: string
+          reason?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          capability?: string
+          created_at?: string
+          effect?: string
+          expires_at?: string | null
+          grant_id?: string
+          id?: string
+          reason?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_capability_grants: {
         Row: {
           capability: string
@@ -8305,6 +8344,16 @@ export type Database = {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
       }
+      grant_capability: {
+        Args: {
+          _capability: string
+          _effect: string
+          _expires_at: string
+          _reason: string
+          _user_id: string
+        }
+        Returns: string
+      }
       has_capability: {
         Args: { _capability: string; _now?: string; _user_id: string }
         Returns: boolean
@@ -8520,6 +8569,10 @@ export type Database = {
           label: string
           source_table: string
         }[]
+      }
+      revoke_capability_grant: {
+        Args: { _grant_id: string; _reason?: string }
+        Returns: boolean
       }
       revoke_collab_entry: {
         Args: { _entry_id: string; _org_id: string }
