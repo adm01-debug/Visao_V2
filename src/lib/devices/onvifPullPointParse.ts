@@ -138,12 +138,25 @@ export function parsePullMessages(xml: string): ParsedOnvifEvent[] {
     const topic = decodeEntities(topicRaw.replace(/<[^>]*>/g, '').trim());
     if (topic.length === 0) continue;
 
-    const messageTag = /<(?:[A-Za-z0-9_.-]+:)?Message\b([^>]*)>/i.exec(block);
-    const utcTime = messageTag ? attr(messageTag[1] ?? '', 'UtcTime') : null;
+    // Há DOIS elementos chamados `Message` aninhados: o envelope da notificação
+    // e a mensagem em si. Só o interno carrega `UtcTime`, então escolhemos pelo
+    // atributo, não pela posição — a ordem varia entre fabricantes.
+    let messageAttrs: string | null = null;
+    const tagRe = /<(?:[A-Za-z0-9_.-]+:)?Message\b([^>]*)>/gi;
+    let tagMatch: RegExpExecArray | null;
+    while ((tagMatch = tagRe.exec(block)) !== null) {
+      const attrs = tagMatch[1] ?? '';
+      if (attr(attrs, 'UtcTime') !== null) {
+        messageAttrs = attrs;
+        break;
+      }
+    }
+    const utcTime = messageAttrs ? attr(messageAttrs, 'UtcTime') : null;
     // Q3 — sem instante do equipamento não há chave estável de duplicidade.
     if (!utcTime) continue;
 
-    const rawOp = messageTag ? attr(messageTag[1] ?? '', 'PropertyOperation') : null;
+    const rawOp = messageAttrs ? attr(messageAttrs, 'PropertyOperation') : null;
+
     const propertyOperation =
       rawOp === 'Initialized' || rawOp === 'Changed' || rawOp === 'Deleted' ? rawOp : null;
 
