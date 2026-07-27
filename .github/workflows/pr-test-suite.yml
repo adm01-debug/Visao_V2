@@ -314,6 +314,16 @@ jobs:
       - name: Simulação do roteamento por responsável (Onda 147)
         run: npm run sim:wave147
 
+      # Onda 148/149 — recorte por responsável e dívida de atendimento. Puras,
+      # sem banco: são a especificação executável das telas de manutenção.
+      - name: Simulação do filtro por responsável (Onda 148)
+        run: npm run sim:wave148
+
+      - name: Simulação da dívida de atendimento (Onda 149)
+        run: npm run sim:wave149
+
+
+
 
 
       # Onda 141 — exercício DINÂMICO do laço de auto-cura. Os gates acima são

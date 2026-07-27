@@ -194,7 +194,8 @@
     "db:check:maintenance-console": "node scripts/check-maintenance-console.mjs",
     "db:check:collab-entry-lifecycle": "node scripts/check-collab-entry-lifecycle.mjs",
     "simulate:collab-network": "vitest run src/__tests__/lib/collabNetwork.test.ts",
-    "sim:wave148": "node scripts/simulate-wave148-owner-filter.mjs"
+    "sim:wave148": "node scripts/simulate-wave148-owner-filter.mjs",
+    "sim:wave149": "node scripts/simulate-wave149-owner-aging.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
