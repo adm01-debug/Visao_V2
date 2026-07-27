@@ -138,7 +138,7 @@ export function useCapabilityGrants(): UseCapabilityGrantsReturn {
       try {
         const { data, error: rpcError } = await supabase.rpc('revoke_capability_grant', {
           _grant_id: grantId,
-          _reason: reason || null,
+          _reason: reason || undefined,
         });
         if (rpcError) throw rpcError;
         await refetch();
