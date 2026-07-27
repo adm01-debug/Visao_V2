@@ -34,6 +34,7 @@ import {
   TestTube2,
   Wrench,
   Network,
+  FileCheck2,
 } from "lucide-react";
 import type { NavCategory } from "../types";
 import type { SidebarStatus } from "@/hooks/useSidebarStatus";
@@ -216,6 +217,15 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
           (status.collabOldestAgeHours ?? 0) >= COLLAB_STALE_ACTIONABLE_HOURS,
       },
 
+      {
+        // Onda 159: a Onda 158 selava a prova no servidor, mas ninguém
+        // conseguia conferir o selo depois — existia e era invisível.
+        id: "evidence-exports",
+        label: "Registro Probatório",
+        icon: FileCheck2,
+        path: "/registro-probatorio",
+        minRole: "manager",
+      },
       {
         id: "users",
         label: "Usuários",

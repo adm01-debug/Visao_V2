@@ -88,6 +88,7 @@ const TestModePage = lazy(() => import("@/pages/TestModePage"));
 const LocalAgentsPage = lazy(() => import("@/pages/LocalAgentsPage"));
 const CollabNetworkPage = lazy(() => import("@/pages/CollabNetworkPage"));
 const MaintenanceConsolePage = lazy(() => import("@/pages/MaintenanceConsolePage"));
+const EvidenceExportsPage = lazy(() => import("@/pages/EvidenceExportsPage"));
 
 const CLSReportPage = lazy(() => import("@/pages/CLSReportPage"));
 const LoadingStatesChecklistPage = lazy(() => import("@/pages/LoadingStatesChecklistPage"));
@@ -237,6 +238,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/rede-colaborativa" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<CollabNetworkPage />, "Rede Colaborativa")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/manutencao" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<MaintenanceConsolePage />, "Console de Manutenção")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/maintenance" element={<Navigate to="/manutencao" replace />} />
+                    <Route path="/registro-probatorio" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<EvidenceExportsPage />, "Registro Probatório")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/nvrs" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<NvrsPage />, "NVRs")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/nvrs/:id" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<NvrDetailPage />, "Detalhe NVR")}</ProtectedRoute></ProtectedLayoutRoute>} />
 
