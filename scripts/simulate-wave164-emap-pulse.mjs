@@ -10,12 +10,15 @@
  *   5. Entradas malformadas (relógio NaN, estado desconhecido, id vazio)
  *      não derrubam nem criam pulso eterno.
  */
-import { register } from 'node:module';
-import { pathToFileURL } from 'node:url';
+import { createJiti } from 'jiti';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
 
-register('ts-node/esm', pathToFileURL('./'));
+const here = dirname(fileURLToPath(import.meta.url));
+const root = resolve(here, '..');
+const jiti = createJiti(import.meta.url, { alias: { '@': resolve(root, 'src') } });
 
-const mod = await import('../src/lib/emap/markerPulse.ts');
+const mod = await jiti.import(resolve(root, 'src/lib/emap/markerPulse.ts'));
 const {
   DEFAULT_PULSE_CONFIG,
   activePulses,
@@ -27,6 +30,7 @@ const {
   pulsingCameraIds,
   registerPulses,
 } = mod;
+
 
 let assertions = 0;
 let failures = 0;
