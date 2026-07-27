@@ -220,7 +220,7 @@ Deno.serve(async (req) => {
     }
 
     /* ---------------- actuate ---------------- */
-    const { data: portRow } = await userClient
+    const { data: portRow } = await scopedClient
       .from("camera_io_ports")
       .select("*")
       .eq("id", payload.port_id ?? "")
@@ -258,7 +258,7 @@ Deno.serve(async (req) => {
       port_token: portRow?.port_token ?? null,
       origin: payload.origin ?? "manual",
       origin_ref: payload.origin_ref ?? null,
-      actor_user_id: user.id,
+      actor_user_id: user?.id ?? null,
       command: payload.command ?? "pulse",
       requested_ms: payload.duration_ms ?? null,
     };
