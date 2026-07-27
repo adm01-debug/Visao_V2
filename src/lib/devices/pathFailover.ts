@@ -234,7 +234,8 @@ export function planFailover(input: FailoverInput, nowMs: number): FailoverPlan 
   let reason: FailoverReason;
 
   if (!preferred || !preferredDecision) {
-    head = challenger ?? configured[0];
+    // `configured` é comprovadamente não vazio: o caso zero retornou acima.
+    head = challenger ?? firstConfigured;
     reason = 'preferred_not_configured';
   } else if (preferredDecision.quarantined) {
     // O preferido está provadamente morto agora: qualquer alternativa saudável
