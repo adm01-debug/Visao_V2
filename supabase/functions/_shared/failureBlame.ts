@@ -78,12 +78,16 @@ export interface BlameVerdict {
 const RUN_FROM_VALUES: ReadonlySet<string> = new Set(["cloud", "relay", "agent", "client"]);
 
 /**
- * `agent` executa DENTRO da rede das câmeras: se ele falhou em alcançar o
- * equipamento, as hipóteses de transporte de longa distância já caíram.
- * `relay` atravessa o túnel — o túnel ainda é transporte suspeito.
+ * `agent` e `relay` significam que a tentativa foi EXECUTADA dentro da rede das
+ * câmeras — o veredito veio de lá. Se de dentro da LAN o equipamento não
+ * respondeu, as hipóteses de transporte de longa distância já caíram.
+ *
+ * Importante: quando é o TÚNEL que falha (a nuvem não alcança o agente), a
+ * falha é registrada com `run_from: "cloud"`, porque quem sofreu foi o lado da
+ * nuvem. Por isso `relay` aqui nunca mascara um túnel caído.
  */
 function isLocalReachProven(runFrom: RunFrom): boolean {
-  return runFrom === "agent";
+  return runFrom === "agent" || runFrom === "relay";
 }
 
 function normalizeRunFrom(value: unknown): RunFrom {

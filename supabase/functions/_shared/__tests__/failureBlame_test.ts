@@ -115,7 +115,7 @@ Deno.test("invariante: upstream que respondeu nunca é culpa do transporte", () 
 Deno.test("invariante: da nuvem, falha opaca jamais acusa o equipamento", () => {
   const opaque: NetworkErrorKind[] = ["timeout", "reset", "refused", "unknown"];
   for (const kind of opaque) {
-    for (const runFrom of ["cloud", "relay", "client"] as RunFrom[]) {
+    for (const runFrom of ["cloud", "client"] as RunFrom[]) {
       const v = deriveBlame({ kind, runFrom });
       assertEquals(v.blame, "transport", `${kind}/${runFrom} deveria ser transporte`);
       assertEquals(v.rule, "R5_remote_path_opaque");
@@ -124,11 +124,13 @@ Deno.test("invariante: da nuvem, falha opaca jamais acusa o equipamento", () => 
 });
 
 Deno.test("invariante: dentro da LAN, o transporte deixa de ser suspeito", () => {
-  for (const kind of ["timeout", "reset", "unknown"] as NetworkErrorKind[]) {
-    assertEquals(deriveBlame({ kind, runFrom: "agent" }).blame, "device");
+  for (const runFrom of ["agent", "relay"] as RunFrom[]) {
+    for (const kind of ["timeout", "reset", "unknown"] as NetworkErrorKind[]) {
+      assertEquals(deriveBlame({ kind, runFrom }).blame, "device", `${kind}/${runFrom}`);
+    }
+    // Porta recusada na LAN é serviço/porta, não equipamento morto.
+    assertEquals(deriveBlame({ kind: "refused", runFrom }).blame, "config");
   }
-  // Porta recusada na LAN é serviço/porta, não equipamento morto.
-  assertEquals(deriveBlame({ kind: "refused", runFrom: "agent" }).blame, "config");
 });
 
 Deno.test("invariante: dependência de nuvem tem precedência sobre leitura de rede", () => {
