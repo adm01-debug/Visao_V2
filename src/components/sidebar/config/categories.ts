@@ -35,6 +35,7 @@ import {
   Wrench,
   Network,
   FileCheck2,
+  Map as MapIcon,
 } from "lucide-react";
 import type { NavCategory } from "../types";
 import type { SidebarStatus } from "@/hooks/useSidebarStatus";
@@ -224,7 +225,7 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         // ONDE cada câmera está quando o alarme dispara.
         id: "site-plan",
         label: "Planta Baixa",
-        icon: Map,
+        icon: MapIcon,
         path: "/planta-baixa",
         minRole: "operator",
       },
