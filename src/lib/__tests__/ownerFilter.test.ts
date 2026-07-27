@@ -70,7 +70,7 @@ describe('buildOwnerBuckets', () => {
   it('rotula alerta sem roteamento como balde próprio', () => {
     const buckets = buildOwnerBuckets(rows);
     expect(buckets.find((b) => b.key === 'unrouted')?.label).toBe('Sem responsável');
-    expect(buckets.at(-1)?.key).toBe('unrouted');
+    expect(buckets[buckets.length - 1].key).toBe('unrouted');
   });
 
   it('dono fora do vocabulário cai em triagem, nunca lança', () => {
