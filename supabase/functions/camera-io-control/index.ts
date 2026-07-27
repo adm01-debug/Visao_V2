@@ -112,26 +112,42 @@ Deno.serve(async (req) => {
 
   try {
     const authHeader = req.headers.get("Authorization") ?? "";
+    const bearer = authHeader.replace(/^Bearer\s+/i, "").trim();
     const userClient = createClient(supabaseUrl, anon, {
       global: { headers: { Authorization: authHeader } },
     });
     const admin = createClient(supabaseUrl, service);
 
+    // Chamada interna do motor de regras: o portador é a própria chave de
+    // serviço. Não há usuário, e não deve haver — a regra já foi autorizada
+    // quando o operador a criou. O que NÃO muda é o resto: a decisão de
+    // segurança do pulso continua sendo a mesma função, e o log continua
+    // registrando origem `rule`. Sistema não ganha passe livre no ioSafety.
+    const isSystemCall = bearer !== "" && bearer === service;
+
     // 1. autenticação
-    const { data: { user } } = await userClient.auth.getUser();
-    if (!user) return j({ error: "unauthenticated" }, 401);
+    const { data: { user } } = isSystemCall
+      ? { data: { user: null } }
+      : await userClient.auth.getUser();
+    if (!user && !isSystemCall) return j({ error: "unauthenticated" }, 401);
 
     // 2. capability no servidor — a UI apenas antecipa esta recusa
-    const { data: caps } = await admin.rpc("effective_capabilities", { p_user_id: user.id });
-    const capList: string[] = Array.isArray(caps) ? caps as string[] : [];
-    const canControl = capList.includes("cameras.control_io");
+    let canControl = isSystemCall;
+    if (user) {
+      const { data: caps } = await admin.rpc("effective_capabilities", { p_user_id: user.id });
+      const capList: string[] = Array.isArray(caps) ? caps as string[] : [];
+      canControl = capList.includes("cameras.control_io");
+    }
 
     const payload = (await req.json()) as Payload;
     const action = payload.action ?? "actuate";
     if (!payload.camera_id) return j({ error: "missing_camera_id" }, 400);
+    // Descoberta é operação de cadastro e nunca é feita pelo sistema.
+    if (action === "discover" && isSystemCall) return j({ error: "forbidden_for_system" }, 403);
 
-    // 3. propriedade sob RLS do chamador — nunca com service role
-    const { data: camera } = await userClient
+    // 3. propriedade sob RLS do chamador — nunca com service role para usuário
+    const scopedClient = isSystemCall ? admin : userClient;
+    const { data: camera } = await scopedClient
       .from("cameras")
       .select("id, user_id")
       .eq("id", payload.camera_id)
