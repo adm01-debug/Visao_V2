@@ -4303,6 +4303,131 @@ export type Database = {
           },
         ]
       }
+      onvif_event_deliveries: {
+        Row: {
+          camera_id: string
+          data: Json
+          dedup_key: string
+          device_utc_time: string
+          id: string
+          property_operation: string | null
+          received_at: string
+          source_token: string | null
+          subscription_id: string | null
+          topic: string
+          user_id: string
+        }
+        Insert: {
+          camera_id: string
+          data?: Json
+          dedup_key: string
+          device_utc_time: string
+          id?: string
+          property_operation?: string | null
+          received_at?: string
+          source_token?: string | null
+          subscription_id?: string | null
+          topic: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string
+          data?: Json
+          dedup_key?: string
+          device_utc_time?: string
+          id?: string
+          property_operation?: string | null
+          received_at?: string
+          source_token?: string | null
+          subscription_id?: string | null
+          topic?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "onvif_event_deliveries_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: false
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "onvif_event_deliveries_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "onvif_event_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      onvif_event_subscriptions: {
+        Row: {
+          camera_id: string
+          consecutive_failures: number
+          created_at: string
+          events_received: number
+          id: string
+          last_attempt_at: string | null
+          last_decision: string | null
+          last_decision_reason: string | null
+          last_event_at: string | null
+          last_failure_kind: string
+          lease_duration_ms: number
+          lease_started_at: string | null
+          status: string
+          subscription_ref: string | null
+          termination_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          camera_id: string
+          consecutive_failures?: number
+          created_at?: string
+          events_received?: number
+          id?: string
+          last_attempt_at?: string | null
+          last_decision?: string | null
+          last_decision_reason?: string | null
+          last_event_at?: string | null
+          last_failure_kind?: string
+          lease_duration_ms?: number
+          lease_started_at?: string | null
+          status?: string
+          subscription_ref?: string | null
+          termination_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          camera_id?: string
+          consecutive_failures?: number
+          created_at?: string
+          events_received?: number
+          id?: string
+          last_attempt_at?: string | null
+          last_decision?: string | null
+          last_decision_reason?: string | null
+          last_event_at?: string | null
+          last_failure_kind?: string
+          lease_duration_ms?: number
+          lease_started_at?: string | null
+          status?: string
+          subscription_ref?: string | null
+          termination_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "onvif_event_subscriptions_camera_id_fkey"
+            columns: ["camera_id"]
+            isOneToOne: true
+            referencedRelation: "cameras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organization_members: {
         Row: {
           created_at: string
@@ -8657,6 +8782,20 @@ export type Database = {
           _zone_id: string
         }
         Returns: Json
+      }
+      record_onvif_event: {
+        Args: {
+          p_camera_id: string
+          p_data: Json
+          p_dedup_key: string
+          p_device_utc_time: string
+          p_property_operation: string
+          p_source_token: string
+          p_subscription_id: string
+          p_topic: string
+          p_user_id: string
+        }
+        Returns: boolean
       }
       relay_lease_policy: {
         Args: never
