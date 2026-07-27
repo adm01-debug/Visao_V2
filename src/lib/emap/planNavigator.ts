@@ -106,12 +106,13 @@ export function buildPlanNavigation(input: BuildNavigationInput): PlanNavigation
   // Ativo inválido não deixa a tela órfã: cai na primeira planta.
   if (activeIndex < 0 && items.length > 0) activeIndex = 0;
 
-  if (activeIndex >= 0) items[activeIndex] = { ...items[activeIndex], isActive: true };
+  const activeItem = activeIndex >= 0 ? items[activeIndex] : undefined;
+  if (activeItem) items[activeIndex] = { ...activeItem, isActive: true };
 
   return {
     items,
-    activeIndex,
-    resolvedActiveId: activeIndex >= 0 ? items[activeIndex].planId : null,
+    activeIndex: activeItem ? activeIndex : -1,
+    resolvedActiveId: activeItem ? activeItem.planId : null,
   };
 }
 
