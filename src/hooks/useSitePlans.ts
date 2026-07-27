@@ -19,6 +19,15 @@ import {
   type StatusLedger,
 } from '@/lib/emap/markerStatusStream';
 import {
+  DEFAULT_PULSE_CONFIG,
+  emptyPulseLedger,
+  expirePulses,
+  nextExpiry,
+  pulsingCameraIds as pulsingIdsOf,
+  registerPulses,
+  type PulseLedger,
+} from '@/lib/emap/markerPulse';
+import {
   describeNotice,
   emptyNoticeState,
   evaluateNotices,
@@ -71,6 +80,9 @@ export function useSitePlans() {
   // mudá-la não deve provocar novo render.
   const noticeStateRef = useRef<NoticeState>(emptyNoticeState());
   const previousLedgerRef = useRef<StatusLedger>({});
+  // Onda 164: destaque temporário de quem piorou. Vive em estado (a tela
+  // precisa repintar), mas expira por relógio, nunca por render.
+  const [pulseLedger, setPulseLedger] = useState<PulseLedger>(emptyPulseLedger);
   const [cameras, setCameras] = useState<PlanCamera[]>([]);
   const [planImageUrl, setPlanImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -244,6 +256,11 @@ export function useSitePlans() {
     const transitions = diffLedgers(previousLedgerRef.current, statusLedger);
     previousLedgerRef.current = statusLedger;
 
+    // O pulso segue a mesma ética do aviso: a carga inicial não pisca.
+    if (noticeStateRef.current.primed && transitions.length > 0) {
+      setPulseLedger((current) => registerPulses(current, transitions, Date.now()));
+    }
+
     if (!noticeStateRef.current.primed) {
       noticeStateRef.current = primeNoticeState(
         noticeStateRef.current,
@@ -265,6 +282,22 @@ export function useSitePlans() {
       else toast.warning(message);
     }
   }, [statusLedger, cameras]);
+
+  /**
+   * Um único timer para todo o mapa: agenda-se o próximo vencimento em vez de
+   * um intervalo por marcador (60 câmeras = 60 timers seria desperdício).
+   */
+  useEffect(() => {
+    const due = nextExpiry(pulseLedger, Date.now());
+    if (due === null) return;
+    const delay = Math.max(50, Math.min(due - Date.now(), DEFAULT_PULSE_CONFIG.ttlMs));
+    const timer = window.setTimeout(() => {
+      setPulseLedger((current) => expirePulses(current, Date.now()));
+    }, delay);
+    return () => window.clearTimeout(timer);
+  }, [pulseLedger]);
+
+  const pulsingCameraIds = useMemo(() => pulsingIdsOf(pulseLedger, Date.now()), [pulseLedger]);
 
   // Projeção: geometria (banco) + estado ao vivo (livro). Nunca o contrário.
   const placements = useMemo(
@@ -427,6 +460,7 @@ export function useSitePlans() {
     setActivePlanId,
     planImageUrl,
     placements,
+    pulsingCameraIds,
     cameras,
     unplacedCameras,
     loading,
