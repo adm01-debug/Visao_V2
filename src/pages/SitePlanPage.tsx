@@ -18,6 +18,7 @@ import { PlacementInspector } from '@/components/emap/PlacementInspector';
 import { SuppressedNoticesPanel } from '@/components/emap/SuppressedNoticesPanel';
 import { PlanSwitcher } from '@/components/emap/PlanSwitcher';
 import { CrossFloorAttentionBanner } from '@/components/emap/CrossFloorAttentionBanner';
+import { AttentionClockPanel } from '@/components/emap/AttentionClockPanel';
 import { isEditableTarget, resolveShortcutTarget, stepPlan, type PlanNavItem } from '@/lib/emap/planNavigator';
 import {
   adviseCrossFloorAttention,
@@ -25,6 +26,13 @@ import {
   recordDismissal,
   type DismissalLedger,
 } from '@/lib/emap/attentionRouter';
+import {
+  clearAttention,
+  emptyAttentionLedger,
+  observeAttention,
+  pruneAttention,
+  type AttentionLedger,
+} from '@/lib/emap/attentionClock';
 
 import { useSitePlans } from '@/hooks/useSitePlans';
 import { summarizePlan, type MapMarkerStatus } from '@/lib/emap/floorPlanGeometry';
@@ -99,6 +107,33 @@ export default function SitePlanPage() {
       return next.length === previous.length ? previous : next;
     });
   }, [planNavigation.items]);
+
+  /**
+   * Onda 168 — relógio de atenção. Cada rodada de observação alimenta o livro;
+   * confirmar o mesmo estado não reinicia a contagem, e só voltar a operar
+   * apaga a entrada. Câmera que sumiu da lista mantém o relógio correndo:
+   * ausência de observação nunca é prova de melhora.
+   */
+  const [attentionClock, setAttentionClock] = useState<AttentionLedger>(emptyAttentionLedger);
+  useEffect(() => {
+    if (placements.length === 0) return;
+    const now = Date.now();
+    const observations = placements.map((placement) => ({
+      cameraId: placement.cameraId,
+      status: placement.status,
+    }));
+    setAttentionClock((previous) => observeAttention(previous, observations, now));
+  }, [placements]);
+  useEffect(() => {
+    const knownIds = new Set(cameras.map((camera) => camera.id));
+    if (knownIds.size === 0) return;
+    setAttentionClock((previous) => pruneAttention(previous, knownIds));
+  }, [cameras]);
+  const acknowledgeAttention = useCallback((cameraId: string) => {
+    setAttentionClock((previous) => clearAttention(previous, cameraId));
+  }, []);
+
+
 
 
   /**
@@ -241,6 +276,12 @@ export default function SitePlanPage() {
                 void removePlacement(id);
                 setSelectedId(null);
               }}
+            />
+
+            <AttentionClockPanel
+              ledger={attentionClock}
+              nameOf={nameOf}
+              onAcknowledge={acknowledgeAttention}
             />
 
             <SuppressedNoticesPanel

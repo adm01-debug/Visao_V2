@@ -11,3 +11,4 @@
 - [Rede Colaborativa de Placas](mem://features/collab-plate-network) — Onda 127: HMAC por rede (placa nunca em claro), reciprocidade, TTL/revogação, cooldown; gate `db:check:collab-network`
 - [Owner SLA Aging](mem://features/owner-sla-aging) — Onda 149: dívida de atendimento por responsável, prazo por par (dono, severidade), estado do pior alerta aberto, `sim:wave149`
 - [E-Map avisos silenciados](mem://features/emap-suppressed-notices) — Onda 165: livro auditável do anti-ruído; só supressão de agravamento entra, expira por relógio, painel some quando vazio, `simulate:wave165`
+- [E-Map relógio de atenção](mem://features/emap-attention-clock) — Onda 168: idade do estado no mapa; confirmação nunca reinicia o relógio, só normalização observada apaga, ausência não é melhora, faixas fresh/sustained/prolonged, `simulate:wave168`
