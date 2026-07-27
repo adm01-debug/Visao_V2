@@ -4,8 +4,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CheckCircle2, ShieldAlert } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { cn } from '@/lib/utils';
 import type { MaintenanceConsoleModel } from '@/lib/maintenance/maintenanceConsoleView';
 import { scopeLabel } from '@/lib/maintenance/maintenanceOwner';
+import {
+  applyOwnerFilter,
+  buildOwnerBuckets,
+  resolveOwnerFilter,
+} from '@/lib/maintenance/ownerFilter';
 
 interface MaintenanceAlertsCardProps {
   readonly model: MaintenanceConsoleModel;
@@ -31,6 +38,14 @@ export function MaintenanceAlertsCard({
   onAcknowledge,
 }: MaintenanceAlertsCardProps) {
   const { rows, summary } = model;
+
+  // Onda 148 — recorte por responsável. O estado guarda apenas a chave crua;
+  // o valor efetivo é DERIVADO dos baldes a cada render, então um balde que
+  // some entre dois refetches degrada para `Todos` sem useEffect.
+  const [selected, setSelected] = useState<string>('all');
+  const buckets = useMemo(() => buildOwnerBuckets(rows), [rows]);
+  const activeKey = resolveOwnerFilter(buckets, selected);
+  const visibleRows = useMemo(() => applyOwnerFilter(rows, activeKey), [rows, activeKey]);
 
   return (
     <Card>
@@ -71,8 +86,52 @@ export function MaintenanceAlertsCard({
               )}
             </div>
 
+            {buckets.length > 1 && (
+              <div
+                className="flex flex-wrap gap-2"
+                role="group"
+                aria-label="Filtrar incidentes por responsável"
+              >
+                {buckets.map((bucket) => {
+                  const isActive = bucket.key === activeKey;
+                  return (
+                    <Button
+                      key={bucket.key}
+                      type="button"
+                      size="sm"
+                      variant={isActive ? 'default' : 'outline'}
+                      aria-pressed={isActive}
+                      className="h-8 gap-2 rounded-full px-3 text-xs"
+                      onClick={() => setSelected(bucket.key)}
+                    >
+                      <span>{bucket.label}</span>
+                      <span
+                        className={cn(
+                          'rounded-full px-1.5 text-[0.65rem] font-semibold',
+                          bucket.critical > 0
+                            ? 'bg-destructive text-destructive-foreground'
+                            : 'bg-muted text-muted-foreground',
+                        )}
+                      >
+                        {bucket.open}
+                      </span>
+                    </Button>
+                  );
+                })}
+              </div>
+            )}
+
+            {visibleRows.length === 0 ? (
+              <Alert>
+                <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
+                <AlertTitle>Nada pendente para este responsável</AlertTitle>
+                <AlertDescription>
+                  Os incidentes deste recorte já foram reconhecidos.
+                </AlertDescription>
+              </Alert>
+            ) : (
             <ul className="space-y-3">
-              {rows.map((row) => (
+              {visibleRows.map((row) => (
                 <li
                   key={row.id}
                   className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4 md:flex-row md:items-center md:justify-between"
@@ -130,6 +189,7 @@ export function MaintenanceAlertsCard({
                 </li>
               ))}
             </ul>
+            )}
           </>
         )}
       </CardContent>
