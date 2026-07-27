@@ -217,6 +217,15 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
       },
 
       {
+        // Onda 159: a Onda 158 selava a prova no servidor, mas ninguém
+        // conseguia conferir o selo depois — existia e era invisível.
+        id: "evidence-exports",
+        label: "Registro Probatório",
+        icon: FileCheck2,
+        path: "/registro-probatorio",
+        minRole: "manager",
+      },
+      {
         id: "users",
         label: "Usuários",
         icon: UserCog,
