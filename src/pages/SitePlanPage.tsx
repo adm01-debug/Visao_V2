@@ -172,6 +172,13 @@ export default function SitePlanPage() {
 
       <PlanSwitcher items={planNavigation.items} onSelect={setActivePlanId} />
 
+      <CrossFloorAttentionBanner
+        advice={attentionAdvice}
+        onGo={setActivePlanId}
+        onDismiss={dismissAttention}
+      />
+
+
       {error && (
         <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive" role="alert">
           {error}
