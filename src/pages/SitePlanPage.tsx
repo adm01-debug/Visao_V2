@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Map as MapIcon, MapPin } from 'lucide-react';
 import { PageMeta } from '@/components/PageMeta';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,6 +16,8 @@ import { FloorPlanCanvas } from '@/components/emap/FloorPlanCanvas';
 import { UploadPlanDialog } from '@/components/emap/UploadPlanDialog';
 import { PlacementInspector } from '@/components/emap/PlacementInspector';
 import { SuppressedNoticesPanel } from '@/components/emap/SuppressedNoticesPanel';
+import { PlanSwitcher } from '@/components/emap/PlanSwitcher';
+import { isEditableTarget, resolveShortcutTarget, stepPlan } from '@/lib/emap/planNavigator';
 
 import { useSitePlans } from '@/hooks/useSitePlans';
 import { summarizePlan, type MapMarkerStatus } from '@/lib/emap/floorPlanGeometry';
@@ -31,6 +33,7 @@ const SUMMARY_LABEL: Record<MapMarkerStatus, string> = {
 export default function SitePlanPage() {
   const {
     plans,
+    planNavigation,
     activePlan,
     activePlanId,
     setActivePlanId,
@@ -100,6 +103,8 @@ export default function SitePlanPage() {
           <UploadPlanDialog saving={saving} onCreate={createPlan} />
         </div>
       </header>
+
+      <PlanSwitcher items={planNavigation.items} onSelect={setActivePlanId} />
 
       {error && (
         <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive" role="alert">
