@@ -63,12 +63,49 @@ export function extractIp(host?: string | null): string | null {
   return m ? m[1] : null;
 }
 
+/**
+ * Deriva classe de rede + responsável a partir da entrada de auditoria.
+ * Exportada para teste: é a cola entre a taxonomia e a persistência, e é
+ * exatamente onde um engano se torna invisível na tabela.
+ */
+export function classifyAuditInput(input: EdgeErrorAuditInput): {
+  network_kind: NetworkErrorKind | null;
+  blame: FailureBlame | null;
+  blame_rule: string | null;
+} {
+  const network_kind = input.network_kind ??
+    (input.error !== undefined
+      ? classifyNetworkError(input.error, { deadlineExpired: input.deadline_expired === true })
+      : null);
+
+  // Sem sinal algum de rede/upstream/nuvem não há base honesta para acusar
+  // ninguém: preferimos deixar NULL a poluir os painéis com "unknown".
+  const hasSignal = network_kind !== null ||
+    input.upstream_status != null ||
+    input.cloud_dependency === true;
+  if (!hasSignal && !input.blame) return { network_kind, blame: null, blame_rule: null };
+
+  const verdict = deriveBlame({
+    kind: network_kind,
+    runFrom: input.run_from ?? "cloud",
+    upstreamStatus: input.upstream_status ?? null,
+    cloudDependency: input.cloud_dependency === true,
+  });
+
+  return {
+    network_kind,
+    blame: input.blame ?? verdict.blame,
+    blame_rule: verdict.rule,
+  };
+}
+
 /** Não-bloqueante. Erros de auditoria são apenas registrados no console. */
 export async function recordEdgeError(input: EdgeErrorAuditInput): Promise<void> {
   try {
     const client = admin();
     if (!client) return;
     const target_ip = input.target_ip ?? extractIp(input.target_host ?? null);
+    const { network_kind, blame, blame_rule } = classifyAuditInput(input);
     await client.from("edge_function_error_audit").insert({
       function_name: input.function_name,
       error_code: input.error_code,
@@ -83,8 +120,12 @@ export async function recordEdgeError(input: EdgeErrorAuditInput): Promise<void>
       message: input.message ?? null,
       hint: input.hint ?? null,
       context: input.context ?? {},
+      network_kind,
+      blame,
+      blame_rule,
     });
   } catch (err) {
+
     console.error(JSON.stringify({
       level: "warn",
       fn: "errorAudit",
