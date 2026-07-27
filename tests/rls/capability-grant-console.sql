@@ -18,11 +18,6 @@ DECLARE
   v_msg    text;
   v_ok     boolean;
   v_count  int;
-
-  PROCEDURE_MARK constant text := 'wave151';
-
-  -- helper inline: executa e captura a mensagem de erro
-  FUNCTION_UNUSED text;
 BEGIN
   DELETE FROM public.user_roles WHERE user_id IN (v_admin, v_admin2, v_viewer);
   INSERT INTO public.user_roles (user_id, role) VALUES
