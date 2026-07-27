@@ -270,8 +270,17 @@ export function useSitePlans() {
     }
     if (transitions.length === 0) return;
 
-    const { state, notices } = evaluateNotices(noticeStateRef.current, transitions, Date.now());
+    const now = Date.now();
+    const { state, notices, suppressed } = evaluateNotices(
+      noticeStateRef.current,
+      transitions,
+      now,
+    );
     noticeStateRef.current = state;
+
+    // Onda 165: tudo que foi calado vira registro auditável. Mecanismo que
+    // silencia sem prestar contas é ponto cego, não proteção.
+    setSuppressionLedger((current) => recordSuppressions(current, suppressed, now));
 
     const nameOf = (cameraId: string) =>
       cameras.find((camera) => camera.id === cameraId)?.name ?? 'Câmera';
@@ -282,6 +291,7 @@ export function useSitePlans() {
       else toast.warning(message);
     }
   }, [statusLedger, cameras]);
+
 
   /**
    * Um único timer para todo o mapa: agenda-se o próximo vencimento em vez de
