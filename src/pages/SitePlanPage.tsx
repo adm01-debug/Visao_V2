@@ -34,6 +34,7 @@ export default function SitePlanPage() {
     setActivePlanId,
     planImageUrl,
     placements,
+    pulsingCameraIds,
     unplacedCameras,
     loading,
     saving,
@@ -134,6 +135,7 @@ export default function SitePlanPage() {
                 imageHeight={activePlan.imageHeight}
                 placements={placements}
                 selectedId={selectedId}
+                pulsingCameraIds={pulsingCameraIds}
                 onSelect={setSelectedId}
                 onMove={(id, position) => void movePlacement(id, position)}
                 className="h-[520px]"
