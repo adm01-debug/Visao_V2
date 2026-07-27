@@ -12,13 +12,12 @@
  *  I5  Toda linha adulterada/sumida/indeterminada é acionável — e só elas.
  *  I6  A ordenação é total e estável (nunca perde nem duplica linhas).
  */
-import { pathToFileURL } from 'node:url';
-import { register } from 'node:module';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const jiti = require('jiti')(import.meta.url, { interopDefault: true, esmResolve: true });
 
-register('ts-node/esm', pathToFileURL('./'));
-
-const mod = await import('../src/lib/evidence/exportRegistryView.ts');
-const { toExportView, outcomeFromVerify, outcomeFromFailure, sortForReview, summarize } = mod;
+const { toExportView, outcomeFromVerify, outcomeFromFailure, sortForReview, summarize } =
+  jiti('../src/lib/evidence/exportRegistryView.ts');
 
 const VERDICTS = ['admissible', 'weakened', 'broken', 'desconhecido'];
 const COVERAGES = [-0.5, 0, 0.5, 0.98, 1, 3];
