@@ -26,6 +26,19 @@ const {
 let assertions = 0;
 const failures = [];
 
+/**
+ * Serialização canônica: o livro é um mapa, e mapa não tem ordem. Comparar
+ * `JSON.stringify` cru acusaria diferença só porque a câmera A foi vista antes
+ * da B — falso positivo que esconderia a falha real.
+ */
+function canonical(ledger) {
+  return JSON.stringify(
+    Object.keys(ledger)
+      .sort()
+      .map((key) => [key, ledger[key].status, ledger[key].observedAt]),
+  );
+}
+
 function check(condition, message) {
   assertions += 1;
   if (!condition) failures.push(message);
@@ -100,10 +113,14 @@ for (let scenario = 0; scenario < SCENARIOS; scenario += 1) {
   const inOrder = applyStatusEvents({}, [...events].sort((a, b) => a.observedAt - b.observedAt));
   const asArrived = applyStatusEvents({}, events);
   const reversed = applyStatusEvents({}, [...events].reverse());
-  const shuffled = applyStatusEvents(
-    {},
-    [...events].sort(() => (random() < 0.5 ? -1 : 1)),
-  );
+  // Embaralhamento por Fisher-Yates: comparador aleatório em `sort` é
+  // inconsistente e produziria uma permutação enviesada (ou nenhuma).
+  const shuffledEvents = [...events];
+  for (let index = shuffledEvents.length - 1; index > 0; index -= 1) {
+    const swap = Math.floor(random() * (index + 1));
+    [shuffledEvents[index], shuffledEvents[swap]] = [shuffledEvents[swap], shuffledEvents[index]];
+  }
+  const shuffled = applyStatusEvents({}, shuffledEvents);
 
   // I1 — comutatividade: a ordem de chegada não muda o estado final.
   for (const [label, candidate] of [
@@ -112,14 +129,14 @@ for (let scenario = 0; scenario < SCENARIOS; scenario += 1) {
     ['ordem embaralhada', shuffled],
   ]) {
     check(
-      JSON.stringify(candidate) === JSON.stringify(inOrder),
+      canonical(candidate) === canonical(inOrder),
       `I1 (cenário ${scenario}) ordem "${label}" produziu estado diferente da ordem cronológica`,
     );
   }
 
   // I2 — idempotência: reentregar tudo de novo não muda nada.
   check(
-    JSON.stringify(applyStatusEvents(inOrder, events)) === JSON.stringify(inOrder),
+    canonical(applyStatusEvents(inOrder, events)) === canonical(inOrder),
     `I2 (cenário ${scenario}) reentrega alterou o estado final`,
   );
 
