@@ -1,14 +1,21 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import {
   clampToPlan,
   normalizeAngle,
   normalizeFov,
-  type MapMarkerStatus,
   type MapPlacement,
   type NormalizedPoint,
 } from '@/lib/emap/floorPlanGeometry';
+import {
+  applyStatusEvent,
+  ledgerFromSnapshot,
+  reconcilePlacements,
+  toMarkerStatus,
+  type StatusLedger,
+} from '@/lib/emap/markerStatusStream';
 
 export interface SitePlan {
   id: string;
@@ -28,27 +35,6 @@ export interface PlanCamera {
 
 const BUCKET = 'site-plans';
 
-/**
- * Traduz o estado bruto da câmera para o vocabulário do mapa.
- *
- * Um estado desconhecido NUNCA é traduzido para `online`: no mapa de situação,
- * "não sei" tem que ser visualmente diferente de "está tudo bem".
- */
-function toMarkerStatus(raw: string | null | undefined): MapMarkerStatus {
-  switch (raw) {
-    case 'online':
-      return 'online';
-    case 'offline':
-      return 'offline';
-    case 'alert':
-      return 'alert';
-    case 'warning':
-      return 'warning';
-    default:
-      return 'unknown';
-  }
-}
-
 interface PlacementRow {
   id: string;
   plan_id: string;
@@ -66,7 +52,12 @@ const num = (value: number | string): number =>
 export function useSitePlans() {
   const [plans, setPlans] = useState<SitePlan[]>([]);
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
-  const [placements, setPlacements] = useState<MapPlacement[]>([]);
+  const [rawPlacements, setRawPlacements] = useState<MapPlacement[]>([]);
+  // Onda 162: o estado ao vivo de cada câmera vive num livro separado da
+  // geometria. Assim, tempo real nunca move marcador nem apaga mira — ele só
+  // pode repintar o estado.
+  const [statusLedger, setStatusLedger] = useState<StatusLedger>({});
+  const channelRef = useRef<RealtimeChannel | null>(null);
   const [cameras, setCameras] = useState<PlanCamera[]>([]);
   const [planImageUrl, setPlanImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -109,6 +100,7 @@ export function useSitePlans() {
       setCameras(
         (cameraRows ?? []).map((row) => ({ id: row.id, name: row.name, status: row.status })),
       );
+      setStatusLedger(ledgerFromSnapshot(cameraRows ?? [], Date.now()));
       setActivePlanId((current) => current ?? mapped[0]?.id ?? null);
     } catch (cause) {
       logger.error('Falha ao carregar plantas baixas', cause);
@@ -161,7 +153,7 @@ export function useSitePlans() {
       }
 
       const cameraById = new Map(cameras.map((camera) => [camera.id, camera]));
-      setPlacements(
+      setRawPlacements(
         (data ?? []).map((row: PlacementRow) => {
           const camera = cameraById.get(row.camera_id);
           return {
@@ -171,6 +163,8 @@ export function useSitePlans() {
             position: clampToPlan({ x: num(row.x), y: num(row.y) }).point,
             headingDeg: normalizeAngle(num(row.heading_deg)),
             fovDeg: normalizeFov(num(row.fov_deg)),
+            // Estado inicial vem do livro logo em seguida; aqui só evitamos um
+            // quadro vazio no primeiro render.
             status: toMarkerStatus(camera?.status),
           };
         }),
@@ -181,8 +175,56 @@ export function useSitePlans() {
 
   useEffect(() => {
     if (activePlanId) void loadPlacements(activePlanId);
-    else setPlacements([]);
+    else setRawPlacements([]);
   }, [activePlanId, loadPlacements]);
+
+  /**
+   * Assinatura de tempo real do estado das câmeras.
+   *
+   * O carimbo usado para ordenar é o `updated_at` da própria linha — nunca o
+   * relógio do navegador, que faria um evento antigo parecer novo e rebaixar
+   * um alarme legítimo.
+   */
+  useEffect(() => {
+    if (channelRef.current) {
+      void supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
+
+    const channel = supabase
+      .channel(`emap-cameras-${Date.now()}`)
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'cameras' },
+        (payload) => {
+          const row = payload.new as { id?: string; status?: unknown; updated_at?: string } | null;
+          if (!row?.id) return;
+          const parsed = row.updated_at ? Date.parse(row.updated_at) : Number.NaN;
+          setStatusLedger((current) => {
+            const { ledger } = applyStatusEvent(current, {
+              cameraId: row.id as string,
+              status: row.status,
+              observedAt: Number.isFinite(parsed) ? parsed : Date.now(),
+            });
+            return ledger;
+          });
+        },
+      )
+      .subscribe();
+
+    channelRef.current = channel;
+
+    return () => {
+      void supabase.removeChannel(channel);
+      channelRef.current = null;
+    };
+  }, []);
+
+  // Projeção: geometria (banco) + estado ao vivo (livro). Nunca o contrário.
+  const placements = useMemo(
+    () => reconcilePlacements(rawPlacements, statusLedger),
+    [rawPlacements, statusLedger],
+  );
 
   /** Envia a imagem da planta e cadastra o registro com as dimensões reais. */
   const createPlan = useCallback(
@@ -267,8 +309,8 @@ export function useSitePlans() {
   const movePlacement = useCallback(
     async (placementId: string, position: NormalizedPoint) => {
       const safe = clampToPlan(position).point;
-      const previous = placements;
-      setPlacements((current) =>
+      const previous = rawPlacements;
+      setRawPlacements((current) =>
         current.map((item) => (item.id === placementId ? { ...item, position: safe } : item)),
       );
       const { error: updateError } = await supabase
@@ -277,20 +319,20 @@ export function useSitePlans() {
         .eq('id', placementId);
       if (updateError) {
         logger.error('Falha ao mover marcador', updateError);
-        setPlacements(previous);
+        setRawPlacements(previous);
         setError('Não foi possível salvar a nova posição.');
         return false;
       }
       return true;
     },
-    [placements],
+    [rawPlacements],
   );
 
   const updateAim = useCallback(
     async (placementId: string, headingDeg: number, fovDeg: number) => {
       const heading = normalizeAngle(headingDeg);
       const fov = normalizeFov(fovDeg);
-      setPlacements((current) =>
+      setRawPlacements((current) =>
         current.map((item) =>
           item.id === placementId ? { ...item, headingDeg: heading, fovDeg: fov } : item,
         ),
@@ -321,7 +363,7 @@ export function useSitePlans() {
         setError('Não foi possível remover o marcador.');
         return false;
       }
-      setPlacements((current) => current.filter((item) => item.id !== placementId));
+      setRawPlacements((current) => current.filter((item) => item.id !== placementId));
       return true;
     },
     [],
