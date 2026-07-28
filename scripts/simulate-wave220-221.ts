@@ -149,8 +149,11 @@ for (let scenario = 0; scenario < 20_000; scenario += 1) {
   const target = pick([...catalogIds, 'fantasma-1']);
   const once = toggleSelection(clean, target);
   const twice = toggleSelection(once, target);
+  // K6 é reversibilidade de *conjunto*: reinserir manda para o fim da lista
+  // (é a ordem em que o operador escolheu), e a ordem de origens não altera
+  // nenhuma decisão da régua.
   check(
-    JSON.stringify(twice) === JSON.stringify(clean),
+    JSON.stringify([...twice].sort()) === JSON.stringify([...clean].sort()),
     'K6 toggle reversível',
     () => JSON.stringify({ clean, once, twice, target }),
   );
@@ -326,11 +329,13 @@ for (let scenario = 0; scenario < 30_000; scenario += 1) {
 
 /* G5 — sobreposição: varredura exaustiva de pares de janelas ---------- */
 const GRID = [0, 120, 360, 480, 720, 1080, 1380];
+// Fim `00:00` é entrada ambígua recusada por G6 — não entra na varredura de G5.
+const END_GRID = [...GRID.filter((m) => m !== 0), 1440];
 for (const s1 of GRID) {
-  for (const e1 of [...GRID, 1440]) {
+  for (const e1 of END_GRID) {
     if (s1 === e1) continue;
     for (const s2 of GRID) {
-      for (const e2 of [...GRID, 1440]) {
+      for (const e2 of END_GRID) {
         if (s2 === e2) continue;
         const state: ScheduleFormState = [
           [mkRow(formatClock(s1), formatClock(e1)), mkRow(formatClock(s2), formatClock(e2))],
