@@ -128,12 +128,23 @@ async function withDeadline<T>(
   return result;
 }
 
+/**
+ * A6 — só a primeira linha da mensagem, com teto de tamanho.
+ *
+ * Não basta descartar `error.stack`: bibliotecas nativas (WebGL, WASM, drivers)
+ * embutem a stack dentro da própria `message` (`cuda oom\n  at kernel.cc:42`).
+ * Esse texto vai para um laudo que terceiros conferem (Onda 202) — caminho de
+ * arquivo e endereço interno não têm o que fazer lá.
+ */
 function sanitize(error: unknown): string {
-  /* A6 — só a mensagem, nunca a stack: o texto vai para o laudo e o laudo é
-   * auditável por terceiros (Onda 202). */
-  if (error instanceof BackendUnavailableError) return error.message;
-  if (error instanceof Error) return error.message.slice(0, 200);
-  return 'backend_error';
+  const raw =
+    error instanceof Error
+      ? error.message
+      : typeof error === 'string'
+        ? error
+        : 'backend_error';
+  const firstLine = raw.split('\n', 1)[0]!.trim();
+  return firstLine.length > 0 ? firstLine.slice(0, 200) : 'backend_error';
 }
 
 function failure(
