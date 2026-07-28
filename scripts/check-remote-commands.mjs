@@ -18,6 +18,7 @@ let proofs = 0;
 const sql = (query) => {
   const out = execFileSync('psql', ['-X', '-A', '-t', '-v', 'ON_ERROR_STOP=1', '-c', query], {
     encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
   });
   return out
     .split('\n')
