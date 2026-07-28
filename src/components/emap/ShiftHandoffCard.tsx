@@ -144,6 +144,32 @@ export function ShiftHandoffCard({ journal, ledger, nameOf, acks, restoreOutcome
           </p>
         )}
 
+        <div className="rounded-md border border-border p-2">
+          <p className="text-xs font-medium text-foreground">Desempenho de atendimento</p>
+          <div className="mt-1 flex flex-wrap gap-2">
+            <Badge variant="outline">conformidade {formatCompliance(performance.compliance)}</Badge>
+            <Badge variant="outline">
+              tempo médio até ciência{' '}
+              {performance.mttaMs == null ? 'sem amostra' : formatAge(performance.mttaMs)}
+            </Badge>
+            {performance.breachedInShift > 0 && (
+              <Badge variant="destructive">{performance.breachedInShift} vencida(s) no turno</Badge>
+            )}
+            {performance.inheritedBreached > 0 && (
+              <Badge variant="destructive">
+                {performance.inheritedBreached} vencida(s) herdada(s)
+              </Badge>
+            )}
+            {performance.dueSoon > 0 && (
+              <Badge variant="secondary">{performance.dueSoon} vence(m) já</Badge>
+            )}
+          </div>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            Só atendimento concluído entra na média — pendência aberta nunca melhora o número.
+          </p>
+        </div>
+
+
         <Button variant="outline" size="sm" onClick={() => void copy()}>
           {copied ? (
             <Check className="mr-1 h-4 w-4" aria-hidden="true" />
