@@ -12,16 +12,26 @@ import {
   type ShiftJournal,
 } from '@/lib/emap/shiftHandoff';
 import type { AttentionLedger } from '@/lib/emap/attentionClock';
+import type { AckLedger } from '@/lib/emap/triageAck';
+import {
+  buildShiftPerformance,
+  formatCompliance,
+  formatPerformanceReport,
+  type ShiftPerformance,
+} from '@/lib/emap/shiftPerformance';
 import type { ShiftLoadOutcome } from '@/lib/emap/shiftJournalStore';
 
 export interface ShiftHandoffCardProps {
   journal: ShiftJournal;
   ledger: AttentionLedger;
   nameOf: (cameraId: string) => string;
+  /** Onda 175 — livro de ciências, base do prazo de atendimento. */
+  acks?: AckLedger;
   /** Onda 170 — como o diário foi restaurado nesta sessão. */
   restoreOutcome?: ShiftLoadOutcome;
   className?: string;
 }
+
 
 /**
  * Onda 170: perda de história nunca é silenciosa. O operador precisa saber se
