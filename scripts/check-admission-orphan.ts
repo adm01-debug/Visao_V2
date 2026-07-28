@@ -158,7 +158,7 @@ BEGIN
     RAISE EXCEPTION 'estoque conciliado não pode emitir: %', v_res;
   END IF;
 
-  -- 2) Janela vencida (2 anos) sem execução legível: aviso `no_run`.
+  -- 2) Janela vencida (2 anos) sem execução legível: aviso no_run.
   INSERT INTO public.admission_ledger_windows
     (user_id, source_id, window_start, window_end, counts, total, admitted)
   VALUES (v_user, 'gate-orphan',
