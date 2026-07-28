@@ -29,11 +29,19 @@ import {
   type DismissalLedger,
 } from '@/lib/emap/attentionRouter';
 import {
-  clearAttention,
   observeAttention,
   pruneAttention,
   type AttentionLedger,
 } from '@/lib/emap/attentionClock';
+import {
+  acknowledge,
+  acknowledgedIds,
+  browserAckStorage,
+  readAckState,
+  reconcileAcks,
+  writeAckState,
+  type AckLedger,
+} from '@/lib/emap/triageAck';
 import {
   diffClosures,
   recordClosures,
