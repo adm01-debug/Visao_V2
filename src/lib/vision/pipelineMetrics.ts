@@ -48,7 +48,7 @@
  */
 
 import type { FrameDropReason } from './frameBus';
-import type { CycleExecution, CycleReport } from './pipelineCycle';
+import type { CycleReport } from './pipelineCycle';
 import type { ProcessorCapability } from './visionPipeline';
 
 /* ========================================================================== */
