@@ -27,6 +27,8 @@ import {
 } from '@/lib/alarms/armedRoster';
 import { useMinuteClock } from '@/hooks/useMinuteClock';
 import { useAlarmSchemes } from '@/hooks/useAlarmSchemes';
+import { useAdmissionCoverage } from '@/hooks/useAdmissionCoverage';
+import { AdmissionCoverageCard } from '@/components/alarms/AdmissionCoverageCard';
 
 export default function AlarmSchemesPage() {
   const { entries, duplicates, counts, isLoading, error } = useAlarmSchemes();
@@ -71,6 +73,14 @@ export default function AlarmSchemesPage() {
     () => filterRoster(roster.entries, filter).map((e) => e.item),
     [roster, filter],
   );
+
+  // Onda 229 — inventário esperado = origens declaradas nos esquemas. Origem
+  // esperada sem nenhum evento é buraco cego, não silêncio saudável.
+  const expectedSourceIds = useMemo(
+    () => [...new Set(entries.flatMap((e) => e.draft.sourceIds ?? []))].sort(),
+    [entries],
+  );
+  const coverage = useAdmissionCoverage({ hours: 24, expectedSourceIds });
 
   const openCreate = () => {
     setEditing(null);
@@ -140,6 +150,13 @@ export default function AlarmSchemesPage() {
           </AlertDescription>
         </Alert>
       )}
+
+      <AdmissionCoverageCard
+        summary={coverage.summary}
+        report={coverage.report}
+        windowStartAt={coverage.windowStartAt}
+        isLoading={coverage.isLoading}
+      />
 
       <ArmedFilterBar value={filter} onChange={setFilter} counts={roster.counts} sizes={sizes} />
 
