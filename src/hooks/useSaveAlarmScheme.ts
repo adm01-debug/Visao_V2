@@ -58,7 +58,10 @@ export function useSaveAlarmScheme(context: SchemeContext = {}) {
         throw new SchemeAdmissionError(admission.refusals.map((r) => r.message));
       }
 
-      const payload = draftToPayload(formToDraft(form));
+      // `actions` é JSONB no banco; o tipo gerado exige `Json`, que não aceita
+      // interfaces nomeadas (falta index signature). A conversão é estrutural,
+      // não semântica: o conteúdo gravado é exatamente o julgado (F4).
+      const payload = draftToPayload(formToDraft(form)) as unknown as Record<string, unknown>;
 
       if (form.id) {
         const { error } = await supabase
