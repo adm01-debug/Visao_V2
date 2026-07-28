@@ -1,3 +1,14 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,12 +19,17 @@ import {
   type BridgeAssessment,
   type BridgeVerdict,
 } from '@/lib/retention/episodeBridgeWatch';
+import { ABANDONED_OPEN_DAYS } from '@/lib/retention/episodeReconciliation';
 
 interface EpisodeBridgeCardProps {
   readonly assessment: BridgeAssessment;
   readonly evaluatedAt: number | null;
   readonly isLoading: boolean;
   readonly onRefresh: () => void;
+  /** Onda 187 — dispara a reconciliação no servidor. */
+  readonly onReconcile?: () => void;
+  readonly isReconciling?: boolean;
+  readonly canReconcile?: boolean;
 }
 
 /**
