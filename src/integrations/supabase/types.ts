@@ -8973,6 +8973,28 @@ export type Database = {
           previous_level: number
         }[]
       }
+      escalation_ladder_minutes: {
+        Args: { p_level: number; p_profile: string; p_severity: string }
+        Returns: number
+      }
+      escalation_profile_for: { Args: { p_routine: string }; Returns: string }
+      escalation_profile_selftest: {
+        Args: never
+        Returns: {
+          detail: string
+          guard: string
+          ok: boolean
+        }[]
+      }
+      escalation_profile_timing: {
+        Args: { p_profile: string }
+        Returns: {
+          anchor_mode: string
+          cadence_minutes: number
+          min_step_minutes: number
+          undelivered_grace_minutes: number
+        }[]
+      }
       evaluate_abandoned_episode_alerts: {
         Args: { p_now?: string }
         Returns: Json
