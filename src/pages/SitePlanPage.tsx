@@ -200,10 +200,23 @@ export default function SitePlanPage() {
    * mentiria dizendo que o problema acabou e zeraria a dívida acumulada): ele
    * grava uma decisão humana congelada sobre o estado observado. Agravamento,
    * janela nova ou prazo vencido revogam a ciência automaticamente.
+   *
+   * Onda 173 — a ciência não atravessa o turno. Na montagem, tudo que foi
+   * reconhecido ANTES do início do turno corrente é revogado: o operador que
+   * assume não herda o "eu já vi" de outra pessoa. O que era dívida viva vira
+   * lista explícita para revalidação, nunca some em silêncio.
    */
-  const [acks, setAcks] = useState<AckLedger>(
-    () => readAckState(browserAckStorage(), Date.now()).acks,
-  );
+  const ackBoot = useRef(
+    (() => {
+      const now = Date.now();
+      const stored = readAckState(browserAckStorage(), now).acks;
+      return handoffAcks(stored, restored.state.ledger, restored.state.journal.startedAt, now);
+    })(),
+  ).current;
+
+  const [acks, setAcks] = useState<AckLedger>(ackBoot.acks);
+  const [inheritedAcks, setInheritedAcks] = useState<readonly InheritedAck[]>(ackBoot.inherited);
+
 
   const acknowledgeAttention = useCallback((cameraId: string) => {
     const entry = ledgerRef.current[cameraId];
