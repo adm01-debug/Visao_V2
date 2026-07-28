@@ -244,6 +244,13 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         minRole: "manager",
       },
       {
+        id: "attestation-conference",
+        label: "Conferência de Atestado",
+        icon: FileSearch,
+        path: "/conferencia-atestado",
+        minRole: "manager",
+      },
+      {
         id: "users",
         label: "Usuários",
         icon: UserCog,
