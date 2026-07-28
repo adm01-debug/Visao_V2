@@ -3,7 +3,7 @@
  * Sidebar Categories Configuration with Dynamic Status
  */
 
-import { STALE_ACTIONABLE_HOURS as COLLAB_STALE_ACTIONABLE_HOURS } from "@/lib/collab/collabNavBadge";
+import { KeyRound, STALE_ACTIONABLE_HOURS as COLLAB_STALE_ACTIONABLE_HOURS } from "@/lib/collab/collabNavBadge";
 
 import {
   LayoutDashboard,
@@ -58,6 +58,7 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
       { id: "fleet-health", label: "Saúde da Frota", icon: Activity, path: "/cameras/frota" },
       { id: "favorite-views", label: "Visualizações", icon: Star, path: "/visualizacoes" },
       { id: "nvrs", label: "NVRs", icon: Video, path: "/nvrs" },
+      { id: "device-registrations", label: "Conexão por Registro", icon: KeyRound, path: "/dispositivos" },
       { id: "recordings", label: "Gravações", icon: Video, path: "/recordings" },
     ],
     getStatus: () => {
