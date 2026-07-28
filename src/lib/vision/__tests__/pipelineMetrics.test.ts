@@ -79,7 +79,14 @@ describe('pipelineMetrics (Onda 212)', () => {
           { consumerId: 'idy', frameId: 1, reason: 'stale' },
           { consumerId: 'idy', frameId: 2, reason: 'superseded' },
         ],
-        refusals: [{ processorId: 'idy', reason: 'stale_frame' }],
+        refusals: [{ processorId: 'idy', kind: 'identify', reason: 'cadence_skip', frameId: 1 }],
+        decision: {
+          action: 'skip',
+          reason: 'stale_frame',
+          trackId: null,
+          effectiveNowMs: 1_000,
+          budgetRemaining: 0,
+        },
       }),
       { ...DEFAULT_METRICS_CONFIG, windowMs: null },
     );
@@ -95,7 +102,14 @@ describe('pipelineMetrics (Onda 212)', () => {
       fresh(),
       report({
         busDrops: [{ consumerId: 'idy', frameId: 1, reason: 'stale' }],
-        refusals: [{ processorId: 'idy', reason: 'stale_frame' }],
+        refusals: [{ processorId: 'idy', kind: 'identify', reason: 'cadence_skip', frameId: 1 }],
+        decision: {
+          action: 'skip',
+          reason: 'stale_frame',
+          trackId: null,
+          effectiveNowMs: 1_000,
+          budgetRemaining: 0,
+        },
       }),
       { ...DEFAULT_METRICS_CONFIG, windowMs: null },
     );
@@ -116,7 +130,7 @@ describe('pipelineMetrics (Onda 212)', () => {
             startedAtMs: null,
             executionMs: null,
             queueLatencyMs: null,
-            outcome: 'failed',
+            outcome: 'failure',
             failure: 'executor_missing',
           }),
         ],
@@ -134,7 +148,7 @@ describe('pipelineMetrics (Onda 212)', () => {
       fresh(),
       report({
         executions: [
-          execution({ outcome: 'failed', failure: 'executor_threw' }),
+          execution({ outcome: 'failure', failure: 'executor_threw' }),
         ],
       }),
       { ...DEFAULT_METRICS_CONFIG, windowMs: null },
