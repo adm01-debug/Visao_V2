@@ -2816,6 +2816,71 @@ export type Database = {
           },
         ]
       }
+      device_remote_commands: {
+        Row: {
+          command: string
+          completed_at: string | null
+          created_at: string
+          decision_reason: string
+          delivered_at: string | null
+          error_message: string | null
+          expires_at: string
+          id: string
+          idempotency_key: string
+          payload: Json
+          registration_id: string
+          requested_by: string
+          result: Json | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          command: string
+          completed_at?: string | null
+          created_at?: string
+          decision_reason?: string
+          delivered_at?: string | null
+          error_message?: string | null
+          expires_at: string
+          id?: string
+          idempotency_key: string
+          payload?: Json
+          registration_id: string
+          requested_by: string
+          result?: Json | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          command?: string
+          completed_at?: string | null
+          created_at?: string
+          decision_reason?: string
+          delivered_at?: string | null
+          error_message?: string | null
+          expires_at?: string
+          id?: string
+          idempotency_key?: string
+          payload?: Json
+          registration_id?: string
+          requested_by?: string
+          result?: Json | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "device_remote_commands_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "device_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dry_run_report_snapshots: {
         Row: {
           created_at: string
@@ -8496,6 +8561,7 @@ export type Database = {
       evidence_current_subject: { Args: never; Returns: string }
       execute_camera_schedules: { Args: never; Returns: number }
       expire_agent_relay_tasks: { Args: never; Returns: number }
+      expire_device_remote_commands: { Args: never; Returns: number }
       extract_url_credentials: {
         Args: { _url: string }
         Returns: {
