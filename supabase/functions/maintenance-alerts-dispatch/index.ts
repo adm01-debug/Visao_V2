@@ -188,6 +188,7 @@ Deno.serve(async (req) => {
         dry_run: true,
         planned: plan.items.map((i) => ({ alert_id: i.alert.id, channel: i.channel, attempt: i.attempt })),
         skipped: plan.skipped,
+        throttled: plan.skipped.filter((s) => s.reason === "condition_throttled").length,
       });
     }
 
@@ -209,7 +210,11 @@ Deno.serve(async (req) => {
             attempts: item.attempt,
             last_attempt_at: new Date().toISOString(),
             last_error: error,
-            detail: { routine: item.alert.routine, severity: item.alert.severity },
+            detail: {
+              routine: item.alert.routine,
+              severity: item.alert.severity,
+              condition_key: item.conditionKey,
+            },
           },
           { onConflict: "alert_id,channel" },
         );
@@ -224,9 +229,17 @@ Deno.serve(async (req) => {
       sent,
       failed,
       skipped: plan.skipped.length,
+      throttled: plan.skipped.filter((s) => s.reason === "condition_throttled").length,
     });
 
-    return json({ ok: true, candidates: alerts.length, dispatched: sent, failed, skipped: plan.skipped.length });
+    return json({
+      ok: true,
+      candidates: alerts.length,
+      dispatched: sent,
+      failed,
+      skipped: plan.skipped.length,
+      throttled: plan.skipped.filter((s) => s.reason === "condition_throttled").length,
+    });
   } catch (err) {
     const message = err instanceof Error ? err.message : "unknown_error";
     log("error", "dispatch_failed", { err: message });
