@@ -6,23 +6,28 @@
  * reportes e verifica, a cada passo, as invariantes que garantem que o
  * histórico de reincidência é fiel aos episódios que realmente ocorreram.
  */
-import { createRequire } from 'node:module';
-import { register } from 'node:module';
-import { pathToFileURL } from 'node:url';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
-register('ts-node/esm', pathToFileURL('./'));
-const require = createRequire(import.meta.url);
-void require;
-
-const {
-  applySourceReport,
-  rearmOnConnect,
-  emptyEpisode,
-} = await import('../src/lib/alarms/alarmAggregation.ts');
-const { emptyRecurrenceLedger } = await import('../src/lib/alarms/alarmRecurrence.ts');
-const { bridgeAggregation, reconcileLedger } = await import(
-  '../src/lib/alarms/alarmEpisodeBridge.ts'
+const dir = mkdtempSync(join(tmpdir(), 'wave181-'));
+const entry = join(dir, 'entry.mjs');
+writeFileSync(
+  entry,
+  [
+    `export * from ${JSON.stringify(join(process.cwd(), 'src/lib/alarms/alarmAggregation.ts'))};`,
+    `export * from ${JSON.stringify(join(process.cwd(), 'src/lib/alarms/alarmRecurrence.ts'))};`,
+    `export * from ${JSON.stringify(join(process.cwd(), 'src/lib/alarms/alarmEpisodeBridge.ts'))};`,
+  ].join('\n'),
 );
+execFileSync(
+  'npx',
+  ['esbuild', entry, '--bundle', '--format=esm', '--platform=node', `--outfile=${join(dir, 'b.mjs')}`],
+  { stdio: 'pipe' },
+);
+const M = await import(join(dir, 'b.mjs'));
+const { applySourceReport, rearmOnConnect, emptyEpisode, emptyRecurrenceLedger, bridgeAggregation, reconcileLedger } = M;
 
 let assertions = 0;
 const failures = [];
