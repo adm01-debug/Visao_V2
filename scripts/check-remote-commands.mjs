@@ -32,11 +32,10 @@ const expect = (condition, label) => {
 
 // --- 1. Privilégios lidos pelo ACL, nunca por information_schema ------------
 const acl = sql(`
-  SELECT grantee || ':' || privilege_type
+  SELECT r.rolname || ':' || a.privilege_type
     FROM pg_class c
     CROSS JOIN LATERAL aclexplode(c.relacl) a
     JOIN pg_roles r ON r.oid = a.grantee
-    JOIN LATERAL (SELECT r.rolname AS grantee, a.privilege_type) x ON true
    WHERE c.relname = 'device_remote_commands' AND c.relnamespace = 'public'::regnamespace
 `);
 const granted = new Set(acl);
