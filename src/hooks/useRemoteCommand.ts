@@ -53,6 +53,11 @@ export interface RemoteCommandRow {
   readonly deliveryAttempts: number;
   /** Instante do laudo, quando o equipamento prestou contas. */
   readonly reportedAt: number | null;
+  /**
+   * Autoria do encerramento: `device` = o equipamento prestou contas;
+   * `sweep` = a varredura observou ausência. Nunca são a mesma coisa.
+   */
+  readonly settledBy: 'device' | 'sweep' | null;
 }
 
 interface RawCommand {
@@ -66,6 +71,7 @@ interface RawCommand {
   error_message: string | null;
   delivery_attempts: number | null;
   reported_at: string | null;
+  settled_by: string | null;
 }
 
 const millis = (value: string): number => {
@@ -119,7 +125,7 @@ export function useRemoteCommand(
       const { data, error } = await supabase
         .from('device_remote_commands')
         .select(
-          'id, registration_id, command, status, created_at, expires_at, result, error_message, delivery_attempts, reported_at',
+          'id, registration_id, command, status, created_at, expires_at, result, error_message, delivery_attempts, reported_at, settled_by',
         )
         .eq('registration_id', registrationId as string)
         .order('created_at', { ascending: false })
@@ -137,6 +143,8 @@ export function useRemoteCommand(
         errorMessage: row.error_message,
         deliveryAttempts: row.delivery_attempts ?? 0,
         reportedAt: row.reported_at === null ? null : millis(row.reported_at),
+        settledBy:
+          row.settled_by === 'device' || row.settled_by === 'sweep' ? row.settled_by : null,
       }));
     },
   });
