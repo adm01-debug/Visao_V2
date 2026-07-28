@@ -47,7 +47,11 @@ export interface UseVisionPipelineOptions {
 
 export interface UseVisionPipelineResult {
   /** Publica um frame e devolve as tarefas admitidas neste instante. */
-  readonly tick: (frame: FrameObservation) => PipelineTick;
+  readonly tick: (
+    frame: BusFrame,
+    observation: FrameObservation,
+    nowMs: number,
+  ) => PipelineTick;
   /** Registra o desfecho de uma tarefa executada. */
   readonly settle: (task: PipelineTask, outcome: TaskOutcome, nowMs: number) => SettleResult;
   /** Retrato estável para a UI; só muda quando algo relevante muda. */
