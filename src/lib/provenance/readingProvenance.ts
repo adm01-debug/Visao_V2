@@ -313,7 +313,7 @@ export function assessReadingProvenance(
     });
   }
 
-  if (llmCount > 0 && strength !== 'investigative') {
+  if (llmCount > 0 && bestTier !== 'llm') {
     caveats.push({
       code: 'llm_in_evidence',
       count: llmCount,
