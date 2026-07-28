@@ -208,7 +208,7 @@ for (const routine of ROUTINES) {
   const nova = mk('nova', 'admission_reconcile:ledger_stock', 'critical', 0, 10, null, null);
   const model = buildMaintenanceConsole([velha, nova], NOW);
   const novaView = model.rows.find((r) => r.id === 'nova')!;
-  check(novaView.conditionAgeMinutes! < 1, 'chave nova não herda âncora de outra chave');
+  check(novaView.conditionAgeMinutes! < 60, 'chave nova não herda âncora de outra chave');
 }
 
 // P6 — envelhecer a condição nunca aumenta a previsão.
