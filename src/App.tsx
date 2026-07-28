@@ -215,6 +215,8 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/settings" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<SettingsPage />, "Configurações")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/security" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<SecurityPage />, "Segurança")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/face-recognition" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<FaceRecognitionPage />, "Reconhecimento Facial")}</ProtectedLayoutRoute>} />
+                    <Route path="/busca-de-faces" element={<ProtectedLayoutRoute><ProtectedRoute minRole="operator">{withRouteErrorBoundary(<FaceSearchPage />, "Busca de Faces")}</ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/face-search" element={<Navigate to="/busca-de-faces" replace />} />
                     <Route path="/license-plate" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<LicensePlatePage />, "Placas")}</ProtectedLayoutRoute>} />
                     <Route path="/heatmap" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<HeatmapPage />, "Mapa de Calor")}</ProtectedLayoutRoute>} />
                     <Route path="/reports" element={<ProtectedLayoutRoute>{withRouteErrorBoundary(<ReportsPage />, "Relatórios")}</ProtectedLayoutRoute>} />
