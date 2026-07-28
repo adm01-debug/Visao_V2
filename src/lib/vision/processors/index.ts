@@ -55,7 +55,6 @@ import {
 } from '../visionPipeline';
 import type { ProcessorExecutor } from '../pipelineCycle';
 import {
-  BackendUnavailableError,
   type FaceBackend,
   type FramePayload,
   type HeatBackend,
