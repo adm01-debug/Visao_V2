@@ -58,6 +58,7 @@ export default function EventAlertsDashboardPage() {
   const [severity, setSeverity] = useState<Severity | "all">("all");
   const [cameraId, setCameraId] = useState<string>("all");
   const [riskType, setRiskType] = useState<string>("all");
+  const [treating, setTreating] = useState<AlertRow | null>(null);
 
   const since = useMemo(
     () => subHours(new Date(), RANGES[rangeKey]).toISOString(),
