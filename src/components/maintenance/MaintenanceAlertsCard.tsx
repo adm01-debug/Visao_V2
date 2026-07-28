@@ -200,6 +200,19 @@ export function MaintenanceAlertsCard({
                         {row.conditionRows} reemissões sem reconhecimento
                       </p>
                     )}
+                    {row.silence && row.silence.remainingMinutes !== null && (
+                      <p className="text-xs font-medium text-warning">
+                        <BellOff className="mr-1 inline h-3 w-3" aria-hidden="true" />
+                        Canal externo calado por mais {formatMinutes(row.silence.remainingMinutes)}
+                        {' · '}
+                        {silencedChannelLabel(row.silence)} já notificado nesta condição
+                      </p>
+                    )}
+                    {row.silence?.breaksOnEscalation && (
+                      <p className="text-xs font-medium text-destructive">
+                        Agravamento detectado — o próximo despacho fura o silêncio
+                      </p>
+                    )}
 
                   </div>
 
