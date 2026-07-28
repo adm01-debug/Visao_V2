@@ -20,6 +20,7 @@ import { PlanSwitcher } from '@/components/emap/PlanSwitcher';
 import { CrossFloorAttentionBanner } from '@/components/emap/CrossFloorAttentionBanner';
 import { AttentionClockPanel } from '@/components/emap/AttentionClockPanel';
 import { ShiftHandoffCard } from '@/components/emap/ShiftHandoffCard';
+import { TriageQueuePanel } from '@/components/emap/TriageQueuePanel';
 import { isEditableTarget, resolveShortcutTarget, stepPlan, type PlanNavItem } from '@/lib/emap/planNavigator';
 import {
   adviseCrossFloorAttention,
@@ -46,6 +47,8 @@ import {
 } from '@/lib/emap/shiftJournalStore';
 
 
+import type { TriageItem, TriagePlace } from '@/lib/emap/triageQueue';
+
 import { useSitePlans } from '@/hooks/useSitePlans';
 import { summarizePlan, type MapMarkerStatus } from '@/lib/emap/floorPlanGeometry';
 
@@ -61,6 +64,7 @@ const SUMMARY_LABEL: Record<MapMarkerStatus, string> = {
 export default function SitePlanPage() {
   const {
     plans,
+    planRoster,
     planNavigation,
     activePlan,
     activePlanId,
@@ -188,6 +192,35 @@ export default function SitePlanPage() {
       applyLedger(clearAttention(ledgerRef.current, cameraId), Date.now(), 'acknowledged');
     },
     [applyLedger],
+  );
+
+  /**
+   * Onda 171 — fila de triagem. O localizador responde "onde essa câmera
+   * mora": sem planta conhecida a pendência permanece na fila com lugar
+   * `null`, jamais some (ausência de mapa não é ausência de problema).
+   */
+  const locateCamera = useCallback(
+    (cameraId: string): TriagePlace | null => {
+      for (const item of planNavigation.items) {
+        const roster = planRoster[item.planId];
+        if (roster && roster.includes(cameraId)) {
+          return { planId: item.planId, planName: item.name };
+        }
+      }
+      return null;
+    },
+    [planNavigation.items, planRoster],
+  );
+
+  const focusTriageItem = useCallback(
+    (item: TriageItem) => {
+      if (item.planId && item.planId !== planNavigation.resolvedActiveId) {
+        setActivePlanId(item.planId);
+      }
+      const placement = placements.find((candidate) => candidate.cameraId === item.cameraId);
+      setSelectedId(placement?.id ?? null);
+    },
+    [placements, planNavigation.resolvedActiveId, setActivePlanId],
   );
 
 
@@ -333,6 +366,15 @@ export default function SitePlanPage() {
                 void removePlacement(id);
                 setSelectedId(null);
               }}
+            />
+
+            <TriageQueuePanel
+              ledger={attentionClock}
+              nameOf={nameOf}
+              locate={locateCamera}
+              activePlanId={planNavigation.resolvedActiveId}
+              onFocus={focusTriageItem}
+              onAcknowledge={acknowledgeAttention}
             />
 
             <AttentionClockPanel
