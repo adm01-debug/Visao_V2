@@ -30,6 +30,8 @@ export interface AlarmSchemeRow {
 export interface AlarmSchemeEntry {
   readonly row: AlarmSchemeRow;
   readonly diagnosis: SchemeDiagnosis;
+  /** Onda 218 — rascunho reidratado para edição (nada é reinterpretado depois). */
+  readonly draft: AlarmSchemeDraft;
 }
 
 /** Converte com desconfiança: nada vindo do banco é assumido bem-formado. */
@@ -86,6 +88,7 @@ export function useAlarmSchemes(): AlarmSchemesModel {
           updatedAt: typeof raw.updated_at === 'string' ? raw.updated_at : '',
         },
         diagnosis: diagnoseScheme(draft),
+        draft,
       };
     });
 
