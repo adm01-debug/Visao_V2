@@ -8951,6 +8951,25 @@ export type Database = {
         Args: { _camera_id?: string; _rule_id?: string; _user_id: string }
         Returns: boolean
       }
+      list_alarm_recurrence_series: {
+        Args: {
+          p_chatter_max_ms?: number
+          p_limit?: number
+          p_now?: string
+          p_organization_id: string
+          p_window_ms?: number
+        }
+        Returns: {
+          chatter_in_window: number
+          episodes_in_window: number
+          is_open: boolean
+          last_closed_at: string
+          last_opened_at: string
+          peak_severity: string
+          series_key: string
+          total_episodes: number
+        }[]
+      }
       list_cron_jobs: {
         Args: never
         Returns: {
