@@ -64,11 +64,22 @@ const REASON_VARIANT: Record<ShiftClosureReason, 'secondary' | 'outline' | 'dest
  * entre normalizar e apenas dar ciência. O relatório em texto é gerado pela
  * mesma regra pura que a simulação exercita — a tela nunca reescreve o fato.
  */
-export function ShiftHandoffCard({ journal, ledger, nameOf, restoreOutcome, className }: ShiftHandoffCardProps) {
+export function ShiftHandoffCard({ journal, ledger, nameOf, acks, restoreOutcome, className }: ShiftHandoffCardProps) {
   const [copied, setCopied] = useState(false);
   const handoff: ShiftHandoff = useMemo(
     () => buildHandoff(journal, ledger, Date.now()),
     [journal, ledger],
+  );
+  // Onda 175 — desempenho de atendimento derivado da mesma regra pura do gate.
+  const performance: ShiftPerformance = useMemo(
+    () =>
+      buildShiftPerformance({
+        ledger,
+        acks: acks ?? {},
+        startedAt: journal.startedAt,
+        now: handoff.endedAt,
+      }),
+    [ledger, acks, journal.startedAt, handoff.endedAt],
   );
 
   const hasHistory =
@@ -77,7 +88,7 @@ export function ShiftHandoffCard({ journal, ledger, nameOf, restoreOutcome, clas
   if (!hasHistory) return null;
 
   const copy = async () => {
-    const report = formatHandoffReport(handoff, nameOf);
+    const report = `${formatHandoffReport(handoff, nameOf)}\n\n${formatPerformanceReport(performance)}`;
     try {
       await navigator.clipboard.writeText(report);
       setCopied(true);
@@ -87,6 +98,7 @@ export function ShiftHandoffCard({ journal, ledger, nameOf, restoreOutcome, clas
       setCopied(false);
     }
   };
+
 
   return (
     <Card className={className}>
