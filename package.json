@@ -300,7 +300,8 @@
     "simulate:wave238": "tsx scripts/simulate-wave238-escalation-profiles.ts",
     "db:check:reconcile-retention": "tsx scripts/check-reconcile-retention.ts",
     "simulate:wave239": "tsx scripts/simulate-wave239-console-profile.ts",
-    "simulate:wave240": "tsx scripts/simulate-wave240-condition-throttle.ts"
+    "simulate:wave240": "tsx scripts/simulate-wave240-condition-throttle.ts",
+    "simulate:wave241": "tsx scripts/simulate-wave241-condition-silence.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
