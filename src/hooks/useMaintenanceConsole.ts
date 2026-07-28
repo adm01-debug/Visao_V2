@@ -76,6 +76,28 @@ export function useMaintenanceConsole() {
     staleTime: 60_000,
   });
 
+  // Onda 241 — entregas externas recentes, para revelar o silêncio por
+  // condição da Onda 240. A janela de leitura (7 dias) cobre com folga a maior
+  // janela de silêncio declarada (1 dia) mesmo com o cron parado por dias.
+  const dispatches = useQuery({
+    queryKey: DISPATCH_KEY,
+    queryFn: async (): Promise<DispatchRow[]> => {
+      const since = new Date(Date.now() - 7 * 24 * 60 * 60_000).toISOString();
+      const { data, error } = await supabase
+        .from('maintenance_alert_dispatches')
+        .select('alert_id, channel, status, last_attempt_at')
+        .eq('status', 'sent')
+        .gte('last_attempt_at', since)
+        .order('last_attempt_at', { ascending: false })
+        .limit(500);
+
+      if (error) throw error;
+      return (data ?? []) as DispatchRow[];
+    },
+    staleTime: 60_000,
+    refetchInterval: 120_000,
+  });
+
   const acknowledge = useMutation({
     mutationFn: async (alertId: string): Promise<string> => {
       const { data, error } = await supabase.rpc('acknowledge_maintenance_alert', {
@@ -91,10 +113,30 @@ export function useMaintenanceConsole() {
     },
   });
 
+  // R1 — a entrega é registrada por linha de alerta; a condição vem da rotina
+  // dessa linha. Despacho cujo alerta não está na janela carregada é
+  // descartado: sem a rotina não há condição, e adivinhar seria pior.
+  const notices: ConditionNoticeRow[] = useMemo(() => {
+    const byAlert = new Map((alerts.data ?? []).map((row) => [row.id, row]));
+    const result: ConditionNoticeRow[] = [];
+    for (const dispatch of dispatches.data ?? []) {
+      const alert = byAlert.get(dispatch.alert_id);
+      if (!alert) continue;
+      result.push({
+        conditionKey: alert.routine,
+        channel: dispatch.channel,
+        severity: alert.severity,
+        status: dispatch.status,
+        sentAt: dispatch.last_attempt_at,
+      });
+    }
+    return result;
+  }, [alerts.data, dispatches.data]);
+
   const model: MaintenanceConsoleModel = useMemo(
-    () => buildMaintenanceConsole(alerts.data ?? [], Date.now()),
-    [alerts.data],
+    () => buildMaintenanceConsole(alerts.data ?? [], Date.now(), undefined, notices),
+    [alerts.data, notices],
   );
 
-  return { alerts, retention, acknowledge, model };
+  return { alerts, retention, dispatches, acknowledge, model };
 }
