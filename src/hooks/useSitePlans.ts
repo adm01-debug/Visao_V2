@@ -527,6 +527,7 @@ export function useSitePlans() {
 
   return {
     plans,
+    planRoster,
     planNavigation,
     activePlan,
     activePlanId,
