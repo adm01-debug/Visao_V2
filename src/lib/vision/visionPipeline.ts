@@ -240,6 +240,47 @@ function thawIfDue(runtime: ProcessorRuntime, nowMs: number): ProcessorRuntime {
 }
 
 /**
+ * Onda 208-B — devolve o slot do barramento até ele ficar realmente ocioso.
+ *
+ * `completeDelivery` promove a pendência assim que o slot vaga. Quando quem
+ * está sendo liberado é um processador que NÃO vai executar nada (recusado
+ * pela cadência, suspenso, ou sem capacidade de rastreio), essa promoção
+ * criaria uma entrega órfã: o barramento marca o frame em voo, ninguém executa,
+ * e o processador fica mudo para sempre. A simulação de vídeo maltratado achou
+ * exatamente esse buraco.
+ *
+ * Promover a pendência a tarefa aqui seria pior: furaria P1, entregando
+ * trabalho sem passar pela cadência. Então drenamos — e cada devolução é um
+ * descarte declarado (`consumer_refused`), nunca um sumiço silencioso (P8).
+ */
+function drainConsumer(
+  bus: FrameBusState,
+  consumerId: string,
+  frameId: number,
+  nowMs: number,
+): { bus: FrameBusState; drops: FrameDrop[] } {
+  let current = bus;
+  const drops: FrameDrop[] = [];
+  let target = frameId;
+
+  /* A pendência é unitária (F2), então uma volta basta; o teto existe só para
+   * que nenhuma mudança futura no barramento transforme isto em laço infinito. */
+  for (let guard = 0; guard < 4; guard += 1) {
+    const released = completeDelivery(current, consumerId, target, nowMs);
+    current = released.bus;
+    drops.push(...released.drops);
+    const promoted = released.deliveries[0];
+    if (!promoted) break;
+    drops.push({ consumerId, frameId: promoted.frameId, reason: 'consumer_refused' });
+    target = promoted.frameId;
+  }
+
+  return { bus: current, drops };
+}
+
+
+
+/**
  * Um tick do ciclo da câmera: publica o frame, colhe as entregas do barramento
  * e converte cada entrega em tarefa, sob a régua de cadência.
  */
@@ -360,10 +401,11 @@ export function tickPipeline(
   let bus = published.bus;
   const drops = [...published.drops];
   for (const refusal of refusals) {
-    const released = completeDelivery(bus, refusal.processorId, refusal.frameId, effectiveNowMs);
-    bus = released.bus;
-    drops.push(...released.drops);
+    const drained = drainConsumer(bus, refusal.processorId, refusal.frameId, effectiveNowMs);
+    bus = drained.bus;
+    drops.push(...drained.drops);
   }
+
 
   return {
     state: {
@@ -392,6 +434,8 @@ export interface SettleResult {
   readonly tasks: readonly PipelineTask[];
   /** `true` quando o laudo chegou tarde e foi descartado (P4). */
   readonly late: boolean;
+  /** Descartes do barramento provocados por esta baixa (P8). */
+  readonly busDrops: readonly FrameDrop[];
 }
 
 /**
@@ -407,7 +451,12 @@ export function settleTask(
   const effectiveNowMs = Math.max(nowMs, state.clockFloorMs);
   const runtime = state.runtimes[task.processorId];
   if (!runtime) {
-    return { state: { ...state, clockFloorMs: effectiveNowMs }, tasks: [], late: false };
+    return {
+      state: { ...state, clockFloorMs: effectiveNowMs },
+      tasks: [],
+      busDrops: [],
+      late: false,
+    };
   }
 
   /* P4 — laudo de frame já superado é estatística, não leitura. */
@@ -457,15 +506,40 @@ export function settleTask(
   /* Frame que estava pendente e agora foi entregue vira tarefa de rastreio: o
    * pipeline nunca promove pendência a identificação sem passar pela cadência
    * do próximo tick — promover aqui furaria P1 e o orçamento. */
-  const tasks: PipelineTask[] = released.deliveries
-    .filter(() => next.health !== 'quarantined' && next.processor.capabilities.includes('track'))
-    .map((d) => ({
+  const canWork =
+    next.health !== 'quarantined' && next.processor.capabilities.includes('track');
+
+  let bus = released.bus;
+  const drops: FrameDrop[] = [...released.drops];
+  let tasks: PipelineTask[] = [];
+
+  if (canWork) {
+    tasks = released.deliveries.map((d) => ({
       processorId: task.processorId,
       kind: 'track' as const,
       frameId: d.frameId,
       capturedAtMs: d.capturedAtMs,
       trackId: null,
     }));
+  } else {
+    /* Onda 208-B — o processador não vai executar: a pendência promovida seria
+     * entrega órfã (slot em voo sem tarefa). Drena e contabiliza. */
+    for (const delivery of released.deliveries) {
+      drops.push({
+        consumerId: task.processorId,
+        frameId: delivery.frameId,
+        reason: 'consumer_refused',
+      });
+      const drained = drainConsumer(
+        bus,
+        task.processorId,
+        delivery.frameId,
+        effectiveNowMs,
+      );
+      bus = drained.bus;
+      drops.push(...drained.drops);
+    }
+  }
 
   const withAdmission: ProcessorRuntime =
     tasks.length > 0
@@ -479,15 +553,17 @@ export function settleTask(
   return {
     state: {
       ...state,
-      bus: released.bus,
+      bus,
       cadence,
       runtimes: { ...state.runtimes, [task.processorId]: withAdmission },
       clockFloorMs: effectiveNowMs,
     },
     tasks,
+    busDrops: drops,
     late,
   };
 }
+
 
 /* ========================================================================== */
 /* Leitura para a UI                                                           */
