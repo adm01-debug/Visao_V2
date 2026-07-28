@@ -8978,6 +8978,14 @@ export type Database = {
         Returns: number
       }
       escalation_profile_for: { Args: { p_routine: string }; Returns: string }
+      escalation_profile_selftest: {
+        Args: never
+        Returns: {
+          detail: string
+          guard: string
+          ok: boolean
+        }[]
+      }
       escalation_profile_timing: {
         Args: { p_profile: string }
         Returns: {
