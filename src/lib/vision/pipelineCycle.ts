@@ -80,7 +80,19 @@ export interface CycleExecution {
   readonly late: boolean;
   /** Mensagem do erro capturado, quando houver. Nunca vaza o objeto de erro. */
   readonly errorMessage: string | null;
+  /* --- Onda 212: relógios da execução (L7) ----------------------------- */
+  /** Instante em que o executor foi chamado. `null` quando não houve chamada. */
+  readonly startedAtMs: number | null;
+  /** Instante da baixa. Sempre existe: toda tarefa é dada baixa (L2). */
+  readonly settledAtMs: number;
+  /** Espera entre a captura do frame e a chamada do executor. */
+  readonly queueLatencyMs: number | null;
+  /** Duração da chamada do executor. `null` quando não houve chamada. */
+  readonly executionMs: number | null;
+  /** Captura → baixa. A latência que o operador realmente sente. */
+  readonly totalLatencyMs: number;
 }
+
 
 export interface CycleOptions {
   /** Executores por `processorId`. Ausência é falha declarada, não silêncio. */
@@ -107,6 +119,10 @@ export interface CycleReport {
   readonly cascaded: number;
   /** Tarefas recusadas por cascata acima do teto. */
   readonly cascadeCapped: number;
+  /** Instante em que o frame entrou no ciclo. Âncora da janela de auditoria. */
+  readonly tickAtMs: number;
+  /** Instante da última baixa; igual a `tickAtMs` quando nada foi admitido. */
+  readonly completedAtMs: number;
 }
 
 function errorMessageOf(error: unknown): string {
@@ -114,6 +130,20 @@ function errorMessageOf(error: unknown): string {
   if (typeof error === 'string') return error;
   return 'unknown_error';
 }
+
+/**
+ * L7 — duração observada entre dois instantes, nunca negativa.
+ *
+ * O relógio do host pode retroceder (NTP) e o `capturedAtMs` do frame vem do
+ * equipamento, que pode estar adiantado (a Onda 112 mede exatamente esse
+ * desvio). Latência negativa não existe fisicamente e envenenaria qualquer
+ * média; então o piso é zero — declarado, não silencioso.
+ */
+function elapsed(fromMs: number, toMs: number): number {
+  if (!Number.isFinite(fromMs) || !Number.isFinite(toMs)) return 0;
+  return Math.max(0, toMs - fromMs);
+}
+
 
 /* ========================================================================== */
 /* Ciclo de uma câmera                                                         */
@@ -135,7 +165,8 @@ export async function runCameraCycle(
   const maxCascade = options.maxCascade ?? DEFAULT_MAX_CASCADE;
 
   /* L1 — um único tick por frame. */
-  const tick = tickPipeline(state, frame, observation, options.clock());
+  const tickAtMs = options.clock();
+  const tick = tickPipeline(state, frame, observation, tickAtMs);
 
   let current = tick.state;
   const executions: CycleExecution[] = [];
@@ -158,8 +189,10 @@ export async function runCameraCycle(
      * senão o slot do barramento ficaria ocupado para sempre. */
     if (entry.cascaded && cascaded > maxCascade) {
       cascadeCapped += 1;
-      const settled = settleTask(current, task, 'failure', options.clock());
+      const settledAtMs = options.clock();
+      const settled = settleTask(current, task, 'failure', settledAtMs);
       current = settled.state;
+      busDrops.push(...settled.busDrops);
       executions.push({
         task,
         outcome: 'failure',
@@ -167,6 +200,11 @@ export async function runCameraCycle(
         cascaded: true,
         late: settled.late,
         errorMessage: null,
+        startedAtMs: null,
+        settledAtMs,
+        queueLatencyMs: null,
+        executionMs: null,
+        totalLatencyMs: elapsed(task.capturedAtMs, settledAtMs),
       });
       /* Baixa de tarefa capada não realimenta a fila: seria o mesmo laço. */
       continue;
@@ -177,11 +215,17 @@ export async function runCameraCycle(
     let failure: ExecutionFailure | null = null;
     let errorMessage: string | null = null;
 
+    /* L7 — o relógio é lido nas bordas reais da chamada. Sem executor não há
+     * chamada, logo não há duração: `null` honesto em vez de zero inventado. */
+    let startedAtMs: number | null = null;
+    let executionMs: number | null = null;
+
     if (!executor) {
       /* L2 — ausência é fracasso declarado, não desaparecimento. */
       outcome = 'failure';
       failure = 'executor_missing';
     } else {
+      startedAtMs = options.clock();
       try {
         await executor(task);
       } catch (error) {
@@ -190,10 +234,15 @@ export async function runCameraCycle(
         failure = 'executor_threw';
         errorMessage = errorMessageOf(error);
       }
+      /* A duração de uma execução que falhou também é custo gasto: medir só o
+       * sucesso esconderia justamente o timeout que derruba a câmera. */
+      executionMs = elapsed(startedAtMs, options.clock());
     }
 
-    const settled = settleTask(current, task, outcome, options.clock());
+    const settledAtMs = options.clock();
+    const settled = settleTask(current, task, outcome, settledAtMs);
     current = settled.state;
+    busDrops.push(...settled.busDrops);
 
     executions.push({
       task,
@@ -202,6 +251,12 @@ export async function runCameraCycle(
       cascaded: entry.cascaded,
       late: settled.late,
       errorMessage,
+      startedAtMs,
+      settledAtMs,
+      queueLatencyMs:
+        startedAtMs === null ? null : elapsed(task.capturedAtMs, startedAtMs),
+      executionMs,
+      totalLatencyMs: elapsed(task.capturedAtMs, settledAtMs),
     });
 
     /* L5 — pendência liberada vira nova tarefa, sempre marcada como cascata. */
@@ -210,6 +265,8 @@ export async function runCameraCycle(
       queue.push({ task: next, cascaded: true });
     }
   }
+
+
 
   return {
     cameraId: current.cameraId,
@@ -222,6 +279,9 @@ export async function runCameraCycle(
     admitted,
     cascaded,
     cascadeCapped,
+    tickAtMs,
+    completedAtMs:
+      executions.length > 0 ? executions[executions.length - 1]!.settledAtMs : tickAtMs,
   };
 }
 
