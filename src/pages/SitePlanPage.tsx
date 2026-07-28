@@ -414,6 +414,13 @@ export default function SitePlanPage() {
               }}
             />
 
+            <InheritedAckCard
+              inherited={inheritedAcks}
+              nameOf={nameOf}
+              onFocus={(cameraId) => setSelectedId(cameraId)}
+              onDismiss={() => setInheritedAcks([])}
+            />
+
             <TriageQueuePanel
               ledger={attentionClock}
               nameOf={nameOf}
