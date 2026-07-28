@@ -48,7 +48,7 @@ const auditTrg = query(`
     FROM pg_trigger
    WHERE tgrelid='public.device_registration_audit'::regclass
      AND tgname='trg_device_audit_immutable' AND NOT tgisinternal`);
-check('4 trilha imutável', /BEFORE UPDATE OR DELETE/.test(auditTrg), `definição: ${auditTrg || 'ausente'}`);
+check("4 trilha imutável", /BEFORE (UPDATE OR DELETE|DELETE OR UPDATE)/.test(auditTrg), `definição: ${auditTrg || 'ausente'}`);
 
 // 5) Guarda de governança
 const rulesTrg = query(`
