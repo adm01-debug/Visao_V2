@@ -255,8 +255,8 @@
     "db:check:remote-commands": "node scripts/check-remote-commands.mjs",
     "db:check:command-delivery": "node scripts/check-command-delivery.mjs",
     "simulate:wave194": "node --experimental-strip-types scripts/simulate-wave194-command-delivery.mjs",
-    "db:check:command-sweep": "node --experimental-strip-types scripts/check-command-sweep.mjs",
-    "simulate:wave195": "node --experimental-strip-types scripts/simulate-wave195-command-sweep.mjs"
+    "db:check:command-sweep": "bun scripts/check-command-sweep.mjs",
+    "simulate:wave195": "bun scripts/simulate-wave195-command-sweep.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
