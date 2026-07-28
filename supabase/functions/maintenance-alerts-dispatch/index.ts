@@ -122,27 +122,59 @@ Deno.serve(async (req) => {
   }
 
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
-  const since = new Date(Date.now() - config.maxAgeHours * 3_600_000).toISOString();
+  const nowMs = Date.now();
+  const since = new Date(nowMs - config.maxAgeHours * 3_600_000).toISOString();
+  // Onda 240 — a janela de silêncio por condição (até 1 dia) exige olhar mais
+  // para trás do que a janela de candidatura. Só o histórico é lido aqui; a
+  // elegibilidade de envio continua limitada por `maxAgeHours`.
+  const historySince = new Date(
+    nowMs - Math.max(config.maxAgeHours, CONDITION_HISTORY_HOURS) * 3_600_000,
+  ).toISOString();
 
   try {
-    const { data: alertRows, error: alertsError } = await supabase
+    const { data: historyRows, error: alertsError } = await supabase
       .from("maintenance_alert_events")
       .select("id, routine, severity, reason, created_at, detail")
-      .gte("created_at", since)
+      .gte("created_at", historySince)
       .order("created_at", { ascending: false })
-      .limit(200);
+      .limit(600);
     if (alertsError) throw alertsError;
 
-    const alerts = (alertRows ?? []) as MaintenanceAlert[];
-    if (alerts.length === 0) return json({ ok: true, dispatched: 0, candidates: 0 });
+    const history = (historyRows ?? []) as MaintenanceAlert[];
+    const alerts = history.filter((a) => a.created_at >= since);
+    if (history.length === 0) return json({ ok: true, dispatched: 0, candidates: 0 });
 
     const { data: dispatchRows, error: dispatchError } = await supabase
       .from("maintenance_alert_dispatches")
       .select("alert_id, channel, status, attempts, last_attempt_at")
-      .in("alert_id", alerts.map((a) => a.id));
+      .in("alert_id", history.map((a) => a.id));
     if (dispatchError) throw dispatchError;
 
-    const plan = planDispatch(alerts, dispatchRows ?? [], config, Date.now());
+    // Notificações já entregues, indexadas pela condição (routine) do alerta.
+    const alertById = new Map(history.map((a) => [a.id, a]));
+    const notices: ConditionNotice[] = [];
+    for (const row of dispatchRows ?? []) {
+      if (row.status !== "sent") continue; // Q4 — falha nunca silencia
+      const source = alertById.get(row.alert_id);
+      if (!source) continue;
+      notices.push({
+        conditionKey: conditionKeyFor(source),
+        channel: row.channel as DispatchChannel,
+        severity: source.severity,
+        sentAt: row.last_attempt_at,
+      });
+    }
+
+    if (alerts.length === 0) return json({ ok: true, dispatched: 0, candidates: 0 });
+
+    const plan = planDispatch(
+      alerts,
+      (dispatchRows ?? []).filter((d) => alerts.some((a) => a.id === d.alert_id)),
+      config,
+      nowMs,
+      notices,
+    );
+
 
     if (dryRun) {
       return json({
