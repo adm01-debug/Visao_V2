@@ -137,31 +137,33 @@ BEGIN;
 CREATE TEMP TABLE gate_result(msg text) ON COMMIT DROP;
 DO $exercise$
 DECLARE
-  v_user uuid;
+  v_user uuid := gen_random_uuid();
   v_now  timestamptz := now();
   v_res  jsonb;
   v_cnt  int;
 BEGIN
-  SELECT w.user_id INTO v_user FROM public.admission_ledger_windows w LIMIT 1;
-  IF v_user IS NULL THEN
-    SELECT p.id INTO v_user FROM public.profiles p LIMIT 1;
-  END IF;
-  IF v_user IS NULL THEN
-    INSERT INTO gate_result VALUES ('SKIP');
+  -- Nenhum DELETE: as tabelas do livro são append-only por projeto. A arena é
+  -- construída por inserção e desfeita pelo ROLLBACK da transação.
+  SELECT count(*) INTO v_cnt FROM public.maintenance_alert_events
+   WHERE routine = 'admission_reconcile:ledger_stock'
+     AND created_at > v_now - interval '1440 minutes';
+  IF v_cnt > 0 THEN
+    INSERT INTO gate_result VALUES ('SKIP: alerta recente em cooldown impede o exercício');
     RETURN;
   END IF;
 
-  -- Limpa a arena dentro da transação (será revertida).
-  DELETE FROM public.maintenance_alert_events WHERE routine = 'admission_reconcile:ledger_stock';
-  DELETE FROM public.admission_ledger_purge_runs;
-  DELETE FROM public.admission_ledger_windows;
+  -- 1) Estoque vazio: silêncio obrigatório.
+  v_res := public.evaluate_admission_reconcile_alerts(v_now);
+  IF v_res->>'verdict' <> 'reconciled' OR (v_res->>'emitted')::int <> 0 THEN
+    RAISE EXCEPTION 'estoque conciliado não pode emitir: %', v_res;
+  END IF;
 
-  -- Janela vencida (2 anos) e nenhuma execução: veredito no_run → warning.
+  -- 2) Janela vencida (2 anos) sem execução legível: aviso `no_run`.
   INSERT INTO public.admission_ledger_windows
-    (user_id, source_id, window_start, window_end, admitted_count, refused_count,
-     indeterminate_count, admitted_by_reason, refused_by_reason)
-  VALUES (v_user, 'gate-orphan', v_now - interval '730 days', v_now - interval '729 days',
-          0, 0, 0, '{}'::jsonb, '{}'::jsonb);
+    (user_id, source_id, window_start, window_end, counts, total, admitted)
+  VALUES (v_user, 'gate-orphan',
+          v_now - interval '730 days', v_now - interval '730 days' + interval '1 hour',
+          '{"admitted":1}'::jsonb, 1, 1);
 
   v_res := public.evaluate_admission_reconcile_alerts(v_now);
   IF v_res->>'verdict' <> 'no_run' OR v_res->>'severity' <> 'warning'
@@ -169,17 +171,18 @@ BEGIN
     RAISE EXCEPTION 'sem execução legível deveria emitir aviso no_run: %', v_res;
   END IF;
 
-  -- Reexecução imediata: cooldown segura a segunda emissão.
+  -- 3) Reexecução imediata: o cooldown segura a segunda emissão.
   v_res := public.evaluate_admission_reconcile_alerts(v_now);
   IF (v_res->>'emitted')::int <> 0 THEN
     RAISE EXCEPTION 'cooldown não segurou a reemissão: %', v_res;
   END IF;
 
-  -- Execução válida declarando passivo ZERO: a janela vencida vira órfã.
+  -- 4) Execução válida declarando passivo ZERO: a janela vencida vira órfã.
   INSERT INTO public.admission_ledger_purge_runs
-    (executed_at, cutoff_at, retention_days, batch_cap, deleted_count, deferred_count, capped)
+    (executed_at, cutoff_at, retention_days, batch_cap, deleted_count, deferred_count,
+     quarantined_count, capped, duration_ms)
   VALUES (v_now - interval '1 hour', v_now - interval '1 hour' - interval '365 days',
-          365, 500, 0, 0, false);
+          365, 500, 0, 0, 0, false, 120);
 
   v_res := public.evaluate_admission_reconcile_alerts(v_now);
   IF v_res->>'verdict' <> 'unaccounted' OR v_res->>'severity' <> 'critical'
@@ -189,17 +192,10 @@ BEGIN
 
   SELECT count(*) INTO v_cnt FROM public.maintenance_alert_events
    WHERE routine = 'admission_reconcile:ledger_stock' AND severity = 'critical'
-     AND (detail->>'orphan_count')::bigint = 1;
+     AND (detail->>'orphan_count')::bigint = 1
+     AND (detail->>'cooldown_minutes')::int = 720;
   IF v_cnt <> 1 THEN
-    RAISE EXCEPTION 'detalhe do crítico não carrega o órfão medido (n=%)', v_cnt;
-  END IF;
-
-  -- Estoque limpo: silêncio.
-  DELETE FROM public.admission_ledger_windows;
-  DELETE FROM public.maintenance_alert_events WHERE routine = 'admission_reconcile:ledger_stock';
-  v_res := public.evaluate_admission_reconcile_alerts(v_now);
-  IF v_res->>'verdict' <> 'reconciled' OR (v_res->>'emitted')::int <> 0 THEN
-    RAISE EXCEPTION 'estoque conciliado não pode emitir: %', v_res;
+    RAISE EXCEPTION 'detalhe do crítico não carrega órfão/cooldown medidos (n=%)', v_cnt;
   END IF;
 
   INSERT INTO gate_result VALUES ('DYNAMIC-OK');
@@ -216,9 +212,10 @@ try {
     [...(conn ? [conn] : []), '-X', '-q', '-v', 'ON_ERROR_STOP=1', '-c', dynamic],
     { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] },
   );
-  if (!/DYNAMIC-OK|SKIP/.test(out)) {
+  if (!/DYNAMIC-OK/.test(out)) {
     errors.push(`exercício dinâmico não confirmou execução: ${out.trim()}`);
   }
+
 } catch (e) {
   errors.push(`exercício dinâmico falhou: ${(e as Error).message}`);
 }
