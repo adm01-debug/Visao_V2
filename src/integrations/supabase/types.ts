@@ -9658,6 +9658,13 @@ export type Database = {
         Returns: Json
       }
       tick_timelapse_capture: { Args: never; Returns: number }
+      timeline_attestation_selftest: {
+        Args: { p_document: Json }
+        Returns: {
+          case_name: string
+          outcome: string
+        }[]
+      }
       timeline_attestation_verdict: {
         Args: { p_document: Json }
         Returns: string
