@@ -2833,6 +2833,7 @@ export type Database = {
           reported_at: string | null
           requested_by: string
           result: Json | null
+          settled_by: string | null
           status: string
           updated_at: string
           user_id: string
@@ -2853,6 +2854,7 @@ export type Database = {
           reported_at?: string | null
           requested_by: string
           result?: Json | null
+          settled_by?: string | null
           status?: string
           updated_at?: string
           user_id: string
@@ -2873,6 +2875,7 @@ export type Database = {
           reported_at?: string | null
           requested_by?: string
           result?: Json | null
+          settled_by?: string | null
           status?: string
           updated_at?: string
           user_id?: string
@@ -8460,6 +8463,7 @@ export type Database = {
       detect_stale_ingest_publishers: { Args: never; Returns: Json }
       device_remote_command_delivery_selftest: { Args: never; Returns: Json }
       device_remote_command_selftest: { Args: never; Returns: Json }
+      device_remote_command_sweep_selftest: { Args: never; Returns: Json }
       device_silence_thresholds: {
         Args: never
         Returns: {
@@ -9578,6 +9582,10 @@ export type Database = {
         }[]
       }
       stable_hash32: { Args: { _input: string }; Returns: number }
+      sweep_device_remote_commands: {
+        Args: { p_limit?: number; p_now?: string }
+        Returns: Json
+      }
       system_health: { Args: never; Returns: Json }
       terminate_db_session: {
         Args: { _force?: boolean; _pid: number; _reason?: string }
