@@ -43,6 +43,8 @@ export default function DeviceRegistrationsPage() {
   const [label, setLabel] = useState('');
   const [busy, setBusy] = useState(false);
 
+  const CONNECT_ENDPOINT = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/device-connect`;
+
   const graceMinutes = useMemo(() => Math.round(ROTATION_GRACE_MS / 60_000), []);
 
   const handleEnroll = async () => {
@@ -193,6 +195,13 @@ export default function DeviceRegistrationsPage() {
             </div>
           ))}
 
+          <p className="text-xs text-muted-foreground">
+            O equipamento em campo se apresenta em{' '}
+            <code className="rounded bg-muted px-1 py-0.5">
+              {CONNECT_ENDPOINT}
+            </code>{' '}
+            enviando o código e o segredo. Toda tentativa — aceita ou recusada — fica registrada.
+          </p>
           <p className="text-xs text-muted-foreground">
             Ao trocar o segredo, o anterior continua aceito por {graceMinutes} minutos — tempo para
             o equipamento em campo se atualizar. A revogação é imediata e definitiva: encerra também
