@@ -37,16 +37,16 @@ check(
   query(`SELECT relrowsecurity FROM pg_class WHERE oid = 'public.${TABLE}'::regclass`) === 't',
   'RLS desabilitada',
 );
-const anonPriv = query(`
-  SELECT COALESCE(string_agg(DISTINCT privilege_type, ','), '')
-    FROM information_schema.role_table_grants
-   WHERE table_schema = 'public' AND table_name = '${TABLE}' AND grantee = 'anon'`);
+const tablePriv = (role) =>
+  query(`SELECT COALESCE(string_agg(DISTINCT a.privilege_type, ',' ORDER BY a.privilege_type), '')
+           FROM pg_class c
+           CROSS JOIN LATERAL aclexplode(COALESCE(c.relacl, acldefault('r', c.relowner))) a
+          WHERE c.oid = 'public.${TABLE}'::regclass
+            AND a.grantee::regrole::text = '${role}'`);
+const anonPriv = tablePriv('anon');
 check('ANON', anonPriv === '', `anon possui privilégios (${anonPriv})`);
 
-const authPriv = query(`
-  SELECT COALESCE(string_agg(DISTINCT privilege_type, ','), '')
-    FROM information_schema.role_table_grants
-   WHERE table_schema = 'public' AND table_name = '${TABLE}' AND grantee = 'authenticated'`);
+const authPriv = tablePriv('authenticated');
 check('AUTH', authPriv === 'SELECT', `authenticated deveria ter só SELECT, tem (${authPriv})`);
 
 // --- 2) Um episódio aberto por série -----------------------------------------
@@ -91,7 +91,7 @@ const sqlDefaults = query(`
   SELECT pg_get_function_arguments(p.oid) FROM pg_proc p
     JOIN pg_namespace n ON n.oid = p.pronamespace
    WHERE n.nspname='public' AND p.proname='assess_alarm_recurrence'`);
-const sqlDefault = (name) => Number(new RegExp(`${name}[^=]*DEFAULT\\s+(\\d+)`).exec(sqlDefaults)?.[1]);
+const sqlDefault = (name) => Number(new RegExp(`${name}\\s+\\w+\\s+DEFAULT\\s+(\\d+)`).exec(sqlDefaults)?.[1]);
 check('PARIDADE', sqlDefault('p_window_ms') === ts.windowMs, `janela SQL=${sqlDefault('p_window_ms')} TS=${ts.windowMs}`);
 check(
   'PARIDADE',
@@ -191,7 +191,7 @@ ROLLBACK;
 
 const parts = Object.fromEntries(
   functional
-    .split('|')
+    .split(/[|\n]/)
     .map((s) => s.trim())
     .filter(Boolean)
     .map((s) => s.split('=')),
