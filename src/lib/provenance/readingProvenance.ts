@@ -245,10 +245,8 @@ export function assessReadingProvenance(
 ): ProvenanceAssessment {
   if (readings.length === 0) return EMPTY_ASSESSMENT;
 
-  const tiers = readings.map((reading) => deriveStageTier(reading.stages));
-
-  let bestTier: ProvenanceTier = 'unknown';
-  let worstTier: ProvenanceTier = 'human';
+  let bestTier: ProvenanceTier = 'unknown' as ProvenanceTier;
+  let worstTier: ProvenanceTier = 'human' as ProvenanceTier;
   const qualifiedSources = new Set<string>();
   let unknownCount = 0;
   let llmCount = 0;
