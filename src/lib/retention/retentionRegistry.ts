@@ -77,6 +77,12 @@ export const RETENTION_ROUTINES: readonly RetentionRoutine[] = [
     label: 'Descobertas de agentes locais',
   },
   {
+    jobName: 'alarm_recurrence',
+    sourceTable: 'alarm_recurrence_purge_runs',
+    cadenceMinutes: 1440,
+    label: 'Episódios de reincidência de alarme',
+  },
+  {
     jobName: 'agent_relay_tasks',
     sourceTable: 'agent_relay_purge_runs',
     cadenceMinutes: 1440,
