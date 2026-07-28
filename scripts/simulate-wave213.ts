@@ -195,7 +195,7 @@ async function main(): Promise<void> {
   let scenarios = 0;
 
   /* ---------------- Bateria aleatória sobre laudos hostis ---------------- */
-  for (let seed = 1; seed <= 900; seed += 1) {
+  for (let seed = 1; seed <= 12_000; seed += 1) {
     const random = rng(9_001 + seed * 7);
     const capability = CAPABILITIES[seed % CAPABILITIES.length]!;
     const input = buildProcessorInput('cam-1', task(capability, 42), 20_000);
