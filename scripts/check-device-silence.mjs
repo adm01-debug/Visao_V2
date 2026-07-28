@@ -27,7 +27,10 @@ const rows = (sql) =>
     .split('\n')
     .map((l) => l.trim())
     .filter(Boolean)
-    .map((l) => l.split('\u0001'));
+    .map((l) => l.split('\u0001'))
+    // psql ecoa rótulos de comando (BEGIN, INSERT 0 3, ROLLBACK) no mesmo fluxo;
+    // só linhas com o número de colunas pedido são resultado de verdade.
+    .filter((cols) => cols.length > 1 || /=/.test(cols[0]));
 
 const MIN = 60_000;
 const NOW = Date.parse('2026-07-28T12:00:00.000Z');
@@ -197,7 +200,7 @@ BEGIN;
   SELECT 'run1=' || (public.evaluate_device_silence_alerts(${NOW_SQL}) ->> 'emitted');
   SELECT 'escalou=' || (SELECT count(*) FROM public.maintenance_alert_events
                          WHERE routine = 'device:GATEAAAA0005' AND severity = 'critical');
-  SELECT 'sev=' || (SELECT string_agg(severity, '>' ORDER BY created_at)
+  SELECT 'sev=' || (SELECT string_agg(severity, '+' ORDER BY severity)
                       FROM public.maintenance_alert_events WHERE routine = 'device:GATEAAAA0005');
   SELECT 'run2=' || (public.evaluate_device_silence_alerts(${NOW_SQL}) ->> 'suppressed');
   SELECT 'revogado=' || (SELECT count(*) FROM public.maintenance_alert_events
@@ -209,7 +212,8 @@ ROLLBACK;`).map((r) => r[0]);
 const got = Object.fromEntries(fanin.map((l) => l.split('=')));
 ok(got.run1 === '3', `G4 primeira passada deveria emitir 3 alertas (emitiu ${got.run1})`);
 ok(got.escalou === '1', 'G4 agravamento não furou a pausa');
-ok(got.sev === 'warning>critical', `G4 trilha de gravidade inesperada (${got.sev})`);
+ok(got.sev === 'critical+warning',
+  `G4 o agravamento deveria conviver com o aviso anterior, não substituí-lo (${got.sev})`);
 ok(got.run2 === '3', `G4 repetição idêntica não foi engolida pela pausa (${got.run2})`);
 ok(got.revogado === '0', 'G4 registro revogado gerou alerta — silêncio intencional virou ruído');
 ok(got.emdia === '0', 'G4 equipamento em dia gerou alerta');
