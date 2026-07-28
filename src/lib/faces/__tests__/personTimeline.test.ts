@@ -17,7 +17,7 @@ function reading(over: Partial<FaceSearchResult> & { id: string }): FaceSearchRe
     cameraId: over.cameraId ?? 'cam-a',
     personId: over.personId ?? 'p1',
     personName: null,
-    similarity: over.similarity ?? 0.9,
+    similarity: 'similarity' in over ? (over.similarity ?? null) : 0.9,
     recognized: true,
     spoofDetected: false,
     livenessScore: 0.9,
