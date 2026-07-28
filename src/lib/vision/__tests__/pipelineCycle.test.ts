@@ -196,8 +196,8 @@ describe('pipelineCycle (Onda 211)', () => {
 
     const failing = await runCameraCycle(
       state,
-      { frameId: 1, capturedAtMs: 1_000 },
-      observation(1_000),
+      { frameId: 1, capturedAtMs: 5_000 },
+      observation(5_000),
       { executors: { track: () => Promise.reject(new Error('x')) }, clock: () => 5_000 },
     );
 
@@ -206,10 +206,11 @@ describe('pipelineCycle (Onda 211)', () => {
     /* Relógio volta no tempo: a quarentena não pode expirar. */
     const later = await runCameraCycle(
       failing.state,
-      { frameId: 2, capturedAtMs: 1_400 },
-      observation(1_400),
+      { frameId: 2, capturedAtMs: 5_400 },
+      observation(5_400),
       { executors: { track: () => undefined }, clock: () => 1_000 },
     );
+
 
     expect(later.state.runtimes.track?.health).toBe('quarantined');
     expect(later.state.clockFloorMs).toBeGreaterThanOrEqual(5_000);
