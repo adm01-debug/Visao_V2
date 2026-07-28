@@ -24,9 +24,9 @@ function check(cond: boolean, msg: string) {
   if (!cond) failures.push(msg);
 }
 
-const EXPIRED = [0, 1, 2, 5, 50, 5000];
-const DRIFT = [0, 1, 2, 5, 50];
-const DEFERRED = [0, 1, 2, 5, 50, 5000];
+const EXPIRED = [0, 1, 2, 3, 5, 8, 50, 500, 5000];
+const DRIFT = [0, 1, 2, 3, 5, 8, 50];
+const DEFERRED = [0, 1, 2, 3, 5, 8, 50, 500, 5000];
 const OBS_OFFSET = [-DAY, -1, 0, 1, 3_600_000, 7 * DAY];
 const TOTAL = [5000, 100000];
 
