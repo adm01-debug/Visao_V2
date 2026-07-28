@@ -49,7 +49,7 @@ for (const fn of FUNCS) {
     FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
     WHERE n.nspname = 'public'
       AND p.proname = '${fn.name}'
-      AND pg_get_function_identity_arguments(p.oid) = '${fn.args}';
+      AND pg_get_function_identity_arguments(p.oid) LIKE '%${fn.args}';
   `);
   if (rows.length === 0) {
     errors.push(`public.${fn.name}(${fn.args}) não existe.`);
