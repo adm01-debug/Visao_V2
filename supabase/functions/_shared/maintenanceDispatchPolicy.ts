@@ -57,6 +57,7 @@ export type SkipReason =
   | "max_attempts_reached"
   | "backoff_pending"
   | "batch_limit"
+  | "condition_throttled"
   | "channel_disabled";
 
 /** Uma unidade de trabalho: mandar `alert` pelo `channel`. */
@@ -65,6 +66,8 @@ export interface DispatchPlanItem {
   channel: DispatchChannel;
   attempt: number;
   dedupKey: string;
+  /** Chave da condição (Onda 240) — usada para o silêncio por condição. */
+  conditionKey: string;
 }
 
 /** Um par (alerta, canal) descartado, com o motivo auditável. */
@@ -72,6 +75,8 @@ export interface DispatchSkip {
   alertId: string;
   channel: DispatchChannel;
   reason: SkipReason;
+  /** Detalhe auditável do silêncio por condição (minutos restantes). */
+  detail?: Record<string, unknown>;
 }
 
 /** Resultado do planejamento. */
@@ -79,6 +84,83 @@ export interface DispatchPlan {
   items: DispatchPlanItem[];
   skipped: DispatchSkip[];
 }
+
+/**
+ * Onda 240 — **Silêncio por condição no despacho externo**.
+ *
+ * ## O defeito
+ *
+ * A dedup da Onda 111 é por **linha** (`alert_id:canal`). Isso bastava quando
+ * toda fonte do barramento era pontual. Desde as Ondas 232/234/236 existem
+ * fontes de contabilidade que **reemitem uma linha nova a cada noite** enquanto
+ * a condição persiste. Para o despachante, cada noite é um alerta inédito: a
+ * mesma condição crônica vira uma notificação externa por dia, indefinidamente.
+ * Canal externo que repete todo dia a mesma frase é canal que o operador
+ * silencia — e aí o alerta crítico seguinte também morre. Ruído crônico não é
+ * excesso de zelo, é destruição de canal.
+ *
+ * ## As leis Q1–Q10
+ *
+ *  Q1. A condição é a **chave da rotina** (`admission_trend:ledger_stock`), não
+ *      o id da linha. Silêncio é por (condição, canal).
+ *  Q2. A janela de silêncio sai do **perfil de escalada** (Onda 238): fonte
+ *      operacional tem janela 0 (comportamento pré-240 bit-a-bit idêntico —
+ *      não-regressão), fonte de contabilidade herda `minStepMinutes` (1 dia).
+ *  Q3. **Agravamento sempre fura o silêncio.** Se a última notificação bem
+ *      sucedida foi `warning` e a condição agora é `critical`, notifica já.
+ *  Q4. Só **envio bem-sucedido** silencia. Falha de transporte jamais cala uma
+ *      condição — senão um Telegram fora do ar viraria silêncio de um dia.
+ *  Q5. Silêncio é **por canal**. Telegram entregue não cala o e-mail.
+ *  Q6. Relógio inválido ou notificação no futuro **não** silencia (fail-open).
+ *  Q7. Primeira notificação de uma condição nunca é silenciada.
+ *  Q8. O silêncio é **auditável**: `condition_throttled` carrega os minutos
+ *      restantes e a severidade que já foi entregue.
+ *  Q9. Dedup por linha (`already_sent`) tem precedência sobre o silêncio: o
+ *      motivo mais específico é o que vai para a trilha.
+ *  Q10. O silêncio também vale **dentro da mesma execução**: uma rajada de
+ *      linhas da mesma condição gera no máximo um envio por canal.
+ */
+
+/** Notificação externa já entregue com sucesso para uma condição. */
+export interface ConditionNotice {
+  conditionKey: string;
+  channel: DispatchChannel;
+  severity: DispatchSeverity;
+  /** ISO timestamp do envio bem-sucedido. */
+  sentAt: string | null;
+}
+
+/**
+ * Espelho do mapa de perfis de `src/lib/escalationProfiles.ts` (Onda 238).
+ * Prefixo → janela mínima entre notificações externas da mesma condição.
+ * A paridade com o módulo do app é conferida em teste unitário.
+ */
+export const CONDITION_THROTTLE_PREFIXES: ReadonlyArray<readonly [string, number]> = [
+  ["admission_trend:", 1440],
+  ["admission_reconcile:", 1440],
+  ["admission_backlog:", 1440],
+];
+
+/** Q1 — chave da condição de um alerta. */
+export function conditionKeyFor(alert: MaintenanceAlert): string {
+  return typeof alert.routine === "string" ? alert.routine : "";
+}
+
+/** Q2 — janela de silêncio (minutos) da condição. `0` = sem silêncio. */
+export function conditionThrottleMinutes(routine: string | null | undefined): number {
+  if (typeof routine !== "string" || routine.length === 0) return 0;
+  let minutes = 0;
+  let bestLength = -1;
+  for (const [prefix, value] of CONDITION_THROTTLE_PREFIXES) {
+    if (routine.startsWith(prefix) && prefix.length > bestLength) {
+      minutes = value;
+      bestLength = prefix.length;
+    }
+  }
+  return minutes;
+}
+
+
 
 export const DEFAULT_DISPATCH_CONFIG: DispatchConfig = {
   channels: [],
@@ -132,13 +214,16 @@ function parseTime(value: string | null | undefined): number | null {
  *  I3 — respeita backoff exponencial após falhas;
  *  I4 — nunca despacha alerta abaixo de `minSeverity` nem mais velho que `maxAgeHours`;
  *  I5 — nunca ultrapassa `batchLimit` itens;
- *  I6 — cada par aparece no máximo uma vez, seja em `items` ou em `skipped`.
+ *  I6 — cada par aparece no máximo uma vez, seja em `items` ou em `skipped`;
+ *  I7 (Onda 240) — condição sob silêncio só volta a notificar por agravamento
+ *      ou por vencimento da janela do perfil.
  */
 export function planDispatch(
   alerts: MaintenanceAlert[],
   dispatches: DispatchRecord[],
   config: DispatchConfig,
   nowMs: number,
+  notices: ConditionNotice[] = [],
 ): DispatchPlan {
   const items: DispatchPlanItem[] = [];
   const skipped: DispatchSkip[] = [];
@@ -154,6 +239,21 @@ export function planDispatch(
       (prev.status !== "sent" && d.attempts > prev.attempts)
     ) {
       byPair.set(key, d);
+    }
+  }
+
+  // Q4/Q6 — só entrega bem-sucedida com relógio legível e não-futuro silencia.
+  // Guarda-se a notificação MAIS RECENTE por (condição, canal) e, junto, a
+  // maior severidade já entregue nela, para que Q3 seja decidível.
+  const lastNotice = new Map<string, { atMs: number; severity: DispatchSeverity }>();
+  for (const n of notices) {
+    if (!n.conditionKey) continue;
+    const atMs = parseTime(n.sentAt);
+    if (atMs === null || atMs > nowMs) continue; // Q6 — fail-open
+    const key = `${n.conditionKey}:${n.channel}`;
+    const prev = lastNotice.get(key);
+    if (!prev || atMs > prev.atMs) {
+      lastNotice.set(key, { atMs, severity: n.severity });
     }
   }
 
@@ -186,6 +286,7 @@ export function planDispatch(
 
       const record = byPair.get(pairKey);
       if (record?.status === "sent") {
+        // Q9 — motivo mais específico vence o silêncio por condição.
         skipped.push({ alertId: alert.id, channel, reason: "already_sent" });
         continue;
       }
@@ -194,6 +295,30 @@ export function planDispatch(
       if (attempts >= config.maxAttempts) {
         skipped.push({ alertId: alert.id, channel, reason: "max_attempts_reached" });
         continue;
+      }
+
+      // Q1–Q10 — silêncio por condição.
+      const conditionKey = conditionKeyFor(alert);
+      const throttleMinutes = conditionThrottleMinutes(conditionKey);
+      const noticeKey = `${conditionKey}:${channel}`;
+      const notice = lastNotice.get(noticeKey);
+      if (throttleMinutes > 0 && notice) {
+        const elapsedMinutes = (nowMs - notice.atMs) / 60_000;
+        const escalated = SEVERITY_RANK[alert.severity] > SEVERITY_RANK[notice.severity]; // Q3
+        if (!escalated && elapsedMinutes < throttleMinutes) {
+          skipped.push({
+            alertId: alert.id,
+            channel,
+            reason: "condition_throttled",
+            detail: {
+              conditionKey,
+              windowMinutes: throttleMinutes,
+              remainingMinutes: Math.max(0, Math.ceil(throttleMinutes - elapsedMinutes)),
+              lastSeverity: notice.severity,
+            },
+          });
+          continue;
+        }
       }
 
       if (attempts > 0) {
@@ -209,12 +334,25 @@ export function planDispatch(
         continue;
       }
 
-      items.push({ alert, channel, attempt: attempts + 1, dedupKey: dedupKeyFor(alert, channel) });
+      items.push({
+        alert,
+        channel,
+        attempt: attempts + 1,
+        dedupKey: dedupKeyFor(alert, channel),
+        conditionKey,
+      });
+
+      // Q10 — o próprio envio planejado silencia a condição nesta execução.
+      if (throttleMinutes > 0) {
+        lastNotice.set(noticeKey, { atMs: nowMs, severity: alert.severity });
+      }
     }
   }
 
   return { items, skipped };
 }
+
+
 
 /** Corpo da notificação, já formatado por canal. */
 export interface RenderedMessage {
