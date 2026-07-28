@@ -14,7 +14,9 @@ import { ScanSearch } from 'lucide-react';
 import { FaceSearchFilters } from '@/components/faces/FaceSearchFilters';
 import { FaceSearchResults } from '@/components/faces/FaceSearchResults';
 import { ReferenceFaceMatchCard } from '@/components/faces/ReferenceFaceMatchCard';
+import { FaceEventTimeline } from '@/components/faces/FaceEventTimeline';
 import { PersonTimelineCard } from '@/components/faces/PersonTimelineCard';
+
 import { TimelineAttestationCard } from '@/components/faces/TimelineAttestationCard';
 
 import { useFaceSearch, MAX_ROWS } from '@/hooks/useFaceSearch';
