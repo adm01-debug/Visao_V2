@@ -50,6 +50,11 @@ import {
   type EscalationThresholds,
   type MaintenanceSeverity,
 } from '@/lib/maintenanceEscalation';
+import {
+  buildConditionStreak,
+  escalationProfileFor,
+  type EscalationProfile,
+} from '@/lib/escalationProfiles';
 import { readOwnerRouting, type OwnerRouting } from '@/lib/maintenance/maintenanceOwner';
 
 const MINUTE_MS = 60_000;
@@ -91,6 +96,21 @@ export interface MaintenanceAlertView {
    * anteriores ao roteamento por culpa, que continuam válidas sem endereço.
    */
   readonly routing: OwnerRouting | null;
+  /** Onda 239 — perfil de urgência efetivamente aplicado pelo cron. */
+  readonly profileId: string;
+  readonly profileLabel: string;
+  /**
+   * Onda 239 — idade da CONDIÇÃO (âncora da sequência) em minutos, para
+   * perfis ancorados em `streak`. `null` quando a âncora é a própria linha.
+   */
+  readonly conditionAgeMinutes: number | null;
+  /** Quantidade de linhas abertas da mesma chave na sequência (P6). */
+  readonly conditionRows: number;
+  /**
+   * Nível efetivo considerado pela escada: o maior já alcançado na sequência
+   * quando o perfil ancora na condição (O4), senão o nível da própria linha.
+   */
+  readonly effectiveLevel: EscalationLevel;
 }
 
 export interface MaintenanceConsoleSummary {
@@ -103,6 +123,8 @@ export interface MaintenanceConsoleSummary {
   readonly atCeiling: number;
   /** Severidade agregada da tela, para o cabeçalho. */
   readonly worst: 'ok' | MaintenanceSeverity;
+  /** Onda 239 — abertos governados por perfil lento (contabilidade diária). */
+  readonly slowProfile: number;
 }
 
 export interface MaintenanceConsoleModel {
@@ -159,6 +181,35 @@ export function minutesToNextLevel(
   return Math.round(Math.max(waitByAge, waitByStep) * 10) / 10;
 }
 
+/**
+ * Onda 239 — mesma previsão, porém regida pelo PERFIL da fonte.
+ *
+ * Este é o defeito que a onda corrige: depois da Onda 238 o cron passou a usar
+ * a escada do perfil, mas o painel continuou prometendo o degrau em 30 minutos
+ * para uma fonte diária. Painel e rotina discordando é pior que painel ausente,
+ * porque a discordância parece informação.
+ */
+export function minutesToNextLevelForProfile(
+  profile: EscalationProfile,
+  severity: MaintenanceSeverity,
+  level: EscalationLevel,
+  ageMin: number,
+  minutesSinceLastStep: number | null,
+): number | null {
+  if (level >= profile.maxLevel[severity]) return null;
+
+  const required = profile.ladderMinutes[severity][level + 1];
+  if (required === undefined || required === null || !Number.isFinite(required)) return null;
+
+  const waitByAge = Math.max(0, required - ageMin);
+  const waitByStep =
+    minutesSinceLastStep === null
+      ? 0
+      : Math.max(0, profile.minStepMinutes - minutesSinceLastStep);
+
+  return Math.round(Math.max(waitByAge, waitByStep) * 10) / 10;
+}
+
 function compareRows(a: MaintenanceAlertView, b: MaintenanceAlertView): number {
   // Aberto sempre antes de reconhecido: o trabalho pendente é o que importa.
   if (a.status !== b.status) return a.status === 'open' ? -1 : 1;
@@ -173,6 +224,26 @@ export function buildMaintenanceConsole(
   nowMs: number,
   thresholds: EscalationThresholds = DEFAULT_ESCALATION_THRESHOLDS,
 ): MaintenanceConsoleModel {
+  // P2 — a sequência é apurada por CHAVE de rotina, exatamente como o SQL da
+  // Onda 238 faz. Duas chaves distintas nunca compartilham âncora.
+  const streaks = new Map<string, ReturnType<typeof buildConditionStreak>>();
+  const grouped = new Map<
+    string,
+    Array<{ createdAtMs: number; acknowledgedAtMs: number | null; escalationLevel: EscalationLevel }>
+  >();
+  for (const row of rows) {
+    const bucket = grouped.get(row.routine) ?? [];
+    bucket.push({
+      createdAtMs: parseMs(row.created_at) ?? nowMs,
+      acknowledgedAtMs: parseMs(row.acknowledged_at),
+      escalationLevel: normalizeLevel(row.escalation_level),
+    });
+    grouped.set(row.routine, bucket);
+  }
+  for (const [routine, bucket] of grouped) {
+    streaks.set(routine, buildConditionStreak(bucket));
+  }
+
   const views: MaintenanceAlertView[] = rows.map((row) => {
     const createdMs = parseMs(row.created_at) ?? nowMs;
     const acknowledgedAtMs = parseMs(row.acknowledged_at);
@@ -181,6 +252,22 @@ export function buildMaintenanceConsole(
     const level = normalizeLevel(row.escalation_level);
     const status: MaintenanceAlertStatus = acknowledgedAtMs === null ? 'open' : 'acknowledged';
     const ageMin = Math.max(0, (nowMs - createdMs) / MINUTE_MS);
+    const profile = escalationProfileFor(row.routine);
+
+    // P3 — a âncora só governa alertas ABERTOS de perfis `streak`. Um alerta
+    // reconhecido não tem previsão (I1) e um perfil `row` continua idêntico ao
+    // comportamento pré-238, garantindo não-regressão.
+    const streak =
+      profile.anchorMode === 'streak' && status === 'open'
+        ? (streaks.get(row.routine) ?? null)
+        : null;
+
+    const conditionAgeMinutes =
+      streak === null ? null : Math.max(0, (nowMs - streak.anchorAtMs) / MINUTE_MS);
+    // P4 — a idade que alimenta a escada nunca é menor que a da própria linha.
+    const ladderAge = conditionAgeMinutes === null ? ageMin : Math.max(conditionAgeMinutes, ageMin);
+    const effectiveLevel: EscalationLevel =
+      streak === null ? level : ((streak.maxLevel > level ? streak.maxLevel : level) as EscalationLevel);
 
     return {
       id: row.id,
@@ -195,16 +282,22 @@ export function buildMaintenanceConsole(
       minutesToNextLevel:
         status === 'acknowledged'
           ? null
-          : minutesToNextLevel(
+          : minutesToNextLevelForProfile(
+              profile,
               severity,
-              level,
-              ageMin,
+              effectiveLevel,
+              ladderAge,
               lastStepMs === null ? null : Math.max(0, (nowMs - lastStepMs) / MINUTE_MS),
-              thresholds,
             ),
       canAcknowledge: status === 'open',
       acknowledgedAtMs,
       routing: readOwnerRouting(row.detail),
+      profileId: profile.id,
+      profileLabel: profile.label,
+      conditionAgeMinutes:
+        conditionAgeMinutes === null ? null : Math.round(conditionAgeMinutes * 10) / 10,
+      conditionRows: streak?.rows ?? 1,
+      effectiveLevel,
     };
   });
 
@@ -212,7 +305,14 @@ export function buildMaintenanceConsole(
 
   const open = views.filter((view) => view.status === 'open');
   const openCritical = open.filter((view) => view.severity === 'critical').length;
-  const atCeiling = open.filter((view) => view.level >= thresholds.maxLevel[view.severity]).length;
+  const atCeiling = open.filter(
+    (view) => view.effectiveLevel >= escalationProfileFor(view.routine).maxLevel[view.severity],
+  ).length;
+
+  // `thresholds` permanece na assinatura por compatibilidade com chamadores
+  // antigos; a régua efetiva é o perfil. Lemos o campo para deixar explícito
+  // que a divergência é intencional e não um parâmetro esquecido.
+  void thresholds;
 
   return {
     rows: views,
@@ -224,6 +324,8 @@ export function buildMaintenanceConsole(
       acknowledged: views.length - open.length,
       atCeiling,
       worst: openCritical > 0 ? 'critical' : open.length > 0 ? 'warning' : 'ok',
+      slowProfile: open.filter((view) => view.profileId !== 'operational').length,
     },
   };
 }
+
