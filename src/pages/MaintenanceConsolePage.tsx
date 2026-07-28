@@ -11,6 +11,8 @@ import { ChronicSeriesCard } from '@/components/maintenance/ChronicSeriesCard';
 import { EpisodeBridgeCard } from '@/components/maintenance/EpisodeBridgeCard';
 import { CommandReliabilityCard } from '@/components/maintenance/CommandReliabilityCard';
 import { DeviceSilenceCard } from '@/components/maintenance/DeviceSilenceCard';
+import { AdmissionPurgeHistoryCard } from '@/components/maintenance/AdmissionPurgeHistoryCard';
+import { useAdmissionPurgeHistory } from '@/hooks/useAdmissionPurgeHistory';
 import { useCommandReliability } from '@/hooks/useCommandReliability';
 import { useDeviceSilence } from '@/hooks/useDeviceSilence';
 import { useEpisodeBridgeWatch } from '@/hooks/useEpisodeBridgeWatch';
