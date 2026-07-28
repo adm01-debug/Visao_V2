@@ -88,6 +88,11 @@ export function MaintenanceAlertsCard({
               {summary.atCeiling > 0 && (
                 <Badge variant="destructive">{summary.atCeiling} no topo da escada</Badge>
               )}
+              {summary.silenced > 0 && (
+                <Badge variant="outline" className="border-warning/50 text-warning">
+                  {summary.silenced} com canal externo calado
+                </Badge>
+              )}
             </div>
 
             {buckets.length > 1 && (
