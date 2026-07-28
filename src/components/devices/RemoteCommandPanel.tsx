@@ -38,23 +38,25 @@ export interface RemoteCommandPanelProps {
 const STATUS_LABEL: Readonly<Record<string, string>> = {
   queued: 'na fila',
   awaiting_presence: 'aguardando o equipamento',
-  dispatched: 'entregue',
-  succeeded: 'concluído',
+  delivered: 'entregue ao equipamento',
+  completed: 'concluído',
   failed: 'falhou',
   expired: 'expirado',
   cancelled: 'cancelado',
 };
 
 const STATUS_VARIANT = (status: string): 'default' | 'secondary' | 'destructive' | 'outline' => {
-  if (status === 'succeeded') return 'default';
+  if (status === 'completed') return 'default';
   if (status === 'failed') return 'destructive';
-  if (status === 'queued' || status === 'awaiting_presence' || status === 'dispatched') {
+  if (status === 'queued' || status === 'awaiting_presence' || status === 'delivered') {
     return 'secondary';
   }
   return 'outline';
 };
 
-const OPEN = new Set(['queued', 'awaiting_presence', 'dispatched']);
+// Só ordem ainda não entregue pode ser cancelada pelo operador: cancelar algo
+// que o equipamento já recebeu seria promessa falsa (a RLS também recusa).
+const OPEN = new Set(['queued', 'awaiting_presence']);
 
 export function RemoteCommandPanel({
   registrationId,
@@ -164,6 +166,16 @@ export function RemoteCommandPanel({
                   <span className="text-muted-foreground">
                     {new Date(row.createdAt).toLocaleString('pt-BR')}
                   </span>
+                  {row.deliveryAttempts > 1 && (
+                    <span className="text-muted-foreground">
+                      · {row.deliveryAttempts}ª entrega
+                    </span>
+                  )}
+                  {row.reportedAt !== null && (
+                    <span className="text-muted-foreground">
+                      · laudo às {new Date(row.reportedAt).toLocaleTimeString('pt-BR')}
+                    </span>
+                  )}
                 </span>
 
                 {OPEN.has(row.status) && row.expiresAt > Date.now() && (
