@@ -84,7 +84,7 @@ const scenario = sql(`
 BEGIN;
   -- Reaproveita um usuário real: criar em auth.users exigiria privilégio que o
   -- papel do gate não tem, e forjar o dono invalidaria a prova de propriedade.
-  CREATE TEMP TABLE ci_owner ON COMMIT DROP AS SELECT id FROM auth.users LIMIT 1;
+  CREATE TEMP TABLE ci_owner ON COMMIT DROP AS SELECT user_id AS id FROM public.profiles LIMIT 1;
 
   INSERT INTO public.device_registrations (id, user_id, device_code, secret_hash, status)
   SELECT '00000000-0000-4000-8000-000000000194', id, 'CIWAVE193AAA', repeat('a',64), 'active' FROM ci_owner;
