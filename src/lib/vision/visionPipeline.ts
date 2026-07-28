@@ -499,15 +499,40 @@ export function settleTask(
   /* Frame que estava pendente e agora foi entregue vira tarefa de rastreio: o
    * pipeline nunca promove pendência a identificação sem passar pela cadência
    * do próximo tick — promover aqui furaria P1 e o orçamento. */
-  const tasks: PipelineTask[] = released.deliveries
-    .filter(() => next.health !== 'quarantined' && next.processor.capabilities.includes('track'))
-    .map((d) => ({
+  const canWork =
+    next.health !== 'quarantined' && next.processor.capabilities.includes('track');
+
+  let bus = released.bus;
+  const drops: FrameDrop[] = [...released.drops];
+  let tasks: PipelineTask[] = [];
+
+  if (canWork) {
+    tasks = released.deliveries.map((d) => ({
       processorId: task.processorId,
       kind: 'track' as const,
       frameId: d.frameId,
       capturedAtMs: d.capturedAtMs,
       trackId: null,
     }));
+  } else {
+    /* Onda 208-B — o processador não vai executar: a pendência promovida seria
+     * entrega órfã (slot em voo sem tarefa). Drena e contabiliza. */
+    for (const delivery of released.deliveries) {
+      drops.push({
+        consumerId: task.processorId,
+        frameId: delivery.frameId,
+        reason: 'consumer_refused',
+      });
+      const drained = drainConsumer(
+        bus,
+        task.processorId,
+        delivery.frameId,
+        effectiveNowMs,
+      );
+      bus = drained.bus;
+      drops.push(...drained.drops);
+    }
+  }
 
   const withAdmission: ProcessorRuntime =
     tasks.length > 0
@@ -521,15 +546,17 @@ export function settleTask(
   return {
     state: {
       ...state,
-      bus: released.bus,
+      bus,
       cadence,
       runtimes: { ...state.runtimes, [task.processorId]: withAdmission },
       clockFloorMs: effectiveNowMs,
     },
     tasks,
+    busDrops: drops,
     late,
   };
 }
+
 
 /* ========================================================================== */
 /* Leitura para a UI                                                           */
