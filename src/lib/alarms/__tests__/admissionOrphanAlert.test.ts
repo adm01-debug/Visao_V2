@@ -25,6 +25,8 @@ function validRun(deferred: number, at = NOW - 3_600_000) {
     deleted_count: 10,
     deferred_count: deferred,
     capped: deferred > 0,
+    quarantined_count: 0,
+    duration_ms: 120,
   });
 }
 
