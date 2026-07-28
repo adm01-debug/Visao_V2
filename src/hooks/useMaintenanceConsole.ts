@@ -16,8 +16,19 @@ import {
   type MaintenanceConsoleModel,
 } from '@/lib/maintenance/maintenanceConsoleView';
 
+import type { ConditionNoticeRow } from '@/lib/maintenance/conditionSilence';
+
 const ALERTS_KEY = ['maintenance', 'alerts'] as const;
 const RETENTION_KEY = ['maintenance', 'retention-overview'] as const;
+const DISPATCH_KEY = ['maintenance', 'dispatches'] as const;
+
+/** Linha crua de `public.maintenance_alert_dispatches` (Onda 241). */
+interface DispatchRow {
+  alert_id: string;
+  channel: string;
+  status: string;
+  last_attempt_at: string | null;
+}
 
 export interface RetentionOverviewRow {
   job_name: string;
