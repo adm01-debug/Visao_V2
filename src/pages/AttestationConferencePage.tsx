@@ -1,14 +1,16 @@
 /**
- * Onda 202 — Conferência de atestado de trajetória.
+ * Onda 202/203 — Conferência de atestado e de dossiê.
  *
- * Tela de destino de quem RECEBE um atestado. Ela não emite nada: cola-se o
- * JSON, o servidor reconfere a corrente e consulta o registro, e a régua única
- * `conferAttestation` produz o parecer.
+ * Tela de destino de quem RECEBE prova. Ela não emite nada: cola-se o JSON — um
+ * atestado avulso ou um dossiê inteiro —, o servidor reconfere cada corrente e
+ * consulta o registro, e as réguas únicas `conferAttestation` (peça) e
+ * `summarizeBatch` (conjunto) produzem o parecer.
  *
- * Decisão de UI que não pode ser revertida: integridade e procedência aparecem
- * como DOIS cartões, nunca como um selo único. Fundi-los faria "não consta"
- * parecer "adulterado" para um leitor apressado — exatamente o erro que a
- * Onda 159 corrigiu no registro de vídeo.
+ * Duas decisões de UI que não podem ser revertidas:
+ *  - Integridade e procedência aparecem como DOIS cartões, nunca como um selo
+ *    único. Fundi-los faria "não consta" parecer "adulterado".
+ *  - O cabeçalho do lote é o PIOR elemento, nunca a maioria. Nenhuma tela deste
+ *    sistema exibirá "11 de 12 autênticos" como conclusão.
  */
 
 import { useCallback, useMemo, useState } from 'react';
@@ -20,7 +22,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
-import { FileSearch, ShieldCheck, ShieldAlert, HelpCircle, Loader2 } from 'lucide-react';
+import {
+  FileSearch,
+  ShieldCheck,
+  ShieldAlert,
+  HelpCircle,
+  Loader2,
+  FileWarning,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import {
@@ -31,6 +40,14 @@ import {
   type ConferenceTone,
   type RegistryLookup,
 } from '@/lib/faces/attestationConference';
+import {
+  contentFingerprint,
+  describeCoverage,
+  parseDossier,
+  summarizeBatch,
+  type BatchPiece,
+  type BatchSummary,
+} from '@/lib/faces/attestationBatch';
 import {
   describeAttestationVerdict,
   describeCaveat,
@@ -56,35 +73,61 @@ interface VerifyResponse {
   registered_by?: string | null;
 }
 
-function parseAttestation(raw: string): TimelineAttestation {
-  const parsed = JSON.parse(raw) as Partial<TimelineAttestation>;
-  if (
-    !parsed ||
-    typeof parsed !== 'object' ||
-    typeof parsed.rootHash !== 'string' ||
-    !Array.isArray(parsed.chain) ||
-    !Array.isArray(parsed.stays)
-  ) {
-    throw new Error('O arquivo não tem a forma de um atestado de trajetória.');
-  }
-  return parsed as TimelineAttestation;
+async function conferOne(
+  attestation: TimelineAttestation,
+): Promise<ConferenceResult> {
+  const { data, error } = await supabase.functions.invoke<VerifyResponse>('timeline-attest', {
+    body: { action: 'verify', attestation },
+  });
+  if (error || !data) throw new Error(error?.message ?? 'Sem resposta do servidor.');
+
+  // Compatibilidade: resposta antiga sem `registry_status` só distingue achado
+  // de não-achado; nunca inferimos "indisponível" a partir dela.
+  const status = data.registry_status ?? (data.registered ? 'found' : 'absent');
+  const registry: RegistryLookup =
+    status === 'found'
+      ? {
+          status: 'found',
+          issuedAt: data.registered_at ?? attestation.issuance.issuedAtUtc,
+          issuedBy: data.registered_by ?? null,
+        }
+      : status === 'unavailable'
+        ? { status: 'unavailable', reason: 'o registro não respondeu' }
+        : { status: 'absent' };
+
+  return conferAttestation({
+    attestation,
+    verification: {
+      intact: data.intact,
+      firstBrokenIndex: data.first_broken_index,
+      rootMatches: data.root_matches,
+      verdictMatches: data.verdict_matches,
+      recomputedVerdict: data.recomputed_verdict,
+    },
+    registry,
+  });
+}
+
+interface ConferenceState {
+  readonly pieces: readonly BatchPiece[];
+  readonly summary: BatchSummary;
+  readonly documents: ReadonlyMap<number, TimelineAttestation>;
+  readonly single: boolean;
 }
 
 export default function AttestationConferencePage() {
   const [raw, setRaw] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [doc, setDoc] = useState<TimelineAttestation | null>(null);
-  const [result, setResult] = useState<ConferenceResult | null>(null);
+  const [state, setState] = useState<ConferenceState | null>(null);
 
   const handleConfer = useCallback(async () => {
     setError(null);
-    setResult(null);
-    setDoc(null);
+    setState(null);
 
-    let attestation: TimelineAttestation;
+    let parsed: ReturnType<typeof parseDossier>;
     try {
-      attestation = parseAttestation(raw);
+      parsed = parseDossier(raw);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'JSON inválido.');
       return;
@@ -92,59 +135,64 @@ export default function AttestationConferencePage() {
 
     setBusy(true);
     try {
-      const { data, error: fnError } = await supabase.functions.invoke<VerifyResponse>(
-        'timeline-attest',
-        { body: { action: 'verify', attestation } },
-      );
-      if (fnError || !data) throw new Error(fnError?.message ?? 'Sem resposta do servidor.');
+      const pieces: BatchPiece[] = [];
+      const documents = new Map<number, TimelineAttestation>();
 
-      // Compatibilidade: resposta antiga sem `registry_status` só distingue
-      // achado de não-achado; nunca inferimos "indisponível" a partir dela.
-      const status = data.registry_status ?? (data.registered ? 'found' : 'absent');
-      const registry: RegistryLookup =
-        status === 'found'
-          ? {
-              status: 'found',
-              issuedAt: data.registered_at ?? attestation.issuance.issuedAtUtc,
-              issuedBy: data.registered_by ?? null,
-            }
-          : status === 'unavailable'
-            ? { status: 'unavailable', reason: 'o registro não respondeu' }
-            : { status: 'absent' };
+      for (const entry of parsed.entries) {
+        if (entry.kind === 'unreadable') {
+          pieces.push({ kind: 'unreadable', index: entry.index, reason: entry.reason });
+          continue;
+        }
+        // Falha de rede em UMA peça não pode derrubar o parecer das outras:
+        // ela vira peça não conferida, jamais peça acusada.
+        try {
+          const result = await conferOne(entry.attestation);
+          pieces.push({
+            kind: 'conferred',
+            index: entry.index,
+            rootHash: entry.attestation.rootHash,
+            fingerprint: contentFingerprint(entry.attestation),
+            result,
+          });
+          documents.set(entry.index, entry.attestation);
+        } catch (e) {
+          pieces.push({
+            kind: 'unreadable',
+            index: entry.index,
+            reason: `não foi possível conferir (${e instanceof Error ? e.message : 'erro'})`,
+          });
+        }
+      }
 
-      setDoc(attestation);
-      setResult(
-        conferAttestation({
-          attestation,
-          verification: {
-            intact: data.intact,
-            firstBrokenIndex: data.first_broken_index,
-            rootMatches: data.root_matches,
-            verdictMatches: data.verdict_matches,
-            recomputedVerdict: data.recomputed_verdict,
-          },
-          registry,
-        }),
-      );
-    } catch (e) {
-      // Falha ao conferir NUNCA é apresentada como resultado da conferência.
-      setError(
-        e instanceof Error
-          ? `Não foi possível concluir a conferência: ${e.message}`
-          : 'Não foi possível concluir a conferência.',
-      );
+      setState({
+        pieces,
+        summary: summarizeBatch(pieces),
+        documents,
+        single: parsed.single,
+      });
     } finally {
       setBusy(false);
     }
   }, [raw]);
 
-  const caveats = useMemo(() => doc?.caveats.filter((c) => c.count > 0) ?? [], [doc]);
+  const soleDoc = useMemo(() => {
+    if (!state || !state.single) return null;
+    return state.documents.get(1) ?? null;
+  }, [state]);
+
+  const solePiece = useMemo(() => {
+    if (!state || !state.single) return null;
+    const p = state.pieces[0];
+    return p && p.kind === 'conferred' ? p : null;
+  }, [state]);
+
+  const caveats = useMemo(() => soleDoc?.caveats.filter((c) => c.count > 0) ?? [], [soleDoc]);
 
   return (
     <PageContent className="container mx-auto space-y-6 p-4 md:p-6">
       <PageMeta
         title="Conferência de atestado | VISÃO"
-        description="Confira a integridade e a procedência de um atestado de trajetória recebido de terceiro."
+        description="Confira a integridade e a procedência de atestados de trajetória recebidos de terceiro."
       />
 
       <header className="space-y-1">
@@ -153,8 +201,8 @@ export default function AttestationConferencePage() {
           Conferência de atestado
         </h1>
         <p className="text-sm text-muted-foreground">
-          Cole o arquivo JSON recebido. A conferência responde duas perguntas separadas: o
-          documento confere consigo mesmo e o selo consta no registro de origem.
+          Cole um atestado ou um dossiê inteiro. A conferência responde duas perguntas
+          separadas: o documento confere consigo mesmo e o selo consta no registro de origem.
         </p>
       </header>
 
@@ -166,7 +214,7 @@ export default function AttestationConferencePage() {
           <Textarea
             value={raw}
             onChange={(e) => setRaw(e.target.value)}
-            placeholder='{ "format": "visao.timeline.attestation", ... }'
+            placeholder='{ "format": "visao.timeline.attestation", ... } ou [ {...}, {...} ]'
             className="min-h-[180px] font-mono text-xs"
             aria-label="Conteúdo do atestado em JSON"
           />
@@ -177,14 +225,13 @@ export default function AttestationConferencePage() {
               ) : (
                 <ShieldCheck className="mr-2 h-4 w-4" aria-hidden="true" />
               )}
-              Conferir atestado
+              Conferir
             </Button>
             <Button
               variant="ghost"
               onClick={() => {
                 setRaw('');
-                setDoc(null);
-                setResult(null);
+                setState(null);
                 setError(null);
               }}
               disabled={busy}
@@ -205,122 +252,173 @@ export default function AttestationConferencePage() {
         </Alert>
       )}
 
-      {busy && !result && <Skeleton className="h-40 w-full" />}
+      {busy && <Skeleton className="h-40 w-full" />}
 
-      {result && doc && (
+      {state && !busy && (
         <div className="space-y-4" aria-live="polite">
-          <Card className={cn('border-2', TONE_CLASS[result.tone])}>
+          <Card className={cn('border-2', TONE_CLASS[state.summary.tone])}>
             <CardContent className="space-y-2 p-5">
               <p className="text-lg font-semibold">
-                {describeConferenceOutcome(result.outcome)}
+                {state.summary.headline
+                  ? describeConferenceOutcome(state.summary.headline)
+                  : 'Nada foi conferido'}
               </p>
-              <p className="text-sm opacity-90">
-                {summarizeConferenceOutcome(result.outcome)}
-              </p>
+              {state.summary.headline && (
+                <p className="text-sm opacity-90">
+                  {summarizeConferenceOutcome(state.summary.headline)}
+                </p>
+              )}
               <ul className="mt-2 space-y-1 text-sm text-foreground/80">
-                {result.reasons.map((reason) => (
+                {state.summary.reasons.map((reason) => (
                   <li key={reason} className="flex gap-2">
                     <span aria-hidden="true">•</span>
                     <span>{reason}</span>
                   </li>
                 ))}
               </ul>
-            </CardContent>
-          </Card>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  Integridade do arquivo
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p
-                  className={cn(
-                    'text-base font-semibold',
-                    result.documentIntact ? 'text-success' : 'text-destructive',
-                  )}
-                >
-                  {result.documentIntact ? 'Confere com o selo' : 'Não confere com o selo'}
+              {!state.single && (
+                <p className="pt-1 text-xs text-muted-foreground">
+                  {describeCoverage(state.summary.coverage)} — a conclusão do dossiê é a da
+                  peça mais grave, nunca a da maioria.
                 </p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Verificado por recálculo da corrente, sem consultar o banco.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  Procedência
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p
-                  className={cn(
-                    'flex items-center gap-2 text-base font-semibold',
-                    result.originConfirmed ? 'text-success' : 'text-muted-foreground',
-                  )}
-                >
-                  {!result.originConfirmed && (
-                    <HelpCircle className="h-4 w-4" aria-hidden="true" />
-                  )}
-                  {result.originConfirmed
-                    ? 'Selo localizado no registro'
-                    : 'Selo não confirmado neste registro'}
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Eixo independente da integridade: um não substitui o outro.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Conteúdo atestado
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm">
-              <p>
-                <span className="font-medium">Conclusão do documento: </span>
-                {describeAttestationVerdict(result.documentVerdict)}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                A conferência atesta autenticidade, não conteúdo: um atestado autêntico pode
-                ser contestado.
-              </p>
-              {caveats.length > 0 && (
-                <div className="flex flex-wrap gap-2 pt-1">
-                  {caveats.map((c) => (
-                    <Badge key={c.code} variant="outline">
-                      {describeCaveat(c.code)} ({c.count})
-                    </Badge>
-                  ))}
-                </div>
               )}
-              <dl className="grid grid-cols-2 gap-2 pt-2 text-xs text-muted-foreground">
-                <div>
-                  <dt className="font-medium text-foreground">Permanências</dt>
-                  <dd>{doc.stats.stays}</dd>
-                </div>
-                <div>
-                  <dt className="font-medium text-foreground">Câmeras</dt>
-                  <dd>{doc.stats.camerasVisited}</dd>
-                </div>
-                <div>
-                  <dt className="font-medium text-foreground">Emitido em</dt>
-                  <dd>{doc.issuance.issuedAtUtc}</dd>
-                </div>
-                <div>
-                  <dt className="font-medium text-foreground">Selo</dt>
-                  <dd className="break-all font-mono">{doc.rootHash.slice(0, 24)}…</dd>
-                </div>
-              </dl>
             </CardContent>
           </Card>
+
+          {/* Peças do dossiê (só quando há mais de uma) */}
+          {!state.single && state.pieces.length > 0 && (
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Peças do dossiê ({state.summary.conferred} conferida(s) de {state.summary.total})
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {state.pieces.map((p) => (
+                  <div
+                    key={p.index}
+                    className={cn(
+                      'flex flex-col gap-1 rounded-md border p-3 text-sm md:flex-row md:items-center md:justify-between',
+                      p.kind === 'conferred' ? TONE_CLASS[p.result.tone] : 'border-dashed',
+                    )}
+                  >
+                    <span className="flex items-center gap-2 font-medium">
+                      {p.kind === 'unreadable' && (
+                        <FileWarning className="h-4 w-4" aria-hidden="true" />
+                      )}
+                      Peça {p.index}
+                    </span>
+                    <span className="text-xs md:text-sm">
+                      {p.kind === 'conferred'
+                        ? describeConferenceOutcome(p.result.outcome)
+                        : `Não conferida — ${p.reason}`}
+                    </span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Detalhe da peça única */}
+          {state.single && solePiece && (
+            <div className="grid gap-4 md:grid-cols-2">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Integridade do arquivo
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p
+                    className={cn(
+                      'text-base font-semibold',
+                      solePiece.result.documentIntact ? 'text-success' : 'text-destructive',
+                    )}
+                  >
+                    {solePiece.result.documentIntact
+                      ? 'Confere com o selo'
+                      : 'Não confere com o selo'}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Verificado por recálculo da corrente, sem consultar o banco.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Procedência
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p
+                    className={cn(
+                      'flex items-center gap-2 text-base font-semibold',
+                      solePiece.result.originConfirmed ? 'text-success' : 'text-muted-foreground',
+                    )}
+                  >
+                    {!solePiece.result.originConfirmed && (
+                      <HelpCircle className="h-4 w-4" aria-hidden="true" />
+                    )}
+                    {solePiece.result.originConfirmed
+                      ? 'Selo localizado no registro'
+                      : 'Selo não confirmado neste registro'}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Eixo independente da integridade: um não substitui o outro.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {state.single && soleDoc && solePiece && (
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Conteúdo atestado
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                <p>
+                  <span className="font-medium">Conclusão do documento: </span>
+                  {describeAttestationVerdict(solePiece.result.documentVerdict)}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  A conferência atesta autenticidade, não conteúdo: um atestado autêntico pode
+                  ser contestado.
+                </p>
+                {caveats.length > 0 && (
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {caveats.map((c) => (
+                      <Badge key={c.code} variant="outline">
+                        {describeCaveat(c.code)} ({c.count})
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+                <dl className="grid grid-cols-2 gap-2 pt-2 text-xs text-muted-foreground">
+                  <div>
+                    <dt className="font-medium text-foreground">Permanências</dt>
+                    <dd>{soleDoc.stats.stays}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-medium text-foreground">Câmeras</dt>
+                    <dd>{soleDoc.stats.camerasVisited}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-medium text-foreground">Emitido em</dt>
+                    <dd>{soleDoc.issuance.issuedAtUtc}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-medium text-foreground">Selo</dt>
+                    <dd className="break-all font-mono">{soleDoc.rootHash.slice(0, 24)}…</dd>
+                  </div>
+                </dl>
+              </CardContent>
+            </Card>
+          )}
         </div>
       )}
     </PageContent>
