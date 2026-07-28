@@ -51,6 +51,12 @@
  *   I11 todo passo para nível ≥ 2 emite alerta no barramento de manutenção
  */
 
+import {
+  escalationProfileFor,
+  type ConditionStreak,
+  type EscalationProfile,
+} from './escalationProfiles.ts';
+
 /** Severidade compatível com `maintenance_alert_events`. */
 export type MaintenanceSeverity = 'warning' | 'critical';
 
@@ -123,14 +129,26 @@ export interface AlertSnapshot {
   /** Instante do último degrau; `null` quando o alerta nunca escalou. */
   readonly lastEscalatedAtMs: number | null;
   readonly dispatch: AlertDispatchState;
+  /**
+   * Onda 238 (O3/O4) — âncora da condição, quando a fonte é renovável.
+   * Ausente para fontes `row`, e ignorada quando o perfil resolvido não usa
+   * `streak`: o perfil manda, nunca o chamador.
+   */
+  readonly streak?: ConditionStreak | null;
 }
 
 export interface EscalationInput {
   /** Referência temporal injetada — mantém a simulação determinística. */
   readonly nowMs: number;
   readonly alerts: readonly AlertSnapshot[];
+  /**
+   * Override explícito da régua. Quando ausente (o caso normal desde a Onda
+   * 238), a régua vem do **perfil da fonte**. Mantido para que a suíte da
+   * Onda 117 continue exercitando limiares arbitrários.
+   */
   readonly thresholds?: EscalationThresholds;
 }
+
 
 export interface EscalationDecision {
   readonly alertId: string;
@@ -143,8 +161,13 @@ export interface EscalationDecision {
   /** `true` quando o degrau precisa virar evento no barramento (nível ≥ 2). */
   readonly emitsAlert: boolean;
   readonly ageMinutes: number;
+  /** Onda 238 (O10) — perfil efetivamente aplicado. */
+  readonly profileId: string;
+  /** Onda 238 (O3) — `true` quando a idade veio da âncora da condição. */
+  readonly anchoredOnStreak: boolean;
   readonly reason: string;
 }
+
 
 export interface EscalationVerdict {
   readonly severity: EscalationVerdictSeverity;
@@ -234,16 +257,52 @@ function describe(decision: {
 }
 
 /**
+ * Onda 238 — converte um perfil na régua consumida pela Onda 117.
+ *
+ * `null` no perfil (degrau inalcançável) vira `+Infinity`, que é a forma que
+ * `targetLevelForAge` já sabia tratar. Manter uma única representação interna
+ * evita um segundo ramo de comparação — e ramo duplicado em régua de escalada
+ * é onde os erros se escondem.
+ */
+export function thresholdsFromProfile(profile: EscalationProfile): EscalationThresholds {
+  const toLadder = (values: readonly (number | null)[]): readonly number[] =>
+    values.map((v) => (v === null ? Number.POSITIVE_INFINITY : v));
+  return {
+    ageMinutesByLevel: {
+      critical: toLadder(profile.ladderMinutes.critical),
+      warning: toLadder(profile.ladderMinutes.warning),
+    },
+    maxLevel: profile.maxLevel,
+    minStepMinutes: profile.minStepMinutes,
+    undeliveredGraceMinutes: profile.undeliveredGraceMinutes,
+  };
+}
+
+/**
  * Avalia a escada para um único alerta. Exportada para o simulador poder
  * exercitar invariantes por alerta sem montar o agregado inteiro.
+ *
+ * Desde a Onda 238, `thresholds` é **opcional**: omitido, a régua vem do
+ * perfil da fonte (O1) e, quando o perfil é renovável, idade e nível de
+ * partida vêm da âncora da condição (O3/O4).
  */
 export function evaluateAlertEscalation(
   alert: AlertSnapshot,
   nowMs: number,
-  thresholds: EscalationThresholds = DEFAULT_ESCALATION_THRESHOLDS,
+  thresholds?: EscalationThresholds,
 ): EscalationDecision {
-  const ageMin = ageMinutes(nowMs, alert.createdAtMs);
-  const from = clampLevel(alert.escalationLevel);
+  const profile = escalationProfileFor(alert.routine);
+  const rule = thresholds ?? thresholdsFromProfile(profile);
+
+  // O3/O4 — a âncora só é honrada quando o PERFIL a pede. Um chamador não
+  // consegue transformar uma fonte pontual em renovável passando `streak`.
+  const streak = profile.anchorMode === 'streak' ? (alert.streak ?? null) : null;
+  const anchoredOnStreak = streak !== null;
+
+  const ageMin = ageMinutes(nowMs, anchoredOnStreak ? streak.anchorAtMs : alert.createdAtMs);
+  const from = clampLevel(
+    anchoredOnStreak ? Math.max(alert.escalationLevel, streak.maxLevel) : alert.escalationLevel,
+  );
   const acknowledged = alert.acknowledgedAtMs !== null;
 
   const base = {
@@ -252,7 +311,10 @@ export function evaluateAlertEscalation(
     severity: alert.severity,
     fromLevel: from,
     ageMinutes: round1(ageMin),
+    profileId: profile.id,
+    anchoredOnStreak,
   } as const;
+
 
   // I1 — reconhecer congela a escada, independentemente de idade ou nível.
   if (acknowledged) {
@@ -273,7 +335,7 @@ export function evaluateAlertEscalation(
     };
   }
 
-  const desired = targetLevelForAge(alert.severity, ageMin, alert.dispatch, thresholds);
+  const desired = targetLevelForAge(alert.severity, ageMin, alert.dispatch, rule);
 
   // I2 — nunca desce. Um alerta já escalonado não volta a "lembrete" porque a
   // régua mudou ou porque a idade foi recalculada com outro relógio.
@@ -299,7 +361,7 @@ export function evaluateAlertEscalation(
   // três níveis em três execuções consecutivas de minuto em minuto.
   const sinceLastStep =
     alert.lastEscalatedAtMs === null ? Number.POSITIVE_INFINITY : (nowMs - alert.lastEscalatedAtMs) / MINUTE_MS;
-  if (sinceLastStep < thresholds.minStepMinutes) {
+  if (sinceLastStep < rule.minStepMinutes) {
     return {
       ...base,
       toLevel: from,
@@ -318,8 +380,14 @@ export function evaluateAlertEscalation(
   }
 
   // I3 — um degrau por avaliação, respeitando o teto da severidade (I5).
-  const ceiling = thresholds.maxLevel[alert.severity];
+  const ceiling = rule.maxLevel[alert.severity];
   const next = clampLevel(Math.min(from + 1, desired, ceiling));
+
+  // O10 — o perfil aplicado (e a âncora, quando usada) viajam no texto do
+  // degrau. Escada silenciosa é escada que ninguém audita.
+  const provenance = anchoredOnStreak
+    ? ` [perfil: ${profile.label}; âncora da condição sobre ${streak.rows} linha(s)]`
+    : ` [perfil: ${profile.label}]`;
 
   return {
     ...base,
@@ -328,15 +396,17 @@ export function evaluateAlertEscalation(
     // I11 — a partir do nível 2 o incidente deixa de ser "repique de canal" e
     // passa a ser um fato novo que o barramento precisa registrar.
     emitsAlert: next >= 2,
-    reason: describe({
-      severity: alert.severity,
-      fromLevel: from,
-      toLevel: next,
-      ageMin,
-      dispatch: alert.dispatch,
-      blockedByCooldown: false,
-      acknowledged: false,
-    }),
+    reason:
+      describe({
+        severity: alert.severity,
+        fromLevel: from,
+        toLevel: next,
+        ageMin,
+        dispatch: alert.dispatch,
+        blockedByCooldown: false,
+        acknowledged: false,
+      }) + provenance,
+
   };
 }
 
@@ -348,8 +418,11 @@ export function evaluateAlertEscalation(
  * — este módulo mede reconhecimento, não a saúde das rotinas em si.
  */
 export function evaluateEscalations(input: EscalationInput): EscalationVerdict {
-  const thresholds = input.thresholds ?? DEFAULT_ESCALATION_THRESHOLDS;
-  const decisions = input.alerts.map((alert) => evaluateAlertEscalation(alert, input.nowMs, thresholds));
+  // Onda 238 — sem override, cada alerta resolve o próprio perfil (O1).
+  const decisions = input.alerts.map((alert) =>
+    evaluateAlertEscalation(alert, input.nowMs, input.thresholds),
+  );
+
   const pending = decisions.filter((d) => d.shouldEscalate);
 
   const paged = decisions.filter((d) => d.toLevel >= 3).length;
