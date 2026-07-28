@@ -229,84 +229,49 @@ const validDoc = {
 };
 
 const lit = (obj) => `'${JSON.stringify(obj).replaceAll("'", "''")}'::jsonb`;
-const insert = (doc, hash = doc.rootHash, id = doc.attestationId) => `
-  INSERT INTO public.timeline_attestations
-    (attestation_id, user_id, window_from, window_to, verdict, root_hash, document, issued_by,
-     stays_count, confirmed_stays, cameras_visited, confirmed_dwell_ms, open_floor_ms, excluded_readings)
-  VALUES ('${id}', '00000000-0000-0000-0000-0000000000aa',
-          '2000-01-01', '2000-01-02', 'corroborated', '${hash}', ${lit(doc)}, 'cliente@mentiroso',
-          999, 999, 999, 999, 999, 999)
-`;
 
-// 5a. resumo é derivado do documento, não do que o cliente mandou.
-try {
-  const out = psql(`
-    BEGIN;
-    ${insert(validDoc)};
-    SELECT verdict || '|' || stays_count || '|' || confirmed_stays || '|' || cameras_visited
-        || '|' || confirmed_dwell_ms || '|' || open_floor_ms || '|' || excluded_readings
-        || '|' || issued_by
-    FROM public.timeline_attestations WHERE attestation_id = 'gate-201';
-    ROLLBACK;
-  `);
-  const line = out.split('\n').filter(Boolean).pop();
-  if (line !== 'partial|2|2|1|1|1|3|gate@visao.test') {
-    fail(`colunas derivadas não espelham o documento: "${line}"`);
-  }
-} catch (error) {
-  fail(`inserção legítima recusada: ${error.stderr ?? error.message}`);
-}
-
-const mustReject = (label, sql, fragment) => {
-  try {
-    psql(`BEGIN; ${sql}; ROLLBACK;`);
-    fail(`${label}: o banco aceitou o que deveria recusar`);
-  } catch (error) {
-    const text = `${error.stderr ?? ''}${error.stdout ?? ''}${error.message}`;
-    if (!text.includes(fragment)) {
-      fail(`${label}: recusado, mas por outro motivo: ${text.slice(-300)}`);
-    }
-  }
+// O papel do gate não tem privilégio direto na tabela (e não deve ter): o
+// exercício roda dentro de uma função SECURITY DEFINER de autoteste, sempre em
+// transação revertida — nada do que ela escreve sobrevive.
+const EXPECTED = {
+  derived: 'partial|2|2|1|1|1|3|gate@visao.test',
+  forged_verdict: 'veredito_forjado',
+  seal_mismatch: 'selo_divergente',
+  id_mismatch: 'identificador_divergente',
+  summary_mismatch: 'resumo_divergente',
+  unknown_format: 'formato_desconhecido',
+  update_blocked: 'atestado_imutavel',
+  delete_blocked: 'atestado_imutavel',
 };
 
-// 5b. veredito forjado: o documento diz "corroborated" com conflito declarado.
-mustReject(
-  'veredito forjado',
-  insert({
-    ...validDoc,
-    verdict: 'corroborated',
-    caveats: [{ code: 'co_presence_conflict', count: 1, detail: 'x' }],
-  }),
-  'veredito_forjado',
-);
+let report = '';
+try {
+  report = psql(`
+    BEGIN;
+    SELECT case_name || '=>' || outcome FROM public.timeline_attestation_selftest(${lit(validDoc)});
+    ROLLBACK;
+  `);
+} catch (error) {
+  fail(`autoteste do registro não executou: ${error.stderr ?? error.message}`);
+}
 
-// 5c. selo da coluna divergente do selo do documento.
-mustReject('selo divergente', insert(validDoc, 'b'.repeat(64)), 'selo_divergente');
-
-// 5d. identificador divergente.
-mustReject('identificador divergente', insert(validDoc, validDoc.rootHash, 'outro-id'), 'identificador_divergente');
-
-// 5e. resumo mentindo sobre o número de permanências.
-mustReject(
-  'resumo divergente',
-  insert({ ...validDoc, stats: { ...validDoc.stats, stays: 5 } }),
-  'resumo_divergente',
-);
-
-// 5f. formato desconhecido não entra no registro probatório.
-mustReject('formato estranho', insert({ ...validDoc, format: 'qualquer.coisa' }), 'formato_desconhecido');
-
-// 5g. imutabilidade.
-mustReject(
-  'atualização',
-  `${insert(validDoc)}; UPDATE public.timeline_attestations SET verdict = 'corroborated' WHERE attestation_id = 'gate-201'`,
-  'atestado_imutavel',
-);
-mustReject(
-  'remoção',
-  `${insert(validDoc)}; DELETE FROM public.timeline_attestations WHERE attestation_id = 'gate-201'`,
-  'atestado_imutavel',
-);
+const seen = new Map();
+for (const line of report.split('\n')) {
+  const at = line.indexOf('=>');
+  if (at > 0) seen.set(line.slice(0, at).trim(), line.slice(at + 2).trim());
+}
+for (const [name, fragment] of Object.entries(EXPECTED)) {
+  const got = seen.get(name);
+  if (got === undefined) {
+    fail(`autoteste não reportou o caso "${name}"`);
+  } else if (name === 'derived') {
+    if (got !== fragment) fail(`colunas derivadas não espelham o documento: "${got}"`);
+  } else if (got === 'ACEITOU') {
+    fail(`${name}: o banco aceitou o que deveria recusar`);
+  } else if (!got.includes(fragment)) {
+    fail(`${name}: recusado por outro motivo: ${got}`);
+  }
+}
 
 /* -------- veredito do gate -------------------------------------------- */
 
