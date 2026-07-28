@@ -204,7 +204,15 @@ export function reconcileLedger(
   const ledgerOpen = ledger.openIndex !== null;
 
   if (aggregationOpen && !ledgerOpen) {
-    return applyOpen(ledger, input.seriesKey, state.openedAt as number, input.severity, cfg);
+    const onset = state.openedAt as number;
+    // O alarme pode ter começado antes do último fato que o livro aceitou
+    // (perdemos eventos). Reescrever o passado é proibido, mas deixar o livro
+    // divergente da realidade é pior: registramos a abertura no instante mais
+    // antigo que ainda é honesto — o último carimbo aceito. A série ganha o
+    // episódio; só a duração fica subestimada, nunca inventada.
+    const floor = ledger.lastAcceptedAt;
+    const at = isClock(floor) && onset < floor ? floor : onset;
+    return applyOpen(ledger, input.seriesKey, at, input.severity, cfg);
   }
 
   if (!aggregationOpen && ledgerOpen) {
