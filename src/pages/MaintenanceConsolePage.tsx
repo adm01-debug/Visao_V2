@@ -34,6 +34,7 @@ export default function MaintenanceConsolePage() {
   const devices = useDeviceSilence();
   const reliability = useCommandReliability();
   const reconciliation = useEpisodeReconciliation(organizationId);
+  const admissionPurge = useAdmissionPurgeHistory();
 
   const { toast } = useToast();
   const [pendingId, setPendingId] = useState<string | null>(null);
