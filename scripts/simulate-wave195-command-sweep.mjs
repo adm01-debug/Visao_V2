@@ -164,6 +164,52 @@ for (const c of snapshot.slice(0, 5_000)) {
   }
 }
 
+
+// --- Fuzz determinístico (PRNG semeado) -------------------------------------
+// A matriz cobre as bordas; o fuzz cobre o miolo, com relógios e prazos
+// arbitrários, inclusive combinações incoerentes vindas de dados legados.
+let seed = 195_0195;
+const rnd = () => {
+  seed = (seed * 1_664_525 + 1_013_904_223) >>> 0;
+  return seed / 0x1_0000_0000;
+};
+const pick = (arr) => arr[Math.floor(rnd() * arr.length)];
+
+for (let i = 0; i < 120_000; i += 1) {
+  const status = pick(STATUSES);
+  const now = NOW + Math.floor((rnd() - 0.5) * 7_200_000);
+  const c = {
+    id: `f${i}`,
+    status,
+    expiresAt: NOW + Math.floor((rnd() - 0.5) * 3_600_000),
+    deliveredAt: rnd() < 0.15 ? null : NOW + Math.floor((rnd() - 0.5) * 3_600_000),
+    deliveryAttempts: Math.floor(rnd() * 5),
+  };
+  const v = judgeSweep(c, now);
+  const ctx = { ...c, now };
+
+  check(v.nextStatus !== 'completed', 'fuzz: varredura inventou sucesso', ctx);
+  check(['expired', 'failed', null].includes(v.nextStatus), 'fuzz: estado final ilegal', ctx);
+
+  if (!OPEN.has(status)) {
+    check(v.nextStatus === null, 'fuzz: terminal tocado', ctx);
+    continue;
+  }
+  if (c.expiresAt <= now) {
+    check(v.nextStatus === 'expired', 'fuzz: vencida ficou viva', ctx);
+    continue;
+  }
+  if (status !== 'delivered' || (c.deliveredAt ?? 0) + L > now) {
+    check(v.nextStatus === null, 'fuzz: ordem viva encerrada', ctx);
+    continue;
+  }
+  check(
+    (c.deliveryAttempts >= MAX_DELIVERY_ATTEMPTS) === (v.nextStatus === 'failed'),
+    'fuzz: abandono sem as duas condições',
+    ctx,
+  );
+}
+
 if (failures.length > 0) {
   console.error(failures.slice(0, 20).join('\n'));
   console.error(`\n❌ Onda 195 — ${failures.length} falhas em ${assertions} asserções.`);
