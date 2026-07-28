@@ -434,6 +434,8 @@ export interface SettleResult {
   readonly tasks: readonly PipelineTask[];
   /** `true` quando o laudo chegou tarde e foi descartado (P4). */
   readonly late: boolean;
+  /** Descartes do barramento provocados por esta baixa (P8). */
+  readonly busDrops: readonly FrameDrop[];
 }
 
 /**
