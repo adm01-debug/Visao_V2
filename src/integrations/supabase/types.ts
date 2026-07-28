@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      admission_ledger_windows: {
+        Row: {
+          admitted: number
+          counts: Json
+          created_at: string
+          dropped_out_of_window: number
+          first_at: string | null
+          id: string
+          last_at: string | null
+          source_id: string
+          total: number
+          user_id: string
+          window_end: string
+          window_start: string
+        }
+        Insert: {
+          admitted: number
+          counts?: Json
+          created_at?: string
+          dropped_out_of_window?: number
+          first_at?: string | null
+          id?: string
+          last_at?: string | null
+          source_id: string
+          total: number
+          user_id: string
+          window_end: string
+          window_start: string
+        }
+        Update: {
+          admitted?: number
+          counts?: Json
+          created_at?: string
+          dropped_out_of_window?: number
+          first_at?: string | null
+          id?: string
+          last_at?: string | null
+          source_id?: string
+          total?: number
+          user_id?: string
+          window_end?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       agent_discoveries: {
         Row: {
           agent_id: string
@@ -8199,6 +8244,30 @@ export type Database = {
       acquire_ptz_lock: {
         Args: { _camera_id: string; _ttl_seconds?: number }
         Returns: Json
+      }
+      admission_counts_sum: { Args: { p_counts: Json }; Returns: number }
+      admission_counts_valid: { Args: { p_counts: Json }; Returns: boolean }
+      admission_coverage: {
+        Args: {
+          p_source_ids: string[]
+          p_user_id: string
+          p_window_start: string
+        }
+        Returns: {
+          admitted: number
+          dominant_reason: string
+          source_id: string
+          status: string
+          total: number
+        }[]
+      }
+      admission_ledger_selftest: {
+        Args: never
+        Returns: {
+          detail: string
+          name: string
+          ok: boolean
+        }[]
       }
       alarm_admission_selftest: {
         Args: never
