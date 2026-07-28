@@ -119,6 +119,10 @@ export interface CycleReport {
   readonly cascaded: number;
   /** Tarefas recusadas por cascata acima do teto. */
   readonly cascadeCapped: number;
+  /** Instante em que o frame entrou no ciclo. Âncora da janela de auditoria. */
+  readonly tickAtMs: number;
+  /** Instante da última baixa; igual a `tickAtMs` quando nada foi admitido. */
+  readonly completedAtMs: number;
 }
 
 function errorMessageOf(error: unknown): string {
