@@ -134,110 +134,20 @@ for (const [prefix, profile] of ESCALATION_PROFILE_PREFIXES) {
 // ---------------------------------------------------------------------------
 // 4. Exercício dinâmico em transação revertida.
 // ---------------------------------------------------------------------------
-const DYNAMIC = `
-BEGIN;
-DO $$
-DECLARE
-  v_level SMALLINT;
-  v_rows  INT;
-  v_prof  TEXT;
-BEGIN
-  -- Defeito B reproduzido: 20 linhas diárias da MESMA condição lenta, cada
-  -- uma jovem, nenhuma reconhecida. Antes da Onda 238 nenhuma escalava.
-  FOR i IN 0..19 LOOP
-    INSERT INTO public.maintenance_alert_events (routine, severity, reason, detail, created_at)
-    VALUES ('admission_trend:__gate__', 'critical', 'gate onda 238', '{}'::jsonb, now() - ((19 - i) || ' days')::INTERVAL);
-  END LOOP;
-
-  -- Uma fonte operacional velha, para provar que o perfil antigo segue vivo.
-  INSERT INTO public.maintenance_alert_events (routine, severity, reason, detail, created_at)
-  VALUES ('__gate_fast__', 'critical', 'gate onda 238', '{}'::jsonb, now() - INTERVAL '20 hours');
-
-  -- Sobe a escada: um degrau por execução (O7).
-  FOR i IN 1..6 LOOP
-    PERFORM public.escalate_stale_maintenance_alerts();
-    UPDATE public.maintenance_alert_events
-       SET last_escalated_at = last_escalated_at - INTERVAL '2 days'
-     WHERE routine IN ('admission_trend:__gate__', '__gate_fast__');
-  END LOOP;
-
-  SELECT MAX(escalation_level) INTO v_level
-    FROM public.maintenance_alert_events WHERE routine = 'admission_trend:__gate__';
-  IF v_level IS DISTINCT FROM 3 THEN
-    RAISE EXCEPTION 'G1 falhou: cronico de 20 dias parou no nivel % (esperado 3)', v_level;
-  END IF;
-
-  SELECT MAX(escalation_level) INTO v_level
-    FROM public.maintenance_alert_events WHERE routine = '__gate_fast__';
-  IF v_level IS DISTINCT FROM 3 THEN
-    RAISE EXCEPTION 'G2 falhou: fonte operacional parou no nivel % (esperado 3)', v_level;
-  END IF;
-
-  -- G3 — a trilha registra o perfil e a ancora.
-  SELECT count(*) INTO v_rows
-    FROM public.maintenance_alert_escalations e
-    JOIN public.maintenance_alert_events ev ON ev.id = e.alert_id
-   WHERE ev.routine = 'admission_trend:__gate__'
-     AND e.detail->>'profile' = 'slow_accounting'
-     AND (e.detail->>'anchored_on_streak')::BOOLEAN;
-  IF v_rows = 0 THEN
-    RAISE EXCEPTION 'G3 falhou: nenhum degrau lento registrou perfil/ancora';
-  END IF;
-
-  SELECT e.detail->>'profile' INTO v_prof
-    FROM public.maintenance_alert_escalations e
-    JOIN public.maintenance_alert_events ev ON ev.id = e.alert_id
-   WHERE ev.routine = '__gate_fast__' LIMIT 1;
-  IF v_prof IS DISTINCT FROM 'operational' THEN
-    RAISE EXCEPTION 'G4 falhou: fonte nao declarada usou perfil %', v_prof;
-  END IF;
-
-  -- G5 — reconhecer quebra a sequencia: nova linha pos-ack nasce do zero.
-  UPDATE public.maintenance_alert_events
-     SET acknowledged_at = now()
-   WHERE routine = 'admission_trend:__gate__';
-  INSERT INTO public.maintenance_alert_events (routine, severity, reason, detail, created_at)
-  VALUES ('admission_trend:__gate__', 'critical', 'pos-ack', '{}'::jsonb, now() - INTERVAL '2 hours');
-  PERFORM public.escalate_stale_maintenance_alerts();
-  SELECT escalation_level INTO v_level
-    FROM public.maintenance_alert_events
-   WHERE routine = 'admission_trend:__gate__' AND acknowledged_at IS NULL;
-  IF v_level IS DISTINCT FROM 0 THEN
-    RAISE EXCEPTION 'G5 falhou: condicao pos-reconhecimento nasceu no nivel %', v_level;
-  END IF;
-
-  -- G6 — warning lento jamais atinge o plantao.
-  INSERT INTO public.maintenance_alert_events (routine, severity, reason, detail, created_at)
-  VALUES ('admission_reconcile:__gate_warn__', 'warning', 'gate', '{}'::jsonb, now() - INTERVAL '400 days');
-  FOR i IN 1..5 LOOP
-    PERFORM public.escalate_stale_maintenance_alerts();
-    UPDATE public.maintenance_alert_events SET last_escalated_at = last_escalated_at - INTERVAL '5 days'
-     WHERE routine = 'admission_reconcile:__gate_warn__';
-  END LOOP;
-  SELECT escalation_level INTO v_level
-    FROM public.maintenance_alert_events WHERE routine = 'admission_reconcile:__gate_warn__';
-  IF v_level > 2 THEN
-    RAISE EXCEPTION 'G6 falhou: warning lento chegou ao nivel %', v_level;
-  END IF;
-
-  RAISE NOTICE 'exercicio dinamico OK (6 guardas)';
-END $$;
-ROLLBACK;
-`;
-
-let dynamicOk = false;
-try {
-  const out = execFileSync('psql', ['-v', 'ON_ERROR_STOP=1'], { encoding: 'utf8', input: DYNAMIC });
-  dynamicOk = out.includes('exercicio dinamico OK');
-} catch (error) {
-  const err = error as { stderr?: string };
-  failures.push(`exercício dinâmico: ${(err.stderr ?? String(error)).trim().split('\n')[0]}`);
+// O gate roda como papel sem UPDATE nas tabelas de manutenção: o exercício
+// vive numa função SECURITY DEFINER que cria e desfaz os próprios dados.
+const guards = sql(
+  `SELECT string_agg(guard || '=' || ok::TEXT || '(' || coalesce(detail, '') || ')', E'\n') FROM public.escalation_profile_selftest()`,
+).split('\n').filter(Boolean);
+check('autoteste devolveu 8 guardas', guards.length === 8, `${guards.length}`);
+for (const line of guards) {
+  const [name, verdict] = line.split('=');
+  check(`autoteste ${name}`, verdict.startsWith('true'), verdict);
 }
-check('exercício dinâmico', dynamicOk);
 
-// Nenhum resíduo do gate no banco.
+// Nenhum resíduo do autoteste no banco.
 const leftovers = sql(
-  `SELECT count(*) FROM public.maintenance_alert_events WHERE routine LIKE '%__gate%'`,
+  `SELECT count(*) FROM public.maintenance_alert_events WHERE routine LIKE '%__selftest%'`,
 );
 check('sem resíduo', leftovers === '0', leftovers);
 
@@ -247,5 +157,5 @@ if (failures.length) {
   process.exit(1);
 }
 console.log(
-  `Gate de perfis de escalada OK — ${probes} sondas, paridade TS↔SQL completa, exercício dinâmico com 6 guardas.`,
+  `Gate de perfis de escalada OK — ${probes} sondas, paridade TS↔SQL completa, exercício dinâmico com 8 guardas.`,
 );
