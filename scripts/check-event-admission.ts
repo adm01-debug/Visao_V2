@@ -152,11 +152,11 @@ const sqlParts: string[] = ['\\set ON_ERROR_STOP on'];
 scenarios.forEach((sc, i) => {
   sqlParts.push('BEGIN;');
   sc.schemes.forEach((s, k) => {
-    const actions = s.health === 'inoperative' && rnd(1) === 0 ? '[]' : '[{"id":"popup"}]';
-    // A saúde no TS foi derivada de origens+ações; aqui gravamos exatamente
-    // o mesmo material para que o banco derive a mesma saúde sozinho.
-    const acts =
-      s.sourceIds.filter((x) => !s.missingSourceIds.includes(x)).length === 0 ? '[{"id":"popup"}]' : actions;
+    // O banco deriva a saúde sozinho a partir de origens + ações; aqui
+    // gravamos exatamente o material que o TS usou para derivar a dele.
+    const acts = s.health === 'inoperative' && s.sourceIds.some((x) => !s.missingSourceIds.includes(x))
+      ? '[]'
+      : '[{"id":"popup"}]';
     sqlParts.push(
       `INSERT INTO public.alarm_schemes(user_id,name,enabled,event_type,source_ids,missing_source_ids,actions,schedule,created_at)
        VALUES ('${userId}', 'gate-${i}-${k}', ${s.enabled}, ${lit(s.eventType)}, ${arr(s.sourceIds)}, ${arr(s.missingSourceIds)}, ${lit(acts)}::jsonb, ${s.schedule === null ? 'NULL' : `${lit(JSON.stringify(s.schedule))}::jsonb`}, now() + make_interval(secs => ${k}));`,
