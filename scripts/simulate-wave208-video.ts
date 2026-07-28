@@ -132,7 +132,7 @@ function runVideoTrajectory(
 
   let now = 1_700_000_000_000;
   let frameId = 0;
-  let lastCapturedAtMs = now;
+  let lastCapturedAtMs = Number.NEGATIVE_INFINITY;
   const open: OpenJob[] = [];
   /** Frames aceitos pelo barramento (não `out_of_order`). */
   let acceptedFrames = 0;
