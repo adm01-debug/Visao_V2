@@ -125,8 +125,10 @@ BEGIN;
   -- antiga: fora da janela de 1h, mas o acumulado permanece
   ${open(ORG, 'old', 'high', '5 hours')} ${close(ORG, 'old', `now() - interval '4 hours'`)}
 
-  -- série de outra organização: nunca pode vazar
-  ${open(OTHER, 'leak', 'critical', '2 min')}
+  -- série de outra organização: nunca pode vazar (inserida direto, pois o
+  -- ator do teste nem sequer é membro dela)
+  INSERT INTO public.alarm_recurrence_episodes (organization_id, series_key, severity, opened_at)
+    VALUES ('${OTHER}', 'leak', 'critical', now() - interval '2 min');
 
   SELECT string_agg(x, '|') FROM (
     SELECT 'chr=' || episodes_in_window || ',' || chatter_in_window || ',' || total_episodes
