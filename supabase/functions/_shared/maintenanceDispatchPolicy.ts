@@ -353,8 +353,6 @@ export function planDispatch(
 }
 
 
-  return { items, skipped };
-}
 
 /** Corpo da notificação, já formatado por canal. */
 export interface RenderedMessage {
