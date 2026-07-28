@@ -353,6 +353,9 @@ export function buildMaintenanceConsole(
       atCeiling,
       worst: openCritical > 0 ? 'critical' : open.length > 0 ? 'warning' : 'ok',
       slowProfile: open.filter((view) => view.profileId !== 'operational').length,
+      silenced: open.filter((view) => (view.silence?.silencedChannels ?? 0) > 0).length,
+      silenceBrokenByEscalation: open.filter((view) => view.silence?.breaksOnEscalation === true)
+        .length,
     },
   };
 }
