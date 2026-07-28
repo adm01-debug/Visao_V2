@@ -176,6 +176,11 @@ export function RemoteCommandPanel({
                       · laudo às {new Date(row.reportedAt).toLocaleTimeString('pt-BR')}
                     </span>
                   )}
+                  {row.settledBy === 'sweep' && (
+                    <span className="text-muted-foreground">
+                      · encerrado pela varredura (sem laudo do equipamento)
+                    </span>
+                  )}
                 </span>
 
                 {OPEN.has(row.status) && row.expiresAt > Date.now() && (
