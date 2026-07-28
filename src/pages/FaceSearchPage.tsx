@@ -100,6 +100,12 @@ export default function FaceSearchPage() {
 
       {criteria !== null && !isFetching && results.length > 0 && (
         <>
+          <FaceEventTimeline
+            results={results}
+            fromMs={criteria.fromMs}
+            toMs={criteria.toMs}
+            partial={truncated}
+          />
           <PersonTimelineCard results={results} windowEndMs={criteria.toMs} />
           <TimelineAttestationCard
             results={results}
@@ -113,6 +119,7 @@ export default function FaceSearchPage() {
           />
         </>
       )}
+
 
 
       {criteria !== null && !isFetching && <FaceSearchResults results={results} />}
