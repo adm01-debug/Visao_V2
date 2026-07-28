@@ -142,6 +142,8 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
       { id: "recognition-analytics", label: "Reconhec. Analytics", icon: PieChart, path: "/recognition-analytics" },
       { id: "behavior-detection", label: "Comportamento", icon: Brain, path: "/behavior-detection" },
       { id: "face-recognition", label: "Reconhecimento", icon: ScanFace, path: "/face-recognition" },
+      // Onda 197: o histórico facial era escrito por máquina e nunca lido por gente.
+      { id: "face-search", label: "Busca de Faces", icon: ScanSearch, path: "/busca-de-faces", minRole: "operator" as const },
       { id: "recognition-logs", label: "Logs Reconhec.", icon: Activity, path: "/recognition-logs" },
       { id: "license-plate", label: "Placas", icon: Car, path: "/license-plate" },
       { id: "vehicles", label: "Veículos", icon: Car, path: "/vehicles" },
