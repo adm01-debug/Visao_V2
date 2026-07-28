@@ -168,7 +168,12 @@ async function runScenario(spec: ScenarioSpec): Promise<ScenarioResult> {
 
     const stale = random() < spec.staleRate;
     const idle = random() < spec.idleRate;
-    const capturedAtMs = clock.peek() - (stale ? 5_000 : 10);
+
+    /* A captura permanece monotônica — o que envelhece é a *chegada*. Puxar o
+     * `capturedAtMs` para trás produziria `out_of_order`, que é outro defeito
+     * (frame fora de ordem), não o atraso de pipeline que queremos medir. */
+    const capturedAtMs = clock.peek() - 10;
+    if (stale) clock.advance(5_000);
 
     const frame: BusFrame = { frameId: i + 1, capturedAtMs };
     const observation: FrameObservation = {
@@ -223,13 +228,17 @@ async function runScenario(spec: ScenarioSpec): Promise<ScenarioResult> {
       check('monotonicidade de custo', metrics.cost.unitsSpent >= before.cost.unitsSpent);
     }
 
-    /* M4/M5 — custo só existe quando houve chamada. */
-    const charged = report.executions.filter((e) => e.startedAtMs !== null).length;
-    check(
-      'M4 custo só na execução',
-      metrics.cost.trackRuns + metrics.cost.identifyRuns >=
-        before.cost.trackRuns + before.cost.identifyRuns + (metrics.rolledOverAtMs === before.rolledOverAtMs ? charged : 0),
-    );
+    /* M4/M5 — custo só existe quando houve chamada. Dentro da mesma janela, o
+     * livro cresce exatamente pelo número de execuções que chamaram o
+     * executor: nem mais (cobrança fantasma), nem menos (gasto engolido). */
+    if (metrics.rolledOverAtMs === before.rolledOverAtMs) {
+      const charged = report.executions.filter((e) => e.startedAtMs !== null).length;
+      check(
+        'M4 custo só na execução',
+        metrics.cost.trackRuns + metrics.cost.identifyRuns ===
+          before.cost.trackRuns + before.cost.identifyRuns + charged,
+      );
+    }
   }
 
   return { metrics, reports };
@@ -281,7 +290,6 @@ async function main(): Promise<void> {
               /* M2 — frame velho nunca some sem balde. */
               if (staleRate > 0.5 && metrics.rolledOverAtMs === null) {
                 const staleSeen = metrics.drops.stale_frame + metrics.drops.stale;
-                if (staleSeen === 0) console.log('DBG', JSON.stringify({ executorKind, staleRate, idleRate, rewindRate, window: config.windowMs, frames: metrics.framesSeen, drops: metrics.drops }));
                 check('M2 frame velho contabilizado', staleSeen > 0);
               }
 
