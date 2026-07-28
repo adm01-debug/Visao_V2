@@ -94,6 +94,7 @@ const FavoriteViewsPage = lazy(() => import("@/pages/FavoriteViewsPage"));
 const DetachedMonitorPage = lazy(() => import("@/pages/DetachedMonitorPage"));
 const DeviceRegistrationsPage = lazy(() => import("@/pages/DeviceRegistrationsPage"));
 const EvidenceExportsPage = lazy(() => import("@/pages/EvidenceExportsPage"));
+const AttestationConferencePage = lazy(() => import("@/pages/AttestationConferencePage"));
 const SitePlanPage = lazy(() => import("@/pages/SitePlanPage"));
 
 const CLSReportPage = lazy(() => import("@/pages/CLSReportPage"));
@@ -251,6 +252,7 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/manutencao" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<MaintenanceConsolePage />, "Console de Manutenção")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/maintenance" element={<Navigate to="/manutencao" replace />} />
                     <Route path="/planta-baixa" element={<ProtectedLayoutRoute><ProtectedRoute minRole="operator">{withRouteErrorBoundary(<SitePlanPage />, "Planta Baixa")}</ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/conferencia-atestado" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<AttestationConferencePage />, "Conferência de Atestado")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/registro-probatorio" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<EvidenceExportsPage />, "Registro Probatório")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/nvrs" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<NvrsPage />, "NVRs")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/nvrs/:id" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<NvrDetailPage />, "Detalhe NVR")}</ProtectedRoute></ProtectedLayoutRoute>} />
