@@ -42,6 +42,8 @@ import {
   writeAckState,
   type AckLedger,
 } from '@/lib/emap/triageAck';
+import { handoffAcks, type InheritedAck } from '@/lib/emap/ackHandoff';
+import { InheritedAckCard } from '@/components/emap/InheritedAckCard';
 import {
   diffClosures,
   recordClosures,
