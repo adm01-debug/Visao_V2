@@ -112,8 +112,8 @@ export function slaBudget(
   entry: AttentionEntry,
   policy: SlaPolicy = DEFAULT_SLA_POLICY,
 ): { budgetMs: number | null; budgetStatus: MapMarkerStatus } {
-  const current = entry.status;
-  const worst = entry.worst;
+  const current = entry?.status ?? 'online';
+  const worst = entry?.worst ?? current;
   const budgetStatus =
     severityRank(worst) <= severityRank(current) ? worst : current;
   const raw = policy.budgetMs[budgetStatus];
