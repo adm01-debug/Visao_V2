@@ -80,7 +80,19 @@ export interface CycleExecution {
   readonly late: boolean;
   /** Mensagem do erro capturado, quando houver. Nunca vaza o objeto de erro. */
   readonly errorMessage: string | null;
+  /* --- Onda 212: relógios da execução (L7) ----------------------------- */
+  /** Instante em que o executor foi chamado. `null` quando não houve chamada. */
+  readonly startedAtMs: number | null;
+  /** Instante da baixa. Sempre existe: toda tarefa é dada baixa (L2). */
+  readonly settledAtMs: number;
+  /** Espera entre a captura do frame e a chamada do executor. */
+  readonly queueLatencyMs: number | null;
+  /** Duração da chamada do executor. `null` quando não houve chamada. */
+  readonly executionMs: number | null;
+  /** Captura → baixa. A latência que o operador realmente sente. */
+  readonly totalLatencyMs: number;
 }
+
 
 export interface CycleOptions {
   /** Executores por `processorId`. Ausência é falha declarada, não silêncio. */
