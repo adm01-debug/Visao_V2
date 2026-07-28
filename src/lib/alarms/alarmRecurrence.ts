@@ -322,6 +322,59 @@ export function assessRecurrence(
     }
   }
 
+  const verdict = classifyRecurrenceCounts(
+    { episodesInWindow, chatterInWindow, peakSeverity },
+    config,
+  );
+
+  return {
+    klass: verdict.klass,
+    mode: verdict.mode,
+    episodesInWindow,
+    chatterInWindow,
+    flapping: verdict.flapping,
+    peakSeverity,
+    open: ledger.openIndex !== null,
+    collapsedCount: verdict.collapsedCount,
+    config,
+  };
+}
+
+export interface RecurrenceCounts {
+  episodesInWindow: number;
+  chatterInWindow: number;
+  peakSeverity: RecurrenceSeverity | null;
+}
+
+export interface RecurrenceVerdict {
+  klass: RecurrenceClass;
+  mode: NoticeMode;
+  flapping: boolean;
+  collapsedCount: number;
+}
+
+/**
+ * Regra única de classificação a partir de contagens já apuradas.
+ *
+ * Extraída na Onda 183 para que o painel de séries crônicas (que recebe as
+ * contagens agregadas do banco, sem o histórico episódio a episódio) chegue
+ * exatamente ao mesmo veredito que a avaliação local. Duas implementações da
+ * mesma escada divergiriam no primeiro ajuste de limiar.
+ */
+export function classifyRecurrenceCounts(
+  counts: RecurrenceCounts,
+  cfg?: Partial<RecurrenceConfig> | null,
+): RecurrenceVerdict {
+  const config = normalizeConfig(cfg);
+  const episodesInWindow =
+    Number.isFinite(counts?.episodesInWindow) && counts.episodesInWindow > 0
+      ? Math.floor(counts.episodesInWindow)
+      : 0;
+  const chatterInWindow =
+    Number.isFinite(counts?.chatterInWindow) && counts.chatterInWindow > 0
+      ? Math.min(Math.floor(counts.chatterInWindow), episodesInWindow)
+      : 0;
+
   const flapping = chatterInWindow >= config.chatterThreshold;
 
   let klass: RecurrenceClass = 'isolated';
@@ -331,7 +384,7 @@ export function assessRecurrence(
   // episódios contados, mas nunca além de reincidente por si só.
   if (flapping && CLASS_RANK[klass] < CLASS_RANK.recurrent) klass = 'recurrent';
 
-  const critical = peakSeverity === 'critical';
+  const critical = counts?.peakSeverity === 'critical';
   let mode: NoticeMode;
   if (klass === 'chronic') mode = 'escalate';
   else if (klass === 'recurrent' && !critical) mode = 'summarize';
@@ -340,15 +393,11 @@ export function assessRecurrence(
   return {
     klass,
     mode,
-    episodesInWindow,
-    chatterInWindow,
     flapping,
-    peakSeverity,
-    open: ledger.openIndex !== null,
     collapsedCount: mode === 'summarize' ? Math.max(0, episodesInWindow - 1) : 0,
-    config,
   };
 }
+
 
 export const recurrenceClassLabel = (c: RecurrenceClass): string => {
   switch (c) {
