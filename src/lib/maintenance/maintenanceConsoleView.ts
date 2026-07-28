@@ -139,6 +139,10 @@ export interface MaintenanceConsoleSummary {
   readonly worst: 'ok' | MaintenanceSeverity;
   /** Onda 239 — abertos governados por perfil lento (contabilidade diária). */
   readonly slowProfile: number;
+  /** Onda 241 — abertos cuja condição está calada no despacho externo agora. */
+  readonly silenced: number;
+  /** Onda 241 — abertos que só voltam a notificar por agravamento (R4). */
+  readonly silenceBrokenByEscalation: number;
 }
 
 export interface MaintenanceConsoleModel {
