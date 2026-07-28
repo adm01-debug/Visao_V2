@@ -133,30 +133,6 @@ check(
 const ACTOR = '00000000-0000-0000-0000-00000000d184';
 const ORG = '00000000-0000-0000-0000-0000000d1840';
 
-const functional = queryTx(`
-BEGIN;
-  SET LOCAL client_min_messages = warning;
-  INSERT INTO public.organizations (id, name, slug, created_by)
-    VALUES ('${ORG}', 'gate-184', 'gate-184', '${ACTOR}');
-
-  -- (a) fechado fora do prazo · (b) fechado dentro do prazo
-  -- (c) aberto antiquíssimo    · (d) abriu há muito, fechou ontem
-  INSERT INTO public.alarm_recurrence_episodes (organization_id, series_key, severity, opened_at, closed_at, duration_ms)
-  VALUES
-    ('${ORG}', 'expira',  'high',   now() - interval '400 days', now() - interval '399 days', 86400000),
-    ('${ORG}', 'guarda',  'low',    now() - interval '2 days',   now() - interval '1 day',    86400000),
-    ('${ORG}', 'longo',   'high',   now() - interval '400 days', now() - interval '1 day',    1);
-  INSERT INTO public.alarm_recurrence_episodes (organization_id, series_key, severity, opened_at)
-  VALUES ('${ORG}', 'aberto', 'critical', now() - interval '900 days');
-
-  SELECT 'resultado=' || public.purge_alarm_recurrence_episodes()::text;
-  SELECT 'sobrou=' || COALESCE(string_agg(series_key, ',' ORDER BY series_key), '');
-    FROM public.alarm_recurrence_episodes WHERE organization_id = '${ORG}';
-ROLLBACK;
-`);
-void functional;
-
-// A consulta acima é montada em partes para manter o SQL legível; abaixo a real.
 const battery = queryTx(`
 BEGIN;
   SET LOCAL client_min_messages = warning;
