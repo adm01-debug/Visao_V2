@@ -191,6 +191,7 @@ export function FaceEventTimeline({ results, fromMs, toMs, partial = false }: Fa
               </p>
               <Badge variant="outline">{selected.count} leitura(s)</Badge>
             </div>
+            <ProvenanceBadge assessment={provenance} showCaveats />
             <ul className="space-y-1 text-xs text-muted-foreground">
               {selectedResults.slice(0, 12).map((r) => (
                 <li key={r.id} className="flex flex-wrap gap-2">
