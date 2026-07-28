@@ -8452,6 +8452,7 @@ export type Database = {
         Returns: Json
       }
       detect_stale_ingest_publishers: { Args: never; Returns: Json }
+      device_remote_command_selftest: { Args: never; Returns: Json }
       device_silence_thresholds: {
         Args: never
         Returns: {
