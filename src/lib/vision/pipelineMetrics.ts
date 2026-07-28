@@ -111,7 +111,8 @@ function observe(
   if (!Number.isFinite(valueMs) || valueMs < 0) return digest;
 
   const buckets = [...digest.buckets];
-  buckets[bucketIndexOf(valueMs, edges)] += 1;
+  const index = bucketIndexOf(valueMs, edges);
+  buckets[index] = (buckets[index] ?? 0) + 1;
 
   const count = digest.count + 1;
   const sumMs = digest.sumMs + valueMs;
