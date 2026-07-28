@@ -97,7 +97,8 @@ for (const a of LEVELS) {
 
 if (errors.length === 0) {
   const values = probes
-    .map((s, i) => `(${i}, ARRAY[${s.join(',')}]::bigint[])`)
+    // A janela é aplicada por `admission_backlog_assess`; o núcleo puro recebe já cortado.
+    .map((s, i) => `(${i}, ARRAY[${s.slice(0, PERSIST_RUNS).join(',')}]::bigint[])`)
     .join(',\n    ');
   const rows = query(`
     WITH probes(i, series) AS (VALUES
