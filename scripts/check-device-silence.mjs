@@ -181,37 +181,38 @@ ok(divergences === 0, `G3 espelho SQL divergiu da regra única em ${divergences}
 //     piora fura a pausa, e repetição igual é engolida. Tudo revertido. ───
 const fanin = rows(`
 BEGIN;
-  CREATE TEMP TABLE _r(kind text, id uuid) ON COMMIT DROP;
-
   INSERT INTO public.device_registrations
     (user_id, device_code, label, status, secret_hash, last_seen_at, revoked_at)
   VALUES
     ('11111111-1111-1111-1111-111111111111','GATEAAAA0001','Sumido','active',repeat('a',64), ${NOW_SQL} - interval '600 min', NULL),
     ('11111111-1111-1111-1111-111111111111','GATEAAAA0002','Atrasado','active',repeat('a',64), ${NOW_SQL} - interval '50 min', NULL),
     ('11111111-1111-1111-1111-111111111111','GATEAAAA0003','Revogado','revoked',repeat('a',64), ${NOW_SQL} - interval '9000 min', ${NOW_SQL} - interval '1 day'),
-    ('11111111-1111-1111-1111-111111111111','GATEAAAA0004','Em dia','active',repeat('a',64), ${NOW_SQL} - interval '2 min', NULL);
+    ('11111111-1111-1111-1111-111111111111','GATEAAAA0004','Em dia','active',repeat('a',64), ${NOW_SQL} - interval '2 min', NULL),
+    ('11111111-1111-1111-1111-111111111111','GATEAAAA0005','Piorou','active',repeat('a',64), ${NOW_SQL} - interval '900 min', NULL);
+
+  -- 0005 já foi avisado como "atrasado" dentro da pausa; agora está "sumido".
+  INSERT INTO public.maintenance_alert_events (routine, severity, reason, detail, observed_at)
+  VALUES ('device:GATEAAAA0005','warning','atrasado','{}'::jsonb, ${NOW_SQL});
 
   SELECT 'run1=' || (public.evaluate_device_silence_alerts(${NOW_SQL}) ->> 'emitted');
+  SELECT 'escalou=' || (SELECT count(*) FROM public.maintenance_alert_events
+                         WHERE routine = 'device:GATEAAAA0005' AND severity = 'critical');
+  SELECT 'sev=' || (SELECT string_agg(severity, '>' ORDER BY created_at)
+                      FROM public.maintenance_alert_events WHERE routine = 'device:GATEAAAA0005');
   SELECT 'run2=' || (public.evaluate_device_silence_alerts(${NOW_SQL}) ->> 'suppressed');
   SELECT 'revogado=' || (SELECT count(*) FROM public.maintenance_alert_events
                           WHERE routine = 'device:GATEAAAA0003');
   SELECT 'emdia=' || (SELECT count(*) FROM public.maintenance_alert_events
                        WHERE routine = 'device:GATEAAAA0004');
-  -- o atrasado piora: precisa furar a pausa
-  UPDATE public.device_registrations SET last_seen_at = ${NOW_SQL} - interval '900 min'
-   WHERE device_code = 'GATEAAAA0002';
-  SELECT 'escalou=' || (public.evaluate_device_silence_alerts(${NOW_SQL}) ->> 'escalated');
-  SELECT 'sev=' || (SELECT string_agg(severity, '>' ORDER BY created_at)
-                      FROM public.maintenance_alert_events WHERE routine = 'device:GATEAAAA0002');
 ROLLBACK;`).map((r) => r[0]);
 
 const got = Object.fromEntries(fanin.map((l) => l.split('=')));
-ok(got.run1 === '2', `G4 primeira passada deveria emitir 2 alertas (emitiu ${got.run1})`);
-ok(got.run2 === '2', `G4 repetição idêntica não foi engolida pela pausa (${got.run2})`);
+ok(got.run1 === '3', `G4 primeira passada deveria emitir 3 alertas (emitiu ${got.run1})`);
+ok(got.escalou === '1', 'G4 agravamento não furou a pausa');
+ok(got.sev === 'warning>critical', `G4 trilha de gravidade inesperada (${got.sev})`);
+ok(got.run2 === '3', `G4 repetição idêntica não foi engolida pela pausa (${got.run2})`);
 ok(got.revogado === '0', 'G4 registro revogado gerou alerta — silêncio intencional virou ruído');
 ok(got.emdia === '0', 'G4 equipamento em dia gerou alerta');
-ok(got.escalou === '1', `G4 agravamento não furou a pausa (${got.escalou})`);
-ok(got.sev === 'warning>critical', `G4 trilha de gravidade inesperada (${got.sev})`);
 
 // ─── G5: as constantes do SQL espelham as do TypeScript ───
 const [thr] = rows('SELECT * FROM public.device_silence_thresholds()');
