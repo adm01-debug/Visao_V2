@@ -257,7 +257,8 @@
     "simulate:wave194": "node --experimental-strip-types scripts/simulate-wave194-command-delivery.mjs",
     "db:check:command-sweep": "bun scripts/check-command-sweep.mjs",
     "simulate:wave195": "bun scripts/simulate-wave195-command-sweep.mjs",
-    "simulate:wave196": "bun scripts/simulate-wave196-command-reliability.mjs"
+    "simulate:wave196": "bun scripts/simulate-wave196-command-reliability.mjs",
+    "simulate:wave197": "bun scripts/simulate-wave197-face-search.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
