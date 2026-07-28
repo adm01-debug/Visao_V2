@@ -13,6 +13,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ScanSearch } from 'lucide-react';
 import { FaceSearchFilters } from '@/components/faces/FaceSearchFilters';
 import { FaceSearchResults } from '@/components/faces/FaceSearchResults';
+import { ReferenceFaceMatchCard } from '@/components/faces/ReferenceFaceMatchCard';
 import { useFaceSearch, MAX_ROWS } from '@/hooks/useFaceSearch';
 import { describeRejection } from '@/lib/faces/faceSearch';
 
@@ -36,6 +37,8 @@ export default function FaceSearchPage() {
           Pergunte ao histórico facial: quem passou, quando e com que grau de certeza.
         </p>
       </header>
+
+      <ReferenceFaceMatchCard />
 
       <FaceSearchFilters isFetching={isFetching} onSubmit={submit} onReset={reset} />
 
