@@ -101,6 +101,51 @@ export type Database = {
         }
         Relationships: []
       }
+      admission_reconcile_snapshots: {
+        Row: {
+          created_at: string
+          declared_deferred: number
+          drift_stock: number
+          expired_stock: number
+          id: number
+          last_run_at: string | null
+          observed_at: string
+          orphan_count: number
+          quarantined_stock: number
+          retention_days: number
+          total_stock: number
+          verdict: string
+        }
+        Insert: {
+          created_at?: string
+          declared_deferred: number
+          drift_stock: number
+          expired_stock: number
+          id?: number
+          last_run_at?: string | null
+          observed_at: string
+          orphan_count: number
+          quarantined_stock: number
+          retention_days: number
+          total_stock: number
+          verdict: string
+        }
+        Update: {
+          created_at?: string
+          declared_deferred?: number
+          drift_stock?: number
+          expired_stock?: number
+          id?: number
+          last_run_at?: string | null
+          observed_at?: string
+          orphan_count?: number
+          quarantined_stock?: number
+          retention_days?: number
+          total_stock?: number
+          verdict?: string
+        }
+        Relationships: []
+      }
       agent_discoveries: {
         Row: {
           agent_id: string
@@ -8320,6 +8365,11 @@ export type Database = {
           ok: boolean
         }[]
       }
+      admission_orphan_trend: { Args: { p_window?: number }; Returns: Json }
+      admission_orphan_trend_classify: {
+        Args: { p_series: number[] }
+        Returns: string
+      }
       admission_reconcile_classify: {
         Args: {
           p_deferred: number
@@ -9726,6 +9776,10 @@ export type Database = {
       reap_monitoring_center_leases: { Args: { _at?: string }; Returns: Json }
       reconcile_abandoned_episodes: {
         Args: { p_limit?: number; p_now?: string; p_organization_id: string }
+        Returns: Json
+      }
+      record_admission_reconcile_snapshot: {
+        Args: { p_now?: string }
         Returns: Json
       }
       record_alarm_episode_close: {
