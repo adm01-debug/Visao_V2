@@ -6,14 +6,20 @@
 // entrega pelos canais externos configurados, registrando tudo para auditoria.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import {
+  conditionKeyFor,
   planDispatch,
   renderMessage,
   resolveConfig,
+  type ConditionNotice,
   type DispatchChannel,
   type DispatchConfig,
   type DispatchPlanItem,
   type MaintenanceAlert,
 } from "../_shared/maintenanceDispatchPolicy.ts";
+
+/** Lookback do histórico usado pelo silêncio por condição (Onda 240). */
+const CONDITION_HISTORY_HOURS = 72;
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
