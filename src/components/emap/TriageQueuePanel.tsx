@@ -158,6 +158,12 @@ export function TriageQueuePanel({
           {sla.summary.late > 0 && (
             <Badge variant="secondary">{sla.summary.late} atendido(s) com atraso</Badge>
           )}
+          {escalation.summary.total > 0 && (
+            <Badge variant="destructive">
+              acionamento: {escalationLabel(escalation.summary.highest)} (
+              {escalation.summary.total})
+            </Badge>
+          )}
         </div>
 
         <ol className="space-y-2">
