@@ -104,6 +104,20 @@ export function TriageQueuePanel({
     return { byCamera, summary: summarizeSla(byCamera.values()) };
   }, [queue.items, ledger, now, acks]);
 
+  // Onda 176 — degrau de acionamento. A memória vive num ref porque o degrau
+  // nunca retrocede: recalcular do zero a cada render rebaixaria acionamentos
+  // já feitos quando o estado da câmera melhora.
+  const escalationMemory = useRef<EscalationLedger>({});
+  const escalation = useMemo(() => {
+    const result = reconcileEscalations({
+      verdicts: sla.byCamera.values(),
+      memory: escalationMemory.current,
+      now,
+    });
+    escalationMemory.current = result.memory;
+    return { ledger: result.memory, summary: summarizeEscalations(result.memory) };
+  }, [sla, now]);
+
   if (queue.totals.total === 0) return null;
 
   return (
