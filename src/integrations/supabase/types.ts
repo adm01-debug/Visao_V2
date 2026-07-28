@@ -8287,6 +8287,11 @@ export type Database = {
         Args: { _camera_id: string; _ttl_seconds?: number }
         Returns: Json
       }
+      admission_backlog_assess: { Args: { p_window?: number }; Returns: Json }
+      admission_backlog_classify: {
+        Args: { p_series: number[] }
+        Returns: string
+      }
       admission_counts_sum: { Args: { p_counts: Json }; Returns: number }
       admission_counts_valid: { Args: { p_counts: Json }; Returns: boolean }
       admission_coverage: {
@@ -8843,6 +8848,10 @@ export type Database = {
         }[]
       }
       evaluate_abandoned_episode_alerts: {
+        Args: { p_now?: string }
+        Returns: Json
+      }
+      evaluate_admission_backlog_alerts: {
         Args: { p_now?: string }
         Returns: Json
       }
