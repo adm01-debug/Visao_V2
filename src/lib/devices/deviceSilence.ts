@@ -288,6 +288,7 @@ export function summarizeDeviceSilence(verdicts: readonly DeviceSilenceVerdict[]
     else if (v.severity === 'warning') warning += 1;
     else quiet += 1;
   }
+  const head = sorted.length > 0 ? sorted[0] : undefined;
   return {
     total: sorted.length,
     ok,
@@ -295,6 +296,6 @@ export function summarizeDeviceSilence(verdicts: readonly DeviceSilenceVerdict[]
     critical,
     warning,
     quiet,
-    worst: sorted.length > 0 && sorted[0].severity !== null ? sorted[0] : null,
+    worst: head !== undefined && head.severity !== null ? head : null,
   };
 }
