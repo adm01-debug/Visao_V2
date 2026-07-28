@@ -7,6 +7,14 @@ import { formatAge, type AttentionLedger } from '@/lib/emap/attentionClock';
 import { buildTriageQueue, type TriageItem } from '@/lib/emap/triageQueue';
 import type { TriageLocator } from '@/lib/emap/triageQueue';
 import type { MapMarkerStatus } from '@/lib/emap/floorPlanGeometry';
+import type { AckLedger } from '@/lib/emap/triageAck';
+import {
+  evaluateSla,
+  slaStateLabel,
+  summarizeSla,
+  type SlaState,
+  type SlaVerdict,
+} from '@/lib/emap/triageSla';
 
 export interface TriageQueuePanelProps {
   ledger: AttentionLedger;
@@ -14,12 +22,15 @@ export interface TriageQueuePanelProps {
   locate?: TriageLocator;
   activePlanId?: string | null;
   acknowledged?: Iterable<string>;
+  /** Livro de ciência (Onda 172) — congela o veredito de prazo da Onda 174. */
+  acks?: AckLedger;
   /** Leva o operador até a câmera (troca de andar + seleção). */
   onFocus?: (item: TriageItem) => void;
   onAcknowledge?: (cameraId: string) => void;
   limit?: number;
   className?: string;
 }
+
 
 const STATUS_LABEL: Record<MapMarkerStatus, string> = {
   alert: 'alarme',
