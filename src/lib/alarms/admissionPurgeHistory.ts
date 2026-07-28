@@ -256,8 +256,10 @@ export function readPurgeHistory(
   const trend = valid.slice(0, TREND_WINDOW).map((r) => r.deferred ?? 0).reverse();
   let backlogGrowing = false;
   for (let i = 1; i < trend.length; i += 1) {
-    if (trend[i] > trend[i - 1]) backlogGrowing = true;
-    else if (trend[i] < trend[i - 1]) backlogGrowing = false;
+    const prev = trend[i - 1] ?? 0;
+    const curr = trend[i] ?? 0;
+    if (curr > prev) backlogGrowing = true;
+    else if (curr < prev) backlogGrowing = false;
   }
   if (trend.length < 2) backlogGrowing = false;
 
