@@ -165,7 +165,8 @@ export async function runCameraCycle(
   const maxCascade = options.maxCascade ?? DEFAULT_MAX_CASCADE;
 
   /* L1 — um único tick por frame. */
-  const tick = tickPipeline(state, frame, observation, options.clock());
+  const tickAtMs = options.clock();
+  const tick = tickPipeline(state, frame, observation, tickAtMs);
 
   let current = tick.state;
   const executions: CycleExecution[] = [];
