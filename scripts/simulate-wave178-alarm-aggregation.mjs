@@ -76,7 +76,7 @@ check(M.isWithinSchedule(null, Date.UTC(2026, 0, 1, 3, 0)), '24x7 sempre dentro'
 
 {
   // Domingo 2026-01-04. Janela noturna 22:00 -> 06:00 (cruza a meia-noite).
-  const night = [[], [], [], [], [], [], [{ startMin: 22 * 60, endMin: 6 * 60 }]];
+  const night = [[{ startMin: 22 * 60, endMin: 6 * 60 }], [], [], [], [], [], []]; // domingo
   const at = (d, h, m = 0) => Date.UTC(2026, 0, d, h, m);
   check(M.isWithinSchedule(night, at(4, 23)), 'domingo 23h dentro da janela noturna');
   check(M.isWithinSchedule(night, at(5, 5, 59)), 'segunda 05:59 ainda dentro (continuacao)');
