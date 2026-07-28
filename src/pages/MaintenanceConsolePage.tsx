@@ -24,6 +24,8 @@ export default function MaintenanceConsolePage() {
   const { organizationId, isLoading: orgLoading } = usePrimaryOrganization();
   const chronic = useChronicSeries(organizationId);
   const bridge = useEpisodeBridgeWatch();
+  const reconciliation = useEpisodeReconciliation(organizationId);
+
   const { toast } = useToast();
   const [pendingId, setPendingId] = useState<string | null>(null);
 
