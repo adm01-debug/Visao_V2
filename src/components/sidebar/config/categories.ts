@@ -280,6 +280,8 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
     items: [
       { id: "settings-general", label: "Geral", icon: Settings, path: "/settings" },
       { id: "notifications", label: "Notificações", icon: Bell, path: "/notification-settings" },
+      // Onda 216: cadastro dos esquemas de alarme (régua da Onda 215 sobre a base da 217).
+      { id: "alarm-schemes", label: "Esquemas de alarme", icon: Bell, path: "/esquemas-de-alarme" },
       { id: "streams", label: "Streams", icon: Sliders, path: "/stream-settings" },
       { id: "telegram", label: "Telegram", icon: MessageSquare, path: "/telegram-settings" },
       {
