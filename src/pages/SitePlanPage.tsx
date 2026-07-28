@@ -427,6 +427,8 @@ export default function SitePlanPage() {
               locate={locateCamera}
               activePlanId={planNavigation.resolvedActiveId}
               acknowledged={acknowledgedCameraIds}
+              acks={acks}
+
               onFocus={focusTriageItem}
               onAcknowledge={acknowledgeAttention}
             />
