@@ -110,7 +110,7 @@ export interface FaceSearchCriteria {
   readonly cameraIds: readonly string[] | null;
   readonly personIds: readonly string[] | null;
   readonly minSimilarity: number;
-  readonly attributes: FaceAttributeFilter;
+  readonly attributes: NormalizedAttributeFilter;
   readonly includeSpoof: boolean;
 }
 
