@@ -1,9 +1,13 @@
 {
-  "generatedAt": "2026-07-28T16:29:51.537Z",
+  "generatedAt": "2026-07-28T18:38:59.996Z",
   "pages": [
     {
       "file": "AcessoNegado.tsx",
       "mode": "standalone"
+    },
+    {
+      "file": "AlarmSchemesPage.tsx",
+      "mode": "standard"
     },
     {
       "file": "AlertsPage.tsx",
