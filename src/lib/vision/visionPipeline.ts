@@ -360,10 +360,11 @@ export function tickPipeline(
   let bus = published.bus;
   const drops = [...published.drops];
   for (const refusal of refusals) {
-    const released = completeDelivery(bus, refusal.processorId, refusal.frameId, effectiveNowMs);
-    bus = released.bus;
-    drops.push(...released.drops);
+    const drained = drainConsumer(bus, refusal.processorId, refusal.frameId, effectiveNowMs);
+    bus = drained.bus;
+    drops.push(...drained.drops);
   }
+
 
   return {
     state: {
