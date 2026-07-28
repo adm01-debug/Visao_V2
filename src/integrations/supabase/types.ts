@@ -8404,6 +8404,14 @@ export type Database = {
         }
         Returns: Json
       }
+      enroll_device: {
+        Args: { p_label: string; p_nvr_id?: string; p_ttl_hours?: number }
+        Returns: {
+          device_code: string
+          device_secret: string
+          registration_id: string
+        }[]
+      }
       ensure_future_partitions: {
         Args: { months_ahead?: number }
         Returns: Json
@@ -9358,6 +9366,10 @@ export type Database = {
         Args: { _entry_id: string; _org_id: string }
         Returns: boolean
       }
+      revoke_device: {
+        Args: { p_reason?: string; p_registration_id: string }
+        Returns: boolean
+      }
       rewrap_camera_vault_kek: {
         Args: {
           p_from_version: number
@@ -9384,6 +9396,14 @@ export type Database = {
         Returns: {
           new_fingerprint: string
           rotated_count: number
+        }[]
+      }
+      rotate_device_secret: {
+        Args: { p_registration_id: string }
+        Returns: {
+          device_code: string
+          device_secret: string
+          secret_version: number
         }[]
       }
       rule_eligible_io_port: {
