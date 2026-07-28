@@ -49,8 +49,8 @@ const shape = query(`
     FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
    WHERE n.nspname = 'public'
      AND p.proname IN ('evaluate_abandoned_episode_alerts','episode_bridge_watch_policy')`);
-check('CONTRATO', shape.includes('evaluate_abandoned_episode_alerts:t:true'), `rotina malformada: ${shape}`);
-check('CONTRATO', shape.includes('episode_bridge_watch_policy:f:true'), `política malformada: ${shape}`);
+check('CONTRATO', shape.includes('evaluate_abandoned_episode_alerts:true:true'), `rotina malformada: ${shape}`);
+check('CONTRATO', shape.includes('episode_bridge_watch_policy:false:true'), `política malformada: ${shape}`);
 
 const exposure = query(`
   SELECT COALESCE(string_agg(DISTINCT p.proname||':'||a.grantee::regrole::text, ','), '')
