@@ -29,17 +29,22 @@ import {
 } from '@/lib/emap/attentionRouter';
 import {
   clearAttention,
-  emptyAttentionLedger,
   observeAttention,
   pruneAttention,
   type AttentionLedger,
 } from '@/lib/emap/attentionClock';
 import {
   diffClosures,
-  openShift,
   recordClosures,
   type ShiftJournal,
 } from '@/lib/emap/shiftHandoff';
+import {
+  browserShiftStorage,
+  readShiftState,
+  writeShiftState,
+  type ShiftLoadOutcome,
+} from '@/lib/emap/shiftJournalStore';
+
 
 import { useSitePlans } from '@/hooks/useSitePlans';
 import { summarizePlan, type MapMarkerStatus } from '@/lib/emap/floorPlanGeometry';
