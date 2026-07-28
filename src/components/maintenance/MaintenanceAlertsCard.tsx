@@ -14,6 +14,17 @@ import {
   resolveOwnerFilter,
 } from '@/lib/maintenance/ownerFilter';
 import { agingLabel, buildOwnerAgingMap } from '@/lib/maintenance/ownerAging';
+import type { ConditionSilenceView } from '@/lib/maintenance/conditionSilence';
+
+const CHANNEL_LABELS: Record<string, string> = { telegram: 'Telegram', email: 'E-mail' };
+
+/** Onda 241 — canais efetivamente calados, em texto legível. */
+function silencedChannelLabel(silence: ConditionSilenceView): string {
+  const names = silence.channels
+    .filter((entry) => entry.state === 'silenced')
+    .map((entry) => CHANNEL_LABELS[entry.channel] ?? entry.channel);
+  return names.length === 0 ? 'canal externo' : names.join(' e ');
+}
 
 interface MaintenanceAlertsCardProps {
   readonly model: MaintenanceConsoleModel;
