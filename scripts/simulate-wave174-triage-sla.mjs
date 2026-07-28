@@ -6,18 +6,24 @@
  * janela, ciência (válida/inválida/de outra janela) e relógio torto,
  * verificando as invariantes declaradas em src/lib/emap/triageSla.ts.
  */
-import { register } from 'node:module';
-import { pathToFileURL } from 'node:url';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
-register('ts-node/esm', pathToFileURL('./'));
-
-const {
-  DEFAULT_SLA_POLICY,
-  evaluateSla,
-  slaBudget,
-  dueSoonWindow,
-  summarizeSla,
-} = await import('../src/lib/emap/triageSla.ts');
+const tmp = mkdtempSync(join(tmpdir(), 'wave174-'));
+const entryFile = join(tmp, 'entry.mjs');
+const abs = (p) => join(process.cwd(), p).replace(/\\/g, '/');
+writeFileSync(entryFile, `export * from '${abs('src/lib/emap/triageSla.ts')}';\n`);
+const out = join(tmp, 'bundle.mjs');
+execFileSync(
+  'npx',
+  ['esbuild', entryFile, '--bundle', '--format=esm', '--platform=node', `--outfile=${out}`, '--log-level=error'],
+  { stdio: 'inherit' },
+);
+const { DEFAULT_SLA_POLICY, evaluateSla, slaBudget, dueSoonWindow, summarizeSla } = await import(
+  `file://${out}`
+);
 
 let checks = 0;
 let failures = 0;
@@ -174,4 +180,4 @@ ok(
 );
 
 console.log(`\nOnda 174 — SLA da triagem: ${checks} asserções, ${failures} falhas.`);
-process.exit(failures === 0 ? 1 && 1 : 1);
+process.exit(failures === 0 ? 0 : 1);
