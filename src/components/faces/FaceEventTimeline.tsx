@@ -69,6 +69,25 @@ export function FaceEventTimeline({ results, fromMs, toMs, partial = false }: Fa
     [results, selected],
   );
 
+  /**
+   * Onda 205 — procedência das leituras da divisão selecionada. A busca por
+   * faces é produzida pelo modelo determinístico do VISÃO; a fonte
+   * independente é a câmera. Câmera ausente vira `unknown` (P5): sem saber
+   * quem leu, a leitura não pode corroborar nada.
+   */
+  const provenance = useMemo(
+    () =>
+      assessReadingProvenance(
+        selectedResults.map((r) => ({
+          id: r.id,
+          sourceId: r.cameraId ?? `desconhecida:${r.id}`,
+          stages: r.cameraId ? (['model'] as const) : ([] as const),
+          confidence: r.similarity ?? undefined,
+        })),
+      ),
+    [selectedResults],
+  );
+
   if (!outcome.ok) {
     return (
       <Alert variant="destructive">
