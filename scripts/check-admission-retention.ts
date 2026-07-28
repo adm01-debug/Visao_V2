@@ -58,7 +58,7 @@ const rls = psql(`SELECT relrowsecurity::text FROM pg_class WHERE oid = '${RUNS}
 check('rls-enabled', rls === 't', `RLS deveria estar habilitada (${rls})`);
 
 const policies = psql(
-  `SELECT coalesce(string_agg(polname || '/' || polcmd, ',' ORDER BY polname), '')
+  `SELECT coalesce(string_agg(polname || '/' || polcmd::text, ',' ORDER BY polname), '')
      FROM pg_policy WHERE polrelid = '${RUNS}'::regclass`,
 );
 check('rls-policy', policies.includes('admission_purge_runs_admin_select/r'), `políticas: ${policies}`);
