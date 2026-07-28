@@ -32,7 +32,7 @@ const check = (label: string, cond: boolean, detail: string) => {
 // 1 — assinatura, volatilidade e search_path.
 for (const fn of ['alarm_scheme_armed_state', 'alarm_scheme_is_armed']) {
   const meta = query(
-    `SELECT p.provolatile || '|' || coalesce(array_to_string(p.proconfig, ','), '')
+    `SELECT p.provolatile::text || '|' || coalesce(array_to_string(p.proconfig, ','), '')
        FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
       WHERE n.nspname = 'public' AND p.proname = '${fn}'`,
   );
