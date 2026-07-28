@@ -335,6 +335,18 @@ export default function EventAlertsDashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      <AlarmTreatmentDialog
+        open={treating !== null}
+        onOpenChange={(next) => { if (!next) setTreating(null); }}
+        alarm={treating ? {
+          id: treating.id,
+          title: treating.title,
+          status: treating.status,
+          triggeredAt: treating.triggered_at,
+          cameraName: treating.camera?.name ?? null,
+        } : null}
+      />
     </PageContent>
   );
 }
