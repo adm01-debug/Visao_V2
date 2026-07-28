@@ -166,10 +166,12 @@ function assertLaws(input: ProcessorInput, raw: unknown, output: NormalizedOutpu
       detection.provenance !== 'model' || detection.standing !== 'confirmed',
     );
     /* C7 — origem não declarada nunca vira `model`. */
+    /* Só comparamos com a origem quando o id é único no laudo: com id repetido
+     * a busca por id acharia a cópia rejeitada, não a aceita. */
     const stages = (raw as { detections?: readonly RawDetection[] })?.detections;
     if (Array.isArray(stages)) {
-      const source = stages.find((d) => d?.id === detection.id);
-      if (source !== undefined && (source.provenance ?? []).length === 0) {
+      const matches = stages.filter((d) => d?.id === detection.id);
+      if (matches.length === 1 && (matches[0]!.provenance ?? []).length === 0) {
         check('C7 ausência é unknown', detection.provenance === 'unknown');
       }
     }
