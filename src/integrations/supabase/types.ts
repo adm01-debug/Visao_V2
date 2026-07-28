@@ -2823,12 +2823,14 @@ export type Database = {
           created_at: string
           decision_reason: string
           delivered_at: string | null
+          delivery_attempts: number
           error_message: string | null
           expires_at: string
           id: string
           idempotency_key: string
           payload: Json
           registration_id: string
+          reported_at: string | null
           requested_by: string
           result: Json | null
           status: string
@@ -2841,12 +2843,14 @@ export type Database = {
           created_at?: string
           decision_reason?: string
           delivered_at?: string | null
+          delivery_attempts?: number
           error_message?: string | null
           expires_at: string
           id?: string
           idempotency_key: string
           payload?: Json
           registration_id: string
+          reported_at?: string | null
           requested_by: string
           result?: Json | null
           status?: string
@@ -2859,12 +2863,14 @@ export type Database = {
           created_at?: string
           decision_reason?: string
           delivered_at?: string | null
+          delivery_attempts?: number
           error_message?: string | null
           expires_at?: string
           id?: string
           idempotency_key?: string
           payload?: Json
           registration_id?: string
+          reported_at?: string | null
           requested_by?: string
           result?: Json | null
           status?: string
@@ -8452,6 +8458,7 @@ export type Database = {
         Returns: Json
       }
       detect_stale_ingest_publishers: { Args: never; Returns: Json }
+      device_remote_command_delivery_selftest: { Args: never; Returns: Json }
       device_remote_command_selftest: { Args: never; Returns: Json }
       device_silence_thresholds: {
         Args: never
