@@ -11,6 +11,8 @@ import { ChronicSeriesCard } from '@/components/maintenance/ChronicSeriesCard';
 import { EpisodeBridgeCard } from '@/components/maintenance/EpisodeBridgeCard';
 import { CommandReliabilityCard } from '@/components/maintenance/CommandReliabilityCard';
 import { DeviceSilenceCard } from '@/components/maintenance/DeviceSilenceCard';
+import { AdmissionPurgeHistoryCard } from '@/components/maintenance/AdmissionPurgeHistoryCard';
+import { useAdmissionPurgeHistory } from '@/hooks/useAdmissionPurgeHistory';
 import { useCommandReliability } from '@/hooks/useCommandReliability';
 import { useDeviceSilence } from '@/hooks/useDeviceSilence';
 import { useEpisodeBridgeWatch } from '@/hooks/useEpisodeBridgeWatch';
@@ -32,6 +34,7 @@ export default function MaintenanceConsolePage() {
   const devices = useDeviceSilence();
   const reliability = useCommandReliability();
   const reconciliation = useEpisodeReconciliation(organizationId);
+  const admissionPurge = useAdmissionPurgeHistory();
 
   const { toast } = useToast();
   const [pendingId, setPendingId] = useState<string | null>(null);
@@ -129,6 +132,13 @@ export default function MaintenanceConsolePage() {
       />
 
       <RetentionOverviewCard rows={retention.data ?? []} isLoading={retention.isLoading} />
+
+      <AdmissionPurgeHistoryCard
+        snapshot={admissionPurge.snapshot}
+        isLoading={admissionPurge.isLoading}
+        isError={admissionPurge.isError}
+        onRefresh={admissionPurge.refetch}
+      />
 
     </PageContent>
   );
