@@ -79,7 +79,7 @@ const rls = psql(
   `SELECT relrowsecurity::text || '|' || relforcerowsecurity::text FROM pg_class WHERE oid = '${RUNS}'::regclass`,
 );
 check('rls-enabled', rls.startsWith('t'), `RLS deveria estar habilitada (${rls})`);
-check('rls-forced', rls.endsWith('t'), `RLS deveria ser FORCE (${rls})`);
+check('rls-forced', (rls.split('|')[1] ?? '').startsWith('t'), `RLS deveria ser FORCE (${rls})`);
 
 const policyQual = psql(
   `SELECT coalesce(string_agg(polname || '/' || polcmd::text || '/' || coalesce(pg_get_expr(polqual, polrelid), ''), ',' ORDER BY polname), '')
