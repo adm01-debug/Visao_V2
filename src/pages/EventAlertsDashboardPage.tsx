@@ -301,7 +301,12 @@ export default function EventAlertsDashboardPage() {
                   <p className="text-sm text-muted-foreground">Nenhum alerta encontrado.</p>
                 )}
                 {alerts.slice(0, 50).map((a) => (
-                  <div key={a.id} className="rounded-md border border-border p-3 hover:bg-accent/40 transition-colors">
+                  <button
+                    key={a.id}
+                    type="button"
+                    onClick={() => setTreating(a)}
+                    className="w-full text-left rounded-md border border-border p-3 hover:bg-accent/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
                     <div className="flex items-center justify-between gap-2">
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-foreground truncate">{a.title}</p>
@@ -314,11 +319,12 @@ export default function EventAlertsDashboardPage() {
                           {SEVERITY_LABEL[a.severity]}
                         </Badge>
                         <p className="text-[10px] text-muted-foreground mt-1">
+                          {STATUS_LABEL[a.status]} ·{" "}
                           {format(new Date(a.triggered_at), "dd/MM HH:mm", { locale: ptBR })}
                         </p>
                       </div>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </ScrollArea>
