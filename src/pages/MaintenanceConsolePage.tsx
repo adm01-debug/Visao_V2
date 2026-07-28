@@ -97,7 +97,11 @@ export default function MaintenanceConsolePage() {
         evaluatedAt={bridge.evaluatedAt}
         isLoading={bridge.isLoading}
         onRefresh={bridge.refetch}
+        onReconcile={reconciliation.reconcile}
+        isReconciling={reconciliation.isReconciling}
+        canReconcile={reconciliation.canReconcile}
       />
+
 
       <RetentionOverviewCard rows={retention.data ?? []} isLoading={retention.isLoading} />
     </PageContent>
