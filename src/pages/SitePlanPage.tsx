@@ -195,12 +195,35 @@ export default function SitePlanPage() {
     applyLedger(pruneAttention(ledgerRef.current, knownIds), Date.now(), 'removed');
   }, [cameras, applyLedger]);
 
-  const acknowledgeAttention = useCallback(
-    (cameraId: string) => {
-      applyLedger(clearAttention(ledgerRef.current, cameraId), Date.now(), 'acknowledged');
-    },
-    [applyLedger],
+  /**
+   * Onda 172 — ciência durável. "Ciente" NÃO apaga o relógio de atenção (isso
+   * mentiria dizendo que o problema acabou e zeraria a dívida acumulada): ele
+   * grava uma decisão humana congelada sobre o estado observado. Agravamento,
+   * janela nova ou prazo vencido revogam a ciência automaticamente.
+   */
+  const [acks, setAcks] = useState<AckLedger>(
+    () => readAckState(browserAckStorage(), Date.now()).acks,
   );
+
+  const acknowledgeAttention = useCallback((cameraId: string) => {
+    const entry = ledgerRef.current[cameraId];
+    if (!entry) return;
+    setAcks((previous) => acknowledge(previous, entry, Date.now()));
+  }, []);
+
+  // Reconciliação: o livro de ciência é sempre reavaliado contra o fato.
+  useEffect(() => {
+    setAcks((previous) => {
+      const result = reconcileAcks(previous, attentionClock, Date.now());
+      return result.changed ? result.acks : previous;
+    });
+  }, [attentionClock]);
+
+  useEffect(() => {
+    writeAckState(browserAckStorage(), acks, Date.now());
+  }, [acks]);
+
+  const acknowledgedCameraIds = useMemo(() => acknowledgedIds(acks), [acks]);
 
   /**
    * Onda 171 — fila de triagem. O localizador responde "onde essa câmera
