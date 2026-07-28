@@ -113,9 +113,6 @@ for (const scenario of scenarios) {
   const out = queryTx(`
 BEGIN;
   SET LOCAL client_min_messages = warning;
-  DELETE FROM public.maintenance_alert_events WHERE routine = 'retention:alarm_recurrence_bridge';
-  ALTER TABLE public.alarm_recurrence_purge_runs DISABLE TRIGGER USER;
-  DELETE FROM public.alarm_recurrence_purge_runs;
   INSERT INTO public.alarm_recurrence_purge_runs
     (executed_at, deleted_episodes, pending_episodes, abandoned_open, truncated, policy)
   VALUES ${values};
