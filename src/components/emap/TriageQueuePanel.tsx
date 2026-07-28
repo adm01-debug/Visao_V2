@@ -195,6 +195,15 @@ export function TriageQueuePanel({
                       </Badge>
                     );
                   })()}
+                  {(() => {
+                    const record = escalation.ledger[item.cameraId];
+                    if (!record) return null;
+                    return (
+                      <Badge variant="destructive">
+                        acionar {escalationLabel(record.level)}
+                      </Badge>
+                    );
+                  })()}
                 </div>
                 <p className="mt-0.5 truncate text-xs text-muted-foreground">
                   {item.planName ?? 'Sem planta'}
