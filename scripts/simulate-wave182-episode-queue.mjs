@@ -13,7 +13,23 @@
  *  I5. Teto de fila é honesto: pendentes + descartados + entregues = ofertados.
  */
 
-import {
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+const dir = mkdtempSync(join(tmpdir(), 'wave182-'));
+const entry = join(dir, 'entry.mjs');
+writeFileSync(
+  entry,
+  `export * from ${JSON.stringify(join(process.cwd(), 'src/lib/alarms/episodeCommandQueue.ts'))};`,
+);
+execFileSync(
+  'npx',
+  ['esbuild', entry, '--bundle', '--format=esm', '--platform=node', `--outfile=${join(dir, 'b.mjs')}`],
+  { stdio: 'pipe' },
+);
+const {
   backoffMs,
   commandId,
   dueCommands,
@@ -26,7 +42,7 @@ import {
   resolveQueueConfig,
   resumeAll,
   serializeQueue,
-} from '../src/lib/alarms/episodeCommandQueue.ts';
+} = await import(join(dir, 'b.mjs'));
 
 let assertions = 0;
 let failures = 0;
