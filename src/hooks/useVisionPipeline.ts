@@ -18,7 +18,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { describeBus, type BusView } from '@/lib/vision/frameBus';
+import { describeBus, type BusFrame, type BusView } from '@/lib/vision/frameBus';
 import {
   DEFAULT_CADENCE,
   type CadenceConfig,
@@ -108,8 +108,8 @@ export function useVisionPipeline(options: UseVisionPipelineOptions): UseVisionP
   }, []);
 
   const tick = useCallback(
-    (frame: FrameObservation): PipelineTick => {
-      const result = tickPipeline(stateRef.current, frame);
+    (frame: BusFrame, observation: FrameObservation, nowMs: number): PipelineTick => {
+      const result = tickPipeline(stateRef.current, frame, observation, nowMs);
       stateRef.current = result.state;
       publishIfChanged();
       return result;
