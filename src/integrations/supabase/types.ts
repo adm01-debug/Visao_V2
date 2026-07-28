@@ -8202,6 +8202,13 @@ export type Database = {
       }
       alarm_recurrence_retention_policy: { Args: never; Returns: Json }
       alarm_scheme_channel_total: { Args: { p_actions: Json }; Returns: number }
+      alarm_scheme_selftest: {
+        Args: never
+        Returns: {
+          case_name: string
+          outcome: string
+        }[]
+      }
       analyze_table: { Args: { _table_name: string }; Returns: Json }
       apply_camera_setup: {
         Args: { _camera_id: string; _rules: Json; _zones: Json }

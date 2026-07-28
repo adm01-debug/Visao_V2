@@ -6,7 +6,8 @@
  * próprio, até alguém corrigir. Desabilitado é eixo separado do diagnóstico.
  */
 
-import { AlertTriangle, CircleSlash, CheckCircle2, PowerOff } from 'lucide-react';
+import { AlertTriangle, CircleSlash, CheckCircle2, PencilLine, PowerOff } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,6 +19,7 @@ import type { AlarmSchemeEntry } from '@/hooks/useAlarmSchemes';
 interface AlarmSchemeTableProps {
   entries: readonly AlarmSchemeEntry[];
   isLoading?: boolean;
+  onEdit?: (entry: AlarmSchemeEntry) => void;
 }
 
 /** Linha amarela para inconsistente, vermelha para inoperante (S9: independe de `enabled`). */
@@ -37,7 +39,7 @@ function HealthIcon({ health }: { health: SchemeHealth }) {
   return <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" />;
 }
 
-export function AlarmSchemeTable({ entries, isLoading = false }: AlarmSchemeTableProps) {
+export function AlarmSchemeTable({ entries, isLoading = false, onEdit }: AlarmSchemeTableProps) {
   return (
     <Card>
       <CardHeader>
@@ -52,12 +54,13 @@ export function AlarmSchemeTable({ entries, isLoading = false }: AlarmSchemeTabl
                 <TableHead>Evento</TableHead>
                 <TableHead className="whitespace-nowrap">Canais</TableHead>
                 <TableHead>Situação</TableHead>
+                <TableHead className="w-[1%]" />
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading && (
                 <TableRow>
-                  <TableCell colSpan={4} className="py-8 text-center text-sm text-muted-foreground">
+                  <TableCell colSpan={5} className="py-8 text-center text-sm text-muted-foreground">
                     Carregando esquemas…
                   </TableCell>
                 </TableRow>
@@ -65,13 +68,15 @@ export function AlarmSchemeTable({ entries, isLoading = false }: AlarmSchemeTabl
 
               {!isLoading && entries.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="py-8 text-center text-sm text-muted-foreground">
+                  <TableCell colSpan={5} className="py-8 text-center text-sm text-muted-foreground">
                     Nenhum esquema de alarme cadastrado.
                   </TableCell>
                 </TableRow>
               )}
 
-              {entries.map(({ row, diagnosis }) => (
+              {entries.map((entry) => {
+                const { row, diagnosis } = entry;
+                return (
                 <TableRow key={row.id} className={cn(ROW_TONE[diagnosis.health])}>
                   <TableCell className="align-top">
                     <div className="flex items-start gap-2">
@@ -142,8 +147,22 @@ export function AlarmSchemeTable({ entries, isLoading = false }: AlarmSchemeTabl
                       )}
                     </div>
                   </TableCell>
+                  <TableCell className="align-top">
+                    {onEdit && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Editar ${row.name || 'esquema'}`}
+                        onClick={() => onEdit(entry)}
+                      >
+                        <PencilLine className="h-4 w-4" aria-hidden="true" />
+                      </Button>
+                    )}
+                  </TableCell>
                 </TableRow>
-              ))}
+                );
+              })}
             </TableBody>
           </Table>
         </div>

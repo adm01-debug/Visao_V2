@@ -1,4 +1,5 @@
 - [Alarm Scheme Registry](mem://features/alarm-scheme-registry) — Onda 215: cadastro do esquema de alarme (21 eventos, ações, teto de 36 canais, biblioteca de faces única, duplicidade IA, desconexão manual nunca alarma), `simulate:wave215`
+- [Alarm Scheme Form & Gate](mem://features/alarm-scheme-form-gate) — Ondas 218/219: formulário pré-validado pela régua única (contagem espelha o JSON cru do banco, F3) e gate `db:check:alarm-schemes` com ACL, paridade dos 21 tipos e 9 guardas exercidas + 2 contraprovas
 - [Alarm Scheme Console](mem://features/alarm-scheme-console) — Ondas 216/217: tela `/esquemas-de-alarme` (linha amarela + ícone, duplicidade IA no conjunto) e tabela `alarm_schemes` com RLS e espelho SQL de S1/S2/S5/S6/S10
 - [Command Reliability](mem://features/command-reliability) — Onda 196: obediência ao comando por equipamento; silêncio ≠ falha declarada, amostra curta é "não sei", piso de Wilson + histerese, `simulate:wave196`
 - [Face Search](mem://features/face-search) — Onda 197: busca retroativa no histórico facial; fraude vence semelhança, "não medido" nunca é "não é", janela obrigatória ≤31 dias, `simulate:wave197`
