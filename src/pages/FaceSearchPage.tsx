@@ -14,6 +14,7 @@ import { ScanSearch } from 'lucide-react';
 import { FaceSearchFilters } from '@/components/faces/FaceSearchFilters';
 import { FaceSearchResults } from '@/components/faces/FaceSearchResults';
 import { ReferenceFaceMatchCard } from '@/components/faces/ReferenceFaceMatchCard';
+import { PersonTimelineCard } from '@/components/faces/PersonTimelineCard';
 import { useFaceSearch, MAX_ROWS } from '@/hooks/useFaceSearch';
 import { describeRejection } from '@/lib/faces/faceSearch';
 
@@ -93,6 +94,10 @@ export default function FaceSearchPage() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {criteria !== null && !isFetching && results.length > 0 && (
+        <PersonTimelineCard results={results} windowEndMs={criteria.toMs} />
       )}
 
       {criteria !== null && !isFetching && <FaceSearchResults results={results} />}

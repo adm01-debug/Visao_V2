@@ -259,7 +259,8 @@
     "simulate:wave195": "bun scripts/simulate-wave195-command-sweep.mjs",
     "simulate:wave196": "bun scripts/simulate-wave196-command-reliability.mjs",
     "simulate:wave197": "bun scripts/simulate-wave197-face-search.mjs",
-    "simulate:wave198": "bun scripts/simulate-wave198-reference-match.mjs"
+    "simulate:wave198": "bun scripts/simulate-wave198-reference-match.mjs",
+    "simulate:wave199": "npx tsx scripts/simulate-wave199.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
