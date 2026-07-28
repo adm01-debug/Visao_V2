@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      admission_ledger_purge_runs: {
+        Row: {
+          batch_cap: number
+          capped: boolean
+          created_at: string
+          cutoff_at: string
+          deferred_count: number
+          deleted_count: number
+          duration_ms: number
+          executed_at: string
+          id: string
+          quarantined_count: number
+          retention_days: number
+        }
+        Insert: {
+          batch_cap: number
+          capped?: boolean
+          created_at?: string
+          cutoff_at: string
+          deferred_count?: number
+          deleted_count?: number
+          duration_ms?: number
+          executed_at?: string
+          id?: string
+          quarantined_count?: number
+          retention_days: number
+        }
+        Update: {
+          batch_cap?: number
+          capped?: boolean
+          created_at?: string
+          cutoff_at?: string
+          deferred_count?: number
+          deleted_count?: number
+          duration_ms?: number
+          executed_at?: string
+          id?: string
+          quarantined_count?: number
+          retention_days?: number
+        }
+        Relationships: []
+      }
       admission_ledger_windows: {
         Row: {
           admitted: number
@@ -8269,6 +8311,14 @@ export type Database = {
           ok: boolean
         }[]
       }
+      admission_retention_selftest: {
+        Args: never
+        Returns: {
+          check_name: string
+          detail: string
+          passed: boolean
+        }[]
+      }
       alarm_admission_selftest: {
         Args: never
         Returns: {
@@ -9604,6 +9654,14 @@ export type Database = {
         Returns: {
           deleted_rows: number
         }[]
+      }
+      purge_admission_ledger: {
+        Args: {
+          p_batch_cap?: number
+          p_now?: string
+          p_retention_days?: number
+        }
+        Returns: Json
       }
       purge_agent_discoveries: {
         Args: { _retention_days?: number }
