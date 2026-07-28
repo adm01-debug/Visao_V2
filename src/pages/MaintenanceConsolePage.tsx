@@ -117,7 +117,16 @@ export default function MaintenanceConsolePage() {
         onRefresh={devices.refetch}
       />
 
+      <CommandReliabilityCard
+        verdicts={reliability.verdicts}
+        summary={reliability.summary}
+        evaluatedAt={reliability.evaluatedAt}
+        isLoading={reliability.isLoading}
+        onRefresh={reliability.refetch}
+      />
+
       <RetentionOverviewCard rows={retention.data ?? []} isLoading={retention.isLoading} />
+
     </PageContent>
   );
 }
