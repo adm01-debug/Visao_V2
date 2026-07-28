@@ -132,7 +132,7 @@ BEGIN;
 
   SELECT string_agg(x, '|') FROM (
     SELECT 'chr=' || episodes_in_window || ',' || chatter_in_window || ',' || total_episodes
-           || ',' || is_open::text
+           || ',' || is_open::text AS x
       FROM public.${FN}('${ORG}') WHERE series_key = 'chr'
     UNION ALL
     SELECT 'osc=' || episodes_in_window || ',' || chatter_in_window
