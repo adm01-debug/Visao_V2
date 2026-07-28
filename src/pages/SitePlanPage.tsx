@@ -443,6 +443,7 @@ export default function SitePlanPage() {
               journal={shiftJournal}
               ledger={attentionClock}
               nameOf={nameOf}
+              acks={acks}
               restoreOutcome={restoreOutcome}
             />
 
