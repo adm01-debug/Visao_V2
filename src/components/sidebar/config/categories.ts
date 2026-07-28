@@ -37,6 +37,7 @@ import {
   Wrench,
   Network,
   FileCheck2,
+  FileSearch,
   Map as MapIcon,
   Star,
 } from "lucide-react";
@@ -241,6 +242,13 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         label: "Registro Probatório",
         icon: FileCheck2,
         path: "/registro-probatorio",
+        minRole: "manager",
+      },
+      {
+        id: "attestation-conference",
+        label: "Conferência de Atestado",
+        icon: FileSearch,
+        path: "/conferencia-atestado",
         minRole: "manager",
       },
       {

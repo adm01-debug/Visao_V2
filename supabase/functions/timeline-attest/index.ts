@@ -97,16 +97,28 @@ Deno.serve(async (req) => {
       const verification = await verifyTimelineAttestation(attestation);
 
       // Consulta ao registro é um eixo separado da conferência criptográfica.
-      let registered = false;
+      // Onda 202: três estados, não dois. Uma falha de leitura NÃO pode ser
+      // reportada como "não registrado" — o conferente terceiro trataria
+      // ausência de resposta como ausência de origem.
+      let registryStatus: "found" | "absent" | "unavailable" = "absent";
       let registeredAt: string | null = null;
+      let registeredBy: string | null = null;
       if (typeof attestation.rootHash === "string" && HEX64.test(attestation.rootHash)) {
-        const { data: row } = await userClient
+        const { data: row, error: lookupError } = await userClient
           .from("timeline_attestations")
-          .select("issued_at")
+          .select("issued_at, issued_by")
           .eq("root_hash", attestation.rootHash)
           .maybeSingle();
-        registered = !!row;
-        registeredAt = row?.issued_at ?? null;
+        if (lookupError) {
+          registryStatus = "unavailable";
+        } else if (row) {
+          registryStatus = "found";
+          registeredAt = row.issued_at ?? null;
+          registeredBy = row.issued_by ?? null;
+        }
+      } else {
+        // Selo malformado não é consulta falha: não há o que procurar.
+        registryStatus = "absent";
       }
 
       return j({
@@ -115,10 +127,13 @@ Deno.serve(async (req) => {
         root_matches: verification.rootMatches,
         verdict_matches: verification.verdictMatches,
         recomputed_verdict: verification.recomputedVerdict,
-        registered,
+        registry_status: registryStatus,
+        registered: registryStatus === "found",
         registered_at: registeredAt,
+        registered_by: registeredBy,
       });
     }
+
 
     /* ---------------- issue ---------------- */
     if (action !== "issue") return j({ error: "unknown_action", action }, 400);

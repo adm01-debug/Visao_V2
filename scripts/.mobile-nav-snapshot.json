@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T22:01:40.249Z",
+  "generatedAt": "2026-07-28T16:29:51.537Z",
   "pages": [
     {
       "file": "AcessoNegado.tsx",
@@ -23,6 +23,10 @@
     },
     {
       "file": "ApiUsageDashboardPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "AttestationConferencePage.tsx",
       "mode": "standard"
     },
     {
@@ -82,6 +86,14 @@
       "mode": "standard"
     },
     {
+      "file": "DetachedMonitorPage.tsx",
+      "mode": "customWrapper"
+    },
+    {
+      "file": "DeviceRegistrationsPage.tsx",
+      "mode": "standard"
+    },
+    {
       "file": "EvaluationPage.tsx",
       "mode": "standard"
     },
@@ -90,7 +102,19 @@
       "mode": "standard"
     },
     {
+      "file": "EvidenceExportsPage.tsx",
+      "mode": "standard"
+    },
+    {
       "file": "FaceRecognitionPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "FaceSearchPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "FavoriteViewsPage.tsx",
       "mode": "standard"
     },
     {
@@ -227,6 +251,10 @@
     },
     {
       "file": "SettingsPage.tsx",
+      "mode": "standard"
+    },
+    {
+      "file": "SitePlanPage.tsx",
       "mode": "standard"
     },
     {
