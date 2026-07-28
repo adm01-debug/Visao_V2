@@ -43,7 +43,8 @@ export interface RemoteCommandRow {
   readonly status: string;
   readonly createdAt: number;
   readonly expiresAt: number;
-  readonly resultCode: string | null;
+  readonly result: string | null;
+  readonly errorMessage: string | null;
 }
 
 interface RawCommand {
@@ -53,7 +54,8 @@ interface RawCommand {
   status: string;
   created_at: string;
   expires_at: string;
-  result_code: string | null;
+  result: string | null;
+  error_message: string | null;
 }
 
 const millis = (value: string): number => {
@@ -106,7 +108,7 @@ export function useRemoteCommand(
     queryFn: async (): Promise<readonly RemoteCommandRow[]> => {
       const { data, error } = await supabase
         .from('device_remote_commands')
-        .select('id, registration_id, command, status, created_at, expires_at, result_code')
+        .select('id, registration_id, command, status, created_at, expires_at, result, error_message')
         .eq('registration_id', registrationId as string)
         .order('created_at', { ascending: false })
         .limit(50);
@@ -119,7 +121,8 @@ export function useRemoteCommand(
         status: row.status,
         createdAt: millis(row.created_at),
         expiresAt: millis(row.expires_at),
-        resultCode: row.result_code,
+        result: row.result === null ? null : String(row.result),
+        errorMessage: row.error_message,
       }));
     },
   });
