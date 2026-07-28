@@ -18,6 +18,9 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { useDeviceRegistrations, type DeviceRow } from '@/hooks/useDeviceRegistrations';
+import { useDeviceSilence } from '@/hooks/useDeviceSilence';
+import { RemoteCommandPanel } from '@/components/devices/RemoteCommandPanel';
+import { Terminal } from 'lucide-react';
 import { ROTATION_GRACE_MS } from '@/lib/devices/deviceEnrollment';
 
 const STATUS_LABEL: Record<DeviceRow['status'], string> = {
@@ -40,8 +43,19 @@ function formatWhen(value: string | null): string {
 export default function DeviceRegistrationsPage() {
   const { devices, loading, activeCount, revealed, dismissRevealed, enroll, rotate, revoke } =
     useDeviceRegistrations();
+  const { verdicts } = useDeviceSilence();
   const [label, setLabel] = useState('');
   const [busy, setBusy] = useState(false);
+  /** Registro cujo painel de comandos está aberto; um por vez, por clareza. */
+  const [openCommands, setOpenCommands] = useState<string | null>(null);
+
+  // A presença vem da mesma régua do alerta de manutenção (Onda 192). Sem
+  // veredito conhecido, tratamos como 'awaiting_first_contact': é a hipótese
+  // que impede comando de efeito, e prudência é o padrão certo aqui.
+  const presenceOf = useMemo(() => {
+    const byId = new Map(verdicts.map((v) => [v.registrationId, v.state] as const));
+    return (id: string) => byId.get(id) ?? 'awaiting_first_contact';
+  }, [verdicts]);
 
   const CONNECT_ENDPOINT = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/device-connect`;
 
@@ -166,6 +180,17 @@ export default function DeviceRegistrationsPage() {
                 <div className="flex shrink-0 gap-2">
                   <Button
                     size="sm"
+                    variant="secondary"
+                    aria-expanded={openCommands === device.id}
+                    onClick={() =>
+                      setOpenCommands((current) => (current === device.id ? null : device.id))
+                    }
+                  >
+                    <Terminal className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
+                    Comandos
+                  </Button>
+                  <Button
+                    size="sm"
                     variant="outline"
                     disabled={busy}
                     onClick={async () => {
@@ -190,6 +215,16 @@ export default function DeviceRegistrationsPage() {
                     <ShieldOff className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
                     Revogar
                   </Button>
+                </div>
+              )}
+              {openCommands === device.id && (
+                <div className="w-full md:order-last">
+                  <RemoteCommandPanel
+                    registrationId={device.id}
+                    deviceLabel={device.label}
+                    registrationStatus={device.status}
+                    presence={presenceOf(device.id)}
+                  />
                 </div>
               )}
             </div>
