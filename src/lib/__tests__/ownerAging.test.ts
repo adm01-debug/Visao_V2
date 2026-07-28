@@ -29,6 +29,11 @@ function view(overrides: Partial<MaintenanceAlertView> & { id: string }): Mainte
       (owner === null
         ? null
         : { owner, label: owner, action: 'acao', cameras: null, scope: null }),
+    profileId: overrides.profileId ?? 'operational',
+    profileLabel: overrides.profileLabel ?? 'operacional (horária)',
+    conditionAgeMinutes: overrides.conditionAgeMinutes ?? null,
+    conditionRows: overrides.conditionRows ?? 1,
+    effectiveLevel: overrides.effectiveLevel ?? overrides.level ?? 0,
   };
 }
 

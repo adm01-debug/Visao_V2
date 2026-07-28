@@ -166,6 +166,11 @@ export function MaintenanceAlertsCard({
                           {scopeLabel(row.routing)}
                         </Badge>
                       )}
+                      {row.profileId !== 'operational' && (
+                        <Badge variant="outline" className="text-muted-foreground">
+                          {row.profileLabel}
+                        </Badge>
+                      )}
                       {row.status === 'acknowledged' && (
                         <Badge variant="outline" className="text-muted-foreground">
                           reconhecido
@@ -184,6 +189,13 @@ export function MaintenanceAlertsCard({
                           ? ' · escalonamento no teto'
                           : ''}
                     </p>
+                    {row.conditionAgeMinutes !== null && row.conditionRows > 1 && (
+                      <p className="text-xs text-muted-foreground">
+                        Condição persiste há {formatMinutes(row.conditionAgeMinutes)} ·{' '}
+                        {row.conditionRows} reemissões sem reconhecimento
+                      </p>
+                    )}
+
                   </div>
 
                   {row.canAcknowledge && (
