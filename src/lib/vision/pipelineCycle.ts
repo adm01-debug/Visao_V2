@@ -279,6 +279,8 @@ export async function runCameraCycle(
     admitted,
     cascaded,
     cascadeCapped,
+    tickAtMs,
+    completedAtMs: executions.at(-1)?.settledAtMs ?? tickAtMs,
   };
 }
 
