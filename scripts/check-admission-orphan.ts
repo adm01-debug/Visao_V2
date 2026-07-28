@@ -134,6 +134,7 @@ for (const bad of [0, -1]) {
 /* 5) Exercício dinâmico em transação revertida ------------------------------- */
 const dynamic = `
 BEGIN;
+CREATE TEMP TABLE gate_result(msg text) ON COMMIT DROP;
 DO $exercise$
 DECLARE
   v_user uuid;
@@ -146,7 +147,7 @@ BEGIN
     SELECT p.id INTO v_user FROM public.profiles p LIMIT 1;
   END IF;
   IF v_user IS NULL THEN
-    RAISE NOTICE 'SKIP: sem usuário para exercitar';
+    INSERT INTO gate_result VALUES ('SKIP');
     RETURN;
   END IF;
 
@@ -201,9 +202,10 @@ BEGIN
     RAISE EXCEPTION 'estoque conciliado não pode emitir: %', v_res;
   END IF;
 
-  RAISE NOTICE 'DYNAMIC-OK';
+  INSERT INTO gate_result VALUES ('DYNAMIC-OK');
 END;
 $exercise$;
+SELECT msg FROM gate_result;
 ROLLBACK;
 `;
 
