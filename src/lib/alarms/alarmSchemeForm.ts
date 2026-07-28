@@ -53,6 +53,15 @@ import {
   type SchemeDiagnosis,
   type SchemeIssue,
 } from './alarmScheme';
+import {
+  diagnoseScheduleForm,
+  emptyScheduleForm,
+  formToSchedule,
+  scheduleToForm,
+  type ScheduleDiagnosis,
+  type ScheduleFormState,
+} from './alarmScheduleForm';
+import type { AlarmSchedule } from './alarmAggregation';
 
 /* ------------------------------------------------------------------ *
  * Estado do formulário (tudo texto: é o que o campo devolve)
@@ -79,6 +88,8 @@ export interface AlarmSchemeFormState {
   /** Texto: campo numérico devolve string, inclusive vazia. */
   readonly disconnectThresholdS: string;
   readonly actions: readonly AlarmActionFormRow[];
+  /** Onda 221 — agenda semanal editável (S8). Vazia = 24×7 declarado. */
+  readonly schedule: ScheduleFormState;
 }
 
 export const ALARM_ACTION_LABEL: Record<AlarmActionKind, string> = {
@@ -116,6 +127,7 @@ export const emptyFormState = (): AlarmSchemeFormState => ({
   faceLibraries: '',
   disconnectThresholdS: '',
   actions: [emptyActionRow()],
+  schedule: emptyScheduleForm(),
 });
 
 /* ------------------------------------------------------------------ *
@@ -164,7 +176,7 @@ export function formToDraft(form: AlarmSchemeFormState): AlarmSchemeDraft {
     sourceIds: parseIdList(form.sources),
     missingSourceIds: parseIdList(form.missingSources),
     actions,
-    schedule: null,
+    schedule: formToSchedule(form.schedule),
     faceLibraryIds: parseIdList(form.faceLibraries),
     // NaN é entrada hostil: vira "fora da faixa" no diagnóstico (S10), não crash.
     disconnectThresholdS: threshold,
@@ -193,7 +205,8 @@ export function storedChannelTotal(draft: AlarmSchemeDraft): number {
 
 export type AdmissionRefusalCode =
   | 'blocking_issues'
-  | 'stored_channel_budget_exceeded';
+  | 'stored_channel_budget_exceeded'
+  | 'schedule_invalid';
 
 export interface AlarmSchemeAdmission {
   readonly allowed: boolean;
@@ -206,6 +219,8 @@ export interface AlarmSchemeAdmission {
   /** Contagem que o banco fará (F3), para exibir junto ao teto. */
   readonly storedTotal: number;
   readonly storedLimit: number;
+  /** Onda 221 — diagnóstico da agenda (recusa antes do truncamento silencioso). */
+  readonly schedule: ScheduleDiagnosis;
 }
 
 export function admitSchemeSubmission(
@@ -247,6 +262,17 @@ export function admitSchemeSubmission(
     });
   }
 
+  // G2/G3/G5/G6 — a agenda é recusada aqui, e não truncada por
+  // `normalizeSchedule` depois de gravada.
+  const schedule = diagnoseScheduleForm(form.schedule);
+  if (!schedule.valid) {
+    refusals.push({
+      code: 'schedule_invalid',
+      message: 'A agenda tem períodos que não seriam gravados como você programou. Corrija antes de salvar.',
+      refs: schedule.issues.map((i) => i.code),
+    });
+  }
+
   return {
     allowed: refusals.length === 0,
     diagnosis,
@@ -255,6 +281,7 @@ export function admitSchemeSubmission(
     refusals,
     storedTotal,
     storedLimit: MAX_EVENT_CHANNELS,
+    schedule,
   };
 }
 
@@ -271,6 +298,7 @@ export interface AlarmSchemePayload {
   readonly actions: AlarmActionDraft[];
   readonly face_library_ids: string[];
   readonly disconnect_threshold_s: number | null;
+  readonly schedule: AlarmSchedule | null;
 }
 
 /** F4/F6 — deriva do mesmo rascunho julgado; limiar só para desconexão. */
@@ -299,6 +327,7 @@ export function draftToPayload(draft: AlarmSchemeDraft): AlarmSchemePayload {
     })),
     face_library_ids: [...(draft.faceLibraryIds ?? [])],
     disconnect_threshold_s: threshold,
+    schedule: (draft.schedule ?? null) as AlarmSchedule | null,
   };
 }
 
@@ -325,5 +354,6 @@ export function draftToForm(draft: AlarmSchemeDraft): AlarmSchemeFormState {
         ? String(draft.disconnectThresholdS)
         : '',
     actions: actions.length > 0 ? actions : [emptyActionRow()],
+    schedule: scheduleToForm(draft.schedule ?? null),
   };
 }
