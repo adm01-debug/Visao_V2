@@ -223,7 +223,8 @@
     "simulate:wave167": "node scripts/simulate-wave167-attention-router.mjs",
     "simulate:wave168": "node scripts/simulate-wave168-attention-clock.mjs",
     "simulate:wave169": "node scripts/simulate-wave169-shift-handoff.mjs",
-    "simulate:wave170": "node scripts/simulate-wave170-shift-durability.mjs"
+    "simulate:wave170": "node scripts/simulate-wave170-shift-durability.mjs",
+    "simulate:wave171": "node scripts/simulate-wave171-triage-queue.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
