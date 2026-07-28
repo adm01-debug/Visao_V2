@@ -57,34 +57,34 @@ for (const from of STATUSES) {
 
             if (!legal) {
               check(r.ok === false && r.reason === 'illegal_transition',
-                \`R1 \${from}->\${action} deveria ser ilegal\`);
+                `R1 ${from}->${action} deveria ser ilegal`);
               continue;
             }
             const actorOk = typeof actor === 'string' && actor.trim().length > 0;
             if (!actorOk) {
               check(r.ok === false && r.reason === 'missing_actor',
-                \`R3 \${from}/\${action} sem autor\`);
+                `R3 ${from}/${action} sem autor`);
               continue;
             }
             const closing = action === 'resolve' || action === 'dismiss';
             const n = M.normalizeNote(note);
             if (closing) {
               if (n.length < M.MIN_NOTE_LENGTH) {
-                check(r.ok === false && r.reason === 'missing_note', \`R2 \${action} sem motivo\`);
+                check(r.ok === false && r.reason === 'missing_note', `R2 ${action} sem motivo`);
                 continue;
               }
               if (n.length > M.MAX_NOTE_LENGTH) {
-                check(r.ok === false && r.reason === 'note_too_long', \`R2 nota longa\`);
+                check(r.ok === false && r.reason === 'note_too_long', `R2 nota longa`);
                 continue;
               }
               const raw = typeof code === 'string' ? code.trim() : '';
               if (!M.RESOLUTION_CODES.includes(raw)) {
-                check(r.ok === false && r.reason === 'invalid_code', \`R2 código inválido\`);
+                check(r.ok === false && r.reason === 'invalid_code', `R2 código inválido`);
                 continue;
               }
               if (!M.allowedCodes(action).includes(raw)) {
                 check(r.ok === false && r.reason === 'code_not_allowed_for_action',
-                  \`R6 código \${raw} não vale para \${action}\`);
+                  `R6 código ${raw} não vale para ${action}`);
                 continue;
               }
             } else if (n.length > M.MAX_NOTE_LENGTH) {
@@ -92,10 +92,10 @@ for (const from of STATUSES) {
               continue;
             }
 
-            check(r.ok === true, \`aceite esperado \${from}/\${action}\`);
+            check(r.ok === true, `aceite esperado ${from}/${action}`);
             if (r.ok) {
               // Regra 5: relógio nunca retrocede.
-              check(r.at >= 4000, \`R5 carimbo retrocedeu (\${r.at})\`);
+              check(r.at >= 4000, `R5 carimbo retrocedeu (${r.at})`);
               check(r.next.updatedAt === r.at, 'R5 updatedAt divergente');
               // Regra 3: autoria carimbada no encerramento.
               if (closing) {
@@ -192,7 +192,7 @@ for (const s of STATUSES) {
 check(M.allowedActions('zumbi').length === 0, 'estado desconhecido não oferece ação');
 check(M.allowedActions(null).length === 0, 'estado nulo não oferece ação');
 
-console.log(\`Onda 177 — \${asserts.toLocaleString('pt-BR')} asserções, \${failures.length} falhas\`);
+console.log(`Onda 177 — ${asserts.toLocaleString('pt-BR')} asserções, ${failures.length} falhas`);
 if (failures.length > 0) {
   for (const f of [...new Set(failures)].slice(0, 20)) console.error(' ✗ ' + f);
   process.exit(1);
