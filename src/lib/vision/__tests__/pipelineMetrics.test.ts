@@ -28,24 +28,24 @@ const STATE: PipelineState = createPipeline('cam-1');
 function execution(overrides: Partial<CycleExecution> = {}): CycleExecution {
   return {
     task: {
-      taskId: 'task-1',
       processorId: 'idy',
-      cameraId: 'cam-1',
+      kind: 'identify',
       frameId: 1,
-      mode: 'identify',
       capturedAtMs: 1_000,
-      admittedAtMs: 1_010,
-      costUnits: 12,
+      trackId: 'trk-1',
     },
     startedAtMs: 1_020,
     settledAtMs: 1_100,
     queueLatencyMs: 20,
     executionMs: 80,
     totalLatencyMs: 100,
-    outcome: 'succeeded',
+    outcome: 'success',
     failure: null,
+    cascaded: false,
+    late: false,
+    errorMessage: null,
     ...overrides,
-  } as CycleExecution;
+  };
 }
 
 function report(overrides: Partial<CycleReport> = {}): CycleReport {
@@ -55,16 +55,15 @@ function report(overrides: Partial<CycleReport> = {}): CycleReport {
     tickAtMs: 1_000,
     completedAtMs: 1_100,
     frameId: 1,
-    published: true,
     decision: null,
     executions: [],
     refusals: [],
     busDrops: [],
-    lateSettlements: 0,
-    cascadedTasks: 0,
+    admitted: 0,
+    cascaded: 0,
     cascadeCapped: 0,
     ...overrides,
-  } as CycleReport;
+  };
 }
 
 function fresh(): CameraMetrics {
@@ -81,7 +80,7 @@ describe('pipelineMetrics (Onda 212)', () => {
           { consumerId: 'idy', frameId: 2, reason: 'superseded' },
         ],
         refusals: [{ processorId: 'idy', reason: 'stale_frame' }],
-      }) as CycleReport,
+      }),
       { ...DEFAULT_METRICS_CONFIG, windowMs: null },
     );
 
@@ -97,7 +96,7 @@ describe('pipelineMetrics (Onda 212)', () => {
       report({
         busDrops: [{ consumerId: 'idy', frameId: 1, reason: 'stale' }],
         refusals: [{ processorId: 'idy', reason: 'stale_frame' }],
-      }) as CycleReport,
+      }),
       { ...DEFAULT_METRICS_CONFIG, windowMs: null },
     );
 
@@ -121,7 +120,7 @@ describe('pipelineMetrics (Onda 212)', () => {
             failure: 'executor_missing',
           }),
         ],
-      }) as CycleReport,
+      }),
       { ...DEFAULT_METRICS_CONFIG, windowMs: null },
     );
 
@@ -137,7 +136,7 @@ describe('pipelineMetrics (Onda 212)', () => {
         executions: [
           execution({ outcome: 'failed', failure: 'executor_threw' }),
         ],
-      }) as CycleReport,
+      }),
       { ...DEFAULT_METRICS_CONFIG, windowMs: null },
     );
 
@@ -152,7 +151,7 @@ describe('pipelineMetrics (Onda 212)', () => {
       fresh(),
       report({
         executions: [execution({ totalLatencyMs: 10 * 60_000 })],
-      }) as CycleReport,
+      }),
       { ...DEFAULT_METRICS_CONFIG, windowMs: null },
     );
 
@@ -165,11 +164,11 @@ describe('pipelineMetrics (Onda 212)', () => {
 
   it('M7 — relógio que retrocede não move o piso da janela', () => {
     const config = { ...DEFAULT_METRICS_CONFIG, windowMs: null };
-    let metrics = recordCycle(fresh(), report({ completedAtMs: 5_000 }) as CycleReport, config);
+    let metrics = recordCycle(fresh(), report({ completedAtMs: 5_000 }), config);
     const floor = metrics.clockFloorMs;
     metrics = recordCycle(
       metrics,
-      report({ tickAtMs: 100, completedAtMs: 200 }) as CycleReport,
+      report({ tickAtMs: 100, completedAtMs: 200 }),
       config,
     );
     expect(metrics.clockFloorMs).toBe(floor);
@@ -178,12 +177,12 @@ describe('pipelineMetrics (Onda 212)', () => {
   it('M8 — a virada de janela é declarada e zera os contadores', () => {
     const config = { ...DEFAULT_METRICS_CONFIG, windowMs: 1_000 };
     let metrics = createCameraMetrics('cam-1', 0, config);
-    metrics = recordCycle(metrics, report({ tickAtMs: 0, completedAtMs: 10 }) as CycleReport, config);
+    metrics = recordCycle(metrics, report({ tickAtMs: 0, completedAtMs: 10 }), config);
     expect(metrics.framesSeen).toBe(1);
 
     metrics = recordCycle(
       metrics,
-      report({ tickAtMs: 50_000, completedAtMs: 50_010 }) as CycleReport,
+      report({ tickAtMs: 50_000, completedAtMs: 50_010 }),
       config,
     );
     expect(metrics.rolledOverAtMs).not.toBeNull();
@@ -197,13 +196,13 @@ describe('pipelineMetrics (Onda 212)', () => {
   it('frota — o pior governa e o empate ordena por identificador', () => {
     const config = { ...DEFAULT_METRICS_CONFIG, windowMs: null };
     let ledger: MetricsLedger = {};
-    ledger = recordFleetCycle(ledger, report({ cameraId: 'cam-b' }) as CycleReport, config);
+    ledger = recordFleetCycle(ledger, report({ cameraId: 'cam-b' }), config);
     ledger = recordFleetCycle(
       ledger,
       report({
         cameraId: 'cam-a',
         executions: [execution({ totalLatencyMs: 9_000 })],
-      }) as CycleReport,
+      }),
       config,
     );
 
