@@ -240,6 +240,47 @@ function thawIfDue(runtime: ProcessorRuntime, nowMs: number): ProcessorRuntime {
 }
 
 /**
+ * Onda 208-B — devolve o slot do barramento até ele ficar realmente ocioso.
+ *
+ * `completeDelivery` promove a pendência assim que o slot vaga. Quando quem
+ * está sendo liberado é um processador que NÃO vai executar nada (recusado
+ * pela cadência, suspenso, ou sem capacidade de rastreio), essa promoção
+ * criaria uma entrega órfã: o barramento marca o frame em voo, ninguém executa,
+ * e o processador fica mudo para sempre. A simulação de vídeo maltratado achou
+ * exatamente esse buraco.
+ *
+ * Promover a pendência a tarefa aqui seria pior: furaria P1, entregando
+ * trabalho sem passar pela cadência. Então drenamos — e cada devolução é um
+ * descarte declarado (`consumer_refused`), nunca um sumiço silencioso (P8).
+ */
+function drainConsumer(
+  bus: FrameBusState,
+  consumerId: string,
+  frameId: number,
+  nowMs: number,
+): { bus: FrameBusState; drops: FrameDrop[] } {
+  let current = bus;
+  const drops: FrameDrop[] = [];
+  let target = frameId;
+
+  /* A pendência é unitária (F2), então uma volta basta; o teto existe só para
+   * que nenhuma mudança futura no barramento transforme isto em laço infinito. */
+  for (let guard = 0; guard < 4; guard += 1) {
+    const released = completeDelivery(current, consumerId, target, nowMs);
+    current = released.bus;
+    drops.push(...released.drops);
+    const promoted = released.deliveries[0];
+    if (!promoted) break;
+    drops.push({ consumerId, frameId: promoted.frameId, reason: 'consumer_refused' });
+    target = promoted.frameId;
+  }
+
+  return { bus: current, drops };
+}
+
+
+
+/**
  * Um tick do ciclo da câmera: publica o frame, colhe as entregas do barramento
  * e converte cada entrega em tarefa, sob a régua de cadência.
  */
