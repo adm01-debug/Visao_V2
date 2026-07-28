@@ -17,6 +17,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageContent } from "@/components/layout/MainLayout";
+import { AlarmTreatmentDialog } from "@/components/alarms/AlarmTreatmentDialog";
 
 type Severity = "low" | "medium" | "high" | "critical";
 type Status = "open" | "acknowledged" | "resolved" | "dismissed";
@@ -44,6 +45,9 @@ const SEVERITY_TONE: Record<Severity, string> = {
   medium: "bg-primary/80 text-primary-foreground",
   low: "bg-muted text-muted-foreground",
 };
+const STATUS_LABEL: Record<Status, string> = {
+  open: "Aberto", acknowledged: "Em tratativa", resolved: "Resolvido", dismissed: "Descartado",
+};
 const RANGES = {
   "1h": 1, "6h": 6, "24h": 24, "7d": 24 * 7, "30d": 24 * 30,
 } as const;
@@ -55,6 +59,7 @@ export default function EventAlertsDashboardPage() {
   const [severity, setSeverity] = useState<Severity | "all">("all");
   const [cameraId, setCameraId] = useState<string>("all");
   const [riskType, setRiskType] = useState<string>("all");
+  const [treating, setTreating] = useState<AlertRow | null>(null);
 
   const since = useMemo(
     () => subHours(new Date(), RANGES[rangeKey]).toISOString(),
@@ -301,7 +306,12 @@ export default function EventAlertsDashboardPage() {
                   <p className="text-sm text-muted-foreground">Nenhum alerta encontrado.</p>
                 )}
                 {alerts.slice(0, 50).map((a) => (
-                  <div key={a.id} className="rounded-md border border-border p-3 hover:bg-accent/40 transition-colors">
+                  <button
+                    key={a.id}
+                    type="button"
+                    onClick={() => setTreating(a)}
+                    className="w-full text-left rounded-md border border-border p-3 hover:bg-accent/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
                     <div className="flex items-center justify-between gap-2">
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-foreground truncate">{a.title}</p>
@@ -314,17 +324,30 @@ export default function EventAlertsDashboardPage() {
                           {SEVERITY_LABEL[a.severity]}
                         </Badge>
                         <p className="text-[10px] text-muted-foreground mt-1">
+                          {STATUS_LABEL[a.status]} ·{" "}
                           {format(new Date(a.triggered_at), "dd/MM HH:mm", { locale: ptBR })}
                         </p>
                       </div>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </ScrollArea>
           </CardContent>
         </Card>
       </div>
+
+      <AlarmTreatmentDialog
+        open={treating !== null}
+        onOpenChange={(next) => { if (!next) setTreating(null); }}
+        alarm={treating ? {
+          id: treating.id,
+          title: treating.title,
+          status: treating.status,
+          triggeredAt: treating.triggered_at,
+          cameraName: treating.camera?.name ?? null,
+        } : null}
+      />
     </PageContent>
   );
 }

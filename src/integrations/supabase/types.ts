@@ -2821,6 +2821,62 @@ export type Database = {
         }
         Relationships: []
       }
+      event_alert_treatments: {
+        Row: {
+          acted_at: string
+          action: string
+          actor_id: string
+          alert_id: string
+          created_at: string
+          from_status: Database["public"]["Enums"]["event_alert_status"]
+          id: string
+          note: string | null
+          organization_id: string
+          resolution_code:
+            | Database["public"]["Enums"]["alarm_resolution_code"]
+            | null
+          to_status: Database["public"]["Enums"]["event_alert_status"]
+        }
+        Insert: {
+          acted_at?: string
+          action: string
+          actor_id: string
+          alert_id: string
+          created_at?: string
+          from_status: Database["public"]["Enums"]["event_alert_status"]
+          id?: string
+          note?: string | null
+          organization_id: string
+          resolution_code?:
+            | Database["public"]["Enums"]["alarm_resolution_code"]
+            | null
+          to_status: Database["public"]["Enums"]["event_alert_status"]
+        }
+        Update: {
+          acted_at?: string
+          action?: string
+          actor_id?: string
+          alert_id?: string
+          created_at?: string
+          from_status?: Database["public"]["Enums"]["event_alert_status"]
+          id?: string
+          note?: string | null
+          organization_id?: string
+          resolution_code?:
+            | Database["public"]["Enums"]["alarm_resolution_code"]
+            | null
+          to_status?: Database["public"]["Enums"]["event_alert_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_alert_treatments_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "event_alerts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_alerts: {
         Row: {
           acknowledged_at: string | null
@@ -2834,6 +2890,10 @@ export type Database = {
           is_test: boolean
           metadata: Json
           organization_id: string
+          resolution_code:
+            | Database["public"]["Enums"]["alarm_resolution_code"]
+            | null
+          resolution_note: string | null
           resolved_at: string | null
           resolved_by: string | null
           severity: Database["public"]["Enums"]["event_alert_severity"]
@@ -2854,6 +2914,10 @@ export type Database = {
           is_test?: boolean
           metadata?: Json
           organization_id: string
+          resolution_code?:
+            | Database["public"]["Enums"]["alarm_resolution_code"]
+            | null
+          resolution_note?: string | null
           resolved_at?: string | null
           resolved_by?: string | null
           severity?: Database["public"]["Enums"]["event_alert_severity"]
@@ -2874,6 +2938,10 @@ export type Database = {
           is_test?: boolean
           metadata?: Json
           organization_id?: string
+          resolution_code?:
+            | Database["public"]["Enums"]["alarm_resolution_code"]
+            | null
+          resolution_note?: string | null
           resolved_at?: string | null
           resolved_by?: string | null
           severity?: Database["public"]["Enums"]["event_alert_severity"]
@@ -9119,6 +9187,44 @@ export type Database = {
         Returns: Json
       }
       tick_timelapse_capture: { Args: never; Returns: number }
+      treat_event_alert: {
+        Args: {
+          p_action: string
+          p_alert_id: string
+          p_code?: string
+          p_note?: string
+        }
+        Returns: {
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          camera_id: string | null
+          created_at: string
+          dedup_key: string | null
+          description: string | null
+          event_id: string | null
+          id: string
+          is_test: boolean
+          metadata: Json
+          organization_id: string
+          resolution_code:
+            | Database["public"]["Enums"]["alarm_resolution_code"]
+            | null
+          resolution_note: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: Database["public"]["Enums"]["event_alert_severity"]
+          status: Database["public"]["Enums"]["event_alert_status"]
+          title: string
+          triggered_at: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "event_alerts"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       triage_default_quarantine: {
         Args: { months_ahead?: number; months_back?: number }
         Returns: Json
@@ -9151,6 +9257,13 @@ export type Database = {
       wrap_dek: { Args: { p_dek: string; p_kek: string }; Returns: string }
     }
     Enums: {
+      alarm_resolution_code:
+        | "incident_confirmed"
+        | "handled_on_site"
+        | "no_action_needed"
+        | "false_positive"
+        | "duplicate"
+        | "test"
       alert_type:
         | "security"
         | "safety"
@@ -9367,6 +9480,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      alarm_resolution_code: [
+        "incident_confirmed",
+        "handled_on_site",
+        "no_action_needed",
+        "false_positive",
+        "duplicate",
+        "test",
+      ],
       alert_type: [
         "security",
         "safety",
