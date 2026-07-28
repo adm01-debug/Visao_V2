@@ -36,6 +36,7 @@ import {
   Network,
   FileCheck2,
   Map as MapIcon,
+  Star,
 } from "lucide-react";
 import type { NavCategory } from "../types";
 import type { SidebarStatus } from "@/hooks/useSidebarStatus";
@@ -55,6 +56,7 @@ export const createSidebarCategories = (status: SidebarStatus): NavCategory[] =>
         badge: status.totalCameras > 0 ? `${status.onlineCameras}/${status.totalCameras}` : undefined
       },
       { id: "fleet-health", label: "Saúde da Frota", icon: Activity, path: "/cameras/frota" },
+      { id: "favorite-views", label: "Visualizações", icon: Star, path: "/visualizacoes" },
       { id: "nvrs", label: "NVRs", icon: Video, path: "/nvrs" },
       { id: "recordings", label: "Gravações", icon: Video, path: "/recordings" },
     ],

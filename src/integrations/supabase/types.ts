@@ -3990,6 +3990,7 @@ export type Database = {
           created_at: string
           id: string
           is_default: boolean
+          last_used_at: string | null
           layout: string
           name: string
           updated_at: string
@@ -3999,6 +4000,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_default?: boolean
+          last_used_at?: string | null
           layout: string
           name: string
           updated_at?: string
@@ -4008,6 +4010,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_default?: boolean
+          last_used_at?: string | null
           layout?: string
           name?: string
           updated_at?: string
