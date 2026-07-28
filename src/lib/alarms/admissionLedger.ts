@@ -179,7 +179,7 @@ export function buildAdmissionLedger(
   );
 
   for (const entry of Array.isArray(entries) ? entries : []) {
-    const reason = entry?.verdict?.reason;
+    const reason = entry?.verdict?.reason as AdmissionReason | undefined;
     if (!reason || !ADMISSION_REASONS.includes(reason)) continue;
 
     const at = finiteAt(entry?.at);
