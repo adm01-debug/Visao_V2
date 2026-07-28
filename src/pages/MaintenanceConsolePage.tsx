@@ -14,6 +14,8 @@ import { DeviceSilenceCard } from '@/components/maintenance/DeviceSilenceCard';
 import { AdmissionPurgeHistoryCard } from '@/components/maintenance/AdmissionPurgeHistoryCard';
 import { useAdmissionPurgeHistory } from '@/hooks/useAdmissionPurgeHistory';
 import { useAdmissionReconcile } from '@/hooks/useAdmissionReconcile';
+import { useAdmissionOrphanTrend } from '@/hooks/useAdmissionOrphanTrend';
+import { AdmissionOrphanTrendCard } from '@/components/maintenance/AdmissionOrphanTrendCard';
 import { AdmissionReconcileCard } from '@/components/maintenance/AdmissionReconcileCard';
 import { useCommandReliability } from '@/hooks/useCommandReliability';
 import { useDeviceSilence } from '@/hooks/useDeviceSilence';
@@ -38,6 +40,7 @@ export default function MaintenanceConsolePage() {
   const reconciliation = useEpisodeReconciliation(organizationId);
   const admissionPurge = useAdmissionPurgeHistory();
   const admissionReconcile = useAdmissionReconcile(admissionPurge.snapshot.lastValid);
+  const orphanTrend = useAdmissionOrphanTrend();
 
   const { toast } = useToast();
   const [pendingId, setPendingId] = useState<string | null>(null);
@@ -149,6 +152,14 @@ export default function MaintenanceConsolePage() {
         isError={admissionReconcile.isError}
         sqlVerdict={admissionReconcile.sqlVerdict}
         onRefresh={admissionReconcile.refetch}
+      />
+
+      <AdmissionOrphanTrendCard
+        assessment={orphanTrend.assessment}
+        isLoading={orphanTrend.isLoading}
+        isError={orphanTrend.isError}
+        sqlVerdict={orphanTrend.sqlVerdict}
+        onRefresh={orphanTrend.refetch}
       />
 
     </PageContent>
