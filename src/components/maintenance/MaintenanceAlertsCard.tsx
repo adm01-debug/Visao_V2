@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { CheckCircle2, ShieldAlert } from 'lucide-react';
+import { BellOff, CheckCircle2, ShieldAlert } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { cn } from '@/lib/utils';
 import type { MaintenanceConsoleModel } from '@/lib/maintenance/maintenanceConsoleView';
@@ -14,6 +14,17 @@ import {
   resolveOwnerFilter,
 } from '@/lib/maintenance/ownerFilter';
 import { agingLabel, buildOwnerAgingMap } from '@/lib/maintenance/ownerAging';
+import type { ConditionSilenceView } from '@/lib/maintenance/conditionSilence';
+
+const CHANNEL_LABELS: Record<string, string> = { telegram: 'Telegram', email: 'E-mail' };
+
+/** Onda 241 — canais efetivamente calados, em texto legível. */
+function silencedChannelLabel(silence: ConditionSilenceView): string {
+  const names = silence.channels
+    .filter((entry) => entry.state === 'silenced')
+    .map((entry) => CHANNEL_LABELS[entry.channel] ?? entry.channel);
+  return names.length === 0 ? 'canal externo' : names.join(' e ');
+}
 
 interface MaintenanceAlertsCardProps {
   readonly model: MaintenanceConsoleModel;
@@ -87,6 +98,11 @@ export function MaintenanceAlertsCard({
               <Badge variant="outline">{summary.acknowledged} reconhecidos</Badge>
               {summary.atCeiling > 0 && (
                 <Badge variant="destructive">{summary.atCeiling} no topo da escada</Badge>
+              )}
+              {summary.silenced > 0 && (
+                <Badge variant="outline" className="border-warning/50 text-warning">
+                  {summary.silenced} com canal externo calado
+                </Badge>
               )}
             </div>
 
@@ -193,6 +209,19 @@ export function MaintenanceAlertsCard({
                       <p className="text-xs text-muted-foreground">
                         Condição persiste há {formatMinutes(row.conditionAgeMinutes)} ·{' '}
                         {row.conditionRows} reemissões sem reconhecimento
+                      </p>
+                    )}
+                    {row.silence && row.silence.remainingMinutes !== null && (
+                      <p className="text-xs font-medium text-warning">
+                        <BellOff className="mr-1 inline h-3 w-3" aria-hidden="true" />
+                        Canal externo calado por mais {formatMinutes(row.silence.remainingMinutes)}
+                        {' · '}
+                        {silencedChannelLabel(row.silence)} já notificado nesta condição
+                      </p>
+                    )}
+                    {row.silence?.breaksOnEscalation && (
+                      <p className="text-xs font-medium text-destructive">
+                        Agravamento detectado — o próximo despacho fura o silêncio
                       </p>
                     )}
 

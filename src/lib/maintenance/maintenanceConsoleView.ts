@@ -56,6 +56,13 @@ import {
   type EscalationProfile,
 } from '@/lib/escalationProfiles';
 import { readOwnerRouting, type OwnerRouting } from '@/lib/maintenance/maintenanceOwner';
+import {
+  buildConditionSilence,
+  indexConditionNotices,
+  type ConditionNoticeRow,
+  type ConditionSilenceView,
+} from '@/lib/maintenance/conditionSilence';
+
 
 const MINUTE_MS = 60_000;
 
@@ -111,7 +118,14 @@ export interface MaintenanceAlertView {
    * quando o perfil ancora na condição (O4), senão o nível da própria linha.
    */
   readonly effectiveLevel: EscalationLevel;
+  /**
+   * Onda 241 — silêncio ativo por condição no despacho externo. `null` quando
+   * a fonte não tem janela de silêncio, quando nunca houve entrega ou quando o
+   * alerta já foi reconhecido (R2/R7/R8).
+   */
+  readonly silence: ConditionSilenceView | null;
 }
+
 
 export interface MaintenanceConsoleSummary {
   readonly total: number;
@@ -125,6 +139,10 @@ export interface MaintenanceConsoleSummary {
   readonly worst: 'ok' | MaintenanceSeverity;
   /** Onda 239 — abertos governados por perfil lento (contabilidade diária). */
   readonly slowProfile: number;
+  /** Onda 241 — abertos cuja condição está calada no despacho externo agora. */
+  readonly silenced: number;
+  /** Onda 241 — abertos que só voltam a notificar por agravamento (R4). */
+  readonly silenceBrokenByEscalation: number;
 }
 
 export interface MaintenanceConsoleModel {
@@ -223,7 +241,11 @@ export function buildMaintenanceConsole(
   rows: readonly MaintenanceAlertRow[],
   nowMs: number,
   thresholds: EscalationThresholds = DEFAULT_ESCALATION_THRESHOLDS,
+  notices: readonly ConditionNoticeRow[] = [],
 ): MaintenanceConsoleModel {
+  // Onda 241 — índice de entregas externas por (condição, canal).
+  const noticeIndex = indexConditionNotices(notices, nowMs);
+
   // P2 — a sequência é apurada por CHAVE de rotina, exatamente como o SQL da
   // Onda 238 faz. Duas chaves distintas nunca compartilham âncora.
   const streaks = new Map<string, ReturnType<typeof buildConditionStreak>>();
@@ -298,6 +320,12 @@ export function buildMaintenanceConsole(
         conditionAgeMinutes === null ? null : Math.round(conditionAgeMinutes * 10) / 10,
       conditionRows: streak?.rows ?? 1,
       effectiveLevel,
+      // R8 — reconhecido não exibe silêncio: a expectativa de notificação
+      // externa foi encerrada pelo próprio operador.
+      silence:
+        status === 'open'
+          ? buildConditionSilence(row.routine, severity, noticeIndex, nowMs)
+          : null,
     };
   });
 
@@ -325,6 +353,9 @@ export function buildMaintenanceConsole(
       atCeiling,
       worst: openCritical > 0 ? 'critical' : open.length > 0 ? 'warning' : 'ok',
       slowProfile: open.filter((view) => view.profileId !== 'operational').length,
+      silenced: open.filter((view) => (view.silence?.silencedChannels ?? 0) > 0).length,
+      silenceBrokenByEscalation: open.filter((view) => view.silence?.breaksOnEscalation === true)
+        .length,
     },
   };
 }
