@@ -234,7 +234,8 @@
     "simulate:wave177": "node scripts/simulate-wave177-alarm-treatment.mjs",
     "simulate:wave178": "node scripts/simulate-wave178-alarm-aggregation.mjs",
     "simulate:wave179": "node scripts/simulate-wave179-alarm-recurrence.mjs",
-    "simulate:wave181": "node scripts/simulate-wave181-episode-bridge.mjs"
+    "simulate:wave181": "node scripts/simulate-wave181-episode-bridge.mjs",
+    "simulate:wave182": "node scripts/simulate-wave182-episode-queue.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
