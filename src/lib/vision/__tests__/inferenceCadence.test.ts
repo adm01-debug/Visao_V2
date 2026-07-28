@@ -107,7 +107,10 @@ describe('inferenceCadence', () => {
 
   it('relógio retrocedendo não libera execução extra (C5)', () => {
     let s = createCadenceState();
-    s = commitDecision(s, decideCadence(s, frame(), 10_000));
+    s = commitDecision(
+      s,
+      decideCadence(s, frame({ capturedAtMs: 10_000 }), 10_000),
+    );
     const d = decideCadence(
       s,
       frame({ capturedAtMs: 10_050, trackId: 't1', trackEverIdentified: true }),
@@ -130,7 +133,19 @@ describe('inferenceCadence', () => {
     const cfg = { ...DEFAULT_CADENCE, identifyBudget: 2 };
     expect(describeBudget(s, 0, cfg).pressure).toBe('healthy');
     s = commitDecision(s, decideCadence(s, frame(), 1_000, cfg), cfg);
-    expect(describeBudget(s, 1_000, cfg).pressure).toBe('tight');
+    /* 1 de 2 = 50% do teto: ainda folgado. */
+    expect(describeBudget(s, 1_000, cfg).pressure).toBe('healthy');
+    /* 7 de 10 = 70%: aperto declarado antes do esgotamento. */
+    expect(
+      describeBudget(
+        {
+          ...createCadenceState(),
+          recentIdentifyAtMs: [1, 2, 3, 4, 5, 6, 7],
+        },
+        1_000,
+        { ...DEFAULT_CADENCE, identifyBudget: 10 },
+      ).pressure,
+    ).toBe('tight');
     s = releaseIdentify(s);
     s = commitDecision(
       s,
