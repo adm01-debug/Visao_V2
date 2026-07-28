@@ -352,17 +352,30 @@ export function tickPipeline(
     cadence = commitDecision(state.cadence, effective, state.config);
   }
 
+  /* P3/P8 — recusa NÃO pode deixar o slot do barramento ocupado. O FrameBus
+   * marca o consumidor em voo no instante da entrega; se o ciclo recusou, nunca
+   * haverá `settleTask` para dar baixa e o processador ficaria mudo para sempre
+   * (gap achado pela simulação da Onda 208, cenário de quarentena). Liberamos
+   * aqui, no mesmo tick, e o descarte fica contabilizado. */
+  let bus = published.bus;
+  const drops = [...published.drops];
+  for (const refusal of refusals) {
+    const released = completeDelivery(bus, refusal.processorId, refusal.frameId, effectiveNowMs);
+    bus = released.bus;
+    drops.push(...released.drops);
+  }
+
   return {
     state: {
       ...state,
-      bus: published.bus,
+      bus,
       cadence,
       runtimes,
       clockFloorMs: effectiveNowMs,
     },
     tasks,
     refusals,
-    busDrops: published.drops,
+    busDrops: drops,
     decision,
   };
 }
