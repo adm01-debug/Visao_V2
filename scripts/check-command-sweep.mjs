@@ -149,7 +149,7 @@ for (const r of rows) {
     },
     NOW,
   );
-  if (dbMap.get(r.id) !== v.reason) mismatches += 1;
+  if (dbMap.get(r.id) !== v.reason) { mismatches += 1; if (mismatches < 5) console.log('DIVERG', JSON.stringify(r), 'db=', dbMap.get(r.id), 'app=', v.reason); }
 }
 expect(
   mismatches === 0,
