@@ -69,7 +69,9 @@ export function useSaveAlarmScheme(context: SchemeContext = {}) {
       const payload: TablesInsert<'alarm_schemes'> = {
         ...built,
         actions: built.actions as unknown as Json,
+        schedule: (built.schedule ?? null) as unknown as Json,
       };
+
 
       if (form.id) {
         const { error } = await supabase
