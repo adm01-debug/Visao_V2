@@ -203,38 +203,49 @@ export function buildFaceTimeline(
 
   const bucketCount = Math.max(1, Math.ceil((toMs - fromMs) / stepMs));
 
-  const counts = new Array<number>(bucketCount).fill(0);
-  const tones: BucketTone[] = new Array<BucketTone>(bucketCount).fill('idle');
-  const ids: string[][] = Array.from({ length: bucketCount }, () => []);
+  interface Accumulator {
+    count: number;
+    tone: BucketTone;
+    ids: string[];
+  }
+  const acc: Accumulator[] = Array.from({ length: bucketCount }, () => ({
+    count: 0,
+    tone: 'idle' as BucketTone,
+    ids: [] as string[],
+  }));
 
   for (const r of results) {
     if (!isFiniteNumber(r.timestampMs)) continue;
     if (r.timestampMs < fromMs || r.timestampMs > toMs) continue;
     // Borda fechada só no último balde: a leitura exata em `toMs` não pode sumir.
     const raw = Math.floor((r.timestampMs - fromMs) / stepMs);
-    const index = raw >= bucketCount ? bucketCount - 1 : raw;
-    counts[index] += 1;
-    tones[index] = worsen(tones[index], VERDICT_TONE[r.verdict] ?? 'unverified');
-    ids[index].push(r.id);
+    const index = raw >= bucketCount ? bucketCount - 1 : raw < 0 ? 0 : raw;
+    const slot = acc[index];
+    if (slot === undefined) continue;
+    slot.count += 1;
+    slot.tone = worsen(slot.tone, VERDICT_TONE[r.verdict] ?? 'unverified');
+    slot.ids.push(r.id);
   }
 
   let peakCount = 0;
   let totalCount = 0;
   const buckets: FaceTimelineBucket[] = [];
   for (let i = 0; i < bucketCount; i += 1) {
+    const slot = acc[i] ?? { count: 0, tone: 'idle' as BucketTone, ids: [] as string[] };
     const startMs = fromMs + i * stepMs;
     const endMs = i === bucketCount - 1 ? toMs : Math.min(toMs, startMs + stepMs);
-    if (counts[i] > peakCount) peakCount = counts[i];
-    totalCount += counts[i];
+    if (slot.count > peakCount) peakCount = slot.count;
+    totalCount += slot.count;
     buckets.push({
       index: i,
       startMs,
       endMs,
-      count: counts[i],
-      tone: tones[i],
-      resultIds: ids[i],
+      count: slot.count,
+      tone: slot.tone,
+      resultIds: slot.ids,
     });
   }
+
 
   return {
     ok: true,
