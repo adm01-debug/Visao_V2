@@ -37,6 +37,8 @@ export default function FaceSearchPage() {
         </p>
       </header>
 
+      <ReferenceFaceMatchCard />
+
       <FaceSearchFilters isFetching={isFetching} onSubmit={submit} onReset={reset} />
 
       {rejection !== null && (
