@@ -1,18 +1,27 @@
 {
-  "generatedAt": "2026-07-28T12:56:41.732Z",
+  "generatedAt": "2026-07-28T13:02:35.454Z",
   "wrapperFile": "src/components/layout/MainLayout.tsx",
   "requiredClass": "mb-mobile-nav",
   "totals": {
-    "total": 70,
+    "total": 71,
     "ok": 62,
-    "pendente": 0,
+    "pendente": 1,
     "isenta": 8,
-    "standard": 62,
+    "standard": 63,
     "customWrapper": 0,
     "standalone": 8
   },
   "failed": true,
   "rows": [
+    {
+      "file": "DetachedMonitorPage.tsx",
+      "path": "src/pages/DetachedMonitorPage.tsx",
+      "category": "standard",
+      "status": "pendente",
+      "issues": [
+        "Wrapper customizado não cadastrado (linha 107)"
+      ]
+    },
     {
       "file": "AlertsPage.tsx",
       "path": "src/pages/AlertsPage.tsx",
