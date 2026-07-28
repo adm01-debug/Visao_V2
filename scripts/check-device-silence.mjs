@@ -109,7 +109,6 @@ const values = scenarios
 
 const sqlVerdicts = rows(`
 BEGIN;
-  SET LOCAL session_replication_role = replica; -- gatilhos de regra não governam cenário sintético
   CREATE TEMP TABLE _s(code text, status text, seen timestamptz, denied timestamptz,
                        exp timestamptz, rot timestamptz) ON COMMIT DROP;
   INSERT INTO _s VALUES ${values};
@@ -182,7 +181,6 @@ ok(divergences === 0, `G3 espelho SQL divergiu da regra única em ${divergences}
 //     piora fura a pausa, e repetição igual é engolida. Tudo revertido. ───
 const fanin = rows(`
 BEGIN;
-  SET LOCAL session_replication_role = replica;
   CREATE TEMP TABLE _r(kind text, id uuid) ON COMMIT DROP;
 
   INSERT INTO public.device_registrations
