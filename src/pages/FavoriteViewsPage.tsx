@@ -21,6 +21,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCameras } from '@/hooks/useCameras';
+import { useDetachedMonitors } from '@/hooks/useDetachedMonitors';
+import { DetachedMonitorsBar } from '@/components/favorite-views/DetachedMonitorsBar';
 import { useFavoriteViews } from '@/hooks/useFavoriteViews';
 import { FavoriteViewsBar } from '@/components/favorite-views/FavoriteViewsBar';
 import { FavoriteArrangementGrid } from '@/components/favorite-views/FavoriteArrangementGrid';
@@ -34,6 +36,7 @@ import {
   layoutCapacity,
   restoreFavoriteView,
 } from '@/lib/views/favoriteViewRestore';
+import { MAX_DETACHED_WINDOWS } from '@/lib/views/detachedMonitor';
 
 function emptyCells(layout: MonitorLayout): RestoredCell[] {
   return Array.from({ length: layoutCapacity(layout) }, (_, slotIndex) => ({
@@ -46,6 +49,7 @@ function emptyCells(layout: MonitorLayout): RestoredCell[] {
 export default function FavoriteViewsPage() {
   const { cameras, loading: camerasLoading } = useCameras();
   const favorites = useFavoriteViews();
+  const monitors = useDetachedMonitors();
   const { views, activeId, setActiveId, touchView } = favorites;
 
   const [layout, setLayout] = useState<MonitorLayout>('2x2');
@@ -56,6 +60,10 @@ export default function FavoriteViewsPage() {
   const visibleCameraIds = useMemo(() => new Set(cameras.map((c) => c.id)), [cameras]);
   const cameraOptions = useMemo(
     () => cameras.map((c) => ({ id: c.id, name: c.name })),
+    [cameras],
+  );
+  const cameraNames = useMemo(
+    () => Object.fromEntries(cameras.map((c) => [c.id, c.name])),
     [cameras],
   );
 
@@ -154,6 +162,22 @@ export default function FavoriteViewsPage() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">
+            Janelas destacadas · {monitors.aliveCount}/{MAX_DETACHED_WINDOWS}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <DetachedMonitorsBar
+            detached={monitors.detached}
+            cameraNames={cameraNames}
+            now={Date.now()}
+            onClose={monitors.closeDetached}
+          />
+        </CardContent>
+      </Card>
+
       {notice && (
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" aria-hidden="true" />
@@ -195,6 +219,7 @@ export default function FavoriteViewsPage() {
               cells={cells}
               cameras={cameraOptions}
               onAssign={handleAssign}
+              onDetach={monitors.detach}
             />
           )}
 
