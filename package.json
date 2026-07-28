@@ -283,6 +283,7 @@
     "simulate:wave215": "npx tsx scripts/simulate-wave215.ts",
     "simulate:wave229": "npx tsx scripts/simulate-wave229.ts",
     "simulate:wave230": "tsx scripts/simulate-wave230-admission-retention.ts",
+    "simulate:wave231": "tsx scripts/simulate-wave231-purge-history.ts",
     "db:check:admission-retention": "tsx scripts/check-admission-retention.ts"
   },
   "dependencies": {
