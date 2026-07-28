@@ -93,6 +93,15 @@ export interface FaceAttributeFilter {
   ageMax?: number | null;
 }
 
+/** Filtro já normalizado: os três campos existem, `null` = "sem filtro". */
+export interface NormalizedAttributeFilter {
+  readonly gender: 'male' | 'female' | null;
+  readonly ageMin: number | null;
+  readonly ageMax: number | null;
+}
+
+
+
 export interface RawFaceSearchCriteria {
   fromMs: number | null;
   toMs: number | null;
