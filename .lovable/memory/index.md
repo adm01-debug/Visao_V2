@@ -14,3 +14,4 @@
 - [E-Map relógio de atenção](mem://features/emap-attention-clock) — Onda 168: idade do estado no mapa; confirmação nunca reinicia o relógio, só normalização observada apaga, ausência não é melhora, faixas fresh/sustained/prolonged, `simulate:wave168`
 - [E-Map passagem de turno](mem://features/emap-shift-handoff) — Onda 169: diário do turno; reconhecer nunca é resolver, herdado nunca é novo, sumiu ≠ normalizou, teto de detalhe não altera contagens, `simulate:wave169`
 - [E-Map durabilidade do turno](mem://features/emap-shift-durability) — Onda 170: diário + relógio sobrevivem ao F5; envelope inválido descarta tudo, registro ruim cai sozinho, relógio futuro é suspeito, turno expira mas pendência vira herança, `simulate:wave170`
+- [E-Map fila de triagem](mem://features/emap-triage-queue) — Onda 171: ordem de atendimento; gravidade manda, dívida promove um degrau só (teto `offline`), ciente vai ao fim sem sumir, sem planta continua na fila, `simulate:wave171`
