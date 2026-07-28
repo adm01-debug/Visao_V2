@@ -69,8 +69,17 @@ export function EpisodeBridgeCard({
   evaluatedAt,
   isLoading,
   onRefresh,
+  onReconcile,
+  isReconciling = false,
+  canReconcile = false,
 }: EpisodeBridgeCardProps) {
   const unknown = assessment.verdict === 'insufficient_data';
+  // A ação só aparece quando existe passivo medido. Oferecer "reconciliar" com
+  // veredito desconhecido convidaria o operador a agir sobre um número que o
+  // sistema admite não saber.
+  const showReconcile =
+    onReconcile !== undefined && canReconcile && !unknown && assessment.latest > 0;
+
 
   return (
     <Card>
