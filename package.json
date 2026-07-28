@@ -271,6 +271,7 @@
     "simulate:wave207": "npx tsx scripts/simulate-wave207.ts",
     "simulate:wave208": "npx tsx scripts/simulate-wave208.ts",
     "simulate:wave209": "npx tsx scripts/simulate-wave209.ts",
+    "simulate:wave208:video": "npx tsx scripts/simulate-wave208-video.ts",
     "simulate:wave211": "npx tsx scripts/simulate-wave211.ts"
   },
   "dependencies": {
