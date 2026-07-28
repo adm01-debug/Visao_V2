@@ -281,6 +281,7 @@ async function main(): Promise<void> {
               /* M2 — frame velho nunca some sem balde. */
               if (staleRate > 0.5 && metrics.rolledOverAtMs === null) {
                 const staleSeen = metrics.drops.stale_frame + metrics.drops.stale;
+                if (staleSeen === 0) console.log('DBG', JSON.stringify({ executorKind, staleRate, idleRate, rewindRate, window: config.windowMs, frames: metrics.framesSeen, drops: metrics.drops }));
                 check('M2 frame velho contabilizado', staleSeen > 0);
               }
 
