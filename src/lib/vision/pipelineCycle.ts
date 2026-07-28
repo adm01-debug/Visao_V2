@@ -127,6 +127,20 @@ function errorMessageOf(error: unknown): string {
   return 'unknown_error';
 }
 
+/**
+ * L7 — duração observada entre dois instantes, nunca negativa.
+ *
+ * O relógio do host pode retroceder (NTP) e o `capturedAtMs` do frame vem do
+ * equipamento, que pode estar adiantado (a Onda 112 mede exatamente esse
+ * desvio). Latência negativa não existe fisicamente e envenenaria qualquer
+ * média; então o piso é zero — declarado, não silencioso.
+ */
+function elapsed(fromMs: number, toMs: number): number {
+  if (!Number.isFinite(fromMs) || !Number.isFinite(toMs)) return 0;
+  return Math.max(0, toMs - fromMs);
+}
+
+
 /* ========================================================================== */
 /* Ciclo de uma câmera                                                         */
 /* ========================================================================== */
