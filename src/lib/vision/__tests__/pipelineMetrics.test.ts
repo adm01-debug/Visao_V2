@@ -56,6 +56,7 @@ function report(overrides: Partial<CycleReport> = {}): CycleReport {
     completedAtMs: 1_100,
     frameId: 1,
     published: true,
+    decision: null,
     executions: [],
     refusals: [],
     busDrops: [],
