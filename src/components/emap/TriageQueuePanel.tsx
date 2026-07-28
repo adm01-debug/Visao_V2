@@ -48,6 +48,16 @@ const STATUS_VARIANT: Record<MapMarkerStatus, 'destructive' | 'secondary' | 'out
   online: 'outline',
 };
 
+/** Onda 174: o prazo nunca compete com a gravidade — só a explica. */
+const SLA_VARIANT: Record<SlaState, 'destructive' | 'secondary' | 'outline'> = {
+  breached: 'destructive',
+  due_soon: 'secondary',
+  on_time: 'outline',
+  late: 'secondary',
+  met: 'outline',
+  not_applicable: 'outline',
+};
+
 /**
  * Onda 171 — "o que eu atendo agora?".
  *
@@ -61,6 +71,7 @@ export function TriageQueuePanel({
   locate,
   activePlanId = null,
   acknowledged,
+  acks,
   onFocus,
   onAcknowledge,
   limit = 6,
@@ -81,6 +92,17 @@ export function TriageQueuePanel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [ledger, now, locate, activePlanId, ackKey, limit],
   );
+
+  // Onda 174 — veredito de prazo por item. Fora de escopo não vira selo.
+  const sla = useMemo(() => {
+    const byCamera = new Map<string, SlaVerdict>();
+    for (const item of queue.items) {
+      const entry = ledger[item.cameraId];
+      if (!entry) continue;
+      byCamera.set(item.cameraId, evaluateSla({ entry, now, ack: acks?.[item.cameraId] ?? null }));
+    }
+    return { byCamera, summary: summarizeSla(byCamera.values()) };
+  }, [queue.items, ledger, now, acks]);
 
   if (queue.totals.total === 0) return null;
 
@@ -110,6 +132,12 @@ export function TriageQueuePanel({
           {queue.totals.offPlan > 0 && (
             <Badge variant="outline">{queue.totals.offPlan} fora de planta</Badge>
           )}
+          {sla.summary.breached > 0 && (
+            <Badge variant="destructive">{sla.summary.breached} fora do prazo</Badge>
+          )}
+          {sla.summary.late > 0 && (
+            <Badge variant="secondary">{sla.summary.late} atendido(s) com atraso</Badge>
+          )}
         </div>
 
         <ol className="space-y-2">
@@ -127,6 +155,20 @@ export function TriageQueuePanel({
                   <Badge variant={STATUS_VARIANT[item.status]}>{STATUS_LABEL[item.status]}</Badge>
                   {item.promoted && <Badge variant="outline">promovido</Badge>}
                   {item.acknowledged && <Badge variant="outline">ciente</Badge>}
+                  {(() => {
+                    const verdict = sla.byCamera.get(item.cameraId);
+                    if (!verdict || verdict.state === 'not_applicable') return null;
+                    return (
+                      <Badge variant={SLA_VARIANT[verdict.state]}>
+                        {slaStateLabel(verdict.state)}
+                        {verdict.overdueMs > 0
+                          ? ` +${formatAge(verdict.overdueMs)}`
+                          : verdict.remainingMs != null && !verdict.frozen
+                            ? ` (${formatAge(verdict.remainingMs)})`
+                            : ''}
+                      </Badge>
+                    );
+                  })()}
                 </div>
                 <p className="mt-0.5 truncate text-xs text-muted-foreground">
                   {item.planName ?? 'Sem planta'}
