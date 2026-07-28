@@ -53,7 +53,9 @@ const rls = sql(
 expect(rls === 't', 'RLS desligada na fila de comandos');
 
 const policies = sql(`
-  SELECT cmd || '|' || coalesce(qual,'-') || '|' || coalesce(with_check,'-')
+  SELECT replace(regexp_replace(
+           cmd || '|' || coalesce(qual,'-') || '|' || coalesce(with_check,'-'),
+           E'\\s+', ' ', 'g'), E'\\n', ' ')
     FROM pg_policies WHERE tablename='device_remote_commands'
 `);
 expect(policies.length >= 3, 'faltam políticas na fila de comandos');
