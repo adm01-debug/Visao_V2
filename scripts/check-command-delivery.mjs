@@ -81,7 +81,7 @@ for (const c of ['DELIVERY_LEASE_MS', 'MAX_DELIVERY_ATTEMPTS']) {
 
 // --- 2. Catálogo de atos com efeito físico ----------------------------------
 const effectfulOf = (source) => {
-  const m = source.match(/EFFECTFUL[^=]*=\s*new Set<RemoteCommandKind>\(\[([^\]]+)\]\)/);
+  const m = source.match(/EFFECTFUL[^=]*=\s*new Set(?:<RemoteCommandKind>)?\(\[([^\]]+)\]\)/);
   return m
     ? m[1]
       .split(',')

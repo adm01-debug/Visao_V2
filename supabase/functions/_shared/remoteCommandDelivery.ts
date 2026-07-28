@@ -23,7 +23,6 @@ export type RemoteCommandKind =
 /** Atos que mudam o estado físico do equipamento. */
 const EFFECTFUL: ReadonlySet<RemoteCommandKind> = new Set<RemoteCommandKind>([
   'osd.apply',
-  'clock.sync',
   'stream.restart',
   'device.reboot',
 ]);

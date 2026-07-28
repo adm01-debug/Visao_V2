@@ -53,7 +53,6 @@ import type { RemoteCommandKind } from './remoteCommandAdmission';
  */
 const EFFECTFUL: ReadonlySet<RemoteCommandKind> = new Set<RemoteCommandKind>([
   'osd.apply',
-  'clock.sync',
   'stream.restart',
   'device.reboot',
 ]);
