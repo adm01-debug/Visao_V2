@@ -40,7 +40,25 @@
  * `supabase/functions/_shared/remoteCommandDelivery.ts`.
  */
 
-import { isEffectful, type RemoteCommandKind } from './remoteCommandAdmission';
+import type { RemoteCommandKind } from './remoteCommandAdmission';
+
+/**
+ * Atos com efeito físico observável no equipamento.
+ *
+ * Declarado aqui (e não importado em tempo de execução) porque este módulo é
+ * carregado tanto pelo app quanto pelas simulações e pelo espelho de servidor,
+ * que não compartilham resolvedor de módulo. O gate
+ * `scripts/check-command-delivery.mjs` compara este conjunto com o do espelho e
+ * com o catálogo da Onda 193 — divergência falha o build.
+ */
+const EFFECTFUL: ReadonlySet<RemoteCommandKind> = new Set<RemoteCommandKind>([
+  'osd.apply',
+  'clock.sync',
+  'stream.restart',
+  'device.reboot',
+]);
+
+export const isEffectful = (kind: RemoteCommandKind): boolean => EFFECTFUL.has(kind);
 
 /** Estados possíveis de uma ordem na fila (espelho do CHECK da tabela). */
 export type CommandStatus =
