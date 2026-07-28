@@ -391,6 +391,39 @@ export type Database = {
           },
         ]
       }
+      alarm_recurrence_purge_runs: {
+        Row: {
+          abandoned_open: number
+          created_at: string
+          deleted_episodes: number
+          executed_at: string
+          id: string
+          pending_episodes: number
+          policy: Json
+          truncated: boolean
+        }
+        Insert: {
+          abandoned_open?: number
+          created_at?: string
+          deleted_episodes?: number
+          executed_at?: string
+          id?: string
+          pending_episodes?: number
+          policy: Json
+          truncated?: boolean
+        }
+        Update: {
+          abandoned_open?: number
+          created_at?: string
+          deleted_episodes?: number
+          executed_at?: string
+          id?: string
+          pending_episodes?: number
+          policy?: Json
+          truncated?: boolean
+        }
+        Relationships: []
+      }
       alertmanager_silences_audit: {
         Row: {
           action: string
@@ -7858,6 +7891,7 @@ export type Database = {
         Args: { _camera_id: string; _ttl_seconds?: number }
         Returns: Json
       }
+      alarm_recurrence_retention_policy: { Args: never; Returns: Json }
       analyze_table: { Args: { _table_name: string }; Returns: Json }
       apply_camera_setup: {
         Args: { _camera_id: string; _rules: Json; _zones: Json }
@@ -9085,6 +9119,10 @@ export type Database = {
           deleted: number
           expired: number
         }[]
+      }
+      purge_alarm_recurrence_episodes: {
+        Args: { p_now?: string }
+        Returns: Json
       }
       purge_bandwidth_samples: { Args: never; Returns: number }
       purge_timelapse_snapshots: { Args: never; Returns: number }
