@@ -14,7 +14,9 @@ import { ScanSearch } from 'lucide-react';
 import { FaceSearchFilters } from '@/components/faces/FaceSearchFilters';
 import { FaceSearchResults } from '@/components/faces/FaceSearchResults';
 import { ReferenceFaceMatchCard } from '@/components/faces/ReferenceFaceMatchCard';
+import { FaceEventTimeline } from '@/components/faces/FaceEventTimeline';
 import { PersonTimelineCard } from '@/components/faces/PersonTimelineCard';
+
 import { TimelineAttestationCard } from '@/components/faces/TimelineAttestationCard';
 
 import { useFaceSearch, MAX_ROWS } from '@/hooks/useFaceSearch';
@@ -100,6 +102,12 @@ export default function FaceSearchPage() {
 
       {criteria !== null && !isFetching && results.length > 0 && (
         <>
+          <FaceEventTimeline
+            results={results}
+            fromMs={criteria.fromMs}
+            toMs={criteria.toMs}
+            partial={truncated}
+          />
           <PersonTimelineCard results={results} windowEndMs={criteria.toMs} />
           <TimelineAttestationCard
             results={results}
@@ -113,6 +121,7 @@ export default function FaceSearchPage() {
           />
         </>
       )}
+
 
 
       {criteria !== null && !isFetching && <FaceSearchResults results={results} />}
