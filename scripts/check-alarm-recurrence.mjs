@@ -120,9 +120,9 @@ const ACTOR = '00000000-0000-0000-0000-00000000d180';
 const functional = query(`
 BEGIN;
   SET LOCAL client_min_messages = warning;
-  INSERT INTO public.organizations (id, name, slug) VALUES ('00000000-0000-0000-0000-0000000d1800', 'gate-180', 'gate-180');
+  INSERT INTO public.organizations (id, name, slug, created_by) VALUES ('00000000-0000-0000-0000-0000000d1800', 'gate-180', 'gate-180', '${ACTOR}');
   INSERT INTO public.organization_members (organization_id, user_id, role)
-    VALUES ('00000000-0000-0000-0000-0000000d1800', '${ACTOR}', 'owner');
+    VALUES ('00000000-0000-0000-0000-0000000d1800', '${ACTOR}', 'owner') ON CONFLICT DO NOTHING;
   SELECT set_config('request.jwt.claims', json_build_object('sub', '${ACTOR}')::text, true);
 
   -- Isolada: um episódio longo.
@@ -217,7 +217,7 @@ const immutability = (sql) => {
 const prelude = `
 BEGIN;
   SET LOCAL client_min_messages = warning;
-  INSERT INTO public.organizations (id, name, slug) VALUES ('00000000-0000-0000-0000-0000000d1801', 'gate-180b', 'gate-180b');
+  INSERT INTO public.organizations (id, name, slug, created_by) VALUES ('00000000-0000-0000-0000-0000000d1801', 'gate-180b', 'gate-180b', '00000000-0000-0000-0000-00000000d180');
   INSERT INTO public.alarm_recurrence_episodes (id, organization_id, series_key, severity, opened_at, closed_at, duration_ms)
     VALUES ('00000000-0000-0000-0000-0000000d1802','00000000-0000-0000-0000-0000000d1801','s','low', now() - interval '1 min', now(), 60000);
 `;
