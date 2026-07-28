@@ -169,6 +169,8 @@
     "db:check:capabilities": "node scripts/check-capabilities.mjs",
     "db:check:alarm-recurrence": "node scripts/check-alarm-recurrence.mjs",
     "db:check:favorite-views": "node scripts/check-favorite-views.mjs",
+    "db:check:device-silence": "node scripts/check-device-silence.mjs",
+    "simulate:wave192": "node scripts/simulate-wave192-device-silence.mjs",
     "db:check:device-connect": "node scripts/check-device-connect.mjs",
     "simulate:wave191": "node scripts/simulate-wave191-device-connect.mjs",
     "db:check:device-enrollment": "node scripts/check-device-enrollment.mjs",
