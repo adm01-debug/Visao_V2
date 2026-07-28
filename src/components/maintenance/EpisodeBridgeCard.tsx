@@ -154,6 +154,33 @@ export function EpisodeBridgeCard({
                 Avaliado em {new Date(evaluatedAt).toLocaleString('pt-BR')}.
               </p>
             )}
+
+            {showReconcile && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline" size="sm" disabled={isReconciling}>
+                    {isReconciling ? 'Reconciliando…' : 'Reconciliar abandonados'}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Encerrar episódios abandonados?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Episódios abertos há mais de {ABANDONED_OPEN_DAYS} dias serão encerrados no
+                      corte declarado de {ABANDONED_OPEN_DAYS} dias após a abertura — nunca no
+                      horário de agora, para não registrar durações que ninguém mediu. A duração
+                      resultante fica marcada como reconciliada, e não como observada. A ação é
+                      irreversível e fica registrada na auditoria.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={onReconcile}>Reconciliar</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+
           </>
         )}
       </CardContent>
