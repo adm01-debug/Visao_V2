@@ -79,66 +79,18 @@ expect(
   'sem índice de exclusividade: dois reinícios empilhariam',
 );
 
-// --- 4. Exercício dinâmico em transação revertida ---------------------------
-const scenario = sql(`
-BEGIN;
-  -- Reaproveita um usuário real: criar em auth.users exigiria privilégio que o
-  -- papel do gate não tem, e forjar o dono invalidaria a prova de propriedade.
-  CREATE TEMP TABLE ci_owner ON COMMIT DROP AS SELECT user_id AS id FROM public.profiles LIMIT 1;
+// --- 4. Exercício dinâmico via autoteste do banco --------------------------
+// Gate estático não prova execução (Onda 141). O autoteste roda dentro do
+// banco, com o papel dono da tabela, e desfaz tudo o que criou.
+const selftest = JSON.parse(sql(`SELECT public.device_remote_command_selftest()::text`)[0]);
 
-  INSERT INTO public.device_registrations (id, user_id, device_code, secret_hash, status)
-  SELECT '00000000-0000-4000-8000-000000000194', id, 'CIWAVE193AAA', repeat('a',64), 'active' FROM ci_owner;
-
-  -- 4.1 comando válido entra
-  INSERT INTO public.device_remote_commands (user_id, registration_id, command, idempotency_key, expires_at, requested_by)
-  SELECT id, '00000000-0000-4000-8000-000000000194','device.reboot','idem-193-aaa', now() + interval '10 minutes', id FROM ci_owner;
-  SELECT 'inserted:' || count(*)::text FROM public.device_remote_commands WHERE idempotency_key='idem-193-aaa';
-
-  -- 4.2 prazo acima do teto é recusado
-  SAVEPOINT s1;
-  DO $$ BEGIN
-    BEGIN
-      INSERT INTO public.device_remote_commands (user_id, registration_id, command, idempotency_key, expires_at, requested_by)
-      SELECT id, '00000000-0000-4000-8000-000000000194','config.read','idem-193-ttl', now() + interval '90 minutes', id FROM ci_owner;
-      RAISE NOTICE 'TTL_GUARD:FAIL';
-    EXCEPTION WHEN others THEN RAISE NOTICE 'TTL_GUARD:OK';
-    END;
-  END $$;
-  ROLLBACK TO SAVEPOINT s1;
-
-  -- 4.3 segundo exclusivo em voo é barrado
-  DO $$ BEGIN
-    BEGIN
-      INSERT INTO public.device_remote_commands (user_id, registration_id, command, idempotency_key, expires_at, requested_by)
-      SELECT id, '00000000-0000-4000-8000-000000000194','stream.restart','idem-193-bbb', now() + interval '10 minutes', id FROM ci_owner;
-      RAISE NOTICE 'EXCLUSIVE_GUARD:FAIL';
-    EXCEPTION WHEN others THEN RAISE NOTICE 'EXCLUSIVE_GUARD:OK';
-    END;
-  END $$;
-
-  -- 4.4 estado encerrado é irreversível
-  UPDATE public.device_remote_commands SET status='cancelled' WHERE idempotency_key='idem-193-aaa';
-  DO $$ BEGIN
-    BEGIN
-      UPDATE public.device_remote_commands SET status='queued' WHERE idempotency_key='idem-193-aaa';
-      RAISE NOTICE 'TERMINAL_GUARD:FAIL';
-    EXCEPTION WHEN others THEN RAISE NOTICE 'TERMINAL_GUARD:OK';
-    END;
-  END $$;
-
-  -- 4.5 expiração é fato do relógio
-  INSERT INTO public.device_remote_commands (user_id, registration_id, command, idempotency_key, expires_at, requested_by)
-  SELECT id, '00000000-0000-4000-8000-000000000194','config.read','idem-193-ccc', now() + interval '1 minute', id FROM ci_owner;
-  UPDATE public.device_remote_commands SET expires_at = now() - interval '1 second' WHERE false;
-  SELECT 'expired:' || public.expire_device_remote_commands()::text;
-ROLLBACK;
-`).join('\n');
-
-expect(/inserted:1/.test(scenario), 'comando válido não entrou na fila');
-expect(/TTL_GUARD:OK/.test(scenario), 'prazo acima do teto foi aceito');
-expect(/EXCLUSIVE_GUARD:OK/.test(scenario), 'dois comandos exclusivos coexistiram');
-expect(/TERMINAL_GUARD:OK/.test(scenario), 'comando encerrado voltou atrás');
-expect(/expired:/.test(scenario), 'rotina de expiração não executou');
+expect(selftest.admitted === true, 'comando válido não entrou na fila');
+expect(selftest.ttl_guard === true, 'prazo acima do teto foi aceito');
+expect(selftest.exclusive_guard === true, 'dois comandos exclusivos coexistiram');
+expect(selftest.idempotency_guard === true, 'chave repetida duplicou o comando');
+expect(selftest.ownership_guard === true, 'comando aceito para registro de outro dono');
+expect(selftest.terminal_guard === true, 'comando encerrado voltou atrás');
+expect(selftest.expired === true, 'comando vencido continuou na fila');
 
 // --- 5. Agenda de expiração -------------------------------------------------
 try {
