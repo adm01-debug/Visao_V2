@@ -51,9 +51,6 @@ const makeRule = (sourceCount, alwaysOn) => ({
   id: 'r1',
   enabled: true,
   sourceIds: Array.from({ length: sourceCount }, (_, i) => `s${i}`),
-  knownSourceIds: Array.from({ length: sourceCount }, (_, i) => `s${i}`),
-  actions: ['notify'],
-  knownActionIds: ['notify'],
   schedule: alwaysOn ? null : [[{ startMinute: 0, endMinute: 1439 }]],
 });
 

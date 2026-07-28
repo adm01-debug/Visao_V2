@@ -7,9 +7,6 @@ const rule: AlarmRule = {
   id: 'r1',
   enabled: true,
   sourceIds: ['a', 'b'],
-  knownSourceIds: ['a', 'b'],
-  actions: ['notify'],
-  knownActionIds: ['notify'],
   schedule: null,
 };
 
