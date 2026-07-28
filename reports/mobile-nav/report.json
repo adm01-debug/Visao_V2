@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-07-26T22:08:49.928Z",
+  "generatedAt": "2026-07-28T12:56:41.732Z",
   "wrapperFile": "src/components/layout/MainLayout.tsx",
   "requiredClass": "mb-mobile-nav",
   "totals": {
-    "total": 67,
-    "ok": 59,
+    "total": 70,
+    "ok": 62,
     "pendente": 0,
     "isenta": 8,
-    "standard": 59,
+    "standard": 62,
     "customWrapper": 0,
     "standalone": 8
   },
-  "failed": false,
+  "failed": true,
   "rows": [
     {
       "file": "AlertsPage.tsx",
@@ -140,8 +140,22 @@
       "issues": []
     },
     {
+      "file": "EvidenceExportsPage.tsx",
+      "path": "src/pages/EvidenceExportsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
       "file": "FaceRecognitionPage.tsx",
       "path": "src/pages/FaceRecognitionPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "FavoriteViewsPage.tsx",
+      "path": "src/pages/FavoriteViewsPage.tsx",
       "category": "standard",
       "status": "ok",
       "issues": []
@@ -352,6 +366,13 @@
     {
       "file": "SettingsPage.tsx",
       "path": "src/pages/SettingsPage.tsx",
+      "category": "standard",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "file": "SitePlanPage.tsx",
+      "path": "src/pages/SitePlanPage.tsx",
       "category": "standard",
       "status": "ok",
       "issues": []
