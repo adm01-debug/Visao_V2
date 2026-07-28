@@ -13,48 +13,30 @@
  *  I8  `escalated` só quando a gravidade atual é estritamente pior
  *  I9  resumo coerente com a lista
  */
-import { readFileSync } from 'node:fs';
-import { pathToFileURL } from 'node:url';
-import ts from 'typescript';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
-const load = async (path) => {
-  const src = readFileSync(path, 'utf8');
-  const js = ts.transpileModule(src, {
-    compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
-  }).outputText;
-  const url = 'data:text/javascript;base64,' + Buffer.from(js).toString('base64');
-  return import(url);
-};
-
-const RANK = { alert: 0, offline: 1, warning: 2, unknown: 3, online: 4 };
-const geometry = `export const severityRank = (s) => (${JSON.stringify(RANK)})[s] ?? 9;`;
-void pathToFileURL;
-
-// Stubs mínimos: o módulo só usa severityRank e attentionAge.
-const stubUrl = (code) => 'data:text/javascript;base64,' + Buffer.from(code).toString('base64');
-
-let src = readFileSync('src/lib/emap/ackHandoff.ts', 'utf8');
-src = src
-  .replace(/import type \{[^}]*\} from '\.\/attentionClock';/s, '')
-  .replace(/import \{ attentionAge \} from '\.\/attentionClock';/, '')
-  .replace(/import \{ severityRank[^}]*\} from '\.\/floorPlanGeometry';/s, '')
-  .replace(/import type \{[^}]*\} from '\.\/triageAck';/s, '');
-src =
-  `const severityRank = (s) => (${JSON.stringify(RANK)})[s] ?? 9;\n` +
-  `const attentionAge = (e, now) => Math.max(0, now - e.openedAt);\n` +
-  src;
-void geometry;
-
-const mod = await import(
-  stubUrl(
-    ts.transpileModule(src, {
-      compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
-    }).outputText,
-  )
+const tmp = mkdtempSync(join(tmpdir(), 'wave173-'));
+const entry = join(tmp, 'entry.mjs');
+const abs = (p) => join(process.cwd(), p).replace(/\\/g, '/');
+writeFileSync(
+  entry,
+  `export * from '${abs('src/lib/emap/ackHandoff.ts')}';\n` +
+    `export { severityRank } from '${abs('src/lib/emap/floorPlanGeometry.ts')}';\n`,
 );
-void load;
-
-const { handoffAcks, summarizeAckHandoff, formatInheritedAcks } = mod;
+const out = join(tmp, 'bundle.mjs');
+execFileSync(
+  'npx',
+  ['esbuild', entry, '--bundle', '--format=esm', '--platform=node', `--outfile=${out}`, '--log-level=error'],
+  { stdio: 'inherit' },
+);
+const mod = await import(`file://${out}`);
+const { handoffAcks, summarizeAckHandoff, formatInheritedAcks, severityRank } = mod;
+const RANK = Object.fromEntries(
+  ['alert', 'offline', 'warning', 'unknown', 'online'].map((s) => [s, severityRank(s)]),
+);
 
 const STATUSES = ['alert', 'offline', 'warning', 'unknown', 'online'];
 let asserts = 0;
