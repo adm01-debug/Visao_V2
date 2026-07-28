@@ -133,6 +133,13 @@ export default function MaintenanceConsolePage() {
 
       <RetentionOverviewCard rows={retention.data ?? []} isLoading={retention.isLoading} />
 
+      <AdmissionPurgeHistoryCard
+        snapshot={admissionPurge.snapshot}
+        isLoading={admissionPurge.isLoading}
+        isError={admissionPurge.isError}
+        onRefresh={admissionPurge.refetch}
+      />
+
     </PageContent>
   );
 }
