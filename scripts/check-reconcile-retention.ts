@@ -100,7 +100,7 @@ check('trilha-imutavel', trig.includes('reconcile_purge_runs_immutable'), `gatil
 
 /* Append-only da tabela de fotos continua ativo (tgenabled = 'O'). */
 const snapTrig = psql(
-  `SELECT coalesce(string_agg(tgname || ':' || tgenabled, ',' ORDER BY tgname), '') FROM pg_trigger
+  `SELECT coalesce(string_agg(tgname || ':' || tgenabled::text, ',' ORDER BY tgname), '') FROM pg_trigger
     WHERE tgrelid = '${SNAPS}'::regclass AND NOT tgisinternal`,
 );
 check(
