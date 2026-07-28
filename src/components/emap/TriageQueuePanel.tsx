@@ -15,6 +15,12 @@ import {
   type SlaState,
   type SlaVerdict,
 } from '@/lib/emap/triageSla';
+import {
+  escalationLabel,
+  reconcileEscalations,
+  summarizeEscalations,
+  type EscalationLedger,
+} from '@/lib/emap/triageEscalation';
 
 export interface TriageQueuePanelProps {
   ledger: AttentionLedger;
