@@ -194,7 +194,7 @@ export function isWithinSchedule(
   const weekday = local.getUTCDay();
   const minute = local.getUTCHours() * 60 + local.getUTCMinutes();
 
-  for (const p of days[weekday]) {
+  for (const p of days[weekday] ?? []) {
     if (p.startMin < p.endMin) {
       if (minute >= p.startMin && minute < p.endMin) return true;
     } else if (minute >= p.startMin) {
@@ -204,7 +204,7 @@ export function isWithinSchedule(
   }
   // ...e a continuação, no dia anterior, das janelas que cruzam a meia-noite.
   const previous = (weekday + 6) % 7;
-  for (const p of days[previous]) {
+  for (const p of days[previous] ?? []) {
     if (p.startMin > p.endMin && minute < p.endMin) return true;
   }
   return false;
