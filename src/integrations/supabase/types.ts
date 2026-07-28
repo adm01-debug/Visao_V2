@@ -427,6 +427,54 @@ export type Database = {
         }
         Relationships: []
       }
+      alarm_schemes: {
+        Row: {
+          actions: Json
+          created_at: string
+          disconnect_threshold_s: number | null
+          enabled: boolean
+          event_type: string
+          face_library_ids: string[]
+          id: string
+          missing_source_ids: string[]
+          name: string
+          schedule: Json | null
+          source_ids: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          actions?: Json
+          created_at?: string
+          disconnect_threshold_s?: number | null
+          enabled?: boolean
+          event_type: string
+          face_library_ids?: string[]
+          id?: string
+          missing_source_ids?: string[]
+          name: string
+          schedule?: Json | null
+          source_ids?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          actions?: Json
+          created_at?: string
+          disconnect_threshold_s?: number | null
+          enabled?: boolean
+          event_type?: string
+          face_library_ids?: string[]
+          id?: string
+          missing_source_ids?: string[]
+          name?: string
+          schedule?: Json | null
+          source_ids?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       alertmanager_silences_audit: {
         Row: {
           action: string
@@ -8153,6 +8201,7 @@ export type Database = {
         Returns: Json
       }
       alarm_recurrence_retention_policy: { Args: never; Returns: Json }
+      alarm_scheme_channel_total: { Args: { p_actions: Json }; Returns: number }
       analyze_table: { Args: { _table_name: string }; Returns: Json }
       apply_camera_setup: {
         Args: { _camera_id: string; _rules: Json; _zones: Json }
