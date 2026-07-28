@@ -174,18 +174,23 @@ for (let s = 0; s < SCENARIOS; s += 1) {
   }
   check(`parity-${s}-balance`, planIsBalanced(plan), 'contabilidade da régua não fecha');
 
+  // O contador de sobreviventes roda numa instrução separada: no mesmo comando
+  // ele enxergaria o snapshot anterior ao DELETE feito dentro da função.
   const sql = `
 BEGIN;
 INSERT INTO ${WINDOWS}
   (id, user_id, source_id, window_start, window_end, counts, total, admitted)
 VALUES ${values.join(',')};
-SELECT (r->>'deleted') || '|' || (r->>'deferred') || '|' || (r->>'quarantined') || '|' || (r->>'capped') || '|' ||
-       (SELECT count(*) FROM ${WINDOWS} WHERE user_id = '${userId}')::text
+SELECT (r->>'deleted') || '|' || (r->>'deferred') || '|' || (r->>'quarantined') || '|' || (r->>'capped')
   FROM public.purge_admission_ledger(${days}, ${cap}, ${NOW_SQL}) AS r;
+SELECT 'survivors|' || count(*)::text FROM ${WINDOWS} WHERE user_id = '${userId}';
 ROLLBACK;`;
 
-  const out = psqlScript(sql).split('\n').filter((l) => l.includes('|')).pop() ?? '';
-  const [deleted, deferred, quarantined, capped, survivors] = out.split('|');
+  const lines = psqlScript(sql).split('\n').filter((l) => l.includes('|'));
+  const survivorsLine = lines.find((l) => l.startsWith('survivors|')) ?? 'survivors|-1';
+  const out = lines.find((l) => !l.startsWith('survivors|')) ?? '';
+  const [deleted, deferred, quarantined, capped] = out.split('|');
+  const survivors = survivorsLine.split('|')[1];
   compared += 1;
 
   check(`parity-${s}-deleted`, Number(deleted) === plan.deleted, `SQL ${deleted} != TS ${plan.deleted}`);
