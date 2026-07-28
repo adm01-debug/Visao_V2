@@ -7,6 +7,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useMaintenanceConsole } from '@/hooks/useMaintenanceConsole';
 import { MaintenanceAlertsCard } from '@/components/maintenance/MaintenanceAlertsCard';
 import { RetentionOverviewCard } from '@/components/maintenance/RetentionOverviewCard';
+import { ChronicSeriesCard } from '@/components/maintenance/ChronicSeriesCard';
+import { useChronicSeries, usePrimaryOrganization } from '@/hooks/useChronicSeries';
 
 /**
  * Onda 136 — Console de manutenção.
@@ -17,6 +19,8 @@ import { RetentionOverviewCard } from '@/components/maintenance/RetentionOvervie
  */
 export default function MaintenanceConsolePage() {
   const { alerts, retention, acknowledge, model } = useMaintenanceConsole();
+  const { organizationId, isLoading: orgLoading } = usePrimaryOrganization();
+  const chronic = useChronicSeries(organizationId);
   const { toast } = useToast();
   const [pendingId, setPendingId] = useState<string | null>(null);
 
@@ -77,6 +81,12 @@ export default function MaintenanceConsolePage() {
         isAcknowledging={acknowledge.isPending}
         pendingId={pendingId}
         onAcknowledge={handleAcknowledge}
+      />
+
+      <ChronicSeriesCard
+        board={chronic.board}
+        isLoading={orgLoading || chronic.isLoading}
+        onRefresh={chronic.refetch}
       />
 
       <RetentionOverviewCard rows={retention.data ?? []} isLoading={retention.isLoading} />
