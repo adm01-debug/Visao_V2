@@ -141,7 +141,10 @@ DECLARE
   v_res  jsonb;
   v_cnt  int;
 BEGIN
-  SELECT id INTO v_user FROM auth.users ORDER BY created_at LIMIT 1;
+  SELECT w.user_id INTO v_user FROM public.admission_ledger_windows w LIMIT 1;
+  IF v_user IS NULL THEN
+    SELECT p.id INTO v_user FROM public.profiles p LIMIT 1;
+  END IF;
   IF v_user IS NULL THEN
     RAISE NOTICE 'SKIP: sem usuário para exercitar';
     RETURN;
