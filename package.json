@@ -267,7 +267,8 @@
     "simulate:wave202": "npx tsx scripts/simulate-wave202.ts",
     "simulate:wave203": "npx tsx scripts/simulate-wave203.ts",
     "simulate:wave205": "npx tsx scripts/simulate-wave205.ts",
-    "simulate:wave206": "npx tsx scripts/simulate-wave206.ts"
+    "simulate:wave206": "npx tsx scripts/simulate-wave206.ts",
+    "simulate:wave207": "npx tsx scripts/simulate-wave207.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
