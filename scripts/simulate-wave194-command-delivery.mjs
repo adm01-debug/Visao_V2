@@ -346,17 +346,22 @@ check(mirror.MAX_DELIVERY_ATTEMPTS === MAX_DELIVERY_ATTEMPTS, 'paridade de teto'
 const rnd = (n) => Math.floor(Math.random() * n);
 for (let i = 0; i < 60_000; i += 1) {
   const n = rnd(6);
-  const list = Array.from({ length: n }, (_, k) =>
-    snap({
+  // O ruído é hostil, mas coerente com o que o banco permite existir: só há
+  // contagem de entrega em ordem que já foi entregue (guarda da migração da
+  // Onda 194). Sortear estados impossíveis testaria uma realidade inexistente.
+  const list = Array.from({ length: n }, (_, k) => {
+    const status = STATUSES[rnd(STATUSES.length)];
+    const jaEntregue = status === 'delivered' || TERMINAL_STATUSES.has(status);
+    return snap({
       id: `r${k}`,
-      status: STATUSES[rnd(STATUSES.length)],
+      status,
       command: KINDS[rnd(KINDS.length)],
       createdAt: NOW - rnd(1_000_000),
       expiresAt: NOW - 500_000 + rnd(1_000_000),
-      deliveredAt: rnd(2) ? NOW - rnd(300_000) : null,
-      deliveryAttempts: rnd(4),
-    })
-  );
+      deliveredAt: jaEntregue ? NOW - rnd(300_000) : null,
+      deliveryAttempts: jaEntregue ? 1 + rnd(MAX_DELIVERY_ATTEMPTS) : 0,
+    });
+  });
   const plan = planPoll(list, NOW);
   check(plan.decisions.length === n, 'toda ordem julgada', { i, n });
   check(
@@ -370,7 +375,9 @@ for (let i = 0; i < 60_000; i += 1) {
   if (entregue) {
     check(entregue.expiresAt > NOW, 'nunca entrega vencida sob ruído', { i });
     check(!TERMINAL_STATUSES.has(entregue.status), 'nunca entrega encerrada', { i });
-    check(entregue.deliveryAttempts < MAX_DELIVERY_ATTEMPTS, 'nunca entrega esgotada', { i });
+    if (entregue.status === 'delivered') {
+      check(entregue.deliveryAttempts < MAX_DELIVERY_ATTEMPTS, 'nunca entrega esgotada', { i });
+    }
   }
 }
 
