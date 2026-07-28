@@ -17,6 +17,7 @@ import {
   type AlarmSchemeFormState,
 } from '@/lib/alarms/alarmSchemeForm';
 import type { SchemeContext } from '@/lib/alarms/alarmScheme';
+import type { TablesInsert, Json } from '@/integrations/supabase/types';
 
 /** Traduz a recusa do trigger/CHECK (Onda 217) para linguagem de operador. */
 export function translateServerRefusal(message: string): string {
@@ -61,7 +62,14 @@ export function useSaveAlarmScheme(context: SchemeContext = {}) {
       // `actions` é JSONB no banco; o tipo gerado exige `Json`, que não aceita
       // interfaces nomeadas (falta index signature). A conversão é estrutural,
       // não semântica: o conteúdo gravado é exatamente o julgado (F4).
-      const payload = draftToPayload(formToDraft(form)) as unknown as Record<string, unknown>;
+      const built = draftToPayload(formToDraft(form));
+      // `actions` é JSONB: o tipo gerado exige `Json`, que não aceita interfaces
+      // nomeadas (falta index signature). A conversão é estrutural, não
+      // semântica — o conteúdo gravado é exatamente o julgado (F4).
+      const payload: TablesInsert<'alarm_schemes'> = {
+        ...built,
+        actions: built.actions as unknown as Json,
+      };
 
       if (form.id) {
         const { error } = await supabase
