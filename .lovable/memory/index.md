@@ -16,3 +16,4 @@
 - [E-Map durabilidade do turno](mem://features/emap-shift-durability) — Onda 170: diário + relógio sobrevivem ao F5; envelope inválido descarta tudo, registro ruim cai sozinho, relógio futuro é suspeito, turno expira mas pendência vira herança, `simulate:wave170`
 - [E-Map fila de triagem](mem://features/emap-triage-queue) — Onda 171: ordem de atendimento; gravidade manda, dívida promove um degrau só (teto `offline`), ciente vai ao fim sem sumir, sem planta continua na fila, `simulate:wave171`
 - [E-Map ciência da triagem](mem://features/emap-triage-ack) — Onda 172: "ciente" nunca apaga o relógio; ciência congela o estado e é revogada por agravamento/reabertura/caducidade (4h), durável em localStorage, `simulate:wave172`
+- [E-Map ciência entre turnos](mem://features/emap-ack-handoff) — Onda 173: ciência anterior ao início do turno é revogada na montagem e vira lista de revalidação (`InheritedAckCard`); corte pelo turno, nunca pelo TTL, `simulate:wave173`
