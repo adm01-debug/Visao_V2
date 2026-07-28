@@ -17,6 +17,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageContent } from "@/components/layout/MainLayout";
+import { AlarmTreatmentDialog } from "@/components/alarms/AlarmTreatmentDialog";
 
 type Severity = "low" | "medium" | "high" | "critical";
 type Status = "open" | "acknowledged" | "resolved" | "dismissed";
