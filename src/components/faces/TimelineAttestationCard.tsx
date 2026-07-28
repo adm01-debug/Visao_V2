@@ -17,10 +17,10 @@ import type { FaceSearchResult } from '@/lib/faces/faceSearch';
 import { buildPersonTimeline } from '@/lib/faces/personTimeline';
 import {
   assessTimeline,
-  buildTimelineAttestation,
   describeAttestationVerdict,
   describeCaveat,
   type AttestationVerdict,
+  type TimelineAttestation,
 } from '@/lib/faces/timelineAttestation';
 
 export interface TimelineAttestationCardProps {
