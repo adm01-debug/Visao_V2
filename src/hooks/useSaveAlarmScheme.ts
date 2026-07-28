@@ -33,6 +33,9 @@ export function translateServerRefusal(message: string): string {
   if (message.includes('alarm_schemes_name_useful')) {
     return 'O servidor recusou: o nome precisa ter de 1 a 120 caracteres úteis.';
   }
+  if (message.includes('alarm_scheme_schedule_invalid')) {
+    return 'O servidor recusou a agenda semanal (períodos sobrepostos, fora do dia ou acima de 6 por dia).';
+  }
   if (message.includes('alarm_schemes_disconnect_range')) {
     return 'O servidor recusou: o limiar de desconexão precisa ficar entre 30 e 3600 segundos.';
   }
