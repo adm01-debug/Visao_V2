@@ -2701,6 +2701,121 @@ export type Database = {
         }
         Relationships: []
       }
+      device_registration_audit: {
+        Row: {
+          created_at: string
+          device_code: string
+          event: string
+          id: string
+          reason: string | null
+          registration_id: string | null
+          secret_version: number | null
+          source_ip: unknown
+          used_grace: boolean
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          device_code: string
+          event: string
+          id?: string
+          reason?: string | null
+          registration_id?: string | null
+          secret_version?: number | null
+          source_ip?: unknown
+          used_grace?: boolean
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          device_code?: string
+          event?: string
+          id?: string
+          reason?: string | null
+          registration_id?: string | null
+          secret_version?: number | null
+          source_ip?: unknown
+          used_grace?: boolean
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "device_registration_audit_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "device_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      device_registrations: {
+        Row: {
+          created_at: string
+          device_code: string
+          expires_at: string | null
+          id: string
+          label: string
+          last_seen_at: string | null
+          last_seen_ip: unknown
+          nvr_id: string | null
+          previous_secret_hash: string | null
+          revoked_at: string | null
+          rotated_at: string | null
+          secret_hash: string
+          secret_issued_at: string
+          secret_version: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_code: string
+          expires_at?: string | null
+          id?: string
+          label?: string
+          last_seen_at?: string | null
+          last_seen_ip?: unknown
+          nvr_id?: string | null
+          previous_secret_hash?: string | null
+          revoked_at?: string | null
+          rotated_at?: string | null
+          secret_hash: string
+          secret_issued_at?: string
+          secret_version?: number
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_code?: string
+          expires_at?: string | null
+          id?: string
+          label?: string
+          last_seen_at?: string | null
+          last_seen_ip?: unknown
+          nvr_id?: string | null
+          previous_secret_hash?: string | null
+          revoked_at?: string | null
+          rotated_at?: string | null
+          secret_hash?: string
+          secret_issued_at?: string
+          secret_version?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "device_registrations_nvr_id_fkey"
+            columns: ["nvr_id"]
+            isOneToOne: false
+            referencedRelation: "nvrs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dry_run_report_snapshots: {
         Row: {
           created_at: string
@@ -8289,6 +8404,14 @@ export type Database = {
         }
         Returns: Json
       }
+      enroll_device: {
+        Args: { p_label: string; p_nvr_id?: string; p_ttl_hours?: number }
+        Returns: {
+          device_code: string
+          device_secret: string
+          registration_id: string
+        }[]
+      }
       ensure_future_partitions: {
         Args: { months_ahead?: number }
         Returns: Json
@@ -9243,6 +9366,10 @@ export type Database = {
         Args: { _entry_id: string; _org_id: string }
         Returns: boolean
       }
+      revoke_device: {
+        Args: { p_reason?: string; p_registration_id: string }
+        Returns: boolean
+      }
       rewrap_camera_vault_kek: {
         Args: {
           p_from_version: number
@@ -9269,6 +9396,14 @@ export type Database = {
         Returns: {
           new_fingerprint: string
           rotated_count: number
+        }[]
+      }
+      rotate_device_secret: {
+        Args: { p_registration_id: string }
+        Returns: {
+          device_code: string
+          device_secret: string
+          secret_version: number
         }[]
       }
       rule_eligible_io_port: {
