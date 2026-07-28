@@ -118,7 +118,14 @@ export interface MaintenanceAlertView {
    * quando o perfil ancora na condição (O4), senão o nível da própria linha.
    */
   readonly effectiveLevel: EscalationLevel;
+  /**
+   * Onda 241 — silêncio ativo por condição no despacho externo. `null` quando
+   * a fonte não tem janela de silêncio, quando nunca houve entrega ou quando o
+   * alerta já foi reconhecido (R2/R7/R8).
+   */
+  readonly silence: ConditionSilenceView | null;
 }
+
 
 export interface MaintenanceConsoleSummary {
   readonly total: number;
