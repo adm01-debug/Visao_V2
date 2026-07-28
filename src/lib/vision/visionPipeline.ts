@@ -451,7 +451,12 @@ export function settleTask(
   const effectiveNowMs = Math.max(nowMs, state.clockFloorMs);
   const runtime = state.runtimes[task.processorId];
   if (!runtime) {
-    return { state: { ...state, clockFloorMs: effectiveNowMs }, tasks: [], late: false };
+    return {
+      state: { ...state, clockFloorMs: effectiveNowMs },
+      tasks: [],
+      busDrops: [],
+      late: false,
+    };
   }
 
   /* P4 — laudo de frame já superado é estatística, não leitura. */
