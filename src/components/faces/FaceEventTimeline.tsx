@@ -24,6 +24,8 @@ import {
   type BucketTone,
   type FaceTimelineBucket,
 } from '@/lib/faces/faceTimeline';
+import { assessReadingProvenance } from '@/lib/provenance/readingProvenance';
+import { ProvenanceBadge } from '@/components/provenance/ProvenanceBadge';
 
 const TONE_CLASS: Record<BucketTone, string> = {
   idle: 'bg-muted',
