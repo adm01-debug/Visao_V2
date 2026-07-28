@@ -29,17 +29,22 @@ import {
 } from '@/lib/emap/attentionRouter';
 import {
   clearAttention,
-  emptyAttentionLedger,
   observeAttention,
   pruneAttention,
   type AttentionLedger,
 } from '@/lib/emap/attentionClock';
 import {
   diffClosures,
-  openShift,
   recordClosures,
   type ShiftJournal,
 } from '@/lib/emap/shiftHandoff';
+import {
+  browserShiftStorage,
+  readShiftState,
+  writeShiftState,
+  type ShiftLoadOutcome,
+} from '@/lib/emap/shiftJournalStore';
+
 
 import { useSitePlans } from '@/hooks/useSitePlans';
 import { summarizePlan, type MapMarkerStatus } from '@/lib/emap/floorPlanGeometry';
@@ -121,14 +126,22 @@ export default function SitePlanPage() {
    * apaga a entrada. Câmera que sumiu da lista mantém o relógio correndo:
    * ausência de observação nunca é prova de melhora.
    */
-  const [attentionClock, setAttentionClock] = useState<AttentionLedger>(emptyAttentionLedger);
+  /**
+   * Onda 170 — durabilidade. O estado inicial vem do armazenamento local, uma
+   * única vez: recarregar a página não pode transformar pendência antiga em
+   * ocorrência nova nem zerar o diário do turno. Falha de leitura vira turno
+   * novo com aviso explícito, jamais um estado meia-boca.
+   */
+  const restored = useRef(readShiftState(browserShiftStorage(), Date.now())).current;
+  const [attentionClock, setAttentionClock] = useState<AttentionLedger>(restored.state.ledger);
   /**
    * Onda 169 — diário do turno. O espelho em `ref` existe para derivar o
    * fechamento (quem saiu do livro e por quê) fora do updater do React: gravar
    * história dentro de um updater duplicaria registros em modo estrito.
    */
-  const ledgerRef = useRef<AttentionLedger>(attentionClock);
-  const [shiftJournal, setShiftJournal] = useState<ShiftJournal>(() => openShift(Date.now()));
+  const ledgerRef = useRef<AttentionLedger>(restored.state.ledger);
+  const [shiftJournal, setShiftJournal] = useState<ShiftJournal>(restored.state.journal);
+  const restoreOutcome: ShiftLoadOutcome = restored.outcome;
 
   const applyLedger = useCallback(
     (next: AttentionLedger, closedAt: number, reason: 'normalized' | 'acknowledged' | 'removed') => {
@@ -143,6 +156,16 @@ export default function SitePlanPage() {
     },
     [],
   );
+
+  // Persistência: grava o par (diário + relógio) a cada mudança observada.
+  useEffect(() => {
+    writeShiftState(
+      browserShiftStorage(),
+      { journal: shiftJournal, ledger: attentionClock },
+      Date.now(),
+    );
+  }, [shiftJournal, attentionClock]);
+
 
   useEffect(() => {
     if (placements.length === 0) return;
@@ -322,6 +345,7 @@ export default function SitePlanPage() {
               journal={shiftJournal}
               ledger={attentionClock}
               nameOf={nameOf}
+              restoreOutcome={restoreOutcome}
             />
 
 
