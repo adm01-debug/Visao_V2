@@ -93,7 +93,8 @@ describe('pipelineMetrics (Onda 212)', () => {
 
     const sum = DROP_BUCKETS.reduce((acc, bucket) => acc + metrics.drops[bucket], 0);
     expect(sum).toBe(metrics.totalDrops);
-    expect(metrics.totalDrops).toBe(3);
+    /* 2 do barramento + 1 recusa de contrato + 1 skip da cadência. */
+    expect(metrics.totalDrops).toBe(4);
     expect(auditMetrics(metrics)).toEqual([]);
   });
 
