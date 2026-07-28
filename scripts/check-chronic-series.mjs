@@ -35,7 +35,7 @@ const boardSrc = readFileSync(
 
 // --- 1) Contrato e privilégios ------------------------------------------------
 const meta = query(`
-  SELECT p.prosecdef::text || ',' || p.provolatile
+  SELECT p.prosecdef::text || ',' || p.provolatile::text
     FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
    WHERE n.nspname='public' AND p.proname='${FN}'`);
 check('ROTINA', meta === 'true,s', `${FN} deveria ser STABLE SECURITY DEFINER, é (${meta || 'ausente'})`);
