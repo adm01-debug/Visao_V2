@@ -15,6 +15,7 @@ import {
   Settings,
   Video,
   ScanFace,
+  ScanSearch,
   BarChart3,
   Flame,
   Car,
