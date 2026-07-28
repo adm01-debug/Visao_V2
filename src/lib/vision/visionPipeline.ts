@@ -347,7 +347,7 @@ export function tickPipeline(
   if (decision) {
     const effective: CadenceDecision =
       decision.action === 'identify' && !identifyClaimed
-        ? { ...decision, action: 'track', reason: 'capability_missing' as never, trackId: null }
+        ? { ...decision, action: 'track', trackId: null }
         : decision;
     cadence = commitDecision(state.cadence, effective, state.config);
   }
