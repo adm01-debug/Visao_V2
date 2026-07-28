@@ -78,7 +78,7 @@ function referenceVerdict(series: readonly number[]): OrphanTrendVerdict {
 }
 
 let bruteCases = 0;
-for (const series of allSeries(5, 3)) {
+for (const series of allSeries(7, 3)) {
   bruteCases += 1;
   const expected = referenceVerdict(series);
   const got = classifyOrphanSeries(series);
@@ -127,7 +127,7 @@ function shuffle<T>(arr: readonly T[], seed: number): T[] {
   return out;
 }
 
-for (const series of allSeries(4, 2)) {
+for (const series of allSeries(5, 3)) {
   const canonical = assessOrphanTrendFromRows(rows(series)).verdict;
   for (let seed = 1; seed <= 8; seed += 1) {
     const scrambled = assessOrphanTrendFromRows(shuffle(rows(series), seed)).verdict;
