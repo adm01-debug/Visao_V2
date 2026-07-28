@@ -115,7 +115,13 @@ export function judgeSweep(candidate: SweepCandidate, now: number): SweepVerdict
   // Ordem entregue e dentro do prazo. Só é abandonada quando as duas condições
   // valem ao mesmo tempo: nada mais a reentregar E o empréstimo já venceu.
   // Testar só o contador fecharia ordem em plena execução na terceira tentativa.
-  const leaseEnd = (deliveredAt ?? 0) + DELIVERY_LEASE_MS;
+  // Entrega sem carimbo é dado incoerente (o guard do banco a proíbe). Tratar
+  // o carimbo ausente como "época zero" faria a varredura encerrar a ordem por
+  // um empréstimo que nunca foi medido — a varredura não age sobre o que não
+  // conseguiu observar, então esse retrato permanece vivo.
+  if (deliveredAt === null) return { id, reason: 'alive', nextStatus: null };
+
+  const leaseEnd = deliveredAt + DELIVERY_LEASE_MS;
   if (deliveryAttempts >= MAX_DELIVERY_ATTEMPTS && leaseEnd <= now) {
     return { id, reason: 'delivery_exhausted', nextStatus: 'failed' };
   }
