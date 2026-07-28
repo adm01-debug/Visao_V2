@@ -15,6 +15,8 @@ import { FaceSearchFilters } from '@/components/faces/FaceSearchFilters';
 import { FaceSearchResults } from '@/components/faces/FaceSearchResults';
 import { ReferenceFaceMatchCard } from '@/components/faces/ReferenceFaceMatchCard';
 import { PersonTimelineCard } from '@/components/faces/PersonTimelineCard';
+import { TimelineAttestationCard } from '@/components/faces/TimelineAttestationCard';
+
 import { useFaceSearch, MAX_ROWS } from '@/hooks/useFaceSearch';
 import { describeRejection } from '@/lib/faces/faceSearch';
 
@@ -97,8 +99,21 @@ export default function FaceSearchPage() {
       )}
 
       {criteria !== null && !isFetching && results.length > 0 && (
-        <PersonTimelineCard results={results} windowEndMs={criteria.toMs} />
+        <>
+          <PersonTimelineCard results={results} windowEndMs={criteria.toMs} />
+          <TimelineAttestationCard
+            results={results}
+            windowStartMs={criteria.fromMs}
+            windowEndMs={criteria.toMs}
+            personId={
+              criteria.personIds !== null && criteria.personIds.length === 1
+                ? criteria.personIds[0]
+                : null
+            }
+          />
+        </>
       )}
+
 
       {criteria !== null && !isFetching && <FaceSearchResults results={results} />}
     </PageContent>
