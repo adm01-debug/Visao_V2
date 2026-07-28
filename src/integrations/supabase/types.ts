@@ -7714,6 +7714,72 @@ export type Database = {
           },
         ]
       }
+      timeline_attestations: {
+        Row: {
+          attestation_id: string
+          cameras_visited: number
+          confirmed_dwell_ms: number
+          confirmed_stays: number
+          document: Json
+          excluded_readings: number
+          id: string
+          issued_at: string
+          issued_by: string
+          open_floor_ms: number
+          related_export_root_hash: string | null
+          root_hash: string
+          stays_count: number
+          subject_label: string | null
+          subject_person_id: string | null
+          user_id: string
+          verdict: string
+          window_from: string
+          window_to: string
+        }
+        Insert: {
+          attestation_id: string
+          cameras_visited?: number
+          confirmed_dwell_ms?: number
+          confirmed_stays?: number
+          document: Json
+          excluded_readings?: number
+          id?: string
+          issued_at?: string
+          issued_by: string
+          open_floor_ms?: number
+          related_export_root_hash?: string | null
+          root_hash: string
+          stays_count?: number
+          subject_label?: string | null
+          subject_person_id?: string | null
+          user_id?: string
+          verdict: string
+          window_from: string
+          window_to: string
+        }
+        Update: {
+          attestation_id?: string
+          cameras_visited?: number
+          confirmed_dwell_ms?: number
+          confirmed_stays?: number
+          document?: Json
+          excluded_readings?: number
+          id?: string
+          issued_at?: string
+          issued_by?: string
+          open_floor_ms?: number
+          related_export_root_hash?: string | null
+          root_hash?: string
+          stays_count?: number
+          subject_label?: string | null
+          subject_person_id?: string | null
+          user_id?: string
+          verdict?: string
+          window_from?: string
+          window_to?: string
+        }
+        Relationships: []
+      }
       user_capability_grant_audit: {
         Row: {
           action: string
@@ -9592,6 +9658,17 @@ export type Database = {
         Returns: Json
       }
       tick_timelapse_capture: { Args: never; Returns: number }
+      timeline_attestation_selftest: {
+        Args: { p_document: Json }
+        Returns: {
+          case_name: string
+          outcome: string
+        }[]
+      }
+      timeline_attestation_verdict: {
+        Args: { p_document: Json }
+        Returns: string
+      }
       treat_event_alert: {
         Args: {
           p_action: string

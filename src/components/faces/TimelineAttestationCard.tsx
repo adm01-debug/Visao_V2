@@ -17,10 +17,10 @@ import type { FaceSearchResult } from '@/lib/faces/faceSearch';
 import { buildPersonTimeline } from '@/lib/faces/personTimeline';
 import {
   assessTimeline,
-  buildTimelineAttestation,
   describeAttestationVerdict,
   describeCaveat,
   type AttestationVerdict,
+  type TimelineAttestation,
 } from '@/lib/faces/timelineAttestation';
 
 export interface TimelineAttestationCardProps {
@@ -60,26 +60,30 @@ export function TimelineAttestationCard({
     [timeline, subject],
   );
 
+  /**
+   * Onda 201 — a emissão passou a ser um ato do servidor. Autoria, relógio e
+   * identificador não saem mais do navegador (um documento cuja procedência o
+   * próprio cliente escreve não prova procedência), e o selo fica registrado
+   * para conferência futura contra a origem.
+   */
   const handleIssue = async (): Promise<void> => {
     setIssuing(true);
     try {
-      const { data } = await supabase.auth.getUser();
-      const issuedBy = data.user?.email ?? data.user?.id ?? 'desconhecido';
-
-      const attestation = await buildTimelineAttestation({
-        attestationId: crypto.randomUUID(),
-        subject,
-        window: {
-          fromUtc: new Date(windowStartMs).toISOString(),
-          toUtc: new Date(windowEndMs).toISOString(),
-        },
-        timeline,
-        issuance: {
-          issuedAtUtc: new Date().toISOString(),
-          issuedBy,
-          sourceSystem: `VISAO/${window.location.host}`,
+      const { data, error } = await supabase.functions.invoke('timeline-attest', {
+        body: {
+          action: 'issue',
+          timeline,
+          subject,
+          window: {
+            fromUtc: new Date(windowStartMs).toISOString(),
+            toUtc: new Date(windowEndMs).toISOString(),
+          },
         },
       });
+      if (error) throw error;
+
+      const attestation = (data as { attestation?: TimelineAttestation } | null)?.attestation;
+      if (!attestation) throw new Error('O servidor não devolveu o atestado.');
 
       const blob = new Blob([JSON.stringify(attestation, null, 2)], {
         type: 'application/json',
@@ -91,7 +95,7 @@ export function TimelineAttestationCard({
       link.click();
       URL.revokeObjectURL(url);
 
-      toast.success('Atestado emitido', {
+      toast.success('Atestado emitido e registrado', {
         description: `Selo ${attestation.rootHash.slice(0, 12)}… — ${describeAttestationVerdict(
           attestation.verdict,
         )}.`,
