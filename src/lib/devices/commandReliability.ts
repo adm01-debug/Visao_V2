@@ -280,10 +280,12 @@ export function summarizeReliability(
 /** Veredito por equipamento, já ordenado por urgência. */
 export function classifyFleetReliability(
   outcomes: readonly CommandOutcome[],
-  options: ClassifyOptions & { readonly previous?: Readonly<Record<string, ReliabilityState>> } = {},
+  options: Omit<ClassifyOptions, 'previous'> & {
+    readonly previous?: Readonly<Record<string, ReliabilityState>>;
+  } = {},
 ): readonly ReliabilityVerdict[] {
   const ids = [...new Set(outcomes.map((o) => o.registrationId))];
-  const previousMap = (options.previous ?? {}) as Record<string, ReliabilityState>;
+  const previousMap = options.previous ?? {};
   return ids
     .map((id) =>
       classifyCommandReliability(id, outcomes, {
