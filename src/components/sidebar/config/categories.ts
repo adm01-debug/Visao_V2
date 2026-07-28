@@ -37,6 +37,7 @@ import {
   Wrench,
   Network,
   FileCheck2,
+  FileSearch,
   Map as MapIcon,
   Star,
 } from "lucide-react";
