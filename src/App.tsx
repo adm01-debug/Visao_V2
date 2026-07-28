@@ -61,6 +61,8 @@ const SecurityPage = lazy(() => import("@/pages/SecurityPage"));
 const ApiUsageDashboardPage = lazy(() => import("@/pages/ApiUsageDashboardPage"));
 const CspReportsDashboardPage = lazy(() => import("@/pages/CspReportsDashboardPage"));
 const FaceRecognitionPage = lazy(() => import("@/pages/FaceRecognitionPage"));
+// Onda 197: busca retroativa no histórico facial (paridade SIM Next).
+const FaceSearchPage = lazy(() => import("@/pages/FaceSearchPage"));
 const LicensePlatePage = lazy(() => import("@/pages/LicensePlatePage"));
 const HeatmapPage = lazy(() => import("@/pages/HeatmapPage"));
 const ReportsPage = lazy(() => import("@/pages/ReportsPage"));
