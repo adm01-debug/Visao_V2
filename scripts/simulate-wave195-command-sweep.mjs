@@ -94,7 +94,11 @@ for (const status of STATUSES) {
           }
 
           // V. Empréstimo correndo é execução em andamento — nunca abandono.
-          const leaseEnd = (c.deliveredAt ?? 0) + L;
+          if (c.deliveredAt === null) {
+            check(v.reason === 'alive', 'entrega sem carimbo foi encerrada', ctx);
+            continue;
+          }
+          const leaseEnd = c.deliveredAt + L;
           if (leaseEnd > now) {
             check(v.reason === 'alive', 'empréstimo vivo foi encerrado', ctx);
             continue;
@@ -199,7 +203,7 @@ for (let i = 0; i < 120_000; i += 1) {
     check(v.nextStatus === 'expired', 'fuzz: vencida ficou viva', ctx);
     continue;
   }
-  if (status !== 'delivered' || (c.deliveredAt ?? 0) + L > now) {
+  if (status !== 'delivered' || c.deliveredAt === null || c.deliveredAt + L > now) {
     check(v.nextStatus === null, 'fuzz: ordem viva encerrada', ctx);
     continue;
   }
