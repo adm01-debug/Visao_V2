@@ -112,7 +112,7 @@ const selftest = psql(
 check('selftest-executou', selftest !== '', 'autoteste não devolveu nenhuma verificação');
 for (const item of selftest.split(',').filter(Boolean)) {
   const [name, passed] = item.split('=');
-  check(`selftest:${name}`, passed === 't', 'guarda reprovada no banco');
+  check(`selftest:${name}`, passed === 'true' || passed === 't', 'guarda reprovada no banco');
 }
 check(
   'selftest-cobertura',
