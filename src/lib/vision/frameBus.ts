@@ -476,8 +476,12 @@ export interface BusView {
  * apesar de haver publicação — estado que nunca é apresentado como saudável.
  */
 export function describeBus(bus: FrameBusState): BusView {
-  const consumers = bus.order.map((id): ConsumerView => {
-    const slot = bus.slots[id];
+  const slots = bus.order
+    .map((id) => bus.slots[id])
+    .filter((slot): slot is ConsumerSlot => slot !== undefined);
+
+  const consumers = slots.map((slot): ConsumerView => {
+    const id = slot.consumer.id;
     const { stats } = slot;
     const deliveryRatio =
       bus.publishedFrames === 0 ? 0 : stats.delivered / bus.publishedFrames;
