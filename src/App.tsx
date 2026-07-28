@@ -251,6 +251,8 @@ const App = forwardRef<HTMLDivElement>(function App(_props, _ref) { return (
                     <Route path="/rede-colaborativa" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<CollabNetworkPage />, "Rede Colaborativa")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/manutencao" element={<ProtectedLayoutRoute><ProtectedRoute minRole="admin">{withRouteErrorBoundary(<MaintenanceConsolePage />, "Console de Manutenção")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/maintenance" element={<Navigate to="/manutencao" replace />} />
+                    <Route path="/esquemas-de-alarme" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<AlarmSchemesPage />, "Esquemas de Alarme")}</ProtectedRoute></ProtectedLayoutRoute>} />
+                    <Route path="/alarm-schemes" element={<Navigate to="/esquemas-de-alarme" replace />} />
                     <Route path="/planta-baixa" element={<ProtectedLayoutRoute><ProtectedRoute minRole="operator">{withRouteErrorBoundary(<SitePlanPage />, "Planta Baixa")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/conferencia-atestado" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<AttestationConferencePage />, "Conferência de Atestado")}</ProtectedRoute></ProtectedLayoutRoute>} />
                     <Route path="/registro-probatorio" element={<ProtectedLayoutRoute><ProtectedRoute minRole="manager">{withRouteErrorBoundary(<EvidenceExportsPage />, "Registro Probatório")}</ProtectedRoute></ProtectedLayoutRoute>} />
