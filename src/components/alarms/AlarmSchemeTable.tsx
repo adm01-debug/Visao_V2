@@ -17,12 +17,21 @@ import { eventLabel, schemeHealthLabel, schemeSummary, type SchemeHealth } from 
 import { browserTzOffsetMinutes, evaluateArmedNow } from '@/lib/alarms/armedNow';
 import { ArmedNowBadge } from '@/components/alarms/ArmedNowBadge';
 import { useMinuteClock } from '@/hooks/useMinuteClock';
+import type { ArmedVerdict } from '@/lib/alarms/armedNow';
 import type { AlarmSchemeEntry } from '@/hooks/useAlarmSchemes';
 
 interface AlarmSchemeTableProps {
   entries: readonly AlarmSchemeEntry[];
   isLoading?: boolean;
   onEdit?: (entry: AlarmSchemeEntry) => void;
+  /**
+   * Onda 224 — vereditos já calculados pelo painel. Passar o mapa garante que
+   * contador e tabela leiam a MESMA avaliação (lei R1); sem ele, a tabela
+   * avalia por conta própria e pode cair do outro lado da virada do minuto.
+   */
+  verdicts?: ReadonlyMap<string, ArmedVerdict>;
+  /** Mensagem do estado vazio — distingue "sem cadastro" de "filtro sem resultado" (R5). */
+  emptyMessage?: string;
 }
 
 /** Linha amarela para inconsistente, vermelha para inoperante (S9: independe de `enabled`). */
@@ -42,7 +51,13 @@ function HealthIcon({ health }: { health: SchemeHealth }) {
   return <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" />;
 }
 
-export function AlarmSchemeTable({ entries, isLoading = false, onEdit }: AlarmSchemeTableProps) {
+export function AlarmSchemeTable({
+  entries,
+  isLoading = false,
+  onEdit,
+  verdicts,
+  emptyMessage = 'Nenhum esquema de alarme cadastrado.',
+}: AlarmSchemeTableProps) {
   // Onda 223 — um relógio de minuto para toda a tabela (linhas viram juntas).
   const now = useMinuteClock();
   const tzOffset = browserTzOffsetMinutes(now);
@@ -77,14 +92,14 @@ export function AlarmSchemeTable({ entries, isLoading = false, onEdit }: AlarmSc
               {!isLoading && entries.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={6} className="py-8 text-center text-sm text-muted-foreground">
-                    Nenhum esquema de alarme cadastrado.
+                    {emptyMessage}
                   </TableCell>
                 </TableRow>
               )}
 
               {entries.map((entry) => {
                 const { row, diagnosis } = entry;
-                const armed = evaluateArmedNow(
+                const armed = verdicts?.get(row.id) ?? evaluateArmedNow(
                   {
                     enabled: diagnosis.enabled,
                     health: diagnosis.health,
