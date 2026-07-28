@@ -320,6 +320,12 @@ export function buildMaintenanceConsole(
         conditionAgeMinutes === null ? null : Math.round(conditionAgeMinutes * 10) / 10,
       conditionRows: streak?.rows ?? 1,
       effectiveLevel,
+      // R8 — reconhecido não exibe silêncio: a expectativa de notificação
+      // externa foi encerrada pelo próprio operador.
+      silence:
+        status === 'open'
+          ? buildConditionSilence(row.routine, severity, noticeIndex, nowMs)
+          : null,
     };
   });
 
