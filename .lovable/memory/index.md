@@ -1,3 +1,4 @@
+- [Alarm Scheme Registry](mem://features/alarm-scheme-registry) — Onda 215: cadastro do esquema de alarme (21 eventos, ações, teto de 36 canais, biblioteca de faces única, duplicidade IA, desconexão manual nunca alarma), `simulate:wave215`
 - [Command Reliability](mem://features/command-reliability) — Onda 196: obediência ao comando por equipamento; silêncio ≠ falha declarada, amostra curta é "não sei", piso de Wilson + histerese, `simulate:wave196`
 - [Face Search](mem://features/face-search) — Onda 197: busca retroativa no histórico facial; fraude vence semelhança, "não medido" nunca é "não é", janela obrigatória ≤31 dias, `simulate:wave197`
 - [Reference Face Match](mem://features/reference-face-match) — Onda 198: comparação 1:N por imagem; modelo/dimensão incompatível é "não comparado" (nunca semelhança baixa), empate no topo é ambíguo, `simulate:wave198`
