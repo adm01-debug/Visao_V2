@@ -49,10 +49,11 @@ for (const fn of CLOSED_FNS) {
 
 /* 2 — autoteste executado. */
 const bad = psql(
-  `BEGIN; SELECT coalesce(string_agg(case_name || ' (esperado ' || expected || ', obtido ' || coalesce(actual,'∅') || ')', '; '), '') FROM public.alarm_admission_selftest(); ROLLBACK;`,
+  `BEGIN; SELECT coalesce(string_agg(case_name || ' (esperado ' || expected || ', obtido ' || coalesce(actual,'∅') || ')', '; '), '') FROM public.alarm_admission_selftest() WHERE NOT ok; ROLLBACK;`,
 )
   .split('\n')
-  .filter(Boolean)
+  .map((l) => l.trim())
+  .filter((l) => l !== '' && l !== 'BEGIN' && l !== 'ROLLBACK')
   .join('');
 check('selftest', bad === '', bad);
 const passed = Number(
@@ -60,7 +61,8 @@ const passed = Number(
     `BEGIN; SELECT count(*) FROM public.alarm_admission_selftest() WHERE ok; ROLLBACK;`,
   )
     .split('\n')
-    .filter(Boolean)
+    .map((l) => l.trim())
+    .filter((l) => /^\d+$/.test(l))
     .pop() ?? '0',
 );
 check('selftest', passed >= 14, `apenas ${passed} fronteiras exercidas`);
