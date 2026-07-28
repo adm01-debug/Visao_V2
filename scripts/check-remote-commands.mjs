@@ -82,17 +82,16 @@ expect(
 // --- 4. Exercício dinâmico em transação revertida ---------------------------
 const scenario = sql(`
 BEGIN;
-  SET LOCAL role postgres;
-  INSERT INTO auth.users (id, instance_id, aud, role, email, encrypted_password, created_at, updated_at)
-  VALUES ('00000000-0000-4000-8000-000000000193','00000000-0000-0000-0000-000000000000','authenticated','authenticated','remote-cmd-ci@visao.test','x',now(),now())
-  ON CONFLICT (id) DO NOTHING;
+  -- Reaproveita um usuário real: criar em auth.users exigiria privilégio que o
+  -- papel do gate não tem, e forjar o dono invalidaria a prova de propriedade.
+  CREATE TEMP TABLE ci_owner ON COMMIT DROP AS SELECT id FROM auth.users LIMIT 1;
 
   INSERT INTO public.device_registrations (id, user_id, device_code, secret_hash, status)
-  VALUES ('00000000-0000-4000-8000-000000000194','00000000-0000-4000-8000-000000000193','CIWAVE193AAA', repeat('a',64), 'active');
+  SELECT '00000000-0000-4000-8000-000000000194', id, 'CIWAVE193AAA', repeat('a',64), 'active' FROM ci_owner;
 
   -- 4.1 comando válido entra
   INSERT INTO public.device_remote_commands (user_id, registration_id, command, idempotency_key, expires_at, requested_by)
-  VALUES ('00000000-0000-4000-8000-000000000193','00000000-0000-4000-8000-000000000194','device.reboot','idem-193-aaa', now() + interval '10 minutes','00000000-0000-4000-8000-000000000193');
+  SELECT id, '00000000-0000-4000-8000-000000000194','device.reboot','idem-193-aaa', now() + interval '10 minutes', id FROM ci_owner;
   SELECT 'inserted:' || count(*)::text FROM public.device_remote_commands WHERE idempotency_key='idem-193-aaa';
 
   -- 4.2 prazo acima do teto é recusado
@@ -100,7 +99,7 @@ BEGIN;
   DO $$ BEGIN
     BEGIN
       INSERT INTO public.device_remote_commands (user_id, registration_id, command, idempotency_key, expires_at, requested_by)
-      VALUES ('00000000-0000-4000-8000-000000000193','00000000-0000-4000-8000-000000000194','config.read','idem-193-ttl', now() + interval '90 minutes','00000000-0000-4000-8000-000000000193');
+      SELECT id, '00000000-0000-4000-8000-000000000194','config.read','idem-193-ttl', now() + interval '90 minutes', id FROM ci_owner;
       RAISE NOTICE 'TTL_GUARD:FAIL';
     EXCEPTION WHEN others THEN RAISE NOTICE 'TTL_GUARD:OK';
     END;
@@ -111,7 +110,7 @@ BEGIN;
   DO $$ BEGIN
     BEGIN
       INSERT INTO public.device_remote_commands (user_id, registration_id, command, idempotency_key, expires_at, requested_by)
-      VALUES ('00000000-0000-4000-8000-000000000193','00000000-0000-4000-8000-000000000194','stream.restart','idem-193-bbb', now() + interval '10 minutes','00000000-0000-4000-8000-000000000193');
+      SELECT id, '00000000-0000-4000-8000-000000000194','stream.restart','idem-193-bbb', now() + interval '10 minutes', id FROM ci_owner;
       RAISE NOTICE 'EXCLUSIVE_GUARD:FAIL';
     EXCEPTION WHEN others THEN RAISE NOTICE 'EXCLUSIVE_GUARD:OK';
     END;
@@ -129,7 +128,7 @@ BEGIN;
 
   -- 4.5 expiração é fato do relógio
   INSERT INTO public.device_remote_commands (user_id, registration_id, command, idempotency_key, expires_at, requested_by)
-  VALUES ('00000000-0000-4000-8000-000000000193','00000000-0000-4000-8000-000000000194','config.read','idem-193-ccc', now() + interval '1 minute','00000000-0000-4000-8000-000000000193');
+  SELECT id, '00000000-0000-4000-8000-000000000194','config.read','idem-193-ccc', now() + interval '1 minute', id FROM ci_owner;
   UPDATE public.device_remote_commands SET expires_at = now() - interval '1 second' WHERE false;
   SELECT 'expired:' || public.expire_device_remote_commands()::text;
 ROLLBACK;
