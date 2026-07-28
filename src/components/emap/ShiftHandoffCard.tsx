@@ -12,13 +12,28 @@ import {
   type ShiftJournal,
 } from '@/lib/emap/shiftHandoff';
 import type { AttentionLedger } from '@/lib/emap/attentionClock';
+import type { ShiftLoadOutcome } from '@/lib/emap/shiftJournalStore';
 
 export interface ShiftHandoffCardProps {
   journal: ShiftJournal;
   ledger: AttentionLedger;
   nameOf: (cameraId: string) => string;
+  /** Onda 170 — como o diário foi restaurado nesta sessão. */
+  restoreOutcome?: ShiftLoadOutcome;
   className?: string;
 }
+
+/**
+ * Onda 170: perda de história nunca é silenciosa. O operador precisa saber se
+ * está lendo o diário do turno inteiro ou um caderno reiniciado.
+ */
+const RESTORE_NOTE: Partial<Record<ShiftLoadOutcome, string>> = {
+  corrupt: 'O registro anterior estava ilegível e foi descartado: este turno começou agora.',
+  clock_suspect:
+    'O registro anterior tinha data futura (relógio do dispositivo) e foi descartado por segurança.',
+  rolled_over:
+    'O turno anterior expirou. Contadores reiniciados; as pendências abertas seguem como herdadas.',
+};
 
 const REASON_LABEL: Record<ShiftClosureReason, string> = {
   normalized: 'normalizadas',
@@ -39,7 +54,7 @@ const REASON_VARIANT: Record<ShiftClosureReason, 'secondary' | 'outline' | 'dest
  * entre normalizar e apenas dar ciência. O relatório em texto é gerado pela
  * mesma regra pura que a simulação exercita — a tela nunca reescreve o fato.
  */
-export function ShiftHandoffCard({ journal, ledger, nameOf, className }: ShiftHandoffCardProps) {
+export function ShiftHandoffCard({ journal, ledger, nameOf, restoreOutcome, className }: ShiftHandoffCardProps) {
   const [copied, setCopied] = useState(false);
   const handoff: ShiftHandoff = useMemo(
     () => buildHandoff(journal, ledger, Date.now()),
@@ -77,6 +92,11 @@ export function ShiftHandoffCard({ journal, ledger, nameOf, className }: ShiftHa
         </p>
       </CardHeader>
       <CardContent className="space-y-3">
+        {restoreOutcome && RESTORE_NOTE[restoreOutcome] && (
+          <p className="rounded-md border border-border bg-muted/50 p-2 text-xs text-muted-foreground">
+            {RESTORE_NOTE[restoreOutcome]}
+          </p>
+        )}
         <div className="flex flex-wrap gap-2">
           {(Object.keys(REASON_LABEL) as ShiftClosureReason[])
             .filter((reason) => handoff.totals[reason] > 0)

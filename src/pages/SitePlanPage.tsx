@@ -345,6 +345,7 @@ export default function SitePlanPage() {
               journal={shiftJournal}
               ledger={attentionClock}
               nameOf={nameOf}
+              restoreOutcome={restoreOutcome}
             />
 
 
