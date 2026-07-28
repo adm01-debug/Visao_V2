@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ListChecks, ArrowRight, Check } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +15,12 @@ import {
   type SlaState,
   type SlaVerdict,
 } from '@/lib/emap/triageSla';
+import {
+  escalationLabel,
+  reconcileEscalations,
+  summarizeEscalations,
+  type EscalationLedger,
+} from '@/lib/emap/triageEscalation';
 
 export interface TriageQueuePanelProps {
   ledger: AttentionLedger;
@@ -104,6 +110,20 @@ export function TriageQueuePanel({
     return { byCamera, summary: summarizeSla(byCamera.values()) };
   }, [queue.items, ledger, now, acks]);
 
+  // Onda 176 — degrau de acionamento. A memória vive num ref porque o degrau
+  // nunca retrocede: recalcular do zero a cada render rebaixaria acionamentos
+  // já feitos quando o estado da câmera melhora.
+  const escalationMemory = useRef<EscalationLedger>({});
+  const escalation = useMemo(() => {
+    const result = reconcileEscalations({
+      verdicts: sla.byCamera.values(),
+      memory: escalationMemory.current,
+      now,
+    });
+    escalationMemory.current = result.memory;
+    return { ledger: result.memory, summary: summarizeEscalations(result.memory) };
+  }, [sla, now]);
+
   if (queue.totals.total === 0) return null;
 
   return (
@@ -138,6 +158,12 @@ export function TriageQueuePanel({
           {sla.summary.late > 0 && (
             <Badge variant="secondary">{sla.summary.late} atendido(s) com atraso</Badge>
           )}
+          {escalation.summary.total > 0 && (
+            <Badge variant="destructive">
+              acionamento: {escalationLabel(escalation.summary.highest)} (
+              {escalation.summary.total})
+            </Badge>
+          )}
         </div>
 
         <ol className="space-y-2">
@@ -166,6 +192,15 @@ export function TriageQueuePanel({
                           : verdict.remainingMs != null && !verdict.frozen
                             ? ` (${formatAge(verdict.remainingMs)})`
                             : ''}
+                      </Badge>
+                    );
+                  })()}
+                  {(() => {
+                    const record = escalation.ledger[item.cameraId];
+                    if (!record) return null;
+                    return (
+                      <Badge variant="destructive">
+                        acionar {escalationLabel(record.level)}
                       </Badge>
                     );
                   })()}

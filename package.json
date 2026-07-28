@@ -228,7 +228,8 @@
     "simulate:wave172": "node scripts/simulate-wave172-triage-ack.mjs",
     "simulate:wave173": "node scripts/simulate-wave173-ack-handoff.mjs",
     "simulate:wave174": "node scripts/simulate-wave174-triage-sla.mjs",
-    "simulate:wave175": "node scripts/simulate-wave175-shift-performance.mjs"
+    "simulate:wave175": "node scripts/simulate-wave175-shift-performance.mjs",
+    "simulate:wave176": "node scripts/simulate-wave176-triage-escalation.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
