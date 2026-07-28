@@ -55,7 +55,7 @@ check(
 
 /* 2 — RLS habilitada e política restrita a admin. */
 const rls = psql(`SELECT relrowsecurity::text FROM pg_class WHERE oid = '${RUNS}'::regclass`);
-check('rls-enabled', rls === 't', `RLS deveria estar habilitada (${rls})`);
+check('rls-enabled', rls === 't' || rls === 'true', `RLS deveria estar habilitada (${rls})`);
 
 const policies = psql(
   `SELECT coalesce(string_agg(polname || '/' || polcmd::text, ',' ORDER BY polname), '')
