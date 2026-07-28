@@ -23,6 +23,7 @@ const STANDALONE_ALLOWLIST = new Set([
   'Auth.tsx',
   'AuthCallback.tsx',
   'CoveragePage.tsx',
+  'DetachedMonitorPage.tsx', // Onda 189: janela de segundo monitor (sem sidebar por definição)
   'Index.tsx',
   'NotFound.tsx',
   'PricingPage.tsx',        // rota pública /precos (marketing com header próprio)

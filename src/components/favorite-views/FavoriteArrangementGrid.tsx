@@ -5,7 +5,7 @@
  * desloca as vizinhas. Vacância sempre exibe o motivo declarado pela regra.
  */
 import { memo } from 'react';
-import { Camera as CameraIcon, X } from 'lucide-react';
+import { Camera as CameraIcon, ExternalLink, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -27,6 +27,8 @@ interface FavoriteArrangementGridProps {
   cells: readonly RestoredCell[];
   cameras: readonly GridCameraOption[];
   onAssign: (slotIndex: number, cameraId: string | null) => void;
+  /** Onda 189 — destaca a câmera da célula numa janela de segundo monitor. */
+  onDetach?: (cameraId: string) => void;
 }
 
 const VACANCY_TEXT: Record<Exclude<VacancyReason, 'empty'>, string> = {
@@ -58,6 +60,7 @@ function FavoriteArrangementGridImpl({
   cells,
   cameras,
   onAssign,
+  onDetach,
 }: FavoriteArrangementGridProps) {
   const nameById = new Map(cameras.map((c) => [c.id, c.name]));
 
@@ -118,9 +121,22 @@ function FavoriteArrangementGridImpl({
             </div>
 
             {cell.cameraId && (
-              <p className="text-xs text-foreground truncate">
-                {nameById.get(cell.cameraId) ?? cell.cameraId}
-              </p>
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-xs text-foreground truncate">
+                  {nameById.get(cell.cameraId) ?? cell.cameraId}
+                </p>
+                {onDetach && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 shrink-0 px-2 text-xs"
+                    onClick={() => onDetach(cell.cameraId as string)}
+                  >
+                    <ExternalLink className="mr-1 h-3 w-3" aria-hidden="true" />
+                    Destacar
+                  </Button>
+                )}
+              </div>
             )}
           </div>
         );
