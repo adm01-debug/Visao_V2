@@ -1,0 +1,116 @@
+import { useMemo, useState } from 'react';
+import { ClipboardList, Copy, Check } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { formatAge } from '@/lib/emap/attentionClock';
+import {
+  buildHandoff,
+  formatHandoffReport,
+  type ShiftClosureReason,
+  type ShiftHandoff,
+  type ShiftJournal,
+} from '@/lib/emap/shiftHandoff';
+import type { AttentionLedger } from '@/lib/emap/attentionClock';
+
+export interface ShiftHandoffCardProps {
+  journal: ShiftJournal;
+  ledger: AttentionLedger;
+  nameOf: (cameraId: string) => string;
+  className?: string;
+}
+
+const REASON_LABEL: Record<ShiftClosureReason, string> = {
+  normalized: 'normalizadas',
+  acknowledged: 'cientes (não resolvidas)',
+  removed: 'fora do escopo',
+};
+
+const REASON_VARIANT: Record<ShiftClosureReason, 'secondary' | 'outline' | 'destructive'> = {
+  normalized: 'secondary',
+  acknowledged: 'destructive',
+  removed: 'outline',
+};
+
+/**
+ * Onda 169 — passagem de turno.
+ *
+ * O card responde "o que aconteceu no meu turno" sem esconder a diferença
+ * entre normalizar e apenas dar ciência. O relatório em texto é gerado pela
+ * mesma regra pura que a simulação exercita — a tela nunca reescreve o fato.
+ */
+export function ShiftHandoffCard({ journal, ledger, nameOf, className }: ShiftHandoffCardProps) {
+  const [copied, setCopied] = useState(false);
+  const handoff: ShiftHandoff = useMemo(
+    () => buildHandoff(journal, ledger, Date.now()),
+    [journal, ledger],
+  );
+
+  const hasHistory =
+    handoff.open.length > 0 ||
+    handoff.totals.normalized + handoff.totals.acknowledged + handoff.totals.removed > 0;
+  if (!hasHistory) return null;
+
+  const copy = async () => {
+    const report = formatHandoffReport(handoff, nameOf);
+    try {
+      await navigator.clipboard.writeText(report);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2500);
+    } catch {
+      // Área de transferência bloqueada não é erro do operador: silêncio.
+      setCopied(false);
+    }
+  };
+
+  return (
+    <Card className={className}>
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <ClipboardList className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          Passagem de turno
+          <Badge variant="outline">{formatAge(handoff.durationMs)}</Badge>
+        </CardTitle>
+        <p className="text-sm text-muted-foreground">
+          {handoff.open.length} aberta(s) agora — {handoff.inheritedCount} herdada(s),{' '}
+          {handoff.arisenCount} surgida(s) neste turno.
+        </p>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div className="flex flex-wrap gap-2">
+          {(Object.keys(REASON_LABEL) as ShiftClosureReason[])
+            .filter((reason) => handoff.totals[reason] > 0)
+            .map((reason) => (
+              <Badge key={reason} variant={REASON_VARIANT[reason]}>
+                {handoff.totals[reason]} {REASON_LABEL[reason]}
+              </Badge>
+            ))}
+        </div>
+
+        {handoff.oldest && (
+          <p className="text-xs text-muted-foreground">
+            Mais antiga aberta: <span className="font-medium text-foreground">{nameOf(handoff.oldest.cameraId)}</span>{' '}
+            há {formatAge(handoff.oldest.ageMs)}
+            {handoff.oldest.inherited && ' (herdada do turno anterior)'}.
+          </p>
+        )}
+
+        {handoff.flapping.length > 0 && (
+          <p className="text-xs text-muted-foreground">
+            Oscilando: {handoff.flapping.slice(0, 4).map((id) => nameOf(id)).join(', ')}
+            {handoff.flapping.length > 4 && ` e mais ${handoff.flapping.length - 4}`}.
+          </p>
+        )}
+
+        <Button variant="outline" size="sm" onClick={() => void copy()}>
+          {copied ? (
+            <Check className="mr-1 h-4 w-4" aria-hidden="true" />
+          ) : (
+            <Copy className="mr-1 h-4 w-4" aria-hidden="true" />
+          )}
+          {copied ? 'Relatório copiado' : 'Copiar relatório do turno'}
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}

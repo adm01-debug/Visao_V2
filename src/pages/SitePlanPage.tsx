@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Map as MapIcon, MapPin } from 'lucide-react';
 import { PageMeta } from '@/components/PageMeta';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,6 +19,7 @@ import { SuppressedNoticesPanel } from '@/components/emap/SuppressedNoticesPanel
 import { PlanSwitcher } from '@/components/emap/PlanSwitcher';
 import { CrossFloorAttentionBanner } from '@/components/emap/CrossFloorAttentionBanner';
 import { AttentionClockPanel } from '@/components/emap/AttentionClockPanel';
+import { ShiftHandoffCard } from '@/components/emap/ShiftHandoffCard';
 import { isEditableTarget, resolveShortcutTarget, stepPlan, type PlanNavItem } from '@/lib/emap/planNavigator';
 import {
   adviseCrossFloorAttention,
@@ -33,6 +34,12 @@ import {
   pruneAttention,
   type AttentionLedger,
 } from '@/lib/emap/attentionClock';
+import {
+  diffClosures,
+  openShift,
+  recordClosures,
+  type ShiftJournal,
+} from '@/lib/emap/shiftHandoff';
 
 import { useSitePlans } from '@/hooks/useSitePlans';
 import { summarizePlan, type MapMarkerStatus } from '@/lib/emap/floorPlanGeometry';
@@ -115,6 +122,28 @@ export default function SitePlanPage() {
    * ausência de observação nunca é prova de melhora.
    */
   const [attentionClock, setAttentionClock] = useState<AttentionLedger>(emptyAttentionLedger);
+  /**
+   * Onda 169 — diário do turno. O espelho em `ref` existe para derivar o
+   * fechamento (quem saiu do livro e por quê) fora do updater do React: gravar
+   * história dentro de um updater duplicaria registros em modo estrito.
+   */
+  const ledgerRef = useRef<AttentionLedger>(attentionClock);
+  const [shiftJournal, setShiftJournal] = useState<ShiftJournal>(() => openShift(Date.now()));
+
+  const applyLedger = useCallback(
+    (next: AttentionLedger, closedAt: number, reason: 'normalized' | 'acknowledged' | 'removed') => {
+      const previous = ledgerRef.current;
+      if (next === previous) return;
+      const closures = diffClosures(previous, next, closedAt, reason);
+      ledgerRef.current = next;
+      setAttentionClock(next);
+      if (closures.length > 0) {
+        setShiftJournal((journal) => recordClosures(journal, closures));
+      }
+    },
+    [],
+  );
+
   useEffect(() => {
     if (placements.length === 0) return;
     const now = Date.now();
@@ -122,16 +151,21 @@ export default function SitePlanPage() {
       cameraId: placement.cameraId,
       status: placement.status,
     }));
-    setAttentionClock((previous) => observeAttention(previous, observations, now));
-  }, [placements]);
+    applyLedger(observeAttention(ledgerRef.current, observations, now), now, 'normalized');
+  }, [placements, applyLedger]);
+
   useEffect(() => {
     const knownIds = new Set(cameras.map((camera) => camera.id));
     if (knownIds.size === 0) return;
-    setAttentionClock((previous) => pruneAttention(previous, knownIds));
-  }, [cameras]);
-  const acknowledgeAttention = useCallback((cameraId: string) => {
-    setAttentionClock((previous) => clearAttention(previous, cameraId));
-  }, []);
+    applyLedger(pruneAttention(ledgerRef.current, knownIds), Date.now(), 'removed');
+  }, [cameras, applyLedger]);
+
+  const acknowledgeAttention = useCallback(
+    (cameraId: string) => {
+      applyLedger(clearAttention(ledgerRef.current, cameraId), Date.now(), 'acknowledged');
+    },
+    [applyLedger],
+  );
 
 
 
@@ -283,6 +317,14 @@ export default function SitePlanPage() {
               nameOf={nameOf}
               onAcknowledge={acknowledgeAttention}
             />
+
+            <ShiftHandoffCard
+              journal={shiftJournal}
+              ledger={attentionClock}
+              nameOf={nameOf}
+            />
+
+
 
             <SuppressedNoticesPanel
               summary={suppressionSummary}
