@@ -307,11 +307,9 @@ export function admitRemoteCommand(
 
   // 7. Relógio inconsistente: comando de efeito seria cego; leitura é inofensiva.
   if (request.presence === 'clock_anomaly') {
-    return EFFECTFUL.has(kind) && kind !== 'device.reboot'
+    return EFFECTFUL.has(kind)
       ? verdict('reject', 'clock_unreliable', null, false)
-      : kind === 'device.reboot'
-        ? verdict('reject', 'clock_unreliable', null, false)
-        : verdict('defer', 'awaiting_presence', expiresAt);
+      : verdict('defer', 'awaiting_presence', expiresAt);
   }
 
   // 8. Exclusividade: só depois de saber que o comando é viável.
