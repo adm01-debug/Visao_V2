@@ -24,7 +24,12 @@ function cons(id: string, health: ConsumerHealth): ConsumerView {
     health,
     inFlight: false,
     hasPending: false,
-    stats: { delivered: health === 'starved' ? 0 : 1, dropped: 0 } as ConsumerView['stats'],
+    stats: {
+      delivered: health === 'starved' ? 0 : 1,
+      droppedStale: 0,
+      droppedInterval: 0,
+      droppedSuperseded: 0,
+    },
     deliveryRatio: health === 'starved' ? 0 : 1,
   };
 }
