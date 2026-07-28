@@ -280,7 +280,8 @@ export async function runCameraCycle(
     cascaded,
     cascadeCapped,
     tickAtMs,
-    completedAtMs: executions.at(-1)?.settledAtMs ?? tickAtMs,
+    completedAtMs:
+      executions.length > 0 ? executions[executions.length - 1]!.settledAtMs : tickAtMs,
   };
 }
 
