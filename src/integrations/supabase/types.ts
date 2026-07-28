@@ -101,6 +101,54 @@ export type Database = {
         }
         Relationships: []
       }
+      admission_reconcile_purge_runs: {
+        Row: {
+          anchor_keep: number
+          anchored_count: number
+          batch_cap: number
+          capped: boolean
+          created_at: string
+          cutoff_at: string
+          deferred_count: number
+          deleted_count: number
+          duration_ms: number
+          executed_at: string
+          id: string
+          quarantined_count: number
+          retention_days: number
+        }
+        Insert: {
+          anchor_keep: number
+          anchored_count?: number
+          batch_cap: number
+          capped?: boolean
+          created_at?: string
+          cutoff_at: string
+          deferred_count?: number
+          deleted_count?: number
+          duration_ms?: number
+          executed_at?: string
+          id?: string
+          quarantined_count?: number
+          retention_days: number
+        }
+        Update: {
+          anchor_keep?: number
+          anchored_count?: number
+          batch_cap?: number
+          capped?: boolean
+          created_at?: string
+          cutoff_at?: string
+          deferred_count?: number
+          deleted_count?: number
+          duration_ms?: number
+          executed_at?: string
+          id?: string
+          quarantined_count?: number
+          retention_days?: number
+        }
+        Relationships: []
+      }
       admission_reconcile_snapshots: {
         Row: {
           created_at: string
@@ -9758,6 +9806,15 @@ export type Database = {
         }
         Returns: Json
       }
+      purge_admission_reconcile_snapshots: {
+        Args: {
+          p_anchor_keep?: number
+          p_batch_cap?: number
+          p_now?: string
+          p_retention_days?: number
+        }
+        Returns: Json
+      }
       purge_agent_discoveries: {
         Args: { _retention_days?: number }
         Returns: number
@@ -9786,6 +9843,14 @@ export type Database = {
       reconcile_abandoned_episodes: {
         Args: { p_limit?: number; p_now?: string; p_organization_id: string }
         Returns: Json
+      }
+      reconcile_retention_selftest: {
+        Args: never
+        Returns: {
+          check_name: string
+          detail: string
+          passed: boolean
+        }[]
       }
       record_admission_reconcile_snapshot: {
         Args: { p_now?: string }
