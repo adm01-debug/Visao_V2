@@ -1,3 +1,4 @@
+- [Command Reliability](mem://features/command-reliability) — Onda 196: obediência ao comando por equipamento; silêncio ≠ falha declarada, amostra curta é "não sei", piso de Wilson + histerese, `simulate:wave196`
 - [Command Sweep](mem://features/command-sweep) — Onda 195: varredura de ordens abandonadas na fila de comandos; autoria `device` vs `sweep`, varredura nunca inventa laudo nem fecha ordem viva, gate `db:check:command-sweep`
 - [Camera IO Alarm](mem://features/camera-io-alarm) — Onda 154: I/O de alarme físico ONVIF, `ioSafety.ts` espelhado byte a byte na borda, soltar relé sempre passa, ação `trigger_output`, gate `db:check:camera-io`
 - [Path Failover](mem://features/connectivity-path-failover) — Onda 152: ordem de tentativa direct/port_forward/vpn/relay, quarentena rebaixa (nunca exclui), só falha de transporte culpa a rota, gate `db:check:path-failover`
