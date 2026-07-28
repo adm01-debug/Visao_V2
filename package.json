@@ -296,6 +296,8 @@
     "simulate:wave234": "tsx scripts/simulate-wave234-orphan-alert.ts",
     "db:check:admission-orphan": "tsx scripts/check-admission-orphan.ts",
     "simulate:wave237": "tsx scripts/simulate-wave237-snapshot-retention.ts",
+    "db:check:escalation-profiles": "tsx scripts/check-escalation-profiles.ts",
+    "simulate:wave238": "tsx scripts/simulate-wave238-escalation-profiles.ts",
     "db:check:reconcile-retention": "tsx scripts/check-reconcile-retention.ts"
   },
   "dependencies": {
