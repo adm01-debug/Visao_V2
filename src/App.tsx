@@ -90,6 +90,7 @@ const TestModePage = lazy(() => import("@/pages/TestModePage"));
 const LocalAgentsPage = lazy(() => import("@/pages/LocalAgentsPage"));
 const CollabNetworkPage = lazy(() => import("@/pages/CollabNetworkPage"));
 const MaintenanceConsolePage = lazy(() => import("@/pages/MaintenanceConsolePage"));
+const AlarmSchemesPage = lazy(() => import("@/pages/AlarmSchemesPage"));
 const FavoriteViewsPage = lazy(() => import("@/pages/FavoriteViewsPage"));
 const DetachedMonitorPage = lazy(() => import("@/pages/DetachedMonitorPage"));
 const DeviceRegistrationsPage = lazy(() => import("@/pages/DeviceRegistrationsPage"));
