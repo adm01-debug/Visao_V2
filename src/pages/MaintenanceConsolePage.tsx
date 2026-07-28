@@ -9,6 +9,8 @@ import { MaintenanceAlertsCard } from '@/components/maintenance/MaintenanceAlert
 import { RetentionOverviewCard } from '@/components/maintenance/RetentionOverviewCard';
 import { ChronicSeriesCard } from '@/components/maintenance/ChronicSeriesCard';
 import { EpisodeBridgeCard } from '@/components/maintenance/EpisodeBridgeCard';
+import { DeviceSilenceCard } from '@/components/maintenance/DeviceSilenceCard';
+import { useDeviceSilence } from '@/hooks/useDeviceSilence';
 import { useEpisodeBridgeWatch } from '@/hooks/useEpisodeBridgeWatch';
 import { useEpisodeReconciliation } from '@/hooks/useEpisodeReconciliation';
 import { useChronicSeries, usePrimaryOrganization } from '@/hooks/useChronicSeries';
@@ -25,6 +27,7 @@ export default function MaintenanceConsolePage() {
   const { organizationId, isLoading: orgLoading } = usePrimaryOrganization();
   const chronic = useChronicSeries(organizationId);
   const bridge = useEpisodeBridgeWatch();
+  const devices = useDeviceSilence();
   const reconciliation = useEpisodeReconciliation(organizationId);
 
   const { toast } = useToast();
@@ -105,6 +108,14 @@ export default function MaintenanceConsolePage() {
         canReconcile={reconciliation.canReconcile}
       />
 
+
+      <DeviceSilenceCard
+        verdicts={devices.verdicts}
+        summary={devices.summary}
+        evaluatedAt={devices.evaluatedAt}
+        isLoading={devices.isLoading}
+        onRefresh={devices.refetch}
+      />
 
       <RetentionOverviewCard rows={retention.data ?? []} isLoading={retention.isLoading} />
     </PageContent>

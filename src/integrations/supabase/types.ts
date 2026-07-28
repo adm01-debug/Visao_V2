@@ -8177,6 +8177,19 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      classify_device_silence: {
+        Args: { p_now?: string }
+        Returns: {
+          device_code: string
+          label: string
+          reason: string
+          registration_id: string
+          severity: string
+          silence_minutes: number
+          state: string
+          user_id: string
+        }[]
+      }
       classify_retention_health: {
         Args: { p_cadence_minutes: number; p_minutes_since: number }
         Returns: string
@@ -8374,6 +8387,17 @@ export type Database = {
         Returns: Json
       }
       detect_stale_ingest_publishers: { Args: never; Returns: Json }
+      device_silence_thresholds: {
+        Args: never
+        Returns: {
+          clock_tolerance_minutes: number
+          critical_factor: number
+          denial_window_minutes: number
+          heartbeat_minutes: number
+          rotation_grace_minutes: number
+          warn_factor: number
+        }[]
+      }
       dwell_policy: {
         Args: never
         Returns: {
@@ -8442,6 +8466,10 @@ export type Database = {
       }
       evaluate_and_restart_streams: { Args: never; Returns: number }
       evaluate_blame_alerts: { Args: { p_now?: string }; Returns: Json }
+      evaluate_device_silence_alerts: {
+        Args: { p_now?: string }
+        Returns: Json
+      }
       evaluate_dwell_alerts: {
         Args: { _threshold_seconds?: number }
         Returns: Json
