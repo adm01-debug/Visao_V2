@@ -8308,6 +8308,10 @@ export type Database = {
           total: number
         }[]
       }
+      admission_ledger_reconcile: {
+        Args: { p_now?: string; p_retention_days?: number }
+        Returns: Json
+      }
       admission_ledger_selftest: {
         Args: never
         Returns: {
@@ -8315,6 +8319,17 @@ export type Database = {
           name: string
           ok: boolean
         }[]
+      }
+      admission_reconcile_classify: {
+        Args: {
+          p_deferred: number
+          p_drift: number
+          p_expired: number
+          p_has_run: boolean
+          p_readable: boolean
+          p_stale: boolean
+        }
+        Returns: string
       }
       admission_retention_selftest: {
         Args: never
