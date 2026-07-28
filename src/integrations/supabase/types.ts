@@ -8397,6 +8397,11 @@ export type Database = {
           passed: boolean
         }[]
       }
+      admission_trend_cooldown: {
+        Args: { p_cadence_minutes: number; p_verdict: string }
+        Returns: number
+      }
+      admission_trend_severity: { Args: { p_verdict: string }; Returns: string }
       alarm_admission_selftest: {
         Args: never
         Returns: {
@@ -8930,6 +8935,10 @@ export type Database = {
       }
       evaluate_admission_reconcile_alerts: {
         Args: { p_now?: string }
+        Returns: Json
+      }
+      evaluate_admission_trend_alerts: {
+        Args: { cadence_minutes?: number; p_now?: string; p_window?: number }
         Returns: Json
       }
       evaluate_and_restart_streams: { Args: never; Returns: number }
