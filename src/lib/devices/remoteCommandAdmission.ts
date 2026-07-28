@@ -312,7 +312,16 @@ export function admitRemoteCommand(
       : verdict('defer', 'awaiting_presence', expiresAt);
   }
 
-  // 8. Exclusividade: só depois de saber que o comando é viável.
+  // 8. Presença antes de concorrência: dizer "aguarde o outro comando" a quem
+  //    está sem prova de vida seria apontar a causa errada — o operador voltaria
+  //    depois e receberia a recusa real que já existia agora. Efeito exige prova de vida; leitura pode esperar.
+  if (!HEALTHY_PRESENCE.has(request.presence)) {
+    return EFFECTFUL.has(kind)
+      ? verdict('reject', 'presence_required', null, false)
+      : verdict('defer', 'awaiting_presence', expiresAt);
+  }
+
+  // 9. Exclusividade: só depois de saber que o comando é viável em si.
   const inFlight = request.inFlight ?? null;
   if (
     inFlight !== null &&
@@ -321,13 +330,6 @@ export function admitRemoteCommand(
     (EXCLUSIVE.has(kind) || EXCLUSIVE.has(inFlight.kind))
   ) {
     return verdict('reject', 'conflicting_command', null, false);
-  }
-
-  // 9. Presença. Efeito exige prova de vida; leitura pode esperar.
-  if (!HEALTHY_PRESENCE.has(request.presence)) {
-    return EFFECTFUL.has(kind)
-      ? verdict('reject', 'presence_required', null, false)
-      : verdict('defer', 'awaiting_presence', expiresAt);
   }
 
   return verdict('admit', 'admitted', expiresAt);
