@@ -202,7 +202,9 @@ const trim = (
 export function openEpisode(
   ledger: RecurrenceLedger,
   input: { at: number; severity: RecurrenceSeverity },
+  cfg?: Partial<RecurrenceConfig> | null,
 ): LedgerMutation {
+  const config = normalizeConfig(cfg);
   if (!input || !isClock(input.at) || !isSeverity(input.severity)) {
     return { ledger, ignored: 'invalid_input' };
   }
@@ -215,7 +217,7 @@ export function openEpisode(
     ...ledger.episodes,
     { openedAt: input.at, closedAt: null, durationMs: null, severity: input.severity },
   ];
-  const { episodes: kept, openIndex } = trim(episodes, episodes.length - 1, DEFAULT_RECURRENCE_CONFIG.maxHistory);
+  const { episodes: kept, openIndex } = trim(episodes, episodes.length - 1, config.maxHistory);
 
   return {
     ledger: {
