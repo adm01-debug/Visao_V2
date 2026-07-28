@@ -35,7 +35,10 @@ function deps(overrides: Partial<AdapterDeps> = {}): AdapterDeps {
   return {
     clock: () => 1_000,
     resolveFrame: () => FRAME,
-    timer: async () => {},
+    /* Timer que nunca dispara = prazo folgado. O teste de estouro injeta um
+     * timer imediato de propósito; deixar o padrão imediato faria toda chamada
+     * "vencer o prazo" só porque o backend usa um microtask a mais. */
+    timer: () => new Promise<void>(() => {}),
     ...overrides,
   };
 }
@@ -102,7 +105,7 @@ describe('adaptador de face', () => {
           return new Promise(() => {});
         },
       },
-      deps(),
+      deps({ timer: async () => {} }),
     );
     const output = await normalize(run, 'identify');
     expect(output.verdict).toBe('rejected');
@@ -200,7 +203,12 @@ describe('registro de executores', () => {
   it('declara só os processadores cujo backend existe', () => {
     const registry = buildProcessorRegistry(
       { face: sane },
-      { cameraId: 'cam-1', clock: () => 1_000, resolveFrame: () => FRAME, timer: async () => {} },
+      {
+        cameraId: 'cam-1',
+        clock: () => 1_000,
+        resolveFrame: () => FRAME,
+        timer: () => new Promise<void>(() => {}),
+      },
     );
     expect(registry.processors.map((p) => p.id)).toEqual([FACE_PROCESSOR.id]);
     expect(Object.keys(registry.executors)).toEqual(['face']);
@@ -222,7 +230,7 @@ describe('registro de executores', () => {
         cameraId: 'cam-1',
         clock: () => 1_000,
         resolveFrame: () => FRAME,
-        timer: async () => {},
+        timer: () => new Promise<void>(() => {}),
         sink,
       },
     );
