@@ -111,7 +111,7 @@ for (let scenario = 0; scenario < 400; scenario += 1) {
   }
 
   let queue = emptyCommandQueue();
-  const deliveredOrder = new Map(); // série -> lista de kinds entregues
+  const deliveredOrder = new Map(); // série -> carimbo do último fato entregue
   const deliveredIds = new Map(); // id -> contagem de entregas
 
   let now = 0;
@@ -151,21 +151,19 @@ for (let scenario = 0; scenario < 400; scenario += 1) {
     for (const item of due) {
       const roll = rand();
       if (roll < 0.55) {
-        // Entrega bem-sucedida.
-        const list = deliveredOrder.get(item.command.seriesKey) ?? [];
-        if (item.command.kind === 'close') {
+        // Entrega bem-sucedida. A garantia da fila é de **ordem temporal por
+        // série**: um fato nunca chega ao servidor antes de outro mais antigo
+        // da mesma série. Itens recusados definitivamente saem da fila (I4 do
+        // módulo), então o par open/close pode ficar incompleto — o que não
+        // pode acontecer jamais é inversão cronológica.
+        const last = deliveredOrder.get(item.command.seriesKey) ?? null;
+        if (last !== null) {
           ok(
-            list.length > 0 && list[list.length - 1] === 'open',
-            `I2: close entregue sem open aberto (${item.command.seriesKey})`,
-          );
-        } else {
-          ok(
-            list.length === 0 || list[list.length - 1] === 'close',
-            `I2: open duplicado sem close (${item.command.seriesKey})`,
+            item.command.at >= last,
+            `I2: inversão cronológica em ${item.command.seriesKey} (${item.command.at} < ${last})`,
           );
         }
-        list.push(item.command.kind);
-        deliveredOrder.set(item.command.seriesKey, list);
+        deliveredOrder.set(item.command.seriesKey, item.command.at);
         deliveredIds.set(item.id, (deliveredIds.get(item.id) ?? 0) + 1);
         ok(deliveredIds.get(item.id) === 1, `I1: fato entregue duas vezes (${item.id})`);
         queue = markDelivered(queue, item.id);
