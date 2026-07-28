@@ -184,7 +184,7 @@ SELECT (r->>'deleted') || '|' || (r->>'deferred') || '|' || (r->>'quarantined') 
   FROM public.purge_admission_ledger(${days}, ${cap}, ${NOW_SQL}) AS r;
 ROLLBACK;`;
 
-  const out = psqlScript(sql).split('\n').filter(Boolean).pop() ?? '';
+  const out = psqlScript(sql).split('\n').filter((l) => l.includes('|')).pop() ?? '';
   const [deleted, deferred, quarantined, capped, survivors] = out.split('|');
   compared += 1;
 
