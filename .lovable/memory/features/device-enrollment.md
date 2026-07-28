@@ -17,3 +17,16 @@ Rota `/dispositivos` (protegida, item "Conexão por Registro" no grupo Monitoram
 Banco: `device_registrations` (CHECKs de formato do código/hash, graça pareada, revogado com data) + `device_registration_audit` append-only. Ambas **somente-leitura para `authenticated`** e sem nenhuma policy de escrita: criar/rotacionar/revogar é exclusividade das rotinas `SECURITY DEFINER`. `anon` sem qualquer privilégio.
 
 Validação: `npm run simulate:wave190` (207.956 asserções), `npm run db:check:device-enrollment` (inclui exercício dinâmico em transação revertida) e `src/__tests__/lib/deviceEnrollment.test.ts`.
+
+## Onda 191 — porta pública `device-connect`
+
+Edge function **sem JWT de pessoa** (o gravador não tem sessão), única entrada de rede da Onda 190. Regra da superfície em `supabase/functions/_shared/deviceConnect.ts`:
+- **Recusa é uma constante**: todo `denied` sai como `401 {"connected":false}`, byte a byte igual — inexistente, revogado, vencido, segredo errado e graça encerrada são indistinguíveis. Só `not_json` vira 400 (não nomeia dispositivo).
+- **Falha interna também cai na recusa canônica** — um 500 seria dica de existência.
+- O segredo vira digest na primeira linha e **nunca** é logado, ecoado ou gravado.
+- **Relógio e TTL são do servidor**; campos extras no corpo são descartados sem eco.
+- **Toda tentativa vira linha na trilha**, inclusive de código desconhecido (`registration_id NULL`) — é assim que uma varredura fica visível.
+- `secretStale` (usou graça) é a única informação extra, e só para quem já provou identidade.
+- IP vem de `x-forwarded-for` normalizado; cabeçalho sujo vira `null` (perder o IP é melhor que perder a trilha, coluna é `inet`).
+
+Espelho `_shared/deviceEnrollment.ts` é byte a byte igual a `src/lib/devices/deviceEnrollment.ts` (imposto pelo gate). Validação: `npm run simulate:wave191` (193.787 asserções, inclui fuzz de 120k estados) e `npm run db:check:device-connect`.
