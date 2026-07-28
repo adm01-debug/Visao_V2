@@ -128,7 +128,7 @@ function rand(): number {
 
 const verdictPool = [...SNAPSHOT_VERDICTS, 'bogus', ''];
 
-for (let scenario = 0; scenario < 4000; scenario += 1) {
+for (let scenario = 0; scenario < 60000; scenario += 1) {
   const size = Math.floor(rand() * 25);
   const retentionDays = [90, 180, 365, 730, 3650][Math.floor(rand() * 5)];
   const batchCap = [1, 2, 3, 5, 10, 10_000][Math.floor(rand() * 6)];
