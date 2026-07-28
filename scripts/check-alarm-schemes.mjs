@@ -38,6 +38,17 @@ const formSrc = readFileSync(
   new URL('../src/lib/alarms/alarmSchemeForm.ts', import.meta.url),
   'utf8',
 );
+// Onda 222 — a agenda semanal (S8) tem régua própria no TS e espelho no banco.
+// As constantes moram em `alarmAggregation.ts` (fonte única); o formulário só
+// as reexporta, então o gate lê a origem para não validar contra um apelido.
+const scheduleSrc = readFileSync(
+  new URL('../src/lib/alarms/alarmScheduleForm.ts', import.meta.url),
+  'utf8',
+);
+const aggregationSrc = readFileSync(
+  new URL('../src/lib/alarms/alarmAggregation.ts', import.meta.url),
+  'utf8',
+);
 
 /* -- 1) ACL ------------------------------------------------------------- */
 
@@ -96,8 +107,15 @@ const fnMeta = query(`
   SELECT COALESCE(string_agg(p.proname || ':' || COALESCE(array_to_string(p.proconfig, ' '), 'sem-config'), ','), '')
     FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
    WHERE n.nspname='public'
-     AND p.proname IN ('alarm_scheme_channel_total','enforce_alarm_scheme_rules','alarm_scheme_selftest')`);
-for (const fn of ['alarm_scheme_channel_total', 'enforce_alarm_scheme_rules', 'alarm_scheme_selftest']) {
+     AND p.proname IN ('alarm_scheme_channel_total','enforce_alarm_scheme_rules',
+                       'alarm_scheme_selftest','alarm_schedule_refusal','alarm_schedule_selftest')`);
+for (const fn of [
+  'alarm_scheme_channel_total',
+  'enforce_alarm_scheme_rules',
+  'alarm_scheme_selftest',
+  'alarm_schedule_refusal',
+  'alarm_schedule_selftest',
+]) {
   check('GUARDA', fnMeta.includes(`${fn}:`), `rotina ausente: ${fn}`);
   check('GUARDA', new RegExp(`${fn}:[^,]*search_path=`).test(fnMeta), `${fn} sem search_path fixo`);
 }
@@ -106,9 +124,28 @@ const selftestAcl = query(`
   SELECT COALESCE(string_agg(DISTINCT a.grantee::regrole::text, ','), '')
     FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
     CROSS JOIN LATERAL aclexplode(COALESCE(p.proacl, acldefault('f', p.proowner))) a
-   WHERE n.nspname='public' AND p.proname='alarm_scheme_selftest'
+   WHERE n.nspname='public' AND p.proname IN ('alarm_scheme_selftest','alarm_schedule_selftest')
      AND a.grantee::regrole::text IN ('anon','authenticated','-')`);
-check('GUARDA', selftestAcl === '', `alarm_scheme_selftest alcançável por (${selftestAcl})`);
+check('GUARDA', selftestAcl === '', `rotina de autoteste alcançável por (${selftestAcl})`);
+
+// `alarm_schedule_refusal` é lida pelo gatilho; anon jamais precisa dela.
+const refusalAcl = query(`
+  SELECT COALESCE(string_agg(DISTINCT a.grantee::regrole::text, ','), '')
+    FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+    CROSS JOIN LATERAL aclexplode(COALESCE(p.proacl, acldefault('f', p.proowner))) a
+   WHERE n.nspname='public' AND p.proname='alarm_schedule_refusal'
+     AND a.grantee::regrole::text IN ('anon','-')`);
+check('GUARDA', refusalAcl === '', `alarm_schedule_refusal alcançável por (${refusalAcl})`);
+
+// O gatilho precisa realmente consultar a régua de agenda: função existir sem
+// ser chamada é o mesmo que não existir.
+const trigCallsSchedule = query(`SELECT prosrc FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
+  WHERE n.nspname='public' AND p.proname='enforce_alarm_scheme_rules'`);
+check(
+  'GUARDA',
+  trigCallsSchedule.includes('alarm_schedule_refusal'),
+  'o gatilho não consulta alarm_schedule_refusal — a agenda entraria sem julgamento',
+);
 
 /* -- 4) Paridade TS ↔ SQL ---------------------------------------------- */
 
@@ -133,6 +170,21 @@ check(
   rangeDef.includes(String(tsMin)) && rangeDef.includes(String(tsMaxS)),
   `faixa do limiar SQL=(${rangeDef}) TS=${tsMin}..${tsMaxS}`,
 );
+
+// Agenda (Onda 222): teto de períodos e eixo do dia precisam bater.
+const tsPeriods = Number(/MAX_PERIODS_PER_DAY\s*=\s*(\d+)/.exec(aggregationSrc)?.[1]);
+const tsMinutes = Number(/MINUTES_PER_DAY\s*=\s*(\d+)/.exec(aggregationSrc)?.[1]);
+check('PARIDADE', /diagnoseScheduleForm/.test(scheduleSrc), 'régua de agenda ausente no TS');
+const schedSrc = query(`SELECT prosrc FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
+  WHERE n.nspname='public' AND p.proname='alarm_schedule_refusal'`);
+const sqlPeriods = Number(/v_count\s*>\s*(\d+)/.exec(schedSrc)?.[1]);
+check('PARIDADE', sqlPeriods === tsPeriods, `períodos/dia SQL=${sqlPeriods} TS=${tsPeriods}`);
+check(
+  'PARIDADE',
+  tsMinutes === 1440 && schedSrc.includes('1440'),
+  `eixo do dia SQL/TS divergente (TS=${tsMinutes})`,
+);
+check('PARIDADE', /7 dias/.test(schedSrc), 'o espelho SQL não exige os 7 dias da semana');
 
 // Catálogo: os 21 tipos do TS precisam estar no CHECK, e vice-versa.
 const catalogDef = query(`SELECT pg_get_constraintdef(oid) FROM pg_constraint
@@ -192,6 +244,53 @@ const mustRefuse = [
   ['face_library_ambiguous', 'face reconhecida com duas bibliotecas'],
   ['update_budget_guard', 'teto de canais na alteração'],
 ];
+
+/* Onda 222 — guardas de agenda, exercitadas em transação revertida. */
+const rawSchedule = query(`
+BEGIN;
+  SET LOCAL client_min_messages = warning;
+  SELECT case_name || '=' || CASE WHEN outcome = 'ACEITOU' THEN 'ACEITOU' ELSE 'RECUSOU' END
+    FROM public.alarm_schedule_selftest();
+ROLLBACK;`);
+const scheduleResults = Object.fromEntries(
+  rawSchedule
+    .split('\n')
+    .map((l) => l.trim())
+    .filter((l) => l.includes('='))
+    .map((l) => l.split('=')),
+);
+const scheduleMustRefuse = [
+  ['schedule_wrong_day_count', 'agenda sem os 7 dias'],
+  ['schedule_too_many_periods', 'sétimo período no dia'],
+  ['schedule_degenerate_period', 'período de duração zero'],
+  ['schedule_overlap', 'períodos sobrepostos'],
+  ['schedule_overlap_midnight', 'sobreposição ao cruzar a meia-noite'],
+  ['schedule_out_of_day', 'minuto fora do eixo do dia'],
+  ['schedule_malformed_period', 'período malformado'],
+  ['schedule_update_guard', 'agenda inválida na alteração'],
+];
+for (const [key, label] of scheduleMustRefuse) {
+  check(
+    'EXECUÇÃO',
+    scheduleResults[key] === 'RECUSOU',
+    `guarda de agenda não barrou ${label} (${scheduleResults[key] ?? 'sem resultado'})`,
+  );
+}
+// Contraprovas: a régua de agenda não pode ter virado veto geral.
+for (const [key, label] of [
+  ['schedule_null_always_on', 'agenda vazia (24×7)'],
+  ['schedule_cross_midnight_ok', 'janela que cruza a meia-noite'],
+  ['schedule_touching_ok', 'períodos que apenas se encostam'],
+]) {
+  check('EXECUÇÃO', scheduleResults[key] === 'ACEITOU', `${label} foi recusada — régua cega`);
+}
+
+// Regra única: o formulário precisa julgar a agenda pela mesma régua.
+check(
+  'REGRA-ÚNICA',
+  /diagnoseScheduleForm/.test(formSrc),
+  'o formulário não submete a agenda a diagnoseScheduleForm',
+);
 for (const [key, label] of mustRefuse) {
   check('EXECUÇÃO', results[key] === 'RECUSOU', `guarda não barrou ${label} (${results[key] ?? 'sem resultado'})`);
 }
@@ -207,7 +306,8 @@ check(
 
 if (failures.length === 0) {
   console.log(
-    `✓ alarm-schemes OK — ACL, RLS, ${mustRefuse.length} guardas exercidas + 2 contraprovas, paridade de ${tsTypes.length} tipos`,
+    `✓ alarm-schemes OK — ACL, RLS, ${mustRefuse.length + scheduleMustRefuse.length} guardas exercidas ` +
+      `+ 5 contraprovas, paridade de ${tsTypes.length} tipos e da agenda semanal`,
   );
   process.exit(0);
 }

@@ -8202,6 +8202,13 @@ export type Database = {
       }
       alarm_recurrence_retention_policy: { Args: never; Returns: Json }
       alarm_schedule_refusal: { Args: { p_schedule: Json }; Returns: string }
+      alarm_schedule_selftest: {
+        Args: never
+        Returns: {
+          case_name: string
+          outcome: string
+        }[]
+      }
       alarm_scheme_channel_total: { Args: { p_actions: Json }; Returns: number }
       alarm_scheme_selftest: {
         Args: never
