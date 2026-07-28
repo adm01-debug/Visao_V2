@@ -147,6 +147,7 @@ for (let seed = 1; seed <= 600; seed += 1) {
     totalEpisodes: base.totalEpisodes + 1 + Math.floor(r() * 5),
   };
   worse.chatterInWindow = Math.min(base.chatterInWindow + Math.floor(r() * 2), worse.episodesInWindow);
+  worse.totalEpisodes = Math.max(worse.totalEpisodes, worse.episodesInWindow);
   worse.peakSeverity = worse.peakSeverity ?? 'low';
   const after = buildChronicSeriesBoard([worse], NOW).entries[0];
   ok(after.score >= before.score, `seed ${seed}: pontuação caiu ao agravar`);
