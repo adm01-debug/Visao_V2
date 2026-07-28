@@ -70,10 +70,14 @@ export type ConferenceOutcome =
   | 'forged_verdict'
   /** Documento íntegro, mas o registro contradiz a emissão declarada. */
   | 'registry_divergence'
-  /** Documento íntegro; o registro não pôde ser consultado. */
-  | 'origin_unknown'
-  /** Documento íntegro; o selo não consta no registro consultado. */
+  /**
+   * Documento íntegro; o selo NÃO consta no registro consultado.
+   * Pesa mais que `origin_unknown`: aqui houve resposta, e ela foi negativa.
+   * Achado de ausência é fato; não ter perguntado não é.
+   */
   | 'unregistered'
+  /** Documento íntegro; o registro não pôde ser consultado (nenhum fato novo). */
+  | 'origin_unknown'
   /** Documento íntegro e selo confirmado no registro de origem. */
   | 'authentic';
 
@@ -81,8 +85,8 @@ const ORDER: readonly ConferenceOutcome[] = [
   'tampered',
   'forged_verdict',
   'registry_divergence',
-  'origin_unknown',
   'unregistered',
+  'origin_unknown',
   'authentic',
 ];
 
