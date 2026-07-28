@@ -8200,6 +8200,15 @@ export type Database = {
         Args: { _camera_id: string; _ttl_seconds?: number }
         Returns: Json
       }
+      alarm_armed_state_selftest: {
+        Args: never
+        Returns: {
+          actual: string
+          case_name: string
+          expected: string
+          ok: boolean
+        }[]
+      }
       alarm_recurrence_retention_policy: { Args: never; Returns: Json }
       alarm_schedule_refusal: { Args: { p_schedule: Json }; Returns: string }
       alarm_schedule_selftest: {
@@ -8209,7 +8218,27 @@ export type Database = {
           outcome: string
         }[]
       }
+      alarm_scheme_armed_state: {
+        Args: {
+          p_at: string
+          p_enabled: boolean
+          p_health: string
+          p_schedule: Json
+          p_tz_offset_minutes?: number
+        }
+        Returns: string
+      }
       alarm_scheme_channel_total: { Args: { p_actions: Json }; Returns: number }
+      alarm_scheme_is_armed: {
+        Args: {
+          p_at: string
+          p_enabled: boolean
+          p_health: string
+          p_schedule: Json
+          p_tz_offset_minutes?: number
+        }
+        Returns: boolean
+      }
       alarm_scheme_selftest: {
         Args: never
         Returns: {
