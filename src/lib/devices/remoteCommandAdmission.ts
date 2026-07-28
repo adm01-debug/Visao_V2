@@ -41,7 +41,7 @@
  *     da autorização, não substituta dela.
  */
 
-import type { CapabilityKey } from '@/lib/permissions/capabilities';
+import type { Capability } from '@/lib/permissions/capabilities';
 import type { DeviceSilenceState } from '@/lib/devices/deviceSilence';
 
 /** Catálogo fechado de comandos remotos. Nada fora daqui é admissível. */
@@ -75,7 +75,7 @@ const EFFECTFUL: ReadonlySet<RemoteCommandKind> = new Set([
 const EXCLUSIVE: ReadonlySet<RemoteCommandKind> = new Set(['device.reboot', 'stream.restart']);
 
 /** Permissão mínima exigida por comando. */
-export const COMMAND_CAPABILITY: Readonly<Record<RemoteCommandKind, CapabilityKey>> = {
+export const COMMAND_CAPABILITY: Readonly<Record<RemoteCommandKind, Capability>> = {
   'osd.open': 'cameras.view',
   'osd.apply': 'cameras.manage',
   'clock.sync': 'cameras.manage',
@@ -164,7 +164,7 @@ export interface AdmissionRequest {
   readonly command: string;
   readonly registrationStatus: 'pending' | 'active' | 'revoked';
   readonly presence: DeviceSilenceState;
-  readonly capabilities: ReadonlySet<CapabilityKey> | readonly CapabilityKey[];
+  readonly capabilities: ReadonlySet<Capability> | readonly Capability[];
   readonly ttlMinutes: number;
   /** Comando exclusivo já em voo para o mesmo equipamento, se houver. */
   readonly inFlight?: InFlightCommand | null;
@@ -212,8 +212,11 @@ const verdict = (
 
 const hasCapability = (
   caps: AdmissionRequest['capabilities'],
-  needed: CapabilityKey,
-): boolean => (caps instanceof Set ? caps.has(needed) : caps.includes(needed));
+  needed: Capability,
+): boolean =>
+  caps instanceof Set
+    ? caps.has(needed)
+    : Array.from(caps as readonly Capability[]).includes(needed);
 
 /** `true` quando o comando altera o estado percebido em campo. */
 export const isEffectful = (kind: RemoteCommandKind): boolean => EFFECTFUL.has(kind);
