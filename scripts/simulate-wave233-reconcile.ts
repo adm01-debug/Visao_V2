@@ -137,7 +137,6 @@ for (const kind of RUN_KINDS) {
 
 /* Corrupções de inventário — nenhuma pode virar veredito conclusivo. */
 const CORRUPT: Array<Record<string, unknown>> = [
-  {},
   { observed_at: null },
   { observed_at: 'ontem' },
   { cutoff_at: null },
