@@ -13,6 +13,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ScanSearch } from 'lucide-react';
 import { FaceSearchFilters } from '@/components/faces/FaceSearchFilters';
 import { FaceSearchResults } from '@/components/faces/FaceSearchResults';
+import { ReferenceFaceMatchCard } from '@/components/faces/ReferenceFaceMatchCard';
 import { useFaceSearch, MAX_ROWS } from '@/hooks/useFaceSearch';
 import { describeRejection } from '@/lib/faces/faceSearch';
 
