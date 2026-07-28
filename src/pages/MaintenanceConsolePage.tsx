@@ -13,6 +13,8 @@ import { CommandReliabilityCard } from '@/components/maintenance/CommandReliabil
 import { DeviceSilenceCard } from '@/components/maintenance/DeviceSilenceCard';
 import { AdmissionPurgeHistoryCard } from '@/components/maintenance/AdmissionPurgeHistoryCard';
 import { useAdmissionPurgeHistory } from '@/hooks/useAdmissionPurgeHistory';
+import { useAdmissionReconcile } from '@/hooks/useAdmissionReconcile';
+import { AdmissionReconcileCard } from '@/components/maintenance/AdmissionReconcileCard';
 import { useCommandReliability } from '@/hooks/useCommandReliability';
 import { useDeviceSilence } from '@/hooks/useDeviceSilence';
 import { useEpisodeBridgeWatch } from '@/hooks/useEpisodeBridgeWatch';
@@ -35,6 +37,7 @@ export default function MaintenanceConsolePage() {
   const reliability = useCommandReliability();
   const reconciliation = useEpisodeReconciliation(organizationId);
   const admissionPurge = useAdmissionPurgeHistory();
+  const admissionReconcile = useAdmissionReconcile(admissionPurge.snapshot.lastValid);
 
   const { toast } = useToast();
   const [pendingId, setPendingId] = useState<string | null>(null);
@@ -138,6 +141,14 @@ export default function MaintenanceConsolePage() {
         isLoading={admissionPurge.isLoading}
         isError={admissionPurge.isError}
         onRefresh={admissionPurge.refetch}
+      />
+
+      <AdmissionReconcileCard
+        snapshot={admissionReconcile.snapshot}
+        isLoading={admissionReconcile.isLoading}
+        isError={admissionReconcile.isError}
+        sqlVerdict={admissionReconcile.sqlVerdict}
+        onRefresh={admissionReconcile.refetch}
       />
 
     </PageContent>
