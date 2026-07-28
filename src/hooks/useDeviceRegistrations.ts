@@ -99,8 +99,7 @@ export function useDeviceRegistrations() {
     async (label: string, ttlHours: number | null) => {
       const { data, error } = await supabase.rpc('enroll_device', {
         p_label: label,
-        p_nvr_id: null,
-        p_ttl_hours: ttlHours,
+        p_ttl_hours: ttlHours ?? undefined,
       });
       const row = Array.isArray(data) ? data[0] : null;
       if (error || !row) {
@@ -141,7 +140,7 @@ export function useDeviceRegistrations() {
     async (registrationId: string, reason: string | null) => {
       const { data, error } = await supabase.rpc('revoke_device', {
         p_registration_id: registrationId,
-        p_reason: reason,
+        p_reason: reason ?? undefined,
       });
       if (error) {
         toast.error(error.message);
