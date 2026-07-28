@@ -8296,6 +8296,7 @@ export type Database = {
           total: number
         }[]
       }
+      episode_bridge_watch_policy: { Args: never; Returns: Json }
       escalate_stale_maintenance_alerts: {
         Args: never
         Returns: {
@@ -8304,6 +8305,10 @@ export type Database = {
           new_level: number
           previous_level: number
         }[]
+      }
+      evaluate_abandoned_episode_alerts: {
+        Args: { p_now?: string }
+        Returns: Json
       }
       evaluate_and_restart_streams: { Args: never; Returns: number }
       evaluate_blame_alerts: { Args: { p_now?: string }; Returns: Json }

@@ -22,3 +22,4 @@
 - [E-Map escalonamento de prazo](mem://features/emap-triage-escalation) — Onda 176: degrau operador/supervisão/gerência pelo múltiplo do orçamento, monotônico por janela, emissão única, `simulate:wave176`
 - [Tratativa de alarme](mem://features/alarm-treatment) — Onda 177: transição legal ou nada (`open → resolved` proibido), desfecho exige autor+motivo+código, código exclusivo por desfecho, trilha `event_alert_treatments` append-only, `simulate:wave177`
 - [Episode Command Queue](mem://features/episode-command-queue) — Onda 182: fila durável dos comandos de episódio; idempotência pelo fato (`kind:seriesKey:at`), ordem cronológica por série, recuo exponencial, carta morta auditável, `simulate:wave182`
+- [Episode Bridge Watch](mem://features/episode-bridge-watch) — Onda 185: vigia da ponte de episódios abandonados; tendência em 72h, ignorância nunca é saúde, drenagem nunca alarma, patamar ≥100 é soberano, gate `db:check:bridge-watch`, `simulate:wave185`
