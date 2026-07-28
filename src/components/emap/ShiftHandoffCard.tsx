@@ -12,16 +12,26 @@ import {
   type ShiftJournal,
 } from '@/lib/emap/shiftHandoff';
 import type { AttentionLedger } from '@/lib/emap/attentionClock';
+import type { AckLedger } from '@/lib/emap/triageAck';
+import {
+  buildShiftPerformance,
+  formatCompliance,
+  formatPerformanceReport,
+  type ShiftPerformance,
+} from '@/lib/emap/shiftPerformance';
 import type { ShiftLoadOutcome } from '@/lib/emap/shiftJournalStore';
 
 export interface ShiftHandoffCardProps {
   journal: ShiftJournal;
   ledger: AttentionLedger;
   nameOf: (cameraId: string) => string;
+  /** Onda 175 — livro de ciências, base do prazo de atendimento. */
+  acks?: AckLedger;
   /** Onda 170 — como o diário foi restaurado nesta sessão. */
   restoreOutcome?: ShiftLoadOutcome;
   className?: string;
 }
+
 
 /**
  * Onda 170: perda de história nunca é silenciosa. O operador precisa saber se
@@ -54,11 +64,22 @@ const REASON_VARIANT: Record<ShiftClosureReason, 'secondary' | 'outline' | 'dest
  * entre normalizar e apenas dar ciência. O relatório em texto é gerado pela
  * mesma regra pura que a simulação exercita — a tela nunca reescreve o fato.
  */
-export function ShiftHandoffCard({ journal, ledger, nameOf, restoreOutcome, className }: ShiftHandoffCardProps) {
+export function ShiftHandoffCard({ journal, ledger, nameOf, acks, restoreOutcome, className }: ShiftHandoffCardProps) {
   const [copied, setCopied] = useState(false);
   const handoff: ShiftHandoff = useMemo(
     () => buildHandoff(journal, ledger, Date.now()),
     [journal, ledger],
+  );
+  // Onda 175 — desempenho de atendimento derivado da mesma regra pura do gate.
+  const performance: ShiftPerformance = useMemo(
+    () =>
+      buildShiftPerformance({
+        ledger,
+        acks: acks ?? {},
+        startedAt: journal.startedAt,
+        now: handoff.endedAt,
+      }),
+    [ledger, acks, journal.startedAt, handoff.endedAt],
   );
 
   const hasHistory =
@@ -67,7 +88,7 @@ export function ShiftHandoffCard({ journal, ledger, nameOf, restoreOutcome, clas
   if (!hasHistory) return null;
 
   const copy = async () => {
-    const report = formatHandoffReport(handoff, nameOf);
+    const report = `${formatHandoffReport(handoff, nameOf)}\n\n${formatPerformanceReport(performance)}`;
     try {
       await navigator.clipboard.writeText(report);
       setCopied(true);
@@ -77,6 +98,7 @@ export function ShiftHandoffCard({ journal, ledger, nameOf, restoreOutcome, clas
       setCopied(false);
     }
   };
+
 
   return (
     <Card className={className}>
@@ -121,6 +143,32 @@ export function ShiftHandoffCard({ journal, ledger, nameOf, restoreOutcome, clas
             {handoff.flapping.length > 4 && ` e mais ${handoff.flapping.length - 4}`}.
           </p>
         )}
+
+        <div className="rounded-md border border-border p-2">
+          <p className="text-xs font-medium text-foreground">Desempenho de atendimento</p>
+          <div className="mt-1 flex flex-wrap gap-2">
+            <Badge variant="outline">conformidade {formatCompliance(performance.compliance)}</Badge>
+            <Badge variant="outline">
+              tempo médio até ciência{' '}
+              {performance.mttaMs == null ? 'sem amostra' : formatAge(performance.mttaMs)}
+            </Badge>
+            {performance.breachedInShift > 0 && (
+              <Badge variant="destructive">{performance.breachedInShift} vencida(s) no turno</Badge>
+            )}
+            {performance.inheritedBreached > 0 && (
+              <Badge variant="destructive">
+                {performance.inheritedBreached} vencida(s) herdada(s)
+              </Badge>
+            )}
+            {performance.dueSoon > 0 && (
+              <Badge variant="secondary">{performance.dueSoon} vence(m) já</Badge>
+            )}
+          </div>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            Só atendimento concluído entra na média — pendência aberta nunca melhora o número.
+          </p>
+        </div>
+
 
         <Button variant="outline" size="sm" onClick={() => void copy()}>
           {copied ? (
