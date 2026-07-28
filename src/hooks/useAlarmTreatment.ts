@@ -69,8 +69,8 @@ export function useTreatAlarm() {
       const { data, error } = await supabase.rpc('treat_event_alert', {
         p_alert_id: alertId,
         p_action: action,
-        p_note: note ?? null,
-        p_code: code ?? null,
+        p_note: note ?? undefined,
+        p_code: code ?? undefined,
       });
       if (error) throw new Error(error.message);
       return data;
