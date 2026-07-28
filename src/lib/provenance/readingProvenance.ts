@@ -127,11 +127,11 @@ export function compareProvenance(a: ProvenanceTier, b: ProvenanceTier): number 
  * elo mais fraco. Cadeia vazia é `unknown`.
  */
 export function deriveStageTier(stages: readonly ProvenanceTier[]): ProvenanceTier {
-  if (stages.length === 0) return 'unknown';
-  return stages.reduce<ProvenanceTier>(
-    (worst, tier) => (compareProvenance(tier, worst) < 0 ? tier : worst),
-    stages[0],
-  );
+  let worst: ProvenanceTier | null = null;
+  for (const tier of stages) {
+    if (worst === null || compareProvenance(tier, worst) < 0) worst = tier;
+  }
+  return worst ?? 'unknown';
 }
 
 /* ========================================================================== */
