@@ -121,20 +121,23 @@ export function assessEpisodeBridge(
 ): BridgeAssessment {
   const window = sanitize(samples, now);
 
-  if (window.length < MIN_SAMPLES) {
+  const first: AbandonedSample | undefined = window[0];
+  const last: AbandonedSample | undefined = window[window.length - 1];
+
+  if (window.length < MIN_SAMPLES || first === undefined || last === undefined) {
     return {
       verdict: 'insufficient_data',
       severity: null,
       samples: window.length,
-      latest: window.at(-1)?.abandonedOpen ?? 0,
-      baseline: window[0]?.abandonedOpen ?? 0,
+      latest: last?.abandonedOpen ?? 0,
+      baseline: first?.abandonedOpen ?? 0,
       growth: 0,
       reason: `Ponte de episódios: apenas ${window.length} execução(ões) nas últimas ${TREND_WINDOW_HOURS}h — amostra insuficiente para veredito.`,
     };
   }
 
-  const baseline = window[0].abandonedOpen;
-  const latest = window[window.length - 1].abandonedOpen;
+  const baseline = first.abandonedOpen;
+  const latest = last.abandonedOpen;
   const growth = latest - baseline;
   const base = {
     samples: window.length,
