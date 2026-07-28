@@ -83,6 +83,10 @@ export type FrameDropReason =
   | 'stale'
   | 'interval'
   | 'superseded'
+  /* entregue pelo barramento, mas sem processador apto a executar (Onda 208-B):
+   * o ciclo recusou a tarefa, então a entrega é devolvida em vez de ficar em
+   * voo para sempre. */
+  | 'consumer_refused'
   /* conclusões inválidas */
   | 'unknown_consumer'
   | 'detached'
