@@ -87,7 +87,7 @@ const makeRow = (r, i) => {
 };
 
 // ---- Bateria 1: propriedades sobre carteiras aleatórias -----------------------
-for (let seed = 1; seed <= 400; seed += 1) {
+for (let seed = 1; seed <= 1500; seed += 1) {
   const r = rng(seed);
   const count = 1 + Math.floor(r() * 40);
   const rows = Array.from({ length: count }, (_, i) => makeRow(r, i));
@@ -135,7 +135,7 @@ for (let seed = 1; seed <= 400; seed += 1) {
 }
 
 // ---- Bateria 2: monotonicidade (I2) ------------------------------------------
-for (let seed = 1; seed <= 600; seed += 1) {
+for (let seed = 1; seed <= 4000; seed += 1) {
   const r = rng(seed * 7919);
   const base = makeRow(r, 0);
   base.chatterInWindow = Math.min(base.chatterInWindow, base.episodesInWindow);
