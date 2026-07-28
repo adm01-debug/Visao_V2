@@ -241,7 +241,11 @@ export function buildMaintenanceConsole(
   rows: readonly MaintenanceAlertRow[],
   nowMs: number,
   thresholds: EscalationThresholds = DEFAULT_ESCALATION_THRESHOLDS,
+  notices: readonly ConditionNoticeRow[] = [],
 ): MaintenanceConsoleModel {
+  // Onda 241 — índice de entregas externas por (condição, canal).
+  const noticeIndex = indexConditionNotices(notices, nowMs);
+
   // P2 — a sequência é apurada por CHAVE de rotina, exatamente como o SQL da
   // Onda 238 faz. Duas chaves distintas nunca compartilham âncora.
   const streaks = new Map<string, ReturnType<typeof buildConditionStreak>>();
