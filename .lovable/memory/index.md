@@ -20,3 +20,4 @@
 - [E-Map SLA da triagem](mem://features/emap-triage-sla) — Onda 174: orçamento pelo pior estado da janela, ciência congela o veredito, relógio torto nunca acusa atraso, `simulate:wave174`
 - [Shift Performance](mem://features/emap-shift-performance) — Onda 175: MTTA/conformidade só de atendimento concluído, atribuição pelo instante da ciência, vencido herdado nunca somado ao do turno, `simulate:wave175`
 - [E-Map escalonamento de prazo](mem://features/emap-triage-escalation) — Onda 176: degrau operador/supervisão/gerência pelo múltiplo do orçamento, monotônico por janela, emissão única, `simulate:wave176`
+- [Tratativa de alarme](mem://features/alarm-treatment) — Onda 177: transição legal ou nada (`open → resolved` proibido), desfecho exige autor+motivo+código, código exclusivo por desfecho, trilha `event_alert_treatments` append-only, `simulate:wave177`
