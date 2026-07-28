@@ -47,6 +47,9 @@ import {
   type AlarmSchemeFormState,
 } from '@/lib/alarms/alarmSchemeForm';
 import { SchemeAdmissionError, useSaveAlarmScheme } from '@/hooks/useSaveAlarmScheme';
+import { useSchemeCatalog } from '@/hooks/useSchemeCatalog';
+import { CatalogSelector } from '@/components/alarms/CatalogSelector';
+import { AlarmScheduleEditor } from '@/components/alarms/AlarmScheduleEditor';
 import type { AlarmActionKind } from '@/lib/alarms/alarmScheme';
 
 interface AlarmSchemeFormDialogProps {
@@ -69,7 +72,13 @@ export function AlarmSchemeFormDialog({
     if (open) setForm(initial ?? emptyFormState());
   }, [open, initial]);
 
-  const admission = useMemo(() => admitSchemeSubmission(form), [form]);
+  // Onda 220 — o catálogo real alimenta o contexto de S6: sem ele, o
+  // julgamento continua (só não verifica o vínculo da biblioteca).
+  const catalog = useSchemeCatalog(open);
+  const admission = useMemo(
+    () => admitSchemeSubmission(form, catalog.context),
+    [form, catalog.context],
+  );
 
   const patch = (partial: Partial<AlarmSchemeFormState>) =>
     setForm((prev) => ({ ...prev, ...partial }));
@@ -147,16 +156,15 @@ export function AlarmSchemeFormDialog({
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="scheme-sources">Origens (canais/dispositivos)</Label>
-              <Input
-                id="scheme-sources"
-                value={form.sources}
-                onChange={(e) => patch({ sources: e.target.value })}
-                placeholder="cam-01, cam-02"
-              />
-              <p className="text-xs text-muted-foreground">Separe por vírgula.</p>
-            </div>
+            <CatalogSelector
+              id="scheme-sources"
+              label="Origens (canais/dispositivos)"
+              description="Somente câmeras existentes podem ser escolhidas — digitar identificador acabou na Onda 220."
+              snapshot={catalog.cameras}
+              value={form.sources}
+              onChange={(next) => patch({ sources: next })}
+              emptyLabel="Nenhuma câmera cadastrada."
+            />
 
             <div className="space-y-2">
               <Label htmlFor="scheme-missing-sources">Origens removidas (auditoria)</Label>
@@ -173,15 +181,16 @@ export function AlarmSchemeFormDialog({
           </div>
 
           {isFaceRecognized && (
-            <div className="space-y-2">
-              <Label htmlFor="scheme-libraries">Biblioteca de faces (exatamente uma)</Label>
-              <Input
-                id="scheme-libraries"
-                value={form.faceLibraries}
-                onChange={(e) => patch({ faceLibraries: e.target.value })}
-                placeholder="lib-visitantes"
-              />
-            </div>
+            <CatalogSelector
+              id="scheme-libraries"
+              label="Biblioteca de faces (exatamente uma)"
+              description="A biblioteca precisa estar carregada em alguma origem viva do esquema."
+              snapshot={catalog.libraries}
+              value={form.faceLibraries}
+              onChange={(next) => patch({ faceLibraries: next })}
+              mode="single"
+              emptyLabel="Nenhuma lista de faces ativa encontrada."
+            />
           )}
 
           {isDisconnect && (
@@ -202,6 +211,11 @@ export function AlarmSchemeFormDialog({
               </p>
             </div>
           )}
+
+          <AlarmScheduleEditor
+            value={form.schedule}
+            onChange={(schedule) => patch({ schedule })}
+          />
 
           {/* Ações */}
           <section className="space-y-3">
