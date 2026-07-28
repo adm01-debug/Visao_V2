@@ -8200,6 +8200,25 @@ export type Database = {
         Args: { _camera_id: string; _ttl_seconds?: number }
         Returns: Json
       }
+      alarm_admission_selftest: {
+        Args: never
+        Returns: {
+          actual: string
+          case_name: string
+          expected: string
+          ok: boolean
+        }[]
+      }
+      alarm_admit_event: {
+        Args: {
+          p_at: string
+          p_event_type: string
+          p_source_id: string
+          p_tz_offset_minutes?: number
+          p_user_id: string
+        }
+        Returns: Json
+      }
       alarm_armed_state_selftest: {
         Args: never
         Returns: {
@@ -8245,6 +8264,14 @@ export type Database = {
           case_name: string
           outcome: string
         }[]
+      }
+      alarm_scheme_stored_health: {
+        Args: {
+          p_actions: Json
+          p_missing_source_ids: string[]
+          p_source_ids: string[]
+        }
+        Returns: string
       }
       analyze_table: { Args: { _table_name: string }; Returns: Json }
       apply_camera_setup: {
