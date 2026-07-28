@@ -340,6 +340,57 @@ export type Database = {
           },
         ]
       }
+      alarm_recurrence_episodes: {
+        Row: {
+          alert_id: string | null
+          closed_at: string | null
+          created_at: string
+          duration_ms: number | null
+          id: string
+          opened_at: string
+          organization_id: string
+          series_key: string
+          severity: Database["public"]["Enums"]["event_alert_severity"]
+        }
+        Insert: {
+          alert_id?: string | null
+          closed_at?: string | null
+          created_at?: string
+          duration_ms?: number | null
+          id?: string
+          opened_at: string
+          organization_id: string
+          series_key: string
+          severity: Database["public"]["Enums"]["event_alert_severity"]
+        }
+        Update: {
+          alert_id?: string | null
+          closed_at?: string | null
+          created_at?: string
+          duration_ms?: number | null
+          id?: string
+          opened_at?: string
+          organization_id?: string
+          series_key?: string
+          severity?: Database["public"]["Enums"]["event_alert_severity"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alarm_recurrence_episodes_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "event_alerts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alarm_recurrence_episodes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       alertmanager_silences_audit: {
         Row: {
           action: string
@@ -7834,6 +7885,28 @@ export type Database = {
             Returns: Json
           }
       array_days_valid: { Args: { days: number[] }; Returns: boolean }
+      assess_alarm_recurrence: {
+        Args: {
+          p_chatter_max_ms?: number
+          p_chatter_threshold?: number
+          p_chronic_threshold?: number
+          p_now?: string
+          p_organization_id: string
+          p_recurrent_threshold?: number
+          p_series_key: string
+          p_window_ms?: number
+        }
+        Returns: {
+          chatter_in_window: number
+          collapsed_count: number
+          episodes_in_window: number
+          flapping: boolean
+          is_open: boolean
+          klass: string
+          mode: string
+          peak_severity: string
+        }[]
+      }
       audit_cameras_embedded_credentials: {
         Args: never
         Returns: {
@@ -9004,6 +9077,20 @@ export type Database = {
         }[]
       }
       reap_monitoring_center_leases: { Args: { _at?: string }; Returns: Json }
+      record_alarm_episode_close: {
+        Args: { p_at?: string; p_organization_id: string; p_series_key: string }
+        Returns: string
+      }
+      record_alarm_episode_open: {
+        Args: {
+          p_alert_id?: string
+          p_at?: string
+          p_organization_id: string
+          p_series_key: string
+          p_severity: string
+        }
+        Returns: string
+      }
       record_dwell_observation: {
         Args: {
           _camera_id: string
