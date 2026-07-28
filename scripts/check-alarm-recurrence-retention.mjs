@@ -76,18 +76,22 @@ const anonExec = query(`
      AND a.grantee::regrole::text IN ('anon','authenticated','public','-')`);
 check('EXPOSIÇÃO', anonExec === '', `rotina de expurgo executável por quem não deveria: ${anonExec}`);
 
+// `information_schema` só mostra concessões visíveis ao papel atual — aqui a
+// leitura é feita direto no ACL, que é a verdade.
 const anonTable = query(`
-  SELECT COALESCE(string_agg(DISTINCT grantee||':'||privilege_type, ','), '')
-    FROM information_schema.role_table_grants
-   WHERE table_schema = 'public' AND table_name = 'alarm_recurrence_purge_runs'
-     AND grantee IN ('anon','PUBLIC')`);
+  SELECT COALESCE(string_agg(DISTINCT a.grantee::regrole::text||':'||a.privilege_type, ','), '')
+    FROM pg_class c
+    CROSS JOIN LATERAL aclexplode(c.relacl) a
+   WHERE c.oid = 'public.alarm_recurrence_purge_runs'::regclass
+     AND a.grantee::regrole::text IN ('anon','-')`);
 check('EXPOSIÇÃO', anonTable === '', `anon tem acesso à trilha de expurgo: ${anonTable}`);
 
 const authTable = query(`
-  SELECT COALESCE(string_agg(DISTINCT privilege_type, ',' ORDER BY privilege_type), '')
-    FROM information_schema.role_table_grants
-   WHERE table_schema = 'public' AND table_name = 'alarm_recurrence_purge_runs'
-     AND grantee = 'authenticated'`);
+  SELECT COALESCE(string_agg(DISTINCT a.privilege_type, ',' ORDER BY a.privilege_type), '')
+    FROM pg_class c
+    CROSS JOIN LATERAL aclexplode(c.relacl) a
+   WHERE c.oid = 'public.alarm_recurrence_purge_runs'::regclass
+     AND a.grantee::regrole::text = 'authenticated'`);
 check('EXPOSIÇÃO', authTable === 'SELECT', `authenticated deveria ter apenas SELECT, tem: ${authTable}`);
 
 const rlsOn = query(`SELECT relrowsecurity FROM pg_class WHERE oid = 'public.alarm_recurrence_purge_runs'::regclass`);
@@ -164,7 +168,7 @@ check(
 );
 check(
   'FUNCIONAL',
-  line('abandonados=') === 'abandonados=1;pendentes=0;truncado=f',
+  line('abandonados=') === 'abandonados=1;pendentes=0;truncado=false',
   `auditoria não refletiu a execução corretamente: ${line('abandonados=')}`,
 );
 
