@@ -24,6 +24,8 @@ import {
   type BucketTone,
   type FaceTimelineBucket,
 } from '@/lib/faces/faceTimeline';
+import { assessReadingProvenance } from '@/lib/provenance/readingProvenance';
+import { ProvenanceBadge } from '@/components/provenance/ProvenanceBadge';
 
 const TONE_CLASS: Record<BucketTone, string> = {
   idle: 'bg-muted',
@@ -67,6 +69,25 @@ export function FaceEventTimeline({ results, fromMs, toMs, partial = false }: Fa
   const selectedResults = useMemo(
     () => (selected ? selectBucketResults(results, selected) : []),
     [results, selected],
+  );
+
+  /**
+   * Onda 205 — procedência das leituras da divisão selecionada. A busca por
+   * faces é produzida pelo modelo determinístico do VISÃO; a fonte
+   * independente é a câmera. Câmera ausente vira `unknown` (P5): sem saber
+   * quem leu, a leitura não pode corroborar nada.
+   */
+  const provenance = useMemo(
+    () =>
+      assessReadingProvenance(
+        selectedResults.map((r) => ({
+          id: r.id,
+          sourceId: r.cameraId ?? `desconhecida:${r.id}`,
+          stages: r.cameraId ? (['model'] as const) : ([] as const),
+          confidence: r.similarity ?? undefined,
+        })),
+      ),
+    [selectedResults],
   );
 
   if (!outcome.ok) {
@@ -170,6 +191,7 @@ export function FaceEventTimeline({ results, fromMs, toMs, partial = false }: Fa
               </p>
               <Badge variant="outline">{selected.count} leitura(s)</Badge>
             </div>
+            <ProvenanceBadge assessment={provenance} showCaveats />
             <ul className="space-y-1 text-xs text-muted-foreground">
               {selectedResults.slice(0, 12).map((r) => (
                 <li key={r.id} className="flex flex-wrap gap-2">
