@@ -231,7 +231,8 @@
     "simulate:wave175": "node scripts/simulate-wave175-shift-performance.mjs",
     "simulate:wave176": "node scripts/simulate-wave176-triage-escalation.mjs",
     "simulate:wave177": "node scripts/simulate-wave177-alarm-treatment.mjs",
-    "simulate:wave178": "node scripts/simulate-wave178-alarm-aggregation.mjs"
+    "simulate:wave178": "node scripts/simulate-wave178-alarm-aggregation.mjs",
+    "simulate:wave179": "node scripts/simulate-wave179-alarm-recurrence.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
