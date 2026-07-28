@@ -298,6 +298,50 @@ for (const [input, expected] of ipCases) {
 }
 
 // ─────────────────────────────────────────────────────────────
+// 6b. Fuzz determinístico: 120 mil estados aleatórios, uma só recusa
+// ─────────────────────────────────────────────────────────────
+let seed = 0x191c0de;
+const rnd = () => {
+  seed ^= seed << 13; seed ^= seed >>> 17; seed ^= seed << 5;
+  return ((seed >>> 0) % 1_000_000) / 1_000_000;
+};
+const pick = (arr) => arr[Math.floor(rnd() * arr.length)];
+
+for (let i = 0; i < 120_000; i += 1) {
+  const state = base({
+    status: pick(statuses),
+    secretVersion: 1 + Math.floor(rnd() * 50),
+    secretIssuedAt: T0 + Math.floor((rnd() - 0.5) * 10_000_000),
+    expiresAt: pick([null, T0 + Math.floor((rnd() - 0.5) * 10_000_000)]),
+    previousSecretHash: pick(['hash-v1', null]),
+    rotatedAt: null,
+    lastSeenAt: pick([null, T0 - Math.floor(rnd() * 10_000_000)]),
+  });
+  if (state.previousSecretHash === null) {
+    state.rotatedAt = null;
+  } else {
+    state.rotatedAt = T0 + Math.floor((rnd() - 0.5) * 1_000_000);
+  }
+  const now = T0 + Math.floor((rnd() - 0.5) * 20_000_000);
+  const verdict = authenticateDevice(state, {
+    deviceCode: pick([CODE, 'ZZZZZZZZ0000']),
+    presentedHash: pick(['hash-v2', 'hash-v1', 'ruido']),
+    now,
+  });
+  const res = toPublicResponse(verdict);
+  if (verdict.outcome === 'denied') {
+    ok(JSON.stringify(res) === CANON, `I23 fuzz produziu recusa distinguível (${verdict.reason})`);
+  } else {
+    ok(res.status === 200 && res.body.sessionTtlSeconds === CONNECT_SESSION_TTL_S,
+      'I23 fuzz produziu aceitação fora do contrato');
+    ok(
+      verdict.registration.lastSeenAt >= (state.lastSeenAt ?? now),
+      'I24 prova de vida andou para trás',
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
 // 7. O código-fonte da porta não pode registrar segredo
 // ─────────────────────────────────────────────────────────────
 const connectSource = readFileSync('supabase/functions/_shared/deviceConnect.ts', 'utf8');
