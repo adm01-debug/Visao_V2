@@ -17,3 +17,4 @@
 - [E-Map fila de triagem](mem://features/emap-triage-queue) — Onda 171: ordem de atendimento; gravidade manda, dívida promove um degrau só (teto `offline`), ciente vai ao fim sem sumir, sem planta continua na fila, `simulate:wave171`
 - [E-Map ciência da triagem](mem://features/emap-triage-ack) — Onda 172: "ciente" nunca apaga o relógio; ciência congela o estado e é revogada por agravamento/reabertura/caducidade (4h), durável em localStorage, `simulate:wave172`
 - [E-Map ciência entre turnos](mem://features/emap-ack-handoff) — Onda 173: ciência anterior ao início do turno é revogada na montagem e vira lista de revalidação (`InheritedAckCard`); corte pelo turno, nunca pelo TTL, `simulate:wave173`
+- [E-Map SLA da triagem](mem://features/emap-triage-sla) — Onda 174: orçamento pelo pior estado da janela, ciência congela o veredito, relógio torto nunca acusa atraso, `simulate:wave174`
