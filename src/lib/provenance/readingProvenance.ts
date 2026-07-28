@@ -255,8 +255,8 @@ export function assessReadingProvenance(
   let confidenceWithoutProvenance = 0;
   const allSources = new Set<string>();
 
-  readings.forEach((reading, index) => {
-    const tier = tiers[index];
+  for (const reading of readings) {
+    const tier = deriveStageTier(reading.stages);
     if (compareProvenance(tier, bestTier) > 0) bestTier = tier;
     if (compareProvenance(tier, worstTier) < 0) worstTier = tier;
     allSources.add(reading.sourceId);
@@ -268,7 +268,7 @@ export function assessReadingProvenance(
       if (typeof reading.confidence === 'number') confidenceWithoutProvenance += 1;
     }
     if (tier === 'llm') llmCount += 1;
-  });
+  }
 
   const independentSources = qualifiedSources.size;
   const corroborated = independentSources >= 2;
