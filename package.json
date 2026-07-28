@@ -288,7 +288,9 @@
     "simulate:wave232": "tsx scripts/simulate-wave232-backlog-alert.ts",
     "db:check:admission-backlog": "tsx scripts/check-admission-backlog.ts",
     "db:check:admission-reconcile": "tsx scripts/check-admission-reconcile.ts",
-    "simulate:wave233": "tsx scripts/simulate-wave233-reconcile.ts"
+    "simulate:wave233": "tsx scripts/simulate-wave233-reconcile.ts",
+    "simulate:wave234": "tsx scripts/simulate-wave234-orphan-alert.ts",
+    "db:check:admission-orphan": "tsx scripts/check-admission-orphan.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",

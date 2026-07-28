@@ -8331,6 +8331,14 @@ export type Database = {
         }
         Returns: string
       }
+      admission_reconcile_cooldown: {
+        Args: { p_cadence_minutes: number; p_severity: string }
+        Returns: number
+      }
+      admission_reconcile_severity: {
+        Args: { p_reason?: string; p_verdict: string }
+        Returns: string
+      }
       admission_retention_selftest: {
         Args: never
         Returns: {
@@ -8867,6 +8875,10 @@ export type Database = {
         Returns: Json
       }
       evaluate_admission_backlog_alerts: {
+        Args: { p_now?: string }
+        Returns: Json
+      }
+      evaluate_admission_reconcile_alerts: {
         Args: { p_now?: string }
         Returns: Json
       }
