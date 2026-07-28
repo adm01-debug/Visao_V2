@@ -6,30 +6,20 @@
  * que a regra existe para impedir — promessa falsa ao operador, reinício às
  * cegas, comando duplicado e comando eterno.
  *
- * Rodar: node scripts/simulate-wave193-remote-command.mjs
+ * Rodar: node --experimental-strip-types scripts/simulate-wave193-remote-command.mjs
  */
 
-import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import tsModule from 'typescript';
-
-const ts = tsModule.default ?? tsModule;
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
 
-// Carrega a regra transpilando o TypeScript em memória: o teste precisa
-// exercitar EXATAMENTE o arquivo que roda em produção, nunca uma cópia.
-const source = readFileSync(
-  path.join(root, 'src/lib/devices/remoteCommandAdmission.ts'),
-  'utf8',
-);
-const js = ts.transpileModule(source, {
-  compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
-}).outputText;
+// Importa DIRETAMENTE o arquivo de produção (Node 22 remove as anotações de
+// tipo). Copiar a regra para dentro do teste seria testar uma cópia — o defeito
+// clássico que faz uma suíte verde conviver com produção quebrada.
 const mod = await import(
-  `data:text/javascript;base64,${Buffer.from(js).toString('base64')}`
+  path.join(root, 'src/lib/devices/remoteCommandAdmission.ts')
 );
 
 const {
