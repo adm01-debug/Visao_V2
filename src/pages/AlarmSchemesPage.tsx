@@ -6,7 +6,7 @@
  * inoperante, e aviso de duplicidade IA/não-IA como achado do **conjunto**.
  */
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { BellRing, Copy, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PageContent } from '@/components/layout/MainLayout';
@@ -16,12 +16,61 @@ import { Card, CardContent } from '@/components/ui/card';
 import { AlarmSchemeTable } from '@/components/alarms/AlarmSchemeTable';
 import { AlarmSchemeFormDialog } from '@/components/alarms/AlarmSchemeFormDialog';
 import { draftToForm, type AlarmSchemeFormState } from '@/lib/alarms/alarmSchemeForm';
+import { ArmedFilterBar } from '@/components/alarms/ArmedFilterBar';
+import { browserTzOffsetMinutes } from '@/lib/alarms/armedNow';
+import {
+  buildArmedRoster,
+  countForFilter,
+  filterLabel,
+  filterRoster,
+  type ArmedFilter,
+} from '@/lib/alarms/armedRoster';
+import { useMinuteClock } from '@/hooks/useMinuteClock';
 import { useAlarmSchemes } from '@/hooks/useAlarmSchemes';
 
 export default function AlarmSchemesPage() {
   const { entries, duplicates, counts, isLoading, error } = useAlarmSchemes();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<AlarmSchemeFormState | null>(null);
+  const [filter, setFilter] = useState<ArmedFilter>('all');
+
+  // Onda 224 — uma única avaliação por tique alimenta contador, filtro e tabela.
+  const now = useMinuteClock();
+  const roster = useMemo(
+    () =>
+      buildArmedRoster(
+        entries,
+        (entry) => ({
+          id: entry.row.id,
+          input: {
+            enabled: entry.diagnosis.enabled,
+            health: entry.diagnosis.health,
+            schedule: entry.draft.schedule,
+          },
+        }),
+        now,
+        browserTzOffsetMinutes(now),
+      ),
+    [entries, now],
+  );
+
+  const verdicts = useMemo(
+    () => new Map(roster.entries.map((e) => [e.id, e.verdict] as const)),
+    [roster],
+  );
+  const sizes = useMemo(
+    () => ({
+      all: roster.counts.total,
+      armed: countForFilter(roster.entries, 'armed'),
+      attention: countForFilter(roster.entries, 'attention'),
+      off: countForFilter(roster.entries, 'off'),
+    }),
+    [roster],
+  );
+  const visible = useMemo(
+    () => filterRoster(roster.entries, filter).map((e) => e.item),
+    [roster, filter],
+  );
 
   const openCreate = () => {
     setEditing(null);
@@ -59,10 +108,11 @@ export default function AlarmSchemesPage() {
         </Alert>
       )}
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
         {[
-          { label: 'Consistentes', value: counts.ok, tone: 'text-success' },
+          { label: 'Armados agora', value: roster.counts.armed, tone: 'text-success' },
           { label: 'Inconsistentes', value: counts.inconsistent, tone: 'text-warning' },
+          { label: 'Fora da janela', value: roster.counts.idle, tone: 'text-muted-foreground' },
           { label: 'Inoperantes', value: counts.inoperative, tone: 'text-destructive' },
           { label: 'Desabilitados', value: counts.disabled, tone: 'text-muted-foreground' },
         ].map((item) => (
@@ -91,8 +141,16 @@ export default function AlarmSchemesPage() {
         </Alert>
       )}
 
+      <ArmedFilterBar value={filter} onChange={setFilter} counts={roster.counts} sizes={sizes} />
+
       <AlarmSchemeTable
-        entries={entries}
+        entries={visible}
+        verdicts={verdicts}
+        emptyMessage={
+          filter === 'all'
+            ? 'Nenhum esquema de alarme cadastrado.'
+            : `Nenhum esquema em "${filterLabel(filter)}" neste momento.`
+        }
         isLoading={isLoading}
         onEdit={(entry) => {
           setEditing(draftToForm(entry.draft));
