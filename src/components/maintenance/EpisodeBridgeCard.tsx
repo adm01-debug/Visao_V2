@@ -1,3 +1,14 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,12 +19,17 @@ import {
   type BridgeAssessment,
   type BridgeVerdict,
 } from '@/lib/retention/episodeBridgeWatch';
+import { ABANDONED_OPEN_DAYS } from '@/lib/retention/episodeReconciliation';
 
 interface EpisodeBridgeCardProps {
   readonly assessment: BridgeAssessment;
   readonly evaluatedAt: number | null;
   readonly isLoading: boolean;
   readonly onRefresh: () => void;
+  /** Onda 187 — dispara a reconciliação no servidor. */
+  readonly onReconcile?: () => void;
+  readonly isReconciling?: boolean;
+  readonly canReconcile?: boolean;
 }
 
 /**
@@ -53,8 +69,17 @@ export function EpisodeBridgeCard({
   evaluatedAt,
   isLoading,
   onRefresh,
+  onReconcile,
+  isReconciling = false,
+  canReconcile = false,
 }: EpisodeBridgeCardProps) {
   const unknown = assessment.verdict === 'insufficient_data';
+  // A ação só aparece quando existe passivo medido. Oferecer "reconciliar" com
+  // veredito desconhecido convidaria o operador a agir sobre um número que o
+  // sistema admite não saber.
+  const showReconcile =
+    onReconcile !== undefined && canReconcile && !unknown && assessment.latest > 0;
+
 
   return (
     <Card>
@@ -129,6 +154,33 @@ export function EpisodeBridgeCard({
                 Avaliado em {new Date(evaluatedAt).toLocaleString('pt-BR')}.
               </p>
             )}
+
+            {showReconcile && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline" size="sm" disabled={isReconciling}>
+                    {isReconciling ? 'Reconciliando…' : 'Reconciliar abandonados'}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Encerrar episódios abandonados?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Episódios abertos há mais de {ABANDONED_OPEN_DAYS} dias serão encerrados no
+                      corte declarado de {ABANDONED_OPEN_DAYS} dias após a abertura — nunca no
+                      horário de agora, para não registrar durações que ninguém mediu. A duração
+                      resultante fica marcada como reconciliada, e não como observada. A ação é
+                      irreversível e fica registrada na auditoria.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={onReconcile}>Reconciliar</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+
           </>
         )}
       </CardContent>

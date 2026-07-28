@@ -343,6 +343,7 @@ export type Database = {
       alarm_recurrence_episodes: {
         Row: {
           alert_id: string | null
+          close_source: string
           closed_at: string | null
           created_at: string
           duration_ms: number | null
@@ -354,6 +355,7 @@ export type Database = {
         }
         Insert: {
           alert_id?: string | null
+          close_source?: string
           closed_at?: string | null
           created_at?: string
           duration_ms?: number | null
@@ -365,6 +367,7 @@ export type Database = {
         }
         Update: {
           alert_id?: string | null
+          close_source?: string
           closed_at?: string | null
           created_at?: string
           duration_ms?: number | null
@@ -8297,6 +8300,7 @@ export type Database = {
         }[]
       }
       episode_bridge_watch_policy: { Args: never; Returns: Json }
+      episode_reconciliation_policy: { Args: never; Returns: Json }
       escalate_stale_maintenance_alerts: {
         Args: never
         Returns: {
@@ -9139,6 +9143,10 @@ export type Database = {
         }[]
       }
       reap_monitoring_center_leases: { Args: { _at?: string }; Returns: Json }
+      reconcile_abandoned_episodes: {
+        Args: { p_limit?: number; p_now?: string; p_organization_id: string }
+        Returns: Json
+      }
       record_alarm_episode_close: {
         Args: { p_at?: string; p_organization_id: string; p_series_key: string }
         Returns: string

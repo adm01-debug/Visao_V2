@@ -10,6 +10,7 @@ import { RetentionOverviewCard } from '@/components/maintenance/RetentionOvervie
 import { ChronicSeriesCard } from '@/components/maintenance/ChronicSeriesCard';
 import { EpisodeBridgeCard } from '@/components/maintenance/EpisodeBridgeCard';
 import { useEpisodeBridgeWatch } from '@/hooks/useEpisodeBridgeWatch';
+import { useEpisodeReconciliation } from '@/hooks/useEpisodeReconciliation';
 import { useChronicSeries, usePrimaryOrganization } from '@/hooks/useChronicSeries';
 
 /**
@@ -24,6 +25,8 @@ export default function MaintenanceConsolePage() {
   const { organizationId, isLoading: orgLoading } = usePrimaryOrganization();
   const chronic = useChronicSeries(organizationId);
   const bridge = useEpisodeBridgeWatch();
+  const reconciliation = useEpisodeReconciliation(organizationId);
+
   const { toast } = useToast();
   const [pendingId, setPendingId] = useState<string | null>(null);
 
@@ -97,7 +100,11 @@ export default function MaintenanceConsolePage() {
         evaluatedAt={bridge.evaluatedAt}
         isLoading={bridge.isLoading}
         onRefresh={bridge.refetch}
+        onReconcile={reconciliation.reconcile}
+        isReconciling={reconciliation.isReconciling}
+        canReconcile={reconciliation.canReconcile}
       />
+
 
       <RetentionOverviewCard rows={retention.data ?? []} isLoading={retention.isLoading} />
     </PageContent>
