@@ -407,7 +407,8 @@ export function rearmOnConnect(
   if (diagnosis.health === 'inoperative') return ignore('rule_inoperative', base, effective);
 
   const stamp = isClock(at) ? at : 0;
-  const next: EpisodeState = { ...base, sources: { ...base.sources } };
+  const sources: Record<string, { state: SourceState; at: number }> = { ...base.sources };
+  const next: EpisodeState = { ...base, sources };
   let anyActive = false;
 
   for (const report of Array.isArray(reports) ? reports : []) {
@@ -420,9 +421,9 @@ export function rearmOnConnect(
       continue;
     }
     const stampedAt = isClock(report.at) ? report.at : stamp;
-    const previous = next.sources[report.sourceId];
+    const previous = sources[report.sourceId];
     if (previous && stampedAt < previous.at) continue;
-    next.sources[report.sourceId] = { state: report.state, at: stampedAt };
+    sources[report.sourceId] = { state: report.state, at: stampedAt };
     if (report.state === 'active') anyActive = true;
     next.lastAcceptedAt =
       next.lastAcceptedAt === null ? stampedAt : Math.max(next.lastAcceptedAt, stampedAt);
