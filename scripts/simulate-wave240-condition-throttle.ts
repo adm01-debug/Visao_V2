@@ -211,7 +211,7 @@ for (const routine of ROUTINES) {
   const burst = Array.from({ length: 12 }, (_, i) =>
     alert({ id: `burst-${i}`, routine, created_at: new Date(NOW - (i + 1) * MINUTE).toISOString() }),
   );
-  const plan = planDispatch(burst, [], config(), NOW, []);
+  const plan = planDispatch(burst, [], config({ batchLimit: 100 }), NOW, []);
   const perChannel = CHANNELS.map((c) => plan.items.filter((i) => i.channel === c).length);
   const window = conditionThrottleMinutes(routine);
   for (const count of perChannel) {
