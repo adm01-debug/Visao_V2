@@ -12,7 +12,9 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import ts from 'typescript';
+import tsModule from 'typescript';
+
+const ts = tsModule.default ?? tsModule;
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
