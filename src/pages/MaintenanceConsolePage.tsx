@@ -8,6 +8,8 @@ import { useMaintenanceConsole } from '@/hooks/useMaintenanceConsole';
 import { MaintenanceAlertsCard } from '@/components/maintenance/MaintenanceAlertsCard';
 import { RetentionOverviewCard } from '@/components/maintenance/RetentionOverviewCard';
 import { ChronicSeriesCard } from '@/components/maintenance/ChronicSeriesCard';
+import { EpisodeBridgeCard } from '@/components/maintenance/EpisodeBridgeCard';
+import { useEpisodeBridgeWatch } from '@/hooks/useEpisodeBridgeWatch';
 import { useChronicSeries, usePrimaryOrganization } from '@/hooks/useChronicSeries';
 
 /**
@@ -21,6 +23,7 @@ export default function MaintenanceConsolePage() {
   const { alerts, retention, acknowledge, model } = useMaintenanceConsole();
   const { organizationId, isLoading: orgLoading } = usePrimaryOrganization();
   const chronic = useChronicSeries(organizationId);
+  const bridge = useEpisodeBridgeWatch();
   const { toast } = useToast();
   const [pendingId, setPendingId] = useState<string | null>(null);
 
@@ -87,6 +90,13 @@ export default function MaintenanceConsolePage() {
         board={chronic.board}
         isLoading={orgLoading || chronic.isLoading}
         onRefresh={chronic.refetch}
+      />
+
+      <EpisodeBridgeCard
+        assessment={bridge.assessment}
+        evaluatedAt={bridge.evaluatedAt}
+        isLoading={bridge.isLoading}
+        onRefresh={bridge.refetch}
       />
 
       <RetentionOverviewCard rows={retention.data ?? []} isLoading={retention.isLoading} />
