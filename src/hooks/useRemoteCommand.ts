@@ -34,7 +34,11 @@ import {
 import type { DeviceSilenceState } from '@/lib/devices/deviceSilence';
 
 /** Estados em que o comando ainda pode ser entregue ao equipamento. */
-const OPEN_STATUSES = ['queued', 'awaiting_presence', 'dispatched'] as const;
+// Onda 194: os nomes aqui precisam ser exatamente os do CHECK da tabela. A
+// versão anterior usava 'dispatched', que nunca existiu no banco — o efeito era
+// uma ordem já entregue deixar de contar como "em voo", e a UI liberar um
+// segundo reinício que só o índice único do banco barrava, sem explicação.
+const OPEN_STATUSES = ['queued', 'awaiting_presence', 'delivered'] as const;
 
 export interface RemoteCommandRow {
   readonly id: string;
@@ -45,6 +49,10 @@ export interface RemoteCommandRow {
   readonly expiresAt: number;
   readonly result: string | null;
   readonly errorMessage: string | null;
+  /** Quantas vezes o equipamento já recebeu esta ordem (Onda 194). */
+  readonly deliveryAttempts: number;
+  /** Instante do laudo, quando o equipamento prestou contas. */
+  readonly reportedAt: number | null;
 }
 
 interface RawCommand {
@@ -56,6 +64,8 @@ interface RawCommand {
   expires_at: string;
   result: string | null;
   error_message: string | null;
+  delivery_attempts: number | null;
+  reported_at: string | null;
 }
 
 const millis = (value: string): number => {
@@ -108,7 +118,9 @@ export function useRemoteCommand(
     queryFn: async (): Promise<readonly RemoteCommandRow[]> => {
       const { data, error } = await supabase
         .from('device_remote_commands')
-        .select('id, registration_id, command, status, created_at, expires_at, result, error_message')
+        .select(
+          'id, registration_id, command, status, created_at, expires_at, result, error_message, delivery_attempts, reported_at',
+        )
         .eq('registration_id', registrationId as string)
         .order('created_at', { ascending: false })
         .limit(50);
@@ -123,6 +135,8 @@ export function useRemoteCommand(
         expiresAt: millis(row.expires_at),
         result: row.result === null ? null : String(row.result),
         errorMessage: row.error_message,
+        deliveryAttempts: row.delivery_attempts ?? 0,
+        reportedAt: row.reported_at === null ? null : millis(row.reported_at),
       }));
     },
   });
