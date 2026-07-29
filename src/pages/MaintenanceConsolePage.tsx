@@ -162,6 +162,13 @@ export default function MaintenanceConsolePage() {
         onRefresh={orphanTrend.refetch}
       />
 
+      <DispatchSuppressionCard
+        ledger={suppressions.ledger}
+        isLoading={suppressions.isLoading}
+        isError={suppressions.isError}
+        onRefresh={suppressions.refetch}
+      />
+
     </PageContent>
   );
 }
