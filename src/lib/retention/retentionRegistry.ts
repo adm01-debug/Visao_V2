@@ -156,6 +156,7 @@ export function findRetentionRoutine(jobName: string): RetentionRoutine | undefi
 export function retentionThresholds(cadenceMinutes: number): {
   readonly warnAfterMinutes: number;
   readonly stalledAfterMinutes: number;
+  readonly debutAfterMinutes: number;
 } {
   if (!Number.isFinite(cadenceMinutes) || cadenceMinutes <= 0) {
     throw new RangeError(`cadenceMinutes deve ser positivo e finito, recebido: ${cadenceMinutes}`);
@@ -163,22 +164,45 @@ export function retentionThresholds(cadenceMinutes: number): {
   return {
     warnAfterMinutes: WARN_CADENCE_FACTOR * cadenceMinutes + GRACE_MINUTES,
     stalledAfterMinutes: STALLED_CADENCE_FACTOR * cadenceMinutes + GRACE_MINUTES,
+    debutAfterMinutes: DEBUT_CADENCE_FACTOR * cadenceMinutes + GRACE_MINUTES,
   };
 }
 
 /**
  * Classifica a saúde de uma rotina.
  *
+ * Leis da estreia (Onda 244), aplicadas apenas quando NÃO há execução:
+ *  - sem idade de registro legível ⇒ `never` (ausência de âncora nunca compra
+ *    silêncio);
+ *  - idade dentro de `cadência + carência` ⇒ `pending_first_run`;
+ *  - idade além disso ⇒ `never`, agora com prova de que nasceu quebrada.
+ *
+ * Existindo execução, a estreia é irrelevante: a escada de silêncio governa
+ * sozinha.
+ *
  * @param minutesSinceLastRun minutos desde a última execução; `null` quando
  *   nunca executou. Valores negativos (relógio adiantado do servidor que
  *   gravou a linha) são tratados como zero — silêncio negativo não existe.
+ * @param cadenceMinutes cadência declarada da rotina.
+ * @param minutesSinceRegistration minutos desde o registro; `null`/omitido
+ *   quando não há âncora legível.
  */
 export function classifyRetentionHealth(
   minutesSinceLastRun: number | null,
   cadenceMinutes: number,
+  minutesSinceRegistration: number | null = null,
 ): RetentionHealth {
-  const { warnAfterMinutes, stalledAfterMinutes } = retentionThresholds(cadenceMinutes);
-  if (minutesSinceLastRun === null) return 'never';
+  const { warnAfterMinutes, stalledAfterMinutes, debutAfterMinutes } =
+    retentionThresholds(cadenceMinutes);
+
+  if (minutesSinceLastRun === null) {
+    if (minutesSinceRegistration === null || !Number.isFinite(minutesSinceRegistration)) {
+      return 'never';
+    }
+    const age = Math.max(0, minutesSinceRegistration);
+    return age < debutAfterMinutes ? 'pending_first_run' : 'never';
+  }
+
   if (!Number.isFinite(minutesSinceLastRun)) return 'stalled';
   const silence = Math.max(0, minutesSinceLastRun);
   if (silence < warnAfterMinutes) return 'ok';
@@ -190,3 +214,4 @@ export function classifyRetentionHealth(
 export function isRetentionActionable(health: RetentionHealth): boolean {
   return health === 'stalled' || health === 'never';
 }
+
