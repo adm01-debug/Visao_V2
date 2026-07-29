@@ -61,7 +61,13 @@ describe('limiares derivados da cadência', () => {
 
 describe('classificação de saúde — varredura exaustiva', () => {
   it('é monotônica: mais silêncio nunca melhora o diagnóstico', () => {
-    const rank: Record<RetentionHealth, number> = { ok: 0, warn: 1, stalled: 2, never: 3 };
+    const rank: Record<RetentionHealth, number> = {
+      ok: 0,
+      pending_first_run: 1,
+      warn: 2,
+      stalled: 3,
+      never: 4,
+    };
     for (const cadence of CADENCES) {
       const { stalledAfterMinutes } = retentionThresholds(cadence);
       let previous = -1;
