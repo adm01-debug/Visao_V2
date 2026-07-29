@@ -56,6 +56,12 @@ import {
   type EscalationProfile,
 } from '@/lib/escalationProfiles';
 import { readOwnerRouting, type OwnerRouting } from '@/lib/maintenance/maintenanceOwner';
+import type { AcknowledgementState } from '@/lib/maintenance/acknowledgementDecay';
+import {
+  escalationAckGate,
+  escalationAckLabel,
+} from '@/lib/maintenance/escalationAckGate';
+
 import {
   buildConditionSilence,
   indexConditionNotices,
