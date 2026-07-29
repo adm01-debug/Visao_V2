@@ -55,6 +55,11 @@ export interface RetentionObservation {
   readonly jobName: string;
   /** Minutos desde a última execução; `null` quando nunca executou. */
   readonly minutesSinceLastRun: number | null;
+  /**
+   * Minutos desde o registro da rotina (Onda 244). `null`/omitido quando não
+   * há âncora legível — nesse caso a ausência de execução volta a ser crítica.
+   */
+  readonly minutesSinceRegistration?: number | null;
 }
 
 /** Alerta candidato a ser gravado no barramento de manutenção. */
@@ -92,6 +97,9 @@ export function severityForHealth(health: RetentionHealth): MaintenanceSeverity 
       return 'critical';
     case 'warn':
       return 'warning';
+    // Estreia pendente é estado esperado, não defeito: emitir aqui seria
+    // transformar toda rotina nova num crítico falso na primeira hora.
+    case 'pending_first_run':
     case 'ok':
       return null;
   }
@@ -121,7 +129,8 @@ function reasonFor(
  * emitir alerta de rotina desconhecida só polui o barramento.
  *
  * Rotinas registradas SEM observação correspondente são tratadas como
- * `never` — a ausência do fato é, ela própria, o fato mais grave.
+ * `never` — a ausência do fato é, ela própria, o fato mais grave —, exceto
+ * durante a carência de estreia (Onda 244).
  */
 export function evaluateRetentionAlerts(
   observations: readonly RetentionObservation[],
@@ -136,7 +145,8 @@ export function evaluateRetentionAlerts(
   for (const routine of routines) {
     const observation = byJob.get(routine.jobName);
     const minutes = observation ? observation.minutesSinceLastRun : null;
-    const health = classifyRetentionHealth(minutes, routine.cadenceMinutes);
+    const age = observation?.minutesSinceRegistration ?? null;
+    const health = classifyRetentionHealth(minutes, routine.cadenceMinutes, age);
     const severity = severityForHealth(health);
     if (severity === null) continue;
     candidates.push({
@@ -148,4 +158,5 @@ export function evaluateRetentionAlerts(
     });
   }
   return candidates;
+
 }

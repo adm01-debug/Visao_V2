@@ -61,7 +61,13 @@ describe('limiares derivados da cadência', () => {
 
 describe('classificação de saúde — varredura exaustiva', () => {
   it('é monotônica: mais silêncio nunca melhora o diagnóstico', () => {
-    const rank: Record<RetentionHealth, number> = { ok: 0, warn: 1, stalled: 2, never: 3 };
+    const rank: Record<RetentionHealth, number> = {
+      ok: 0,
+      pending_first_run: 1,
+      warn: 2,
+      stalled: 3,
+      never: 4,
+    };
     for (const cadence of CADENCES) {
       const { stalledAfterMinutes } = retentionThresholds(cadence);
       let previous = -1;
@@ -123,5 +129,50 @@ describe('acionabilidade', () => {
     expect(isRetentionActionable('warn')).toBe(false);
     expect(isRetentionActionable('stalled')).toBe(true);
     expect(isRetentionActionable('never')).toBe(true);
+  });
+});
+
+describe('Onda 244 — carência de estreia', () => {
+  it('trata rotina recém-registrada sem execução como estreia pendente', () => {
+    for (const cadence of CADENCES) {
+      const { debutAfterMinutes } = retentionThresholds(cadence);
+      expect(classifyRetentionHealth(null, cadence, 0)).toBe('pending_first_run');
+      expect(classifyRetentionHealth(null, cadence, debutAfterMinutes - 1)).toBe('pending_first_run');
+    }
+  });
+
+  it('volta a ser crítica assim que a carência vence', () => {
+    for (const cadence of CADENCES) {
+      const { debutAfterMinutes } = retentionThresholds(cadence);
+      expect(classifyRetentionHealth(null, cadence, debutAfterMinutes)).toBe('never');
+      expect(classifyRetentionHealth(null, cadence, debutAfterMinutes + 1)).toBe('never');
+    }
+  });
+
+  it('sem âncora de registro legível, ausência de execução continua crítica', () => {
+    for (const age of [null, Number.NaN, Number.POSITIVE_INFINITY]) {
+      expect(classifyRetentionHealth(null, 1440, age as number | null)).toBe('never');
+    }
+  });
+
+  it('registro no futuro é saneado para zero, nunca vira silêncio infinito', () => {
+    expect(classifyRetentionHealth(null, 1440, -50_000)).toBe('pending_first_run');
+  });
+
+  it('havendo execução, a idade de registro é irrelevante', () => {
+    for (const cadence of CADENCES) {
+      const { stalledAfterMinutes } = retentionThresholds(cadence);
+      for (const silence of [0, stalledAfterMinutes + 1]) {
+        for (const age of [null, 0, 10, 1_000_000]) {
+          expect(classifyRetentionHealth(silence, cadence, age)).toBe(
+            classifyRetentionHealth(silence, cadence, null),
+          );
+        }
+      }
+    }
+  });
+
+  it('estreia pendente nunca é acionável', () => {
+    expect(isRetentionActionable('pending_first_run')).toBe(false);
   });
 });

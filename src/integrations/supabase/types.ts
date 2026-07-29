@@ -10047,6 +10047,14 @@ export type Database = {
         }
         Returns: string[]
       }
+      retention_debut_selftest: {
+        Args: never
+        Returns: {
+          check_name: string
+          detail: string
+          passed: boolean
+        }[]
+      }
       retention_health_thresholds: {
         Args: never
         Returns: {
@@ -10061,6 +10069,7 @@ export type Database = {
           cadence_minutes: number
           job_name: string
           label: string
+          registered_at: string
           source_table: string
         }[]
       }
