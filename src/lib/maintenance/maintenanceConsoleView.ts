@@ -382,8 +382,6 @@ export function buildMaintenanceConsole(
     };
   });
 
-  });
-
   views.sort(compareRows);
 
   const open = views.filter((view) => view.status === 'open');
