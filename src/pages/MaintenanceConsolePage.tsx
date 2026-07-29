@@ -47,6 +47,8 @@ export default function MaintenanceConsolePage() {
   const admissionReconcile = useAdmissionReconcile(admissionPurge.snapshot.lastValid);
   const orphanTrend = useAdmissionOrphanTrend();
   const suppressions = useDispatchSuppressions();
+  const deliverability = useDispatchDeliverability();
+
 
   const { toast } = useToast();
   const [pendingId, setPendingId] = useState<string | null>(null);
