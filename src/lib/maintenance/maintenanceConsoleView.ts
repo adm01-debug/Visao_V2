@@ -152,6 +152,12 @@ export interface MaintenanceConsoleSummary {
   readonly openCritical: number;
   readonly openWarning: number;
   readonly acknowledged: number;
+  /**
+   * Onda 249 — reconhecidos cuja promessa decaiu: a condição segue viva e a
+   * escada voltou a correr. É o passivo que o ack em massa criava em silêncio.
+   */
+  readonly ackDecayed: number;
+
   /** Abertos que já atingiram o teto da escada — ninguém mais será avisado. */
   readonly atCeiling: number;
   /** Severidade agregada da tela, para o cabeçalho. */
