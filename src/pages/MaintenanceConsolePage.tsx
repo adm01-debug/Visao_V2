@@ -17,6 +17,8 @@ import { useAdmissionReconcile } from '@/hooks/useAdmissionReconcile';
 import { useAdmissionOrphanTrend } from '@/hooks/useAdmissionOrphanTrend';
 import { AdmissionOrphanTrendCard } from '@/components/maintenance/AdmissionOrphanTrendCard';
 import { AdmissionReconcileCard } from '@/components/maintenance/AdmissionReconcileCard';
+import { DispatchSuppressionCard } from '@/components/maintenance/DispatchSuppressionCard';
+import { useDispatchSuppressions } from '@/hooks/useDispatchSuppressions';
 import { useCommandReliability } from '@/hooks/useCommandReliability';
 import { useDeviceSilence } from '@/hooks/useDeviceSilence';
 import { useEpisodeBridgeWatch } from '@/hooks/useEpisodeBridgeWatch';
@@ -41,6 +43,7 @@ export default function MaintenanceConsolePage() {
   const admissionPurge = useAdmissionPurgeHistory();
   const admissionReconcile = useAdmissionReconcile(admissionPurge.snapshot.lastValid);
   const orphanTrend = useAdmissionOrphanTrend();
+  const suppressions = useDispatchSuppressions();
 
   const { toast } = useToast();
   const [pendingId, setPendingId] = useState<string | null>(null);
@@ -160,6 +163,13 @@ export default function MaintenanceConsolePage() {
         isError={orphanTrend.isError}
         sqlVerdict={orphanTrend.sqlVerdict}
         onRefresh={orphanTrend.refetch}
+      />
+
+      <DispatchSuppressionCard
+        ledger={suppressions.ledger}
+        isLoading={suppressions.isLoading}
+        isError={suppressions.isError}
+        onRefresh={suppressions.refetch}
       />
 
     </PageContent>
