@@ -124,7 +124,20 @@ export interface MaintenanceAlertView {
    * alerta já foi reconhecido (R2/R7/R8).
    */
   readonly silence: ConditionSilenceView | null;
+  /**
+   * Onda 249 — estado do reconhecimento perante a escada. `none` para alertas
+   * abertos; para reconhecidos, diz se a promessa ainda vale (`pending`), se
+   * foi cumprida (`honored`) ou se **decaiu** e devolveu o alerta à escada.
+   */
+  readonly ackState: AcknowledgementState;
+  /** Frase pronta para o operador (Y10) — nunca um booleano nu. */
+  readonly ackLabel: string;
+  /** `true` quando a promessa quebrou: o alerta voltou a escalar. */
+  readonly ackDecayed: boolean;
+  /** Minutos restantes de silêncio acordado; `null` quando não se aplica. */
+  readonly ackMinutesRemaining: number | null;
 }
+
 
 
 export interface MaintenanceConsoleSummary {
