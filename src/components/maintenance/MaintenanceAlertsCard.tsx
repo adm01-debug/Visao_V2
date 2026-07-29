@@ -230,6 +230,19 @@ export function MaintenanceAlertsCard({
                         Agravamento detectado — o próximo despacho fura o silêncio
                       </p>
                     )}
+                    {row.status === 'acknowledged' && (
+                      <p
+                        className={
+                          row.ackDecayed
+                            ? 'text-xs font-medium text-destructive'
+                            : 'text-xs text-muted-foreground'
+                        }
+                      >
+                        Reconhecimento: {row.ackLabel}
+                      </p>
+                    )}
+
+
 
                   </div>
 
