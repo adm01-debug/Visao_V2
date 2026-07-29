@@ -247,7 +247,11 @@ Deno.serve(async (req) => {
       });
     }
 
-    if (alerts.length === 0) return json({ ok: true, dispatched: 0, candidates: 0 });
+    if (alerts.length === 0) {
+      await recordRun("idle", ZERO, { reason: "no_candidates_in_window" });
+      return json({ ok: true, dispatched: 0, candidates: 0 });
+    }
+
 
     const plan = planDispatch(
       alerts,
