@@ -409,6 +409,8 @@ export function buildMaintenanceConsole(
       openCritical,
       openWarning: open.length - openCritical,
       acknowledged: views.length - open.length,
+      ackDecayed: views.filter((view) => view.ackDecayed).length,
+
       atCeiling,
       worst: openCritical > 0 ? 'critical' : open.length > 0 ? 'warning' : 'ok',
       slowProfile: open.filter((view) => view.profileId !== 'operational').length,
