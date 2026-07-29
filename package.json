@@ -309,7 +309,8 @@
     "simulate:wave245": "tsx scripts/simulate-wave245-retention-debut-view.ts",
     "simulate:wave247": "tsx scripts/simulate-wave247-deliverability-alert.ts",
     "test:wave243": "vitest run src/__tests__/lib/suppressionRetention.test.ts",
-    "test:wave242": "vitest run src/__tests__/lib/suppressionLedger.test.ts"
+    "test:wave242": "vitest run src/__tests__/lib/suppressionLedger.test.ts",
+    "simulate:wave248": "tsx scripts/simulate-wave248-acknowledgement-decay.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
