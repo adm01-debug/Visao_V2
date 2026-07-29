@@ -8707,6 +8707,10 @@ export type Database = {
           peak_severity: string
         }[]
       }
+      assess_dispatch_deliverability: {
+        Args: { p_cadence_minutes?: number; p_now?: string }
+        Returns: Json
+      }
       audit_cameras_embedded_credentials: {
         Args: never
         Returns: {
@@ -9031,6 +9035,15 @@ export type Database = {
         Args: { _target_user_id: string }
         Returns: undefined
       }
+      deliverability_alert_selftest: { Args: never; Returns: Json }
+      deliverability_alert_severity: {
+        Args: { p_delivery: string; p_unnotified_critical?: number }
+        Returns: string
+      }
+      deliverability_cooldown: {
+        Args: { p_cadence_minutes: number; p_severity: string }
+        Returns: number
+      }
       detect_camera_clock_skew: {
         Args: {
           critical_seconds?: number
@@ -9158,6 +9171,10 @@ export type Database = {
       }
       evaluate_and_restart_streams: { Args: never; Returns: number }
       evaluate_blame_alerts: { Args: { p_now?: string }; Returns: Json }
+      evaluate_deliverability_alerts: {
+        Args: { p_now?: string }
+        Returns: Json
+      }
       evaluate_device_silence_alerts: {
         Args: { p_now?: string }
         Returns: Json

@@ -307,6 +307,7 @@
     "simulate:wave243": "tsx scripts/simulate-wave243-suppression-retention.ts",
     "simulate:wave244": "tsx scripts/simulate-wave244-retention-debut.ts",
     "simulate:wave245": "tsx scripts/simulate-wave245-retention-debut-view.ts",
+    "simulate:wave247": "tsx scripts/simulate-wave247-deliverability-alert.ts",
     "test:wave243": "vitest run src/__tests__/lib/suppressionRetention.test.ts",
     "test:wave242": "vitest run src/__tests__/lib/suppressionLedger.test.ts"
   },
