@@ -142,7 +142,9 @@ export function evaluateRetentionDebut(
   }
 
   if (minutesSinceRegistration === null) {
-    return { stage: 'no_anchor', health, minutesRemaining: null, dueAt: null, mismatch };
+    // O vencimento continua sendo exibível quando o carimbo é legível (ainda
+    // que no futuro): esconder o número apagaria a prova do relógio errado.
+    return { stage: 'no_anchor', health, minutesRemaining: null, dueAt, mismatch };
   }
 
   const remaining = debutAfterMinutes - minutesSinceRegistration;
