@@ -41,6 +41,12 @@ export interface RetentionOverviewRow {
   runs_last_30d: number;
   deleted_last_30d: number;
   retention_days: number;
+  /** Onda 245 — âncora da carência de estreia; `null` quando não registrada. */
+  registered_at: string | null;
+  /** Onda 245 — idade do registro em minutos; `null` sem âncora legível. */
+  minutes_since_registration: number | null;
+  /** Onda 245 — instante em que a carência de estreia vence. */
+  debut_due_at: string | null;
 }
 
 export function useMaintenanceConsole() {
