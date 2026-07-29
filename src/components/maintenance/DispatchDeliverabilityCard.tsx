@@ -57,6 +57,7 @@ function ageLabel(minutes: number | null): string {
  */
 export function DispatchDeliverabilityCard({
   verdict,
+  launderedCritical,
   isLoading,
   isError,
   onRefresh,
