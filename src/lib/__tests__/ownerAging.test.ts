@@ -34,6 +34,7 @@ function view(overrides: Partial<MaintenanceAlertView> & { id: string }): Mainte
     conditionAgeMinutes: overrides.conditionAgeMinutes ?? null,
     conditionRows: overrides.conditionRows ?? 1,
     effectiveLevel: overrides.effectiveLevel ?? overrides.level ?? 0,
+    silence: overrides.silence ?? null,
   };
 }
 
