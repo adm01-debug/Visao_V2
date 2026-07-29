@@ -82,16 +82,22 @@ export function useDispatchDeliverability(): UseDispatchDeliverabilityResult {
         .limit(RUN_SAMPLE);
       if (runsResult.error) throw runsResult.error;
 
-      const criticalResult = await supabase
-        .from('maintenance_alert_events')
-        .select('id', { count: 'exact', head: true })
-        .eq('severity', 'critical')
-        .is('acknowledged_at', null);
+      // X2 — DANO, não desatenção: críticos que nunca tiveram entrega
+      // confirmada. Imune a reconhecimento, por construção.
+      const undelivered = await supabase.rpc('undelivered_critical_count' as never);
+      const laundered = await supabase.rpc('laundered_critical_count' as never);
+
+      const count = (result: { error: unknown; data: unknown }): number | null => {
+        // Falha de leitura é ignorância declarada, não ausência de críticos.
+        if (result.error) return null;
+        const value = typeof result.data === 'string' ? Number(result.data) : result.data;
+        return typeof value === 'number' && Number.isFinite(value) ? value : null;
+      };
 
       return {
         runs: toRuns(runsResult.data),
-        // Falha de leitura é ignorância declarada, não ausência de críticos.
-        openCritical: criticalResult.error ? null : (criticalResult.count ?? null),
+        undeliveredCritical: count(undelivered),
+        launderedCritical: count(laundered),
       };
     },
     staleTime: 60_000,
@@ -99,12 +105,18 @@ export function useDispatchDeliverability(): UseDispatchDeliverabilityResult {
   });
 
   const verdict = useMemo(
-    () => assessDeliverability(query.data?.runs ?? [], query.data?.openCritical ?? null, Date.now()),
+    () =>
+      assessDeliverability(
+        query.data?.runs ?? [],
+        query.data?.undeliveredCritical ?? null,
+        Date.now(),
+      ),
     [query.data],
   );
 
   return {
     verdict,
+    launderedCritical: query.data?.launderedCritical ?? null,
     isLoading: query.isLoading,
     isError: query.isError,
     refetch: () => {
