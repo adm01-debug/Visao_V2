@@ -172,6 +172,7 @@ export default function MaintenanceConsolePage() {
 
       <DispatchDeliverabilityCard
         verdict={deliverability.verdict}
+        launderedCritical={deliverability.launderedCritical}
         isLoading={deliverability.isLoading}
         isError={deliverability.isError}
         onRefresh={deliverability.refetch}

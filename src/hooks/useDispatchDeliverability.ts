@@ -7,8 +7,15 @@
  * simulação: nenhum agregado pronto vem do banco, para que divergência entre
  * banco e régua vire tela em vez de silêncio.
  *
- * A contagem de críticos abertos vem separada, da própria fonte dos alertas —
- * um número que a execução não conseguiu ler jamais vira zero (V10).
+ * A contagem de críticos vem separada, da própria fonte dos alertas — um
+ * número que a execução não conseguiu ler jamais vira zero (V10).
+ *
+ * Onda 248 (X2) — a contagem que sustenta a acusação é a de críticos **jamais
+ * entregues**, não a de "não reconhecidos". A versão anterior filtrava por
+ * `acknowledged_at IS NULL`, de modo que reconhecer alertas no console
+ * encolhia a acusação de mudez sem que nenhuma mensagem tivesse saído. O
+ * gesto interno não avisa o plantonista distante da tela e, portanto, não
+ * pode apagar a prova de que ninguém foi avisado.
  */
 
 import { useQuery } from '@tanstack/react-query';
@@ -27,6 +34,11 @@ const RUN_SAMPLE = 24;
 
 export interface UseDispatchDeliverabilityResult {
   readonly verdict: DeliverabilityVerdict;
+  /**
+   * X2 — críticos reconhecidos que nunca foram entregues. Medida direta da
+   * lavagem de acusação; publicada para ser exibida, nunca escondida.
+   */
+  readonly launderedCritical: number | null;
   readonly isLoading: boolean;
   readonly isError: boolean;
   readonly refetch: () => void;
@@ -35,7 +47,8 @@ export interface UseDispatchDeliverabilityResult {
 interface Payload {
   readonly runs: DispatchRunRow[];
   /** `null` quando a contagem não pôde ser lida — nunca coagido a zero. */
-  readonly openCritical: number | null;
+  readonly undeliveredCritical: number | null;
+  readonly launderedCritical: number | null;
 }
 
 function toRuns(raw: unknown): DispatchRunRow[] {
@@ -69,16 +82,22 @@ export function useDispatchDeliverability(): UseDispatchDeliverabilityResult {
         .limit(RUN_SAMPLE);
       if (runsResult.error) throw runsResult.error;
 
-      const criticalResult = await supabase
-        .from('maintenance_alert_events')
-        .select('id', { count: 'exact', head: true })
-        .eq('severity', 'critical')
-        .is('acknowledged_at', null);
+      // X2 — DANO, não desatenção: críticos que nunca tiveram entrega
+      // confirmada. Imune a reconhecimento, por construção.
+      const undelivered = await supabase.rpc('undelivered_critical_count' as never);
+      const laundered = await supabase.rpc('laundered_critical_count' as never);
+
+      const count = (result: { error: unknown; data: unknown }): number | null => {
+        // Falha de leitura é ignorância declarada, não ausência de críticos.
+        if (result.error) return null;
+        const value = typeof result.data === 'string' ? Number(result.data) : result.data;
+        return typeof value === 'number' && Number.isFinite(value) ? value : null;
+      };
 
       return {
         runs: toRuns(runsResult.data),
-        // Falha de leitura é ignorância declarada, não ausência de críticos.
-        openCritical: criticalResult.error ? null : (criticalResult.count ?? null),
+        undeliveredCritical: count(undelivered),
+        launderedCritical: count(laundered),
       };
     },
     staleTime: 60_000,
@@ -86,12 +105,18 @@ export function useDispatchDeliverability(): UseDispatchDeliverabilityResult {
   });
 
   const verdict = useMemo(
-    () => assessDeliverability(query.data?.runs ?? [], query.data?.openCritical ?? null, Date.now()),
+    () =>
+      assessDeliverability(
+        query.data?.runs ?? [],
+        query.data?.undeliveredCritical ?? null,
+        Date.now(),
+      ),
     [query.data],
   );
 
   return {
     verdict,
+    launderedCritical: query.data?.launderedCritical ?? null,
     isLoading: query.isLoading,
     isError: query.isError,
     refetch: () => {

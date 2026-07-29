@@ -13,6 +13,12 @@ import {
 
 interface DispatchDeliverabilityCardProps {
   readonly verdict: DeliverabilityVerdict;
+  /**
+   * Onda 248 (X2) — críticos dados como vistos que nunca foram entregues.
+   * Reconhecer é um gesto interno: não avisa ninguém e não apaga a prova.
+   * `null` quando a contagem não pôde ser lida.
+   */
+  readonly launderedCritical: number | null;
   readonly isLoading: boolean;
   readonly isError: boolean;
   readonly onRefresh: () => void;
@@ -51,6 +57,7 @@ function ageLabel(minutes: number | null): string {
  */
 export function DispatchDeliverabilityCard({
   verdict,
+  launderedCritical,
   isLoading,
   isError,
   onRefresh,
@@ -116,10 +123,25 @@ export function DispatchDeliverabilityCard({
                 </dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">Críticos não avisados</dt>
+                <dt className="text-muted-foreground">Críticos jamais entregues</dt>
                 <dd className="font-medium">{verdict.unnotifiedCritical}</dd>
               </div>
             </dl>
+
+            {launderedCritical !== null && launderedCritical > 0 ? (
+              <Alert>
+                <ShieldAlert className="h-4 w-4" aria-hidden="true" />
+                <AlertTitle>
+                  {launderedCritical} crítico(s) marcados como vistos sem nunca terem
+                  sido entregues
+                </AlertTitle>
+                <AlertDescription>
+                  Reconhecer no console registra que alguém olhou a tela — não que
+                  alguém foi avisado. Esses alertas continuam contando como dano até
+                  que um canal externo exista e entregue.
+                </AlertDescription>
+              </Alert>
+            ) : null}
 
             {verdict.reasons.length > 0 ? (
               <ul className="space-y-1 text-sm text-muted-foreground">
