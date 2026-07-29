@@ -43,6 +43,7 @@ export default function MaintenanceConsolePage() {
   const admissionPurge = useAdmissionPurgeHistory();
   const admissionReconcile = useAdmissionReconcile(admissionPurge.snapshot.lastValid);
   const orphanTrend = useAdmissionOrphanTrend();
+  const suppressions = useDispatchSuppressions();
 
   const { toast } = useToast();
   const [pendingId, setPendingId] = useState<string | null>(null);
