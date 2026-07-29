@@ -129,11 +129,11 @@ check(
 const overviewSrc = query(`
   SELECT prosrc FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
    WHERE n.nspname='public' AND p.proname='get_retention_overview'`);
-for (const row of registered) {
+for (const table of registered) {
   check(
     'COBERTURA',
-    overviewSrc.includes(row.sourceTable),
-    `get_retention_overview não soma a origem '${row.sourceTable}' — rotina saudável apareceria como parada`,
+    overviewSrc.includes(table),
+    `get_retention_overview não soma a origem '${table}' — rotina saudável apareceria como parada`,
   );
 }
 
