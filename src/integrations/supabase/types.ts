@@ -4187,6 +4187,45 @@ export type Database = {
         }
         Relationships: []
       }
+      maintenance_dispatch_suppressions: {
+        Row: {
+          alert_id: string | null
+          channel: string
+          condition_key: string
+          created_at: string
+          id: number
+          last_severity: string | null
+          remaining_minutes: number
+          severity: string
+          suppressed_at: string
+          window_minutes: number
+        }
+        Insert: {
+          alert_id?: string | null
+          channel: string
+          condition_key: string
+          created_at?: string
+          id?: number
+          last_severity?: string | null
+          remaining_minutes: number
+          severity: string
+          suppressed_at?: string
+          window_minutes: number
+        }
+        Update: {
+          alert_id?: string | null
+          channel?: string
+          condition_key?: string
+          created_at?: string
+          id?: number
+          last_severity?: string | null
+          remaining_minutes?: number
+          severity?: string
+          suppressed_at?: string
+          window_minutes?: number
+        }
+        Relationships: []
+      }
       media_assets: {
         Row: {
           archived_at: string | null
@@ -9743,6 +9782,11 @@ export type Database = {
           success_count_24h: number
         }[]
       }
+      maintenance_suppression_ledger: {
+        Args: { p_window_hours?: number }
+        Returns: Json
+      }
+      maintenance_suppression_selftest: { Args: never; Returns: Json }
       mark_ingest_unpublish: { Args: { _stream_key: string }; Returns: Json }
       match_collab_plate: {
         Args: {
