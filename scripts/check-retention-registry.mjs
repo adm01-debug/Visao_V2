@@ -106,11 +106,43 @@ check(
   `classificação inesperada nas fronteiras: '${functional}'`,
 );
 
+// --- 4b) Onda 245: carência de estreia no painel ------------------------------
+const debut = queryTx(`
+BEGIN;
+SELECT
+     public.classify_retention_health(NULL, 1440, NULL)
+  || '/' || public.classify_retention_health(NULL, 1440, 0)
+  || '/' || public.classify_retention_health(NULL, 1440, 1454.9)
+  || '/' || public.classify_retention_health(NULL, 1440, 1455)
+  || '/' || public.classify_retention_health(NULL, 60, 74)
+  || '/' || public.classify_retention_health(NULL, 60, 75)
+  || '/' || public.classify_retention_health(10, 1440, 0);
+ROLLBACK;`);
+check(
+  'ESTREIA',
+  debut === 'never/pending_first_run/pending_first_run/never/pending_first_run/never/ok',
+  `carência de estreia divergente do TS (Onda 244/245): '${debut}'`,
+);
+
+// Toda rotina registrada precisa ter origem somada no painel: sem isso, uma
+// rotina saudável aparece como 'nunca executou' (defeito corrigido na Onda 245).
+const overviewSrc = query(`
+  SELECT prosrc FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
+   WHERE n.nspname='public' AND p.proname='get_retention_overview'`);
+for (const table of registered) {
+  check(
+    'COBERTURA',
+    overviewSrc.includes(table),
+    `get_retention_overview não soma a origem '${table}' — rotina saudável apareceria como parada`,
+  );
+}
+
 const shape = queryTx(`
 BEGIN;
 SELECT count(*) FROM (
   SELECT job_name, label, cadence_minutes, last_run, minutes_since_last, hours_since_last,
-         health, runs_last_30d, deleted_last_30d, retention_days
+         health, runs_last_30d, deleted_last_30d, retention_days,
+         registered_at, minutes_since_registration, debut_due_at
     FROM public.get_retention_overview() LIMIT 0
 ) q;
 ROLLBACK;`);
