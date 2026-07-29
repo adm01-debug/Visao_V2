@@ -13,6 +13,12 @@ import {
 
 interface DispatchDeliverabilityCardProps {
   readonly verdict: DeliverabilityVerdict;
+  /**
+   * Onda 248 (X2) — críticos dados como vistos que nunca foram entregues.
+   * Reconhecer é um gesto interno: não avisa ninguém e não apaga a prova.
+   * `null` quando a contagem não pôde ser lida.
+   */
+  readonly launderedCritical: number | null;
   readonly isLoading: boolean;
   readonly isError: boolean;
   readonly onRefresh: () => void;
