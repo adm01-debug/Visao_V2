@@ -8511,6 +8511,27 @@ export type Database = {
         Args: { _alert_id: string }
         Returns: string
       }
+      acknowledgement_decay_selftest: {
+        Args: never
+        Returns: {
+          detail: string
+          guard: string
+          ok: boolean
+        }[]
+      }
+      acknowledgement_state: {
+        Args: {
+          p_acknowledged_at: string
+          p_acknowledged_by: string
+          p_cadence_minutes?: number
+          p_condition_persists: boolean
+          p_now?: string
+          p_self_referential?: boolean
+          p_severity_at_ack: string
+          p_severity_now: string
+        }
+        Returns: Json
+      }
       acquire_ptz_lock: {
         Args: { _camera_id: string; _ttl_seconds?: number }
         Returns: Json
@@ -9861,6 +9882,7 @@ export type Database = {
         Args: { _camera_id?: string; _rule_id?: string; _user_id: string }
         Returns: boolean
       }
+      laundered_critical_count: { Args: { p_since?: string }; Returns: number }
       list_alarm_recurrence_series: {
         Args: {
           p_chatter_max_ms?: number
@@ -9976,6 +9998,10 @@ export type Database = {
           total_started: number
           window_hours: number
         }[]
+      }
+      promise_window_minutes: {
+        Args: { p_cadence_minutes?: number; p_severity: string }
+        Returns: number
       }
       prune_connectivity_resolution_telemetry: {
         Args: never
@@ -10339,6 +10365,10 @@ export type Database = {
       triage_default_quarantine: {
         Args: { months_ahead?: number; months_back?: number }
         Returns: Json
+      }
+      undelivered_critical_count: {
+        Args: { p_since?: string }
+        Returns: number
       }
       unwrap_dek: {
         Args: { p_kek: string; p_wrapped: string }
