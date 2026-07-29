@@ -17,6 +17,8 @@ import { useAdmissionReconcile } from '@/hooks/useAdmissionReconcile';
 import { useAdmissionOrphanTrend } from '@/hooks/useAdmissionOrphanTrend';
 import { AdmissionOrphanTrendCard } from '@/components/maintenance/AdmissionOrphanTrendCard';
 import { AdmissionReconcileCard } from '@/components/maintenance/AdmissionReconcileCard';
+import { DispatchSuppressionCard } from '@/components/maintenance/DispatchSuppressionCard';
+import { useDispatchSuppressions } from '@/hooks/useDispatchSuppressions';
 import { useCommandReliability } from '@/hooks/useCommandReliability';
 import { useDeviceSilence } from '@/hooks/useDeviceSilence';
 import { useEpisodeBridgeWatch } from '@/hooks/useEpisodeBridgeWatch';
