@@ -18,7 +18,10 @@ import { useAdmissionOrphanTrend } from '@/hooks/useAdmissionOrphanTrend';
 import { AdmissionOrphanTrendCard } from '@/components/maintenance/AdmissionOrphanTrendCard';
 import { AdmissionReconcileCard } from '@/components/maintenance/AdmissionReconcileCard';
 import { DispatchSuppressionCard } from '@/components/maintenance/DispatchSuppressionCard';
+import { DispatchDeliverabilityCard } from '@/components/maintenance/DispatchDeliverabilityCard';
 import { useDispatchSuppressions } from '@/hooks/useDispatchSuppressions';
+import { useDispatchDeliverability } from '@/hooks/useDispatchDeliverability';
+
 import { useCommandReliability } from '@/hooks/useCommandReliability';
 import { useDeviceSilence } from '@/hooks/useDeviceSilence';
 import { useEpisodeBridgeWatch } from '@/hooks/useEpisodeBridgeWatch';
@@ -44,6 +47,8 @@ export default function MaintenanceConsolePage() {
   const admissionReconcile = useAdmissionReconcile(admissionPurge.snapshot.lastValid);
   const orphanTrend = useAdmissionOrphanTrend();
   const suppressions = useDispatchSuppressions();
+  const deliverability = useDispatchDeliverability();
+
 
   const { toast } = useToast();
   const [pendingId, setPendingId] = useState<string | null>(null);
@@ -165,7 +170,15 @@ export default function MaintenanceConsolePage() {
         onRefresh={orphanTrend.refetch}
       />
 
+      <DispatchDeliverabilityCard
+        verdict={deliverability.verdict}
+        isLoading={deliverability.isLoading}
+        isError={deliverability.isError}
+        onRefresh={deliverability.refetch}
+      />
+
       <DispatchSuppressionCard
+
         ledger={suppressions.ledger}
         isLoading={suppressions.isLoading}
         isError={suppressions.isError}

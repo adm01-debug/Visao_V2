@@ -122,13 +122,84 @@ Deno.serve(async (req) => {
   const { dryRun = false, ...configOverrides } = overrides;
   const config = resolveConfig(Deno.env.toObject(), configOverrides);
 
-  if (config.channels.length === 0) {
-    log("warn", "no_channels_configured");
-    return json({ ok: true, dispatched: 0, reason: "no_channels_configured" });
-  }
-
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
   const nowMs = Date.now();
+
+  /**
+   * Onda 246 — toda execução real entra no livro, inclusive (e sobretudo) a
+   * que não enviou nada. Sem esta linha, "não havia o que avisar" e "o
+   * despachante está mudo há oito meses" são indistinguíveis de fora, que foi
+   * exatamente o defeito encontrado na auditoria de 29/07.
+   *
+   * V9 — ensaio nunca entra no livro. Falha ao registrar nunca derruba o
+   * despacho: a prova é preciosa, o aviso é mais.
+   */
+  const recordRun = async (
+    outcome: "delivered" | "degraded" | "failing" | "muted" | "idle" | "error",
+    counts: {
+      candidates: number;
+      planned: number;
+      sent: number;
+      failed: number;
+      skipped: number;
+      throttled: number;
+      openCritical: number;
+    },
+    detail: Record<string, unknown> = {},
+  ): Promise<void> => {
+    if (dryRun) return;
+    const { error } = await supabase.from("maintenance_dispatch_runs").insert({
+      ran_at: new Date(nowMs).toISOString(),
+      channels: config.channels,
+      candidates: counts.candidates,
+      planned: counts.planned,
+      sent: counts.sent,
+      failed: counts.failed,
+      skipped: counts.skipped,
+      throttled: counts.throttled,
+      open_critical: counts.openCritical,
+      outcome,
+      detail,
+    });
+    if (error) log("error", "run_ledger_failed", { err: error.message, outcome });
+  };
+
+  const ZERO = {
+    candidates: 0,
+    planned: 0,
+    sent: 0,
+    failed: 0,
+    skipped: 0,
+    throttled: 0,
+    openCritical: 0,
+  };
+
+  /** Críticos abertos agora — traduz a mudez para a linguagem do plantão. */
+  const countOpenCritical = async (): Promise<number> => {
+    const { count, error } = await supabase
+      .from("maintenance_alert_events")
+      .select("id", { count: "exact", head: true })
+      .eq("severity", "critical")
+      .is("acknowledged_at", null);
+    if (error) {
+      log("warn", "open_critical_unreadable", { err: error.message });
+      return 0;
+    }
+    return count ?? 0;
+  };
+
+  if (config.channels.length === 0) {
+    const openCritical = await countOpenCritical();
+    log("warn", "no_channels_configured", { open_critical: openCritical });
+    await recordRun("muted", { ...ZERO, openCritical }, { reason: "no_channels_configured" });
+    return json({
+      ok: true,
+      dispatched: 0,
+      reason: "no_channels_configured",
+      open_critical: openCritical,
+    });
+  }
+
   const since = new Date(nowMs - config.maxAgeHours * 3_600_000).toISOString();
   // Onda 240 — a janela de silêncio por condição (até 1 dia) exige olhar mais
   // para trás do que a janela de candidatura. Só o histórico é lido aqui; a
@@ -136,6 +207,7 @@ Deno.serve(async (req) => {
   const historySince = new Date(
     nowMs - Math.max(config.maxAgeHours, CONDITION_HISTORY_HOURS) * 3_600_000,
   ).toISOString();
+
 
   try {
     const { data: historyRows, error: alertsError } = await supabase
@@ -148,7 +220,11 @@ Deno.serve(async (req) => {
 
     const history = (historyRows ?? []) as MaintenanceAlert[];
     const alerts = history.filter((a) => a.created_at >= since);
-    if (history.length === 0) return json({ ok: true, dispatched: 0, candidates: 0 });
+    if (history.length === 0) {
+      await recordRun("idle", ZERO, { reason: "no_history" });
+      return json({ ok: true, dispatched: 0, candidates: 0 });
+    }
+
 
     const { data: dispatchRows, error: dispatchError } = await supabase
       .from("maintenance_alert_dispatches")
@@ -171,7 +247,11 @@ Deno.serve(async (req) => {
       });
     }
 
-    if (alerts.length === 0) return json({ ok: true, dispatched: 0, candidates: 0 });
+    if (alerts.length === 0) {
+      await recordRun("idle", ZERO, { reason: "no_candidates_in_window" });
+      return json({ ok: true, dispatched: 0, candidates: 0 });
+    }
+
 
     const plan = planDispatch(
       alerts,
@@ -262,14 +342,40 @@ Deno.serve(async (req) => {
       }
     }
 
+    const throttled = plan.skipped.filter((s) => s.reason === "condition_throttled").length;
+    // A unidade do livro é o par (alerta, canal) — a mesma de `planned` e
+    // `skipped`. Misturar "alertas" com "pares" quebraria a contabilidade
+    // fechada e o veredito viraria `unreadable` por erro de unidade nosso.
+    const pairs = plan.items.length + plan.skipped.length;
+
     log(failed > 0 ? "warn" : "info", "dispatch_done", {
       candidates: alerts.length,
       planned: plan.items.length,
       sent,
       failed,
       skipped: plan.skipped.length,
-      throttled: plan.skipped.filter((s) => s.reason === "condition_throttled").length,
+      throttled,
     });
+
+    await recordRun(
+      plan.items.length === 0
+        ? "idle"
+        : failed === 0
+          ? "delivered"
+          : sent === 0
+            ? "failing"
+            : "degraded",
+      {
+        candidates: pairs,
+        planned: plan.items.length,
+        sent,
+        failed,
+        skipped: plan.skipped.length,
+        throttled,
+        openCritical: await countOpenCritical(),
+      },
+      { alerts: alerts.length },
+    );
 
     return json({
       ok: true,
@@ -277,11 +383,16 @@ Deno.serve(async (req) => {
       dispatched: sent,
       failed,
       skipped: plan.skipped.length,
-      throttled: plan.skipped.filter((s) => s.reason === "condition_throttled").length,
+      throttled,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "unknown_error";
     log("error", "dispatch_failed", { err: message });
+    // Fracasso inteiro também é fato: sem esta linha, uma exceção recorrente
+    // deixaria o livro com um buraco silencioso e o painel diria "atrasado"
+    // em vez de "quebrado".
+    await recordRun("error", ZERO, { error: message });
     return json({ ok: false, error: message }, 500);
   }
+
 });

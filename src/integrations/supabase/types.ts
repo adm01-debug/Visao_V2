@@ -4187,6 +4187,54 @@ export type Database = {
         }
         Relationships: []
       }
+      maintenance_dispatch_runs: {
+        Row: {
+          candidates: number
+          channels: string[]
+          created_at: string
+          detail: Json
+          failed: number
+          id: number
+          open_critical: number
+          outcome: string
+          planned: number
+          ran_at: string
+          sent: number
+          skipped: number
+          throttled: number
+        }
+        Insert: {
+          candidates?: number
+          channels?: string[]
+          created_at?: string
+          detail?: Json
+          failed?: number
+          id?: number
+          open_critical?: number
+          outcome: string
+          planned?: number
+          ran_at?: string
+          sent?: number
+          skipped?: number
+          throttled?: number
+        }
+        Update: {
+          candidates?: number
+          channels?: string[]
+          created_at?: string
+          detail?: Json
+          failed?: number
+          id?: number
+          open_critical?: number
+          outcome?: string
+          planned?: number
+          ran_at?: string
+          sent?: number
+          skipped?: number
+          throttled?: number
+        }
+        Relationships: []
+      }
       maintenance_dispatch_suppressions: {
         Row: {
           alert_id: string | null
@@ -9007,6 +9055,7 @@ export type Database = {
           warn_factor: number
         }[]
       }
+      dispatch_runs_selftest: { Args: never; Returns: Json }
       dwell_policy: {
         Args: never
         Returns: {
