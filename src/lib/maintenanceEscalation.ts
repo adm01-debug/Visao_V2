@@ -56,6 +56,12 @@ import {
   type ConditionStreak,
   type EscalationProfile,
 } from './escalationProfiles.ts';
+import {
+  escalationAckGate,
+  escalationAckLabel,
+  type EscalationAckContext,
+} from './maintenance/escalationAckGate.ts';
+
 
 /** Severidade compatível com `maintenance_alert_events`. */
 export type MaintenanceSeverity = 'warning' | 'critical';
@@ -135,7 +141,15 @@ export interface AlertSnapshot {
    * `streak`: o perfil manda, nunca o chamador.
    */
   readonly streak?: ConditionStreak | null;
+  /**
+   * Onda 249 — contexto do reconhecimento (autor, severidade no ack e se a
+   * condição ainda persiste). Ausente, a Y9 assume condição persistente: a
+   * promessa corre prazo e vence, em vez de o silêncio virar congelamento
+   * eterno por omissão do chamador.
+   */
+  readonly ack?: EscalationAckContext | null;
 }
+
 
 export interface EscalationInput {
   /** Referência temporal injetada — mantém a simulação determinística. */
@@ -303,7 +317,19 @@ export function evaluateAlertEscalation(
   const from = clampLevel(
     anchoredOnStreak ? Math.max(alert.escalationLevel, streak.maxLevel) : alert.escalationLevel,
   );
-  const acknowledged = alert.acknowledgedAtMs !== null;
+  // Onda 249 (Y1–Y5) — reconhecer congela a escada **por um prazo**, não para
+  // sempre. O portão devolve o estado nomeado; a escada só respeita promessa
+  // viva. Promessa vencida com a condição ativa devolve o alerta à escada no
+  // degrau em que ele estava (Y2/Y6/Y7: nem rebaixa, nem rejuvenesce, nem
+  // ganha degrau de brinde).
+  const ackGate = escalationAckGate(
+    {
+      acknowledgedAtMs: alert.acknowledgedAtMs,
+      severityNow: alert.severity,
+      ack: alert.ack ?? null,
+    },
+    nowMs,
+  );
 
   const base = {
     alertId: alert.id,
@@ -316,24 +342,16 @@ export function evaluateAlertEscalation(
   } as const;
 
 
-  // I1 — reconhecer congela a escada, independentemente de idade ou nível.
-  if (acknowledged) {
+  if (ackGate.freezesLadder) {
     return {
       ...base,
       toLevel: from,
       shouldEscalate: false,
       emitsAlert: false,
-      reason: describe({
-        severity: alert.severity,
-        fromLevel: from,
-        toLevel: from,
-        ageMin,
-        dispatch: alert.dispatch,
-        blockedByCooldown: false,
-        acknowledged: true,
-      }),
+      reason: `alerta reconhecido — ${escalationAckLabel(ackGate)}`,
     };
   }
+
 
   const desired = targetLevelForAge(alert.severity, ageMin, alert.dispatch, rule);
 

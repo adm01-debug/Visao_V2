@@ -104,6 +104,12 @@ export function MaintenanceAlertsCard({
                   {summary.silenced} com canal externo calado
                 </Badge>
               )}
+              {summary.ackDecayed > 0 && (
+                <Badge variant="destructive">
+                  {summary.ackDecayed} com promessa vencida (escada retomada)
+                </Badge>
+              )}
+
             </div>
 
             {buckets.length > 1 && (
@@ -224,6 +230,19 @@ export function MaintenanceAlertsCard({
                         Agravamento detectado — o próximo despacho fura o silêncio
                       </p>
                     )}
+                    {row.status === 'acknowledged' && (
+                      <p
+                        className={
+                          row.ackDecayed
+                            ? 'text-xs font-medium text-destructive'
+                            : 'text-xs text-muted-foreground'
+                        }
+                      >
+                        Reconhecimento: {row.ackLabel}
+                      </p>
+                    )}
+
+
 
                   </div>
 

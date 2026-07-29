@@ -9152,6 +9152,40 @@ export type Database = {
           previous_level: number
         }[]
       }
+      escalation_ack_frozen: {
+        Args: { p_alert_id: string; p_now?: string }
+        Returns: Json
+      }
+      escalation_ack_gate: {
+        Args: {
+          p_acknowledged_at: string
+          p_acknowledged_by: string
+          p_cadence_minutes?: number
+          p_condition_persists: boolean
+          p_now?: string
+          p_self_referential?: boolean
+          p_severity_at_ack: string
+          p_severity_now: string
+        }
+        Returns: Json
+      }
+      escalation_condition_persists: {
+        Args: {
+          p_ack_at: string
+          p_cadence?: number
+          p_now?: string
+          p_routine: string
+        }
+        Returns: boolean
+      }
+      escalation_decay_selftest: {
+        Args: never
+        Returns: {
+          detail: string
+          guard: string
+          ok: boolean
+        }[]
+      }
       escalation_ladder_minutes: {
         Args: { p_level: number; p_profile: string; p_severity: string }
         Returns: number

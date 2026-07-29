@@ -56,6 +56,12 @@ import {
   type EscalationProfile,
 } from '@/lib/escalationProfiles';
 import { readOwnerRouting, type OwnerRouting } from '@/lib/maintenance/maintenanceOwner';
+import type { AcknowledgementState } from '@/lib/maintenance/acknowledgementDecay';
+import {
+  escalationAckGate,
+  escalationAckLabel,
+} from '@/lib/maintenance/escalationAckGate';
+
 import {
   buildConditionSilence,
   indexConditionNotices,
@@ -124,7 +130,20 @@ export interface MaintenanceAlertView {
    * alerta já foi reconhecido (R2/R7/R8).
    */
   readonly silence: ConditionSilenceView | null;
+  /**
+   * Onda 249 — estado do reconhecimento perante a escada. `none` para alertas
+   * abertos; para reconhecidos, diz se a promessa ainda vale (`pending`), se
+   * foi cumprida (`honored`) ou se **decaiu** e devolveu o alerta à escada.
+   */
+  readonly ackState: AcknowledgementState;
+  /** Frase pronta para o operador (Y10) — nunca um booleano nu. */
+  readonly ackLabel: string;
+  /** `true` quando a promessa quebrou: o alerta voltou a escalar. */
+  readonly ackDecayed: boolean;
+  /** Minutos restantes de silêncio acordado; `null` quando não se aplica. */
+  readonly ackMinutesRemaining: number | null;
 }
+
 
 
 export interface MaintenanceConsoleSummary {
@@ -133,6 +152,12 @@ export interface MaintenanceConsoleSummary {
   readonly openCritical: number;
   readonly openWarning: number;
   readonly acknowledged: number;
+  /**
+   * Onda 249 — reconhecidos cuja promessa decaiu: a condição segue viva e a
+   * escada voltou a correr. É o passivo que o ack em massa criava em silêncio.
+   */
+  readonly ackDecayed: number;
+
   /** Abertos que já atingiram o teto da escada — ninguém mais será avisado. */
   readonly atCeiling: number;
   /** Severidade agregada da tela, para o cabeçalho. */
@@ -276,11 +301,41 @@ export function buildMaintenanceConsole(
     const ageMin = Math.max(0, (nowMs - createdMs) / MINUTE_MS);
     const profile = escalationProfileFor(row.routine);
 
-    // P3 — a âncora só governa alertas ABERTOS de perfis `streak`. Um alerta
-    // reconhecido não tem previsão (I1) e um perfil `row` continua idêntico ao
-    // comportamento pré-238, garantindo não-regressão.
+    // Onda 249 (Y1/Y9) — a condição persiste quando a fonte reemitiu a mesma
+    // rotina DEPOIS do reconhecimento. Medida no mundo (outras linhas), nunca
+    // declarada pelo operador; sem evidência, `null` → a Y9 assume persistir.
+    const conditionPersists =
+      acknowledgedAtMs === null
+        ? null
+        : rows.some(
+            (other) =>
+              other.routine === row.routine &&
+              (parseMs(other.created_at) ?? 0) > acknowledgedAtMs,
+          ) || null;
+
+    const ackGate = escalationAckGate(
+      {
+        acknowledgedAtMs,
+        severityNow: severity,
+        ack:
+          acknowledgedAtMs === null
+            ? null
+            : {
+                acknowledgedBy: row.acknowledged_by,
+                severityAtAck: severity,
+                conditionPersists,
+              },
+      },
+      nowMs,
+    );
+    // A escada volta a correr para promessa quebrada (Y1/Y2).
+    const ladderLive = status === 'open' || ackGate.decayed;
+
+
+    // P3 — a âncora governa alertas cuja escada está viva: abertos ou com
+    // promessa decaída (Y1). Perfil `row` segue idêntico ao pré-238.
     const streak =
-      profile.anchorMode === 'streak' && status === 'open'
+      profile.anchorMode === 'streak' && ladderLive
         ? (streaks.get(row.routine) ?? null)
         : null;
 
@@ -300,17 +355,17 @@ export function buildMaintenanceConsole(
       level,
       levelLabel: ESCALATION_LEVEL_LABELS[level],
       ageMinutes: Math.round(ageMin * 10) / 10,
-      // Reconhecer congela a escada (Onda 117): previsão deixa de existir.
-      minutesToNextLevel:
-        status === 'acknowledged'
-          ? null
-          : minutesToNextLevelForProfile(
-              profile,
-              severity,
-              effectiveLevel,
-              ladderAge,
-              lastStepMs === null ? null : Math.max(0, (nowMs - lastStepMs) / MINUTE_MS),
-            ),
+      // Reconhecer congela a escada (Onda 117) — mas só enquanto a promessa
+      // vale (Onda 249). Promessa quebrada volta a ter previsão de degrau.
+      minutesToNextLevel: ladderLive
+        ? minutesToNextLevelForProfile(
+            profile,
+            severity,
+            effectiveLevel,
+            ladderAge,
+            lastStepMs === null ? null : Math.max(0, (nowMs - lastStepMs) / MINUTE_MS),
+          )
+        : null,
       canAcknowledge: status === 'open',
       acknowledgedAtMs,
       routing: readOwnerRouting(row.detail),
@@ -326,6 +381,10 @@ export function buildMaintenanceConsole(
         status === 'open'
           ? buildConditionSilence(row.routine, severity, noticeIndex, nowMs)
           : null,
+      ackState: ackGate.state,
+      ackLabel: escalationAckLabel(ackGate),
+      ackDecayed: ackGate.decayed,
+      ackMinutesRemaining: ackGate.minutesRemaining,
     };
   });
 
@@ -350,6 +409,8 @@ export function buildMaintenanceConsole(
       openCritical,
       openWarning: open.length - openCritical,
       acknowledged: views.length - open.length,
+      ackDecayed: views.filter((view) => view.ackDecayed).length,
+
       atCeiling,
       worst: openCritical > 0 ? 'critical' : open.length > 0 ? 'warning' : 'ok',
       slowProfile: open.filter((view) => view.profileId !== 'operational').length,
