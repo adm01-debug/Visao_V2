@@ -71,13 +71,21 @@ describe('buildMaintenanceConsole — varredura combinatória', () => {
     expect(model.rows).toHaveLength(cases.length);
   });
 
-  it('I1 — reconhecido não oferece ação nem previsão', () => {
+  // I1 emendada pela Onda 249: reconhecer nunca devolve a AÇÃO, mas o silêncio
+  // da escada dura só enquanto a promessa vale. Promessa decaída volta a ter
+  // previsão de degrau — é exatamente o defeito que a onda veio corrigir.
+  it('I1 — reconhecido não oferece ação; previsão só enquanto a promessa vale', () => {
     for (const view of model.rows) {
       if (view.status !== 'acknowledged') continue;
       expect(view.canAcknowledge).toBe(false);
-      expect(view.minutesToNextLevel).toBeNull();
+      if (view.ackDecayed) {
+        expect(view.ackState).not.toBe('pending');
+      } else {
+        expect(view.minutesToNextLevel).toBeNull();
+      }
     }
   });
+
 
   it('I2 — alerta no teto da severidade não tem previsão', () => {
     for (const view of model.rows) {
