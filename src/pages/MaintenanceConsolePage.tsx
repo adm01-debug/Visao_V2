@@ -170,7 +170,15 @@ export default function MaintenanceConsolePage() {
         onRefresh={orphanTrend.refetch}
       />
 
+      <DispatchDeliverabilityCard
+        verdict={deliverability.verdict}
+        isLoading={deliverability.isLoading}
+        isError={deliverability.isError}
+        onRefresh={deliverability.refetch}
+      />
+
       <DispatchSuppressionCard
+
         ledger={suppressions.ledger}
         isLoading={suppressions.isLoading}
         isError={suppressions.isError}
