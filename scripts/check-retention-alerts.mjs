@@ -205,13 +205,18 @@ for (const routine of RETENTION_ROUTINES) {
 }
 
 // --- 5) Elo alerta -> despacho externo -----------------------------------------
+// Alerta já reconhecido por um humano é excluído de propósito: o despacho
+// existe para provocar reconhecimento, e cobrar envio depois que a intervenção
+// aconteceu transformaria o gate num alarme perpétuo sobre passado resolvido.
 const orphaned = query(`
   SELECT e.routine, round(extract(epoch from (now() - e.created_at)) / 3600.0, 1)
     FROM public.maintenance_alert_events e
    WHERE e.routine LIKE 'retention:%' AND e.severity = 'critical'
      AND e.created_at < now() - interval '2 hours'
+     AND e.acknowledged_at IS NULL
      AND NOT EXISTS (SELECT 1 FROM public.maintenance_alert_dispatches d WHERE d.alert_id = e.id)
    ORDER BY e.created_at DESC LIMIT 5`);
+
 for (const [routine, hours] of orphaned) {
   failures.push(`DESPACHO: alerta crítico sem envio há ${hours}h — ${routine}`);
 }
