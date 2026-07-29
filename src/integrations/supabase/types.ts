@@ -8787,10 +8787,19 @@ export type Database = {
           user_id: string
         }[]
       }
-      classify_retention_health: {
-        Args: { p_cadence_minutes: number; p_minutes_since: number }
-        Returns: string
-      }
+      classify_retention_health:
+        | {
+            Args: { p_cadence_minutes: number; p_minutes_since: number }
+            Returns: string
+          }
+        | {
+            Args: {
+              p_cadence_minutes: number
+              p_minutes_since: number
+              p_minutes_since_registration: number
+            }
+            Returns: string
+          }
       cleanup_api_usage_logs: { Args: never; Returns: number }
       cleanup_edge_cache: { Args: never; Returns: number }
       cleanup_old_test_events: { Args: never; Returns: number }
@@ -9493,6 +9502,7 @@ export type Database = {
         Args: { p_now?: string }
         Returns: {
           cadence_minutes: number
+          debut_due_at: string
           deleted_last_30d: number
           health: string
           hours_since_last: number
@@ -9500,6 +9510,8 @@ export type Database = {
           label: string
           last_run: string
           minutes_since_last: number
+          minutes_since_registration: number
+          registered_at: string
           retention_days: number
           runs_last_30d: number
         }[]
