@@ -77,25 +77,74 @@ try {
 // --- 3) Paridade funcional SQL <-> TypeScript ----------------------------------
 // Cada rotina é exercitada em três pontos: saudável, atrasada e parada. O SQL
 // roda dentro de uma transação revertida com um relógio injetado (p_now).
+// --- 2.5) Paridade do registro TS <-> SQL (Onda 244) --------------------------
+// A carência de estreia depende de `registered_at`. Se as duas listas
+// divergirem, a régua da tela e a do banco julgam rotinas diferentes.
+{
+  const sqlRows = query(
+    `SELECT job_name || '|' || source_table || '|' || cadence_minutes || '|' ||
+            coalesce(to_char(registered_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS'), '-')
+       FROM public.retention_routine_registry() ORDER BY source_table`,
+  ).map((r) => r[0]);
+  const tsRows = [...RETENTION_ROUTINES]
+    .sort((a, b) => a.sourceTable.localeCompare(b.sourceTable))
+    .map(
+      (r) =>
+        `${r.jobName}|${r.sourceTable}|${r.cadenceMinutes}|${new Date(r.registeredAt)
+          .toISOString()
+          .slice(0, 19)}`,
+    );
+  check(
+    'REGISTRO',
+    sqlRows.join('\n') === tsRows.join('\n'),
+    `registro divergente:\n  SQL: ${sqlRows.join(' ; ')}\n  TS : ${tsRows.join(' ; ')}`,
+  );
+}
+
 for (const routine of RETENTION_ROUTINES) {
   const cadence = routine.cadenceMinutes;
+  const registeredAtMs = new Date(routine.registeredAt).getTime();
 
-  // Sem nenhuma execução gravada, `max(executed_at)` é NULL e o relógio
-  // injetado perde a referência: o SQL responde (corretamente) 'never'. Esse
-  // estado é verificado à parte; os cenários de silêncio exigem uma âncora.
+  // Sem nenhuma execução gravada, `max(executed_at)` é NULL. A partir da Onda
+  // 244 isso não é automaticamente crítico: dentro de `cadência + 15 min` do
+  // registro a rotina está em estreia pendente (silêncio esperado); passado o
+  // prazo, volta a ser crítico. As duas pontas são exercitadas contra o SQL.
   const [[anchored]] = query(
     `SELECT (max(executed_at) IS NOT NULL)::text FROM public.${routine.sourceTable}`,
   );
   if (anchored !== 'true') {
-    const [alert] = evaluateRetentionAlerts([{ jobName: routine.jobName, minutesSinceLastRun: null }], [routine]);
-    check(
-      'NUNCA-EXECUTOU',
-      alert?.severity === 'critical',
-      `${routine.jobName}: rotina sem execuções deveria virar alerta crítico`,
-    );
+    for (const [name, age, expected] of [
+      ['carência', 1, 'none'],
+      ['carência vencida', cadence + 16, 'critical'],
+    ]) {
+      const [alert] = evaluateRetentionAlerts(
+        [{ jobName: routine.jobName, minutesSinceLastRun: null, minutesSinceRegistration: age }],
+        [routine],
+      );
+      const tsSeverity = alert ? alert.severity : 'none';
+      const clock = new Date(registeredAtMs + age * 60_000).toISOString();
+      const rows = query(`
+        BEGIN;
+        SELECT set_config('search_path', 'public', true);
+        SELECT coalesce(
+          (SELECT x->>'severity' FROM jsonb_array_elements(
+             (public.evaluate_retention_alerts(timestamptz '${clock}'))->'routines') x
+            WHERE x->>'routine' = 'retention:${routine.jobName}'),
+          'missing');
+        ROLLBACK;`)
+        .map((r) => r[0])
+        .filter((v) => v !== '' && v !== 'set_config');
+      const sqlSeverity = rows[rows.length - 1];
+      check(
+        'ESTREIA',
+        sqlSeverity === expected && tsSeverity === expected,
+        `${routine.jobName} (${name}): SQL='${sqlSeverity}' TS='${tsSeverity}' esperado='${expected}'`,
+      );
+    }
     console.warn(`⚠️  ${routine.jobName}: sem execuções registradas — cenários de silêncio pulados.`);
     continue;
   }
+
 
   const scenarios = [
     { minutes: 0, name: 'saudável' },
