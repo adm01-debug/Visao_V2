@@ -220,7 +220,11 @@ Deno.serve(async (req) => {
 
     const history = (historyRows ?? []) as MaintenanceAlert[];
     const alerts = history.filter((a) => a.created_at >= since);
-    if (history.length === 0) return json({ ok: true, dispatched: 0, candidates: 0 });
+    if (history.length === 0) {
+      await recordRun("idle", ZERO, { reason: "no_history" });
+      return json({ ok: true, dispatched: 0, candidates: 0 });
+    }
+
 
     const { data: dispatchRows, error: dispatchError } = await supabase
       .from("maintenance_alert_dispatches")
