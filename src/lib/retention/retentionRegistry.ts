@@ -41,8 +41,16 @@
  * Assim, a próxima rotina de expurgo não pode nascer invisível.
  */
 
-/** Situação de uma rotina de expurgo em relação à sua própria cadência. */
-export type RetentionHealth = 'ok' | 'warn' | 'stalled' | 'never';
+/**
+ * Situação de uma rotina de expurgo em relação à sua própria cadência.
+ *
+ * `pending_first_run` (Onda 244) separa dois fatos que antes eram um só:
+ * "nunca executou porque acabou de ser registrada" (esperado, sem alerta) e
+ * "nunca executou apesar de já ter passado da estreia" (`never`, crítico).
+ * Fundir os dois produzia um crítico falso a cada rotina nova — e crítico
+ * falso é a forma mais rápida de treinar o operador a ignorar a classe toda.
+ */
+export type RetentionHealth = 'ok' | 'warn' | 'stalled' | 'pending_first_run' | 'never';
 
 /** Tolerância fixa somada aos múltiplos de cadência, em minutos. */
 export const GRACE_MINUTES = 15;
@@ -52,6 +60,12 @@ export const WARN_CADENCE_FACTOR = 2;
 
 /** Multiplicador de cadência a partir do qual a rotina é dada como parada. */
 export const STALLED_CADENCE_FACTOR = 4;
+
+/**
+ * Multiplicador da carência de estreia. Uma cadência inteira cobre o pior
+ * caso: a rotina é registrada um minuto depois do horário do cron do dia.
+ */
+export const DEBUT_CADENCE_FACTOR = 1;
 
 /** Uma rotina de expurgo supervisionada. */
 export interface RetentionRoutine {
@@ -63,6 +77,11 @@ export interface RetentionRoutine {
   readonly cadenceMinutes: number;
   /** Rótulo humano, em português. */
   readonly label: string;
+  /**
+   * Instante ISO em que a rotina entrou no registro. É a âncora da carência
+   * de estreia; sem ela, "nunca executou" volta a ser crítico imediato.
+   */
+  readonly registeredAt: string;
 }
 
 /**
@@ -71,34 +90,60 @@ export interface RetentionRoutine {
  */
 export const RETENTION_ROUTINES: readonly RetentionRoutine[] = [
   {
+    jobName: 'admission_ledger',
+    sourceTable: 'admission_ledger_purge_runs',
+    cadenceMinutes: 1440,
+    label: 'Janelas do livro de admissão',
+    registeredAt: '2026-07-20T00:00:00.000Z',
+  },
+  {
+    jobName: 'admission_reconcile',
+    sourceTable: 'admission_reconcile_purge_runs',
+    cadenceMinutes: 1440,
+    label: 'Fotos de conciliação da admissão',
+    registeredAt: '2026-07-26T00:00:00.000Z',
+  },
+  {
     jobName: 'agent_discoveries',
     sourceTable: 'agent_discoveries_purge_runs',
     cadenceMinutes: 1440,
     label: 'Descobertas de agentes locais',
+    registeredAt: '2026-05-01T00:00:00.000Z',
   },
   {
     jobName: 'agent_relay_tasks',
     sourceTable: 'agent_relay_purge_runs',
     cadenceMinutes: 1440,
     label: 'Tarefas de relay dos agentes',
+    registeredAt: '2026-05-01T00:00:00.000Z',
   },
   {
     jobName: 'alarm_recurrence',
     sourceTable: 'alarm_recurrence_purge_runs',
     cadenceMinutes: 1440,
     label: 'Episódios de reincidência de alarme',
+    registeredAt: '2026-06-10T00:00:00.000Z',
   },
   {
     jobName: 'collab_entries',
     sourceTable: 'collab_entry_purge_runs',
     cadenceMinutes: 1440,
     label: 'Entradas da rede colaborativa',
+    registeredAt: '2026-05-20T00:00:00.000Z',
   },
   {
     jobName: 'collab_notifications',
     sourceTable: 'collab_notification_purge_runs',
     cadenceMinutes: 60,
     label: 'Avisos da rede colaborativa',
+    registeredAt: '2026-05-20T00:00:00.000Z',
+  },
+  {
+    jobName: 'dispatch_suppressions',
+    sourceTable: 'maintenance_suppression_purge_runs',
+    cadenceMinutes: 1440,
+    label: 'Trilha de silêncios do despacho',
+    registeredAt: '2026-07-29T15:15:00.000Z',
   },
 ] as const;
 
