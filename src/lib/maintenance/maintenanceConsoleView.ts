@@ -295,6 +295,37 @@ export function buildMaintenanceConsole(
     const ageMin = Math.max(0, (nowMs - createdMs) / MINUTE_MS);
     const profile = escalationProfileFor(row.routine);
 
+    // Onda 249 (Y1/Y9) — a condição persiste quando a fonte reemitiu a mesma
+    // rotina DEPOIS do reconhecimento. Medida no mundo (outras linhas), nunca
+    // declarada pelo operador; sem evidência, `null` → a Y9 assume persistir.
+    const conditionPersists =
+      acknowledgedAtMs === null
+        ? null
+        : rows.some(
+            (other) =>
+              other.routine === row.routine &&
+              (parseMs(other.created_at) ?? 0) > acknowledgedAtMs,
+          ) || null;
+
+    const ackGate = escalationAckGate(
+      {
+        acknowledgedAtMs,
+        severityNow: severity,
+        ack:
+          acknowledgedAtMs === null
+            ? null
+            : {
+                acknowledgedBy: row.acknowledged_by,
+                severityAtAck: severity,
+                conditionPersists,
+              },
+      },
+      nowMs,
+    );
+    // A escada volta a correr para promessa quebrada (Y1/Y2).
+    const ladderLive = status === 'open' || ackGate.decayed;
+
+
     // P3 — a âncora só governa alertas ABERTOS de perfis `streak`. Um alerta
     // reconhecido não tem previsão (I1) e um perfil `row` continua idêntico ao
     // comportamento pré-238, garantindo não-regressão.
