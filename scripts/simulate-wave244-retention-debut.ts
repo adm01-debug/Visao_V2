@@ -62,13 +62,15 @@ function check(ok: boolean, label: string): void {
 }
 
 /** Cadências exercitadas: horária, diária e extremos plausíveis. */
-const CADENCES = [5, 60, 240, 720, 1440, 10080];
+const CADENCES = [1, 5, 15, 30, 60, 90, 120, 240, 360, 720, 1440, 2880, 4320, 10080, 43200];
 
 /** Idades de registro, em minutos, relativas à fronteira da carência. */
-const AGE_OFFSETS = [-10_000, -1, 0, 1, 2, 30, 900, 100_000];
+const AGE_OFFSETS = [
+  -1_000_000, -100_000, -10_000, -1_440, -61, -16, -2, -1, 0, 1, 2, 16, 61, 900, 10_000, 100_000,
+];
 
 /** Silêncios exercitados, relativos às fronteiras de warn/stalled. */
-const SILENCE_OFFSETS = [-1000, -1, 0, 1, 5000];
+const SILENCE_OFFSETS = [-100_000, -1_000, -61, -2, -1, 0, 1, 2, 61, 1_000, 100_000];
 
 for (const cadence of CADENCES) {
   const { warnAfterMinutes, stalledAfterMinutes, debutAfterMinutes } =
