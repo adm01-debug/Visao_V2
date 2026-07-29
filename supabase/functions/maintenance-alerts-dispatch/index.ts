@@ -342,14 +342,40 @@ Deno.serve(async (req) => {
       }
     }
 
+    const throttled = plan.skipped.filter((s) => s.reason === "condition_throttled").length;
+    // A unidade do livro é o par (alerta, canal) — a mesma de `planned` e
+    // `skipped`. Misturar "alertas" com "pares" quebraria a contabilidade
+    // fechada e o veredito viraria `unreadable` por erro de unidade nosso.
+    const pairs = plan.items.length + plan.skipped.length;
+
     log(failed > 0 ? "warn" : "info", "dispatch_done", {
       candidates: alerts.length,
       planned: plan.items.length,
       sent,
       failed,
       skipped: plan.skipped.length,
-      throttled: plan.skipped.filter((s) => s.reason === "condition_throttled").length,
+      throttled,
     });
+
+    await recordRun(
+      plan.items.length === 0
+        ? "idle"
+        : failed === 0
+          ? "delivered"
+          : sent === 0
+            ? "failing"
+            : "degraded",
+      {
+        candidates: pairs,
+        planned: plan.items.length,
+        sent,
+        failed,
+        skipped: plan.skipped.length,
+        throttled,
+        openCritical: await countOpenCritical(),
+      },
+      { alerts: alerts.length },
+    );
 
     return json({
       ok: true,
@@ -357,11 +383,16 @@ Deno.serve(async (req) => {
       dispatched: sent,
       failed,
       skipped: plan.skipped.length,
-      throttled: plan.skipped.filter((s) => s.reason === "condition_throttled").length,
+      throttled,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "unknown_error";
     log("error", "dispatch_failed", { err: message });
+    // Fracasso inteiro também é fato: sem esta linha, uma exceção recorrente
+    // deixaria o livro com um buraco silencioso e o painel diria "atrasado"
+    // em vez de "quebrado".
+    await recordRun("error", ZERO, { error: message });
     return json({ ok: false, error: message }, 500);
   }
+
 });
