@@ -34,6 +34,11 @@ const RUN_SAMPLE = 24;
 
 export interface UseDispatchDeliverabilityResult {
   readonly verdict: DeliverabilityVerdict;
+  /**
+   * X2 — críticos reconhecidos que nunca foram entregues. Medida direta da
+   * lavagem de acusação; publicada para ser exibida, nunca escondida.
+   */
+  readonly launderedCritical: number | null;
   readonly isLoading: boolean;
   readonly isError: boolean;
   readonly refetch: () => void;
@@ -42,7 +47,8 @@ export interface UseDispatchDeliverabilityResult {
 interface Payload {
   readonly runs: DispatchRunRow[];
   /** `null` quando a contagem não pôde ser lida — nunca coagido a zero. */
-  readonly openCritical: number | null;
+  readonly undeliveredCritical: number | null;
+  readonly launderedCritical: number | null;
 }
 
 function toRuns(raw: unknown): DispatchRunRow[] {
