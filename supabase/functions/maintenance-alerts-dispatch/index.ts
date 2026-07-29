@@ -181,6 +181,33 @@ Deno.serve(async (req) => {
       notices,
     );
 
+    // Onda 242 — a supressão vira fato persistido. Sem trilha, "calamos 40
+    // mensagens" e "o despachante está quebrado" são indistinguíveis de fora.
+    const suppressionRows = plan.skipped
+      .filter((s) => s.reason === "condition_throttled")
+      .map((s) => {
+        const detail = (s.detail ?? {}) as Record<string, unknown>;
+        const alert = alertById.get(s.alertId);
+        const windowMinutes = Number(detail.windowMinutes);
+        const remaining = Number(detail.remainingMinutes);
+        if (!Number.isFinite(windowMinutes) || windowMinutes <= 0) return null;
+        return {
+          alert_id: s.alertId,
+          condition_key: String(detail.conditionKey ?? alert?.routine ?? "").trim(),
+          channel: s.channel,
+          severity: alert?.severity ?? "warning",
+          last_severity: typeof detail.lastSeverity === "string" ? detail.lastSeverity : null,
+          window_minutes: Math.trunc(windowMinutes),
+          // O CHECK exige `remaining <= window`; grampeamos aqui em vez de
+          // deixar a linha inteira ser recusada por um arredondamento.
+          remaining_minutes: Math.min(
+            Math.trunc(windowMinutes),
+            Math.max(0, Number.isFinite(remaining) ? Math.trunc(remaining) : 0),
+          ),
+          suppressed_at: new Date(nowMs).toISOString(),
+        };
+      })
+      .filter((row): row is NonNullable<typeof row> => row !== null && row.condition_key.length > 0);
 
     if (dryRun) {
       return json({
@@ -188,8 +215,20 @@ Deno.serve(async (req) => {
         dry_run: true,
         planned: plan.items.map((i) => ({ alert_id: i.alert.id, channel: i.channel, attempt: i.attempt })),
         skipped: plan.skipped,
-        throttled: plan.skipped.filter((s) => s.reason === "condition_throttled").length,
+        throttled: suppressionRows.length,
       });
+    }
+
+    if (suppressionRows.length > 0) {
+      // Falha ao auditar nunca derruba o despacho: o envio é o efeito
+      // principal, a trilha é a prova. Perder a prova é ruim; perder o aviso
+      // por causa da prova seria pior.
+      const { error: suppressionError } = await supabase
+        .from("maintenance_dispatch_suppressions")
+        .insert(suppressionRows);
+      if (suppressionError) {
+        log("error", "suppression_trail_failed", { err: suppressionError.message });
+      }
     }
 
     let sent = 0;
