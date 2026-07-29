@@ -326,11 +326,10 @@ export function buildMaintenanceConsole(
     const ladderLive = status === 'open' || ackGate.decayed;
 
 
-    // P3 — a âncora só governa alertas ABERTOS de perfis `streak`. Um alerta
-    // reconhecido não tem previsão (I1) e um perfil `row` continua idêntico ao
-    // comportamento pré-238, garantindo não-regressão.
+    // P3 — a âncora governa alertas cuja escada está viva: abertos ou com
+    // promessa decaída (Y1). Perfil `row` segue idêntico ao pré-238.
     const streak =
-      profile.anchorMode === 'streak' && status === 'open'
+      profile.anchorMode === 'streak' && ladderLive
         ? (streaks.get(row.routine) ?? null)
         : null;
 
@@ -350,17 +349,17 @@ export function buildMaintenanceConsole(
       level,
       levelLabel: ESCALATION_LEVEL_LABELS[level],
       ageMinutes: Math.round(ageMin * 10) / 10,
-      // Reconhecer congela a escada (Onda 117): previsão deixa de existir.
-      minutesToNextLevel:
-        status === 'acknowledged'
-          ? null
-          : minutesToNextLevelForProfile(
-              profile,
-              severity,
-              effectiveLevel,
-              ladderAge,
-              lastStepMs === null ? null : Math.max(0, (nowMs - lastStepMs) / MINUTE_MS),
-            ),
+      // Reconhecer congela a escada (Onda 117) — mas só enquanto a promessa
+      // vale (Onda 249). Promessa quebrada volta a ter previsão de degrau.
+      minutesToNextLevel: ladderLive
+        ? minutesToNextLevelForProfile(
+            profile,
+            severity,
+            effectiveLevel,
+            ladderAge,
+            lastStepMs === null ? null : Math.max(0, (nowMs - lastStepMs) / MINUTE_MS),
+          )
+        : null,
       canAcknowledge: status === 'open',
       acknowledgedAtMs,
       routing: readOwnerRouting(row.detail),
@@ -376,7 +375,13 @@ export function buildMaintenanceConsole(
         status === 'open'
           ? buildConditionSilence(row.routine, severity, noticeIndex, nowMs)
           : null,
+      ackState: ackGate.state,
+      ackLabel: escalationAckLabel(ackGate),
+      ackDecayed: ackGate.decayed,
+      ackMinutesRemaining: ackGate.minutesRemaining,
     };
+  });
+
   });
 
   views.sort(compareRows);
