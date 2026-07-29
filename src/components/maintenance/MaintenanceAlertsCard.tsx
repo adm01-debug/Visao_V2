@@ -104,6 +104,12 @@ export function MaintenanceAlertsCard({
                   {summary.silenced} com canal externo calado
                 </Badge>
               )}
+              {summary.ackDecayed > 0 && (
+                <Badge variant="destructive">
+                  {summary.ackDecayed} com promessa vencida (escada retomada)
+                </Badge>
+              )}
+
             </div>
 
             {buckets.length > 1 && (
