@@ -122,13 +122,84 @@ Deno.serve(async (req) => {
   const { dryRun = false, ...configOverrides } = overrides;
   const config = resolveConfig(Deno.env.toObject(), configOverrides);
 
-  if (config.channels.length === 0) {
-    log("warn", "no_channels_configured");
-    return json({ ok: true, dispatched: 0, reason: "no_channels_configured" });
-  }
-
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
   const nowMs = Date.now();
+
+  /**
+   * Onda 246 — toda execução real entra no livro, inclusive (e sobretudo) a
+   * que não enviou nada. Sem esta linha, "não havia o que avisar" e "o
+   * despachante está mudo há oito meses" são indistinguíveis de fora, que foi
+   * exatamente o defeito encontrado na auditoria de 29/07.
+   *
+   * V9 — ensaio nunca entra no livro. Falha ao registrar nunca derruba o
+   * despacho: a prova é preciosa, o aviso é mais.
+   */
+  const recordRun = async (
+    outcome: "delivered" | "degraded" | "failing" | "muted" | "idle" | "error",
+    counts: {
+      candidates: number;
+      planned: number;
+      sent: number;
+      failed: number;
+      skipped: number;
+      throttled: number;
+      openCritical: number;
+    },
+    detail: Record<string, unknown> = {},
+  ): Promise<void> => {
+    if (dryRun) return;
+    const { error } = await supabase.from("maintenance_dispatch_runs").insert({
+      ran_at: new Date(nowMs).toISOString(),
+      channels: config.channels,
+      candidates: counts.candidates,
+      planned: counts.planned,
+      sent: counts.sent,
+      failed: counts.failed,
+      skipped: counts.skipped,
+      throttled: counts.throttled,
+      open_critical: counts.openCritical,
+      outcome,
+      detail,
+    });
+    if (error) log("error", "run_ledger_failed", { err: error.message, outcome });
+  };
+
+  const ZERO = {
+    candidates: 0,
+    planned: 0,
+    sent: 0,
+    failed: 0,
+    skipped: 0,
+    throttled: 0,
+    openCritical: 0,
+  };
+
+  /** Críticos abertos agora — traduz a mudez para a linguagem do plantão. */
+  const countOpenCritical = async (): Promise<number> => {
+    const { count, error } = await supabase
+      .from("maintenance_alert_events")
+      .select("id", { count: "exact", head: true })
+      .eq("severity", "critical")
+      .is("acknowledged_at", null);
+    if (error) {
+      log("warn", "open_critical_unreadable", { err: error.message });
+      return 0;
+    }
+    return count ?? 0;
+  };
+
+  if (config.channels.length === 0) {
+    const openCritical = await countOpenCritical();
+    log("warn", "no_channels_configured", { open_critical: openCritical });
+    await recordRun("muted", { ...ZERO, openCritical }, { reason: "no_channels_configured" });
+    return json({
+      ok: true,
+      dispatched: 0,
+      reason: "no_channels_configured",
+      open_critical: openCritical,
+    });
+  }
+
   const since = new Date(nowMs - config.maxAgeHours * 3_600_000).toISOString();
   // Onda 240 — a janela de silêncio por condição (até 1 dia) exige olhar mais
   // para trás do que a janela de candidatura. Só o histórico é lido aqui; a
@@ -136,6 +207,7 @@ Deno.serve(async (req) => {
   const historySince = new Date(
     nowMs - Math.max(config.maxAgeHours, CONDITION_HISTORY_HOURS) * 3_600_000,
   ).toISOString();
+
 
   try {
     const { data: historyRows, error: alertsError } = await supabase
