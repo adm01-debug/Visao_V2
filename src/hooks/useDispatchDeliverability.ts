@@ -7,8 +7,15 @@
  * simulação: nenhum agregado pronto vem do banco, para que divergência entre
  * banco e régua vire tela em vez de silêncio.
  *
- * A contagem de críticos abertos vem separada, da própria fonte dos alertas —
- * um número que a execução não conseguiu ler jamais vira zero (V10).
+ * A contagem de críticos vem separada, da própria fonte dos alertas — um
+ * número que a execução não conseguiu ler jamais vira zero (V10).
+ *
+ * Onda 248 (X2) — a contagem que sustenta a acusação é a de críticos **jamais
+ * entregues**, não a de "não reconhecidos". A versão anterior filtrava por
+ * `acknowledged_at IS NULL`, de modo que reconhecer alertas no console
+ * encolhia a acusação de mudez sem que nenhuma mensagem tivesse saído. O
+ * gesto interno não avisa o plantonista distante da tela e, portanto, não
+ * pode apagar a prova de que ninguém foi avisado.
  */
 
 import { useQuery } from '@tanstack/react-query';
