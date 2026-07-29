@@ -4226,6 +4226,54 @@ export type Database = {
         }
         Relationships: []
       }
+      maintenance_suppression_purge_runs: {
+        Row: {
+          anchor_per_condition: number
+          anchored_count: number
+          batch_cap: number
+          capped: boolean
+          created_at: string
+          cutoff_at: string
+          deferred_count: number
+          deleted_count: number
+          duration_ms: number
+          executed_at: string
+          id: string
+          quarantined_count: number
+          retention_days: number
+        }
+        Insert: {
+          anchor_per_condition: number
+          anchored_count: number
+          batch_cap: number
+          capped: boolean
+          created_at?: string
+          cutoff_at: string
+          deferred_count: number
+          deleted_count: number
+          duration_ms: number
+          executed_at?: string
+          id?: string
+          quarantined_count: number
+          retention_days: number
+        }
+        Update: {
+          anchor_per_condition?: number
+          anchored_count?: number
+          batch_cap?: number
+          capped?: boolean
+          created_at?: string
+          cutoff_at?: string
+          deferred_count?: number
+          deleted_count?: number
+          duration_ms?: number
+          executed_at?: string
+          id?: string
+          quarantined_count?: number
+          retention_days?: number
+        }
+        Relationships: []
+      }
       media_assets: {
         Row: {
           archived_at: string | null
@@ -9897,6 +9945,15 @@ export type Database = {
         Returns: Json
       }
       purge_bandwidth_samples: { Args: never; Returns: number }
+      purge_dispatch_suppressions: {
+        Args: {
+          p_anchor_per_condition?: number
+          p_batch_cap?: number
+          p_now?: string
+          p_retention_days?: number
+        }
+        Returns: Json
+      }
       purge_timelapse_snapshots: { Args: never; Returns: number }
       reap_agent_relay_leases: {
         Args: never
@@ -10125,6 +10182,14 @@ export type Database = {
         }[]
       }
       stable_hash32: { Args: { _input: string }; Returns: number }
+      suppression_retention_selftest: {
+        Args: never
+        Returns: {
+          check_name: string
+          detail: string
+          passed: boolean
+        }[]
+      }
       sweep_device_remote_commands: {
         Args: { p_limit?: number; p_now?: string }
         Returns: Json
