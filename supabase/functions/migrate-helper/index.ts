@@ -1,35 +1,50 @@
-// Edge function temporária para migração de banco.
-// Cole em: Cloud > Edge Functions > migrate-helper > View code
-// Após a migração, remova esta função.
+// Edge function utilitária de apoio à migração.
+// IMPORTANTE: esta função NUNCA devolve SUPABASE_SERVICE_ROLE_KEY nem SUPABASE_DB_URL.
+// Endpoint público (verify_jwt = false) só pode expor sinal não sensível.
 
-const ACCESS_KEY = "34d4001243f848ce135ffbf82a5544e60c1981de5f13eedc";
 const cors = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-access-key",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 
-Deno.serve(async (req) => {
+const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { ...cors, "Content-Type": "application/json" },
+  });
+
+/** Comparação em tempo constante para não vazar o segredo por timing. */
+function safeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+Deno.serve((req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: cors });
-  const key = req.headers.get("x-access-key");
-  if (key !== ACCESS_KEY) return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { ...cors, "Content-Type": "application/json" } });
 
-  const url = new URL(req.url);
-  const action = url.searchParams.get("action") || "ping";
-
-  try {
-    if (action === "ping") {
-      return new Response(JSON.stringify({ ok: true, project_ref: Deno.env.get("SUPABASE_URL") }), { headers: { ...cors, "Content-Type": "application/json" } });
-    }
-    if (action === "credentials") {
-      return new Response(JSON.stringify({
-        url: Deno.env.get("SUPABASE_URL"),
-        service_role: Deno.env.get("SUPABASE_SERVICE_ROLE_KEY"),
-        db_url: Deno.env.get("SUPABASE_DB_URL"),
-      }), { headers: { ...cors, "Content-Type": "application/json" } });
-    }
-    return new Response(JSON.stringify({ error: "unknown_action" }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
-  } catch (e) {
-    return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
+  // O segredo vem do ambiente, nunca literal no código versionado.
+  const expected = Deno.env.get("MIGRATE_HELPER_ACCESS_KEY");
+  if (!expected) {
+    return json({ error: "not_configured", detail: "MIGRATE_HELPER_ACCESS_KEY ausente" }, 503);
   }
+
+  const provided = req.headers.get("x-access-key") ?? "";
+  if (!safeEqual(provided, expected)) return json({ error: "unauthorized" }, 401);
+
+  const action = new URL(req.url).searchParams.get("action") ?? "ping";
+
+  if (action === "ping") {
+    return json({ ok: true, ts: new Date().toISOString() });
+  }
+
+  // A antiga ação "credentials" foi removida de propósito: devolvia a service role key
+  // em texto puro num endpoint sem JWT, o que anula a RLS de todo o projeto.
+  if (action === "credentials") {
+    return json({ error: "action_removed", detail: "credenciais nunca são expostas" }, 410);
+  }
+
+  return json({ error: "unknown_action" }, 400);
 });
