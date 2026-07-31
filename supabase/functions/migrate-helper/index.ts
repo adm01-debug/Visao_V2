@@ -105,7 +105,7 @@ Deno.serve(async (req) => {
         { auth: { persistSession: false, autoRefreshToken: false } },
       );
 
-      const { data, error } = await supabaseAdmin.rpc("exec_sql", { query: guard.sql });
+      const { data, error } = await supabaseAdmin.rpc("_migrate_read_sql", { query: guard.sql });
       if (error) {
         return json({ ok: false, error: error.message, ts: new Date().toISOString() }, 500);
       }
