@@ -8507,6 +8507,7 @@ export type Database = {
       }
     }
     Functions: {
+      _migrate_read_sql: { Args: { query: string }; Returns: Json }
       acknowledge_maintenance_alert: {
         Args: { _alert_id: string }
         Returns: string
