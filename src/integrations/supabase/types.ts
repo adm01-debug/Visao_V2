@@ -5997,6 +5997,51 @@ export type Database = {
         }
         Relationships: []
       }
+      plate_detections_m2027_02: {
+        Row: {
+          camera_id: string | null
+          camera_name: string
+          confidence: number
+          created_at: string
+          direction: string | null
+          id: string
+          image_url: string | null
+          plate: string
+          status: string
+          timestamp: string
+          user_id: string
+          vehicle_type: string | null
+        }
+        Insert: {
+          camera_id?: string | null
+          camera_name: string
+          confidence?: number
+          created_at?: string
+          direction?: string | null
+          id?: string
+          image_url?: string | null
+          plate: string
+          status?: string
+          timestamp?: string
+          user_id: string
+          vehicle_type?: string | null
+        }
+        Update: {
+          camera_id?: string | null
+          camera_name?: string
+          confidence?: number
+          created_at?: string
+          direction?: string | null
+          id?: string
+          image_url?: string | null
+          plate?: string
+          status?: string
+          timestamp?: string
+          user_id?: string
+          vehicle_type?: string | null
+        }
+        Relationships: []
+      }
       plate_detections_y2025_y2026_pre: {
         Row: {
           camera_id: string | null
@@ -6958,6 +7003,66 @@ export type Database = {
         Relationships: []
       }
       recognition_logs_m2027_01: {
+        Row: {
+          age_estimated: number | null
+          camera_id: string | null
+          confidence: number | null
+          created_at: string
+          gender_estimated: string | null
+          id: string
+          image_url: string | null
+          liveness_score: number | null
+          model_version: string | null
+          person_id: string | null
+          pose_pitch: number | null
+          pose_roll: number | null
+          pose_yaw: number | null
+          recognized: boolean
+          spoof_detected: boolean
+          timestamp: string
+          user_id: string
+        }
+        Insert: {
+          age_estimated?: number | null
+          camera_id?: string | null
+          confidence?: number | null
+          created_at?: string
+          gender_estimated?: string | null
+          id?: string
+          image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
+          person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
+          recognized?: boolean
+          spoof_detected?: boolean
+          timestamp?: string
+          user_id: string
+        }
+        Update: {
+          age_estimated?: number | null
+          camera_id?: string | null
+          confidence?: number | null
+          created_at?: string
+          gender_estimated?: string | null
+          id?: string
+          image_url?: string | null
+          liveness_score?: number | null
+          model_version?: string | null
+          person_id?: string | null
+          pose_pitch?: number | null
+          pose_roll?: number | null
+          pose_yaw?: number | null
+          recognized?: boolean
+          spoof_detected?: boolean
+          timestamp?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      recognition_logs_m2027_02: {
         Row: {
           age_estimated: number | null
           camera_id: string | null
