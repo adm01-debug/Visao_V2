@@ -62,9 +62,10 @@ function runVitest({ jsonFile, files = [], coverage }) {
     // Override script-shell on Windows: .npmrc sets script-shell=/bin/bash which
     // doesn't exist on Windows runners, causing npm exec (called by npx) to ENOENT.
     // 'cmd.exe' is the correct Windows shell and takes precedence over .npmrc.
-    env: process.platform === 'win32'
-      ? { ...process.env, npm_config_script_shell: 'cmd.exe' }
-      : process.env,
+    env:
+      process.platform === 'win32'
+        ? { ...process.env, npm_config_script_shell: 'cmd.exe' }
+        : process.env,
   });
   return { status: result.status ?? 1, failures: readFailures(jsonFile) };
 }
