@@ -56,7 +56,11 @@ function runVitest({ jsonFile, files = [], coverage }) {
     ...EXTRA_ARGS,
   ];
 
-  const result = spawnSync('npx', args, { stdio: 'inherit', shell: process.platform === 'win32' });
+  const result = spawnSync('npx', args, {
+    stdio: 'inherit',
+    shell: process.platform === 'win32',
+    env: { ...process.env, npm_config_script_shell: '' },
+  });
   return { status: result.status ?? 1, failures: readFailures(jsonFile) };
 }
 

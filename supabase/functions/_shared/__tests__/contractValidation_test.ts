@@ -277,7 +277,7 @@ const SchemaV2 = z
   .object({
     id: z.string().uuid(),
     name: z.string().min(1),
-    tags: z.array(z.string()).optional(),
+    tags: z.array(z.string()),
   })
   .strict();
 
