@@ -115,7 +115,7 @@ jobs:
       # 1ª execução sem retry (gera cobertura). Só os testes que falharem são
       # reexecutados — flaky é reportado, falha real reprova o job.
       - name: Vitest (suíte completa + retry apenas de testes flaky)
-        run: npm run test:ci:flaky-retry
+        run: node scripts/vitest-flaky-retry.mjs
         env:
           CI: true
           FLAKY_MAX_RETRIES: '2'

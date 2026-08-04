@@ -71,10 +71,7 @@ export const IngestAuthSchemaV2 = z
       .superRefine((val, ctx) => {
         if (val !== undefined && Object.keys(val).length > 10) {
           ctx.addIssue({
-            code: 'too_big',
-            type: 'object',
-            maximum: 10,
-            inclusive: true,
+            code: z.ZodIssueCode.custom,
             message: 'metadata não pode ter mais de 10 chaves',
           });
         }
