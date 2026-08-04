@@ -25,6 +25,7 @@ import {
   PreviewTelemetryAlertQuerySchema,
   ConnectivityResolutionAlertQuerySchema,
   WatchdogAckSlaAlertSchemaV1,
+  WatchdogAckSlaAlertQuerySchema,
   MonitoringCenterDispatchSchemaV1,
   VaultCoverageWatchdogQuerySchema,
 } from "../webhookSchemas.ts";
@@ -950,6 +951,134 @@ Deno.test("watchdog-ack-sla-alert V1: rejeita force como string", async () => {
 
 Deno.test("watchdog-ack-sla-alert V1: rejeita campo desconhecido (strict)", async () => {
   const result = validatePayload(WatchdogAckSlaAlertSchemaV1, { extra: "campo" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
+});
+
+Deno.test("watchdog-ack-sla-alert V1: aceita min_ack = 10080 (máximo)", () => {
+  const result = WatchdogAckSlaAlertSchemaV1.safeParse({ min_ack: 10080 });
+  assertEquals(result.success, true);
+});
+
+Deno.test("watchdog-ack-sla-alert V1: rejeita min_ack = 10081 (acima do máximo)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertSchemaV1, { min_ack: 10081 });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "min_ack");
+});
+
+Deno.test("watchdog-ack-sla-alert V1: rejeita mtta_cap_min = 10081 (acima do máximo)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertSchemaV1, { mtta_cap_min: 10081 });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "mtta_cap_min");
+});
+
+// ─────────────────────────────────────────────────────────────
+// watchdog-ack-sla-alert — query param variant (GET)
+// Schema: WatchdogAckSlaAlertQuerySchema — z.coerce para string→number
+// Protege contra NaN causado por valores não-numéricos em query params
+// ─────────────────────────────────────────────────────────────
+
+Deno.test("watchdog-ack-sla-alert query: aceita params vazios (GET sem query string)", () => {
+  const result = WatchdogAckSlaAlertQuerySchema.safeParse({});
+  assertEquals(result.success, true);
+});
+
+Deno.test("watchdog-ack-sla-alert query: aceita force = '1' (string)", () => {
+  const result = WatchdogAckSlaAlertQuerySchema.safeParse({ force: "1" });
+  assertEquals(result.success, true);
+  if (result.success) assertEquals(result.data.force, "1");
+});
+
+Deno.test("watchdog-ack-sla-alert query: aceita force = '0' (string)", () => {
+  const result = WatchdogAckSlaAlertQuerySchema.safeParse({ force: "0" });
+  assertEquals(result.success, true);
+});
+
+Deno.test("watchdog-ack-sla-alert query: aceita min_ack como string numérica válida", () => {
+  const result = WatchdogAckSlaAlertQuerySchema.safeParse({ min_ack: "70" });
+  assertEquals(result.success, true);
+  if (result.success) assertEquals(result.data.min_ack, 70);
+});
+
+Deno.test("watchdog-ack-sla-alert query: aceita todos os params com coerção", () => {
+  const result = WatchdogAckSlaAlertQuerySchema.safeParse({
+    force: "1",
+    min_ack: "80",
+    min_esc: "5",
+    mtta_cap_min: "45",
+  });
+  assertEquals(result.success, true);
+  if (result.success) {
+    assertEquals(result.data.min_ack, 80);
+    assertEquals(result.data.min_esc, 5);
+    assertEquals(result.data.mtta_cap_min, 45);
+  }
+});
+
+Deno.test("watchdog-ack-sla-alert query: aceita min_ack = '0' (mínimo)", () => {
+  const result = WatchdogAckSlaAlertQuerySchema.safeParse({ min_ack: "0" });
+  assertEquals(result.success, true);
+  if (result.success) assertEquals(result.data.min_ack, 0);
+});
+
+Deno.test("watchdog-ack-sla-alert query: aceita min_ack = '10080' (máximo)", () => {
+  const result = WatchdogAckSlaAlertQuerySchema.safeParse({ min_ack: "10080" });
+  assertEquals(result.success, true);
+  if (result.success) assertEquals(result.data.min_ack, 10080);
+});
+
+// NaN protection — valores não-numéricos que causavam NaN antes da correção
+Deno.test("watchdog-ack-sla-alert query: rejeita min_ack = 'abc' (NaN-inducing)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertQuerySchema, { min_ack: "abc" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "min_ack");
+});
+
+Deno.test("watchdog-ack-sla-alert query: rejeita min_esc = 'abc' (NaN-inducing)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertQuerySchema, { min_esc: "abc" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "min_esc");
+});
+
+Deno.test("watchdog-ack-sla-alert query: rejeita mtta_cap_min = 'abc' (NaN-inducing)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertQuerySchema, { mtta_cap_min: "abc" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "mtta_cap_min");
+});
+
+Deno.test("watchdog-ack-sla-alert query: aceita min_ack = '' (string vazia coerge para 0)", () => {
+  // Number("") === 0, portanto "" coerge para 0 (dentro do intervalo [0,10080])
+  const result = WatchdogAckSlaAlertQuerySchema.safeParse({ min_ack: "" });
+  assertEquals(result.success, true);
+  if (result.success) assertEquals(result.data.min_ack, 0);
+});
+
+Deno.test("watchdog-ack-sla-alert query: rejeita min_ack = '10081' (acima do máximo)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertQuerySchema, { min_ack: "10081" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "min_ack");
+});
+
+Deno.test("watchdog-ack-sla-alert query: rejeita min_ack = '-1' (negativo)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertQuerySchema, { min_ack: "-1" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "min_ack");
+});
+
+Deno.test("watchdog-ack-sla-alert query: rejeita min_ack = '70.5' (decimal)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertQuerySchema, { min_ack: "70.5" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "min_ack");
+});
+
+Deno.test("watchdog-ack-sla-alert query: rejeita min_ack = 'Infinity' (Infinity-inducing)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertQuerySchema, { min_ack: "Infinity" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "min_ack");
+});
+
+Deno.test("watchdog-ack-sla-alert query: rejeita campo desconhecido (strict)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertQuerySchema, { unknown_param: "val" });
   assertEquals(result.success, false);
   if (!result.success) await assert422Shape(result.response);
 });
