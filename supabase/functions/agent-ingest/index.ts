@@ -33,14 +33,22 @@ const j = (body: unknown, status = 200) =>
 const RELAY_LONG_POLL_MS = 15_000;
 const RELAY_POLL_INTERVAL_MS = 500;
 
-function isPrivateHost(h: string): boolean {
+function isLocalHost(h: string): boolean {
+  // IPv4 private/loopback ranges
   const m = h.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
-  if (!m) return false;
-  const [a, b] = [parseInt(m[1]), parseInt(m[2])];
-  if (a === 10 || a === 127) return true;
-  if (a === 169 && b === 254) return true;
-  if (a === 172 && b >= 16 && b <= 31) return true;
-  if (a === 192 && b === 168) return true;
+  if (m) {
+    const [a, b] = [parseInt(m[1]), parseInt(m[2])];
+    if (a === 10 || a === 127) return true;
+    if (a === 169 && b === 254) return true;
+    if (a === 172 && b >= 16 && b <= 31) return true;
+    if (a === 192 && b === 168) return true;
+    return false;
+  }
+  // IPv6 loopback and link-local/unique-local (fc00::/7, fe80::/10)
+  const lower = h.toLowerCase();
+  if (lower === "::1" || lower.startsWith("fe80:") || lower.startsWith("fc") || lower.startsWith("fd")) return true;
+  // mDNS hostnames (.local, .localdomain) and plain names with no dots (e.g. "camera1")
+  if (h.endsWith(".local") || h.endsWith(".localdomain") || !h.includes(".")) return true;
   return false;
 }
 
@@ -52,7 +60,7 @@ Deno.serve(async (req) => {
   if (!token || token.length < 32) return j({ error: "missing_token" }, 401);
 
   const url = new URL(req.url);
-  const route = url.pathname.split("/").pop();
+  const route = url.pathname.split("/").filter(Boolean).pop();
   const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
   const version = getContractVersion(req);
 
@@ -82,7 +90,7 @@ Deno.serve(async (req) => {
     await admin.from("local_agents")
       .update({
         last_seen_at: new Date().toISOString(),
-        version: payload.agent_version ?? null,
+        ...(payload.agent_version !== undefined ? { version: payload.agent_version } : {}),
         last_ip: clientIp,
         ...(payload.network_cidr ? { network_cidr: payload.network_cidr } : {}),
       })
@@ -105,7 +113,7 @@ Deno.serve(async (req) => {
     const payload = validation.data;
 
     const rows = payload.discoveries
-      .filter((d) => isPrivateHost(d.host) || d.host.length <= 253)
+      .filter((d) => isLocalHost(d.host))
       .map((d) => ({
         agent_id: agentId,
         user_id: userId,
@@ -184,6 +192,8 @@ Deno.serve(async (req) => {
         response: payload.response ?? null,
         error: payload.error ?? null,
         completed_at: new Date().toISOString(),
+        ...("exit_code" in payload && payload.exit_code !== undefined ? { exit_code: payload.exit_code } : {}),
+        ...("duration_ms" in payload && payload.duration_ms !== undefined ? { duration_ms: payload.duration_ms } : {}),
       })
       .eq("id", payload.task_id)
       .eq("agent_id", agentId)
