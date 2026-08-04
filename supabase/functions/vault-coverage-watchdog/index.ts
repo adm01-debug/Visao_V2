@@ -2,6 +2,8 @@
 // Cron-invoked (a cada 15 min). Se cobertura KEK for `critical`, dispara alerta
 // Telegram e grava linha em `camera_vault_audit` para rastreabilidade.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { validatePayload } from "../_shared/contractValidation.ts";
+import { VaultCoverageWatchdogQuerySchema } from "../_shared/webhookSchemas.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -18,6 +20,10 @@ interface CoverageRow {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
+  const rawParams = Object.fromEntries(new URL(req.url).searchParams.entries());
+  const qValidation = validatePayload(VaultCoverageWatchdogQuerySchema, rawParams, corsHeaders);
+  if (!qValidation.success) return qValidation.response;
 
   const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
   const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
