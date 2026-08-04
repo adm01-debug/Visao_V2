@@ -80,7 +80,10 @@ export default defineConfig(({ mode }) => ({
       // The webpack UMD build is a CJS factory that Rolldown wraps in a __cjs__
       // thunk — all code (including jsPDF references) stays inside the factory
       // body, which the guard strips before scanning.
-      'jspdf-autotable': path.resolve(__dirname, 'node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.js'),
+      'jspdf-autotable': path.resolve(
+        __dirname,
+        'node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.js'
+      ),
     },
   },
   optimizeDeps: {
@@ -145,7 +148,8 @@ export default defineConfig(({ mode }) => ({
             id.includes('react-fast-compare') ||
             id.includes('invariant') ||
             id.includes('shallowequal')
-          ) return 'vendor-react';
+          )
+            return 'vendor-react';
 
           // Data + estado
           if (id.includes('@tanstack/react-query')) return 'vendor-query';
