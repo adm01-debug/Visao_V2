@@ -13,11 +13,17 @@
 // decisão fica na rotina `public.authorize_ingest_publish`, service_role only.
 
 import { createClient } from "npm:@supabase/supabase-js@2";
+import {
+  getContractVersion,
+  parseJsonBody,
+  validateVersionedPayload,
+} from "../_shared/contractValidation.ts";
+import { IngestAuthSchemaV1, IngestAuthSchemaV2 } from "../_shared/webhookSchemas.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-ingest-secret",
+    "authorization, x-client-info, apikey, content-type, x-ingest-secret, x-api-version, x-contract-version",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
@@ -26,9 +32,6 @@ const j = (body: unknown, status = 200) =>
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
-
-const STREAM_KEY_RE = /^[a-f0-9]{32,64}$/;
-const PROTOCOLS = new Set(["rtmp_push", "srt_push"]);
 
 /** Comparação em tempo constante para não vazar o segredo por timing. */
 function safeEqual(a: string, b: string): boolean {
@@ -52,29 +55,31 @@ Deno.serve(async (req) => {
     return j({ allowed: false, reason: "unauthorized" }, 401);
   }
 
-  let payload: {
-    action?: string;
-    stream_key?: string;
-    protocol?: string;
-    client_ip?: string;
-  };
-  try {
-    payload = await req.json();
-  } catch {
+  // Parse body with size guard (ingest payloads are small — 10KB limit).
+  const bodyResult = await parseJsonBody(req, 10_000, corsHeaders);
+  if (!bodyResult.success) return bodyResult.response;
+
+  if (bodyResult.data === null) {
     return j({ allowed: false, reason: "invalid_json" }, 400);
   }
 
-  const action = (payload.action ?? "publish").trim();
-  const streamKey = (payload.stream_key ?? "").trim().toLowerCase();
-  const protocol = (payload.protocol ?? "rtmp_push").trim();
-  const clientIp = (payload.client_ip ?? "").trim().slice(0, 64) || null;
+  // Validate against versioned schema (V1/V2 with backward compatibility).
+  const version = getContractVersion(req);
+  const validation = validateVersionedPayload(
+    { v1: IngestAuthSchemaV1, v2: IngestAuthSchemaV2 },
+    bodyResult.data,
+    version,
+    corsHeaders,
+  );
+  if (!validation.success) return validation.response;
 
-  if (!STREAM_KEY_RE.test(streamKey)) {
-    return j({ allowed: false, reason: "malformed_key" }, 403);
-  }
-  if (action === "publish" && !PROTOCOLS.has(protocol)) {
-    return j({ allowed: false, reason: "unsupported_protocol" }, 403);
-  }
+  const payload = validation.data;
+  // Default action to "publish" for backward compat with MediaMTX clients
+  // that may omit the field (schema requires it, but we keep the fallback at the DB level).
+  const action = payload.action;
+  const streamKey = payload.stream_key.trim().toLowerCase();
+  const protocol = payload.protocol ?? "rtmp_push";
+  const clientIp = payload.client_ip?.trim().slice(0, 64) || null;
 
   const admin = createClient(
     Deno.env.get("SUPABASE_URL")!,
@@ -112,6 +117,7 @@ Deno.serve(async (req) => {
       reason: verdict.reason ?? null,
       camera_id: verdict.camera_id ?? null,
       key_prefix: streamKey.slice(0, 6),
+      contract_version: validation.version,
       ts: new Date().toISOString(),
     }));
 

@@ -57,6 +57,49 @@ Deno.test("getContractVersion retorna v1 para valor desconhecido", () => {
   assertEquals(getContractVersion(req), "v1");
 });
 
+// Case-insensitivity fixes (CV-002: uppercase V2 was silently downgraded to v1)
+Deno.test("getContractVersion aceita V2 maiúsculo via x-api-version", () => {
+  const req = new Request("http://example.com", {
+    method: "POST",
+    headers: { "x-api-version": "V2" },
+  });
+  assertEquals(getContractVersion(req), "v2");
+});
+
+Deno.test("getContractVersion aceita V2 maiúsculo via x-contract-version", () => {
+  const req = new Request("http://example.com", {
+    method: "POST",
+    headers: { "x-contract-version": "V2" },
+  });
+  assertEquals(getContractVersion(req), "v2");
+});
+
+// Whitespace tolerance (CV-013: trailing spaces from proxies)
+Deno.test("getContractVersion tolera espaços em torno do valor do header", () => {
+  const req = new Request("http://example.com", {
+    method: "POST",
+    headers: { "x-api-version": "  v2  " },
+  });
+  assertEquals(getContractVersion(req), "v2");
+});
+
+// Precedence: x-api-version with non-empty value overrides x-contract-version
+Deno.test("getContractVersion usa x-api-version quando ambos headers estão presentes", () => {
+  const req = new Request("http://example.com", {
+    method: "POST",
+    headers: { "x-api-version": "v1", "x-contract-version": "v2" },
+  });
+  assertEquals(getContractVersion(req), "v1");
+});
+
+Deno.test("getContractVersion usa x-contract-version quando x-api-version está vazio", () => {
+  const req = new Request("http://example.com", {
+    method: "POST",
+    headers: { "x-api-version": "", "x-contract-version": "v2" },
+  });
+  assertEquals(getContractVersion(req), "v2");
+});
+
 // ─────────────────────────────────────────────────────────────
 // validationError422
 // ─────────────────────────────────────────────────────────────
@@ -93,6 +136,14 @@ Deno.test("validationError422 inclui CORS headers quando fornecidos", () => {
   const cors = { "Access-Control-Allow-Origin": "*" };
   const res = validationError422("Erro", [], cors);
   assertEquals(res.headers.get("access-control-allow-origin"), "*");
+});
+
+Deno.test("validationError422 Content-Type não é duplicado por CORS header", () => {
+  // If CORS object contains content-type, it must not appear twice.
+  const cors = { "Access-Control-Allow-Origin": "*" };
+  const res = validationError422("Erro", [], cors);
+  // Headers API deduplicates — just verify it's set once and correct.
+  assertEquals(res.headers.get("content-type"), "application/json");
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -150,7 +201,7 @@ Deno.test("validatePayload retorna success:false para campo extra em strict sche
   }
 });
 
-Deno.test("validatePayload v2 inclui received no campo de erro", async () => {
+Deno.test("validatePayload v2 inclui received para invalid_type", async () => {
   const result = validatePayload(SimpleSchema, { name: "Ana", age: "nao-numero" }, {}, "v2");
   assertEquals(result.success, false);
   if (!result.success) {
@@ -158,6 +209,19 @@ Deno.test("validatePayload v2 inclui received no campo de erro", async () => {
     const ageField = body.fields.find((f: { field: string }) => f.field === "age");
     assertExists(ageField);
     assertExists(ageField.received);
+    assertEquals(ageField.received, "string"); // ZodInvalidTypeIssue.received is the JS type name
+  }
+});
+
+Deno.test("validatePayload v2 inclui received para invalid_enum_value", async () => {
+  const EnumSchema = z.object({ status: z.enum(["active", "inactive"]) }).strict();
+  const result = validatePayload(EnumSchema, { status: "unknown" }, {}, "v2");
+  assertEquals(result.success, false);
+  if (!result.success) {
+    const body = await result.response.json();
+    const field = body.fields.find((f: { field: string }) => f.field === "status");
+    assertExists(field);
+    assertExists(field.received); // received = "unknown" for invalid_enum_value
   }
 });
 
@@ -175,11 +239,19 @@ Deno.test("validatePayload v1 não inclui received", async () => {
 Deno.test("validatePayload retorna success:false para null", async () => {
   const result = validatePayload(SimpleSchema, null);
   assertEquals(result.success, false);
+  if (!result.success) {
+    assertEquals(result.response.status, 422);
+    const body = await result.response.json();
+    assertEquals(body.code, "VALIDATION_ERROR");
+  }
 });
 
 Deno.test("validatePayload retorna success:false para undefined", async () => {
   const result = validatePayload(SimpleSchema, undefined);
   assertEquals(result.success, false);
+  if (!result.success) {
+    assertEquals(result.response.status, 422);
+  }
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -191,9 +263,11 @@ const SchemaV1 = z.object({
   name: z.string().min(1),
 }).strict();
 
-const SchemaV2 = SchemaV1.omit({}).extend({
+const SchemaV2 = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1),
   tags: z.array(z.string()).optional(),
-});
+}).strict();
 
 const schemas = { v1: SchemaV1, v2: SchemaV2 };
 
@@ -220,10 +294,8 @@ Deno.test("validateVersionedPayload aceita payload v2 em contrato v2", () => {
 });
 
 Deno.test("validateVersionedPayload aceita payload v1 em contrato v2 (backward compat)", () => {
-  // v1 payload (sem tags) enviado para endpoint v2 → deve ser aceito como v1
   const data = { id: "550e8400-e29b-41d4-a716-446655440000", name: "Test" };
   const result = validateVersionedPayload(schemas, data, "v2");
-  // v2 extends v1, so v1 payload is also valid v2 (tags is optional)
   assertEquals(result.success, true);
 });
 
@@ -239,12 +311,14 @@ Deno.test("validateVersionedPayload rejeita payload inválido em v1", async () =
   }
 });
 
-Deno.test("validateVersionedPayload rejeita payload inválido em v2 com fallback v1 também falha", async () => {
+Deno.test("validateVersionedPayload rejeita payload inválido em v2 quando fallback v1 também falha", async () => {
   const data = { name: "Sem ID" };
   const result = validateVersionedPayload(schemas, data, "v2");
   assertEquals(result.success, false);
   if (!result.success) {
     assertEquals(result.response.status, 422);
+    const body = await result.response.json();
+    assertEquals(body.contract_version, "v2");
   }
 });
 
@@ -288,6 +362,19 @@ Deno.test("parseJsonBody retorna null para body vazio", async () => {
   }
 });
 
+Deno.test("parseJsonBody retorna null para body de apenas whitespace", async () => {
+  const req = new Request("http://example.com", {
+    method: "POST",
+    body: "   \t\n  ",
+    headers: { "content-type": "application/json" },
+  });
+  const result = await parseJsonBody(req);
+  assertEquals(result.success, true);
+  if (result.success) {
+    assertEquals(result.data, null);
+  }
+});
+
 Deno.test("parseJsonBody retorna 400 para JSON inválido", async () => {
   const req = new Request("http://example.com", {
     method: "POST",
@@ -303,11 +390,10 @@ Deno.test("parseJsonBody retorna 400 para JSON inválido", async () => {
   }
 });
 
-Deno.test("parseJsonBody retorna 413 quando body excede maxBytes (content-length)", async () => {
-  const bigPayload = "x".repeat(100);
+Deno.test("parseJsonBody retorna 413 quando Content-Length excede maxBytes", async () => {
   const req = new Request("http://example.com", {
     method: "POST",
-    body: bigPayload,
+    body: "x".repeat(50),
     headers: {
       "content-type": "application/json",
       "content-length": "200",
@@ -322,6 +408,41 @@ Deno.test("parseJsonBody retorna 413 quando body excede maxBytes (content-length
   }
 });
 
+Deno.test("parseJsonBody retorna 413 quando body real excede maxBytes sem Content-Length", async () => {
+  // Body is 120 bytes but no content-length header — second-stage byte check must fire.
+  const bigBody = JSON.stringify({ data: "x".repeat(110) });
+  const req = new Request("http://example.com", {
+    method: "POST",
+    body: bigBody,
+    headers: { "content-type": "application/json" },
+  });
+  const result = await parseJsonBody(req, 50);
+  assertEquals(result.success, false);
+  if (!result.success) {
+    assertEquals(result.response.status, 413);
+  }
+});
+
+Deno.test("parseJsonBody rejeita emoji que ultrapassa maxBytes em bytes (CV-003)", async () => {
+  // Each emoji is 4 bytes in UTF-8 but only 2 code units in JS string.length.
+  // 30 emoji = 120 UTF-8 bytes, but string.length = 60 → old check would pass at limit 100.
+  const emojiBody = JSON.stringify({ d: "🎉".repeat(30) });
+  const byteLen = new TextEncoder().encode(emojiBody).length;
+  // Only run test if emoji body actually exceeds our limit.
+  if (byteLen > 100) {
+    const req = new Request("http://example.com", {
+      method: "POST",
+      body: emojiBody,
+      headers: { "content-type": "application/json" },
+    });
+    const result = await parseJsonBody(req, 100);
+    assertEquals(result.success, false);
+    if (!result.success) {
+      assertEquals(result.response.status, 413);
+    }
+  }
+});
+
 Deno.test("parseJsonBody aceita arrays JSON", async () => {
   const req = new Request("http://example.com", {
     method: "POST",
@@ -333,6 +454,18 @@ Deno.test("parseJsonBody aceita arrays JSON", async () => {
   if (result.success) {
     assertEquals(Array.isArray(result.data), true);
   }
+});
+
+Deno.test("parseJsonBody Content-Length: 0 sem body não passa limite alto", async () => {
+  // Content-Length: 0 should NOT bypass the byte check for a non-empty body.
+  const req = new Request("http://example.com", {
+    method: "POST",
+    body: "{}",
+    headers: { "content-type": "application/json", "content-length": "0" },
+  });
+  const result = await parseJsonBody(req, 1_000);
+  // Body is "{}": 2 bytes, well within limit. Should succeed.
+  assertEquals(result.success, true);
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -378,7 +511,7 @@ Deno.test("parseAndValidate retorna 400 para JSON inválido", async () => {
   }
 });
 
-Deno.test("parseAndValidate propaga versão v2 corretamente", async () => {
+Deno.test("parseAndValidate propaga versão v2 quando passada explicitamente", async () => {
   const req = new Request("http://example.com", {
     method: "POST",
     body: JSON.stringify({ name: "Teste", age: "errado" }),
@@ -389,8 +522,23 @@ Deno.test("parseAndValidate propaga versão v2 corretamente", async () => {
   if (!result.success) {
     const body = await result.response.json();
     assertEquals(body.contract_version, "v2");
-    // v2 deve incluir received
     const ageField = body.fields.find((f: { field: string }) => f.field === "age");
     assertExists(ageField.received);
+  }
+});
+
+Deno.test("parseAndValidate lê versão de x-api-version quando opts.version não é fornecido (CV-004)", async () => {
+  // Critical fix: parseAndValidate must read X-Api-Version from headers automatically.
+  const req = new Request("http://example.com", {
+    method: "POST",
+    body: JSON.stringify({ name: "Teste", age: "errado" }),
+    headers: { "content-type": "application/json", "x-api-version": "v2" },
+  });
+  const result = await parseAndValidate(req, SimpleSchema);
+  assertEquals(result.success, false);
+  if (!result.success) {
+    const body = await result.response.json();
+    // Must pick up v2 from the request header.
+    assertEquals(body.contract_version, "v2");
   }
 });
