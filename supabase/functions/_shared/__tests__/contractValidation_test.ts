@@ -297,6 +297,7 @@ Deno.test("validateVersionedPayload aceita payload v1 em contrato v2 (backward c
   const data = { id: "550e8400-e29b-41d4-a716-446655440000", name: "Test" };
   const result = validateVersionedPayload(schemas, data, "v2");
   assertEquals(result.success, true);
+  if (result.success) assertEquals(result.version, "v1");
 });
 
 Deno.test("validateVersionedPayload rejeita payload inválido em v1", async () => {
@@ -427,19 +428,18 @@ Deno.test("parseJsonBody rejeita emoji que ultrapassa maxBytes em bytes (CV-003)
   // Each emoji is 4 bytes in UTF-8 but only 2 code units in JS string.length.
   // 30 emoji = 120 UTF-8 bytes, but string.length = 60 → old check would pass at limit 100.
   const emojiBody = JSON.stringify({ d: "🎉".repeat(30) });
+  // Unconditionally assert the body is large enough so this test is never vacuous.
   const byteLen = new TextEncoder().encode(emojiBody).length;
-  // Only run test if emoji body actually exceeds our limit.
-  if (byteLen > 100) {
-    const req = new Request("http://example.com", {
-      method: "POST",
-      body: emojiBody,
-      headers: { "content-type": "application/json" },
-    });
-    const result = await parseJsonBody(req, 100);
-    assertEquals(result.success, false);
-    if (!result.success) {
-      assertEquals(result.response.status, 413);
-    }
+  assert(byteLen > 100, `Emoji body deve ter > 100 bytes, mas tem ${byteLen}`);
+  const req = new Request("http://example.com", {
+    method: "POST",
+    body: emojiBody,
+    headers: { "content-type": "application/json" },
+  });
+  const result = await parseJsonBody(req, 100);
+  assertEquals(result.success, false);
+  if (!result.success) {
+    assertEquals(result.response.status, 413);
   }
 });
 
@@ -466,6 +466,20 @@ Deno.test("parseJsonBody Content-Length: 0 sem body não passa limite alto", asy
   const result = await parseJsonBody(req, 1_000);
   // Body is "{}": 2 bytes, well within limit. Should succeed.
   assertEquals(result.success, true);
+});
+
+Deno.test("parseJsonBody rejeita body real grande mesmo com Content-Length: 0 (CV-spoofed)", async () => {
+  // A client that spoofs Content-Length: 0 to bypass the header fast-path
+  // must still be caught by the byte-accurate second check.
+  const bigBody = JSON.stringify({ data: "x".repeat(200) });
+  const req = new Request("http://example.com", {
+    method: "POST",
+    body: bigBody,
+    headers: { "content-type": "application/json", "content-length": "0" },
+  });
+  const result = await parseJsonBody(req, 50);
+  assertEquals(result.success, false);
+  if (!result.success) assertEquals(result.response.status, 413);
 });
 
 // ─────────────────────────────────────────────────────────────

@@ -77,7 +77,7 @@ export function validationError422(
   };
   return new Response(JSON.stringify(body), {
     status: 422,
-    headers: { "Content-Type": "application/json", ...cors },
+    headers: { ...cors, "Content-Type": "application/json" },
   });
 }
 
@@ -186,7 +186,7 @@ export async function parseJsonBody(
         success: false,
         response: new Response(
           JSON.stringify({ code: "PAYLOAD_TOO_LARGE", message: `Body excede ${maxBytes} bytes` }),
-          { status: 413, headers: { "Content-Type": "application/json", ...cors } },
+          { status: 413, headers: { ...cors, "Content-Type": "application/json" } },
         ),
       };
     }
@@ -200,7 +200,7 @@ export async function parseJsonBody(
       success: false,
       response: new Response(
         JSON.stringify({ code: "READ_ERROR", message: "Não foi possível ler o corpo da requisição" }),
-        { status: 400, headers: { "Content-Type": "application/json", ...cors } },
+        { status: 400, headers: { ...cors, "Content-Type": "application/json" } },
       ),
     };
   }
@@ -212,7 +212,7 @@ export async function parseJsonBody(
       success: false,
       response: new Response(
         JSON.stringify({ code: "PAYLOAD_TOO_LARGE", message: `Body excede ${maxBytes} bytes` }),
-        { status: 413, headers: { "Content-Type": "application/json", ...cors } },
+        { status: 413, headers: { ...cors, "Content-Type": "application/json" } },
       ),
     };
   }
@@ -229,7 +229,7 @@ export async function parseJsonBody(
       success: false,
       response: new Response(
         JSON.stringify({ code: "INVALID_JSON", message: "Corpo da requisição não é JSON válido" }),
-        { status: 400, headers: { "Content-Type": "application/json", ...cors } },
+        { status: 400, headers: { ...cors, "Content-Type": "application/json" } },
       ),
     };
   }

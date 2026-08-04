@@ -2,10 +2,25 @@
 // Autenticação por header X-Agent-Token (token opaco emitido pelo agent-pair).
 // Rotas: POST /heartbeat, POST /discoveries, POST /relay-poll, POST /relay-complete.
 import { createClient } from "npm:@supabase/supabase-js@2";
+import {
+  getContractVersion,
+  parseJsonBody,
+  validatePayload,
+  validateVersionedPayload,
+} from "../_shared/contractValidation.ts";
+import {
+  AgentHeartbeatSchemaV1,
+  AgentHeartbeatSchemaV2,
+  AgentDiscoveriesSchemaV1,
+  AgentDiscoveriesSchemaV2,
+  AgentRelayPollSchema,
+  AgentRelayCompleteSchemaV1,
+  AgentRelayCompleteSchemaV2,
+} from "../_shared/webhookSchemas.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "content-type, x-agent-token",
+  "Access-Control-Allow-Headers": "content-type, x-agent-token, x-api-version, x-contract-version",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
@@ -15,24 +30,8 @@ const j = (body: unknown, status = 200) =>
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
 
-const MAX_BODY_BYTES = 2 * 1024 * 1024; // relé pode carregar payloads maiores
-const MAX_DISCOVERIES = 128;
 const RELAY_LONG_POLL_MS = 15_000;
 const RELAY_POLL_INTERVAL_MS = 500;
-
-interface DiscoveryPayload {
-  host: string;
-  port: number;
-  manufacturer?: string | null;
-  model?: string | null;
-  firmware?: string | null;
-  onvif_endpoint?: string | null;
-  rtsp_primary?: string | null;
-  rtsp_substream?: string | null;
-  ptz_capable?: boolean;
-  discovered_at?: string;
-  raw?: unknown;
-}
 
 function isPrivateHost(h: string): boolean {
   const m = h.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
@@ -52,8 +51,10 @@ Deno.serve(async (req) => {
   const token = req.headers.get("x-agent-token");
   if (!token || token.length < 32) return j({ error: "missing_token" }, 401);
 
-  const body = await req.text();
-  if (body.length > MAX_BODY_BYTES) return j({ error: "body_too_large" }, 413);
+  const url = new URL(req.url);
+  const route = url.pathname.split("/").pop();
+  const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
+  const version = getContractVersion(req);
 
   const admin = createClient(
     Deno.env.get("SUPABASE_URL")!,
@@ -64,40 +65,47 @@ Deno.serve(async (req) => {
   if (verifyErr || !verify || verify.length === 0) return j({ error: "invalid_token" }, 401);
   const { agent_id: agentId, agent_user_id: userId } = verify[0];
 
-  const url = new URL(req.url);
-  const route = url.pathname.split("/").pop();
-  const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
-
-  let payload: Record<string, unknown>;
-  try {
-    payload = body ? JSON.parse(body) : {};
-  } catch {
-    return j({ error: "invalid_json" }, 400);
-  }
-
   if (route === "heartbeat") {
-    const version = typeof payload.agent_version === "string" ? payload.agent_version.slice(0, 40) : null;
-    const cidr = typeof payload.network_cidr === "string" ? payload.network_cidr.slice(0, 60) : null;
+    const bodyResult = await parseJsonBody(req, 4_000, corsHeaders);
+    if (!bodyResult.success) return bodyResult.response;
+    const rawData = bodyResult.data ?? {};
+
+    const validation = validateVersionedPayload(
+      { v1: AgentHeartbeatSchemaV1, v2: AgentHeartbeatSchemaV2 },
+      rawData,
+      version,
+      corsHeaders,
+    );
+    if (!validation.success) return validation.response;
+    const payload = validation.data;
+
     await admin.from("local_agents")
       .update({
         last_seen_at: new Date().toISOString(),
-        version,
+        version: payload.agent_version ?? null,
         last_ip: clientIp,
-        ...(cidr ? { network_cidr: cidr } : {}),
+        ...(payload.network_cidr ? { network_cidr: payload.network_cidr } : {}),
       })
       .eq("id", agentId);
     return j({ ok: true });
   }
 
   if (route === "discoveries") {
-    const list = Array.isArray(payload.discoveries) ? payload.discoveries as DiscoveryPayload[] : [];
-    if (list.length === 0) return j({ ok: true, upserted: 0 });
-    if (list.length > MAX_DISCOVERIES) return j({ error: "too_many_discoveries" }, 400);
+    const bodyResult = await parseJsonBody(req, 128_000, corsHeaders);
+    if (!bodyResult.success) return bodyResult.response;
+    const rawData = bodyResult.data ?? {};
 
-    const rows = list
-      .filter((d) => typeof d.host === "string" && typeof d.port === "number" && d.port > 0 && d.port < 65536)
+    const validation = validateVersionedPayload(
+      { v1: AgentDiscoveriesSchemaV1, v2: AgentDiscoveriesSchemaV2 },
+      rawData,
+      version,
+      corsHeaders,
+    );
+    if (!validation.success) return validation.response;
+    const payload = validation.data;
+
+    const rows = payload.discoveries
       .filter((d) => isPrivateHost(d.host) || d.host.length <= 253)
-      .slice(0, MAX_DISCOVERIES)
       .map((d) => ({
         agent_id: agentId,
         user_id: userId,
@@ -126,14 +134,21 @@ Deno.serve(async (req) => {
     return j({ ok: true, upserted: rows.length });
   }
 
-  // Relé — agente faz long-poll por tarefas HTTP pendentes.
   if (route === "relay-poll") {
+    const bodyResult = await parseJsonBody(req, 1_000, corsHeaders);
+    if (!bodyResult.success) return bodyResult.response;
+    const rawData = bodyResult.data ?? {};
+
+    const validation = validatePayload(AgentRelayPollSchema, rawData, corsHeaders, version);
+    if (!validation.success) return validation.response;
+    const payload = validation.data;
+
     await admin.rpc("expire_agent_relay_tasks");
     await admin.from("local_agents")
       .update({ last_seen_at: new Date().toISOString(), last_ip: clientIp })
       .eq("id", agentId);
 
-    const maxTasks = Math.min(Math.max(Number(payload.max) || 4, 1), 8);
+    const maxTasks = payload.max ?? 4;
     const deadline = Date.now() + RELAY_LONG_POLL_MS;
     while (true) {
       const { data, error } = await admin.rpc("claim_agent_relay_tasks", {
@@ -147,23 +162,30 @@ Deno.serve(async (req) => {
     }
   }
 
-  // Relé — agente devolve o resultado da execução local.
   if (route === "relay-complete") {
-    const taskId = String(payload.task_id ?? "");
-    if (!taskId) return j({ error: "missing_task_id" }, 400);
-    const status = payload.error ? "failed" : "done";
-    const response = payload.response ?? null;
-    const errMsg = typeof payload.error === "string" ? payload.error.slice(0, 500) : null;
+    const bodyResult = await parseJsonBody(req, 512_000, corsHeaders);
+    if (!bodyResult.success) return bodyResult.response;
+    const rawData = bodyResult.data ?? {};
 
+    const validation = validateVersionedPayload(
+      { v1: AgentRelayCompleteSchemaV1, v2: AgentRelayCompleteSchemaV2 },
+      rawData,
+      version,
+      corsHeaders,
+    );
+    if (!validation.success) return validation.response;
+    const payload = validation.data;
+
+    const status = payload.error ? "failed" : "done";
     const { data: updated, error } = await admin
       .from("agent_relay_tasks")
       .update({
         status,
-        response,
-        error: errMsg,
+        response: payload.response ?? null,
+        error: payload.error ?? null,
         completed_at: new Date().toISOString(),
       })
-      .eq("id", taskId)
+      .eq("id", payload.task_id)
       .eq("agent_id", agentId)
       .in("status", ["in_progress", "pending"])
       .select("id");

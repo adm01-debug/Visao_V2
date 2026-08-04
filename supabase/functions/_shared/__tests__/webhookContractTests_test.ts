@@ -882,7 +882,7 @@ Deno.test("connectivity-resolution-alert query: rejeita campo desconhecido (stri
 
 // ─────────────────────────────────────────────────────────────
 // watchdog-ack-sla-alert
-// Schema: { force?: boolean, min_ack?: int(min 0), min_esc?: int(min 0), mtta_cap_ms?: int(min 0) }
+// Schema: { force?: boolean, min_ack?: int(min 0), min_esc?: int(min 0), mtta_cap_min?: int(min 0) }
 // ─────────────────────────────────────────────────────────────
 
 Deno.test("watchdog-ack-sla-alert V1: aceita payload vazio (todos opcionais)", () => {
@@ -895,7 +895,7 @@ Deno.test("watchdog-ack-sla-alert V1: aceita com todos os campos", () => {
     force: true,
     min_ack: 5,
     min_esc: 10,
-    mtta_cap_ms: 30_000,
+    mtta_cap_min: 30,
   });
   assertEquals(result.success, true);
 });
@@ -922,10 +922,10 @@ Deno.test("watchdog-ack-sla-alert V1: rejeita min_esc negativo", async () => {
   if (!result.success) await assert422Shape(result.response, "min_esc");
 });
 
-Deno.test("watchdog-ack-sla-alert V1: rejeita mtta_cap_ms negativo", async () => {
-  const result = validatePayload(WatchdogAckSlaAlertSchemaV1, { mtta_cap_ms: -1 });
+Deno.test("watchdog-ack-sla-alert V1: rejeita mtta_cap_min negativo", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertSchemaV1, { mtta_cap_min: -1 });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "mtta_cap_ms");
+  if (!result.success) await assert422Shape(result.response, "mtta_cap_min");
 });
 
 Deno.test("watchdog-ack-sla-alert V1: rejeita force como string", async () => {
@@ -1099,4 +1099,76 @@ Deno.test("422 response: received incluído para enum inválido em v2", async ()
     assertExists(actionField.received, "v2 deve incluir 'received' para enum inválido");
     assertEquals(actionField.received, "invalid_action");
   }
+});
+
+// ─────────────────────────────────────────────────────────────
+// Boundary tests: port, stream_key, duration_ms
+// ─────────────────────────────────────────────────────────────
+
+Deno.test("agent discoveries: DiscoveryItemSchema aceita port = 1 (mínimo válido)", () => {
+  const result = DiscoveryItemSchema.safeParse({ host: "cam.local", port: 1 });
+  assertEquals(result.success, true);
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema aceita port = 65535 (máximo válido)", () => {
+  const result = DiscoveryItemSchema.safeParse({ host: "cam.local", port: 65535 });
+  assertEquals(result.success, true);
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema rejeita port = 0 (abaixo do mínimo)", () => {
+  const result = DiscoveryItemSchema.safeParse({ host: "cam.local", port: 0 });
+  assertEquals(result.success, false);
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema rejeita port = 65536 (acima do máximo)", () => {
+  const result = DiscoveryItemSchema.safeParse({ host: "cam.local", port: 65536 });
+  assertEquals(result.success, false);
+});
+
+Deno.test("ingest-auth V1: rejeita stream_key de exatamente 31 chars (abaixo do mínimo hex)", () => {
+  const result = IngestAuthSchemaV1.safeParse({
+    action: "publish",
+    stream_key: "a".repeat(31),
+  });
+  assertEquals(result.success, false);
+});
+
+Deno.test("ingest-auth V1: aceita stream_key de exatamente 32 chars (mínimo válido)", () => {
+  const result = IngestAuthSchemaV1.safeParse({
+    action: "publish",
+    stream_key: "a1b2c3d4".repeat(4),
+  });
+  assertEquals(result.success, true);
+});
+
+Deno.test("ingest-auth V1: aceita stream_key de exatamente 64 chars (máximo válido)", () => {
+  const result = IngestAuthSchemaV1.safeParse({
+    action: "publish",
+    stream_key: "a1b2c3d4".repeat(8),
+  });
+  assertEquals(result.success, true);
+});
+
+Deno.test("ingest-auth V1: rejeita stream_key de exatamente 65 chars (acima do máximo)", () => {
+  const result = IngestAuthSchemaV1.safeParse({
+    action: "publish",
+    stream_key: "a".repeat(65),
+  });
+  assertEquals(result.success, false);
+});
+
+Deno.test("agent relay-complete V2: aceita duration_ms = 0 (mínimo válido)", () => {
+  const result = AgentRelayCompleteSchemaV2.safeParse({
+    task_id: "task-abc-123",
+    duration_ms: 0,
+  });
+  assertEquals(result.success, true);
+});
+
+Deno.test("agent relay-complete V2: rejeita duration_ms negativo", () => {
+  const result = AgentRelayCompleteSchemaV2.safeParse({
+    task_id: "task-abc-123",
+    duration_ms: -1,
+  });
+  assertEquals(result.success, false);
 });

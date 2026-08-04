@@ -125,7 +125,7 @@ export const DiscoveryItemSchema = z.object({
   ptz_capable: z.boolean().optional(),
   discovered_at: isoDatetime.optional(),
   raw: z.unknown().optional(),
-});
+}).strict();
 
 export const AgentDiscoveriesSchemaV1 = z.object({
   discoveries: z
@@ -216,7 +216,7 @@ export const VaultCoverageWatchdogQuerySchema = z.object({
 
 // ─────────────────────────────────────────────────────────────
 // watchdog-ack-sla-alert — SLA monitor with optional POST body
-// POST { force?, min_ack?, min_esc?, mtta_cap_ms? }
+// POST { force?, min_ack?, min_esc?, mtta_cap_min? }
 // These field names match the actual function implementation.
 // ─────────────────────────────────────────────────────────────
 
@@ -224,7 +224,7 @@ export const WatchdogAckSlaAlertSchemaV1 = z.object({
   force: z.boolean().optional(),
   min_ack: z.number().int().finite().min(0).optional(),
   min_esc: z.number().int().finite().min(0).optional(),
-  mtta_cap_ms: z.number().int().finite().min(0).optional(),
+  mtta_cap_min: z.number().int().finite().min(0).optional(),
 }).strict();
 
 // ─────────────────────────────────────────────────────────────
