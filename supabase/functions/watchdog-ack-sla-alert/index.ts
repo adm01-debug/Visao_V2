@@ -2,6 +2,8 @@
 // Dispara Telegram quando a taxa de ACK em 24h fica abaixo do limiar
 // com escalações suficientes para significância estatística.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { getContractVersion, parseJsonBody, validatePayload } from "../_shared/contractValidation.ts";
+import { WatchdogAckSlaAlertSchemaV1 } from "../_shared/webhookSchemas.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -32,13 +34,16 @@ Deno.serve(async (req) => {
   let mttaCapMin = Number(url.searchParams.get("mtta_cap_min") ?? "30");
 
   if (req.method === "POST") {
-    try {
-      const b = await req.json();
-      if (typeof b?.force === "boolean") force = b.force;
-      if (typeof b?.min_ack === "number") minAck = b.min_ack;
-      if (typeof b?.min_esc === "number") minEsc = b.min_esc;
-      if (typeof b?.mtta_cap_min === "number") mttaCapMin = b.mtta_cap_min;
-    } catch { /* ignore */ }
+    const version = getContractVersion(req);
+    const bodyResult = await parseJsonBody(req, 8_000, corsHeaders);
+    if (!bodyResult.success) return bodyResult.response;
+    const validation = validatePayload(WatchdogAckSlaAlertSchemaV1, bodyResult.data ?? {}, corsHeaders, version);
+    if (!validation.success) return validation.response;
+    const b = validation.data;
+    if (b.force !== undefined) force = b.force;
+    if (b.min_ack !== undefined) minAck = b.min_ack;
+    if (b.min_esc !== undefined) minEsc = b.min_esc;
+    if (b.mtta_cap_min !== undefined) mttaCapMin = b.mtta_cap_min;
   }
 
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
