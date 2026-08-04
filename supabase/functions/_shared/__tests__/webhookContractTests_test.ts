@@ -21,23 +21,20 @@ import {
   AgentRelayPollSchema,
   AgentRelayCompleteSchemaV1,
   AgentRelayCompleteSchemaV2,
-  StreamHealthProbeSchemaV1,
-  StreamHealthProbeSchemaV2,
-  PreviewTelemetryAlertSchemaV1,
-  ConnectivityResolutionAlertSchemaV1,
+  StreamHealthProbeQuerySchema,
+  PreviewTelemetryAlertQuerySchema,
+  ConnectivityResolutionAlertQuerySchema,
   WatchdogAckSlaAlertSchemaV1,
   MonitoringCenterDispatchSchemaV1,
-  VaultCoverageWatchdogSchemaV1,
+  VaultCoverageWatchdogQuerySchema,
 } from "../webhookSchemas.ts";
 import { validatePayload, validateVersionedPayload } from "../contractValidation.ts";
 
-// UUIDs válidos para testes
 const VALID_UUID = "550e8400-e29b-41d4-a716-446655440000";
 const VALID_UUID_2 = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
 const VALID_STREAM_KEY = "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"; // 32 hex chars
 const VALID_DATETIME = "2024-01-15T10:30:00+00:00";
 
-// Helper para verificar shape da resposta 422
 async function assert422Shape(response: Response, expectedField?: string) {
   assertEquals(response.status, 422);
   const body = await response.json();
@@ -103,7 +100,7 @@ Deno.test("ingest-auth V1: rejeita stream_key ausente", async () => {
 Deno.test("ingest-auth V1: rejeita stream_key com caracteres não-hex", async () => {
   const result = validatePayload(IngestAuthSchemaV1, {
     action: "publish",
-    stream_key: "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG", // hex maiúsculo inválido
+    stream_key: "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
   });
   assertEquals(result.success, false);
   if (!result.success) await assert422Shape(result.response, "stream_key");
@@ -112,7 +109,7 @@ Deno.test("ingest-auth V1: rejeita stream_key com caracteres não-hex", async ()
 Deno.test("ingest-auth V1: rejeita stream_key muito curta (< 32 chars)", async () => {
   const result = validatePayload(IngestAuthSchemaV1, {
     action: "publish",
-    stream_key: "a1b2c3d4", // só 8 chars
+    stream_key: "a1b2c3d4",
   });
   assertEquals(result.success, false);
   if (!result.success) await assert422Shape(result.response, "stream_key");
@@ -151,11 +148,11 @@ Deno.test("ingest-auth V1: rejeita payload vazio", async () => {
   assertEquals(result.success, false);
   if (!result.success) {
     const body = await assert422Shape(result.response);
-    assert(body.fields.length >= 2); // action e stream_key ausentes
+    assert(body.fields.length >= 2);
   }
 });
 
-// ingest-auth V2 — versioning
+// ingest-auth V2
 
 Deno.test("ingest-auth V2: aceita payload V1 sem campos adicionais (backward compat)", () => {
   const result = IngestAuthSchemaV2.safeParse({
@@ -183,6 +180,28 @@ Deno.test("ingest-auth V2: aceita metadata como record", () => {
   assertEquals(result.success, true);
 });
 
+Deno.test("ingest-auth V2: aceita metadata com exatamente 10 chaves", () => {
+  const metadata: Record<string, string> = {};
+  for (let i = 0; i < 10; i++) metadata[`key${i}`] = `val${i}`;
+  const result = IngestAuthSchemaV2.safeParse({
+    action: "publish",
+    stream_key: VALID_STREAM_KEY,
+    metadata,
+  });
+  assertEquals(result.success, true);
+});
+
+Deno.test("ingest-auth V2: rejeita metadata com mais de 10 chaves", async () => {
+  const metadata: Record<string, string> = {};
+  for (let i = 0; i < 11; i++) metadata[`key${i}`] = `val${i}`;
+  const result = validatePayload(IngestAuthSchemaV2, {
+    action: "publish",
+    stream_key: VALID_STREAM_KEY,
+    metadata,
+  });
+  assertEquals(result.success, false);
+});
+
 Deno.test("ingest-auth V2: rejeita session_id inválido (não-UUID)", async () => {
   const result = validatePayload(IngestAuthSchemaV2, {
     action: "publish",
@@ -198,6 +217,15 @@ Deno.test("ingest-auth V2: rejeita metadata com valor longo (> 256 chars)", asyn
     action: "publish",
     stream_key: VALID_STREAM_KEY,
     metadata: { key: "x".repeat(257) },
+  });
+  assertEquals(result.success, false);
+});
+
+Deno.test("ingest-auth V2: rejeita campo desconhecido (strict)", async () => {
+  const result = validatePayload(IngestAuthSchemaV2, {
+    action: "publish",
+    stream_key: VALID_STREAM_KEY,
+    extra_unknown: "valor",
   });
   assertEquals(result.success, false);
 });
@@ -405,6 +433,18 @@ Deno.test("agent discoveries: DiscoveryItemSchema rejeita port não-inteiro", as
   if (!result.success) await assert422Shape(result.response, "port");
 });
 
+Deno.test("agent discoveries: DiscoveryItemSchema rejeita port NaN", async () => {
+  const result = validatePayload(DiscoveryItemSchema, { host: "cam.local", port: NaN });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "port");
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema rejeita port Infinity", async () => {
+  const result = validatePayload(DiscoveryItemSchema, { host: "cam.local", port: Infinity });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "port");
+});
+
 Deno.test("agent discoveries: DiscoveryItemSchema rejeita onvif_endpoint URL inválida", async () => {
   const result = validatePayload(DiscoveryItemSchema, {
     host: "cam.local",
@@ -483,8 +523,17 @@ Deno.test("agent discoveries V2: rejeita source inválida", async () => {
   if (!result.success) await assert422Shape(result.response, "source");
 });
 
+Deno.test("agent discoveries V2: rejeita campo desconhecido (strict)", async () => {
+  const result = validatePayload(AgentDiscoveriesSchemaV2, {
+    discoveries: [{ host: "cam.local", port: 554 }],
+    extra_field: "valor",
+  });
+  assertEquals(result.success, false);
+});
+
 // ─────────────────────────────────────────────────────────────
 // agent-ingest — relay-poll
+// Schema: { max?: number (int, 1-8) }
 // ─────────────────────────────────────────────────────────────
 
 Deno.test("agent relay-poll: aceita payload vazio", () => {
@@ -492,21 +541,43 @@ Deno.test("agent relay-poll: aceita payload vazio", () => {
   assertEquals(result.success, true);
 });
 
-Deno.test("agent relay-poll: aceita timeout_ms válido", () => {
-  const result = AgentRelayPollSchema.safeParse({ timeout_ms: 5000 });
+Deno.test("agent relay-poll: aceita max válido (4)", () => {
+  const result = AgentRelayPollSchema.safeParse({ max: 4 });
   assertEquals(result.success, true);
 });
 
-Deno.test("agent relay-poll: rejeita timeout_ms negativo", async () => {
-  const result = validatePayload(AgentRelayPollSchema, { timeout_ms: -1 });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "timeout_ms");
+Deno.test("agent relay-poll: aceita max = 1 (mínimo)", () => {
+  const result = AgentRelayPollSchema.safeParse({ max: 1 });
+  assertEquals(result.success, true);
 });
 
-Deno.test("agent relay-poll: rejeita timeout_ms acima de 30000", async () => {
-  const result = validatePayload(AgentRelayPollSchema, { timeout_ms: 30001 });
+Deno.test("agent relay-poll: aceita max = 8 (máximo)", () => {
+  const result = AgentRelayPollSchema.safeParse({ max: 8 });
+  assertEquals(result.success, true);
+});
+
+Deno.test("agent relay-poll: rejeita max = 0 (abaixo do mínimo)", async () => {
+  const result = validatePayload(AgentRelayPollSchema, { max: 0 });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "timeout_ms");
+  if (!result.success) await assert422Shape(result.response, "max");
+});
+
+Deno.test("agent relay-poll: rejeita max = 9 (acima do máximo)", async () => {
+  const result = validatePayload(AgentRelayPollSchema, { max: 9 });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "max");
+});
+
+Deno.test("agent relay-poll: rejeita max decimal", async () => {
+  const result = validatePayload(AgentRelayPollSchema, { max: 3.5 });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "max");
+});
+
+Deno.test("agent relay-poll: rejeita max NaN", async () => {
+  const result = validatePayload(AgentRelayPollSchema, { max: NaN });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "max");
 });
 
 Deno.test("agent relay-poll: rejeita campo desconhecido (strict)", async () => {
@@ -516,97 +587,161 @@ Deno.test("agent relay-poll: rejeita campo desconhecido (strict)", async () => {
 
 // ─────────────────────────────────────────────────────────────
 // agent-ingest — relay-complete
+// Schema V1: { task_id: string(1-128), response?: unknown, error?: string(max 500) }
+// Schema V2: V1 + { exit_code?: int(-2147483648..2147483647), duration_ms?: int(min 0) }
 // ─────────────────────────────────────────────────────────────
 
-Deno.test("agent relay-complete V1: aceita payload mínimo válido", () => {
-  const result = AgentRelayCompleteSchemaV1.safeParse({
-    command_id: VALID_UUID,
-    success: true,
-  });
+Deno.test("agent relay-complete V1: aceita payload mínimo (só task_id)", () => {
+  const result = AgentRelayCompleteSchemaV1.safeParse({ task_id: "task-abc-123" });
   assertEquals(result.success, true);
 });
 
-Deno.test("agent relay-complete V1: aceita com output e error opcionais", () => {
+Deno.test("agent relay-complete V1: aceita com response e error opcionais", () => {
   const result = AgentRelayCompleteSchemaV1.safeParse({
-    command_id: VALID_UUID,
-    success: false,
-    output: "stdout output",
+    task_id: "task-abc-123",
+    response: { output: "ok", code: 0 },
     error: "stderr message",
   });
   assertEquals(result.success, true);
 });
 
-Deno.test("agent relay-complete V1: rejeita command_id ausente", async () => {
-  const result = validatePayload(AgentRelayCompleteSchemaV1, { success: true });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "command_id");
+Deno.test("agent relay-complete V1: aceita response como string", () => {
+  const result = AgentRelayCompleteSchemaV1.safeParse({
+    task_id: "task-abc-123",
+    response: "resultado em texto",
+  });
+  assertEquals(result.success, true);
 });
 
-Deno.test("agent relay-complete V1: rejeita command_id não-UUID", async () => {
+Deno.test("agent relay-complete V1: aceita response null", () => {
+  const result = AgentRelayCompleteSchemaV1.safeParse({
+    task_id: "task-abc-123",
+    response: null,
+  });
+  assertEquals(result.success, true);
+});
+
+Deno.test("agent relay-complete V1: rejeita task_id ausente", async () => {
+  const result = validatePayload(AgentRelayCompleteSchemaV1, {});
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "task_id");
+});
+
+Deno.test("agent relay-complete V1: rejeita task_id vazio", async () => {
+  const result = validatePayload(AgentRelayCompleteSchemaV1, { task_id: "" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "task_id");
+});
+
+Deno.test("agent relay-complete V1: rejeita task_id acima de 128 chars", async () => {
   const result = validatePayload(AgentRelayCompleteSchemaV1, {
-    command_id: "nao-e-uuid",
-    success: true,
+    task_id: "t".repeat(129),
   });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "command_id");
+  if (!result.success) await assert422Shape(result.response, "task_id");
 });
 
-Deno.test("agent relay-complete V1: rejeita success ausente", async () => {
-  const result = validatePayload(AgentRelayCompleteSchemaV1, { command_id: VALID_UUID });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "success");
-});
-
-Deno.test("agent relay-complete V1: rejeita success como string", async () => {
+Deno.test("agent relay-complete V1: rejeita error acima de 500 chars", async () => {
   const result = validatePayload(AgentRelayCompleteSchemaV1, {
-    command_id: VALID_UUID,
-    success: "true",
+    task_id: "task-abc-123",
+    error: "e".repeat(501),
   });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "success");
+  if (!result.success) await assert422Shape(result.response, "error");
 });
 
-Deno.test("agent relay-complete V1: rejeita output acima de 65536 chars", async () => {
+Deno.test("agent relay-complete V1: rejeita campo desconhecido (strict)", async () => {
   const result = validatePayload(AgentRelayCompleteSchemaV1, {
-    command_id: VALID_UUID,
-    success: true,
-    output: "x".repeat(65537),
+    task_id: "task-abc-123",
+    unknown_field: "x",
   });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "output");
 });
 
-Deno.test("agent relay-complete V2: aceita duration_ms e exit_code", () => {
+Deno.test("agent relay-complete V2: aceita exit_code e duration_ms", () => {
   const result = AgentRelayCompleteSchemaV2.safeParse({
-    command_id: VALID_UUID,
-    success: true,
-    duration_ms: 1500,
+    task_id: "task-abc-123",
     exit_code: 0,
+    duration_ms: 1500,
   });
   assertEquals(result.success, true);
 });
 
 Deno.test("agent relay-complete V2: aceita payload V1 (backward compat)", () => {
+  const result = AgentRelayCompleteSchemaV2.safeParse({ task_id: "task-abc-123" });
+  assertEquals(result.success, true);
+});
+
+Deno.test("agent relay-complete V2: aceita exit_code negativo válido (-1)", () => {
   const result = AgentRelayCompleteSchemaV2.safeParse({
-    command_id: VALID_UUID,
-    success: true,
+    task_id: "task-abc-123",
+    exit_code: -1,
   });
   assertEquals(result.success, true);
 });
 
+Deno.test("agent relay-complete V2: aceita exit_code no limite int32 mínimo", () => {
+  const result = AgentRelayCompleteSchemaV2.safeParse({
+    task_id: "task-abc-123",
+    exit_code: -2_147_483_648,
+  });
+  assertEquals(result.success, true);
+});
+
+Deno.test("agent relay-complete V2: aceita exit_code no limite int32 máximo", () => {
+  const result = AgentRelayCompleteSchemaV2.safeParse({
+    task_id: "task-abc-123",
+    exit_code: 2_147_483_647,
+  });
+  assertEquals(result.success, true);
+});
+
+Deno.test("agent relay-complete V2: rejeita exit_code abaixo de int32 mínimo", async () => {
+  const result = validatePayload(AgentRelayCompleteSchemaV2, {
+    task_id: "task-abc-123",
+    exit_code: -2_147_483_649,
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "exit_code");
+});
+
+Deno.test("agent relay-complete V2: rejeita exit_code acima de int32 máximo", async () => {
+  const result = validatePayload(AgentRelayCompleteSchemaV2, {
+    task_id: "task-abc-123",
+    exit_code: 2_147_483_648,
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "exit_code");
+});
+
 Deno.test("agent relay-complete V2: rejeita duration_ms negativo", async () => {
   const result = validatePayload(AgentRelayCompleteSchemaV2, {
-    command_id: VALID_UUID,
-    success: true,
+    task_id: "task-abc-123",
     duration_ms: -1,
   });
   assertEquals(result.success, false);
   if (!result.success) await assert422Shape(result.response, "duration_ms");
 });
 
-// Versioning com validateVersionedPayload
+Deno.test("agent relay-complete V2: rejeita exit_code decimal", async () => {
+  const result = validatePayload(AgentRelayCompleteSchemaV2, {
+    task_id: "task-abc-123",
+    exit_code: 1.5,
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "exit_code");
+});
+
+Deno.test("agent relay-complete V2: rejeita campo desconhecido (strict)", async () => {
+  const result = validatePayload(AgentRelayCompleteSchemaV2, {
+    task_id: "task-abc-123",
+    extra_field: "x",
+  });
+  assertEquals(result.success, false);
+});
+
 Deno.test("agent relay-complete: versioned validation aceita V1 em endpoint V2", () => {
-  const v1Payload = { command_id: VALID_UUID, success: true };
+  const v1Payload = { task_id: "task-abc-123" };
   const result = validateVersionedPayload(
     { v1: AgentRelayCompleteSchemaV1, v2: AgentRelayCompleteSchemaV2 },
     v1Payload,
@@ -616,423 +751,275 @@ Deno.test("agent relay-complete: versioned validation aceita V1 em endpoint V2",
 });
 
 // ─────────────────────────────────────────────────────────────
-// stream-health-probe
+// stream-health-probe — query params only
+// Schema: { limit?: int(1-200) }
 // ─────────────────────────────────────────────────────────────
 
-Deno.test("stream-health-probe V1: aceita payload mínimo", () => {
-  const result = StreamHealthProbeSchemaV1.safeParse({ camera_id: VALID_UUID });
+Deno.test("stream-health-probe query: aceita objeto vazio (batch sem filtro)", () => {
+  const result = StreamHealthProbeQuerySchema.safeParse({});
   assertEquals(result.success, true);
 });
 
-Deno.test("stream-health-probe V1: aceita com todos os campos opcionais", () => {
-  const result = StreamHealthProbeSchemaV1.safeParse({
-    camera_id: VALID_UUID,
-    stream_url: "rtsp://cam.local/live",
-    timeout_ms: 5000,
-  });
+Deno.test("stream-health-probe query: aceita limit válido", () => {
+  const result = StreamHealthProbeQuerySchema.safeParse({ limit: 50 });
   assertEquals(result.success, true);
 });
 
-Deno.test("stream-health-probe V1: rejeita camera_id ausente", async () => {
-  const result = validatePayload(StreamHealthProbeSchemaV1, {});
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "camera_id");
-});
-
-Deno.test("stream-health-probe V1: rejeita camera_id inválido (não-UUID)", async () => {
-  const result = validatePayload(StreamHealthProbeSchemaV1, {
-    camera_id: "nao-uuid",
-  });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "camera_id");
-});
-
-Deno.test("stream-health-probe V1: rejeita stream_url inválida", async () => {
-  const result = validatePayload(StreamHealthProbeSchemaV1, {
-    camera_id: VALID_UUID,
-    stream_url: "nao-e-url",
-  });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "stream_url");
-});
-
-Deno.test("stream-health-probe V1: rejeita timeout_ms abaixo de 1000", async () => {
-  const result = validatePayload(StreamHealthProbeSchemaV1, {
-    camera_id: VALID_UUID,
-    timeout_ms: 999,
-  });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "timeout_ms");
-});
-
-Deno.test("stream-health-probe V1: rejeita timeout_ms acima de 30000", async () => {
-  const result = validatePayload(StreamHealthProbeSchemaV1, {
-    camera_id: VALID_UUID,
-    timeout_ms: 30001,
-  });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "timeout_ms");
-});
-
-Deno.test("stream-health-probe V2: aceita check_audio e expected_codec", () => {
-  const result = StreamHealthProbeSchemaV2.safeParse({
-    camera_id: VALID_UUID,
-    check_audio: true,
-    expected_codec: "h264",
-  });
+Deno.test("stream-health-probe query: aceita limit = 1 (mínimo)", () => {
+  const result = StreamHealthProbeQuerySchema.safeParse({ limit: 1 });
   assertEquals(result.success, true);
 });
 
-Deno.test("stream-health-probe V2: rejeita expected_codec longo (> 32 chars)", async () => {
-  const result = validatePayload(StreamHealthProbeSchemaV2, {
-    camera_id: VALID_UUID,
-    expected_codec: "c".repeat(33),
-  });
+Deno.test("stream-health-probe query: aceita limit = 200 (máximo)", () => {
+  const result = StreamHealthProbeQuerySchema.safeParse({ limit: 200 });
+  assertEquals(result.success, true);
+});
+
+Deno.test("stream-health-probe query: rejeita limit = 0", async () => {
+  const result = validatePayload(StreamHealthProbeQuerySchema, { limit: 0 });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "expected_codec");
+  if (!result.success) await assert422Shape(result.response, "limit");
+});
+
+Deno.test("stream-health-probe query: rejeita limit = 201", async () => {
+  const result = validatePayload(StreamHealthProbeQuerySchema, { limit: 201 });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "limit");
+});
+
+Deno.test("stream-health-probe query: rejeita limit decimal", async () => {
+  const result = validatePayload(StreamHealthProbeQuerySchema, { limit: 50.5 });
+  assertEquals(result.success, false);
+});
+
+Deno.test("stream-health-probe query: rejeita campo desconhecido (strict)", async () => {
+  const result = validatePayload(StreamHealthProbeQuerySchema, { camera_id: VALID_UUID });
+  assertEquals(result.success, false);
 });
 
 // ─────────────────────────────────────────────────────────────
-// preview-telemetry-alert
+// preview-telemetry-alert — query params only
+// Schema: { window?: int(1-1440), min?: int(1+), threshold?: number }
 // ─────────────────────────────────────────────────────────────
 
-Deno.test("preview-telemetry-alert V1: aceita payload completo", () => {
-  const result = PreviewTelemetryAlertSchemaV1.safeParse({
-    camera_id: VALID_UUID,
-    alert_type: "cpu_spike",
-    severity: "high",
-    metric: "cpu_usage_percent",
-    value: 98.5,
-    threshold: 90.0,
-    timestamp: VALID_DATETIME,
+Deno.test("preview-telemetry-alert query: aceita objeto vazio", () => {
+  const result = PreviewTelemetryAlertQuerySchema.safeParse({});
+  assertEquals(result.success, true);
+});
+
+Deno.test("preview-telemetry-alert query: aceita com todos os campos", () => {
+  const result = PreviewTelemetryAlertQuerySchema.safeParse({
+    window: 60,
+    min: 5,
+    threshold: 0.8,
   });
   assertEquals(result.success, true);
 });
 
-Deno.test("preview-telemetry-alert V1: aceita payload mínimo", () => {
-  const result = PreviewTelemetryAlertSchemaV1.safeParse({
-    camera_id: VALID_UUID,
-    alert_type: "latency",
-    severity: "low",
-    metric: "rtt_ms",
-    value: 250,
+Deno.test("preview-telemetry-alert query: aceita window = 1440 (máximo)", () => {
+  const result = PreviewTelemetryAlertQuerySchema.safeParse({ window: 1440 });
+  assertEquals(result.success, true);
+});
+
+Deno.test("preview-telemetry-alert query: rejeita window = 0", async () => {
+  const result = validatePayload(PreviewTelemetryAlertQuerySchema, { window: 0 });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "window");
+});
+
+Deno.test("preview-telemetry-alert query: rejeita window = 1441", async () => {
+  const result = validatePayload(PreviewTelemetryAlertQuerySchema, { window: 1441 });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "window");
+});
+
+Deno.test("preview-telemetry-alert query: rejeita min = 0", async () => {
+  const result = validatePayload(PreviewTelemetryAlertQuerySchema, { min: 0 });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "min");
+});
+
+Deno.test("preview-telemetry-alert query: rejeita campo desconhecido (strict)", async () => {
+  const result = validatePayload(PreviewTelemetryAlertQuerySchema, { camera_id: VALID_UUID });
+  assertEquals(result.success, false);
+});
+
+// ─────────────────────────────────────────────────────────────
+// connectivity-resolution-alert — query params only
+// Schema: { window?: int(1-1440), min?: int(1+), threshold?: number }
+// ─────────────────────────────────────────────────────────────
+
+Deno.test("connectivity-resolution-alert query: aceita objeto vazio", () => {
+  const result = ConnectivityResolutionAlertQuerySchema.safeParse({});
+  assertEquals(result.success, true);
+});
+
+Deno.test("connectivity-resolution-alert query: aceita com todos os campos", () => {
+  const result = ConnectivityResolutionAlertQuerySchema.safeParse({
+    window: 30,
+    min: 3,
+    threshold: 0.5,
   });
   assertEquals(result.success, true);
 });
 
-Deno.test("preview-telemetry-alert V1: rejeita camera_id ausente", async () => {
-  const result = validatePayload(PreviewTelemetryAlertSchemaV1, {
-    alert_type: "cpu_spike",
-    severity: "high",
-    metric: "cpu",
-    value: 90,
-  });
+Deno.test("connectivity-resolution-alert query: rejeita window = 0", async () => {
+  const result = validatePayload(ConnectivityResolutionAlertQuerySchema, { window: 0 });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "camera_id");
+  if (!result.success) await assert422Shape(result.response, "window");
 });
 
-Deno.test("preview-telemetry-alert V1: rejeita severity inválida", async () => {
-  const result = validatePayload(PreviewTelemetryAlertSchemaV1, {
-    camera_id: VALID_UUID,
-    alert_type: "cpu_spike",
-    severity: "extreme",
-    metric: "cpu",
-    value: 99,
-  });
+Deno.test("connectivity-resolution-alert query: rejeita min negativo", async () => {
+  const result = validatePayload(ConnectivityResolutionAlertQuerySchema, { min: -1 });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "severity");
+  if (!result.success) await assert422Shape(result.response, "min");
 });
 
-Deno.test("preview-telemetry-alert V1: rejeita todos os severities inválidos", async () => {
-  for (const sev of ["none", "warning", "emergency", ""]) {
-    const result = validatePayload(PreviewTelemetryAlertSchemaV1, {
-      camera_id: VALID_UUID,
-      alert_type: "test",
-      severity: sev,
-      metric: "m",
-      value: 1,
-    });
-    assertEquals(result.success, false, `severity "${sev}" deveria ser rejeitada`);
-  }
-});
-
-Deno.test("preview-telemetry-alert V1: aceita todos os severities válidos", () => {
-  for (const sev of ["low", "medium", "high", "critical"]) {
-    const result = PreviewTelemetryAlertSchemaV1.safeParse({
-      camera_id: VALID_UUID,
-      alert_type: "test",
-      severity: sev,
-      metric: "m",
-      value: 1,
-    });
-    assertEquals(result.success, true, `severity "${sev}" deveria ser aceita`);
-  }
-});
-
-Deno.test("preview-telemetry-alert V1: rejeita value como string", async () => {
-  const result = validatePayload(PreviewTelemetryAlertSchemaV1, {
-    camera_id: VALID_UUID,
-    alert_type: "test",
-    severity: "low",
-    metric: "m",
-    value: "noventa",
-  });
+Deno.test("connectivity-resolution-alert query: rejeita campo desconhecido (strict)", async () => {
+  const result = validatePayload(ConnectivityResolutionAlertQuerySchema, { resolution_type: "timeout" });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "value");
-});
-
-Deno.test("preview-telemetry-alert V1: rejeita timestamp inválido", async () => {
-  const result = validatePayload(PreviewTelemetryAlertSchemaV1, {
-    camera_id: VALID_UUID,
-    alert_type: "test",
-    severity: "low",
-    metric: "m",
-    value: 1,
-    timestamp: "nao-e-datetime",
-  });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "timestamp");
-});
-
-// ─────────────────────────────────────────────────────────────
-// connectivity-resolution-alert
-// ─────────────────────────────────────────────────────────────
-
-Deno.test("connectivity-resolution-alert V1: aceita payload mínimo", () => {
-  const result = ConnectivityResolutionAlertSchemaV1.safeParse({
-    camera_id: VALID_UUID,
-    resolution_type: "reconnected",
-  });
-  assertEquals(result.success, true);
-});
-
-Deno.test("connectivity-resolution-alert V1: aceita todos os resolution_types", () => {
-  for (const rt of ["reconnected", "timeout", "dns_failure", "auth_failure"]) {
-    const result = ConnectivityResolutionAlertSchemaV1.safeParse({
-      camera_id: VALID_UUID,
-      resolution_type: rt,
-    });
-    assertEquals(result.success, true, `resolution_type "${rt}" deveria ser aceito`);
-  }
-});
-
-Deno.test("connectivity-resolution-alert V1: rejeita resolution_type inválido", async () => {
-  const result = validatePayload(ConnectivityResolutionAlertSchemaV1, {
-    camera_id: VALID_UUID,
-    resolution_type: "packet_loss",
-  });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "resolution_type");
-});
-
-Deno.test("connectivity-resolution-alert V1: rejeita camera_id ausente", async () => {
-  const result = validatePayload(ConnectivityResolutionAlertSchemaV1, {
-    resolution_type: "timeout",
-  });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "camera_id");
-});
-
-Deno.test("connectivity-resolution-alert V1: rejeita duration_ms negativo", async () => {
-  const result = validatePayload(ConnectivityResolutionAlertSchemaV1, {
-    camera_id: VALID_UUID,
-    resolution_type: "reconnected",
-    duration_ms: -1,
-  });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "duration_ms");
 });
 
 // ─────────────────────────────────────────────────────────────
 // watchdog-ack-sla-alert
+// Schema: { force?: boolean, min_ack?: int(min 0), min_esc?: int(min 0), mtta_cap_ms?: int(min 0) }
 // ─────────────────────────────────────────────────────────────
 
-Deno.test("watchdog-ack-sla-alert V1: aceita payload mínimo", () => {
+Deno.test("watchdog-ack-sla-alert V1: aceita payload vazio (todos opcionais)", () => {
+  const result = WatchdogAckSlaAlertSchemaV1.safeParse({});
+  assertEquals(result.success, true);
+});
+
+Deno.test("watchdog-ack-sla-alert V1: aceita com todos os campos", () => {
   const result = WatchdogAckSlaAlertSchemaV1.safeParse({
-    alert_id: VALID_UUID,
-    acknowledged_by: VALID_UUID_2,
+    force: true,
+    min_ack: 5,
+    min_esc: 10,
+    mtta_cap_ms: 30_000,
   });
   assertEquals(result.success, true);
 });
 
-Deno.test("watchdog-ack-sla-alert V1: aceita com note opcional", () => {
-  const result = WatchdogAckSlaAlertSchemaV1.safeParse({
-    alert_id: VALID_UUID,
-    acknowledged_by: VALID_UUID_2,
-    note: "Câmera reiniciada manualmente.",
-  });
+Deno.test("watchdog-ack-sla-alert V1: aceita force = false", () => {
+  const result = WatchdogAckSlaAlertSchemaV1.safeParse({ force: false });
   assertEquals(result.success, true);
 });
 
-Deno.test("watchdog-ack-sla-alert V1: rejeita alert_id ausente", async () => {
-  const result = validatePayload(WatchdogAckSlaAlertSchemaV1, {
-    acknowledged_by: VALID_UUID_2,
-  });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "alert_id");
+Deno.test("watchdog-ack-sla-alert V1: aceita min_ack = 0 (mínimo)", () => {
+  const result = WatchdogAckSlaAlertSchemaV1.safeParse({ min_ack: 0 });
+  assertEquals(result.success, true);
 });
 
-Deno.test("watchdog-ack-sla-alert V1: rejeita acknowledged_by inválido", async () => {
-  const result = validatePayload(WatchdogAckSlaAlertSchemaV1, {
-    alert_id: VALID_UUID,
-    acknowledged_by: "nao-uuid",
-  });
+Deno.test("watchdog-ack-sla-alert V1: rejeita min_ack negativo", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertSchemaV1, { min_ack: -1 });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "acknowledged_by");
+  if (!result.success) await assert422Shape(result.response, "min_ack");
 });
 
-Deno.test("watchdog-ack-sla-alert V1: rejeita note longa (> 1000 chars)", async () => {
-  const result = validatePayload(WatchdogAckSlaAlertSchemaV1, {
-    alert_id: VALID_UUID,
-    acknowledged_by: VALID_UUID_2,
-    note: "n".repeat(1001),
-  });
+Deno.test("watchdog-ack-sla-alert V1: rejeita min_esc negativo", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertSchemaV1, { min_esc: -5 });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "note");
+  if (!result.success) await assert422Shape(result.response, "min_esc");
+});
+
+Deno.test("watchdog-ack-sla-alert V1: rejeita mtta_cap_ms negativo", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertSchemaV1, { mtta_cap_ms: -1 });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "mtta_cap_ms");
+});
+
+Deno.test("watchdog-ack-sla-alert V1: rejeita force como string", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertSchemaV1, { force: "true" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "force");
 });
 
 Deno.test("watchdog-ack-sla-alert V1: rejeita campo desconhecido (strict)", async () => {
-  const result = validatePayload(WatchdogAckSlaAlertSchemaV1, {
-    alert_id: VALID_UUID,
-    acknowledged_by: VALID_UUID_2,
-    extra: "campo",
-  });
+  const result = validatePayload(WatchdogAckSlaAlertSchemaV1, { extra: "campo" });
   assertEquals(result.success, false);
 });
 
 // ─────────────────────────────────────────────────────────────
 // monitoring-center-dispatch
+// Schema: { limit?: int(1-100) }
 // ─────────────────────────────────────────────────────────────
 
-Deno.test("monitoring-center-dispatch V1: aceita payload mínimo", () => {
-  const result = MonitoringCenterDispatchSchemaV1.safeParse({
-    alert_id: VALID_UUID,
-    severity: "critical",
-    message: "Câmera offline há mais de 5 minutos",
-    dispatch_to: ["ops@example.com"],
-  });
+Deno.test("monitoring-center-dispatch V1: aceita payload vazio", () => {
+  const result = MonitoringCenterDispatchSchemaV1.safeParse({});
   assertEquals(result.success, true);
 });
 
-Deno.test("monitoring-center-dispatch V1: aceita com camera_id opcional", () => {
-  const result = MonitoringCenterDispatchSchemaV1.safeParse({
-    alert_id: VALID_UUID,
-    camera_id: VALID_UUID_2,
-    severity: "high",
-    message: "Alerta de câmera",
-    dispatch_to: ["a@b.com", "c@d.com"],
-  });
+Deno.test("monitoring-center-dispatch V1: aceita limit válido", () => {
+  const result = MonitoringCenterDispatchSchemaV1.safeParse({ limit: 50 });
   assertEquals(result.success, true);
 });
 
-Deno.test("monitoring-center-dispatch V1: rejeita dispatch_to vazio", async () => {
-  const result = validatePayload(MonitoringCenterDispatchSchemaV1, {
-    alert_id: VALID_UUID,
-    severity: "high",
-    message: "Alerta",
-    dispatch_to: [],
-  });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "dispatch_to");
+Deno.test("monitoring-center-dispatch V1: aceita limit = 1 (mínimo)", () => {
+  const result = MonitoringCenterDispatchSchemaV1.safeParse({ limit: 1 });
+  assertEquals(result.success, true);
 });
 
-Deno.test("monitoring-center-dispatch V1: rejeita email inválido em dispatch_to", async () => {
-  const result = validatePayload(MonitoringCenterDispatchSchemaV1, {
-    alert_id: VALID_UUID,
-    severity: "low",
-    message: "Alerta",
-    dispatch_to: ["nao-e-email"],
-  });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "dispatch_to");
+Deno.test("monitoring-center-dispatch V1: aceita limit = 100 (máximo)", () => {
+  const result = MonitoringCenterDispatchSchemaV1.safeParse({ limit: 100 });
+  assertEquals(result.success, true);
 });
 
-Deno.test("monitoring-center-dispatch V1: rejeita message vazia", async () => {
-  const result = validatePayload(MonitoringCenterDispatchSchemaV1, {
-    alert_id: VALID_UUID,
-    severity: "low",
-    message: "",
-    dispatch_to: ["a@b.com"],
-  });
+Deno.test("monitoring-center-dispatch V1: rejeita limit = 0", async () => {
+  const result = validatePayload(MonitoringCenterDispatchSchemaV1, { limit: 0 });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "message");
+  if (!result.success) await assert422Shape(result.response, "limit");
 });
 
-Deno.test("monitoring-center-dispatch V1: rejeita message acima de 2000 chars", async () => {
-  const result = validatePayload(MonitoringCenterDispatchSchemaV1, {
-    alert_id: VALID_UUID,
-    severity: "low",
-    message: "m".repeat(2001),
-    dispatch_to: ["a@b.com"],
-  });
+Deno.test("monitoring-center-dispatch V1: rejeita limit = 101", async () => {
+  const result = validatePayload(MonitoringCenterDispatchSchemaV1, { limit: 101 });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "message");
+  if (!result.success) await assert422Shape(result.response, "limit");
 });
 
-Deno.test("monitoring-center-dispatch V1: rejeita mais de 50 destinatários", async () => {
-  const result = validatePayload(MonitoringCenterDispatchSchemaV1, {
-    alert_id: VALID_UUID,
-    severity: "low",
-    message: "Alerta",
-    dispatch_to: Array.from({ length: 51 }, (_, i) => `user${i}@example.com`),
-  });
+Deno.test("monitoring-center-dispatch V1: rejeita limit decimal", async () => {
+  const result = validatePayload(MonitoringCenterDispatchSchemaV1, { limit: 10.5 });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "dispatch_to");
+});
+
+Deno.test("monitoring-center-dispatch V1: rejeita campo desconhecido (strict)", async () => {
+  const result = validatePayload(MonitoringCenterDispatchSchemaV1, { alert_id: VALID_UUID });
+  assertEquals(result.success, false);
 });
 
 // ─────────────────────────────────────────────────────────────
-// vault-coverage-watchdog
+// vault-coverage-watchdog — query params only
+// Schema: { limit?: int(1-500) }
 // ─────────────────────────────────────────────────────────────
 
-Deno.test("vault-coverage-watchdog V1: aceita payload vazio (todos opcionais)", () => {
-  const result = VaultCoverageWatchdogSchemaV1.safeParse({});
+Deno.test("vault-coverage-watchdog query: aceita objeto vazio", () => {
+  const result = VaultCoverageWatchdogQuerySchema.safeParse({});
   assertEquals(result.success, true);
 });
 
-Deno.test("vault-coverage-watchdog V1: aceita camera_ids e threshold_hours", () => {
-  const result = VaultCoverageWatchdogSchemaV1.safeParse({
-    camera_ids: [VALID_UUID, VALID_UUID_2],
-    threshold_hours: 24,
-  });
+Deno.test("vault-coverage-watchdog query: aceita limit válido", () => {
+  const result = VaultCoverageWatchdogQuerySchema.safeParse({ limit: 100 });
   assertEquals(result.success, true);
 });
 
-Deno.test("vault-coverage-watchdog V1: rejeita camera_ids com não-UUID", async () => {
-  const result = validatePayload(VaultCoverageWatchdogSchemaV1, {
-    camera_ids: ["nao-uuid"],
-  });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "camera_ids");
+Deno.test("vault-coverage-watchdog query: aceita limit = 500 (máximo)", () => {
+  const result = VaultCoverageWatchdogQuerySchema.safeParse({ limit: 500 });
+  assertEquals(result.success, true);
 });
 
-Deno.test("vault-coverage-watchdog V1: rejeita camera_ids vazia", async () => {
-  const result = validatePayload(VaultCoverageWatchdogSchemaV1, {
-    camera_ids: [],
-  });
+Deno.test("vault-coverage-watchdog query: rejeita limit = 0", async () => {
+  const result = validatePayload(VaultCoverageWatchdogQuerySchema, { limit: 0 });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "camera_ids");
+  if (!result.success) await assert422Shape(result.response, "limit");
 });
 
-Deno.test("vault-coverage-watchdog V1: rejeita threshold_hours abaixo de 1", async () => {
-  const result = validatePayload(VaultCoverageWatchdogSchemaV1, {
-    threshold_hours: 0,
-  });
+Deno.test("vault-coverage-watchdog query: rejeita limit = 501", async () => {
+  const result = validatePayload(VaultCoverageWatchdogQuerySchema, { limit: 501 });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "threshold_hours");
+  if (!result.success) await assert422Shape(result.response, "limit");
 });
 
-Deno.test("vault-coverage-watchdog V1: rejeita threshold_hours acima de 720", async () => {
-  const result = validatePayload(VaultCoverageWatchdogSchemaV1, {
-    threshold_hours: 721,
-  });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "threshold_hours");
-});
-
-Deno.test("vault-coverage-watchdog V1: rejeita campo desconhecido (strict)", async () => {
-  const result = validatePayload(VaultCoverageWatchdogSchemaV1, {
-    unknown: "campo",
-  });
+Deno.test("vault-coverage-watchdog query: rejeita campo desconhecido (strict)", async () => {
+  const result = validatePayload(VaultCoverageWatchdogQuerySchema, { camera_ids: [VALID_UUID] });
   assertEquals(result.success, false);
 });
 
@@ -1088,11 +1075,28 @@ Deno.test("422 response: contract_version v2 quando especificado", async () => {
 });
 
 Deno.test("422 response: multiple errors reportados de uma vez", async () => {
-  const result = validatePayload(PreviewTelemetryAlertSchemaV1, {});
+  // IngestAuthSchemaV1 requer action e stream_key; payload vazio gera >= 2 erros
+  const result = validatePayload(IngestAuthSchemaV1, {});
   assertEquals(result.success, false);
   if (!result.success) {
     const body = await result.response.json();
-    // Payload totalmente vazio deve gerar múltiplos erros (camera_id, alert_type, severity, metric, value)
-    assert(body.fields.length >= 3, `Esperado >= 3 erros, recebido ${body.fields.length}`);
+    assert(body.fields.length >= 2, `Esperado >= 2 erros, recebido ${body.fields.length}`);
+  }
+});
+
+Deno.test("422 response: received incluído para enum inválido em v2", async () => {
+  const result = validatePayload(
+    IngestAuthSchemaV1,
+    { action: "invalid_action", stream_key: VALID_STREAM_KEY },
+    {},
+    "v2",
+  );
+  assertEquals(result.success, false);
+  if (!result.success) {
+    const body = await result.response.json();
+    const actionField = body.fields.find((f: { field: string }) => f.field === "action");
+    assertExists(actionField);
+    assertExists(actionField.received, "v2 deve incluir 'received' para enum inválido");
+    assertEquals(actionField.received, "invalid_action");
   }
 });

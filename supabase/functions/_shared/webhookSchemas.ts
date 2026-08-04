@@ -7,6 +7,9 @@
  * Schema versioning:
  *  - V1 schemas: original contract (conservative, no breaking changes allowed)
  *  - V2 schemas: extend V1 with additive fields (must remain backward-compatible)
+ *
+ * IMPORTANT: V2 schemas must be supersets of V1. Every V1-valid payload must also
+ * pass V2 validation. This enables lossless backward-compatible versioning.
  */
 import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 
@@ -36,10 +39,34 @@ export const IngestAuthSchemaV1 = z.object({
   client_ip: z.string().max(64, "client_ip excede 64 caracteres").optional(),
 }).strict();
 
-export const IngestAuthSchemaV2 = IngestAuthSchemaV1.omit({}).extend({
+// V2 adds optional session_id and a bounded metadata map.
+// Uses z.object().strict() directly instead of .omit({}).extend() to preserve strict mode.
+export const IngestAuthSchemaV2 = z.object({
+  action: z.enum(["publish", "unpublish"], {
+    errorMap: () => ({ message: 'action deve ser "publish" ou "unpublish"' }),
+  }),
+  stream_key: z
+    .string()
+    .min(1, "stream_key é obrigatório")
+    .regex(/^[a-f0-9]{32,64}$/, "stream_key deve ser hex de 32-64 caracteres"),
+  protocol: z.enum(["rtmp_push", "srt_push"], {
+    errorMap: () => ({ message: 'protocol deve ser "rtmp_push" ou "srt_push"' }),
+  }).optional(),
+  client_ip: z.string().max(64, "client_ip excede 64 caracteres").optional(),
   session_id: uuid.optional(),
-  metadata: z.record(z.string().max(256)).max(10).optional(),
-});
+  // z.record() has no .max() — use superRefine to enforce key count.
+  metadata: z.record(z.string().max(256)).optional().superRefine((val, ctx) => {
+    if (val !== undefined && Object.keys(val).length > 10) {
+      ctx.addIssue({
+        code: "too_big",
+        type: "object",
+        maximum: 10,
+        inclusive: true,
+        message: "metadata não pode ter mais de 10 chaves",
+      });
+    }
+  }),
+}).strict();
 
 export type IngestAuthPayloadV1 = z.infer<typeof IngestAuthSchemaV1>;
 export type IngestAuthPayloadV2 = z.infer<typeof IngestAuthSchemaV2>;
@@ -69,6 +96,7 @@ export type CspReportingApiItem = z.infer<typeof CspReportingApiItemSchema>;
 // ─────────────────────────────────────────────────────────────
 // agent-ingest — Local Agent webhook routes
 // POST /heartbeat | /discoveries | /relay-poll | /relay-complete
+// Fields match what agent-ingest/index.ts actually reads.
 // ─────────────────────────────────────────────────────────────
 
 export const AgentHeartbeatSchemaV1 = z.object({
@@ -76,14 +104,18 @@ export const AgentHeartbeatSchemaV1 = z.object({
   network_cidr: z.string().max(60, "network_cidr excede 60 caracteres").optional(),
 }).strict();
 
-export const AgentHeartbeatSchemaV2 = AgentHeartbeatSchemaV1.omit({}).extend({
+// V2: additive fields preserved, strict() explicit.
+export const AgentHeartbeatSchemaV2 = z.object({
+  agent_version: z.string().max(40, "agent_version excede 40 caracteres").optional(),
+  network_cidr: z.string().max(60, "network_cidr excede 60 caracteres").optional(),
   capabilities: z.array(z.string().max(64)).max(50).optional(),
   region: z.string().max(64).optional(),
-});
+}).strict();
 
 export const DiscoveryItemSchema = z.object({
   host: z.string().min(1, "host é obrigatório").max(253, "host excede 253 caracteres"),
-  port: z.number().int("port deve ser inteiro").min(1, "port mínimo 1").max(65535, "port máximo 65535"),
+  // .finite() rejects NaN and Infinity which sneak through bare z.number()
+  port: z.number().int("port deve ser inteiro").finite().min(1, "port mínimo 1").max(65535, "port máximo 65535"),
   manufacturer: z.string().max(100).nullish(),
   model: z.string().max(100).nullish(),
   firmware: z.string().max(100).nullish(),
@@ -102,30 +134,39 @@ export const AgentDiscoveriesSchemaV1 = z.object({
     .max(128, "discoveries excede o limite de 128 itens"),
 }).strict();
 
+// V2: additive source and scan_duration_ms fields; strict() explicit.
 export const AgentDiscoveriesSchemaV2 = z.object({
   discoveries: z
     .array(DiscoveryItemSchema)
     .min(1, "discoveries deve ter ao menos 1 item")
     .max(128, "discoveries excede o limite de 128 itens"),
   source: z.enum(["onvif", "mdns", "manual"]).optional(),
-  scan_duration_ms: z.number().int().min(0).optional(),
-});
+  scan_duration_ms: z.number().int().finite().min(0).optional(),
+}).strict();
 
+// relay-poll: `max` controls how many tasks to return (matches agent-ingest/index.ts).
+// Note: field is `max`, not `timeout_ms` — the long-poll timeout is server-side only.
 export const AgentRelayPollSchema = z.object({
-  timeout_ms: z.number().int().min(0).max(30_000).optional(),
+  max: z.number().int().finite().min(1).max(8).optional(),
 }).strict();
 
+// relay-complete: fields match agent-ingest/index.ts relay-complete route.
+// Note: function reads task_id (not command_id), response (not output).
 export const AgentRelayCompleteSchemaV1 = z.object({
-  command_id: uuid,
-  success: z.boolean({ required_error: "success é obrigatório" }),
-  output: z.string().max(65_536, "output excede 65536 bytes").optional(),
-  error: z.string().max(2_048, "error excede 2048 bytes").optional(),
+  task_id: z.string().min(1, "task_id é obrigatório").max(128),
+  response: z.unknown().optional(),
+  error: z.string().max(500, "error excede 500 caracteres").optional(),
 }).strict();
 
-export const AgentRelayCompleteSchemaV2 = AgentRelayCompleteSchemaV1.omit({}).extend({
-  duration_ms: z.number().int().min(0).optional(),
-  exit_code: z.number().int().optional(),
-});
+// V2: additive exit_code and duration_ms; strict() explicit.
+export const AgentRelayCompleteSchemaV2 = z.object({
+  task_id: z.string().min(1, "task_id é obrigatório").max(128),
+  response: z.unknown().optional(),
+  error: z.string().max(500, "error excede 500 caracteres").optional(),
+  // Bounded to signed 32-bit range to avoid DB integer overflow.
+  exit_code: z.number().int().finite().min(-2_147_483_648).max(2_147_483_647).optional(),
+  duration_ms: z.number().int().finite().min(0).optional(),
+}).strict();
 
 export type AgentHeartbeatPayloadV1 = z.infer<typeof AgentHeartbeatSchemaV1>;
 export type AgentHeartbeatPayloadV2 = z.infer<typeof AgentHeartbeatSchemaV2>;
@@ -142,74 +183,57 @@ export type AgentRelayCompletePayloadV1 = z.infer<typeof AgentRelayCompleteSchem
 export const CspAnomalyNotifySchema = z.object({}).passthrough();
 
 // ─────────────────────────────────────────────────────────────
-// stream-health-probe — Camera stream health check
+// Telemetry / alert functions that use URL query parameters only.
+// These schemas validate the QUERY PARAMS (not a JSON body).
+// Functions: stream-health-probe, preview-telemetry-alert,
+//            connectivity-resolution-alert, vault-coverage-watchdog
 // ─────────────────────────────────────────────────────────────
 
-export const StreamHealthProbeSchemaV1 = z.object({
-  camera_id: uuid,
-  stream_url: z.string().url("stream_url deve ser URL válida").optional(),
-  timeout_ms: z.number().int().min(1000).max(30_000).optional(),
+// stream-health-probe is a batch cron that reads all cameras from DB — no per-camera input.
+// Accepts an optional query param to limit batch size.
+export const StreamHealthProbeQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(200).optional(),
 }).strict();
 
-export const StreamHealthProbeSchemaV2 = StreamHealthProbeSchemaV1.omit({}).extend({
-  check_audio: z.boolean().optional(),
-  expected_codec: z.string().max(32).optional(),
-});
-
-// ─────────────────────────────────────────────────────────────
-// preview-telemetry-alert — Telemetry alert ingestion
-// ─────────────────────────────────────────────────────────────
-
-export const PreviewTelemetryAlertSchemaV1 = z.object({
-  camera_id: uuid,
-  alert_type: z.string().min(1).max(64),
-  severity: z.enum(["low", "medium", "high", "critical"]),
-  metric: z.string().min(1).max(128),
-  value: z.number(),
-  threshold: z.number().optional(),
-  timestamp: isoDatetime.optional(),
+// preview-telemetry-alert reads ?window=&min=&threshold= query params.
+export const PreviewTelemetryAlertQuerySchema = z.object({
+  window: z.coerce.number().int().finite().min(1).max(1440).optional(),
+  min: z.coerce.number().int().finite().min(1).optional(),
+  threshold: z.coerce.number().finite().optional(),
 }).strict();
 
-// ─────────────────────────────────────────────────────────────
-// connectivity-resolution-alert — Network connectivity alerts
-// ─────────────────────────────────────────────────────────────
+// connectivity-resolution-alert reads ?window=&min=&threshold= query params.
+export const ConnectivityResolutionAlertQuerySchema = z.object({
+  window: z.coerce.number().int().finite().min(1).max(1440).optional(),
+  min: z.coerce.number().int().finite().min(1).optional(),
+  threshold: z.coerce.number().finite().optional(),
+}).strict();
 
-export const ConnectivityResolutionAlertSchemaV1 = z.object({
-  camera_id: uuid,
-  resolution_type: z.enum(["reconnected", "timeout", "dns_failure", "auth_failure"]),
-  details: z.string().max(1024).optional(),
-  duration_ms: z.number().int().min(0).optional(),
+// vault-coverage-watchdog reads DB view with no request input.
+export const VaultCoverageWatchdogQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(500).optional(),
 }).strict();
 
 // ─────────────────────────────────────────────────────────────
-// watchdog-ack-sla-alert — SLA breach acknowledgement
+// watchdog-ack-sla-alert — SLA monitor with optional POST body
+// POST { force?, min_ack?, min_esc?, mtta_cap_ms? }
+// These field names match the actual function implementation.
 // ─────────────────────────────────────────────────────────────
 
 export const WatchdogAckSlaAlertSchemaV1 = z.object({
-  alert_id: uuid,
-  acknowledged_by: uuid,
-  note: z.string().max(1000).optional(),
+  force: z.boolean().optional(),
+  min_ack: z.number().int().finite().min(0).optional(),
+  min_esc: z.number().int().finite().min(0).optional(),
+  mtta_cap_ms: z.number().int().finite().min(0).optional(),
 }).strict();
 
 // ─────────────────────────────────────────────────────────────
-// monitoring-center-dispatch — Dispatch to monitoring center
+// monitoring-center-dispatch — Queue worker with optional limit
+// POST { limit? }  — dispatches from internal alert queue, not from caller
 // ─────────────────────────────────────────────────────────────
 
 export const MonitoringCenterDispatchSchemaV1 = z.object({
-  alert_id: uuid,
-  camera_id: uuid.optional(),
-  severity: z.enum(["low", "medium", "high", "critical"]),
-  message: z.string().min(1).max(2000),
-  dispatch_to: z.array(z.string().email()).min(1).max(50),
-}).strict();
-
-// ─────────────────────────────────────────────────────────────
-// vault-coverage-watchdog — Vault coverage monitoring
-// ─────────────────────────────────────────────────────────────
-
-export const VaultCoverageWatchdogSchemaV1 = z.object({
-  camera_ids: z.array(uuid).min(1).max(100).optional(),
-  threshold_hours: z.number().int().min(1).max(720).optional(),
+  limit: z.number().int().finite().min(1).max(100).optional(),
 }).strict();
 
 // ─────────────────────────────────────────────────────────────
