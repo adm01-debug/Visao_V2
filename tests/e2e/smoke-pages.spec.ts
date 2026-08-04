@@ -60,9 +60,12 @@ const PAGES: Array<{
   },
 ];
 
+// devices['iPhone 12'] includes defaultBrowserType which cannot be used inside
+// test.describe — strip it so test.use() is valid at the describe level.
+const { defaultBrowserType: _dbt, ...iphone12Config } = devices['iPhone 12'];
 const VIEWPORTS = [
   { name: 'desktop', config: { viewport: { width: 1280, height: 720 } } },
-  { name: 'mobile', config: { ...devices['iPhone 12'] } },
+  { name: 'mobile', config: iphone12Config },
 ];
 
 const CONSOLE_IGNORE = [

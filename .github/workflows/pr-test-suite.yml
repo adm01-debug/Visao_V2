@@ -235,6 +235,8 @@ jobs:
       - name: Instalar navegadores
         # Com cache hit só reinstalamos as libs de sistema (Linux); o binário
         # do Chromium vem do cache. `--with-deps` não existe no Windows.
+        # No Windows, npm lê .npmrc (script-shell=/bin/bash) via npx → ENOENT.
+        # Prefixar npm_config_script_shell=cmd.exe sobrescreve o .npmrc.
         run: |
           if [ "${{ steps.cache-playwright.outputs.cache-hit }}" = "true" ]; then
             if [ "$RUNNER_OS" = "Linux" ]; then
@@ -245,7 +247,7 @@ jobs:
           elif [ "$RUNNER_OS" = "Linux" ]; then
             npx playwright install --with-deps chromium
           else
-            npx playwright install chromium
+            npm_config_script_shell=cmd.exe npx playwright install chromium
           fi
       - name: Build de produção
         run: npm run build
