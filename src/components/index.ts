@@ -22,7 +22,7 @@ export {
 } from './common';
 
 // TimeAgo
-export { TimeAgo } from './timeago';
+export { TimeAgo } from './TimeAgo';
 
 // ErrorBoundary
 export { ErrorBoundary } from './ErrorBoundary';

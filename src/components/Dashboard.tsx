@@ -16,7 +16,7 @@ import {
   CameraGridSkeleton,
   AlertsSidebarSkeleton,
   mapDbCameraToUI,
-} from './dashboard';
+} from './dashboard/index';
 import { DashboardControlsBar } from './dashboard/DashboardControlsBar';
 import { DashboardCameraGrid } from './dashboard/DashboardCameraGrid';
 import { AnimatedTransition } from './ui/AnimatedTransition';
