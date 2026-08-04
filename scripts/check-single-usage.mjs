@@ -20,8 +20,9 @@ function audit(file) {
   const lines = src.split('\n');
   for (let i = 0; i < lines.length; i++) {
     if (!/\.single\(\)/.test(lines[i])) continue;
-    // Look back up to 8 lines for insert/update/upsert on the same chain
-    const window = lines.slice(Math.max(0, i - 8), i + 1).join('\n');
+    // Look back up to 20 lines for insert/update/upsert on the same chain.
+    // Objetos com muitos campos superam 8 linhas — ajuste de Wave 13.
+    const window = lines.slice(Math.max(0, i - 20), i + 1).join('\n');
     const isWrite = /\.(insert|update|upsert|delete)\s*\(/.test(window);
     if (!isWrite) {
       offenders.push(`${file}:${i + 1}`);
