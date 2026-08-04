@@ -55,6 +55,7 @@ import {
 
 import type { TriageItem, TriagePlace } from '@/lib/emap/triageQueue';
 
+import { PageContent } from '@/components/layout/MainLayout';
 import { useSitePlans } from '@/hooks/useSitePlans';
 import { summarizePlan, type MapMarkerStatus } from '@/lib/emap/floorPlanGeometry';
 
@@ -298,7 +299,7 @@ export default function SitePlanPage() {
   }, [planNavigation, setActivePlanId]);
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <PageContent className="p-4 md:p-6">
       <PageMeta
         title="Planta Baixa — VISÃO"
         description="Mapa de situação: posicione as câmeras na planta do local e veja o estado de cada ponto em tempo real."
@@ -481,6 +482,6 @@ export default function SitePlanPage() {
           </div>
         </div>
       )}
-    </div>
+    </PageContent>
   );
 }
