@@ -37,6 +37,7 @@ const ALLOWLIST = new Set([
   'AcessoNegado.tsx',
   'PricingPage.tsx',
   'ApiDocsPage.tsx',
+  'DetachedMonitorPage.tsx',
 ]);
 
 // Páginas com wrapper customizado que SUBSTITUEM o <main> do MainLayout
@@ -316,7 +317,7 @@ try {
 
   // 2. Extrai rotas envolvidas em <ProtectedLayoutRoute>...<ComponentName />...</ProtectedLayoutRoute>
   const routeRe =
-    /<Route\s+path=["']([^"']+)["'][^>]*element=\{<ProtectedLayoutRoute>([\s\S]*?)<\/ProtectedLayoutRoute>\}/g;
+    /<Route\s+path=["']([^"']+)["'][^>]*element=\{\s*<ProtectedLayoutRoute>([\s\S]*?)<\/ProtectedLayoutRoute>\s*\}/g;
   const componentInRouteRe = /<(\w+)\s*\/>/g;
   const authenticatedRoutes = [];
   let rm;

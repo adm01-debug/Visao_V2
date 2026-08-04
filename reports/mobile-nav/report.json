@@ -1,25 +1,18 @@
 {
-  "generatedAt": "2026-07-28T19:35:29.082Z",
+  "generatedAt": "2026-08-04T19:16:37.085Z",
   "wrapperFile": "src/components/layout/MainLayout.tsx",
   "requiredClass": "mb-mobile-nav",
   "totals": {
     "total": 75,
     "ok": 66,
-    "pendente": 1,
-    "isenta": 8,
-    "standard": 67,
+    "pendente": 0,
+    "isenta": 9,
+    "standard": 66,
     "customWrapper": 0,
-    "standalone": 8
+    "standalone": 9
   },
-  "failed": true,
+  "failed": false,
   "rows": [
-    {
-      "file": "DetachedMonitorPage.tsx",
-      "path": "src/pages/DetachedMonitorPage.tsx",
-      "category": "standard",
-      "status": "pendente",
-      "issues": ["Wrapper customizado não cadastrado (linha 107)"]
-    },
     {
       "file": "AlarmSchemesPage.tsx",
       "path": "src/pages/AlarmSchemesPage.tsx",
@@ -506,6 +499,13 @@
     {
       "file": "AuthCallback.tsx",
       "path": "src/pages/AuthCallback.tsx",
+      "category": "standalone",
+      "status": "isenta",
+      "issues": []
+    },
+    {
+      "file": "DetachedMonitorPage.tsx",
+      "path": "src/pages/DetachedMonitorPage.tsx",
       "category": "standalone",
       "status": "isenta",
       "issues": []
