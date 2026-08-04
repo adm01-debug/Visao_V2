@@ -250,11 +250,23 @@ jobs:
             npm_config_script_shell=cmd.exe npx playwright install chromium
           fi
       - name: Build de produção
-        run: npm run build
+        # .npmrc sets script-shell=/bin/bash which ENOENT on Windows.
+        # Prefix npm_config_script_shell=cmd.exe to override .npmrc for Windows.
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            npm_config_script_shell=cmd.exe npm run build
+          else
+            npm run build
+          fi
         env:
           CI: true
       - name: Smoke das páginas principais
-        run: npm run test:smoke -- --project=chromium --workers=4
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            npm_config_script_shell=cmd.exe npm run test:smoke -- --project=chromium --workers=4
+          else
+            npm run test:smoke -- --project=chromium --workers=4
+          fi
         env:
           CI: true
       - name: Upload artefatos E2E

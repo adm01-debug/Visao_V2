@@ -258,6 +258,18 @@ export async function gotoAuthenticated(
 
   await page.goto(path, { waitUntil, timeout }).catch(() => {});
 
+  // SPA race-condition guard: React processes auth state asynchronously —
+  // domcontentloaded fires before JS runs, so the URL may still be the original
+  // path when we check. Wait for either the authenticated scaffold OR the auth
+  // redirect to appear, whichever comes first, before deciding.
+  await Promise.race([
+    page.waitForURL((url) => isAuthRedirect(url.href), { timeout: 5000 }),
+    page.waitForSelector('[data-app-scroll]', { state: 'visible', timeout: 5000 }),
+  ]).catch(() => {
+    // Timeout: no redirect or scaffold appeared — proceed with current URL check
+    // (handles public pages or very slow environments)
+  });
+
   if (!isAuthRedirect(page.url())) {
     // Sucesso: log mostra qual estratégia entregou a sessão
     if (strategy === 'storage-state') authLog(path, 'OK storage-state');
