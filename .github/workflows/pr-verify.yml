@@ -19,10 +19,10 @@ jobs:
       fail-fast: false
       matrix:
         node: ['20', '22']
-        bun: ['1.1.34', 'latest']
+        bun: ['1.2.0', 'latest']
         include:
           - node: '20'
-            bun: '1.1.34'
+            bun: '1.2.0'
             primary: true
           - node: '22'
             bun: 'latest'
@@ -31,7 +31,7 @@ jobs:
           - node: '20'
             bun: 'latest'
           - node: '22'
-            bun: '1.1.34'
+            bun: '1.2.0'
 
     steps:
       - name: Checkout
