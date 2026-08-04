@@ -232,6 +232,15 @@ export const WatchdogAckSlaAlertSchemaV1 = z.object({
   mtta_cap_min: z.number().int().finite().min(0).max(10080).optional(),
 }).strict();
 
+// GET query-param variant: same bounds but uses z.coerce for string→number conversion.
+// force is left as string — caller compares === "1" directly.
+export const WatchdogAckSlaAlertQuerySchema = z.object({
+  force: z.string().optional(),
+  min_ack: z.coerce.number().int().finite().min(0).max(10080).optional(),
+  min_esc: z.coerce.number().int().finite().min(0).max(10080).optional(),
+  mtta_cap_min: z.coerce.number().int().finite().min(0).max(10080).optional(),
+}).strict();
+
 // ─────────────────────────────────────────────────────────────
 // monitoring-center-dispatch — Queue worker with optional limit
 // POST { limit? }  — dispatches from internal alert queue, not from caller

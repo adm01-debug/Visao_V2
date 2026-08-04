@@ -3,7 +3,7 @@
 // com escalações suficientes para significância estatística.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { getContractVersion, parseJsonBody, validatePayload } from "../_shared/contractValidation.ts";
-import { WatchdogAckSlaAlertSchemaV1 } from "../_shared/webhookSchemas.ts";
+import { WatchdogAckSlaAlertQuerySchema, WatchdogAckSlaAlertSchemaV1 } from "../_shared/webhookSchemas.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -28,10 +28,13 @@ Deno.serve(async (req) => {
   const TELEGRAM_CHAT_ID = Deno.env.get("TELEGRAM_CHAT_ID");
 
   const url = new URL(req.url);
-  let force = url.searchParams.get("force") === "1";
-  let minAck = Number(url.searchParams.get("min_ack") ?? "70"); // %
-  let minEsc = Number(url.searchParams.get("min_esc") ?? "3");
-  let mttaCapMin = Number(url.searchParams.get("mtta_cap_min") ?? "30");
+  const rawParams = Object.fromEntries(url.searchParams.entries());
+  const qValidation = validatePayload(WatchdogAckSlaAlertQuerySchema, rawParams, corsHeaders);
+  if (!qValidation.success) return qValidation.response;
+  let force = qValidation.data.force === "1";
+  let minAck = qValidation.data.min_ack ?? 70; // % default
+  let minEsc = qValidation.data.min_esc ?? 3;
+  let mttaCapMin = qValidation.data.mtta_cap_min ?? 30;
 
   if (req.method === "POST") {
     const version = getContractVersion(req);

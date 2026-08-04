@@ -1005,7 +1005,8 @@ Deno.test("monitoring-center-dispatch V1: rejeita campo desconhecido (strict)", 
 
 // ─────────────────────────────────────────────────────────────
 // vault-coverage-watchdog — query params only
-// Schema: { limit?: int(1-500) }
+// Schema: z.object({}).strict() — sem campos permitidos; rejeita qualquer param
+// (schema intencionalmente vazio: função lê aggregate view sem parâmetros externos)
 // ─────────────────────────────────────────────────────────────
 
 Deno.test("vault-coverage-watchdog query: aceita objeto vazio", () => {
@@ -1013,26 +1014,16 @@ Deno.test("vault-coverage-watchdog query: aceita objeto vazio", () => {
   assertEquals(result.success, true);
 });
 
-Deno.test("vault-coverage-watchdog query: aceita limit válido", () => {
-  const result = VaultCoverageWatchdogQuerySchema.safeParse({ limit: 100 });
-  assertEquals(result.success, true);
+Deno.test("vault-coverage-watchdog query: rejeita limit (campo não permitido pelo schema vazio)", async () => {
+  const result = validatePayload(VaultCoverageWatchdogQuerySchema, { limit: 100 });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
 });
 
-Deno.test("vault-coverage-watchdog query: aceita limit = 500 (máximo)", () => {
-  const result = VaultCoverageWatchdogQuerySchema.safeParse({ limit: 500 });
-  assertEquals(result.success, true);
-});
-
-Deno.test("vault-coverage-watchdog query: rejeita limit = 0", async () => {
+Deno.test("vault-coverage-watchdog query: rejeita limit = 0 (campo não permitido)", async () => {
   const result = validatePayload(VaultCoverageWatchdogQuerySchema, { limit: 0 });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "limit");
-});
-
-Deno.test("vault-coverage-watchdog query: rejeita limit = 501", async () => {
-  const result = validatePayload(VaultCoverageWatchdogQuerySchema, { limit: 501 });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "limit");
+  if (!result.success) await assert422Shape(result.response);
 });
 
 Deno.test("vault-coverage-watchdog query: rejeita campo desconhecido (strict)", async () => {
