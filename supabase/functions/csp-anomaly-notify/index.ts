@@ -2,7 +2,6 @@
 // Consulta audit_logs para eventos security.csp_anomaly recentes ainda não
 // notificados e envia mensagem consolidada. Idempotente via flag notified_at
 // gravada no próprio registro (new_values.notified_at).
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -39,7 +38,7 @@ async function sendTelegram(text: string): Promise<{ ok: boolean; error?: string
   }
 }
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   // Autorização opcional: se RETENTION_SECRET estiver definido e o header
   // x-cron-secret NÃO bater, rejeita. Caso contrário aceita (function é
   // verify_jwt=false para permitir chamada via pg_cron/net.http_post).

@@ -3,6 +3,7 @@
  * Tests the unified 422 response format, version detection, and versioned validation.
  */
 import {
+  assert,
   assertEquals,
   assertExists,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";

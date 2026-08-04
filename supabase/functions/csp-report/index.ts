@@ -60,7 +60,12 @@ Deno.serve(async (req) => {
   let raw: unknown;
   try {
     const text = await req.text();
-    if (text.length > MAX_BYTES) throw new Error("payload_too_large");
+    // Byte-accurate check: text.length counts UTF-16 code units, not bytes.
+    if (new TextEncoder().encode(text).length > MAX_BYTES) {
+      return new Response(JSON.stringify({ error: "payload_too_large" }), {
+        status: 413, headers: { ...cors, "content-type": "application/json" },
+      });
+    }
     raw = JSON.parse(text);
   } catch {
     return new Response(JSON.stringify({ error: "invalid_json" }), {

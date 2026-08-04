@@ -54,8 +54,9 @@ export const IngestAuthSchemaV2 = z.object({
   }).optional(),
   client_ip: z.string().max(64, "client_ip excede 64 caracteres").optional(),
   session_id: uuid.optional(),
-  // z.record() has no .max() — use superRefine to enforce key count.
-  metadata: z.record(z.string().max(256)).optional().superRefine((val, ctx) => {
+  // z.record(keySchema, valueSchema) — keys max 64 chars, values max 256 chars.
+  // superRefine enforces key count since z.record has no .max() on entries.
+  metadata: z.record(z.string().max(64), z.string().max(256)).optional().superRefine((val, ctx) => {
     if (val !== undefined && Object.keys(val).length > 10) {
       ctx.addIssue({
         code: "too_big",
@@ -108,7 +109,7 @@ export const AgentHeartbeatSchemaV1 = z.object({
 export const AgentHeartbeatSchemaV2 = z.object({
   agent_version: z.string().max(40, "agent_version excede 40 caracteres").optional(),
   network_cidr: z.string().max(60, "network_cidr excede 60 caracteres").optional(),
-  capabilities: z.array(z.string().max(64)).max(50).optional(),
+  capabilities: z.array(z.string().min(1).max(64)).max(50).optional(),
   region: z.string().max(64).optional(),
 }).strict();
 
@@ -122,8 +123,8 @@ export const DiscoveryItemSchema = z.object({
   onvif_endpoint: z.string().url("onvif_endpoint deve ser URL válida").nullish(),
   rtsp_primary: z.string().max(512).nullish(),
   rtsp_substream: z.string().max(512).nullish(),
-  ptz_capable: z.boolean().optional(),
-  discovered_at: isoDatetime.optional(),
+  ptz_capable: z.boolean().nullish(),
+  discovered_at: isoDatetime.nullish(),
   raw: z.unknown().optional(),
 }).strict();
 
@@ -172,7 +173,10 @@ export type AgentHeartbeatPayloadV1 = z.infer<typeof AgentHeartbeatSchemaV1>;
 export type AgentHeartbeatPayloadV2 = z.infer<typeof AgentHeartbeatSchemaV2>;
 export type DiscoveryItem = z.infer<typeof DiscoveryItemSchema>;
 export type AgentDiscoveriesPayloadV1 = z.infer<typeof AgentDiscoveriesSchemaV1>;
+export type AgentDiscoveriesPayloadV2 = z.infer<typeof AgentDiscoveriesSchemaV2>;
+export type AgentRelayPollPayload = z.infer<typeof AgentRelayPollSchema>;
 export type AgentRelayCompletePayloadV1 = z.infer<typeof AgentRelayCompleteSchemaV1>;
+export type AgentRelayCompletePayloadV2 = z.infer<typeof AgentRelayCompleteSchemaV2>;
 
 // ─────────────────────────────────────────────────────────────
 // csp-anomaly-notify — Cron-triggered notification endpoint

@@ -2,6 +2,8 @@
 // Usa resolve-camera-url para obter a URL final rehidratada do cofre.
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
+import { validatePayload } from '../_shared/contractValidation.ts';
+import { StreamHealthProbeQuerySchema } from '../_shared/webhookSchemas.ts';
 import { maskSecrets } from '../_shared/maskSecrets.ts';
 
 const corsHeaders = {
@@ -64,13 +66,19 @@ const log = (level: 'info' | 'warn' | 'error', msg: string, meta: Record<string,
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
+  const url = new URL(req.url);
+  const rawParams = Object.fromEntries(url.searchParams.entries());
+  const qValidation = validatePayload(StreamHealthProbeQuerySchema, rawParams, corsHeaders);
+  if (!qValidation.success) return qValidation.response;
+  const batchSize = qValidation.data.limit ?? BATCH_SIZE;
+
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
 
   try {
     const { data: cams, error } = await supabase
       .from('cameras')
       .select('id, user_id, substream_url')
-      .limit(BATCH_SIZE);
+      .limit(batchSize);
     if (error) throw error;
 
     const list = (cams ?? []) as Array<{

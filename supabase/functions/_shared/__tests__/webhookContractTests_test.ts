@@ -141,6 +141,7 @@ Deno.test("ingest-auth V1: rejeita campo desconhecido (strict)", async () => {
     unknown_field: "x",
   });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
 });
 
 Deno.test("ingest-auth V1: rejeita payload vazio", async () => {
@@ -200,6 +201,7 @@ Deno.test("ingest-auth V2: rejeita metadata com mais de 10 chaves", async () => 
     metadata,
   });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "metadata");
 });
 
 Deno.test("ingest-auth V2: rejeita session_id inválido (não-UUID)", async () => {
@@ -219,6 +221,7 @@ Deno.test("ingest-auth V2: rejeita metadata com valor longo (> 256 chars)", asyn
     metadata: { key: "x".repeat(257) },
   });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
 });
 
 Deno.test("ingest-auth V2: rejeita campo desconhecido (strict)", async () => {
@@ -228,6 +231,7 @@ Deno.test("ingest-auth V2: rejeita campo desconhecido (strict)", async () => {
     extra_unknown: "valor",
   });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
 });
 
 Deno.test("ingest-auth: versioned validation aceita V1 em endpoint V2", () => {
@@ -347,6 +351,7 @@ Deno.test("agent heartbeat V1: rejeita campo desconhecido (strict)", async () =>
     unknown: "field",
   });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
 });
 
 Deno.test("agent heartbeat V2: aceita capabilities e region", () => {
@@ -368,6 +373,7 @@ Deno.test("agent heartbeat V2: rejeita capabilities com string longa", async () 
     capabilities: ["x".repeat(65)],
   });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "capabilities");
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -529,6 +535,7 @@ Deno.test("agent discoveries V2: rejeita campo desconhecido (strict)", async () 
     extra_field: "valor",
   });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -583,6 +590,7 @@ Deno.test("agent relay-poll: rejeita max NaN", async () => {
 Deno.test("agent relay-poll: rejeita campo desconhecido (strict)", async () => {
   const result = validatePayload(AgentRelayPollSchema, { unknown: "x" });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -656,6 +664,7 @@ Deno.test("agent relay-complete V1: rejeita campo desconhecido (strict)", async 
     unknown_field: "x",
   });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
 });
 
 Deno.test("agent relay-complete V2: aceita exit_code e duration_ms", () => {
@@ -738,6 +747,7 @@ Deno.test("agent relay-complete V2: rejeita campo desconhecido (strict)", async 
     extra_field: "x",
   });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
 });
 
 Deno.test("agent relay-complete: versioned validation aceita V1 em endpoint V2", () => {
@@ -790,11 +800,13 @@ Deno.test("stream-health-probe query: rejeita limit = 201", async () => {
 Deno.test("stream-health-probe query: rejeita limit decimal", async () => {
   const result = validatePayload(StreamHealthProbeQuerySchema, { limit: 50.5 });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "limit");
 });
 
 Deno.test("stream-health-probe query: rejeita campo desconhecido (strict)", async () => {
   const result = validatePayload(StreamHealthProbeQuerySchema, { camera_id: VALID_UUID });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -842,6 +854,7 @@ Deno.test("preview-telemetry-alert query: rejeita min = 0", async () => {
 Deno.test("preview-telemetry-alert query: rejeita campo desconhecido (strict)", async () => {
   const result = validatePayload(PreviewTelemetryAlertQuerySchema, { camera_id: VALID_UUID });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -878,6 +891,7 @@ Deno.test("connectivity-resolution-alert query: rejeita min negativo", async () 
 Deno.test("connectivity-resolution-alert query: rejeita campo desconhecido (strict)", async () => {
   const result = validatePayload(ConnectivityResolutionAlertQuerySchema, { resolution_type: "timeout" });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -937,6 +951,7 @@ Deno.test("watchdog-ack-sla-alert V1: rejeita force como string", async () => {
 Deno.test("watchdog-ack-sla-alert V1: rejeita campo desconhecido (strict)", async () => {
   const result = validatePayload(WatchdogAckSlaAlertSchemaV1, { extra: "campo" });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -979,11 +994,13 @@ Deno.test("monitoring-center-dispatch V1: rejeita limit = 101", async () => {
 Deno.test("monitoring-center-dispatch V1: rejeita limit decimal", async () => {
   const result = validatePayload(MonitoringCenterDispatchSchemaV1, { limit: 10.5 });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "limit");
 });
 
 Deno.test("monitoring-center-dispatch V1: rejeita campo desconhecido (strict)", async () => {
   const result = validatePayload(MonitoringCenterDispatchSchemaV1, { alert_id: VALID_UUID });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -1021,6 +1038,7 @@ Deno.test("vault-coverage-watchdog query: rejeita limit = 501", async () => {
 Deno.test("vault-coverage-watchdog query: rejeita campo desconhecido (strict)", async () => {
   const result = validatePayload(VaultCoverageWatchdogQuerySchema, { camera_ids: [VALID_UUID] });
   assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -1147,6 +1165,83 @@ Deno.test("ingest-auth V1: aceita stream_key de exatamente 64 chars (máximo vá
     stream_key: "a1b2c3d4".repeat(8),
   });
   assertEquals(result.success, true);
+});
+
+// ─────────────────────────────────────────────────────────────
+// Testes de regressão para correções de schema (Onda webhook-edge-functions-schema)
+// ─────────────────────────────────────────────────────────────
+
+Deno.test("ingest-auth V2: rejeita metadata com chave acima de 64 chars", async () => {
+  const longKey = "k".repeat(65);
+  const result = validatePayload(IngestAuthSchemaV2, {
+    action: "publish",
+    stream_key: VALID_STREAM_KEY,
+    metadata: { [longKey]: "valor" },
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "metadata");
+});
+
+Deno.test("ingest-auth V2: aceita metadata com chave de exatamente 64 chars", () => {
+  const maxKey = "k".repeat(64);
+  const result = IngestAuthSchemaV2.safeParse({
+    action: "publish",
+    stream_key: VALID_STREAM_KEY,
+    metadata: { [maxKey]: "valor" },
+  });
+  assertEquals(result.success, true);
+});
+
+Deno.test("agent heartbeat V2: rejeita capabilities com string vazia", async () => {
+  const result = validatePayload(AgentHeartbeatSchemaV2, {
+    capabilities: ["scanner", ""],
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "capabilities");
+});
+
+Deno.test("agent heartbeat V2: aceita capabilities com strings não-vazias", () => {
+  const result = AgentHeartbeatSchemaV2.safeParse({
+    capabilities: ["onvif", "rtsp", "ptz"],
+  });
+  assertEquals(result.success, true);
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema aceita ptz_capable = null", () => {
+  const result = DiscoveryItemSchema.safeParse({
+    host: "192.168.1.100",
+    port: 80,
+    ptz_capable: null,
+  });
+  assertEquals(result.success, true);
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema aceita discovered_at = null", () => {
+  const result = DiscoveryItemSchema.safeParse({
+    host: "192.168.1.100",
+    port: 80,
+    discovered_at: null,
+  });
+  assertEquals(result.success, true);
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema aceita ptz_capable = false (não-nulo)", () => {
+  const result = DiscoveryItemSchema.safeParse({
+    host: "192.168.1.100",
+    port: 80,
+    ptz_capable: false,
+  });
+  assertEquals(result.success, true);
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema rejeita discovered_at em formato inválido", async () => {
+  const result = validatePayload(DiscoveryItemSchema, {
+    host: "192.168.1.100",
+    port: 80,
+    discovered_at: "not-a-date",
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "discovered_at");
 });
 
 Deno.test("ingest-auth V1: rejeita stream_key de exatamente 65 chars (acima do máximo)", () => {

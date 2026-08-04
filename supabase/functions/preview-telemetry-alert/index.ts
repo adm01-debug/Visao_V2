@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
   const url = new URL(req.url);
   const windowHours = Math.max(1, Math.min(24, Number(url.searchParams.get('window') ?? '1')));
   const minEvents  = Math.max(10, Math.min(10000, Number(url.searchParams.get('min') ?? '50')));
-  const threshold  = Math.max(0.5, Math.min(0.99, Number(url.searchParams.get('th') ?? '0.9')));
+  const threshold  = Math.max(0.5, Math.min(0.99, Number(url.searchParams.get('threshold') ?? '0.9')));
   const force      = url.searchParams.get('force') === '1';
 
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);

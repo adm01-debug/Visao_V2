@@ -7,6 +7,8 @@
 // tentativas e prazo final — a política vive no banco, não aqui.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { formatContactIdFrame, type ContactIdQualifier } from "../_shared/contactId.ts";
+import { getContractVersion, parseJsonBody, validatePayload } from "../_shared/contractValidation.ts";
+import { MonitoringCenterDispatchSchemaV1 } from "../_shared/webhookSchemas.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -59,11 +61,13 @@ Deno.serve(async (req) => {
 
   const worker = `edge-${crypto.randomUUID().slice(0, 8)}`;
   let batchSize = 20;
-  try {
-    const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
-    if (typeof body?.limit === "number") batchSize = Math.min(Math.max(body.limit, 1), 100);
-  } catch {
-    // corpo opcional: um POST vazio é uma execução padrão
+  if (req.method === "POST") {
+    const version = getContractVersion(req);
+    const bodyResult = await parseJsonBody(req, 8_000, corsHeaders);
+    if (!bodyResult.success) return bodyResult.response;
+    const validation = validatePayload(MonitoringCenterDispatchSchemaV1, bodyResult.data ?? {}, corsHeaders, version);
+    if (!validation.success) return validation.response;
+    if (validation.data.limit !== undefined) batchSize = validation.data.limit;
   }
 
   // Devolve à fila o que ficou preso em worker morto antes de reclamar novos.
