@@ -2,7 +2,7 @@
  * VISÃO — Wave 22: shared Zod schemas for InsightFace edge functions.
  * Defense-in-depth: reject malformed input before any Replicate call.
  */
-import { z } from 'https://esm.sh/zod@3.23.8';
+import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 
 /** Max ~7 MB base64 image (5 MB raw). Prevents oversized payloads / DoS. */
 const IMAGE_MAX_LEN = 7_500_000;

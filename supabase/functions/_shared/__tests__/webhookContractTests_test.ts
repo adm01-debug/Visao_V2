@@ -25,6 +25,7 @@ import {
   PreviewTelemetryAlertQuerySchema,
   ConnectivityResolutionAlertQuerySchema,
   WatchdogAckSlaAlertSchemaV1,
+  WatchdogAckSlaAlertQuerySchema,
   MonitoringCenterDispatchSchemaV1,
   VaultCoverageWatchdogQuerySchema,
 } from "../webhookSchemas.ts";
@@ -468,6 +469,45 @@ Deno.test("agent discoveries: DiscoveryItemSchema aceita onvif_endpoint null", (
     onvif_endpoint: null,
   });
   assertEquals(result.success, true);
+});
+
+// DiscoveryItemSchema: min(1) enforcement on optional nullish string fields
+// These fields are .nullish() so null/undefined are valid, but "" (empty string) must be rejected.
+// This prevents database entries with empty strings masquerading as valid metadata.
+
+Deno.test("agent discoveries: DiscoveryItemSchema rejeita manufacturer = '' (string vazia)", async () => {
+  const result = validatePayload(DiscoveryItemSchema, { host: "cam.local", port: 554, manufacturer: "" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "manufacturer");
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema aceita manufacturer = null", () => {
+  const result = DiscoveryItemSchema.safeParse({ host: "cam.local", port: 554, manufacturer: null });
+  assertEquals(result.success, true);
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema rejeita model = '' (string vazia)", async () => {
+  const result = validatePayload(DiscoveryItemSchema, { host: "cam.local", port: 554, model: "" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "model");
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema rejeita firmware = '' (string vazia)", async () => {
+  const result = validatePayload(DiscoveryItemSchema, { host: "cam.local", port: 554, firmware: "" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "firmware");
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema rejeita rtsp_primary = '' (string vazia)", async () => {
+  const result = validatePayload(DiscoveryItemSchema, { host: "cam.local", port: 554, rtsp_primary: "" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "rtsp_primary");
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema rejeita rtsp_substream = '' (string vazia)", async () => {
+  const result = validatePayload(DiscoveryItemSchema, { host: "cam.local", port: 554, rtsp_substream: "" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "rtsp_substream");
 });
 
 Deno.test("agent discoveries V1: aceita lista com uma câmera", () => {
@@ -954,6 +994,134 @@ Deno.test("watchdog-ack-sla-alert V1: rejeita campo desconhecido (strict)", asyn
   if (!result.success) await assert422Shape(result.response);
 });
 
+Deno.test("watchdog-ack-sla-alert V1: aceita min_ack = 10080 (máximo)", () => {
+  const result = WatchdogAckSlaAlertSchemaV1.safeParse({ min_ack: 10080 });
+  assertEquals(result.success, true);
+});
+
+Deno.test("watchdog-ack-sla-alert V1: rejeita min_ack = 10081 (acima do máximo)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertSchemaV1, { min_ack: 10081 });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "min_ack");
+});
+
+Deno.test("watchdog-ack-sla-alert V1: rejeita mtta_cap_min = 10081 (acima do máximo)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertSchemaV1, { mtta_cap_min: 10081 });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "mtta_cap_min");
+});
+
+// ─────────────────────────────────────────────────────────────
+// watchdog-ack-sla-alert — query param variant (GET)
+// Schema: WatchdogAckSlaAlertQuerySchema — z.coerce para string→number
+// Protege contra NaN causado por valores não-numéricos em query params
+// ─────────────────────────────────────────────────────────────
+
+Deno.test("watchdog-ack-sla-alert query: aceita params vazios (GET sem query string)", () => {
+  const result = WatchdogAckSlaAlertQuerySchema.safeParse({});
+  assertEquals(result.success, true);
+});
+
+Deno.test("watchdog-ack-sla-alert query: aceita force = '1' (string)", () => {
+  const result = WatchdogAckSlaAlertQuerySchema.safeParse({ force: "1" });
+  assertEquals(result.success, true);
+  if (result.success) assertEquals(result.data.force, "1");
+});
+
+Deno.test("watchdog-ack-sla-alert query: aceita force = '0' (string)", () => {
+  const result = WatchdogAckSlaAlertQuerySchema.safeParse({ force: "0" });
+  assertEquals(result.success, true);
+});
+
+Deno.test("watchdog-ack-sla-alert query: aceita min_ack como string numérica válida", () => {
+  const result = WatchdogAckSlaAlertQuerySchema.safeParse({ min_ack: "70" });
+  assertEquals(result.success, true);
+  if (result.success) assertEquals(result.data.min_ack, 70);
+});
+
+Deno.test("watchdog-ack-sla-alert query: aceita todos os params com coerção", () => {
+  const result = WatchdogAckSlaAlertQuerySchema.safeParse({
+    force: "1",
+    min_ack: "80",
+    min_esc: "5",
+    mtta_cap_min: "45",
+  });
+  assertEquals(result.success, true);
+  if (result.success) {
+    assertEquals(result.data.min_ack, 80);
+    assertEquals(result.data.min_esc, 5);
+    assertEquals(result.data.mtta_cap_min, 45);
+  }
+});
+
+Deno.test("watchdog-ack-sla-alert query: aceita min_ack = '0' (mínimo)", () => {
+  const result = WatchdogAckSlaAlertQuerySchema.safeParse({ min_ack: "0" });
+  assertEquals(result.success, true);
+  if (result.success) assertEquals(result.data.min_ack, 0);
+});
+
+Deno.test("watchdog-ack-sla-alert query: aceita min_ack = '10080' (máximo)", () => {
+  const result = WatchdogAckSlaAlertQuerySchema.safeParse({ min_ack: "10080" });
+  assertEquals(result.success, true);
+  if (result.success) assertEquals(result.data.min_ack, 10080);
+});
+
+// NaN protection — valores não-numéricos que causavam NaN antes da correção
+Deno.test("watchdog-ack-sla-alert query: rejeita min_ack = 'abc' (NaN-inducing)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertQuerySchema, { min_ack: "abc" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "min_ack");
+});
+
+Deno.test("watchdog-ack-sla-alert query: rejeita min_esc = 'abc' (NaN-inducing)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertQuerySchema, { min_esc: "abc" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "min_esc");
+});
+
+Deno.test("watchdog-ack-sla-alert query: rejeita mtta_cap_min = 'abc' (NaN-inducing)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertQuerySchema, { mtta_cap_min: "abc" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "mtta_cap_min");
+});
+
+Deno.test("watchdog-ack-sla-alert query: aceita min_ack = '' (string vazia coerge para 0)", () => {
+  // Number("") === 0, portanto "" coerge para 0 (dentro do intervalo [0,10080])
+  const result = WatchdogAckSlaAlertQuerySchema.safeParse({ min_ack: "" });
+  assertEquals(result.success, true);
+  if (result.success) assertEquals(result.data.min_ack, 0);
+});
+
+Deno.test("watchdog-ack-sla-alert query: rejeita min_ack = '10081' (acima do máximo)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertQuerySchema, { min_ack: "10081" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "min_ack");
+});
+
+Deno.test("watchdog-ack-sla-alert query: rejeita min_ack = '-1' (negativo)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertQuerySchema, { min_ack: "-1" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "min_ack");
+});
+
+Deno.test("watchdog-ack-sla-alert query: rejeita min_ack = '70.5' (decimal)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertQuerySchema, { min_ack: "70.5" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "min_ack");
+});
+
+Deno.test("watchdog-ack-sla-alert query: rejeita min_ack = 'Infinity' (Infinity-inducing)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertQuerySchema, { min_ack: "Infinity" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "min_ack");
+});
+
+Deno.test("watchdog-ack-sla-alert query: rejeita campo desconhecido (strict)", async () => {
+  const result = validatePayload(WatchdogAckSlaAlertQuerySchema, { unknown_param: "val" });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
+});
+
 // ─────────────────────────────────────────────────────────────
 // monitoring-center-dispatch
 // Schema: { limit?: int(1-100) }
@@ -1005,7 +1173,8 @@ Deno.test("monitoring-center-dispatch V1: rejeita campo desconhecido (strict)", 
 
 // ─────────────────────────────────────────────────────────────
 // vault-coverage-watchdog — query params only
-// Schema: { limit?: int(1-500) }
+// Schema: z.object({}).strict() — sem campos permitidos; rejeita qualquer param
+// (schema intencionalmente vazio: função lê aggregate view sem parâmetros externos)
 // ─────────────────────────────────────────────────────────────
 
 Deno.test("vault-coverage-watchdog query: aceita objeto vazio", () => {
@@ -1013,26 +1182,16 @@ Deno.test("vault-coverage-watchdog query: aceita objeto vazio", () => {
   assertEquals(result.success, true);
 });
 
-Deno.test("vault-coverage-watchdog query: aceita limit válido", () => {
-  const result = VaultCoverageWatchdogQuerySchema.safeParse({ limit: 100 });
-  assertEquals(result.success, true);
+Deno.test("vault-coverage-watchdog query: rejeita limit (campo não permitido pelo schema vazio)", async () => {
+  const result = validatePayload(VaultCoverageWatchdogQuerySchema, { limit: 100 });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
 });
 
-Deno.test("vault-coverage-watchdog query: aceita limit = 500 (máximo)", () => {
-  const result = VaultCoverageWatchdogQuerySchema.safeParse({ limit: 500 });
-  assertEquals(result.success, true);
-});
-
-Deno.test("vault-coverage-watchdog query: rejeita limit = 0", async () => {
+Deno.test("vault-coverage-watchdog query: rejeita limit = 0 (campo não permitido)", async () => {
   const result = validatePayload(VaultCoverageWatchdogQuerySchema, { limit: 0 });
   assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "limit");
-});
-
-Deno.test("vault-coverage-watchdog query: rejeita limit = 501", async () => {
-  const result = validatePayload(VaultCoverageWatchdogQuerySchema, { limit: 501 });
-  assertEquals(result.success, false);
-  if (!result.success) await assert422Shape(result.response, "limit");
+  if (!result.success) await assert422Shape(result.response);
 });
 
 Deno.test("vault-coverage-watchdog query: rejeita campo desconhecido (strict)", async () => {
@@ -1192,6 +1351,37 @@ Deno.test("ingest-auth V2: aceita metadata com chave de exatamente 64 chars", ()
   assertEquals(result.success, true);
 });
 
+Deno.test("ingest-auth V2: rejeita metadata com chave de 65 chars (acima do máximo)", async () => {
+  const overKey = "k".repeat(65);
+  const result = validatePayload(IngestAuthSchemaV2, {
+    action: "publish",
+    stream_key: VALID_STREAM_KEY,
+    metadata: { [overKey]: "valor" },
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
+});
+
+Deno.test("ingest-auth V2: rejeita metadata com chave vazia (min 1)", async () => {
+  // z.record(z.string().min(1).max(64), ...) deve rejeitar chave ""
+  const result = validatePayload(IngestAuthSchemaV2, {
+    action: "publish",
+    stream_key: VALID_STREAM_KEY,
+    metadata: { "": "valor" },
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
+});
+
+Deno.test("ingest-auth V2: aceita metadata com chave de 1 char (mínimo válido)", () => {
+  const result = IngestAuthSchemaV2.safeParse({
+    action: "publish",
+    stream_key: VALID_STREAM_KEY,
+    metadata: { "k": "valor" },
+  });
+  assertEquals(result.success, true);
+});
+
 Deno.test("agent heartbeat V2: rejeita capabilities com string vazia", async () => {
   const result = validatePayload(AgentHeartbeatSchemaV2, {
     capabilities: ["scanner", ""],
@@ -1266,4 +1456,166 @@ Deno.test("agent relay-complete V2: rejeita duration_ms negativo", () => {
     duration_ms: -1,
   });
   assertEquals(result.success, false);
+});
+
+// ─────────────────────────────────────────────────────────────
+// Wave 6 — Constraint ceiling/floor gap coverage
+// ─────────────────────────────────────────────────────────────
+
+// AgentHeartbeatSchemaV2: capabilities max(50) array length
+Deno.test("agent heartbeat V2: rejeita capabilities com mais de 50 itens", async () => {
+  const tooMany = Array.from({ length: 51 }, (_, i) => `cap-${i}`);
+  const result = validatePayload(AgentHeartbeatSchemaV2, { capabilities: tooMany });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "capabilities");
+});
+
+Deno.test("agent heartbeat V2: aceita capabilities com exatamente 50 itens", () => {
+  const maxCaps = Array.from({ length: 50 }, (_, i) => `cap-${i}`);
+  const result = AgentHeartbeatSchemaV2.safeParse({ capabilities: maxCaps });
+  assertEquals(result.success, true);
+});
+
+// AgentHeartbeatSchemaV2: region max(64)
+Deno.test("agent heartbeat V2: rejeita region acima de 64 chars", async () => {
+  const result = validatePayload(AgentHeartbeatSchemaV2, {
+    region: "r".repeat(65),
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "region");
+});
+
+Deno.test("agent heartbeat V2: aceita region com exatamente 64 chars", () => {
+  const result = AgentHeartbeatSchemaV2.safeParse({ region: "r".repeat(64) });
+  assertEquals(result.success, true);
+});
+
+// IngestAuthSchemaV2: metadata value max(256)
+Deno.test("ingest-auth V2: rejeita metadata com valor acima de 256 chars", async () => {
+  const result = validatePayload(IngestAuthSchemaV2, {
+    action: "publish",
+    stream_key: VALID_STREAM_KEY,
+    metadata: { "key": "v".repeat(257) },
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response);
+});
+
+Deno.test("ingest-auth V2: aceita metadata com valor de exatamente 256 chars", () => {
+  const result = IngestAuthSchemaV2.safeParse({
+    action: "publish",
+    stream_key: VALID_STREAM_KEY,
+    metadata: { "key": "v".repeat(256) },
+  });
+  assertEquals(result.success, true);
+});
+
+// AgentDiscoveriesSchemaV2: scan_duration_ms guards (negative, NaN, Infinity)
+Deno.test("agent discoveries V2: rejeita scan_duration_ms negativo", async () => {
+  const result = validatePayload(AgentDiscoveriesSchemaV2, {
+    discoveries: [{ host: "cam.local", port: 554 }],
+    scan_duration_ms: -1,
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "scan_duration_ms");
+});
+
+Deno.test("agent discoveries V2: rejeita scan_duration_ms = NaN", async () => {
+  const result = validatePayload(AgentDiscoveriesSchemaV2, {
+    discoveries: [{ host: "cam.local", port: 554 }],
+    scan_duration_ms: NaN,
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "scan_duration_ms");
+});
+
+Deno.test("agent discoveries V2: rejeita scan_duration_ms = Infinity", async () => {
+  const result = validatePayload(AgentDiscoveriesSchemaV2, {
+    discoveries: [{ host: "cam.local", port: 554 }],
+    scan_duration_ms: Infinity,
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "scan_duration_ms");
+});
+
+Deno.test("agent discoveries V2: rejeita scan_duration_ms decimal", async () => {
+  const result = validatePayload(AgentDiscoveriesSchemaV2, {
+    discoveries: [{ host: "cam.local", port: 554 }],
+    scan_duration_ms: 1.5,
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "scan_duration_ms");
+});
+
+Deno.test("agent discoveries V2: aceita scan_duration_ms = 0 (mínimo válido)", () => {
+  const result = AgentDiscoveriesSchemaV2.safeParse({
+    discoveries: [{ host: "cam.local", port: 554 }],
+    scan_duration_ms: 0,
+  });
+  assertEquals(result.success, true);
+});
+
+// DiscoveryItemSchema: string field upper bounds
+Deno.test("agent discoveries: DiscoveryItemSchema rejeita host acima de 253 chars", async () => {
+  const result = validatePayload(DiscoveryItemSchema, {
+    host: "h".repeat(254),
+    port: 554,
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "host");
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema aceita host de exatamente 253 chars", () => {
+  const result = DiscoveryItemSchema.safeParse({ host: "h".repeat(253), port: 554 });
+  assertEquals(result.success, true);
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema rejeita manufacturer acima de 100 chars", async () => {
+  const result = validatePayload(DiscoveryItemSchema, {
+    host: "cam.local",
+    port: 554,
+    manufacturer: "m".repeat(101),
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "manufacturer");
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema rejeita model acima de 100 chars", async () => {
+  const result = validatePayload(DiscoveryItemSchema, {
+    host: "cam.local",
+    port: 554,
+    model: "m".repeat(101),
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "model");
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema rejeita firmware acima de 100 chars", async () => {
+  const result = validatePayload(DiscoveryItemSchema, {
+    host: "cam.local",
+    port: 554,
+    firmware: "f".repeat(101),
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "firmware");
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema rejeita rtsp_primary acima de 512 chars", async () => {
+  const result = validatePayload(DiscoveryItemSchema, {
+    host: "cam.local",
+    port: 554,
+    rtsp_primary: "r".repeat(513),
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "rtsp_primary");
+});
+
+Deno.test("agent discoveries: DiscoveryItemSchema rejeita rtsp_substream acima de 512 chars", async () => {
+  const result = validatePayload(DiscoveryItemSchema, {
+    host: "cam.local",
+    port: 554,
+    rtsp_substream: "r".repeat(513),
+  });
+  assertEquals(result.success, false);
+  if (!result.success) await assert422Shape(result.response, "rtsp_substream");
 });

@@ -45,7 +45,7 @@ Deno.serve(async (req) => {
   // Como side-effects são idempotentes (marca notified_at), o risco de abuso
   // é limitado a notificações Telegram já enviadas.
   const provided = req.headers.get("x-cron-secret") ?? "";
-  if (RETENTION_SECRET && provided && provided !== RETENTION_SECRET) {
+  if (RETENTION_SECRET && provided !== RETENTION_SECRET) {
     return new Response(JSON.stringify({ error: "unauthorized" }), {
       status: 401,
       headers: { "content-type": "application/json" },
